@@ -1,0 +1,443 @@
+{
+  "anchor_bootstrap_confidence_intervals": {
+    "antibody_to_antigen": {
+      "mrr": {
+        "bootstrap_standard_error": 0.018665435300024166,
+        "estimate": 0.0850590203247666,
+        "lower": 0.052060851884197776,
+        "upper": 0.12442868364884886
+      },
+      "recall_at_1": {
+        "bootstrap_standard_error": 0.018828923572238507,
+        "estimate": 0.047619047619047616,
+        "lower": 0.015873015873015872,
+        "upper": 0.0873015873015873
+      },
+      "recall_at_10": {
+        "bootstrap_standard_error": 0.031589280615693195,
+        "estimate": 0.15079365079365079,
+        "lower": 0.0873015873015873,
+        "upper": 0.21428571428571427
+      },
+      "recall_at_5": {
+        "bootstrap_standard_error": 0.02607014053723973,
+        "estimate": 0.09523809523809523,
+        "lower": 0.047619047619047616,
+        "upper": 0.15079365079365079
+      }
+    },
+    "antigen_to_antibody": {
+      "mrr": {
+        "bootstrap_standard_error": 0.011603504718983818,
+        "estimate": 0.06274877228890957,
+        "lower": 0.04270050491338597,
+        "upper": 0.08811627085221499
+      },
+      "recall_at_1": {
+        "bootstrap_standard_error": 0.008290270440070581,
+        "estimate": 0.008333333333333333,
+        "lower": 0.0,
+        "upper": 0.025
+      },
+      "recall_at_10": {
+        "bootstrap_standard_error": 0.030899766793490893,
+        "estimate": 0.13333333333333333,
+        "lower": 0.075,
+        "upper": 0.2
+      },
+      "recall_at_5": {
+        "bootstrap_standard_error": 0.023983900151907107,
+        "estimate": 0.075,
+        "lower": 0.03333333333333333,
+        "upper": 0.125
+      }
+    },
+    "bidirectional": {
+      "mrr": {
+        "bootstrap_standard_error": 0.011015634540921755,
+        "estimate": 0.07390389630683808,
+        "lower": 0.05415905773814647,
+        "upper": 0.09689348869112108
+      },
+      "recall_at_1": {
+        "bootstrap_standard_error": 0.010313221621892753,
+        "estimate": 0.027976190476190474,
+        "lower": 0.011904761904761904,
+        "upper": 0.04841269841269841
+      },
+      "recall_at_10": {
+        "bootstrap_standard_error": 0.021977840015855708,
+        "estimate": 0.14206349206349206,
+        "lower": 0.10138888888888889,
+        "upper": 0.1869047619047619
+      },
+      "recall_at_5": {
+        "bootstrap_standard_error": 0.017719261054544563,
+        "estimate": 0.08511904761904762,
+        "lower": 0.05257936507936507,
+        "upper": 0.12163194444444438
+      }
+    },
+    "bootstrap_count": 10000,
+    "confidence_level": 0.95,
+    "directional_resampling": "independent_within_each_retrieval_direction",
+    "interval": "two-sided_percentile",
+    "protocol": "nonparametric_anchor_bootstrap",
+    "seed": 20260723
+  },
+  "baselines": {
+    "raw_frozen_esm_masked_mean_cosine": {
+      "loss_temperature": 1.0,
+      "metrics": {
+        "antibody_to_antigen": {
+          "anchor_count": 126,
+          "candidate_count": 120,
+          "known_positive_count": 148,
+          "mean_positives_per_anchor": 1.1746032238006592,
+          "mean_rank": 56.79365079365079,
+          "median_rank": 55.0,
+          "mrr": 0.04513429607021748,
+          "recall_at_1": 0.0,
+          "recall_at_10": 0.1111111111111111,
+          "recall_at_5": 0.031746031746031744
+        },
+        "antigen_to_antibody": {
+          "anchor_count": 120,
+          "candidate_count": 126,
+          "known_positive_count": 148,
+          "mean_positives_per_anchor": 1.2333333492279053,
+          "mean_rank": 65.49166666666666,
+          "median_rank": 65.0,
+          "mrr": 0.05121397620775946,
+          "recall_at_1": 0.016666666666666666,
+          "recall_at_10": 0.1,
+          "recall_at_5": 0.05
+        },
+        "bidirectional_mrr": 0.048174136138988466,
+        "exact_pair_count": 148,
+        "loss": 4.687285423278809,
+        "unique_antibody_count": 126,
+        "unique_antigen_count": 120
+      },
+      "protocol": "Parameter-free masked mean of frozen residue embeddings followed by L2 normalization and cosine similarity."
+    },
+    "same_architecture_random_initialization": {
+      "metrics": {
+        "antibody_to_antigen": {
+          "anchor_count": 126,
+          "candidate_count": 120,
+          "known_positive_count": 148,
+          "mean_positives_per_anchor": 1.1746032238006592,
+          "mean_rank": 59.01587301587302,
+          "median_rank": 52.5,
+          "mrr": 0.05640144852811111,
+          "recall_at_1": 0.023809523809523808,
+          "recall_at_10": 0.0873015873015873,
+          "recall_at_5": 0.05555555555555555
+        },
+        "antigen_to_antibody": {
+          "anchor_count": 120,
+          "candidate_count": 126,
+          "known_positive_count": 148,
+          "mean_positives_per_anchor": 1.2333333492279053,
+          "mean_rank": 65.3,
+          "median_rank": 62.5,
+          "mrr": 0.043365187751185745,
+          "recall_at_1": 0.008333333333333333,
+          "recall_at_10": 0.09166666666666666,
+          "recall_at_5": 0.041666666666666664
+        },
+        "bidirectional_mrr": 0.04988331813964843,
+        "exact_pair_count": 148,
+        "loss": 4.752248764038086,
+        "unique_antibody_count": 126,
+        "unique_antigen_count": 120
+      },
+      "protocol": "Same checkpoint architecture, deterministic training seed, and no parameter updates.",
+      "seed": 42
+    }
+  },
+  "checkpoint": {
+    "best_epoch": 8,
+    "best_validation_mrr_stored": 0.07390389630683807,
+    "config_sha256": "e8661233353fc7c6186d85e5e7c449bf4c932925f1fc240611e5228ed660e20c",
+    "format_version": "sabdab2_partner_retrieval_v1",
+    "path": "/cluster/project/model_deployment/results/sabdab2/partner_retrieval/partner_retrieval_seed42/checkpoints/best.pt",
+    "sha256": "ba1bca6673891a73cb7ea7c5f057af81f3509acb2251b2627f986f787e7281f7",
+    "training_seed": 42
+  },
+  "created_at_utc": "2026-07-23T02:32:46.627704+00:00",
+  "dataset": {
+    "instances_path": "/cluster/project/model_deployment/data/sppider_seq_sabdab2_prepared/instances.parquet",
+    "instances_sha256": "a9131d52323bae40572b7de81c5e41353ccc39a73309b7d7043485350facb009",
+    "raw_instance_counts": {
+      "test": 218,
+      "train": 3229,
+      "validation": 216
+    },
+    "split_intended_use": "development_only",
+    "split_manifest": "/cluster/project/model_deployment/data/interaction_first/double_remote_split.json",
+    "split_manifest_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b"
+  },
+  "embedding_corpus": {
+    "content_manifest_sha256": "c338549d09db11ca233af6346125c49b9729b5fcf4e29b984c22c9bc164dd862",
+    "manifest_algorithm": "sha256(sequence_key,size,file_sha256)",
+    "scope": "deduplicated_train_and_validation_sequences",
+    "sequence_count": 2801,
+    "total_bytes": 3172923731
+  },
+  "exact_finite_library_random_expectation": {
+    "antibody_to_antigen": {
+      "anchor_count": 126,
+      "candidate_count": 120,
+      "mean_positives_per_anchor": 1.1746031746031746,
+      "mean_rank": 57.458994708994716,
+      "mrr": 0.049570575582264846,
+      "positive_degree_histogram": {
+        "1": 110,
+        "2": 10,
+        "3": 6
+      },
+      "recall_at_1": 0.009788359788359768,
+      "recall_at_10": 0.09650338478140773,
+      "recall_at_5": 0.04863225892993719
+    },
+    "antigen_to_antibody": {
+      "anchor_count": 120,
+      "candidate_count": 126,
+      "mean_positives_per_anchor": 1.2333333333333334,
+      "mean_rank": 59.41785714285714,
+      "mrr": 0.049119023176485345,
+      "positive_degree_histogram": {
+        "1": 100,
+        "2": 15,
+        "3": 4,
+        "6": 1
+      },
+      "recall_at_1": 0.009788359788359772,
+      "recall_at_10": 0.09595475923256819,
+      "recall_at_5": 0.04850343665230612
+    },
+    "bidirectional": {
+      "mrr": 0.049344799379375096,
+      "recall_at_1": 0.00978835978835977,
+      "recall_at_10": 0.09622907200698796,
+      "recall_at_5": 0.04856784779112165
+    },
+    "formula": {
+      "mean_rank": "E[R]=(N+1)/(d+1)",
+      "survival": "P(R>k)=C(N-k,d)/C(N,d)"
+    },
+    "protocol": "uniform_candidate_order_with_anchor_specific_positive_degree"
+  },
+  "fixed_degree_label_permutation": {
+    "alternative": "trained_retrieval_metric_is_greater_than_or_equal_to_null",
+    "degree_constraint": "The positive mask is unchanged, so every antibody and antigen degree is fixed in every permutation.",
+    "minimum_attainable_p_value": 9.999000099990002e-05,
+    "p_value_estimator": "(1 + upper-tail exceedances) / (1 + permutations)",
+    "permutation_count": 10000,
+    "protocol": "independently_permute_antibody_and_antigen_embedding_labels_against_the_fixed_positive_graph",
+    "results": {
+      "antibody_to_antigen": {
+        "mrr": {
+          "null_mean": 0.04950818879909689,
+          "null_percentile_2_5": 0.03383826315978992,
+          "null_percentile_97_5": 0.06953546184408486,
+          "null_standard_deviation": 0.009256952644189973,
+          "observed": 0.0850590203247666,
+          "p_value": 0.0010998900109989002,
+          "upper_tail_exceedance_count": 10
+        },
+        "recall_at_1": {
+          "null_mean": 0.009687301587301586,
+          "null_percentile_2_5": 0.0,
+          "null_percentile_97_5": 0.031746031746031744,
+          "null_standard_deviation": 0.008321024789639154,
+          "observed": 0.047619047619047616,
+          "p_value": 0.0008999100089991,
+          "upper_tail_exceedance_count": 8
+        },
+        "recall_at_10": {
+          "null_mean": 0.09658253968253967,
+          "null_percentile_2_5": 0.05555555555555555,
+          "null_percentile_97_5": 0.14285714285714285,
+          "null_standard_deviation": 0.02406872579713133,
+          "observed": 0.15079365079365079,
+          "p_value": 0.022097790220977902,
+          "upper_tail_exceedance_count": 220
+        },
+        "recall_at_5": {
+          "null_mean": 0.048751587301587296,
+          "null_percentile_2_5": 0.015873015873015872,
+          "null_percentile_97_5": 0.0873015873015873,
+          "null_standard_deviation": 0.017664092414325358,
+          "observed": 0.09523809523809523,
+          "p_value": 0.014098590140985901,
+          "upper_tail_exceedance_count": 140
+        }
+      },
+      "antigen_to_antibody": {
+        "mrr": {
+          "null_mean": 0.04914209827868003,
+          "null_percentile_2_5": 0.03201141262383887,
+          "null_percentile_97_5": 0.07130841775843123,
+          "null_standard_deviation": 0.010083291456358032,
+          "observed": 0.06274877228890957,
+          "p_value": 0.0968903109689031,
+          "upper_tail_exceedance_count": 968
+        },
+        "recall_at_1": {
+          "null_mean": 0.009797499999999999,
+          "null_percentile_2_5": 0.0,
+          "null_percentile_97_5": 0.03333333333333333,
+          "null_standard_deviation": 0.00882366461474489,
+          "observed": 0.008333333333333333,
+          "p_value": 0.6971302869713029,
+          "upper_tail_exceedance_count": 6971
+        },
+        "recall_at_10": {
+          "null_mean": 0.09604499999999998,
+          "null_percentile_2_5": 0.05,
+          "null_percentile_97_5": 0.15,
+          "null_standard_deviation": 0.025649753938367926,
+          "observed": 0.13333333333333333,
+          "p_value": 0.09979002099790021,
+          "upper_tail_exceedance_count": 997
+        },
+        "recall_at_5": {
+          "null_mean": 0.048516666666666666,
+          "null_percentile_2_5": 0.016666666666666666,
+          "null_percentile_97_5": 0.09166666666666666,
+          "null_standard_deviation": 0.01882342331936142,
+          "observed": 0.075,
+          "p_value": 0.12058794120587941,
+          "upper_tail_exceedance_count": 1205
+        }
+      },
+      "bidirectional": {
+        "mrr": {
+          "null_mean": 0.049325143538888463,
+          "null_percentile_2_5": 0.03554310184783795,
+          "null_percentile_97_5": 0.06593485308120968,
+          "null_standard_deviation": 0.007893452649822994,
+          "observed": 0.07390389630683808,
+          "p_value": 0.0044995500449955,
+          "upper_tail_exceedance_count": 44
+        },
+        "recall_at_1": {
+          "null_mean": 0.009742400793650793,
+          "null_percentile_2_5": 0.0,
+          "null_percentile_97_5": 0.024404761904761905,
+          "null_standard_deviation": 0.006371443807202041,
+          "observed": 0.027976190476190474,
+          "p_value": 0.0115988401159884,
+          "upper_tail_exceedance_count": 115
+        },
+        "recall_at_10": {
+          "null_mean": 0.09631376984126984,
+          "null_percentile_2_5": 0.05734126984126984,
+          "null_percentile_97_5": 0.1382936507936508,
+          "null_standard_deviation": 0.020332183171502254,
+          "observed": 0.14206349206349206,
+          "p_value": 0.0193980601939806,
+          "upper_tail_exceedance_count": 193
+        },
+        "recall_at_5": {
+          "null_mean": 0.04863412698412698,
+          "null_percentile_2_5": 0.024007936507936506,
+          "null_percentile_97_5": 0.08095238095238094,
+          "null_standard_deviation": 0.01459164376223138,
+          "observed": 0.08511904761904762,
+          "p_value": 0.013398660133986601,
+          "upper_tail_exceedance_count": 133
+        }
+      }
+    },
+    "seed": 20260723
+  },
+  "format_version": "sabdab2_partner_retrieval_statistics_v1",
+  "observed": {
+    "trained_checkpoint": {
+      "antibody_to_antigen": {
+        "anchor_count": 126,
+        "candidate_count": 120,
+        "known_positive_count": 148,
+        "mean_positives_per_anchor": 1.1746032238006592,
+        "mean_rank": 54.26984126984127,
+        "median_rank": 50.5,
+        "mrr": 0.08505902032476659,
+        "recall_at_1": 0.047619047619047616,
+        "recall_at_10": 0.15079365079365079,
+        "recall_at_5": 0.09523809523809523
+      },
+      "antigen_to_antibody": {
+        "anchor_count": 120,
+        "candidate_count": 126,
+        "known_positive_count": 148,
+        "mean_positives_per_anchor": 1.2333333492279053,
+        "mean_rank": 52.675,
+        "median_rank": 47.0,
+        "mrr": 0.06274877228890954,
+        "recall_at_1": 0.008333333333333333,
+        "recall_at_10": 0.13333333333333333,
+        "recall_at_5": 0.075
+      },
+      "bidirectional_mrr": 0.07390389630683807,
+      "exact_pair_count": 148,
+      "loss": 5.471413612365723,
+      "unique_antibody_count": 126,
+      "unique_antigen_count": 120
+    }
+  },
+  "runtime": {
+    "bucket_width": 128,
+    "device": "cuda",
+    "embedding_cache": {
+      "cache_bytes": 270336000,
+      "cached_sequence_count": 246,
+      "hits": 492,
+      "max_cache_bytes": 25769803776,
+      "misses": 246
+    },
+    "encoding_batch_size": 64
+  },
+  "scientific_scope": {
+    "analysis_split": "validation",
+    "frozen_test_embeddings_loaded": false,
+    "frozen_test_pair_rows_materialized": false,
+    "frozen_test_scored": false,
+    "inference_status": "Post-selection validation analysis. Confidence intervals and permutation p-values do not correct for checkpoint selection on the same validation split and are not confirmatory test evidence.",
+    "model_selection_used_this_validation_split": true
+  },
+  "stage": "validation_only_partner_retrieval_statistics",
+  "validation_library": {
+    "antibody_key_order_sha256": "2f7be723775369318c98c45f499f18d77b7e9deee33b94caee9152c0b0e334b6",
+    "antigen_key_order_sha256": "47aef7b2a09cb03473ae3f0794a40afdc5a2ede54c6bf4473ba53b62a0a893cb",
+    "exact_pair_count": 148,
+    "positive_mask_sha256": "2a2cc2817164a5927b0803d887cae99c577fa575a6c7b44f1a1c84283f187d22",
+    "trained_cosine_similarity_maximum": 0.5198733806610107,
+    "trained_cosine_similarity_minimum": -0.5003511309623718,
+    "trained_cosine_similarity_sha256": "938f9c126187c4d91353f6a2197cb959e06e16c7c148ffb322092aaf9fe18f14",
+    "unique_antibody_count": 126,
+    "unique_antigen_count": 120
+  },
+  "verification": {
+    "checkpoint_config_sha256": true,
+    "checkpoint_format": true,
+    "embedding_content_manifest_sha256": true,
+    "exact_duplicate_pairs_removed": {
+      "train": 1399,
+      "validation": 68
+    },
+    "prepared_instances_sha256": true,
+    "source_sha256": true,
+    "split_manifest_sha256": true,
+    "train_exact_pair_sha256": true,
+    "train_validation_double_remote_isolation": {
+      "antibody_sequence_overlap": 0,
+      "antigen_sequence_overlap": 0,
+      "exact_pair_overlap": 0
+    },
+    "validation_exact_pair_sha256": true
+  }
+}
