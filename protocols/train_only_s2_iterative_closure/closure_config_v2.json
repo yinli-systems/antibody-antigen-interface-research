@@ -1,0 +1,37 @@
+{
+  "axis_balance_tolerance": 0.05,
+  "constraint_sources": [
+    "parent_assignment_mmseqs2_concatenated_antibody_components",
+    "parent_assignment_mmseqs2_antigen_components",
+    "exact_nw_concatenated_antibody_crossing_edges",
+    "exact_nw_vh_crossing_edges_lifted_to_concatenated_antibody_entities",
+    "exact_nw_vl_crossing_edges_lifted_to_concatenated_antibody_entities",
+    "exact_nw_antigen_crossing_edges",
+    "exact_vh_digest_equivalence_lifted_to_concatenated_antibody_entities",
+    "exact_nonempty_vl_digest_equivalence_lifted_to_concatenated_antibody_entities"
+  ],
+  "deterministic_policy": "sorted_digest_inputs_lexical_union_roots_largest_antibody_component_pinned_fold_zero_then_canonical_fold_relabel_v2",
+  "equality_constraint_semantics": "every connected augmented similarity component must be assigned wholly to exactly one fold",
+  "fold_axis_balance_unit": "unique_exact_antibody_antigen_sequence_pair_degree",
+  "fold_count": 3,
+  "format_version": "sabdab2_train_only_s2_iterative_closure_config_v2",
+  "identity_threshold": 0.8,
+  "infeasibility_precheck": "stop_without_solver_or_assignment_if_any_augmented_component_unique_pair_degree_exceeds_the_locked_per_fold_axis_upper_bound",
+  "integer_axis_degree_lower_bound": 580,
+  "integer_axis_degree_upper_bound": 640,
+  "iteration_index": 1,
+  "lexicographic_objectives": [
+    "maximize_retained_unique_exact_antibody_antigen_sequence_pairs",
+    "conditional_on_prior_optimum_maximize_retained_authority_train_source_rows",
+    "conditional_on_prior_optima_maximize_minimum_fold_retained_unique_pair_count"
+  ],
+  "nonzero_audit_iteration_policy": "publish_immutable_evidence_add_all_new_digest_edges_and_start_a_new_versioned_iteration",
+  "reciprocal_coverage_threshold": 0.8,
+  "solver_policy": {
+    "backend": "scipy.optimize.milp_HiGHS",
+    "mip_relative_gap": 0.0,
+    "require_proven_optimum_at_every_stage": true,
+    "time_limit_seconds_per_stage": 300.0
+  },
+  "threshold_or_balance_relaxation_after_results": false
+}

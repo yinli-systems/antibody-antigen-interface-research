@@ -1,0 +1,14 @@
+{
+  "axis_balance_tolerance": 0.05,
+  "deterministic_policy": "sorted_inputs_fixed_highs_then_canonical_fold_relabel_v1",
+  "fold_count": 3,
+  "format_version": "sabdab2_train_only_two_axis_s2_builder_config_v1",
+  "identity_threshold": 0.8,
+  "optimized_sequence_views": [
+    "concatenated_antibody",
+    "antigen"
+  ],
+  "reciprocal_coverage_threshold": 0.8,
+  "similarity_backend": "precomputed_mmseqs2",
+  "time_limit_seconds": 300.0
+}

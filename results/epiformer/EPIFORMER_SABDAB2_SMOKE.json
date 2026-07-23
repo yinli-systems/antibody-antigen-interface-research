@@ -1,0 +1,2647 @@
+{
+  "antigen_pdb": "/cluster/project/model_deployment/results/sabdab2/epiformer_smoke/pdb_00001a14_H_L_antigen.pdb",
+  "antibody_pdb": "/cluster/project/model_deployment/results/sabdab2/epiformer_smoke/pdb_00001a14_H_L_antibody.pdb",
+  "threshold": 0.3,
+  "n_antigen_residues": 263,
+  "n_antibody_residues": 53,
+  "epitope_probabilities": [
+    0.005377626977860928,
+    0.005260796286165714,
+    0.004681115038692951,
+    0.0039709582924842834,
+    0.004128789994865656,
+    0.005391952581703663,
+    0.007788428105413914,
+    0.005719622131437063,
+    0.005594915710389614,
+    0.00693649984896183,
+    0.0055587878450751305,
+    0.007467582821846008,
+    0.007008558139204979,
+    0.008826488628983498,
+    0.01520758680999279,
+    0.014864733442664146,
+    0.012079689651727676,
+    0.008280197158455849,
+    0.009869478642940521,
+    0.013548096641898155,
+    0.07551002502441406,
+    0.053702641278505325,
+    0.029091045260429382,
+    0.20261824131011963,
+    0.08941078186035156,
+    0.29566341638565063,
+    0.11010760068893433,
+    0.0054864599369466305,
+    0.004606027156114578,
+    0.00969177857041359,
+    0.011042265221476555,
+    0.009382668882608414,
+    0.011243974789977074,
+    0.22753214836120605,
+    0.4044412672519684,
+    0.4657773971557617,
+    0.575907289981842,
+    0.3629496097564697,
+    0.3062884211540222,
+    0.29657769203186035,
+    0.46513599157333374,
+    0.753684401512146,
+    0.5188987255096436,
+    0.18305805325508118,
+    0.7979309558868408,
+    0.49521470069885254,
+    0.20449163019657135,
+    0.48022520542144775,
+    0.8054330348968506,
+    0.3649093508720398,
+    0.578872561454773,
+    0.7168376445770264,
+    0.58925461769104,
+    0.569720447063446,
+    0.16057509183883667,
+    0.04617596045136452,
+    0.005117959342896938,
+    0.006399556994438171,
+    0.005246943794190884,
+    0.0038249033968895674,
+    0.005830236244946718,
+    0.017137443646788597,
+    0.09487489610910416,
+    0.04321443662047386,
+    0.0079331174492836,
+    0.012721593491733074,
+    0.01055319607257843,
+    0.08867987245321274,
+    0.013494351878762245,
+    0.5559511184692383,
+    0.41869935393333435,
+    0.0023793657310307026,
+    0.0024935961700975895,
+    0.0019751107320189476,
+    0.003367451950907707,
+    0.009258782491087914,
+    0.5671903491020203,
+    0.42199137806892395,
+    0.8030643463134766,
+    0.683930516242981,
+    0.7164522409439087,
+    0.7028406858444214,
+    0.4421413242816925,
+    0.21934190392494202,
+    0.0149995693936944,
+    0.0029763595666736364,
+    0.00405008252710104,
+    0.015562845394015312,
+    0.01730366051197052,
+    0.038352735340595245,
+    0.004924777429550886,
+    0.01968400739133358,
+    0.45478639006614685,
+    0.2606125473976135,
+    0.7488830089569092,
+    0.8083442449569702,
+    0.5352864265441895,
+    0.5053067207336426,
+    0.854273796081543,
+    0.6682890057563782,
+    0.743876039981842,
+    0.5521342754364014,
+    0.19845423102378845,
+    0.013699977658689022,
+    0.0022775076795369387,
+    0.0018475537654012442,
+    0.0016378018772229552,
+    0.0022447286173701286,
+    0.37868064641952515,
+    0.6957457065582275,
+    0.5661380290985107,
+    0.8370551466941833,
+    0.6421361565589905,
+    0.6299874782562256,
+    0.7454095482826233,
+    0.5601834654808044,
+    0.27055561542510986,
+    0.11234303563833237,
+    0.08137910068035126,
+    0.0013072467409074306,
+    0.0021434214431792498,
+    0.010977507568895817,
+    0.0385219044983387,
+    0.003333419794216752,
+    0.003956560045480728,
+    0.08763033896684647,
+    0.0055033559910953045,
+    0.12195470929145813,
+    0.08197315782308578,
+    0.0024794219061732292,
+    0.012636056169867516,
+    0.09408744424581528,
+    0.016667565330863,
+    0.5851246118545532,
+    0.38074833154678345,
+    0.14689788222312927,
+    0.0016304987948387861,
+    0.001757442718371749,
+    0.0020902296528220177,
+    0.002088705310598016,
+    0.0216277614235878,
+    0.21122947335243225,
+    0.39381253719329834,
+    0.6490736603736877,
+    0.4245400130748749,
+    0.02933494932949543,
+    0.010375404730439186,
+    0.002392158145084977,
+    0.0021366984583437443,
+    0.0033006295561790466,
+    0.005650944076478481,
+    0.0027818800881505013,
+    0.021762972697615623,
+    0.01292344368994236,
+    0.01664022170007229,
+    0.01749659888446331,
+    0.003850403008982539,
+    0.005915436893701553,
+    0.02847258374094963,
+    0.17007653415203094,
+    0.27167969942092896,
+    0.2799570858478546,
+    0.21975062787532806,
+    0.18629294633865356,
+    0.04428958147764206,
+    0.038079436868429184,
+    0.01717679761350155,
+    0.00934574194252491,
+    0.007659858092665672,
+    0.15551653504371643,
+    0.008852978236973286,
+    0.023302147164940834,
+    0.34302082657814026,
+    0.3695540130138397,
+    0.3520183861255646,
+    0.6086774468421936,
+    0.40692755579948425,
+    0.6926515102386475,
+    0.7823454141616821,
+    0.8579249978065491,
+    0.7471802830696106,
+    0.0052406638860702515,
+    0.0025522755458950996,
+    0.0018826918676495552,
+    0.0022355378605425358,
+    0.002133234404027462,
+    0.21351531147956848,
+    0.13671496510505676,
+    0.09733447432518005,
+    0.1483449637889862,
+    0.08930543065071106,
+    0.3890671133995056,
+    0.24078023433685303,
+    0.1363891065120697,
+    0.07361194491386414,
+    0.06299073994159698,
+    0.012992536649107933,
+    0.0032609468325972557,
+    0.002863666508346796,
+    0.0021461714059114456,
+    0.0036075126845389605,
+    0.004166934173554182,
+    0.003847376676276326,
+    0.00405185716226697,
+    0.009493223391473293,
+    0.003665363881736994,
+    0.009723340161144733,
+    0.010891796089708805,
+    0.006124036852270365,
+    0.005642601288855076,
+    0.02265932597219944,
+    0.0034159733913838863,
+    0.021657265722751617,
+    0.08677487075328827,
+    0.26975592970848083,
+    0.37723469734191895,
+    0.08371369540691376,
+    0.12563690543174744,
+    0.08333826065063477,
+    0.0052596027962863445,
+    0.0051787178963422775,
+    0.006792331114411354,
+    0.006447517313063145,
+    0.008747362531721592,
+    0.006525048520416021,
+    0.006819283589720726,
+    0.004692656919360161,
+    0.0037205102853477,
+    0.0034636675845831633,
+    0.004823185969144106,
+    0.07656769454479218,
+    0.055031172931194305,
+    0.2760414481163025,
+    0.3668316602706909,
+    0.3113273084163666,
+    0.1479826718568802,
+    0.4701452851295471,
+    0.29989856481552124,
+    0.11537296324968338,
+    0.4266975522041321,
+    0.3650122880935669,
+    0.14391127228736877,
+    0.05480986833572388,
+    0.0024800500832498074,
+    0.0025582159869372845,
+    0.0022136648185551167,
+    0.003222014056518674,
+    0.00493162777274847,
+    0.0027606948278844357,
+    0.002759481780230999,
+    0.0057106115855276585,
+    0.006129290442913771,
+    0.06139574199914932,
+    0.009930327534675598,
+    0.05395574867725372,
+    0.005905386991798878,
+    0.01577395386993885,
+    0.045595355331897736,
+    0.05918022617697716,
+    0.13465841114521027,
+    0.018247360363602638,
+    0.044487543404102325,
+    0.1274745911359787
+  ],
+  "epitope_predictions": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "predicted_epitope_count": 64,
+  "residue_details": [
+    {
+      "index": 0,
+      "residue_name": "ARG",
+      "residue_id": 82,
+      "chain_id": "N",
+      "probability": 0.005377626977860928,
+      "is_epitope": false
+    },
+    {
+      "index": 1,
+      "residue_name": "ASP",
+      "residue_id": 83,
+      "chain_id": "N",
+      "probability": 0.005260796286165714,
+      "is_epitope": false
+    },
+    {
+      "index": 2,
+      "residue_name": "PHE",
+      "residue_id": 84,
+      "chain_id": "N",
+      "probability": 0.004681115038692951,
+      "is_epitope": false
+    },
+    {
+      "index": 3,
+      "residue_name": "ASN",
+      "residue_id": 85,
+      "chain_id": "N",
+      "probability": 0.0039709582924842834,
+      "is_epitope": false
+    },
+    {
+      "index": 4,
+      "residue_name": "ASN",
+      "residue_id": 86,
+      "chain_id": "N",
+      "probability": 0.004128789994865656,
+      "is_epitope": false
+    },
+    {
+      "index": 5,
+      "residue_name": "THR",
+      "residue_id": 88,
+      "chain_id": "N",
+      "probability": 0.005391952581703663,
+      "is_epitope": false
+    },
+    {
+      "index": 6,
+      "residue_name": "LYS",
+      "residue_id": 89,
+      "chain_id": "N",
+      "probability": 0.007788428105413914,
+      "is_epitope": false
+    },
+    {
+      "index": 7,
+      "residue_name": "GLY",
+      "residue_id": 90,
+      "chain_id": "N",
+      "probability": 0.005719622131437063,
+      "is_epitope": false
+    },
+    {
+      "index": 8,
+      "residue_name": "LEU",
+      "residue_id": 91,
+      "chain_id": "N",
+      "probability": 0.005594915710389614,
+      "is_epitope": false
+    },
+    {
+      "index": 9,
+      "residue_name": "CYS",
+      "residue_id": 92,
+      "chain_id": "N",
+      "probability": 0.00693649984896183,
+      "is_epitope": false
+    },
+    {
+      "index": 10,
+      "residue_name": "THR",
+      "residue_id": 93,
+      "chain_id": "N",
+      "probability": 0.0055587878450751305,
+      "is_epitope": false
+    },
+    {
+      "index": 11,
+      "residue_name": "ASN",
+      "residue_id": 95,
+      "chain_id": "N",
+      "probability": 0.007467582821846008,
+      "is_epitope": false
+    },
+    {
+      "index": 12,
+      "residue_name": "HIS",
+      "residue_id": 98,
+      "chain_id": "N",
+      "probability": 0.007008558139204979,
+      "is_epitope": false
+    },
+    {
+      "index": 13,
+      "residue_name": "ILE",
+      "residue_id": 99,
+      "chain_id": "N",
+      "probability": 0.008826488628983498,
+      "is_epitope": false
+    },
+    {
+      "index": 14,
+      "residue_name": "TYR",
+      "residue_id": 100,
+      "chain_id": "N",
+      "probability": 0.01520758680999279,
+      "is_epitope": false
+    },
+    {
+      "index": 15,
+      "residue_name": "LYS",
+      "residue_id": 102,
+      "chain_id": "N",
+      "probability": 0.014864733442664146,
+      "is_epitope": false
+    },
+    {
+      "index": 16,
+      "residue_name": "ASP",
+      "residue_id": 103,
+      "chain_id": "N",
+      "probability": 0.012079689651727676,
+      "is_epitope": false
+    },
+    {
+      "index": 17,
+      "residue_name": "ASN",
+      "residue_id": 104,
+      "chain_id": "N",
+      "probability": 0.008280197158455849,
+      "is_epitope": false
+    },
+    {
+      "index": 18,
+      "residue_name": "ARG",
+      "residue_id": 107,
+      "chain_id": "N",
+      "probability": 0.009869478642940521,
+      "is_epitope": false
+    },
+    {
+      "index": 19,
+      "residue_name": "ILE",
+      "residue_id": 108,
+      "chain_id": "N",
+      "probability": 0.013548096641898155,
+      "is_epitope": false
+    },
+    {
+      "index": 20,
+      "residue_name": "GLU",
+      "residue_id": 110,
+      "chain_id": "N",
+      "probability": 0.07551002502441406,
+      "is_epitope": false
+    },
+    {
+      "index": 21,
+      "residue_name": "ASP",
+      "residue_id": 111,
+      "chain_id": "N",
+      "probability": 0.053702641278505325,
+      "is_epitope": false
+    },
+    {
+      "index": 22,
+      "residue_name": "SER",
+      "residue_id": 112,
+      "chain_id": "N",
+      "probability": 0.029091045260429382,
+      "is_epitope": false
+    },
+    {
+      "index": 23,
+      "residue_name": "ASP",
+      "residue_id": 113,
+      "chain_id": "N",
+      "probability": 0.20261824131011963,
+      "is_epitope": false
+    },
+    {
+      "index": 24,
+      "residue_name": "LEU",
+      "residue_id": 115,
+      "chain_id": "N",
+      "probability": 0.08941078186035156,
+      "is_epitope": false
+    },
+    {
+      "index": 25,
+      "residue_name": "ARG",
+      "residue_id": 118,
+      "chain_id": "N",
+      "probability": 0.29566341638565063,
+      "is_epitope": false
+    },
+    {
+      "index": 26,
+      "residue_name": "GLU",
+      "residue_id": 119,
+      "chain_id": "N",
+      "probability": 0.11010760068893433,
+      "is_epitope": false
+    },
+    {
+      "index": 27,
+      "residue_name": "ASP",
+      "residue_id": 125,
+      "chain_id": "N",
+      "probability": 0.0054864599369466305,
+      "is_epitope": false
+    },
+    {
+      "index": 28,
+      "residue_name": "PRO",
+      "residue_id": 126,
+      "chain_id": "N",
+      "probability": 0.004606027156114578,
+      "is_epitope": false
+    },
+    {
+      "index": 29,
+      "residue_name": "ASP",
+      "residue_id": 127,
+      "chain_id": "N",
+      "probability": 0.00969177857041359,
+      "is_epitope": false
+    },
+    {
+      "index": 30,
+      "residue_name": "GLU",
+      "residue_id": 128,
+      "chain_id": "N",
+      "probability": 0.011042265221476555,
+      "is_epitope": false
+    },
+    {
+      "index": 31,
+      "residue_name": "CYS",
+      "residue_id": 129,
+      "chain_id": "N",
+      "probability": 0.009382668882608414,
+      "is_epitope": false
+    },
+    {
+      "index": 32,
+      "residue_name": "ARG",
+      "residue_id": 130,
+      "chain_id": "N",
+      "probability": 0.011243974789977074,
+      "is_epitope": false
+    },
+    {
+      "index": 33,
+      "residue_name": "SER",
+      "residue_id": 135,
+      "chain_id": "N",
+      "probability": 0.22753214836120605,
+      "is_epitope": false
+    },
+    {
+      "index": 34,
+      "residue_name": "GLN",
+      "residue_id": 136,
+      "chain_id": "N",
+      "probability": 0.4044412672519684,
+      "is_epitope": true
+    },
+    {
+      "index": 35,
+      "residue_name": "GLY",
+      "residue_id": 137,
+      "chain_id": "N",
+      "probability": 0.4657773971557617,
+      "is_epitope": true
+    },
+    {
+      "index": 36,
+      "residue_name": "THR",
+      "residue_id": 138,
+      "chain_id": "N",
+      "probability": 0.575907289981842,
+      "is_epitope": true
+    },
+    {
+      "index": 37,
+      "residue_name": "THR",
+      "residue_id": 139,
+      "chain_id": "N",
+      "probability": 0.3629496097564697,
+      "is_epitope": true
+    },
+    {
+      "index": 38,
+      "residue_name": "ILE",
+      "residue_id": 140,
+      "chain_id": "N",
+      "probability": 0.3062884211540222,
+      "is_epitope": true
+    },
+    {
+      "index": 39,
+      "residue_name": "ARG",
+      "residue_id": 141,
+      "chain_id": "N",
+      "probability": 0.29657769203186035,
+      "is_epitope": false
+    },
+    {
+      "index": 40,
+      "residue_name": "GLY",
+      "residue_id": 142,
+      "chain_id": "N",
+      "probability": 0.46513599157333374,
+      "is_epitope": true
+    },
+    {
+      "index": 41,
+      "residue_name": "LYS",
+      "residue_id": 143,
+      "chain_id": "N",
+      "probability": 0.753684401512146,
+      "is_epitope": true
+    },
+    {
+      "index": 42,
+      "residue_name": "HIS",
+      "residue_id": 144,
+      "chain_id": "N",
+      "probability": 0.5188987255096436,
+      "is_epitope": true
+    },
+    {
+      "index": 43,
+      "residue_name": "SER",
+      "residue_id": 145,
+      "chain_id": "N",
+      "probability": 0.18305805325508118,
+      "is_epitope": false
+    },
+    {
+      "index": 44,
+      "residue_name": "ASN",
+      "residue_id": 146,
+      "chain_id": "N",
+      "probability": 0.7979309558868408,
+      "is_epitope": true
+    },
+    {
+      "index": 45,
+      "residue_name": "GLY",
+      "residue_id": 147,
+      "chain_id": "N",
+      "probability": 0.49521470069885254,
+      "is_epitope": true
+    },
+    {
+      "index": 46,
+      "residue_name": "THR",
+      "residue_id": 148,
+      "chain_id": "N",
+      "probability": 0.20449163019657135,
+      "is_epitope": false
+    },
+    {
+      "index": 47,
+      "residue_name": "ILE",
+      "residue_id": 149,
+      "chain_id": "N",
+      "probability": 0.48022520542144775,
+      "is_epitope": true
+    },
+    {
+      "index": 48,
+      "residue_name": "HIS",
+      "residue_id": 150,
+      "chain_id": "N",
+      "probability": 0.8054330348968506,
+      "is_epitope": true
+    },
+    {
+      "index": 49,
+      "residue_name": "ASP",
+      "residue_id": 151,
+      "chain_id": "N",
+      "probability": 0.3649093508720398,
+      "is_epitope": true
+    },
+    {
+      "index": 50,
+      "residue_name": "ARG",
+      "residue_id": 152,
+      "chain_id": "N",
+      "probability": 0.578872561454773,
+      "is_epitope": true
+    },
+    {
+      "index": 51,
+      "residue_name": "SER",
+      "residue_id": 153,
+      "chain_id": "N",
+      "probability": 0.7168376445770264,
+      "is_epitope": true
+    },
+    {
+      "index": 52,
+      "residue_name": "GLN",
+      "residue_id": 154,
+      "chain_id": "N",
+      "probability": 0.58925461769104,
+      "is_epitope": true
+    },
+    {
+      "index": 53,
+      "residue_name": "TYR",
+      "residue_id": 155,
+      "chain_id": "N",
+      "probability": 0.569720447063446,
+      "is_epitope": true
+    },
+    {
+      "index": 54,
+      "residue_name": "ALA",
+      "residue_id": 157,
+      "chain_id": "N",
+      "probability": 0.16057509183883667,
+      "is_epitope": false
+    },
+    {
+      "index": 55,
+      "residue_name": "ILE",
+      "residue_id": 159,
+      "chain_id": "N",
+      "probability": 0.04617596045136452,
+      "is_epitope": false
+    },
+    {
+      "index": 56,
+      "residue_name": "PRO",
+      "residue_id": 162,
+      "chain_id": "N",
+      "probability": 0.005117959342896938,
+      "is_epitope": false
+    },
+    {
+      "index": 57,
+      "residue_name": "LEU",
+      "residue_id": 163,
+      "chain_id": "N",
+      "probability": 0.006399556994438171,
+      "is_epitope": false
+    },
+    {
+      "index": 58,
+      "residue_name": "SER",
+      "residue_id": 164,
+      "chain_id": "N",
+      "probability": 0.005246943794190884,
+      "is_epitope": false
+    },
+    {
+      "index": 59,
+      "residue_name": "SER",
+      "residue_id": 165,
+      "chain_id": "N",
+      "probability": 0.0038249033968895674,
+      "is_epitope": false
+    },
+    {
+      "index": 60,
+      "residue_name": "PRO",
+      "residue_id": 166,
+      "chain_id": "N",
+      "probability": 0.005830236244946718,
+      "is_epitope": false
+    },
+    {
+      "index": 61,
+      "residue_name": "THR",
+      "residue_id": 168,
+      "chain_id": "N",
+      "probability": 0.017137443646788597,
+      "is_epitope": false
+    },
+    {
+      "index": 62,
+      "residue_name": "VAL",
+      "residue_id": 169,
+      "chain_id": "N",
+      "probability": 0.09487489610910416,
+      "is_epitope": false
+    },
+    {
+      "index": 63,
+      "residue_name": "TYR",
+      "residue_id": 169,
+      "chain_id": "N",
+      "probability": 0.04321443662047386,
+      "is_epitope": false
+    },
+    {
+      "index": 64,
+      "residue_name": "ASN",
+      "residue_id": 170,
+      "chain_id": "N",
+      "probability": 0.0079331174492836,
+      "is_epitope": false
+    },
+    {
+      "index": 65,
+      "residue_name": "SER",
+      "residue_id": 171,
+      "chain_id": "N",
+      "probability": 0.012721593491733074,
+      "is_epitope": false
+    },
+    {
+      "index": 66,
+      "residue_name": "ARG",
+      "residue_id": 172,
+      "chain_id": "N",
+      "probability": 0.01055319607257843,
+      "is_epitope": false
+    },
+    {
+      "index": 67,
+      "residue_name": "VAL",
+      "residue_id": 173,
+      "chain_id": "N",
+      "probability": 0.08867987245321274,
+      "is_epitope": false
+    },
+    {
+      "index": 68,
+      "residue_name": "GLU",
+      "residue_id": 174,
+      "chain_id": "N",
+      "probability": 0.013494351878762245,
+      "is_epitope": false
+    },
+    {
+      "index": 69,
+      "residue_name": "ILE",
+      "residue_id": 176,
+      "chain_id": "N",
+      "probability": 0.5559511184692383,
+      "is_epitope": true
+    },
+    {
+      "index": 70,
+      "residue_name": "TRP",
+      "residue_id": 178,
+      "chain_id": "N",
+      "probability": 0.41869935393333435,
+      "is_epitope": true
+    },
+    {
+      "index": 71,
+      "residue_name": "HIS",
+      "residue_id": 184,
+      "chain_id": "N",
+      "probability": 0.0023793657310307026,
+      "is_epitope": false
+    },
+    {
+      "index": 72,
+      "residue_name": "LYS",
+      "residue_id": 187,
+      "chain_id": "N",
+      "probability": 0.0024935961700975895,
+      "is_epitope": false
+    },
+    {
+      "index": 73,
+      "residue_name": "THR",
+      "residue_id": 188,
+      "chain_id": "N",
+      "probability": 0.0019751107320189476,
+      "is_epitope": false
+    },
+    {
+      "index": 74,
+      "residue_name": "ARG",
+      "residue_id": 189,
+      "chain_id": "N",
+      "probability": 0.003367451950907707,
+      "is_epitope": false
+    },
+    {
+      "index": 75,
+      "residue_name": "SER",
+      "residue_id": 191,
+      "chain_id": "N",
+      "probability": 0.009258782491087914,
+      "is_epitope": false
+    },
+    {
+      "index": 76,
+      "residue_name": "SER",
+      "residue_id": 195,
+      "chain_id": "N",
+      "probability": 0.5671903491020203,
+      "is_epitope": true
+    },
+    {
+      "index": 77,
+      "residue_name": "GLY",
+      "residue_id": 196,
+      "chain_id": "N",
+      "probability": 0.42199137806892395,
+      "is_epitope": true
+    },
+    {
+      "index": 78,
+      "residue_name": "PRO",
+      "residue_id": 197,
+      "chain_id": "N",
+      "probability": 0.8030643463134766,
+      "is_epitope": true
+    },
+    {
+      "index": 79,
+      "residue_name": "ASN",
+      "residue_id": 198,
+      "chain_id": "N",
+      "probability": 0.683930516242981,
+      "is_epitope": true
+    },
+    {
+      "index": 80,
+      "residue_name": "ASN",
+      "residue_id": 199,
+      "chain_id": "N",
+      "probability": 0.7164522409439087,
+      "is_epitope": true
+    },
+    {
+      "index": 81,
+      "residue_name": "ASN",
+      "residue_id": 200,
+      "chain_id": "N",
+      "probability": 0.7028406858444214,
+      "is_epitope": true
+    },
+    {
+      "index": 82,
+      "residue_name": "SER",
+      "residue_id": 202,
+      "chain_id": "N",
+      "probability": 0.4421413242816925,
+      "is_epitope": true
+    },
+    {
+      "index": 83,
+      "residue_name": "VAL",
+      "residue_id": 204,
+      "chain_id": "N",
+      "probability": 0.21934190392494202,
+      "is_epitope": false
+    },
+    {
+      "index": 84,
+      "residue_name": "TRP",
+      "residue_id": 206,
+      "chain_id": "N",
+      "probability": 0.0149995693936944,
+      "is_epitope": false
+    },
+    {
+      "index": 85,
+      "residue_name": "TYR",
+      "residue_id": 207,
+      "chain_id": "N",
+      "probability": 0.0029763595666736364,
+      "is_epitope": false
+    },
+    {
+      "index": 86,
+      "residue_name": "ASN",
+      "residue_id": 208,
+      "chain_id": "N",
+      "probability": 0.00405008252710104,
+      "is_epitope": false
+    },
+    {
+      "index": 87,
+      "residue_name": "ARG",
+      "residue_id": 209,
+      "chain_id": "N",
+      "probability": 0.015562845394015312,
+      "is_epitope": false
+    },
+    {
+      "index": 88,
+      "residue_name": "ARG",
+      "residue_id": 210,
+      "chain_id": "N",
+      "probability": 0.01730366051197052,
+      "is_epitope": false
+    },
+    {
+      "index": 89,
+      "residue_name": "PRO",
+      "residue_id": 211,
+      "chain_id": "N",
+      "probability": 0.038352735340595245,
+      "is_epitope": false
+    },
+    {
+      "index": 90,
+      "residue_name": "VAL",
+      "residue_id": 212,
+      "chain_id": "N",
+      "probability": 0.004924777429550886,
+      "is_epitope": false
+    },
+    {
+      "index": 91,
+      "residue_name": "THR",
+      "residue_id": 213,
+      "chain_id": "N",
+      "probability": 0.01968400739133358,
+      "is_epitope": false
+    },
+    {
+      "index": 92,
+      "residue_name": "GLU",
+      "residue_id": 214,
+      "chain_id": "N",
+      "probability": 0.45478639006614685,
+      "is_epitope": true
+    },
+    {
+      "index": 93,
+      "residue_name": "ILE",
+      "residue_id": 215,
+      "chain_id": "N",
+      "probability": 0.2606125473976135,
+      "is_epitope": false
+    },
+    {
+      "index": 94,
+      "residue_name": "ASN",
+      "residue_id": 216,
+      "chain_id": "N",
+      "probability": 0.7488830089569092,
+      "is_epitope": true
+    },
+    {
+      "index": 95,
+      "residue_name": "THR",
+      "residue_id": 217,
+      "chain_id": "N",
+      "probability": 0.8083442449569702,
+      "is_epitope": true
+    },
+    {
+      "index": 96,
+      "residue_name": "TRP",
+      "residue_id": 218,
+      "chain_id": "N",
+      "probability": 0.5352864265441895,
+      "is_epitope": true
+    },
+    {
+      "index": 97,
+      "residue_name": "ALA",
+      "residue_id": 219,
+      "chain_id": "N",
+      "probability": 0.5053067207336426,
+      "is_epitope": true
+    },
+    {
+      "index": 98,
+      "residue_name": "ARG",
+      "residue_id": 220,
+      "chain_id": "N",
+      "probability": 0.854273796081543,
+      "is_epitope": true
+    },
+    {
+      "index": 99,
+      "residue_name": "ASN",
+      "residue_id": 221,
+      "chain_id": "N",
+      "probability": 0.6682890057563782,
+      "is_epitope": true
+    },
+    {
+      "index": 100,
+      "residue_name": "ILE",
+      "residue_id": 222,
+      "chain_id": "N",
+      "probability": 0.743876039981842,
+      "is_epitope": true
+    },
+    {
+      "index": 101,
+      "residue_name": "ARG",
+      "residue_id": 224,
+      "chain_id": "N",
+      "probability": 0.5521342754364014,
+      "is_epitope": true
+    },
+    {
+      "index": 102,
+      "residue_name": "GLU",
+      "residue_id": 227,
+      "chain_id": "N",
+      "probability": 0.19845423102378845,
+      "is_epitope": false
+    },
+    {
+      "index": 103,
+      "residue_name": "GLU",
+      "residue_id": 229,
+      "chain_id": "N",
+      "probability": 0.013699977658689022,
+      "is_epitope": false
+    },
+    {
+      "index": 104,
+      "residue_name": "CYS",
+      "residue_id": 232,
+      "chain_id": "N",
+      "probability": 0.0022775076795369387,
+      "is_epitope": false
+    },
+    {
+      "index": 105,
+      "residue_name": "HIS",
+      "residue_id": 233,
+      "chain_id": "N",
+      "probability": 0.0018475537654012442,
+      "is_epitope": false
+    },
+    {
+      "index": 106,
+      "residue_name": "ASN",
+      "residue_id": 234,
+      "chain_id": "N",
+      "probability": 0.0016378018772229552,
+      "is_epitope": false
+    },
+    {
+      "index": 107,
+      "residue_name": "VAL",
+      "residue_id": 236,
+      "chain_id": "N",
+      "probability": 0.0022447286173701286,
+      "is_epitope": false
+    },
+    {
+      "index": 108,
+      "residue_name": "GLY",
+      "residue_id": 244,
+      "chain_id": "N",
+      "probability": 0.37868064641952515,
+      "is_epitope": true
+    },
+    {
+      "index": 109,
+      "residue_name": "SER",
+      "residue_id": 245,
+      "chain_id": "N",
+      "probability": 0.6957457065582275,
+      "is_epitope": true
+    },
+    {
+      "index": 110,
+      "residue_name": "ALA",
+      "residue_id": 246,
+      "chain_id": "N",
+      "probability": 0.5661380290985107,
+      "is_epitope": true
+    },
+    {
+      "index": 111,
+      "residue_name": "THR",
+      "residue_id": 247,
+      "chain_id": "N",
+      "probability": 0.8370551466941833,
+      "is_epitope": true
+    },
+    {
+      "index": 112,
+      "residue_name": "GLY",
+      "residue_id": 248,
+      "chain_id": "N",
+      "probability": 0.6421361565589905,
+      "is_epitope": true
+    },
+    {
+      "index": 113,
+      "residue_name": "PRO",
+      "residue_id": 249,
+      "chain_id": "N",
+      "probability": 0.6299874782562256,
+      "is_epitope": true
+    },
+    {
+      "index": 114,
+      "residue_name": "ALA",
+      "residue_id": 250,
+      "chain_id": "N",
+      "probability": 0.7454095482826233,
+      "is_epitope": true
+    },
+    {
+      "index": 115,
+      "residue_name": "GLU",
+      "residue_id": 251,
+      "chain_id": "N",
+      "probability": 0.5601834654808044,
+      "is_epitope": true
+    },
+    {
+      "index": 116,
+      "residue_name": "THR",
+      "residue_id": 252,
+      "chain_id": "N",
+      "probability": 0.27055561542510986,
+      "is_epitope": false
+    },
+    {
+      "index": 117,
+      "residue_name": "ARG",
+      "residue_id": 253,
+      "chain_id": "N",
+      "probability": 0.11234303563833237,
+      "is_epitope": false
+    },
+    {
+      "index": 118,
+      "residue_name": "TYR",
+      "residue_id": 255,
+      "chain_id": "N",
+      "probability": 0.08137910068035126,
+      "is_epitope": false
+    },
+    {
+      "index": 119,
+      "residue_name": "LYS",
+      "residue_id": 258,
+      "chain_id": "N",
+      "probability": 0.0013072467409074306,
+      "is_epitope": false
+    },
+    {
+      "index": 120,
+      "residue_name": "GLU",
+      "residue_id": 259,
+      "chain_id": "N",
+      "probability": 0.0021434214431792498,
+      "is_epitope": false
+    },
+    {
+      "index": 121,
+      "residue_name": "LYS",
+      "residue_id": 261,
+      "chain_id": "N",
+      "probability": 0.010977507568895817,
+      "is_epitope": false
+    },
+    {
+      "index": 122,
+      "residue_name": "ILE",
+      "residue_id": 262,
+      "chain_id": "N",
+      "probability": 0.0385219044983387,
+      "is_epitope": false
+    },
+    {
+      "index": 123,
+      "residue_name": "LEU",
+      "residue_id": 263,
+      "chain_id": "N",
+      "probability": 0.003333419794216752,
+      "is_epitope": false
+    },
+    {
+      "index": 124,
+      "residue_name": "LYS",
+      "residue_id": 264,
+      "chain_id": "N",
+      "probability": 0.003956560045480728,
+      "is_epitope": false
+    },
+    {
+      "index": 125,
+      "residue_name": "TRP",
+      "residue_id": 265,
+      "chain_id": "N",
+      "probability": 0.08763033896684647,
+      "is_epitope": false
+    },
+    {
+      "index": 126,
+      "residue_name": "GLU",
+      "residue_id": 266,
+      "chain_id": "N",
+      "probability": 0.0055033559910953045,
+      "is_epitope": false
+    },
+    {
+      "index": 127,
+      "residue_name": "PRO",
+      "residue_id": 267,
+      "chain_id": "N",
+      "probability": 0.12195470929145813,
+      "is_epitope": false
+    },
+    {
+      "index": 128,
+      "residue_name": "LEU",
+      "residue_id": 268,
+      "chain_id": "N",
+      "probability": 0.08197315782308578,
+      "is_epitope": false
+    },
+    {
+      "index": 129,
+      "residue_name": "ALA",
+      "residue_id": 269,
+      "chain_id": "N",
+      "probability": 0.0024794219061732292,
+      "is_epitope": false
+    },
+    {
+      "index": 130,
+      "residue_name": "GLY",
+      "residue_id": 270,
+      "chain_id": "N",
+      "probability": 0.012636056169867516,
+      "is_epitope": false
+    },
+    {
+      "index": 131,
+      "residue_name": "THR",
+      "residue_id": 271,
+      "chain_id": "N",
+      "probability": 0.09408744424581528,
+      "is_epitope": false
+    },
+    {
+      "index": 132,
+      "residue_name": "ALA",
+      "residue_id": 272,
+      "chain_id": "N",
+      "probability": 0.016667565330863,
+      "is_epitope": false
+    },
+    {
+      "index": 133,
+      "residue_name": "LYS",
+      "residue_id": 273,
+      "chain_id": "N",
+      "probability": 0.5851246118545532,
+      "is_epitope": true
+    },
+    {
+      "index": 134,
+      "residue_name": "GLU",
+      "residue_id": 276,
+      "chain_id": "N",
+      "probability": 0.38074833154678345,
+      "is_epitope": true
+    },
+    {
+      "index": 135,
+      "residue_name": "GLU",
+      "residue_id": 277,
+      "chain_id": "N",
+      "probability": 0.14689788222312927,
+      "is_epitope": false
+    },
+    {
+      "index": 136,
+      "residue_name": "GLU",
+      "residue_id": 283,
+      "chain_id": "N",
+      "probability": 0.0016304987948387861,
+      "is_epitope": false
+    },
+    {
+      "index": 137,
+      "residue_name": "ARG",
+      "residue_id": 284,
+      "chain_id": "N",
+      "probability": 0.001757442718371749,
+      "is_epitope": false
+    },
+    {
+      "index": 138,
+      "residue_name": "ALA",
+      "residue_id": 285,
+      "chain_id": "N",
+      "probability": 0.0020902296528220177,
+      "is_epitope": false
+    },
+    {
+      "index": 139,
+      "residue_name": "GLU",
+      "residue_id": 286,
+      "chain_id": "N",
+      "probability": 0.002088705310598016,
+      "is_epitope": false
+    },
+    {
+      "index": 140,
+      "residue_name": "THR",
+      "residue_id": 290,
+      "chain_id": "N",
+      "probability": 0.0216277614235878,
+      "is_epitope": false
+    },
+    {
+      "index": 141,
+      "residue_name": "ARG",
+      "residue_id": 292,
+      "chain_id": "N",
+      "probability": 0.21122947335243225,
+      "is_epitope": false
+    },
+    {
+      "index": 142,
+      "residue_name": "ASN",
+      "residue_id": 294,
+      "chain_id": "N",
+      "probability": 0.39381253719329834,
+      "is_epitope": true
+    },
+    {
+      "index": 143,
+      "residue_name": "TRP",
+      "residue_id": 295,
+      "chain_id": "N",
+      "probability": 0.6490736603736877,
+      "is_epitope": true
+    },
+    {
+      "index": 144,
+      "residue_name": "GLN",
+      "residue_id": 296,
+      "chain_id": "N",
+      "probability": 0.4245400130748749,
+      "is_epitope": true
+    },
+    {
+      "index": 145,
+      "residue_name": "ARG",
+      "residue_id": 300,
+      "chain_id": "N",
+      "probability": 0.02933494932949543,
+      "is_epitope": false
+    },
+    {
+      "index": 146,
+      "residue_name": "ARG",
+      "residue_id": 304,
+      "chain_id": "N",
+      "probability": 0.010375404730439186,
+      "is_epitope": false
+    },
+    {
+      "index": 147,
+      "residue_name": "ASP",
+      "residue_id": 306,
+      "chain_id": "N",
+      "probability": 0.002392158145084977,
+      "is_epitope": false
+    },
+    {
+      "index": 148,
+      "residue_name": "VAL",
+      "residue_id": 308,
+      "chain_id": "N",
+      "probability": 0.0021366984583437443,
+      "is_epitope": false
+    },
+    {
+      "index": 149,
+      "residue_name": "ALA",
+      "residue_id": 309,
+      "chain_id": "N",
+      "probability": 0.0033006295561790466,
+      "is_epitope": false
+    },
+    {
+      "index": 150,
+      "residue_name": "MET",
+      "residue_id": 310,
+      "chain_id": "N",
+      "probability": 0.005650944076478481,
+      "is_epitope": false
+    },
+    {
+      "index": 151,
+      "residue_name": "THR",
+      "residue_id": 311,
+      "chain_id": "N",
+      "probability": 0.0027818800881505013,
+      "is_epitope": false
+    },
+    {
+      "index": 152,
+      "residue_name": "HIS",
+      "residue_id": 312,
+      "chain_id": "N",
+      "probability": 0.021762972697615623,
+      "is_epitope": false
+    },
+    {
+      "index": 153,
+      "residue_name": "THR",
+      "residue_id": 313,
+      "chain_id": "N",
+      "probability": 0.01292344368994236,
+      "is_epitope": false
+    },
+    {
+      "index": 154,
+      "residue_name": "SER",
+      "residue_id": 314,
+      "chain_id": "N",
+      "probability": 0.01664022170007229,
+      "is_epitope": false
+    },
+    {
+      "index": 155,
+      "residue_name": "GLN",
+      "residue_id": 315,
+      "chain_id": "N",
+      "probability": 0.01749659888446331,
+      "is_epitope": false
+    },
+    {
+      "index": 156,
+      "residue_name": "ILE",
+      "residue_id": 317,
+      "chain_id": "N",
+      "probability": 0.003850403008982539,
+      "is_epitope": false
+    },
+    {
+      "index": 157,
+      "residue_name": "VAL",
+      "residue_id": 321,
+      "chain_id": "N",
+      "probability": 0.005915436893701553,
+      "is_epitope": false
+    },
+    {
+      "index": 158,
+      "residue_name": "THR",
+      "residue_id": 323,
+      "chain_id": "N",
+      "probability": 0.02847258374094963,
+      "is_epitope": false
+    },
+    {
+      "index": 159,
+      "residue_name": "ASN",
+      "residue_id": 325,
+      "chain_id": "N",
+      "probability": 0.17007653415203094,
+      "is_epitope": false
+    },
+    {
+      "index": 160,
+      "residue_name": "PRO",
+      "residue_id": 326,
+      "chain_id": "N",
+      "probability": 0.27167969942092896,
+      "is_epitope": false
+    },
+    {
+      "index": 161,
+      "residue_name": "ARG",
+      "residue_id": 327,
+      "chain_id": "N",
+      "probability": 0.2799570858478546,
+      "is_epitope": false
+    },
+    {
+      "index": 162,
+      "residue_name": "PRO",
+      "residue_id": 328,
+      "chain_id": "N",
+      "probability": 0.21975062787532806,
+      "is_epitope": false
+    },
+    {
+      "index": 163,
+      "residue_name": "ASN",
+      "residue_id": 329,
+      "chain_id": "N",
+      "probability": 0.18629294633865356,
+      "is_epitope": false
+    },
+    {
+      "index": 164,
+      "residue_name": "ASP",
+      "residue_id": 330,
+      "chain_id": "N",
+      "probability": 0.04428958147764206,
+      "is_epitope": false
+    },
+    {
+      "index": 165,
+      "residue_name": "PRO",
+      "residue_id": 331,
+      "chain_id": "N",
+      "probability": 0.038079436868429184,
+      "is_epitope": false
+    },
+    {
+      "index": 166,
+      "residue_name": "THR",
+      "residue_id": 332,
+      "chain_id": "N",
+      "probability": 0.01717679761350155,
+      "is_epitope": false
+    },
+    {
+      "index": 167,
+      "residue_name": "VAL",
+      "residue_id": 333,
+      "chain_id": "N",
+      "probability": 0.00934574194252491,
+      "is_epitope": false
+    },
+    {
+      "index": 168,
+      "residue_name": "GLY",
+      "residue_id": 335,
+      "chain_id": "N",
+      "probability": 0.007659858092665672,
+      "is_epitope": false
+    },
+    {
+      "index": 169,
+      "residue_name": "LYS",
+      "residue_id": 336,
+      "chain_id": "N",
+      "probability": 0.15551653504371643,
+      "is_epitope": false
+    },
+    {
+      "index": 170,
+      "residue_name": "CYS",
+      "residue_id": 337,
+      "chain_id": "N",
+      "probability": 0.008852978236973286,
+      "is_epitope": false
+    },
+    {
+      "index": 171,
+      "residue_name": "ASN",
+      "residue_id": 338,
+      "chain_id": "N",
+      "probability": 0.023302147164940834,
+      "is_epitope": false
+    },
+    {
+      "index": 172,
+      "residue_name": "ASP",
+      "residue_id": 339,
+      "chain_id": "N",
+      "probability": 0.34302082657814026,
+      "is_epitope": true
+    },
+    {
+      "index": 173,
+      "residue_name": "PRO",
+      "residue_id": 340,
+      "chain_id": "N",
+      "probability": 0.3695540130138397,
+      "is_epitope": true
+    },
+    {
+      "index": 174,
+      "residue_name": "TYR",
+      "residue_id": 341,
+      "chain_id": "N",
+      "probability": 0.3520183861255646,
+      "is_epitope": true
+    },
+    {
+      "index": 175,
+      "residue_name": "PRO",
+      "residue_id": 342,
+      "chain_id": "N",
+      "probability": 0.6086774468421936,
+      "is_epitope": true
+    },
+    {
+      "index": 176,
+      "residue_name": "GLY",
+      "residue_id": 343,
+      "chain_id": "N",
+      "probability": 0.40692755579948425,
+      "is_epitope": true
+    },
+    {
+      "index": 177,
+      "residue_name": "ASN",
+      "residue_id": 344,
+      "chain_id": "N",
+      "probability": 0.6926515102386475,
+      "is_epitope": true
+    },
+    {
+      "index": 178,
+      "residue_name": "ASN",
+      "residue_id": 345,
+      "chain_id": "N",
+      "probability": 0.7823454141616821,
+      "is_epitope": true
+    },
+    {
+      "index": 179,
+      "residue_name": "ASN",
+      "residue_id": 346,
+      "chain_id": "N",
+      "probability": 0.8579249978065491,
+      "is_epitope": true
+    },
+    {
+      "index": 180,
+      "residue_name": "ASN",
+      "residue_id": 347,
+      "chain_id": "N",
+      "probability": 0.7471802830696106,
+      "is_epitope": true
+    },
+    {
+      "index": 181,
+      "residue_name": "LEU",
+      "residue_id": 355,
+      "chain_id": "N",
+      "probability": 0.0052406638860702515,
+      "is_epitope": false
+    },
+    {
+      "index": 182,
+      "residue_name": "ASP",
+      "residue_id": 356,
+      "chain_id": "N",
+      "probability": 0.0025522755458950996,
+      "is_epitope": false
+    },
+    {
+      "index": 183,
+      "residue_name": "GLY",
+      "residue_id": 357,
+      "chain_id": "N",
+      "probability": 0.0018826918676495552,
+      "is_epitope": false
+    },
+    {
+      "index": 184,
+      "residue_name": "VAL",
+      "residue_id": 358,
+      "chain_id": "N",
+      "probability": 0.0022355378605425358,
+      "is_epitope": false
+    },
+    {
+      "index": 185,
+      "residue_name": "ASN",
+      "residue_id": 359,
+      "chain_id": "N",
+      "probability": 0.002133234404027462,
+      "is_epitope": false
+    },
+    {
+      "index": 186,
+      "residue_name": "ARG",
+      "residue_id": 364,
+      "chain_id": "N",
+      "probability": 0.21351531147956848,
+      "is_epitope": false
+    },
+    {
+      "index": 187,
+      "residue_name": "THR",
+      "residue_id": 365,
+      "chain_id": "N",
+      "probability": 0.13671496510505676,
+      "is_epitope": false
+    },
+    {
+      "index": 188,
+      "residue_name": "ILE",
+      "residue_id": 366,
+      "chain_id": "N",
+      "probability": 0.09733447432518005,
+      "is_epitope": false
+    },
+    {
+      "index": 189,
+      "residue_name": "SER",
+      "residue_id": 367,
+      "chain_id": "N",
+      "probability": 0.1483449637889862,
+      "is_epitope": false
+    },
+    {
+      "index": 190,
+      "residue_name": "ILE",
+      "residue_id": 368,
+      "chain_id": "N",
+      "probability": 0.08930543065071106,
+      "is_epitope": false
+    },
+    {
+      "index": 191,
+      "residue_name": "ALA",
+      "residue_id": 369,
+      "chain_id": "N",
+      "probability": 0.3890671133995056,
+      "is_epitope": true
+    },
+    {
+      "index": 192,
+      "residue_name": "SER",
+      "residue_id": 370,
+      "chain_id": "N",
+      "probability": 0.24078023433685303,
+      "is_epitope": false
+    },
+    {
+      "index": 193,
+      "residue_name": "ARG",
+      "residue_id": 371,
+      "chain_id": "N",
+      "probability": 0.1363891065120697,
+      "is_epitope": false
+    },
+    {
+      "index": 194,
+      "residue_name": "SER",
+      "residue_id": 372,
+      "chain_id": "N",
+      "probability": 0.07361194491386414,
+      "is_epitope": false
+    },
+    {
+      "index": 195,
+      "residue_name": "GLU",
+      "residue_id": 375,
+      "chain_id": "N",
+      "probability": 0.06299073994159698,
+      "is_epitope": false
+    },
+    {
+      "index": 196,
+      "residue_name": "LEU",
+      "residue_id": 377,
+      "chain_id": "N",
+      "probability": 0.012992536649107933,
+      "is_epitope": false
+    },
+    {
+      "index": 197,
+      "residue_name": "LYS",
+      "residue_id": 378,
+      "chain_id": "N",
+      "probability": 0.0032609468325972557,
+      "is_epitope": false
+    },
+    {
+      "index": 198,
+      "residue_name": "PRO",
+      "residue_id": 380,
+      "chain_id": "N",
+      "probability": 0.002863666508346796,
+      "is_epitope": false
+    },
+    {
+      "index": 199,
+      "residue_name": "ASN",
+      "residue_id": 381,
+      "chain_id": "N",
+      "probability": 0.0021461714059114456,
+      "is_epitope": false
+    },
+    {
+      "index": 200,
+      "residue_name": "LEU",
+      "residue_id": 383,
+      "chain_id": "N",
+      "probability": 0.0036075126845389605,
+      "is_epitope": false
+    },
+    {
+      "index": 201,
+      "residue_name": "THR",
+      "residue_id": 384,
+      "chain_id": "N",
+      "probability": 0.004166934173554182,
+      "is_epitope": false
+    },
+    {
+      "index": 202,
+      "residue_name": "ASP",
+      "residue_id": 385,
+      "chain_id": "N",
+      "probability": 0.003847376676276326,
+      "is_epitope": false
+    },
+    {
+      "index": 203,
+      "residue_name": "ASP",
+      "residue_id": 386,
+      "chain_id": "N",
+      "probability": 0.00405185716226697,
+      "is_epitope": false
+    },
+    {
+      "index": 204,
+      "residue_name": "LYS",
+      "residue_id": 387,
+      "chain_id": "N",
+      "probability": 0.009493223391473293,
+      "is_epitope": false
+    },
+    {
+      "index": 205,
+      "residue_name": "SER",
+      "residue_id": 388,
+      "chain_id": "N",
+      "probability": 0.003665363881736994,
+      "is_epitope": false
+    },
+    {
+      "index": 206,
+      "residue_name": "LYS",
+      "residue_id": 389,
+      "chain_id": "N",
+      "probability": 0.009723340161144733,
+      "is_epitope": false
+    },
+    {
+      "index": 207,
+      "residue_name": "PRO",
+      "residue_id": 390,
+      "chain_id": "N",
+      "probability": 0.010891796089708805,
+      "is_epitope": false
+    },
+    {
+      "index": 208,
+      "residue_name": "THR",
+      "residue_id": 391,
+      "chain_id": "N",
+      "probability": 0.006124036852270365,
+      "is_epitope": false
+    },
+    {
+      "index": 209,
+      "residue_name": "GLN",
+      "residue_id": 392,
+      "chain_id": "N",
+      "probability": 0.005642601288855076,
+      "is_epitope": false
+    },
+    {
+      "index": 210,
+      "residue_name": "GLY",
+      "residue_id": 394,
+      "chain_id": "N",
+      "probability": 0.02265932597219944,
+      "is_epitope": false
+    },
+    {
+      "index": 211,
+      "residue_name": "GLN",
+      "residue_id": 395,
+      "chain_id": "N",
+      "probability": 0.0034159733913838863,
+      "is_epitope": false
+    },
+    {
+      "index": 212,
+      "residue_name": "THR",
+      "residue_id": 396,
+      "chain_id": "N",
+      "probability": 0.021657265722751617,
+      "is_epitope": false
+    },
+    {
+      "index": 213,
+      "residue_name": "LEU",
+      "residue_id": 399,
+      "chain_id": "N",
+      "probability": 0.08677487075328827,
+      "is_epitope": false
+    },
+    {
+      "index": 214,
+      "residue_name": "ASN",
+      "residue_id": 400,
+      "chain_id": "N",
+      "probability": 0.26975592970848083,
+      "is_epitope": false
+    },
+    {
+      "index": 215,
+      "residue_name": "THR",
+      "residue_id": 401,
+      "chain_id": "N",
+      "probability": 0.37723469734191895,
+      "is_epitope": true
+    },
+    {
+      "index": 216,
+      "residue_name": "ASP",
+      "residue_id": 402,
+      "chain_id": "N",
+      "probability": 0.08371369540691376,
+      "is_epitope": false
+    },
+    {
+      "index": 217,
+      "residue_name": "TRP",
+      "residue_id": 403,
+      "chain_id": "N",
+      "probability": 0.12563690543174744,
+      "is_epitope": false
+    },
+    {
+      "index": 218,
+      "residue_name": "TYR",
+      "residue_id": 406,
+      "chain_id": "N",
+      "probability": 0.08333826065063477,
+      "is_epitope": false
+    },
+    {
+      "index": 219,
+      "residue_name": "ASP",
+      "residue_id": 412,
+      "chain_id": "N",
+      "probability": 0.0052596027962863445,
+      "is_epitope": false
+    },
+    {
+      "index": 220,
+      "residue_name": "TYR",
+      "residue_id": 412,
+      "chain_id": "N",
+      "probability": 0.0051787178963422775,
+      "is_epitope": false
+    },
+    {
+      "index": 221,
+      "residue_name": "TRP",
+      "residue_id": 412,
+      "chain_id": "N",
+      "probability": 0.006792331114411354,
+      "is_epitope": false
+    },
+    {
+      "index": 222,
+      "residue_name": "ALA",
+      "residue_id": 413,
+      "chain_id": "N",
+      "probability": 0.006447517313063145,
+      "is_epitope": false
+    },
+    {
+      "index": 223,
+      "residue_name": "GLU",
+      "residue_id": 414,
+      "chain_id": "N",
+      "probability": 0.008747362531721592,
+      "is_epitope": false
+    },
+    {
+      "index": 224,
+      "residue_name": "GLY",
+      "residue_id": 415,
+      "chain_id": "N",
+      "probability": 0.006525048520416021,
+      "is_epitope": false
+    },
+    {
+      "index": 225,
+      "residue_name": "GLU",
+      "residue_id": 416,
+      "chain_id": "N",
+      "probability": 0.006819283589720726,
+      "is_epitope": false
+    },
+    {
+      "index": 226,
+      "residue_name": "CYS",
+      "residue_id": 417,
+      "chain_id": "N",
+      "probability": 0.004692656919360161,
+      "is_epitope": false
+    },
+    {
+      "index": 227,
+      "residue_name": "TYR",
+      "residue_id": 418,
+      "chain_id": "N",
+      "probability": 0.0037205102853477,
+      "is_epitope": false
+    },
+    {
+      "index": 228,
+      "residue_name": "ARG",
+      "residue_id": 419,
+      "chain_id": "N",
+      "probability": 0.0034636675845831633,
+      "is_epitope": false
+    },
+    {
+      "index": 229,
+      "residue_name": "CYS",
+      "residue_id": 421,
+      "chain_id": "N",
+      "probability": 0.004823185969144106,
+      "is_epitope": false
+    },
+    {
+      "index": 230,
+      "residue_name": "ILE",
+      "residue_id": 427,
+      "chain_id": "N",
+      "probability": 0.07656769454479218,
+      "is_epitope": false
+    },
+    {
+      "index": 231,
+      "residue_name": "ARG",
+      "residue_id": 428,
+      "chain_id": "N",
+      "probability": 0.055031172931194305,
+      "is_epitope": false
+    },
+    {
+      "index": 232,
+      "residue_name": "ARG",
+      "residue_id": 430,
+      "chain_id": "N",
+      "probability": 0.2760414481163025,
+      "is_epitope": false
+    },
+    {
+      "index": 233,
+      "residue_name": "PRO",
+      "residue_id": 431,
+      "chain_id": "N",
+      "probability": 0.3668316602706909,
+      "is_epitope": true
+    },
+    {
+      "index": 234,
+      "residue_name": "LYS",
+      "residue_id": 432,
+      "chain_id": "N",
+      "probability": 0.3113273084163666,
+      "is_epitope": true
+    },
+    {
+      "index": 235,
+      "residue_name": "GLU",
+      "residue_id": 433,
+      "chain_id": "N",
+      "probability": 0.1479826718568802,
+      "is_epitope": false
+    },
+    {
+      "index": 236,
+      "residue_name": "ASP",
+      "residue_id": 434,
+      "chain_id": "N",
+      "probability": 0.4701452851295471,
+      "is_epitope": true
+    },
+    {
+      "index": 237,
+      "residue_name": "LYS",
+      "residue_id": 435,
+      "chain_id": "N",
+      "probability": 0.29989856481552124,
+      "is_epitope": false
+    },
+    {
+      "index": 238,
+      "residue_name": "VAL",
+      "residue_id": 436,
+      "chain_id": "N",
+      "probability": 0.11537296324968338,
+      "is_epitope": false
+    },
+    {
+      "index": 239,
+      "residue_name": "TRP",
+      "residue_id": 437,
+      "chain_id": "N",
+      "probability": 0.4266975522041321,
+      "is_epitope": true
+    },
+    {
+      "index": 240,
+      "residue_name": "TRP",
+      "residue_id": 438,
+      "chain_id": "N",
+      "probability": 0.3650122880935669,
+      "is_epitope": true
+    },
+    {
+      "index": 241,
+      "residue_name": "THR",
+      "residue_id": 439,
+      "chain_id": "N",
+      "probability": 0.14391127228736877,
+      "is_epitope": false
+    },
+    {
+      "index": 242,
+      "residue_name": "ASN",
+      "residue_id": 441,
+      "chain_id": "N",
+      "probability": 0.05480986833572388,
+      "is_epitope": false
+    },
+    {
+      "index": 243,
+      "residue_name": "MET",
+      "residue_id": 446,
+      "chain_id": "N",
+      "probability": 0.0024800500832498074,
+      "is_epitope": false
+    },
+    {
+      "index": 244,
+      "residue_name": "SER",
+      "residue_id": 449,
+      "chain_id": "N",
+      "probability": 0.0025582159869372845,
+      "is_epitope": false
+    },
+    {
+      "index": 245,
+      "residue_name": "THR",
+      "residue_id": 450,
+      "chain_id": "N",
+      "probability": 0.0022136648185551167,
+      "is_epitope": false
+    },
+    {
+      "index": 246,
+      "residue_name": "GLU",
+      "residue_id": 451,
+      "chain_id": "N",
+      "probability": 0.003222014056518674,
+      "is_epitope": false
+    },
+    {
+      "index": 247,
+      "residue_name": "PHE",
+      "residue_id": 452,
+      "chain_id": "N",
+      "probability": 0.00493162777274847,
+      "is_epitope": false
+    },
+    {
+      "index": 248,
+      "residue_name": "LEU",
+      "residue_id": 453,
+      "chain_id": "N",
+      "probability": 0.0027606948278844357,
+      "is_epitope": false
+    },
+    {
+      "index": 249,
+      "residue_name": "GLY",
+      "residue_id": 454,
+      "chain_id": "N",
+      "probability": 0.002759481780230999,
+      "is_epitope": false
+    },
+    {
+      "index": 250,
+      "residue_name": "GLN",
+      "residue_id": 455,
+      "chain_id": "N",
+      "probability": 0.0057106115855276585,
+      "is_epitope": false
+    },
+    {
+      "index": 251,
+      "residue_name": "TRP",
+      "residue_id": 456,
+      "chain_id": "N",
+      "probability": 0.006129290442913771,
+      "is_epitope": false
+    },
+    {
+      "index": 252,
+      "residue_name": "ASP",
+      "residue_id": 457,
+      "chain_id": "N",
+      "probability": 0.06139574199914932,
+      "is_epitope": false
+    },
+    {
+      "index": 253,
+      "residue_name": "TRP",
+      "residue_id": 458,
+      "chain_id": "N",
+      "probability": 0.009930327534675598,
+      "is_epitope": false
+    },
+    {
+      "index": 254,
+      "residue_name": "PRO",
+      "residue_id": 459,
+      "chain_id": "N",
+      "probability": 0.05395574867725372,
+      "is_epitope": false
+    },
+    {
+      "index": 255,
+      "residue_name": "GLY",
+      "residue_id": 461,
+      "chain_id": "N",
+      "probability": 0.005905386991798878,
+      "is_epitope": false
+    },
+    {
+      "index": 256,
+      "residue_name": "ALA",
+      "residue_id": 462,
+      "chain_id": "N",
+      "probability": 0.01577395386993885,
+      "is_epitope": false
+    },
+    {
+      "index": 257,
+      "residue_name": "LYS",
+      "residue_id": 463,
+      "chain_id": "N",
+      "probability": 0.045595355331897736,
+      "is_epitope": false
+    },
+    {
+      "index": 258,
+      "residue_name": "ILE",
+      "residue_id": 464,
+      "chain_id": "N",
+      "probability": 0.05918022617697716,
+      "is_epitope": false
+    },
+    {
+      "index": 259,
+      "residue_name": "GLU",
+      "residue_id": 465,
+      "chain_id": "N",
+      "probability": 0.13465841114521027,
+      "is_epitope": false
+    },
+    {
+      "index": 260,
+      "residue_name": "TYR",
+      "residue_id": 466,
+      "chain_id": "N",
+      "probability": 0.018247360363602638,
+      "is_epitope": false
+    },
+    {
+      "index": 261,
+      "residue_name": "PHE",
+      "residue_id": 467,
+      "chain_id": "N",
+      "probability": 0.044487543404102325,
+      "is_epitope": false
+    },
+    {
+      "index": 262,
+      "residue_name": "LEU",
+      "residue_id": 468,
+      "chain_id": "N",
+      "probability": 0.1274745911359787,
+      "is_epitope": false
+    }
+  ],
+  "instance_id": "pdb_00001a14_H_L",
+  "canonical_antigen_length": 388,
+  "canonical_antibody_length": 224
+}

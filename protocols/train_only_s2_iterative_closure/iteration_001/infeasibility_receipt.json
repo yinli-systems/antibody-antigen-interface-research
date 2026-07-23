@@ -1,0 +1,338 @@
+{
+  "assignment_exported": false,
+  "augmented_components": {
+    "antibody": {
+      "axis": "antibody",
+      "component_count": 82,
+      "component_degree_inventory_sha256": "c0445d10141b50a103980ad66681f29ca4e7328ead47e493c402c959a65b2775",
+      "component_entity_inventory_sha256": "8f4ecdcfbeb1f836c9db12897565085831c9dcfd98556125f8fde09730360cfb",
+      "entity_count": 1383,
+      "largest_pair_degree_component": {
+        "entity_count": 1282,
+        "entity_fraction": 0.9269703543022415,
+        "entity_membership_sha256": "4a1d07689076f0c269d458158ab57de134c02f2d8bd86db81e670564b896044b",
+        "unique_pair_degree": 1704,
+        "unique_pair_degree_fraction": 0.9311475409836065
+      },
+      "raw_sequences_or_instance_ids_included": false,
+      "singleton_component_count": 66,
+      "sum_component_unique_pair_degrees": 1830,
+      "top_component_pair_degrees": [
+        {
+          "entity_count": 1282,
+          "unique_pair_degree": 1704
+        },
+        {
+          "entity_count": 3,
+          "unique_pair_degree": 9
+        },
+        {
+          "entity_count": 3,
+          "unique_pair_degree": 5
+        },
+        {
+          "entity_count": 2,
+          "unique_pair_degree": 5
+        },
+        {
+          "entity_count": 3,
+          "unique_pair_degree": 4
+        },
+        {
+          "entity_count": 3,
+          "unique_pair_degree": 4
+        },
+        {
+          "entity_count": 3,
+          "unique_pair_degree": 3
+        },
+        {
+          "entity_count": 2,
+          "unique_pair_degree": 3
+        },
+        {
+          "entity_count": 2,
+          "unique_pair_degree": 3
+        },
+        {
+          "entity_count": 2,
+          "unique_pair_degree": 3
+        }
+      ]
+    },
+    "antigen": {
+      "axis": "antigen",
+      "component_count": 418,
+      "component_degree_inventory_sha256": "e7d34b8b2f160066f6571c5a230cefffdf393ebdd9b34c9f372e8d093d91f923",
+      "component_entity_inventory_sha256": "903ced977a6cec5499530cc5aeaba318bfd758520b7d603d77ec6b382a93e4a3",
+      "entity_count": 1172,
+      "largest_pair_degree_component": {
+        "entity_count": 168,
+        "entity_fraction": 0.14334470989761092,
+        "entity_membership_sha256": "872d08bab8452d99b00b184ba17ead4d55c6da8d93af8b0a046118fda5c8fb8b",
+        "unique_pair_degree": 436,
+        "unique_pair_degree_fraction": 0.23825136612021858
+      },
+      "raw_sequences_or_instance_ids_included": false,
+      "singleton_component_count": 217,
+      "sum_component_unique_pair_degrees": 1830,
+      "top_component_pair_degrees": [
+        {
+          "entity_count": 168,
+          "unique_pair_degree": 436
+        },
+        {
+          "entity_count": 50,
+          "unique_pair_degree": 164
+        },
+        {
+          "entity_count": 12,
+          "unique_pair_degree": 59
+        },
+        {
+          "entity_count": 19,
+          "unique_pair_degree": 21
+        },
+        {
+          "entity_count": 15,
+          "unique_pair_degree": 20
+        },
+        {
+          "entity_count": 14,
+          "unique_pair_degree": 20
+        },
+        {
+          "entity_count": 14,
+          "unique_pair_degree": 19
+        },
+        {
+          "entity_count": 10,
+          "unique_pair_degree": 14
+        },
+        {
+          "entity_count": 13,
+          "unique_pair_degree": 13
+        },
+        {
+          "entity_count": 12,
+          "unique_pair_degree": 13
+        }
+      ]
+    }
+  },
+  "authority": {
+    "authorized_instance_count": 3229,
+    "authorized_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+    "sealed_instance_count": 434,
+    "sealed_membership_sha256": "897ce1786f86cc261170a126cc138fdef74a6c2aac8a4f9334bdbc38ceaafa86",
+    "sealed_split_counts": {
+      "test": 218,
+      "validation": 216
+    },
+    "sealed_splits": [
+      "validation",
+      "test"
+    ],
+    "source_pool_split": "train"
+  },
+  "authorized_for_model_selection": false,
+  "authorized_for_training": false,
+  "closure_evidence": {
+    "all_constraint_sources_applied_transitively": true,
+    "base_parent_component_counts": {
+      "antibody": 357,
+      "antigen": 420
+    },
+    "chain_digest_equivalence_group_counts": {
+      "nonempty_vl": 981,
+      "vh": 1282
+    },
+    "ingested_exact_edge_counts": {
+      "antigen": 2,
+      "concatenated_antibody": 489,
+      "vh": 6269,
+      "vl": 12558
+    }
+  },
+  "config": {
+    "axis_balance_tolerance": 0.05,
+    "constraint_sources": [
+      "parent_assignment_mmseqs2_concatenated_antibody_components",
+      "parent_assignment_mmseqs2_antigen_components",
+      "exact_nw_concatenated_antibody_crossing_edges",
+      "exact_nw_vh_crossing_edges_lifted_to_concatenated_antibody_entities",
+      "exact_nw_vl_crossing_edges_lifted_to_concatenated_antibody_entities",
+      "exact_nw_antigen_crossing_edges",
+      "exact_vh_digest_equivalence_lifted_to_concatenated_antibody_entities",
+      "exact_nonempty_vl_digest_equivalence_lifted_to_concatenated_antibody_entities"
+    ],
+    "deterministic_policy": "sorted_digest_inputs_lexical_union_roots_largest_antibody_component_pinned_fold_zero_then_canonical_fold_relabel_v2",
+    "equality_constraint_semantics": "every connected augmented similarity component must be assigned wholly to exactly one fold",
+    "fold_axis_balance_unit": "unique_exact_antibody_antigen_sequence_pair_degree",
+    "fold_count": 3,
+    "format_version": "sabdab2_train_only_s2_iterative_closure_config_v2",
+    "identity_threshold": 0.8,
+    "infeasibility_precheck": "stop_without_solver_or_assignment_if_any_augmented_component_unique_pair_degree_exceeds_the_locked_per_fold_axis_upper_bound",
+    "integer_axis_degree_lower_bound": 580,
+    "integer_axis_degree_upper_bound": 640,
+    "iteration_index": 1,
+    "lexicographic_objectives": [
+      "maximize_retained_unique_exact_antibody_antigen_sequence_pairs",
+      "conditional_on_prior_optimum_maximize_retained_authority_train_source_rows",
+      "conditional_on_prior_optima_maximize_minimum_fold_retained_unique_pair_count"
+    ],
+    "nonzero_audit_iteration_policy": "publish_immutable_evidence_add_all_new_digest_edges_and_start_a_new_versioned_iteration",
+    "reciprocal_coverage_threshold": 0.8,
+    "solver_policy": {
+      "backend": "scipy.optimize.milp_HiGHS",
+      "mip_relative_gap": 0.0,
+      "require_proven_optimum_at_every_stage": true,
+      "time_limit_seconds_per_stage": 300.0
+    },
+    "threshold_or_balance_relaxation_after_results": false
+  },
+  "config_payload_sha256": "45d9f0f0223afa9c18413a69588c49b16c1369e33742604d1659f436a3da649a",
+  "data_firewall": {
+    "accepted_label_prediction_checkpoint_or_score_inputs": false,
+    "authorized_rows_materialized": 3229,
+    "authorized_source_split": "train",
+    "non_authorized_rows_skipped_before_sequence_parse": 434,
+    "sealed_rows_materialized": 0,
+    "sequence_columns_parsed_for": "authority_train_only",
+    "test_sequence_fields_parsed": 0,
+    "validation_or_test_labels_read": 0,
+    "validation_or_test_predictions_read": 0,
+    "validation_or_test_scores_read": 0,
+    "validation_sequence_fields_parsed": 0
+  },
+  "decision": {
+    "balance_tolerance_relaxed": false,
+    "reason": "necessary_component_degree_exceeds_locked_integer_fold_upper_bound",
+    "silent_alternative_split_substituted": false,
+    "status": "stop_strict_transitive_three_fold_s2_workflow",
+    "threshold_relaxed": false
+  },
+  "format_version": "sabdab2_train_only_s2_exact_closure_infeasibility_receipt_v2",
+  "inputs": {
+    "authority_split": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/data_snapshot/double_remote_split.json",
+      "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "size_bytes": 349156
+    },
+    "canonical_sequence_manifest": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/remote/canonical_manifest.csv",
+      "sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+      "size_bytes": 2800509
+    },
+    "closure_config": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_iterative_closure/closure_config_v2.json",
+      "sha256": "d72f4d068867a88747178ddaf45a665321bbd30b91ba944a086376f090b0924f",
+      "size_bytes": 2018
+    },
+    "exact_crossing_edge_artifacts": {
+      "antigen": {
+        "all_rows_digest_only_and_threshold_verified": true,
+        "edge_count": 2,
+        "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_exact_nw/assignment_8dce37bec026/antigen.identity80_coverage80.crossing_edges.jsonl",
+        "sequence_view": "antigen",
+        "sha256": "c26a4f9487d5e5eb4fe88c8332d5d25cc18f837a6426a018c62b2b3777eabdb2",
+        "size_bytes": 1439
+      },
+      "concatenated_antibody": {
+        "all_rows_digest_only_and_threshold_verified": true,
+        "edge_count": 489,
+        "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_exact_nw/assignment_8dce37bec026/concatenated_antibody.identity80_coverage80.crossing_edges.jsonl",
+        "sequence_view": "concatenated_antibody",
+        "sha256": "3ce8e2f1700ef06bd9776a64782b4e2d605f25462e4de733e3366789ed8a1898",
+        "size_bytes": 367321
+      },
+      "vh": {
+        "all_rows_digest_only_and_threshold_verified": true,
+        "edge_count": 6269,
+        "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_exact_nw/assignment_8dce37bec026/vh.identity80_coverage80.crossing_edges.jsonl",
+        "sequence_view": "vh",
+        "sha256": "26c45573b56f8cb428a1ba5423d40a7be8802743171767b68287664270547dcd",
+        "size_bytes": 4564220
+      },
+      "vl": {
+        "all_rows_digest_only_and_threshold_verified": true,
+        "edge_count": 12558,
+        "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_exact_nw/assignment_8dce37bec026/vl.identity80_coverage80.crossing_edges.jsonl",
+        "sequence_view": "vl",
+        "sha256": "a16be9b26fc1c5dea7e0124394cf6255f6bccf0af82f14fb344481c217e1a9f8",
+        "size_bytes": 9062917
+      }
+    },
+    "parent_assignment_scientific_payload_sha256": "4b2fd9633685162af9fa48c33766bfbbea2722f5f04f76ee2bf86974d968d7ac",
+    "parent_audit_scientific_payload_sha256": "9910b328d413afd69d5c9151b675d758b41f13362d1ea1778e3c826443b2a0ea",
+    "parent_exact_audit_receipt": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_exact_nw/assignment_8dce37bec026/audit_receipt.json",
+      "sha256": "f6bfd37f5ad062c1a3a48974b17f7bfdb24ac70a1c8ffd8ebcd479c9eb2670b3",
+      "size_bytes": 18549
+    },
+    "parent_provisional_assignment": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_feasibility/s2_assignment_provisional_v1.json",
+      "sha256": "8dce37bec026e76c1d8d7e917b946ced01fca378ad1bccac196d23aced587959",
+      "size_bytes": 2212719
+    }
+  },
+  "intended_use": "authority_train_only_split_design_infeasibility_evidence",
+  "limitations": [
+    "This receipt proves infeasibility only for the recorded transitive same-fold constraints, three-fold count, and integer 580..640 degree bounds.",
+    "It does not authorize a relaxed threshold, relaxed balance, alternate split, training run, model selection, or model evaluation.",
+    "Authority validation and frozen-test sequence fields, labels, predictions, checkpoints, and scores were not read."
+  ],
+  "locked_balance_contract": {
+    "continuous_tolerance_interval": {
+      "lower": 579.5,
+      "upper": 640.5
+    },
+    "fold_count": 3,
+    "integer_unique_pair_degree_bounds_per_axis_per_fold": {
+      "lower_inclusive": 580,
+      "upper_inclusive": 640
+    },
+    "rational_target_per_axis_per_fold": 610,
+    "total_original_unique_exact_pair_degree_per_axis": 1830
+  },
+  "mathematical_infeasibility_proof": {
+    "conclusion": "No one-hot three-fold assignment can satisfy the locked per-axis integer degree bounds after exact four-view transitive closure.",
+    "contradictory_inequality": "1704 > 640",
+    "locked_integer_fold_upper_bound": 640,
+    "necessary_condition": "Every transitive same-fold component is assigned wholly to exactly one fold, so the assigned fold's axis degree is at least that component's original unique-pair degree. Therefore every component degree must be at most the locked integer fold upper bound.",
+    "upper_bound_excess_unique_pair_degree": 1064,
+    "upper_bound_ratio": 2.6625,
+    "witness_axis": "antibody",
+    "witness_component_entity_count": 1282,
+    "witness_component_entity_membership_sha256": "4a1d07689076f0c269d458158ab57de134c02f2d8bd86db81e670564b896044b",
+    "witness_component_unique_pair_degree": 1704
+  },
+  "publication": {
+    "create_only_no_overwrite": true,
+    "inputs_and_sources_rehashed_immediately_before_publication": true,
+    "raw_sequences_or_instance_ids_included": false,
+    "receipt_path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/research/train_only_s2_iterative_closure/iteration_001/infeasibility_receipt.json"
+  },
+  "runtime": {
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "python": "3.9.6",
+    "solver": "not_launched_by_necessary_condition"
+  },
+  "scientific_payload_sha256": "6a1eb3408f466dc7ebb76e1c89b17445d296e5f8a098fbf946adce02d9ffbea5",
+  "solver_launched": false,
+  "source_files": {
+    "exact_closure_infeasibility_builder": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/work/job_scripts/build_train_only_s2_iterative_closure.py",
+      "sha256": "aacf56795498bc0f702f717c361ddc1744d36a483273ee59e0b34558587d1d94",
+      "size_bytes": 33831
+    },
+    "independent_exact_four_view_auditor": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/work/job_scripts/audit_train_only_s2_exact_four_view_nw.py",
+      "sha256": "bec90ccc4ad7009a2f9a5e4197bee4ad986948b203913e9cb63e0dafac95f4e4",
+      "size_bytes": 76471
+    }
+  },
+  "stage": "exact_four_view_transitive_component_balance_infeasibility_proof",
+  "strict_three_fold_s2_balance_feasible": false,
+  "valid_infeasibility_proof": true
+}
