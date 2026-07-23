@@ -1,0 +1,9 @@
+{
+  "key_equality": true,
+  "nonfinite_score_count": 0,
+  "null_score_count": 0,
+  "prediction_sha256": "8144898cab10cd9207c09085de0e645a0b6be021f0dc226cd59e7e69626b86a1",
+  "row_count": 18473412,
+  "row_group_count": 455,
+  "schema": "instance_id: string not null\nab_res_idx: int64 not null\nag_res_idx: int64 not null\nscore: float not null"
+}
