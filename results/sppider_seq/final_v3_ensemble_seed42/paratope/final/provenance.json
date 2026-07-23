@@ -1,0 +1,15 @@
+{
+  "architecture": "released ChunkwiseInteractionModel",
+  "benchmark_manifest_sha256": "15f7819193d79f637849744b7cc8160b34b81b5bc2f50671c0cd07560b524377",
+  "benchmark_root": "/cluster/project/model_deployment/data/sabdab2-baseline-outsourcing",
+  "checkpoint_sha256": "178fd893a7d5cdfbfb786b0c814894bc7f1d1c247a129d9634c64a6839c5de05",
+  "command": "/cluster/project/model_deployment/jobs/sppider_seq/sabdab2_sppider_seq.py assemble --benchmark-root /cluster/project/model_deployment/data/sabdab2-baseline-outsourcing --prepare-dir /cluster/project/model_deployment/data/sppider_seq_sabdab2_prepared_cluster_val_v3 --inference-dir /cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/paratope/inference --output-dir /cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/paratope/final --role paratope --threshold 0.32534101605415344",
+  "created_at_unix": 1784737277.0858064,
+  "esm_model": "facebook/esm2_t33_650M_UR50D",
+  "format_version": "sabdab2_sppider_seq_v1",
+  "projection_warning": "SPPIDER-seq emits marginal residue probabilities, not a native antibody-antigen pair interaction matrix.",
+  "python_version": "3.10.20",
+  "role": "paratope",
+  "source_commit": "241d08e1dcee6d5f4ca444468db96a4707ec6f10",
+  "source_release": "SPPIDER-seq v2.1.0"
+}

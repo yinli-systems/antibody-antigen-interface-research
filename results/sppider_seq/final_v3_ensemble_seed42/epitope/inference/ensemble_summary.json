@@ -1,0 +1,19 @@
+{
+  "ensemble_digest": "154747fae61d19b5a4174d6ce6242a110d998f1667651ee6f34c420b68faa8e2",
+  "format_version": "sabdab2_sppider_seq_v1",
+  "inputs": [
+    {
+      "checkpoint_sha256": "83e3b2058f08c1c31d5a0e388d12354d945e7d139e8a0cf0533ab0658446897f",
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_component_base/epitope/inference",
+      "weight": 0.5
+    },
+    {
+      "checkpoint_sha256": "2e226d51a4f514942c6416b7174ee192d86ad4ab3559d29f8e45f6842aa96ba8",
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_component_lr3e5/epitope/inference",
+      "weight": 0.5
+    }
+  ],
+  "instance_count": 455,
+  "role": "epitope",
+  "stage": "ensemble_inference"
+}

@@ -1,0 +1,70 @@
+{
+  "description": "ROC and precision-recall curves for aligned residue predictions on the frozen SAbDab2 test set. The partner-permuted control uses the same focal sequences with deterministically reassigned partner sequences.",
+  "outputs": {
+    "pdf": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/figures/final_test_curves.pdf",
+    "pdf_sha256": "32a69c85ace0d0b9736c5510d51e1d79454786446f576c89d43306e3d71bc501",
+    "png": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/figures/final_test_curves.png",
+    "png_sha256": "4c1dab16749690b098f8d8d9b57560e9105d03ca2d44908ae864d2d549d638c5"
+  },
+  "roles": {
+    "epitope": {
+      "Final ensemble": {
+        "auprc": 0.1454445354058009,
+        "auroc": 0.6717651372480649,
+        "instance_count": 455,
+        "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/epitope/final/residue_predictions.parquet",
+        "positive_fraction": 0.0819314769876198,
+        "residue_count": 97252,
+        "sha256": "dced4df5c8988ee88f34e26aeff032ead15c701d2b3879986624b674a956565b"
+      },
+      "Partner-permuted": {
+        "auprc": 0.14252947462432375,
+        "auroc": 0.6672949153756282,
+        "instance_count": 455,
+        "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_partner_control/ensemble/epitope.residue_predictions.parquet",
+        "positive_fraction": 0.0819314769876198,
+        "residue_count": 97252,
+        "sha256": "27d323a9c7d3c202e44bb32118d841c79c43b326dc659531adf0195012fb3095"
+      },
+      "Previous run": {
+        "auprc": 0.11508827821347753,
+        "auroc": 0.6096396331934071,
+        "instance_count": 455,
+        "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/trained_seed42/epitope/final/residue_predictions.parquet",
+        "positive_fraction": 0.0819314769876198,
+        "residue_count": 97252,
+        "sha256": "9de57e231f3bfa13a5a41f2615012221413ecc846834cb1983ed68b869c2231f"
+      }
+    },
+    "paratope": {
+      "Final ensemble": {
+        "auprc": 0.6510892460656408,
+        "auroc": 0.9486222255565321,
+        "instance_count": 455,
+        "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/paratope/final/residue_predictions.parquet",
+        "positive_fraction": 0.09639974204451955,
+        "residue_count": 89938,
+        "sha256": "3ac18f6332e1231a62c223c60b883773b41331b271d333fce0d04959038d3508"
+      },
+      "Partner-permuted": {
+        "auprc": 0.6392394227009056,
+        "auroc": 0.9474057306172371,
+        "instance_count": 455,
+        "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_partner_control/ensemble/paratope.residue_predictions.parquet",
+        "positive_fraction": 0.09639974204451955,
+        "residue_count": 89938,
+        "sha256": "40c5563ab85c52b824551b0dd1ec01b0d0339cc194298cb2936174dfaf7ec1f2"
+      },
+      "Previous run": {
+        "auprc": 0.6134187700383451,
+        "auroc": 0.9428929296486899,
+        "instance_count": 455,
+        "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/trained_seed42/paratope/final/residue_predictions.parquet",
+        "positive_fraction": 0.09639974204451955,
+        "residue_count": 89938,
+        "sha256": "d812a4619a5aa5e2739c8454d6e7223a2ec1f77042fbea1a0544df064ad71e7e"
+      }
+    }
+  },
+  "stage": "final_test_figures"
+}
