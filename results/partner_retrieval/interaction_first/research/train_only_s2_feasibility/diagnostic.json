@@ -1,0 +1,286 @@
+{
+  "authority": {
+    "authorized_instance_count": 3229,
+    "authorized_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+    "sealed_instance_count": 434,
+    "sealed_membership_sha256": "897ce1786f86cc261170a126cc138fdef74a6c2aac8a4f9334bdbc38ceaafa86",
+    "sealed_split_counts": {
+      "test": 218,
+      "validation": 216
+    },
+    "sealed_splits": [
+      "validation",
+      "test"
+    ],
+    "source_pool_split": "train"
+  },
+  "bipartite_component_analysis": {
+    "component_count_with_interactions": 65,
+    "largest_component": {
+      "antibody_cluster_node_count": 273,
+      "antigen_cluster_node_count": 341,
+      "source_row_count": 3014,
+      "source_row_fraction": 0.9334159182409415,
+      "unique_exact_pair_count": 1675,
+      "unique_exact_pair_fraction": 0.9153005464480874
+    },
+    "source_row_count": 3229,
+    "top_components": [
+      {
+        "antibody_cluster_node_count": 273,
+        "antigen_cluster_node_count": 341,
+        "source_row_count": 3014,
+        "unique_exact_pair_count": 1675
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 3,
+        "source_row_count": 24,
+        "unique_exact_pair_count": 15
+      },
+      {
+        "antibody_cluster_node_count": 2,
+        "antigen_cluster_node_count": 2,
+        "source_row_count": 16,
+        "unique_exact_pair_count": 11
+      },
+      {
+        "antibody_cluster_node_count": 3,
+        "antigen_cluster_node_count": 3,
+        "source_row_count": 12,
+        "unique_exact_pair_count": 10
+      },
+      {
+        "antibody_cluster_node_count": 4,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 9,
+        "unique_exact_pair_count": 6
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 2,
+        "source_row_count": 9,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 8,
+        "unique_exact_pair_count": 7
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 2,
+        "source_row_count": 8,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 8,
+        "unique_exact_pair_count": 2
+      },
+      {
+        "antibody_cluster_node_count": 3,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 6,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 2,
+        "antigen_cluster_node_count": 2,
+        "source_row_count": 5,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 2,
+        "antigen_cluster_node_count": 2,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 4
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 4
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 4
+      },
+      {
+        "antibody_cluster_node_count": 3,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 2,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 2,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 3,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 3
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 2
+      },
+      {
+        "antibody_cluster_node_count": 1,
+        "antigen_cluster_node_count": 1,
+        "source_row_count": 4,
+        "unique_exact_pair_count": 1
+      }
+    ],
+    "unique_exact_pair_count": 1830,
+    "whole_component_three_fold_feasible": false
+  },
+  "data_firewall": {
+    "authorized_rows_materialized": 3229,
+    "non_authorized_rows_skipped_before_sequence_parse": 434,
+    "sealed_rows_materialized": 0,
+    "sequence_columns_parsed_for": "authority_train_only"
+  },
+  "decision": {
+    "required_next_strategy": "assign antibody and antigen clusters as separate S2 dimensions, then discard cross-fold interactions",
+    "whole_bipartite_component_assignment_rejected": true
+  },
+  "entity_clusters": {
+    "antibody": {
+      "cluster_count": 357,
+      "entity_count": 1383,
+      "largest_cluster_entity_count": 274,
+      "largest_cluster_entity_fraction": 0.19812002892263195,
+      "singleton_cluster_count": 245,
+      "top_cluster_entity_counts": [
+        274,
+        159,
+        105,
+        55,
+        36,
+        28,
+        27,
+        25,
+        17,
+        17,
+        16,
+        14,
+        12,
+        12,
+        10,
+        9,
+        9,
+        9,
+        8,
+        8
+      ]
+    },
+    "antigen": {
+      "cluster_count": 420,
+      "entity_count": 1172,
+      "largest_cluster_entity_count": 168,
+      "largest_cluster_entity_fraction": 0.14334470989761092,
+      "singleton_cluster_count": 220,
+      "top_cluster_entity_counts": [
+        168,
+        50,
+        19,
+        15,
+        14,
+        14,
+        13,
+        12,
+        12,
+        11,
+        11,
+        10,
+        10,
+        9,
+        9,
+        8,
+        8,
+        7,
+        7,
+        7
+      ]
+    }
+  },
+  "format_version": "sabdab2_train_only_s2_feasibility_v1",
+  "inputs": {
+    "antibody_mmseqs2_similarity": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/remote/antibody_full_all_vs_all.tsv",
+      "sha256": "fd1dcdcb4acfc6307e87071f0b7e74048cdcde0d378c5d68be40811f9d239545",
+      "size_bytes": 3419836
+    },
+    "antigen_mmseqs2_similarity": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/remote/antigen_full_all_vs_all.tsv",
+      "sha256": "0f6b6e3b4a04c0500903356b572fe1308bad49397e767e74926c590fadcf55aa",
+      "size_bytes": 5709248
+    },
+    "authority_split": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/data_snapshot/double_remote_split.json",
+      "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "size_bytes": 349156
+    },
+    "canonical_sequence_manifest": {
+      "path": "/Users/USER/Documents/Codex/2026-07-21/2c0e-6ae5-2/outputs/interaction_first/remote/canonical_manifest.csv",
+      "sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+      "size_bytes": 2800509
+    }
+  },
+  "intended_use": "train_only_split_design_diagnostic",
+  "limitations": [
+    "This is an authority-train-only split-design diagnostic, not model evaluation.",
+    "MMseqs2 relations are approximate and final folds require exhaustive exact Needleman-Wunsch auditing.",
+    "Authorized sequences absent from an MMseqs2 inventory are treated as singleton clusters; adding missed similarity edges can only merge components, so the reported largest component is a lower bound.",
+    "The diagnostic uses concatenated antibodies and antigens only; final S2 auditing must also cover VH and VL separately.",
+    "No authority-validation or frozen-test sequence, label, embedding, prediction, checkpoint, or score was materialized."
+  ],
+  "parameters": {
+    "identity_threshold": 0.8,
+    "reciprocal_coverage_threshold": 0.8,
+    "sequence_views": [
+      "concatenated_antibody",
+      "antigen"
+    ],
+    "similarity_backend": "precomputed_mmseqs2"
+  },
+  "scientific_payload_sha256": "d364e7dcec6fd1dac2501339c9c56d13a05887cfc005f19b92fda7a9250b6cfb",
+  "similarity_evidence": {
+    "antibody": {
+      "authorized_observed_digest_count": 1383,
+      "authorized_row_count": 22726,
+      "authorized_unique_digest_count": 1383,
+      "authorized_unobserved_digest_count": 0,
+      "filter_before_metric_parsing": true,
+      "qualified_unique_nonself_edge_count": 10731,
+      "total_row_count": 23107
+    },
+    "antigen": {
+      "authorized_observed_digest_count": 1167,
+      "authorized_row_count": 38033,
+      "authorized_unique_digest_count": 1172,
+      "authorized_unobserved_digest_count": 5,
+      "filter_before_metric_parsing": true,
+      "qualified_unique_nonself_edge_count": 16264,
+      "total_row_count": 38576
+    }
+  },
+  "stage": "train_only_s2_whole_component_feasibility_diagnostic",
+  "valid": true
+}
