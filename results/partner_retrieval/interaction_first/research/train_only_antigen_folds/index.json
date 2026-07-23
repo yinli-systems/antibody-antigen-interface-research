@@ -1,0 +1,229 @@
+{
+  "all_folds_valid": true,
+  "authority": {
+    "allowed_instance_count": 3229,
+    "allowed_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+    "authority_intended_use": "development_only",
+    "path": "/cluster/project/model_deployment/data/interaction_first/double_remote_split.json",
+    "sealed_instance_count": 434,
+    "sealed_membership_sha256": "897ce1786f86cc261170a126cc138fdef74a6c2aac8a4f9334bdbc38ceaafa86",
+    "sealed_split_counts": {
+      "test": 218,
+      "validation": 216
+    },
+    "sealed_split_membership_sha256": {
+      "test": "f5bdb678de2bc2826dbb2e391a2c231381021d20171673ec2cf16f405d653460",
+      "validation": "cf89aa2827b2e0ad7c6b3d8af8a672de938462b9c8e49d88c75a93350c768727"
+    },
+    "sealed_splits": [
+      "validation",
+      "test"
+    ],
+    "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+    "source_pool_split": "train"
+  },
+  "balance": {
+    "exact_pair_count_range": 0,
+    "final_objective": [
+      0,
+      773,
+      1116300,
+      3816749
+    ],
+    "initial_objective": [
+      0,
+      773,
+      1116300,
+      3816749
+    ],
+    "instance_count_range": 773,
+    "local_improvement_move_count": 0,
+    "method": "deterministic_lpt_then_single_move_local_search",
+    "primary_balance_unit": "unique_exact_antibody_antigen_pair_count",
+    "secondary_balance_unit": "instance_count",
+    "validation_component_counts": [
+      157,
+      110,
+      151
+    ],
+    "validation_exact_pair_counts": [
+      610,
+      610,
+      610
+    ],
+    "validation_instance_counts": [
+      908,
+      774,
+      1547
+    ]
+  },
+  "components": {
+    "combined_antigen_edge_count": 16266,
+    "component_count": 418,
+    "largest_component_fraction": 0.2898730257045525,
+    "largest_component_instance_count": 936,
+    "singleton_component_count": 127,
+    "top_component_instance_counts": [
+      936,
+      518,
+      70,
+      48,
+      45,
+      34,
+      33,
+      27,
+      24,
+      24,
+      23,
+      22,
+      21,
+      20,
+      19,
+      17,
+      17,
+      17,
+      16,
+      16
+    ]
+  },
+  "coverage_mode": "exact",
+  "created_at_utc": "2026-07-23T03:08:48.857696+00:00",
+  "elapsed_seconds": 0.5647146701812744,
+  "fold_count": 3,
+  "fold_summaries": [
+    {
+      "fold_index": 0,
+      "train_instance_count": 2321,
+      "train_unique_exact_pair_count": 1220,
+      "valid": true,
+      "validation_instance_count": 908,
+      "validation_unique_exact_pair_count": 610
+    },
+    {
+      "fold_index": 1,
+      "train_instance_count": 2455,
+      "train_unique_exact_pair_count": 1220,
+      "valid": true,
+      "validation_instance_count": 774,
+      "validation_unique_exact_pair_count": 610
+    },
+    {
+      "fold_index": 2,
+      "train_instance_count": 1682,
+      "train_unique_exact_pair_count": 1220,
+      "valid": true,
+      "validation_instance_count": 1547,
+      "validation_unique_exact_pair_count": 610
+    }
+  ],
+  "folds": [
+    {
+      "fold_index": 0,
+      "path": "fold_0.json",
+      "sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a"
+    },
+    {
+      "fold_index": 1,
+      "path": "fold_1.json",
+      "sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b"
+    },
+    {
+      "fold_index": 2,
+      "path": "fold_2.json",
+      "sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db"
+    }
+  ],
+  "format_version": "sabdab2_antigen_cluster_development_index_v1",
+  "intended_use": "development_only",
+  "isolation_policy": "antigen_exact",
+  "provenance": {
+    "authority": {
+      "allowed_instance_count": 3229,
+      "allowed_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+      "authority_intended_use": "development_only",
+      "path": "/cluster/project/model_deployment/data/interaction_first/double_remote_split.json",
+      "sealed_instance_count": 434,
+      "sealed_membership_sha256": "897ce1786f86cc261170a126cc138fdef74a6c2aac8a4f9334bdbc38ceaafa86",
+      "sealed_split_counts": {
+        "test": 218,
+        "validation": 216
+      },
+      "sealed_split_membership_sha256": {
+        "test": "f5bdb678de2bc2826dbb2e391a2c231381021d20171673ec2cf16f405d653460",
+        "validation": "cf89aa2827b2e0ad7c6b3d8af8a672de938462b9c8e49d88c75a93350c768727"
+      },
+      "sealed_splits": [
+        "validation",
+        "test"
+      ],
+      "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "source_pool_split": "train"
+    },
+    "builder_script": {
+      "path": "/cluster/project/model_deployment/jobs/interaction_first/build_train_only_antigen_folds.py",
+      "sha256": "775c0f51110418b08d89c66596d8303c92ac29f74deb7769dd1092907cba04de"
+    },
+    "canonical_manifest": {
+      "path": "/cluster/project/model_deployment/data/interaction_first/canonical_manifest.csv",
+      "sequence_rows_parsed": "source_train_only",
+      "sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+      "size_bytes": 2800509
+    },
+    "labels_contacts_predictions_or_checkpoints_read": false,
+    "sealed_sequences_read": false,
+    "similarity_evidence": {
+      "antibody_mmseqs": {
+        "authorized_observed_digest_count": 1383,
+        "authorized_row_count": 22743,
+        "authorized_unique_digest_count": 1383,
+        "authorized_unobserved_digest_count": 0,
+        "filter_before_metric_parsing": true,
+        "identity_threshold": 0.8,
+        "path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/exhaustive_mmseqs/antibody_identity80_exhaustive.tsv",
+        "provided": true,
+        "qualified_nonself_edge_count": 10684,
+        "reciprocal_coverage_threshold": 0.8,
+        "sha256": "20d88672caf72aeb4ec218c84f55322d4a0c03e9d479ea4cac64a5d7c99cdd3e",
+        "size_bytes": 3400300,
+        "total_row_count": 22975
+      },
+      "antigen_mmseqs": {
+        "authorized_observed_digest_count": 1172,
+        "authorized_row_count": 33704,
+        "authorized_unique_digest_count": 1172,
+        "authorized_unobserved_digest_count": 0,
+        "filter_before_metric_parsing": true,
+        "identity_threshold": 0.8,
+        "path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/exhaustive_mmseqs/antigen_identity80_exhaustive.tsv",
+        "provided": true,
+        "qualified_nonself_edge_count": 16266,
+        "reciprocal_coverage_threshold": 0.8,
+        "sha256": "d7371ad5c6f2334f3637806aae75c5357b2ebb8e57107b163832ac3ac2a89378",
+        "size_bytes": 5029928,
+        "total_row_count": 33986
+      },
+      "antigen_needleman_wunsch": {
+        "provided": false,
+        "qualified_nonself_edge_count": 0
+      }
+    },
+    "thresholds": {
+      "coverage_policy": "both_query_and_target",
+      "identity": 0.8,
+      "reciprocal_coverage": 0.8
+    }
+  },
+  "runtime": {
+    "host": "wqd10nah09g2",
+    "python_version": "3.10.20"
+  },
+  "seed": 42,
+  "source_pool_split": "train",
+  "source_train": {
+    "instance_count": 3229,
+    "unique_antibody_count": 1383,
+    "unique_antigen_count": 1172,
+    "unique_exact_pair_count": 1830
+  },
+  "stage": "train_only_antigen_cluster_model_selection"
+}

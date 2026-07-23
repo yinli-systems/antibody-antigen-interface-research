@@ -1,0 +1,8 @@
+{
+  "cumulative_edge_artifact_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cumulative_edge_count": 0,
+  "report_path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/needleman_wunsch_audit/audit.json",
+  "report_sha256": "00ccd7dd3220673eec3b7938c05e04160a1415d8bf7a07124a81fadf47c3cc4d",
+  "scientific_payload_sha256": "f6a531086f02790521d282100b3922e255b1f12d5edfec8f3666e5d573d624d4",
+  "valid": true
+}
