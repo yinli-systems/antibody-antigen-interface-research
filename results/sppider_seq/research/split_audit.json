@@ -1,0 +1,35 @@
+{
+  "elapsed_seconds": 0.576777458190918,
+  "exact_antibody_antigen_pair_overlap_count": 0,
+  "limitations": [
+    "Exact sequence disjointness does not establish disjointness at a lower sequence-identity threshold.",
+    "A separate MMseqs2 audit is required for thresholded train-test similarity."
+  ],
+  "sequence_audits": {
+    "antibody": {
+      "exact_train_test_overlap_count": 0,
+      "test_instance_count_with_exact_train_sequence": 0,
+      "test_unique_sequence_count": 258,
+      "train_unique_sequence_count": 1350
+    },
+    "antigen": {
+      "exact_train_test_overlap_count": 0,
+      "test_instance_count_with_exact_train_sequence": 0,
+      "test_unique_sequence_count": 256,
+      "train_unique_sequence_count": 1151
+    }
+  },
+  "stage": "audit_split",
+  "test_cluster_count": 84,
+  "test_cluster_size": {
+    "maximum": 64,
+    "median": 2.0,
+    "minimum": 1
+  },
+  "test_instance_count": 455,
+  "test_instance_count_in_overlapping_cluster": 0,
+  "test_source_pdb_count": 257,
+  "train_cluster_count": 274,
+  "train_instance_count": 3208,
+  "train_test_cluster_overlap_count": 0
+}
