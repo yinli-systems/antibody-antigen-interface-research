@@ -1,0 +1,7 @@
+{
+  "audit_source_sha256": "34ebef8e05706099ad45153fcb4f2dbe4ff1cf6b0c320da4a223d0a16863da89",
+  "format_version": "sabdab2_development_needleman_wunsch_audit_v1",
+  "report_path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/needleman_wunsch_audit.json",
+  "report_sha256": "97ad0986a0af7a4326d81d3dd5103097c2c5feee85a9301fecfaa2c53c891769",
+  "scientific_payload_sha256": "279016e7f711db015632ba64bb65867cf9cd47995df722738653abd2e0a69aa0"
+}
