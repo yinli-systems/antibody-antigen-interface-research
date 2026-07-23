@@ -1,0 +1,4138 @@
+{
+  "benchmark": "sabdab2",
+  "instance_count": 455,
+  "is_partial_split": false,
+  "macro_per_instance": {
+    "auprc": {
+      "count": 455,
+      "mean": 0.34797314216055486,
+      "std": 0.21204151197650825
+    },
+    "auroc": {
+      "count": 455,
+      "mean": 0.7676556687282927,
+      "std": 0.1624208145159683
+    },
+    "f1_at_threshold": {
+      "count": 455,
+      "mean": 0.31166109851936585,
+      "std": 0.19105244954848655
+    },
+    "mcc_at_threshold": {
+      "count": 455,
+      "mean": 0.23506277020773172,
+      "std": 0.21587580545506538
+    }
+  },
+  "micro": {
+    "auprc": 0.2775161534630108,
+    "auroc": 0.8008087360699012,
+    "f1_at_threshold": 0.33503207099551885,
+    "mcc_at_threshold": 0.2715204001684301,
+    "positive_count": 7968,
+    "residue_count": 97252
+  },
+  "note": "EpiFormer is an epitope-residue model. Candidate-pair scores are the frozen epitope projection score[ag_res_idx] and do not represent a native pair-interaction output.",
+  "per_instance": [
+    {
+      "auprc": 0.06818170294688812,
+      "auroc": 0.6603908144344601,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00001a14_H_L",
+      "mcc_at_threshold": -0.07032365665837689,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.7399278992342407,
+      "auroc": 0.9207547169811321,
+      "candidate_antigen_residues": 68,
+      "f1_at_threshold": 0.5882352941176471,
+      "instance_id": "pdb_000010zo_A_+",
+      "mcc_at_threshold": 0.5015698625755192,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.6597122811532441,
+      "auroc": 0.8798498122653317,
+      "candidate_antigen_residues": 64,
+      "f1_at_threshold": 0.6808510638297872,
+      "instance_id": "pdb_00006app_A_+",
+      "mcc_at_threshold": 0.5693635274375304,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.14600176205018658,
+      "auroc": 0.7024871843554206,
+      "candidate_antigen_residues": 252,
+      "f1_at_threshold": 0.16901408450704225,
+      "instance_id": "pdb_00001ynt_D_C",
+      "mcc_at_threshold": 0.056812356226540996,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.12222299454259808,
+      "auroc": 0.6548319726599583,
+      "candidate_antigen_residues": 252,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00001ynt_B_A",
+      "mcc_at_threshold": -0.07391267197889277,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.6114565484757793,
+      "auroc": 0.9080675422138836,
+      "candidate_antigen_residues": 95,
+      "f1_at_threshold": 0.49056603773584906,
+      "instance_id": "pdb_00001ob1_B_A",
+      "mcc_at_threshold": 0.46689164147374573,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.49662098697425694,
+      "auroc": 0.963768115942029,
+      "candidate_antigen_residues": 389,
+      "f1_at_threshold": 0.5348837209302325,
+      "instance_id": "pdb_00001ncd_H_L",
+      "mcc_at_threshold": 0.5702455444084468,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.5818597675168041,
+      "auroc": 0.9686648501362398,
+      "candidate_antigen_residues": 389,
+      "f1_at_threshold": 0.5060240963855421,
+      "instance_id": "pdb_00001ncb_H_L",
+      "mcc_at_threshold": 0.5371352953454688,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.6375837805834985,
+      "auroc": 0.9672527472527472,
+      "candidate_antigen_residues": 389,
+      "f1_at_threshold": 0.575,
+      "instance_id": "pdb_00001nca_H_L",
+      "mcc_at_threshold": 0.585646201743172,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.7449781580307927,
+      "auroc": 0.9832501781895938,
+      "candidate_antigen_residues": 389,
+      "f1_at_threshold": 0.5111111111111111,
+      "instance_id": "pdb_00001ncc_H_L",
+      "mcc_at_threshold": 0.5495584751198495,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.7444078020619982,
+      "auroc": 0.9410860655737704,
+      "candidate_antigen_residues": 138,
+      "f1_at_threshold": 0.48484848484848486,
+      "instance_id": "pdb_00001v7n_I_M",
+      "mcc_at_threshold": 0.4804369595807004,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.3817271255162717,
+      "auroc": 0.8302845528455285,
+      "candidate_antigen_residues": 139,
+      "f1_at_threshold": 0.36923076923076925,
+      "instance_id": "pdb_00001v7n_J_N",
+      "mcc_at_threshold": 0.30006851100284865,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.6020954106093426,
+      "auroc": 0.9076990376202975,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.47761194029850745,
+      "instance_id": "pdb_00001v7m_H_L",
+      "mcc_at_threshold": 0.43851768878212455,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.6129672030501689,
+      "auroc": 0.9406682027649769,
+      "candidate_antigen_residues": 138,
+      "f1_at_threshold": 0.42424242424242425,
+      "instance_id": "pdb_00001v7n_K_O",
+      "mcc_at_threshold": 0.43211637987563467,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.419846536196474,
+      "auroc": 0.8570772058823529,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.4307692307692308,
+      "instance_id": "pdb_00001v7m_I_M",
+      "mcc_at_threshold": 0.38140181498840614,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.11292371234918411,
+      "auroc": 0.49816176470588236,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.125,
+      "instance_id": "pdb_00001v7n_H_L",
+      "mcc_at_threshold": -0.0691755630139787,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.06346692984516837,
+      "auroc": 0.6285836542575952,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.03508771929824561,
+      "instance_id": "pdb_00001nmc_B_C",
+      "mcc_at_threshold": -0.03458841513293317,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.07011092733180085,
+      "auroc": 0.6663814006561117,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00001nmc_H_L",
+      "mcc_at_threshold": -0.06803205781358136,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.19410577166360177,
+      "auroc": 0.6881127450980392,
+      "candidate_antigen_residues": 118,
+      "f1_at_threshold": 0.3939393939393939,
+      "instance_id": "pdb_00001pkq_G_F",
+      "mcc_at_threshold": 0.3115993364596951,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.40549230549492765,
+      "auroc": 0.7986425339366516,
+      "candidate_antigen_residues": 121,
+      "f1_at_threshold": 0.41509433962264153,
+      "instance_id": "pdb_00001pkq_B_A",
+      "mcc_at_threshold": 0.30911995876556564,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.7556071933181907,
+      "auroc": 0.9114015976761075,
+      "candidate_antigen_residues": 98,
+      "f1_at_threshold": 0.5172413793103449,
+      "instance_id": "pdb_00003csy_A_B",
+      "mcc_at_threshold": 0.43090662139558017,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.26360593547101724,
+      "auroc": 0.5966697502312673,
+      "candidate_antigen_residues": 117,
+      "f1_at_threshold": 0.3448275862068966,
+      "instance_id": "pdb_00003b9k_D_C",
+      "mcc_at_threshold": 0.14652916381989772,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.2868172710235072,
+      "auroc": 0.6349206349206349,
+      "candidate_antigen_residues": 117,
+      "f1_at_threshold": 0.3125,
+      "instance_id": "pdb_00003b9k_H_L",
+      "mcc_at_threshold": 0.10541827607143552,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.5439997795256747,
+      "auroc": 0.8181818181818181,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.31746031746031744,
+      "instance_id": "pdb_00005hhv_H_L",
+      "mcc_at_threshold": 0.25030555350323797,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.3779695855223891,
+      "auroc": 0.878921568627451,
+      "candidate_antigen_residues": 234,
+      "f1_at_threshold": 0.5675675675675675,
+      "instance_id": "pdb_00002xwt_A_B",
+      "mcc_at_threshold": 0.502457372522089,
+      "positive_epitope_residues": 30
+    },
+    {
+      "auprc": 0.5840342723525858,
+      "auroc": 0.9202586206896551,
+      "candidate_antigen_residues": 136,
+      "f1_at_threshold": 0.5063291139240507,
+      "instance_id": "pdb_00003ab0_E_F",
+      "mcc_at_threshold": 0.47435705047822213,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.4788107772133572,
+      "auroc": 0.8918103448275863,
+      "candidate_antigen_residues": 136,
+      "f1_at_threshold": 0.59375,
+      "instance_id": "pdb_00003ab0_B_C",
+      "mcc_at_threshold": 0.5560391183707416,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.20789648080794326,
+      "auroc": 0.628053585500394,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.2608695652173913,
+      "instance_id": "pdb_00003k74_B_+",
+      "mcc_at_threshold": 0.14748642253328484,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.4750224136477333,
+      "auroc": 0.8306976744186048,
+      "candidate_antigen_residues": 230,
+      "f1_at_threshold": 0.40816326530612246,
+      "instance_id": "pdb_00003raj_H_L",
+      "mcc_at_threshold": 0.38611855950412644,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.25289120247831326,
+      "auroc": 0.802158273381295,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.40625,
+      "instance_id": "pdb_00004eig_B_+",
+      "mcc_at_threshold": 0.31648494999933224,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.7545879086425531,
+      "auroc": 0.9456025128498001,
+      "candidate_antigen_residues": 240,
+      "f1_at_threshold": 0.6829268292682927,
+      "instance_id": "pdb_00004cmh_B_C",
+      "mcc_at_threshold": 0.6332902487173654,
+      "positive_epitope_residues": 34
+    },
+    {
+      "auprc": 0.1539355662480969,
+      "auroc": 0.7630385487528345,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00004eiz_D_+",
+      "mcc_at_threshold": -0.03962144258751636,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.6074912137123716,
+      "auroc": 0.8452380952380952,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.5333333333333333,
+      "instance_id": "pdb_00004ej1_D_+",
+      "mcc_at_threshold": 0.4990784514993943,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.2047210013517053,
+      "auroc": 0.6802721088435374,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.11764705882352941,
+      "instance_id": "pdb_00004ej1_C_+",
+      "mcc_at_threshold": 0.08494553219700984,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.360366448423724,
+      "auroc": 0.846938775510204,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.375,
+      "instance_id": "pdb_00004eiz_C_+",
+      "mcc_at_threshold": 0.3224233777696247,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.6197674133999759,
+      "auroc": 0.9400000000000002,
+      "candidate_antigen_residues": 229,
+      "f1_at_threshold": 0.676056338028169,
+      "instance_id": "pdb_00003w9e_A_B",
+      "mcc_at_threshold": 0.6338424695286542,
+      "positive_epitope_residues": 29
+    },
+    {
+      "auprc": 0.25815227760276216,
+      "auroc": 0.6712396694214876,
+      "candidate_antigen_residues": 146,
+      "f1_at_threshold": 0.3389830508474576,
+      "instance_id": "pdb_00003rkd_H_L",
+      "mcc_at_threshold": 0.17972921425764557,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.5808719117668742,
+      "auroc": 0.8586666666666667,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.49056603773584906,
+      "instance_id": "pdb_00003rkd_D_C",
+      "mcc_at_threshold": 0.3779947574107829,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.23867345833948878,
+      "auroc": 0.7066115702479339,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.11538461538461539,
+      "instance_id": "pdb_00009iy2_D_C",
+      "mcc_at_threshold": -0.07683836115536845,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.16825888537642864,
+      "auroc": 0.5242975206611571,
+      "candidate_antigen_residues": 146,
+      "f1_at_threshold": 0.06666666666666667,
+      "instance_id": "pdb_00009iy2_H_L",
+      "mcc_at_threshold": -0.17006320272620096,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.6578617485913002,
+      "auroc": 0.951506456241033,
+      "candidate_antigen_residues": 222,
+      "f1_at_threshold": 0.46875,
+      "instance_id": "pdb_00005vph_D_C",
+      "mcc_at_threshold": 0.47274048958280307,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.08396544321030096,
+      "auroc": 0.529639175257732,
+      "candidate_antigen_residues": 105,
+      "f1_at_threshold": 0.16393442622950818,
+      "instance_id": "pdb_00003ve0_A_B",
+      "mcc_at_threshold": 0.06906386938157594,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.3147383225639559,
+      "auroc": 0.9257237778832463,
+      "candidate_antigen_residues": 315,
+      "f1_at_threshold": 0.43902439024390244,
+      "instance_id": "pdb_00003v7a_E_H",
+      "mcc_at_threshold": 0.4292198168337416,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.22501038195650175,
+      "auroc": 0.7066320645905422,
+      "candidate_antigen_residues": 391,
+      "f1_at_threshold": 0.1095890410958904,
+      "instance_id": "pdb_00004nzr_H_L",
+      "mcc_at_threshold": 0.037254024795612614,
+      "positive_epitope_residues": 51
+    },
+    {
+      "auprc": 0.6728187498986344,
+      "auroc": 0.9271911663216011,
+      "candidate_antigen_residues": 149,
+      "f1_at_threshold": 0.6229508196721312,
+      "instance_id": "pdb_00004g6j_H_L",
+      "mcc_at_threshold": 0.5597425827681264,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.1631232955493863,
+      "auroc": 0.7305973181633483,
+      "candidate_antigen_residues": 237,
+      "f1_at_threshold": 0.21333333333333335,
+      "instance_id": "pdb_00004ij3_C_B",
+      "mcc_at_threshold": 0.10172781098871465,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.35261605505294147,
+      "auroc": 0.9294354838709677,
+      "candidate_antigen_residues": 258,
+      "f1_at_threshold": 0.32432432432432434,
+      "instance_id": "pdb_00004n1h_D_+",
+      "mcc_at_threshold": 0.3249504489956457,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.34672021454174495,
+      "auroc": 0.905587313295224,
+      "candidate_antigen_residues": 336,
+      "f1_at_threshold": 0.3582089552238806,
+      "instance_id": "pdb_00004lvo_C_B",
+      "mcc_at_threshold": 0.36133693331666056,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.09610968486644407,
+      "auroc": 0.726350728379126,
+      "candidate_antigen_residues": 336,
+      "f1_at_threshold": 0.09090909090909091,
+      "instance_id": "pdb_00004lvn_C_B",
+      "mcc_at_threshold": 0.03166639898590421,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.3846349751088696,
+      "auroc": 0.7644887412329272,
+      "candidate_antigen_residues": 150,
+      "f1_at_threshold": 0.4074074074074074,
+      "instance_id": "pdb_00004g6m_H_L",
+      "mcc_at_threshold": 0.2959085640186047,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.41710102359178763,
+      "auroc": 0.9454391891891892,
+      "candidate_antigen_residues": 386,
+      "f1_at_threshold": 0.37037037037037035,
+      "instance_id": "pdb_00004qnp_H_L",
+      "mcc_at_threshold": 0.3675430909116003,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.30058891341205407,
+      "auroc": 0.7098765432098766,
+      "candidate_antigen_residues": 117,
+      "f1_at_threshold": 0.4166666666666667,
+      "instance_id": "pdb_00004orz_C_+",
+      "mcc_at_threshold": 0.2921234667377451,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.18538500590117188,
+      "auroc": 0.7249085737505079,
+      "candidate_antigen_residues": 237,
+      "f1_at_threshold": 0.2857142857142857,
+      "instance_id": "pdb_00005d96_C_B",
+      "mcc_at_threshold": 0.19442691410984883,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.2780524318519053,
+      "auroc": 0.8307189542483661,
+      "candidate_antigen_residues": 367,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00005bjz_C_L",
+      "mcc_at_threshold": 0.22524335112285868,
+      "positive_epitope_residues": 27
+    },
+    {
+      "auprc": 0.06208395196212233,
+      "auroc": 0.6173884514435696,
+      "candidate_antigen_residues": 401,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00005hvh_B_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.04309322068375483,
+      "auroc": 0.4035714285714286,
+      "candidate_antigen_residues": 401,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00005hvg_B_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.04625718059278505,
+      "auroc": 0.5369400814426992,
+      "candidate_antigen_residues": 400,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00005hvg_D_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.44482952532997655,
+      "auroc": 0.8784121491733947,
+      "candidate_antigen_residues": 307,
+      "f1_at_threshold": 0.3829787234042553,
+      "instance_id": "pdb_00004x7d_D_+",
+      "mcc_at_threshold": 0.34604715709061923,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.22400267968002785,
+      "auroc": 0.8056795131845842,
+      "candidate_antigen_residues": 307,
+      "f1_at_threshold": 0.27586206896551724,
+      "instance_id": "pdb_00004x7c_D_+",
+      "mcc_at_threshold": 0.23988861284404212,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.21233659211849099,
+      "auroc": 0.3990772779700115,
+      "candidate_antigen_residues": 68,
+      "f1_at_threshold": 0.36065573770491804,
+      "instance_id": "pdb_00004w2q_E_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.2150616746969418,
+      "auroc": 0.3197530864197531,
+      "candidate_antigen_residues": 63,
+      "f1_at_threshold": 0.3050847457627119,
+      "instance_id": "pdb_00004w2q_G_+",
+      "mcc_at_threshold": -0.20005542469276413,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.5320316514167502,
+      "auroc": 0.7047058823529412,
+      "candidate_antigen_residues": 67,
+      "f1_at_threshold": 0.43137254901960786,
+      "instance_id": "pdb_00004w2q_A_+",
+      "mcc_at_threshold": 0.16281380762915268,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.4925873270424935,
+      "auroc": 0.7033248081841432,
+      "candidate_antigen_residues": 63,
+      "f1_at_threshold": 0.4782608695652174,
+      "instance_id": "pdb_00004w2q_C_+",
+      "mcc_at_threshold": 0.22776561548893126,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.6505140277096142,
+      "auroc": 0.8915770609318996,
+      "candidate_antigen_residues": 207,
+      "f1_at_threshold": 0.4675324675324675,
+      "instance_id": "pdb_00004zpv_A_B",
+      "mcc_at_threshold": 0.4437021915534753,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.4984265370630363,
+      "auroc": 0.9165383430859255,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.4838709677419355,
+      "instance_id": "pdb_00004zpt_A_B",
+      "mcc_at_threshold": 0.4825582090847432,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.6137022035798516,
+      "auroc": 0.8987747145641882,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.47368421052631576,
+      "instance_id": "pdb_00004zpv_H_L",
+      "mcc_at_threshold": 0.4786425135559713,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.37301832466572565,
+      "auroc": 0.8571637426900585,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.4307692307692308,
+      "instance_id": "pdb_00004zpt_H_L",
+      "mcc_at_threshold": 0.4061209535112255,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.4941673340869034,
+      "auroc": 0.9115470022205774,
+      "candidate_antigen_residues": 207,
+      "f1_at_threshold": 0.3870967741935484,
+      "instance_id": "pdb_00004zs6_H_L",
+      "mcc_at_threshold": 0.3990215397469383,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.4395579739085482,
+      "auroc": 0.8486306439674316,
+      "candidate_antigen_residues": 207,
+      "f1_at_threshold": 0.23333333333333334,
+      "instance_id": "pdb_00004zs6_C_D",
+      "mcc_at_threshold": 0.1799539376871736,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.2500979640274714,
+      "auroc": 0.7958333333333333,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.2807017543859649,
+      "instance_id": "pdb_00004xak_H_L",
+      "mcc_at_threshold": 0.2213023426250633,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.4552833887396585,
+      "auroc": 0.8270005757052389,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.33962264150943394,
+      "instance_id": "pdb_00004xak_D_E",
+      "mcc_at_threshold": 0.2743192968851511,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.7085044845064581,
+      "auroc": 0.8985690235690236,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.6944444444444444,
+      "instance_id": "pdb_00005d72_H_L",
+      "mcc_at_threshold": 0.6067776742406759,
+      "positive_epitope_residues": 27
+    },
+    {
+      "auprc": 0.26636838412811153,
+      "auroc": 0.7562091503267975,
+      "candidate_antigen_residues": 285,
+      "f1_at_threshold": 0.2191780821917808,
+      "instance_id": "pdb_00005f72_T1_T2",
+      "mcc_at_threshold": 0.11095900821829636,
+      "positive_epitope_residues": 30
+    },
+    {
+      "auprc": 0.3568988622295265,
+      "auroc": 0.8247637576431351,
+      "candidate_antigen_residues": 285,
+      "f1_at_threshold": 0.38235294117647056,
+      "instance_id": "pdb_00005f72_S1_S2",
+      "mcc_at_threshold": 0.30782361367666095,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.21530462027874928,
+      "auroc": 0.8502525252525253,
+      "candidate_antigen_residues": 238,
+      "f1_at_threshold": 0.3684210526315789,
+      "instance_id": "pdb_00006hf1_C_B",
+      "mcc_at_threshold": 0.35584279585194295,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.20105318297255548,
+      "auroc": 0.8045227223309416,
+      "candidate_antigen_residues": 240,
+      "f1_at_threshold": 0.2894736842105263,
+      "instance_id": "pdb_00005d93_C_B",
+      "mcc_at_threshold": 0.21708386234307434,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.15134560189164387,
+      "auroc": 0.7813131313131313,
+      "candidate_antigen_residues": 238,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006hf1_F_E",
+      "mcc_at_threshold": -0.11677484162422845,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.48620392296156767,
+      "auroc": 0.8903186274509804,
+      "candidate_antigen_residues": 118,
+      "f1_at_threshold": 0.5084745762711864,
+      "instance_id": "pdb_00005d1q_B_A",
+      "mcc_at_threshold": 0.47163097917095725,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.3707790898911669,
+      "auroc": 0.7591911764705882,
+      "candidate_antigen_residues": 118,
+      "f1_at_threshold": 0.27586206896551724,
+      "instance_id": "pdb_00005d1q_C_D",
+      "mcc_at_threshold": 0.11917286644580191,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.14709940201442606,
+      "auroc": 0.7511622992392224,
+      "candidate_antigen_residues": 366,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00005bk1_H_L",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.29052249760226334,
+      "auroc": 0.877108134920635,
+      "candidate_antigen_residues": 360,
+      "f1_at_threshold": 0.26666666666666666,
+      "instance_id": "pdb_00005gru_H1_L2",
+      "mcc_at_threshold": 0.21076905532025017,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.21003587673577923,
+      "auroc": 0.8603801169590644,
+      "candidate_antigen_residues": 366,
+      "f1_at_threshold": 0.3835616438356164,
+      "instance_id": "pdb_00005m14_C_+",
+      "mcc_at_threshold": 0.3496477992001776,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.22371306507317035,
+      "auroc": 0.8709881756756757,
+      "candidate_antigen_residues": 312,
+      "f1_at_threshold": 0.24242424242424243,
+      "instance_id": "pdb_00005mwn_E_+",
+      "mcc_at_threshold": 0.2002665895907455,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.10756594636302708,
+      "auroc": 0.7422371866816311,
+      "candidate_antigen_residues": 315,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00005mwn_D_+",
+      "mcc_at_threshold": -0.03974054636721917,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.14188614992678186,
+      "auroc": 0.8043396932285821,
+      "candidate_antigen_residues": 315,
+      "f1_at_threshold": 0.18867924528301888,
+      "instance_id": "pdb_00005o04_D_+",
+      "mcc_at_threshold": 0.13055824196677338,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.45896467938699875,
+      "auroc": 0.8550505050505051,
+      "candidate_antigen_residues": 128,
+      "f1_at_threshold": 0.43333333333333335,
+      "instance_id": "pdb_00005lqb_H_L",
+      "mcc_at_threshold": 0.33953096091639173,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.17268423845683473,
+      "auroc": 0.5453501722158438,
+      "candidate_antigen_residues": 80,
+      "f1_at_threshold": 0.23809523809523808,
+      "instance_id": "pdb_00005n88_H_+",
+      "mcc_at_threshold": 0.020264443025129603,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.16196393061802267,
+      "auroc": 0.541044776119403,
+      "candidate_antigen_residues": 79,
+      "f1_at_threshold": 0.19047619047619047,
+      "instance_id": "pdb_00005n88_A_+",
+      "mcc_at_threshold": -0.04047305477213721,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.291733054056133,
+      "auroc": 0.7864583333333334,
+      "candidate_antigen_residues": 304,
+      "f1_at_threshold": 0.23255813953488372,
+      "instance_id": "pdb_00005o02_C_+",
+      "mcc_at_threshold": 0.18533220531133662,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.668292713828428,
+      "auroc": 0.9358706986444213,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00005mes_H_L",
+      "mcc_at_threshold": 0.4836706866469503,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.49839454306552444,
+      "auroc": 0.8629629629629628,
+      "candidate_antigen_residues": 159,
+      "f1_at_threshold": 0.38461538461538464,
+      "instance_id": "pdb_00006qb6_H_L",
+      "mcc_at_threshold": 0.33146119887918707,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.6984887141843663,
+      "auroc": 0.953921568627451,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.5652173913043478,
+      "instance_id": "pdb_00005mev_H_L",
+      "mcc_at_threshold": 0.5437825409331751,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.6458407950074616,
+      "auroc": 0.9272300469483568,
+      "candidate_antigen_residues": 157,
+      "f1_at_threshold": 0.49122807017543857,
+      "instance_id": "pdb_00008av9_H_L",
+      "mcc_at_threshold": 0.4888579601392778,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.45925138896504913,
+      "auroc": 0.6931949250288351,
+      "candidate_antigen_residues": 68,
+      "f1_at_threshold": 0.5151515151515151,
+      "instance_id": "pdb_00005otj_B_A",
+      "mcc_at_threshold": 0.35951592548908334,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.8455363049992206,
+      "auroc": 0.9321266968325791,
+      "candidate_antigen_residues": 69,
+      "f1_at_threshold": 0.6037735849056604,
+      "instance_id": "pdb_00005otj_H_L",
+      "mcc_at_threshold": 0.4800989431365971,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.2067959099505643,
+      "auroc": 0.841289592760181,
+      "candidate_antigen_residues": 366,
+      "f1_at_threshold": 0.32432432432432434,
+      "instance_id": "pdb_00005m15_C_+",
+      "mcc_at_threshold": 0.27065884623923525,
+      "positive_epitope_residues": 26
+    },
+    {
+      "auprc": 0.25169364954242757,
+      "auroc": 0.5748882265275708,
+      "candidate_antigen_residues": 144,
+      "f1_at_threshold": 0.24242424242424243,
+      "instance_id": "pdb_00005y9j_H_L",
+      "mcc_at_threshold": 0.05354269524466559,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.023423021956038157,
+      "auroc": 0.5924984106802289,
+      "candidate_antigen_residues": 583,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00005vnw_D_+",
+      "mcc_at_threshold": -0.028734129524524168,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.4688096749896752,
+      "auroc": 0.7212121212121212,
+      "candidate_antigen_residues": 112,
+      "f1_at_threshold": 0.43478260869565216,
+      "instance_id": "pdb_00006bfs_H_L",
+      "mcc_at_threshold": 0.26266022719064597,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.4357482765486719,
+      "auroc": 0.7947727272727273,
+      "candidate_antigen_residues": 222,
+      "f1_at_threshold": 0.37037037037037035,
+      "instance_id": "pdb_00005vcn_D_C",
+      "mcc_at_threshold": 0.29310354654151716,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.4266851952388733,
+      "auroc": 0.7361363636363636,
+      "candidate_antigen_residues": 222,
+      "f1_at_threshold": 0.375,
+      "instance_id": "pdb_00005vcn_F_E",
+      "mcc_at_threshold": 0.3016907622339736,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.5439550175083343,
+      "auroc": 0.7667450058754407,
+      "candidate_antigen_residues": 97,
+      "f1_at_threshold": 0.5625,
+      "instance_id": "pdb_00005w2b_H_L",
+      "mcc_at_threshold": 0.4062092657292446,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.5257440208163259,
+      "auroc": 0.7492408906882593,
+      "candidate_antigen_residues": 102,
+      "f1_at_threshold": 0.5396825396825397,
+      "instance_id": "pdb_00005vkd_H_L",
+      "mcc_at_threshold": 0.3541329113939936,
+      "positive_epitope_residues": 26
+    },
+    {
+      "auprc": 0.6118405277632352,
+      "auroc": 0.8489911727616646,
+      "candidate_antigen_residues": 148,
+      "f1_at_threshold": 0.625,
+      "instance_id": "pdb_00006bp2_H_L",
+      "mcc_at_threshold": 0.55576859852662,
+      "positive_epitope_residues": 26
+    },
+    {
+      "auprc": 0.08533688578050766,
+      "auroc": 0.7015784982935154,
+      "candidate_antigen_residues": 309,
+      "f1_at_threshold": 0.045454545454545456,
+      "instance_id": "pdb_00006hjx_G_+",
+      "mcc_at_threshold": -0.0228869975500321,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.29003218659868274,
+      "auroc": 0.8224080267558528,
+      "candidate_antigen_residues": 309,
+      "f1_at_threshold": 0.11594202898550725,
+      "instance_id": "pdb_00006hjx_H_+",
+      "mcc_at_threshold": 0.0972749270260512,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.37888284554951224,
+      "auroc": 0.8271604938271604,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.3684210526315789,
+      "instance_id": "pdb_00008dyx_U_V",
+      "mcc_at_threshold": 0.3249366401497406,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.17158825164247854,
+      "auroc": 0.7242798353909465,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.08695652173913043,
+      "instance_id": "pdb_00008dyx_E_F",
+      "mcc_at_threshold": -0.04087595596566439,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.21487876965322833,
+      "auroc": 0.75,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.35555555555555557,
+      "instance_id": "pdb_00008dyx_W_X",
+      "mcc_at_threshold": 0.2981544966893907,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.34838020978371853,
+      "auroc": 0.8641975308641975,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00008dyx_S_T",
+      "mcc_at_threshold": 0.447213595499958,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.6123951973951973,
+      "auroc": 0.9396433470507545,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.3829787234042553,
+      "instance_id": "pdb_00008dyx_H_L",
+      "mcc_at_threshold": 0.3899317679104012,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.4703890885494659,
+      "auroc": 0.8737997256515775,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00008dyx_Q_R",
+      "mcc_at_threshold": 0.32791920691716653,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.05606098977609694,
+      "auroc": 0.1143292682926829,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008dyx_Y_Z",
+      "mcc_at_threshold": -0.13968605915391566,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.102332825309689,
+      "auroc": 0.5533536585365854,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008dyx_A_B",
+      "mcc_at_threshold": -0.2044794529772991,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.2195826347142137,
+      "auroc": 0.7928669410150891,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.35555555555555557,
+      "instance_id": "pdb_00008dyx_O_P",
+      "mcc_at_threshold": 0.33264675519277725,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.22145727629598597,
+      "auroc": 0.7311385459533608,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.2564102564102564,
+      "instance_id": "pdb_00008dyx_M_N",
+      "mcc_at_threshold": 0.15713484026367724,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.16311871412905513,
+      "auroc": 0.7023319615912208,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008dyx_C_D",
+      "mcc_at_threshold": -0.14907119849998599,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.5031324409501015,
+      "auroc": 0.8497983870967741,
+      "candidate_antigen_residues": 78,
+      "f1_at_threshold": 0.6153846153846154,
+      "instance_id": "pdb_00005x0t_A_B",
+      "mcc_at_threshold": 0.5487032611687344,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.7055716617940884,
+      "auroc": 0.934475806451613,
+      "candidate_antigen_residues": 78,
+      "f1_at_threshold": 0.5161290322580645,
+      "instance_id": "pdb_00005x0t_C_D",
+      "mcc_at_threshold": 0.4237017130659009,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.40052200612910466,
+      "auroc": 0.822383498854087,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00006c6y_A_B",
+      "mcc_at_threshold": 0.34042642746432544,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.6623314483734306,
+      "auroc": 0.8691112808759868,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.5217391304347826,
+      "instance_id": "pdb_00006c6y_H_L",
+      "mcc_at_threshold": 0.49820150184441486,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.5071609241511372,
+      "auroc": 0.9149135109864422,
+      "candidate_antigen_residues": 209,
+      "f1_at_threshold": 0.5396825396825397,
+      "instance_id": "pdb_00005yy5_H_L",
+      "mcc_at_threshold": 0.48961771304015084,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.6663957792031421,
+      "auroc": 0.9287797763733592,
+      "candidate_antigen_residues": 209,
+      "f1_at_threshold": 0.7142857142857143,
+      "instance_id": "pdb_00005yy5_C_D",
+      "mcc_at_threshold": 0.6936759739934053,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.6505755944643032,
+      "auroc": 0.9133771929824562,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.5964912280701754,
+      "instance_id": "pdb_00006bit_J_L",
+      "mcc_at_threshold": 0.5337200262403916,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.4761278878753702,
+      "auroc": 0.8337334933973589,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.4918032786885246,
+      "instance_id": "pdb_00006bit_I_K",
+      "mcc_at_threshold": 0.4282541227729628,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.5792528994585606,
+      "auroc": 0.8873239436619719,
+      "candidate_antigen_residues": 156,
+      "f1_at_threshold": 0.375,
+      "instance_id": "pdb_00006fs0_H_L",
+      "mcc_at_threshold": 0.3231620930733352,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.013806102958193688,
+      "auroc": 0.32005623242736647,
+      "candidate_antigen_residues": 593,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006qx4_D_+",
+      "mcc_at_threshold": -0.009803236315144499,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.03571310172423614,
+      "auroc": 0.5743961352657004,
+      "candidate_antigen_residues": 593,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006qx4_H_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.6525277418659772,
+      "auroc": 0.9434931506849316,
+      "candidate_antigen_residues": 81,
+      "f1_at_threshold": 0.3076923076923077,
+      "instance_id": "pdb_00006umg_H_L",
+      "mcc_at_threshold": 0.30356946638544563,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.41005599807779397,
+      "auroc": 0.8572192513368984,
+      "candidate_antigen_residues": 277,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006rtw_B_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.14632433609395634,
+      "auroc": 0.771326164874552,
+      "candidate_antigen_residues": 299,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00006r2s_B_A",
+      "mcc_at_threshold": 0.15732283600309593,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.4244781401689379,
+      "auroc": 0.8580765639589168,
+      "candidate_antigen_residues": 123,
+      "f1_at_threshold": 0.5263157894736842,
+      "instance_id": "pdb_00009eze_B_C",
+      "mcc_at_threshold": 0.42044313897502894,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.2037700168018031,
+      "auroc": 0.868968968968969,
+      "candidate_antigen_residues": 573,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006rai_C_+",
+      "mcc_at_threshold": -0.015099536750172959,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.18094059562890513,
+      "auroc": 0.8403811252268603,
+      "candidate_antigen_residues": 571,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006rak_C_+",
+      "mcc_at_threshold": -0.013846042422828832,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.21288584325515048,
+      "auroc": 0.847425422762683,
+      "candidate_antigen_residues": 573,
+      "f1_at_threshold": 0.07407407407407407,
+      "instance_id": "pdb_00006raj_C_+",
+      "mcc_at_threshold": 0.0610353157454158,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.10936779264647199,
+      "auroc": 0.7055353901996371,
+      "candidate_antigen_residues": 571,
+      "f1_at_threshold": 0.13793103448275862,
+      "instance_id": "pdb_00009ryf_C_+",
+      "mcc_at_threshold": 0.12885309727954516,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.14092616329354013,
+      "auroc": 0.7754083484573502,
+      "candidate_antigen_residues": 571,
+      "f1_at_threshold": 0.1875,
+      "instance_id": "pdb_00009rye_C_+",
+      "mcc_at_threshold": 0.17132290216355398,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.1986238692120584,
+      "auroc": 0.8715517241379309,
+      "candidate_antigen_residues": 571,
+      "f1_at_threshold": 0.08695652173913043,
+      "instance_id": "pdb_00006ral_C_+",
+      "mcc_at_threshold": 0.11792212796775889,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.22194429474838398,
+      "auroc": 0.8791767310789049,
+      "candidate_antigen_residues": 570,
+      "f1_at_threshold": 0.08695652173913043,
+      "instance_id": "pdb_00006rah_C_+",
+      "mcc_at_threshold": 0.09059958740475597,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.12972270079510922,
+      "auroc": 0.5785507246376811,
+      "candidate_antigen_residues": 130,
+      "f1_at_threshold": 0.12307692307692308,
+      "instance_id": "pdb_00006qd7_X_Z",
+      "mcc_at_threshold": -0.08755950357709132,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.3795773387975563,
+      "auroc": 0.8594482040603852,
+      "candidate_antigen_residues": 130,
+      "f1_at_threshold": 0.46511627906976744,
+      "instance_id": "pdb_00006qd7_H_L",
+      "mcc_at_threshold": 0.3764612342669272,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.1859588057704699,
+      "auroc": 0.6600728787090057,
+      "candidate_antigen_residues": 130,
+      "f1_at_threshold": 0.2909090909090909,
+      "instance_id": "pdb_00006qd7_U_P",
+      "mcc_at_threshold": 0.15203613737967062,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.2702687157737231,
+      "auroc": 0.7462500000000001,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00006mb3_J_S",
+      "mcc_at_threshold": 0.13803940759355818,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.0802634269953846,
+      "auroc": 0.35253772290809327,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006mb3_H_L",
+      "mcc_at_threshold": -0.14306584587982535,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.27744479401814226,
+      "auroc": 0.7434842249657064,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.21428571428571427,
+      "instance_id": "pdb_00006mb3_F_P",
+      "mcc_at_threshold": 0.09983100785484385,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.3330998577375389,
+      "auroc": 0.8806584362139918,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00006mb3_C_N",
+      "mcc_at_threshold": 0.5091750772173156,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.23944260765200465,
+      "auroc": 0.7750342935528121,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.3333333333333333,
+      "instance_id": "pdb_00006mb3_A_K",
+      "mcc_at_threshold": 0.2667107547328796,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.34341555225256415,
+      "auroc": 0.8779149519890261,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00006mb3_I_R",
+      "mcc_at_threshold": 0.408248290463863,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.21066478941159247,
+      "auroc": 0.7366255144032922,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.16,
+      "instance_id": "pdb_00006mb3_G_Q",
+      "mcc_at_threshold": 0.038749212914606423,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.5132861301339562,
+      "auroc": 0.9204389574759945,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.47368421052631576,
+      "instance_id": "pdb_00006mb3_D_O",
+      "mcc_at_threshold": 0.4834423182715653,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.2571054834780325,
+      "auroc": 0.8285322359396433,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.41025641025641024,
+      "instance_id": "pdb_00006mb3_B_M",
+      "mcc_at_threshold": 0.3928371006591931,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.09014185723393357,
+      "auroc": 0.7407407407407407,
+      "candidate_antigen_residues": 593,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006qx4_E_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 27
+    },
+    {
+      "auprc": 0.038017984290679,
+      "auroc": 0.3684210526315789,
+      "candidate_antigen_residues": 99,
+      "f1_at_threshold": 0.03773584905660377,
+      "instance_id": "pdb_00006nha_H_L",
+      "mcc_at_threshold": -0.10053028037238733,
+      "positive_epitope_residues": 4
+    },
+    {
+      "auprc": 0.47643041712809153,
+      "auroc": 0.9721461187214612,
+      "candidate_antigen_residues": 371,
+      "f1_at_threshold": 0.3125,
+      "instance_id": "pdb_00009nr6_F1_F2",
+      "mcc_at_threshold": 0.38333202196496546,
+      "positive_epitope_residues": 6
+    },
+    {
+      "auprc": 0.19954217373138067,
+      "auroc": 0.8273972602739726,
+      "candidate_antigen_residues": 373,
+      "f1_at_threshold": 0.1875,
+      "instance_id": "pdb_00009nr6_E1_E2",
+      "mcc_at_threshold": 0.18744332267375707,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.15463667854862187,
+      "auroc": 0.8820921985815603,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.23728813559322035,
+      "instance_id": "pdb_00006pzf_H_L",
+      "mcc_at_threshold": 0.2530647194654633,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.15463667854862187,
+      "auroc": 0.8820921985815603,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.23728813559322035,
+      "instance_id": "pdb_00006pzf_F_E",
+      "mcc_at_threshold": 0.2530647194654633,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.16059057149083084,
+      "auroc": 0.7675856307435255,
+      "candidate_antigen_residues": 306,
+      "f1_at_threshold": 0.17142857142857143,
+      "instance_id": "pdb_00006n8d_F_E",
+      "mcc_at_threshold": 0.12615285068497087,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.24535182884777357,
+      "auroc": 0.7618437900128041,
+      "candidate_antigen_residues": 306,
+      "f1_at_threshold": 0.08,
+      "instance_id": "pdb_00006n8d_D_B",
+      "mcc_at_threshold": 0.10070679846141556,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.6237379273951379,
+      "auroc": 0.8642091997479521,
+      "candidate_antigen_residues": 161,
+      "f1_at_threshold": 0.5428571428571428,
+      "instance_id": "pdb_00006pcu_H2_H1",
+      "mcc_at_threshold": 0.4796467116773491,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.528237674029159,
+      "auroc": 0.8355285376561973,
+      "candidate_antigen_residues": 162,
+      "f1_at_threshold": 0.48,
+      "instance_id": "pdb_00006pcu_B2_B1",
+      "mcc_at_threshold": 0.4288246465719977,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.23177147099424067,
+      "auroc": 0.6880907372400755,
+      "candidate_antigen_residues": 161,
+      "f1_at_threshold": 0.34285714285714286,
+      "instance_id": "pdb_00006pcu_E2_E1",
+      "mcc_at_threshold": 0.20635963176816183,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.49921994515687595,
+      "auroc": 0.7761075949367089,
+      "candidate_antigen_residues": 95,
+      "f1_at_threshold": 0.47619047619047616,
+      "instance_id": "pdb_00006u54_A_+",
+      "mcc_at_threshold": 0.3546145089825699,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.28912422071780425,
+      "auroc": 0.9193502824858757,
+      "candidate_antigen_residues": 374,
+      "f1_at_threshold": 0.4090909090909091,
+      "instance_id": "pdb_00006s3t_E_I",
+      "mcc_at_threshold": 0.37423125400879814,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.18707826740306688,
+      "auroc": 0.8665722379603399,
+      "candidate_antigen_residues": 373,
+      "f1_at_threshold": 0.1702127659574468,
+      "instance_id": "pdb_00006s3t_D_C",
+      "mcc_at_threshold": 0.11722349519505108,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.18312847013320666,
+      "auroc": 0.8506677458518819,
+      "candidate_antigen_residues": 374,
+      "f1_at_threshold": 0.26229508196721313,
+      "instance_id": "pdb_00006s3t_R_Q",
+      "mcc_at_threshold": 0.21624299006239306,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.1682492878117578,
+      "auroc": 0.8463510049912316,
+      "candidate_antigen_residues": 374,
+      "f1_at_threshold": 0.24096385542168675,
+      "instance_id": "pdb_00006s3t_N_M",
+      "mcc_at_threshold": 0.2035933364014451,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.3680208205118353,
+      "auroc": 0.6897759103641457,
+      "candidate_antigen_residues": 101,
+      "f1_at_threshold": 0.37037037037037035,
+      "instance_id": "pdb_00006u55_A_+",
+      "mcc_at_threshold": 0.2071905880028914,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.6789549608549517,
+      "auroc": 0.9511538461538461,
+      "candidate_antigen_residues": 341,
+      "f1_at_threshold": 0.5217391304347826,
+      "instance_id": "pdb_00009b70_G_+",
+      "mcc_at_threshold": 0.5185674439409105,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.46110356475252395,
+      "auroc": 0.8678936605316974,
+      "candidate_antigen_residues": 341,
+      "f1_at_threshold": 0.4444444444444444,
+      "instance_id": "pdb_00009b71_G_+",
+      "mcc_at_threshold": 0.42468667803207677,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.22455345325080617,
+      "auroc": 0.8141104294478527,
+      "candidate_antigen_residues": 341,
+      "f1_at_threshold": 0.17647058823529413,
+      "instance_id": "pdb_00009b71_H_+",
+      "mcc_at_threshold": 0.1349264816854066,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.3280871150901275,
+      "auroc": 0.803476482617587,
+      "candidate_antigen_residues": 341,
+      "f1_at_threshold": 0.2413793103448276,
+      "instance_id": "pdb_00009b70_H_+",
+      "mcc_at_threshold": 0.22006519515393227,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.2106932256818541,
+      "auroc": 0.7514546548956662,
+      "candidate_antigen_residues": 384,
+      "f1_at_threshold": 0.1694915254237288,
+      "instance_id": "pdb_00006q23_E_F",
+      "mcc_at_threshold": 0.10072644944111811,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.33601130296750364,
+      "auroc": 0.8422953451043339,
+      "candidate_antigen_residues": 384,
+      "f1_at_threshold": 0.3950617283950617,
+      "instance_id": "pdb_00006q23_J_K",
+      "mcc_at_threshold": 0.35239518873735,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.2674596706839733,
+      "auroc": 0.8206761637239166,
+      "candidate_antigen_residues": 384,
+      "f1_at_threshold": 0.28125,
+      "instance_id": "pdb_00006q23_G_I",
+      "mcc_at_threshold": 0.2190617367342457,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.24871921631962468,
+      "auroc": 0.774026886035313,
+      "candidate_antigen_residues": 384,
+      "f1_at_threshold": 0.18181818181818182,
+      "instance_id": "pdb_00006q23_H_L",
+      "mcc_at_threshold": 0.10831480515278673,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.8164609707084409,
+      "auroc": 0.9451581027667983,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.6285714285714286,
+      "instance_id": "pdb_00006p9h_C_D",
+      "mcc_at_threshold": 0.5734146386569556,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.7290815362498186,
+      "auroc": 0.9088145896656534,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.5454545454545454,
+      "instance_id": "pdb_00006p9h_H_L",
+      "mcc_at_threshold": 0.4511528148570637,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.14026819069490631,
+      "auroc": 0.32,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.15789473684210525,
+      "instance_id": "pdb_00006x87_G_H",
+      "mcc_at_threshold": -0.16043612574988467,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.18838961774083984,
+      "auroc": 0.5054545454545455,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.25,
+      "instance_id": "pdb_00006x87_K_L",
+      "mcc_at_threshold": -0.0195962378834549,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.11291267314427139,
+      "auroc": 0.1309090909090909,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006x87_I_J",
+      "mcc_at_threshold": -0.4465142774872938,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.23217729841106463,
+      "auroc": 0.5927272727272728,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.23076923076923078,
+      "instance_id": "pdb_00006x87_E_F",
+      "mcc_at_threshold": 0.02921908521346044,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.4536721513006099,
+      "auroc": 0.8527272727272727,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.5714285714285714,
+      "instance_id": "pdb_00006x87_A_B",
+      "mcc_at_threshold": 0.4950946930828032,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.5909118969463797,
+      "auroc": 0.8345454545454546,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.5185185185185185,
+      "instance_id": "pdb_00006x87_M_N",
+      "mcc_at_threshold": 0.39886518316773945,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.6978574057521426,
+      "auroc": 0.8963636363636364,
+      "candidate_antigen_residues": 61,
+      "f1_at_threshold": 0.5116279069767442,
+      "instance_id": "pdb_00006x87_C_D",
+      "mcc_at_threshold": 0.4465142774872938,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.12377522936080029,
+      "auroc": 0.45021645021645024,
+      "candidate_antigen_residues": 89,
+      "f1_at_threshold": 0.13559322033898305,
+      "instance_id": "pdb_00006wir_A_B",
+      "mcc_at_threshold": -0.15401172145570663,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.15285225962541488,
+      "auroc": 0.5665584415584416,
+      "candidate_antigen_residues": 102,
+      "f1_at_threshold": 0.29411764705882354,
+      "instance_id": "pdb_00006wio_A_B",
+      "mcc_at_threshold": 0.14773421007131973,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.1341486855869806,
+      "auroc": 0.6634085213032581,
+      "candidate_antigen_residues": 229,
+      "f1_at_threshold": 0.14035087719298245,
+      "instance_id": "pdb_00007duo_H_L",
+      "mcc_at_threshold": 0.036050127093995944,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.11762910395929957,
+      "auroc": 0.8694262890341321,
+      "candidate_antigen_residues": 474,
+      "f1_at_threshold": 0.13114754098360656,
+      "instance_id": "pdb_00007cn2_M_m",
+      "mcc_at_threshold": 0.10358444302024888,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.1716312800451456,
+      "auroc": 0.6860341151385928,
+      "candidate_antigen_residues": 148,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006xzu_A_+",
+      "mcc_at_threshold": -0.053871661262954514,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.3199703910679681,
+      "auroc": 0.7898248540450375,
+      "candidate_antigen_residues": 131,
+      "f1_at_threshold": 0.5151515151515151,
+      "instance_id": "pdb_00006ye3_G_H",
+      "mcc_at_threshold": 0.4155422396543118,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.7551837555629364,
+      "auroc": 0.9074074074074074,
+      "candidate_antigen_residues": 130,
+      "f1_at_threshold": 0.6129032258064516,
+      "instance_id": "pdb_00006ye3_D_E",
+      "mcc_at_threshold": 0.5436540851587195,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.4943331781745043,
+      "auroc": 0.8095238095238095,
+      "candidate_antigen_residues": 131,
+      "f1_at_threshold": 0.46153846153846156,
+      "instance_id": "pdb_00006ye3_A_B",
+      "mcc_at_threshold": 0.3500731279127521,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.7134593279097923,
+      "auroc": 0.9063881076737647,
+      "candidate_antigen_residues": 150,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00007chy_H_L",
+      "mcc_at_threshold": 0.45052109295688514,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.07441493949071952,
+      "auroc": 0.48283069573006865,
+      "candidate_antigen_residues": 214,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00006ztr_H_L",
+      "mcc_at_threshold": -0.1092443781681992,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.16285186230663873,
+      "auroc": 0.6663817663817664,
+      "candidate_antigen_residues": 213,
+      "f1_at_threshold": 0.1694915254237288,
+      "instance_id": "pdb_00006ztr_A_B",
+      "mcc_at_threshold": 0.06572612714573853,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.7551205738705739,
+      "auroc": 0.9685185185185184,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.5454545454545454,
+      "instance_id": "pdb_00007chz_H_L",
+      "mcc_at_threshold": 0.5342449069236604,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.20357289120156696,
+      "auroc": 0.6874149659863945,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.1951219512195122,
+      "instance_id": "pdb_00006war_B_+",
+      "mcc_at_threshold": 0.12072845683452597,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.3231845567466683,
+      "auroc": 0.6846938775510204,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.3157894736842105,
+      "instance_id": "pdb_00006war_H_+",
+      "mcc_at_threshold": 0.2583111318306935,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.2161883447363284,
+      "auroc": 0.705221174764322,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.19047619047619047,
+      "instance_id": "pdb_00006war_F_+",
+      "mcc_at_threshold": 0.12023661561444082,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.6188688507235082,
+      "auroc": 0.9088141025641026,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.5161290322580645,
+      "instance_id": "pdb_00006war_J_+",
+      "mcc_at_threshold": 0.4780987405560308,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.25201269852346175,
+      "auroc": 0.7773809523809523,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.3870967741935484,
+      "instance_id": "pdb_00006war_N_+",
+      "mcc_at_threshold": 0.3387633341232649,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.6490150047096137,
+      "auroc": 0.8653846153846154,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.5714285714285714,
+      "instance_id": "pdb_00006war_P_+",
+      "mcc_at_threshold": 0.5480713942052369,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.5768826488783825,
+      "auroc": 0.8333333333333333,
+      "candidate_antigen_residues": 211,
+      "f1_at_threshold": 0.5185185185185185,
+      "instance_id": "pdb_00006war_D_+",
+      "mcc_at_threshold": 0.4965793539592185,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.10989934524417369,
+      "auroc": 0.7167585784313726,
+      "candidate_antigen_residues": 401,
+      "f1_at_threshold": 0.2127659574468085,
+      "instance_id": "pdb_00007qia_B_+",
+      "mcc_at_threshold": 0.1753894788434399,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.21571220103583452,
+      "auroc": 0.9001623376623378,
+      "candidate_antigen_residues": 401,
+      "f1_at_threshold": 0.2857142857142857,
+      "instance_id": "pdb_00007qia_C_+",
+      "mcc_at_threshold": 0.2634954315200592,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.47808744252778007,
+      "auroc": 0.7981481481481482,
+      "candidate_antigen_residues": 101,
+      "f1_at_threshold": 0.47619047619047616,
+      "instance_id": "pdb_00009min_E_+",
+      "mcc_at_threshold": 0.3396975873295081,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.6267656823331633,
+      "auroc": 0.8930379746835443,
+      "candidate_antigen_residues": 99,
+      "f1_at_threshold": 0.5945945945945946,
+      "instance_id": "pdb_00009o5s_O_+",
+      "mcc_at_threshold": 0.5046867318548741,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.252778522499789,
+      "auroc": 0.589240506329114,
+      "candidate_antigen_residues": 99,
+      "f1_at_threshold": 0.24390243902439024,
+      "instance_id": "pdb_00009o5s_F_+",
+      "mcc_at_threshold": 0.04662037593092171,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.18858372878486043,
+      "auroc": 0.4054206662902315,
+      "candidate_antigen_residues": 100,
+      "f1_at_threshold": 0.0784313725490196,
+      "instance_id": "pdb_00009ytd_D_+",
+      "mcc_at_threshold": -0.2349786615078903,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.016666666666666666,
+      "auroc": 0.7937062937062938,
+      "candidate_antigen_residues": 287,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008qot_H_L",
+      "mcc_at_threshold": -0.019824677421796805,
+      "positive_epitope_residues": 1
+    },
+    {
+      "auprc": 0.4976337443385498,
+      "auroc": 0.8434782608695652,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.45454545454545453,
+      "instance_id": "pdb_00009d3j_A_B",
+      "mcc_at_threshold": 0.3750532783976546,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.9237043820377154,
+      "auroc": 0.981029810298103,
+      "candidate_antigen_residues": 50,
+      "f1_at_threshold": 0.375,
+      "instance_id": "pdb_00009d3j_E_F",
+      "mcc_at_threshold": 0.24882462912669542,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.31335614721184574,
+      "auroc": 0.7280783582089553,
+      "candidate_antigen_residues": 150,
+      "f1_at_threshold": 0.43243243243243246,
+      "instance_id": "pdb_00007r24_C_+",
+      "mcc_at_threshold": 0.35850634751688476,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.20213992573000714,
+      "auroc": 0.6044871794871796,
+      "candidate_antigen_residues": 119,
+      "f1_at_threshold": 0.3333333333333333,
+      "instance_id": "pdb_00007r1z_C_+",
+      "mcc_at_threshold": 0.2171939408202307,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.40888159362847465,
+      "auroc": 0.8134295713035871,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00007r23_C_+",
+      "mcc_at_threshold": 0.42730068150907696,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.6221215123255323,
+      "auroc": 0.8582978723404255,
+      "candidate_antigen_residues": 119,
+      "f1_at_threshold": 0.6101694915254238,
+      "instance_id": "pdb_00007r1z_E_+",
+      "mcc_at_threshold": 0.49576933552061603,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.4847921712134648,
+      "auroc": 0.8009259259259259,
+      "candidate_antigen_residues": 150,
+      "f1_at_threshold": 0.4411764705882353,
+      "instance_id": "pdb_00007r24_E_+",
+      "mcc_at_threshold": 0.3179319417656403,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.11264189720456806,
+      "auroc": 0.4389334862385321,
+      "candidate_antigen_residues": 125,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007ozt_AAA_+",
+      "mcc_at_threshold": -0.1622073802408647,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.21691633609241875,
+      "auroc": 0.47566718995290425,
+      "candidate_antigen_residues": 119,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00009ihc_H_L",
+      "mcc_at_threshold": -0.0965609099170535,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.18979885294222965,
+      "auroc": 0.3695652173913043,
+      "candidate_antigen_residues": 122,
+      "f1_at_threshold": 0.034482758620689655,
+      "instance_id": "pdb_00009pzi_F_E",
+      "mcc_at_threshold": -0.26639554683779065,
+      "positive_epitope_residues": 30
+    },
+    {
+      "auprc": 0.2752794633698359,
+      "auroc": 0.8928571428571429,
+      "candidate_antigen_residues": 426,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007ngh_D_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.17411606624574072,
+      "auroc": 0.7756126958617918,
+      "candidate_antigen_residues": 281,
+      "f1_at_threshold": 0.24615384615384617,
+      "instance_id": "pdb_00007kzz_F_E",
+      "mcc_at_threshold": 0.18730373583577342,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.5935721555118247,
+      "auroc": 0.9379268782643632,
+      "candidate_antigen_residues": 281,
+      "f1_at_threshold": 0.47058823529411764,
+      "instance_id": "pdb_00007kzz_D_C",
+      "mcc_at_threshold": 0.4739036521266754,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.7287971236277663,
+      "auroc": 0.8039772727272727,
+      "candidate_antigen_residues": 72,
+      "f1_at_threshold": 0.5833333333333334,
+      "instance_id": "pdb_00008qf5_A_+",
+      "mcc_at_threshold": 0.395781955934523,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.5835670014671477,
+      "auroc": 0.6542222222222223,
+      "candidate_antigen_residues": 70,
+      "f1_at_threshold": 0.5333333333333333,
+      "instance_id": "pdb_00008qf5_G_+",
+      "mcc_at_threshold": 0.20869967789998037,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.3610826138427203,
+      "auroc": 0.9154046997389034,
+      "candidate_antigen_residues": 403,
+      "f1_at_threshold": 0.2857142857142857,
+      "instance_id": "pdb_00007uie_G_+",
+      "mcc_at_threshold": 0.24685280937883267,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.3596382428271452,
+      "auroc": 0.8590128170166348,
+      "candidate_antigen_residues": 405,
+      "f1_at_threshold": 0.09090909090909091,
+      "instance_id": "pdb_00007uie_E_+",
+      "mcc_at_threshold": 0.11701327569008184,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.30055785539501984,
+      "auroc": 0.8762337662337663,
+      "candidate_antigen_residues": 405,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00007uie_C_+",
+      "mcc_at_threshold": 0.1877859941743596,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.33500374635187147,
+      "auroc": 0.8733160621761658,
+      "candidate_antigen_residues": 406,
+      "f1_at_threshold": 0.09523809523809523,
+      "instance_id": "pdb_00007uie_B_+",
+      "mcc_at_threshold": 0.2182986967154278,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.17887595037965834,
+      "auroc": 0.8104175166598667,
+      "candidate_antigen_residues": 406,
+      "f1_at_threshold": 0.21052631578947367,
+      "instance_id": "pdb_00007uib_B_+",
+      "mcc_at_threshold": 0.17176662586699307,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.3334475094368396,
+      "auroc": 0.8743489583333334,
+      "candidate_antigen_residues": 404,
+      "f1_at_threshold": 0.17391304347826086,
+      "instance_id": "pdb_00007uie_I_+",
+      "mcc_at_threshold": 0.24608671797262463,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.1585510513769882,
+      "auroc": 0.8024054982817869,
+      "candidate_antigen_residues": 406,
+      "f1_at_threshold": 0.15,
+      "instance_id": "pdb_00007uia_B_+",
+      "mcc_at_threshold": 0.10701453028576849,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.3027975657315409,
+      "auroc": 0.8166883116883117,
+      "candidate_antigen_residues": 405,
+      "f1_at_threshold": 0.17391304347826086,
+      "instance_id": "pdb_00007uib_E_+",
+      "mcc_at_threshold": 0.24611735941132912,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.36996414068630856,
+      "auroc": 0.8481865284974093,
+      "candidate_antigen_residues": 406,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007uia_E_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.21037408770708038,
+      "auroc": 0.6207430340557275,
+      "candidate_antigen_residues": 240,
+      "f1_at_threshold": 0.20689655172413793,
+      "instance_id": "pdb_00007ndf_C_+",
+      "mcc_at_threshold": 0.1705450089891786,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.15757750205586143,
+      "auroc": 0.6390469416785205,
+      "candidate_antigen_residues": 241,
+      "f1_at_threshold": 0.2,
+      "instance_id": "pdb_00007ndf_D_+",
+      "mcc_at_threshold": 0.11341372636508117,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.2221109247975833,
+      "auroc": 0.5208333333333334,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.35555555555555557,
+      "instance_id": "pdb_00008dz3_C_D",
+      "mcc_at_threshold": 0.08214204190127188,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.20994610359061572,
+      "auroc": 0.4791666666666667,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.2631578947368421,
+      "instance_id": "pdb_00008dz3_H_L",
+      "mcc_at_threshold": -0.04986383946711772,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.2896885049897263,
+      "auroc": 0.6420454545454546,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00008dz3_M_N",
+      "mcc_at_threshold": 0.1832399396259142,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.22587374045034203,
+      "auroc": 0.49053030303030304,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.34782608695652173,
+      "instance_id": "pdb_00008dz3_O_P",
+      "mcc_at_threshold": 0.06364909472854591,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.2392014825623357,
+      "auroc": 0.6879432624113475,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.43243243243243246,
+      "instance_id": "pdb_00008dz3_Q_R",
+      "mcc_at_threshold": 0.3403516468284206,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.1755085736703384,
+      "auroc": 0.41414141414141414,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.14285714285714285,
+      "instance_id": "pdb_00008dz3_A_B",
+      "mcc_at_threshold": -0.13091876497307772,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.5675005642270072,
+      "auroc": 0.7803030303030303,
+      "candidate_antigen_residues": 56,
+      "f1_at_threshold": 0.38095238095238093,
+      "instance_id": "pdb_00008dz3_E_F",
+      "mcc_at_threshold": 0.13712555853457373,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.11835146693448129,
+      "auroc": 0.6414408460013219,
+      "candidate_antigen_residues": 390,
+      "f1_at_threshold": 0.03278688524590164,
+      "instance_id": "pdb_00008g3z_H_L",
+      "mcc_at_threshold": -0.048476836446706556,
+      "positive_epitope_residues": 34
+    },
+    {
+      "auprc": 0.12645749088254676,
+      "auroc": 0.6420120724346077,
+      "candidate_antigen_residues": 390,
+      "f1_at_threshold": 0.06557377049180328,
+      "instance_id": "pdb_00008g3z_E_F",
+      "mcc_at_threshold": -0.01198830511852413,
+      "positive_epitope_residues": 35
+    },
+    {
+      "auprc": 0.08524471452702034,
+      "auroc": 0.5312706543291474,
+      "candidate_antigen_residues": 390,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008g3z_J_K",
+      "mcc_at_threshold": -0.08259436939366824,
+      "positive_epitope_residues": 34
+    },
+    {
+      "auprc": 0.08350210766078978,
+      "auroc": 0.5358203887615652,
+      "candidate_antigen_residues": 390,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008g3z_G_I",
+      "mcc_at_threshold": -0.0861724141208926,
+      "positive_epitope_residues": 33
+    },
+    {
+      "auprc": 0.37486481288910956,
+      "auroc": 0.7524752475247526,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.2962962962962963,
+      "instance_id": "pdb_00007v05_C_c",
+      "mcc_at_threshold": 0.2156758351657001,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.07718589636679357,
+      "auroc": 0.46296296296296297,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007v05_J_j",
+      "mcc_at_threshold": -0.13068205256070964,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.18208578243461965,
+      "auroc": 0.7346534653465346,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.3157894736842105,
+      "instance_id": "pdb_00007v05_G_g",
+      "mcc_at_threshold": 0.25194663130408534,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.12363902182754391,
+      "auroc": 0.596039603960396,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.22857142857142856,
+      "instance_id": "pdb_00007v05_E_e",
+      "mcc_at_threshold": 0.13165028786944857,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.3017963231597932,
+      "auroc": 0.7950495049504951,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.38095238095238093,
+      "instance_id": "pdb_00007v05_D_d",
+      "mcc_at_threshold": 0.35546685682569834,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.17254468826349667,
+      "auroc": 0.6672727272727274,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.24390243902439024,
+      "instance_id": "pdb_00007v05_B_b",
+      "mcc_at_threshold": 0.13762047064079508,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.22303424408687567,
+      "auroc": 0.7663366336633664,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.2777777777777778,
+      "instance_id": "pdb_00007v05_M_m",
+      "mcc_at_threshold": 0.19745366182629412,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.09831362177886696,
+      "auroc": 0.5267326732673268,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.16326530612244897,
+      "instance_id": "pdb_00007v05_I_i",
+      "mcc_at_threshold": 0.032065241945929995,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.04360377429448142,
+      "auroc": 0.08616504854368931,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007v05_A_a",
+      "mcc_at_threshold": -0.20511264566331164,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.12816128360464904,
+      "auroc": 0.6564356435643565,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.125,
+      "instance_id": "pdb_00007v05_H_h",
+      "mcc_at_threshold": 0.0014222075015728585,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.08910668054052756,
+      "auroc": 0.48217821782178216,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.09090909090909091,
+      "instance_id": "pdb_00007v05_L_l",
+      "mcc_at_threshold": -0.07256655387804135,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.05996599399507992,
+      "auroc": 0.1900990099009901,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007v05_K_k",
+      "mcc_at_threshold": -0.20909007049605136,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.06892484559652196,
+      "auroc": 0.25636363636363635,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007v05_N_n",
+      "mcc_at_threshold": -0.21572774865200242,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.2502368192740567,
+      "auroc": 0.8336633663366337,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.375,
+      "instance_id": "pdb_00007v05_F_f",
+      "mcc_at_threshold": 0.36980836769190434,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.47998303553142097,
+      "auroc": 0.9007352941176472,
+      "candidate_antigen_residues": 293,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00008a44_C_D",
+      "mcc_at_threshold": 0.46413675747622724,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.8235157601957053,
+      "auroc": 0.9592592592592593,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.7164179104477612,
+      "instance_id": "pdb_00007y1b_H_L",
+      "mcc_at_threshold": 0.6635586466314638,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.29200395760358616,
+      "auroc": 0.8226415094339622,
+      "candidate_antigen_residues": 121,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00008dcn_A_B",
+      "mcc_at_threshold": 0.3131185243058646,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.8262385762385762,
+      "auroc": 0.9646194926568759,
+      "candidate_antigen_residues": 121,
+      "f1_at_threshold": 0.5714285714285714,
+      "instance_id": "pdb_00008dcn_D_E",
+      "mcc_at_threshold": 0.5670055794282838,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.09585400694121446,
+      "auroc": 0.6993902439024391,
+      "candidate_antigen_residues": 174,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007xtp_D_+",
+      "mcc_at_threshold": -0.04666583705915984,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.09235181721222054,
+      "auroc": 0.6822085889570553,
+      "candidate_antigen_residues": 173,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007xtp_C_+",
+      "mcc_at_threshold": -0.05453925725468348,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.07113190049358306,
+      "auroc": 0.4629564606741573,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008g3v_A_L",
+      "mcc_at_threshold": -0.048764535331219896,
+      "positive_epitope_residues": 32
+    },
+    {
+      "auprc": 0.10004720359721263,
+      "auroc": 0.6103405898876405,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008g3v_C_N",
+      "mcc_at_threshold": -0.02646550910776675,
+      "positive_epitope_residues": 32
+    },
+    {
+      "auprc": 0.15310623995353562,
+      "auroc": 0.7163639649408151,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008g3v_B_M",
+      "mcc_at_threshold": -0.03994231855679708,
+      "positive_epitope_residues": 31
+    },
+    {
+      "auprc": 0.08525933463931629,
+      "auroc": 0.5584169151531579,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008g3v_D_O",
+      "mcc_at_threshold": -0.061113233135214086,
+      "positive_epitope_residues": 31
+    },
+    {
+      "auprc": 0.2790343225865997,
+      "auroc": 0.8739266198282591,
+      "candidate_antigen_residues": 387,
+      "f1_at_threshold": 0.27906976744186046,
+      "instance_id": "pdb_00008gav_H_L",
+      "mcc_at_threshold": 0.23675817383787515,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.363613372182523,
+      "auroc": 0.6751543209876544,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00008dfg_I_M",
+      "mcc_at_threshold": 0.20044593143431827,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.34263793817675564,
+      "auroc": 0.7300564061240935,
+      "candidate_antigen_residues": 90,
+      "f1_at_threshold": 0.42857142857142855,
+      "instance_id": "pdb_00008dfg_H_L",
+      "mcc_at_threshold": 0.26541946696884167,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.12040705178538984,
+      "auroc": 0.8162946428571428,
+      "candidate_antigen_residues": 334,
+      "f1_at_threshold": 0.1568627450980392,
+      "instance_id": "pdb_00008dki_A_B",
+      "mcc_at_threshold": 0.11658299550789918,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.18774399626880273,
+      "auroc": 0.900892857142857,
+      "candidate_antigen_residues": 334,
+      "f1_at_threshold": 0.28205128205128205,
+      "instance_id": "pdb_00008dkw_A_B",
+      "mcc_at_threshold": 0.31573400993520145,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.10282309203264814,
+      "auroc": 0.813392857142857,
+      "candidate_antigen_residues": 334,
+      "f1_at_threshold": 0.17142857142857143,
+      "instance_id": "pdb_00008dke_A_B",
+      "mcc_at_threshold": 0.14608459208899566,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.21405706157931867,
+      "auroc": 0.9066964285714286,
+      "candidate_antigen_residues": 334,
+      "f1_at_threshold": 0.2619047619047619,
+      "instance_id": "pdb_00008dkx_A_B",
+      "mcc_at_threshold": 0.2960789970520735,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.1268575022156218,
+      "auroc": 0.8493303571428571,
+      "candidate_antigen_residues": 334,
+      "f1_at_threshold": 0.1891891891891892,
+      "instance_id": "pdb_00008dkm_A_B",
+      "mcc_at_threshold": 0.1745508225685786,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.4133359582757922,
+      "auroc": 0.7183098591549295,
+      "candidate_antigen_residues": 92,
+      "f1_at_threshold": 0.4918032786885246,
+      "instance_id": "pdb_00008dfh_H_L",
+      "mcc_at_threshold": 0.30663609151116233,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.22817820611012163,
+      "auroc": 0.8954794520547945,
+      "candidate_antigen_residues": 385,
+      "f1_at_threshold": 0.35294117647058826,
+      "instance_id": "pdb_00008e6k_E_I",
+      "mcc_at_threshold": 0.3368093088801907,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.1511187803119657,
+      "auroc": 0.8453424657534246,
+      "candidate_antigen_residues": 385,
+      "f1_at_threshold": 0.22857142857142856,
+      "instance_id": "pdb_00008e6k_G_K",
+      "mcc_at_threshold": 0.18810247036656508,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.2769799982479703,
+      "auroc": 0.9156164383561644,
+      "candidate_antigen_residues": 385,
+      "f1_at_threshold": 0.37037037037037035,
+      "instance_id": "pdb_00008e6k_F_J",
+      "mcc_at_threshold": 0.3792185110028275,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.22881699937091873,
+      "auroc": 0.883013698630137,
+      "candidate_antigen_residues": 385,
+      "f1_at_threshold": 0.34782608695652173,
+      "instance_id": "pdb_00008e6k_H_L",
+      "mcc_at_threshold": 0.33202613875521797,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.500827522928843,
+      "auroc": 0.9031963470319636,
+      "candidate_antigen_residues": 307,
+      "f1_at_threshold": 0.45614035087719296,
+      "instance_id": "pdb_00008en0_D_+",
+      "mcc_at_threshold": 0.4813753806484564,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.7498482315519854,
+      "auroc": 0.8790922619047619,
+      "candidate_antigen_residues": 100,
+      "f1_at_threshold": 0.5306122448979592,
+      "instance_id": "pdb_00007xy8_I_M",
+      "mcc_at_threshold": 0.4478404264645756,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.18719470333241378,
+      "auroc": 0.6316964285714286,
+      "candidate_antigen_residues": 181,
+      "f1_at_threshold": 0.19230769230769232,
+      "instance_id": "pdb_00007xy8_H_L",
+      "mcc_at_threshold": 0.06425953839275197,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.12355597624938022,
+      "auroc": 0.5984015984015983,
+      "candidate_antigen_residues": 307,
+      "f1_at_threshold": 0.12121212121212122,
+      "instance_id": "pdb_00008en6_C_+",
+      "mcc_at_threshold": 0.07850806540100104,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.4163129377135715,
+      "auroc": 0.9368964368964369,
+      "candidate_antigen_residues": 307,
+      "f1_at_threshold": 0.4888888888888889,
+      "instance_id": "pdb_00008en6_D_+",
+      "mcc_at_threshold": 0.44982555393986295,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.3002874867674022,
+      "auroc": 0.7786096256684492,
+      "candidate_antigen_residues": 96,
+      "f1_at_threshold": 0.3508771929824561,
+      "instance_id": "pdb_00008ds5_C_B",
+      "mcc_at_threshold": 0.3095894334409731,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.11807579067485748,
+      "auroc": 0.7083195592286501,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.0784313725490196,
+      "instance_id": "pdb_00008ez7_H_L",
+      "mcc_at_threshold": 0.013633465673598712,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.1882962650885827,
+      "auroc": 0.6356589147286822,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.12,
+      "instance_id": "pdb_00007z4t_H_L",
+      "mcc_at_threshold": -0.052137456133195974,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.6451521022639634,
+      "auroc": 0.9556213017751479,
+      "candidate_antigen_residues": 169,
+      "f1_at_threshold": 0.36363636363636365,
+      "instance_id": "pdb_00007yv1_H_L",
+      "mcc_at_threshold": 0.3792099046845784,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.7537037037037038,
+      "auroc": 0.9525316455696202,
+      "candidate_antigen_residues": 91,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00008f5i_H_L",
+      "mcc_at_threshold": 0.4817338586278976,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.8953703703703704,
+      "auroc": 0.9703153988868275,
+      "candidate_antigen_residues": 91,
+      "f1_at_threshold": 0.5833333333333334,
+      "instance_id": "pdb_00008f5i_X_Y",
+      "mcc_at_threshold": 0.5520985729238927,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.14073318504174398,
+      "auroc": 0.5619834710743801,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.2,
+      "instance_id": "pdb_00008dz4_C_D",
+      "mcc_at_threshold": 0.00864610760955432,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.19980242870434323,
+      "auroc": 0.6655701754385965,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.2727272727272727,
+      "instance_id": "pdb_00008dz4_E_F",
+      "mcc_at_threshold": 0.11264088922239575,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.1011167912610637,
+      "auroc": 0.3565525383707202,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008dz4_A_B",
+      "mcc_at_threshold": -0.2649866367867346,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.2328188731633004,
+      "auroc": 0.6907894736842105,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.3448275862068966,
+      "instance_id": "pdb_00008dz4_O_P",
+      "mcc_at_threshold": 0.2249370259632905,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.5449019347239161,
+      "auroc": 0.9133771929824562,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.6060606060606061,
+      "instance_id": "pdb_00008dz4_M_N",
+      "mcc_at_threshold": 0.5543897292698066,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.4757448263300134,
+      "auroc": 0.8234649122807017,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.34285714285714286,
+      "instance_id": "pdb_00008dz4_S_T",
+      "mcc_at_threshold": 0.2158154465931628,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.40567843991757035,
+      "auroc": 0.8512396694214875,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00008dz4_Q_R",
+      "mcc_at_threshold": 0.4236592728681617,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.44842982462657915,
+      "auroc": 0.8925438596491228,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.5555555555555556,
+      "instance_id": "pdb_00008dz4_U_V",
+      "mcc_at_threshold": 0.5001827151531845,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.1993762599293143,
+      "auroc": 0.6469893742621016,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.25,
+      "instance_id": "pdb_00008dz4_W_X",
+      "mcc_at_threshold": 0.10051217257427864,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.07866374649627493,
+      "auroc": 0.3094233473980309,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008dz4_Y_Z",
+      "mcc_at_threshold": -0.26144680219835703,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.13063217602892782,
+      "auroc": 0.4649122807017544,
+      "candidate_antigen_residues": 88,
+      "f1_at_threshold": 0.15789473684210525,
+      "instance_id": "pdb_00008dz4_H_L",
+      "mcc_at_threshold": -0.03958779379793278,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.35461243433324646,
+      "auroc": 0.872629915730337,
+      "candidate_antigen_residues": 388,
+      "f1_at_threshold": 0.10526315789473684,
+      "instance_id": "pdb_00008ez8_H_L",
+      "mcc_at_threshold": 0.11428929462231616,
+      "positive_epitope_residues": 32
+    },
+    {
+      "auprc": 0.5411234014420384,
+      "auroc": 0.860461338531514,
+      "candidate_antigen_residues": 255,
+      "f1_at_threshold": 0.5384615384615384,
+      "instance_id": "pdb_00007vke_B_+",
+      "mcc_at_threshold": 0.48659242090624155,
+      "positive_epitope_residues": 27
+    },
+    {
+      "auprc": 0.11694756585332042,
+      "auroc": 0.7722527472527473,
+      "candidate_antigen_residues": 274,
+      "f1_at_threshold": 0.18421052631578946,
+      "instance_id": "pdb_00008eb2_J_L",
+      "mcc_at_threshold": 0.15180106973810073,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.29529250859276,
+      "auroc": 0.8799177921315325,
+      "candidate_antigen_residues": 275,
+      "f1_at_threshold": 0.32558139534883723,
+      "instance_id": "pdb_00008eb2_N_O",
+      "mcc_at_threshold": 0.3067908399464301,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.0739611930216802,
+      "auroc": 0.6614668856048167,
+      "candidate_antigen_residues": 275,
+      "f1_at_threshold": 0.038461538461538464,
+      "instance_id": "pdb_00008eb2_K_M",
+      "mcc_at_threshold": -0.04480050201175205,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.07332098245350434,
+      "auroc": 0.6673486786018755,
+      "candidate_antigen_residues": 362,
+      "f1_at_threshold": 0.04,
+      "instance_id": "pdb_00008df1_M_N",
+      "mcc_at_threshold": -0.024938145201242445,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.27304614843321967,
+      "auroc": 0.883640180878553,
+      "candidate_antigen_residues": 362,
+      "f1_at_threshold": 0.39285714285714285,
+      "instance_id": "pdb_00008df1_U_V",
+      "mcc_at_threshold": 0.3777207767112217,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.18290048100150577,
+      "auroc": 0.8393009377664109,
+      "candidate_antigen_residues": 362,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00008df1_S_T",
+      "mcc_at_threshold": 0.18373393456181514,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.3053808008775117,
+      "auroc": 0.8656069364161849,
+      "candidate_antigen_residues": 362,
+      "f1_at_threshold": 0.26865671641791045,
+      "instance_id": "pdb_00008df1_H_L",
+      "mcc_at_threshold": 0.26060475543609757,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.22707557949638163,
+      "auroc": 0.8357203751065644,
+      "candidate_antigen_residues": 362,
+      "f1_at_threshold": 0.30303030303030304,
+      "instance_id": "pdb_00008df1_O_P",
+      "mcc_at_threshold": 0.29385477467116705,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.03966981928076139,
+      "auroc": 0.5228858784893268,
+      "candidate_antigen_residues": 362,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008df1_Q_R",
+      "mcc_at_threshold": -0.07266479487202247,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.7907324560558112,
+      "auroc": 0.9300057372346529,
+      "candidate_antigen_residues": 104,
+      "f1_at_threshold": 0.6176470588235294,
+      "instance_id": "pdb_00008iow_H_L",
+      "mcc_at_threshold": 0.5539353742740069,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.2545109086992063,
+      "auroc": 0.7852112676056339,
+      "candidate_antigen_residues": 155,
+      "f1_at_threshold": 0.3333333333333333,
+      "instance_id": "pdb_00008w9j_H_L",
+      "mcc_at_threshold": 0.2726045735611635,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.6418796401298957,
+      "auroc": 0.9011375947995669,
+      "candidate_antigen_residues": 155,
+      "f1_at_threshold": 0.5454545454545454,
+      "instance_id": "pdb_00008w9j_B_A",
+      "mcc_at_threshold": 0.5469555253359801,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.7457945112506792,
+      "auroc": 0.9288421052631579,
+      "candidate_antigen_residues": 215,
+      "f1_at_threshold": 0.6,
+      "instance_id": "pdb_00008vc7_B_A",
+      "mcc_at_threshold": 0.5623700400265866,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.6515411924206538,
+      "auroc": 0.8983157894736842,
+      "candidate_antigen_residues": 215,
+      "f1_at_threshold": 0.6666666666666666,
+      "instance_id": "pdb_00008vc7_J_D",
+      "mcc_at_threshold": 0.6228565488249683,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.5174525341707249,
+      "auroc": 0.8746584699453552,
+      "candidate_antigen_residues": 390,
+      "f1_at_threshold": 0.5306122448979592,
+      "instance_id": "pdb_00008vrs_C2_C1",
+      "mcc_at_threshold": 0.49928086618363027,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.30448577905599433,
+      "auroc": 0.8516763416656795,
+      "candidate_antigen_residues": 390,
+      "f1_at_threshold": 0.3611111111111111,
+      "instance_id": "pdb_00008vrs_D2_D1",
+      "mcc_at_threshold": 0.3320126242924553,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.21475189209029466,
+      "auroc": 0.8995689655172413,
+      "candidate_antigen_residues": 306,
+      "f1_at_threshold": 0.3050847457627119,
+      "instance_id": "pdb_00008vkx_H_L",
+      "mcc_at_threshold": 0.285206372459,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.396851000120637,
+      "auroc": 0.8124533929903057,
+      "candidate_antigen_residues": 167,
+      "f1_at_threshold": 0.4482758620689655,
+      "instance_id": "pdb_00008vgq_H_L",
+      "mcc_at_threshold": 0.39310282924185824,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.08169295612634275,
+      "auroc": 0.6157937806873978,
+      "candidate_antigen_residues": 201,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008t05_C_D",
+      "mcc_at_threshold": -0.09452499615656315,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.4066789415842535,
+      "auroc": 0.8003826530612245,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.375,
+      "instance_id": "pdb_00008r9y_B_C",
+      "mcc_at_threshold": 0.26920655765871754,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.35211040907171526,
+      "auroc": 0.7723214285714285,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.38095238095238093,
+      "instance_id": "pdb_00008r9z_B_C",
+      "mcc_at_threshold": 0.27721795321599424,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.8289861270679684,
+      "auroc": 0.9535714285714286,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.39436619718309857,
+      "instance_id": "pdb_00008r9y_H_L",
+      "mcc_at_threshold": 0.37416573867739417,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.4535763866957867,
+      "auroc": 0.7721611721611721,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.2777777777777778,
+      "instance_id": "pdb_00008pmz_D1_D2",
+      "mcc_at_threshold": 0.18644737326633787,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.11140321069146955,
+      "auroc": 0.3801965230536659,
+      "candidate_antigen_residues": 147,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008pmz_B1_B2",
+      "mcc_at_threshold": -0.10425720702853739,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.6469270946118626,
+      "auroc": 0.9596507076181873,
+      "candidate_antigen_residues": 387,
+      "f1_at_threshold": 0.4307692307692308,
+      "instance_id": "pdb_00008u1q_H_L",
+      "mcc_at_threshold": 0.4437806874734834,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.506061500633869,
+      "auroc": 0.8842412451361867,
+      "candidate_antigen_residues": 273,
+      "f1_at_threshold": 0.4444444444444444,
+      "instance_id": "pdb_00008tq8_H_L",
+      "mcc_at_threshold": 0.4402846482188596,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.19725511522038117,
+      "auroc": 0.7906318082788671,
+      "candidate_antigen_residues": 273,
+      "f1_at_threshold": 0.325,
+      "instance_id": "pdb_00008tq7_H_L",
+      "mcc_at_threshold": 0.3139776204693922,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.17813554248304844,
+      "auroc": 0.7731040198922503,
+      "candidate_antigen_residues": 273,
+      "f1_at_threshold": 0.35,
+      "instance_id": "pdb_00008tq7_F_G",
+      "mcc_at_threshold": 0.3370890612962699,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.43971933103266303,
+      "auroc": 0.9074605451936872,
+      "candidate_antigen_residues": 181,
+      "f1_at_threshold": 0.46153846153846156,
+      "instance_id": "pdb_00008t6m_B_A",
+      "mcc_at_threshold": 0.4178061790083911,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.20048900309198903,
+      "auroc": 0.6343537414965986,
+      "candidate_antigen_residues": 98,
+      "f1_at_threshold": 0.32,
+      "instance_id": "pdb_00009d72_H_L",
+      "mcc_at_threshold": 0.17282528245507087,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.718850264211289,
+      "auroc": 0.9221428571428572,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.3835616438356164,
+      "instance_id": "pdb_00008r9z_H_L",
+      "mcc_at_threshold": 0.36125956676089727,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.18179150278236594,
+      "auroc": 0.7368110816386678,
+      "candidate_antigen_residues": 287,
+      "f1_at_threshold": 0.24242424242424243,
+      "instance_id": "pdb_00008qot_B_+",
+      "mcc_at_threshold": 0.1533925401912183,
+      "positive_epitope_residues": 26
+    },
+    {
+      "auprc": 0.29355555881685436,
+      "auroc": 0.6994001043296817,
+      "candidate_antigen_residues": 169,
+      "f1_at_threshold": 0.3508771929824561,
+      "instance_id": "pdb_00008rwf_G_+",
+      "mcc_at_threshold": 0.2200840606540592,
+      "positive_epitope_residues": 27
+    },
+    {
+      "auprc": 0.34231468307943413,
+      "auroc": 0.8155172413793103,
+      "candidate_antigen_residues": 169,
+      "f1_at_threshold": 0.3333333333333333,
+      "instance_id": "pdb_00008rwf_E_+",
+      "mcc_at_threshold": 0.2023547272462536,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.20117369827373624,
+      "auroc": 0.6263931104356636,
+      "candidate_antigen_residues": 169,
+      "f1_at_threshold": 0.1935483870967742,
+      "instance_id": "pdb_00008rwf_C_+",
+      "mcc_at_threshold": 0.014564540070951485,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.688269647670206,
+      "auroc": 0.8431498079385403,
+      "candidate_antigen_residues": 93,
+      "f1_at_threshold": 0.6,
+      "instance_id": "pdb_00009dbo_H_L",
+      "mcc_at_threshold": 0.4637995904478729,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.1773570666518467,
+      "auroc": 0.8547166638641333,
+      "candidate_antigen_residues": 332,
+      "f1_at_threshold": 0.3116883116883117,
+      "instance_id": "pdb_00009hud_H_L",
+      "mcc_at_threshold": 0.2964529176953236,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.34855344870405236,
+      "auroc": 0.7320261437908496,
+      "candidate_antigen_residues": 152,
+      "f1_at_threshold": 0.2608695652173913,
+      "instance_id": "pdb_00009jie_C_D",
+      "mcc_at_threshold": 0.24966626484129376,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.4972341705391443,
+      "auroc": 0.8383442265795207,
+      "candidate_antigen_residues": 152,
+      "f1_at_threshold": 0.4166666666666667,
+      "instance_id": "pdb_00009jie_H_L",
+      "mcc_at_threshold": 0.3384420924736161,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.07518628303571123,
+      "auroc": 0.24075924075924077,
+      "candidate_antigen_residues": 102,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009mnx_C_+",
+      "mcc_at_threshold": -0.23507238605926922,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.13527862460160706,
+      "auroc": 0.6297348484848485,
+      "candidate_antigen_residues": 107,
+      "f1_at_threshold": 0.25,
+      "instance_id": "pdb_00009mnz_C_+",
+      "mcc_at_threshold": 0.14797885270995229,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.07820504365471329,
+      "auroc": 0.29423264907135877,
+      "candidate_antigen_residues": 104,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009mo0_C_+",
+      "mcc_at_threshold": -0.250237079237724,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.07026183880076967,
+      "auroc": 0.23523898781630742,
+      "candidate_antigen_residues": 108,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009mny_C_+",
+      "mcc_at_threshold": -0.19922530373796532,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.3902952346045804,
+      "auroc": 0.7320261437908497,
+      "candidate_antigen_residues": 152,
+      "f1_at_threshold": 0.32653061224489793,
+      "instance_id": "pdb_00009jii_F_E",
+      "mcc_at_threshold": 0.2263665833672441,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.7302595584195883,
+      "auroc": 0.9485838779956427,
+      "candidate_antigen_residues": 152,
+      "f1_at_threshold": 0.6046511627906976,
+      "instance_id": "pdb_00009jii_H_L",
+      "mcc_at_threshold": 0.5594510175967297,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.551870918302089,
+      "auroc": 0.8867355727820844,
+      "candidate_antigen_residues": 147,
+      "f1_at_threshold": 0.43902439024390244,
+      "instance_id": "pdb_00009jij_H_L",
+      "mcc_at_threshold": 0.3532303526750603,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.9324066725455615,
+      "auroc": 0.9866494401378122,
+      "candidate_antigen_residues": 147,
+      "f1_at_threshold": 0.7555555555555555,
+      "instance_id": "pdb_00009jij_E_F",
+      "mcc_at_threshold": 0.7339055332957276,
+      "positive_epitope_residues": 18
+    },
+    {
+      "auprc": 0.5394255909612904,
+      "auroc": 0.9447933019361591,
+      "candidate_antigen_residues": 287,
+      "f1_at_threshold": 0.46511627906976744,
+      "instance_id": "pdb_00009pxu_C_+",
+      "mcc_at_threshold": 0.46077245622661783,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.23993081761252247,
+      "auroc": 0.6727272727272727,
+      "candidate_antigen_residues": 116,
+      "f1_at_threshold": 0.1951219512195122,
+      "instance_id": "pdb_00009l1p_H_L",
+      "mcc_at_threshold": 0.0776254182635384,
+      "positive_epitope_residues": 11
+    },
+    {
+      "auprc": 0.5164390847805627,
+      "auroc": 0.9059405940594059,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.4444444444444444,
+      "instance_id": "pdb_00009e6k_H_L",
+      "mcc_at_threshold": 0.43209302785880116,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.4840298081999132,
+      "auroc": 0.8189102564102564,
+      "candidate_antigen_residues": 116,
+      "f1_at_threshold": 0.3076923076923077,
+      "instance_id": "pdb_00009g48_C_+",
+      "mcc_at_threshold": 0.2148121103975664,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.4170886377522019,
+      "auroc": 0.9064885496183206,
+      "candidate_antigen_residues": 279,
+      "f1_at_threshold": 0.5531914893617021,
+      "instance_id": "pdb_00008yj8_D_+",
+      "mcc_at_threshold": 0.5403826478677941,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.5600307065582122,
+      "auroc": 0.9227657004830917,
+      "candidate_antigen_residues": 383,
+      "f1_at_threshold": 0.5405405405405406,
+      "instance_id": "pdb_00009mjb_H_L",
+      "mcc_at_threshold": 0.547866315672705,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.14432526106621832,
+      "auroc": 0.7272727272727272,
+      "candidate_antigen_residues": 215,
+      "f1_at_threshold": 0.09090909090909091,
+      "instance_id": "pdb_00009jq6_J_K",
+      "mcc_at_threshold": -0.00701584741843637,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.23568648410057672,
+      "auroc": 0.7542964554242749,
+      "candidate_antigen_residues": 215,
+      "f1_at_threshold": 0.2777777777777778,
+      "instance_id": "pdb_00009jq6_H_I",
+      "mcc_at_threshold": 0.20213706344050528,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.25697636697063686,
+      "auroc": 0.8436065197428834,
+      "candidate_antigen_residues": 387,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00009dpc_H_L",
+      "mcc_at_threshold": 0.16305265570870256,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.3001222577095468,
+      "auroc": 0.7607017543859649,
+      "candidate_antigen_residues": 110,
+      "f1_at_threshold": 0.3793103448275862,
+      "instance_id": "pdb_00009b2c_H_L",
+      "mcc_at_threshold": 0.2788491894955938,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.7508220627779114,
+      "auroc": 0.8666666666666667,
+      "candidate_antigen_residues": 59,
+      "f1_at_threshold": 0.56,
+      "instance_id": "pdb_00009h77_B_+",
+      "mcc_at_threshold": 0.4042545202860658,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.5501399548532296,
+      "auroc": 0.7075757575757575,
+      "candidate_antigen_residues": 59,
+      "f1_at_threshold": 0.4888888888888889,
+      "instance_id": "pdb_00009h77_A_+",
+      "mcc_at_threshold": 0.2626161815175238,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.4829589563555104,
+      "auroc": 0.9134860050890585,
+      "candidate_antigen_residues": 146,
+      "f1_at_threshold": 0.49056603773584906,
+      "instance_id": "pdb_00009iy2_G_I",
+      "mcc_at_threshold": 0.46764158263809297,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.32749189825565533,
+      "auroc": 0.8825641025641024,
+      "candidate_antigen_residues": 145,
+      "f1_at_threshold": 0.45454545454545453,
+      "instance_id": "pdb_00009iy2_E_F",
+      "mcc_at_threshold": 0.46116123347254434,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.6911920836460006,
+      "auroc": 0.8967331118493909,
+      "candidate_antigen_residues": 143,
+      "f1_at_threshold": 0.38235294117647056,
+      "instance_id": "pdb_00009fns_E_F",
+      "mcc_at_threshold": 0.3743904448706576,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.7523166258692574,
+      "auroc": 0.8630208333333333,
+      "candidate_antigen_residues": 143,
+      "f1_at_threshold": 0.3880597014925373,
+      "instance_id": "pdb_00009fns_C_D",
+      "mcc_at_threshold": 0.35797150890884627,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.07020169480763037,
+      "auroc": 0.5864391558149977,
+      "candidate_antigen_residues": 279,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008yj7_G1_G2",
+      "mcc_at_threshold": -0.09489213791283986,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.3624500783335604,
+      "auroc": 0.9177756653992396,
+      "candidate_antigen_residues": 279,
+      "f1_at_threshold": 0.4090909090909091,
+      "instance_id": "pdb_00008yj7_H1_H2",
+      "mcc_at_threshold": 0.3793547147455083,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.29302159481215667,
+      "auroc": 0.7625109745390694,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.17142857142857143,
+      "instance_id": "pdb_00009jim_H_L",
+      "mcc_at_threshold": 0.06294748772872567,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.21428182493080972,
+      "auroc": 0.5620370370370371,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009jim_C_D",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.5552126645103194,
+      "auroc": 0.7888719512195123,
+      "candidate_antigen_residues": 98,
+      "f1_at_threshold": 0.34782608695652173,
+      "instance_id": "pdb_00009dl0_H_Z",
+      "mcc_at_threshold": 0.18581962631710722,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.3733853869863129,
+      "auroc": 0.6589762076423937,
+      "candidate_antigen_residues": 92,
+      "f1_at_threshold": 0.37037037037037035,
+      "instance_id": "pdb_00009dl0_A_Y",
+      "mcc_at_threshold": 0.15329588601107566,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.7017125908422917,
+      "auroc": 0.8716666666666668,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.625,
+      "instance_id": "pdb_00009g5z_C_+",
+      "mcc_at_threshold": 0.5661609446845609,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.34574384808898084,
+      "auroc": 0.770748299319728,
+      "candidate_antigen_residues": 113,
+      "f1_at_threshold": 0.5,
+      "instance_id": "pdb_00009g5z_D_+",
+      "mcc_at_threshold": 0.43706146852900135,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.3555866291499601,
+      "auroc": 0.7972560975609756,
+      "candidate_antigen_residues": 98,
+      "f1_at_threshold": 0.46875,
+      "instance_id": "pdb_00009hkq_D_E",
+      "mcc_at_threshold": 0.39560755221033594,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.7005548373195432,
+      "auroc": 0.9314285714285715,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.38095238095238093,
+      "instance_id": "pdb_00009g2g_D_+",
+      "mcc_at_threshold": 0.3592878785739777,
+      "positive_epitope_residues": 10
+    },
+    {
+      "auprc": 0.28331573994246795,
+      "auroc": 0.6966637401229149,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.2978723404255319,
+      "instance_id": "pdb_00009jik_C_D",
+      "mcc_at_threshold": 0.19022042775140338,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.648576389211064,
+      "auroc": 0.9157155399473222,
+      "candidate_antigen_residues": 151,
+      "f1_at_threshold": 0.631578947368421,
+      "instance_id": "pdb_00009jik_H_L",
+      "mcc_at_threshold": 0.5834515661234161,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.1630274104850432,
+      "auroc": 0.7045454545454546,
+      "candidate_antigen_residues": 209,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00008ysh_A_+",
+      "mcc_at_threshold": -0.04139210893269464,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.10876639262600189,
+      "auroc": 0.6163522012578616,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.058823529411764705,
+      "instance_id": "pdb_00009g4g_B_+",
+      "mcc_at_threshold": -0.07508051427970514,
+      "positive_epitope_residues": 9
+    },
+    {
+      "auprc": 0.7582081417607733,
+      "auroc": 0.9031007751937985,
+      "candidate_antigen_residues": 144,
+      "f1_at_threshold": 0.3888888888888889,
+      "instance_id": "pdb_00009fnt_C_D",
+      "mcc_at_threshold": 0.3747957701582205,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.20079696665361518,
+      "auroc": 0.7634615384615384,
+      "candidate_antigen_residues": 144,
+      "f1_at_threshold": 0.38461538461538464,
+      "instance_id": "pdb_00009fnt_E_F",
+      "mcc_at_threshold": 0.33535549243512414,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.2732751129500112,
+      "auroc": 0.7793880837359098,
+      "candidate_antigen_residues": 212,
+      "f1_at_threshold": 0.36065573770491804,
+      "instance_id": "pdb_00008ysf_C_+",
+      "mcc_at_threshold": 0.2719545200415287,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.790625959008312,
+      "auroc": 0.9044289044289044,
+      "candidate_antigen_residues": 112,
+      "f1_at_threshold": 0.4067796610169492,
+      "instance_id": "pdb_00009df0_H_L",
+      "mcc_at_threshold": 0.3773971971344368,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.10684252957895743,
+      "auroc": 0.7495361781076068,
+      "candidate_antigen_residues": 245,
+      "f1_at_threshold": 0.1276595744680851,
+      "instance_id": "pdb_00009goy_H_L",
+      "mcc_at_threshold": 0.057394164593838344,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.517234559789489,
+      "auroc": 0.8468614718614719,
+      "candidate_antigen_residues": 146,
+      "f1_at_threshold": 0.32727272727272727,
+      "instance_id": "pdb_00009l9y_H_L",
+      "mcc_at_threshold": 0.26235790748351395,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.3748030166859605,
+      "auroc": 0.8098818474758325,
+      "candidate_antigen_residues": 147,
+      "f1_at_threshold": 0.4864864864864865,
+      "instance_id": "pdb_00009l9y_A_B",
+      "mcc_at_threshold": 0.4343796575208619,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.7455755165313989,
+      "auroc": 0.9522058823529411,
+      "candidate_antigen_residues": 80,
+      "f1_at_threshold": 0.46153846153846156,
+      "instance_id": "pdb_00009ck4_C_D",
+      "mcc_at_threshold": 0.420084025208403,
+      "positive_epitope_residues": 12
+    },
+    {
+      "auprc": 0.300145419882262,
+      "auroc": 0.8559027777777777,
+      "candidate_antigen_residues": 80,
+      "f1_at_threshold": 0.3018867924528302,
+      "instance_id": "pdb_00009ck4_A_B",
+      "mcc_at_threshold": 0.2939723678960656,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.4828019203019203,
+      "auroc": 0.9305555555555556,
+      "candidate_antigen_residues": 80,
+      "f1_at_threshold": 0.34782608695652173,
+      "instance_id": "pdb_00009ck4_E_F",
+      "mcc_at_threshold": 0.35043832202523123,
+      "positive_epitope_residues": 8
+    },
+    {
+      "auprc": 0.09335278900496292,
+      "auroc": 0.4,
+      "candidate_antigen_residues": 51,
+      "f1_at_threshold": 0.1702127659574468,
+      "instance_id": "pdb_00009b6s_H_L",
+      "mcc_at_threshold": -0.02034892318891199,
+      "positive_epitope_residues": 5
+    },
+    {
+      "auprc": 0.08513624486748786,
+      "auroc": 0.34347826086956523,
+      "candidate_antigen_residues": 51,
+      "f1_at_threshold": 0.16216216216216217,
+      "instance_id": "pdb_00009b6s_h_l",
+      "mcc_at_threshold": -0.018718986555524418,
+      "positive_epitope_residues": 5
+    },
+    {
+      "auprc": 0.3061297799268243,
+      "auroc": 0.6802054154995332,
+      "candidate_antigen_residues": 123,
+      "f1_at_threshold": 0.325,
+      "instance_id": "pdb_00009dh2_P_Q",
+      "mcc_at_threshold": 0.12658340529445694,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.43155862200296463,
+      "auroc": 0.768695652173913,
+      "candidate_antigen_residues": 123,
+      "f1_at_threshold": 0.47058823529411764,
+      "instance_id": "pdb_00009dh2_K_L",
+      "mcc_at_threshold": 0.3283705251445743,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.6708287137628133,
+      "auroc": 0.906025824964132,
+      "candidate_antigen_residues": 99,
+      "f1_at_threshold": 0.5964912280701754,
+      "instance_id": "pdb_00009uvi_B_A",
+      "mcc_at_threshold": 0.5529852465724825,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.6992097158478332,
+      "auroc": 0.8565400843881856,
+      "candidate_antigen_residues": 100,
+      "f1_at_threshold": 0.6153846153846154,
+      "instance_id": "pdb_00009ytf_D_+",
+      "mcc_at_threshold": 0.5252976353164026,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.23223556488095753,
+      "auroc": 0.7567988668555241,
+      "candidate_antigen_residues": 373,
+      "f1_at_threshold": 0.2222222222222222,
+      "instance_id": "pdb_00009rxi_H_+",
+      "mcc_at_threshold": 0.18455727185428858,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.2564361156393229,
+      "auroc": 0.6761363636363636,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.3333333333333333,
+      "instance_id": "pdb_00009yc3_A_+",
+      "mcc_at_threshold": 0.19891546031038632,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.07765889893321389,
+      "auroc": 0.7853821833736285,
+      "candidate_antigen_residues": 585,
+      "f1_at_threshold": 0.07407407407407407,
+      "instance_id": "pdb_00009q6h_D_+",
+      "mcc_at_threshold": 0.030898977484832037,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.0656069723912416,
+      "auroc": 0.6747623291740938,
+      "candidate_antigen_residues": 585,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009q6h_B_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.21842883139574118,
+      "auroc": 0.8893105118682384,
+      "candidate_antigen_residues": 585,
+      "f1_at_threshold": 0.07407407407407407,
+      "instance_id": "pdb_00009q6h_C_+",
+      "mcc_at_threshold": 0.07925543844230083,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.3024063477675059,
+      "auroc": 0.8400702987697715,
+      "candidate_antigen_residues": 585,
+      "f1_at_threshold": 0.19047619047619047,
+      "instance_id": "pdb_00009q6h_E_+",
+      "mcc_at_threshold": 0.21213453406219684,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.5826649131262398,
+      "auroc": 0.9693365054189796,
+      "candidate_antigen_residues": 304,
+      "f1_at_threshold": 0.4864864864864865,
+      "instance_id": "pdb_00009np0_B_C",
+      "mcc_at_threshold": 0.48076164036151536,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.4542662313986956,
+      "auroc": 0.8790524732620322,
+      "candidate_antigen_residues": 386,
+      "f1_at_threshold": 0.10526315789473684,
+      "instance_id": "pdb_00009osr_H_L",
+      "mcc_at_threshold": 0.14872522967291213,
+      "positive_epitope_residues": 34
+    },
+    {
+      "auprc": 0.3510580689415457,
+      "auroc": 0.8638938964718001,
+      "candidate_antigen_residues": 386,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009osr_I_M",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 33
+    },
+    {
+      "auprc": 0.37759594355318926,
+      "auroc": 0.8355161787365177,
+      "candidate_antigen_residues": 387,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009osr_J_N",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 33
+    },
+    {
+      "auprc": 0.5842804710434267,
+      "auroc": 0.9248416367060435,
+      "candidate_antigen_residues": 387,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00009osr_K_R",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 33
+    },
+    {
+      "auprc": 0.2626027031417978,
+      "auroc": 0.7482993197278911,
+      "candidate_antigen_residues": 217,
+      "f1_at_threshold": 0.25,
+      "instance_id": "pdb_00009my8_A_+",
+      "mcc_at_threshold": 0.15010614320514934,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.6076528951128706,
+      "auroc": 0.9654093516426212,
+      "candidate_antigen_residues": 545,
+      "f1_at_threshold": 0.4918032786885246,
+      "instance_id": "pdb_00009s6u_H_L",
+      "mcc_at_threshold": 0.4855828147747584,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.28836886636612247,
+      "auroc": 0.7208622579466568,
+      "candidate_antigen_residues": 142,
+      "f1_at_threshold": 0.3,
+      "instance_id": "pdb_00009npt_I_+",
+      "mcc_at_threshold": 0.19115429454585955,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.21661418631977905,
+      "auroc": 0.6602272727272727,
+      "candidate_antigen_residues": 142,
+      "f1_at_threshold": 0.17391304347826086,
+      "instance_id": "pdb_00009npt_H_+",
+      "mcc_at_threshold": 0.01462889097958512,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.15650499779075197,
+      "auroc": 0.5344352617079889,
+      "candidate_antigen_residues": 142,
+      "f1_at_threshold": 0.13636363636363635,
+      "instance_id": "pdb_00009npt_G_+",
+      "mcc_at_threshold": -0.021613998870782906,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.6288869405442852,
+      "auroc": 0.8812869822485206,
+      "candidate_antigen_residues": 130,
+      "f1_at_threshold": 0.6129032258064516,
+      "instance_id": "pdb_00009pd2_H_L",
+      "mcc_at_threshold": 0.5071154460772401,
+      "positive_epitope_residues": 26
+    },
+    {
+      "auprc": 0.26027482103103783,
+      "auroc": 0.8494623655913979,
+      "candidate_antigen_residues": 584,
+      "f1_at_threshold": 0.3018867924528302,
+      "instance_id": "pdb_00009q6n_B_+",
+      "mcc_at_threshold": 0.26876781066724287,
+      "positive_epitope_residues": 26
+    },
+    {
+      "auprc": 0.1275795680772121,
+      "auroc": 0.8646051305897854,
+      "candidate_antigen_residues": 584,
+      "f1_at_threshold": 0.03773584905660377,
+      "instance_id": "pdb_00009q6n_D_+",
+      "mcc_at_threshold": -0.00723844046757507,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.13140587270441673,
+      "auroc": 0.795349434737924,
+      "candidate_antigen_residues": 584,
+      "f1_at_threshold": 0.23684210526315788,
+      "instance_id": "pdb_00009q6n_E_+",
+      "mcc_at_threshold": 0.19546968861061037,
+      "positive_epitope_residues": 28
+    },
+    {
+      "auprc": 0.15566020324438526,
+      "auroc": 0.854025044722719,
+      "candidate_antigen_residues": 584,
+      "f1_at_threshold": 0.14285714285714285,
+      "instance_id": "pdb_00009q6n_C_+",
+      "mcc_at_threshold": 0.09749624852074126,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.09553634864294835,
+      "auroc": 0.7606177606177607,
+      "candidate_antigen_residues": 155,
+      "f1_at_threshold": 0.16666666666666666,
+      "instance_id": "pdb_00009n8f_H_L",
+      "mcc_at_threshold": 0.15132824720084564,
+      "positive_epitope_residues": 7
+    },
+    {
+      "auprc": 0.4762138658323081,
+      "auroc": 0.7356382978723404,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.41379310344827586,
+      "instance_id": "pdb_00006nmu_H_L",
+      "mcc_at_threshold": 0.26093122922137685,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.62753203563057,
+      "auroc": 0.9180851063829788,
+      "candidate_antigen_residues": 114,
+      "f1_at_threshold": 0.5405405405405406,
+      "instance_id": "pdb_00006nmu_B_A",
+      "mcc_at_threshold": 0.4862166383263152,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.7862219262219262,
+      "auroc": 0.9188118811881189,
+      "candidate_antigen_residues": 116,
+      "f1_at_threshold": 0.5531914893617021,
+      "instance_id": "pdb_00006nmv_H_L",
+      "mcc_at_threshold": 0.5094155128205113,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.22786808883222803,
+      "auroc": 0.5553884711779449,
+      "candidate_antigen_residues": 116,
+      "f1_at_threshold": 0.25925925925925924,
+      "instance_id": "pdb_00006nms_H_L",
+      "mcc_at_threshold": 0.05090723336541843,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.3258460831135979,
+      "auroc": 0.6741443108233117,
+      "candidate_antigen_residues": 117,
+      "f1_at_threshold": 0.43137254901960786,
+      "instance_id": "pdb_00006nms_B_A",
+      "mcc_at_threshold": 0.2770187141923693,
+      "positive_epitope_residues": 23
+    },
+    {
+      "auprc": 0.3055793182903249,
+      "auroc": 0.625909090909091,
+      "candidate_antigen_residues": 113,
+      "f1_at_threshold": 0.4166666666666667,
+      "instance_id": "pdb_00006nmr_H_L",
+      "mcc_at_threshold": 0.19905409043390448,
+      "positive_epitope_residues": 25
+    },
+    {
+      "auprc": 0.3488172122299087,
+      "auroc": 0.6434343434343435,
+      "candidate_antigen_residues": 112,
+      "f1_at_threshold": 0.43636363636363634,
+      "instance_id": "pdb_00006nmr_J_K",
+      "mcc_at_threshold": 0.2720103093578866,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.5134008684641196,
+      "auroc": 0.818655303030303,
+      "candidate_antigen_residues": 112,
+      "f1_at_threshold": 0.5846153846153846,
+      "instance_id": "pdb_00006nmr_F_G",
+      "mcc_at_threshold": 0.46137915021866593,
+      "positive_epitope_residues": 24
+    },
+    {
+      "auprc": 0.47837240838723316,
+      "auroc": 0.8207070707070707,
+      "candidate_antigen_residues": 112,
+      "f1_at_threshold": 0.5277777777777778,
+      "instance_id": "pdb_00006nmr_A_B",
+      "mcc_at_threshold": 0.4149346209399869,
+      "positive_epitope_residues": 22
+    },
+    {
+      "auprc": 0.40348019703693394,
+      "auroc": 0.8220000000000001,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.4782608695652174,
+      "instance_id": "pdb_00006nmt_B_A",
+      "mcc_at_threshold": 0.40478449381261083,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.1572143957449555,
+      "auroc": 0.8021008403361345,
+      "candidate_antigen_residues": 577,
+      "f1_at_threshold": 0.0,
+      "instance_id": "pdb_00007ph3_D_+",
+      "mcc_at_threshold": 0.0,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.06883537793886765,
+      "auroc": 0.6452731092436975,
+      "candidate_antigen_residues": 577,
+      "f1_at_threshold": 0.058823529411764705,
+      "instance_id": "pdb_00007ph3_C_+",
+      "mcc_at_threshold": 0.030252100840336135,
+      "positive_epitope_residues": 17
+    },
+    {
+      "auprc": 0.5501638831421061,
+      "auroc": 0.9321839080459771,
+      "candidate_antigen_residues": 281,
+      "f1_at_threshold": 0.46153846153846156,
+      "instance_id": "pdb_00009jqz_H_L",
+      "mcc_at_threshold": 0.4452316434315373,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.49748647222910236,
+      "auroc": 0.9323754789272031,
+      "candidate_antigen_residues": 281,
+      "f1_at_threshold": 0.4307692307692308,
+      "instance_id": "pdb_00009jqy_H_L",
+      "mcc_at_threshold": 0.4074910425856061,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.38628709532314587,
+      "auroc": 0.950870297585626,
+      "candidate_antigen_residues": 287,
+      "f1_at_threshold": 0.4782608695652174,
+      "instance_id": "pdb_00008hs2_B_C",
+      "mcc_at_threshold": 0.4992563302716471,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.6108729703475346,
+      "auroc": 0.9428182437031994,
+      "candidate_antigen_residues": 126,
+      "f1_at_threshold": 0.5454545454545454,
+      "instance_id": "pdb_00008yw6_C_+",
+      "mcc_at_threshold": 0.5331850929484908,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.6087500483428085,
+      "auroc": 0.941958041958042,
+      "candidate_antigen_residues": 123,
+      "f1_at_threshold": 0.7096774193548387,
+      "instance_id": "pdb_00008yw9_D_+",
+      "mcc_at_threshold": 0.6806614674711896,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.20461222292628034,
+      "auroc": 0.7637848876786931,
+      "candidate_antigen_residues": 126,
+      "f1_at_threshold": 0.1111111111111111,
+      "instance_id": "pdb_00008yw8_C_+",
+      "mcc_at_threshold": 0.06470550779256219,
+      "positive_epitope_residues": 13
+    },
+    {
+      "auprc": 0.61856751100804,
+      "auroc": 0.9387387387387388,
+      "candidate_antigen_residues": 126,
+      "f1_at_threshold": 0.5769230769230769,
+      "instance_id": "pdb_00009kny_C_+",
+      "mcc_at_threshold": 0.570135759722405,
+      "positive_epitope_residues": 15
+    },
+    {
+      "auprc": 0.6163671305224643,
+      "auroc": 0.9349489795918368,
+      "candidate_antigen_residues": 126,
+      "f1_at_threshold": 0.5490196078431373,
+      "instance_id": "pdb_00009knw_C_+",
+      "mcc_at_threshold": 0.5483390152776616,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.27594937523825924,
+      "auroc": 0.6322489391796322,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.2727272727272727,
+      "instance_id": "pdb_00005d1x_C_D",
+      "mcc_at_threshold": 0.1421899721688318,
+      "positive_epitope_residues": 14
+    },
+    {
+      "auprc": 0.6764562506664825,
+      "auroc": 0.9431818181818182,
+      "candidate_antigen_residues": 115,
+      "f1_at_threshold": 0.5333333333333333,
+      "instance_id": "pdb_00005d1x_B_A",
+      "mcc_at_threshold": 0.5106757438288703,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.2414847016408627,
+      "auroc": 0.665934065934066,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.3333333333333333,
+      "instance_id": "pdb_00003stb_B_+",
+      "mcc_at_threshold": 0.1461403583552388,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.44326093010303536,
+      "auroc": 0.9313186813186813,
+      "candidate_antigen_residues": 111,
+      "f1_at_threshold": 0.4,
+      "instance_id": "pdb_00003stb_A_+",
+      "mcc_at_threshold": 0.41602596282693705,
+      "positive_epitope_residues": 7
+    },
+    {
+      "auprc": 0.15236747134140083,
+      "auroc": 0.6886661097187412,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.13043478260869565,
+      "instance_id": "pdb_00009uoc_D_+",
+      "mcc_at_threshold": 0.02649684142943775,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.14070113039850243,
+      "auroc": 0.6357712765957447,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.10714285714285714,
+      "instance_id": "pdb_00009uoc_F_+",
+      "mcc_at_threshold": -0.019895819705694567,
+      "positive_epitope_residues": 20
+    },
+    {
+      "auprc": 0.37307604803984507,
+      "auroc": 0.8240979381443299,
+      "candidate_antigen_residues": 113,
+      "f1_at_threshold": 0.4666666666666667,
+      "instance_id": "pdb_000011zw_H_L",
+      "mcc_at_threshold": 0.40448067203173094,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.3735705328721947,
+      "auroc": 0.839459760512392,
+      "candidate_antigen_residues": 208,
+      "f1_at_threshold": 0.3404255319148936,
+      "instance_id": "pdb_00009uo0_A_+",
+      "mcc_at_threshold": 0.26608687683463994,
+      "positive_epitope_residues": 19
+    },
+    {
+      "auprc": 0.3255719917086309,
+      "auroc": 0.8764478764478765,
+      "candidate_antigen_residues": 275,
+      "f1_at_threshold": 0.32,
+      "instance_id": "pdb_00009qqf_H_L",
+      "mcc_at_threshold": 0.3241996423062644,
+      "positive_epitope_residues": 16
+    },
+    {
+      "auprc": 0.4633769813706789,
+      "auroc": 0.9047619047619048,
+      "candidate_antigen_residues": 146,
+      "f1_at_threshold": 0.631578947368421,
+      "instance_id": "pdb_00008pmy_A_L",
+      "mcc_at_threshold": 0.5806221472886458,
+      "positive_epitope_residues": 21
+    },
+    {
+      "auprc": 0.6495066949689846,
+      "auroc": 0.9369491525423729,
+      "candidate_antigen_residues": 305,
+      "f1_at_threshold": 0.2978723404255319,
+      "instance_id": "pdb_00009gsl_B3_B1",
+      "mcc_at_threshold": 0.3263363431987351,
+      "positive_epitope_residues": 10
+    }
+  ],
+  "prediction_row_count": 18473412,
+  "prediction_schema": "instance_id: string not null\nab_res_idx: int64 not null\nag_res_idx: int64 not null\nscore: float not null",
+  "projection": "epitope",
+  "split": "test",
+  "threshold": 0.3
+}

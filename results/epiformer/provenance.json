@@ -1,0 +1,20 @@
+{
+  "benchmark": "sabdab2",
+  "benchmark_manifest_sha256": "15f7819193d79f637849744b7cc8160b34b81b5bc2f50671c0cd07560b524377",
+  "checkpoint_path": "/cluster/project/model_deployment/data/results/epiformer/checkpoints/formal_epi_group_seed42/epiformer_best.pt",
+  "checkpoint_sha256": "73384a41d55725edc4983f63ff8bab676b7172870d52a08dfaa26ec333c132c2",
+  "classification_threshold": 0.3,
+  "is_partial_split": false,
+  "mapping_method_counts": {
+    "delivered_ag_to_agseq": 450,
+    "global_sequence_alignment": 5
+  },
+  "mean_mapping_coverage": 0.9999609857598024,
+  "mean_mapping_identity": 1.0,
+  "method": "EpiFormer",
+  "prediction_file": "/cluster/project/model_deployment/results/sabdab2/epiformer_formal/predictions.parquet",
+  "prediction_sha256": "c72aa55a3ac04b28d5e2a4565a0c3e561bf3c4012c42b470669d4c8e62c62330",
+  "projection": "epitope",
+  "sasa_threshold": 5.0,
+  "split": "test"
+}

@@ -1,0 +1,13 @@
+{
+  "benchmark": "sabdab2",
+  "split": "test",
+  "instances_verified": 455,
+  "rows_verified": 18473412,
+  "exact_candidate_keys": true,
+  "null_scores": 0,
+  "nonfinite_scores": 0,
+  "score_min": 0.0001909434504341334,
+  "score_max": 0.9916707277297974,
+  "prediction_sha256": "c72aa55a3ac04b28d5e2a4565a0c3e561bf3c4012c42b470669d4c8e62c62330",
+  "checkpoint_sha256": "73384a41d55725edc4983f63ff8bab676b7172870d52a08dfaa26ec333c132c2"
+}
