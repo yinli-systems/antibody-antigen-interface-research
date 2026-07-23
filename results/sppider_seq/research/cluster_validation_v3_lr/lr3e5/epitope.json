@@ -1,0 +1,50 @@
+{
+  "checkpoint": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/cluster_val_v3_lr3e5_seed42/epitope/checkpoints/best.pt",
+  "checkpoint_sha256": "2e226d51a4f514942c6416b7174ee192d86ad4ab3559d29f8e45f6842aa96ba8",
+  "context_mapping_sha256": "da9b684fa78446b29a6110c4cdfa385168c1f70955f6fd9531b603682f53d354",
+  "context_mode": "matched",
+  "context_seed": 20260722,
+  "device": "cuda",
+  "elapsed_seconds": 8.185536623001099,
+  "embedding_cache": {
+    "cache_bytes": 532797440,
+    "cached_sequence_count": 473,
+    "hits": 489,
+    "max_cache_bytes": 25769803776,
+    "misses": 473
+  },
+  "failures": [],
+  "format_version": "sabdab2_sppider_seq_v1",
+  "instance_count": 481,
+  "residue_macro_mean": {
+    "accuracy": 0.8964896392200989,
+    "auprc": 0.2194923799216907,
+    "auroc": 0.6849338894305832,
+    "f1": 0.0009094785181741703,
+    "mcc": 0.0009135244381671458,
+    "precision": 0.010395010395010396,
+    "recall": 0.0004766870151485536
+  },
+  "residue_micro": {
+    "accuracy": 0.9320459469147925,
+    "auprc": 0.14731484043733178,
+    "auroc": 0.7325969376176584,
+    "count": 128322,
+    "f1": 0.001145475372279496,
+    "mcc": 0.009882303942205328,
+    "positive_count": 8712,
+    "positive_fraction": 0.06789170991723945,
+    "precision": 0.2777777777777778,
+    "recall": 0.000573921028466483,
+    "score_max": 0.5489190220832825,
+    "score_min": 0.00011988838377874345,
+    "threshold": 0.5
+  },
+  "residue_predictions": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/cluster_validation_v3_lr/lr3e5/epitope.residue_predictions.parquet",
+  "residue_predictions_sha256": "30b7d9658cd8bf2b1d91396a8b5acd72d09caa6c02ad29045aa061219480fb1c",
+  "role": "epitope",
+  "split": "validation",
+  "stage": "evaluate",
+  "threshold": 0.5,
+  "torch_version": "2.7.1+cu128"
+}
