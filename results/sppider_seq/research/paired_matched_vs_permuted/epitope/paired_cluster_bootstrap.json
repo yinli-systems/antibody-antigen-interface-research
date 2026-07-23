@@ -1,0 +1,89 @@
+{
+  "candidate_name": "matched_partner",
+  "candidate_point_metrics": {
+    "accuracy": 0.6705157734545305,
+    "auprc": 0.1454445354058009,
+    "auroc": 0.6717651372480649,
+    "count": 97252,
+    "f1": 0.21043293990094375,
+    "mcc": 0.12688535963084105,
+    "positive_count": 7968,
+    "positive_fraction": 0.0819314769876198,
+    "precision": 0.13092135520466044,
+    "recall": 0.5358935742971888,
+    "score_max": 0.7368945479393005,
+    "score_min": 7.611110049765557e-05,
+    "threshold": 0.0823112279176712
+  },
+  "candidate_prediction_path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_ensemble_seed42/epitope/final/residue_predictions.parquet",
+  "candidate_prediction_sha256": "dced4df5c8988ee88f34e26aeff032ead15c701d2b3879986624b674a956565b",
+  "candidate_threshold": 0.0823112279176712,
+  "cluster_count": 84,
+  "elapsed_seconds": 200.7722680568695,
+  "instance_count": 455,
+  "interpretation": "Positive differences favor the candidate. Confidence intervals preserve the pairing of predictions and resample canonical test clusters rather than individual residues.",
+  "paired_cluster_bootstrap_differences": {
+    "auprc": {
+      "ci95_lower": -0.0004891468590668669,
+      "ci95_upper": 0.006323409223716314,
+      "mean": 0.002936349497144911,
+      "probability_greater_than_zero": 0.956,
+      "probability_less_than_zero": 0.044,
+      "standard_error": 0.0017414444742412307
+    },
+    "auroc": {
+      "ci95_lower": -0.0023357911463629173,
+      "ci95_upper": 0.010203275806541125,
+      "mean": 0.004210053980542329,
+      "probability_greater_than_zero": 0.899,
+      "probability_less_than_zero": 0.101,
+      "standard_error": 0.0031488715898455024
+    },
+    "f1": {
+      "ci95_lower": -0.007371680601148967,
+      "ci95_upper": 0.0018803991873705568,
+      "mean": -0.0023704554241823416,
+      "probability_greater_than_zero": 0.158,
+      "probability_less_than_zero": 0.842,
+      "standard_error": 0.0023753160167595383
+    },
+    "mcc": {
+      "ci95_lower": -0.01261679291185099,
+      "ci95_upper": 0.002123423282369309,
+      "mean": -0.004776401392942327,
+      "probability_greater_than_zero": 0.101,
+      "probability_less_than_zero": 0.899,
+      "standard_error": 0.0037883269569335427
+    }
+  },
+  "point_differences_candidate_minus_reference": {
+    "auprc": 0.002915060781477158,
+    "auroc": 0.004470221872436619,
+    "f1": -0.002335072461428278,
+    "mcc": -0.004572711950747155
+  },
+  "reference_name": "deterministic_partner_permutation",
+  "reference_point_metrics": {
+    "accuracy": 0.6647472545551762,
+    "auprc": 0.14252947462432375,
+    "auroc": 0.6672949153756282,
+    "count": 97252,
+    "f1": 0.21276801236237203,
+    "mcc": 0.1314580715815882,
+    "positive_count": 7968,
+    "positive_fraction": 0.0819314769876198,
+    "precision": 0.1317268596029658,
+    "recall": 0.5529618473895582,
+    "score_max": 0.7628387212753296,
+    "score_min": 7.887918764026836e-05,
+    "threshold": 0.0823112279176712
+  },
+  "reference_prediction_path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_partner_control/ensemble/epitope.residue_predictions.parquet",
+  "reference_prediction_sha256": "27d323a9c7d3c202e44bb32118d841c79c43b326dc659531adf0195012fb3095",
+  "reference_threshold": 0.0823112279176712,
+  "replicates": 1000,
+  "residue_count": 97252,
+  "role": "epitope",
+  "seed": 20260723,
+  "stage": "paired_cluster_bootstrap"
+}
