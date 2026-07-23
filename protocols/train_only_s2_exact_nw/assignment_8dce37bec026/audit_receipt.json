@@ -1,0 +1,430 @@
+{
+  "approval_status": "not_approved_cross_fold_edges_detected",
+  "approved_for_model_selection": false,
+  "approved_for_training": false,
+  "assignment": {
+    "independently_reconstructed_from_authority_train_sequences": true,
+    "path": "/cluster/project/model_deployment/data/interaction_first/train_only_s2_feasibility/s2_assignment_provisional_v1.json",
+    "provisional_assignment_was_unapproved": true,
+    "scientific_payload_sha256": "4b2fd9633685162af9fa48c33766bfbbea2722f5f04f76ee2bf86974d968d7ac",
+    "sha256": "8dce37bec026e76c1d8d7e917b946ced01fca378ad1bccac196d23aced587959",
+    "size_bytes": 2212719
+  },
+  "authority": {
+    "authorized_instance_count": 3229,
+    "authorized_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+    "sealed_instance_count": 434,
+    "sealed_membership_sha256": "897ce1786f86cc261170a126cc138fdef74a6c2aac8a4f9334bdbc38ceaafa86",
+    "sealed_split_counts": {
+      "test": 218,
+      "validation": 216
+    },
+    "sealed_splits": [
+      "validation",
+      "test"
+    ],
+    "source_pool_split": "train"
+  },
+  "crossing_edge_artifacts": {
+    "antigen": {
+      "create_only_publication": true,
+      "edge_count": 2,
+      "format": "JSON Lines; one digest-only threshold crossing per line",
+      "path": "/cluster/project/model_deployment/results/sabdab2/train_only_s2_exact_nw/assignment_8dce37bec026/antigen.identity80_coverage80.crossing_edges.jsonl",
+      "raw_sequences_or_instance_ids_included": false,
+      "sha256": "c26a4f9487d5e5eb4fe88c8332d5d25cc18f837a6426a018c62b2b3777eabdb2",
+      "size_bytes": 1439
+    },
+    "concatenated_antibody": {
+      "create_only_publication": true,
+      "edge_count": 489,
+      "format": "JSON Lines; one digest-only threshold crossing per line",
+      "path": "/cluster/project/model_deployment/results/sabdab2/train_only_s2_exact_nw/assignment_8dce37bec026/concatenated_antibody.identity80_coverage80.crossing_edges.jsonl",
+      "raw_sequences_or_instance_ids_included": false,
+      "sha256": "3ce8e2f1700ef06bd9776a64782b4e2d605f25462e4de733e3366789ed8a1898",
+      "size_bytes": 367321
+    },
+    "vh": {
+      "create_only_publication": true,
+      "edge_count": 6269,
+      "format": "JSON Lines; one digest-only threshold crossing per line",
+      "path": "/cluster/project/model_deployment/results/sabdab2/train_only_s2_exact_nw/assignment_8dce37bec026/vh.identity80_coverage80.crossing_edges.jsonl",
+      "raw_sequences_or_instance_ids_included": false,
+      "sha256": "26c45573b56f8cb428a1ba5423d40a7be8802743171767b68287664270547dcd",
+      "size_bytes": 4564220
+    },
+    "vl": {
+      "create_only_publication": true,
+      "edge_count": 12558,
+      "format": "JSON Lines; one digest-only threshold crossing per line",
+      "path": "/cluster/project/model_deployment/results/sabdab2/train_only_s2_exact_nw/assignment_8dce37bec026/vl.identity80_coverage80.crossing_edges.jsonl",
+      "raw_sequences_or_instance_ids_included": false,
+      "sha256": "a16be9b26fc1c5dea7e0124394cf6255f6bccf0af82f14fb344481c217e1a9f8",
+      "size_bytes": 9062917
+    }
+  },
+  "data_firewall": {
+    "accepted_label_prediction_checkpoint_or_score_inputs": false,
+    "authorized_rows_materialized": 3229,
+    "authorized_source_split": "train",
+    "non_authorized_rows_skipped_before_sequence_parse": 434,
+    "sealed_rows_materialized": 0,
+    "sequence_columns_parsed_for": "authority_train_only",
+    "test_sequence_fields_parsed": 0,
+    "validation_or_test_labels_read": 0,
+    "validation_or_test_predictions_read": 0,
+    "validation_or_test_scores_read": 0,
+    "validation_sequence_fields_parsed": 0
+  },
+  "exhaustive_accounting": {
+    "dynamic_alignments_plus_safe_prunes_equal_all_pairs": true,
+    "total_cross_fold_unique_sequence_pair_count": 1478580,
+    "total_dynamic_programming_alignment_count": 992048,
+    "total_provably_pruned_by_length_upper_bound_count": 486532,
+    "total_threshold_crossing_edge_count": 19318
+  },
+  "format_version": "sabdab2_train_only_s2_exact_four_view_nw_audit_receipt_v1",
+  "inputs": {
+    "authority_split": {
+      "path": "/cluster/project/model_deployment/data/interaction_first/double_remote_split.json",
+      "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "size_bytes": 349156
+    },
+    "canonical_sequence_manifest": {
+      "path": "/cluster/project/model_deployment/data/interaction_first/canonical_manifest.csv",
+      "sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+      "size_bytes": 2800509
+    }
+  },
+  "intended_use": "train_only_s2_training_and_model_selection_gate",
+  "inventory": {
+    "antigen": {
+      "all_fold_digest_and_length_inventory_sha256": "6024d4cdd547484ecd026cacf6a402605dfd3f59220b702e4a5cdb8d37bee876",
+      "folds": [
+        {
+          "digest_and_length_inventory_sha256": "99a0cae0478fb24f664c0b39a67c775f234d5a43dc68c1e7f1a3a9f150597618",
+          "fold_index": 0,
+          "unique_sequence_count": 373
+        },
+        {
+          "digest_and_length_inventory_sha256": "df1f334155df12d8a1f5c0d4b002b5a0e76425df1fadc4f524c5b64d06f6456b",
+          "fold_index": 1,
+          "unique_sequence_count": 400
+        },
+        {
+          "digest_and_length_inventory_sha256": "1967e060b6ef10f6ee7067866c958a01ef02168474232e9ad8e2d43118eb2597",
+          "fold_index": 2,
+          "unique_sequence_count": 307
+        }
+      ],
+      "raw_sequences_or_instance_ids_included": false
+    },
+    "concatenated_antibody": {
+      "all_fold_digest_and_length_inventory_sha256": "e4f7fd67b47ec1aa675b430bd0f0c0520140afe16c621277ed48d387081f8f19",
+      "folds": [
+        {
+          "digest_and_length_inventory_sha256": "0f3c72c984368333f699b920444d1e5ef1edec636e731d1a4d976113d62f66ba",
+          "fold_index": 0,
+          "unique_sequence_count": 362
+        },
+        {
+          "digest_and_length_inventory_sha256": "7e345f2f15da53a8d1efb07788c3afc407e8c8db5af1c1435668d6d5a3b6b8fa",
+          "fold_index": 1,
+          "unique_sequence_count": 427
+        },
+        {
+          "digest_and_length_inventory_sha256": "6490c811ea88a37783caebd0eb604c22096ee829f2ccee8cdd4b1a138dc11e2a",
+          "fold_index": 2,
+          "unique_sequence_count": 404
+        }
+      ],
+      "raw_sequences_or_instance_ids_included": false
+    },
+    "vh": {
+      "all_fold_digest_and_length_inventory_sha256": "b2365e74a9135a88d8c418996de4ed9d4f06db6454b0371c8e1285da5033655d",
+      "folds": [
+        {
+          "digest_and_length_inventory_sha256": "d0bf4b443080a1dfa4daaf178b40e12932ee8fbfce40b8e54ec988398e57162b",
+          "fold_index": 0,
+          "unique_sequence_count": 335
+        },
+        {
+          "digest_and_length_inventory_sha256": "0bbc9dfbd79601d689bb6592c149a63d47fe8b5d54de1e8f35314e36e72c450c",
+          "fold_index": 1,
+          "unique_sequence_count": 382
+        },
+        {
+          "digest_and_length_inventory_sha256": "f07b5e1f18b63161665bc278df4a62fc53f0cb230f94f54ec22354b6a3044b37",
+          "fold_index": 2,
+          "unique_sequence_count": 382
+        }
+      ],
+      "raw_sequences_or_instance_ids_included": false
+    },
+    "vl": {
+      "all_fold_digest_and_length_inventory_sha256": "ca6b0ce5cca3863711465ce0fbf2e9dd90315c0f018157b88cf763af3c8709f2",
+      "folds": [
+        {
+          "digest_and_length_inventory_sha256": "def524dea4a1178c31b18092c1d3bccf35678e793ef25f075a5ee441bc50d765",
+          "fold_index": 0,
+          "unique_sequence_count": 158
+        },
+        {
+          "digest_and_length_inventory_sha256": "005c8e0f16ec43a51f0a1f3e5c6fab4844fd7b5f7f2bf59fc425cae293a07853",
+          "fold_index": 1,
+          "unique_sequence_count": 349
+        },
+        {
+          "digest_and_length_inventory_sha256": "2494aa449ffb879cecc88ed1683de3dc54870e64ec7391833662f1ffe60f70e0",
+          "fold_index": 2,
+          "unique_sequence_count": 319
+        }
+      ],
+      "raw_sequences_or_instance_ids_included": false
+    }
+  },
+  "limitations": [
+    "This audit authorizes only authority-train S2 training and model selection; it is not model evaluation.",
+    "Authority validation and frozen-test sequence fields, labels, predictions, checkpoints, and scores were not read.",
+    "Passing sequence-homology isolation does not establish structural, functional, temporal, or prospective independence.",
+    "The frozen protein-language-model pretraining corpus remains outside this downstream audit."
+  ],
+  "policy": {
+    "algorithm": "exact global dynamic programming (Needleman-Wunsch family)",
+    "aligned_region_identity_definition": "identical residue-residue columns divided by all residue-residue columns; gap columns excluded",
+    "backend": "Biopython PairwiseAligner 1.83",
+    "enumeration": "all cross-fold unique-sequence pairs in each required view",
+    "gap_extend_penalty": 1.0,
+    "gap_model": "affine with identically penalized terminal gaps",
+    "gap_open_penalty": 10.0,
+    "identity_threshold": 0.8,
+    "missing_vl_policy": "exclude genuinely empty VL from the VL inventory; use VH normally",
+    "only_pair_pruning_rule": "prune only when min(raw lengths)/max(raw lengths) is strictly below 0.8, which is a mathematical upper bound on both reciprocal coverages",
+    "optimal_traceback_policy": "first deterministic traceback returned by pinned Biopython 1.83",
+    "reciprocal_coverage_definition": "paired residue-residue columns divided by each full raw sequence length",
+    "reciprocal_coverage_threshold": 0.8,
+    "sequence_views": [
+      "vh",
+      "vl",
+      "concatenated_antibody",
+      "antigen"
+    ],
+    "substitution_matrix": "BLOSUM62",
+    "substitution_matrix_payload_sha256": "2c62ca4bb7a4c3ec5fe5faee64276841028a7e6638cf846c801dd9c5e64527e2",
+    "threshold_comparison": "exact integer cross-products; equality is included"
+  },
+  "publication": {
+    "edge_artifacts_and_receipt_are_create_only": true,
+    "input_and_source_files_rehashed_immediately_before_publication": true,
+    "raw_sequences_or_instance_ids_published_in_crossing_edges": false,
+    "receipt_path": "/cluster/project/model_deployment/results/sabdab2/train_only_s2_exact_nw/assignment_8dce37bec026/audit_receipt.json"
+  },
+  "results": {
+    "antigen": {
+      "fold_pairs": [
+        {
+          "cross_fold_unique_sequence_pair_count": 149200,
+          "dynamic_programming_alignment_count": 29307,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 373,
+          "provably_pruned_by_length_upper_bound_count": 119893,
+          "right_fold_index": 1,
+          "right_unique_sequence_count": 400,
+          "threshold_crossing_edge_count": 0
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 114511,
+          "dynamic_programming_alignment_count": 20498,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 373,
+          "provably_pruned_by_length_upper_bound_count": 94013,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 307,
+          "threshold_crossing_edge_count": 0
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 122800,
+          "dynamic_programming_alignment_count": 26909,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 1,
+          "left_unique_sequence_count": 400,
+          "provably_pruned_by_length_upper_bound_count": 95891,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 307,
+          "threshold_crossing_edge_count": 2
+        }
+      ],
+      "sequence_view": "antigen",
+      "total_cross_fold_unique_sequence_pair_count": 386511,
+      "total_dynamic_programming_alignment_count": 76714,
+      "total_exact_sequence_overlap_count": 0,
+      "total_provably_pruned_by_length_upper_bound_count": 309797,
+      "total_threshold_crossing_edge_count": 2,
+      "valid_zero_crossing_edges": false
+    },
+    "concatenated_antibody": {
+      "fold_pairs": [
+        {
+          "cross_fold_unique_sequence_pair_count": 154574,
+          "dynamic_programming_alignment_count": 80319,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 362,
+          "provably_pruned_by_length_upper_bound_count": 74255,
+          "right_fold_index": 1,
+          "right_unique_sequence_count": 427,
+          "threshold_crossing_edge_count": 88
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 146248,
+          "dynamic_programming_alignment_count": 75452,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 362,
+          "provably_pruned_by_length_upper_bound_count": 70796,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 404,
+          "threshold_crossing_edge_count": 253
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 172508,
+          "dynamic_programming_alignment_count": 141542,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 1,
+          "left_unique_sequence_count": 427,
+          "provably_pruned_by_length_upper_bound_count": 30966,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 404,
+          "threshold_crossing_edge_count": 148
+        }
+      ],
+      "sequence_view": "concatenated_antibody",
+      "total_cross_fold_unique_sequence_pair_count": 473330,
+      "total_dynamic_programming_alignment_count": 297313,
+      "total_exact_sequence_overlap_count": 0,
+      "total_provably_pruned_by_length_upper_bound_count": 176017,
+      "total_threshold_crossing_edge_count": 489,
+      "valid_zero_crossing_edges": false
+    },
+    "vh": {
+      "fold_pairs": [
+        {
+          "cross_fold_unique_sequence_pair_count": 127970,
+          "dynamic_programming_alignment_count": 127968,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 335,
+          "provably_pruned_by_length_upper_bound_count": 2,
+          "right_fold_index": 1,
+          "right_unique_sequence_count": 382,
+          "threshold_crossing_edge_count": 915
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 127970,
+          "dynamic_programming_alignment_count": 127635,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 335,
+          "provably_pruned_by_length_upper_bound_count": 335,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 382,
+          "threshold_crossing_edge_count": 1580
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 145924,
+          "dynamic_programming_alignment_count": 145543,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 1,
+          "left_unique_sequence_count": 382,
+          "provably_pruned_by_length_upper_bound_count": 381,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 382,
+          "threshold_crossing_edge_count": 3774
+        }
+      ],
+      "sequence_view": "vh",
+      "total_cross_fold_unique_sequence_pair_count": 401864,
+      "total_dynamic_programming_alignment_count": 401146,
+      "total_exact_sequence_overlap_count": 0,
+      "total_provably_pruned_by_length_upper_bound_count": 718,
+      "total_threshold_crossing_edge_count": 6269,
+      "valid_zero_crossing_edges": false
+    },
+    "vl": {
+      "fold_pairs": [
+        {
+          "cross_fold_unique_sequence_pair_count": 55142,
+          "dynamic_programming_alignment_count": 55142,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 158,
+          "provably_pruned_by_length_upper_bound_count": 0,
+          "right_fold_index": 1,
+          "right_unique_sequence_count": 349,
+          "threshold_crossing_edge_count": 1073
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 50402,
+          "dynamic_programming_alignment_count": 50402,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 0,
+          "left_unique_sequence_count": 158,
+          "provably_pruned_by_length_upper_bound_count": 0,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 319,
+          "threshold_crossing_edge_count": 1313
+        },
+        {
+          "cross_fold_unique_sequence_pair_count": 111331,
+          "dynamic_programming_alignment_count": 111331,
+          "exact_sequence_overlap_count": 0,
+          "left_fold_index": 1,
+          "left_unique_sequence_count": 349,
+          "provably_pruned_by_length_upper_bound_count": 0,
+          "right_fold_index": 2,
+          "right_unique_sequence_count": 319,
+          "threshold_crossing_edge_count": 10172
+        }
+      ],
+      "sequence_view": "vl",
+      "total_cross_fold_unique_sequence_pair_count": 216875,
+      "total_dynamic_programming_alignment_count": 216875,
+      "total_exact_sequence_overlap_count": 0,
+      "total_provably_pruned_by_length_upper_bound_count": 0,
+      "total_threshold_crossing_edge_count": 12558,
+      "valid_zero_crossing_edges": false
+    }
+  },
+  "runtime": {
+    "biopython": "1.83",
+    "chunk_size": 512,
+    "multiprocessing_start_method": "fork",
+    "pairwise_aligner_binary": {
+      "path": "/cluster/project/model_deployment/envs/epiformer/lib/python3.10/site-packages/Bio/Align/_pairwisealigner.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9c6517ef292f58a6f85897975cca94c39c7dfdecd53242d5719b8427258cb951",
+      "size_bytes": 818128
+    },
+    "platform": "Linux-5.15.0-176-generic-x86_64-with-glibc2.35",
+    "python": "3.10.20",
+    "worker_count": 32
+  },
+  "scientific_payload_sha256": "9910b328d413afd69d5c9151b675d758b41f13362d1ea1778e3c826443b2a0ea",
+  "source_files": {
+    "independent_exact_four_view_auditor": {
+      "path": "/cluster/project/model_deployment/jobs/interaction_first/audit_train_only_s2_exact_four_view_nw.py",
+      "sha256": "bec90ccc4ad7009a2f9a5e4197bee4ad986948b203913e9cb63e0dafac95f4e4",
+      "size_bytes": 76471
+    }
+  },
+  "stage": "completed_exact_train_only_s2_four_view_nw_audit",
+  "valid_audit_execution": true,
+  "validity_gate": {
+    "all_required_views_completed": true,
+    "gate_name": "exact_four_view_needleman_wunsch_cross_fold_audit",
+    "gate_passed": false,
+    "required_result": "zero_cross_fold_pairs_at_or_above_threshold_in_every_view",
+    "zero_crossing_edges_in_every_view": false
+  }
+}
