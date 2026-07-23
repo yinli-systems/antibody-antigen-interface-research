@@ -1,0 +1,24 @@
+{
+  "checkpoint": "/cluster/project/model_deployment/models/sppider_seq/crossattn_rec_run27_best.pt",
+  "checkpoint_sha256": "de00e13dd1edbe7a4eb76e3cbf298ba65abe2ef44cd85d9ce12dff5b5e01c113",
+  "device": "cuda",
+  "elapsed_seconds": 5.117230653762817,
+  "embedding_cache": {
+    "cache_bytes": 179599360,
+    "cached_sequence_count": 168,
+    "hits": 46,
+    "max_cache_bytes": 25769803776,
+    "misses": 168
+  },
+  "failure_count": 0,
+  "failures": [],
+  "format_version": "sabdab2_sppider_seq_v1",
+  "role": "paratope",
+  "selected_instance_count": 107,
+  "shard_count": 4,
+  "shard_index": 1,
+  "skipped_count": 0,
+  "stage": "infer",
+  "torch_version": "2.7.1+cu128",
+  "written_count": 107
+}
