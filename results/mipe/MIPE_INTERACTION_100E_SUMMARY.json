@@ -1,0 +1,190 @@
+{
+  "status": "complete",
+  "scope": "five_fold_held_out_interaction_export",
+  "matrix_axes": {
+    "ag_to_ab": "[antigen residue, antibody residue]",
+    "ab_to_ag": "[antibody residue, antigen residue]",
+    "interaction_score_mean": "[antigen residue, antibody residue]"
+  },
+  "notes": [
+    "Both directional matrices are 16-head-averaged cross-attention weights.",
+    "Both directions were explicitly supervised against edge_AGAB with BCE during MIPE training.",
+    "Ranking metrics use every residue pair in each held-out fold."
+  ],
+  "folds": [
+    {
+      "fold": 0,
+      "checkpoint": "/cluster/project/model_deployment/results/mipe/formal_seed42/fold_0_best.pt",
+      "checkpoint_epoch": 7,
+      "best_validation_joint_auprc": 0.23338483273983002,
+      "interaction_score": "mean(ag_to_ab, transpose(ab_to_ag))",
+      "interaction_metrics": {
+        "mean_bidirectional": {
+          "auroc": 0.5846188068389893,
+          "auprc": 0.0016553234308958054,
+          "pairs": 2547256,
+          "positive_pairs": 3610,
+          "positive_fraction": 0.0014172112569212914
+        },
+        "ag_to_ab": {
+          "auroc": 0.5340073704719543,
+          "auprc": 0.0014219211880117655,
+          "pairs": 2547256,
+          "positive_pairs": 3610,
+          "positive_fraction": 0.0014172112569212914
+        },
+        "ab_to_ag_transposed": {
+          "auroc": 0.6881879568099976,
+          "auprc": 0.002791331149637699,
+          "pairs": 2547256,
+          "positive_pairs": 3610,
+          "positive_fraction": 0.0014172112569212914
+        }
+      }
+    },
+    {
+      "fold": 1,
+      "checkpoint": "/cluster/project/model_deployment/results/mipe/formal_seed42/fold_1_best.pt",
+      "checkpoint_epoch": 80,
+      "best_validation_joint_auprc": 0.3605566807091236,
+      "interaction_score": "mean(ag_to_ab, transpose(ab_to_ag))",
+      "interaction_metrics": {
+        "mean_bidirectional": {
+          "auroc": 0.48696449398994446,
+          "auprc": 0.0015017393743619323,
+          "pairs": 2373238,
+          "positive_pairs": 3627,
+          "positive_fraction": 0.001528291730210185
+        },
+        "ag_to_ab": {
+          "auroc": 0.4819401204586029,
+          "auprc": 0.001497142482548952,
+          "pairs": 2373238,
+          "positive_pairs": 3627,
+          "positive_fraction": 0.001528291730210185
+        },
+        "ab_to_ag_transposed": {
+          "auroc": 0.5045022368431091,
+          "auprc": 0.0015579762402921915,
+          "pairs": 2373238,
+          "positive_pairs": 3627,
+          "positive_fraction": 0.001528291730210185
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "checkpoint": "/cluster/project/model_deployment/results/mipe/formal_seed42/fold_2_best.pt",
+      "checkpoint_epoch": 71,
+      "best_validation_joint_auprc": 0.4222860783338547,
+      "interaction_score": "mean(ag_to_ab, transpose(ab_to_ag))",
+      "interaction_metrics": {
+        "mean_bidirectional": {
+          "auroc": 0.7344515323638916,
+          "auprc": 0.003154836827889085,
+          "pairs": 2247291,
+          "positive_pairs": 3653,
+          "positive_fraction": 0.0016255127266049385
+        },
+        "ag_to_ab": {
+          "auroc": 0.6636052131652832,
+          "auprc": 0.002311947289854288,
+          "pairs": 2247291,
+          "positive_pairs": 3653,
+          "positive_fraction": 0.0016255127266049385
+        },
+        "ab_to_ag_transposed": {
+          "auroc": 0.8255596160888672,
+          "auprc": 0.006908287759870291,
+          "pairs": 2247291,
+          "positive_pairs": 3653,
+          "positive_fraction": 0.0016255127266049385
+        }
+      }
+    },
+    {
+      "fold": 3,
+      "checkpoint": "/cluster/project/model_deployment/results/mipe/formal_seed42/fold_3_best.pt",
+      "checkpoint_epoch": 78,
+      "best_validation_joint_auprc": 0.34162814542651176,
+      "interaction_score": "mean(ag_to_ab, transpose(ab_to_ag))",
+      "interaction_metrics": {
+        "mean_bidirectional": {
+          "auroc": 0.4940173327922821,
+          "auprc": 0.001719393185339868,
+          "pairs": 2207630,
+          "positive_pairs": 3784,
+          "positive_fraction": 0.0017140553100034595
+        },
+        "ag_to_ab": {
+          "auroc": 0.49062108993530273,
+          "auprc": 0.0016768707428127527,
+          "pairs": 2207630,
+          "positive_pairs": 3784,
+          "positive_fraction": 0.0017140553100034595
+        },
+        "ab_to_ag_transposed": {
+          "auroc": 0.5028388500213623,
+          "auprc": 0.001754333614371717,
+          "pairs": 2207630,
+          "positive_pairs": 3784,
+          "positive_fraction": 0.0017140553100034595
+        }
+      }
+    },
+    {
+      "fold": 4,
+      "checkpoint": "/cluster/project/model_deployment/results/mipe/formal_seed42/fold_4_best.pt",
+      "checkpoint_epoch": 97,
+      "best_validation_joint_auprc": 0.2779175192117691,
+      "interaction_score": "mean(ag_to_ab, transpose(ab_to_ag))",
+      "interaction_metrics": {
+        "mean_bidirectional": {
+          "auroc": 0.48811379075050354,
+          "auprc": 0.0017744514625519514,
+          "pairs": 2056003,
+          "positive_pairs": 3642,
+          "positive_fraction": 0.0017713982379063964
+        },
+        "ag_to_ab": {
+          "auroc": 0.48407429456710815,
+          "auprc": 0.001760755549184978,
+          "pairs": 2056003,
+          "positive_pairs": 3642,
+          "positive_fraction": 0.0017713982379063964
+        },
+        "ab_to_ag_transposed": {
+          "auroc": 0.5037302374839783,
+          "auprc": 0.0018185346852988005,
+          "pairs": 2056003,
+          "positive_pairs": 3642,
+          "positive_fraction": 0.0017713982379063964
+        }
+      }
+    }
+  ],
+  "overall_interaction_metrics": {
+    "mean_bidirectional": {
+      "auroc": 0.5071899890899658,
+      "auprc": 0.001718544983305037,
+      "pairs": 11431418,
+      "positive_pairs": 18316,
+      "positive_fraction": 0.0016022509662434459
+    },
+    "ag_to_ab": {
+      "auroc": 0.49180400371551514,
+      "auprc": 0.001568127074278891,
+      "pairs": 11431418,
+      "positive_pairs": 18316,
+      "positive_fraction": 0.0016022509662434459
+    },
+    "ab_to_ag_transposed": {
+      "auroc": 0.5333037972450256,
+      "auprc": 0.0024491329677402973,
+      "pairs": 11431418,
+      "positive_pairs": 18316,
+      "positive_fraction": 0.0016022509662434459
+    }
+  },
+  "elapsed_seconds": 147.24448657035828
+}
