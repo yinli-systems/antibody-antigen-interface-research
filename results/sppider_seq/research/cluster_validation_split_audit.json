@@ -1,0 +1,193 @@
+{
+  "elapsed_seconds": 0.13224244117736816,
+  "prepared_instances": "/cluster/project/model_deployment/data/sppider_seq_sabdab2_prepared_cluster_val/instances.parquet",
+  "roles": {
+    "epitope": {
+      "overlaps": {
+        "train_test": {
+          "cluster_overlap_count": 0,
+          "query_sequence_overlap_count": 0
+        },
+        "train_validation": {
+          "cluster_overlap_count": 0,
+          "query_sequence_overlap_count": 0
+        },
+        "validation_test": {
+          "cluster_overlap_count": 0,
+          "query_sequence_overlap_count": 0
+        }
+      },
+      "splits": {
+        "test": {
+          "cluster_count": 84,
+          "instance_count": 455,
+          "instance_positive_fraction": {
+            "maximum": 0.3888888888888889,
+            "mean": 0.10804481429587244,
+            "median": 0.0990990990990991,
+            "minimum": 0.003484320557491289,
+            "p25": 0.0643501709379058,
+            "p75": 0.13910164123236396
+          },
+          "micro_positive_fraction": 0.0819314769876198,
+          "positive_residue_count": 7968,
+          "residue_count": 97252,
+          "sequence_length": {
+            "maximum": 593.0,
+            "mean": 213.74065934065933,
+            "median": 151.0,
+            "minimum": 50.0,
+            "p25": 111.0,
+            "p75": 307.0
+          },
+          "unique_context_sequence_count": 258,
+          "unique_query_sequence_count": 256
+        },
+        "train": {
+          "cluster_count": 267,
+          "instance_count": 2887,
+          "instance_positive_fraction": {
+            "maximum": 0.3548387096774194,
+            "mean": 0.08106345778748052,
+            "median": 0.06422018348623854,
+            "minimum": 0.0,
+            "p25": 0.03254437869822485,
+            "p75": 0.1134020618556701
+          },
+          "micro_positive_fraction": 0.060447875354465795,
+          "positive_residue_count": 47813,
+          "residue_count": 790979,
+          "sequence_length": {
+            "maximum": 2363.0,
+            "mean": 273.97956356078976,
+            "median": 290.0,
+            "minimum": 51.0,
+            "p25": 193.0,
+            "p75": 338.0
+          },
+          "unique_context_sequence_count": 1227,
+          "unique_query_sequence_count": 1047
+        },
+        "validation": {
+          "cluster_count": 7,
+          "instance_count": 321,
+          "instance_positive_fraction": {
+            "maximum": 0.25,
+            "mean": 0.10459401503256949,
+            "median": 0.10526315789473684,
+            "minimum": 0.0,
+            "p25": 0.04747774480712166,
+            "p75": 0.14728682170542637
+          },
+          "micro_positive_fraction": 0.07588185433917977,
+          "positive_residue_count": 5819,
+          "residue_count": 76685,
+          "sequence_length": {
+            "maximum": 656.0,
+            "mean": 238.89408099688472,
+            "median": 153.0,
+            "minimum": 76.0,
+            "p25": 129.0,
+            "p75": 338.0
+          },
+          "unique_context_sequence_count": 123,
+          "unique_query_sequence_count": 104
+        }
+      }
+    },
+    "paratope": {
+      "overlaps": {
+        "train_test": {
+          "cluster_overlap_count": 0,
+          "query_sequence_overlap_count": 0
+        },
+        "train_validation": {
+          "cluster_overlap_count": 0,
+          "query_sequence_overlap_count": 0
+        },
+        "validation_test": {
+          "cluster_overlap_count": 0,
+          "query_sequence_overlap_count": 0
+        }
+      },
+      "splits": {
+        "test": {
+          "cluster_count": 84,
+          "instance_count": 455,
+          "instance_positive_fraction": {
+            "maximum": 0.21367521367521367,
+            "mean": 0.10297409433105943,
+            "median": 0.09482758620689655,
+            "minimum": 0.004291845493562232,
+            "p25": 0.0782608695652174,
+            "p75": 0.11627906976744186
+          },
+          "micro_positive_fraction": 0.09639974204451955,
+          "positive_residue_count": 8670,
+          "residue_count": 89938,
+          "sequence_length": {
+            "maximum": 242.0,
+            "mean": 197.66593406593407,
+            "median": 228.0,
+            "minimum": 109.0,
+            "p25": 127.0,
+            "p75": 231.0
+          },
+          "unique_context_sequence_count": 256,
+          "unique_query_sequence_count": 258
+        },
+        "train": {
+          "cluster_count": 267,
+          "instance_count": 2887,
+          "instance_positive_fraction": {
+            "maximum": 0.2692307692307692,
+            "mean": 0.09279144523380073,
+            "median": 0.09251101321585903,
+            "minimum": 0.0,
+            "p25": 0.06167400881057269,
+            "p75": 0.1171875
+          },
+          "micro_positive_fraction": 0.08679849902547633,
+          "positive_residue_count": 50056,
+          "residue_count": 576692,
+          "sequence_length": {
+            "maximum": 277.0,
+            "mean": 199.75476272947697,
+            "median": 228.0,
+            "minimum": 108.0,
+            "p25": 128.0,
+            "p75": 231.0
+          },
+          "unique_context_sequence_count": 1047,
+          "unique_query_sequence_count": 1227
+        },
+        "validation": {
+          "cluster_count": 7,
+          "instance_count": 321,
+          "instance_positive_fraction": {
+            "maximum": 0.15966386554621848,
+            "mean": 0.09515530086486328,
+            "median": 0.09251101321585903,
+            "minimum": 0.0,
+            "p25": 0.08370044052863436,
+            "p75": 0.10526315789473684
+          },
+          "micro_positive_fraction": 0.09267003543009816,
+          "positive_residue_count": 6382,
+          "residue_count": 68868,
+          "sequence_length": {
+            "maximum": 246.0,
+            "mean": 214.54205607476635,
+            "median": 226.0,
+            "minimum": 114.0,
+            "p25": 221.0,
+            "p75": 227.0
+          },
+          "unique_context_sequence_count": 104,
+          "unique_query_sequence_count": 123
+        }
+      }
+    }
+  },
+  "stage": "audit_prepared_splits"
+}
