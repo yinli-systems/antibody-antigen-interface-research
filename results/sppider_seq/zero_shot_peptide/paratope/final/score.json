@@ -1,0 +1,57 @@
+{
+  "candidate_pair_score_definition": "paratope_score[ab_res_idx]",
+  "format_version": "sabdab2_sppider_seq_v1",
+  "native_pair_interaction_score": false,
+  "projection": "paratope",
+  "projection_macro_mean": {
+    "accuracy": 0.9959826986467922,
+    "auprc": 0.005000730136026162,
+    "auroc": 0.70516958929236,
+    "f1": 0.0039384234829580875,
+    "mcc": 0.004718467053257303,
+    "precision": 0.00251623312967723,
+    "recall": 0.014945361368775341
+  },
+  "projection_micro": {
+    "accuracy": 0.9961897672178804,
+    "auprc": 0.0023667661762253453,
+    "auroc": 0.6858601395677815,
+    "count": 18473412,
+    "f1": 0.007809196244819712,
+    "mcc": 0.0069979307326779065,
+    "positive_count": 19786,
+    "positive_fraction": 0.001071052819046097,
+    "precision": 0.005414809602001721,
+    "recall": 0.01399979783685434,
+    "score_max": 0.9999492168426514,
+    "score_min": 2.311598407990676e-17,
+    "threshold": 0.5
+  },
+  "residue_macro_mean": {
+    "accuracy": 0.8971096199011104,
+    "auprc": 0.2790963245225842,
+    "auroc": 0.7029599971055419,
+    "f1": 0.0239451146122455,
+    "mcc": 0.038469401132534796,
+    "precision": 0.16245421245421243,
+    "recall": 0.013527851933209512
+  },
+  "residue_micro": {
+    "accuracy": 0.9038337521403633,
+    "auprc": 0.1881741588866266,
+    "auroc": 0.659654077025626,
+    "count": 89938,
+    "f1": 0.025025363544132567,
+    "mcc": 0.07309668579856657,
+    "positive_count": 8670,
+    "positive_fraction": 0.09639974204451955,
+    "precision": 0.5522388059701493,
+    "recall": 0.012802768166089966,
+    "score_max": 0.9999492168426514,
+    "score_min": 2.311598407990676e-17,
+    "threshold": 0.5
+  },
+  "role": "paratope",
+  "test_instance_count": 455,
+  "threshold": 0.5
+}
