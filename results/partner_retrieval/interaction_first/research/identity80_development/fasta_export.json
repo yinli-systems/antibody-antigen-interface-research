@@ -1,0 +1,31 @@
+{
+  "antibody_unique_sequence_count": 1509,
+  "antigen_unique_sequence_count": 1292,
+  "development_instance_count": 3445,
+  "files": {
+    "antibody": {
+      "path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/exhaustive_mmseqs/development_antibody.fasta",
+      "sha256": "6072dfe76cf4fd0bda276c4b26cdd0d2e09bafa689e16e4d6c9f7eba649cbf46"
+    },
+    "antigen": {
+      "path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/exhaustive_mmseqs/development_antigen.fasta",
+      "sha256": "3ba7680fdfe52751c03e828c7bac35b00f9092c481e6ffaaef6361f5fb30f5f7"
+    }
+  },
+  "format_version": "sabdab2_identity_isolated_development_v1",
+  "frozen_test_labels_or_predictions_read": false,
+  "intended_use": "development_only",
+  "sealed_source_split_counts": {
+    "test": 218
+  },
+  "sealed_source_splits": [
+    "test"
+  ],
+  "sequence_manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+  "source_pool_splits": [
+    "train",
+    "validation"
+  ],
+  "source_split_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+  "stage": "export_development_similarity_fastas"
+}
