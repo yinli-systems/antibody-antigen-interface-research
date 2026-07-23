@@ -1,0 +1,1798 @@
+{
+  "all_runs_valid": true,
+  "antigen_embedding_manifest_common": true,
+  "architecture_selection": {
+    "ranking": [
+      {
+        "all_fold_bidirectional_mrr_above_random": true,
+        "all_fold_count": true,
+        "both_directions_above_random_in_all_folds": true,
+        "fold_bidirectional_mrr": [
+          0.0714933022743292,
+          0.056427690936451454,
+          0.05619238201508671
+        ],
+        "fold_exact_random_bidirectional_mrr": [
+          0.017206624063686435,
+          0.02123773839738194,
+          0.021021997048400055
+        ],
+        "macro_mean_bidirectional_mrr": 0.061371125075289114,
+        "macro_mean_exact_random_bidirectional_mrr": 0.019822119836489478,
+        "macro_multiple_over_exact_random": 3.09609292959244,
+        "parameter_count": 528641,
+        "passes_predeclared_directional_random_gates": true,
+        "selection_rank": 1,
+        "variant": "antiberty_calm_mean",
+        "worst_fold_bidirectional_mrr": 0.05619238201508671
+      },
+      {
+        "all_fold_bidirectional_mrr_above_random": true,
+        "all_fold_count": true,
+        "both_directions_above_random_in_all_folds": true,
+        "fold_bidirectional_mrr": [
+          0.07130406014426179,
+          0.05472517496586399,
+          0.05591437924470194
+        ],
+        "fold_exact_random_bidirectional_mrr": [
+          0.017206624063686435,
+          0.02123773839738194,
+          0.021021997048400055
+        ],
+        "macro_mean_bidirectional_mrr": 0.060647871451609235,
+        "macro_mean_exact_random_bidirectional_mrr": 0.019822119836489478,
+        "macro_multiple_over_exact_random": 3.059605730965556,
+        "parameter_count": 528641,
+        "passes_predeclared_directional_random_gates": true,
+        "selection_rank": 2,
+        "variant": "antiberty_chain_balanced",
+        "worst_fold_bidirectional_mrr": 0.05472517496586399
+      },
+      {
+        "all_fold_bidirectional_mrr_above_random": true,
+        "all_fold_count": true,
+        "both_directions_above_random_in_all_folds": false,
+        "fold_bidirectional_mrr": [
+          0.0637463463010876,
+          0.029457111977472618,
+          0.04257404251864817
+        ],
+        "fold_exact_random_bidirectional_mrr": [
+          0.017206624063686435,
+          0.02123773839738194,
+          0.021021997048400055
+        ],
+        "macro_mean_bidirectional_mrr": 0.045259166932402804,
+        "macro_mean_exact_random_bidirectional_mrr": 0.019822119836489478,
+        "macro_multiple_over_exact_random": 2.283265730695848,
+        "parameter_count": 726785,
+        "passes_predeclared_directional_random_gates": false,
+        "selection_rank": 3,
+        "variant": "esm2_calm_mean",
+        "worst_fold_bidirectional_mrr": 0.029457111977472618
+      }
+    ],
+    "winner": "antiberty_calm_mean"
+  },
+  "authority": {
+    "path": "/cluster/project/model_deployment/data/interaction_first/double_remote_split.json",
+    "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b"
+  },
+  "embedded_source_hash_set_common": true,
+  "fixed_holdout_evaluated": false,
+  "fold_index": {
+    "fold_sha256": {
+      "0": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a",
+      "1": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b",
+      "2": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db"
+    },
+    "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/index.json",
+    "sha256": "feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d"
+  },
+  "format_version": "sabdab2_asymmetric_retrieval_fold_screen_audit_v1",
+  "frozen_test_used": false,
+  "launch_and_split_evidence": {
+    "pretraining_needleman_wunsch_fold_audit": {
+      "checks": {
+        "audit_valid": true,
+        "fold_index_sha_matches": true,
+        "receipt_audit_sha_matches": true,
+        "receipt_valid": true
+      },
+      "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/needleman_wunsch_audit/audit.json",
+      "receipt_path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/needleman_wunsch_audit/receipt.json",
+      "receipt_sha256": "62fd065f92c894911a3677cf4e135a9ac89410849bf75a3d72fc88b8d1a0934e",
+      "sha256": "00ccd7dd3220673eec3b7938c05e04160a1415d8bf7a07124a81fadf47c3cc4d"
+    },
+    "slurm_log_sha256": {
+      "antiberty_calm_mean_antigen_fold0_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_0.err": "a6739c9d463e6418420d64ebefffc25519596349e47ea0e637c592195f4389e5",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_0.out": "39a96a271f5007fe810e7a115184421fedc29941b65be96b8ef15893f64779f4"
+      },
+      "antiberty_calm_mean_antigen_fold1_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_1.err": "347bb346fd53224f15789fa18490d8ccffd283d94f0c717fc0269f1a315f5f97",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_1.out": "db24beb24433a5eee93e117341da4e544e3544ed9508e5766485f24ca2b02de2"
+      },
+      "antiberty_calm_mean_antigen_fold2_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_2.err": "c9bccb9a4c22c81a96c3d4e25126f981a6328823900115855cbf9dcefc7b03cb",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_2.out": "f7b8c836328b32417bcfd07fee274ccca595f8528309a5d3d4ecea7129a98c6c"
+      },
+      "antiberty_chain_balanced_antigen_fold0_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_0.err": "80170ef640647cc0f40324472b5bafdbf169770fd24076e3e6584a63d7aab086",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_0.out": "11ff716ee6dc7bc943f55e68870504f887c63e3e276e0c5451459bd3fb849e1c"
+      },
+      "antiberty_chain_balanced_antigen_fold1_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_1.err": "202422ff63a33aa245c09a63edec523edebaf001dc474f536f1c9d42a7aa13ab",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_1.out": "34858aeb03f9ef259b49ef3f65f29d35d67b25f9c540fe182ab8660fbfabea32"
+      },
+      "antiberty_chain_balanced_antigen_fold2_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_2.err": "7a78822d5d2505b8359451cbb9a6a098571379f851684de6b4d24da55cc0d3f7",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_2.out": "43e873b796102efedccb5309ed1da0eba2c6f357f48bef1fb6946e2ba3f29aa3"
+      },
+      "esm2_calm_mean_antigen_fold0_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_0.err": "0f5bb854a34101996a96ea50a07fbcd60a97876f1ef54cf2ecb491f834a2dd98",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_0.out": "b08024c718e591e3520f053f5d534475718360eba74ebf3df68462b45ce079ea"
+      },
+      "esm2_calm_mean_antigen_fold1_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_1.err": "f6cc358194d669f1c16bc7436091179d503db8f9b8a1a52152cc3e861ce0e705",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_1.out": "e394c5900b88551c2ec17105da602d7cd48505264101092b750efb3fb71b33dc"
+      },
+      "esm2_calm_mean_antigen_fold2_seed42_b1024": {
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_2.err": "bdb172a62d6088f10fd3501908636c095728bd080713e1f0653bafd698ab5a3b",
+        "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_2.out": "216bcd29c8b64fe81d1f445b77f78fcd4cf76762f9cff34fdf422fce28f62186"
+      }
+    },
+    "slurm_submit_lines": [
+      {
+        "display_job_id": "1273256_0",
+        "job_id": "1273259",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "antiberty_calm_mean_antigen_fold0_seed42_b1024",
+        "sha256": "4e75baffd285eee1f257e12c12b1e1b59e01d675eeec02375bb580168e7fac2b"
+      },
+      {
+        "display_job_id": "1273256_1",
+        "job_id": "1273289",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "antiberty_calm_mean_antigen_fold1_seed42_b1024",
+        "sha256": "4e75baffd285eee1f257e12c12b1e1b59e01d675eeec02375bb580168e7fac2b"
+      },
+      {
+        "display_job_id": "1273256_2",
+        "job_id": "1273256",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "antiberty_calm_mean_antigen_fold2_seed42_b1024",
+        "sha256": "4e75baffd285eee1f257e12c12b1e1b59e01d675eeec02375bb580168e7fac2b"
+      },
+      {
+        "display_job_id": "1273257_0",
+        "job_id": "1273260",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "antiberty_chain_balanced_antigen_fold0_seed42_b1024",
+        "sha256": "dfe3d3b844764b9262c594425925aef4aec2a11ea279a4053fe8ef5040364ff0"
+      },
+      {
+        "display_job_id": "1273257_1",
+        "job_id": "1273288",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "antiberty_chain_balanced_antigen_fold1_seed42_b1024",
+        "sha256": "dfe3d3b844764b9262c594425925aef4aec2a11ea279a4053fe8ef5040364ff0"
+      },
+      {
+        "display_job_id": "1273257_2",
+        "job_id": "1273257",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "antiberty_chain_balanced_antigen_fold2_seed42_b1024",
+        "sha256": "dfe3d3b844764b9262c594425925aef4aec2a11ea279a4053fe8ef5040364ff0"
+      },
+      {
+        "display_job_id": "1273255_0",
+        "job_id": "1273258",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "esm2_calm_mean_antigen_fold0_seed42_b1024",
+        "sha256": "044009c37917bf1c3940508136072b04928913f4d77fbef08e34757b8226343d"
+      },
+      {
+        "display_job_id": "1273255_1",
+        "job_id": "1273308",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "esm2_calm_mean_antigen_fold1_seed42_b1024",
+        "sha256": "044009c37917bf1c3940508136072b04928913f4d77fbef08e34757b8226343d"
+      },
+      {
+        "display_job_id": "1273255_2",
+        "job_id": "1273255",
+        "pins_reviewed_fold_index_sha": true,
+        "run_name": "esm2_calm_mean_antigen_fold2_seed42_b1024",
+        "sha256": "044009c37917bf1c3940508136072b04928913f4d77fbef08e34757b8226343d"
+      }
+    ],
+    "submission_script": {
+      "checkpoint_native": false,
+      "path": "/cluster/project/model_deployment/jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+      "semantic_checks": {
+        "passes_fold_manifest_sha_to_entrypoint": true,
+        "pins_authority_sha": true,
+        "recomputes_fold_index_sha": true,
+        "rejects_fold_index_sha_mismatch": true,
+        "requires_fold_index_sha_environment": true
+      },
+      "sha256": "b52f88823c0896e823c8211e8ed46d22d15fdccffb119502e23475ee5d0c109d"
+    }
+  },
+  "output_directories_unique": true,
+  "protocol": {
+    "checkpoint_native": false,
+    "path": "/tmp/asymmetric_partner_retrieval_protocol.json",
+    "selection_rule_verified": true,
+    "semantic_match_all_runs": true,
+    "sha256": "602a5fe74ba3797d19027d8893711fc530cab16aadca740d36f1cc98a16b599e"
+  },
+  "provenance_caveats": [
+    "The protocol-manifest SHA-256 is not embedded in the nine checkpoint configs; the audit establishes an exact semantic match to the current reviewed manifest.",
+    "The fold-index SHA-256 is enforced by the submission wrapper but is not embedded in checkpoint provenance; each individual fold-manifest SHA-256 is embedded and verified.",
+    "The model-weight digests are verified against reviewed locks and against the metadata validated during embedding loads; this audit does not reinterpret those custom weight hashes.",
+    "The current remote entrypoint has changed since these runs. All nine checkpoints embed one common run-time source hash set, but the exact entrypoint bytes are no longer present at the live source path. This is source-archival drift, not evidence of metric or checkpoint contamination."
+  ],
+  "run_count": 9,
+  "runs": [
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "5b154852fe2f345f06ca2511e3392eb8872c60a829d14d1b96d675c2a259ca70",
+        "history": "547773b67c7ddbf50afc21926a68feb047d623416ce7513e664bbca4f797868e",
+        "last_checkpoint": "5046bbf80b1acac6436529d6e41a607e11d2960892b4144c32d251fe589758be",
+        "provenance": "6631f7b0bec94db98f783cf2866a33a641290609815566898e175cde5e3f098e",
+        "training_summary": "f242255f2ecbd72664923b4a0edabcee572e202dccc9bd263f90d1f0a4bd847e"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.0714933022743292,
+        "bidirectional_mrr_multiple": 4.154987172946471,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.02741778849228642,
+            "mrr_multiple": 2.5791602048750764,
+            "observed": {
+              "mrr": 0.044780047500361776,
+              "recall_at_1": 0.023255813953488372,
+              "recall_at_10": 0.06976744186046512,
+              "recall_at_20": 0.12050739957716702,
+              "recall_at_5": 0.040169133192389
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 473,
+              "candidate_count": 458,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.2896405919661733,
+              "mrr": 0.017362259008075358,
+              "recall_at_1": 0.0028158091527645257,
+              "recall_at_10": 0.02783920663380672,
+              "recall_at_20": 0.05504320669462405,
+              "recall_at_5": 0.014006051803504444
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.08115556792899913,
+            "mrr_multiple": 5.759581239609791,
+            "observed": {
+              "mrr": 0.09820655704829664,
+              "recall_at_1": 0.07641921397379912,
+              "recall_at_10": 0.13100436681222707,
+              "recall_at_20": 0.17467248908296942,
+              "recall_at_5": 0.10043668122270742
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 458,
+              "candidate_count": 473,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.331877729257642,
+              "mrr": 0.017050989119297515,
+              "recall_at_1": 0.002815809152764595,
+              "recall_at_10": 0.027340319810610653,
+              "recall_at_20": 0.0535231839843809,
+              "recall_at_5": 0.01387362069930561
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.017206624063686435
+      },
+      "config_sha256": {
+        "best_checkpoint": "f2fa6b670b481ad8c5436dce97782ab720dad8cdd2a395a5fead069f02250a8d",
+        "history": "f2fa6b670b481ad8c5436dce97782ab720dad8cdd2a395a5fead069f02250a8d",
+        "last_checkpoint": "f2fa6b670b481ad8c5436dce97782ab720dad8cdd2a395a5fead069f02250a8d",
+        "provenance": "f2fa6b670b481ad8c5436dce97782ab720dad8cdd2a395a5fead069f02250a8d",
+        "recomputed": "f2fa6b670b481ad8c5436dce97782ab720dad8cdd2a395a5fead069f02250a8d",
+        "summary": "f2fa6b670b481ad8c5436dce97782ab720dad8cdd2a395a5fead069f02250a8d"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "9eb10c64fd05897162548a81871841724d9471ba5ed1c800b3d10a2c9229a45e",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 58,
+        "absolute_raw_maximum_mrr": 0.0714933022743292,
+        "completed": 73,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 58,
+        "selected_mrr": 0.0714933022743292
+      },
+      "failures": [],
+      "fold_index": 0,
+      "model_weight_sha256": {
+        "antibody": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 528641,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "antiberty_calm_mean_antigen_fold0_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_0.err": "a6739c9d463e6418420d64ebefffc25519596349e47ea0e637c592195f4389e5",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_0.out": "39a96a271f5007fe810e7a115184421fedc29941b65be96b8ef15893f64779f4"
+        },
+        "primary": {
+          "Elapsed": "00:02:33",
+          "ExitCode": "0:0",
+          "JobID": "1273256_0",
+          "JobIDRaw": "1273259",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:02:33",
+            "ExitCode": "0:0",
+            "JobID": "1273256_0",
+            "JobIDRaw": "1273259",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "4e75baffd285eee1f257e12c12b1e1b59e01d675eeec02375bb580168e7fac2b"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a",
+      "valid": true,
+      "variant": "antiberty_calm_mean"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "403fa86545237eb42b0dc4fd50d82fb03d95360eaa22cf332673d25e06880298",
+        "history": "2894e25994af9a570394156e053c2ea69268f84ec10c4e81054256ee4788feec",
+        "last_checkpoint": "758644cfbc80208f272c2c625d9e849fafe1c80ca9cb6ad2fb9edf01b856bda0",
+        "provenance": "b96327c7132b01c60479ee3746ef462b82628faf8f1b195c6a5a8a97f4eb2b56",
+        "training_summary": "c7c0d481ffe4fbcf38367ba8ae6c433c78fa6b9baa847e82aa7f89e94487bffd"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.056427690936451454,
+        "bidirectional_mrr_multiple": 2.656953856414745,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.0209111853555223,
+            "mrr_multiple": 1.928567001815524,
+            "observed": {
+              "mrr": 0.043431030789009575,
+              "recall_at_1": 0.02584493041749503,
+              "recall_at_10": 0.061630218687872766,
+              "recall_at_20": 0.08946322067594434,
+              "recall_at_5": 0.03777335984095427
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 503,
+              "candidate_count": 322,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.2127236580516898,
+              "mrr": 0.022519845433487274,
+              "recall_at_1": 0.0037662225405331495,
+              "recall_at_10": 0.037403825247381006,
+              "recall_at_20": 0.07424870354411502,
+              "recall_at_5": 0.018773277343738043
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.04946871972261673,
+            "mrr_multiple": 3.4789353354466916,
+            "observed": {
+              "mrr": 0.06942435108389333,
+              "recall_at_1": 0.043478260869565216,
+              "recall_at_10": 0.10869565217391304,
+              "recall_at_20": 0.13975155279503104,
+              "recall_at_5": 0.07763975155279502
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 322,
+              "candidate_count": 503,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.8944099378881987,
+              "mrr": 0.0199556313612766,
+              "recall_at_1": 0.003766222540533211,
+              "recall_at_10": 0.03490166670123306,
+              "recall_at_20": 0.06575857432776645,
+              "recall_at_5": 0.018144430670124473
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.02123773839738194
+      },
+      "config_sha256": {
+        "best_checkpoint": "217f116098b4573283b906066b8d17722c533c4160e1b1e0a6bfe58a5e1cd151",
+        "history": "217f116098b4573283b906066b8d17722c533c4160e1b1e0a6bfe58a5e1cd151",
+        "last_checkpoint": "217f116098b4573283b906066b8d17722c533c4160e1b1e0a6bfe58a5e1cd151",
+        "provenance": "217f116098b4573283b906066b8d17722c533c4160e1b1e0a6bfe58a5e1cd151",
+        "recomputed": "217f116098b4573283b906066b8d17722c533c4160e1b1e0a6bfe58a5e1cd151",
+        "summary": "217f116098b4573283b906066b8d17722c533c4160e1b1e0a6bfe58a5e1cd151"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "9eb10c64fd05897162548a81871841724d9471ba5ed1c800b3d10a2c9229a45e",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 60,
+        "absolute_raw_maximum_mrr": 0.056427690936451454,
+        "completed": 75,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 60,
+        "selected_mrr": 0.056427690936451454
+      },
+      "failures": [],
+      "fold_index": 1,
+      "model_weight_sha256": {
+        "antibody": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 528641,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "antiberty_calm_mean_antigen_fold1_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_1.err": "347bb346fd53224f15789fa18490d8ccffd283d94f0c717fc0269f1a315f5f97",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_1.out": "db24beb24433a5eee93e117341da4e544e3544ed9508e5766485f24ca2b02de2"
+        },
+        "primary": {
+          "Elapsed": "00:02:25",
+          "ExitCode": "0:0",
+          "JobID": "1273256_1",
+          "JobIDRaw": "1273289",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:02:25",
+            "ExitCode": "0:0",
+            "JobID": "1273256_1",
+            "JobIDRaw": "1273289",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "4e75baffd285eee1f257e12c12b1e1b59e01d675eeec02375bb580168e7fac2b"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b",
+      "valid": true,
+      "variant": "antiberty_calm_mean"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "368275fdfdd7d356d2ece053334a20f388c2dbc8699a920cb5f2ae491896f3ae",
+        "history": "d94d251386115103fdcc416b20c4303db8fec9b7d22fecdb7534773e8640d571",
+        "last_checkpoint": "e83aef6c5963b8a9a52c42b9c9a3cf2d69db8676caa45439419f7d3b9a7931d2",
+        "provenance": "9eb67139f9604dbcd1866bf7dfb640ac47e0a4b57363097f30c0ccdbb59f56a1",
+        "training_summary": "d34a2b6d7b4f7f29e121d01f67ebea70f40fae9715c683a901a88825bdb829bd"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.05619238201508671,
+        "bidirectional_mrr_multiple": 2.6730277758917014,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.030978214971034767,
+            "mrr_multiple": 2.4665663462350045,
+            "observed": {
+              "mrr": 0.05210116999489891,
+              "recall_at_1": 0.026004728132387706,
+              "recall_at_10": 0.07565011820330969,
+              "recall_at_20": 0.14420803782505912,
+              "recall_at_5": 0.0591016548463357
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 423,
+              "candidate_count": 392,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.442080378250591,
+              "mrr": 0.021122955023864142,
+              "recall_at_1": 0.003678776475129009,
+              "recall_at_10": 0.035901942395025775,
+              "recall_at_20": 0.07009314622883168,
+              "recall_at_5": 0.01818950997279111
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.039362554962338536,
+            "mrr_multiple": 2.881481833914216,
+            "observed": {
+              "mrr": 0.0602835940352745,
+              "recall_at_1": 0.02806122448979592,
+              "recall_at_10": 0.11734693877551021,
+              "recall_at_20": 0.18877551020408162,
+              "recall_at_5": 0.06887755102040816
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 392,
+              "candidate_count": 423,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.5561224489795917,
+              "mrr": 0.02092103907293597,
+              "recall_at_1": 0.0036787764751290775,
+              "recall_at_10": 0.035812226464115575,
+              "recall_at_20": 0.0697504911609944,
+              "recall_at_5": 0.018168452430478228
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.021021997048400055
+      },
+      "config_sha256": {
+        "best_checkpoint": "66d7fa040a3eb5c36a94257112b8dc4098cd2664e713011039e3058914c1a5e3",
+        "history": "66d7fa040a3eb5c36a94257112b8dc4098cd2664e713011039e3058914c1a5e3",
+        "last_checkpoint": "66d7fa040a3eb5c36a94257112b8dc4098cd2664e713011039e3058914c1a5e3",
+        "provenance": "66d7fa040a3eb5c36a94257112b8dc4098cd2664e713011039e3058914c1a5e3",
+        "recomputed": "66d7fa040a3eb5c36a94257112b8dc4098cd2664e713011039e3058914c1a5e3",
+        "summary": "66d7fa040a3eb5c36a94257112b8dc4098cd2664e713011039e3058914c1a5e3"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "9eb10c64fd05897162548a81871841724d9471ba5ed1c800b3d10a2c9229a45e",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 44,
+        "absolute_raw_maximum_mrr": 0.05619238201508671,
+        "completed": 59,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 44,
+        "selected_mrr": 0.05619238201508671
+      },
+      "failures": [],
+      "fold_index": 2,
+      "model_weight_sha256": {
+        "antibody": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 528641,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "antiberty_calm_mean_antigen_fold2_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_2.err": "c9bccb9a4c22c81a96c3d4e25126f981a6328823900115855cbf9dcefc7b03cb",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273256_2.out": "f7b8c836328b32417bcfd07fee274ccca595f8528309a5d3d4ecea7129a98c6c"
+        },
+        "primary": {
+          "Elapsed": "00:01:47",
+          "ExitCode": "0:0",
+          "JobID": "1273256_2",
+          "JobIDRaw": "1273256",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:02:33",
+            "ExitCode": "0:0",
+            "JobID": "1273256_0",
+            "JobIDRaw": "1273259",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          },
+          {
+            "Elapsed": "00:02:25",
+            "ExitCode": "0:0",
+            "JobID": "1273256_1",
+            "JobIDRaw": "1273289",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          },
+          {
+            "Elapsed": "00:01:47",
+            "ExitCode": "0:0",
+            "JobID": "1273256_2",
+            "JobIDRaw": "1273256",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "4e75baffd285eee1f257e12c12b1e1b59e01d675eeec02375bb580168e7fac2b"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db",
+      "valid": true,
+      "variant": "antiberty_calm_mean"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "ad4a9f1f0ed174db8dab46c172803f44f161532ec436a8b8c495452f8096ff26",
+        "history": "2afff1c54b669811cdc28814ba83789798ef9ae2e34c5f632d918c465da53fea",
+        "last_checkpoint": "44924ef2a170e8616042753b24a0020f3384d9a1bbacd1b4dbdd73d20afb13fc",
+        "provenance": "1ffe0174dd1b0bb00044a7e1eab2a5437102fb5a5d60844392199233ec35b028",
+        "training_summary": "802aaff5a68163ad8e6dfb35043f134d1e27f81de1a86442603409e6fa208c5b"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.07130406014426179,
+        "bidirectional_mrr_multiple": 4.14398895915584,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.02939547234587754,
+            "mrr_multiple": 2.693067263436481,
+            "observed": {
+              "mrr": 0.0467577313539529,
+              "recall_at_1": 0.02748414376321353,
+              "recall_at_10": 0.07399577167019028,
+              "recall_at_20": 0.12050739957716702,
+              "recall_at_5": 0.04439746300211417
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 473,
+              "candidate_count": 458,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.2896405919661733,
+              "mrr": 0.017362259008075358,
+              "recall_at_1": 0.0028158091527645257,
+              "recall_at_10": 0.02783920663380672,
+              "recall_at_20": 0.05504320669462405,
+              "recall_at_5": 0.014006051803504444
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.07879939981527315,
+            "mrr_multiple": 5.621397577815099,
+            "observed": {
+              "mrr": 0.09585038893457067,
+              "recall_at_1": 0.07205240174672489,
+              "recall_at_10": 0.1222707423580786,
+              "recall_at_20": 0.1812227074235808,
+              "recall_at_5": 0.0982532751091703
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 458,
+              "candidate_count": 473,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.331877729257642,
+              "mrr": 0.017050989119297515,
+              "recall_at_1": 0.002815809152764595,
+              "recall_at_10": 0.027340319810610653,
+              "recall_at_20": 0.0535231839843809,
+              "recall_at_5": 0.01387362069930561
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.017206624063686435
+      },
+      "config_sha256": {
+        "best_checkpoint": "ea36a214e57452992cfb3e164bd1f70bb5da317c6a1c518b079b9a06aafa47d2",
+        "history": "ea36a214e57452992cfb3e164bd1f70bb5da317c6a1c518b079b9a06aafa47d2",
+        "last_checkpoint": "ea36a214e57452992cfb3e164bd1f70bb5da317c6a1c518b079b9a06aafa47d2",
+        "provenance": "ea36a214e57452992cfb3e164bd1f70bb5da317c6a1c518b079b9a06aafa47d2",
+        "recomputed": "ea36a214e57452992cfb3e164bd1f70bb5da317c6a1c518b079b9a06aafa47d2",
+        "summary": "ea36a214e57452992cfb3e164bd1f70bb5da317c6a1c518b079b9a06aafa47d2"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "9eb10c64fd05897162548a81871841724d9471ba5ed1c800b3d10a2c9229a45e",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 58,
+        "absolute_raw_maximum_mrr": 0.07130406014426179,
+        "completed": 73,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 58,
+        "selected_mrr": 0.07130406014426179
+      },
+      "failures": [],
+      "fold_index": 0,
+      "model_weight_sha256": {
+        "antibody": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 528641,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "antiberty_chain_balanced_antigen_fold0_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_0.err": "80170ef640647cc0f40324472b5bafdbf169770fd24076e3e6584a63d7aab086",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_0.out": "11ff716ee6dc7bc943f55e68870504f887c63e3e276e0c5451459bd3fb849e1c"
+        },
+        "primary": {
+          "Elapsed": "00:02:32",
+          "ExitCode": "0:0",
+          "JobID": "1273257_0",
+          "JobIDRaw": "1273260",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:02:32",
+            "ExitCode": "0:0",
+            "JobID": "1273257_0",
+            "JobIDRaw": "1273260",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "dfe3d3b844764b9262c594425925aef4aec2a11ea279a4053fe8ef5040364ff0"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a",
+      "valid": true,
+      "variant": "antiberty_chain_balanced"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "35ad1093b22406aa275f5c852f46970dd587a2e2896cf48f6343429a3f450401",
+        "history": "c6a31b502c54b67a7ab96026da406d1cd17c26cd56263ef8b0006d2deb4c668a",
+        "last_checkpoint": "1b46a64dbbf1d5ff88afaffff90ce90021955feed0e66e8d5813e8cdcec807eb",
+        "provenance": "e5fbb431fb3a3e992e1c0617503c49835d44cea578d89a6d161cfae1db2801a0",
+        "training_summary": "b974c0a4d7daa6360732da7febf2ac8cd75eabb39cbf034518e82988ee35f503"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.05472517496586399,
+        "bidirectional_mrr_multiple": 2.576789201462722,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.018792996804390612,
+            "mrr_multiple": 1.8345082500630847,
+            "observed": {
+              "mrr": 0.041312842237877886,
+              "recall_at_1": 0.02186878727634195,
+              "recall_at_10": 0.05765407554671968,
+              "recall_at_20": 0.08946322067594434,
+              "recall_at_5": 0.039761431411530816
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 503,
+              "candidate_count": 322,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.2127236580516898,
+              "mrr": 0.022519845433487274,
+              "recall_at_1": 0.0037662225405331495,
+              "recall_at_10": 0.037403825247381006,
+              "recall_at_20": 0.07424870354411502,
+              "recall_at_5": 0.018773277343738043
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.04818187633257349,
+            "mrr_multiple": 3.4144501098606783,
+            "observed": {
+              "mrr": 0.06813750769385009,
+              "recall_at_1": 0.040372670807453416,
+              "recall_at_10": 0.11180124223602485,
+              "recall_at_20": 0.14906832298136646,
+              "recall_at_5": 0.07453416149068323
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 322,
+              "candidate_count": 503,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.8944099378881987,
+              "mrr": 0.0199556313612766,
+              "recall_at_1": 0.003766222540533211,
+              "recall_at_10": 0.03490166670123306,
+              "recall_at_20": 0.06575857432776645,
+              "recall_at_5": 0.018144430670124473
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.02123773839738194
+      },
+      "config_sha256": {
+        "best_checkpoint": "e3cb8675b75496c396a3e48616d1b311129b74aa3987b660744134e49d1135b9",
+        "history": "e3cb8675b75496c396a3e48616d1b311129b74aa3987b660744134e49d1135b9",
+        "last_checkpoint": "e3cb8675b75496c396a3e48616d1b311129b74aa3987b660744134e49d1135b9",
+        "provenance": "e3cb8675b75496c396a3e48616d1b311129b74aa3987b660744134e49d1135b9",
+        "recomputed": "e3cb8675b75496c396a3e48616d1b311129b74aa3987b660744134e49d1135b9",
+        "summary": "e3cb8675b75496c396a3e48616d1b311129b74aa3987b660744134e49d1135b9"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "9eb10c64fd05897162548a81871841724d9471ba5ed1c800b3d10a2c9229a45e",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 54,
+        "absolute_raw_maximum_mrr": 0.05472517496586399,
+        "completed": 69,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 54,
+        "selected_mrr": 0.05472517496586399
+      },
+      "failures": [],
+      "fold_index": 1,
+      "model_weight_sha256": {
+        "antibody": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 528641,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "antiberty_chain_balanced_antigen_fold1_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_1.err": "202422ff63a33aa245c09a63edec523edebaf001dc474f536f1c9d42a7aa13ab",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_1.out": "34858aeb03f9ef259b49ef3f65f29d35d67b25f9c540fe182ab8660fbfabea32"
+        },
+        "primary": {
+          "Elapsed": "00:02:14",
+          "ExitCode": "0:0",
+          "JobID": "1273257_1",
+          "JobIDRaw": "1273288",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:02:14",
+            "ExitCode": "0:0",
+            "JobID": "1273257_1",
+            "JobIDRaw": "1273288",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "dfe3d3b844764b9262c594425925aef4aec2a11ea279a4053fe8ef5040364ff0"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b",
+      "valid": true,
+      "variant": "antiberty_chain_balanced"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "43d8880e07c50328255697e19d755fcec0b325801b5ce5e250518949acfe6293",
+        "history": "baca71d5ac81c123d0e7c0f6ed9d4c8f17f80169f444e83366e18ec3631cd1df",
+        "last_checkpoint": "4cad43d37705bb715aceab0baf41218213cbbb7425d90bb96a7451eff48c327b",
+        "provenance": "b3cf0b8343020f78e2fc0fcfda1056d52eaa8fb24e5ecd36b774e164d789aaf7",
+        "training_summary": "f8e049bcbbbe6f9967fe3fd6be51fbb189e8fba4a6ff86d854b577fb53555031"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.05591437924470194,
+        "bidirectional_mrr_multiple": 2.659803400978856,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.029426814203065785,
+            "mrr_multiple": 2.393120146770192,
+            "observed": {
+              "mrr": 0.05054976922692993,
+              "recall_at_1": 0.026004728132387706,
+              "recall_at_10": 0.09219858156028368,
+              "recall_at_20": 0.14420803782505912,
+              "recall_at_5": 0.05200945626477541
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 423,
+              "candidate_count": 392,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.442080378250591,
+              "mrr": 0.021122955023864142,
+              "recall_at_1": 0.003678776475129009,
+              "recall_at_10": 0.035901942395025775,
+              "recall_at_20": 0.07009314622883168,
+              "recall_at_5": 0.01818950997279111
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.040357950189537986,
+            "mrr_multiple": 2.9290605045399554,
+            "observed": {
+              "mrr": 0.06127898926247395,
+              "recall_at_1": 0.02806122448979592,
+              "recall_at_10": 0.12244897959183673,
+              "recall_at_20": 0.1836734693877551,
+              "recall_at_5": 0.08163265306122448
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 392,
+              "candidate_count": 423,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.5561224489795917,
+              "mrr": 0.02092103907293597,
+              "recall_at_1": 0.0036787764751290775,
+              "recall_at_10": 0.035812226464115575,
+              "recall_at_20": 0.0697504911609944,
+              "recall_at_5": 0.018168452430478228
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.021021997048400055
+      },
+      "config_sha256": {
+        "best_checkpoint": "6dcfd96c6992e95c641e7e0be85bda8d7bfaa7e9ea0142895d842ce5a2e3f0fb",
+        "history": "6dcfd96c6992e95c641e7e0be85bda8d7bfaa7e9ea0142895d842ce5a2e3f0fb",
+        "last_checkpoint": "6dcfd96c6992e95c641e7e0be85bda8d7bfaa7e9ea0142895d842ce5a2e3f0fb",
+        "provenance": "6dcfd96c6992e95c641e7e0be85bda8d7bfaa7e9ea0142895d842ce5a2e3f0fb",
+        "recomputed": "6dcfd96c6992e95c641e7e0be85bda8d7bfaa7e9ea0142895d842ce5a2e3f0fb",
+        "summary": "6dcfd96c6992e95c641e7e0be85bda8d7bfaa7e9ea0142895d842ce5a2e3f0fb"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "9eb10c64fd05897162548a81871841724d9471ba5ed1c800b3d10a2c9229a45e",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 52,
+        "absolute_raw_maximum_mrr": 0.05591437924470194,
+        "completed": 67,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 52,
+        "selected_mrr": 0.05591437924470194
+      },
+      "failures": [],
+      "fold_index": 2,
+      "model_weight_sha256": {
+        "antibody": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 528641,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "antiberty_chain_balanced_antigen_fold2_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_2.err": "7a78822d5d2505b8359451cbb9a6a098571379f851684de6b4d24da55cc0d3f7",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273257_2.out": "43e873b796102efedccb5309ed1da0eba2c6f357f48bef1fb6946e2ba3f29aa3"
+        },
+        "primary": {
+          "Elapsed": "00:02:01",
+          "ExitCode": "0:0",
+          "JobID": "1273257_2",
+          "JobIDRaw": "1273257",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:02:32",
+            "ExitCode": "0:0",
+            "JobID": "1273257_0",
+            "JobIDRaw": "1273260",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          },
+          {
+            "Elapsed": "00:02:14",
+            "ExitCode": "0:0",
+            "JobID": "1273257_1",
+            "JobIDRaw": "1273288",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          },
+          {
+            "Elapsed": "00:02:01",
+            "ExitCode": "0:0",
+            "JobID": "1273257_2",
+            "JobIDRaw": "1273257",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=antiberty_chain_balanced,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "dfe3d3b844764b9262c594425925aef4aec2a11ea279a4053fe8ef5040364ff0"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db",
+      "valid": true,
+      "variant": "antiberty_chain_balanced"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "895d388189f49304345931b1371d062b7aa4b50d8fcb99f01ac451bf399ec031",
+        "history": "d68ee5428c44fcefb6ec8806e42aceb85b9bab46cddc25d73f1244f9eba8728b",
+        "last_checkpoint": "9b9ebeb50be7e590e26508706bb5aee188085d912f666cd39890fc6d0350f07d",
+        "provenance": "512f58cc6124eb811b0e0261002ad55c809fdcc7d023dea97b1bb307f89e58cf",
+        "training_summary": "1e0cdce04a3e87962be95b907d85b5d4348b78c805fabbb8377f4a195b2e77ac"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.0637463463010876,
+        "bidirectional_mrr_multiple": 3.704756148861327,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.024777080050144243,
+            "mrr_multiple": 2.4270654549399464,
+            "observed": {
+              "mrr": 0.0421393390582196,
+              "recall_at_1": 0.016913319238900635,
+              "recall_at_10": 0.07822410147991543,
+              "recall_at_20": 0.13530655391120508,
+              "recall_at_5": 0.04439746300211417
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 473,
+              "candidate_count": 458,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.2896405919661733,
+              "mrr": 0.017362259008075358,
+              "recall_at_1": 0.0028158091527645257,
+              "recall_at_10": 0.02783920663380672,
+              "recall_at_20": 0.05504320669462405,
+              "recall_at_5": 0.014006051803504444
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.06830236442465806,
+            "mrr_multiple": 5.005771392309238,
+            "observed": {
+              "mrr": 0.08535335354395558,
+              "recall_at_1": 0.05895196506550218,
+              "recall_at_10": 0.10262008733624454,
+              "recall_at_20": 0.14847161572052403,
+              "recall_at_5": 0.08733624454148471
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 458,
+              "candidate_count": 473,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.331877729257642,
+              "mrr": 0.017050989119297515,
+              "recall_at_1": 0.002815809152764595,
+              "recall_at_10": 0.027340319810610653,
+              "recall_at_20": 0.0535231839843809,
+              "recall_at_5": 0.01387362069930561
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.017206624063686435
+      },
+      "config_sha256": {
+        "best_checkpoint": "3dd3caafff662a867b262aff690b0af26f17d7cb26b018ebcf31e270199bd7e7",
+        "history": "3dd3caafff662a867b262aff690b0af26f17d7cb26b018ebcf31e270199bd7e7",
+        "last_checkpoint": "3dd3caafff662a867b262aff690b0af26f17d7cb26b018ebcf31e270199bd7e7",
+        "provenance": "3dd3caafff662a867b262aff690b0af26f17d7cb26b018ebcf31e270199bd7e7",
+        "recomputed": "3dd3caafff662a867b262aff690b0af26f17d7cb26b018ebcf31e270199bd7e7",
+        "summary": "3dd3caafff662a867b262aff690b0af26f17d7cb26b018ebcf31e270199bd7e7"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "03a9e0e4b4acf8b3b76cca651d65c4f278f5ac5a8985d3b12fe001da7809bf36",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 95,
+        "absolute_raw_maximum_mrr": 0.0637463463010876,
+        "completed": 100,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 95,
+        "selected_mrr": 0.0637463463010876
+      },
+      "failures": [],
+      "fold_index": 0,
+      "model_weight_sha256": {
+        "antibody": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 726785,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "esm2_calm_mean_antigen_fold0_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_0.err": "0f5bb854a34101996a96ea50a07fbcd60a97876f1ef54cf2ecb491f834a2dd98",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_0.out": "b08024c718e591e3520f053f5d534475718360eba74ebf3df68462b45ce079ea"
+        },
+        "primary": {
+          "Elapsed": "00:04:01",
+          "ExitCode": "0:0",
+          "JobID": "1273255_0",
+          "JobIDRaw": "1273258",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:04:01",
+            "ExitCode": "0:0",
+            "JobID": "1273255_0",
+            "JobIDRaw": "1273258",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "044009c37917bf1c3940508136072b04928913f4d77fbef08e34757b8226343d"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a",
+      "valid": true,
+      "variant": "esm2_calm_mean"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "a58292d0c846f23d08d3125419877c17b623ef7e0ace110fc51108c8ea38bcce",
+        "history": "6ed04716596716a1bcba37bae22999bf2d99d9bb3d255bbec36d710d863878f3",
+        "last_checkpoint": "0f30249ed037bd0753abfd8fa94b001e43db097937fb1c5814310bf207d4713d",
+        "provenance": "c78638b45bd976952088882db2f5624abf1483c345f1acd761ea81fced55f003",
+        "training_summary": "b9a712bf52d7f414951d0b5fa10fcb68e2a8fe67f2aad9930ca297a6d85ed5fa"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.029457111977472618,
+        "bidirectional_mrr_multiple": 1.3870173662702199,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": false,
+            "mrr_excess": -0.004590406512286909,
+            "mrr_multiple": 0.7961617220755467,
+            "observed": {
+              "mrr": 0.017929438921200365,
+              "recall_at_1": 0.0,
+              "recall_at_10": 0.02584493041749503,
+              "recall_at_20": 0.061630218687872766,
+              "recall_at_5": 0.015904572564612324
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 503,
+              "candidate_count": 322,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.2127236580516898,
+              "mrr": 0.022519845433487274,
+              "recall_at_1": 0.0037662225405331495,
+              "recall_at_10": 0.037403825247381006,
+              "recall_at_20": 0.07424870354411502,
+              "recall_at_5": 0.018773277343738043
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.02102915367246827,
+            "mrr_multiple": 2.0537954571196786,
+            "observed": {
+              "mrr": 0.04098478503374487,
+              "recall_at_1": 0.018633540372670808,
+              "recall_at_10": 0.06521739130434782,
+              "recall_at_20": 0.10559006211180125,
+              "recall_at_5": 0.052795031055900624
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 322,
+              "candidate_count": 503,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.8944099378881987,
+              "mrr": 0.0199556313612766,
+              "recall_at_1": 0.003766222540533211,
+              "recall_at_10": 0.03490166670123306,
+              "recall_at_20": 0.06575857432776645,
+              "recall_at_5": 0.018144430670124473
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.02123773839738194
+      },
+      "config_sha256": {
+        "best_checkpoint": "b62335ab20169d53246564448b8dbf0a87517fc5fe417e3d777180a9f13a7331",
+        "history": "b62335ab20169d53246564448b8dbf0a87517fc5fe417e3d777180a9f13a7331",
+        "last_checkpoint": "b62335ab20169d53246564448b8dbf0a87517fc5fe417e3d777180a9f13a7331",
+        "provenance": "b62335ab20169d53246564448b8dbf0a87517fc5fe417e3d777180a9f13a7331",
+        "recomputed": "b62335ab20169d53246564448b8dbf0a87517fc5fe417e3d777180a9f13a7331",
+        "summary": "b62335ab20169d53246564448b8dbf0a87517fc5fe417e3d777180a9f13a7331"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "03a9e0e4b4acf8b3b76cca651d65c4f278f5ac5a8985d3b12fe001da7809bf36",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 34,
+        "absolute_raw_maximum_mrr": 0.029457111977472618,
+        "completed": 49,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 34,
+        "selected_mrr": 0.029457111977472618
+      },
+      "failures": [],
+      "fold_index": 1,
+      "model_weight_sha256": {
+        "antibody": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 726785,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "esm2_calm_mean_antigen_fold1_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_1.err": "f6cc358194d669f1c16bc7436091179d503db8f9b8a1a52152cc3e861ce0e705",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_1.out": "e394c5900b88551c2ec17105da602d7cd48505264101092b750efb3fb71b33dc"
+        },
+        "primary": {
+          "Elapsed": "00:01:33",
+          "ExitCode": "0:0",
+          "JobID": "1273255_1",
+          "JobIDRaw": "1273308",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:01:33",
+            "ExitCode": "0:0",
+            "JobID": "1273255_1",
+            "JobIDRaw": "1273308",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "044009c37917bf1c3940508136072b04928913f4d77fbef08e34757b8226343d"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b",
+      "valid": true,
+      "variant": "esm2_calm_mean"
+    },
+    {
+      "artifact_sha256": {
+        "best_checkpoint": "180b97fa2f229c3d13dc99eea8dd4a1001446e676d679838b4c3c26b76354787",
+        "history": "dde769dd1e8c1350ee46e18614eb24efcc5d5a3e823895b60a197cd8ca558503",
+        "last_checkpoint": "ae305c44e0057e33490ccc67b1d214d79721560cb72a4aa8cae7cb0b4c00299b",
+        "provenance": "72a78da5f7b4552c900af3a4b599067ece2750cf976a45f2de34f8a75e1edc9d",
+        "training_summary": "42adae2cbd26f004cc2db9d7daee2152492e967f67faac082fe7e5355278a466"
+      },
+      "authority_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+      "best_validation": {
+        "bidirectional_mrr": 0.04257404251864817,
+        "bidirectional_mrr_multiple": 2.025213989928155,
+        "directions": {
+          "antibody_to_antigen": {
+            "above_random": true,
+            "mrr_excess": 0.015160134026809931,
+            "mrr_multiple": 1.7177089573727928,
+            "observed": {
+              "mrr": 0.036283089050674074,
+              "recall_at_1": 0.01182033096926714,
+              "recall_at_10": 0.05673758865248227,
+              "recall_at_20": 0.12529550827423167,
+              "recall_at_5": 0.04491725768321513
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 423,
+              "candidate_count": 392,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.442080378250591,
+              "mrr": 0.021122955023864142,
+              "recall_at_1": 0.003678776475129009,
+              "recall_at_10": 0.035901942395025775,
+              "recall_at_20": 0.07009314622883168,
+              "recall_at_5": 0.01818950997279111
+            }
+          },
+          "antigen_to_antibody": {
+            "above_random": true,
+            "mrr_excess": 0.027943956913686296,
+            "mrr_multiple": 2.3356868564829254,
+            "observed": {
+              "mrr": 0.048864995986622264,
+              "recall_at_1": 0.02040816326530612,
+              "recall_at_10": 0.09183673469387756,
+              "recall_at_20": 0.1326530612244898,
+              "recall_at_5": 0.05612244897959184
+            },
+            "random_exact_multi_positive": {
+              "anchor_count": 392,
+              "candidate_count": 423,
+              "derivation": "P(best_rank=r)=C(N-r,m-1)/C(N,m); P(best_rank<=k)=1-C(N-k,m)/C(N,m)",
+              "mean_positive_count": 1.5561224489795917,
+              "mrr": 0.02092103907293597,
+              "recall_at_1": 0.0036787764751290775,
+              "recall_at_10": 0.035812226464115575,
+              "recall_at_20": 0.0697504911609944,
+              "recall_at_5": 0.018168452430478228
+            }
+          }
+        },
+        "exact_random_bidirectional_mrr": 0.021021997048400055
+      },
+      "config_sha256": {
+        "best_checkpoint": "78a2dd62a76ac7b4e9b8f265dfa6ef5de5973ba5a9b140a519b1e2072e9cb676",
+        "history": "78a2dd62a76ac7b4e9b8f265dfa6ef5de5973ba5a9b140a519b1e2072e9cb676",
+        "last_checkpoint": "78a2dd62a76ac7b4e9b8f265dfa6ef5de5973ba5a9b140a519b1e2072e9cb676",
+        "provenance": "78a2dd62a76ac7b4e9b8f265dfa6ef5de5973ba5a9b140a519b1e2072e9cb676",
+        "recomputed": "78a2dd62a76ac7b4e9b8f265dfa6ef5de5973ba5a9b140a519b1e2072e9cb676",
+        "summary": "78a2dd62a76ac7b4e9b8f265dfa6ef5de5973ba5a9b140a519b1e2072e9cb676"
+      },
+      "embedding_content_manifest_sha256": {
+        "antibody": "03a9e0e4b4acf8b3b76cca651d65c4f278f5ac5a8985d3b12fe001da7809bf36",
+        "antigen": "d4157971ba2e977d1125e896fe13147371292495fa04a47f62b32ebe8f4ac97e"
+      },
+      "epochs": {
+        "absolute_raw_maximum": 51,
+        "absolute_raw_maximum_mrr": 0.04257404251864817,
+        "completed": 66,
+        "early_stop_or_max_epoch_clean": true,
+        "history_contiguous_from_one": true,
+        "min_delta": 0.0001,
+        "raw_maximum_minus_selected": 0.0,
+        "selected": 51,
+        "selected_mrr": 0.04257404251864817
+      },
+      "failures": [],
+      "fold_index": 2,
+      "model_weight_sha256": {
+        "antibody": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antigen": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+      },
+      "parameter_count": 726785,
+      "protocol": {
+        "mismatches": [],
+        "semantic_match": true
+      },
+      "run_name": "esm2_calm_mean_antigen_fold2_seed42_b1024",
+      "scientific_scope": {
+        "frozen_test_records_selected": false,
+        "frozen_test_used": false,
+        "sealed_source_splits": [
+          "validation",
+          "test"
+        ],
+        "selected_sealed_overlap_count": 0,
+        "source_pool_splits": [
+          "train"
+        ]
+      },
+      "slurm": {
+        "available": true,
+        "command_exit_code": 0,
+        "error_pattern_hits": [],
+        "log_sha256": {
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_2.err": "bdb172a62d6088f10fd3501908636c095728bd080713e1f0653bafd698ab5a3b",
+          "/cluster/project/model_deployment/logs/asym-retrieval-fold-1273255_2.out": "216bcd29c8b64fe81d1f445b77f78fcd4cf76762f9cff34fdf422fce28f62186"
+        },
+        "primary": {
+          "Elapsed": "00:02:08",
+          "ExitCode": "0:0",
+          "JobID": "1273255_2",
+          "JobIDRaw": "1273255",
+          "JobName": "asym-retrieval-fold",
+          "State": "COMPLETED",
+          "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+          "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+          "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+          "WorkDir": "/cluster/project/model_deployment"
+        },
+        "rows": [
+          {
+            "Elapsed": "00:04:01",
+            "ExitCode": "0:0",
+            "JobID": "1273255_0",
+            "JobIDRaw": "1273258",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          },
+          {
+            "Elapsed": "00:01:33",
+            "ExitCode": "0:0",
+            "JobID": "1273255_1",
+            "JobIDRaw": "1273308",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          },
+          {
+            "Elapsed": "00:02:08",
+            "ExitCode": "0:0",
+            "JobID": "1273255_2",
+            "JobIDRaw": "1273255",
+            "JobName": "asym-retrieval-fold",
+            "State": "COMPLETED",
+            "StdErr": "/cluster/project/model_deployment/logs/%x-%A_%a.err",
+            "StdOut": "/cluster/project/model_deployment/logs/%x-%A_%a.out",
+            "SubmitLine": "sbatch --export=ALL,RETRIEVAL_FOLD_INDEX_SHA256=feca6a1ec6761aa76baae847a1932fbf910568466dee7a34f133df27566fbc2d,RETRIEVAL_VARIANT=esm2_calm_mean,RETRIEVAL_SEED=42 jobs/interaction_first/asymmetric_partner_retrieval_fold_train.sbatch",
+            "WorkDir": "/cluster/project/model_deployment"
+          }
+        ],
+        "submit_line_sha256": "044009c37917bf1c3940508136072b04928913f4d77fbef08e34757b8226343d"
+      },
+      "source_sha256": {
+        "current_physical_files": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "f587f97238192bccb3bb8f5af0314395261de1dbe229aad959aedc92df569ee6",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        },
+        "current_snapshot_matches_run": false,
+        "embedded_at_run": {
+          "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+          "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+          "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+          "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+        }
+      },
+      "split_sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db",
+      "valid": true,
+      "variant": "esm2_calm_mean"
+    }
+  ],
+  "scope": "train-only antigen-fold architecture selection; no fixed holdout evaluation",
+  "selection_validity_assessment": {
+    "assessment": "The caveats weaken bitwise launch provenance but do not invalidate the independently recomputed metrics, fold-wise macro selection, or winner.",
+    "current_source_snapshot_matches_all_runs": false,
+    "metric_or_selection_invalidated_by_caveats": false
+  },
+  "top_level_failures": [],
+  "valid": true,
+  "verdict": "pass_with_provenance_caveats"
+}
