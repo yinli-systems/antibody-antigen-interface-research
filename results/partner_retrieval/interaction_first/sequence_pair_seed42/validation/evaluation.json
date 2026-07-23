@@ -1,0 +1,123 @@
+{
+  "artifacts": {
+    "node_predictions": "/cluster/project/model_deployment/results/sabdab2/interaction_first/sequence_pair_seed42/validation/node_predictions.parquet",
+    "pair_predictions": "/cluster/project/model_deployment/results/sabdab2/interaction_first/sequence_pair_seed42/validation/pair_predictions.parquet",
+    "partner_scores": "/cluster/project/model_deployment/results/sabdab2/interaction_first/sequence_pair_seed42/validation/partner_scores.parquet"
+  },
+  "checkpoint": "/cluster/project/model_deployment/results/sabdab2/interaction_first/sequence_pair_seed42/checkpoints/best.pt",
+  "checkpoint_sha256": "3ef92c82a1fa3e04d56a29a352c481915439e0b6f1cb3a71399409f8407483cb",
+  "epitope_matched_minus_mean_wrong_auprc": {
+    "cluster_count": 67,
+    "confidence": 0.95,
+    "instance_count": 216,
+    "iterations": 2000,
+    "lower": -0.003467285035637251,
+    "mean": 0.001129484223766959,
+    "seed": 42,
+    "upper": 0.0065180904054011534
+  },
+  "format_version": "sabdab2_interaction_first_v1",
+  "instance_count": 216,
+  "negative_policy": {
+    "count": 9,
+    "hard_pool_size": 64,
+    "unknown pairs are ranked but never assigned all-zero contact labels": true
+  },
+  "nodes": {
+    "epitope": {
+      "macro": {
+        "accuracy": 0.8937700876525251,
+        "auprc": 0.18540105770417603,
+        "auroc": 0.6213620530265189,
+        "f1": 0.0,
+        "mcc": 0.0,
+        "precision": 0.0,
+        "prevalence": 0.10622991234747489,
+        "recall": 0.0
+      },
+      "micro": {
+        "accuracy": 0.9260065501755211,
+        "auprc": 0.13658014851969902,
+        "auroc": 0.6807451297311706,
+        "count": 50991,
+        "f1": 0.0,
+        "mcc": 0.0,
+        "positive_count": 3773,
+        "precision": 0.0,
+        "prevalence": 0.07399344982447884,
+        "recall": 0.0,
+        "threshold": 0.5
+      }
+    },
+    "paratope": {
+      "macro": {
+        "accuracy": 0.8995650824397727,
+        "auprc": 0.6671192617077386,
+        "auroc": 0.9348142297743854,
+        "f1": 0.028708695674060387,
+        "mcc": 0.036501501057480235,
+        "precision": 0.09544753086419754,
+        "prevalence": 0.10182554218373402,
+        "recall": 0.018141706321054146
+      },
+      "micro": {
+        "accuracy": 0.9045153374233129,
+        "auprc": 0.5119355556627445,
+        "auroc": 0.9214717070641456,
+        "count": 40750,
+        "f1": 0.03281133482475764,
+        "mcc": 0.10519523798505179,
+        "positive_count": 3938,
+        "precision": 0.7764705882352941,
+        "prevalence": 0.09663803680981595,
+        "recall": 0.01675977653631285,
+        "threshold": 0.5
+      }
+    }
+  },
+  "pair": {
+    "macro": {
+      "accuracy": 0.9895245675186227,
+      "auprc": 0.020591833731604975,
+      "auroc": 0.9176415444659027,
+      "contact_iou": 0.013656304666129557,
+      "f1": 0.02634944693221391,
+      "mcc": 0.03723225410778864,
+      "precision": 0.024746104755805933,
+      "precision_at_true_contact_count": 0.024965893764475597,
+      "prevalence": 0.0014495235563783831,
+      "recall": 0.11016428589905862
+    },
+    "micro": {
+      "accuracy": 0.9940345582474499,
+      "auprc": 0.011927283117810576,
+      "auroc": 0.9258553719967,
+      "contact_iou": 0.01733874605322508,
+      "count": 9129919,
+      "f1": 0.03408647536622566,
+      "mcc": 0.044298200886795425,
+      "positive_count": 9051,
+      "precision": 0.020302102038660612,
+      "precision_at_true_contact_count": 0.021434095680035355,
+      "prevalence": 0.000991356002172637,
+      "recall": 0.10617611313666998,
+      "threshold": 0.5
+    }
+  },
+  "partner_retrieval": {
+    "candidate_count_per_instance": 10,
+    "instance_count": 216,
+    "mean_hardest_negative_score": 1.0287975300517347,
+    "mean_matched_minus_hardest_negative": -0.48204397555026746,
+    "mean_matched_score": 0.5467535545014672,
+    "mean_rank": 5.587962962962963,
+    "median_rank": 6.0,
+    "recall_at_1": 0.05092592592592592,
+    "recall_at_10": 1.0,
+    "recall_at_5": 0.4722222222222222
+  },
+  "split": "validation",
+  "split_manifest_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+  "stage": "evaluate",
+  "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection"
+}

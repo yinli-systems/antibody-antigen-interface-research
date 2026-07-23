@@ -1,0 +1,125 @@
+{
+  "analysis": "post_hoc_development_marginal_ablation",
+  "epitope": {
+    "max": {
+      "macro_auprc": 0.17995682509135355,
+      "macro_auroc": 0.6134041754709564,
+      "micro_auprc": 0.13027173814350518,
+      "micro_auroc": 0.6727407380805263,
+      "node_count": 50991,
+      "positive_count": 3773
+    },
+    "mean": {
+      "macro_auprc": 0.18540105770417603,
+      "macro_auroc": 0.6213620530265189,
+      "micro_auprc": 0.13658016108546275,
+      "micro_auroc": 0.6807451297311705,
+      "node_count": 50991,
+      "positive_count": 3773
+    },
+    "noisy_or": {
+      "macro_auprc": 0.18367180194332042,
+      "macro_auroc": 0.6207324492371342,
+      "micro_auprc": 0.14190948182809532,
+      "micro_auroc": 0.6945960802097829,
+      "node_count": 50991,
+      "positive_count": 3773
+    },
+    "top1pct": {
+      "macro_auprc": 0.18303666644573569,
+      "macro_auroc": 0.6141520779807494,
+      "micro_auprc": 0.1310411897322082,
+      "micro_auroc": 0.6741065910156552,
+      "node_count": 50991,
+      "positive_count": 3773
+    },
+    "top2": {
+      "macro_auprc": 0.18161953478745557,
+      "macro_auroc": 0.6139000511787991,
+      "micro_auprc": 0.13114463249609284,
+      "micro_auroc": 0.6753282312466653,
+      "node_count": 50991,
+      "positive_count": 3773
+    },
+    "top3": {
+      "macro_auprc": 0.18343926770619548,
+      "macro_auroc": 0.6146492082218918,
+      "micro_auprc": 0.13194149117052928,
+      "micro_auroc": 0.6773852296845022,
+      "node_count": 50991,
+      "positive_count": 3773
+    },
+    "top5": {
+      "macro_auprc": 0.18372178149029655,
+      "macro_auroc": 0.6151624763963107,
+      "micro_auprc": 0.1330779582611509,
+      "micro_auroc": 0.6799401891112536,
+      "node_count": 50991,
+      "positive_count": 3773
+    }
+  },
+  "instance_count": 216,
+  "limitations": [
+    "This analysis reuses a previously inspected development validation set.",
+    "It compares score aggregation only and is not evidence from a retrained model."
+  ],
+  "pair_prediction_path": "/cluster/project/model_deployment/results/sabdab2/interaction_first/sequence_pair_seed42/validation/pair_predictions.parquet",
+  "paratope": {
+    "max": {
+      "macro_auprc": 0.6416341346745037,
+      "macro_auroc": 0.931685967975799,
+      "micro_auprc": 0.5039489872784315,
+      "micro_auroc": 0.924628582372575,
+      "node_count": 40750,
+      "positive_count": 3938
+    },
+    "mean": {
+      "macro_auprc": 0.6671192617077386,
+      "macro_auroc": 0.9348142297743854,
+      "micro_auprc": 0.5119355780826982,
+      "micro_auroc": 0.9214717105132384,
+      "node_count": 40750,
+      "positive_count": 3938
+    },
+    "noisy_or": {
+      "macro_auprc": 0.6280660034159088,
+      "macro_auroc": 0.9332134117844773,
+      "micro_auprc": 0.5324178440890147,
+      "micro_auroc": 0.9319810410817744,
+      "node_count": 40750,
+      "positive_count": 3938
+    },
+    "top1pct": {
+      "macro_auprc": 0.6469449483992823,
+      "macro_auroc": 0.932297324187037,
+      "micro_auprc": 0.5052335238127721,
+      "micro_auroc": 0.9235029709381671,
+      "node_count": 40750,
+      "positive_count": 3938
+    },
+    "top2": {
+      "macro_auprc": 0.6447910299627518,
+      "macro_auroc": 0.9323277445628974,
+      "micro_auprc": 0.5073398849858821,
+      "micro_auroc": 0.9248293333697485,
+      "node_count": 40750,
+      "positive_count": 3938
+    },
+    "top3": {
+      "macro_auprc": 0.6476967065885111,
+      "macro_auroc": 0.9324990207086272,
+      "micro_auprc": 0.5092964433321987,
+      "micro_auroc": 0.9249532247830243,
+      "node_count": 40750,
+      "positive_count": 3938
+    },
+    "top5": {
+      "macro_auprc": 0.648365530915041,
+      "macro_auroc": 0.9324914984045052,
+      "micro_auprc": 0.5117058970223413,
+      "micro_auroc": 0.9251499541380246,
+      "node_count": 40750,
+      "positive_count": 3938
+    }
+  }
+}
