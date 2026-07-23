@@ -1,0 +1,21 @@
+[project]
+name = "antibody-antigen-interface-research"
+version = "0.1.0"
+description = "Partner-aware antibody-antigen interface modeling research artifacts"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "scikit-learn",
+  "scipy",
+  "torch",
+  "torchmetrics",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
