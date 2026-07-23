@@ -1,0 +1,125 @@
+{
+  "benchmark": "frozen SAbDab2",
+  "completed_at": "2026-07-23T00:50:00+08:00",
+  "final_run_id": "final_v3_ensemble_seed42",
+  "model": "SPPIDER-seq v2.1.0 released architecture",
+  "protocol": {
+    "canonical_test_cluster_count": 84,
+    "canonical_test_instance_count": 455,
+    "final_test_opened_after_model_and_threshold_selection": true,
+    "paired_cluster_bootstrap_replicates": 1000,
+    "train_instance_count": 2727,
+    "train_validation_cluster_overlap_count": 0,
+    "train_validation_query_sequence_overlap_count": 0,
+    "validation_instance_count": 481,
+    "validation_test_cluster_overlap_count": 0,
+    "validation_test_query_sequence_overlap_count": 0
+  },
+  "roles": {
+    "paratope": {
+      "calibration": {
+        "brier_score": 0.04954920942435821,
+        "equal_mass_ece": 0.004178083657417493
+      },
+      "final_micro": {
+        "auprc": 0.6510892460656408,
+        "auroc": 0.9486222255565321,
+        "f1": 0.6401777149492603,
+        "mcc": 0.6023340783236582,
+        "threshold": 0.32534101605415344
+      },
+      "final_micro_cluster_bootstrap_ci95": {
+        "auprc": [0.6269058552431018, 0.6783403897319024],
+        "auroc": [0.9417296003554984, 0.953729837384625],
+        "f1": [0.6241664915445971, 0.6566857867210342],
+        "mcc": [0.583578009610723, 0.6201750285502029]
+      },
+      "final_minus_previous_point": {
+        "auprc": 0.037670476027295674,
+        "auroc": 0.005729295907842213,
+        "f1": 0.07489610169384964,
+        "mcc": 0.0735731941214467
+      },
+      "final_minus_previous_paired_cluster_bootstrap_ci95": {
+        "auprc": [0.017024771135278984, 0.058822471967247415],
+        "auroc": [0.002902803039674479, 0.00850659640656679],
+        "f1": [0.0358694302989083, 0.11933315713108397],
+        "mcc": [0.038606376474596776, 0.10719225410604262]
+      },
+      "matched_minus_partner_permuted": {
+        "auprc": 0.011849823364735168,
+        "auprc_paired_cluster_bootstrap_ci95": [0.0002116224787088424, 0.026145238595054306],
+        "auroc": 0.0012164949392949875,
+        "auroc_paired_cluster_bootstrap_ci95": [-0.001008609050295639, 0.004616492613342587]
+      },
+      "residue_count": 89938,
+      "validation_multiseed": {
+        "auprc_mean": 0.679397,
+        "auprc_sample_sd": 0.005976,
+        "auroc_mean": 0.958735,
+        "auroc_sample_sd": 0.000587,
+        "seeds": [17, 42, 73]
+      }
+    },
+    "epitope": {
+      "calibration": {
+        "brier_score": 0.0739946962475328,
+        "equal_mass_ece": 0.02349720248194138
+      },
+      "final_micro": {
+        "auprc": 0.1454445354058009,
+        "auroc": 0.6717651372480649,
+        "f1": 0.21043293990094375,
+        "mcc": 0.12688535963084105,
+        "threshold": 0.0823112279176712
+      },
+      "final_micro_cluster_bootstrap_ci95": {
+        "auprc": [0.12133188676680078, 0.1668480239188798],
+        "auroc": [0.6257848661173161, 0.7081379715638035],
+        "f1": [0.17854062706370039, 0.2380912792128936],
+        "mcc": [0.08466143705957346, 0.16197083164434486]
+      },
+      "final_minus_previous_point": {
+        "auprc": 0.030356257192323377,
+        "auroc": 0.062125504054657776,
+        "f1": 0.1804294511231789,
+        "mcc": 0.09078819708250477
+      },
+      "final_minus_previous_paired_cluster_bootstrap_ci95": {
+        "auprc": [0.012954362630684304, 0.04388613945012926],
+        "auroc": [0.027364728105858424, 0.08936617593479701],
+        "f1": [0.14540034068337102, 0.21448562172861985],
+        "mcc": [0.04991117819087648, 0.1319711917733771]
+      },
+      "matched_minus_partner_permuted": {
+        "auprc": 0.002915060781477158,
+        "auprc_paired_cluster_bootstrap_ci95": [-0.0004891468590668669, 0.006323409223716314],
+        "auroc": 0.004470221872436619,
+        "auroc_paired_cluster_bootstrap_ci95": [-0.0023357911463629173, 0.010203275806541125]
+      },
+      "residue_count": 97252,
+      "validation_multiseed": {
+        "auprc_mean": 0.154151,
+        "auprc_sample_sd": 0.006831,
+        "auroc_mean": 0.739283,
+        "auroc_sample_sd": 0.007761,
+        "seeds": [17, 42, 73]
+      }
+    }
+  },
+  "verification": {
+    "candidate_projection_row_count_per_role": 18473412,
+    "exact_key_equality": true,
+    "nonfinite_score_count": 0,
+    "null_score_count": 0,
+    "official_checkpoint_strict_load_tested": true,
+    "test_count": 11,
+    "test_status": "passed"
+  },
+  "scientific_interpretation": {
+    "native_pair_interaction_matrix": false,
+    "partner_dependence": "weak; paratope AUPRC shows a small paired advantage, while epitope differences are not conclusive",
+    "primary_strength": "high-quality paratope marginal residue prediction",
+    "primary_weakness": "epitope marginal prediction remains modest and below the structure-aided EpiFormer result on the same frozen benchmark"
+  }
+}

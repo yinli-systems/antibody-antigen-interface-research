@@ -1,0 +1,78 @@
+{
+  "completed_at": "2026-07-22 17:52:04 CST",
+  "format_version": "sabdab2_sppider_seq_v1",
+  "benchmark": {
+    "instance_count": 3663,
+    "test_instance_count": 455,
+    "candidate_pair_count": 190509766,
+    "test_candidate_pair_count": 18473412,
+    "manifest_sha256": "15f7819193d79f637849744b7cc8160b34b81b5bc2f50671c0cd07560b524377"
+  },
+  "esm_snapshot": {
+    "repository": "facebook/esm2_t33_650M_UR50D",
+    "revision": "08e4846e537177426273712802403f7ba8261b6c",
+    "model_size_bytes": 2609506392,
+    "model_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+    "embedding_count": 3015,
+    "embedding_failure_count": 0
+  },
+  "training": {
+    "implementation_defaults": {
+      "optimizer": "Adam",
+      "learning_rate": 0.0001,
+      "weight_decay": 0.0,
+      "batch_size": 1,
+      "seed": 42
+    },
+    "paper_settings": {
+      "loss": "binary cross-entropy",
+      "maximum_epochs": 50,
+      "early_stopping_patience": 10,
+      "checkpoint_selection": "minimum validation loss"
+    },
+    "paratope": {
+      "stopped_epoch": 19,
+      "best_epoch": 9,
+      "best_validation_loss": 0.14209366764760378,
+      "best_checkpoint_sha256": "e49d694e3fb256098ef6468165a621a577dfeec7ca529b9b11ac1d87e0e5d736"
+    },
+    "epitope": {
+      "stopped_epoch": 20,
+      "best_epoch": 10,
+      "best_validation_loss": 0.1607859274459498,
+      "best_checkpoint_sha256": "fad092ccea9b21f75f3b657a64c6254672900a7bbd0426588f7d83ec74b89b25"
+    }
+  },
+  "trained_test_results": {
+    "paratope": {
+      "residue_count": 89938,
+      "positive_count": 8670,
+      "micro_auroc": 0.9428929296486899,
+      "micro_auprc": 0.6134187700383451,
+      "micro_f1": 0.5652816132554107,
+      "micro_mcc": 0.5287608842022115,
+      "macro_auroc": 0.9434794343970779,
+      "macro_auprc": 0.6857631061312172,
+      "prediction_sha256": "13456afecf6c5a10478ca547c536edb23d10041f8565163d81925e150f2bfcbd"
+    },
+    "epitope": {
+      "residue_count": 97252,
+      "positive_count": 7968,
+      "micro_auroc": 0.6096396331934071,
+      "micro_auprc": 0.11508827821347753,
+      "micro_f1": 0.030003488777764858,
+      "micro_mcc": 0.036097162548336274,
+      "macro_auroc": 0.5986041815852756,
+      "macro_auprc": 0.18198521755537045,
+      "prediction_sha256": "c9ba87b624155cf0e4d11c2dc15b5ee0ffea29d9e2718a0afd1eec0c467f826b"
+    }
+  },
+  "verification": {
+    "row_count_per_projection": 18473412,
+    "row_group_count_per_projection": 455,
+    "key_equality": true,
+    "null_score_count": 0,
+    "nonfinite_score_count": 0,
+    "native_pair_interaction_score": false
+  }
+}
