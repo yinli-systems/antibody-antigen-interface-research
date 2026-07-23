@@ -1,0 +1,71 @@
+{
+  "format_version": "sabdab2_asymmetric_retrieval_screen_protocol_v1",
+  "intended_use": "development_model_selection_only",
+  "frozen_test_unlocked": false,
+  "authority": {
+    "coverage_mode": "exact",
+    "sealed_source_splits": [
+      "validation",
+      "test"
+    ],
+    "source_pool_splits": [
+      "train"
+    ],
+    "source_split_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b"
+  },
+  "fold_protocol": {
+    "count": 3,
+    "fold_index_manifest_must_be_sha256_pinned": true,
+    "isolation_policy": "antigen_exact",
+    "manifest_format": "sabdab2_antigen_cluster_development_fold_v1"
+  },
+  "architecture_selection": {
+    "primary_statistic": "unweighted_mean_of_fold_bidirectional_mrr",
+    "first_tiebreaker": "largest_worst_fold_bidirectional_mrr",
+    "second_tiebreaker": "smallest_trainable_parameter_count",
+    "folds_must_be_scored_at_their_complete_native_library_sizes": true,
+    "no_pooled_anchor_micro_average_for_selection": true,
+    "rationale": "Antigen components make native fold sizes unequal; equal fold weight prevents the largest antigen family from determining the architecture."
+  },
+  "optimization": {
+    "batch_size_primary": 1024,
+    "batch_size_memory_fallback_requires_new_named_run": 512,
+    "checkpoint_selection": "bidirectional_validation_mrr",
+    "learning_rate": 0.001,
+    "max_epochs": 100,
+    "patience": 15,
+    "scheduler": "cosine_warm_restarts",
+    "temperature_initial": 0.2,
+    "weight_decay": 0.2
+  },
+  "variants": [
+    {
+      "antibody_encoder": "AntiBERTy_md_smooth",
+      "antibody_pooling": "strict_projection_then_length_mean",
+      "name": "antiberty_calm_mean"
+    },
+    {
+      "antibody_encoder": "AntiBERTy_md_smooth",
+      "antibody_pooling": "strict_projection_then_equal_chain_mean",
+      "name": "antiberty_chain_balanced"
+    },
+    {
+      "antibody_encoder": "facebook/esm2_t33_650M_UR50D",
+      "antibody_pooling": "strict_projection_then_length_mean",
+      "name": "esm2_calm_mean"
+    }
+  ],
+  "predeclared_progression_gate": {
+    "all_folds_must_exceed_matched_random_mrr": true,
+    "bidirectional_mrr_multiple_over_matched_random_mean": 2.0,
+    "minimum_positive_fold_count": 3,
+    "require_both_retrieval_directions_above_random": true,
+    "required_followup_before_final_test": [
+      "cluster_bootstrap confidence intervals",
+      "fixed-degree permutation null",
+      "partner-shuffle excess-over-chance destruction",
+      "unary and input-only shortcut controls",
+      "three-seed replication after architecture selection"
+    ]
+  }
+}
