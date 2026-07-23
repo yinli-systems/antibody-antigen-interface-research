@@ -1,0 +1,62 @@
+{
+  "fixed_0_5_metrics": {
+    "accuracy": 0.935654247509435,
+    "auprc": 0.6707136712823603,
+    "auroc": 0.9583112751494266,
+    "count": 101483,
+    "f1": 0.6498659517426274,
+    "mcc": 0.6149441745471916,
+    "positive_count": 9652,
+    "positive_fraction": 0.09510952573337406,
+    "precision": 0.6734829962213825,
+    "recall": 0.627849150435143,
+    "score_max": 0.9867584109306335,
+    "score_min": 1.4876685838771664e-07,
+    "threshold": 0.5
+  },
+  "optimized": {
+    "f1": {
+      "metrics": {
+        "accuracy": 0.9319393395938236,
+        "auprc": 0.6707136712823603,
+        "auroc": 0.9583112751494266,
+        "count": 101483,
+        "f1": 0.6865725824749286,
+        "mcc": 0.6554047371809166,
+        "positive_count": 9652,
+        "positive_fraction": 0.09510952573337406,
+        "precision": 0.6108195397658458,
+        "recall": 0.7837753833402403,
+        "score_max": 0.9867584109306335,
+        "score_min": 1.4876685838771664e-07,
+        "threshold": 0.3447842597961426
+      },
+      "objective_value": 0.6865725824749286,
+      "threshold": 0.3447842597961426
+    },
+    "mcc": {
+      "metrics": {
+        "accuracy": 0.9315846003764178,
+        "auprc": 0.6707136712823603,
+        "auroc": 0.9583112751494266,
+        "count": 101483,
+        "f1": 0.6864471842117148,
+        "mcc": 0.6555540779760084,
+        "positive_count": 9652,
+        "positive_fraction": 0.09510952573337406,
+        "precision": 0.6084380754142983,
+        "recall": 0.7874015748031497,
+        "score_max": 0.9867584109306335,
+        "score_min": 1.4876685838771664e-07,
+        "threshold": 0.3392089009284973
+      },
+      "objective_value": 0.6555540779760084,
+      "threshold": 0.3392089009284973
+    }
+  },
+  "policy": "Use the MCC-optimal validation threshold for the primary frozen-test thresholded metrics; retain 0.5 as the official fixed-threshold comparison.",
+  "residue_predictions": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/cluster_validation_v3/scratch/paratope_with_predictions.residue_predictions.parquet",
+  "role": "paratope",
+  "selection_split": "validation",
+  "stage": "select_validation_threshold"
+}
