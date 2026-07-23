@@ -1,0 +1,121 @@
+{
+  "audit": {
+    "effective_counts": {
+      "train": {
+        "duplicate_exact_pair_row_count": 1365,
+        "instance_count": 3101,
+        "unique_antibody_sequence_count": 1315,
+        "unique_antigen_sequence_count": 1087,
+        "unique_exact_pair_count": 1736
+      },
+      "validation": {
+        "duplicate_exact_pair_row_count": 102,
+        "instance_count": 344,
+        "unique_antibody_sequence_count": 194,
+        "unique_antigen_sequence_count": 205,
+        "unique_exact_pair_count": 242
+      }
+    },
+    "exact_train_validation_overlap": {
+      "antibody_sequence_count": 0,
+      "antigen_sequence_count": 0,
+      "exact_pair_count": 0
+    },
+    "roles": {
+      "antibody": {
+        "crossing_affected_instance_count": 0,
+        "crossing_digest_pair_examples": [],
+        "exact_sequence_crossing_digest_count": 0,
+        "maximum_crossing_identity": null,
+        "threshold_qualified_crossing_digest_pair_count": 0,
+        "valid": true
+      },
+      "antigen": {
+        "crossing_affected_instance_count": 0,
+        "crossing_digest_pair_examples": [],
+        "exact_sequence_crossing_digest_count": 0,
+        "maximum_crossing_identity": null,
+        "threshold_qualified_crossing_digest_pair_count": 0,
+        "valid": true
+      }
+    },
+    "split_instance_counts": {
+      "train": 3101,
+      "validation": 344
+    },
+    "valid": true
+  },
+  "audited_split_sha256": "bc57fa887ad5e4685e1a07a6e6264037e18d9ef445d4545c37da690a03d52c9d",
+  "audited_splits": [
+    "train",
+    "validation"
+  ],
+  "component_summary": {
+    "component_count": 135,
+    "largest_component_fraction": 0.8746008708272859,
+    "largest_component_size": 3013,
+    "singleton_component_count": 51,
+    "top_component_sizes": [
+      3013,
+      24,
+      16,
+      13,
+      12,
+      11,
+      10,
+      10,
+      10,
+      9,
+      9,
+      9,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      6,
+      6
+    ]
+  },
+  "format_version": "sabdab2_identity_isolated_development_v1",
+  "frozen_test_labels_or_predictions_read": false,
+  "intended_use": "development_only",
+  "sealed_source_split_counts": {},
+  "sealed_source_splits": [],
+  "sequence_manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+  "similarity_evidence": {
+    "antibody": {
+      "development_observed_digest_count": 1509,
+      "development_row_count": 22975,
+      "development_unique_digest_count": 1509,
+      "development_unobserved_digest_count": 0,
+      "development_unobserved_digest_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "parsed_row_count": 22975,
+      "path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/exhaustive_mmseqs/antibody_identity80_exhaustive.tsv",
+      "qualified_nonself_digest_pair_count": 10737,
+      "sha256": "20d88672caf72aeb4ec218c84f55322d4a0c03e9d479ea4cac64a5d7c99cdd3e"
+    },
+    "antigen": {
+      "development_observed_digest_count": 1292,
+      "development_row_count": 33986,
+      "development_unique_digest_count": 1292,
+      "development_unobserved_digest_count": 0,
+      "development_unobserved_digest_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "parsed_row_count": 33986,
+      "path": "/cluster/project/model_deployment/data/interaction_first/identity80_development/exhaustive_mmseqs/antigen_identity80_exhaustive.tsv",
+      "qualified_nonself_digest_pair_count": 16347,
+      "sha256": "d7371ad5c6f2334f3637806aae75c5357b2ebb8e57107b163832ac3ac2a89378"
+    },
+    "artifact_declared_minimums": {
+      "antibody_identity": 0.8,
+      "antigen_identity": 0.8,
+      "coverage": 0.8
+    },
+    "coverage_policy": "both query and target coverage must meet the threshold",
+    "coverage_threshold": 0.8,
+    "identity_definition": "MMseqs2 identical residues divided by alignment length",
+    "identity_threshold": 0.8
+  },
+  "stage": "audit_identity_isolated_development_split"
+}
