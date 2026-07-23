@@ -1,0 +1,35 @@
+{
+  "evaluation_threshold": 0.0823112279176712,
+  "input_count": 2,
+  "inputs": [
+    {
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/multiseed_validation/seed17/base_epitope.residue_predictions.parquet",
+      "sha256": "21c998b80593697274533ba1b339a40fdf78486b1031c9db2d8536008ff77efd",
+      "weight": 0.5
+    },
+    {
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/multiseed_validation/seed17/lr3e5_epitope.residue_predictions.parquet",
+      "sha256": "e5655612b5b199b557069d873d6d403f849fbdb16894173d4521d665e7b9d14a",
+      "weight": 0.5
+    }
+  ],
+  "output_predictions": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/multiseed_validation/seed17/ensemble_epitope.residue_predictions.parquet",
+  "output_predictions_sha256": "acb87651ab5b41632e2c847049fcddabdf4baa2dbdaa3bef573a8642716bab1b",
+  "role": "epitope",
+  "stage": "ensemble_residue_predictions",
+  "thresholded_metrics": {
+    "accuracy": 0.6825797602905191,
+    "auprc": 0.161848174126362,
+    "auroc": 0.7473824618754448,
+    "count": 128322,
+    "f1": 0.22403413853539586,
+    "mcc": 0.18999144272424098,
+    "positive_count": 8712,
+    "positive_fraction": 0.06789170991723945,
+    "precision": 0.13430790315212426,
+    "recall": 0.6749311294765841,
+    "score_max": 0.7864497900009155,
+    "score_min": 3.432502853684127e-05,
+    "threshold": 0.0823112279176712
+  }
+}
