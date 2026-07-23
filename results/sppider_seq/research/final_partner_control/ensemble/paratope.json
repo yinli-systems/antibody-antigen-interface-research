@@ -1,0 +1,35 @@
+{
+  "evaluation_threshold": 0.32534101605415344,
+  "input_count": 2,
+  "inputs": [
+    {
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_partner_control/components/paratope_base.residue_predictions.parquet",
+      "sha256": "f55fd57f681a40c19ca74d9c6e7a398ccf373d0617f773c3cfc252ca275f93a7",
+      "weight": 0.5
+    },
+    {
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_partner_control/components/paratope_lr1e5.residue_predictions.parquet",
+      "sha256": "0ff255045b4603e4a38d96004dac9e212bf5682928741ab1cd105237bd5dcc8e",
+      "weight": 0.5
+    }
+  ],
+  "output_predictions": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_partner_control/ensemble/paratope.residue_predictions.parquet",
+  "output_predictions_sha256": "40c5563ab85c52b824551b0dd1ec01b0d0339cc194298cb2936174dfaf7ec1f2",
+  "role": "paratope",
+  "stage": "ensemble_residue_predictions",
+  "thresholded_metrics": {
+    "accuracy": 0.9213346972358736,
+    "auprc": 0.6392394227009056,
+    "auroc": 0.9474057306172371,
+    "count": 89938,
+    "f1": 0.6423697113683465,
+    "mcc": 0.6047599006133174,
+    "positive_count": 8670,
+    "positive_fraction": 0.09639974204451955,
+    "precision": 0.5717628003239449,
+    "recall": 0.7328719723183391,
+    "score_max": 0.9811432361602783,
+    "score_min": 2.3566057279822417e-05,
+    "threshold": 0.32534101605415344
+  }
+}

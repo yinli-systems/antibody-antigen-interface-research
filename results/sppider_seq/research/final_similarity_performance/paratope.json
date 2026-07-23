@@ -1,0 +1,4203 @@
+{
+  "coverage_mode": "bidirectional",
+  "coverage_threshold": 0.8,
+  "identity_source": "maximum_identity_among_coverage_qualifying_mmseqs_hits",
+  "identity_strata": {
+    "[0.5,0.7)": {
+      "instance_count": 11,
+      "residue_metrics": {
+        "accuracy": 0.88,
+        "auprc": 0.5304148479040045,
+        "auroc": 0.8889098153829398,
+        "count": 2025,
+        "f1": 0.5621621621621622,
+        "mcc": 0.4973173989601818,
+        "positive_count": 248,
+        "positive_fraction": 0.12246913580246914,
+        "precision": 0.50814332247557,
+        "recall": 0.6290322580645161,
+        "score_max": 0.8585196733474731,
+        "score_min": 3.246662890887819e-05,
+        "threshold": 0.32534101605415344
+      }
+    },
+    "[0.7,0.8)": {
+      "instance_count": 187,
+      "residue_metrics": {
+        "accuracy": 0.9180268809754746,
+        "auprc": 0.6587673402515538,
+        "auroc": 0.9504039419389028,
+        "count": 36085,
+        "f1": 0.6421485603677716,
+        "mcc": 0.6083590823270714,
+        "positive_count": 3437,
+        "positive_fraction": 0.09524733268671193,
+        "precision": 0.5495961896873058,
+        "recall": 0.7721850450974688,
+        "score_max": 0.9769518375396729,
+        "score_min": 2.7479667551233433e-05,
+        "threshold": 0.32534101605415344
+      }
+    },
+    "[0.8,0.9)": {
+      "instance_count": 244,
+      "residue_metrics": {
+        "accuracy": 0.9241139110837943,
+        "auprc": 0.657760480214445,
+        "auroc": 0.9500556580814885,
+        "count": 48810,
+        "f1": 0.6420564360262853,
+        "mcc": 0.6027846829300888,
+        "positive_count": 4727,
+        "positive_fraction": 0.09684490883015776,
+        "precision": 0.5909980430528375,
+        "recall": 0.7027713137296383,
+        "score_max": 0.9691910743713379,
+        "score_min": 3.184493471053429e-05,
+        "threshold": 0.32534101605415344
+      }
+    },
+    "[0.9,1.0]": {
+      "instance_count": 13,
+      "residue_metrics": {
+        "accuracy": 0.9264413518886679,
+        "auprc": 0.615755130590582,
+        "auroc": 0.9605255027524997,
+        "count": 3018,
+        "f1": 0.6520376175548589,
+        "mcc": 0.6269597557179961,
+        "positive_count": 258,
+        "positive_fraction": 0.08548707753479125,
+        "precision": 0.5473684210526316,
+        "recall": 0.8062015503875969,
+        "score_max": 0.9711957573890686,
+        "score_min": 4.890274431090802e-05,
+        "threshold": 0.32534101605415344
+      }
+    }
+  },
+  "instance_records": [
+    {
+      "auprc": 0.8290821338590215,
+      "auroc": 0.9609022556390978,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_000010zo_A_+",
+      "mcc": 0.6909455804835347,
+      "nearest_identity_fraction": 0.678,
+      "positive_fraction": 0.12844036697247707
+    },
+    {
+      "auprc": 0.7719096896326589,
+      "auroc": 0.9722877358490566,
+      "f1": 0.5909090909090909,
+      "instance_id": "pdb_000011zw_H_L",
+      "mcc": 0.5772829109710346,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.07017543859649122
+    },
+    {
+      "auprc": 0.6452932369119897,
+      "auroc": 0.9670068027210884,
+      "f1": 0.5581395348837209,
+      "instance_id": "pdb_00001a14_H_L",
+      "mcc": 0.5596618068520705,
+      "nearest_identity_fraction": 0.812,
+      "positive_fraction": 0.0625
+    },
+    {
+      "auprc": 0.863571436819115,
+      "auroc": 0.9755665024630542,
+      "f1": 0.7636363636363637,
+      "instance_id": "pdb_00001nca_H_L",
+      "mcc": 0.7354532455158195,
+      "nearest_identity_fraction": 0.859,
+      "positive_fraction": 0.10964912280701754
+    },
+    {
+      "auprc": 0.8650839856330628,
+      "auroc": 0.9796394485683987,
+      "f1": 0.7547169811320755,
+      "instance_id": "pdb_00001ncb_H_L",
+      "mcc": 0.731268546744507,
+      "nearest_identity_fraction": 0.859,
+      "positive_fraction": 0.10087719298245613
+    },
+    {
+      "auprc": 0.8538292111830121,
+      "auroc": 0.9771512806338678,
+      "f1": 0.7719298245614035,
+      "instance_id": "pdb_00001ncc_H_L",
+      "mcc": 0.7407917465729852,
+      "nearest_identity_fraction": 0.859,
+      "positive_fraction": 0.11842105263157894
+    },
+    {
+      "auprc": 0.8901119623410644,
+      "auroc": 0.9834348819497335,
+      "f1": 0.7857142857142857,
+      "instance_id": "pdb_00001ncd_H_L",
+      "mcc": 0.758403572734448,
+      "nearest_identity_fraction": 0.859,
+      "positive_fraction": 0.11403508771929824
+    },
+    {
+      "auprc": 0.6308294188818904,
+      "auroc": 0.9671317829457364,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00001nmc_B_C",
+      "mcc": 0.5601394375134405,
+      "nearest_identity_fraction": 0.82,
+      "positive_fraction": 0.06521739130434782
+    },
+    {
+      "auprc": 0.6308294188818904,
+      "auroc": 0.9671317829457364,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00001nmc_H_L",
+      "mcc": 0.5601394375134405,
+      "nearest_identity_fraction": 0.82,
+      "positive_fraction": 0.06521739130434782
+    },
+    {
+      "auprc": 0.8155586505466887,
+      "auroc": 0.9813350900307423,
+      "f1": 0.7924528301886793,
+      "instance_id": "pdb_00001ob1_B_A",
+      "mcc": 0.7805927506690004,
+      "nearest_identity_fraction": 0.714,
+      "positive_fraction": 0.09606986899563319
+    },
+    {
+      "auprc": 0.8525627154005121,
+      "auroc": 0.9772727272727273,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00001pkq_B_A",
+      "mcc": 0.7105854742180735,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.09482758620689655
+    },
+    {
+      "auprc": 0.8569223932497398,
+      "auroc": 0.9781385281385282,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00001pkq_G_F",
+      "mcc": 0.7105854742180735,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.09482758620689655
+    },
+    {
+      "auprc": 0.7795454438128433,
+      "auroc": 0.976264189886481,
+      "f1": 0.7,
+      "instance_id": "pdb_00001v7m_H_L",
+      "mcc": 0.6715377404516895,
+      "nearest_identity_fraction": 0.74,
+      "positive_fraction": 0.08520179372197309
+    },
+    {
+      "auprc": 0.7572348382888683,
+      "auroc": 0.9674876847290641,
+      "f1": 0.6829268292682927,
+      "instance_id": "pdb_00001v7m_I_M",
+      "mcc": 0.6510839593068543,
+      "nearest_identity_fraction": 0.74,
+      "positive_fraction": 0.08968609865470852
+    },
+    {
+      "auprc": 0.7928064149361964,
+      "auroc": 0.9780788177339901,
+      "f1": 0.7317073170731707,
+      "instance_id": "pdb_00001v7n_H_L",
+      "mcc": 0.704818867865488,
+      "nearest_identity_fraction": 0.74,
+      "positive_fraction": 0.08968609865470852
+    },
+    {
+      "auprc": 0.7833731950090155,
+      "auroc": 0.9765221878224974,
+      "f1": 0.717948717948718,
+      "instance_id": "pdb_00001v7n_I_M",
+      "mcc": 0.6912140375929365,
+      "nearest_identity_fraction": 0.74,
+      "positive_fraction": 0.08520179372197309
+    },
+    {
+      "auprc": 0.7833731950090155,
+      "auroc": 0.9765221878224974,
+      "f1": 0.717948717948718,
+      "instance_id": "pdb_00001v7n_J_N",
+      "mcc": 0.6912140375929365,
+      "nearest_identity_fraction": 0.74,
+      "positive_fraction": 0.08520179372197309
+    },
+    {
+      "auprc": 0.7692045352585652,
+      "auroc": 0.9726600985221675,
+      "f1": 0.7,
+      "instance_id": "pdb_00001v7n_K_O",
+      "mcc": 0.6704433497536946,
+      "nearest_identity_fraction": 0.74,
+      "positive_fraction": 0.08968609865470852
+    },
+    {
+      "auprc": 0.9152295786260978,
+      "auroc": 0.9826912339475153,
+      "f1": 0.7843137254901961,
+      "instance_id": "pdb_00001ynt_B_A",
+      "mcc": 0.7586572680295474,
+      "nearest_identity_fraction": 0.833,
+      "positive_fraction": 0.11946902654867257
+    },
+    {
+      "auprc": 0.9152295786260978,
+      "auroc": 0.9826912339475153,
+      "f1": 0.7843137254901961,
+      "instance_id": "pdb_00001ynt_D_C",
+      "mcc": 0.7586572680295474,
+      "nearest_identity_fraction": 0.833,
+      "positive_fraction": 0.11946902654867257
+    },
+    {
+      "auprc": 0.8620593694441343,
+      "auroc": 0.9769635126777984,
+      "f1": 0.7586206896551724,
+      "instance_id": "pdb_00002xwt_A_B",
+      "mcc": 0.7335358863922861,
+      "nearest_identity_fraction": 0.743,
+      "positive_fraction": 0.14410480349344978
+    },
+    {
+      "auprc": 0.9291571173924116,
+      "auroc": 0.9928845101258895,
+      "f1": 0.7777777777777778,
+      "instance_id": "pdb_00003ab0_B_C",
+      "mcc": 0.7580733442802409,
+      "nearest_identity_fraction": 0.798,
+      "positive_fraction": 0.08144796380090498
+    },
+    {
+      "auprc": 0.8771998698469288,
+      "auroc": 0.983032293377121,
+      "f1": 0.7222222222222222,
+      "instance_id": "pdb_00003ab0_E_F",
+      "mcc": 0.6975916803503011,
+      "nearest_identity_fraction": 0.798,
+      "positive_fraction": 0.08144796380090498
+    },
+    {
+      "auprc": 0.9029228435474228,
+      "auroc": 0.9917843388960205,
+      "f1": 0.8181818181818182,
+      "instance_id": "pdb_00003b9k_D_C",
+      "mcc": 0.808041361334869,
+      "nearest_identity_fraction": 0.714,
+      "positive_fraction": 0.08482142857142858
+    },
+    {
+      "auprc": 0.9260859809533082,
+      "auroc": 0.9938725490196079,
+      "f1": 0.8444444444444444,
+      "instance_id": "pdb_00003b9k_H_L",
+      "mcc": 0.8336791872713316,
+      "nearest_identity_fraction": 0.714,
+      "positive_fraction": 0.08928571428571429
+    },
+    {
+      "auprc": 0.6813042566665757,
+      "auroc": 0.9659239842726082,
+      "f1": 0.6938775510204082,
+      "instance_id": "pdb_00003csy_A_B",
+      "mcc": 0.6681849222214012,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.08786610878661087
+    },
+    {
+      "auprc": 0.752936446421668,
+      "auroc": 0.9476661951909477,
+      "f1": 0.6428571428571429,
+      "instance_id": "pdb_00003k74_B_+",
+      "mcc": 0.5933521923620934,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.12173913043478261
+    },
+    {
+      "auprc": 0.787528720595223,
+      "auroc": 0.9847664184157076,
+      "f1": 0.7027027027027027,
+      "instance_id": "pdb_00003raj_H_L",
+      "mcc": 0.7026342567544271,
+      "nearest_identity_fraction": 0.789,
+      "positive_fraction": 0.06222222222222222
+    },
+    {
+      "auprc": 0.868767514783884,
+      "auroc": 0.9781385281385282,
+      "f1": 0.7843137254901961,
+      "instance_id": "pdb_00003rkd_D_C",
+      "mcc": 0.7673775306735012,
+      "nearest_identity_fraction": 0.741,
+      "positive_fraction": 0.09482758620689655
+    },
+    {
+      "auprc": 0.9209535280751566,
+      "auroc": 0.9938225846305905,
+      "f1": 0.7916666666666666,
+      "instance_id": "pdb_00003rkd_H_L",
+      "mcc": 0.7901981685247733,
+      "nearest_identity_fraction": 0.741,
+      "positive_fraction": 0.08189655172413793
+    },
+    {
+      "auprc": 0.16323702534445306,
+      "auroc": 0.7573913043478262,
+      "f1": 0.1875,
+      "instance_id": "pdb_00003stb_A_+",
+      "mcc": 0.09601803749857477,
+      "nearest_identity_fraction": 0.801,
+      "positive_fraction": 0.08
+    },
+    {
+      "auprc": 0.5655191803261852,
+      "auroc": 0.8711264141662567,
+      "f1": 0.5365853658536586,
+      "instance_id": "pdb_00003stb_B_+",
+      "mcc": 0.44882667252156366,
+      "nearest_identity_fraction": 0.803,
+      "positive_fraction": 0.15079365079365079
+    },
+    {
+      "auprc": 0.6602488038896515,
+      "auroc": 0.9565018315018315,
+      "f1": 0.7346938775510204,
+      "instance_id": "pdb_00003v7a_E_H",
+      "mcc": 0.71276798735666,
+      "nearest_identity_fraction": 0.82,
+      "positive_fraction": 0.09170305676855896
+    },
+    {
+      "auprc": 0.736704980842912,
+      "auroc": 0.9770642201834863,
+      "f1": 0.4666666666666667,
+      "instance_id": "pdb_00003ve0_A_B",
+      "mcc": 0.4805463430269911,
+      "nearest_identity_fraction": 0.8,
+      "positive_fraction": 0.039647577092511016
+    },
+    {
+      "auprc": 0.7308745224539532,
+      "auroc": 0.9500091224229155,
+      "f1": 0.6296296296296297,
+      "instance_id": "pdb_00003w9e_A_B",
+      "mcc": 0.5803685458857872,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.11739130434782609
+    },
+    {
+      "auprc": 0.8654007713013924,
+      "auroc": 0.9771428571428571,
+      "f1": 0.7692307692307693,
+      "instance_id": "pdb_00004cmh_B_C",
+      "mcc": 0.7425257825928512,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.12280701754385964
+    },
+    {
+      "auprc": 0.8568579099124214,
+      "auroc": 0.9627976190476191,
+      "f1": 0.7777777777777778,
+      "instance_id": "pdb_00004eig_B_+",
+      "mcc": 0.7533015566784113,
+      "nearest_identity_fraction": 0.752,
+      "positive_fraction": 0.1794871794871795
+    },
+    {
+      "auprc": 0.6876855252319392,
+      "auroc": 0.938685208596713,
+      "f1": 0.5789473684210527,
+      "instance_id": "pdb_00004eiz_C_+",
+      "mcc": 0.5365224648373661,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.11023622047244094
+    },
+    {
+      "auprc": 0.5781240575472222,
+      "auroc": 0.9188405797101449,
+      "f1": 0.5,
+      "instance_id": "pdb_00004eiz_D_+",
+      "mcc": 0.4629161561942743,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.09448818897637795
+    },
+    {
+      "auprc": 0.6805861738634847,
+      "auroc": 0.9387755102040816,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00004ej1_C_+",
+      "mcc": 0.569138181139492,
+      "nearest_identity_fraction": 0.817,
+      "positive_fraction": 0.1111111111111111
+    },
+    {
+      "auprc": 0.5804634816889719,
+      "auroc": 0.9195906432748538,
+      "f1": 0.5294117647058824,
+      "instance_id": "pdb_00004ej1_D_+",
+      "mcc": 0.4917543313631591,
+      "nearest_identity_fraction": 0.817,
+      "positive_fraction": 0.09523809523809523
+    },
+    {
+      "auprc": 0.9024088225370499,
+      "auroc": 0.9882587064676617,
+      "f1": 0.7391304347826086,
+      "instance_id": "pdb_00004g6j_H_L",
+      "mcc": 0.7131663784374739,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.11061946902654868
+    },
+    {
+      "auprc": 0.8551478378225337,
+      "auroc": 0.9860576923076924,
+      "f1": 0.7804878048780488,
+      "instance_id": "pdb_00004g6m_H_L",
+      "mcc": 0.7590878508741924,
+      "nearest_identity_fraction": 0.741,
+      "positive_fraction": 0.08771929824561403
+    },
+    {
+      "auprc": 0.9156012440223387,
+      "auroc": 0.9903052805280528,
+      "f1": 0.92,
+      "instance_id": "pdb_00004ij3_C_B",
+      "mcc": 0.9109891046377684,
+      "nearest_identity_fraction": 0.834,
+      "positive_fraction": 0.10619469026548672
+    },
+    {
+      "auprc": 0.8126171637012136,
+      "auroc": 0.9668423364075538,
+      "f1": 0.6792452830188679,
+      "instance_id": "pdb_00004lvn_C_B",
+      "mcc": 0.6506515779746453,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.09606986899563319
+    },
+    {
+      "auprc": 0.8081979717820218,
+      "auroc": 0.9664031620553359,
+      "f1": 0.6792452830188679,
+      "instance_id": "pdb_00004lvo_C_B",
+      "mcc": 0.6506515779746453,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.09606986899563319
+    },
+    {
+      "auprc": 0.6220197474722362,
+      "auroc": 0.9523485364193328,
+      "f1": 0.6470588235294118,
+      "instance_id": "pdb_00004n1h_D_+",
+      "mcc": 0.6184149351321927,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.10317460317460317
+    },
+    {
+      "auprc": 0.3037276881177419,
+      "auroc": 0.6020671834625323,
+      "f1": 0.3111111111111111,
+      "instance_id": "pdb_00004nzr_H_L",
+      "mcc": 0.15356108773683527,
+      "nearest_identity_fraction": 0.634,
+      "positive_fraction": 0.17842323651452283
+    },
+    {
+      "auprc": 0.7414035985841352,
+      "auroc": 0.9363250454821104,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00004orz_C_+",
+      "mcc": 0.6245580645506367,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.14912280701754385
+    },
+    {
+      "auprc": 0.2629054375085602,
+      "auroc": 0.7580645161290323,
+      "f1": 0.2222222222222222,
+      "instance_id": "pdb_00004qnp_H_L",
+      "mcc": 0.16612903225806452,
+      "nearest_identity_fraction": 0.751,
+      "positive_fraction": 0.06060606060606061
+    },
+    {
+      "auprc": 0.39137749667935423,
+      "auroc": 0.8610903659447349,
+      "f1": 0.2857142857142857,
+      "instance_id": "pdb_00004w2q_A_+",
+      "mcc": 0.1888668230555742,
+      "nearest_identity_fraction": 0.743,
+      "positive_fraction": 0.11206896551724138
+    },
+    {
+      "auprc": 0.37604243026868883,
+      "auroc": 0.8634920634920635,
+      "f1": 0.2962962962962963,
+      "instance_id": "pdb_00004w2q_C_+",
+      "mcc": 0.2074251915366926,
+      "nearest_identity_fraction": 0.745,
+      "positive_fraction": 0.10256410256410256
+    },
+    {
+      "auprc": 0.4011583590917956,
+      "auroc": 0.8610903659447349,
+      "f1": 0.2857142857142857,
+      "instance_id": "pdb_00004w2q_E_+",
+      "mcc": 0.1888668230555742,
+      "nearest_identity_fraction": 0.743,
+      "positive_fraction": 0.11206896551724138
+    },
+    {
+      "auprc": 0.3718652533583884,
+      "auroc": 0.8528106508875739,
+      "f1": 0.2857142857142857,
+      "instance_id": "pdb_00004w2q_G_+",
+      "mcc": 0.18981415059132414,
+      "nearest_identity_fraction": 0.745,
+      "positive_fraction": 0.1111111111111111
+    },
+    {
+      "auprc": 0.8325129510123863,
+      "auroc": 0.9383680555555556,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00004x7c_D_+",
+      "mcc": 0.6708203932499369,
+      "nearest_identity_fraction": 0.806,
+      "positive_fraction": 0.2
+    },
+    {
+      "auprc": 0.8062038049231576,
+      "auroc": 0.9309895833333334,
+      "f1": 0.6956521739130435,
+      "instance_id": "pdb_00004x7d_D_+",
+      "mcc": 0.6245592137682247,
+      "nearest_identity_fraction": 0.806,
+      "positive_fraction": 0.2
+    },
+    {
+      "auprc": 0.7010591807862198,
+      "auroc": 0.9588539422662645,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00004xak_D_E",
+      "mcc": 0.6341086690294526,
+      "nearest_identity_fraction": 0.875,
+      "positive_fraction": 0.0944206008583691
+    },
+    {
+      "auprc": 0.6031762432343872,
+      "auroc": 0.9629107981220657,
+      "f1": 0.6530612244897959,
+      "instance_id": "pdb_00004xak_H_L",
+      "mcc": 0.627069736522688,
+      "nearest_identity_fraction": 0.875,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.904393194479348,
+      "auroc": 0.987537688442211,
+      "f1": 0.8235294117647058,
+      "instance_id": "pdb_00004zpt_A_B",
+      "mcc": 0.8010653240304094,
+      "nearest_identity_fraction": 0.743,
+      "positive_fraction": 0.11160714285714286
+    },
+    {
+      "auprc": 0.8858754899616437,
+      "auroc": 0.9868686868686869,
+      "f1": 0.8235294117647058,
+      "instance_id": "pdb_00004zpt_H_L",
+      "mcc": 0.8009507925779893,
+      "nearest_identity_fraction": 0.746,
+      "positive_fraction": 0.11210762331838565
+    },
+    {
+      "auprc": 0.9024386198931944,
+      "auroc": 0.987537688442211,
+      "f1": 0.8235294117647058,
+      "instance_id": "pdb_00004zpv_A_B",
+      "mcc": 0.8010653240304094,
+      "nearest_identity_fraction": 0.743,
+      "positive_fraction": 0.11160714285714286
+    },
+    {
+      "auprc": 0.9661410891245532,
+      "auroc": 0.9939531368102797,
+      "f1": 0.8679245283018868,
+      "instance_id": "pdb_00004zpv_H_L",
+      "mcc": 0.8503149546342702,
+      "nearest_identity_fraction": 0.746,
+      "positive_fraction": 0.1210762331838565
+    },
+    {
+      "auprc": 0.7016479642777093,
+      "auroc": 0.9624413145539906,
+      "f1": 0.5,
+      "instance_id": "pdb_00004zs6_C_D",
+      "mcc": 0.5081879632663739,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.06167400881057269
+    },
+    {
+      "auprc": 0.6899366030251781,
+      "auroc": 0.9610062893081761,
+      "f1": 0.5306122448979592,
+      "instance_id": "pdb_00004zs6_H_L",
+      "mcc": 0.5343626641149837,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.06607929515418502
+    },
+    {
+      "auprc": 0.6958106793076475,
+      "auroc": 0.9609126984126984,
+      "f1": 0.6538461538461539,
+      "instance_id": "pdb_00005bjz_C_L",
+      "mcc": 0.6131616089646705,
+      "nearest_identity_fraction": 0.907,
+      "positive_fraction": 0.10256410256410256
+    },
+    {
+      "auprc": 0.8268852274849735,
+      "auroc": 0.9638233054074639,
+      "f1": 0.7037037037037037,
+      "instance_id": "pdb_00005bk1_H_L",
+      "mcc": 0.6645511442032785,
+      "nearest_identity_fraction": 0.887,
+      "positive_fraction": 0.11403508771929824
+    },
+    {
+      "auprc": 0.7723726322665233,
+      "auroc": 0.9569479965899403,
+      "f1": 0.72,
+      "instance_id": "pdb_00005d1q_B_A",
+      "mcc": 0.6883785946076958,
+      "nearest_identity_fraction": 0.841,
+      "positive_fraction": 0.1013215859030837
+    },
+    {
+      "auprc": 0.5099057475388332,
+      "auroc": 0.8992211470379985,
+      "f1": 0.4489795918367347,
+      "instance_id": "pdb_00005d1q_C_D",
+      "mcc": 0.4029989275136084,
+      "nearest_identity_fraction": 0.764,
+      "positive_fraction": 0.07851239669421488
+    },
+    {
+      "auprc": 0.6914809824592807,
+      "auroc": 0.9506406217181265,
+      "f1": 0.64,
+      "instance_id": "pdb_00005d1x_B_A",
+      "mcc": 0.5988257749829075,
+      "nearest_identity_fraction": 0.738,
+      "positive_fraction": 0.1
+    },
+    {
+      "auprc": 0.5918913510096061,
+      "auroc": 0.9294774226281075,
+      "f1": 0.5,
+      "instance_id": "pdb_00005d1x_C_D",
+      "mcc": 0.46567011209537734,
+      "nearest_identity_fraction": 0.729,
+      "positive_fraction": 0.0759493670886076
+    },
+    {
+      "auprc": 0.8591034483662192,
+      "auroc": 0.9730902777777778,
+      "f1": 0.7547169811320755,
+      "instance_id": "pdb_00005d72_H_L",
+      "mcc": 0.7303475383433945,
+      "nearest_identity_fraction": 0.831,
+      "positive_fraction": 0.13513513513513514
+    },
+    {
+      "auprc": 0.8163523579761949,
+      "auroc": 0.9759547383309759,
+      "f1": 0.7111111111111111,
+      "instance_id": "pdb_00005d93_C_B",
+      "mcc": 0.6807243247659372,
+      "nearest_identity_fraction": 0.823,
+      "positive_fraction": 0.09417040358744394
+    },
+    {
+      "auprc": 0.9349694820747891,
+      "auroc": 0.9946455343756693,
+      "f1": 0.92,
+      "instance_id": "pdb_00005d96_C_B",
+      "mcc": 0.9138197818428332,
+      "nearest_identity_fraction": 0.821,
+      "positive_fraction": 0.10176991150442478
+    },
+    {
+      "auprc": 0.7187151570922665,
+      "auroc": 0.9263019364542208,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00005f72_S1_S2",
+      "mcc": 0.5654994456709654,
+      "nearest_identity_fraction": 0.875,
+      "positive_fraction": 0.12053571428571429
+    },
+    {
+      "auprc": 0.6765055648430652,
+      "auroc": 0.9203980099502488,
+      "f1": 0.5882352941176471,
+      "instance_id": "pdb_00005f72_T1_T2",
+      "mcc": 0.5362795193114346,
+      "nearest_identity_fraction": 0.881,
+      "positive_fraction": 0.1145374449339207
+    },
+    {
+      "auprc": 0.5739317578133368,
+      "auroc": 0.9472606246799795,
+      "f1": 0.5652173913043478,
+      "instance_id": "pdb_00005gru_H1_L2",
+      "mcc": 0.5361423958487664,
+      "nearest_identity_fraction": 0.91,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.78724444400915,
+      "auroc": 0.9822429906542056,
+      "f1": 0.7567567567567568,
+      "instance_id": "pdb_00005hhv_H_L",
+      "mcc": 0.7522112984394858,
+      "nearest_identity_fraction": 0.885,
+      "positive_fraction": 0.06550218340611354
+    },
+    {
+      "auprc": 0.4667432640914434,
+      "auroc": 0.8732311320754716,
+      "f1": 0.4444444444444444,
+      "instance_id": "pdb_00005hvg_B_+",
+      "mcc": 0.3526759393054789,
+      "nearest_identity_fraction": 0.852,
+      "positive_fraction": 0.13114754098360656
+    },
+    {
+      "auprc": 0.4733134976602471,
+      "auroc": 0.8756067961165048,
+      "f1": 0.4444444444444444,
+      "instance_id": "pdb_00005hvg_D_+",
+      "mcc": 0.34986933494486927,
+      "nearest_identity_fraction": 0.848,
+      "positive_fraction": 0.13445378151260504
+    },
+    {
+      "auprc": 0.47987338463194673,
+      "auroc": 0.8876190476190476,
+      "f1": 0.45714285714285713,
+      "instance_id": "pdb_00005hvh_B_+",
+      "mcc": 0.3718678720805473,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.125
+    },
+    {
+      "auprc": 0.859721762255748,
+      "auroc": 0.9749482401656314,
+      "f1": 0.75,
+      "instance_id": "pdb_00005lqb_H_L",
+      "mcc": 0.7321919320843225,
+      "nearest_identity_fraction": 0.808,
+      "positive_fraction": 0.09871244635193133
+    },
+    {
+      "auprc": 0.8091441213267706,
+      "auroc": 0.941006600660066,
+      "f1": 0.7391304347826086,
+      "instance_id": "pdb_00005m14_C_+",
+      "mcc": 0.6814102398711138,
+      "nearest_identity_fraction": 0.887,
+      "positive_fraction": 0.192
+    },
+    {
+      "auprc": 0.7230397412274504,
+      "auroc": 0.9066496163682864,
+      "f1": 0.6363636363636364,
+      "instance_id": "pdb_00005m15_C_+",
+      "mcc": 0.5597399362250434,
+      "nearest_identity_fraction": 0.87,
+      "positive_fraction": 0.184
+    },
+    {
+      "auprc": 0.7412275772387229,
+      "auroc": 0.9658823529411764,
+      "f1": 0.7169811320754716,
+      "instance_id": "pdb_00005mes_H_L",
+      "mcc": 0.6814746425572369,
+      "nearest_identity_fraction": 0.899,
+      "positive_fraction": 0.1091703056768559
+    },
+    {
+      "auprc": 0.7013025381273761,
+      "auroc": 0.9607723577235772,
+      "f1": 0.6923076923076923,
+      "instance_id": "pdb_00005mev_H_L",
+      "mcc": 0.655631029153035,
+      "nearest_identity_fraction": 0.899,
+      "positive_fraction": 0.10480349344978165
+    },
+    {
+      "auprc": 0.6723122703097673,
+      "auroc": 0.9336842105263158,
+      "f1": 0.7,
+      "instance_id": "pdb_00005mwn_D_+",
+      "mcc": 0.6407330544913338,
+      "nearest_identity_fraction": 0.783,
+      "positive_fraction": 0.15966386554621848
+    },
+    {
+      "auprc": 0.7090514943599155,
+      "auroc": 0.9363459669582118,
+      "f1": 0.65,
+      "instance_id": "pdb_00005mwn_E_+",
+      "mcc": 0.5805537068319268,
+      "nearest_identity_fraction": 0.783,
+      "positive_fraction": 0.17647058823529413
+    },
+    {
+      "auprc": 0.30427789715155995,
+      "auroc": 0.796996996996997,
+      "f1": 0.35,
+      "instance_id": "pdb_00005n88_A_+",
+      "mcc": 0.2472692714180983,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.11904761904761904
+    },
+    {
+      "auprc": 0.20021699909114068,
+      "auroc": 0.7417091836734695,
+      "f1": 0.3076923076923077,
+      "instance_id": "pdb_00005n88_H_+",
+      "mcc": 0.20404328797178464,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.1111111111111111
+    },
+    {
+      "auprc": 0.605141693486209,
+      "auroc": 0.9286209286209286,
+      "f1": 0.5,
+      "instance_id": "pdb_00005o02_C_+",
+      "mcc": 0.44623567336308717,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.10483870967741936
+    },
+    {
+      "auprc": 0.7699010784119869,
+      "auroc": 0.9142455482661669,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00005o04_D_+",
+      "mcc": 0.5892150108526012,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.18487394957983194
+    },
+    {
+      "auprc": 0.8596593799596511,
+      "auroc": 0.9812773039317662,
+      "f1": 0.7924528301886793,
+      "instance_id": "pdb_00005otj_B_A",
+      "mcc": 0.7748375430371467,
+      "nearest_identity_fraction": 0.77,
+      "positive_fraction": 0.09913793103448276
+    },
+    {
+      "auprc": 0.8612740522038946,
+      "auroc": 0.9814853338880799,
+      "f1": 0.7924528301886793,
+      "instance_id": "pdb_00005otj_H_L",
+      "mcc": 0.7748375430371467,
+      "nearest_identity_fraction": 0.77,
+      "positive_fraction": 0.09913793103448276
+    },
+    {
+      "auprc": 0.8577781333730652,
+      "auroc": 0.9855875831485588,
+      "f1": 0.8085106382978723,
+      "instance_id": "pdb_00005vcn_D_C",
+      "mcc": 0.7884973867492853,
+      "nearest_identity_fraction": 0.844,
+      "positive_fraction": 0.09691629955947137
+    },
+    {
+      "auprc": 0.8775292156241474,
+      "auroc": 0.9862527716186253,
+      "f1": 0.8085106382978723,
+      "instance_id": "pdb_00005vcn_F_E",
+      "mcc": 0.7884973867492853,
+      "nearest_identity_fraction": 0.844,
+      "positive_fraction": 0.09691629955947137
+    },
+    {
+      "auprc": 0.8484648843004822,
+      "auroc": 0.984375,
+      "f1": 0.6818181818181818,
+      "instance_id": "pdb_00005vkd_H_L",
+      "mcc": 0.6824144756285286,
+      "nearest_identity_fraction": 0.914,
+      "positive_fraction": 0.06896551724137931
+    },
+    {
+      "auprc": 0.6524549187504654,
+      "auroc": 0.945054945054945,
+      "f1": 0.5517241379310345,
+      "instance_id": "pdb_00005vnw_D_+",
+      "mcc": 0.4931186311045801,
+      "nearest_identity_fraction": 0.811,
+      "positive_fraction": 0.11016949152542373
+    },
+    {
+      "auprc": 0.7956974464687061,
+      "auroc": 0.9806338028169014,
+      "f1": 0.6521739130434783,
+      "instance_id": "pdb_00005vph_D_C",
+      "mcc": 0.6551194999421656,
+      "nearest_identity_fraction": 0.79,
+      "positive_fraction": 0.06986899563318777
+    },
+    {
+      "auprc": 0.8749887265512265,
+      "auroc": 0.9857558139534883,
+      "f1": 0.75,
+      "instance_id": "pdb_00005w2b_H_L",
+      "mcc": 0.7452838038386719,
+      "nearest_identity_fraction": 0.91,
+      "positive_fraction": 0.06926406926406926
+    },
+    {
+      "auprc": 0.5418415766241853,
+      "auroc": 0.9357509994288977,
+      "f1": 0.5238095238095238,
+      "instance_id": "pdb_00005x0t_A_B",
+      "mcc": 0.4870878317492876,
+      "nearest_identity_fraction": 0.768,
+      "positive_fraction": 0.07623318385650224
+    },
+    {
+      "auprc": 0.5418415766241853,
+      "auroc": 0.9357509994288977,
+      "f1": 0.5238095238095238,
+      "instance_id": "pdb_00005x0t_C_D",
+      "mcc": 0.4870878317492876,
+      "nearest_identity_fraction": 0.768,
+      "positive_fraction": 0.07623318385650224
+    },
+    {
+      "auprc": 0.7505701262238723,
+      "auroc": 0.9617727368199958,
+      "f1": 0.6530612244897959,
+      "instance_id": "pdb_00005y9j_H_L",
+      "mcc": 0.613312457292217,
+      "nearest_identity_fraction": 0.746,
+      "positive_fraction": 0.1
+    },
+    {
+      "auprc": 0.42974419802917263,
+      "auroc": 0.8946050534941953,
+      "f1": 0.4444444444444444,
+      "instance_id": "pdb_00005yy5_C_D",
+      "mcc": 0.37158392732203716,
+      "nearest_identity_fraction": 0.817,
+      "positive_fraction": 0.10747663551401869
+    },
+    {
+      "auprc": 0.4679908663093204,
+      "auroc": 0.9042941982640474,
+      "f1": 0.4230769230769231,
+      "instance_id": "pdb_00005yy5_H_L",
+      "mcc": 0.3535927661625652,
+      "nearest_identity_fraction": 0.83,
+      "positive_fraction": 0.09954751131221719
+    },
+    {
+      "auprc": 0.7877393381595061,
+      "auroc": 0.956859971711457,
+      "f1": 0.6,
+      "instance_id": "pdb_00006app_A_+",
+      "mcc": 0.5418992636180293,
+      "nearest_identity_fraction": 0.695,
+      "positive_fraction": 0.12173913043478261
+    },
+    {
+      "auprc": 0.8850644126514247,
+      "auroc": 0.9868491680085882,
+      "f1": 0.75,
+      "instance_id": "pdb_00006bfs_H_L",
+      "mcc": 0.7302805240997181,
+      "nearest_identity_fraction": 0.82,
+      "positive_fraction": 0.08
+    },
+    {
+      "auprc": 0.809972149645745,
+      "auroc": 0.9691017435444714,
+      "f1": 0.75,
+      "instance_id": "pdb_00006bit_I_K",
+      "mcc": 0.7202351819553289,
+      "nearest_identity_fraction": 0.746,
+      "positive_fraction": 0.10454545454545454
+    },
+    {
+      "auprc": 0.83734029793692,
+      "auroc": 0.9763544536271809,
+      "f1": 0.7659574468085106,
+      "instance_id": "pdb_00006bit_J_L",
+      "mcc": 0.7399853698407473,
+      "nearest_identity_fraction": 0.746,
+      "positive_fraction": 0.1
+    },
+    {
+      "auprc": 0.7258298770027728,
+      "auroc": 0.9672897196261682,
+      "f1": 0.7307692307692307,
+      "instance_id": "pdb_00006bp2_H_L",
+      "mcc": 0.7040072431469115,
+      "nearest_identity_fraction": 0.817,
+      "positive_fraction": 0.0970464135021097
+    },
+    {
+      "auprc": 0.7630554838024867,
+      "auroc": 0.9680762852404644,
+      "f1": 0.711864406779661,
+      "instance_id": "pdb_00006c6y_A_B",
+      "mcc": 0.6859248720424199,
+      "nearest_identity_fraction": 0.831,
+      "positive_fraction": 0.10666666666666667
+    },
+    {
+      "auprc": 0.7420811997492927,
+      "auroc": 0.9633520074696545,
+      "f1": 0.6071428571428571,
+      "instance_id": "pdb_00006c6y_H_L",
+      "mcc": 0.5789258283039805,
+      "nearest_identity_fraction": 0.831,
+      "positive_fraction": 0.09333333333333334
+    },
+    {
+      "auprc": 0.7465374444536708,
+      "auroc": 0.9743589743589743,
+      "f1": 0.7346938775510204,
+      "instance_id": "pdb_00006fs0_H_L",
+      "mcc": 0.71276798735666,
+      "nearest_identity_fraction": 0.899,
+      "positive_fraction": 0.09170305676855896
+    },
+    {
+      "auprc": 0.8194816441037531,
+      "auroc": 0.9828669331810395,
+      "f1": 0.7317073170731707,
+      "instance_id": "pdb_00006hf1_C_B",
+      "mcc": 0.7181476052206485,
+      "nearest_identity_fraction": 0.823,
+      "positive_fraction": 0.07623318385650224
+    },
+    {
+      "auprc": 0.8194816441037531,
+      "auroc": 0.9828669331810395,
+      "f1": 0.7317073170731707,
+      "instance_id": "pdb_00006hf1_F_E",
+      "mcc": 0.7181476052206485,
+      "nearest_identity_fraction": 0.823,
+      "positive_fraction": 0.07623318385650224
+    },
+    {
+      "auprc": 0.5451737412277471,
+      "auroc": 0.8372727272727273,
+      "f1": 0.47619047619047616,
+      "instance_id": "pdb_00006hjx_G_+",
+      "mcc": 0.3681867696240635,
+      "nearest_identity_fraction": 0.778,
+      "positive_fraction": 0.18032786885245902
+    },
+    {
+      "auprc": 0.3283083160800552,
+      "auroc": 0.8763308763308764,
+      "f1": 0.3870967741935484,
+      "instance_id": "pdb_00006hjx_H_+",
+      "mcc": 0.324412100769321,
+      "nearest_identity_fraction": 0.778,
+      "positive_fraction": 0.09016393442622951
+    },
+    {
+      "auprc": 0.5747968849166967,
+      "auroc": 0.9524922118380061,
+      "f1": 0.65,
+      "instance_id": "pdb_00006mb3_A_K",
+      "mcc": 0.621065155823447,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.07758620689655173
+    },
+    {
+      "auprc": 0.5747968849166967,
+      "auroc": 0.9524922118380061,
+      "f1": 0.65,
+      "instance_id": "pdb_00006mb3_B_M",
+      "mcc": 0.621065155823447,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.07758620689655173
+    },
+    {
+      "auprc": 0.5365668563357908,
+      "auroc": 0.944963655244029,
+      "f1": 0.6,
+      "instance_id": "pdb_00006mb3_C_N",
+      "mcc": 0.5660700733230501,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.07758620689655173
+    },
+    {
+      "auprc": 0.5654925215515716,
+      "auroc": 0.9474056603773585,
+      "f1": 0.6190476190476191,
+      "instance_id": "pdb_00006mb3_D_O",
+      "mcc": 0.5820254062071127,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.08620689655172414
+    },
+    {
+      "auprc": 0.5365668563357908,
+      "auroc": 0.944963655244029,
+      "f1": 0.6,
+      "instance_id": "pdb_00006mb3_F_P",
+      "mcc": 0.5660700733230501,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.07758620689655173
+    },
+    {
+      "auprc": 0.5422798738286165,
+      "auroc": 0.948016415868673,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00006mb3_G_Q",
+      "mcc": 0.586478862477207,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.07327586206896551
+    },
+    {
+      "auprc": 0.547330123664493,
+      "auroc": 0.9468742278230788,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00006mb3_H_L",
+      "mcc": 0.6008299273665428,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.08189655172413793
+    },
+    {
+      "auprc": 0.5772388065575302,
+      "auroc": 0.9494470774091628,
+      "f1": 0.6511627906976745,
+      "instance_id": "pdb_00006mb3_I_R",
+      "mcc": 0.6157568463674903,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.09051724137931035
+    },
+    {
+      "auprc": 0.5798656484246985,
+      "auroc": 0.9514150943396227,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00006mb3_J_S",
+      "mcc": 0.6344438434121011,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.08620689655172414
+    },
+    {
+      "auprc": 0.7726501165204371,
+      "auroc": 0.9696969696969697,
+      "f1": 0.6538461538461539,
+      "instance_id": "pdb_00006n8d_D_B",
+      "mcc": 0.6212367488706672,
+      "nearest_identity_fraction": 0.791,
+      "positive_fraction": 0.09361702127659574
+    },
+    {
+      "auprc": 0.7611822370581961,
+      "auroc": 0.96636587366694,
+      "f1": 0.6415094339622641,
+      "instance_id": "pdb_00006n8d_F_E",
+      "mcc": 0.6035344397279307,
+      "nearest_identity_fraction": 0.791,
+      "positive_fraction": 0.09787234042553192
+    },
+    {
+      "auprc": 0.4405605005159959,
+      "auroc": 0.9713302752293578,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00006nha_H_L",
+      "mcc": 0.6148021237570237,
+      "nearest_identity_fraction": 0.772,
+      "positive_fraction": 0.035398230088495575
+    },
+    {
+      "auprc": 0.7945099276762841,
+      "auroc": 0.9720042417815483,
+      "f1": 0.7755102040816326,
+      "instance_id": "pdb_00006nmr_A_B",
+      "mcc": 0.7503624735444135,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.10087719298245613
+    },
+    {
+      "auprc": 0.823886296368949,
+      "auroc": 0.9784009094353922,
+      "f1": 0.7692307692307693,
+      "instance_id": "pdb_00006nmr_F_G",
+      "mcc": 0.7396741189844638,
+      "nearest_identity_fraction": 0.809,
+      "positive_fraction": 0.11353711790393013
+    },
+    {
+      "auprc": 0.9089586073285334,
+      "auroc": 0.9791463017269468,
+      "f1": 0.8070175438596491,
+      "instance_id": "pdb_00006nmr_H_L",
+      "mcc": 0.783761792423972,
+      "nearest_identity_fraction": 0.809,
+      "positive_fraction": 0.13537117903930132
+    },
+    {
+      "auprc": 0.6976520968586428,
+      "auroc": 0.9523005487547489,
+      "f1": 0.6938775510204082,
+      "instance_id": "pdb_00006nmr_J_K",
+      "mcc": 0.6589055987682283,
+      "nearest_identity_fraction": 0.809,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.9521649501551464,
+      "auroc": 0.9952380952380953,
+      "f1": 0.8292682926829268,
+      "instance_id": "pdb_00006nms_B_A",
+      "mcc": 0.8200499662701782,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.07894736842105263
+    },
+    {
+      "auprc": 0.9041630879275683,
+      "auroc": 0.9916364650125453,
+      "f1": 0.8,
+      "instance_id": "pdb_00006nms_H_L",
+      "mcc": 0.7919745424752211,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.07456140350877193
+    },
+    {
+      "auprc": 0.7991781655844156,
+      "auroc": 0.9811893203883495,
+      "f1": 0.6818181818181818,
+      "instance_id": "pdb_00006nmt_B_A",
+      "mcc": 0.681115077786827,
+      "nearest_identity_fraction": 0.764,
+      "positive_fraction": 0.07207207207207207
+    },
+    {
+      "auprc": 0.8848815317097865,
+      "auroc": 0.9853941072777638,
+      "f1": 0.7441860465116279,
+      "instance_id": "pdb_00006nmu_B_A",
+      "mcc": 0.7239227659930269,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.08333333333333333
+    },
+    {
+      "auprc": 0.8682338635628111,
+      "auroc": 0.9833333333333333,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00006nmu_H_L",
+      "mcc": 0.6945667492672501,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.07894736842105263
+    },
+    {
+      "auprc": 0.8564674116075885,
+      "auroc": 0.97333034513671,
+      "f1": 0.6808510638297872,
+      "instance_id": "pdb_00006nmv_H_L",
+      "mcc": 0.6422938935917613,
+      "nearest_identity_fraction": 0.668,
+      "positive_fraction": 0.10599078341013825
+    },
+    {
+      "auprc": 0.7315649535925726,
+      "auroc": 0.9518976169461606,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00006p9h_C_D",
+      "mcc": 0.6304911890872388,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.09649122807017543
+    },
+    {
+      "auprc": 0.7607686266105961,
+      "auroc": 0.9560975609756097,
+      "f1": 0.6938775510204082,
+      "instance_id": "pdb_00006p9h_H_L",
+      "mcc": 0.6587274205352404,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.10087719298245613
+    },
+    {
+      "auprc": 0.8171787462865227,
+      "auroc": 0.9624630177514794,
+      "f1": 0.7213114754098361,
+      "instance_id": "pdb_00006pcu_B2_B1",
+      "mcc": 0.6905292039290031,
+      "nearest_identity_fraction": 0.694,
+      "positive_fraction": 0.1111111111111111
+    },
+    {
+      "auprc": 0.8384510953642625,
+      "auroc": 0.9659900284900285,
+      "f1": 0.7419354838709677,
+      "instance_id": "pdb_00006pcu_E2_E1",
+      "mcc": 0.7113319063510936,
+      "nearest_identity_fraction": 0.698,
+      "positive_fraction": 0.1148936170212766
+    },
+    {
+      "auprc": 0.7827261579536009,
+      "auroc": 0.9582857142857143,
+      "f1": 0.7,
+      "instance_id": "pdb_00006pcu_H2_H1",
+      "mcc": 0.6697263122599658,
+      "nearest_identity_fraction": 0.698,
+      "positive_fraction": 0.10638297872340426
+    },
+    {
+      "auprc": 0.5215379197522055,
+      "auroc": 0.9490274983232729,
+      "f1": 0.45,
+      "instance_id": "pdb_00006pzf_F_E",
+      "mcc": 0.42531644373323446,
+      "nearest_identity_fraction": 0.882,
+      "positive_fraction": 0.06167400881057269
+    },
+    {
+      "auprc": 0.6327044116014704,
+      "auroc": 0.9554621848739496,
+      "f1": 0.5116279069767442,
+      "instance_id": "pdb_00006pzf_H_L",
+      "mcc": 0.47576557598127245,
+      "nearest_identity_fraction": 0.882,
+      "positive_fraction": 0.07488986784140969
+    },
+    {
+      "auprc": 0.5706520505792054,
+      "auroc": 0.9361244019138756,
+      "f1": 0.5423728813559322,
+      "instance_id": "pdb_00006q23_E_F",
+      "mcc": 0.5311829006825646,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.0794979079497908
+    },
+    {
+      "auprc": 0.5706520505792054,
+      "auroc": 0.9361244019138756,
+      "f1": 0.5423728813559322,
+      "instance_id": "pdb_00006q23_G_I",
+      "mcc": 0.5311829006825646,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.0794979079497908
+    },
+    {
+      "auprc": 0.5697292748949296,
+      "auroc": 0.9353946706887883,
+      "f1": 0.5172413793103449,
+      "instance_id": "pdb_00006q23_H_L",
+      "mcc": 0.5091382236937982,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.07531380753138076
+    },
+    {
+      "auprc": 0.5886464285695365,
+      "auroc": 0.9474610356963298,
+      "f1": 0.5517241379310345,
+      "instance_id": "pdb_00006q23_J_K",
+      "mcc": 0.5516108364207852,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.07531380753138076
+    },
+    {
+      "auprc": 0.7405776651137077,
+      "auroc": 0.9692470837751856,
+      "f1": 0.7058823529411765,
+      "instance_id": "pdb_00006qb6_H_L",
+      "mcc": 0.6733505772244558,
+      "nearest_identity_fraction": 0.899,
+      "positive_fraction": 0.10087719298245613
+    },
+    {
+      "auprc": 0.76465149111233,
+      "auroc": 0.9708994708994709,
+      "f1": 0.7,
+      "instance_id": "pdb_00006qd7_H_L",
+      "mcc": 0.6755326068712336,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.07894736842105263
+    },
+    {
+      "auprc": 0.76465149111233,
+      "auroc": 0.9708994708994709,
+      "f1": 0.7,
+      "instance_id": "pdb_00006qd7_U_P",
+      "mcc": 0.6755326068712336,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.07894736842105263
+    },
+    {
+      "auprc": 0.7871028303892754,
+      "auroc": 0.9774184555338723,
+      "f1": 0.717948717948718,
+      "instance_id": "pdb_00006qd7_X_Z",
+      "mcc": 0.6989246374403294,
+      "nearest_identity_fraction": 0.78,
+      "positive_fraction": 0.07456140350877193
+    },
+    {
+      "auprc": 0.09135017911111445,
+      "auroc": 0.552212389380531,
+      "f1": 0.06666666666666667,
+      "instance_id": "pdb_00006qx4_D_+",
+      "mcc": -0.05046820904016675,
+      "nearest_identity_fraction": 0.838,
+      "positive_fraction": 0.08130081300813008
+    },
+    {
+      "auprc": 0.501159195209657,
+      "auroc": 0.86977648202138,
+      "f1": 0.42857142857142855,
+      "instance_id": "pdb_00006qx4_E_+",
+      "mcc": 0.30612244897959184,
+      "nearest_identity_fraction": 0.857,
+      "positive_fraction": 0.17647058823529413
+    },
+    {
+      "auprc": 0.6779801777170199,
+      "auroc": 0.9436936936936937,
+      "f1": 0.5625,
+      "instance_id": "pdb_00006qx4_H_+",
+      "mcc": 0.5233995861083469,
+      "nearest_identity_fraction": 0.838,
+      "positive_fraction": 0.0975609756097561
+    },
+    {
+      "auprc": 0.6647088752543298,
+      "auroc": 0.9416915422885572,
+      "f1": 0.5106382978723404,
+      "instance_id": "pdb_00006r2s_B_A",
+      "mcc": 0.45526182231707485,
+      "nearest_identity_fraction": 0.843,
+      "positive_fraction": 0.11061946902654868
+    },
+    {
+      "auprc": 0.5872126650396654,
+      "auroc": 0.945260347129506,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00006rah_C_+",
+      "mcc": 0.566357673812449,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.11570247933884298
+    },
+    {
+      "auprc": 0.5872126650396654,
+      "auroc": 0.945260347129506,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00006rai_C_+",
+      "mcc": 0.566357673812449,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.11570247933884298
+    },
+    {
+      "auprc": 0.5949437799419259,
+      "auroc": 0.9357142857142857,
+      "f1": 0.631578947368421,
+      "instance_id": "pdb_00006raj_C_+",
+      "mcc": 0.5750546327852951,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.1322314049586777
+    },
+    {
+      "auprc": 0.5872126650396654,
+      "auroc": 0.945260347129506,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00006rak_C_+",
+      "mcc": 0.566357673812449,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.11570247933884298
+    },
+    {
+      "auprc": 0.6171879977702066,
+      "auroc": 0.9400452488687783,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00006ral_C_+",
+      "mcc": 0.6110111212133171,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.14049586776859505
+    },
+    {
+      "auprc": 0.607000566754675,
+      "auroc": 0.9240434037692747,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00006rtw_B_+",
+      "mcc": 0.5486428874099119,
+      "nearest_identity_fraction": 0.833,
+      "positive_fraction": 0.14166666666666666
+    },
+    {
+      "auprc": 0.9279406721137209,
+      "auroc": 0.9923400049419323,
+      "f1": 0.8,
+      "instance_id": "pdb_00006s3t_D_C",
+      "mcc": 0.7908550602874695,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.08189655172413793
+    },
+    {
+      "auprc": 0.9279406721137209,
+      "auroc": 0.9923400049419323,
+      "f1": 0.8,
+      "instance_id": "pdb_00006s3t_E_I",
+      "mcc": 0.7908550602874695,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.08189655172413793
+    },
+    {
+      "auprc": 0.9409602636577923,
+      "auroc": 0.9938679245283019,
+      "f1": 0.8260869565217391,
+      "instance_id": "pdb_00006s3t_N_M",
+      "mcc": 0.8158739068004798,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.08620689655172414
+    },
+    {
+      "auprc": 0.9409602636577923,
+      "auroc": 0.9938679245283019,
+      "f1": 0.8260869565217391,
+      "instance_id": "pdb_00006s3t_R_Q",
+      "mcc": 0.8158739068004798,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.08620689655172414
+    },
+    {
+      "auprc": 0.7622851588445068,
+      "auroc": 0.9510752688172043,
+      "f1": 0.7027027027027027,
+      "instance_id": "pdb_00006u54_A_+",
+      "mcc": 0.6480035611999765,
+      "nearest_identity_fraction": 0.741,
+      "positive_fraction": 0.17699115044247787
+    },
+    {
+      "auprc": 0.44560765371990946,
+      "auroc": 0.865625,
+      "f1": 0.4878048780487805,
+      "instance_id": "pdb_00006u55_A_+",
+      "mcc": 0.3781025926823956,
+      "nearest_identity_fraction": 0.76,
+      "positive_fraction": 0.1724137931034483
+    },
+    {
+      "auprc": 0.5955833970269767,
+      "auroc": 0.9527896995708155,
+      "f1": 0.3111111111111111,
+      "instance_id": "pdb_00006umg_H_L",
+      "mcc": 0.3708414156101633,
+      "nearest_identity_fraction": 0.857,
+      "positive_fraction": 0.03319502074688797
+    },
+    {
+      "auprc": 0.6186989447583751,
+      "auroc": 0.9136842105263159,
+      "f1": 0.5909090909090909,
+      "instance_id": "pdb_00006war_B_+",
+      "mcc": 0.5073224180284827,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.15966386554621848
+    },
+    {
+      "auprc": 0.6728679000348017,
+      "auroc": 0.9263157894736842,
+      "f1": 0.6363636363636364,
+      "instance_id": "pdb_00006war_D_+",
+      "mcc": 0.5636389924178384,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.15966386554621848
+    },
+    {
+      "auprc": 0.6186989447583751,
+      "auroc": 0.9136842105263159,
+      "f1": 0.5909090909090909,
+      "instance_id": "pdb_00006war_F_+",
+      "mcc": 0.5073224180284827,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.15966386554621848
+    },
+    {
+      "auprc": 0.6661146188310703,
+      "auroc": 0.9207070707070707,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00006war_H_+",
+      "mcc": 0.540545211148437,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.16806722689075632
+    },
+    {
+      "auprc": 0.6904537222914461,
+      "auroc": 0.938943894389439,
+      "f1": 0.6511627906976745,
+      "instance_id": "pdb_00006war_J_+",
+      "mcc": 0.5883052233624129,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.15126050420168066
+    },
+    {
+      "auprc": 0.66236065365799,
+      "auroc": 0.9110526315789473,
+      "f1": 0.6363636363636364,
+      "instance_id": "pdb_00006war_N_+",
+      "mcc": 0.5636389924178384,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.15966386554621848
+    },
+    {
+      "auprc": 0.6811410797241864,
+      "auroc": 0.9321052631578948,
+      "f1": 0.6363636363636364,
+      "instance_id": "pdb_00006war_P_+",
+      "mcc": 0.5636389924178384,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.15966386554621848
+    },
+    {
+      "auprc": 0.42341306725391936,
+      "auroc": 0.928644240570846,
+      "f1": 0.5333333333333333,
+      "instance_id": "pdb_00006wio_A_B",
+      "mcc": 0.49854972758914323,
+      "nearest_identity_fraction": 0.865,
+      "positive_fraction": 0.07627118644067797
+    },
+    {
+      "auprc": 0.41751947437797626,
+      "auroc": 0.9296266451786194,
+      "f1": 0.5,
+      "instance_id": "pdb_00006wir_A_B",
+      "mcc": 0.46623296699679345,
+      "nearest_identity_fraction": 0.865,
+      "positive_fraction": 0.07203389830508475
+    },
+    {
+      "auprc": 0.6028839193891602,
+      "auroc": 0.9339665309814564,
+      "f1": 0.5,
+      "instance_id": "pdb_00006x87_A_B",
+      "mcc": 0.47233143367519737,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.09865470852017937
+    },
+    {
+      "auprc": 0.6680216621855045,
+      "auroc": 0.9486657620985979,
+      "f1": 0.5555555555555556,
+      "instance_id": "pdb_00006x87_C_D",
+      "mcc": 0.53432667187977,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.09865470852017937
+    },
+    {
+      "auprc": 0.6530617491327362,
+      "auroc": 0.9402173913043478,
+      "f1": 0.5405405405405406,
+      "instance_id": "pdb_00006x87_E_F",
+      "mcc": 0.5200705882314819,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.1031390134529148
+    },
+    {
+      "auprc": 0.5422015454258062,
+      "auroc": 0.9357142857142857,
+      "f1": 0.47058823529411764,
+      "instance_id": "pdb_00006x87_G_H",
+      "mcc": 0.43636273846189244,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.08968609865470852
+    },
+    {
+      "auprc": 0.6028839193891602,
+      "auroc": 0.9339665309814564,
+      "f1": 0.5,
+      "instance_id": "pdb_00006x87_I_J",
+      "mcc": 0.47233143367519737,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.09865470852017937
+    },
+    {
+      "auprc": 0.530466931257307,
+      "auroc": 0.9266855256954267,
+      "f1": 0.45714285714285713,
+      "instance_id": "pdb_00006x87_K_L",
+      "mcc": 0.4229254065190624,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.09417040358744394
+    },
+    {
+      "auprc": 0.530466931257307,
+      "auroc": 0.9266855256954267,
+      "f1": 0.45714285714285713,
+      "instance_id": "pdb_00006x87_M_N",
+      "mcc": 0.4229254065190624,
+      "nearest_identity_fraction": 0.856,
+      "positive_fraction": 0.09417040358744394
+    },
+    {
+      "auprc": 0.8347395516706415,
+      "auroc": 0.9356897398134512,
+      "f1": 0.7428571428571429,
+      "instance_id": "pdb_00006xzu_A_+",
+      "mcc": 0.7200215305390811,
+      "nearest_identity_fraction": 0.805,
+      "positive_fraction": 0.17796610169491525
+    },
+    {
+      "auprc": 0.919567689212732,
+      "auroc": 0.9877870944221655,
+      "f1": 0.7931034482758621,
+      "instance_id": "pdb_00006ye3_A_B",
+      "mcc": 0.76995995938343,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.10970464135021098
+    },
+    {
+      "auprc": 0.9089738030229266,
+      "auroc": 0.986697965571205,
+      "f1": 0.7857142857142857,
+      "instance_id": "pdb_00006ye3_D_E",
+      "mcc": 0.767754050035958,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.10126582278481013
+    },
+    {
+      "auprc": 0.8709932997858694,
+      "auroc": 0.9788703778951645,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00006ye3_G_H",
+      "mcc": 0.7046465735315515,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.0970464135021097
+    },
+    {
+      "auprc": 0.5806749076608129,
+      "auroc": 0.9373908705412821,
+      "f1": 0.5333333333333333,
+      "instance_id": "pdb_00006ztr_A_B",
+      "mcc": 0.49140562077783084,
+      "nearest_identity_fraction": 0.865,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.5690319205693218,
+      "auroc": 0.9321428571428572,
+      "f1": 0.5217391304347826,
+      "instance_id": "pdb_00006ztr_H_L",
+      "mcc": 0.47459331376886005,
+      "nearest_identity_fraction": 0.865,
+      "positive_fraction": 0.08695652173913043
+    },
+    {
+      "auprc": 0.5967379158781871,
+      "auroc": 0.9471925133689839,
+      "f1": 0.6521739130434783,
+      "instance_id": "pdb_00007chy_H_L",
+      "mcc": 0.6135668674576952,
+      "nearest_identity_fraction": 0.889,
+      "positive_fraction": 0.09734513274336283
+    },
+    {
+      "auprc": 0.6185115197183704,
+      "auroc": 0.9483671668137686,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007chz_H_L",
+      "mcc": 0.5810589690342517,
+      "nearest_identity_fraction": 0.89,
+      "positive_fraction": 0.09649122807017543
+    },
+    {
+      "auprc": 0.6209952527343832,
+      "auroc": 0.9720930232558139,
+      "f1": 0.7,
+      "instance_id": "pdb_00007cn2_M_m",
+      "mcc": 0.6997944219099512,
+      "nearest_identity_fraction": 0.738,
+      "positive_fraction": 0.06521739130434782
+    },
+    {
+      "auprc": 0.769359477124183,
+      "auroc": 0.9779844961240309,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00007duo_H_L",
+      "mcc": 0.6586453922946311,
+      "nearest_identity_fraction": 0.848,
+      "positive_fraction": 0.06521739130434782
+    },
+    {
+      "auprc": 0.7821648029864281,
+      "auroc": 0.9765258215962441,
+      "f1": 0.8148148148148148,
+      "instance_id": "pdb_00007kzz_D_C",
+      "mcc": 0.7976123051385777,
+      "nearest_identity_fraction": 0.898,
+      "positive_fraction": 0.10126582278481013
+    },
+    {
+      "auprc": 0.6741624618323273,
+      "auroc": 0.9676532769556025,
+      "f1": 0.7692307692307693,
+      "instance_id": "pdb_00007kzz_F_E",
+      "mcc": 0.7528072494254496,
+      "nearest_identity_fraction": 0.898,
+      "positive_fraction": 0.09282700421940929
+    },
+    {
+      "auprc": 0.8196148970788254,
+      "auroc": 0.9521505376344086,
+      "f1": 0.5625,
+      "instance_id": "pdb_00007ndf_C_+",
+      "mcc": 0.5175034349393883,
+      "nearest_identity_fraction": 0.805,
+      "positive_fraction": 0.17699115044247787
+    },
+    {
+      "auprc": 0.8706422203010844,
+      "auroc": 0.9611801242236025,
+      "f1": 0.6060606060606061,
+      "instance_id": "pdb_00007ndf_D_+",
+      "mcc": 0.5737723884725667,
+      "nearest_identity_fraction": 0.805,
+      "positive_fraction": 0.18584070796460178
+    },
+    {
+      "auprc": 0.7801552941547671,
+      "auroc": 0.9512061403508771,
+      "f1": 0.5517241379310345,
+      "instance_id": "pdb_00007ngh_D_+",
+      "mcc": 0.5274918981271729,
+      "nearest_identity_fraction": 0.879,
+      "positive_fraction": 0.16521739130434782
+    },
+    {
+      "auprc": 0.6776393066376016,
+      "auroc": 0.9321581196581196,
+      "f1": 0.5789473684210527,
+      "instance_id": "pdb_00007ozt_AAA_+",
+      "mcc": 0.5025085804946576,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.14754098360655737
+    },
+    {
+      "auprc": 0.8779526288629931,
+      "auroc": 0.9653209109730849,
+      "f1": 0.6857142857142857,
+      "instance_id": "pdb_00007ph3_C_+",
+      "mcc": 0.6489919958147438,
+      "nearest_identity_fraction": 0.796,
+      "positive_fraction": 0.18584070796460178
+    },
+    {
+      "auprc": 0.8527515735403436,
+      "auroc": 0.9435564435564435,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00007ph3_D_+",
+      "mcc": 0.6291404822987446,
+      "nearest_identity_fraction": 0.796,
+      "positive_fraction": 0.19469026548672566
+    },
+    {
+      "auprc": 0.8356470483264742,
+      "auroc": 0.9809917355371901,
+      "f1": 0.8333333333333334,
+      "instance_id": "pdb_00007qia_B_+",
+      "mcc": 0.8186309883926305,
+      "nearest_identity_fraction": 0.801,
+      "positive_fraction": 0.09090909090909091
+    },
+    {
+      "auprc": 0.7606346034917463,
+      "auroc": 0.9535367545076283,
+      "f1": 0.7857142857142857,
+      "instance_id": "pdb_00007qia_C_+",
+      "mcc": 0.7565880721220527,
+      "nearest_identity_fraction": 0.771,
+      "positive_fraction": 0.11965811965811966
+    },
+    {
+      "auprc": 0.8246408099781802,
+      "auroc": 0.976703552708212,
+      "f1": 0.8421052631578947,
+      "instance_id": "pdb_00007r1z_C_+",
+      "mcc": 0.8186429547220131,
+      "nearest_identity_fraction": 0.709,
+      "positive_fraction": 0.1440677966101695
+    },
+    {
+      "auprc": 0.89205144552911,
+      "auroc": 0.970873786407767,
+      "f1": 0.7555555555555555,
+      "instance_id": "pdb_00007r1z_E_+",
+      "mcc": 0.702187173398231,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.176
+    },
+    {
+      "auprc": 0.8209369648037468,
+      "auroc": 0.9755387303436226,
+      "f1": 0.7894736842105263,
+      "instance_id": "pdb_00007r23_C_+",
+      "mcc": 0.7555470248348821,
+      "nearest_identity_fraction": 0.709,
+      "positive_fraction": 0.1440677966101695
+    },
+    {
+      "auprc": 0.7897960598222551,
+      "auroc": 0.9580010632642212,
+      "f1": 0.7317073170731707,
+      "instance_id": "pdb_00007r24_C_+",
+      "mcc": 0.6783211161939163,
+      "nearest_identity_fraction": 0.709,
+      "positive_fraction": 0.16101694915254236
+    },
+    {
+      "auprc": 0.8766406716598288,
+      "auroc": 0.9709241952232606,
+      "f1": 0.6829268292682927,
+      "instance_id": "pdb_00007r24_E_+",
+      "mcc": 0.6285130693299775,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.144
+    },
+    {
+      "auprc": 0.7451188285275638,
+      "auroc": 0.9533923303834808,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007uia_B_+",
+      "mcc": 0.6011654311289465,
+      "nearest_identity_fraction": 0.718,
+      "positive_fraction": 0.1171875
+    },
+    {
+      "auprc": 0.7388080178307883,
+      "auroc": 0.9526315789473685,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007uia_E_+",
+      "mcc": 0.6017047080859235,
+      "nearest_identity_fraction": 0.718,
+      "positive_fraction": 0.11627906976744186
+    },
+    {
+      "auprc": 0.7849844532840232,
+      "auroc": 0.9603794642857143,
+      "f1": 0.6521739130434783,
+      "instance_id": "pdb_00007uib_B_+",
+      "mcc": 0.6273643326097713,
+      "nearest_identity_fraction": 0.718,
+      "positive_fraction": 0.125
+    },
+    {
+      "auprc": 0.7423433713661418,
+      "auroc": 0.9532163742690059,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007uib_E_+",
+      "mcc": 0.6017047080859235,
+      "nearest_identity_fraction": 0.718,
+      "positive_fraction": 0.11627906976744186
+    },
+    {
+      "auprc": 0.7921225004220703,
+      "auroc": 0.9617117117117118,
+      "f1": 0.6521739130434783,
+      "instance_id": "pdb_00007uie_B_+",
+      "mcc": 0.6268258368174263,
+      "nearest_identity_fraction": 0.724,
+      "positive_fraction": 0.12598425196850394
+    },
+    {
+      "auprc": 0.7505958206712227,
+      "auroc": 0.9541666666666667,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007uie_C_+",
+      "mcc": 0.6006160585697112,
+      "nearest_identity_fraction": 0.724,
+      "positive_fraction": 0.11811023622047244
+    },
+    {
+      "auprc": 0.7469491507408287,
+      "auroc": 0.9540372670807453,
+      "f1": 0.5909090909090909,
+      "instance_id": "pdb_00007uie_E_+",
+      "mcc": 0.5748362069185368,
+      "nearest_identity_fraction": 0.718,
+      "positive_fraction": 0.10852713178294573
+    },
+    {
+      "auprc": 0.7533735984490004,
+      "auroc": 0.954954954954955,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007uie_G_+",
+      "mcc": 0.6000563036645542,
+      "nearest_identity_fraction": 0.722,
+      "positive_fraction": 0.11904761904761904
+    },
+    {
+      "auprc": 0.7505958206712227,
+      "auroc": 0.9541666666666667,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00007uie_I_+",
+      "mcc": 0.6006160585697112,
+      "nearest_identity_fraction": 0.724,
+      "positive_fraction": 0.11811023622047244
+    },
+    {
+      "auprc": 0.689247871331593,
+      "auroc": 0.9685534591194969,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00007v05_A_a",
+      "mcc": 0.598296328118354,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.6791264057078144,
+      "auroc": 0.9653280119730606,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00007v05_B_b",
+      "mcc": 0.5792553353354714,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.6791264057078144,
+      "auroc": 0.9653280119730606,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00007v05_C_c",
+      "mcc": 0.5792553353354714,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.6791264057078144,
+      "auroc": 0.9653280119730606,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00007v05_D_d",
+      "mcc": 0.5792553353354714,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.7511334446025386,
+      "auroc": 0.9707142857142856,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00007v05_E_e",
+      "mcc": 0.6205495405069653,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08695652173913043
+    },
+    {
+      "auprc": 0.6791264057078144,
+      "auroc": 0.9653280119730606,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00007v05_F_f",
+      "mcc": 0.5792553353354714,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.7511334446025386,
+      "auroc": 0.9707142857142856,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00007v05_G_g",
+      "mcc": 0.6205495405069653,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08695652173913043
+    },
+    {
+      "auprc": 0.6791264057078144,
+      "auroc": 0.9653280119730606,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00007v05_H_h",
+      "mcc": 0.5792553353354714,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.7138516985707926,
+      "auroc": 0.9692857142857142,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00007v05_I_i",
+      "mcc": 0.6205495405069653,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08695652173913043
+    },
+    {
+      "auprc": 0.689247871331593,
+      "auroc": 0.9685534591194969,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00007v05_J_j",
+      "mcc": 0.598296328118354,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.689247871331593,
+      "auroc": 0.9685534591194969,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00007v05_K_k",
+      "mcc": 0.598296328118354,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.6791264057078144,
+      "auroc": 0.9653280119730606,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00007v05_L_l",
+      "mcc": 0.5792553353354714,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.689247871331593,
+      "auroc": 0.9685534591194969,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00007v05_M_m",
+      "mcc": 0.598296328118354,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.689247871331593,
+      "auroc": 0.9685534591194969,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00007v05_N_n",
+      "mcc": 0.598296328118354,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.8058057096587563,
+      "auroc": 0.9312499999999999,
+      "f1": 0.6829268292682927,
+      "instance_id": "pdb_00007vke_B_+",
+      "mcc": 0.6355886081980817,
+      "nearest_identity_fraction": 0.766,
+      "positive_fraction": 0.1935483870967742
+    },
+    {
+      "auprc": 0.07995629401914481,
+      "auroc": 0.4359504132231405,
+      "f1": 0.0,
+      "instance_id": "pdb_00007xtp_C_+",
+      "mcc": -0.1440010017495835,
+      "nearest_identity_fraction": 0.714,
+      "positive_fraction": 0.09022556390977443
+    },
+    {
+      "auprc": 0.07371988653091796,
+      "auroc": 0.4297520661157025,
+      "f1": 0.0,
+      "instance_id": "pdb_00007xtp_D_+",
+      "mcc": -0.13483997249264842,
+      "nearest_identity_fraction": 0.712,
+      "positive_fraction": 0.08333333333333333
+    },
+    {
+      "auprc": 0.887829505187528,
+      "auroc": 0.9802,
+      "f1": 0.7924528301886793,
+      "instance_id": "pdb_00007xy8_H_L",
+      "mcc": 0.7664233962602037,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.1111111111111111
+    },
+    {
+      "auprc": 0.9275044114937716,
+      "auroc": 0.9917151813703537,
+      "f1": 0.8,
+      "instance_id": "pdb_00007xy8_I_M",
+      "mcc": 0.7825421390118646,
+      "nearest_identity_fraction": 0.845,
+      "positive_fraction": 0.09777777777777778
+    },
+    {
+      "auprc": 0.8381816277490997,
+      "auroc": 0.9776151528196299,
+      "f1": 0.7916666666666666,
+      "instance_id": "pdb_00007y1b_H_L",
+      "mcc": 0.7676745077220456,
+      "nearest_identity_fraction": 0.833,
+      "positive_fraction": 0.10222222222222223
+    },
+    {
+      "auprc": 0.8711167800453514,
+      "auroc": 0.9919893190921228,
+      "f1": 0.7368421052631579,
+      "instance_id": "pdb_00007yv1_H_L",
+      "mcc": 0.7457042083528429,
+      "nearest_identity_fraction": 0.876,
+      "positive_fraction": 0.06140350877192982
+    },
+    {
+      "auprc": 0.8069550742944707,
+      "auroc": 0.9861650485436894,
+      "f1": 0.8292682926829268,
+      "instance_id": "pdb_00007z4t_H_L",
+      "mcc": 0.8125401300634876,
+      "nearest_identity_fraction": 0.894,
+      "positive_fraction": 0.08849557522123894
+    },
+    {
+      "auprc": 0.6701140385720219,
+      "auroc": 0.9541747572815534,
+      "f1": 0.72,
+      "instance_id": "pdb_00008a44_C_D",
+      "mcc": 0.6860194174757281,
+      "nearest_identity_fraction": 0.905,
+      "positive_fraction": 0.10822510822510822
+    },
+    {
+      "auprc": 0.7087627979688729,
+      "auroc": 0.9638128861429833,
+      "f1": 0.68,
+      "instance_id": "pdb_00008av9_H_L",
+      "mcc": 0.6471107819691414,
+      "nearest_identity_fraction": 0.899,
+      "positive_fraction": 0.09649122807017543
+    },
+    {
+      "auprc": 0.7371686671340056,
+      "auroc": 0.9778225806451614,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008dcn_A_B",
+      "mcc": 0.668778026578488,
+      "nearest_identity_fraction": 0.892,
+      "positive_fraction": 0.06866952789699571
+    },
+    {
+      "auprc": 0.6792411430975551,
+      "auroc": 0.9680365296803652,
+      "f1": 0.5581395348837209,
+      "instance_id": "pdb_00008dcn_D_E",
+      "mcc": 0.561174260618114,
+      "nearest_identity_fraction": 0.892,
+      "positive_fraction": 0.060085836909871244
+    },
+    {
+      "auprc": 0.7185433815451212,
+      "auroc": 0.9652582159624413,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00008df1_H_L",
+      "mcc": 0.5899286309348089,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.7185433815451212,
+      "auroc": 0.9652582159624413,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00008df1_M_N",
+      "mcc": 0.5899286309348089,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.7185433815451212,
+      "auroc": 0.9652582159624413,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00008df1_O_P",
+      "mcc": 0.5899286309348089,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.7185433815451212,
+      "auroc": 0.9652582159624413,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00008df1_Q_R",
+      "mcc": 0.5899286309348089,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.6971475428634855,
+      "auroc": 0.9539532794249775,
+      "f1": 0.6037735849056604,
+      "instance_id": "pdb_00008df1_S_T",
+      "mcc": 0.5710876312333586,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.09012875536480687
+    },
+    {
+      "auprc": 0.681069467532438,
+      "auroc": 0.9608952287260206,
+      "f1": 0.5882352941176471,
+      "instance_id": "pdb_00008df1_U_V",
+      "mcc": 0.5645339684161784,
+      "nearest_identity_fraction": 0.75,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.6564282522895711,
+      "auroc": 0.961556603773585,
+      "f1": 0.6538461538461539,
+      "instance_id": "pdb_00008dfg_H_L",
+      "mcc": 0.6342597081310546,
+      "nearest_identity_fraction": 0.756,
+      "positive_fraction": 0.08620689655172414
+    },
+    {
+      "auprc": 0.6663516408750213,
+      "auroc": 0.9630331753554502,
+      "f1": 0.6538461538461539,
+      "instance_id": "pdb_00008dfg_I_M",
+      "mcc": 0.6340769284776907,
+      "nearest_identity_fraction": 0.755,
+      "positive_fraction": 0.08658008658008658
+    },
+    {
+      "auprc": 0.78903829712813,
+      "auroc": 0.9674908424908425,
+      "f1": 0.7083333333333334,
+      "instance_id": "pdb_00008dfh_H_L",
+      "mcc": 0.681433316568043,
+      "nearest_identity_fraction": 0.779,
+      "positive_fraction": 0.09170305676855896
+    },
+    {
+      "auprc": 0.8654911537264478,
+      "auroc": 0.9877693651718112,
+      "f1": 0.68,
+      "instance_id": "pdb_00008dke_A_B",
+      "mcc": 0.6887288542986089,
+      "nearest_identity_fraction": 0.729,
+      "positive_fraction": 0.0776255707762557
+    },
+    {
+      "auprc": 0.8642596266328517,
+      "auroc": 0.9874158618671349,
+      "f1": 0.6938775510204082,
+      "instance_id": "pdb_00008dki_A_B",
+      "mcc": 0.7011451187963447,
+      "nearest_identity_fraction": 0.729,
+      "positive_fraction": 0.0779816513761468
+    },
+    {
+      "auprc": 0.8654911537264478,
+      "auroc": 0.9877693651718112,
+      "f1": 0.68,
+      "instance_id": "pdb_00008dkm_A_B",
+      "mcc": 0.6887288542986089,
+      "nearest_identity_fraction": 0.729,
+      "positive_fraction": 0.0776255707762557
+    },
+    {
+      "auprc": 0.8654911537264478,
+      "auroc": 0.9877693651718112,
+      "f1": 0.68,
+      "instance_id": "pdb_00008dkw_A_B",
+      "mcc": 0.6887288542986089,
+      "nearest_identity_fraction": 0.729,
+      "positive_fraction": 0.0776255707762557
+    },
+    {
+      "auprc": 0.8468200765586387,
+      "auroc": 0.9839690436705363,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008dkx_A_B",
+      "mcc": 0.6639843447956858,
+      "nearest_identity_fraction": 0.729,
+      "positive_fraction": 0.0821917808219178
+    },
+    {
+      "auprc": 0.833356291559953,
+      "auroc": 0.9795566502463054,
+      "f1": 0.7727272727272727,
+      "instance_id": "pdb_00008ds5_C_B",
+      "mcc": 0.7519067869140922,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.08968609865470852
+    },
+    {
+      "auprc": 0.5359054806744152,
+      "auroc": 0.944702842377261,
+      "f1": 0.6,
+      "instance_id": "pdb_00008dyx_A_B",
+      "mcc": 0.5662434497098827,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.07725321888412018
+    },
+    {
+      "auprc": 0.5688336176056601,
+      "auroc": 0.9495818986719134,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_C_D",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5648311458901959,
+      "auroc": 0.9471830985915493,
+      "f1": 0.6190476190476191,
+      "instance_id": "pdb_00008dyx_E_F",
+      "mcc": 0.5822033269176133,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.5683275447311661,
+      "auroc": 0.9493359567142154,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_H_L",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5683275447311661,
+      "auroc": 0.9493359567142154,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_M_N",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5683275447311661,
+      "auroc": 0.9493359567142154,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_O_P",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5683275447311661,
+      "auroc": 0.9493359567142154,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_Q_R",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5683275447311661,
+      "auroc": 0.9493359567142154,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_S_T",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5683275447311661,
+      "auroc": 0.9493359567142154,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dyx_U_V",
+      "mcc": 0.600994664727149,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.0815450643776824
+    },
+    {
+      "auprc": 0.5765774308961545,
+      "auroc": 0.949236298292902,
+      "f1": 0.6511627906976745,
+      "instance_id": "pdb_00008dyx_W_X",
+      "mcc": 0.6159250755470771,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.09012875536480687
+    },
+    {
+      "auprc": 0.5399932744477032,
+      "auroc": 0.9556574923547401,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00008dyx_Y_Z",
+      "mcc": 0.6329459537286243,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.06437768240343347
+    },
+    {
+      "auprc": 0.7545071993379187,
+      "auroc": 0.9626701800614845,
+      "f1": 0.6341463414634146,
+      "instance_id": "pdb_00008dz3_A_B",
+      "mcc": 0.6003262376635636,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.09606986899563319
+    },
+    {
+      "auprc": 0.8456844886232524,
+      "auroc": 0.9725622625580413,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00008dz3_C_D",
+      "mcc": 0.689521245966673,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.8456844886232524,
+      "auroc": 0.9725622625580413,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00008dz3_E_F",
+      "mcc": 0.689521245966673,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.8685208934656932,
+      "auroc": 0.9811155028546333,
+      "f1": 0.7317073170731707,
+      "instance_id": "pdb_00008dz3_H_L",
+      "mcc": 0.7077703239667728,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.09606986899563319
+    },
+    {
+      "auprc": 0.8456844886232524,
+      "auroc": 0.9725622625580413,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00008dz3_M_N",
+      "mcc": 0.689521245966673,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.8456844886232524,
+      "auroc": 0.9725622625580413,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00008dz3_O_P",
+      "mcc": 0.689521245966673,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.7384215266628065,
+      "auroc": 0.9638278388278388,
+      "f1": 0.65,
+      "instance_id": "pdb_00008dz3_Q_R",
+      "mcc": 0.6175258616421149,
+      "nearest_identity_fraction": 0.839,
+      "positive_fraction": 0.09170305676855896
+    },
+    {
+      "auprc": 0.6394850817955757,
+      "auroc": 0.9516088800199551,
+      "f1": 0.631578947368421,
+      "instance_id": "pdb_00008dz4_A_B",
+      "mcc": 0.598403591918184,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.7356845963602696,
+      "auroc": 0.9612668033720665,
+      "f1": 0.7,
+      "instance_id": "pdb_00008dz4_C_D",
+      "mcc": 0.6725154524405392,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.09130434782608696
+    },
+    {
+      "auprc": 0.6735851878322898,
+      "auroc": 0.9571656413761677,
+      "f1": 0.65,
+      "instance_id": "pdb_00008dz4_E_F",
+      "mcc": 0.6176843450100805,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.09130434782608696
+    },
+    {
+      "auprc": 0.6201896705371432,
+      "auroc": 0.9481132075471699,
+      "f1": 0.5945945945945946,
+      "instance_id": "pdb_00008dz4_H_L",
+      "mcc": 0.5594034062813323,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.6451338190232603,
+      "auroc": 0.9521077575455226,
+      "f1": 0.631578947368421,
+      "instance_id": "pdb_00008dz4_M_N",
+      "mcc": 0.598403591918184,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.6201896705371432,
+      "auroc": 0.9481132075471699,
+      "f1": 0.5945945945945946,
+      "instance_id": "pdb_00008dz4_O_P",
+      "mcc": 0.5594034062813323,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.6201896705371432,
+      "auroc": 0.9481132075471699,
+      "f1": 0.5945945945945946,
+      "instance_id": "pdb_00008dz4_Q_R",
+      "mcc": 0.5594034062813323,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.6469519620291752,
+      "auroc": 0.9533333333333334,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00008dz4_S_T",
+      "mcc": 0.5800084005779567,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.08695652173913043
+    },
+    {
+      "auprc": 0.6201896705371432,
+      "auroc": 0.9481132075471699,
+      "f1": 0.5945945945945946,
+      "instance_id": "pdb_00008dz4_U_V",
+      "mcc": 0.5594034062813323,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.6394850817955757,
+      "auroc": 0.9516088800199551,
+      "f1": 0.631578947368421,
+      "instance_id": "pdb_00008dz4_W_X",
+      "mcc": 0.598403591918184,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.08260869565217391
+    },
+    {
+      "auprc": 0.6201896705371432,
+      "auroc": 0.9481132075471699,
+      "f1": 0.5945945945945946,
+      "instance_id": "pdb_00008dz4_Y_Z",
+      "mcc": 0.5594034062813323,
+      "nearest_identity_fraction": 0.818,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.8089658927104918,
+      "auroc": 0.9411764705882353,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008e6k_E_I",
+      "mcc": 0.6262640497012768,
+      "nearest_identity_fraction": 0.811,
+      "positive_fraction": 0.1091703056768559
+    },
+    {
+      "auprc": 0.8089658927104918,
+      "auroc": 0.9411764705882353,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008e6k_F_J",
+      "mcc": 0.6262640497012768,
+      "nearest_identity_fraction": 0.811,
+      "positive_fraction": 0.1091703056768559
+    },
+    {
+      "auprc": 0.8089658927104918,
+      "auroc": 0.9411764705882353,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008e6k_G_K",
+      "mcc": 0.6262640497012768,
+      "nearest_identity_fraction": 0.811,
+      "positive_fraction": 0.1091703056768559
+    },
+    {
+      "auprc": 0.8089658927104918,
+      "auroc": 0.9411764705882353,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008e6k_H_L",
+      "mcc": 0.6262640497012768,
+      "nearest_identity_fraction": 0.811,
+      "positive_fraction": 0.1091703056768559
+    },
+    {
+      "auprc": 0.8186055455110108,
+      "auroc": 0.9826216484607746,
+      "f1": 0.7804878048780488,
+      "instance_id": "pdb_00008eb2_J_L",
+      "mcc": 0.7616925973222756,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.08225108225108226
+    },
+    {
+      "auprc": 0.6940115327392624,
+      "auroc": 0.9741616272677295,
+      "f1": 0.717948717948718,
+      "instance_id": "pdb_00008eb2_K_M",
+      "mcc": 0.6992785429280093,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.0735930735930736
+    },
+    {
+      "auprc": 0.7295997308379321,
+      "auroc": 0.9775691184141888,
+      "f1": 0.75,
+      "instance_id": "pdb_00008eb2_N_O",
+      "mcc": 0.7309477787778156,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.07792207792207792
+    },
+    {
+      "auprc": 0.6100070981649929,
+      "auroc": 0.9210977701543739,
+      "f1": 0.4827586206896552,
+      "instance_id": "pdb_00008en0_D_+",
+      "mcc": 0.4308126778390701,
+      "nearest_identity_fraction": 0.786,
+      "positive_fraction": 0.09401709401709402
+    },
+    {
+      "auprc": 0.6201307004159906,
+      "auroc": 0.8992502343017807,
+      "f1": 0.5365853658536586,
+      "instance_id": "pdb_00008en6_C_+",
+      "mcc": 0.4424902401049897,
+      "nearest_identity_fraction": 0.789,
+      "positive_fraction": 0.18487394957983194
+    },
+    {
+      "auprc": 0.6840270436445537,
+      "auroc": 0.9222546161321672,
+      "f1": 0.6,
+      "instance_id": "pdb_00008en6_D_+",
+      "mcc": 0.5203743591725197,
+      "nearest_identity_fraction": 0.789,
+      "positive_fraction": 0.17647058823529413
+    },
+    {
+      "auprc": 0.6544646481747851,
+      "auroc": 0.9535545023696682,
+      "f1": 0.6779661016949152,
+      "instance_id": "pdb_00008ez7_H_L",
+      "mcc": 0.6429609393142497,
+      "nearest_identity_fraction": 0.783,
+      "positive_fraction": 0.1059322033898305
+    },
+    {
+      "auprc": 0.8132763394067708,
+      "auroc": 0.973719806763285,
+      "f1": 0.7384615384615385,
+      "instance_id": "pdb_00008ez8_H_L",
+      "mcc": 0.7245866165582484,
+      "nearest_identity_fraction": 0.799,
+      "positive_fraction": 0.10775862068965517
+    },
+    {
+      "auprc": 0.6840254171480968,
+      "auroc": 0.9688679245283018,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00008f5i_H_L",
+      "mcc": 0.6466945652335216,
+      "nearest_identity_fraction": 0.796,
+      "positive_fraction": 0.08620689655172414
+    },
+    {
+      "auprc": 0.8083534059054984,
+      "auroc": 0.982109423757021,
+      "f1": 0.7777777777777778,
+      "instance_id": "pdb_00008f5i_X_Y",
+      "mcc": 0.7599289396937321,
+      "nearest_identity_fraction": 0.796,
+      "positive_fraction": 0.09913793103448276
+    },
+    {
+      "auprc": 0.5860212206589133,
+      "auroc": 0.9238095238095239,
+      "f1": 0.5454545454545454,
+      "instance_id": "pdb_00008g3v_A_L",
+      "mcc": 0.5074907571777123,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.08898305084745763
+    },
+    {
+      "auprc": 0.5860212206589133,
+      "auroc": 0.9238095238095239,
+      "f1": 0.5454545454545454,
+      "instance_id": "pdb_00008g3v_B_M",
+      "mcc": 0.5074907571777123,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.08898305084745763
+    },
+    {
+      "auprc": 0.5860212206589133,
+      "auroc": 0.9238095238095239,
+      "f1": 0.5454545454545454,
+      "instance_id": "pdb_00008g3v_C_N",
+      "mcc": 0.5074907571777123,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.08898305084745763
+    },
+    {
+      "auprc": 0.5860212206589133,
+      "auroc": 0.9238095238095239,
+      "f1": 0.5454545454545454,
+      "instance_id": "pdb_00008g3v_D_O",
+      "mcc": 0.5074907571777123,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.08898305084745763
+    },
+    {
+      "auprc": 0.5821762192490878,
+      "auroc": 0.938300051203277,
+      "f1": 0.5652173913043478,
+      "instance_id": "pdb_00008g3z_E_F",
+      "mcc": 0.5361423958487664,
+      "nearest_identity_fraction": 0.822,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.5821762192490878,
+      "auroc": 0.938300051203277,
+      "f1": 0.5652173913043478,
+      "instance_id": "pdb_00008g3z_G_I",
+      "mcc": 0.5361423958487664,
+      "nearest_identity_fraction": 0.822,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.5821762192490878,
+      "auroc": 0.938300051203277,
+      "f1": 0.5652173913043478,
+      "instance_id": "pdb_00008g3z_H_L",
+      "mcc": 0.5361423958487664,
+      "nearest_identity_fraction": 0.822,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.5920183246796581,
+      "auroc": 0.9414463032919589,
+      "f1": 0.5777777777777777,
+      "instance_id": "pdb_00008g3z_J_K",
+      "mcc": 0.5564606340286614,
+      "nearest_identity_fraction": 0.822,
+      "positive_fraction": 0.07234042553191489
+    },
+    {
+      "auprc": 0.8496199557820783,
+      "auroc": 0.9789196310935442,
+      "f1": 0.6909090909090909,
+      "instance_id": "pdb_00008gav_H_L",
+      "mcc": 0.6679231437230441,
+      "nearest_identity_fraction": 0.759,
+      "positive_fraction": 0.09606986899563319
+    },
+    {
+      "auprc": 0.5989105339105338,
+      "auroc": 0.9689922480620154,
+      "f1": 0.5490196078431373,
+      "instance_id": "pdb_00008hs2_B_C",
+      "mcc": 0.5647000409032513,
+      "nearest_identity_fraction": 0.714,
+      "positive_fraction": 0.06521739130434782
+    },
+    {
+      "auprc": 0.8582691881860678,
+      "auroc": 0.9804347826086957,
+      "f1": 0.7555555555555555,
+      "instance_id": "pdb_00008iow_H_L",
+      "mcc": 0.7283616799569329,
+      "nearest_identity_fraction": 0.878,
+      "positive_fraction": 0.1031390134529148
+    },
+    {
+      "auprc": 0.8519763773807894,
+      "auroc": 0.981578947368421,
+      "f1": 0.72,
+      "instance_id": "pdb_00008pmy_A_L",
+      "mcc": 0.7050404676490687,
+      "nearest_identity_fraction": 0.844,
+      "positive_fraction": 0.08733624454148471
+    },
+    {
+      "auprc": 0.7817436830472564,
+      "auroc": 0.9764172335600907,
+      "f1": 0.6938775510204082,
+      "instance_id": "pdb_00008pmz_B1_B2",
+      "mcc": 0.6669143921631275,
+      "nearest_identity_fraction": 0.828,
+      "positive_fraction": 0.09090909090909091
+    },
+    {
+      "auprc": 0.7736182931687534,
+      "auroc": 0.975503663003663,
+      "f1": 0.7346938775510204,
+      "instance_id": "pdb_00008pmz_D1_D2",
+      "mcc": 0.71276798735666,
+      "nearest_identity_fraction": 0.826,
+      "positive_fraction": 0.09170305676855896
+    },
+    {
+      "auprc": 0.8118686737326498,
+      "auroc": 0.948695652173913,
+      "f1": 0.6956521739130435,
+      "instance_id": "pdb_00008qf5_A_+",
+      "mcc": 0.6255447936158335,
+      "nearest_identity_fraction": 0.82,
+      "positive_fraction": 0.21367521367521367
+    },
+    {
+      "auprc": 0.7682179944119405,
+      "auroc": 0.9420520999468368,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00008qf5_G_+",
+      "mcc": 0.6575216102061455,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.16101694915254236
+    },
+    {
+      "auprc": 0.8308334422113564,
+      "auroc": 0.9687830687830689,
+      "f1": 0.7391304347826086,
+      "instance_id": "pdb_00008qot_B_+",
+      "mcc": 0.7077912776095944,
+      "nearest_identity_fraction": 0.86,
+      "positive_fraction": 0.14634146341463414
+    },
+    {
+      "auprc": 0.011494252873563218,
+      "auroc": 0.6293103448275862,
+      "f1": 0.0,
+      "instance_id": "pdb_00008qot_H_L",
+      "mcc": -0.03167753968836437,
+      "nearest_identity_fraction": 0.906,
+      "positive_fraction": 0.004291845493562232
+    },
+    {
+      "auprc": 0.7400464576402737,
+      "auroc": 0.9382547277284119,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00008r9y_B_C",
+      "mcc": 0.5282608114330061,
+      "nearest_identity_fraction": 0.834,
+      "positive_fraction": 0.09130434782608696
+    },
+    {
+      "auprc": 0.7345434651339499,
+      "auroc": 0.9737541528239203,
+      "f1": 0.5909090909090909,
+      "instance_id": "pdb_00008r9y_H_L",
+      "mcc": 0.6031985858081809,
+      "nearest_identity_fraction": 0.87,
+      "positive_fraction": 0.0611353711790393
+    },
+    {
+      "auprc": 0.7400464576402737,
+      "auroc": 0.9382547277284119,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00008r9z_B_C",
+      "mcc": 0.5282608114330061,
+      "nearest_identity_fraction": 0.834,
+      "positive_fraction": 0.09130434782608696
+    },
+    {
+      "auprc": 0.7575030062590462,
+      "auroc": 0.9782763532763532,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00008r9z_H_L",
+      "mcc": 0.5875150626291978,
+      "nearest_identity_fraction": 0.866,
+      "positive_fraction": 0.056768558951965066
+    },
+    {
+      "auprc": 0.4766150697044611,
+      "auroc": 0.8922539312754805,
+      "f1": 0.4375,
+      "instance_id": "pdb_00008rwf_C_+",
+      "mcc": 0.3505796626472253,
+      "nearest_identity_fraction": 0.831,
+      "positive_fraction": 0.1440677966101695
+    },
+    {
+      "auprc": 0.3927807381368652,
+      "auroc": 0.8535539215686274,
+      "f1": 0.3225806451612903,
+      "instance_id": "pdb_00008rwf_E_+",
+      "mcc": 0.2204163088278272,
+      "nearest_identity_fraction": 0.831,
+      "positive_fraction": 0.13559322033898305
+    },
+    {
+      "auprc": 0.4645702517772903,
+      "auroc": 0.889341875364007,
+      "f1": 0.4375,
+      "instance_id": "pdb_00008rwf_G_+",
+      "mcc": 0.3505796626472253,
+      "nearest_identity_fraction": 0.831,
+      "positive_fraction": 0.1440677966101695
+    },
+    {
+      "auprc": 0.6928902022493172,
+      "auroc": 0.9550443224989447,
+      "f1": 0.68,
+      "instance_id": "pdb_00008t05_C_D",
+      "mcc": 0.643662488564094,
+      "nearest_identity_fraction": 0.804,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.5416254514748791,
+      "auroc": 0.9274891774891775,
+      "f1": 0.43902439024390244,
+      "instance_id": "pdb_00008t6m_B_A",
+      "mcc": 0.3862147724026661,
+      "nearest_identity_fraction": 0.754,
+      "positive_fraction": 0.09482758620689655
+    },
+    {
+      "auprc": 0.5547333058018725,
+      "auroc": 0.9474282466609832,
+      "f1": 0.47368421052631576,
+      "instance_id": "pdb_00008tq7_F_G",
+      "mcc": 0.4283305849275995,
+      "nearest_identity_fraction": 0.755,
+      "positive_fraction": 0.07589285714285714
+    },
+    {
+      "auprc": 0.5547333058018725,
+      "auroc": 0.9474282466609832,
+      "f1": 0.47368421052631576,
+      "instance_id": "pdb_00008tq7_H_L",
+      "mcc": 0.4283305849275995,
+      "nearest_identity_fraction": 0.755,
+      "positive_fraction": 0.07589285714285714
+    },
+    {
+      "auprc": 0.7139600808263948,
+      "auroc": 0.9675639894086496,
+      "f1": 0.6363636363636364,
+      "instance_id": "pdb_00008tq8_H_L",
+      "mcc": 0.5975286849073257,
+      "nearest_identity_fraction": 0.776,
+      "positive_fraction": 0.09649122807017543
+    },
+    {
+      "auprc": 0.86935894372898,
+      "auroc": 0.987839366515837,
+      "f1": 0.7619047619047619,
+      "instance_id": "pdb_00008u1q_H_L",
+      "mcc": 0.7550967469702593,
+      "nearest_identity_fraction": 0.847,
+      "positive_fraction": 0.07555555555555556
+    },
+    {
+      "auprc": 0.8776670625618734,
+      "auroc": 0.9845853658536585,
+      "f1": 0.8275862068965517,
+      "instance_id": "pdb_00008vc7_B_A",
+      "mcc": 0.8133895316466478,
+      "nearest_identity_fraction": 0.934,
+      "positive_fraction": 0.10869565217391304
+    },
+    {
+      "auprc": 0.8718417792786848,
+      "auroc": 0.983130081300813,
+      "f1": 0.8070175438596491,
+      "instance_id": "pdb_00008vc7_J_D",
+      "mcc": 0.7932781324248142,
+      "nearest_identity_fraction": 0.934,
+      "positive_fraction": 0.10480349344978165
+    },
+    {
+      "auprc": 0.3629864779754147,
+      "auroc": 0.8938401048492791,
+      "f1": 0.2857142857142857,
+      "instance_id": "pdb_00008vgq_H_L",
+      "mcc": 0.23950447699173397,
+      "nearest_identity_fraction": 0.879,
+      "positive_fraction": 0.0603448275862069
+    },
+    {
+      "auprc": 0.8656745341111844,
+      "auroc": 0.9845070422535211,
+      "f1": 0.75,
+      "instance_id": "pdb_00008vkx_H_L",
+      "mcc": 0.7348931126339241,
+      "nearest_identity_fraction": 0.755,
+      "positive_fraction": 0.08583690987124463
+    },
+    {
+      "auprc": 0.6077895226287525,
+      "auroc": 0.9393636515075796,
+      "f1": 0.6551724137931034,
+      "instance_id": "pdb_00008vrs_C2_C1",
+      "mcc": 0.6068632350491421,
+      "nearest_identity_fraction": 0.764,
+      "positive_fraction": 0.1228813559322034
+    },
+    {
+      "auprc": 0.6665437034034452,
+      "auroc": 0.9566883225054139,
+      "f1": 0.6896551724137931,
+      "instance_id": "pdb_00008vrs_D2_D1",
+      "mcc": 0.6461769115442278,
+      "nearest_identity_fraction": 0.764,
+      "positive_fraction": 0.1228813559322034
+    },
+    {
+      "auprc": 0.771345544988637,
+      "auroc": 0.979644495412844,
+      "f1": 0.625,
+      "instance_id": "pdb_00008w9j_B_A",
+      "mcc": 0.6313827560106549,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.06837606837606838
+    },
+    {
+      "auprc": 0.6780454742625796,
+      "auroc": 0.9739105504587156,
+      "f1": 0.625,
+      "instance_id": "pdb_00008w9j_H_L",
+      "mcc": 0.6313827560106549,
+      "nearest_identity_fraction": 0.832,
+      "positive_fraction": 0.06837606837606838
+    },
+    {
+      "auprc": 0.8046653831453079,
+      "auroc": 0.9773904851625059,
+      "f1": 0.6829268292682927,
+      "instance_id": "pdb_00008yj7_G1_G2",
+      "mcc": 0.6518387374430588,
+      "nearest_identity_fraction": 0.731,
+      "positive_fraction": 0.10232558139534884
+    },
+    {
+      "auprc": 0.8239960774426931,
+      "auroc": 0.9800777453838678,
+      "f1": 0.7,
+      "instance_id": "pdb_00008yj7_H1_H2",
+      "mcc": 0.6706444139982737,
+      "nearest_identity_fraction": 0.724,
+      "positive_fraction": 0.0967741935483871
+    },
+    {
+      "auprc": 0.820688567139974,
+      "auroc": 0.9559748427672956,
+      "f1": 0.7222222222222222,
+      "instance_id": "pdb_00008yj8_D_+",
+      "mcc": 0.6750524109014675,
+      "nearest_identity_fraction": 0.772,
+      "positive_fraction": 0.14516129032258066
+    },
+    {
+      "auprc": 0.6218462336883388,
+      "auroc": 0.9310906131307651,
+      "f1": 0.6511627906976745,
+      "instance_id": "pdb_00008ysf_C_+",
+      "mcc": 0.5790027689374245,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.16379310344827586
+    },
+    {
+      "auprc": 0.46198692375538897,
+      "auroc": 0.8215538847117795,
+      "f1": 0.4,
+      "instance_id": "pdb_00008ysh_A_+",
+      "mcc": 0.2572899219859593,
+      "nearest_identity_fraction": 0.758,
+      "positive_fraction": 0.1810344827586207
+    },
+    {
+      "auprc": 0.6957454281287829,
+      "auroc": 0.9411764705882353,
+      "f1": 0.5517241379310345,
+      "instance_id": "pdb_00008yw6_C_+",
+      "mcc": 0.49834742774643,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.14912280701754385
+    },
+    {
+      "auprc": 0.7251391275973993,
+      "auroc": 0.9569436021831413,
+      "f1": 0.6206896551724138,
+      "instance_id": "pdb_00008yw8_C_+",
+      "mcc": 0.5785898101801772,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.14912280701754385
+    },
+    {
+      "auprc": 0.8255165607361493,
+      "auroc": 0.9739235900545785,
+      "f1": 0.5925925925925926,
+      "instance_id": "pdb_00008yw9_D_+",
+      "mcc": 0.56660044047818,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.14912280701754385
+    },
+    {
+      "auprc": 0.7284497584287501,
+      "auroc": 0.9668934240362812,
+      "f1": 0.75,
+      "instance_id": "pdb_00009b2c_H_L",
+      "mcc": 0.7286167394050019,
+      "nearest_identity_fraction": 0.827,
+      "positive_fraction": 0.09090909090909091
+    },
+    {
+      "auprc": 0.24571428571428572,
+      "auroc": 0.9431111111111111,
+      "f1": 0.24242424242424243,
+      "instance_id": "pdb_00009b6s_H_L",
+      "mcc": 0.30921719844357887,
+      "nearest_identity_fraction": 0.752,
+      "positive_fraction": 0.021739130434782608
+    },
+    {
+      "auprc": 0.30634920634920637,
+      "auroc": 0.9794419970631425,
+      "f1": 0.1935483870967742,
+      "instance_id": "pdb_00009b6s_h_l",
+      "mcc": 0.3087765907710318,
+      "nearest_identity_fraction": 0.752,
+      "positive_fraction": 0.013043478260869565
+    },
+    {
+      "auprc": 0.8760909307901789,
+      "auroc": 0.9733766233766235,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00009b70_G_+",
+      "mcc": 0.697171131429518,
+      "nearest_identity_fraction": 0.744,
+      "positive_fraction": 0.11290322580645161
+    },
+    {
+      "auprc": 0.8760909307901789,
+      "auroc": 0.9733766233766235,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00009b70_H_+",
+      "mcc": 0.697171131429518,
+      "nearest_identity_fraction": 0.744,
+      "positive_fraction": 0.11290322580645161
+    },
+    {
+      "auprc": 0.8760909307901789,
+      "auroc": 0.9733766233766235,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00009b71_G_+",
+      "mcc": 0.697171131429518,
+      "nearest_identity_fraction": 0.744,
+      "positive_fraction": 0.11290322580645161
+    },
+    {
+      "auprc": 0.8760909307901789,
+      "auroc": 0.9733766233766235,
+      "f1": 0.7272727272727273,
+      "instance_id": "pdb_00009b71_H_+",
+      "mcc": 0.697171131429518,
+      "nearest_identity_fraction": 0.744,
+      "positive_fraction": 0.11290322580645161
+    },
+    {
+      "auprc": 0.6774599552161664,
+      "auroc": 0.9750673854447439,
+      "f1": 0.6842105263157895,
+      "instance_id": "pdb_00009ck4_A_B",
+      "mcc": 0.6859524922421075,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.061946902654867256
+    },
+    {
+      "auprc": 0.5414869325255354,
+      "auroc": 0.9553571428571428,
+      "f1": 0.6,
+      "instance_id": "pdb_00009ck4_C_D",
+      "mcc": 0.5768090047889836,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.07079646017699115
+    },
+    {
+      "auprc": 0.8087635208653354,
+      "auroc": 0.980654761904762,
+      "f1": 0.65,
+      "instance_id": "pdb_00009ck4_E_F",
+      "mcc": 0.6328050679686702,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.07079646017699115
+    },
+    {
+      "auprc": 0.6871948860026189,
+      "auroc": 0.9712851965430721,
+      "f1": 0.8,
+      "instance_id": "pdb_00009d3j_A_B",
+      "mcc": 0.7919745424752211,
+      "nearest_identity_fraction": 0.824,
+      "positive_fraction": 0.07456140350877193
+    },
+    {
+      "auprc": 0.6880060363612995,
+      "auroc": 0.9786381842456608,
+      "f1": 0.7428571428571429,
+      "instance_id": "pdb_00009d3j_E_F",
+      "mcc": 0.7398531662798871,
+      "nearest_identity_fraction": 0.829,
+      "positive_fraction": 0.06140350877192982
+    },
+    {
+      "auprc": 0.4923225358519476,
+      "auroc": 0.9714932126696834,
+      "f1": 0.5806451612903226,
+      "instance_id": "pdb_00009d72_H_L",
+      "mcc": 0.5986787866567181,
+      "nearest_identity_fraction": 0.678,
+      "positive_fraction": 0.04329004329004329
+    },
+    {
+      "auprc": 0.7399580835387606,
+      "auroc": 0.9696054750402576,
+      "f1": 0.6938775510204082,
+      "instance_id": "pdb_00009dbo_H_L",
+      "mcc": 0.6577462682295636,
+      "nearest_identity_fraction": 0.917,
+      "positive_fraction": 0.1038961038961039
+    },
+    {
+      "auprc": 0.707521862112279,
+      "auroc": 0.9776583710407241,
+      "f1": 0.6808510638297872,
+      "instance_id": "pdb_00009df0_H_L",
+      "mcc": 0.6793982411414773,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.07555555555555556
+    },
+    {
+      "auprc": 0.9106493019109556,
+      "auroc": 0.9904823707549211,
+      "f1": 0.8627450980392157,
+      "instance_id": "pdb_00009dh2_K_L",
+      "mcc": 0.8505120363755314,
+      "nearest_identity_fraction": 0.83,
+      "positive_fraction": 0.10267857142857142
+    },
+    {
+      "auprc": 0.8854168575376006,
+      "auroc": 0.9841666666666666,
+      "f1": 0.8461538461538461,
+      "instance_id": "pdb_00009dh2_P_Q",
+      "mcc": 0.829227982896771,
+      "nearest_identity_fraction": 0.83,
+      "positive_fraction": 0.10714285714285714
+    },
+    {
+      "auprc": 0.6837029775259897,
+      "auroc": 0.9710144927536232,
+      "f1": 0.7083333333333334,
+      "instance_id": "pdb_00009dl0_A_Y",
+      "mcc": 0.6745169082125604,
+      "nearest_identity_fraction": 0.922,
+      "positive_fraction": 0.1038961038961039
+    },
+    {
+      "auprc": 0.6825492755382356,
+      "auroc": 0.9736622073578596,
+      "f1": 0.6956521739130435,
+      "instance_id": "pdb_00009dl0_H_Z",
+      "mcc": 0.6619983277591973,
+      "nearest_identity_fraction": 0.922,
+      "positive_fraction": 0.09956709956709957
+    },
+    {
+      "auprc": 0.9153317909711771,
+      "auroc": 0.9901044529961517,
+      "f1": 0.6530612244897959,
+      "instance_id": "pdb_00009dpc_H_L",
+      "mcc": 0.6548673438555368,
+      "nearest_identity_fraction": 0.849,
+      "positive_fraction": 0.0735930735930736
+    },
+    {
+      "auprc": 0.4795828547076302,
+      "auroc": 0.9214199029126213,
+      "f1": 0.41025641025641024,
+      "instance_id": "pdb_00009e6k_H_L",
+      "mcc": 0.36250883624960506,
+      "nearest_identity_fraction": 0.881,
+      "positive_fraction": 0.07207207207207207
+    },
+    {
+      "auprc": 0.6992183718797246,
+      "auroc": 0.9525577557755776,
+      "f1": 0.5652173913043478,
+      "instance_id": "pdb_00009eze_B_C",
+      "mcc": 0.5166653216537545,
+      "nearest_identity_fraction": 0.843,
+      "positive_fraction": 0.10619469026548672
+    },
+    {
+      "auprc": 0.7067315562588671,
+      "auroc": 0.9641131815044859,
+      "f1": 0.5116279069767442,
+      "instance_id": "pdb_00009fns_C_D",
+      "mcc": 0.5041110575480937,
+      "nearest_identity_fraction": 0.755,
+      "positive_fraction": 0.06334841628959276
+    },
+    {
+      "auprc": 0.7793004794055213,
+      "auroc": 0.973994452149792,
+      "f1": 0.5581395348837209,
+      "instance_id": "pdb_00009fns_E_F",
+      "mcc": 0.5589460072532979,
+      "nearest_identity_fraction": 0.754,
+      "positive_fraction": 0.06363636363636363
+    },
+    {
+      "auprc": 0.5079006931090682,
+      "auroc": 0.9605442176870748,
+      "f1": 0.6190476190476191,
+      "instance_id": "pdb_00009fnt_C_D",
+      "mcc": 0.6273643326097713,
+      "nearest_identity_fraction": 0.785,
+      "positive_fraction": 0.0625
+    },
+    {
+      "auprc": 0.6593372652461916,
+      "auroc": 0.9668760708166763,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00009fnt_E_F",
+      "mcc": 0.6561092430840035,
+      "nearest_identity_fraction": 0.784,
+      "positive_fraction": 0.07623318385650224
+    },
+    {
+      "auprc": 0.7570048905343022,
+      "auroc": 0.9728070175438597,
+      "f1": 0.6153846153846154,
+      "instance_id": "pdb_00009g2g_D_+",
+      "mcc": 0.5927874923158668,
+      "nearest_identity_fraction": 0.83,
+      "positive_fraction": 0.08064516129032258
+    },
+    {
+      "auprc": 0.5499788953736322,
+      "auroc": 0.9386169386169386,
+      "f1": 0.5,
+      "instance_id": "pdb_00009g48_C_+",
+      "mcc": 0.4817499777011721,
+      "nearest_identity_fraction": 0.868,
+      "positive_fraction": 0.0859375
+    },
+    {
+      "auprc": 0.6319316304610423,
+      "auroc": 0.9516949152542372,
+      "f1": 0.5294117647058824,
+      "instance_id": "pdb_00009g4g_B_+",
+      "mcc": 0.5314122288536727,
+      "nearest_identity_fraction": 0.828,
+      "positive_fraction": 0.078125
+    },
+    {
+      "auprc": 0.8142587490168135,
+      "auroc": 0.9726666666666666,
+      "f1": 0.7857142857142857,
+      "instance_id": "pdb_00009g5z_C_+",
+      "mcc": 0.7586935398305388,
+      "nearest_identity_fraction": 0.867,
+      "positive_fraction": 0.13043478260869565
+    },
+    {
+      "auprc": 0.7997217119797765,
+      "auroc": 0.969023569023569,
+      "f1": 0.7857142857142857,
+      "instance_id": "pdb_00009g5z_D_+",
+      "mcc": 0.758403572734448,
+      "nearest_identity_fraction": 0.866,
+      "positive_fraction": 0.13157894736842105
+    },
+    {
+      "auprc": 0.5291394974259425,
+      "auroc": 0.9621461487820935,
+      "f1": 0.6511627906976745,
+      "instance_id": "pdb_00009goy_H_L",
+      "mcc": 0.6703642361591539,
+      "nearest_identity_fraction": 0.877,
+      "positive_fraction": 0.06060606060606061
+    },
+    {
+      "auprc": 0.8251881220631221,
+      "auroc": 0.9886363636363636,
+      "f1": 0.5853658536585366,
+      "instance_id": "pdb_00009gsl_B3_B1",
+      "mcc": 0.6179143806533247,
+      "nearest_identity_fraction": 0.865,
+      "positive_fraction": 0.05172413793103448
+    },
+    {
+      "auprc": 0.7930765182251119,
+      "auroc": 0.9586488060570763,
+      "f1": 0.7428571428571429,
+      "instance_id": "pdb_00009h77_A_+",
+      "mcc": 0.6985169783673801,
+      "nearest_identity_fraction": 0.801,
+      "positive_fraction": 0.1440677966101695
+    },
+    {
+      "auprc": 0.7930765182251119,
+      "auroc": 0.9586488060570763,
+      "f1": 0.7428571428571429,
+      "instance_id": "pdb_00009h77_B_+",
+      "mcc": 0.6985169783673801,
+      "nearest_identity_fraction": 0.801,
+      "positive_fraction": 0.1440677966101695
+    },
+    {
+      "auprc": 0.8726675663135679,
+      "auroc": 0.9705284552845529,
+      "f1": 0.8372093023255814,
+      "instance_id": "pdb_00009hkq_D_E",
+      "mcc": 0.8274151363204649,
+      "nearest_identity_fraction": 0.782,
+      "positive_fraction": 0.10480349344978165
+    },
+    {
+      "auprc": 0.96741519350215,
+      "auroc": 0.9950248756218906,
+      "f1": 0.8695652173913043,
+      "instance_id": "pdb_00009hud_H_L",
+      "mcc": 0.854639844256976,
+      "nearest_identity_fraction": 0.885,
+      "positive_fraction": 0.10267857142857142
+    },
+    {
+      "auprc": 0.7433284859150489,
+      "auroc": 0.9751664106502815,
+      "f1": 0.6274509803921569,
+      "instance_id": "pdb_00009ihc_H_L",
+      "mcc": 0.6204576396790994,
+      "nearest_identity_fraction": 0.919,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.8911749381335388,
+      "auroc": 0.9846535770706387,
+      "f1": 0.8,
+      "instance_id": "pdb_00009iy2_D_C",
+      "mcc": 0.7892505718491846,
+      "nearest_identity_fraction": 0.741,
+      "positive_fraction": 0.09051724137931035
+    },
+    {
+      "auprc": 0.2472913444957,
+      "auroc": 0.8936547323644098,
+      "f1": 0.3,
+      "instance_id": "pdb_00009iy2_E_F",
+      "mcc": 0.2616880738846581,
+      "nearest_identity_fraction": 0.722,
+      "positive_fraction": 0.05652173913043478
+    },
+    {
+      "auprc": 0.2475728838879472,
+      "auroc": 0.8933002481389578,
+      "f1": 0.2926829268292683,
+      "instance_id": "pdb_00009iy2_G_I",
+      "mcc": 0.25435335148077465,
+      "nearest_identity_fraction": 0.722,
+      "positive_fraction": 0.05652173913043478
+    },
+    {
+      "auprc": 0.8893196505639656,
+      "auroc": 0.984427894380501,
+      "f1": 0.8,
+      "instance_id": "pdb_00009iy2_H_L",
+      "mcc": 0.7892505718491846,
+      "nearest_identity_fraction": 0.741,
+      "positive_fraction": 0.09051724137931035
+    },
+    {
+      "auprc": 0.5015554296097282,
+      "auroc": 0.9550991994430909,
+      "f1": 0.5128205128205128,
+      "instance_id": "pdb_00009jie_C_D",
+      "mcc": 0.5078996559989685,
+      "nearest_identity_fraction": 0.876,
+      "positive_fraction": 0.05555555555555555
+    },
+    {
+      "auprc": 0.5015554296097282,
+      "auroc": 0.9550991994430909,
+      "f1": 0.5128205128205128,
+      "instance_id": "pdb_00009jie_H_L",
+      "mcc": 0.5078996559989685,
+      "nearest_identity_fraction": 0.876,
+      "positive_fraction": 0.05555555555555555
+    },
+    {
+      "auprc": 0.562957695838774,
+      "auroc": 0.9568267674042094,
+      "f1": 0.5909090909090909,
+      "instance_id": "pdb_00009jii_F_E",
+      "mcc": 0.569034281236703,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.07234042553191489
+    },
+    {
+      "auprc": 0.6432847985092568,
+      "auroc": 0.9628776241679468,
+      "f1": 0.6222222222222222,
+      "instance_id": "pdb_00009jii_H_L",
+      "mcc": 0.5986849492508649,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.6439923371605288,
+      "auroc": 0.9623655913978494,
+      "f1": 0.6521739130434783,
+      "instance_id": "pdb_00009jij_E_F",
+      "mcc": 0.6349220610972651,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.6439923371605288,
+      "auroc": 0.9623655913978494,
+      "f1": 0.6521739130434783,
+      "instance_id": "pdb_00009jij_H_L",
+      "mcc": 0.6349220610972651,
+      "nearest_identity_fraction": 0.753,
+      "positive_fraction": 0.07659574468085106
+    },
+    {
+      "auprc": 0.5152927587545337,
+      "auroc": 0.9560943643512451,
+      "f1": 0.5365853658536586,
+      "instance_id": "pdb_00009jik_C_D",
+      "mcc": 0.5289424987260021,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.0603448275862069
+    },
+    {
+      "auprc": 0.5152927587545337,
+      "auroc": 0.9560943643512451,
+      "f1": 0.5365853658536586,
+      "instance_id": "pdb_00009jik_H_L",
+      "mcc": 0.5289424987260021,
+      "nearest_identity_fraction": 0.775,
+      "positive_fraction": 0.0603448275862069
+    },
+    {
+      "auprc": 0.519918908150816,
+      "auroc": 0.9394707207207207,
+      "f1": 0.5098039215686274,
+      "instance_id": "pdb_00009jim_C_D",
+      "mcc": 0.5044151137910262,
+      "nearest_identity_fraction": 0.79,
+      "positive_fraction": 0.06722689075630252
+    },
+    {
+      "auprc": 0.519918908150816,
+      "auroc": 0.9394707207207207,
+      "f1": 0.5098039215686274,
+      "instance_id": "pdb_00009jim_H_L",
+      "mcc": 0.5044151137910262,
+      "nearest_identity_fraction": 0.79,
+      "positive_fraction": 0.06722689075630252
+    },
+    {
+      "auprc": 0.8016252234674597,
+      "auroc": 0.9816537467700258,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00009jq6_H_I",
+      "mcc": 0.666216931930968,
+      "nearest_identity_fraction": 0.858,
+      "positive_fraction": 0.07725321888412018
+    },
+    {
+      "auprc": 0.8617431635196102,
+      "auroc": 0.9852713178294573,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00009jq6_J_K",
+      "mcc": 0.666216931930968,
+      "nearest_identity_fraction": 0.858,
+      "positive_fraction": 0.07725321888412018
+    },
+    {
+      "auprc": 0.7561177059045636,
+      "auroc": 0.9691029900332225,
+      "f1": 0.48148148148148145,
+      "instance_id": "pdb_00009jqy_H_L",
+      "mcc": 0.5066785334735793,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.0611353711790393
+    },
+    {
+      "auprc": 0.7054648482210507,
+      "auroc": 0.9629283489096574,
+      "f1": 0.509090909090909,
+      "instance_id": "pdb_00009jqz_H_L",
+      "mcc": 0.5290064867223089,
+      "nearest_identity_fraction": 0.793,
+      "positive_fraction": 0.06550218340611354
+    },
+    {
+      "auprc": 0.7125423771075945,
+      "auroc": 0.9609427609427609,
+      "f1": 0.5925925925925926,
+      "instance_id": "pdb_00009knw_C_+",
+      "mcc": 0.5429466343317952,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.13157894736842105
+    },
+    {
+      "auprc": 0.7125423771075945,
+      "auroc": 0.9609427609427609,
+      "f1": 0.5925925925925926,
+      "instance_id": "pdb_00009kny_C_+",
+      "mcc": 0.5429466343317952,
+      "nearest_identity_fraction": 0.85,
+      "positive_fraction": 0.13157894736842105
+    },
+    {
+      "auprc": 0.8532947447098634,
+      "auroc": 0.9897798742138365,
+      "f1": 0.72,
+      "instance_id": "pdb_00009l1p_H_L",
+      "mcc": 0.7248129231635606,
+      "nearest_identity_fraction": 0.786,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.7446102323294331,
+      "auroc": 0.9689542483660131,
+      "f1": 0.65,
+      "instance_id": "pdb_00009l9y_A_B",
+      "mcc": 0.6416776072195713,
+      "nearest_identity_fraction": 0.84,
+      "positive_fraction": 0.0684931506849315
+    },
+    {
+      "auprc": 0.749465251524075,
+      "auroc": 0.9745098039215686,
+      "f1": 0.65,
+      "instance_id": "pdb_00009l9y_H_L",
+      "mcc": 0.6416776072195713,
+      "nearest_identity_fraction": 0.84,
+      "positive_fraction": 0.0684931506849315
+    },
+    {
+      "auprc": 0.735162163858726,
+      "auroc": 0.931328320802005,
+      "f1": 0.6857142857142857,
+      "instance_id": "pdb_00009min_E_+",
+      "mcc": 0.6505291866299959,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.1810344827586207
+    },
+    {
+      "auprc": 0.7782438254061816,
+      "auroc": 0.9619693396226415,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00009mjb_H_L",
+      "mcc": 0.570206315395028,
+      "nearest_identity_fraction": 0.884,
+      "positive_fraction": 0.07017543859649122
+    },
+    {
+      "auprc": 0.6766716614128719,
+      "auroc": 0.9070938215102975,
+      "f1": 0.5714285714285714,
+      "instance_id": "pdb_00009mnx_C_+",
+      "mcc": 0.542249492428454,
+      "nearest_identity_fraction": 0.825,
+      "positive_fraction": 0.19491525423728814
+    },
+    {
+      "auprc": 0.8203121639363087,
+      "auroc": 0.9304078014184397,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00009mny_C_+",
+      "mcc": 0.5962223753971466,
+      "nearest_identity_fraction": 0.825,
+      "positive_fraction": 0.2033898305084746
+    },
+    {
+      "auprc": 0.6971224324291828,
+      "auroc": 0.9113475177304965,
+      "f1": 0.5555555555555556,
+      "instance_id": "pdb_00009mnz_C_+",
+      "mcc": 0.5265647117368859,
+      "nearest_identity_fraction": 0.825,
+      "positive_fraction": 0.2033898305084746
+    },
+    {
+      "auprc": 0.7855936345506667,
+      "auroc": 0.9469107551487415,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00009mo0_C_+",
+      "mcc": 0.6130298465286284,
+      "nearest_identity_fraction": 0.825,
+      "positive_fraction": 0.19491525423728814
+    },
+    {
+      "auprc": 0.6741921913398058,
+      "auroc": 0.9086491739552964,
+      "f1": 0.6818181818181818,
+      "instance_id": "pdb_00009my8_A_+",
+      "mcc": 0.610785564835303,
+      "nearest_identity_fraction": 0.764,
+      "positive_fraction": 0.17647058823529413
+    },
+    {
+      "auprc": 0.30277777777777776,
+      "auroc": 0.9813218390804598,
+      "f1": 0.18181818181818182,
+      "instance_id": "pdb_00009n8f_H_L",
+      "mcc": 0.2972575801649425,
+      "nearest_identity_fraction": 0.751,
+      "positive_fraction": 0.01276595744680851
+    },
+    {
+      "auprc": 0.339777122803501,
+      "auroc": 0.8751184834123222,
+      "f1": 0.36363636363636365,
+      "instance_id": "pdb_00009np0_B_C",
+      "mcc": 0.2987714386501159,
+      "nearest_identity_fraction": 0.747,
+      "positive_fraction": 0.08658008658008658
+    },
+    {
+      "auprc": 0.3771944810163641,
+      "auroc": 0.8126202385532897,
+      "f1": 0.4166666666666667,
+      "instance_id": "pdb_00009npt_G_+",
+      "mcc": 0.29230417823514226,
+      "nearest_identity_fraction": 0.694,
+      "positive_fraction": 0.16911764705882354
+    },
+    {
+      "auprc": 0.36317271411095703,
+      "auroc": 0.8185344827586206,
+      "f1": 0.4444444444444444,
+      "instance_id": "pdb_00009npt_H_+",
+      "mcc": 0.33894010922140555,
+      "nearest_identity_fraction": 0.694,
+      "positive_fraction": 0.14705882352941177
+    },
+    {
+      "auprc": 0.3771944810163641,
+      "auroc": 0.8126202385532897,
+      "f1": 0.4166666666666667,
+      "instance_id": "pdb_00009npt_I_+",
+      "mcc": 0.29230417823514226,
+      "nearest_identity_fraction": 0.694,
+      "positive_fraction": 0.16911764705882354
+    },
+    {
+      "auprc": 0.43660276322705527,
+      "auroc": 0.9512108262108262,
+      "f1": 0.5789473684210527,
+      "instance_id": "pdb_00009nr6_E1_E2",
+      "mcc": 0.5797663212083111,
+      "nearest_identity_fraction": 0.822,
+      "positive_fraction": 0.056768558951965066
+    },
+    {
+      "auprc": 0.5207978023332361,
+      "auroc": 0.9554517133956386,
+      "f1": 0.6,
+      "instance_id": "pdb_00009nr6_F1_F2",
+      "mcc": 0.5864893550665494,
+      "nearest_identity_fraction": 0.822,
+      "positive_fraction": 0.06550218340611354
+    },
+    {
+      "auprc": 0.735162163858726,
+      "auroc": 0.931328320802005,
+      "f1": 0.6857142857142857,
+      "instance_id": "pdb_00009o5s_F_+",
+      "mcc": 0.6505291866299959,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.1810344827586207
+    },
+    {
+      "auprc": 0.735162163858726,
+      "auroc": 0.931328320802005,
+      "f1": 0.6857142857142857,
+      "instance_id": "pdb_00009o5s_O_+",
+      "mcc": 0.6505291866299959,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.1810344827586207
+    },
+    {
+      "auprc": 0.7439555956814873,
+      "auroc": 0.9733391608391609,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00009osr_H_L",
+      "mcc": 0.6975506959689176,
+      "nearest_identity_fraction": 0.791,
+      "positive_fraction": 0.09565217391304348
+    },
+    {
+      "auprc": 0.7589637445183384,
+      "auroc": 0.9701086956521738,
+      "f1": 0.7142857142857143,
+      "instance_id": "pdb_00009osr_I_M",
+      "mcc": 0.6905810408004578,
+      "nearest_identity_fraction": 0.799,
+      "positive_fraction": 0.09956709956709957
+    },
+    {
+      "auprc": 0.7721426392475377,
+      "auroc": 0.9765290002256827,
+      "f1": 0.7037037037037037,
+      "instance_id": "pdb_00009osr_J_N",
+      "mcc": 0.6886910434376841,
+      "nearest_identity_fraction": 0.8,
+      "positive_fraction": 0.09051724137931035
+    },
+    {
+      "auprc": 0.7608957347183393,
+      "auroc": 0.975094976783453,
+      "f1": 0.75,
+      "instance_id": "pdb_00009osr_K_R",
+      "mcc": 0.7315979660510478,
+      "nearest_identity_fraction": 0.79,
+      "positive_fraction": 0.10043668122270742
+    },
+    {
+      "auprc": 0.9099026278062823,
+      "auroc": 0.9768137621540762,
+      "f1": 0.8253968253968254,
+      "instance_id": "pdb_00009pd2_H_L",
+      "mcc": 0.8042278205805248,
+      "nearest_identity_fraction": 0.814,
+      "positive_fraction": 0.15486725663716813
+    },
+    {
+      "auprc": 0.57654904533568,
+      "auroc": 0.9299416180150125,
+      "f1": 0.6285714285714286,
+      "instance_id": "pdb_00009pxu_C_+",
+      "mcc": 0.6353500804836986,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.09166666666666666
+    },
+    {
+      "auprc": 0.7632914559297692,
+      "auroc": 0.9727906976744186,
+      "f1": 0.6538461538461539,
+      "instance_id": "pdb_00009pzi_F_E",
+      "mcc": 0.6347976182184151,
+      "nearest_identity_fraction": 0.919,
+      "positive_fraction": 0.0851063829787234
+    },
+    {
+      "auprc": 0.7138799329473706,
+      "auroc": 0.9416785206258891,
+      "f1": 0.5,
+      "instance_id": "pdb_00009q6h_B_+",
+      "mcc": 0.4208055295953514,
+      "nearest_identity_fraction": 0.79,
+      "positive_fraction": 0.14615384615384616
+    },
+    {
+      "auprc": 0.8866250081762135,
+      "auroc": 0.9653259361997226,
+      "f1": 0.7692307692307693,
+      "instance_id": "pdb_00009q6h_C_+",
+      "mcc": 0.7295091756318767,
+      "nearest_identity_fraction": 0.779,
+      "positive_fraction": 0.1693548387096774
+    },
+    {
+      "auprc": 0.7503739352840937,
+      "auroc": 0.9338624338624338,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00009q6h_D_+",
+      "mcc": 0.5867980775408761,
+      "nearest_identity_fraction": 0.77,
+      "positive_fraction": 0.14634146341463414
+    },
+    {
+      "auprc": 0.7592813948009902,
+      "auroc": 0.9449541284403671,
+      "f1": 0.631578947368421,
+      "instance_id": "pdb_00009q6h_E_+",
+      "mcc": 0.5680631165321586,
+      "nearest_identity_fraction": 0.804,
+      "positive_fraction": 0.14173228346456693
+    },
+    {
+      "auprc": 0.6865209601368771,
+      "auroc": 0.9411764705882353,
+      "f1": 0.6666666666666666,
+      "instance_id": "pdb_00009q6n_B_+",
+      "mcc": 0.6135992234842141,
+      "nearest_identity_fraction": 0.781,
+      "positive_fraction": 0.1328125
+    },
+    {
+      "auprc": 0.8722133975039932,
+      "auroc": 0.9726720647773279,
+      "f1": 0.8108108108108109,
+      "instance_id": "pdb_00009q6n_C_+",
+      "mcc": 0.7777403091216373,
+      "nearest_identity_fraction": 0.788,
+      "positive_fraction": 0.15447154471544716
+    },
+    {
+      "auprc": 0.7513811489815327,
+      "auroc": 0.9276190476190476,
+      "f1": 0.6111111111111112,
+      "instance_id": "pdb_00009q6n_D_+",
+      "mcc": 0.556013707463307,
+      "nearest_identity_fraction": 0.764,
+      "positive_fraction": 0.17355371900826447
+    },
+    {
+      "auprc": 0.7751474020912722,
+      "auroc": 0.9550239234449761,
+      "f1": 0.7027027027027027,
+      "instance_id": "pdb_00009q6n_E_+",
+      "mcc": 0.6660286373665086,
+      "nearest_identity_fraction": 0.805,
+      "positive_fraction": 0.18803418803418803
+    },
+    {
+      "auprc": 0.680938800259356,
+      "auroc": 0.9643421349582487,
+      "f1": 0.65,
+      "instance_id": "pdb_00009qqf_H_L",
+      "mcc": 0.6179968272065978,
+      "nearest_identity_fraction": 0.817,
+      "positive_fraction": 0.09051724137931035
+    },
+    {
+      "auprc": 0.6193214578643207,
+      "auroc": 0.8553816974869606,
+      "f1": 0.43902439024390244,
+      "instance_id": "pdb_00009rxi_H_+",
+      "mcc": 0.335935834323624,
+      "nearest_identity_fraction": 0.815,
+      "positive_fraction": 0.14615384615384616
+    },
+    {
+      "auprc": 0.6320227192765556,
+      "auroc": 0.950314465408805,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00009rye_C_+",
+      "mcc": 0.6029278668121224,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.12396694214876033
+    },
+    {
+      "auprc": 0.6949351771890135,
+      "auroc": 0.9566037735849057,
+      "f1": 0.6486486486486487,
+      "instance_id": "pdb_00009ryf_C_+",
+      "mcc": 0.6029278668121224,
+      "nearest_identity_fraction": 0.763,
+      "positive_fraction": 0.12396694214876033
+    },
+    {
+      "auprc": 0.7880223496753527,
+      "auroc": 0.9654088050314465,
+      "f1": 0.5245901639344263,
+      "instance_id": "pdb_00009s6u_H_L",
+      "mcc": 0.5246097960109624,
+      "nearest_identity_fraction": 0.893,
+      "positive_fraction": 0.0782608695652174
+    },
+    {
+      "auprc": 0.9076904637251477,
+      "auroc": 0.9841269841269842,
+      "f1": 0.8095238095238095,
+      "instance_id": "pdb_00009uo0_A_+",
+      "mcc": 0.7828747135139081,
+      "nearest_identity_fraction": 0.761,
+      "positive_fraction": 0.14634146341463414
+    },
+    {
+      "auprc": 0.670904513719716,
+      "auroc": 0.9300776914539399,
+      "f1": 0.6363636363636364,
+      "instance_id": "pdb_00009uoc_D_+",
+      "mcc": 0.5843976469975333,
+      "nearest_identity_fraction": 0.715,
+      "positive_fraction": 0.13821138211382114
+    },
+    {
+      "auprc": 0.6878691146102671,
+      "auroc": 0.9410046728971962,
+      "f1": 0.6511627906976745,
+      "instance_id": "pdb_00009uoc_F_+",
+      "mcc": 0.6123790596262608,
+      "nearest_identity_fraction": 0.715,
+      "positive_fraction": 0.13008130081300814
+    },
+    {
+      "auprc": 0.8122329382218466,
+      "auroc": 0.9826262626262626,
+      "f1": 0.8163265306122449,
+      "instance_id": "pdb_00009uvi_B_A",
+      "mcc": 0.7938757684716002,
+      "nearest_identity_fraction": 0.792,
+      "positive_fraction": 0.11210762331838565
+    },
+    {
+      "auprc": 0.37870570472720005,
+      "auroc": 0.7956932773109243,
+      "f1": 0.4444444444444444,
+      "instance_id": "pdb_00009yc3_A_+",
+      "mcc": 0.3507932518315155,
+      "nearest_identity_fraction": 0.784,
+      "positive_fraction": 0.13178294573643412
+    },
+    {
+      "auprc": 0.7410289633191505,
+      "auroc": 0.9318996415770608,
+      "f1": 0.6857142857142857,
+      "instance_id": "pdb_00009ytd_D_+",
+      "mcc": 0.6495149352295456,
+      "nearest_identity_fraction": 0.817,
+      "positive_fraction": 0.18421052631578946
+    },
+    {
+      "auprc": 0.7492580651389317,
+      "auroc": 0.911172161172161,
+      "f1": 0.6842105263157895,
+      "instance_id": "pdb_00009ytf_D_+",
+      "mcc": 0.6595267488757409,
+      "nearest_identity_fraction": 0.813,
+      "positive_fraction": 0.20869565217391303
+    }
+  ],
+  "instance_with_qualifying_neighbor_count": 455,
+  "interpretation_guardrail": "Association with nearest-neighbor identity is descriptive and does not establish that the model memorized training labels.",
+  "role": "paratope",
+  "spearman_correlations": {
+    "auprc": {
+      "instance_count": 455,
+      "pvalue": 0.19209314874271283,
+      "rho": -0.06126284382382088
+    },
+    "auroc": {
+      "instance_count": 455,
+      "pvalue": 0.7557772784148141,
+      "rho": 0.014620782824844412
+    },
+    "f1": {
+      "instance_count": 455,
+      "pvalue": 0.3852508117640301,
+      "rho": -0.04080003856181464
+    },
+    "mcc": {
+      "instance_count": 455,
+      "pvalue": 0.4346376215407928,
+      "rho": -0.03671563210719091
+    }
+  },
+  "stage": "similarity_performance_audit",
+  "test_instance_count": 455
+}
