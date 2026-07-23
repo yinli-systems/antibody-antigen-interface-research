@@ -1,0 +1,123 @@
+{
+  "artifacts": {
+    "node_predictions": "/cluster/project/model_deployment/results/sabdab2/interaction_first/v2_screen_nocross_uncentered_seed42/validation/node_predictions.parquet",
+    "pair_predictions": "/cluster/project/model_deployment/results/sabdab2/interaction_first/v2_screen_nocross_uncentered_seed42/validation/pair_predictions.parquet",
+    "partner_scores": "/cluster/project/model_deployment/results/sabdab2/interaction_first/v2_screen_nocross_uncentered_seed42/validation/partner_scores.parquet"
+  },
+  "checkpoint": "/cluster/project/model_deployment/results/sabdab2/interaction_first/v2_screen_nocross_uncentered_seed42/checkpoints/best.pt",
+  "checkpoint_sha256": "c1eadb1213213815d362d2fe23d80a6b85e18a18c963b7560dfdc45a4820b1bc",
+  "epitope_matched_minus_mean_wrong_auprc": {
+    "cluster_count": 67,
+    "confidence": 0.95,
+    "instance_count": 216,
+    "iterations": 2000,
+    "lower": 0.0,
+    "mean": 0.0,
+    "seed": 42,
+    "upper": 0.0
+  },
+  "format_version": "sabdab2_interaction_first_v2",
+  "instance_count": 216,
+  "negative_policy": {
+    "count": 9,
+    "hard_pool_size": 64,
+    "unknown pairs are ranked but never assigned all-zero contact labels": true
+  },
+  "nodes": {
+    "epitope": {
+      "macro": {
+        "accuracy": 0.4784263877500227,
+        "auprc": 0.19565906031213562,
+        "auroc": 0.6506317366905813,
+        "f1": 0.2252313185458528,
+        "mcc": 0.11022280752243331,
+        "precision": 0.138484926257769,
+        "prevalence": 0.10622991234747489,
+        "recall": 0.7571895052526827
+      },
+      "micro": {
+        "accuracy": 0.5340354180149438,
+        "auprc": 0.13163946785708966,
+        "auroc": 0.6870499702857548,
+        "count": 50991,
+        "f1": 0.1937016424596172,
+        "mcc": 0.14276433363324761,
+        "positive_count": 3773,
+        "precision": 0.11107219303366414,
+        "prevalence": 0.07399344982447884,
+        "recall": 0.7564272462231646,
+        "threshold": 0.5
+      }
+    },
+    "paratope": {
+      "macro": {
+        "accuracy": 0.8714149185387262,
+        "auprc": 0.5476928205746483,
+        "auroc": 0.9165530348346423,
+        "f1": 0.5486971622660166,
+        "mcc": 0.5189004907740836,
+        "precision": 0.4301191082421875,
+        "prevalence": 0.10182554218373402,
+        "recall": 0.7967175502179252
+      },
+      "micro": {
+        "accuracy": 0.8760736196319019,
+        "auprc": 0.47685562742552007,
+        "auroc": 0.9174356476543843,
+        "count": 40750,
+        "f1": 0.5535714285714286,
+        "mcc": 0.5217384929339712,
+        "positive_count": 3938,
+        "precision": 0.42459994575535664,
+        "prevalence": 0.09663803680981595,
+        "recall": 0.7950736414423565,
+        "threshold": 0.5
+      }
+    }
+  },
+  "pair": {
+    "macro": {
+      "accuracy": 0.9464535632273026,
+      "auprc": 0.022701579538017526,
+      "auroc": 0.9224540880588912,
+      "contact_iou": 0.013297966661144653,
+      "f1": 0.02614452630763351,
+      "mcc": 0.07469264217428655,
+      "precision": 0.013559069070804812,
+      "precision_at_true_contact_count": 0.03368349627940422,
+      "prevalence": 0.0014495235563783831,
+      "recall": 0.5337606533292433
+    },
+    "micro": {
+      "accuracy": 0.9521220286839347,
+      "auprc": 0.012314508003377586,
+      "auroc": 0.9258825366391839,
+      "contact_iou": 0.010747480599541495,
+      "count": 9129919,
+      "f1": 0.021266400967265234,
+      "mcc": 0.07030900523042648,
+      "positive_count": 9051,
+      "precision": 0.010853145446775252,
+      "precision_at_true_contact_count": 0.026295436968290797,
+      "prevalence": 0.000991356002172637,
+      "recall": 0.5246934040437521,
+      "threshold": 0.5
+    }
+  },
+  "partner_retrieval": {
+    "candidate_count_per_instance": 10,
+    "instance_count": 216,
+    "mean_hardest_negative_score": 0.2939882410897149,
+    "mean_matched_minus_hardest_negative": -0.07899684817702682,
+    "mean_matched_score": 0.21499139291268807,
+    "mean_rank": 4.583333333333333,
+    "median_rank": 4.0,
+    "recall_at_1": 0.09722222222222222,
+    "recall_at_10": 1.0,
+    "recall_at_5": 0.6388888888888888
+  },
+  "split": "validation",
+  "split_manifest_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+  "stage": "evaluate",
+  "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection"
+}

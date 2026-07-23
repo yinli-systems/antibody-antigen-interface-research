@@ -1,0 +1,72 @@
+{
+  "checkpoint": "/cluster/project/model_deployment/results/sabdab2/partner_retrieval/partner_retrieval_seed42/checkpoints/best.pt",
+  "checkpoint_sha256": "ba1bca6673891a73cb7ea7c5f057af81f3509acb2251b2627f986f787e7281f7",
+  "config_sha256": "e8661233353fc7c6186d85e5e7c449bf4c932925f1fc240611e5228ed660e20c",
+  "dataset": {
+    "instances_path": "/cluster/project/model_deployment/data/sppider_seq_sabdab2_prepared/instances.parquet",
+    "instances_sha256": "a9131d52323bae40572b7de81c5e41353ccc39a73309b7d7043485350facb009",
+    "raw_instance_counts": {
+      "test": 218,
+      "train": 3229,
+      "validation": 216
+    },
+    "split_intended_use": "development_only",
+    "split_manifest": "/cluster/project/model_deployment/data/interaction_first/double_remote_split.json",
+    "split_manifest_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b"
+  },
+  "embedding_cache": {
+    "cache_bytes": 270336000,
+    "cached_sequence_count": 246,
+    "hits": 0,
+    "max_cache_bytes": 25769803776,
+    "misses": 246
+  },
+  "embedding_corpus": {
+    "content_manifest_sha256": "c338549d09db11ca233af6346125c49b9729b5fcf4e29b984c22c9bc164dd862",
+    "manifest_algorithm": "sha256(sequence_key,size,file_sha256)",
+    "scope": "deduplicated_train_and_validation_sequences",
+    "sequence_count": 2801,
+    "total_bytes": 3172923731
+  },
+  "exact_duplicate_pairs_removed": 68,
+  "format_version": "sabdab2_partner_retrieval_v1",
+  "frozen_test_unlocked": false,
+  "metrics": {
+    "antibody_to_antigen": {
+      "anchor_count": 126,
+      "candidate_count": 120,
+      "known_positive_count": 148,
+      "mean_positives_per_anchor": 1.1746032238006592,
+      "mean_rank": 54.26984126984127,
+      "median_rank": 50.5,
+      "mrr": 0.08505902032476659,
+      "recall_at_1": 0.047619047619047616,
+      "recall_at_10": 0.15079365079365079,
+      "recall_at_5": 0.09523809523809523
+    },
+    "antigen_to_antibody": {
+      "anchor_count": 120,
+      "candidate_count": 126,
+      "known_positive_count": 148,
+      "mean_positives_per_anchor": 1.2333333492279053,
+      "mean_rank": 52.675,
+      "median_rank": 47.0,
+      "mrr": 0.06274877228890954,
+      "recall_at_1": 0.008333333333333333,
+      "recall_at_10": 0.13333333333333333,
+      "recall_at_5": 0.075
+    },
+    "bidirectional_mrr": 0.07390389630683807,
+    "exact_pair_count": 148,
+    "loss": 5.471413612365723,
+    "unique_antibody_count": 126,
+    "unique_antigen_count": 120
+  },
+  "split": "validation",
+  "stage": "full_library_evaluation",
+  "train_holdout_isolation": {
+    "antibody_sequence_overlap": 0,
+    "antigen_sequence_overlap": 0,
+    "exact_pair_overlap": 0
+  }
+}

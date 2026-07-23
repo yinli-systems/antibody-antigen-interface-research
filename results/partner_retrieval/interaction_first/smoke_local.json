@@ -1,0 +1,31 @@
+{
+  "component_losses": {
+    "edge": 1.8869115114212036,
+    "edge_count": 0.10254953801631927,
+    "epitope_bce": 2.9191079139709473,
+    "epitope_count": 0.3020474314689636,
+    "epitope_dice": 0.6003478765487671,
+    "paratope_bce": 2.4905145168304443,
+    "paratope_count": 0.3653486371040344,
+    "paratope_dice": 0.5847775340080261,
+    "partner_rank": 0.6324566602706909
+  },
+  "epitope_shape": [
+    2,
+    11
+  ],
+  "format_version": "sabdab2_interaction_first_v1",
+  "gradient_norm": 11.879745483398438,
+  "loss": 3.7322099208831787,
+  "pair_shape": [
+    2,
+    11,
+    7
+  ],
+  "parameter_count": 212873,
+  "paratope_shape": [
+    2,
+    7
+  ],
+  "stage": "synthetic_smoke"
+}
