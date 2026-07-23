@@ -1,0 +1,12 @@
+stage	variant	role	job_id	dependency
+resume_01	trained_seed42	epitope	1262781	none
+resume_02	trained_seed42	epitope	1262782	1262781
+resume_03	trained_seed42	epitope	1262783	1262782
+resume_04	trained_seed42	epitope	1262784	1262783
+resume_05	trained_seed42	epitope	1262785	1262784
+resume_06	trained_seed42	epitope	1262786	1262785
+resume_07	trained_seed42	epitope	1262787	1262786
+resume_08	trained_seed42	epitope	1262788	1262787
+resume_09	trained_seed42	epitope	1262789	1262788
+infer	trained_seed42	epitope	1262790	1262789
+assemble	trained_seed42	epitope	1262791	1262790

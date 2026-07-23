@@ -1,0 +1,32 @@
+{
+  "benchmark_root": "/cluster/project/model_deployment/data/sabdab2-baseline-outsourcing",
+  "candidate_pair_count": 190509766,
+  "created_at_unix": 1784709695.324192,
+  "format_version": "sabdab2_sppider_seq_v1",
+  "instance_count": 3663,
+  "label_definition": {
+    "authoritative_source": "pairs.parquet.label",
+    "epitope": "any positive candidate pair for an antigen residue",
+    "paratope": "any positive candidate pair for an antibody residue"
+  },
+  "manifest_sha256": "15f7819193d79f637849744b7cc8160b34b81b5bc2f50671c0cd07560b524377",
+  "positive_pair_count": 143756,
+  "role_split_counts": {
+    "epitope": {
+      "test": 455,
+      "train": 2887,
+      "validation": 321
+    },
+    "paratope": {
+      "test": 455,
+      "train": 2878,
+      "validation": 330
+    }
+  },
+  "seed": 42,
+  "test_instance_count": 455,
+  "train_instance_count": 3208,
+  "unique_antibody_sequence_count": 1608,
+  "unique_antigen_sequence_count": 1407,
+  "validation_fraction": 0.1
+}

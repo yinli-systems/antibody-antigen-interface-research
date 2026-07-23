@@ -1,0 +1,12 @@
+stage	variant	role	job_id	dependency
+resume_01	trained_seed42	paratope	1262770	none
+resume_02	trained_seed42	paratope	1262771	1262770
+resume_03	trained_seed42	paratope	1262772	1262771
+resume_04	trained_seed42	paratope	1262773	1262772
+resume_05	trained_seed42	paratope	1262774	1262773
+resume_06	trained_seed42	paratope	1262775	1262774
+resume_07	trained_seed42	paratope	1262776	1262775
+resume_08	trained_seed42	paratope	1262777	1262776
+resume_09	trained_seed42	paratope	1262778	1262777
+infer	trained_seed42	paratope	1262779	1262778
+assemble	trained_seed42	paratope	1262780	1262779
