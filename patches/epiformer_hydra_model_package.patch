@@ -1,0 +1,13 @@
+diff --git a/code/conf/config.yaml b/code/conf/config.yaml
+index b3d121c..ca23c7a 100644
+--- a/code/conf/config.yaml
++++ b/code/conf/config.yaml
+@@ -5,7 +5,7 @@ defaults:
+   - _self_
+   - mode: dev      # choices: train, dev, test
+   - hparams: hparams
+-  - model:   model
++  - model@_global_: model
+   - loss:    loss
+   - wandb:   wandb
+   - callbacks: callbacks
