@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/schemas/sabdab2-asymmetric-fold-aggregation-manifest-v1.json",
+  "title": "SAbDab2 asymmetric retrieval fold aggregation manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version",
+    "intended_use",
+    "frozen_test_used",
+    "seed",
+    "fold_count",
+    "authority",
+    "expected_source_sha256",
+    "shared_config_contract",
+    "variants"
+  ],
+  "properties": {
+    "format_version": {
+      "const": "sabdab2_asymmetric_fold_aggregation_manifest_v1"
+    },
+    "intended_use": {
+      "const": "development_only"
+    },
+    "frozen_test_used": {
+      "const": false
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "fold_count": {
+      "const": 3
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha256",
+        "source_pool_splits",
+        "sealed_source_splits",
+        "coverage_mode"
+      ],
+      "properties": {
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_pool_splits": {
+          "const": [
+            "train"
+          ]
+        },
+        "sealed_source_splits": {
+          "const": [
+            "validation",
+            "test"
+          ]
+        },
+        "coverage_mode": {
+          "const": "exact"
+        }
+      }
+    },
+    "expected_source_sha256": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "shared_config_contract": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/variant"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fold_index",
+        "fold_manifest",
+        "history",
+        "training_summary"
+      ],
+      "properties": {
+        "fold_index": {
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fold_manifest": {
+          "$ref": "#/$defs/reference"
+        },
+        "history": {
+          "$ref": "#/$defs/reference"
+        },
+        "training_summary": {
+          "$ref": "#/$defs/reference"
+        }
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "model_contract",
+        "runs"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "esm2_calm_mean",
+            "antiberty_calm_mean",
+            "antiberty_chain_balanced"
+          ]
+        },
+        "model_contract": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "runs": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/run"
+          }
+        }
+      }
+    }
+  }
+}
