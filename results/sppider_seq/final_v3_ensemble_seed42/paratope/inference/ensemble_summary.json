@@ -1,0 +1,19 @@
+{
+  "ensemble_digest": "178fd893a7d5cdfbfb786b0c814894bc7f1d1c247a129d9634c64a6839c5de05",
+  "format_version": "sabdab2_sppider_seq_v1",
+  "inputs": [
+    {
+      "checkpoint_sha256": "3acf22b550b8ce2e83f4893b5db2f110401a9e7ec7594e863741cb74c82eeda3",
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_component_base/paratope/inference",
+      "weight": 0.5
+    },
+    {
+      "checkpoint_sha256": "035c2f9f5d311e4a7ec00ad4a3efa16f779b2e2b831698baf3e45720dde96f58",
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/final_v3_component_lr1e5/paratope/inference",
+      "weight": 0.5
+    }
+  ],
+  "instance_count": 455,
+  "role": "paratope",
+  "stage": "ensemble_inference"
+}

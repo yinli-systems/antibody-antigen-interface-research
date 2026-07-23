@@ -1,0 +1,3 @@
+stage	job_id	dependency
+embed	1262554
+smoke	1262555	1262554
