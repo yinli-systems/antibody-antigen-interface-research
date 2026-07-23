@@ -1,0 +1,62 @@
+{
+  "fixed_0_5_metrics": {
+    "accuracy": 0.9320225682268044,
+    "auprc": 0.15179390695360664,
+    "auroc": 0.7319110427300112,
+    "count": 128322,
+    "f1": 0.0025157232704402514,
+    "mcc": 0.01692348208684148,
+    "positive_count": 8712,
+    "positive_fraction": 0.06789170991723945,
+    "precision": 0.3333333333333333,
+    "recall": 0.0012626262626262627,
+    "score_max": 0.7016875743865967,
+    "score_min": 9.221851360052824e-05,
+    "threshold": 0.5
+  },
+  "optimized": {
+    "f1": {
+      "metrics": {
+        "accuracy": 0.7977042128395755,
+        "auprc": 0.15179390695360664,
+        "auroc": 0.7319110427300112,
+        "count": 128322,
+        "f1": 0.2362978435468212,
+        "mcc": 0.17912359509772235,
+        "positive_count": 8712,
+        "positive_fraction": 0.06789170991723945,
+        "precision": 0.15886704379128921,
+        "recall": 0.46097337006427913,
+        "score_max": 0.7016875743865967,
+        "score_min": 9.221851360052824e-05,
+        "threshold": 0.10376949608325958
+      },
+      "objective_value": 0.2362978435468212,
+      "threshold": 0.10376949608325958
+    },
+    "mcc": {
+      "metrics": {
+        "accuracy": 0.7331556553046243,
+        "auprc": 0.15179390695360664,
+        "auroc": 0.7319110427300112,
+        "count": 128322,
+        "f1": 0.22756598240469209,
+        "mcc": 0.18165257322210346,
+        "positive_count": 8712,
+        "positive_fraction": 0.06789170991723945,
+        "precision": 0.14161379077994274,
+        "recall": 0.578971533516988,
+        "score_max": 0.7016875743865967,
+        "score_min": 9.221851360052824e-05,
+        "threshold": 0.0823112279176712
+      },
+      "objective_value": 0.18165257322210346,
+      "threshold": 0.0823112279176712
+    }
+  },
+  "policy": "Use the MCC-optimal validation threshold for the primary frozen-test thresholded metrics; retain 0.5 as the official fixed-threshold comparison.",
+  "residue_predictions": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_validation_ensemble/epitope.residue_predictions.parquet",
+  "role": "epitope",
+  "selection_split": "validation",
+  "stage": "select_validation_threshold"
+}

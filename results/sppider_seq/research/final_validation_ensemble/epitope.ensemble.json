@@ -1,0 +1,34 @@
+{
+  "fixed_0_5_metrics": {
+    "accuracy": 0.9320225682268044,
+    "auprc": 0.15179390695360664,
+    "auroc": 0.7319110427300112,
+    "count": 128322,
+    "f1": 0.0025157232704402514,
+    "mcc": 0.01692348208684148,
+    "positive_count": 8712,
+    "positive_fraction": 0.06789170991723945,
+    "precision": 0.3333333333333333,
+    "recall": 0.0012626262626262627,
+    "score_max": 0.7016875743865967,
+    "score_min": 9.221851360052824e-05,
+    "threshold": 0.5
+  },
+  "input_count": 2,
+  "inputs": [
+    {
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/cluster_validation_v3/scratch/epitope_with_predictions.residue_predictions.parquet",
+      "sha256": "04ed4c1c2bf3378ef649360027f2da4d46b3717fed91778605e822ca6664ad8e",
+      "weight": 0.5
+    },
+    {
+      "path": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/cluster_validation_v3_lr/lr3e5/epitope.residue_predictions.parquet",
+      "sha256": "30b7d9658cd8bf2b1d91396a8b5acd72d09caa6c02ad29045aa061219480fb1c",
+      "weight": 0.5
+    }
+  ],
+  "output_predictions": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/research/final_validation_ensemble/epitope.residue_predictions.parquet",
+  "output_predictions_sha256": "7fa4b5c24c72f76aa7355b840f0697d38ca4d83b1ca1e736cad18663cf1a2c26",
+  "role": "epitope",
+  "stage": "ensemble_residue_predictions"
+}
