@@ -1,0 +1,277 @@
+{
+  "format_version": "sabdab2_asymmetric_fold_aggregation_manifest_v1",
+  "intended_use": "development_only",
+  "frozen_test_used": false,
+  "seed": 42,
+  "fold_count": 3,
+  "authority": {
+    "sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+    "source_pool_splits": [
+      "train"
+    ],
+    "sealed_source_splits": [
+      "validation",
+      "test"
+    ],
+    "coverage_mode": "exact"
+  },
+  "expected_source_sha256": {
+    "asymmetric_retrieval": "e3da60d0471572cb50e55ec7374630fd4a68a305872e0a2d8f4f21b967e639fc",
+    "entrypoint": "ee3707f61525a9abbb1d451e71fa0b4a07847b0b9915d5a44d1870c673ce61dc",
+    "runtime": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+    "shared_retrieval_protocol": "34b7268dd695ecd60cb38f84bf9bf204c4b03dfe293ea5b29c78a4c54a654883"
+  },
+  "shared_config_contract": {
+    "format_version": "sabdab2_asymmetric_partner_retrieval_v1",
+    "optimization": {
+      "batch_size": 1024,
+      "bucket_width": 128,
+      "deterministic": true,
+      "gradient_clip": 1.0,
+      "learning_rate": 0.001,
+      "max_epochs": 100,
+      "min_delta": 0.0001,
+      "minimum_learning_rate": 1e-06,
+      "optimizer": "AdamW",
+      "patience": 15,
+      "restart_multiplier": 2,
+      "restart_period_epochs": 10,
+      "schedule": "cosine_warm_restarts",
+      "seed": 42,
+      "train_batch_count": 2,
+      "warmup_fraction": 0.1,
+      "weight_decay": 0.2
+    },
+    "dataset": {
+      "instances_sha256": "a9131d52323bae40572b7de81c5e41353ccc39a73309b7d7043485350facb009",
+      "loaded_splits": [
+        "train",
+        "validation"
+      ],
+      "parquet_row_filter": "train_and_validation_identifiers_only",
+      "split_format_version": "sabdab2_antigen_cluster_development_fold_v1",
+      "split_intended_use": "development_only",
+      "frozen_test_records_selected": false
+    },
+    "scientific_scope": {
+      "claims_allowed": "exploratory development-screen evidence only",
+      "frozen_test_used": false,
+      "model_selection_data": "development validation only"
+    }
+  },
+  "variants": [
+    {
+      "name": "antiberty_calm_mean",
+      "model_contract": {
+        "antibody_artifact_format": "antiberty",
+        "antibody_encoder": "AntiBERTy_md_smooth",
+        "antibody_hidden_dim": 256,
+        "antibody_input_dim": 512,
+        "antibody_model_weights_sha256": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antibody_pooling": "mean",
+        "antigen_encoder": "facebook/esm2_t33_650M_UR50D",
+        "antigen_hidden_dim": 256,
+        "antigen_input_dim": 1280,
+        "antigen_model_weights_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antigen_pooling": "mean",
+        "architecture": "AsymmetricPartnerRetrievalModel",
+        "chain_balanced_antibody_pooling": false,
+        "dropout": 0.1,
+        "embedding_dim": 128,
+        "initial_temperature": 0.2,
+        "maximum_temperature": 1.0,
+        "minimum_temperature": 0.01,
+        "projection_order": "per_residue_ffn_then_length_pool_then_l2_normalize"
+      },
+      "runs": [
+        {
+          "fold_index": 0,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_0.json",
+            "sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_calm_mean_antigen_fold0_seed42_b1024/checkpoints/history.json",
+            "sha256": "547773b67c7ddbf50afc21926a68feb047d623416ce7513e664bbca4f797868e"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_calm_mean_antigen_fold0_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "f242255f2ecbd72664923b4a0edabcee572e202dccc9bd263f90d1f0a4bd847e"
+          }
+        },
+        {
+          "fold_index": 1,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_1.json",
+            "sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_calm_mean_antigen_fold1_seed42_b1024/checkpoints/history.json",
+            "sha256": "2894e25994af9a570394156e053c2ea69268f84ec10c4e81054256ee4788feec"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_calm_mean_antigen_fold1_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "c7c0d481ffe4fbcf38367ba8ae6c433c78fa6b9baa847e82aa7f89e94487bffd"
+          }
+        },
+        {
+          "fold_index": 2,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_2.json",
+            "sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_calm_mean_antigen_fold2_seed42_b1024/checkpoints/history.json",
+            "sha256": "d94d251386115103fdcc416b20c4303db8fec9b7d22fecdb7534773e8640d571"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_calm_mean_antigen_fold2_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "d34a2b6d7b4f7f29e121d01f67ebea70f40fae9715c683a901a88825bdb829bd"
+          }
+        }
+      ]
+    },
+    {
+      "name": "antiberty_chain_balanced",
+      "model_contract": {
+        "antibody_artifact_format": "antiberty",
+        "antibody_encoder": "AntiBERTy_md_smooth",
+        "antibody_hidden_dim": 256,
+        "antibody_input_dim": 512,
+        "antibody_model_weights_sha256": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+        "antibody_pooling": "mean",
+        "antigen_encoder": "facebook/esm2_t33_650M_UR50D",
+        "antigen_hidden_dim": 256,
+        "antigen_input_dim": 1280,
+        "antigen_model_weights_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antigen_pooling": "mean",
+        "architecture": "AsymmetricPartnerRetrievalModel",
+        "chain_balanced_antibody_pooling": true,
+        "dropout": 0.1,
+        "embedding_dim": 128,
+        "initial_temperature": 0.2,
+        "maximum_temperature": 1.0,
+        "minimum_temperature": 0.01,
+        "projection_order": "per_residue_ffn_then_length_pool_then_l2_normalize"
+      },
+      "runs": [
+        {
+          "fold_index": 0,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_0.json",
+            "sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_chain_balanced_antigen_fold0_seed42_b1024/checkpoints/history.json",
+            "sha256": "2afff1c54b669811cdc28814ba83789798ef9ae2e34c5f632d918c465da53fea"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_chain_balanced_antigen_fold0_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "802aaff5a68163ad8e6dfb35043f134d1e27f81de1a86442603409e6fa208c5b"
+          }
+        },
+        {
+          "fold_index": 1,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_1.json",
+            "sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_chain_balanced_antigen_fold1_seed42_b1024/checkpoints/history.json",
+            "sha256": "c6a31b502c54b67a7ab96026da406d1cd17c26cd56263ef8b0006d2deb4c668a"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_chain_balanced_antigen_fold1_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "b974c0a4d7daa6360732da7febf2ac8cd75eabb39cbf034518e82988ee35f503"
+          }
+        },
+        {
+          "fold_index": 2,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_2.json",
+            "sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_chain_balanced_antigen_fold2_seed42_b1024/checkpoints/history.json",
+            "sha256": "baca71d5ac81c123d0e7c0f6ed9d4c8f17f80169f444e83366e18ec3631cd1df"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/antiberty_chain_balanced_antigen_fold2_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "f8e049bcbbbe6f9967fe3fd6be51fbb189e8fba4a6ff86d854b577fb53555031"
+          }
+        }
+      ]
+    },
+    {
+      "name": "esm2_calm_mean",
+      "model_contract": {
+        "antibody_artifact_format": "esm_chunks",
+        "antibody_encoder": "facebook/esm2_t33_650M_UR50D",
+        "antibody_hidden_dim": 256,
+        "antibody_input_dim": 1280,
+        "antibody_model_weights_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antibody_pooling": "mean",
+        "antigen_encoder": "facebook/esm2_t33_650M_UR50D",
+        "antigen_hidden_dim": 256,
+        "antigen_input_dim": 1280,
+        "antigen_model_weights_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+        "antigen_pooling": "mean",
+        "architecture": "AsymmetricPartnerRetrievalModel",
+        "chain_balanced_antibody_pooling": false,
+        "dropout": 0.1,
+        "embedding_dim": 128,
+        "initial_temperature": 0.2,
+        "maximum_temperature": 1.0,
+        "minimum_temperature": 0.01,
+        "projection_order": "per_residue_ffn_then_length_pool_then_l2_normalize"
+      },
+      "runs": [
+        {
+          "fold_index": 0,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_0.json",
+            "sha256": "1c8a2094bde4f66cf9f422963d8762acefaaa0924443d2b5cea2d92887e92d3a"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/esm2_calm_mean_antigen_fold0_seed42_b1024/checkpoints/history.json",
+            "sha256": "d68ee5428c44fcefb6ec8806e42aceb85b9bab46cddc25d73f1244f9eba8728b"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/esm2_calm_mean_antigen_fold0_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "1e0cdce04a3e87962be95b907d85b5d4348b78c805fabbb8377f4a195b2e77ac"
+          }
+        },
+        {
+          "fold_index": 1,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_1.json",
+            "sha256": "52a6bc4ce199abe7b241021e4cd44d31d34f921594e22e264e5eef8220846f6b"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/esm2_calm_mean_antigen_fold1_seed42_b1024/checkpoints/history.json",
+            "sha256": "6ed04716596716a1bcba37bae22999bf2d99d9bb3d255bbec36d710d863878f3"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/esm2_calm_mean_antigen_fold1_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "b9a712bf52d7f414951d0b5fa10fcb68e2a8fe67f2aad9930ca297a6d85ed5fa"
+          }
+        },
+        {
+          "fold_index": 2,
+          "fold_manifest": {
+            "path": "/cluster/project/model_deployment/data/interaction_first/antigen_cluster_development_folds/fold_2.json",
+            "sha256": "276b6508725321a1f6d92bd87e276bd7c95677913f38fff5e30077cee2a859db"
+          },
+          "history": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/esm2_calm_mean_antigen_fold2_seed42_b1024/checkpoints/history.json",
+            "sha256": "dde769dd1e8c1350ee46e18614eb24efcc5d5a3e823895b60a197cd8ca558503"
+          },
+          "training_summary": {
+            "path": "/cluster/project/model_deployment/results/sabdab2/asymmetric_partner_retrieval/esm2_calm_mean_antigen_fold2_seed42_b1024/checkpoints/training_summary.json",
+            "sha256": "42adae2cbd26f004cc2db9d7daee2152492e967f67faac082fe7e5355278a466"
+          }
+        }
+      ]
+    }
+  ]
+}
