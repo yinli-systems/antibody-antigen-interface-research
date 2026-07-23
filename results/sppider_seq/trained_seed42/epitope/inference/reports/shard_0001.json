@@ -1,0 +1,24 @@
+{
+  "checkpoint": "/cluster/project/model_deployment/results/sabdab2/sppider_seq/trained_seed42/epitope/checkpoints/best.pt",
+  "checkpoint_sha256": "fad092ccea9b21f75f3b657a64c6254672900a7bbd0426588f7d83ec74b89b25",
+  "device": "cuda",
+  "elapsed_seconds": 8.1720871925354,
+  "embedding_cache": {
+    "cache_bytes": 179599360,
+    "cached_sequence_count": 168,
+    "hits": 46,
+    "max_cache_bytes": 25769803776,
+    "misses": 168
+  },
+  "failure_count": 0,
+  "failures": [],
+  "format_version": "sabdab2_sppider_seq_v1",
+  "role": "epitope",
+  "selected_instance_count": 107,
+  "shard_count": 4,
+  "shard_index": 1,
+  "skipped_count": 0,
+  "stage": "infer",
+  "torch_version": "2.7.1+cu128",
+  "written_count": 107
+}

@@ -1,0 +1,57 @@
+{
+  "candidate_pair_score_definition": "epitope_score[ag_res_idx]",
+  "format_version": "sabdab2_sppider_seq_v1",
+  "native_pair_interaction_score": false,
+  "projection": "epitope",
+  "projection_macro_mean": {
+    "accuracy": 0.9917987346935271,
+    "auprc": 0.0031571752370770536,
+    "auroc": 0.6059293702402786,
+    "f1": 0.0018016650343177026,
+    "mcc": 0.00223147704867392,
+    "precision": 0.0009846734396390087,
+    "recall": 0.017875055560864685
+  },
+  "projection_micro": {
+    "accuracy": 0.9934216267141122,
+    "auprc": 0.001543890061273737,
+    "auroc": 0.6016047306355443,
+    "count": 18473412,
+    "f1": 0.005010766598164356,
+    "mcc": 0.004378284611418642,
+    "positive_count": 19786,
+    "positive_fraction": 0.001071052819046097,
+    "precision": 0.002989711873845883,
+    "recall": 0.015465480642878802,
+    "score_max": 0.9602164030075073,
+    "score_min": 1.6810440192638332e-11,
+    "threshold": 0.5
+  },
+  "residue_macro_mean": {
+    "accuracy": 0.8890084912151307,
+    "auprc": 0.18198521755537045,
+    "auroc": 0.5986041815852756,
+    "f1": 0.02459867967817414,
+    "mcc": 0.017535653494657046,
+    "precision": 0.06787009083712381,
+    "recall": 0.01680477100500354
+  },
+  "residue_micro": {
+    "accuracy": 0.914233126311027,
+    "auprc": 0.11508827821347753,
+    "auroc": 0.6096396331934071,
+    "count": 97252,
+    "f1": 0.030003488777764858,
+    "mcc": 0.036097162548336274,
+    "positive_count": 7968,
+    "positive_fraction": 0.0819314769876198,
+    "precision": 0.20443740095087162,
+    "recall": 0.01618975903614458,
+    "score_max": 0.9602164030075073,
+    "score_min": 1.6810440192638332e-11,
+    "threshold": 0.5
+  },
+  "role": "epitope",
+  "test_instance_count": 455,
+  "threshold": 0.5
+}
