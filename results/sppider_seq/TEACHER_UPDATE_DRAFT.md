@@ -9,6 +9,8 @@
 5. 做了 MMseqs2 train–test similarity audit：抗体侧同源性较高，但 test AUPRC 与 nearest-train identity 没有显著相关；抗原侧在 identity ≥0.5、双向 coverage ≥0.8 时没有 train neighbor，因此 epitope 更接近 remote generalization，也更难。
 6. 也按您的要求检查了 partner-specificity：打乱 partner 后，paratope AUPRC 从 0.6511 降到 0.6392，epitope 从 0.1454 降到 0.1425。说明模型有少量 partner 信号，但整体仍主要是 marginal interface propensity。
 
+最终 recipe 和 threshold 都是在 strict validation 上锁定后才运行 `final_v3`，评估后没有再按 test 指标选模型。不过该 benchmark 更早已经用于 zero-shot 和旧版本评估，因此我把它定位为固定 benchmark 上的严格适配研究，不表述为首次开启的 one-shot blind test。
+
 需要特别说明：SPPIDER-seq 原生只输出 paratope/epitope residue probabilities，并不输出 epitope–paratope residue-pair interaction matrix，所以我没有把它的 projection 当作 native pair prediction。相同 frozen SAbDab2 上，结构辅助 EpiFormer 的 epitope AUROC/AUPRC 是 0.8008/0.2775，仍明显高于 sequence-only SPPIDER-seq；如果后续重点是黄色方框里的 pair-interaction matrix，我建议主线继续放在 MIPE/EpiFormer 或增加显式 pairwise decoder。
 
 所有结果都已经保存到：

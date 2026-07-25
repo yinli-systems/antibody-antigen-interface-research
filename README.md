@@ -34,11 +34,31 @@ the preregistered cross-attention reranker protocol.
 
 ## MIPE status
 
-The released-code-compatible five-fold run has authenticated partial checkpoints,
-but the 800-epoch experiment is not complete. The released code, appendix, and
-paper disagree on important settings, including learning rate, checkpoint
-selection, graph construction, and dataset counts. These discrepancies are
-documented rather than silently reconciled.
+The released-code-compatible five-fold 800-epoch reconstruction and frozen
+evaluation are complete. The native mean-bidirectional residue-pair macro AUPRC
+is `0.00342` (95% cluster-bootstrap CI `0.00305--0.00381`), compared with
+`0.04045` for the predicted-marginal outer-product baseline. The
+validation-best epitope micro AUPRC is `0.2804`. These results support the
+project's diagnosis that the reconstructed model does not recover useful native
+pair correspondence, even when its marginal interface predictions are more
+informative.
+
+The supplied external split had pre-scoring schema access and is therefore
+reported as a provided external test-split evaluation, not as a pristine blind
+test. The released code, appendix, and paper disagree on important settings,
+including learning rate, checkpoint selection, graph construction, and dataset
+counts. Those discrepancies are documented rather than silently reconciled.
+
+## PAIRFormer status
+
+The prospective PAIRFormer path is blocked at Gate 0. Candidate-mask semantics,
+partner-specific controls, calibration metrics, an explicit
+contact--distance--orientation decoder, and an exact joint three-outer plus
+nine-inner split formulation have been implemented and tested. They are
+engineering candidates only: no PAIRFormer biological training, model
+selection, held-out evaluation, or performance-improvement claim is authorized
+until the exact split, independent audits, fold-local cache equality, label
+provenance, and license receipts all pass.
 
 ## Claim boundary
 
