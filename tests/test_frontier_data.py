@@ -11,6 +11,7 @@ import pytest
 torch = pytest.importorskip("torch")
 
 from frontier_test_cache import build_fold_local_cache, write_json  # noqa: E402
+import interaction_first.frontier_data as frontier_data  # noqa: E402
 from interaction_first.frontier_data import (  # noqa: E402
     AUTHORIZATION_FILENAME,
     CACHE_MANIFEST_FILENAME,
@@ -135,6 +136,34 @@ def test_artifact_tamper_is_rejected_before_tensor_loading(
 
     with pytest.raises(ValueError, match="changed after verification"):
         _ = dataset[0]
+
+
+def test_deserializer_receives_the_exact_authenticated_byte_string(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cache_root, authorization_path, _, cache_manifest = build_fold_local_cache(
+        tmp_path
+    )
+    dataset = FoldLocalFrontierDataset(
+        cache_root,
+        authorization_path,
+        verify_artifact_hashes=False,
+    )
+    expected_digest = cache_manifest["instances"][0]["artifact_sha256"]
+    original_load = frontier_data._safe_torch_load
+    observed = False
+
+    def authenticated_load(raw: bytes) -> object:
+        nonlocal observed
+        observed = True
+        assert isinstance(raw, bytes)
+        assert hashlib.sha256(raw).hexdigest() == expected_digest
+        return original_load(raw)
+
+    monkeypatch.setattr(frontier_data, "_safe_torch_load", authenticated_load)
+    assert dataset[0].instance_id == "instance-000"
+    assert observed
 
 
 def test_payload_identity_dimension_and_contact_contracts_fail_closed(

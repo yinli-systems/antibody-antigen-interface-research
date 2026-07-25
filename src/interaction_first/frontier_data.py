@@ -12,15 +12,15 @@ from __future__ import annotations
 from collections import OrderedDict
 from dataclasses import dataclass
 import hashlib
+import io
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
+import stat
 from typing import Any, Mapping, Sequence
 
 from .frontier_batching import FrontierExample, canonical_identifier
-from .frontier_checkpoint import sha256_file
-
-
 AUTHORIZATION_FILENAME = "AUTHORIZED_FOLD_INVENTORY.json"
 CACHE_MANIFEST_FILENAME = "FOLD_LOCAL_CACHE_MANIFEST.json"
 AUTHORIZATION_FORMAT = "frontier_authorized_fold_inventory_v1"
@@ -65,21 +65,106 @@ def _reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def _strict_json_object(path: Path) -> dict[str, Any]:
-    """Read one finite JSON object with duplicate-key detection."""
-    if path.is_symlink() or not path.is_file():
-        raise ValueError(f"Expected a regular non-symlink JSON file: {path}")
+def _open_directory_nofollow(path: Path) -> int:
+    """Open every absolute directory component without following symbolic links."""
+    absolute = Path(os.path.abspath(os.fspath(path)))
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC
+    descriptor = os.open("/", flags)
+    try:
+        for component in absolute.parts[1:]:
+            next_descriptor = os.open(
+                component,
+                flags | getattr(os, "O_NOFOLLOW", 0),
+                dir_fd=descriptor,
+            )
+            status = os.fstat(next_descriptor)
+            if not stat.S_ISDIR(status.st_mode):
+                os.close(next_descriptor)
+                raise ValueError(f"Path component is not a directory: {absolute}")
+            os.close(descriptor)
+            descriptor = next_descriptor
+        return descriptor
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
+def _filesystem_fingerprint(status: os.stat_result) -> tuple[int, int, int, int, int]:
+    """Return file metadata that detects replacement or in-place mutation."""
+    return (
+        int(status.st_dev),
+        int(status.st_ino),
+        int(status.st_size),
+        int(status.st_mtime_ns),
+        int(status.st_ctime_ns),
+    )
+
+
+def _acquire_regular_bytes(path: Path, name: str) -> bytes:
+    """Read one non-symlink regular file once and prove the open inode stayed stable."""
+    absolute = Path(os.path.abspath(os.fspath(path)))
+    parent_descriptor = _open_directory_nofollow(absolute.parent)
+    descriptor = -1
+    try:
+        descriptor = os.open(
+            absolute.name,
+            os.O_RDONLY
+            | os.O_CLOEXEC
+            | getattr(os, "O_NOFOLLOW", 0)
+            | getattr(os, "O_NONBLOCK", 0),
+            dir_fd=parent_descriptor,
+        )
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            raise ValueError(f"{name} must be a regular non-symlink file")
+        chunks: list[bytes] = []
+        remaining = int(before.st_size)
+        while remaining:
+            chunk = os.read(descriptor, min(8 * 1024 * 1024, remaining))
+            if not chunk:
+                raise ValueError(f"{name} ended before its authenticated size")
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        if os.read(descriptor, 1):
+            raise ValueError(f"{name} grew during authenticated acquisition")
+        after = os.fstat(descriptor)
+        if _filesystem_fingerprint(before) != _filesystem_fingerprint(after):
+            raise ValueError(f"{name} changed during authenticated acquisition")
+        payload = b"".join(chunks)
+        if len(payload) != before.st_size:
+            raise ValueError(f"{name} byte count differs from its file metadata")
+        return payload
+    except OSError as error:
+        raise ValueError(f"Cannot securely acquire {name}: {path}") from error
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        os.close(parent_descriptor)
+
+
+def _strict_json_object_bytes(raw: bytes, name: str) -> dict[str, Any]:
+    """Parse one finite JSON object from an already acquired byte string."""
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raise ValueError(f"{name} must not contain a UTF-8 byte-order mark")
     try:
         value = json.loads(
-            path.read_text(encoding="utf-8"),
+            raw.decode("utf-8", errors="strict"),
             parse_constant=_reject_constant,
             object_pairs_hook=_reject_duplicate_pairs,
         )
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise ValueError(f"Cannot read strict JSON from {path}") from error
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"Cannot parse strict JSON for {name}") from error
     if not isinstance(value, dict):
-        raise ValueError(f"JSON payload at {path} must be an object")
+        raise ValueError(f"{name} must contain a JSON object")
     return value
+
+
+def _strict_json_object(path: Path) -> dict[str, Any]:
+    """Acquire and parse one finite JSON object with duplicate-key detection."""
+    return _strict_json_object_bytes(
+        _acquire_regular_bytes(path, f"JSON file {path}"),
+        f"JSON file {path}",
+    )
 
 
 def _canonical_json_bytes(value: Any) -> bytes:
@@ -456,12 +541,22 @@ def load_fold_local_cache_contract(
     """Verify authorization, manifest equality, tree isolation, and artifact hashes."""
     if not isinstance(verify_artifact_hashes, bool):
         raise TypeError("verify_artifact_hashes must be boolean")
-    cache_root_argument = Path(cache_root).expanduser()
-    authorization_argument = Path(authorization_manifest).expanduser()
+    cache_root_argument = Path(
+        os.path.abspath(os.fspath(Path(cache_root).expanduser()))
+    )
+    authorization_argument = Path(
+        os.path.abspath(os.fspath(Path(authorization_manifest).expanduser()))
+    )
     if cache_root_argument.is_symlink():
         raise ValueError("cache_root cannot be a symlink")
-    cache_root = cache_root_argument.resolve()
-    authorization_path = authorization_argument.resolve()
+    cache_root = cache_root_argument
+    authorization_path = authorization_argument
+    try:
+        cache_root_descriptor = _open_directory_nofollow(cache_root)
+    except OSError as error:
+        raise ValueError(f"cache_root must be a real directory: {cache_root}") from error
+    else:
+        os.close(cache_root_descriptor)
     if not cache_root.is_dir():
         raise ValueError(f"cache_root must be a directory: {cache_root}")
     if authorization_argument.name != AUTHORIZATION_FILENAME:
@@ -478,8 +573,16 @@ def load_fold_local_cache_contract(
         raise ValueError("authorization manifest must remain outside the cache root")
 
     cache_manifest_path = cache_root / CACHE_MANIFEST_FILENAME
-    authorization_sha256 = sha256_file(authorization_path)
-    cache_manifest_sha256 = sha256_file(cache_manifest_path)
+    authorization_bytes = _acquire_regular_bytes(
+        authorization_path,
+        "authorization manifest",
+    )
+    cache_manifest_bytes = _acquire_regular_bytes(
+        cache_manifest_path,
+        "cache manifest",
+    )
+    authorization_sha256 = hashlib.sha256(authorization_bytes).hexdigest()
+    cache_manifest_sha256 = hashlib.sha256(cache_manifest_bytes).hexdigest()
     if expected_authorization_manifest_sha256 is not None and (
         _sha256(
             expected_authorization_manifest_sha256,
@@ -496,8 +599,14 @@ def load_fold_local_cache_contract(
         != cache_manifest_sha256
     ):
         raise ValueError("Cache manifest differs from its external anchor")
-    authorization = _strict_json_object(authorization_path)
-    cache_manifest = _strict_json_object(cache_manifest_path)
+    authorization = _strict_json_object_bytes(
+        authorization_bytes,
+        "authorization manifest",
+    )
+    cache_manifest = _strict_json_object_bytes(
+        cache_manifest_bytes,
+        "cache manifest",
+    )
     _exact_fields(
         authorization,
         {
@@ -601,10 +710,15 @@ def load_fold_local_cache_contract(
             raise ValueError(
                 f"Artifact size mismatch for {record.artifact_path}"
             )
-        if verify_artifact_hashes and sha256_file(artifact) != record.artifact_sha256:
-            raise ValueError(
-                f"Artifact SHA-256 mismatch for {record.artifact_path}"
+        if verify_artifact_hashes:
+            artifact_bytes = _acquire_regular_bytes(
+                artifact,
+                f"cache artifact {record.artifact_path}",
             )
+            if hashlib.sha256(artifact_bytes).hexdigest() != record.artifact_sha256:
+                raise ValueError(
+                    f"Artifact SHA-256 mismatch for {record.artifact_path}"
+                )
 
     return FoldLocalCacheContract(
         cache_root=cache_root,
@@ -629,11 +743,11 @@ def load_fold_local_cache_contract(
     )
 
 
-def _safe_torch_load(path: Path) -> Any:
-    """Load a trusted tensor-only artifact with restricted unpickling."""
+def _safe_torch_load(raw: bytes) -> Any:
+    """Load authenticated tensor bytes with restricted unpickling."""
     torch = _require_torch()
     try:
-        return torch.load(path, map_location="cpu", weights_only=True)
+        return torch.load(io.BytesIO(raw), map_location="cpu", weights_only=True)
     except TypeError as error:
         raise RuntimeError(
             "Fold-local loading requires a PyTorch release with weights_only=True"
@@ -694,7 +808,11 @@ class FoldLocalFrontierDataset:
         if verify_artifact_hashes:
             for index, record in enumerate(self.contract.records):
                 path = self._assert_artifact_unchanged(index)
-                if sha256_file(path) != record.artifact_sha256:
+                artifact_bytes = _acquire_regular_bytes(
+                    path,
+                    f"cache artifact {record.artifact_path}",
+                )
+                if hashlib.sha256(artifact_bytes).hexdigest() != record.artifact_sha256:
                     raise ValueError(
                         f"Artifact SHA-256 mismatch for {record.artifact_path}"
                     )
@@ -704,14 +822,7 @@ class FoldLocalFrontierDataset:
     @staticmethod
     def _stat_fingerprint(path: Path) -> tuple[int, int, int, int, int]:
         """Capture metadata that changes on replacement or in-place mutation."""
-        status = path.stat()
-        return (
-            int(status.st_dev),
-            int(status.st_ino),
-            int(status.st_size),
-            int(status.st_mtime_ns),
-            int(status.st_ctime_ns),
-        )
+        return _filesystem_fingerprint(path.stat())
 
     def __len__(self) -> int:
         """Return the authorization-equal instance count."""
@@ -769,11 +880,14 @@ class FoldLocalFrontierDataset:
         torch = _require_torch()
         record = self.contract.records[index]
         path = self._assert_artifact_unchanged(index)
-        if index not in self._verified_artifact_indices:
-            if sha256_file(path) != record.artifact_sha256:
-                raise ValueError(f"Cache artifact changed hash: {record.artifact_path}")
-            self._verified_artifact_indices.add(index)
-        payload = _safe_torch_load(path)
+        artifact_bytes = _acquire_regular_bytes(
+            path,
+            f"cache artifact {record.artifact_path}",
+        )
+        if hashlib.sha256(artifact_bytes).hexdigest() != record.artifact_sha256:
+            raise ValueError(f"Cache artifact changed hash: {record.artifact_path}")
+        self._verified_artifact_indices.add(index)
+        payload = _safe_torch_load(artifact_bytes)
         self._assert_artifact_unchanged(index)
         if not isinstance(payload, dict):
             raise ValueError("Example artifact must contain a mapping")
