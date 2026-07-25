@@ -252,6 +252,12 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             raise ValueError("score_pooling must be 'logmeanexp' or 'top_fraction'")
         if marginal_temperature <= 0.0 or score_temperature <= 0.0:
             raise ValueError("Pooling temperatures must be positive")
+        if (
+            isinstance(score_top_k, bool)
+            or not isinstance(score_top_k, int)
+            or score_top_k <= 0
+        ):
+            raise ValueError("score_top_k must be a positive integer")
         if not 0.0 < score_top_fraction <= 1.0:
             raise ValueError("score_top_fraction must be in (0, 1]")
         self.antigen_projection = nn.Sequential(
@@ -344,41 +350,62 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         interaction_logits = decoder["interaction_logits"]
         axis_mask = antigen_mask.unsqueeze(2) & antibody_mask.unsqueeze(1)
         if candidate_pair_mask is None:
-            edge_supervision_mask = axis_mask
+            pair_mask = axis_mask
         else:
-            if candidate_pair_mask.dtype != torch.bool or candidate_pair_mask.shape != pair_logits.shape:
-                raise ValueError("candidate_pair_mask must be boolean and aligned to pair logits")
-            edge_supervision_mask = axis_mask & candidate_pair_mask
-        if torch.any(edge_supervision_mask.reshape(edge_supervision_mask.shape[0], -1).sum(dim=1) == 0):
+            if (
+                not torch.is_tensor(candidate_pair_mask)
+                or candidate_pair_mask.dtype != torch.bool
+                or tuple(candidate_pair_mask.shape) != tuple(pair_logits.shape)
+            ):
+                raise ValueError(
+                    "candidate_pair_mask must be boolean and aligned to pair logits"
+                )
+            if candidate_pair_mask.device != pair_logits.device:
+                raise ValueError(
+                    "candidate_pair_mask must use the same device as pair logits"
+                )
+            if bool(torch.any(candidate_pair_mask & ~axis_mask)):
+                raise ValueError(
+                    "candidate_pair_mask cannot select padded residue positions"
+                )
+            pair_mask = candidate_pair_mask
+        if torch.any(
+            pair_mask.reshape(pair_mask.shape[0], -1).sum(dim=1) == 0
+        ):
             raise ValueError("Every item must contain at least one valid candidate pair")
 
-        pair_probabilities = torch.sigmoid(pair_logits)
+        pair_probabilities = torch.sigmoid(pair_logits).masked_fill(~pair_mask, 0.0)
         pair_epitope_probability, pair_paratope_probability = self._marginals(
-            pair_logits, pair_probabilities, axis_mask
+            pair_logits, pair_probabilities, pair_mask
         )
+        epitope_supervision_mask = pair_mask.any(dim=2)
+        paratope_supervision_mask = pair_mask.any(dim=1)
         epitope_logits = self.epitope_head(antigen).squeeze(-1)
         paratope_logits = self.paratope_head(antibody).squeeze(-1)
         epitope_probability = torch.sigmoid(epitope_logits).masked_fill(
-            ~antigen_mask, 0.0
+            ~epitope_supervision_mask, 0.0
         )
         paratope_probability = torch.sigmoid(paratope_logits).masked_fill(
-            ~antibody_mask, 0.0
+            ~paratope_supervision_mask, 0.0
         )
         complex_score = normalized_partner_score(
             interaction_logits,
-            axis_mask,
+            pair_mask,
             pooling=self.score_pooling,
             temperature=self.score_temperature,
             top_fraction=self.score_top_fraction,
+            min_count=self.score_top_k,
             center=self.center_partner_score,
-            centering_iterations=1,
         )
         return {
             "pair_logits": pair_logits,
             "interaction_logits": interaction_logits,
             "pair_probabilities": pair_probabilities,
-            "pair_mask": axis_mask,
-            "edge_supervision_mask": edge_supervision_mask,
+            "axis_pair_mask": axis_mask,
+            "pair_mask": pair_mask,
+            "edge_supervision_mask": pair_mask,
+            "epitope_supervision_mask": epitope_supervision_mask,
+            "paratope_supervision_mask": paratope_supervision_mask,
             "epitope_logits": epitope_logits,
             "paratope_logits": paratope_logits,
             "epitope_probability": epitope_probability,

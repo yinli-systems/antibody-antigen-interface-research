@@ -130,13 +130,39 @@ def relative_count_loss(probabilities: Any, targets: Any, mask: Any) -> Any:
 
 
 def masked_consistency_loss(left: Any, right: Any, mask: Any) -> Any:
-    """Align two node-score views without treating either one as a hard label."""
+    """Align independent node heads with contact-matrix-derived marginals."""
     require_torch()
     if left.shape != right.shape or left.shape != mask.shape:
         raise ValueError("Consistency inputs must have identical shapes")
     if mask.dtype != torch.bool or not torch.any(mask):
         raise ValueError("Consistency mask must contain valid entries")
     return F.smooth_l1_loss(left[mask], right[mask])
+
+
+def _validated_supervision_mask(
+    outputs: Mapping[str, Any],
+    key: str,
+    residue_mask: Any,
+) -> Any:
+    """Validate a candidate-supported node mask against the residue padding mask."""
+    if not torch.is_tensor(residue_mask) or residue_mask.dtype != torch.bool:
+        raise ValueError("Residue supervision masks must be boolean tensors")
+    if key not in outputs:
+        raise KeyError(f"Model output is missing key: {key}")
+    mask = outputs[key]
+    if (
+        not torch.is_tensor(mask)
+        or mask.dtype != torch.bool
+        or tuple(mask.shape) != tuple(residue_mask.shape)
+    ):
+        raise ValueError(f"{key} must be boolean and aligned to the residue mask")
+    if mask.device != residue_mask.device:
+        raise ValueError(f"{key} and the residue mask must use the same device")
+    if bool(torch.any(mask & ~residue_mask)):
+        raise ValueError(f"{key} cannot select padded residues")
+    if not bool(torch.any(mask)):
+        raise ValueError(f"{key} must contain at least one supervised residue")
+    return mask
 
 
 def partner_ranking_loss(
@@ -179,6 +205,8 @@ def interaction_first_loss(
         "pair_probabilities",
         "pair_mask",
         "edge_supervision_mask",
+        "epitope_supervision_mask",
+        "paratope_supervision_mask",
         "epitope_logits",
         "paratope_logits",
         "epitope_probability",
@@ -191,26 +219,36 @@ def interaction_first_loss(
     if missing:
         raise KeyError(f"Model output is missing keys: {sorted(missing)}")
     pair_mask = outputs["edge_supervision_mask"]
+    epitope_mask = _validated_supervision_mask(
+        outputs,
+        "epitope_supervision_mask",
+        antigen_mask,
+    )
+    paratope_mask = _validated_supervision_mask(
+        outputs,
+        "paratope_supervision_mask",
+        antibody_mask,
+    )
     edge_loss = masked_bce_with_logits(
         outputs["pair_logits"], pair_targets, pair_mask, edge_positive_weight
     )
     epitope_bce = masked_bce_with_logits(
         outputs["epitope_logits"],
         epitope_targets,
-        antigen_mask,
+        epitope_mask,
         epitope_positive_weight,
     )
     paratope_bce = masked_bce_with_logits(
         outputs["paratope_logits"],
         paratope_targets,
-        antibody_mask,
+        paratope_mask,
         paratope_positive_weight,
     )
     epitope_dice = soft_dice_loss(
-        outputs["epitope_probability"], epitope_targets, antigen_mask
+        outputs["epitope_probability"], epitope_targets, epitope_mask
     )
     paratope_dice = soft_dice_loss(
-        outputs["paratope_probability"], paratope_targets, antibody_mask
+        outputs["paratope_probability"], paratope_targets, paratope_mask
     )
     zero = outputs["complex_score"].new_zeros(())
     edge_count = (
@@ -219,12 +257,20 @@ def interaction_first_loss(
         else zero
     )
     epitope_count = (
-        relative_count_loss(outputs["epitope_probability"], epitope_targets, antigen_mask)
+        relative_count_loss(
+            outputs["epitope_probability"],
+            epitope_targets,
+            epitope_mask,
+        )
         if weights.epitope_count > 0.0
         else zero
     )
     paratope_count = (
-        relative_count_loss(outputs["paratope_probability"], paratope_targets, antibody_mask)
+        relative_count_loss(
+            outputs["paratope_probability"],
+            paratope_targets,
+            paratope_mask,
+        )
         if weights.paratope_count > 0.0
         else zero
     )
@@ -232,7 +278,7 @@ def interaction_first_loss(
         masked_consistency_loss(
             outputs["epitope_probability"],
             outputs["pair_epitope_probability"],
-            antigen_mask,
+            epitope_mask,
         )
         if weights.epitope_consistency > 0.0
         else zero
@@ -241,7 +287,7 @@ def interaction_first_loss(
         masked_consistency_loss(
             outputs["paratope_probability"],
             outputs["pair_paratope_probability"],
-            antibody_mask,
+            paratope_mask,
         )
         if weights.paratope_consistency > 0.0
         else zero
