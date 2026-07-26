@@ -79,7 +79,7 @@ def _registration() -> dict[str, object]:
             "cp_sat_runtime_receipt_sha256": "6" * 64,
         },
         "source": {
-            "implementation_commit": "7" * 64,
+            "implementation_commit": "7" * 40,
             "source_root": "/source",
             "files": source_files,
         },

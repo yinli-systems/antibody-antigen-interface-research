@@ -92,6 +92,16 @@ def _digest(value: object, label: str) -> str:
     return value
 
 
+def _git_object_id(value: object, label: str) -> str:
+    if (
+        not isinstance(value, str)
+        or len(value) not in {40, 64}
+        or any(character not in "0123456789abcdef" for character in value)
+    ):
+        raise V6BProductionError(f"{label} must be a lowercase Git object ID")
+    return value
+
+
 def strict_json(payload: bytes, label: str) -> dict[str, Any]:
     """Parse one strict ASCII JSON object and reject duplicate fields."""
     if not payload or payload.startswith(b"\xef\xbb\xbf"):
@@ -383,7 +393,7 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
         "files",
     }:
         raise V6BProductionError("registration source schema differs")
-    _digest(source.get("implementation_commit"), "implementation commit")
+    _git_object_id(source.get("implementation_commit"), "implementation commit")
     files = source.get("files")
     required_source = set(EXPECTED_SOURCE_FILES) | {
         "production_controller",
