@@ -30,9 +30,10 @@ from . import (
 )
 
 
-REGISTRATION_FORMAT = "v6_b_production_feasibility_registration_v2"
+REGISTRATION_FORMAT = "v6_b_production_feasibility_registration_v3"
 SUPPORTED_REGISTRATION_FORMATS = {
     "v6_b_production_feasibility_registration_v1",
+    "v6_b_production_feasibility_registration_v2",
     REGISTRATION_FORMAT,
 }
 ATTEMPT_FORMAT = "v6_b_production_feasibility_attempt_v1"
@@ -433,17 +434,26 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
         "nodes",
         "tasks",
         "cpus_per_task",
-        "memory_gib",
         "wall_time",
         "gpus_requested",
         "solver_workers",
     }
-    expected_slurm_fields = (
-        common_slurm_fields
-        if registration_format == "v6_b_production_feasibility_registration_v1"
-        else common_slurm_fields
-        | {"accelerator_visible_to_solver", "allocated_gpu_purpose"}
-    )
+    if registration_format == "v6_b_production_feasibility_registration_v1":
+        expected_slurm_fields = common_slurm_fields | {"memory_gib"}
+    elif registration_format == "v6_b_production_feasibility_registration_v2":
+        expected_slurm_fields = common_slurm_fields | {
+            "memory_gib",
+            "accelerator_visible_to_solver",
+            "allocated_gpu_purpose",
+        }
+    else:
+        expected_slurm_fields = common_slurm_fields | {
+            "accelerator_visible_to_solver",
+            "allocated_gpu_purpose",
+            "explicit_memory_request",
+            "memory_allocation_policy",
+            "scheduler_memory_gb_per_gpu",
+        }
     if not isinstance(slurm, Mapping) or set(slurm) != expected_slurm_fields:
         raise V6BProductionError("registration Slurm schema differs")
     if slurm.get("nodes") != 1 or slurm.get("tasks") != 1:
@@ -453,6 +463,15 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
     if registration_format == "v6_b_production_feasibility_registration_v1":
         if slurm.get("gpus_requested") != 0:
             raise V6BProductionError("V1 registration must retain its zero-GPU request")
+    elif registration_format == "v6_b_production_feasibility_registration_v2":
+        if slurm.get("gpus_requested") != 1:
+            raise V6BProductionError(
+                "scheduler-compatible production must request one GPU"
+            )
+        if slurm.get("accelerator_visible_to_solver") is not False:
+            raise V6BProductionError("the allocated scheduler GPU must be hidden")
+        if slurm.get("allocated_gpu_purpose") != "site_scheduler_requirement_only":
+            raise V6BProductionError("the allocated GPU purpose differs")
     else:
         if slurm.get("gpus_requested") != 1:
             raise V6BProductionError(
@@ -462,6 +481,15 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
             raise V6BProductionError("the allocated scheduler GPU must be hidden")
         if slurm.get("allocated_gpu_purpose") != "site_scheduler_requirement_only":
             raise V6BProductionError("the allocated GPU purpose differs")
+        if slurm.get("explicit_memory_request") is not False:
+            raise V6BProductionError("V3 must not request memory explicitly")
+        if (
+            slurm.get("memory_allocation_policy")
+            != "partition_automatic_per_allocated_gpu"
+        ):
+            raise V6BProductionError("V3 memory allocation policy differs")
+        if slurm.get("scheduler_memory_gb_per_gpu") != 126:
+            raise V6BProductionError("V3 scheduler memory allocation differs")
     return dict(payload)
 
 

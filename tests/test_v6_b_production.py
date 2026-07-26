@@ -37,7 +37,7 @@ def _registration() -> dict[str, object]:
         )
     }
     return {
-        "format_version": "v6_b_production_feasibility_registration_v2",
+        "format_version": "v6_b_production_feasibility_registration_v3",
         "parent_evidence": {
             "v6_b_policy": {"path": "/policy.json", "sha256": "2" * 64},
             "v6_b_protocol": {"path": "/protocol.md", "sha256": "8" * 64},
@@ -95,7 +95,9 @@ def _registration() -> dict[str, object]:
             "nodes": 1,
             "tasks": 1,
             "cpus_per_task": 8,
-            "memory_gib": 96,
+            "explicit_memory_request": False,
+            "memory_allocation_policy": "partition_automatic_per_allocated_gpu",
+            "scheduler_memory_gb_per_gpu": 126,
             "wall_time": "48:00:00",
             "gpus_requested": 1,
             "solver_workers": 1,
@@ -133,6 +135,14 @@ def test_registration_requires_one_hidden_scheduler_only_gpu_and_one_worker() ->
     workers["slurm"]["solver_workers"] = 8
     with pytest.raises(V6BProductionError, match="one solver worker"):
         validate_registration(workers)
+    explicit_memory = _registration()
+    explicit_memory["slurm"]["explicit_memory_request"] = True
+    with pytest.raises(V6BProductionError, match="must not request memory"):
+        validate_registration(explicit_memory)
+    wrong_policy = _registration()
+    wrong_policy["slurm"]["memory_allocation_policy"] = "manual"
+    with pytest.raises(V6BProductionError, match="memory allocation policy"):
+        validate_registration(wrong_policy)
 
 
 def test_progress_journal_is_contiguous_self_hashed_and_hash_chained(
@@ -206,7 +216,9 @@ def test_submit_script_hides_its_scheduler_required_gpu() -> None:
         / "scripts"
         / "submit_v6_b_production_feasibility.sbatch"
     ).read_text(encoding="ascii")
-    assert "#SBATCH --mem=96G" in script
+    assert "#SBATCH --mem" not in script
+    assert "#SBATCH --mem-per-cpu" not in script
+    assert "#SBATCH --mem-per-gpu" not in script
     assert "#SBATCH --time=48:00:00" in script
     assert "#SBATCH --signal=B:TERM@120" in script
     assert "#SBATCH --gpus=1" in script

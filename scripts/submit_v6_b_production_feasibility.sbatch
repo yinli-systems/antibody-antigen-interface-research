@@ -5,7 +5,6 @@
 #SBATCH --ntasks=1
 #SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=96G
 #SBATCH --time=48:00:00
 #SBATCH --signal=B:TERM@120
 #SBATCH --output=/ssd/scxi253/model_deployment/logs/v6b-feasibility-%j.out
