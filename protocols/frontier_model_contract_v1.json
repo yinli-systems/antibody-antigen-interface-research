@@ -891,16 +891,16 @@
         "row_selection": "ceiling_one_tenth_per_declared_family_by_canonical_row_sha256",
         "solver_invocation_authorized": false,
         "source_sha256": {
-          "scripts/run_v6_b_row_shard_telemetry.py": "24b0b06fad3f6d48101fa3d8bef9e791afd9ca4a8ae79d78588254c01ef7f8d0",
+          "scripts/run_v6_b_row_shard_telemetry.py": "033dc98f0940c0da02f2d8e4e904eb1dd3d9043d6a212fbd10f6fc914e617f0d",
           "src/interaction_first/v6_b_decomposition.py": "a531e08cd1f00d82485ddbd0565b9b2edd625e5b584653d6b70b4c8f37828ea0",
-          "tests/test_run_v6_b_row_shard_telemetry.py": "4ff0a64f33911886ac22e9d996c734c7247f38173ab464ecd2d09f15e15383ce",
+          "tests/test_run_v6_b_row_shard_telemetry.py": "25d31775cd2da2f0c8c88abb67d2bc706189a22ca0871ff5b3987a0ca3cc78f7",
           "tests/test_v6_b_decomposition.py": "f47345107ddd13163ead0246f1102c2e7362f193a6af545e32743ee2c38cc344"
         },
-        "targeted_tests_passed_under_each_hash_seed": 13,
-        "related_v6_tests_passed_under_each_hash_seed": 109,
+        "targeted_tests_passed_under_each_hash_seed": 15,
+        "related_v6_tests_passed_under_each_hash_seed": 111,
         "training_authorized": false
       },
-      "status": "third_row_shard_attempt_failed_on_proto_serialization_compatibility_fix_required",
+      "status": "pybind_text_proto_serialization_hardened_new_production_attempt_required",
       "training_authorized": false,
       "claim_boundary": "The decomposition protocol and telemetry-only full-IR partition are implemented and synthetically tested after the V6-A registered dry-run stop. No production V6-B telemetry receipt, solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
     },

@@ -289,6 +289,17 @@ def peak_rss_bytes() -> int:
     return value if platform.system() == "Darwin" else value * 1024
 
 
+def deterministic_text_proto_bytes(proto: object) -> bytes:
+    """Serialize the frozen pybind model through its deterministic text form."""
+    try:
+        payload = str(proto).encode("ascii")
+    except UnicodeEncodeError as error:
+        raise V6BRowShardError("CP-SAT text proto is not ASCII") from error
+    if not payload:
+        raise V6BRowShardError("CP-SAT text proto is empty")
+    return payload
+
+
 def _markdown(receipt_core: Mapping[str, object]) -> bytes:
     telemetry = receipt_core["telemetry"]
     partition = receipt_core["partition"]
@@ -375,7 +386,7 @@ def build_receipt(
         exact_oracle_source_sha256=exact_oracle_source_sha256,
     )
     partition = partition_joint_ir(ir)
-    model_bytes = direct.model.Proto().SerializeToString(deterministic=True)
+    model_bytes = deterministic_text_proto_bytes(direct.model.Proto())
     telemetry = build_row_shard_telemetry(
         ir,
         serialized_full_model_bytes=model_bytes,
@@ -433,6 +444,7 @@ def build_receipt(
             "exact_separation_oracle": exact_oracle_source_sha256,
         },
         "direct_formulation_sha256": direct.formulation_sha256,
+        "full_model_serialization": "ortools_pybind_deterministic_ascii_text_proto",
         "partition": partition_summary,
         "telemetry": telemetry,
         "candidate_assignment_created": False,

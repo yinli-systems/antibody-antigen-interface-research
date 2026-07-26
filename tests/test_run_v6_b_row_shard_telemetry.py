@@ -181,3 +181,28 @@ def test_pair_order_normalization_rejects_noncanonical_endpoint_order() -> None:
     ).hexdigest()
     with pytest.raises(SCRIPT.V6BRowShardError, match="canonical endpoint order"):
         SCRIPT.normalize_scientific_pair_order(SCRIPT.canonical_json_bytes(payload))
+
+
+def test_pybind_proto_uses_ascii_text_without_a_protobuf_api() -> None:
+    class PybindShapedProto:
+        def __str__(self) -> str:
+            return 'variables { name: "v_000000000" domain: 0 domain: 1 }'
+
+    proto = PybindShapedProto()
+    assert not hasattr(proto, "SerializeToString")
+    assert SCRIPT.deterministic_text_proto_bytes(proto) == str(proto).encode("ascii")
+
+
+def test_empty_or_non_ascii_text_proto_fails_closed() -> None:
+    class EmptyProto:
+        def __str__(self) -> str:
+            return ""
+
+    class NonAsciiProto:
+        def __str__(self) -> str:
+            return "not-ascii-\N{SNOWMAN}"
+
+    with pytest.raises(SCRIPT.V6BRowShardError, match="empty"):
+        SCRIPT.deterministic_text_proto_bytes(EmptyProto())
+    with pytest.raises(SCRIPT.V6BRowShardError, match="not ASCII"):
+        SCRIPT.deterministic_text_proto_bytes(NonAsciiProto())
