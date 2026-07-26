@@ -121,6 +121,16 @@ def _membership_sha256(values: Iterable[str]) -> str:
     return digest.hexdigest()
 
 
+def _edge_membership_sha256(edges: Iterable[tuple[str, str]]) -> str:
+    digest = hashlib.sha256()
+    for left, right in sorted(set(edges)):
+        digest.update(_identifier(left, "edge membership left").encode("ascii"))
+        digest.update(b"\0")
+        digest.update(_identifier(right, "edge membership right").encode("ascii"))
+        digest.update(b"\n")
+    return digest.hexdigest()
+
+
 def _read_regular_file_nofollow(path: Path, expected_sha256: str, label: str) -> bytes:
     expected = _digest(expected_sha256, f"expected {label}")
     absolute = Path(os.path.abspath(os.path.expanduser(str(path))))
@@ -297,8 +307,8 @@ def _validate_historical_evidence(
             raise InputDerivationError(f"historical {view} edges are unsorted or repeated")
         if row.get("lifted_direct_entity_edge_count") != len(canonical):
             raise InputDerivationError(f"historical {view} edge count differs")
-        if row.get("direct_entity_edge_membership_sha256") != _membership_sha256(
-            f"{left}\0{right}" for left, right in canonical
+        if row.get("direct_entity_edge_membership_sha256") != (
+            _edge_membership_sha256(canonical)
         ):
             raise InputDerivationError(f"historical {view} edge digest differs")
         graphs[view] = canonical

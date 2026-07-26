@@ -41,6 +41,17 @@ def _canonical(payload: object) -> bytes:
     )
 
 
+def _frame(sequence: str) -> bytes:
+    encoded = sequence.encode("ascii")
+    return str(len(encoded)).encode("ascii") + b":" + encoded
+
+
+def _antibody_id(vh_sequence: str, vl_sequence: str) -> str:
+    return hashlib.sha256(
+        b"antibody-v1\0" + _frame(vh_sequence) + _frame(vl_sequence)
+    ).hexdigest()
+
+
 def _manifest_row(
     instance: str,
     vh_sequence: str,
@@ -84,7 +95,16 @@ def _fixture(
         "EXPECTED_AUTHORITY_MEMBERSHIP_SHA256",
         membership,
     )
-    empty_membership = SCRIPT._membership_sha256(())
+    antibody_edge = tuple(
+        sorted(
+            (
+                _antibody_id("AAAAA", ""),
+                _antibody_id("CCCCC", "DDD"),
+            )
+        )
+    )
+    graphs = {view: [] for view in SCRIPT.VIEWS}
+    graphs["vh"] = [antibody_edge]
     assignment = {
         "format_version": SCRIPT.ASSIGNMENT_FORMAT,
         "scientific_payload_sha256": "a" * 64,
@@ -109,9 +129,17 @@ def _fixture(
         },
         "exact_direct_graphs": {
             view: {
-                "direct_entity_edges": [],
-                "lifted_direct_entity_edge_count": 0,
-                "direct_entity_edge_membership_sha256": empty_membership,
+                "direct_entity_edges": [
+                    {
+                        "left_entity_id": left,
+                        "right_entity_id": right,
+                    }
+                    for left, right in graphs[view]
+                ],
+                "lifted_direct_entity_edge_count": len(graphs[view]),
+                "direct_entity_edge_membership_sha256": (
+                    SCRIPT._edge_membership_sha256(graphs[view])
+                ),
             }
             for view in SCRIPT.VIEWS
         },
