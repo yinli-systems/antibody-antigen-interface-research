@@ -496,7 +496,7 @@
       "policy_path": "protocols/v6_a_score_free_solver_policy_v1.json",
       "policy_sha256": "ac28232d8d59190f85c24c0bbfee7e4b8b9bbed28b29b0a91a097b49f7a27fa6",
       "protocol_path": "protocols/V6_A_SCORE_FREE_EXACT_SOLVER_PROTOCOL.md",
-      "protocol_sha256": "a449a5305db8a912a18f6460b564cd33b7850a25de61dc2da00d77f4322ee9c7",
+      "protocol_sha256": "086f6afd7e3835f35e17879a205b753ce0641626bfa6205cce5cecaa33c293ee",
       "raw_source_authority": {
         "accepted_input_channels": [
           "externally anchored physical train-only authority allowlist",
