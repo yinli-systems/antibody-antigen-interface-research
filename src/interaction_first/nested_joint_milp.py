@@ -39,6 +39,7 @@ class JointLevelPolicy:
 
     minimum_validation_pairs: int
     minimum_validation_endpoints_per_axis: int
+    minimum_validation_components_per_axis: int
     validation_pair_lower_fraction: Ratio
     validation_pair_upper_fraction: Ratio
     minimum_training_pair_fraction: Ratio
@@ -53,6 +54,10 @@ class JointLevelPolicy:
         if self.minimum_validation_endpoints_per_axis < 0:
             raise ValueError(
                 "minimum_validation_endpoints_per_axis must be non-negative"
+            )
+        if self.minimum_validation_components_per_axis < 0:
+            raise ValueError(
+                "minimum_validation_components_per_axis must be non-negative"
             )
         for name in (
             "validation_pair_lower_fraction",
@@ -79,6 +84,7 @@ class JointLevelPolicy:
 LOCKED_OUTER_POLICY = JointLevelPolicy(
     minimum_validation_pairs=120,
     minimum_validation_endpoints_per_axis=60,
+    minimum_validation_components_per_axis=25,
     validation_pair_lower_fraction=Ratio(7, 100),
     validation_pair_upper_fraction=Ratio(9, 100),
     minimum_training_pair_fraction=Ratio(3, 5),
@@ -92,6 +98,7 @@ LOCKED_OUTER_POLICY = JointLevelPolicy(
 LOCKED_INNER_POLICY = JointLevelPolicy(
     minimum_validation_pairs=80,
     minimum_validation_endpoints_per_axis=40,
+    minimum_validation_components_per_axis=20,
     validation_pair_lower_fraction=Ratio(7, 100),
     validation_pair_upper_fraction=Ratio(9, 100),
     minimum_training_pair_fraction=Ratio(11, 20),
@@ -119,6 +126,9 @@ def joint_policy_payload(
             "minimum_validation_endpoints_per_axis": (
                 policy.minimum_validation_endpoints_per_axis
             ),
+            "minimum_validation_components_per_axis": (
+                policy.minimum_validation_components_per_axis
+            ),
             "validation_pair_lower_fraction": _ratio_payload(
                 policy.validation_pair_lower_fraction
             ),
@@ -143,7 +153,7 @@ def joint_policy_payload(
         }
 
     return {
-        "schema_version": "joint_nested_split_exact_policy_v1",
+        "schema_version": "joint_nested_split_exact_policy_v2",
         "outer_fold_count": 3,
         "dependent_inner_fold_count_per_outer": 3,
         "outer": level_payload(outer_policy),
@@ -197,6 +207,8 @@ class ModelSizeEstimate:
     pair_count: int
     antibody_count: int
     antigen_count: int
+    antibody_component_count: int
+    antigen_component_count: int
     antibody_undirected_edge_count: int
     antigen_undirected_edge_count: int
     directed_closed_relation_count: int
@@ -382,6 +394,54 @@ def minimum_arithmetically_admissible_pair_count(
     raise ValueError("No admissible pair count was found within search_limit")
 
 
+def _canonical_connected_components(
+    entities: Sequence[str],
+    closed_relation: Mapping[str, Sequence[str]],
+) -> tuple[tuple[str, ...], ...]:
+    """Return deterministic components of one complete direct graph."""
+    remaining = set(entities)
+    components: list[tuple[str, ...]] = []
+    for root in sorted(entities):
+        if root not in remaining:
+            continue
+        remaining.remove(root)
+        pending = [root]
+        members: list[str] = []
+        while pending:
+            current = pending.pop()
+            members.append(current)
+            newly_reached = sorted(
+                remaining.intersection(closed_relation[current]),
+                reverse=True,
+            )
+            for neighbor in newly_reached:
+                remaining.remove(neighbor)
+                pending.append(neighbor)
+        components.append(tuple(sorted(members)))
+    return tuple(sorted(components))
+
+
+def _check_component_gate_capacity(
+    policy: JointLevelPolicy,
+    *,
+    antibody_component_count: int,
+    antigen_component_count: int,
+    level: str,
+) -> None:
+    """Reject a component gate that the complete graphs cannot satisfy."""
+    minimum = policy.minimum_validation_components_per_axis
+    if antibody_component_count < minimum:
+        raise PolicyArithmeticError(
+            f"{level} antibody component gate is infeasible: "
+            f"minimum={minimum}, available={antibody_component_count}"
+        )
+    if antigen_component_count < minimum:
+        raise PolicyArithmeticError(
+            f"{level} antigen component gate is infeasible: "
+            f"minimum={minimum}, available={antigen_component_count}"
+        )
+
+
 def _validate_problem(
     problem: JointSplitProblem,
 ) -> tuple[
@@ -389,6 +449,8 @@ def _validate_problem(
     tuple[str, ...],
     dict[str, tuple[str, ...]],
     dict[str, tuple[str, ...]],
+    tuple[tuple[str, ...], ...],
+    tuple[tuple[str, ...], ...],
 ]:
     if not problem.pairs:
         raise ValueError("The joint split pair universe is empty")
@@ -433,7 +495,22 @@ def _validate_problem(
         problem.antigen_direct_neighbors,
         "antigen",
     )
-    return antibodies, antigens, antibody_closed, antigen_closed
+    antibody_components = _canonical_connected_components(
+        antibodies,
+        antibody_closed,
+    )
+    antigen_components = _canonical_connected_components(
+        antigens,
+        antigen_closed,
+    )
+    return (
+        antibodies,
+        antigens,
+        antibody_closed,
+        antigen_closed,
+        antibody_components,
+        antigen_components,
+    )
 
 
 def estimate_model_size_from_counts(
@@ -441,6 +518,8 @@ def estimate_model_size_from_counts(
     pair_count: int,
     antibody_count: int,
     antigen_count: int,
+    antibody_component_count: int,
+    antigen_component_count: int,
     antibody_undirected_edge_count: int,
     antigen_undirected_edge_count: int,
     outer_fold_count: int = 3,
@@ -451,6 +530,8 @@ def estimate_model_size_from_counts(
         pair_count,
         antibody_count,
         antigen_count,
+        antibody_component_count,
+        antigen_component_count,
         antibody_undirected_edge_count,
         antigen_undirected_edge_count,
     )
@@ -458,14 +539,23 @@ def estimate_model_size_from_counts(
         raise ValueError("Model-size counts must be non-negative")
     if pair_count == 0 or antibody_count == 0 or antigen_count == 0:
         raise ValueError("Pair and endpoint counts must be positive")
+    if antibody_component_count == 0 or antigen_component_count == 0:
+        raise ValueError("Component counts must be positive")
+    if antibody_component_count > antibody_count:
+        raise ValueError("antibody_component_count exceeds antibody_count")
+    if antigen_component_count > antigen_count:
+        raise ValueError("antigen_component_count exceeds antigen_count")
     if outer_fold_count != 3 or inner_fold_count != 3:
         raise ValueError("The locked nested protocol uses exactly 3x3 folds")
     endpoint_count = antibody_count + antigen_count
+    component_count = antibody_component_count + antigen_component_count
     directed_closed = endpoint_count + 2 * (
         antibody_undirected_edge_count + antigen_undirected_edge_count
     )
     level_count = outer_fold_count + outer_fold_count * inner_fold_count
-    variables = 3 * (endpoint_count + pair_count) * level_count
+    variables = (
+        3 * (endpoint_count + pair_count) + component_count
+    ) * level_count
 
     outer_constraints = outer_fold_count * (
         directed_closed + 3 * endpoint_count + 9 * pair_count + 9
@@ -476,6 +566,9 @@ def estimate_model_size_from_counts(
     )
     inner_constraints += outer_fold_count * endpoint_count
     inner_constraints += 30 * outer_fold_count
+    component_constraints = level_count * (
+        endpoint_count + component_count + 2
+    )
 
     outer_nonzeros = outer_fold_count * (
         3 * directed_closed + 5 * endpoint_count + 30 * pair_count
@@ -491,24 +584,38 @@ def estimate_model_size_from_counts(
     inner_nonzeros += 6 * inner_fold_count * outer_fold_count * (
         3 * pair_count + endpoint_count
     )
+    component_nonzeros = level_count * (
+        3 * endpoint_count + 2 * component_count
+    )
     return ModelSizeEstimate(
         pair_count=pair_count,
         antibody_count=antibody_count,
         antigen_count=antigen_count,
+        antibody_component_count=antibody_component_count,
+        antigen_component_count=antigen_component_count,
         antibody_undirected_edge_count=antibody_undirected_edge_count,
         antigen_undirected_edge_count=antigen_undirected_edge_count,
         directed_closed_relation_count=directed_closed,
         binary_variable_count=variables,
-        linear_constraint_count=outer_constraints + inner_constraints,
-        nonzero_coefficient_count=outer_nonzeros + inner_nonzeros,
+        linear_constraint_count=(
+            outer_constraints + inner_constraints + component_constraints
+        ),
+        nonzero_coefficient_count=(
+            outer_nonzeros + inner_nonzeros + component_nonzeros
+        ),
     )
 
 
 def estimate_model_size(problem: JointSplitProblem) -> ModelSizeEstimate:
     """Return exact dimensions for one validated metadata problem."""
-    antibodies, antigens, antibody_closed, antigen_closed = _validate_problem(
-        problem
-    )
+    (
+        antibodies,
+        antigens,
+        antibody_closed,
+        antigen_closed,
+        antibody_components,
+        antigen_components,
+    ) = _validate_problem(problem)
     antibody_directed = sum(len(values) - 1 for values in antibody_closed.values())
     antigen_directed = sum(len(values) - 1 for values in antigen_closed.values())
     if antibody_directed % 2 or antigen_directed % 2:
@@ -517,6 +624,8 @@ def estimate_model_size(problem: JointSplitProblem) -> ModelSizeEstimate:
         pair_count=len(problem.pairs),
         antibody_count=len(antibodies),
         antigen_count=len(antigens),
+        antibody_component_count=len(antibody_components),
+        antigen_component_count=len(antigen_components),
         antibody_undirected_edge_count=antibody_directed // 2,
         antigen_undirected_edge_count=antigen_directed // 2,
     )
@@ -626,6 +735,8 @@ def _add_fixed_level_policy(
     validation_pairs: Sequence[Sequence[int]],
     validation_antibodies: Sequence[Sequence[int]],
     validation_antigens: Sequence[Sequence[int]],
+    validation_antibody_components: Sequence[Sequence[int]],
+    validation_antigen_components: Sequence[Sequence[int]],
     training_pairs: Sequence[Sequence[int]],
     training_antibodies: Sequence[Sequence[int]],
     training_antigens: Sequence[Sequence[int]],
@@ -668,6 +779,20 @@ def _add_fixed_level_policy(
         builder.add_row(
             ((value, 1) for value in validation_antigens[fold_index]),
             lower_bound=policy.minimum_validation_endpoints_per_axis,
+        )
+        builder.add_row(
+            (
+                (value, 1)
+                for value in validation_antibody_components[fold_index]
+            ),
+            lower_bound=policy.minimum_validation_components_per_axis,
+        )
+        builder.add_row(
+            (
+                (value, 1)
+                for value in validation_antigen_components[fold_index]
+            ),
+            lower_bound=policy.minimum_validation_components_per_axis,
         )
         training_ratio = policy.minimum_training_pair_fraction
         builder.add_row(
@@ -728,6 +853,8 @@ def _add_dynamic_inner_policy(
     validation_pairs: Sequence[Sequence[int]],
     validation_antibodies: Sequence[Sequence[int]],
     validation_antigens: Sequence[Sequence[int]],
+    validation_antibody_components: Sequence[Sequence[int]],
+    validation_antigen_components: Sequence[Sequence[int]],
     training_pairs: Sequence[Sequence[int]],
     training_antibodies: Sequence[Sequence[int]],
     training_antigens: Sequence[Sequence[int]],
@@ -767,6 +894,20 @@ def _add_dynamic_inner_policy(
         builder.add_row(
             ((value, 1) for value in validation_antigens[inner_index]),
             lower_bound=policy.minimum_validation_endpoints_per_axis,
+        )
+        builder.add_row(
+            (
+                (value, 1)
+                for value in validation_antibody_components[inner_index]
+            ),
+            lower_bound=policy.minimum_validation_components_per_axis,
+        )
+        builder.add_row(
+            (
+                (value, 1)
+                for value in validation_antigen_components[inner_index]
+            ),
+            lower_bound=policy.minimum_validation_components_per_axis,
         )
         training_ratio = policy.minimum_training_pair_fraction
         builder.add_row(
@@ -874,8 +1015,25 @@ def build_joint_feasibility_model(
     resource_limits: ResourceLimits = ResourceLimits(),
 ) -> JointMILPModel:
     """Build the exact 3+9-level binary feasibility model."""
-    antibodies, antigens, antibody_closed, antigen_closed = _validate_problem(
-        problem
+    (
+        antibodies,
+        antigens,
+        antibody_closed,
+        antigen_closed,
+        antibody_components,
+        antigen_components,
+    ) = _validate_problem(problem)
+    _check_component_gate_capacity(
+        outer_policy,
+        antibody_component_count=len(antibody_components),
+        antigen_component_count=len(antigen_components),
+        level="Outer",
+    )
+    _check_component_gate_capacity(
+        inner_policy,
+        antibody_component_count=len(antibody_components),
+        antigen_component_count=len(antigen_components),
+        level="Inner",
     )
     pairs = tuple(sorted(problem.pairs, key=lambda value: value.pair_id))
     estimate = estimate_model_size(problem)
@@ -919,6 +1077,20 @@ def build_joint_feasibility_model(
         for antigen in antigens:
             for role in ("holdout_g", "closed_g", "train_present_g"):
                 v("outer", outer_index, role, antigen)
+        for component in antibody_components:
+            v(
+                "outer",
+                outer_index,
+                "validation_component_a",
+                component[0],
+            )
+        for component in antigen_components:
+            v(
+                "outer",
+                outer_index,
+                "validation_component_g",
+                component[0],
+            )
         for pair in pairs:
             for role in ("validation_pair", "training_pair", "quarantine_pair"):
                 v("outer", outer_index, role, pair.pair_id)
@@ -929,6 +1101,22 @@ def build_joint_feasibility_model(
             for antigen in antigens:
                 for role in ("holdout_g", "closed_g", "train_present_g"):
                     v("inner", outer_index, inner_index, role, antigen)
+            for component in antibody_components:
+                v(
+                    "inner",
+                    outer_index,
+                    inner_index,
+                    "validation_component_a",
+                    component[0],
+                )
+            for component in antigen_components:
+                v(
+                    "inner",
+                    outer_index,
+                    inner_index,
+                    "validation_component_g",
+                    component[0],
+                )
             for pair in pairs:
                 for role in (
                     "validation_pair",
@@ -942,6 +1130,8 @@ def build_joint_feasibility_model(
     outer_quarantine_pairs: list[list[int]] = []
     outer_holdout_antibodies: list[list[int]] = []
     outer_holdout_antigens: list[list[int]] = []
+    outer_validation_antibody_components: list[list[int]] = []
+    outer_validation_antigen_components: list[list[int]] = []
     outer_training_antibodies: list[list[int]] = []
     outer_training_antigens: list[list[int]] = []
 
@@ -1036,6 +1226,41 @@ def build_joint_feasibility_model(
                 upper_bound=0,
             )
 
+        antibody_component_variables: list[int] = []
+        for component in antibody_components:
+            presence = v(
+                "outer",
+                outer_index,
+                "validation_component_a",
+                component[0],
+            )
+            _add_exact_or(
+                builder,
+                presence,
+                [
+                    v("outer", outer_index, "holdout_a", endpoint)
+                    for endpoint in component
+                ],
+            )
+            antibody_component_variables.append(presence)
+        antigen_component_variables: list[int] = []
+        for component in antigen_components:
+            presence = v(
+                "outer",
+                outer_index,
+                "validation_component_g",
+                component[0],
+            )
+            _add_exact_or(
+                builder,
+                presence,
+                [
+                    v("outer", outer_index, "holdout_g", endpoint)
+                    for endpoint in component
+                ],
+            )
+            antigen_component_variables.append(presence)
+
         outer_validation_pairs.append(
             [
                 v("outer", outer_index, "validation_pair", pair.pair_id)
@@ -1059,6 +1284,12 @@ def build_joint_feasibility_model(
         )
         outer_holdout_antigens.append(
             [v("outer", outer_index, "holdout_g", value) for value in antigens]
+        )
+        outer_validation_antibody_components.append(
+            antibody_component_variables
+        )
+        outer_validation_antigen_components.append(
+            antigen_component_variables
         )
         outer_training_antibodies.append(
             [
@@ -1096,6 +1327,10 @@ def build_joint_feasibility_model(
         validation_pairs=outer_validation_pairs,
         validation_antibodies=outer_holdout_antibodies,
         validation_antigens=outer_holdout_antigens,
+        validation_antibody_components=(
+            outer_validation_antibody_components
+        ),
+        validation_antigen_components=outer_validation_antigen_components,
         training_pairs=outer_training_pairs,
         training_antibodies=outer_training_antibodies,
         training_antigens=outer_training_antigens,
@@ -1111,6 +1346,8 @@ def build_joint_feasibility_model(
         inner_quarantine_pairs: list[list[int]] = []
         inner_holdout_antibodies: list[list[int]] = []
         inner_holdout_antigens: list[list[int]] = []
+        inner_validation_antibody_components: list[list[int]] = []
+        inner_validation_antigen_components: list[list[int]] = []
         inner_training_antibodies: list[list[int]] = []
         inner_training_antigens: list[list[int]] = []
         for inner_index in range(3):
@@ -1402,6 +1639,55 @@ def build_joint_feasibility_model(
                     upper_bound=0,
                 )
 
+            antibody_component_variables = []
+            for component in antibody_components:
+                presence = v(
+                    "inner",
+                    outer_index,
+                    inner_index,
+                    "validation_component_a",
+                    component[0],
+                )
+                _add_exact_or(
+                    builder,
+                    presence,
+                    [
+                        v(
+                            "inner",
+                            outer_index,
+                            inner_index,
+                            "holdout_a",
+                            endpoint,
+                        )
+                        for endpoint in component
+                    ],
+                )
+                antibody_component_variables.append(presence)
+            antigen_component_variables = []
+            for component in antigen_components:
+                presence = v(
+                    "inner",
+                    outer_index,
+                    inner_index,
+                    "validation_component_g",
+                    component[0],
+                )
+                _add_exact_or(
+                    builder,
+                    presence,
+                    [
+                        v(
+                            "inner",
+                            outer_index,
+                            inner_index,
+                            "holdout_g",
+                            endpoint,
+                        )
+                        for endpoint in component
+                    ],
+                )
+                antigen_component_variables.append(presence)
+
             inner_validation_pairs.append(
                 [
                     v(
@@ -1461,6 +1747,12 @@ def build_joint_feasibility_model(
                     )
                     for value in antigens
                 ]
+            )
+            inner_validation_antibody_components.append(
+                antibody_component_variables
+            )
+            inner_validation_antigen_components.append(
+                antigen_component_variables
             )
             inner_training_antibodies.append(
                 [
@@ -1531,6 +1823,10 @@ def build_joint_feasibility_model(
             validation_pairs=inner_validation_pairs,
             validation_antibodies=inner_holdout_antibodies,
             validation_antigens=inner_holdout_antigens,
+            validation_antibody_components=(
+                inner_validation_antibody_components
+            ),
+            validation_antigen_components=inner_validation_antigen_components,
             training_pairs=inner_training_pairs,
             training_antibodies=inner_training_antibodies,
             training_antigens=inner_training_antigens,

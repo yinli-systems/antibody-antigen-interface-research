@@ -12,7 +12,9 @@ from interaction_first.nested_joint_milp import (
     CanonicalPair,
     JointLevelPolicy,
     JointSplitProblem,
+    LOCKED_INNER_POLICY,
     LOCKED_JOINT_POLICY_SHA256,
+    LOCKED_OUTER_POLICY,
     PolicyArithmeticError,
     Ratio,
     ResourceLimitError,
@@ -20,6 +22,7 @@ from interaction_first.nested_joint_milp import (
     build_joint_feasibility_model,
     estimate_model_size,
     estimate_model_size_from_counts,
+    joint_policy_payload,
     minimum_arithmetically_admissible_pair_count,
     solve_joint_feasibility,
     validation_pair_interval,
@@ -30,10 +33,14 @@ def _policy(
     *,
     minimum_validation_pairs: int,
     validation_upper: Ratio,
+    minimum_validation_components_per_axis: int = 1,
 ) -> JointLevelPolicy:
     return JointLevelPolicy(
         minimum_validation_pairs=minimum_validation_pairs,
         minimum_validation_endpoints_per_axis=1,
+        minimum_validation_components_per_axis=(
+            minimum_validation_components_per_axis
+        ),
         validation_pair_lower_fraction=Ratio(1, 1000),
         validation_pair_upper_fraction=validation_upper,
         minimum_training_pair_fraction=Ratio(1, 2),
@@ -57,6 +64,35 @@ def _independent_problem(pair_count: int = 9) -> JointSplitProblem:
         antigen_direct_neighbors={
             f"g{index}": frozenset() for index in range(pair_count)
         },
+    )
+
+
+def _path_component_problem(*, reverse_input: bool = False) -> JointSplitProblem:
+    """Return nine pairs with one three-node path on each homology axis."""
+    pairs = [
+        CanonicalPair(f"p{index}", f"a{index}", f"g{index}")
+        for index in range(9)
+    ]
+    antibody_neighbors = {
+        "a0": frozenset({"a1"}),
+        "a1": frozenset({"a0", "a2"}),
+        "a2": frozenset({"a1"}),
+        **{f"a{index}": frozenset() for index in range(3, 9)},
+    }
+    antigen_neighbors = {
+        "g0": frozenset({"g1"}),
+        "g1": frozenset({"g0", "g2"}),
+        "g2": frozenset({"g1"}),
+        **{f"g{index}": frozenset() for index in range(3, 9)},
+    }
+    if reverse_input:
+        pairs.reverse()
+        antibody_neighbors = dict(reversed(tuple(antibody_neighbors.items())))
+        antigen_neighbors = dict(reversed(tuple(antigen_neighbors.items())))
+    return JointSplitProblem(
+        pairs=tuple(pairs),
+        antibody_direct_neighbors=antibody_neighbors,
+        antigen_direct_neighbors=antigen_neighbors,
     )
 
 
@@ -84,25 +120,196 @@ def test_locked_inner_arithmetic_threshold_is_889() -> None:
 
 def test_locked_exact_joint_policy_has_a_stable_external_anchor() -> None:
     """The exact 3x3 policy digest must remain reviewable out of band."""
+    assert LOCKED_OUTER_POLICY.minimum_validation_components_per_axis == 25
+    assert LOCKED_INNER_POLICY.minimum_validation_components_per_axis == 20
+    assert joint_policy_payload(
+        LOCKED_OUTER_POLICY,
+        LOCKED_INNER_POLICY,
+    )["schema_version"] == "joint_nested_split_exact_policy_v2"
     assert LOCKED_JOINT_POLICY_SHA256 == (
-        "7940bc19f2b1bc7caf687851399d4219d114933eba5caaf9e07a0d41094805e1"
+        "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd"
     )
 
 
 def test_authority_metadata_estimate_is_large_and_prototype_is_fail_closed() -> None:
     """Known train-only counts must trigger review before matrix allocation."""
+    # These are the largest component counts compatible with the edge totals.
     estimate = estimate_model_size_from_counts(
         pair_count=1830,
         antibody_count=1383,
         antigen_count=1172,
+        antibody_component_count=990,
+        antigen_component_count=992,
         antibody_undirected_edge_count=77332,
         antigen_undirected_edge_count=16273,
     )
-    assert estimate.binary_variable_count == 157_860
-    assert estimate.linear_constraint_count == 2_656_178
-    assert estimate.nonzero_coefficient_count == 10_257_570
+    assert estimate.binary_variable_count == 181_644
+    assert estimate.linear_constraint_count == 2_710_646
+    assert estimate.nonzero_coefficient_count == 10_397_118
     with pytest.raises(ResourceLimitError):
         ResourceLimits().check(estimate)
+
+
+def test_component_size_accounting_is_exact_for_independent_graphs() -> None:
+    """Singleton components must be included in every nested model level."""
+    estimate = estimate_model_size(_independent_problem())
+    assert estimate.antibody_component_count == 9
+    assert estimate.antigen_component_count == 9
+    assert estimate.binary_variable_count == 1_188
+    assert estimate.linear_constraint_count == 3_078
+    assert estimate.nonzero_coefficient_count == 11_367
+
+
+def test_full_graph_components_are_transitive_canonical_and_order_stable() -> None:
+    """Input order cannot alter component representatives or matrix bytes."""
+    limits = ResourceLimits(
+        maximum_binary_variables=10_000,
+        maximum_linear_constraints=20_000,
+        maximum_nonzero_coefficients=100_000,
+    )
+    policy = _policy(
+        minimum_validation_pairs=1,
+        validation_upper=Ratio(1, 9),
+    )
+    first = build_joint_feasibility_model(
+        _path_component_problem(),
+        outer_policy=policy,
+        inner_policy=_policy(
+            minimum_validation_pairs=1,
+            validation_upper=Ratio(1, 8),
+        ),
+        resource_limits=limits,
+    )
+    reordered = build_joint_feasibility_model(
+        _path_component_problem(reverse_input=True),
+        outer_policy=policy,
+        inner_policy=_policy(
+            minimum_validation_pairs=1,
+            validation_upper=Ratio(1, 8),
+        ),
+        resource_limits=limits,
+    )
+    expected_representatives = {
+        "a0",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+    }
+    observed_representatives = {
+        key[-1]
+        for key in first.variable_keys
+        if key[:3] == ("outer", "0", "validation_component_a")
+    }
+    assert observed_representatives == expected_representatives
+    assert first.estimate.antibody_component_count == 7
+    assert first.estimate.antigen_component_count == 7
+    assert first.variable_keys == reordered.variable_keys
+    assert first.matrix_sha256 == reordered.matrix_sha256
+
+
+def test_component_presence_is_exactly_tied_to_effective_endpoints() -> None:
+    """Each component binary must be the exact OR of its holdout endpoints."""
+    model = build_joint_feasibility_model(
+        _path_component_problem(),
+        outer_policy=_policy(
+            minimum_validation_pairs=1,
+            validation_upper=Ratio(1, 9),
+        ),
+        inner_policy=_policy(
+            minimum_validation_pairs=1,
+            validation_upper=Ratio(1, 8),
+        ),
+        resource_limits=ResourceLimits(
+            maximum_binary_variables=10_000,
+            maximum_linear_constraints=20_000,
+            maximum_nonzero_coefficients=100_000,
+        ),
+    )
+    index = {key: value for value, key in enumerate(model.variable_keys)}
+
+    def assert_exact_component_or(
+        prefix: tuple[str, ...],
+        *,
+        component_role: str,
+        holdout_role: str,
+        entity_prefix: str,
+    ) -> None:
+        presence = index[
+            (*prefix, component_role, f"{entity_prefix}0")
+        ]
+        endpoints = [
+            index[(*prefix, holdout_role, f"{entity_prefix}{endpoint}")]
+            for endpoint in range(3)
+        ]
+        row_maps = [dict(row.coefficients) for row in model.rows]
+        for endpoint in endpoints:
+            assert any(
+                coefficients == {presence: 1, endpoint: -1}
+                and row.lower_bound == 0
+                and row.upper_bound is None
+                for row, coefficients in zip(model.rows, row_maps)
+            )
+        assert any(
+            coefficients
+            == {presence: 1, **{endpoint: -1 for endpoint in endpoints}}
+            and row.lower_bound is None
+            and row.upper_bound == 0
+            for row, coefficients in zip(model.rows, row_maps)
+        )
+        component_variables = {
+            variable_index
+            for key, variable_index in index.items()
+            if key[:-2] == prefix and key[-2] == component_role
+        }
+        assert any(
+            coefficients
+            == {variable_index: 1 for variable_index in component_variables}
+            and row.lower_bound == 1
+            and row.upper_bound is None
+            for row, coefficients in zip(model.rows, row_maps)
+        )
+
+    for prefix in (("outer", "0"), ("inner", "0", "0")):
+        assert_exact_component_or(
+            prefix,
+            component_role="validation_component_a",
+            holdout_role="holdout_a",
+            entity_prefix="a",
+        )
+        assert_exact_component_or(
+            prefix,
+            component_role="validation_component_g",
+            holdout_role="holdout_g",
+            entity_prefix="g",
+        )
+
+
+def test_transitive_component_capacity_gate_fails_closed() -> None:
+    """Endpoint count cannot substitute for distinct homology components."""
+    with pytest.raises(
+        PolicyArithmeticError,
+        match=r"Outer antibody component gate.*minimum=8, available=7",
+    ):
+        build_joint_feasibility_model(
+            _path_component_problem(),
+            outer_policy=_policy(
+                minimum_validation_pairs=1,
+                validation_upper=Ratio(1, 9),
+                minimum_validation_components_per_axis=8,
+            ),
+            inner_policy=_policy(
+                minimum_validation_pairs=1,
+                validation_upper=Ratio(1, 8),
+            ),
+            resource_limits=ResourceLimits(
+                maximum_binary_variables=10_000,
+                maximum_linear_constraints=20_000,
+                maximum_nonzero_coefficients=100_000,
+            ),
+        )
 
 
 def test_synthetic_joint_outer_and_all_nine_inner_folds_are_feasible() -> None:

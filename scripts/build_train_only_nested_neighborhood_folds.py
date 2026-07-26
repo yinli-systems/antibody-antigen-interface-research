@@ -42,17 +42,17 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Mapping, Sequence
 
-FORMAT_VERSION = "train_only_nested_direct80_four_view_neighborhood_folds_v4"
+FORMAT_VERSION = "train_only_nested_direct80_four_view_neighborhood_folds_v5"
 PROVISIONAL_FORMAT_VERSION = (
-    "train_only_nested_direct80_four_view_neighborhood_folds_provisional_v4"
+    "train_only_nested_direct80_four_view_neighborhood_folds_provisional_v5"
 )
 PROVISIONAL_LEDGER_FORMAT_VERSION = (
-    "train_only_nested_core_feasibility_provisional_attempt_v1"
+    "train_only_nested_core_feasibility_provisional_attempt_v2"
 )
 TRAIN_AUTHORITY_FORMAT_VERSION = "gate0_physical_train_only_allowlist_v1"
 TRAIN_MANIFEST_COLUMNS = ("INSTANCE", "vh_seq", "vl_seq", "ag_seq")
 LOCKED_JOINT_POLICY_SHA256 = (
-    "7940bc19f2b1bc7caf687851399d4219d114933eba5caaf9e07a0d41094805e1"
+    "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd"
 )
 REQUIRED_VIEWS = ("vh", "vl", "concatenated_antibody", "antigen")
 VALID_AMINO_ACIDS = frozenset("ACDEFGHIKLMNPQRSTVWY")
@@ -129,6 +129,7 @@ class LevelPolicy:
     minimum_validation_pairs: int
     maximum_validation_pairs: int
     minimum_validation_endpoints_per_axis: int
+    minimum_validation_components_per_axis: int
     minimum_training_pair_fraction: float
     minimum_training_endpoint_fraction: float
     maximum_quarantine_pair_fraction: float
@@ -1042,6 +1043,43 @@ def adjacency(
     return result
 
 
+def canonical_component_ids(
+    graph: Mapping[str, set[str]],
+) -> dict[str, str]:
+    """Map every full-graph entity to its canonical component representative."""
+    universe = set(graph)
+    for entity, neighbors in graph.items():
+        unknown = neighbors.difference(universe)
+        if unknown:
+            raise ValueError("Graph contains a neighbor outside its universe")
+        for neighbor in neighbors:
+            if entity not in graph[neighbor]:
+                raise ValueError("Graph is not symmetric")
+    remaining = set(graph)
+    result: dict[str, str] = {}
+    for root in sorted(graph):
+        if root not in remaining:
+            continue
+        remaining.remove(root)
+        pending = [root]
+        members: list[str] = []
+        while pending:
+            current = pending.pop()
+            members.append(current)
+            newly_reached = sorted(
+                remaining.intersection(graph[current]),
+                reverse=True,
+            )
+            for neighbor in newly_reached:
+                remaining.remove(neighbor)
+                pending.append(neighbor)
+        representative = min(members)
+        result.update({member: representative for member in members})
+    if set(result) != set(graph):
+        raise RuntimeError("Full-graph component traversal is incomplete")
+    return result
+
+
 def _closed_neighborhood(
     held_out: set[str],
     graph: Mapping[str, set[str]],
@@ -1143,6 +1181,8 @@ def _derive_fold(
     antigen_universe: set[str],
     antibody_graph: Mapping[str, set[str]],
     antigen_graph: Mapping[str, set[str]],
+    antibody_component_by_entity: Mapping[str, str],
+    antigen_component_by_entity: Mapping[str, str],
     validation_antibodies: set[str],
     validation_antigens: set[str],
     policy: LevelPolicy,
@@ -1192,6 +1232,14 @@ def _derive_fold(
         pair.antibody_id for pair in validation
     }
     effective_validation_antigens = {pair.antigen_id for pair in validation}
+    validation_antibody_components = {
+        antibody_component_by_entity[entity]
+        for entity in effective_validation_antibodies
+    }
+    validation_antigen_components = {
+        antigen_component_by_entity[entity]
+        for entity in effective_validation_antigens
+    }
     gates = {
         "validation_pair_lower_bound_passed": (
             len(validation) >= policy.minimum_validation_pairs
@@ -1206,6 +1254,14 @@ def _derive_fold(
         "validation_antigen_count_passed": (
             len(effective_validation_antigens)
             >= policy.minimum_validation_endpoints_per_axis
+        ),
+        "validation_antibody_component_count_passed": (
+            len(validation_antibody_components)
+            >= policy.minimum_validation_components_per_axis
+        ),
+        "validation_antigen_component_count_passed": (
+            len(validation_antigen_components)
+            >= policy.minimum_validation_components_per_axis
         ),
         "training_pair_retention_passed": (
             len(training)
@@ -1261,6 +1317,12 @@ def _derive_fold(
         "fold_index": fold_index,
         "validation_antibody_ids": sorted(validation_antibodies),
         "validation_antigen_ids": sorted(validation_antigens),
+        "validation_antibody_component_ids": sorted(
+            validation_antibody_components
+        ),
+        "validation_antigen_component_ids": sorted(
+            validation_antigen_components
+        ),
         "closed_direct_neighborhood_antibody_ids": sorted(closed_antibodies),
         "closed_direct_neighborhood_antigen_ids": sorted(closed_antigens),
         "training_eligible_antibody_ids": sorted(training_eligible_antibodies),
@@ -1284,6 +1346,12 @@ def _derive_fold(
             "training_antigen_count": len(model_antigens),
             "validation_antibody_count": len(effective_validation_antibodies),
             "validation_antigen_count": len(effective_validation_antigens),
+            "validation_antibody_component_count": len(
+                validation_antibody_components
+            ),
+            "validation_antigen_component_count": len(
+                validation_antigen_components
+            ),
             "training_source_row_count": sum(
                 len(pair.source_instance_ids) for pair in training
             ),
@@ -1306,6 +1374,12 @@ def _derive_fold(
             ),
             "model_antibody_allowlist_sha256": membership_sha256(model_antibodies),
             "model_antigen_allowlist_sha256": membership_sha256(model_antigens),
+            "validation_antibody_component_sha256": membership_sha256(
+                validation_antibody_components
+            ),
+            "validation_antigen_component_sha256": membership_sha256(
+                validation_antigen_components
+            ),
         },
         "hard_gates": gates,
         "all_fold_hard_gates_passed": all(gates.values()),
@@ -1464,6 +1538,9 @@ def _policy_payload(policy: LevelPolicy) -> dict[str, Any]:
         "minimum_validation_endpoints_per_axis": (
             policy.minimum_validation_endpoints_per_axis
         ),
+        "minimum_validation_components_per_axis": (
+            policy.minimum_validation_components_per_axis
+        ),
         "minimum_training_pair_fraction": policy.minimum_training_pair_fraction,
         "minimum_training_endpoint_fraction": (
             policy.minimum_training_endpoint_fraction
@@ -1486,6 +1563,7 @@ def outer_policy(pair_count: int) -> LevelPolicy:
         minimum_validation_pairs=max(120, (7 * pair_count + 99) // 100),
         maximum_validation_pairs=9 * pair_count // 100,
         minimum_validation_endpoints_per_axis=60,
+        minimum_validation_components_per_axis=25,
         minimum_training_pair_fraction=0.60,
         minimum_training_endpoint_fraction=0.60,
         maximum_quarantine_pair_fraction=0.33,
@@ -1500,6 +1578,7 @@ def inner_policy(pair_count: int) -> LevelPolicy:
         minimum_validation_pairs=max(80, (7 * pair_count + 99) // 100),
         maximum_validation_pairs=9 * pair_count // 100,
         minimum_validation_endpoints_per_axis=40,
+        minimum_validation_components_per_axis=20,
         minimum_training_pair_fraction=0.55,
         minimum_training_endpoint_fraction=0.55,
         maximum_quarantine_pair_fraction=0.38,
@@ -1545,6 +1624,12 @@ def _assemble_level_from_held_out_sets(
     validate_level_policy(policy, len(pairs), label="external-held-out-assignment")
     antibody_universe = {pair.antibody_id for pair in pairs}
     antigen_universe = {pair.antigen_id for pair in pairs}
+    antibody_component_by_entity = canonical_component_ids(antibody_graph)
+    antigen_component_by_entity = canonical_component_ids(antigen_graph)
+    if not antibody_universe.issubset(antibody_component_by_entity):
+        raise ValueError("Antibody universe leaves the complete component graph")
+    if not antigen_universe.issubset(antigen_component_by_entity):
+        raise ValueError("Antigen universe leaves the complete component graph")
     if any(not values.issubset(antibody_universe) for values in held_out_antibodies):
         raise ValueError("A held-out antibody is outside the level universe")
     if any(not values.issubset(antigen_universe) for values in held_out_antigens):
@@ -1559,6 +1644,8 @@ def _assemble_level_from_held_out_sets(
             antigen_universe,
             antibody_graph,
             antigen_graph,
+            antibody_component_by_entity,
+            antigen_component_by_entity,
             held_out_antibodies[fold_index],
             held_out_antigens[fold_index],
             policy,
@@ -1655,6 +1742,20 @@ def _assemble_level_from_held_out_sets(
             "pair_membership_sha256": membership_sha256(
                 pair.pair_id for pair in pairs
             ),
+            "full_graph_antibody_component_count": len(
+                set(antibody_component_by_entity.values())
+            ),
+            "full_graph_antigen_component_count": len(
+                set(antigen_component_by_entity.values())
+            ),
+            "full_graph_antibody_component_membership_sha256": membership_sha256(
+                f"{entity}\0{representative}"
+                for entity, representative in antibody_component_by_entity.items()
+            ),
+            "full_graph_antigen_component_membership_sha256": membership_sha256(
+                f"{entity}\0{representative}"
+                for entity, representative in antigen_component_by_entity.items()
+            ),
         },
         "policy": _policy_payload(policy),
         "selection": dict(selection),
@@ -1710,6 +1811,9 @@ def _level_policy_from_joint_policy(
         maximum_validation_pairs=upper,
         minimum_validation_endpoints_per_axis=(
             policy.minimum_validation_endpoints_per_axis
+        ),
+        minimum_validation_components_per_axis=(
+            policy.minimum_validation_components_per_axis
         ),
         minimum_training_pair_fraction=(
             policy.minimum_training_pair_fraction.numerator
@@ -1772,6 +1876,12 @@ def _assert_fold_matches_joint_assignment(
         "closed_g": set(fold["closed_direct_neighborhood_antigen_ids"]),
         "train_present_a": set(fold["model_antibody_allowlist"]),
         "train_present_g": set(fold["model_antigen_allowlist"]),
+        "validation_component_a": set(
+            fold["validation_antibody_component_ids"]
+        ),
+        "validation_component_g": set(
+            fold["validation_antigen_component_ids"]
+        ),
         "validation_pair": _payload_pair_ids(fold, "validation_pair"),
         "training_pair": _payload_pair_ids(fold, "training_pair"),
         "quarantine_pair": _payload_pair_ids(fold, "quarantine_pair"),
@@ -1811,7 +1921,7 @@ def _joint_level_selection_receipt(
         and any(key[: len(prefix)] == prefix for prefix in prefixes)
     )
     return {
-        "algorithm": "joint_3_outer_9_inner_core_feasibility_milp_v1",
+        "algorithm": "joint_3_outer_9_inner_core_feasibility_milp_v2",
         "score_free": True,
         "constant_zero_objective_only": True,
         "lexicographic_optimization_performed": False,
@@ -1966,7 +2076,7 @@ def build_joint_nested_levels(
         if value == 1
     )
     receipt = {
-        "implementation": "joint_3_outer_9_inner_core_feasibility_milp_v1",
+        "implementation": "joint_3_outer_9_inner_core_feasibility_milp_v2",
         "exact_nested_milp_used": True,
         "joint_outer_and_all_dependent_inner_folds_in_one_model": True,
         "outer_fold_count": 3,
@@ -2016,8 +2126,9 @@ def build_joint_nested_levels(
             "audit, or assignment/ledger mismatch aborts publication"
         ),
         "claim_boundary": (
-            "exact joint core-feasibility only; no lexicographic optimality, "
-            "component-count, representativeness, or attainable-precision claim"
+            "exact joint core-feasibility including full-graph component minima "
+            "only; no lexicographic optimality, representativeness, or "
+            "attainable-precision claim"
         ),
     }
     return outer, receipt
@@ -2721,12 +2832,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if selection_method == "joint_core_milp":
         construction_profile = (
             "exact_joint_core_feasibility_direct_neighborhood_nested_"
-            "construction_v1"
+            "construction_v2"
         )
         relation_to_v0 = (
-            "implements one exact joint binary core-feasibility model for all "
-            "three outer and nine dependent inner folds, but does not implement "
-            "the draft lexicographic objective or its full diagnostic suite"
+            "implements one exact joint binary core-feasibility model with "
+            "full-authority homology-component minima for all three outer and "
+            "nine dependent inner folds, but does not implement the draft "
+            "lexicographic objective or its full diagnostic suite"
         )
         method_limitations = [
             (
@@ -2913,7 +3025,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "The builder cannot attest its own pre-execution bytes; production use requires the externally inventoried private-stage launcher.",
             "Direct-neighborhood exclusion does not separate entities connected only through a long homology path.",
             *method_limitations,
-            "The V0 component-count, representativeness, and attainable-precision gates are not claimed by this artifact.",
+            "The remaining V0 representativeness and attainable-precision gates are not claimed by this artifact.",
             "Unobserved cross-pairs are retrieval decoys, not experimentally verified non-binders.",
         ],
     }

@@ -44,9 +44,9 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator, Mapping, Sequence
 
 
-FORMAT_VERSION = "train_only_nested_direct80_four_view_independent_audit_v4"
+FORMAT_VERSION = "train_only_nested_direct80_four_view_independent_audit_v5"
 ASSIGNMENT_FORMAT_VERSION = (
-    "train_only_nested_direct80_four_view_neighborhood_folds_v4"
+    "train_only_nested_direct80_four_view_neighborhood_folds_v5"
 )
 TRAIN_AUTHORITY_FORMAT_VERSION = "gate0_physical_train_only_allowlist_v1"
 TRAIN_MANIFEST_COLUMNS = ("INSTANCE", "vh_seq", "vl_seq", "ag_seq")
@@ -125,6 +125,8 @@ FOLD_FIELDS = frozenset(
         "fold_index",
         "validation_antibody_ids",
         "validation_antigen_ids",
+        "validation_antibody_component_ids",
+        "validation_antigen_component_ids",
         "closed_direct_neighborhood_antibody_ids",
         "closed_direct_neighborhood_antigen_ids",
         "training_eligible_antibody_ids",
@@ -154,7 +156,7 @@ EXPECTED_BLOSUM62_PAYLOAD_SHA256 = (
     "2c62ca4bb7a4c3ec5fe5faee64276841028a7e6638cf846c801dd9c5e64527e2"
 )
 LOCKED_JOINT_POLICY_SHA256 = (
-    "7940bc19f2b1bc7caf687851399d4219d114933eba5caaf9e07a0d41094805e1"
+    "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd"
 )
 REVIEWED_JOINT_MAXIMUM_BINARY_VARIABLES = 200_000
 REVIEWED_JOINT_MAXIMUM_LINEAR_CONSTRAINTS = 3_000_000
@@ -893,16 +895,17 @@ def verify_scientific_digest(assignment: Mapping[str, Any]) -> str:
 def validate_replay_assignment_envelope(
     assignment: Mapping[str, Any],
 ) -> None:
-    """Close every non-ledger replay container against the v4 schema."""
+    """Close every non-ledger replay container against the v5 schema."""
     expected_static_strings = {
         "construction_profile": (
             "exact_joint_core_feasibility_direct_neighborhood_nested_"
-            "construction_v1"
+            "construction_v2"
         ),
         "relation_to_v0_preregistration_draft": (
-            "implements one exact joint binary core-feasibility model for all "
-            "three outer and nine dependent inner folds, but does not implement "
-            "the draft lexicographic objective or its full diagnostic suite"
+            "implements one exact joint binary core-feasibility model with "
+            "full-authority homology-component minima for all three outer and "
+            "nine dependent inner folds, but does not implement the draft "
+            "lexicographic objective or its full diagnostic suite"
         ),
         "claim_boundary": (
             "foldwise direct exact four-view 80/80 C3/S2-like development; "
@@ -916,7 +919,7 @@ def validate_replay_assignment_envelope(
     }
     for key, expected in expected_static_strings.items():
         if assignment.get(key) != expected:
-            raise ValueError(f"Assignment {key} differs from the v4 replay schema")
+            raise ValueError(f"Assignment {key} differs from the v5 replay schema")
 
     for key in (
         "core_feasibility_constraints_passed",
@@ -963,7 +966,7 @@ def validate_replay_assignment_envelope(
         ),
     }
     if not _exact_json_equal(required_next_gate, expected_next_gate):
-        raise ValueError("Assignment required_next_gate differs from v4 replay")
+        raise ValueError("Assignment required_next_gate differs from v5 replay")
 
     expected_alignment_policy = {
         "algorithm": (
@@ -1001,7 +1004,7 @@ def validate_replay_assignment_envelope(
         ),
         expected_alignment_policy,
     ):
-        raise ValueError("Assignment alignment_policy differs from v4 replay")
+        raise ValueError("Assignment alignment_policy differs from v5 replay")
 
     runtime = _mapping(assignment.get("runtime"), "assignment runtime")
     runtime_fields = {
@@ -1044,7 +1047,7 @@ def validate_replay_assignment_envelope(
         )
         is not True
     ):
-        raise ValueError("Assignment runtime receipt differs from v4 replay")
+        raise ValueError("Assignment runtime receipt differs from v5 replay")
 
     expected_limitations = [
         "This builder is score-free construction code, not a performance result.",
@@ -1075,8 +1078,8 @@ def validate_replay_assignment_envelope(
             "selected-variable membership matches an external digest anchor."
         ),
         (
-            "The V0 component-count, representativeness, and "
-            "attainable-precision gates are not claimed by this artifact."
+            "The remaining V0 representativeness and attainable-precision "
+            "gates are not claimed by this artifact."
         ),
         (
             "Unobserved cross-pairs are retrieval decoys, not experimentally "
@@ -1086,7 +1089,7 @@ def validate_replay_assignment_envelope(
     if _list(assignment.get("limitations"), "assignment limitations") != (
         expected_limitations
     ):
-        raise ValueError("Assignment limitations differ from v4 replay")
+        raise ValueError("Assignment limitations differ from v5 replay")
 
 
 def verify_embedded_reference(
@@ -1210,6 +1213,7 @@ def independently_recomputed_outer_policy(
         "minimum_validation_pairs": max(120, (7 * pair_count + 99) // 100),
         "maximum_validation_pairs": 9 * pair_count // 100,
         "minimum_validation_endpoints_per_axis": 60,
+        "minimum_validation_components_per_axis": 25,
         "minimum_training_pair_fraction": 0.60,
         "minimum_training_endpoint_fraction": 0.60,
         "maximum_quarantine_pair_fraction": 0.33,
@@ -1228,6 +1232,7 @@ def independently_recomputed_inner_policy(
         "minimum_validation_pairs": max(80, (7 * pair_count + 99) // 100),
         "maximum_validation_pairs": 9 * pair_count // 100,
         "minimum_validation_endpoints_per_axis": 40,
+        "minimum_validation_components_per_axis": 20,
         "minimum_training_pair_fraction": 0.55,
         "minimum_training_endpoint_fraction": 0.55,
         "maximum_quarantine_pair_fraction": 0.38,
@@ -1255,6 +1260,7 @@ def _parse_policy(value: Any, label: str) -> dict[str, float | int]:
         "minimum_validation_pairs",
         "maximum_validation_pairs",
         "minimum_validation_endpoints_per_axis",
+        "minimum_validation_components_per_axis",
         "minimum_training_pair_fraction",
         "minimum_training_endpoint_fraction",
         "maximum_quarantine_pair_fraction",
@@ -1275,6 +1281,10 @@ def _parse_policy(value: Any, label: str) -> dict[str, float | int]:
         "minimum_validation_endpoints_per_axis": _integer(
             policy["minimum_validation_endpoints_per_axis"],
             f"{label}.minimum_validation_endpoints_per_axis",
+        ),
+        "minimum_validation_components_per_axis": _integer(
+            policy["minimum_validation_components_per_axis"],
+            f"{label}.minimum_validation_components_per_axis",
         ),
     }
     for key in (
@@ -1328,12 +1338,93 @@ def _expected_quarantine_reasons(
     return reasons
 
 
+def independently_reconstructed_component_ids(
+    graph: Mapping[str, Sequence[str]],
+) -> dict[str, str]:
+    """Map a complete graph to lexical-min component representatives."""
+    universe = set(graph)
+    for entity, neighbors in graph.items():
+        unknown = set(neighbors).difference(universe)
+        if unknown:
+            raise ValueError("Independent component graph has unknown neighbors")
+        for neighbor in neighbors:
+            if entity not in graph[neighbor]:
+                raise ValueError("Independent component graph is not symmetric")
+    remaining = set(universe)
+    result: dict[str, str] = {}
+    for root in sorted(universe):
+        if root not in remaining:
+            continue
+        remaining.remove(root)
+        pending = [root]
+        members: list[str] = []
+        while pending:
+            current = pending.pop()
+            members.append(current)
+            newly_reached = sorted(
+                remaining.intersection(graph[current]),
+                reverse=True,
+            )
+            for neighbor in newly_reached:
+                remaining.remove(neighbor)
+                pending.append(neighbor)
+        representative = min(members)
+        result.update({member: representative for member in members})
+    if set(result) != universe:
+        raise RuntimeError("Independent component reconstruction is incomplete")
+    return result
+
+
+def prevalidate_level_envelope(
+    value: Any,
+    *,
+    pair_count: int,
+    label: str,
+    level_kind: str,
+) -> None:
+    """Reject schema and locked-policy tampering before expensive alignment."""
+    level = _mapping(value, label)
+    _require_exact_schema(level, LEVEL_FIELDS, label)
+    policy = _parse_policy(level.get("policy"), f"{label}.policy")
+    recomputed_policy = _independently_recomputed_policy(level_kind, pair_count)
+    if policy != recomputed_policy:
+        raise ValueError(
+            f"{label}.policy does not match the independently recomputed "
+            f"locked {level_kind} policy for {pair_count} pairs"
+        )
+    folds = _list(level.get("folds"), f"{label}.folds")
+    if len(folds) != 3:
+        raise ValueError(f"{label} must contain exactly three folds")
+    for fold_index, raw_fold in enumerate(folds):
+        fold_label = f"{label}.fold_{fold_index}"
+        fold = _mapping(raw_fold, fold_label)
+        expected_fields = (
+            FOLD_FIELDS | {"inner_level"}
+            if level_kind == "outer"
+            else FOLD_FIELDS
+        )
+        _require_exact_schema(fold, expected_fields, fold_label)
+        if level_kind == "outer":
+            inner = _mapping(fold.get("inner_level"), f"{fold_label}.inner")
+            inner_pair_count = len(
+                _list(fold.get("training_pairs"), f"{fold_label}.training_pairs")
+            )
+            prevalidate_level_envelope(
+                inner,
+                pair_count=inner_pair_count,
+                label=f"{fold_label}.inner",
+                level_kind="inner",
+            )
+
+
 def validate_level(
     value: Any,
     expected_pairs: Mapping[str, IndependentPair],
     label: str,
     *,
     level_kind: str,
+    antibody_component_by_entity: Mapping[str, str],
+    antigen_component_by_entity: Mapping[str, str],
 ) -> tuple[list[Boundary], bool, dict[str, Any]]:
     """Independently validate one outer or inner three-fold level."""
     level = _mapping(value, label)
@@ -1349,6 +1440,10 @@ def validate_level(
         raise ValueError(f"{label} universe pair membership hash differs")
     all_antibodies = {pair.antibody_id for pair in expected_pairs.values()}
     all_antigens = {pair.antigen_id for pair in expected_pairs.values()}
+    if not all_antibodies.issubset(antibody_component_by_entity):
+        raise ValueError(f"{label} antibody universe leaves the full graph")
+    if not all_antigens.issubset(antigen_component_by_entity):
+        raise ValueError(f"{label} antigen universe leaves the full graph")
     expected_source_row_count = sum(
         len(pair.source_instance_ids) for pair in expected_pairs.values()
     )
@@ -1358,6 +1453,20 @@ def validate_level(
         "antigen_count": len(all_antigens),
         "source_row_count": expected_source_row_count,
         "pair_membership_sha256": membership_sha256(expected_pairs),
+        "full_graph_antibody_component_count": len(
+            set(antibody_component_by_entity.values())
+        ),
+        "full_graph_antigen_component_count": len(
+            set(antigen_component_by_entity.values())
+        ),
+        "full_graph_antibody_component_membership_sha256": membership_sha256(
+            f"{entity}\0{representative}"
+            for entity, representative in antibody_component_by_entity.items()
+        ),
+        "full_graph_antigen_component_membership_sha256": membership_sha256(
+            f"{entity}\0{representative}"
+            for entity, representative in antigen_component_by_entity.items()
+        ),
     }
     if not _exact_json_equal(universe, expected_universe_counts):
         raise ValueError(f"{label} universe receipt differs independently")
@@ -1402,6 +1511,18 @@ def validate_level(
             _canonical_sha256_list(
                 fold.get("validation_antigen_ids"),
                 f"{fold_label}.validation_antigen_ids",
+            )
+        )
+        claimed_validation_antibody_components = set(
+            _canonical_sha256_list(
+                fold.get("validation_antibody_component_ids"),
+                f"{fold_label}.validation_antibody_component_ids",
+            )
+        )
+        claimed_validation_antigen_components = set(
+            _canonical_sha256_list(
+                fold.get("validation_antigen_component_ids"),
+                f"{fold_label}.validation_antigen_component_ids",
             )
         )
         closed_antibodies = set(
@@ -1488,6 +1609,28 @@ def validate_level(
         effective_val_g = {
             expected_pairs[p_id].antigen_id for p_id in role_ids["validation"]
         }
+        expected_validation_antibody_components = {
+            antibody_component_by_entity[entity] for entity in effective_val_a
+        }
+        expected_validation_antigen_components = {
+            antigen_component_by_entity[entity] for entity in effective_val_g
+        }
+        if (
+            claimed_validation_antibody_components
+            != expected_validation_antibody_components
+        ):
+            raise ValueError(
+                f"{fold_label} antibody component inventory differs from the "
+                "independently reconstructed full graph"
+            )
+        if (
+            claimed_validation_antigen_components
+            != expected_validation_antigen_components
+        ):
+            raise ValueError(
+                f"{fold_label} antigen component inventory differs from the "
+                "independently reconstructed full graph"
+            )
         if validation_antibodies != effective_val_a:
             raise ValueError(f"{fold_label} has dangling held-out antibodies")
         if validation_antigens != effective_val_g:
@@ -1570,6 +1713,12 @@ def validate_level(
             "training_antigen_count": len(model_g),
             "validation_antibody_count": len(effective_val_a),
             "validation_antigen_count": len(effective_val_g),
+            "validation_antibody_component_count": len(
+                expected_validation_antibody_components
+            ),
+            "validation_antigen_component_count": len(
+                expected_validation_antigen_components
+            ),
             "training_source_row_count": sum(
                 len(expected_pairs[p_id].source_instance_ids)
                 for p_id in role_ids["training"]
@@ -1592,6 +1741,12 @@ def validate_level(
             "quarantined_pair_sha256": membership_sha256(role_ids["quarantine"]),
             "model_antibody_allowlist_sha256": membership_sha256(model_a),
             "model_antigen_allowlist_sha256": membership_sha256(model_g),
+            "validation_antibody_component_sha256": membership_sha256(
+                expected_validation_antibody_components
+            ),
+            "validation_antigen_component_sha256": membership_sha256(
+                expected_validation_antigen_components
+            ),
         }
         claimed_hashes = _mapping(
             fold.get("membership_hashes"), f"{fold_label}.membership_hashes"
@@ -1609,6 +1764,14 @@ def validate_level(
             >= int(policy["minimum_validation_endpoints_per_axis"]),
             "validation_antigen_count_passed": len(effective_val_g)
             >= int(policy["minimum_validation_endpoints_per_axis"]),
+            "validation_antibody_component_count_passed": len(
+                expected_validation_antibody_components
+            )
+            >= int(policy["minimum_validation_components_per_axis"]),
+            "validation_antigen_component_count_passed": len(
+                expected_validation_antigen_components
+            )
+            >= int(policy["minimum_validation_components_per_axis"]),
             "training_pair_retention_passed": training_count
             >= _ceil_fraction_product(
                 float(policy["minimum_training_pair_fraction"]),
@@ -1673,6 +1836,12 @@ def validate_level(
             "training_antigen_count": len(model_g),
             "validation_antibody_count": len(effective_val_a),
             "validation_antigen_count": len(effective_val_g),
+            "validation_antibody_component_count": len(
+                expected_validation_antibody_components
+            ),
+            "validation_antigen_component_count": len(
+                expected_validation_antigen_components
+            ),
             "source_row_count": source_count,
             "all_fold_hard_gates_passed": recomputed_all,
         }
@@ -1694,6 +1863,12 @@ def validate_level(
                     inner_expected,
                     f"{fold_label}.inner",
                     level_kind="inner",
+                    antibody_component_by_entity=(
+                        antibody_component_by_entity
+                    ),
+                    antigen_component_by_entity=(
+                        antigen_component_by_entity
+                    ),
                 )
                 boundaries.extend(inner_boundaries)
                 all_nested_children_passed = (
@@ -2520,6 +2695,8 @@ def _fold_selected_binary_keys(
     id_roles = {
         "holdout_a": "validation_antibody_ids",
         "holdout_g": "validation_antigen_ids",
+        "validation_component_a": "validation_antibody_component_ids",
+        "validation_component_g": "validation_antigen_component_ids",
         "closed_a": "closed_direct_neighborhood_antibody_ids",
         "closed_g": "closed_direct_neighborhood_antigen_ids",
         "train_present_a": "model_antibody_allowlist",
@@ -2598,7 +2775,7 @@ def _validate_level_selection_binding(
     if set(selection) != expected_schema:
         raise ValueError(f"{label}.selection schema differs")
     if selection.get("algorithm") != (
-        "joint_3_outer_9_inner_core_feasibility_milp_v1"
+        "joint_3_outer_9_inner_core_feasibility_milp_v2"
     ):
         raise ValueError(f"{label}.selection algorithm differs")
     expected_booleans = {
@@ -2719,6 +2896,7 @@ def _parse_exact_level_policy(
     expected_schema = {
         "minimum_validation_pairs",
         "minimum_validation_endpoints_per_axis",
+        "minimum_validation_components_per_axis",
         "validation_pair_lower_fraction",
         "validation_pair_upper_fraction",
         "minimum_training_pair_fraction",
@@ -2737,6 +2915,10 @@ def _parse_exact_level_policy(
         minimum_validation_endpoints_per_axis=_integer(
             raw["minimum_validation_endpoints_per_axis"],
             f"{label}.minimum_validation_endpoints_per_axis",
+        ),
+        minimum_validation_components_per_axis=_integer(
+            raw["minimum_validation_components_per_axis"],
+            f"{label}.minimum_validation_components_per_axis",
         ),
         validation_pair_lower_fraction=_parse_exact_ratio(
             joint_module,
@@ -3073,7 +3255,7 @@ def validate_exact_joint_selector(
     if set(exact_policy) != expected_policy_schema:
         raise ValueError("Selector exact joint-policy schema differs")
     if (
-        exact_policy["schema_version"] != "joint_nested_split_exact_policy_v1"
+        exact_policy["schema_version"] != "joint_nested_split_exact_policy_v2"
         or _integer(
             exact_policy["outer_fold_count"],
             "exact policy outer_fold_count",
@@ -3114,7 +3296,7 @@ def validate_exact_joint_selector(
         if _integer(selector.get(key), f"selector.{key}") != expected:
             raise ValueError(f"Selector {key} differs from the exact joint contract")
     exact_string_fields = {
-        "implementation": "joint_3_outer_9_inner_core_feasibility_milp_v1",
+        "implementation": "joint_3_outer_9_inner_core_feasibility_milp_v2",
         "objective": "constant_zero_feasibility",
         "solver": "scipy.optimize.milp_HiGHS",
         "solver_termination": "optimal",
@@ -3123,8 +3305,9 @@ def validate_exact_joint_selector(
             "audit, or assignment/ledger mismatch aborts publication"
         ),
         "claim_boundary": (
-            "exact joint core-feasibility only; no lexicographic optimality, "
-            "component-count, representativeness, or attainable-precision claim"
+            "exact joint core-feasibility including full-graph component minima "
+            "only; no lexicographic optimality, representativeness, or "
+            "attainable-precision claim"
         ),
     }
     for key, expected in exact_string_fields.items():
@@ -3370,7 +3553,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if assignment.get("format_version") != ASSIGNMENT_FORMAT_VERSION:
         raise ValueError(
             "Unsupported nested assignment format_version; provisional and "
-            "historical v3 artifacts are non-authoritative"
+            "historical v4 and earlier artifacts are non-authoritative"
         )
     if (
         assignment.get("artifact_role")
@@ -3476,8 +3659,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     selection_method = construction.get("selection_method")
     if selection_method != "joint_core_milp":
         raise ValueError(
-            "Only joint_core_milp v4 artifacts are eligible; greedy and "
-            "historical v3 artifacts are non-authoritative"
+            "Only joint_core_milp v5 artifacts are eligible; greedy and "
+            "historical v4 and earlier artifacts are non-authoritative"
         )
     if construction.get("joint_assignment_mode") != "externally_pinned_replay":
         raise ValueError(
@@ -3612,16 +3795,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         ),
         "assignment outer level",
     )
-    boundaries, structural_passed, structural_summary = validate_level(
+    prevalidate_level_envelope(
         outer,
-        pairs,
-        "outer",
+        pair_count=len(pairs),
+        label="outer",
         level_kind="outer",
     )
-    if len(boundaries) != 12:
-        raise ValueError(
-            "Complete nested construction must expose 3 outer and 9 inner boundaries"
-        )
     edges_by_view, independent_graph_receipts = (
         independently_reconstruct_exact_graphs(
             assignment,
@@ -3631,6 +3810,36 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             chunk_size=args.chunk_size,
         )
     )
+    independent_antibody_graph = _adjacency_from_edges(
+        antibodies,
+        set().union(
+            edges_by_view["vh"],
+            edges_by_view["vl"],
+            edges_by_view["concatenated_antibody"],
+        ),
+    )
+    independent_antigen_graph = _adjacency_from_edges(
+        antigens,
+        edges_by_view["antigen"],
+    )
+    antibody_component_by_entity = independently_reconstructed_component_ids(
+        independent_antibody_graph
+    )
+    antigen_component_by_entity = independently_reconstructed_component_ids(
+        independent_antigen_graph
+    )
+    boundaries, structural_passed, structural_summary = validate_level(
+        outer,
+        pairs,
+        "outer",
+        level_kind="outer",
+        antibody_component_by_entity=antibody_component_by_entity,
+        antigen_component_by_entity=antigen_component_by_entity,
+    )
+    if len(boundaries) != 12:
+        raise ValueError(
+            "Complete nested construction must expose 3 outer and 9 inner boundaries"
+        )
     model_binding = validate_exact_joint_model_binding(
         assignment,
         pairs=pairs,
@@ -3932,7 +4141,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             ),
             "Direct-neighborhood isolation is not transitive lineage independence.",
             "The exact selector proves core feasibility, not retention or lexicographic optimality.",
-            "The V0 component-count, representativeness, and attainable-precision gates remain outside this receipt.",
+            "The remaining V0 representativeness and attainable-precision gates remain outside this receipt.",
             "No validation, test, or external performance result is produced by this audit.",
             "Unobserved cross-pairs remain retrieval decoys rather than measured non-binders.",
         ],

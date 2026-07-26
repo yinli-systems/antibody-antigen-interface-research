@@ -108,6 +108,7 @@ def _toy_policy(_: int) -> builder.LevelPolicy:
         minimum_validation_pairs=1,
         maximum_validation_pairs=2,
         minimum_validation_endpoints_per_axis=1,
+        minimum_validation_components_per_axis=1,
         minimum_training_pair_fraction=0.50,
         minimum_training_endpoint_fraction=0.50,
         maximum_quarantine_pair_fraction=0.50,
@@ -124,6 +125,9 @@ def _toy_policy_payload(pair_count: int) -> dict[str, float | int]:
         "maximum_validation_pairs": policy.maximum_validation_pairs,
         "minimum_validation_endpoints_per_axis": (
             policy.minimum_validation_endpoints_per_axis
+        ),
+        "minimum_validation_components_per_axis": (
+            policy.minimum_validation_components_per_axis
         ),
         "minimum_training_pair_fraction": policy.minimum_training_pair_fraction,
         "minimum_training_endpoint_fraction": (
@@ -150,6 +154,7 @@ def _toy_joint_policy(
     return builder.nested_joint_milp.JointLevelPolicy(
         minimum_validation_pairs=1,
         minimum_validation_endpoints_per_axis=1,
+        minimum_validation_components_per_axis=1,
         validation_pair_lower_fraction=ratio(1, 1000),
         validation_pair_upper_fraction=ratio(
             validation_upper_numerator,
@@ -452,6 +457,126 @@ def _write_rehashed_assignment(path: Path, assignment: dict[str, object]) -> Non
     path.write_bytes(auditor.canonical_json_bytes(assignment))
 
 
+def _reanchor_selected_membership(assignment: dict[str, object]) -> str:
+    """Reanchor every selected-vector digest after an adversarial ledger edit."""
+    construction = assignment["construction"]
+    assert isinstance(construction, dict)
+    outer = construction["outer_level"]
+    assert isinstance(outer, dict)
+
+    def reanchor_level(
+        level: dict[str, object],
+        prefix: tuple[str, ...],
+        label: str,
+    ) -> set[tuple[str, ...]]:
+        selected: set[tuple[str, ...]] = set()
+        folds = level["folds"]
+        assert isinstance(folds, list)
+        for fold_index, fold in enumerate(folds):
+            assert isinstance(fold, dict)
+            selected.update(
+                auditor._fold_selected_binary_keys(
+                    fold,
+                    (*prefix, str(fold_index)),
+                    f"{label}.fold_{fold_index}",
+                )
+            )
+        selection = level["selection"]
+        assert isinstance(selection, dict)
+        selection["selected_binary_membership_sha256"] = (
+            auditor.membership_sha256("\0".join(key) for key in selected)
+        )
+        return selected
+
+    selected = reanchor_level(outer, ("outer",), "outer")
+    outer_folds = outer["folds"]
+    assert isinstance(outer_folds, list)
+    for outer_index, fold in enumerate(outer_folds):
+        assert isinstance(fold, dict)
+        inner = fold["inner_level"]
+        assert isinstance(inner, dict)
+        selected.update(
+            reanchor_level(
+                inner,
+                ("inner", str(outer_index)),
+                f"outer.fold_{outer_index}.inner",
+            )
+        )
+    digest = auditor.membership_sha256(
+        "\0".join(key) for key in selected
+    )
+    selector = construction["selector"]
+    assert isinstance(selector, dict)
+    selector["selected_binary_membership_sha256"] = digest
+    selector["externally_pinned_selected_binary_membership_sha256"] = digest
+    return digest
+
+
+def _assert_reanchored_component_tamper_rejected(
+    root: Path,
+    label: str,
+    build_args: Namespace,
+    tampered: dict[str, object],
+) -> None:
+    """Require independent graph reconstruction to reject a reanchored lie."""
+    tampered_digest = _reanchor_selected_membership(tampered)
+    tampered_path = root / f"{label}.json"
+    _write_rehashed_assignment(tampered_path, tampered)
+    audit_args = _audit_args(
+        build_args,
+        tampered,
+        tampered_path,
+        root / f"{label}-audit.json",
+    )
+    audit_args.expected_joint_selected_membership_sha256 = tampered_digest
+    with (
+        mock.patch.object(
+            auditor,
+            "build_locked_aligner",
+            return_value=FakeAligner(),
+        ),
+        mock.patch.object(
+            auditor,
+            "independently_recomputed_outer_policy",
+            side_effect=lambda count: _toy_joint_policy_payload(
+                count,
+                upper_numerator=1,
+                upper_denominator=9,
+            ),
+        ),
+        mock.patch.object(
+            auditor,
+            "independently_recomputed_inner_policy",
+            side_effect=lambda count: _toy_joint_policy_payload(
+                count,
+                upper_numerator=1,
+                upper_denominator=8,
+            ),
+        ),
+        mock.patch.object(
+            auditor,
+            "LOCKED_JOINT_POLICY_SHA256",
+            build_args.expected_joint_policy_sha256,
+        ),
+        mock.patch.object(
+            nested_joint_milp,
+            "LOCKED_JOINT_POLICY_SHA256",
+            build_args.expected_joint_policy_sha256,
+        ),
+        mock.patch.object(
+            auditor,
+            "load_verified_joint_module",
+            return_value=nested_joint_milp,
+        ),
+        pytest.raises(
+            ValueError,
+            match="component inventory differs from the independently",
+        ),
+    ):
+        auditor.run(audit_args)
+    assert not audit_args.output.exists()
+
+
 def test_firewall_accepts_only_physical_train_projection() -> None:
     """Only an exact four-column physical train-only projection is accepted."""
     with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
@@ -701,6 +826,256 @@ def test_closed_neighborhood_is_direct_not_transitive() -> None:
     assert "C" not in observed
 
 
+def test_inner_component_gate_keeps_full_graph_bridge_identity() -> None:
+    """Removing a bridge from a level must not create new countable components."""
+    antibody_graph = {
+        "a0": {"a1"},
+        "a1": {"a0", "a2"},
+        "a2": {"a1"},
+    }
+    antigen_graph = {
+        "g0": {"g1"},
+        "g1": {"g0", "g2"},
+        "g2": {"g1"},
+    }
+    antibody_components = builder.canonical_component_ids(antibody_graph)
+    antigen_components = builder.canonical_component_ids(antigen_graph)
+    assert antibody_components == {"a0": "a0", "a1": "a0", "a2": "a0"}
+    assert antigen_components == {"g0": "g0", "g1": "g0", "g2": "g0"}
+
+    pairs = (
+        builder.PairGroup("p0", "a0", "g0", ("s0",)),
+        builder.PairGroup("p2", "a2", "g2", ("s2",)),
+    )
+    policy = builder.LevelPolicy(
+        minimum_validation_pairs=2,
+        maximum_validation_pairs=2,
+        minimum_validation_endpoints_per_axis=2,
+        minimum_validation_components_per_axis=2,
+        minimum_training_pair_fraction=0.0,
+        minimum_training_endpoint_fraction=0.0,
+        maximum_quarantine_pair_fraction=1.0,
+        maximum_validation_pair_relative_range=1.0,
+        maximum_other_count_relative_range=1.0,
+    )
+    fold, _ = builder._derive_fold(
+        pairs,
+        {"a0", "a2"},
+        {"g0", "g2"},
+        antibody_graph,
+        antigen_graph,
+        antibody_components,
+        antigen_components,
+        {"a0", "a2"},
+        {"g0", "g2"},
+        policy,
+        fold_index=0,
+    )
+    assert fold["validation_antibody_component_ids"] == ["a0"]
+    assert fold["validation_antigen_component_ids"] == ["g0"]
+    assert not fold["hard_gates"][
+        "validation_antibody_component_count_passed"
+    ]
+    assert not fold["hard_gates"][
+        "validation_antigen_component_count_passed"
+    ]
+
+
+def test_builder_parity_check_binds_both_component_variable_roles() -> None:
+    """The builder cannot claim parity after a component-role substitution."""
+    pairs = (
+        builder.PairGroup("p0", "a0", "g0", ("s0",)),
+        builder.PairGroup("p1", "a1", "g1", ("s1",)),
+    )
+    policy = builder.LevelPolicy(
+        minimum_validation_pairs=1,
+        maximum_validation_pairs=1,
+        minimum_validation_endpoints_per_axis=1,
+        minimum_validation_components_per_axis=1,
+        minimum_training_pair_fraction=0.0,
+        minimum_training_endpoint_fraction=0.0,
+        maximum_quarantine_pair_fraction=1.0,
+        maximum_validation_pair_relative_range=1.0,
+        maximum_other_count_relative_range=1.0,
+    )
+    fold, _ = builder._derive_fold(
+        pairs,
+        {"a0", "a1"},
+        {"g0", "g1"},
+        {"a0": set(), "a1": set()},
+        {"g0": set(), "g1": set()},
+        {"a0": "a0", "a1": "a1"},
+        {"g0": "g0", "g1": "g1"},
+        {"a0"},
+        {"g0"},
+        policy,
+        fold_index=0,
+    )
+    prefix = ("outer", "0")
+    role_members = {
+        "holdout_a": fold["validation_antibody_ids"],
+        "holdout_g": fold["validation_antigen_ids"],
+        "closed_a": fold["closed_direct_neighborhood_antibody_ids"],
+        "closed_g": fold["closed_direct_neighborhood_antigen_ids"],
+        "train_present_a": fold["model_antibody_allowlist"],
+        "train_present_g": fold["model_antigen_allowlist"],
+        "validation_component_a": fold[
+            "validation_antibody_component_ids"
+        ],
+        "validation_component_g": fold[
+            "validation_antigen_component_ids"
+        ],
+        "validation_pair": [
+            pair["pair_id"] for pair in fold["validation_pairs"]
+        ],
+        "training_pair": [pair["pair_id"] for pair in fold["training_pairs"]],
+        "quarantine_pair": [
+            pair["pair_id"] for pair in fold["quarantined_pairs"]
+        ],
+    }
+    assignment = {
+        (*prefix, role, member): 1
+        for role, members in role_members.items()
+        for member in members
+    }
+    builder._assert_fold_matches_joint_assignment(fold, assignment, prefix)
+
+    for role, observed, replacement in (
+        ("validation_component_a", "a0", "a1"),
+        ("validation_component_g", "g0", "g1"),
+    ):
+        tampered = dict(assignment)
+        del tampered[(*prefix, role, observed)]
+        tampered[(*prefix, role, replacement)] = 1
+        with pytest.raises(RuntimeError, match=role):
+            builder._assert_fold_matches_joint_assignment(
+                fold,
+                tampered,
+                prefix,
+            )
+
+
+def test_inner_auditor_rejects_reanchored_induced_bridge_component() -> None:
+    """An omitted bridge cannot split a full-graph component during audit."""
+    with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
+        root = Path(directory)
+        build_args, assignment = _build_pinned_joint_toy(
+            root,
+            "bridge-component-audit",
+        )
+        train_ids, _ = auditor.read_train_authority_allowlist(
+            build_args.train_authority_allowlist.read_bytes()
+        )
+        rows, _ = auditor.reconstruct_train_rows(
+            build_args.train_canonical_manifest.read_bytes(),
+            train_ids,
+        )
+        _, _, all_pairs, _ = auditor.reconstruct_entities(rows)
+        outer_fold = assignment["construction"]["outer_level"]["folds"][0]
+        inner = outer_fold["inner_level"]
+        inner_pair_ids = [
+            pair["pair_id"] for pair in outer_fold["training_pairs"]
+        ]
+        inner_pairs = {
+            pair_id: all_pairs[pair_id] for pair_id in inner_pair_ids
+        }
+        all_antibody_ids = sorted(
+            {pair.antibody_id for pair in all_pairs.values()}
+        )
+        all_antigen_ids = sorted(
+            {pair.antigen_id for pair in all_pairs.values()}
+        )
+        removed_bridge = outer_fold["validation_antibody_ids"][0]
+        selected_by_fold = [
+            fold["validation_antibody_ids"][0] for fold in inner["folds"]
+        ]
+        selected_endpoint = next(
+            entity
+            for entity in selected_by_fold
+            if entity != all_antibody_ids[0]
+        )
+        other_endpoint = next(
+            entity
+            for entity in all_antibody_ids
+            if entity not in {removed_bridge, selected_endpoint}
+        )
+        antibody_graph = {entity: set() for entity in all_antibody_ids}
+        antibody_graph[other_endpoint].add(removed_bridge)
+        antibody_graph[removed_bridge].update(
+            {other_endpoint, selected_endpoint}
+        )
+        antibody_graph[selected_endpoint].add(removed_bridge)
+        antibody_components = (
+            auditor.independently_reconstructed_component_ids(antibody_graph)
+        )
+        assert antibody_components[selected_endpoint] != selected_endpoint
+        antigen_components = auditor.independently_reconstructed_component_ids(
+            {entity: set() for entity in all_antigen_ids}
+        )
+
+        universe = inner["universe"]
+        universe["full_graph_antibody_component_count"] = len(
+            set(antibody_components.values())
+        )
+        universe["full_graph_antibody_component_membership_sha256"] = (
+            auditor.membership_sha256(
+                f"{entity}\0{representative}"
+                for entity, representative in antibody_components.items()
+            )
+        )
+        target_fold = None
+        for fold in inner["folds"]:
+            effective = {
+                inner_pairs[pair["pair_id"]].antibody_id
+                for pair in fold["validation_pairs"]
+            }
+            components = sorted(
+                {antibody_components[entity] for entity in effective}
+            )
+            fold["validation_antibody_component_ids"] = components
+            fold["counts"]["validation_antibody_component_count"] = len(
+                components
+            )
+            fold["membership_hashes"][
+                "validation_antibody_component_sha256"
+            ] = auditor.membership_sha256(components)
+            fold["hard_gates"][
+                "validation_antibody_component_count_passed"
+            ] = bool(components)
+            if selected_endpoint in effective:
+                target_fold = fold
+        assert target_fold is not None
+        target_fold["validation_antibody_component_ids"] = [selected_endpoint]
+        target_fold["membership_hashes"][
+            "validation_antibody_component_sha256"
+        ] = auditor.membership_sha256([selected_endpoint])
+        _reanchor_selected_membership(assignment)
+
+        with (
+            mock.patch.object(
+                auditor,
+                "independently_recomputed_inner_policy",
+                side_effect=lambda count: _toy_joint_policy_payload(
+                    count,
+                    upper_numerator=1,
+                    upper_denominator=8,
+                ),
+            ),
+            pytest.raises(
+                ValueError,
+                match="component inventory differs from the independently",
+            ),
+        ):
+            auditor.validate_level(
+                inner,
+                inner_pairs,
+                "outer.fold_0.inner",
+                level_kind="inner",
+                antibody_component_by_entity=antibody_components,
+                antigen_component_by_entity=antigen_components,
+            )
+
+
 def test_symmetric_builder_edge_is_fail_closed_under_directional_traceback() -> None:
     """Either qualifying alignment orientation must create one undirected edge."""
     aligner = DirectionSensitiveAligner()
@@ -809,6 +1184,8 @@ def test_quarantine_ledger_records_every_incompatible_pair_and_source_row() -> N
         {"g0", "g1"},
         {"a0": set(), "a1": set()},
         {"g0": set(), "g1": set()},
+        {"a0": "a0", "a1": "a1"},
+        {"g0": "g0", "g1": "g1"},
         {"a0"},
         {"g0"},
         policy,
@@ -841,6 +1218,7 @@ def test_infeasible_validation_interval_is_rejected_before_selection() -> None:
         minimum_validation_pairs=2,
         maximum_validation_pairs=1,
         minimum_validation_endpoints_per_axis=1,
+        minimum_validation_components_per_axis=1,
         minimum_training_pair_fraction=0.0,
         minimum_training_endpoint_fraction=0.0,
         maximum_quarantine_pair_fraction=1.0,
@@ -888,6 +1266,7 @@ def test_independent_locked_policy_recomputation_preserves_declared_formulas() -
         "minimum_validation_pairs": 129,
         "maximum_validation_pairs": 164,
         "minimum_validation_endpoints_per_axis": 60,
+        "minimum_validation_components_per_axis": 25,
         "minimum_training_pair_fraction": 0.60,
         "minimum_training_endpoint_fraction": 0.60,
         "maximum_quarantine_pair_fraction": 0.33,
@@ -917,6 +1296,7 @@ def test_balance_gates_do_not_override_failed_absolute_fold_gates() -> None:
         minimum_validation_pairs=1,
         maximum_validation_pairs=1,
         minimum_validation_endpoints_per_axis=1,
+        minimum_validation_components_per_axis=1,
         minimum_training_pair_fraction=1.0,
         minimum_training_endpoint_fraction=0.0,
         maximum_quarantine_pair_fraction=1.0,
@@ -1081,6 +1461,14 @@ def test_joint_core_milp_materializes_exact_three_plus_nine_ledgers() -> None:
         assert len(outer["folds"]) == 3
         outer_validation: set[str] = set()
         for outer_fold in outer["folds"]:
+            assert len(outer_fold["validation_antibody_component_ids"]) == 1
+            assert len(outer_fold["validation_antigen_component_ids"]) == 1
+            assert outer_fold["counts"][
+                "validation_antibody_component_count"
+            ] == 1
+            assert outer_fold["counts"][
+                "validation_antigen_component_count"
+            ] == 1
             outer_validation.update(
                 pair["pair_id"] for pair in outer_fold["validation_pairs"]
             )
@@ -1091,6 +1479,8 @@ def test_joint_core_milp_materializes_exact_three_plus_nine_ledgers() -> None:
             assert len(inner["folds"]) == 3
             inner_validation: set[str] = set()
             for inner_fold in inner["folds"]:
+                assert len(inner_fold["validation_antibody_component_ids"]) == 1
+                assert len(inner_fold["validation_antigen_component_ids"]) == 1
                 validation = {
                     pair["pair_id"]
                     for pair in inner_fold["validation_pairs"]
@@ -1524,6 +1914,66 @@ def test_joint_auditor_recomputes_matrix_and_selected_membership_digests() -> No
             assert not audit_args.output.exists()
 
 
+def test_auditor_rejects_reanchored_full_graph_component_substitution() -> None:
+    """A new external vector anchor cannot legitimize an induced-component lie."""
+    with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
+        root = Path(directory)
+        build_args, assignment = _build_pinned_joint_toy(root, "component-tamper")
+        tampered = json.loads(json.dumps(assignment))
+        outer = tampered["construction"]["outer_level"]
+        folds = outer["folds"]
+        replacement = folds[1]["validation_antibody_component_ids"][0]
+        assert replacement != folds[0]["validation_antibody_component_ids"][0]
+        folds[0]["validation_antibody_component_ids"] = [replacement]
+        folds[0]["membership_hashes"][
+            "validation_antibody_component_sha256"
+        ] = auditor.membership_sha256([replacement])
+
+        _assert_reanchored_component_tamper_rejected(
+            root,
+            "component-tampered",
+            build_args,
+            tampered,
+        )
+
+
+def test_auditor_rejects_reanchored_unknown_and_axis_swapped_components() -> None:
+    """External anchors cannot authorize unknown or cross-axis component IDs."""
+    with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
+        root = Path(directory)
+        build_args, assignment = _build_pinned_joint_toy(
+            root,
+            "component-domain-tamper",
+        )
+        source_fold = assignment["construction"]["outer_level"]["folds"][0]
+        antibody_components = {
+            component
+            for fold in assignment["construction"]["outer_level"]["folds"]
+            for component in fold["validation_antibody_component_ids"]
+        }
+        unknown = "f" * 64
+        assert unknown not in antibody_components
+        axis_swapped = source_fold["validation_antigen_component_ids"][0]
+        assert axis_swapped not in antibody_components
+
+        for label, replacement in (
+            ("unknown-component", unknown),
+            ("axis-swapped-component", axis_swapped),
+        ):
+            tampered = json.loads(json.dumps(assignment))
+            fold = tampered["construction"]["outer_level"]["folds"][0]
+            fold["validation_antibody_component_ids"] = [replacement]
+            fold["membership_hashes"][
+                "validation_antibody_component_sha256"
+            ] = auditor.membership_sha256([replacement])
+            _assert_reanchored_component_tamper_rejected(
+                root,
+                label,
+                build_args,
+                tampered,
+            )
+
+
 def test_auditor_rejects_unknown_assignment_container_fields() -> None:
     """Unknown fields cannot smuggle prohibited data into an audited artifact."""
     with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
@@ -1659,6 +2109,12 @@ def test_auditor_rejects_noncanonical_duplicate_and_reordered_ledgers() -> None:
             train_ids,
         )
         _, _, pairs, _ = auditor.reconstruct_entities(rows)
+        antibody_components = {
+            pair.antibody_id: pair.antibody_id for pair in pairs.values()
+        }
+        antigen_components = {
+            pair.antigen_id: pair.antigen_id for pair in pairs.values()
+        }
 
         attacks: list[tuple[dict[str, object], str]] = []
         duplicate = json.loads(json.dumps(assignment["construction"]["outer_level"]))
@@ -1699,6 +2155,8 @@ def test_auditor_rejects_noncanonical_duplicate_and_reordered_ledgers() -> None:
                     pairs,
                     "outer",
                     level_kind="outer",
+                    antibody_component_by_entity=antibody_components,
+                    antigen_component_by_entity=antigen_components,
                 )
 
 
@@ -2609,21 +3067,25 @@ def test_auditor_rejects_rehashed_inner_policy_tampering() -> None:
         assert not audit_args.output.exists()
 
 
-def test_v4_auditor_rejects_legacy_v3_assignment_format() -> None:
-    """The hardened auditor must reject the pre-firewall v3 format."""
+@pytest.mark.parametrize("legacy_generation", ("v3", "v4"))
+def test_v5_auditor_rejects_legacy_assignment_formats(
+    legacy_generation: str,
+) -> None:
+    """The v5 auditor must reject both historical assignment generations."""
     with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
         root = Path(directory)
         build_args = _fixture(root)
         assignment = _build_toy(build_args)
         legacy = json.loads(json.dumps(assignment))
         legacy["format_version"] = (
-            "train_only_nested_direct80_four_view_neighborhood_folds_v3"
+            "train_only_nested_direct80_four_view_neighborhood_folds_"
+            f"{legacy_generation}"
         )
         legacy.pop("scientific_payload_sha256")
         legacy["scientific_payload_sha256"] = auditor.canonical_payload_sha256(
             legacy
         )
-        legacy_path = root / "legacy-v3.json"
+        legacy_path = root / f"legacy-{legacy_generation}.json"
         legacy_path.write_bytes(auditor.canonical_json_bytes(legacy))
         audit_output = root / "legacy-audit.json"
         audit_args = _audit_args(
@@ -2637,7 +3099,9 @@ def test_v4_auditor_rejects_legacy_v3_assignment_format() -> None:
         except ValueError as error:
             assert "Unsupported nested assignment format_version" in str(error)
         else:
-            raise AssertionError("The legacy v3 assignment was accepted")
+            raise AssertionError(
+                f"The legacy {legacy_generation} assignment was accepted"
+            )
         assert not audit_output.exists()
 
 
