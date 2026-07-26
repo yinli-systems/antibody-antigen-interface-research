@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 from interaction_first.v6_b_production import (
@@ -35,9 +36,17 @@ def test_registration_binds_every_local_source_byte() -> None:
         "9aeeb76c602ebb428cc4348b17b9c2c59a53048d"
     )
     for reference in source["files"].values():
-        path = ROOT / reference["path"]
-        assert path.is_file() and not path.is_symlink()
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == reference["sha256"]
+        result = subprocess.run(
+            [
+                "git",
+                "show",
+                f"{source['implementation_commit']}:{reference['path']}",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        )
+        assert hashlib.sha256(result.stdout).hexdigest() == reference["sha256"]
 
 
 def test_registration_reproduces_parent_protocol_hashes_and_frozen_limits() -> None:

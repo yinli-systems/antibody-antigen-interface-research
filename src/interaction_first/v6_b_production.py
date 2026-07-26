@@ -30,7 +30,11 @@ from . import (
 )
 
 
-REGISTRATION_FORMAT = "v6_b_production_feasibility_registration_v1"
+REGISTRATION_FORMAT = "v6_b_production_feasibility_registration_v2"
+SUPPORTED_REGISTRATION_FORMATS = {
+    "v6_b_production_feasibility_registration_v1",
+    REGISTRATION_FORMAT,
+}
 ATTEMPT_FORMAT = "v6_b_production_feasibility_attempt_v1"
 JOURNAL_FORMAT = "v6_b_production_hash_chain_event_v1"
 FINAL_FORMAT = "v6_b_production_feasibility_final_receipt_v1"
@@ -309,7 +313,11 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
     }
     if set(payload) != expected_keys:
         raise V6BProductionError("production registration schema differs")
-    if payload.get("format_version") != REGISTRATION_FORMAT:
+    registration_format = payload.get("format_version")
+    if (
+        not isinstance(registration_format, str)
+        or registration_format not in SUPPORTED_REGISTRATION_FORMATS
+    ):
         raise V6BProductionError("production registration format differs")
     parent = payload.get("parent_evidence")
     if not isinstance(parent, Mapping) or set(parent) != {
@@ -420,7 +428,7 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
         "registered CP-SAT runtime receipt",
     )
     slurm = payload.get("slurm")
-    if not isinstance(slurm, Mapping) or set(slurm) != {
+    common_slurm_fields = {
         "partition",
         "nodes",
         "tasks",
@@ -429,14 +437,31 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
         "wall_time",
         "gpus_requested",
         "solver_workers",
-    }:
+    }
+    expected_slurm_fields = (
+        common_slurm_fields
+        if registration_format == "v6_b_production_feasibility_registration_v1"
+        else common_slurm_fields
+        | {"accelerator_visible_to_solver", "allocated_gpu_purpose"}
+    )
+    if not isinstance(slurm, Mapping) or set(slurm) != expected_slurm_fields:
         raise V6BProductionError("registration Slurm schema differs")
     if slurm.get("nodes") != 1 or slurm.get("tasks") != 1:
         raise V6BProductionError("production registration must use one task")
     if slurm.get("solver_workers") != 1:
         raise V6BProductionError("production registration must use one solver worker")
-    if slurm.get("gpus_requested") != 0:
-        raise V6BProductionError("score-free production solve must request no GPU")
+    if registration_format == "v6_b_production_feasibility_registration_v1":
+        if slurm.get("gpus_requested") != 0:
+            raise V6BProductionError("V1 registration must retain its zero-GPU request")
+    else:
+        if slurm.get("gpus_requested") != 1:
+            raise V6BProductionError(
+                "scheduler-compatible production must request one GPU"
+            )
+        if slurm.get("accelerator_visible_to_solver") is not False:
+            raise V6BProductionError("the allocated scheduler GPU must be hidden")
+        if slurm.get("allocated_gpu_purpose") != "site_scheduler_requirement_only":
+            raise V6BProductionError("the allocated GPU purpose differs")
     return dict(payload)
 
 
@@ -674,6 +699,9 @@ def _runtime_receipt(registration: Mapping[str, object]) -> dict[str, object]:
         raise V6BProductionError("OR-Tools version differs from registration")
     if observed_platform != runtime["platform"]:
         raise V6BProductionError("runtime platform differs from registration")
+    cuda_visible = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+    if cuda_visible != "":
+        raise V6BProductionError("a GPU is visible to the score-free solver process")
     locked = read_verified(
         Path(str(runtime["cp_sat_runtime_receipt_path"])),
         str(runtime["cp_sat_runtime_receipt_sha256"]),
@@ -684,6 +712,8 @@ def _runtime_receipt(registration: Mapping[str, object]) -> dict[str, object]:
         "python_version": observed_python,
         "ortools_version": ortools.__version__,
         "platform": observed_platform,
+        "cuda_visible_devices": cuda_visible,
+        "accelerator_visible_to_solver": False,
         "cp_sat_runtime_receipt_sha256": _sha256_bytes(locked),
         "cp_sat_runtime_receipt_byte_size": len(locked),
     }

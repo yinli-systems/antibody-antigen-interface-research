@@ -893,12 +893,12 @@
         "sigterm_receipt_handler_installed": true,
         "source_sha256": {
           "scripts/run_v6_b_production_feasibility.py": "57855e90a0a77ffff0c747aa69790f3623f90203c0a9a9684aa137e2a39d8a6b",
-          "scripts/submit_v6_b_production_feasibility.sbatch": "18408b00cc158f1a4cd5d9ccc0d3fdf8905437abb047866547dfc413a1c2ce93",
-          "src/interaction_first/v6_b_production.py": "4879916172a69803a5d7c625ab0be4dfd0184f9e4b233c96ca9e381885229838",
-          "tests/test_v6_b_production.py": "9349b6957630cccf8934d49b27b9ddba8904b20cb5079c5034ffb0bfd06ae46a"
+          "scripts/submit_v6_b_production_feasibility.sbatch": "ad6276e13f00496f40232bea989ebaa6df591186dca12ed40e938f6a7447a24f",
+          "src/interaction_first/v6_b_production.py": "76f055affeca83fb546a982865944854f8aae1ac7d93005b7fb75ba1714430a6",
+          "tests/test_v6_b_production.py": "89b5cfeacf88643db526166a40b36e08686e2c014ec230336992d72300eb69ec"
         },
         "targeted_tests_passed_under_each_hash_seed": 6,
-        "related_v6_tests_passed_under_each_hash_seed": 136,
+        "related_v6_tests_passed_under_each_hash_seed": 141,
         "split_gate0_authorized": false,
         "training_authorized": false
       },
@@ -918,7 +918,7 @@
           "solver_invoked": false,
           "status": "SCHEDULER_REJECTED_ZERO_GPU_REQUEST"
         },
-        "related_v6_tests_passed_under_each_hash_seed": 139,
+        "related_v6_tests_passed_under_each_hash_seed": 141,
         "slurm": {
           "cpus_per_task": 8,
           "gpus_requested": 0,
@@ -931,10 +931,10 @@
         "source_sha256": {
           "protocols/v6_b_production_feasibility_registration_v1.json": "e4cb9329b248c12ec1b1b81cca84c61d109c91131812f543e3a773d221899175",
           "protocols/v6_b_production_submission_attempt_001.json": "206976c3f8772a496b42a35adee18d55968310b7deb8fcf701f4c77ace8eb65f",
-          "tests/test_v6_b_production_registration.py": "6f74f4988451c33625f5911338c882311f61cd4b639887cce3adc5728526457e",
+          "tests/test_v6_b_production_registration.py": "926b57137160e17d3a7c77797a23f6a27b29a89e27e568e2117596662aff798e",
           "tests/test_v6_b_submission_evidence.py": "4c1e393fd3c5427a45de078c25ab4b2cb137e2f16983f5366257d350d791ef5e"
         },
-        "targeted_tests_passed_under_each_hash_seed": 9,
+        "targeted_tests_passed_under_each_hash_seed": 11,
         "split_gate0_authorized": false,
         "training_authorized": false
       },

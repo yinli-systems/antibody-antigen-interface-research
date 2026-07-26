@@ -37,7 +37,7 @@ def _registration() -> dict[str, object]:
         )
     }
     return {
-        "format_version": "v6_b_production_feasibility_registration_v1",
+        "format_version": "v6_b_production_feasibility_registration_v2",
         "parent_evidence": {
             "v6_b_policy": {"path": "/policy.json", "sha256": "2" * 64},
             "v6_b_protocol": {"path": "/protocol.md", "sha256": "8" * 64},
@@ -89,13 +89,15 @@ def _registration() -> dict[str, object]:
             "maximum_time_seconds_per_solve": 21600,
         },
         "slurm": {
+            "accelerator_visible_to_solver": False,
+            "allocated_gpu_purpose": "site_scheduler_requirement_only",
             "partition": "gpu_5090",
             "nodes": 1,
             "tasks": 1,
             "cpus_per_task": 8,
             "memory_gib": 96,
             "wall_time": "48:00:00",
-            "gpus_requested": 0,
+            "gpus_requested": 1,
             "solver_workers": 1,
         },
         "authorization": {
@@ -118,11 +120,15 @@ def test_registration_has_no_defaults_and_keeps_authority_false() -> None:
         validate_registration(bad)
 
 
-def test_registration_requires_zero_gpu_and_one_solver_worker() -> None:
+def test_registration_requires_one_hidden_scheduler_only_gpu_and_one_worker() -> None:
     gpu = _registration()
-    gpu["slurm"]["gpus_requested"] = 1
-    with pytest.raises(V6BProductionError, match="request no GPU"):
+    gpu["slurm"]["gpus_requested"] = 0
+    with pytest.raises(V6BProductionError, match="request one GPU"):
         validate_registration(gpu)
+    visible = _registration()
+    visible["slurm"]["accelerator_visible_to_solver"] = True
+    with pytest.raises(V6BProductionError, match="must be hidden"):
+        validate_registration(visible)
     workers = _registration()
     workers["slurm"]["solver_workers"] = 8
     with pytest.raises(V6BProductionError, match="one solver worker"):
@@ -194,7 +200,7 @@ def test_solver_event_persists_full_exact_oracle_evidence(tmp_path: Path) -> Non
     assert rows[-1]["evidence"] == Oracle.evidence_history[-1]
 
 
-def test_submit_script_requests_cpu_memory_but_no_gpu() -> None:
+def test_submit_script_hides_its_scheduler_required_gpu() -> None:
     script = (
         Path(__file__).resolve().parents[1]
         / "scripts"
@@ -203,6 +209,7 @@ def test_submit_script_requests_cpu_memory_but_no_gpu() -> None:
     assert "#SBATCH --mem=96G" in script
     assert "#SBATCH --time=48:00:00" in script
     assert "#SBATCH --signal=B:TERM@120" in script
-    assert "--gres" not in script
+    assert "#SBATCH --gpus=1" in script
+    assert "export CUDA_VISIBLE_DEVICES=" in script
     assert "PYTHONHASHSEED=0" in script
     assert "OMP_NUM_THREADS=1" in script

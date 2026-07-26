@@ -3,6 +3,7 @@
 #SBATCH --partition=gpu_5090
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=48:00:00
@@ -25,6 +26,7 @@ export PYTHONNOUSERSITE=1
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONHASHSEED=0
 export PYTHONPATH=$SOURCE_ROOT/src
+export CUDA_VISIBLE_DEVICES=
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
@@ -56,4 +58,3 @@ fi
   --registration-sha256 "$REGISTRATION_SHA256" \
   --controller-sha256 "$CONTROLLER_SHA256" \
   --output-directory "$OUTPUT_DIRECTORY"
-
