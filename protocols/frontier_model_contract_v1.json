@@ -519,6 +519,33 @@
           "source_rows": 3229
         },
         "nofollow_same_descriptor_hash_and_read": true,
+        "physical_input_derivation_controller": {
+          "authenticated_historical_scope": "train-authority membership and exact four-view direct graphs only",
+          "create_only_outputs": [
+            "train_authority_allowlist.json",
+            "train_canonical_manifest.csv",
+            "edge_ledger_vh.json",
+            "edge_ledger_vl.json",
+            "edge_ledger_concatenated_antibody.json",
+            "edge_ledger_antigen.json",
+            "derivation_receipt.json"
+          ],
+          "historical_fold_assignment_reused": false,
+          "historical_fold_feasibility_claim_reused": false,
+          "manifest_firewall": "only the first INSTANCE field is inspected before authorization; sequence columns are parsed only for authority-train identifiers",
+          "production_inputs_created": false,
+          "source_sha256": {
+            "scripts/derive_v6_score_free_inputs.py": "8ac94d8c42478a85128d2858c051280c52a8fb756502ae12e40d81050fdf204e",
+            "tests/test_derive_v6_score_free_inputs.py": "c785a1386441d3b9702051b5271e3d5e56ed649255dcf96905e743c90c58d99d"
+          },
+          "status": "synthetically_hardened_unrun_on_production_sources",
+          "targeted_tests_passed_under_each_hash_seed": 7,
+          "related_regression_tests_passed_under_each_hash_seed": 153,
+          "tested_under_python_hash_seeds": [
+            1,
+            777
+          ]
+        },
         "production_bundle_created": false,
         "source_sha256": {
           "scripts/build_score_free_authority.py": "98a2f3d36890461602c0e0c596d6ced50ed5cc3e9324bf076a8b422d7f62d544",
