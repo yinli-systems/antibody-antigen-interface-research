@@ -710,19 +710,56 @@
           "status_agreement": "64_of_64_OPTIMAL_or_INFEASIBLE_states",
           "exact_separation_integrated_with_production_authority": false
         },
-        "production_python_3_10_solver_lock_completed": false,
+        "production_python_3_10_solver_lock_completed": true,
         "production_solver_runtime_controller": {
+          "bootstrap": {
+            "official_virtualenv_no_download_mode": true,
+            "virtualenv_seed_network_download_disabled": true,
+            "virtualenv_version": "20.35.4",
+            "wheel_sha256": {
+              "distlib-0.4.3-py2.py3-none-any.whl": "4b0ce306c966eb73bc3a7b6abad017c556dadd92c44701562cd528ac7fde4d5b",
+              "filelock-3.32.0-py3-none-any.whl": "d396bea984af47333ef05e50eae7eff88c84256de6112aea0ec48a233c064fe3",
+              "platformdirs-4.11.0-py3-none-any.whl": "360ccded2b7fce0af0ff80cc8f5942a1c5d99b0e856033acb030bfc634709e74",
+              "typing_extensions-4.16.0-py3-none-any.whl": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+              "virtualenv-20.35.4-py3-none-any.whl": "c21c9cede36c9753eeade68ba7d523529f228a403463376cf821eaae2b650f1b"
+            }
+          },
           "direct_versions": {
             "highspy": "1.15.1",
             "ortools": "9.15.6755"
           },
+          "immutability_audit": {
+            "physical_directory_and_regular_file_writable_count": 0,
+            "virtualenv_interpreter_symlink_count": 6,
+            "virtualenv_symlink_display_mode_is_not_inode_writability": true
+          },
           "native_library_process_isolation_required": true,
+          "production_receipts": {
+            "cp_sat": {
+              "backend_environment_contains_highspy": false,
+              "file_sha256": "1c776db49d548f0789174514a047b5f7a665da21fe14471bde0c14eca9fa3b82",
+              "receipt_sha256": "4d0250cf77213fe0aa812fce14bccab0c001d105a7285ecca67081c36177250a",
+              "smoke_status": "OPTIMAL",
+              "wheel_count": 11
+            },
+            "highs": {
+              "backend_environment_contains_ortools": false,
+              "file_sha256": "2523cb24fae64d116e97dee4fd3365c767a639e1e84fbeabadf1fa8aca961951",
+              "mip_gap": "0.0",
+              "receipt_sha256": "0de4eb38a60b7def89772ea557e4b0d803c573e8b83504e8f44b3eda2ce26fa3",
+              "smoke_status": "kOptimal",
+              "wheel_count": 2
+            },
+            "python_version": "3.10.12",
+            "root": "/ssd/scxi253/model_deployment/envs/v6_a_solver_runtime_63f71f0_v2",
+            "source_sha256": "91a80ef18535d77ba7bbbc005374ad05bd1eb49a6a966c63b91b6c2982474bc2"
+          },
           "receipt_format": "v6_a_solver_runtime_lock_v1",
           "source_sha256": {
             "scripts/lock_v6_solver_runtime.py": "91a80ef18535d77ba7bbbc005374ad05bd1eb49a6a966c63b91b6c2982474bc2",
             "tests/test_lock_v6_solver_runtime.py": "61031024512f9cbab690ba9de2ce3a8d873d197968fc2d616b531e8139c8aec8"
           },
-          "status": "separate_cp_sat_and_highs_venv_receipts_hardened_unrun_in_production_python_3_10",
+          "status": "separate_cp_sat_and_highs_python_3_10_runtimes_frozen_and_independently_audited",
           "targeted_tests_passed_under_each_hash_seed": 5,
           "related_v6_tests_passed_under_each_hash_seed": 24,
           "training_authorized": false
