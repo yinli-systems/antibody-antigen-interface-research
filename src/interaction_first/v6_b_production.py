@@ -385,7 +385,10 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
         raise V6BProductionError("registration source schema differs")
     _digest(source.get("implementation_commit"), "implementation commit")
     files = source.get("files")
-    required_source = set(EXPECTED_SOURCE_FILES) | {"production_controller"}
+    required_source = set(EXPECTED_SOURCE_FILES) | {
+        "production_controller",
+        "slurm_launcher",
+    }
     if not isinstance(files, Mapping) or set(files) != required_source:
         raise V6BProductionError("registration source-file set differs")
     for label, reference in files.items():
@@ -547,6 +550,19 @@ def _source_receipts(registration: Mapping[str, object]) -> dict[str, object]:
             "sha256": _sha256_bytes(payload),
             "byte_size": len(payload),
         }
+    launcher_reference = files["slurm_launcher"]
+    assert isinstance(launcher_reference, Mapping)
+    launcher_path = source_root / str(launcher_reference["path"])
+    launcher_bytes = read_verified(
+        launcher_path,
+        str(launcher_reference["sha256"]),
+        "source slurm_launcher",
+    )
+    receipts["slurm_launcher"] = {
+        "path": str(launcher_path),
+        "sha256": _sha256_bytes(launcher_bytes),
+        "byte_size": len(launcher_bytes),
+    }
     return receipts
 
 

@@ -894,8 +894,8 @@
         "source_sha256": {
           "scripts/run_v6_b_production_feasibility.py": "57855e90a0a77ffff0c747aa69790f3623f90203c0a9a9684aa137e2a39d8a6b",
           "scripts/submit_v6_b_production_feasibility.sbatch": "18408b00cc158f1a4cd5d9ccc0d3fdf8905437abb047866547dfc413a1c2ce93",
-          "src/interaction_first/v6_b_production.py": "08187308d2ccffaf79884a7f2f9bd84b199fb2746923fb96050030ef06f61e26",
-          "tests/test_v6_b_production.py": "3852230e232cc9850eae210cbd5f6aef339f7fdb374e08f128cae805aa2002a4"
+          "src/interaction_first/v6_b_production.py": "db3ef14786e43509965dde9c897b64533a19e855644f77dffe3fb95949557554",
+          "tests/test_v6_b_production.py": "335d6f4fe6750c30f5896a401c9ed33b8ee5d625fb9ab6d03394156b8a09dd42"
         },
         "targeted_tests_passed_under_each_hash_seed": 6,
         "related_v6_tests_passed_under_each_hash_seed": 136,

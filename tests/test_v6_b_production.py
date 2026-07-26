@@ -33,6 +33,7 @@ def _registration() -> dict[str, object]:
             "v6_joint_ir",
             "v6_b_production",
             "production_controller",
+            "slurm_launcher",
         )
     }
     return {
