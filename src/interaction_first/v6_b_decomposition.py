@@ -11,12 +11,14 @@ import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
+from typing import Callable, Iterable, Mapping, Sequence
 
 from .v6_joint_ir import (
     CanonicalJointIR,
     ExactSeparationGate,
     IRLinearConstraint,
+    SeparationFailure,
+    SeparationOracleResult,
     VariableKey,
 )
 
@@ -396,14 +398,14 @@ def selected_row_hashes(telemetry: Mapping[str, object]) -> tuple[str, ...]:
 
 @dataclass(frozen=True)
 class SignedSupportLiteral:
-    """One outer-master Boolean state used by an inner infeasibility proof."""
+    """One canonical outer or inner Boolean state used by a no-good proof."""
 
     key: VariableKey
     value: int
 
     def __post_init__(self) -> None:
-        if not self.key or self.key[0] != "outer":
-            raise V6BDecompositionError("support literal must reference an outer variable")
+        if not self.key or self.key[0] not in {"outer", "inner"}:
+            raise V6BDecompositionError("support literal must reference a split variable")
         _outer_index(self.key)
         if self.value not in {0, 1}:
             raise V6BDecompositionError("support literal value must be binary")
@@ -430,6 +432,32 @@ class V6BMasterNoGoodCut:
             "first_response_sha256": self.first_response_sha256,
             "replay_response_sha256": self.replay_response_sha256,
             "independent_replay_sha256": self.independent_replay_sha256,
+            "cut_sha256": self.cut_sha256,
+        }
+
+
+@dataclass(frozen=True)
+class V6BExactNoGoodCut:
+    """One no-good justified by agreeing primary and independent exact oracles."""
+
+    scope: str
+    outer_fold: int | None
+    gate_signature: tuple[str, str, str, str]
+    support: tuple[SignedSupportLiteral, ...]
+    primary_statistics_receipt_sha256: str
+    independent_audit_receipt_sha256: str
+    failure_payload_sha256: str
+    cut_sha256: str
+
+    def canonical_payload(self) -> dict[str, object]:
+        return {
+            "scope": self.scope,
+            "outer_fold": self.outer_fold,
+            "gate_signature": list(self.gate_signature),
+            "support": [literal.canonical_payload() for literal in self.support],
+            "primary_statistics_receipt_sha256": self.primary_statistics_receipt_sha256,
+            "independent_audit_receipt_sha256": self.independent_audit_receipt_sha256,
+            "failure_payload_sha256": self.failure_payload_sha256,
             "cut_sha256": self.cut_sha256,
         }
 
@@ -524,7 +552,7 @@ def _response_payload(solver: object, status_name: str) -> dict[str, object]:
 def solve_outer_master_linear_projection(
     partition: V6BIRPartition,
     *,
-    cuts: Sequence[V6BMasterNoGoodCut] = (),
+    cuts: Sequence[V6BMasterNoGoodCut | V6BExactNoGoodCut] = (),
     maximum_time_seconds: float | None = None,
 ) -> dict[str, object]:
     """Solve the outer integer projection and reject incomplete CP-SAT states."""
@@ -581,6 +609,7 @@ def _inner_model_with_assumptions(
     partition: V6BIRPartition,
     outer_fold: int,
     support: Sequence[SignedSupportLiteral],
+    exact_cuts: Sequence[V6BExactNoGoodCut] = (),
 ) -> tuple[object, dict[VariableKey, object], dict[int, SignedSupportLiteral]]:
     from ortools.sat.python import cp_model
 
@@ -594,6 +623,10 @@ def _inner_model_with_assumptions(
         for index, key in enumerate(variables_for_group)
     }
     _add_rows(model, variables, rows)
+    for cut in exact_cuts:
+        if cut.scope != "inner" or cut.outer_fold != outer_fold:
+            raise V6BDecompositionError("inner exact cut scope differs")
+        _add_no_good(model, variables, cut.support)
     assumptions: dict[int, SignedSupportLiteral] = {}
     for index, literal in enumerate(support):
         if literal.key not in variables or _outer_index(literal.key) != outer_fold:
@@ -611,6 +644,7 @@ def solve_inner_linear_projection(
     *,
     outer_fold: int,
     outer_assignment: Mapping[VariableKey, int],
+    exact_cuts: Sequence[V6BExactNoGoodCut] = (),
     maximum_time_seconds: float | None = None,
 ) -> dict[str, object]:
     """Solve one inner group under signed outer assumptions and return its core."""
@@ -633,6 +667,7 @@ def solve_inner_linear_projection(
         partition,
         outer_fold,
         support,
+        exact_cuts,
     )
     solver = cp_model.CpSolver()
     _configure_solver(solver, maximum_time_seconds)
@@ -649,6 +684,8 @@ def solve_inner_linear_projection(
             raise V6BDecompositionError("inner integer row audit disagrees")
         if any(assignment[literal.key] != literal.value for literal in support):
             raise V6BDecompositionError("inner boundary audit disagrees")
+        if any(not _audit_no_good(cut.support, assignment) for cut in exact_cuts):
+            raise V6BDecompositionError("inner exact-cut audit disagrees")
     elif status == cp_model.INFEASIBLE:
         raw_core = tuple(int(value) for value in solver.sufficient_assumptions_for_infeasibility())
         try:
@@ -669,6 +706,7 @@ def solve_inner_linear_projection(
         "integer_row_audit_passed": assignment is not None,
         "response": response,
         "assumption_count": len(support),
+        "exact_cut_sha256": [cut.cut_sha256 for cut in exact_cuts],
         "sufficient_assumption_support": [
             literal.canonical_payload() for literal in core
         ],
@@ -692,6 +730,7 @@ def replay_inner_infeasibility_support(
     *,
     outer_fold: int,
     support: Sequence[SignedSupportLiteral],
+    exact_cuts: Sequence[V6BExactNoGoodCut] = (),
     maximum_time_seconds: float | None = None,
 ) -> dict[str, object]:
     """Rebuild an inner model with only the proposed support fixed and replay it."""
@@ -701,7 +740,12 @@ def replay_inner_infeasibility_support(
     canonical = tuple(sorted(support, key=lambda literal: literal.key))
     if not canonical or len({literal.key for literal in canonical}) != len(canonical):
         raise V6BDecompositionError("replay support must be non-empty and unique")
-    model, _, _ = _inner_model_with_assumptions(partition, outer_fold, canonical)
+    model, _, _ = _inner_model_with_assumptions(
+        partition,
+        outer_fold,
+        canonical,
+        exact_cuts,
+    )
     solver = cp_model.CpSolver()
     _configure_solver(solver, maximum_time_seconds)
     status = solver.solve(model)
@@ -715,6 +759,7 @@ def replay_inner_infeasibility_support(
         "support_sha256": _sha256(
             [literal.canonical_payload() for literal in canonical]
         ),
+        "exact_cut_sha256": [cut.cut_sha256 for cut in exact_cuts],
         "status": status_name,
         "replay_infeasible": status == cp_model.INFEASIBLE,
         "accepted_terminal_status": status in {cp_model.OPTIMAL, cp_model.INFEASIBLE},
@@ -723,6 +768,70 @@ def replay_inner_infeasibility_support(
     }
     payload["receipt_sha256"] = _sha256(payload)
     return payload
+
+
+def build_exact_no_good_cuts(
+    result: SeparationOracleResult,
+) -> tuple[V6BExactNoGoodCut, ...]:
+    """Translate every independently agreed exact failure into a scoped no-good."""
+    if not result.independent_agreement:
+        raise V6BDecompositionError("exact oracle disagreement cannot support a cut")
+    cuts = []
+    for failure in result.failures:
+        inner_groups = {
+            _outer_index(key)
+            for key, _ in failure.support
+            if key[0] == "inner"
+        }
+        outer_groups = {
+            _outer_index(key)
+            for key, _ in failure.support
+            if key[0] == "outer"
+        }
+        if not inner_groups:
+            scope = "outer"
+            outer_fold = None
+        elif len(inner_groups) == 1:
+            scope = "inner"
+            outer_fold = next(iter(inner_groups))
+            if outer_groups - {outer_fold}:
+                raise V6BDecompositionError("exact failure mixes outer groups")
+        else:
+            raise V6BDecompositionError("exact failure mixes inner groups")
+        support = tuple(
+            SignedSupportLiteral(key, value) for key, value in failure.support
+        )
+        gate_signature = (
+            failure.gate_id,
+            failure.level_id,
+            failure.axis,
+            failure.role,
+        )
+        failure_payload_sha256 = _sha256(failure.failure_payload)
+        base: dict[str, object] = {
+            "scope": scope,
+            "outer_fold": outer_fold,
+            "gate_signature": list(gate_signature),
+            "support": [literal.canonical_payload() for literal in support],
+            "primary_statistics_receipt_sha256": result.primary_statistics_receipt_sha256,
+            "independent_audit_receipt_sha256": result.independent_audit_receipt_sha256,
+            "failure_payload_sha256": failure_payload_sha256,
+        }
+        cuts.append(
+            V6BExactNoGoodCut(
+                scope=scope,
+                outer_fold=outer_fold,
+                gate_signature=gate_signature,
+                support=support,
+                primary_statistics_receipt_sha256=result.primary_statistics_receipt_sha256,
+                independent_audit_receipt_sha256=result.independent_audit_receipt_sha256,
+                failure_payload_sha256=failure_payload_sha256,
+                cut_sha256=_sha256(base),
+            )
+        )
+    if len({cut.cut_sha256 for cut in cuts}) != len(cuts):
+        raise V6BDecompositionError("exact oracle emitted duplicate failures")
+    return tuple(cuts)
 
 
 def build_replayed_master_no_good_cut(
@@ -778,3 +887,293 @@ def build_replayed_master_no_good_cut(
         independent_replay_sha256=independent_sha256,
         cut_sha256=_sha256(base),
     )
+
+
+def _assignment_from_receipt(
+    receipt: Mapping[str, object],
+) -> dict[VariableKey, int]:
+    raw = receipt.get("assignment")
+    if not isinstance(raw, Sequence) or isinstance(raw, (str, bytes)):
+        raise V6BDecompositionError("solver receipt lacks an assignment")
+    result: dict[VariableKey, int] = {}
+    for item in raw:
+        if (
+            isinstance(item, (str, bytes))
+            or not isinstance(item, Sequence)
+            or len(item) != 2
+        ):
+            raise V6BDecompositionError("solver assignment item is malformed")
+        key = tuple(item[0])
+        value = item[1]
+        if key in result or value not in {0, 1}:
+            raise V6BDecompositionError("solver assignment is duplicated or non-binary")
+        result[key] = int(value)
+    return result
+
+
+def run_v6_b_exact_feasibility(
+    partition: V6BIRPartition,
+    direct_model: object,
+    oracle: Callable[[Mapping[VariableKey, int]], SeparationOracleResult],
+    *,
+    maximum_master_iterations: int = 1000,
+    maximum_combined_candidates: int = 10000,
+    maximum_time_seconds_per_solve: float | None = None,
+) -> dict[str, object]:
+    """Run full V6-B linear decomposition plus complete exact separation."""
+    from .v6_b_independent_core_auditor import replay_direct_inner_support
+
+    if maximum_master_iterations < 1 or maximum_combined_candidates < 1:
+        raise V6BDecompositionError("iteration limits must be positive")
+    declared_gates = {
+        (gate.gate_id, gate.level_id, gate.axis, gate.role)
+        for gate in partition.master_gates
+    }
+    for _, gates in partition.inner_gates:
+        declared_gates.update(
+            (gate.gate_id, gate.level_id, gate.axis, gate.role) for gate in gates
+        )
+    if len(declared_gates) != EXPECTED_TOTAL_GATES:
+        raise V6BDecompositionError("partition does not declare all exact gates")
+
+    master_cuts: list[V6BMasterNoGoodCut | V6BExactNoGoodCut] = []
+    inner_cuts: dict[int, list[V6BExactNoGoodCut]] = {
+        group: [] for group in range(EXPECTED_INNER_GROUPS)
+    }
+    cut_hashes = set()
+    master_history = []
+    inner_history = []
+    oracle_history = []
+    combined_candidate_count = 0
+    terminal_status = "MASTER_ITERATION_LIMIT"
+    complete = False
+    proven_infeasible = False
+    final_assignment: dict[VariableKey, int] | None = None
+
+    for master_iteration in range(1, maximum_master_iterations + 1):
+        master = solve_outer_master_linear_projection(
+            partition,
+            cuts=master_cuts,
+            maximum_time_seconds=maximum_time_seconds_per_solve,
+        )
+        master_history.append({"iteration": master_iteration, **master})
+        if master["status"] == "INFEASIBLE":
+            terminal_status = "PROVEN_INFEASIBLE"
+            complete = True
+            proven_infeasible = True
+            break
+        if master["status"] != "OPTIMAL":
+            terminal_status = f"MASTER_{master['status']}"
+            break
+        outer_assignment = _assignment_from_receipt(master)
+        master_rejected = False
+        while combined_candidate_count < maximum_combined_candidates:
+            combined_candidate_count += 1
+            combined = dict(outer_assignment)
+            inner_linear_infeasible = False
+            for group in range(EXPECTED_INNER_GROUPS):
+                inner = solve_inner_linear_projection(
+                    partition,
+                    outer_fold=group,
+                    outer_assignment=outer_assignment,
+                    exact_cuts=tuple(inner_cuts[group]),
+                    maximum_time_seconds=maximum_time_seconds_per_solve,
+                )
+                inner_history.append(
+                    {
+                        "master_iteration": master_iteration,
+                        "combined_candidate": combined_candidate_count,
+                        **inner,
+                    }
+                )
+                if inner["status"] == "INFEASIBLE":
+                    support = tuple(
+                        SignedSupportLiteral(tuple(key), value)
+                        for key, value in inner["sufficient_assumption_support"]
+                    )
+                    replay = replay_inner_infeasibility_support(
+                        partition,
+                        outer_fold=group,
+                        support=support,
+                        exact_cuts=tuple(inner_cuts[group]),
+                        maximum_time_seconds=maximum_time_seconds_per_solve,
+                    )
+                    independent = replay_direct_inner_support(
+                        direct_model,
+                        outer_fold=group,
+                        signed_support=[
+                            literal.canonical_payload() for literal in support
+                        ],
+                        exact_no_goods=tuple(
+                            cut.canonical_payload() for cut in inner_cuts[group]
+                        ),
+                        maximum_time_seconds=maximum_time_seconds_per_solve,
+                    )
+                    if (
+                        replay["replay_infeasible"] is not True
+                        or independent["replay_infeasible"] is not True
+                    ):
+                        terminal_status = "INNER_CORE_REPLAY_DISAGREEMENT"
+                        master_rejected = True
+                        break
+                    cut = build_replayed_master_no_good_cut(
+                        outer_fold=group,
+                        support=support,
+                        first_response_sha256=inner["response"]["response_sha256"],
+                        replay_response_sha256=replay["response"]["response_sha256"],
+                        independent_replay_receipt=independent,
+                    )
+                    if cut.cut_sha256 in cut_hashes:
+                        terminal_status = "REPEATED_MASTER_CORE_CUT"
+                        master_rejected = True
+                        break
+                    cut_hashes.add(cut.cut_sha256)
+                    master_cuts.append(cut)
+                    inner_history.append(
+                        {
+                            "master_iteration": master_iteration,
+                            "combined_candidate": combined_candidate_count,
+                            "primary_replay": replay,
+                            "independent_replay": independent,
+                            "master_cut": cut.canonical_payload(),
+                        }
+                    )
+                    inner_linear_infeasible = True
+                    master_rejected = True
+                    break
+                if inner["status"] != "OPTIMAL":
+                    terminal_status = f"INNER_{group}_{inner['status']}"
+                    master_rejected = True
+                    break
+                inner_assignment = _assignment_from_receipt(inner)
+                for key, value in inner_assignment.items():
+                    if key in combined and combined[key] != value:
+                        raise V6BDecompositionError("outer and inner assignments disagree")
+                    combined[key] = value
+            if master_rejected:
+                if inner_linear_infeasible:
+                    break
+                if terminal_status.startswith("INNER_"):
+                    break
+            expected_variables = set(partition.master_variables)
+            for _, variables in partition.inner_variables:
+                expected_variables.update(variables)
+            if set(combined) != expected_variables:
+                raise V6BDecompositionError("combined assignment does not cover the IR")
+            try:
+                result = oracle(combined)
+            except Exception as error:
+                terminal_status = "EXACT_ORACLE_EXCEPTION"
+                oracle_history.append(
+                    {
+                        "master_iteration": master_iteration,
+                        "combined_candidate": combined_candidate_count,
+                        "error_type": type(error).__name__,
+                        "error_message": str(error),
+                        "error_sha256": _sha256(
+                            [type(error).__name__, str(error)]
+                        ),
+                    }
+                )
+                master_rejected = True
+                break
+            if not isinstance(result, SeparationOracleResult):
+                terminal_status = "INVALID_EXACT_ORACLE_RESULT"
+                master_rejected = True
+                break
+            if set(result.evaluated_gates) != declared_gates:
+                terminal_status = "INCOMPLETE_EXACT_GATE_AUDIT"
+                master_rejected = True
+                break
+            if not result.independent_agreement:
+                terminal_status = "INDEPENDENT_EXACT_AUDIT_DISAGREEMENT"
+                master_rejected = True
+                break
+            oracle_history.append(
+                {
+                    "master_iteration": master_iteration,
+                    "combined_candidate": combined_candidate_count,
+                    **result.canonical_payload(),
+                }
+            )
+            if not result.failures:
+                final_assignment = combined
+                terminal_status = "OPTIMAL_EXACT_ORACLE_PASS"
+                complete = True
+                break
+            exact_cuts = build_exact_no_good_cuts(result)
+            master_exact_failure = False
+            for cut in exact_cuts:
+                if cut.cut_sha256 in cut_hashes:
+                    terminal_status = "REPEATED_EXACT_CUT"
+                    master_rejected = True
+                    break
+                cut_hashes.add(cut.cut_sha256)
+                if cut.scope == "outer":
+                    master_cuts.append(cut)
+                    master_exact_failure = True
+                else:
+                    assert cut.outer_fold is not None
+                    inner_cuts[cut.outer_fold].append(cut)
+            if master_rejected:
+                break
+            if master_exact_failure:
+                master_rejected = True
+                break
+        if complete or proven_infeasible:
+            break
+        if terminal_status in {
+            "EXACT_ORACLE_EXCEPTION",
+            "INVALID_EXACT_ORACLE_RESULT",
+            "INCOMPLETE_EXACT_GATE_AUDIT",
+            "INDEPENDENT_EXACT_AUDIT_DISAGREEMENT",
+            "INNER_CORE_REPLAY_DISAGREEMENT",
+            "REPEATED_MASTER_CORE_CUT",
+            "REPEATED_EXACT_CUT",
+        } or terminal_status.startswith("INNER_"):
+            break
+        if not master_rejected:
+            terminal_status = "COMBINED_CANDIDATE_LIMIT"
+            break
+
+    assignment_payload = (
+        None
+        if final_assignment is None
+        else [
+            [list(key), final_assignment[key]] for key in sorted(final_assignment)
+        ]
+    )
+    payload: dict[str, object] = {
+        "format_version": "v6_b_exact_decomposition_feasibility_receipt_v1",
+        "partition_sha256": partition.canonical_payload()["partition_sha256"],
+        "maximum_master_iterations": maximum_master_iterations,
+        "maximum_combined_candidates": maximum_combined_candidates,
+        "maximum_time_seconds_per_solve": (
+            None
+            if maximum_time_seconds_per_solve is None
+            else str(maximum_time_seconds_per_solve)
+        ),
+        "master_history": master_history,
+        "inner_history": inner_history,
+        "oracle_history": oracle_history,
+        "master_cuts": [cut.canonical_payload() for cut in master_cuts],
+        "inner_exact_cuts": {
+            str(group): [cut.canonical_payload() for cut in inner_cuts[group]]
+            for group in range(EXPECTED_INNER_GROUPS)
+        },
+        "combined_candidate_count": combined_candidate_count,
+        "terminal_status": terminal_status,
+        "complete": complete,
+        "proven_infeasible": proven_infeasible,
+        "candidate_present": final_assignment is not None,
+        "assignment": assignment_payload,
+        "all_66_exact_gates_passed": (
+            final_assignment is not None and terminal_status == "OPTIMAL_EXACT_ORACLE_PASS"
+        ),
+        "direct_highs_fixed_assignment_audit_completed": False,
+        "split_gate0_authorized": False,
+        "training_authorized": False,
+        "implementation_source_sha256": implementation_source_sha256(),
+    }
+    payload["receipt_sha256"] = _sha256(payload)
+    return payload

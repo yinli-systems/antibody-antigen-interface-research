@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -73,4 +75,52 @@ def test_independent_replay_rejects_foreign_or_duplicate_support() -> None:
                 [["outer", "0", "training_pair", "p0"], 1],
                 [["outer", "0", "training_pair", "p0"], 1],
             ],
+        )
+
+
+def _exact_cut() -> dict[str, object]:
+    payload: dict[str, object] = {
+        "scope": "inner",
+        "outer_fold": 0,
+        "gate_signature": ["gate", "outer_0_inner_0", "both", "fold"],
+        "support": [
+            [["inner", "0", "0", "training_pair", "p0"], 0],
+            [["outer", "0", "training_pair", "p0"], 0],
+        ],
+        "primary_statistics_receipt_sha256": "3" * 64,
+        "independent_audit_receipt_sha256": "4" * 64,
+        "failure_payload_sha256": "5" * 64,
+    }
+    raw = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("ascii") + b"\n"
+    payload["cut_sha256"] = hashlib.sha256(raw).hexdigest()
+    return payload
+
+
+def test_independent_replay_reconstructs_exact_no_goods() -> None:
+    receipt = replay_direct_inner_support(
+        _direct_model(),
+        outer_fold=0,
+        signed_support=[[["outer", "0", "training_pair", "p0"], 0]],
+        exact_no_goods=(_exact_cut(),),
+    )
+    assert receipt["status"] == "INFEASIBLE"
+    assert receipt["replay_infeasible"] is True
+    assert receipt["exact_cut_sha256"] == [_exact_cut()["cut_sha256"]]
+
+
+def test_independent_replay_rejects_a_tampered_exact_no_good() -> None:
+    cut = _exact_cut()
+    cut["failure_payload_sha256"] = "6" * 64
+    with pytest.raises(IndependentCoreAuditError, match="self hash differs"):
+        replay_direct_inner_support(
+            _direct_model(),
+            outer_fold=0,
+            signed_support=[[["outer", "0", "training_pair", "p0"], 0]],
+            exact_no_goods=(cut,),
         )

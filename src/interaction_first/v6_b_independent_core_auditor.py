@@ -93,6 +93,7 @@ def replay_direct_inner_support(
     *,
     outer_fold: int,
     signed_support: Sequence[Sequence[object]],
+    exact_no_goods: Sequence[Mapping[str, object]] = (),
     maximum_time_seconds: float | None = None,
 ) -> dict[str, object]:
     """Rebuild and replay one inner group directly from a direct CP-SAT proto."""
@@ -192,6 +193,48 @@ def replay_direct_inner_support(
         assumption = model.new_bool_var(f"a_{position:09d}")
         model.add(variable == value).only_enforce_if(assumption)
         model.add_assumption(assumption)
+    exact_cut_hashes = []
+    for cut in exact_no_goods:
+        payload = dict(cut)
+        cut_sha256 = payload.pop("cut_sha256", None)
+        if cut_sha256 != _sha256(payload):
+            raise IndependentCoreAuditError("exact no-good self hash differs")
+        if cut.get("scope") != "inner" or cut.get("outer_fold") != outer_fold:
+            raise IndependentCoreAuditError("exact no-good scope differs")
+        raw_cut_support = cut.get("support")
+        if not isinstance(raw_cut_support, Sequence) or isinstance(
+            raw_cut_support,
+            (str, bytes),
+        ):
+            raise IndependentCoreAuditError("exact no-good support is malformed")
+        cut_support = []
+        for item in raw_cut_support:
+            if (
+                isinstance(item, (str, bytes))
+                or not isinstance(item, Sequence)
+                or len(item) != 2
+            ):
+                raise IndependentCoreAuditError("exact no-good item is malformed")
+            key = _key(item[0], "exact no-good key")
+            value = item[1]
+            if value not in {0, 1} or _outer_index(key) != outer_fold:
+                raise IndependentCoreAuditError("exact no-good literal is invalid")
+            try:
+                variable = rebuilt[direct_key_to_index[key]]
+            except KeyError as error:
+                raise IndependentCoreAuditError(
+                    "exact no-good references an unavailable variable"
+                ) from error
+            cut_support.append((variable, int(value)))
+        if not cut_support or len(cut_support) != len(
+            {tuple(item[0]) for item in raw_cut_support}
+        ):
+            raise IndependentCoreAuditError("exact no-good support is empty or duplicated")
+        model.add(
+            sum(variable if value == 0 else 1 - variable for variable, value in cut_support)
+            >= 1
+        )
+        exact_cut_hashes.append(str(cut_sha256))
     model.minimize(0)
     solver = cp_model.CpSolver()
     solver.parameters.num_search_workers = 1
@@ -230,6 +273,7 @@ def replay_direct_inner_support(
         "selected_row_count": len(selected_rows),
         "selected_variable_count": len(selected_indices),
         "selected_rows_sha256": _sha256(row_payloads),
+        "exact_cut_sha256": exact_cut_hashes,
         "response": response,
         "direct_cp_sat_proto_reconstructed": True,
         "v6_b_decomposition_imported": False,
