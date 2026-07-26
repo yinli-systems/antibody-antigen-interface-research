@@ -610,20 +610,37 @@
           "threads": 1,
           "user_solution_callback_used": false
         },
-        "independent_cp_sat_raw_authority_formulation_completed": false,
+        "independent_cp_sat_raw_authority_formulation_completed": true,
+        "independent_cp_sat_evidence": {
+          "authority_input": "externally hash-anchored score_free_authority_v2 plus four authority-bound edge ledgers",
+          "forbidden_imports": [
+            "nested_joint_milp",
+            "v6_joint_ir",
+            "v6_highs_backend"
+          ],
+          "historical_milp_rows_or_indices_consumed": false,
+          "highs_artifacts_consumed": false,
+          "small_instance_exhaustive_outer_states": 64,
+          "small_instance_shared_variable_count": 132,
+          "small_instance_shared_constraint_count": 566,
+          "status_agreement": "64_of_64_OPTIMAL_or_INFEASIBLE_states",
+          "exact_separation_integrated_with_production_authority": false
+        },
         "production_python_3_10_solver_lock_completed": false,
         "production_solver_run_completed": false,
         "source_sha256": {
           "pyproject.toml": "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342",
           "src/interaction_first/v6_highs_backend.py": "e96c8bad2606ee048b6d802fd16da3f38f236cb099f11146b75d423399863e65",
           "src/interaction_first/v6_joint_ir.py": "87e6514703fc27337b2f0b7ecbcb3d17fcbc9fd569d16c94fbdac3246fc9de5e",
+          "src/interaction_first/v6_cp_sat_formulation.py": "d07e2a402c63fe1fe642bb0f80162c8850bfef1d17a18e8d3fb4afde40b3a9dd",
+          "tests/test_v6_cp_sat_formulation.py": "b7b5c5c683d68667cd36c95fa27abc2c57c9f529725139ea659907bef27f543f",
           "tests/test_v6_joint_ir.py": "0452c2ae685d7c614a5128810b75bbba6b884714083c2532055857fa7d033798"
         },
-        "status": "shared_linear_projection_and_fail_closed_separation_engine_synthetically_hardened",
-        "targeted_tests_passed_under_each_hash_seed": 14,
-        "related_regression_tests_passed_under_each_hash_seed": 141,
+        "status": "two_linear_formulations_and_fail_closed_separation_engine_synthetically_hardened",
+        "targeted_tests_passed_under_each_hash_seed": 18,
+        "related_regression_tests_passed_under_each_hash_seed": 145,
         "training_authorized": false,
-        "claim_boundary": "The current canonical IR is explicitly a v5 linear-projection adapter. Its CP-SAT and HiGHS receipts cannot certify the complete V6-A feasible region until the independent raw-authority CP-SAT formulation and production truth-chain audit are completed."
+        "claim_boundary": "The independent direct CP-SAT formulation and common linear semantics are synthetically verified. No receipt can certify the complete V6-A feasible region until production authority reconstruction, complete exact separation, independent statistics agreement, and the HiGHS projection audit all pass."
       },
       "rejected_terminal_states": [
         "FEASIBLE",
@@ -633,7 +650,7 @@
         "incomplete_separation",
         "audit_disagreement"
       ],
-      "status": "truth_chain_and_joint_projection_engineering_hardened_independent_formulation_unimplemented",
+      "status": "truth_chain_and_two_joint_linear_formulations_hardened_production_exact_solve_unrun",
       "training_prerequisites": [
         "audited_full_3_plus_9_assignment",
         "post_freeze_3d_interface_leakage_audit",
