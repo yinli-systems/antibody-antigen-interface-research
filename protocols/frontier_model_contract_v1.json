@@ -711,6 +711,22 @@
           "exact_separation_integrated_with_production_authority": false
         },
         "production_python_3_10_solver_lock_completed": false,
+        "production_solver_runtime_controller": {
+          "direct_versions": {
+            "highspy": "1.15.1",
+            "ortools": "9.15.6755"
+          },
+          "native_library_process_isolation_required": true,
+          "receipt_format": "v6_a_solver_runtime_lock_v1",
+          "source_sha256": {
+            "scripts/lock_v6_solver_runtime.py": "1c25fc356505fdec56665ba4e207bd331c72a0e3c0a841167e7c970d65f5a61c",
+            "tests/test_lock_v6_solver_runtime.py": "f301a9d6ea9b1fc38d795e0d8692d7691a33d05b5c52cfda78cfdef5f146f843"
+          },
+          "status": "synthetically_hardened_unrun_in_production_python_3_10",
+          "targeted_tests_passed_under_each_hash_seed": 4,
+          "related_v6_tests_passed_under_each_hash_seed": 23,
+          "training_authorized": false
+        },
         "production_solver_run_completed": false,
         "source_sha256": {
           "pyproject.toml": "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342",
