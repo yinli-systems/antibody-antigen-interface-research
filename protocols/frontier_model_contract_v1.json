@@ -497,6 +497,42 @@
       "policy_sha256": "ac28232d8d59190f85c24c0bbfee7e4b8b9bbed28b29b0a91a097b49f7a27fa6",
       "protocol_path": "protocols/V6_A_SCORE_FREE_EXACT_SOLVER_PROTOCOL.md",
       "protocol_sha256": "a449a5305db8a912a18f6460b564cd33b7850a25de61dc2da00d77f4322ee9c7",
+      "raw_source_authority": {
+        "accepted_input_channels": [
+          "externally anchored physical train-only authority allowlist",
+          "externally anchored exact four-column canonical sequence manifest",
+          "externally anchored direct-edge ledgers for VH, VL, concatenated antibody, and antigen views"
+        ],
+        "canonical_format": "score_free_authority_v2",
+        "create_only_publication": true,
+        "derived_without_external_summaries": [
+          "sequence lengths and missing VL",
+          "four-view direct and antibody-union degrees",
+          "complete-graph component identity and size",
+          "observed exact-pair incidence degrees",
+          "axis-scoped quantile cuts"
+        ],
+        "locked_inventory": {
+          "antibody_entities": 1383,
+          "antigen_entities": 1172,
+          "exact_pairs": 1830,
+          "source_rows": 3229
+        },
+        "nofollow_same_descriptor_hash_and_read": true,
+        "production_bundle_created": false,
+        "source_sha256": {
+          "scripts/build_score_free_authority.py": "98a2f3d36890461602c0e0c596d6ced50ed5cc3e9324bf076a8b422d7f62d544",
+          "src/interaction_first/score_free_authority.py": "c28b6b7ffe9fbb8a4d42318de8c8c6b014eecca60bf6350a210f75e42bf3f47e",
+          "tests/test_score_free_authority.py": "3718e48dade8b5a6c007ac251faa876c2ce14a1aa58cb8af9df3007288f0b4ad"
+        },
+        "status": "implemented_and_synthetically_audited_unrun_on_production_authority",
+        "related_regression_tests_passed": 116,
+        "targeted_tests_passed": 8,
+        "tested_under_python_hash_seeds": [
+          1,
+          777
+        ]
+      },
       "rejected_terminal_states": [
         "FEASIBLE",
         "UNKNOWN",
@@ -505,7 +541,7 @@
         "incomplete_separation",
         "audit_disagreement"
       ],
-      "status": "frozen_engineering_amendment_unimplemented",
+      "status": "raw_authority_extractor_implemented_remaining_stages_blocked",
       "training_prerequisites": [
         "audited_full_3_plus_9_assignment",
         "post_freeze_3d_interface_leakage_audit",
