@@ -1586,6 +1586,7 @@ def audit_score_free_authority_candidate(
     manifest_bytes: bytes,
     edge_ledger_bytes: Mapping[str, bytes],
     expected_primary_implementation_sha256: Mapping[str, str],
+    expected_primary_controller_sha256: str | None = None,
     expected_counts: Mapping[str, int] = EXPECTED_COUNTS,
 ) -> dict[str, object]:
     """Compare an independently rebuilt authority payload field by field."""
@@ -1599,7 +1600,11 @@ def audit_score_free_authority_candidate(
         ),
         expected_counts=expected_counts,
     )
-    allowed = set(independent) | {"verified_file_receipts", "publication_sha256"}
+    allowed = set(independent) | {
+        "verified_file_receipts",
+        "publication_controller_sha256",
+        "publication_sha256",
+    }
     if set(candidate) - allowed:
         raise IndependentScoreFreeAuditError(
             f"candidate has unknown fields: {sorted(set(candidate) - allowed)}"
@@ -1615,6 +1620,27 @@ def audit_score_free_authority_candidate(
         raise IndependentScoreFreeAuditError(
             f"independent authority disagreement at {difference}"
         )
+    controller_digest = candidate.get("publication_controller_sha256")
+    if "publication_sha256" in candidate and controller_digest is None:
+        raise IndependentScoreFreeAuditError(
+            "published candidate lacks its controller source binding"
+        )
+    if expected_primary_controller_sha256 is not None:
+        if (
+            not isinstance(expected_primary_controller_sha256, str)
+            or len(expected_primary_controller_sha256) != 64
+            or any(
+                character not in "0123456789abcdef"
+                for character in expected_primary_controller_sha256
+            )
+        ):
+            raise IndependentScoreFreeAuditError(
+                "primary publication controller anchor is malformed"
+            )
+        if controller_digest != expected_primary_controller_sha256:
+            raise IndependentScoreFreeAuditError(
+                "primary publication controller source disagrees"
+            )
     if "publication_sha256" in candidate:
         without_publication = dict(candidate)
         claimed_publication = without_publication.pop("publication_sha256")
@@ -1633,6 +1659,7 @@ def audit_score_free_authority_candidate(
             "scientific_payload_sha256"
         ],
         "independent_auditor_source_sha256": implementation_source_sha256(),
+        "primary_publication_controller_sha256": controller_digest,
         "raw_input_sha256": independent["input_sha256"],
         "field_by_field_agreement": True,
         "forbidden_outcome_or_model_fields_observed": False,

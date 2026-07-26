@@ -111,8 +111,10 @@ def read_verified_regular_file(
 def create_only_json(path: Path, payload: object) -> None:
     """Publish canonical JSON atomically without replacing an existing path."""
     absolute = _absolute_without_resolving(path)
-    _reject_symlink_components(absolute, include_final=False)
+    parent_existed = absolute.parent.exists()
+    _reject_symlink_components(absolute.parent, include_final=False)
     absolute.parent.mkdir(parents=False, exist_ok=True)
+    _reject_symlink_components(absolute.parent, include_final=True)
     if absolute.exists() or absolute.is_symlink():
         raise FileExistsError(f"create-only output already exists: {absolute}")
     descriptor, temporary_name = tempfile.mkstemp(
@@ -128,6 +130,7 @@ def create_only_json(path: Path, payload: object) -> None:
             handle.flush()
             os.fsync(handle.fileno())
         os.link(temporary, absolute)
+        os.chmod(absolute, 0o400)
         directory_descriptor = os.open(absolute.parent, os.O_RDONLY)
         try:
             os.fsync(directory_descriptor)
@@ -135,6 +138,8 @@ def create_only_json(path: Path, payload: object) -> None:
             os.close(directory_descriptor)
     finally:
         temporary.unlink(missing_ok=True)
+    if not parent_existed:
+        os.chmod(absolute.parent, 0o500)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -184,6 +189,9 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     )
     payload = bundle.canonical_payload()
     payload["verified_file_receipts"] = verified_inputs
+    payload["publication_controller_sha256"] = hashlib.sha256(
+        Path(__file__).read_bytes()
+    ).hexdigest()
     payload["publication_sha256"] = hashlib.sha256(
         canonical_json_bytes(payload)
     ).hexdigest()

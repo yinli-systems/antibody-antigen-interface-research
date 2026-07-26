@@ -174,6 +174,53 @@ def test_independent_reconstruction_exactly_matches_primary_payload() -> None:
     assert receipt["training_authorized"] is False
 
 
+def test_published_candidate_binds_primary_controller_source() -> None:
+    authority, manifest, ledgers, counts, candidate = _primary_candidate()
+    payload = json.loads(candidate)
+    controller_sha256 = "c" * 64
+    payload["publication_controller_sha256"] = controller_sha256
+    payload["publication_sha256"] = hashlib.sha256(
+        canonical_json_bytes(payload)
+    ).hexdigest()
+    receipt = audit_score_free_authority_candidate(
+        candidate_bytes=canonical_json_bytes(payload),
+        authority_bytes=authority,
+        manifest_bytes=manifest,
+        edge_ledger_bytes=ledgers,
+        expected_primary_implementation_sha256=(
+            _primary_implementation_sha256()
+        ),
+        expected_primary_controller_sha256=controller_sha256,
+        expected_counts={
+            "source_rows": counts.source_rows,
+            "exact_pairs": counts.exact_pairs,
+            "antibody_entities": counts.antibody_entities,
+            "antigen_entities": counts.antigen_entities,
+        },
+    )
+    assert receipt["primary_publication_controller_sha256"] == controller_sha256
+    with pytest.raises(
+        IndependentScoreFreeAuditError,
+        match="controller source disagrees",
+    ):
+        audit_score_free_authority_candidate(
+            candidate_bytes=canonical_json_bytes(payload),
+            authority_bytes=authority,
+            manifest_bytes=manifest,
+            edge_ledger_bytes=ledgers,
+            expected_primary_implementation_sha256=(
+                _primary_implementation_sha256()
+            ),
+            expected_primary_controller_sha256="d" * 64,
+            expected_counts={
+                "source_rows": counts.source_rows,
+                "exact_pairs": counts.exact_pairs,
+                "antibody_entities": counts.antibody_entities,
+                "antigen_entities": counts.antigen_entities,
+            },
+        )
+
+
 @pytest.mark.parametrize(
     "mutation",
     [

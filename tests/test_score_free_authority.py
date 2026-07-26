@@ -277,3 +277,14 @@ def test_create_only_publication_never_replaces_existing_bytes() -> None:
             SCRIPT.create_only_json(output, {"value": 2})
         assert output.read_bytes() == original
         assert os.stat(output).st_nlink == 1
+
+
+def test_create_only_publication_can_create_one_new_parent_directory() -> None:
+    with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
+        output = Path(directory) / "new-publication" / "bundle.json"
+        SCRIPT.create_only_json(output, {"value": 1})
+        assert json.loads(output.read_bytes()) == {"value": 1}
+        assert os.stat(output).st_mode & 0o777 == 0o400
+        assert os.stat(output.parent).st_mode & 0o777 == 0o500
+        with pytest.raises(FileExistsError, match="already exists"):
+            SCRIPT.create_only_json(output, {"value": 2})

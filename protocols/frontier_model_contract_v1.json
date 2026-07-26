@@ -575,14 +575,14 @@
         },
         "production_bundle_created": false,
         "source_sha256": {
-          "scripts/build_score_free_authority.py": "98a2f3d36890461602c0e0c596d6ced50ed5cc3e9324bf076a8b422d7f62d544",
+          "scripts/build_score_free_authority.py": "f31e67c5a2cf8495e5ebdef3d5bfb91e7b95c175c826f282b24d425877f9bed9",
           "src/interaction_first/score_free_authority.py": "41a6874158163f8cb28f29fc2f524daf92b48b53576c0197e5f5c2f223205ee9",
-          "tests/test_score_free_authority.py": "e20dfcdde81ef5947e86ad498beccd5f9229813797836d0c1007f235a26ac440"
+          "tests/test_score_free_authority.py": "5ee4d4a8610c39c5e99869465503aa8a55af8e687480a40bff4960fd6ae1d28d"
         },
-        "status": "implemented_with_frozen_lf_membership_compatibility_unrun_on_production_authority",
+        "status": "production_publication_controller_source_bound_and_parent_creation_hardened_unrun_successfully_on_production_authority",
         "authority_membership_hash_scheme": "sorted_unique_ascii_identifiers_with_one_LF_each",
         "authority_membership_expected_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
-        "related_regression_tests_passed": 146,
+        "related_regression_tests_passed": 157,
         "targeted_tests_passed": 9,
         "tested_under_python_hash_seeds": [
           1,
@@ -632,14 +632,14 @@
           "pooled outer representativeness"
         ],
         "production_audit_receipt_created": false,
-        "related_regression_tests_passed_under_each_hash_seed": 146,
+        "related_regression_tests_passed_under_each_hash_seed": 157,
         "source_sha256": {
-          "scripts/audit_score_free_authority_independent.py": "59704135449de46844b9fa2ff4582f026ae1fafaef82f25911befea7668d5f3c",
-          "src/interaction_first/score_free_independent_auditor.py": "e303ed0c445b6278203e43300c2fb9fc49708a4d58413d52cef461b905e9fe2c",
-          "tests/test_score_free_independent_auditor.py": "ba43687b259f9ca11ba113ede9f9b739016e9a155e7ce9ce426a26477f31bf3a"
+          "scripts/audit_score_free_authority_independent.py": "fb501add7ce098f6535d5b935a4f789057a42761dd36d919a86ea1a0f97edd88",
+          "src/interaction_first/score_free_independent_auditor.py": "ea125cf890b6990885417558c4777ef02a580058c95bcbb1b6ef5b9f08d5a218",
+          "tests/test_score_free_independent_auditor.py": "cb5d01049dd92f55f3afb0a2452e5ab2d0c8eec390587a5a0ab1d3d750cb470a"
         },
-        "status": "synthetically_agrees_field_by_field_with_frozen_lf_membership_unrun_on_production_authority",
-        "targeted_tests_passed": 16,
+        "status": "synthetically_agrees_field_by_field_and_authenticates_publication_controller_unrun_on_production_authority",
+        "targeted_tests_passed": 17,
         "tested_under_python_hash_seeds": [
           1,
           777

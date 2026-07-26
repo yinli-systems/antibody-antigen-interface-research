@@ -151,6 +151,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--canonical-manifest-sha256", required=True)
     parser.add_argument("--primary-authority-source-sha256", required=True)
     parser.add_argument("--primary-statistics-source-sha256", required=True)
+    parser.add_argument("--primary-controller-source-sha256", required=True)
     for view in VIEWS:
         option = view.replace("_", "-")
         parser.add_argument(f"--edge-ledger-{option}", type=Path, required=True)
@@ -194,6 +195,9 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             "score_free_authority": args.primary_authority_source_sha256,
             "score_free_split_statistics": args.primary_statistics_source_sha256,
         },
+        expected_primary_controller_sha256=(
+            args.primary_controller_source_sha256
+        ),
     )
     receipt.pop("receipt_sha256")
     receipt["verified_file_receipts"] = references
