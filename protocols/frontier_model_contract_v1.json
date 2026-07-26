@@ -871,6 +871,13 @@
             "reason": "The frozen direct CP-SAT parser expected the scientific authority schema and rejected the three authenticated publication-envelope fields before model construction.",
             "source_sha256": "80414e1eb810c66776d19b9c04a2673f70dd32770cc02797ed565d17a730cf42",
             "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
+          },
+          {
+            "authority_or_split_failure": false,
+            "output_created": false,
+            "reason": "The publication envelope passed, but the frozen direct CP-SAT parser expected pair-ID order while the authority builder canonically emits unique pairs in endpoint order.",
+            "source_sha256": "921f87a3545ccb6a31e8bd714cfa9e22f8692ec772deda692a0b5c7a2bcf85aa",
+            "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
           }
         ],
         "production_receipt_created": false,
@@ -886,7 +893,7 @@
         "related_v6_tests_passed_under_each_hash_seed": 107,
         "training_authorized": false
       },
-      "status": "publication_envelope_compatibility_hardened_new_production_attempt_required",
+      "status": "second_row_shard_attempt_failed_on_pair_order_compatibility_fix_required",
       "training_authorized": false,
       "claim_boundary": "The decomposition protocol and telemetry-only full-IR partition are implemented and synthetically tested after the V6-A registered dry-run stop. No production V6-B telemetry receipt, solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
     },
