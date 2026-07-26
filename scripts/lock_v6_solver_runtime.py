@@ -118,7 +118,11 @@ def _wheel_metadata(payload: bytes, filename: str) -> dict[str, Any]:
     }
 
 
-def wheelhouse_receipt(wheelhouse: Path) -> list[dict[str, object]]:
+def wheelhouse_receipt(
+    wheelhouse: Path,
+    *,
+    required_direct_projects: Sequence[str],
+) -> list[dict[str, object]]:
     """Authenticate every wheel and require one installed matching distribution."""
     root = Path(os.path.abspath(os.path.expanduser(str(wheelhouse))))
     metadata = os.lstat(root)
@@ -153,7 +157,12 @@ def wheelhouse_receipt(wheelhouse: Path) -> list[dict[str, object]]:
                 "installed_version": installed_version,
             }
         )
-    for project, version in LOCKED_DIRECT_VERSIONS.items():
+    if not required_direct_projects:
+        raise RuntimeLockError("at least one direct solver project is required")
+    for project in required_direct_projects:
+        if project not in LOCKED_DIRECT_VERSIONS:
+            raise RuntimeLockError(f"unknown direct solver project {project}")
+        version = LOCKED_DIRECT_VERSIONS[project]
         if importlib.metadata.version(project) != version:
             raise RuntimeLockError(f"locked direct version differs for {project}")
         if _normalize_project_name(project) not in projects:
@@ -161,7 +170,7 @@ def wheelhouse_receipt(wheelhouse: Path) -> list[dict[str, object]]:
     return records
 
 
-def solver_smoke_receipt() -> dict[str, object]:
+def solver_smoke_receipt(backend: str = "both") -> dict[str, object]:
     """Execute each native solver in a separate clean Python process."""
     cp_source = """
 import json
@@ -226,15 +235,23 @@ print(json.dumps({{"highs_version": solver.version(), "status": "kOptimal", "obj
             raise RuntimeLockError(f"{label} smoke receipt is not an object")
         return payload
 
-    return {
+    if backend not in {"both", "cp_sat", "highs"}:
+        raise RuntimeLockError("solver smoke backend is invalid")
+    receipt: dict[str, object] = {
         "native_library_process_isolation": True,
-        "cp_sat": probe(cp_source, "CP-SAT"),
-        "highs": probe(highs_source, "HiGHS"),
+        "backend": backend,
     }
+    if backend in {"both", "cp_sat"}:
+        receipt["cp_sat"] = probe(cp_source, "CP-SAT")
+    if backend in {"both", "highs"}:
+        receipt["highs"] = probe(highs_source, "HiGHS")
+    return receipt
 
 
-def build_receipt(wheelhouse: Path) -> dict[str, object]:
+def build_receipt(wheelhouse: Path, *, backend: str) -> dict[str, object]:
     """Build the canonical runtime receipt without granting model authority."""
+    if backend not in {"cp_sat", "highs"}:
+        raise RuntimeLockError("production runtime backend is invalid")
     os_release = Path("/etc/os-release")
     os_release_bytes = os_release.read_bytes() if os_release.is_file() else b""
     payload: dict[str, object] = {
@@ -252,8 +269,14 @@ def build_receipt(wheelhouse: Path) -> dict[str, object]:
             "libc": list(platform.libc_ver()),
             "os_release_sha256": hashlib.sha256(os_release_bytes).hexdigest(),
         },
-        "wheels": wheelhouse_receipt(wheelhouse),
-        "solver_smoke": solver_smoke_receipt(),
+        "backend": backend,
+        "wheels": wheelhouse_receipt(
+            wheelhouse,
+            required_direct_projects=(
+                ("ortools",) if backend == "cp_sat" else ("highspy",)
+            ),
+        ),
+        "solver_smoke": solver_smoke_receipt(backend),
         "implementation_source_sha256": hashlib.sha256(
             Path(__file__).read_bytes()
         ).hexdigest(),
@@ -284,6 +307,7 @@ def _write_exclusive(path: Path, payload: bytes) -> None:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--backend", choices=("cp_sat", "highs"), required=True)
     parser.add_argument("--wheelhouse", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args(argv)
@@ -294,7 +318,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     output = Path(os.path.abspath(os.path.expanduser(str(args.output))))
     if not output.parent.is_dir() or output.exists() or output.is_symlink():
         raise FileExistsError("runtime receipt output must be new in an existing directory")
-    receipt = build_receipt(args.wheelhouse)
+    receipt = build_receipt(args.wheelhouse, backend=args.backend)
     _write_exclusive(output, _canonical_json_bytes(receipt))
     print(json.dumps(receipt, sort_keys=True, separators=(",", ":")))
     return 0

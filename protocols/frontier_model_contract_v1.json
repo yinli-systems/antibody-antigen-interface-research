@@ -719,12 +719,12 @@
           "native_library_process_isolation_required": true,
           "receipt_format": "v6_a_solver_runtime_lock_v1",
           "source_sha256": {
-            "scripts/lock_v6_solver_runtime.py": "1c25fc356505fdec56665ba4e207bd331c72a0e3c0a841167e7c970d65f5a61c",
-            "tests/test_lock_v6_solver_runtime.py": "f301a9d6ea9b1fc38d795e0d8692d7691a33d05b5c52cfda78cfdef5f146f843"
+            "scripts/lock_v6_solver_runtime.py": "91a80ef18535d77ba7bbbc005374ad05bd1eb49a6a966c63b91b6c2982474bc2",
+            "tests/test_lock_v6_solver_runtime.py": "61031024512f9cbab690ba9de2ce3a8d873d197968fc2d616b531e8139c8aec8"
           },
-          "status": "synthetically_hardened_unrun_in_production_python_3_10",
-          "targeted_tests_passed_under_each_hash_seed": 4,
-          "related_v6_tests_passed_under_each_hash_seed": 23,
+          "status": "separate_cp_sat_and_highs_venv_receipts_hardened_unrun_in_production_python_3_10",
+          "targeted_tests_passed_under_each_hash_seed": 5,
+          "related_v6_tests_passed_under_each_hash_seed": 24,
           "training_authorized": false
         },
         "production_solver_run_completed": false,

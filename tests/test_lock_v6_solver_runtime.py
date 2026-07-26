@@ -31,6 +31,23 @@ def test_both_integer_solver_smoke_probes_are_exact_optimal() -> None:
     assert receipt["highs"]["locked_options"] == SCRIPT.LOCKED_HIGHS_OPTIONS
 
 
+def test_each_production_backend_smoke_is_physically_separable() -> None:
+    cp_sat = SCRIPT.solver_smoke_receipt("cp_sat")
+    highs = SCRIPT.solver_smoke_receipt("highs")
+    assert set(cp_sat) == {
+        "native_library_process_isolation",
+        "backend",
+        "cp_sat",
+    }
+    assert set(highs) == {
+        "native_library_process_isolation",
+        "backend",
+        "highs",
+    }
+    with pytest.raises(SCRIPT.RuntimeLockError, match="backend is invalid"):
+        SCRIPT.solver_smoke_receipt("shared_native_process")
+
+
 def test_wheel_metadata_is_derived_from_archive_bytes(tmp_path: Path) -> None:
     invalid = tmp_path / "invalid.whl"
     invalid.write_bytes(b"not a wheel")
