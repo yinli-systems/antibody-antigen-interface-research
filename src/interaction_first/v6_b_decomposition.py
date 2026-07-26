@@ -27,6 +27,7 @@ EXPECTED_OUTER_GATES = 18
 EXPECTED_INNER_GATES_PER_GROUP = 16
 EXPECTED_INNER_GROUPS = 3
 EXPECTED_TOTAL_GATES = 66
+LOCKED_RANDOM_SEED = 2026072701
 
 
 class V6BDecompositionError(ValueError):
@@ -391,3 +392,389 @@ def selected_row_hashes(telemetry: Mapping[str, object]) -> tuple[str, ...]:
     if len(result) != len(set(result)):
         raise V6BDecompositionError("selected row hashes are duplicated")
     return tuple(result)
+
+
+@dataclass(frozen=True)
+class SignedSupportLiteral:
+    """One outer-master Boolean state used by an inner infeasibility proof."""
+
+    key: VariableKey
+    value: int
+
+    def __post_init__(self) -> None:
+        if not self.key or self.key[0] != "outer":
+            raise V6BDecompositionError("support literal must reference an outer variable")
+        _outer_index(self.key)
+        if self.value not in {0, 1}:
+            raise V6BDecompositionError("support literal value must be binary")
+
+    def canonical_payload(self) -> list[object]:
+        return [list(self.key), self.value]
+
+
+@dataclass(frozen=True)
+class V6BMasterNoGoodCut:
+    """One replayed logic-based cut over signed outer-state literals."""
+
+    outer_fold: int
+    support: tuple[SignedSupportLiteral, ...]
+    first_response_sha256: str
+    replay_response_sha256: str
+    independent_replay_sha256: str
+    cut_sha256: str
+
+    def canonical_payload(self) -> dict[str, object]:
+        return {
+            "outer_fold": self.outer_fold,
+            "support": [literal.canonical_payload() for literal in self.support],
+            "first_response_sha256": self.first_response_sha256,
+            "replay_response_sha256": self.replay_response_sha256,
+            "independent_replay_sha256": self.independent_replay_sha256,
+            "cut_sha256": self.cut_sha256,
+        }
+
+
+def _configure_solver(solver: object, maximum_time_seconds: float | None) -> None:
+    solver.parameters.num_search_workers = 1
+    solver.parameters.random_seed = LOCKED_RANDOM_SEED
+    solver.parameters.randomize_search = False
+    solver.parameters.relative_gap_limit = 0.0
+    solver.parameters.absolute_gap_limit = 0.0
+    if maximum_time_seconds is not None:
+        if maximum_time_seconds <= 0:
+            raise V6BDecompositionError("CP-SAT time limit must be positive")
+        solver.parameters.max_time_in_seconds = maximum_time_seconds
+
+
+def _add_rows(
+    model: object,
+    variables: Mapping[VariableKey, object],
+    rows: Iterable[IRLinearConstraint],
+) -> None:
+    for row in rows:
+        expression = sum(
+            coefficient * variables[key] for key, coefficient in row.coefficients
+        )
+        if row.lower_bound is not None:
+            model.add(expression >= row.lower_bound)
+        if row.upper_bound is not None:
+            model.add(expression <= row.upper_bound)
+
+
+def _add_no_good(
+    model: object,
+    variables: Mapping[VariableKey, object],
+    support: Sequence[SignedSupportLiteral],
+) -> None:
+    if not support:
+        raise V6BDecompositionError("no-good support cannot be empty")
+    unknown = {literal.key for literal in support} - set(variables)
+    if unknown:
+        raise V6BDecompositionError("no-good support references an unknown variable")
+    model.add(
+        sum(
+            variables[literal.key] if literal.value == 0 else 1 - variables[literal.key]
+            for literal in support
+        )
+        >= 1
+    )
+
+
+def _audit_rows(
+    rows: Iterable[IRLinearConstraint],
+    assignment: Mapping[VariableKey, int],
+) -> bool:
+    if any(value not in {0, 1} for value in assignment.values()):
+        return False
+    for row in rows:
+        if {key for key, _ in row.coefficients} - set(assignment):
+            return False
+        value = sum(
+            coefficient * assignment[key] for key, coefficient in row.coefficients
+        )
+        if row.lower_bound is not None and value < row.lower_bound:
+            return False
+        if row.upper_bound is not None and value > row.upper_bound:
+            return False
+    return True
+
+
+def _audit_no_good(
+    support: Sequence[SignedSupportLiteral],
+    assignment: Mapping[VariableKey, int],
+) -> bool:
+    return any(assignment[literal.key] != literal.value for literal in support)
+
+
+def _response_payload(solver: object, status_name: str) -> dict[str, object]:
+    payload: dict[str, object] = {
+        "status": status_name,
+        "wall_time_seconds": str(solver.wall_time),
+        "user_time_seconds": str(solver.user_time),
+        "branches": int(solver.num_branches),
+        "conflicts": int(solver.num_conflicts),
+        "objective_value": str(solver.objective_value),
+        "best_objective_bound": str(solver.best_objective_bound),
+        "response_stats": str(solver.response_stats()),
+    }
+    payload["response_sha256"] = _sha256(payload)
+    return payload
+
+
+def solve_outer_master_linear_projection(
+    partition: V6BIRPartition,
+    *,
+    cuts: Sequence[V6BMasterNoGoodCut] = (),
+    maximum_time_seconds: float | None = None,
+) -> dict[str, object]:
+    """Solve the outer integer projection and reject incomplete CP-SAT states."""
+    from ortools.sat.python import cp_model
+    import ortools
+
+    model = cp_model.CpModel()
+    variables = {
+        key: model.new_bool_var(f"m_{index:09d}")
+        for index, key in enumerate(partition.master_variables)
+    }
+    _add_rows(model, variables, partition.master_rows)
+    for cut in cuts:
+        _add_no_good(model, variables, cut.support)
+    model.minimize(0)
+    solver = cp_model.CpSolver()
+    _configure_solver(solver, maximum_time_seconds)
+    status = solver.solve(model)
+    status_name = solver.status_name(status)
+    response = _response_payload(solver, status_name)
+    assignment = None
+    if status == cp_model.OPTIMAL:
+        assignment = {
+            key: int(solver.value(variable)) for key, variable in variables.items()
+        }
+        if not _audit_rows(partition.master_rows, assignment) or any(
+            not _audit_no_good(cut.support, assignment) for cut in cuts
+        ):
+            raise V6BDecompositionError("outer integer row audit disagrees")
+    payload: dict[str, object] = {
+        "solver": "OR-Tools CP-SAT",
+        "ortools_version": ortools.__version__,
+        "status": status_name,
+        "accepted_terminal_status": status in {cp_model.OPTIMAL, cp_model.INFEASIBLE},
+        "candidate_present": assignment is not None,
+        "integer_row_audit_passed": assignment is not None,
+        "response": response,
+        "assignment": (
+            None
+            if assignment is None
+            else [[list(key), assignment[key]] for key in partition.master_variables]
+        ),
+        "cut_sha256": [cut.cut_sha256 for cut in cuts],
+        "num_search_workers": 1,
+        "random_seed": LOCKED_RANDOM_SEED,
+        "complete_score_free_feasible_region_authorized": False,
+        "training_authorized": False,
+    }
+    payload["receipt_sha256"] = _sha256(payload)
+    return payload
+
+
+def _inner_model_with_assumptions(
+    partition: V6BIRPartition,
+    outer_fold: int,
+    support: Sequence[SignedSupportLiteral],
+) -> tuple[object, dict[VariableKey, object], dict[int, SignedSupportLiteral]]:
+    from ortools.sat.python import cp_model
+
+    if outer_fold not in range(EXPECTED_INNER_GROUPS):
+        raise V6BDecompositionError("inner outer-fold index is outside range")
+    variables_for_group = dict(partition.inner_variables)[outer_fold]
+    rows = dict(partition.inner_rows)[outer_fold]
+    model = cp_model.CpModel()
+    variables = {
+        key: model.new_bool_var(f"s_{index:09d}")
+        for index, key in enumerate(variables_for_group)
+    }
+    _add_rows(model, variables, rows)
+    assumptions: dict[int, SignedSupportLiteral] = {}
+    for index, literal in enumerate(support):
+        if literal.key not in variables or _outer_index(literal.key) != outer_fold:
+            raise V6BDecompositionError("inner assumption is outside its boundary")
+        assumption = model.new_bool_var(f"a_{index:09d}")
+        model.add(variables[literal.key] == literal.value).only_enforce_if(assumption)
+        model.add_assumption(assumption)
+        assumptions[int(assumption.index)] = literal
+    model.minimize(0)
+    return model, variables, assumptions
+
+
+def solve_inner_linear_projection(
+    partition: V6BIRPartition,
+    *,
+    outer_fold: int,
+    outer_assignment: Mapping[VariableKey, int],
+    maximum_time_seconds: float | None = None,
+) -> dict[str, object]:
+    """Solve one inner group under signed outer assumptions and return its core."""
+    from ortools.sat.python import cp_model
+    import ortools
+
+    boundary_keys = tuple(
+        key
+        for key in dict(partition.inner_variables)[outer_fold]
+        if key[0] == "outer"
+    )
+    if set(outer_assignment) != set(partition.master_variables):
+        raise V6BDecompositionError("outer assignment does not cover the master")
+    if any(value not in {0, 1} for value in outer_assignment.values()):
+        raise V6BDecompositionError("outer assignment is not binary")
+    support = tuple(
+        SignedSupportLiteral(key, outer_assignment[key]) for key in boundary_keys
+    )
+    model, variables, assumptions = _inner_model_with_assumptions(
+        partition,
+        outer_fold,
+        support,
+    )
+    solver = cp_model.CpSolver()
+    _configure_solver(solver, maximum_time_seconds)
+    status = solver.solve(model)
+    status_name = solver.status_name(status)
+    response = _response_payload(solver, status_name)
+    assignment = None
+    core: tuple[SignedSupportLiteral, ...] = ()
+    if status == cp_model.OPTIMAL:
+        assignment = {
+            key: int(solver.value(variable)) for key, variable in variables.items()
+        }
+        if not _audit_rows(dict(partition.inner_rows)[outer_fold], assignment):
+            raise V6BDecompositionError("inner integer row audit disagrees")
+        if any(assignment[literal.key] != literal.value for literal in support):
+            raise V6BDecompositionError("inner boundary audit disagrees")
+    elif status == cp_model.INFEASIBLE:
+        raw_core = tuple(int(value) for value in solver.sufficient_assumptions_for_infeasibility())
+        try:
+            core = tuple(sorted((assumptions[index] for index in raw_core), key=lambda item: item.key))
+        except KeyError as error:
+            raise V6BDecompositionError(
+                "CP-SAT returned an unknown or signed assumption index"
+            ) from error
+        if not core:
+            raise V6BDecompositionError("infeasible inner model returned an empty core")
+    payload: dict[str, object] = {
+        "solver": "OR-Tools CP-SAT",
+        "ortools_version": ortools.__version__,
+        "outer_fold": outer_fold,
+        "status": status_name,
+        "accepted_terminal_status": status in {cp_model.OPTIMAL, cp_model.INFEASIBLE},
+        "candidate_present": assignment is not None,
+        "integer_row_audit_passed": assignment is not None,
+        "response": response,
+        "assumption_count": len(support),
+        "sufficient_assumption_support": [
+            literal.canonical_payload() for literal in core
+        ],
+        "assignment": (
+            None
+            if assignment is None
+            else [
+                [list(key), assignment[key]]
+                for key in dict(partition.inner_variables)[outer_fold]
+            ]
+        ),
+        "complete_score_free_feasible_region_authorized": False,
+        "training_authorized": False,
+    }
+    payload["receipt_sha256"] = _sha256(payload)
+    return payload
+
+
+def replay_inner_infeasibility_support(
+    partition: V6BIRPartition,
+    *,
+    outer_fold: int,
+    support: Sequence[SignedSupportLiteral],
+    maximum_time_seconds: float | None = None,
+) -> dict[str, object]:
+    """Rebuild an inner model with only the proposed support fixed and replay it."""
+    from ortools.sat.python import cp_model
+    import ortools
+
+    canonical = tuple(sorted(support, key=lambda literal: literal.key))
+    if not canonical or len({literal.key for literal in canonical}) != len(canonical):
+        raise V6BDecompositionError("replay support must be non-empty and unique")
+    model, _, _ = _inner_model_with_assumptions(partition, outer_fold, canonical)
+    solver = cp_model.CpSolver()
+    _configure_solver(solver, maximum_time_seconds)
+    status = solver.solve(model)
+    status_name = solver.status_name(status)
+    response = _response_payload(solver, status_name)
+    payload: dict[str, object] = {
+        "solver": "OR-Tools CP-SAT",
+        "ortools_version": ortools.__version__,
+        "outer_fold": outer_fold,
+        "support": [literal.canonical_payload() for literal in canonical],
+        "support_sha256": _sha256(
+            [literal.canonical_payload() for literal in canonical]
+        ),
+        "status": status_name,
+        "replay_infeasible": status == cp_model.INFEASIBLE,
+        "accepted_terminal_status": status in {cp_model.OPTIMAL, cp_model.INFEASIBLE},
+        "response": response,
+        "training_authorized": False,
+    }
+    payload["receipt_sha256"] = _sha256(payload)
+    return payload
+
+
+def build_replayed_master_no_good_cut(
+    *,
+    outer_fold: int,
+    support: Sequence[SignedSupportLiteral],
+    first_response_sha256: str,
+    replay_response_sha256: str,
+    independent_replay_receipt: Mapping[str, object],
+) -> V6BMasterNoGoodCut:
+    """Create a master cut only after both replay evidence hashes are present."""
+    canonical = tuple(sorted(support, key=lambda literal: literal.key))
+    if not canonical or len({literal.key for literal in canonical}) != len(canonical):
+        raise V6BDecompositionError("cut support must be non-empty and unique")
+    expected_support = [literal.canonical_payload() for literal in canonical]
+    independent_payload = dict(independent_replay_receipt)
+    independent_sha256 = independent_payload.pop("receipt_sha256", None)
+    if (
+        independent_replay_receipt.get("format_version")
+        != "v6_b_independent_inner_core_replay_v1"
+        or independent_replay_receipt.get("outer_fold") != outer_fold
+        or independent_replay_receipt.get("support") != expected_support
+        or independent_replay_receipt.get("status") != "INFEASIBLE"
+        or independent_replay_receipt.get("replay_infeasible") is not True
+        or independent_replay_receipt.get("accepted_terminal_status") is not True
+        or independent_replay_receipt.get("v6_b_decomposition_imported") is not False
+        or independent_replay_receipt.get("historical_milp_or_highs_artifact_consumed")
+        is not False
+        or independent_replay_receipt.get("training_authorized") is not False
+    ):
+        raise V6BDecompositionError("independent replay cannot support a master cut")
+    if independent_sha256 != _sha256(independent_payload):
+        raise V6BDecompositionError("independent replay self hash differs")
+    for label, digest in (
+        ("first response", first_response_sha256),
+        ("replay response", replay_response_sha256),
+        ("independent replay", independent_sha256),
+    ):
+        if len(digest) != 64 or any(character not in "0123456789abcdef" for character in digest):
+            raise V6BDecompositionError(f"{label} must be a lowercase SHA-256")
+    base: dict[str, object] = {
+        "outer_fold": outer_fold,
+        "support": [literal.canonical_payload() for literal in canonical],
+        "first_response_sha256": first_response_sha256,
+        "replay_response_sha256": replay_response_sha256,
+        "independent_replay_sha256": independent_sha256,
+    }
+    return V6BMasterNoGoodCut(
+        outer_fold=outer_fold,
+        support=canonical,
+        first_response_sha256=first_response_sha256,
+        replay_response_sha256=replay_response_sha256,
+        independent_replay_sha256=independent_sha256,
+        cut_sha256=_sha256(base),
+    )

@@ -857,6 +857,27 @@
         "row_shard_samples_entities_or_pairs": false,
         "total_exact_gate_count": 66
       },
+      "logic_based_linear_controller": {
+        "accepted_terminal_statuses": [
+          "OPTIMAL",
+          "INFEASIBLE"
+        ],
+        "assumption_support_must_be_nonempty": true,
+        "exhaustive_three_group_outer_states_checked": 8,
+        "independent_replay_directly_rebuilds_selected_proto_rows": true,
+        "integer_row_postsolve_audit_required": true,
+        "master_cut_requires_primary_replay_and_independent_replay": true,
+        "production_run_completed": false,
+        "source_sha256": {
+          "src/interaction_first/v6_b_decomposition.py": "401962abddefbe239fe2fb17d50df4809e130bc1f49432cf57a30568236a2166",
+          "src/interaction_first/v6_b_independent_core_auditor.py": "1bb33ee3e1bebc7229845dc3adfdc9c974bd6243be4cc3038477246548642b72",
+          "tests/test_v6_b_decomposition.py": "b2d8ad4d1db8d229af9d3a1279b7d5b339436f070677410e0d91bec2e0e4d7fd",
+          "tests/test_v6_b_independent_core_auditor.py": "d14c190ea53aa8a6e4b13fc8a025dc615355d2fdda1a8c744e8ef513c0c8fc73"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 13,
+        "related_v6_tests_passed_under_each_hash_seed": 119,
+        "training_authorized": false
+      },
       "parent_v6_a_terminal_receipt_sha256": "e5b1db83df183406430dc118289b466b61d06f8533451c026a14eab0defa81fd",
       "policy_sha256": "197e464e1c73117523f413b1ffabdb553fb9b772fe071aa20630bf80d8e27f81",
       "protocol_sha256": "783a95eaf9522fb7f27c987f9b5d3f18b627fdfcd108356f6a743c1762461bba",
@@ -933,7 +954,7 @@
         "related_v6_tests_passed_under_each_hash_seed": 111,
         "training_authorized": false
       },
-      "status": "full_authority_row_shard_telemetry_passed_decomposition_solver_unimplemented",
+      "status": "row_shard_telemetry_passed_linear_decomposition_controller_synthetically_hardened_production_unrun",
       "training_authorized": false,
       "claim_boundary": "The production full-authority IR was constructed and passed the telemetry-only 25 percent resource-headroom check without solver invocation. No V6-B decomposition solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
     },
