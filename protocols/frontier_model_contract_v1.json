@@ -573,13 +573,29 @@
             777
           ]
         },
-        "production_bundle_created": false,
+        "production_bundle_created": true,
+        "production_bundle_receipt": {
+          "authority_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+          "counts": {
+            "antibody_entities": 1383,
+            "antigen_entities": 1172,
+            "exact_pairs": 1830,
+            "source_rows": 3229
+          },
+          "file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
+          "forbidden_outcome_or_model_fields_accepted": false,
+          "output_path": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/primary_authority_97f362d/score_free_authority_v2.json",
+          "publication_controller_sha256": "f31e67c5a2cf8495e5ebdef3d5bfb91e7b95c175c826f282b24d425877f9bed9",
+          "publication_sha256": "cfea44099d73c7dc6d3ec6047e6a4630759b0777627d46a87e6caac905168ec8",
+          "scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+          "training_authorized": false
+        },
         "source_sha256": {
           "scripts/build_score_free_authority.py": "f31e67c5a2cf8495e5ebdef3d5bfb91e7b95c175c826f282b24d425877f9bed9",
           "src/interaction_first/score_free_authority.py": "41a6874158163f8cb28f29fc2f524daf92b48b53576c0197e5f5c2f223205ee9",
           "tests/test_score_free_authority.py": "5ee4d4a8610c39c5e99869465503aa8a55af8e687480a40bff4960fd6ae1d28d"
         },
-        "status": "production_publication_controller_source_bound_and_parent_creation_hardened_unrun_successfully_on_production_authority",
+        "status": "production_authority_bundle_created_rehashed_and_independently_agreed_no_training_authority",
         "authority_membership_hash_scheme": "sorted_unique_ascii_identifiers_with_one_LF_each",
         "authority_membership_expected_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
         "related_regression_tests_passed": 157,
@@ -631,14 +647,26 @@
           "cross-fold exact relative ranges",
           "pooled outer representativeness"
         ],
-        "production_audit_receipt_created": false,
+        "production_audit_receipt_created": true,
+        "production_audit_receipt": {
+          "candidate_file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
+          "candidate_scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+          "field_by_field_agreement": true,
+          "independent_scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+          "markdown_sha256": "7d4812a72c6a7ab73836c77837a298efebebd43249d41fd167cb94a9446555b9",
+          "output_directory": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/independent_authority_audit_97f362d",
+          "passed": true,
+          "receipt_file_sha256": "134a5af8cd89858dd7cd9d59cec44020c3b9d6bba942861416d65c89ff9ccf20",
+          "receipt_sha256": "52559592b14029425217e75c8c97a6380d2e136faedfbc864268537cbe6e207a",
+          "training_authorized": false
+        },
         "related_regression_tests_passed_under_each_hash_seed": 157,
         "source_sha256": {
           "scripts/audit_score_free_authority_independent.py": "fb501add7ce098f6535d5b935a4f789057a42761dd36d919a86ea1a0f97edd88",
           "src/interaction_first/score_free_independent_auditor.py": "ea125cf890b6990885417558c4777ef02a580058c95bcbb1b6ef5b9f08d5a218",
           "tests/test_score_free_independent_auditor.py": "cb5d01049dd92f55f3afb0a2452e5ab2d0c8eec390587a5a0ab1d3d750cb470a"
         },
-        "status": "synthetically_agrees_field_by_field_and_authenticates_publication_controller_unrun_on_production_authority",
+        "status": "production_authority_reconstructed_from_raw_bytes_and_field_by_field_agreed_no_training_authority",
         "targeted_tests_passed": 17,
         "tested_under_python_hash_seeds": [
           1,
