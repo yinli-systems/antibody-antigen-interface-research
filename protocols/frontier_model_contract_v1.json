@@ -421,7 +421,7 @@
       "authorizes_training_model_selection_or_evaluation": false,
       "does_not_prove": [
         "locked V0 full-retention-first lexicographic objective stages",
-        "locked representativeness and remaining balance gates",
+        "integration of locked representativeness and remaining balance gates into the v5 joint MILP",
         "deterministic sequential variable fixing or canonical tie-break trace",
         "precision or power receipt",
         "remaining runtime closure",
@@ -434,6 +434,53 @@
       "full_graph_reconstruction_production_audit_cost_measured": false,
       "production_solver_memory_and_runtime_measured": false,
       "claim_boundary": "No v5 real run or result exists. Even an independently audited, externally pinned v5 replay is only a non-authorizing exact core-feasibility precursor with full-authority component minima; it cannot close Gate 0 or authorize training, model selection, or evaluation."
+    },
+    "score_free_split_statistics_v1": {
+      "status": "synthetic_engineering_oracle_only",
+      "implementation_commit": "8343c3b526d185d56a8cf3b73c3f8c9165cf02c6",
+      "allowed_input_scope": [
+        "typed train-only sequence-length summaries",
+        "typed train-only direct-degree and component summaries",
+        "observed exact positive-pair incidence",
+        "already scoped outer or inner endpoint universes"
+      ],
+      "forbidden_input_classes": [
+        "contact or interface labels",
+        "paratope or epitope sizes",
+        "affinity or assay outcomes",
+        "embeddings, predictions, losses, ranks, or model scores"
+      ],
+      "implemented_gates": [
+        "tie-preserving type-1 quintile schemes with explicit missing-VL bins",
+        "50-digit Decimal SMD with exact rational means and sample variances",
+        "exact Fraction histogram total variation and empirical KS",
+        "outer, pooled-outer, and inner distribution threshold contracts",
+        "exact pair, endpoint, component, retention, and quarantine shape gates",
+        "singleton-positive fractions, bipartite density, and exact finite-library chance MRR",
+        "exact three-fold relative-range gates and pooled entity-disjoint outer checks",
+        "canonical audit digests binding thresholds, universe/training/validation memberships, and quantile cuts"
+      ],
+      "source_sha256": {
+        "src/interaction_first/score_free_split_statistics.py": "e9b2a2667d52cc1b7785b95fc195666696b202212ad2aa136b551d044a29fecf",
+        "tests/test_score_free_split_statistics.py": "e63d50b145e6d5c4f1bcf52ea16bff4e30c7432add36303556a0503c23a53751"
+      },
+      "targeted_tests_passed": 20,
+      "targeted_tests_passed_under_hash_seeds": [
+        1,
+        777
+      ],
+      "related_combined_tests_passed": 257,
+      "authorizes_split_domain_gate0": false,
+      "authorizes_training_model_selection_or_evaluation": false,
+      "remaining_boundaries": [
+        "typed summaries are not yet independently derived from authenticated raw sequence and graph sources",
+        "the oracle is not integrated into the v5 joint MILP or independent replay auditor",
+        "no real authority-train fold was audited",
+        "homology-edge and zero-crossing audits remain separate",
+        "no independently implemented second statistics oracle exists",
+        "no isolated inner-scope source firewall receipt exists"
+      ],
+      "claim_boundary": "Synthetic score-free statistics and hard-gate engineering only. No real split feasibility, training authority, model result, biological metric, or SOTA evidence was produced."
     },
     "claim_boundary": "No real PAIRFormer contact training, model selection, held-out scoring, new biological metric, metric improvement, large-scale PAIRFormer model run, or world-leading result."
   },

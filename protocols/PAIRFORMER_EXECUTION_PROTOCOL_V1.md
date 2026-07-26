@@ -149,6 +149,19 @@ biological result:
   prove transitive lineage independence, and replay auditing does not
   independently prove the solver's historical execution. Full-graph
   reconstruction and solver workspace also have unmeasured production cost.
+- The score-free statistics v1 oracle is a synthetic engineering contract over
+  typed sequence-length, direct-degree, component, and positive-incidence
+  summaries. It implements the locked type-1 tie-preserving bins, explicit
+  missing-VL bins, SMD, exact histogram TV and empirical KS, fold shape,
+  singleton fraction, bipartite density, exact finite-library chance MRR,
+  three-fold relative-range, and pooled entity-disjoint outer checks. Canonical
+  audit digests bind the thresholds, universe/training/validation memberships,
+  and quantile cuts. It has no input fields for contacts, interface outcomes,
+  affinity, embeddings, predictions, losses, ranks, or model scores. It has not
+  yet independently derived summaries from authenticated raw sources, entered
+  the v5 MILP or replay auditor, audited a real authority-train fold, or received
+  an isolated inner-scope firewall receipt. It therefore does not close the
+  representativeness domain or authorize training.
 - The distributed launch contract binds source, runtime, topology, execution
   mode, and externally verified runtime evidence. It rejects an unreviewed
   96-GPU job and does not implement FSDP2. The associated scale runbook is a
@@ -182,6 +195,8 @@ The current source digests are:
 | `slurm/frontier_nested_split_build_audit.sbatch` | `520d8ba64e5f08231c2c7e91d959ba70830b72d6faeb843bf2b8ede9b0d9caf4` |
 | `tests/test_nested_joint_milp.py` | `2d6d46e61a58b608d79299b15c3ae3e35cd8a7667a9626e8127e516acce6816c` |
 | `tests/test_train_only_nested_neighborhood_folds.py` | `5c021ff4c3fa9637ad2004c3cfaedcb37b168fbb395671cee81d3d4be0828cbb` |
+| `src/interaction_first/score_free_split_statistics.py` | `e9b2a2667d52cc1b7785b95fc195666696b202212ad2aa136b551d044a29fecf` |
+| `tests/test_score_free_split_statistics.py` | `e63d50b145e6d5c4f1bcf52ea16bff4e30c7432add36303556a0503c23a53751` |
 | `scripts/distributed_launch_contract.py` | `4c9831f35a11ea49cb8ed5beecd1d33f9cbafa8830b15eff2139e35ec90df136` |
 | `scripts/generate_runtime_manifest.py` | `4f488dcadcf543d87ab97c1019af2cd5e81e76ca1a18119573120078eea3a26d` |
 | `protocols/PAIRFORMER_SCALE_RUNBOOK_V1.md` | `df022a34544870c5603cb5eed23dd59393a8a26b61c349e92197b9757c93328b` |
@@ -200,6 +215,10 @@ The final nested-v5 targeted suites passed `81` under both
 `237`. Static compilation, diff hygiene, ASCII-only source/comment checks, and
 an independent read-only adversarial review also passed. These are engineering
 tests, not evidence of real-data feasibility or biological performance.
+The score-free statistics v1 suite passed `20` tests under both
+`PYTHONHASHSEED=1` and `PYTHONHASHSEED=777`; its related eight-suite regression
+chain passed `257`. Those tests use synthetic score-free inputs and do not
+constitute a real split audit or a completed representativeness gate.
 
 The post-reconciliation full repository run reported `771 passed, 40 failed,
 1 skipped, 9 warnings, 37 subtests passed`. Thirty-eight deterministic failures
