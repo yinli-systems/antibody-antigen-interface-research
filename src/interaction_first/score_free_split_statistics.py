@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from decimal import Decimal, ROUND_HALF_EVEN, localcontext
 from fractions import Fraction
 from math import comb
+from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
 
@@ -31,6 +32,22 @@ _AXES = frozenset({"antibody", "antigen"})
 
 class ScoreFreeAuditError(ValueError):
     """Raised when score-free audit inputs or invariants are invalid."""
+
+
+def implementation_source_sha256() -> str:
+    """Hash the exact oracle source bytes that produced an audit payload."""
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+
+
+def _canonical_sha256(payload: object) -> str:
+    encoded = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("ascii")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -528,6 +545,42 @@ def build_quantile_schemes(
     return tuple(_build_quantile_scheme(checked, spec) for spec in specs)
 
 
+def _profile_collection_sha256(profiles: Sequence[EntityProfile]) -> str:
+    checked = _validate_profile_collection(profiles, expected_axis=None)
+    payload = [
+        {
+            "entity_id": profile.entity_id,
+            "component_id": profile.component_id,
+            "axis": profile.axis,
+            "values_decimal": [
+                [name, None if value is None else str(value)]
+                for name, value in profile.values
+            ],
+        }
+        for profile in checked
+    ]
+    return _canonical_sha256(payload)
+
+
+def _pair_inventory_sha256(pairs: Sequence[ScoreFreePair]) -> str:
+    payload = [
+        {
+            "pair_id": pair.pair_id,
+            "antibody_id": pair.antibody_id,
+            "antigen_id": pair.antigen_id,
+        }
+        for pair in _validated_pair_inventory(pairs)
+    ]
+    return _canonical_sha256(payload)
+
+
+def _membership_sha256(values: Iterable[str]) -> str:
+    materialized = tuple(sorted(values))
+    if materialized != tuple(sorted(set(materialized))):
+        raise ScoreFreeAuditError("membership digest input must be unique")
+    return _canonical_sha256(list(materialized))
+
+
 def _validate_profile_collection(
     profiles: Sequence[EntityProfile],
     expected_axis: str | None,
@@ -904,6 +957,82 @@ class FoldPanelShape:
 
 
 @dataclass(frozen=True)
+class InnerUniverseScopeReceipt:
+    """Exact proof that one inner universe equals one outer-training universe."""
+
+    outer_fold_id: str
+    inner_fold_id: str
+    complete_authority_pair_membership_sha256: str
+    outer_training_pair_membership_sha256: str
+    inner_universe_pair_membership_sha256: str
+    outer_training_pair_count: int
+    inner_universe_pair_count: int
+    implementation_source_sha256: str
+
+    def __post_init__(self) -> None:
+        _validate_identifier(self.outer_fold_id, "outer_fold_id")
+        _validate_identifier(self.inner_fold_id, "inner_fold_id")
+        for name in (
+            "complete_authority_pair_membership_sha256",
+            "outer_training_pair_membership_sha256",
+            "inner_universe_pair_membership_sha256",
+            "implementation_source_sha256",
+        ):
+            value = getattr(self, name)
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise ScoreFreeAuditError(f"{name} must be a lowercase SHA-256")
+        _positive_integer(
+            self.outer_training_pair_count, "outer_training_pair_count"
+        )
+        _positive_integer(
+            self.inner_universe_pair_count, "inner_universe_pair_count"
+        )
+        if self.outer_training_pair_count != self.inner_universe_pair_count:
+            raise ScoreFreeAuditError(
+                "inner universe count differs from outer training count"
+            )
+        if (
+            self.outer_training_pair_membership_sha256
+            != self.inner_universe_pair_membership_sha256
+        ):
+            raise ScoreFreeAuditError(
+                "inner universe membership differs from outer training membership"
+            )
+
+    @property
+    def passed(self) -> bool:
+        return True
+
+    def canonical_payload(self) -> Mapping[str, object]:
+        return {
+            "schema_version": "score_free_inner_universe_scope_receipt_v1",
+            "outer_fold_id": self.outer_fold_id,
+            "inner_fold_id": self.inner_fold_id,
+            "complete_authority_pair_membership_sha256": (
+                self.complete_authority_pair_membership_sha256
+            ),
+            "outer_training_pair_membership_sha256": (
+                self.outer_training_pair_membership_sha256
+            ),
+            "inner_universe_pair_membership_sha256": (
+                self.inner_universe_pair_membership_sha256
+            ),
+            "outer_training_pair_count": self.outer_training_pair_count,
+            "inner_universe_pair_count": self.inner_universe_pair_count,
+            "implementation_source_sha256": self.implementation_source_sha256,
+            "passed": self.passed,
+        }
+
+    @property
+    def receipt_sha256(self) -> str:
+        return _canonical_sha256(self.canonical_payload())
+
+
+@dataclass(frozen=True)
 class FoldScoreFreeAudit:
     """One fold's shape and two-reference representativeness audit."""
 
@@ -919,6 +1048,11 @@ class FoldScoreFreeAudit:
     training_pair_ids: tuple[str, ...]
     validation_antibody_ids: tuple[str, ...]
     validation_antigen_ids: tuple[str, ...]
+    pair_inventory_sha256: str
+    antibody_profile_sha256: str
+    antigen_profile_sha256: str
+    implementation_source_sha256: str
+    inner_universe_scope_receipt: InnerUniverseScopeReceipt | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.shape_thresholds, FoldShapeThresholds):
@@ -952,6 +1086,33 @@ class FoldScoreFreeAudit:
             raise ScoreFreeAuditError("validation antibody count disagrees with panel")
         if len(self.validation_antigen_ids) != self.panel.validation_antigen_count:
             raise ScoreFreeAuditError("validation antigen count disagrees with panel")
+        for name in (
+            "pair_inventory_sha256",
+            "antibody_profile_sha256",
+            "antigen_profile_sha256",
+            "implementation_source_sha256",
+        ):
+            value = getattr(self, name)
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise ScoreFreeAuditError(f"{name} must be a lowercase SHA-256")
+        if self.inner_universe_scope_receipt is not None:
+            if not isinstance(
+                self.inner_universe_scope_receipt, InnerUniverseScopeReceipt
+            ):
+                raise ScoreFreeAuditError(
+                    "inner_universe_scope_receipt has an invalid type"
+                )
+            if (
+                self.inner_universe_scope_receipt.inner_universe_pair_membership_sha256
+                != _membership_sha256(self.universe_pair_ids)
+            ):
+                raise ScoreFreeAuditError(
+                    "inner scope receipt does not bind this audit universe"
+                )
 
     @property
     def passed(self) -> bool:
@@ -968,7 +1129,7 @@ class FoldScoreFreeAudit:
     def canonical_payload(self) -> Mapping[str, object]:
         panel = self.panel
         return {
-            "schema_version": "score_free_fold_audit_v1",
+            "schema_version": "score_free_fold_audit_v2",
             "fold_id": panel.fold_id,
             "shape_thresholds": _shape_thresholds_payload(self.shape_thresholds),
             "distribution_thresholds": _distribution_thresholds_payload(
@@ -1021,19 +1182,23 @@ class FoldScoreFreeAudit:
             "training_pair_ids": list(self.training_pair_ids),
             "validation_antibody_ids": list(self.validation_antibody_ids),
             "validation_antigen_ids": list(self.validation_antigen_ids),
+            "input_bindings": {
+                "pair_inventory_sha256": self.pair_inventory_sha256,
+                "antibody_profile_sha256": self.antibody_profile_sha256,
+                "antigen_profile_sha256": self.antigen_profile_sha256,
+                "implementation_source_sha256": self.implementation_source_sha256,
+            },
+            "inner_universe_scope_receipt": (
+                None
+                if self.inner_universe_scope_receipt is None
+                else self.inner_universe_scope_receipt.canonical_payload()
+            ),
             "passed": self.passed,
         }
 
     @property
     def audit_sha256(self) -> str:
-        payload = json.dumps(
-            self.canonical_payload(),
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=True,
-            allow_nan=False,
-        ).encode("ascii")
-        return hashlib.sha256(payload).hexdigest()
+        return _canonical_sha256(self.canonical_payload())
 
 
 def _ceil_fraction(value: Fraction) -> int:
@@ -1348,6 +1513,115 @@ def audit_score_free_fold(
         validation_antigen_ids=tuple(
             profile.entity_id for profile in validation_antigens
         ),
+        pair_inventory_sha256=_pair_inventory_sha256(inventory),
+        antibody_profile_sha256=_profile_collection_sha256(all_antibodies),
+        antigen_profile_sha256=_profile_collection_sha256(all_antigens),
+        implementation_source_sha256=implementation_source_sha256(),
+    )
+
+
+def build_inner_universe_scope_receipt(
+    *,
+    outer_fold_id: str,
+    inner_fold_id: str,
+    complete_authority_pairs: Sequence[ScoreFreePair],
+    outer_training_pair_ids: Iterable[str],
+    inner_universe_pairs: Sequence[ScoreFreePair],
+) -> InnerUniverseScopeReceipt:
+    """Prove exact inner-universe equality to the selected outer-training set."""
+    _validate_identifier(outer_fold_id, "outer_fold_id")
+    _validate_identifier(inner_fold_id, "inner_fold_id")
+    complete = _validated_pair_inventory(complete_authority_pairs)
+    complete_ids = frozenset(pair.pair_id for pair in complete)
+    outer_training = _validate_selected_ids(
+        outer_training_pair_ids,
+        name="outer_training_pair_ids",
+        allowed=complete_ids,
+    )
+    inner = _validated_pair_inventory(inner_universe_pairs)
+    inner_ids = frozenset(pair.pair_id for pair in inner)
+    unknown = inner_ids - complete_ids
+    if unknown:
+        raise ScoreFreeAuditError(
+            f"inner universe contains unknown authority pair ID {min(unknown)!r}"
+        )
+    if inner_ids != outer_training:
+        missing = sorted(outer_training - inner_ids)
+        extra = sorted(inner_ids - outer_training)
+        detail = missing[0] if missing else extra[0]
+        raise ScoreFreeAuditError(
+            f"inner universe must equal outer training membership: {detail!r}"
+        )
+    complete_by_id = {pair.pair_id: pair for pair in complete}
+    for pair in inner:
+        if pair != complete_by_id[pair.pair_id]:
+            raise ScoreFreeAuditError(
+                f"inner universe pair payload differs from authority: {pair.pair_id!r}"
+            )
+    return InnerUniverseScopeReceipt(
+        outer_fold_id=outer_fold_id,
+        inner_fold_id=inner_fold_id,
+        complete_authority_pair_membership_sha256=_membership_sha256(complete_ids),
+        outer_training_pair_membership_sha256=_membership_sha256(outer_training),
+        inner_universe_pair_membership_sha256=_membership_sha256(inner_ids),
+        outer_training_pair_count=len(outer_training),
+        inner_universe_pair_count=len(inner_ids),
+        implementation_source_sha256=implementation_source_sha256(),
+    )
+
+
+def audit_inner_score_free_fold(
+    *,
+    outer_fold_id: str,
+    inner_fold_id: str,
+    complete_authority_pairs: Sequence[ScoreFreePair],
+    outer_training_pair_ids: Iterable[str],
+    inner_universe_pairs: Sequence[ScoreFreePair],
+    antibody_profiles: Sequence[EntityProfile],
+    antigen_profiles: Sequence[EntityProfile],
+    validation_pair_ids: Iterable[str],
+    training_pair_ids: Iterable[str],
+    shape_thresholds: FoldShapeThresholds = INNER_FOLD_SHAPE_THRESHOLDS,
+    distribution_thresholds: DistributionThresholds = (
+        INNER_DISTRIBUTION_THRESHOLDS
+    ),
+) -> FoldScoreFreeAudit:
+    """Audit one inner fold after proving its isolated outer-training scope."""
+    receipt = build_inner_universe_scope_receipt(
+        outer_fold_id=outer_fold_id,
+        inner_fold_id=inner_fold_id,
+        complete_authority_pairs=complete_authority_pairs,
+        outer_training_pair_ids=outer_training_pair_ids,
+        inner_universe_pairs=inner_universe_pairs,
+    )
+    audit = audit_score_free_fold(
+        fold_id=inner_fold_id,
+        pairs=inner_universe_pairs,
+        antibody_profiles=antibody_profiles,
+        antigen_profiles=antigen_profiles,
+        validation_pair_ids=validation_pair_ids,
+        training_pair_ids=training_pair_ids,
+        shape_thresholds=shape_thresholds,
+        distribution_thresholds=distribution_thresholds,
+    )
+    return FoldScoreFreeAudit(
+        panel=audit.panel,
+        antibody_vs_universe=audit.antibody_vs_universe,
+        antibody_vs_training=audit.antibody_vs_training,
+        antigen_vs_universe=audit.antigen_vs_universe,
+        antigen_vs_training=audit.antigen_vs_training,
+        shape_thresholds=audit.shape_thresholds,
+        distribution_thresholds=audit.distribution_thresholds,
+        universe_pair_ids=audit.universe_pair_ids,
+        validation_pair_ids=audit.validation_pair_ids,
+        training_pair_ids=audit.training_pair_ids,
+        validation_antibody_ids=audit.validation_antibody_ids,
+        validation_antigen_ids=audit.validation_antigen_ids,
+        pair_inventory_sha256=audit.pair_inventory_sha256,
+        antibody_profile_sha256=audit.antibody_profile_sha256,
+        antigen_profile_sha256=audit.antigen_profile_sha256,
+        implementation_source_sha256=audit.implementation_source_sha256,
+        inner_universe_scope_receipt=receipt,
     )
 
 
@@ -1358,6 +1632,8 @@ class CrossFoldBalanceAudit:
     thresholds: CrossFoldThresholds
     relative_ranges: tuple[tuple[str, Fraction], ...]
     failures: tuple[str, ...]
+    fold_audit_sha256: tuple[str, ...]
+    implementation_source_sha256: str
 
     @property
     def passed(self) -> bool:
@@ -1365,7 +1641,7 @@ class CrossFoldBalanceAudit:
 
     def canonical_payload(self) -> Mapping[str, object]:
         return {
-            "schema_version": "score_free_cross_fold_balance_v1",
+            "schema_version": "score_free_cross_fold_balance_v2",
             "thresholds": {
                 "maximum_validation_pair_relative_range": _fraction_payload(
                     self.thresholds.maximum_validation_pair_relative_range
@@ -1379,8 +1655,16 @@ class CrossFoldBalanceAudit:
                 for name, value in self.relative_ranges
             },
             "failures": list(self.failures),
+            "input_bindings": {
+                "fold_audit_sha256": list(self.fold_audit_sha256),
+                "implementation_source_sha256": self.implementation_source_sha256,
+            },
             "passed": self.passed,
         }
+
+    @property
+    def audit_sha256(self) -> str:
+        return _canonical_sha256(self.canonical_payload())
 
 
 def audit_cross_fold_balance(
@@ -1466,6 +1750,11 @@ def audit_cross_fold_balance(
         thresholds=thresholds,
         relative_ranges=ranges,
         failures=tuple(failures),
+        fold_audit_sha256=tuple(
+            value.audit_sha256
+            for value in sorted(audits, key=lambda item: item.panel.fold_id)
+        ),
+        implementation_source_sha256=implementation_source_sha256(),
     )
 
 
@@ -1478,6 +1767,10 @@ class PooledRepresentativenessAudit:
     antigen_vs_universe: RepresentativenessComparison
     pooled_antibody_ids: tuple[str, ...]
     pooled_antigen_ids: tuple[str, ...]
+    fold_audit_sha256: tuple[str, ...]
+    antibody_profile_sha256: str
+    antigen_profile_sha256: str
+    implementation_source_sha256: str
 
     @property
     def passed(self) -> bool:
@@ -1485,7 +1778,7 @@ class PooledRepresentativenessAudit:
 
     def canonical_payload(self) -> Mapping[str, object]:
         return {
-            "schema_version": "score_free_pooled_outer_audit_v1",
+            "schema_version": "score_free_pooled_outer_audit_v2",
             "thresholds": _distribution_thresholds_payload(self.thresholds),
             "antibody_vs_universe": (
                 self.antibody_vs_universe.canonical_payload()
@@ -1493,19 +1786,18 @@ class PooledRepresentativenessAudit:
             "antigen_vs_universe": self.antigen_vs_universe.canonical_payload(),
             "pooled_antibody_ids": list(self.pooled_antibody_ids),
             "pooled_antigen_ids": list(self.pooled_antigen_ids),
+            "input_bindings": {
+                "fold_audit_sha256": list(self.fold_audit_sha256),
+                "antibody_profile_sha256": self.antibody_profile_sha256,
+                "antigen_profile_sha256": self.antigen_profile_sha256,
+                "implementation_source_sha256": self.implementation_source_sha256,
+            },
             "passed": self.passed,
         }
 
     @property
     def audit_sha256(self) -> str:
-        payload = json.dumps(
-            self.canonical_payload(),
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=True,
-            allow_nan=False,
-        ).encode("ascii")
-        return hashlib.sha256(payload).hexdigest()
+        return _canonical_sha256(self.canonical_payload())
 
 
 def audit_pooled_outer_representativeness(
@@ -1573,4 +1865,11 @@ def audit_pooled_outer_representativeness(
         ),
         pooled_antibody_ids=tuple(sorted(seen_antibodies)),
         pooled_antigen_ids=tuple(sorted(seen_antigens)),
+        fold_audit_sha256=tuple(
+            audit.audit_sha256
+            for audit in sorted(audits, key=lambda value: value.panel.fold_id)
+        ),
+        antibody_profile_sha256=_profile_collection_sha256(full_antibodies),
+        antigen_profile_sha256=_profile_collection_sha256(full_antigens),
+        implementation_source_sha256=implementation_source_sha256(),
     )

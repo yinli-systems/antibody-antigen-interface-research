@@ -522,12 +522,68 @@
         "production_bundle_created": false,
         "source_sha256": {
           "scripts/build_score_free_authority.py": "98a2f3d36890461602c0e0c596d6ced50ed5cc3e9324bf076a8b422d7f62d544",
-          "src/interaction_first/score_free_authority.py": "c28b6b7ffe9fbb8a4d42318de8c8c6b014eecca60bf6350a210f75e42bf3f47e",
+          "src/interaction_first/score_free_authority.py": "63bb0be535fd5c802a1a6b1724ae6b61e2e5bc9cba02679b1fa64c2d58082f58",
           "tests/test_score_free_authority.py": "3718e48dade8b5a6c007ac251faa876c2ce14a1aa58cb8af9df3007288f0b4ad"
         },
         "status": "implemented_and_synthetically_audited_unrun_on_production_authority",
         "related_regression_tests_passed": 116,
         "targeted_tests_passed": 8,
+        "tested_under_python_hash_seeds": [
+          1,
+          777
+        ]
+      },
+      "score_free_statistics_v2": {
+        "cross_fold_and_pooled_receipts_bind_all_fold_receipt_hashes": true,
+        "fold_receipt_bindings": [
+          "pair inventory",
+          "axis-specific profiles including component identity",
+          "thresholds",
+          "quantile cuts and missing-value bins",
+          "role memberships",
+          "statistics implementation source"
+        ],
+        "inner_scope_receipt": "exact inner-universe membership must equal the externally selected outer-training membership",
+        "production_fold_receipts_created": false,
+        "schemas": [
+          "score_free_fold_audit_v2",
+          "score_free_cross_fold_balance_v2",
+          "score_free_pooled_outer_audit_v2",
+          "score_free_inner_universe_scope_receipt_v1"
+        ],
+        "source_sha256": {
+          "src/interaction_first/score_free_split_statistics.py": "4274c75b2e523fb1617546355771331e83b1645ee3ab598dccb321e3bad236f0",
+          "tests/test_score_free_split_statistics.py": "7ef32a47d4b52d47ccd51538d038eaaf38fc92b56b4027a844cc03bbaba90661"
+        },
+        "status": "synthetically_hardened_unrun_on_production_folds",
+        "targeted_tests_passed": 22
+      },
+      "independent_score_free_auditor": {
+        "authority_reconstruction": "independent raw-byte canonicalization, graph reconstruction, covariate derivation, and quantile construction",
+        "create_only_machine_and_markdown_receipts": true,
+        "exhaustive_assignment_checks": 50,
+        "forbidden_imports": [
+          "score_free_authority",
+          "score_free_split_statistics",
+          "nested_joint_milp"
+        ],
+        "fold_statistics_recomputed": [
+          "50-digit pooled-sample SMD",
+          "exact TV and KS",
+          "retention, quarantine, endpoint, and component shape",
+          "singleton fractions, bipartite density, and exact chance MRR",
+          "cross-fold exact relative ranges",
+          "pooled outer representativeness"
+        ],
+        "production_audit_receipt_created": false,
+        "related_regression_tests_passed_under_each_hash_seed": 134,
+        "source_sha256": {
+          "scripts/audit_score_free_authority_independent.py": "59704135449de46844b9fa2ff4582f026ae1fafaef82f25911befea7668d5f3c",
+          "src/interaction_first/score_free_independent_auditor.py": "b8d52fa129b90b73afba7eb676e5a96488e64a4ad551da99c5d1f59f496f0175",
+          "tests/test_score_free_independent_auditor.py": "ba43687b259f9ca11ba113ede9f9b739016e9a155e7ce9ce426a26477f31bf3a"
+        },
+        "status": "synthetically_agrees_field_by_field_unrun_on_production_authority",
+        "targeted_tests_passed": 16,
         "tested_under_python_hash_seeds": [
           1,
           777
@@ -541,7 +597,7 @@
         "incomplete_separation",
         "audit_disagreement"
       ],
-      "status": "raw_authority_extractor_implemented_remaining_stages_blocked",
+      "status": "raw_truth_chain_implemented_and_synthetically_cross_audited_joint_solver_unimplemented",
       "training_prerequisites": [
         "audited_full_3_plus_9_assignment",
         "post_freeze_3d_interface_leakage_audit",

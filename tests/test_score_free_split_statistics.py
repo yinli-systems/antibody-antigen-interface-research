@@ -23,8 +23,10 @@ from interaction_first.score_free_split_statistics import (
     antibody_profile,
     antigen_profile,
     audit_cross_fold_balance,
+    audit_inner_score_free_fold,
     audit_pooled_outer_representativeness,
     audit_score_free_fold,
+    build_inner_universe_scope_receipt,
     build_quantile_schemes,
     compare_representativeness,
     exact_finite_library_chance_mrr,
@@ -381,6 +383,88 @@ def test_complete_fold_audit_passes_balanced_score_free_fixture() -> None:
     assert audit.panel.bipartite_density == Fraction(1, 4)
     assert audit.panel.bidirectional_chance_mrr == Fraction(25, 48)
     assert len(audit.audit_sha256) == 64
+
+
+def test_inner_scope_receipt_proves_exact_outer_training_universe() -> None:
+    pairs, antibodies, antigens = _fixture()
+    outer_training_ids = tuple(f"p{index:02d}" for index in range(8))
+    inner_pairs = tuple(pair for pair in pairs if pair.pair_id in outer_training_ids)
+    inner_antibody_ids = {pair.antibody_id for pair in inner_pairs}
+    inner_antigen_ids = {pair.antigen_id for pair in inner_pairs}
+    receipt = build_inner_universe_scope_receipt(
+        outer_fold_id="outer_0",
+        inner_fold_id="outer_0_inner_0",
+        complete_authority_pairs=pairs,
+        outer_training_pair_ids=outer_training_ids,
+        inner_universe_pairs=tuple(reversed(inner_pairs)),
+    )
+    assert receipt.passed
+    assert receipt.outer_training_pair_membership_sha256 == (
+        receipt.inner_universe_pair_membership_sha256
+    )
+    assert len(receipt.receipt_sha256) == 64
+
+    audit = audit_inner_score_free_fold(
+        outer_fold_id="outer_0",
+        inner_fold_id="outer_0_inner_0",
+        complete_authority_pairs=pairs,
+        outer_training_pair_ids=outer_training_ids,
+        inner_universe_pairs=inner_pairs,
+        antibody_profiles=tuple(
+            profile
+            for profile in antibodies
+            if profile.entity_id in inner_antibody_ids
+        ),
+        antigen_profiles=tuple(
+            profile for profile in antigens if profile.entity_id in inner_antigen_ids
+        ),
+        validation_pair_ids=tuple(f"p{index:02d}" for index in range(4)),
+        training_pair_ids=tuple(f"p{index:02d}" for index in range(4, 8)),
+        shape_thresholds=FoldShapeThresholds(
+            minimum_validation_pairs=1,
+            minimum_validation_endpoints_per_axis=1,
+            minimum_validation_components_per_axis=1,
+            validation_pair_lower_fraction=Fraction(0),
+            validation_pair_upper_fraction=Fraction(1),
+            minimum_training_pair_fraction=Fraction(0),
+            minimum_training_endpoint_fraction=Fraction(0),
+            maximum_quarantine_pair_fraction=Fraction(1),
+        ),
+        distribution_thresholds=DistributionThresholds(
+            maximum_smd=Decimal(1),
+            maximum_tv=Fraction(1),
+            maximum_ks=Fraction(1),
+        ),
+    )
+    assert audit.inner_universe_scope_receipt == receipt
+    assert audit.canonical_payload()["inner_universe_scope_receipt"] == (
+        receipt.canonical_payload()
+    )
+
+
+def test_inner_scope_receipt_rejects_membership_and_pair_payload_tampering() -> None:
+    pairs, _, _ = _fixture()
+    outer_training_ids = tuple(f"p{index:02d}" for index in range(8))
+    inner_pairs = tuple(pair for pair in pairs if pair.pair_id in outer_training_ids)
+    with pytest.raises(ScoreFreeAuditError, match="must equal"):
+        build_inner_universe_scope_receipt(
+            outer_fold_id="outer_0",
+            inner_fold_id="outer_0_inner_0",
+            complete_authority_pairs=pairs,
+            outer_training_pair_ids=outer_training_ids,
+            inner_universe_pairs=inner_pairs[:-1],
+        )
+    tampered = (
+        replace(inner_pairs[0], antigen_id=inner_pairs[1].antigen_id),
+    ) + inner_pairs[1:]
+    with pytest.raises(ScoreFreeAuditError, match="payload differs"):
+        build_inner_universe_scope_receipt(
+            outer_fold_id="outer_0",
+            inner_fold_id="outer_0_inner_0",
+            complete_authority_pairs=pairs,
+            outer_training_pair_ids=outer_training_ids,
+            inner_universe_pairs=tampered,
+        )
 
 
 def test_fold_audit_is_byte_canonical_under_input_reordering() -> None:

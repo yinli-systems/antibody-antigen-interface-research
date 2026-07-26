@@ -13,6 +13,7 @@ import hashlib
 import json
 from collections import defaultdict
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 from .score_free_split_statistics import (
@@ -23,6 +24,7 @@ from .score_free_split_statistics import (
     antibody_profile,
     antigen_profile,
     build_quantile_schemes,
+    implementation_source_sha256 as statistics_implementation_source_sha256,
 )
 
 
@@ -36,6 +38,11 @@ VALID_AMINO_ACIDS = frozenset("ACDEFGHIKLMNPQRSTVWY")
 
 class ScoreFreeAuthorityError(ValueError):
     """Raised when authenticated score-free inputs fail closed."""
+
+
+def implementation_source_sha256() -> str:
+    """Hash the exact authority-extractor source bytes."""
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -146,6 +153,12 @@ class ScoreFreeAuthorityBundle:
             "format_version": BUNDLE_FORMAT_VERSION,
             "input_sha256": dict(self.input_sha256),
             "authority_membership_sha256": self.authority_membership_sha256,
+            "implementation_source_sha256": {
+                "score_free_authority": implementation_source_sha256(),
+                "score_free_split_statistics": (
+                    statistics_implementation_source_sha256()
+                ),
+            },
             "counts": {
                 "source_rows": sum(
                     len(pair.source_instance_ids) for pair in self.pairs
