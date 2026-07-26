@@ -864,6 +864,15 @@
         "full_ir_partition_is_lossless": true,
         "full_variable_dictionary_required": true,
         "inner_cross_group_rows_rejected": true,
+        "production_attempts": [
+          {
+            "authority_or_split_failure": false,
+            "output_created": false,
+            "reason": "The frozen direct CP-SAT parser expected the scientific authority schema and rejected the three authenticated publication-envelope fields before model construction.",
+            "source_sha256": "80414e1eb810c66776d19b9c04a2673f70dd32770cc02797ed565d17a730cf42",
+            "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
+          }
+        ],
         "production_receipt_created": false,
         "row_selection": "ceiling_one_tenth_per_declared_family_by_canonical_row_sha256",
         "solver_invocation_authorized": false,
@@ -877,7 +886,7 @@
         "related_v6_tests_passed_under_each_hash_seed": 105,
         "training_authorized": false
       },
-      "status": "protocol_and_row_shard_telemetry_implemented_production_unrun",
+      "status": "first_row_shard_production_attempt_failed_before_model_construction_compatibility_fix_required",
       "training_authorized": false,
       "claim_boundary": "The decomposition protocol and telemetry-only full-IR partition are implemented and synthetically tested after the V6-A registered dry-run stop. No production V6-B telemetry receipt, solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
     },
