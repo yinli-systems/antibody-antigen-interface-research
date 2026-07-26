@@ -887,7 +887,40 @@
             "status": "FAILED_AFTER_MODEL_CONSTRUCTION_BEFORE_TELEMETRY_PUBLICATION"
           }
         ],
-        "production_receipt_created": false,
+        "production_receipt": {
+          "available_memory_bytes": 336155590656,
+          "construction_elapsed_ns": 432446437814,
+          "full_nonzero_count": 10365708,
+          "full_row_count": 2693786,
+          "full_variable_count": 163464,
+          "inner_gate_counts": [
+            16,
+            16,
+            16
+          ],
+          "inner_row_counts": [
+            680024,
+            680024,
+            680024
+          ],
+          "master_gate_count": 18,
+          "master_row_count": 653714,
+          "observed_peak_rss_bytes": 8344076288,
+          "output_directory": "/ssd/scxi253/model_deployment/results/v6_b_row_shard_telemetry_004",
+          "partition_sha256": "ac675898b79bc1bbc7277ffe156874fc75e5a0435f9ac2bfec07fa10c5db51cf",
+          "receipt_file_sha256": "655514d9cc9961c258d939a6b2f2811632ad272a7d499a0c9bd8adf1ca75cee2",
+          "receipt_sha256": "de140384b0fe4f13f6daf67a0abfef9bee36b2352d8865b726e8ec040aade649",
+          "report_sha256": "ccff3a504e27f1f1ec92c053074609d4d2f4b1482024b1f1f6e086af02296745",
+          "required_available_bytes_with_headroom": 11125435051,
+          "resource_headroom_passed": true,
+          "selected_nonzero_count": 1090171,
+          "selected_row_count": 269433,
+          "serialized_full_model_bytes": 539726954,
+          "solver_invoked": false,
+          "terminal_status": "TELEMETRY_HEADROOM_PASSED",
+          "training_authorized": false
+        },
+        "production_receipt_created": true,
         "row_selection": "ceiling_one_tenth_per_declared_family_by_canonical_row_sha256",
         "solver_invocation_authorized": false,
         "source_sha256": {
@@ -900,9 +933,9 @@
         "related_v6_tests_passed_under_each_hash_seed": 111,
         "training_authorized": false
       },
-      "status": "pybind_text_proto_serialization_hardened_new_production_attempt_required",
+      "status": "full_authority_row_shard_telemetry_passed_decomposition_solver_unimplemented",
       "training_authorized": false,
-      "claim_boundary": "The decomposition protocol and telemetry-only full-IR partition are implemented and synthetically tested after the V6-A registered dry-run stop. No production V6-B telemetry receipt, solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
+      "claim_boundary": "The production full-authority IR was constructed and passed the telemetry-only 25 percent resource-headroom check without solver invocation. No V6-B decomposition solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
     },
     "claim_boundary": "No real PAIRFormer contact training, model selection, held-out scoring, new biological metric, metric improvement, large-scale PAIRFormer model run, or world-leading result."
   },
