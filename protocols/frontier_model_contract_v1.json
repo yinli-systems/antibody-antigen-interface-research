@@ -533,12 +533,39 @@
           "historical_fold_assignment_reused": false,
           "historical_fold_feasibility_claim_reused": false,
           "manifest_firewall": "only the first INSTANCE field is inspected before authorization; sequence columns are parsed only for authority-train identifiers",
-          "production_inputs_created": false,
+          "production_inputs_created": true,
+          "production_receipt": {
+            "authority_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+            "file_sha256": "c0112d107b6b95b3db2d28d11ab1d96b4245323fa9c59f1c2939df1b8ba3ae5f",
+            "graph_edge_counts": {
+              "antigen": 16273,
+              "concatenated_antibody": 19318,
+              "vh": 33202,
+              "vl": 52877
+            },
+            "manifest_firewall": {
+              "authorized_sequence_rows_parsed": 3229,
+              "non_authorized_sequence_rows_parsed": 0,
+              "physical_source_rows_scanned": 3663,
+              "source_newline_convention": "CRLF"
+            },
+            "output_directory": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/derivation_from_v2_assignment_4f08bdce",
+            "output_sha256": {
+              "edge_ledger_antigen.json": "0fbc267e96376635fde00afdc5fbd665d95ed4f691ffb23f6d229842eca0be36",
+              "edge_ledger_concatenated_antibody.json": "158d41b4e83878eb6a302f262fa1d24173ff541d6787b50283e268f35d5aeb2a",
+              "edge_ledger_vh.json": "b0e725b8dc9da91f8180a3bed5f95642ba341393cabc4ec42c5a4154cc44a15d",
+              "edge_ledger_vl.json": "c92a59af623259818290b1105a9dad4a9d2c4574d675fdad4ec10ce45ad9a099",
+              "train_authority_allowlist.json": "c05800f507ae91105099d731e691d45e4ab95b029d76a2d352ed9ea0c10adceb",
+              "train_canonical_manifest.csv": "7a7b24ed59fed5d8debc089de52b6eeb454ec4b027376a18270537a743432bd1"
+            },
+            "self_receipt_sha256": "229d895193809e9970074bc178573027ec8095ad28fcd03c473dec565c402e1d",
+            "training_authorized": false
+          },
           "source_sha256": {
             "scripts/derive_v6_score_free_inputs.py": "ff5dcb68e6257bbf07e2f82b53ee4a2dc08aee801519234e9ee1f3e56fa3f901",
             "tests/test_derive_v6_score_free_inputs.py": "aa78a67f45dd2a572a0381bbb9fa76e0031edbd3b4a48cdc50352ae9a04601f3"
           },
-          "status": "synthetically_hardened_with_uniform_lf_or_crlf_manifest_support_unrun_successfully_on_production_sources",
+          "status": "production_physical_inputs_created_and_independently_rehashed_no_training_authority",
           "targeted_tests_passed_under_each_hash_seed": 9,
           "related_regression_tests_passed_under_each_hash_seed": 155,
           "tested_under_python_hash_seeds": [
