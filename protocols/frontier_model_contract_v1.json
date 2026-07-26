@@ -695,6 +695,7 @@
           "user_solution_callback_used": false
         },
         "independent_cp_sat_raw_authority_formulation_completed": true,
+        "independent_cp_sat_proto_to_canonical_ir_completed": true,
         "independent_cp_sat_evidence": {
           "authority_input": "externally hash-anchored score_free_authority_v2 plus four authority-bound edge ledgers",
           "forbidden_imports": [
@@ -768,14 +769,14 @@
         "source_sha256": {
           "pyproject.toml": "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342",
           "src/interaction_first/v6_highs_backend.py": "e96c8bad2606ee048b6d802fd16da3f38f236cb099f11146b75d423399863e65",
-          "src/interaction_first/v6_joint_ir.py": "87e6514703fc27337b2f0b7ecbcb3d17fcbc9fd569d16c94fbdac3246fc9de5e",
+          "src/interaction_first/v6_joint_ir.py": "a1c5c1d1fa348e244737993db9b0616c859d00750b9e41c19235ef84fce58c99",
           "src/interaction_first/v6_cp_sat_formulation.py": "d07e2a402c63fe1fe642bb0f80162c8850bfef1d17a18e8d3fb4afde40b3a9dd",
-          "tests/test_v6_cp_sat_formulation.py": "b7b5c5c683d68667cd36c95fa27abc2c57c9f529725139ea659907bef27f543f",
+          "tests/test_v6_cp_sat_formulation.py": "104afa1058d2648b8cc3af149a1c3b711d1f512b024d1c865b1c31616e9c75ce",
           "tests/test_v6_a_protocol.py": "daf42ca88fcf9cbe74b3d69ce0d86de437f83e2ac37b2bf208a6a9424663c6b2",
           "tests/test_v6_joint_ir.py": "0452c2ae685d7c614a5128810b75bbba6b884714083c2532055857fa7d033798"
         },
         "status": "two_linear_formulations_and_fail_closed_separation_engine_synthetically_hardened",
-        "targeted_tests_passed_under_each_hash_seed": 19,
+        "targeted_tests_passed_under_each_hash_seed": 21,
         "related_regression_tests_passed_under_each_hash_seed": 146,
         "training_authorized": false,
         "claim_boundary": "The independent direct CP-SAT formulation and common linear semantics are synthetically verified. No receipt can certify the complete V6-A feasible region until production authority reconstruction, complete exact separation, independent statistics agreement, and the HiGHS projection audit all pass."

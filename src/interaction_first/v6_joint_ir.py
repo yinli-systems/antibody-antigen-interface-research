@@ -258,7 +258,9 @@ class CanonicalJointIR:
         return str(self.canonical_payload()["ir_sha256"])
 
 
-def _separation_gate_registry(policy_sha256: str) -> tuple[ExactSeparationGate, ...]:
+def separation_gate_registry(policy_sha256: str) -> tuple[ExactSeparationGate, ...]:
+    """Return the complete canonical registry of 66 exact V6-A gates."""
+    _validate_sha256(policy_sha256, "solver policy")
     gates = []
     for outer_index in range(3):
         for axis in ("antibody", "antigen"):
@@ -336,6 +338,130 @@ def _separation_gate_registry(policy_sha256: str) -> tuple[ExactSeparationGate, 
     )
 
 
+def build_v6_joint_ir_from_direct_cp_sat(
+    direct_model: object,
+    *,
+    solver_policy_sha256: str,
+    direct_formulation_source_sha256: str,
+) -> CanonicalJointIR:
+    """Translate the independent CP-SAT proto into the solver-neutral IR.
+
+    The independent formulation remains unaware of this adapter. This function
+    accepts only Boolean variables and unconditional single-domain integer
+    linear constraints; every other CP-SAT proto construct fails closed.
+    """
+    policy_digest = _validate_sha256(solver_policy_sha256, "solver policy")
+    source_digest = _validate_sha256(
+        direct_formulation_source_sha256,
+        "direct formulation source",
+    )
+    try:
+        model = direct_model.model
+        variable_registry = direct_model.variables
+        authority_digest = _validate_sha256(
+            direct_model.authority_payload_sha256,
+            "score-free authority",
+        )
+        formulation_digest = _validate_sha256(
+            direct_model.formulation_sha256,
+            "direct formulation",
+        )
+        proto = model.Proto()
+    except (AttributeError, TypeError) as error:
+        raise JointIRError("direct CP-SAT model contract is malformed") from error
+    if not isinstance(variable_registry, Mapping):
+        raise JointIRError("direct variable registry must be a mapping")
+    index_to_key: dict[int, VariableKey] = {}
+    for raw_key, variable in variable_registry.items():
+        key = _variable_key(raw_key, "direct variable")
+        try:
+            index = int(variable.index)
+        except (AttributeError, TypeError, ValueError) as error:
+            raise JointIRError("direct variable lacks a proto index") from error
+        if index < 0 or index in index_to_key:
+            raise JointIRError("direct variable proto indices are invalid")
+        index_to_key[index] = key
+    if set(index_to_key) != set(range(len(proto.variables))):
+        raise JointIRError("direct variable registry does not cover the proto")
+    if len(set(index_to_key.values())) != len(index_to_key):
+        raise JointIRError("direct variable keys are not unique")
+    for variable in proto.variables:
+        if tuple(variable.domain) != (0, 1):
+            raise JointIRError("direct CP-SAT proto contains a non-Boolean variable")
+
+    constraints = []
+    negative_infinity = -(2**63)
+    positive_infinity = 2**63 - 1
+    for index, constraint in enumerate(proto.constraints):
+        if constraint.enforcement_literal:
+            raise JointIRError("direct CP-SAT proto contains an enforced row")
+        if not constraint.has_linear():
+            raise JointIRError("direct CP-SAT proto contains a nonlinear row")
+        linear = constraint.linear
+        if len(linear.domain) != 2:
+            raise JointIRError("direct linear row has a non-convex domain")
+        if len(linear.vars) != len(linear.coeffs) or not linear.vars:
+            raise JointIRError("direct linear row is empty or malformed")
+        collected: dict[VariableKey, int] = {}
+        for variable_index, coefficient in zip(
+            linear.vars,
+            linear.coeffs,
+            strict=True,
+        ):
+            if variable_index not in index_to_key:
+                raise JointIRError("direct row references an unknown variable")
+            key = index_to_key[variable_index]
+            collected[key] = collected.get(key, 0) + int(coefficient)
+        coefficients = tuple(
+            sorted(
+                (key, coefficient)
+                for key, coefficient in collected.items()
+                if coefficient != 0
+            )
+        )
+        if not coefficients:
+            raise JointIRError("direct row cancels to an empty expression")
+        lower_raw, upper_raw = map(int, linear.domain)
+        constraints.append(
+            IRLinearConstraint(
+                name=f"direct_cp_sat_{index:09d}",
+                coefficients=coefficients,
+                lower_bound=(
+                    None if lower_raw == negative_infinity else lower_raw
+                ),
+                upper_bound=(
+                    None if upper_raw == positive_infinity else upper_raw
+                ),
+            )
+        )
+    sorted_constraints = tuple(sorted(constraints, key=lambda row: row.name))
+    variable_keys = tuple(sorted(index_to_key.values()))
+    projection_payload = {
+        "variables": [list(key) for key in variable_keys],
+        "linear_constraints": [
+            row.canonical_payload() for row in sorted_constraints
+        ],
+    }
+    return CanonicalJointIR(
+        variable_keys=variable_keys,
+        linear_constraints=sorted_constraints,
+        separation_gates=separation_gate_registry(policy_digest),
+        source_bindings=tuple(
+            sorted(
+                {
+                    "direct_cp_sat_formulation": formulation_digest,
+                    "direct_cp_sat_formulation_source": source_digest,
+                    "score_free_authority": authority_digest,
+                    "solver_policy": policy_digest,
+                }.items()
+            )
+        ),
+        source_linear_projection_sha256=_sha256(projection_payload),
+        construction_scope="independent_raw_authority_direct_cp_sat_proto",
+        independent_raw_authority_reconstruction=True,
+    )
+
+
 def build_v6_joint_ir(
     problem: object,
     *,
@@ -379,7 +505,7 @@ def build_v6_joint_ir(
     return CanonicalJointIR(
         variable_keys=sorted_keys,
         linear_constraints=tuple(constraints),
-        separation_gates=_separation_gate_registry(solver_policy_sha256),
+        separation_gates=separation_gate_registry(solver_policy_sha256),
         source_bindings=tuple(
             sorted(
                 {

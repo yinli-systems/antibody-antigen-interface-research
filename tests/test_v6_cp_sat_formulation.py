@@ -30,9 +30,14 @@ from interaction_first.v6_cp_sat_formulation import (
     DirectLevelPolicy,
     build_independent_cp_sat_formulation,
     direct_problem_from_authority_payload,
+    implementation_source_sha256 as direct_formulation_source_sha256,
     solve_direct_linear_projection,
 )
-from interaction_first.v6_joint_ir import build_v6_joint_ir
+from interaction_first.v6_joint_ir import (
+    JointIRError,
+    build_v6_joint_ir,
+    build_v6_joint_ir_from_direct_cp_sat,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -253,3 +258,63 @@ def test_direct_receipt_remains_non_authorizing_before_exact_separation() -> Non
     assert receipt["exact_score_free_separation_completed"] is False
     assert receipt["complete_score_free_feasible_region_certified"] is False
     assert receipt["training_authorized"] is False
+
+
+def test_direct_cp_sat_proto_builds_authoritative_joint_ir() -> None:
+    payload_bytes, ledgers, counts, _ = _raw_fixture()
+    problem = direct_problem_from_authority_payload(
+        payload_bytes,
+        ledgers,
+        expected_authority_payload_sha256=hashlib.sha256(payload_bytes).hexdigest(),
+        expected_counts={
+            "source_rows": counts.source_rows,
+            "exact_pairs": counts.exact_pairs,
+            "antibody_entities": counts.antibody_entities,
+            "antigen_entities": counts.antigen_entities,
+        },
+    )
+    direct = build_independent_cp_sat_formulation(
+        problem,
+        outer_policy=_direct_policy(),
+        inner_policy=_direct_policy(),
+    )
+    ir = build_v6_joint_ir_from_direct_cp_sat(
+        direct,
+        solver_policy_sha256="a" * 64,
+        direct_formulation_source_sha256=direct_formulation_source_sha256(),
+    )
+    assert ir.independent_raw_authority_reconstruction is True
+    assert ir.construction_scope == "independent_raw_authority_direct_cp_sat_proto"
+    assert set(ir.variable_keys) == set(direct.variables)
+    assert len(ir.linear_constraints) == len(direct.model.Proto().constraints)
+    assert len(ir.separation_gates) == 66
+    assert dict(ir.source_bindings)["direct_cp_sat_formulation"] == (
+        direct.formulation_sha256
+    )
+
+
+def test_direct_cp_sat_adapter_rejects_non_linear_proto_constructs() -> None:
+    payload_bytes, ledgers, counts, _ = _raw_fixture()
+    problem = direct_problem_from_authority_payload(
+        payload_bytes,
+        ledgers,
+        expected_authority_payload_sha256=hashlib.sha256(payload_bytes).hexdigest(),
+        expected_counts={
+            "source_rows": counts.source_rows,
+            "exact_pairs": counts.exact_pairs,
+            "antibody_entities": counts.antibody_entities,
+            "antigen_entities": counts.antigen_entities,
+        },
+    )
+    direct = build_independent_cp_sat_formulation(
+        problem,
+        outer_policy=_direct_policy(),
+        inner_policy=_direct_policy(),
+    )
+    direct.model.add_bool_or([next(iter(direct.variables.values()))])
+    with pytest.raises(JointIRError, match="nonlinear row"):
+        build_v6_joint_ir_from_direct_cp_sat(
+            direct,
+            solver_policy_sha256="a" * 64,
+            direct_formulation_source_sha256=direct_formulation_source_sha256(),
+        )
