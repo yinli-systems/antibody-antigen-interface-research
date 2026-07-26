@@ -119,7 +119,7 @@ biological result:
   exact allowlist equality; no-follow descriptor reads; hash-before-load; and
   create-only sealed publication. It is an in-memory engineering cache, not a
   scientific or billion-scale training pipeline.
-- The v4 nested workflow is a non-authorizing exact core-feasibility precursor.
+- The v5 nested workflow is a non-authorizing exact core-feasibility precursor.
   It accepts only the physical train-only allowlist and its exact four-column
   train-only canonical manifest; the full authority split/test manifest must
   not be mounted or read. No-follow, same-descriptor reads and an isolated
@@ -128,17 +128,27 @@ biological result:
   membership digest and append-only attempt ledger. An external controller
   must freeze that digest before a separate, numbered
   `externally_pinned_replay`, and an independent replay audit may accept only
-  that pinned replay. Every v2 and v3 artifact or receipt is non-authoritative.
-  Even an audited v4 replay proves only feasibility of its published exact
+  that pinned replay. Every v2, v3, and v4 artifact or receipt is
+  non-authoritative. v5 adds exact component-presence variables and minimums
+  of 25 components per axis in each outer validation fold and 20 per axis in
+  each inner validation fold. Component identity is the lexical representative
+  of a transitive connected component reconstructed from the complete
+  authority-train direct graph, and that identity is retained when an inner
+  universe omits a bridge entity. The builder binds both component roles into
+  every selected-vector ledger; the auditor independently reconstructs the
+  complete graphs and rejects substituted, unknown, axis-swapped, or
+  heldout-induced component identities. This is a diversity constraint, not a
+  claim of global S2 or transitive lineage independence. Even an audited v5
+  replay proves only feasibility of its published exact
   core model: it cannot close split-domain Gate 0 or authorize training,
   selection, or evaluation. The locked full-retention lexicographic stages,
-  deterministic sequential fixing and canonical tie-break trace,
-  precision/power receipt, remaining runtime closure, organizational
-  independence, a second independent MILP, and all other Gate 0 domains remain
-  outstanding. Direct neighborhoods do not prove transitive lineage
-  independence, and replay auditing does not independently prove the solver's
-  historical execution. Full-graph reconstruction also has unmeasured
-  production audit cost.
+  representativeness and remaining balance gates, deterministic sequential
+  fixing and canonical tie-break trace, precision/power receipt, remaining
+  runtime closure, organizational independence, a second independent MILP,
+  and all other Gate 0 domains remain outstanding. Direct neighborhoods do not
+  prove transitive lineage independence, and replay auditing does not
+  independently prove the solver's historical execution. Full-graph
+  reconstruction and solver workspace also have unmeasured production cost.
 - The distributed launch contract binds source, runtime, topology, execution
   mode, and externally verified runtime evidence. It rejects an unreviewed
   96-GPU job and does not implement FSDP2. The associated scale runbook is a
@@ -166,10 +176,12 @@ The current source digests are:
 | `src/interaction_first/frontier_training.py` | `5c0e2d0d51c9ab30dcc8962a270bdc5f34a0d255f12534108bc856c162641da2` |
 | `scripts/build_frontier_engineering_cache.py` | `01ecb05c13f85de764047429501542ba6131ae6a69175f08350d3a4c9cd63895` |
 | `slurm/frontier_engineering_cache.sbatch` | `a94f9e26de65ed71ed5dddfaf9869d4e89e38eb07e7190c665793a9494845e82` |
-| `src/interaction_first/nested_joint_milp.py` | `c025acb9c46ef92e928a2c1b584c67e406b47214a06b29a6b2cbd2457ba6fd29` |
-| `scripts/build_train_only_nested_neighborhood_folds.py` | `69e8c13f0ec20434bcdb40d91f83f59c1eb6134e6c694f97a89d470fc55ebc37` |
-| `scripts/audit_train_only_nested_neighborhood_folds.py` | `1705554e7051f4f7076aa9a5cd845208c5dda4cba26e5875a27d5247640fc803` |
+| `src/interaction_first/nested_joint_milp.py` | `798a54752caaa830bf3a5162854ecdf75028b1b2086c57a90df7798bb045883e` |
+| `scripts/build_train_only_nested_neighborhood_folds.py` | `9bb3c0284f76b0d0bae0cc2744ee26bf89ee94b978e7d41acff0c763852bc320` |
+| `scripts/audit_train_only_nested_neighborhood_folds.py` | `9ed89f767f1e6b02a74eda182fc2a9982a3a235e46b6a976d2b319bf4df3cb04` |
 | `slurm/frontier_nested_split_build_audit.sbatch` | `520d8ba64e5f08231c2c7e91d959ba70830b72d6faeb843bf2b8ede9b0d9caf4` |
+| `tests/test_nested_joint_milp.py` | `2d6d46e61a58b608d79299b15c3ae3e35cd8a7667a9626e8127e516acce6816c` |
+| `tests/test_train_only_nested_neighborhood_folds.py` | `5c021ff4c3fa9637ad2004c3cfaedcb37b168fbb395671cee81d3d4be0828cbb` |
 | `scripts/distributed_launch_contract.py` | `4c9831f35a11ea49cb8ed5beecd1d33f9cbafa8830b15eff2139e35ec90df136` |
 | `scripts/generate_runtime_manifest.py` | `4f488dcadcf543d87ab97c1019af2cd5e81e76ca1a18119573120078eea3a26d` |
 | `protocols/PAIRFORMER_SCALE_RUNBOOK_V1.md` | `df022a34544870c5603cb5eed23dd59393a8a26b61c349e92197b9757c93328b` |
@@ -183,8 +195,11 @@ real multiprocessing Gloo tests could not execute in the local sandbox and
 must not be counted as passes. Engineering-cache v2 reports `86` focused
 downstream tests passed; an independent builder-plus-loader rerun passed `24`.
 The launch/runtime-manifest suites passed `42`.
-The final nested-v4 targeted suites passed `71`; the related combined suites
-passed `227`.
+The final nested-v5 targeted suites passed `81` under both
+`PYTHONHASHSEED=1` and `PYTHONHASHSEED=777`; the related combined suites passed
+`237`. Static compilation, diff hygiene, ASCII-only source/comment checks, and
+an independent read-only adversarial review also passed. These are engineering
+tests, not evidence of real-data feasibility or biological performance.
 
 The post-reconciliation full repository run reported `771 passed, 40 failed,
 1 skipped, 9 warnings, 37 subtests passed`. Thirty-eight deterministic failures
@@ -203,10 +218,12 @@ solution. No `nested_assignment.json` or independent audit receipt was
 published. This is an inconclusive timeout, not an infeasibility certificate,
 and it conveys no training or model-selection authority. The job used the
 superseded v2 artifact schema, so it cannot authorize the current workflow.
-A future v4 run must be bound to policy SHA-256
-`7940bc19f2b1bc7caf687851399d4219d114933eba5caaf9e07a0d41094805e1`
-and complete the externally pinned replay and independent replay audit. No v4
-real run or result exists, and even a conforming audited replay would remain a
+A future v5 run must be bound to policy SHA-256
+`5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd`
+and the implementation commit
+`cb2a7a271a2bb14b4a262ba2e9b5124edad72df1`, then complete the externally
+pinned replay and independent replay audit. No v5 real run or result exists,
+and even a conforming audited replay would remain a
 non-authorizing exact core-feasibility precursor rather than closing Gate 0.
 
 No real PAIRFormer contact training, model selection, held-out scoring, new

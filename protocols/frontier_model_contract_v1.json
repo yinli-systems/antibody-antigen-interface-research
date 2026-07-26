@@ -362,22 +362,24 @@
       "builder_log_sha256": "6159a2ddd7a787348a6d077492a4502f1f46adb30035d8a1a060d8208600f0a7",
       "terminal_state_is_infeasibility_proof": false,
       "artifact_schema_generation": "v2_superseded",
-      "accepted_by_current_v4_workflow": false,
+      "accepted_by_current_v5_workflow": false,
       "authorized": false
     },
-    "nested_core_feasibility_v4_precursor": {
+    "nested_core_feasibility_v5_precursor": {
       "status": "unlaunched_non_authorizing_precursor",
-      "format": "train_only_nested_direct80_four_view_neighborhood_folds_v4",
+      "format": "train_only_nested_direct80_four_view_neighborhood_folds_v5",
       "train_authority": "gate0_physical_train_only_allowlist_v1",
-      "locked_joint_policy_sha256": "7940bc19f2b1bc7caf687851399d4219d114933eba5caaf9e07a0d41094805e1",
+      "locked_joint_policy_sha256": "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd",
+      "implementation_commit": "cb2a7a271a2bb14b4a262ba2e9b5124edad72df1",
       "outer_fold_count": 3,
       "dependent_inner_fold_count_per_outer": 3,
       "exhaustive_boundary_view_audit_count": 48,
       "accepted_artifact_generations": {
         "v2": false,
         "v3": false,
-        "v4_provisional_discovery": false,
-        "v4_externally_pinned_replay_after_independent_audit": true
+        "v4": false,
+        "v5_provisional_discovery": false,
+        "v5_externally_pinned_replay_after_independent_audit": true
       },
       "physical_train_only_allowlist_required": true,
       "exact_four_column_train_only_canonical_manifest_required": true,
@@ -390,20 +392,36 @@
         "a separate numbered externally_pinned_replay reproduces the frozen digest",
         "an independent replay audit may accept only the pinned replay"
       ],
-      "source_sha256": {
-        "src/interaction_first/nested_joint_milp.py": "c025acb9c46ef92e928a2c1b584c67e406b47214a06b29a6b2cbd2457ba6fd29",
-        "scripts/build_train_only_nested_neighborhood_folds.py": "69e8c13f0ec20434bcdb40d91f83f59c1eb6134e6c694f97a89d470fc55ebc37",
-        "scripts/audit_train_only_nested_neighborhood_folds.py": "1705554e7051f4f7076aa9a5cd845208c5dda4cba26e5875a27d5247640fc803",
-        "slurm/frontier_nested_split_build_audit.sbatch": "520d8ba64e5f08231c2c7e91d959ba70830b72d6faeb843bf2b8ede9b0d9caf4",
-        "tests/test_nested_joint_milp.py": "605d5222b108661277c7ff28dbbb6154bef8fe9d7d295b1fe954ec2049ddc21c",
-        "tests/test_train_only_nested_neighborhood_folds.py": "ce1d074c7a8f76ece4a343e7c8170c104286796ce032a2d1f73be2764d93bf6c"
+      "full_authority_component_gate": {
+        "identity_source": "transitive_connected_components_of_complete_authority_train_direct_graphs",
+        "canonical_identifier": "lexicographically_minimum_entity_identifier",
+        "outer_minimum_components_per_axis": 25,
+        "inner_minimum_components_per_axis": 20,
+        "component_presence_encoding": "exact_binary_or_over_effective_validation_endpoints",
+        "inner_levels_retain_complete_graph_component_identity": true,
+        "builder_selected_vector_binds_both_axes": true,
+        "auditor_independently_reconstructs_complete_graph_components": true,
+        "proves_global_s2_or_lineage_independence": false
       },
-      "targeted_tests_passed": 71,
-      "related_combined_tests_passed": 227,
+      "source_sha256": {
+        "src/interaction_first/nested_joint_milp.py": "798a54752caaa830bf3a5162854ecdf75028b1b2086c57a90df7798bb045883e",
+        "scripts/build_train_only_nested_neighborhood_folds.py": "9bb3c0284f76b0d0bae0cc2744ee26bf89ee94b978e7d41acff0c763852bc320",
+        "scripts/audit_train_only_nested_neighborhood_folds.py": "9ed89f767f1e6b02a74eda182fc2a9982a3a235e46b6a976d2b319bf4df3cb04",
+        "slurm/frontier_nested_split_build_audit.sbatch": "520d8ba64e5f08231c2c7e91d959ba70830b72d6faeb843bf2b8ede9b0d9caf4",
+        "tests/test_nested_joint_milp.py": "2d6d46e61a58b608d79299b15c3ae3e35cd8a7667a9626e8127e516acce6816c",
+        "tests/test_train_only_nested_neighborhood_folds.py": "5c021ff4c3fa9637ad2004c3cfaedcb37b168fbb395671cee81d3d4be0828cbb"
+      },
+      "targeted_tests_passed": 81,
+      "targeted_tests_passed_under_hash_seeds": [
+        1,
+        777
+      ],
+      "related_combined_tests_passed": 237,
       "authorizes_split_domain_gate0": false,
       "authorizes_training_model_selection_or_evaluation": false,
       "does_not_prove": [
         "locked V0 full-retention-first lexicographic objective stages",
+        "locked representativeness and remaining balance gates",
         "deterministic sequential variable fixing or canonical tie-break trace",
         "precision or power receipt",
         "remaining runtime closure",
@@ -414,7 +432,8 @@
         "any other Gate 0 domain"
       ],
       "full_graph_reconstruction_production_audit_cost_measured": false,
-      "claim_boundary": "No v4 real run or result exists. Even an independently audited, externally pinned v4 replay is only a non-authorizing exact core-feasibility precursor; it cannot close Gate 0 or authorize training, model selection, or evaluation."
+      "production_solver_memory_and_runtime_measured": false,
+      "claim_boundary": "No v5 real run or result exists. Even an independently audited, externally pinned v5 replay is only a non-authorizing exact core-feasibility precursor with full-authority component minima; it cannot close Gate 0 or authorize training, model selection, or evaluation."
     },
     "claim_boundary": "No real PAIRFormer contact training, model selection, held-out scoring, new biological metric, metric improvement, large-scale PAIRFormer model run, or world-leading result."
   },
