@@ -709,7 +709,24 @@
         "independent_cp_sat_proto_to_canonical_ir_completed": true,
         "synthetic_complete_66_gate_exact_separation_oracle_completed": true,
         "canonical_10_percent_dry_run": {
-          "production_run_completed": false,
+          "production_run_completed": true,
+          "production_receipt": {
+            "complete_exact_candidate_present": false,
+            "cp_sat_invoked": false,
+            "graph_or_pair_incidence_accessed": false,
+            "highs_invoked": false,
+            "output_directory": "/ssd/scxi253/model_deployment/results/v6_a_canonical_10pct_001",
+            "peak_rss_kib": 22792,
+            "pre_graph_infeasibility_proven": true,
+            "receipt_file_sha256": "48bac8420b7eacb31086c77ca0f04660004f6e1ba5387bbe9f4259b12ae23952",
+            "receipt_sha256": "e5b1db83df183406430dc118289b466b61d06f8533451c026a14eab0defa81fd",
+            "report_sha256": "db3ffb6d2cbb2c6bf79b8042c2274a7acaa1eada51e2ac9dff3432b44f4e657e",
+            "required_distinct_outer_validation_entities_per_axis": 180,
+            "selected_antibody_count": 139,
+            "selected_antigen_count": 118,
+            "terminal_status": "STATIC_NECESSARY_CONDITION_INFEASIBLE",
+            "training_authorized": false
+          },
           "registered_run_id": "v6_a_canonical_10pct_001",
           "registration_sha256": "51a4b67bb4fe9cb9431ae31ca7a1cfdd16ec8d45381efdc17229ad17c471053a",
           "selection": "per-axis ceiling of one tenth by lowercase SHA-256 entity ID before graph or pair-incidence access",
@@ -717,7 +734,7 @@
             "scripts/run_v6_canonical_dry_run_preflight.py": "368d8eaeba51f0256ae4801cbfcfb1d70fcf5493ee6794b4dca571e8e7b8278a",
             "tests/test_v6_canonical_dry_run_preflight.py": "44439dba3cad17edf91f62a37a34c4b814f19f7476b803ba5b0a68040e594908"
           },
-          "status": "single_run_registered_static_preflight_unrun",
+          "status": "single_run_consumed_static_pre_graph_infeasibility_proven_v6_a_stopped",
           "training_authorized": false
         },
         "independent_cp_sat_evidence": {
@@ -801,7 +818,7 @@
           "tests/test_v6_a_protocol.py": "daf42ca88fcf9cbe74b3d69ce0d86de437f83e2ac37b2bf208a6a9424663c6b2",
           "tests/test_v6_joint_ir.py": "66170ce2a36d5ce76e17a9e4d86d8e9586bdc8064934faadb66219c7eebeefa9"
         },
-        "status": "direct_ir_and_complete_66_gate_dual_oracle_synthetically_hardened_production_unrun",
+        "status": "v6_a_stopped_by_registered_ten_percent_static_preflight_new_decomposition_protocol_required",
         "targeted_tests_passed_under_each_hash_seed": 25,
         "related_regression_tests_passed_under_each_hash_seed": 151,
         "training_authorized": false,
@@ -815,7 +832,7 @@
         "incomplete_separation",
         "audit_disagreement"
       ],
-      "status": "truth_chain_and_two_joint_linear_formulations_hardened_production_exact_solve_unrun",
+      "status": "stopped_after_registered_ten_percent_pre_graph_infeasibility_not_a_full_authority_infeasibility_claim",
       "training_prerequisites": [
         "audited_full_3_plus_9_assignment",
         "post_freeze_3d_interface_leakage_audit",
