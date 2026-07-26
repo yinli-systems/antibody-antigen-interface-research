@@ -194,16 +194,16 @@ missing-physical-fixture failures and one Biopython `1.83` pin versus the local
 multiprocessing Gloo tests. The full suite is explicitly non-passing; zero new
 regressions were identified, and no failure is represented as a pass.
 
-Exact joint core-feasibility job `1320525` was still running at
-the last successful remote observation,
-`2026-07-25T15:01:08+08:00`. It had not published
-`nested_assignment.json` or an independent audit receipt, so it conveyed no
-training or model-selection authority at that time. Subsequent remote status
-could not be verified because the cluster network became unreachable. That
-connectivity failure is not evidence of success, failure, infeasibility, or
-termination. The job used the superseded v2 artifact schema. Even if an
-artifact later appears, neither it nor any v3 artifact can authorize the
-current workflow. A future v4 run must be bound to policy SHA-256
+Exact joint core-feasibility job `1320525` reached Slurm state `FAILED` after
+`12:01:16`, with exit code `1:0`, at `2026-07-26T01:03:14+08:00`. The verified
+builder log (SHA-256
+`6159a2ddd7a787348a6d077492a4502f1f46adb30035d8a1a060d8208600f0a7`)
+records that HiGHS exhausted the locked `43,200`-second limit with no primal
+solution. No `nested_assignment.json` or independent audit receipt was
+published. This is an inconclusive timeout, not an infeasibility certificate,
+and it conveys no training or model-selection authority. The job used the
+superseded v2 artifact schema, so it cannot authorize the current workflow.
+A future v4 run must be bound to policy SHA-256
 `7940bc19f2b1bc7caf687851399d4219d114933eba5caaf9e07a0d41094805e1`
 and complete the externally pinned replay and independent replay audit. No v4
 real run or result exists, and even a conforming audited replay would remain a
