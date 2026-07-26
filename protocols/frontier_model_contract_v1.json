@@ -910,6 +910,14 @@
           "maximum_time_seconds_per_solve": 21600
         },
         "registration_sha256": "e4cb9329b248c12ec1b1b81cca84c61d109c91131812f543e3a773d221899175",
+        "scheduler_preflight": {
+          "attempt": 1,
+          "job_submitted": false,
+          "model_built": false,
+          "reason": "The site submission policy requires one to eight GPUs for every single-node job in gpu_5090 and rejected the registered zero-GPU request.",
+          "solver_invoked": false,
+          "status": "SCHEDULER_REJECTED_ZERO_GPU_REQUEST"
+        },
         "related_v6_tests_passed_under_each_hash_seed": 139,
         "slurm": {
           "cpus_per_task": 8,
@@ -922,7 +930,9 @@
         },
         "source_sha256": {
           "protocols/v6_b_production_feasibility_registration_v1.json": "e4cb9329b248c12ec1b1b81cca84c61d109c91131812f543e3a773d221899175",
-          "tests/test_v6_b_production_registration.py": "6f74f4988451c33625f5911338c882311f61cd4b639887cce3adc5728526457e"
+          "protocols/v6_b_production_submission_attempt_001.json": "206976c3f8772a496b42a35adee18d55968310b7deb8fcf701f4c77ace8eb65f",
+          "tests/test_v6_b_production_registration.py": "6f74f4988451c33625f5911338c882311f61cd4b639887cce3adc5728526457e",
+          "tests/test_v6_b_submission_evidence.py": "4c1e393fd3c5427a45de078c25ab4b2cb137e2f16983f5366257d350d791ef5e"
         },
         "targeted_tests_passed_under_each_hash_seed": 9,
         "split_gate0_authorized": false,
