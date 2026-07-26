@@ -1,8 +1,9 @@
-"""Fail-closed V6-B decomposition and row-shard telemetry primitives.
+"""Fail-closed V6-B decomposition, telemetry, and exact solve primitives.
 
-This module does not solve a split. It partitions the independently rebuilt V6-A
-canonical IR into one outer master and three outer-conditioned inner groups, and it
-constructs deterministic telemetry-only row shards without sampling entities or pairs.
+This module partitions the independently rebuilt V6-A canonical IR into one outer
+master and three outer-conditioned inner groups. It also constructs deterministic
+telemetry-only row shards and executes the complete fail-closed decomposition without
+sampling entities or pairs.
 """
 
 from __future__ import annotations
@@ -919,6 +920,7 @@ def run_v6_b_exact_feasibility(
     maximum_master_iterations: int = 1000,
     maximum_combined_candidates: int = 10000,
     maximum_time_seconds_per_solve: float | None = None,
+    event_callback: Callable[[Mapping[str, object]], None] | None = None,
 ) -> dict[str, object]:
     """Run full V6-B linear decomposition plus complete exact separation."""
     from .v6_b_independent_core_auditor import replay_direct_inner_support
@@ -936,6 +938,25 @@ def run_v6_b_exact_feasibility(
     if len(declared_gates) != EXPECTED_TOTAL_GATES:
         raise V6BDecompositionError("partition does not declare all exact gates")
 
+    partition_sha256 = partition.canonical_payload()["partition_sha256"]
+    event_index = 0
+
+    def emit(event_type: str, evidence: Mapping[str, object]) -> None:
+        nonlocal event_index
+        if event_callback is None:
+            return
+        event_index += 1
+        event: dict[str, object] = {
+            "format_version": "v6_b_exact_decomposition_progress_event_v1",
+            "event_index": event_index,
+            "event_type": event_type,
+            "evidence": dict(evidence),
+            "partition_sha256": partition_sha256,
+            "training_authorized": False,
+        }
+        event["event_sha256"] = _sha256(event)
+        event_callback(event)
+
     master_cuts: list[V6BMasterNoGoodCut | V6BExactNoGoodCut] = []
     inner_cuts: dict[int, list[V6BExactNoGoodCut]] = {
         group: [] for group in range(EXPECTED_INNER_GROUPS)
@@ -950,6 +971,20 @@ def run_v6_b_exact_feasibility(
     proven_infeasible = False
     final_assignment: dict[VariableKey, int] | None = None
 
+    emit(
+        "RUN_STARTED",
+        {
+            "maximum_master_iterations": maximum_master_iterations,
+            "maximum_combined_candidates": maximum_combined_candidates,
+            "maximum_time_seconds_per_solve": (
+                None
+                if maximum_time_seconds_per_solve is None
+                else str(maximum_time_seconds_per_solve)
+            ),
+            "declared_gate_count": len(declared_gates),
+        },
+    )
+
     for master_iteration in range(1, maximum_master_iterations + 1):
         master = solve_outer_master_linear_projection(
             partition,
@@ -957,6 +992,10 @@ def run_v6_b_exact_feasibility(
             maximum_time_seconds=maximum_time_seconds_per_solve,
         )
         master_history.append({"iteration": master_iteration, **master})
+        emit(
+            "MASTER_SOLVED",
+            {"iteration": master_iteration, "receipt": master},
+        )
         if master["status"] == "INFEASIBLE":
             terminal_status = "PROVEN_INFEASIBLE"
             complete = True
@@ -985,6 +1024,14 @@ def run_v6_b_exact_feasibility(
                         "combined_candidate": combined_candidate_count,
                         **inner,
                     }
+                )
+                emit(
+                    "INNER_SOLVED",
+                    {
+                        "master_iteration": master_iteration,
+                        "combined_candidate": combined_candidate_count,
+                        "receipt": inner,
+                    },
                 )
                 if inner["status"] == "INFEASIBLE":
                     support = tuple(
@@ -1038,6 +1085,17 @@ def run_v6_b_exact_feasibility(
                             "master_cut": cut.canonical_payload(),
                         }
                     )
+                    emit(
+                        "INNER_CORE_REPLAYED_AND_CUT",
+                        {
+                            "master_iteration": master_iteration,
+                            "combined_candidate": combined_candidate_count,
+                            "outer_fold": group,
+                            "primary_replay": replay,
+                            "independent_replay": independent,
+                            "master_cut": cut.canonical_payload(),
+                        },
+                    )
                     inner_linear_infeasible = True
                     master_rejected = True
                     break
@@ -1075,6 +1133,10 @@ def run_v6_b_exact_feasibility(
                         ),
                     }
                 )
+                emit(
+                    "EXACT_ORACLE_EXCEPTION",
+                    oracle_history[-1],
+                )
                 master_rejected = True
                 break
             if not isinstance(result, SeparationOracleResult):
@@ -1096,6 +1158,10 @@ def run_v6_b_exact_feasibility(
                     **result.canonical_payload(),
                 }
             )
+            emit(
+                "EXACT_ORACLE_EVALUATED",
+                oracle_history[-1],
+            )
             if not result.failures:
                 final_assignment = combined
                 terminal_status = "OPTIMAL_EXACT_ORACLE_PASS"
@@ -1115,6 +1181,14 @@ def run_v6_b_exact_feasibility(
                 else:
                     assert cut.outer_fold is not None
                     inner_cuts[cut.outer_fold].append(cut)
+            emit(
+                "EXACT_CUTS_ADDED",
+                {
+                    "master_iteration": master_iteration,
+                    "combined_candidate": combined_candidate_count,
+                    "cuts": [cut.canonical_payload() for cut in exact_cuts],
+                },
+            )
             if master_rejected:
                 break
             if master_exact_failure:
@@ -1145,7 +1219,7 @@ def run_v6_b_exact_feasibility(
     )
     payload: dict[str, object] = {
         "format_version": "v6_b_exact_decomposition_feasibility_receipt_v1",
-        "partition_sha256": partition.canonical_payload()["partition_sha256"],
+        "partition_sha256": partition_sha256,
         "maximum_master_iterations": maximum_master_iterations,
         "maximum_combined_candidates": maximum_combined_candidates,
         "maximum_time_seconds_per_solve": (
@@ -1176,4 +1250,15 @@ def run_v6_b_exact_feasibility(
         "implementation_source_sha256": implementation_source_sha256(),
     }
     payload["receipt_sha256"] = _sha256(payload)
+    emit(
+        "RUN_TERMINATED",
+        {
+            "terminal_status": terminal_status,
+            "complete": complete,
+            "proven_infeasible": proven_infeasible,
+            "candidate_present": final_assignment is not None,
+            "combined_candidate_count": combined_candidate_count,
+            "receipt_sha256": payload["receipt_sha256"],
+        },
+    )
     return payload

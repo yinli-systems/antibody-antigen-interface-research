@@ -14,6 +14,7 @@ from interaction_first.v6_b_decomposition import (
     build_exact_no_good_cuts,
     build_replayed_master_no_good_cut,
     build_row_shard_telemetry,
+    canonical_json_bytes,
     partition_joint_ir,
     replay_inner_infeasibility_support,
     run_v6_b_exact_feasibility,
@@ -428,6 +429,71 @@ def test_complete_decomposition_accepts_only_all_66_exact_gates() -> None:
     assert receipt["all_66_exact_gates_passed"] is True
     assert receipt["split_gate0_authorized"] is False
     assert receipt["training_authorized"] is False
+
+
+def test_complete_decomposition_streams_self_hashed_progress_in_order() -> None:
+    ir = _ir()
+    partition = partition_joint_ir(ir)
+    events = []
+
+    def oracle(_assignment):
+        return SeparationOracleResult(
+            evaluated_gates=_all_gate_signatures(ir),
+            failures=(),
+            primary_statistics_receipt_sha256="1" * 64,
+            independent_audit_receipt_sha256="2" * 64,
+            independent_agreement=True,
+        )
+
+    receipt = run_v6_b_exact_feasibility(
+        partition,
+        object(),
+        oracle,
+        maximum_master_iterations=2,
+        maximum_combined_candidates=2,
+        event_callback=events.append,
+    )
+    assert [event["event_index"] for event in events] == list(
+        range(1, len(events) + 1)
+    )
+    assert [event["event_type"] for event in events] == [
+        "RUN_STARTED",
+        "MASTER_SOLVED",
+        "INNER_SOLVED",
+        "INNER_SOLVED",
+        "INNER_SOLVED",
+        "EXACT_ORACLE_EVALUATED",
+        "RUN_TERMINATED",
+    ]
+    for event in events:
+        claimed = event["event_sha256"]
+        core = dict(event)
+        core.pop("event_sha256")
+        assert claimed == hashlib.sha256(canonical_json_bytes(core)).hexdigest()
+        assert event["training_authorized"] is False
+    assert events[-1]["evidence"]["receipt_sha256"] == receipt["receipt_sha256"]
+
+
+def test_progress_sink_failure_stops_the_solver_controller() -> None:
+    ir = _ir()
+
+    def fail(_event):
+        raise OSError("append-only evidence sink failed")
+
+    def oracle(_assignment):
+        raise AssertionError("the solver must not start after evidence failure")
+
+    try:
+        run_v6_b_exact_feasibility(
+            partition_joint_ir(ir),
+            object(),
+            oracle,
+            event_callback=fail,
+        )
+    except OSError as error:
+        assert "evidence sink failed" in str(error)
+    else:
+        raise AssertionError("an unavailable evidence sink must fail closed")
 
 
 def test_outer_exact_failure_is_cut_before_second_candidate_passes() -> None:
