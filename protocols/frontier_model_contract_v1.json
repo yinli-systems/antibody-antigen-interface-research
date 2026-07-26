@@ -535,12 +535,12 @@
           "manifest_firewall": "only the first INSTANCE field is inspected before authorization; sequence columns are parsed only for authority-train identifiers",
           "production_inputs_created": false,
           "source_sha256": {
-            "scripts/derive_v6_score_free_inputs.py": "26c573554e62f245531dc103ddc5f9ac6d29735b1e89cbbf818b3cbce0e74017",
-            "tests/test_derive_v6_score_free_inputs.py": "9c6dd910c32b60058879b24714781477dce787e46ecd878d9dfe84e7f233c2fb"
+            "scripts/derive_v6_score_free_inputs.py": "ff5dcb68e6257bbf07e2f82b53ee4a2dc08aee801519234e9ee1f3e56fa3f901",
+            "tests/test_derive_v6_score_free_inputs.py": "aa78a67f45dd2a572a0381bbb9fa76e0031edbd3b4a48cdc50352ae9a04601f3"
           },
-          "status": "synthetically_hardened_with_nonempty_historical_edge_framing_unrun_successfully_on_production_sources",
-          "targeted_tests_passed_under_each_hash_seed": 8,
-          "related_regression_tests_passed_under_each_hash_seed": 154,
+          "status": "synthetically_hardened_with_uniform_lf_or_crlf_manifest_support_unrun_successfully_on_production_sources",
+          "targeted_tests_passed_under_each_hash_seed": 9,
+          "related_regression_tests_passed_under_each_hash_seed": 155,
           "tested_under_python_hash_seeds": [
             1,
             777

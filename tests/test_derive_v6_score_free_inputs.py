@@ -210,6 +210,7 @@ def test_derivation_uses_only_authority_membership_and_exact_graphs(
     assert receipt["historical_fold_feasibility_claim_reused"] is False
     assert receipt["manifest_firewall"] == {
         "physical_source_rows_scanned": 3,
+        "source_newline_convention": "LF",
         "authorized_sequence_rows_parsed": 2,
         "non_authorized_sequence_rows_parsed": 0,
     }
@@ -312,6 +313,35 @@ def test_duplicate_or_missing_authority_rows_fail_closed(
             assignment_bytes=assignment,
             audit_bytes=audit,
             manifest_bytes=missing,
+            implementation_source_sha256=hashlib.sha256(
+                SCRIPT_PATH.read_bytes()
+            ).hexdigest(),
+        )
+
+
+def test_uniform_crlf_is_supported_but_mixed_newlines_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    assignment, audit, manifest = _fixture(monkeypatch)
+    crlf_manifest = manifest.replace(b"\n", b"\r\n")
+    artifacts = SCRIPT.derive_inputs(
+        assignment_bytes=assignment,
+        audit_bytes=audit,
+        manifest_bytes=crlf_manifest,
+        implementation_source_sha256=hashlib.sha256(
+            SCRIPT_PATH.read_bytes()
+        ).hexdigest(),
+    )
+    assert artifacts["receipt"]["manifest_firewall"][
+        "source_newline_convention"
+    ] == "CRLF"
+    assert b"\r" not in artifacts["train_canonical_manifest.csv"]
+    mixed = crlf_manifest.replace(b"\r\n", b"\n", 1)
+    with pytest.raises(SCRIPT.InputDerivationError, match="mixes newline"):
+        SCRIPT.derive_inputs(
+            assignment_bytes=assignment,
+            audit_bytes=audit,
+            manifest_bytes=mixed,
             implementation_source_sha256=hashlib.sha256(
                 SCRIPT_PATH.read_bytes()
             ).hexdigest(),

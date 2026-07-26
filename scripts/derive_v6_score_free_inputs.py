@@ -318,10 +318,23 @@ def _validate_historical_evidence(
 def _project_authorized_manifest(
     payload_bytes: bytes,
     authorized_ids: Sequence[str],
-) -> tuple[bytes, dict[str, int]]:
-    if b"\0" in payload_bytes or b"\r" in payload_bytes or not payload_bytes.endswith(b"\n"):
+) -> tuple[bytes, dict[str, int | str]]:
+    if b"\0" in payload_bytes or not payload_bytes.endswith(b"\n"):
         raise InputDerivationError("canonical manifest byte framing differs")
-    lines = payload_bytes.split(b"\n")[:-1]
+    if payload_bytes.endswith(b"\r\n"):
+        newline_count = payload_bytes.count(b"\n")
+        if (
+            payload_bytes.count(b"\r\n") != newline_count
+            or payload_bytes.count(b"\r") != newline_count
+        ):
+            raise InputDerivationError("canonical manifest mixes newline conventions")
+        lines = payload_bytes.split(b"\r\n")[:-1]
+        newline_convention = "CRLF"
+    else:
+        if b"\r" in payload_bytes:
+            raise InputDerivationError("canonical manifest mixes newline conventions")
+        lines = payload_bytes.split(b"\n")[:-1]
+        newline_convention = "LF"
     if not lines or any(not line for line in lines):
         raise InputDerivationError("canonical manifest contains an empty physical line")
     try:
@@ -372,6 +385,7 @@ def _project_authorized_manifest(
     writer.writerow(OUTPUT_MANIFEST_COLUMNS)
     writer.writerows(projected_rows)
     return buffer.getvalue().encode("ascii"), {
+        "source_newline_convention": newline_convention,
         "physical_source_rows_scanned": total_rows,
         "authorized_sequence_rows_parsed": len(projected_rows),
         "non_authorized_sequence_rows_parsed": 0,
