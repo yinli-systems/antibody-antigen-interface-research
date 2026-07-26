@@ -707,6 +707,7 @@
         },
         "independent_cp_sat_raw_authority_formulation_completed": true,
         "independent_cp_sat_proto_to_canonical_ir_completed": true,
+        "synthetic_complete_66_gate_exact_separation_oracle_completed": true,
         "independent_cp_sat_evidence": {
           "authority_input": "externally hash-anchored score_free_authority_v2 plus four authority-bound edge ledgers",
           "forbidden_imports": [
@@ -780,17 +781,19 @@
         "source_sha256": {
           "pyproject.toml": "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342",
           "src/interaction_first/v6_highs_backend.py": "e96c8bad2606ee048b6d802fd16da3f38f236cb099f11146b75d423399863e65",
-          "src/interaction_first/v6_joint_ir.py": "a1c5c1d1fa348e244737993db9b0616c859d00750b9e41c19235ef84fce58c99",
+          "src/interaction_first/v6_exact_separation_oracle.py": "902b838cf6ba7c39d51f774497f855a8bec455b7942804c8031f88e09c575cef",
+          "src/interaction_first/v6_joint_ir.py": "595043922213c0e5c95d6a8563e64decaa1d7783d1aa668c6e23e7a099b8fe32",
           "src/interaction_first/v6_cp_sat_formulation.py": "d07e2a402c63fe1fe642bb0f80162c8850bfef1d17a18e8d3fb4afde40b3a9dd",
-          "tests/test_v6_cp_sat_formulation.py": "104afa1058d2648b8cc3af149a1c3b711d1f512b024d1c865b1c31616e9c75ce",
+          "tests/test_v6_cp_sat_formulation.py": "75683f124963e304d370c96f3a526212c09c562135630922f12efde731f68885",
+          "tests/test_v6_exact_separation_oracle.py": "2408ad1b61e224df06ee31f51b0bac08f056b67b4df0588430c2e1e7dc9b6841",
           "tests/test_v6_a_protocol.py": "daf42ca88fcf9cbe74b3d69ce0d86de437f83e2ac37b2bf208a6a9424663c6b2",
-          "tests/test_v6_joint_ir.py": "0452c2ae685d7c614a5128810b75bbba6b884714083c2532055857fa7d033798"
+          "tests/test_v6_joint_ir.py": "66170ce2a36d5ce76e17a9e4d86d8e9586bdc8064934faadb66219c7eebeefa9"
         },
-        "status": "two_linear_formulations_and_fail_closed_separation_engine_synthetically_hardened",
-        "targeted_tests_passed_under_each_hash_seed": 21,
-        "related_regression_tests_passed_under_each_hash_seed": 146,
+        "status": "direct_ir_and_complete_66_gate_dual_oracle_synthetically_hardened_production_unrun",
+        "targeted_tests_passed_under_each_hash_seed": 23,
+        "related_regression_tests_passed_under_each_hash_seed": 149,
         "training_authorized": false,
-        "claim_boundary": "The independent direct CP-SAT formulation and common linear semantics are synthetically verified. No receipt can certify the complete V6-A feasible region until production authority reconstruction, complete exact separation, independent statistics agreement, and the HiGHS projection audit all pass."
+        "claim_boundary": "The independent direct CP-SAT formulation, common linear semantics, and complete 66-gate primary/independent exact oracle are synthetically verified. No receipt can certify the complete V6-A feasible region until production CP-SAT separation and the direct HiGHS projection audit both reach their accepted terminal states."
       },
       "rejected_terminal_states": [
         "FEASIBLE",

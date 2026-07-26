@@ -343,6 +343,7 @@ def build_v6_joint_ir_from_direct_cp_sat(
     *,
     solver_policy_sha256: str,
     direct_formulation_source_sha256: str,
+    exact_oracle_source_sha256: str,
 ) -> CanonicalJointIR:
     """Translate the independent CP-SAT proto into the solver-neutral IR.
 
@@ -354,6 +355,10 @@ def build_v6_joint_ir_from_direct_cp_sat(
     source_digest = _validate_sha256(
         direct_formulation_source_sha256,
         "direct formulation source",
+    )
+    oracle_digest = _validate_sha256(
+        exact_oracle_source_sha256,
+        "exact oracle source",
     )
     try:
         model = direct_model.model
@@ -451,6 +456,7 @@ def build_v6_joint_ir_from_direct_cp_sat(
                 {
                     "direct_cp_sat_formulation": formulation_digest,
                     "direct_cp_sat_formulation_source": source_digest,
+                    "exact_separation_oracle_source": oracle_digest,
                     "score_free_authority": authority_digest,
                     "solver_policy": policy_digest,
                 }.items()
@@ -600,8 +606,26 @@ class SeparationOracleResult:
     def canonical_payload(self) -> dict[str, object]:
         return {
             "evaluated_gates": [list(signature) for signature in self.evaluated_gates],
-            "failure_payload_sha256": [
-                _sha256(failure.failure_payload) for failure in self.failures
+            "failures": [
+                {
+                    "gate_signature": [
+                        failure.gate_id,
+                        failure.level_id,
+                        failure.axis,
+                        failure.role,
+                    ],
+                    "support_sha256": _sha256(
+                        [
+                            [list(key), value]
+                            for key, value in failure.support
+                        ]
+                    ),
+                    "failure_payload": failure.failure_payload,
+                    "failure_payload_sha256": _sha256(
+                        failure.failure_payload
+                    ),
+                }
+                for failure in self.failures
             ],
             "primary_statistics_receipt_sha256": (
                 self.primary_statistics_receipt_sha256
@@ -821,7 +845,18 @@ def solve_cp_sat_with_exact_separation(
         if not audit_integer_constraints(ir, assignment, cuts):
             terminal_status = "INTEGER_ROW_AUDIT_DISAGREEMENT"
             break
-        oracle_result = oracle(assignment)
+        try:
+            oracle_result = oracle(assignment)
+        except Exception as error:
+            error_payload = {
+                "iteration": iteration,
+                "error_type": type(error).__name__,
+                "error_message": str(error),
+            }
+            error_payload["error_sha256"] = _sha256(error_payload)
+            oracle_audit_history.append(error_payload)
+            terminal_status = "EXACT_ORACLE_EXCEPTION"
+            break
         if not isinstance(oracle_result, SeparationOracleResult):
             terminal_status = "INVALID_EXACT_ORACLE_RESULT"
             break

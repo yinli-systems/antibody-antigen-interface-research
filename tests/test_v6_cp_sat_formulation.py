@@ -282,6 +282,7 @@ def test_direct_cp_sat_proto_builds_authoritative_joint_ir() -> None:
         direct,
         solver_policy_sha256="a" * 64,
         direct_formulation_source_sha256=direct_formulation_source_sha256(),
+        exact_oracle_source_sha256="b" * 64,
     )
     assert ir.independent_raw_authority_reconstruction is True
     assert ir.construction_scope == "independent_raw_authority_direct_cp_sat_proto"
@@ -317,4 +318,5 @@ def test_direct_cp_sat_adapter_rejects_non_linear_proto_constructs() -> None:
             direct,
             solver_policy_sha256="a" * 64,
             direct_formulation_source_sha256=direct_formulation_source_sha256(),
+            exact_oracle_source_sha256="b" * 64,
         )

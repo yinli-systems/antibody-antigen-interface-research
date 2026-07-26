@@ -203,6 +203,30 @@ def test_cp_sat_rejects_incomplete_or_disagreeing_exact_audits() -> None:
     assert disagreement["complete_feasible_region_certified"] is False
 
 
+def test_cp_sat_receipt_preserves_exact_failure_values_and_oracle_exceptions() -> None:
+    ir = _generic_ir()
+    failure_receipt = solve_cp_sat_with_exact_separation(
+        ir,
+        lambda assignment: _oracle_result(ir, (_failure(assignment[("x",)]),)),
+        maximum_iterations=1,
+    )
+    recorded = failure_receipt["oracle_audit_history"][0]["failures"][0]
+    assert recorded["failure_payload"] == {
+        "maximum_smd_decimal": "0.35",
+        "observed": "1.0",
+    }
+    assert len(recorded["failure_payload_sha256"]) == 64
+    exception_receipt = solve_cp_sat_with_exact_separation(
+        ir,
+        lambda assignment: (_ for _ in ()).throw(RuntimeError("oracle stopped")),
+    )
+    assert exception_receipt["terminal_status"] == "EXACT_ORACLE_EXCEPTION"
+    assert exception_receipt["complete_feasible_region_certified"] is False
+    assert exception_receipt["oracle_audit_history"][0]["error_type"] == (
+        "RuntimeError"
+    )
+
+
 def test_joint_ir_is_order_stable_and_preserves_every_linear_projection_row() -> None:
     problem = _independent_problem()
     limits = ResourceLimits(
