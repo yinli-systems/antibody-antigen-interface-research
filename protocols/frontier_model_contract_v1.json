@@ -943,6 +943,14 @@
         "limits_unchanged_from_v1": true,
         "registration_sha256": "bdfca4e4884569dd2e47e02caec6f62c5a1ae9de202a1af6c92cc516f3db05b5",
         "related_v6_tests_passed_under_each_hash_seed": 145,
+        "scheduler_preflight": {
+          "attempt": 2,
+          "job_submitted": false,
+          "model_built": false,
+          "reason": "The gpu_5090 partition automatically assigns 126 GB per allocated GPU and rejected the registered explicit 96 GiB --mem request.",
+          "solver_invoked": false,
+          "status": "SCHEDULER_REJECTED_EXPLICIT_MEMORY_REQUEST"
+        },
         "scheduler_adaptation": {
           "accelerator_visible_to_solver": false,
           "allocated_gpu_purpose": "site_scheduler_requirement_only",
@@ -952,7 +960,9 @@
         },
         "source_sha256": {
           "protocols/v6_b_production_feasibility_registration_v2.json": "bdfca4e4884569dd2e47e02caec6f62c5a1ae9de202a1af6c92cc516f3db05b5",
-          "tests/test_v6_b_production_registration_v2.py": "ebc37da8cee0c5d05b5582236a14f4da45997dc6b4742c3347b23444e31fd346"
+          "protocols/v6_b_production_submission_attempt_002.json": "2b2681d727e13bee1736d6af701d391730d0ba494ce0745f5b6c36e84be75245",
+          "tests/test_v6_b_production_registration_v2.py": "ebc37da8cee0c5d05b5582236a14f4da45997dc6b4742c3347b23444e31fd346",
+          "tests/test_v6_b_submission_evidence.py": "f0f54ffdc4cac414cda0077e5232a0a3ac91fbcacd2fc41bbadf218b1af7e164"
         },
         "targeted_tests_passed_under_each_hash_seed": 15,
         "split_gate0_authorized": false,
