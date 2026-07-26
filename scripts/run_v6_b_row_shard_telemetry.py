@@ -81,6 +81,75 @@ def _strict_json(payload: bytes, label: str) -> dict[str, object]:
     return result
 
 
+def extract_scientific_authority(
+    published_bytes: bytes,
+) -> tuple[bytes, dict[str, object]]:
+    """Authenticate the publication envelope and return exact scientific JSON."""
+    published = _strict_json(published_bytes, "published authority")
+    scientific_keys = {
+        "format_version",
+        "input_sha256",
+        "authority_membership_sha256",
+        "implementation_source_sha256",
+        "counts",
+        "antibodies",
+        "antigens",
+        "pairs",
+        "quantile_schemes",
+        "forbidden_outcome_or_model_fields_accepted",
+        "scientific_payload_sha256",
+    }
+    envelope_keys = {
+        "verified_file_receipts",
+        "publication_controller_sha256",
+        "publication_sha256",
+    }
+    if set(published) != scientific_keys | envelope_keys:
+        raise V6BRowShardError("published authority envelope schema differs")
+    publication_sha256 = _digest(
+        published.pop("publication_sha256"),
+        "authority publication",
+    )
+    if hashlib.sha256(canonical_json_bytes(published)).hexdigest() != publication_sha256:
+        raise V6BRowShardError("authority publication digest differs")
+    controller_sha256 = _digest(
+        published.pop("publication_controller_sha256"),
+        "authority publication controller",
+    )
+    verified = published.pop("verified_file_receipts")
+    if not isinstance(verified, Mapping) or set(verified) != {
+        "train_authority",
+        "canonical_manifest",
+        *(f"edge_ledger_{view}" for view in VIEWS),
+    }:
+        raise V6BRowShardError("authority verified-file receipts differ")
+    for label, receipt in verified.items():
+        if not isinstance(receipt, Mapping):
+            raise V6BRowShardError(f"authority {label} file receipt is malformed")
+        canonical_json_bytes(receipt)
+    scientific_sha256 = _digest(
+        published.get("scientific_payload_sha256"),
+        "scientific authority payload",
+    )
+    scientific_without_digest = dict(published)
+    scientific_without_digest.pop("scientific_payload_sha256")
+    if (
+        hashlib.sha256(canonical_json_bytes(scientific_without_digest)).hexdigest()
+        != scientific_sha256
+    ):
+        raise V6BRowShardError("scientific authority digest differs")
+    scientific_bytes = canonical_json_bytes(published)
+    return scientific_bytes, {
+        "publication_sha256": publication_sha256,
+        "publication_controller_sha256": controller_sha256,
+        "scientific_payload_sha256": scientific_sha256,
+        "scientific_file_sha256": hashlib.sha256(scientific_bytes).hexdigest(),
+        "verified_file_receipts_sha256": hashlib.sha256(
+            canonical_json_bytes(verified)
+        ).hexdigest(),
+    }
+
+
 def read_verified(path: Path, expected_sha256: str, label: str) -> bytes:
     """Read one regular file through a stable descriptor and verify its bytes."""
     expected = _digest(expected_sha256, label)
@@ -205,10 +274,20 @@ def build_receipt(
     } != EXPECTED_COUNTS:
         raise V6BRowShardError("V6-B authority inventory differs")
 
+    scientific_authority, publication = extract_scientific_authority(
+        authority_bytes
+    )
+    if (
+        publication["scientific_payload_sha256"]
+        != expected.get("score_free_authority_scientific_sha256")
+    ):
+        raise V6BRowShardError("scientific authority hash differs from V6-B policy")
     problem = direct_problem_from_authority_payload(
-        authority_bytes,
+        scientific_authority,
         edge_bytes,
-        expected_authority_payload_sha256=authority_sha256,
+        expected_authority_payload_sha256=str(
+            publication["scientific_file_sha256"]
+        ),
         expected_counts=EXPECTED_COUNTS,
     )
     start_ns = time.monotonic_ns()
@@ -253,13 +332,18 @@ def build_receipt(
         "terminal_status": terminal,
         "construction_elapsed_ns": elapsed_ns,
         "input_sha256": {
-            "authority": authority_sha256,
+            "published_authority_file": authority_sha256,
+            "scientific_authority_file": publication["scientific_file_sha256"],
+            "scientific_authority_payload": publication[
+                "scientific_payload_sha256"
+            ],
             "policy": policy_sha256,
             **{
                 f"edge_ledger_{view}": hashlib.sha256(edge_bytes[view]).hexdigest()
                 for view in VIEWS
             },
         },
+        "authority_publication": publication,
         "source_sha256": {
             "controller": controller_source_sha256,
             "direct_cp_sat_formulation": direct_source_sha256,

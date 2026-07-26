@@ -89,3 +89,57 @@ def test_markdown_repeats_non_authorizing_boundary() -> None:
     assert "invoked no solver" in report
     assert "does not" in report
     assert "authorize feasibility" in report
+
+
+def _published_authority() -> bytes:
+    scientific = {
+        "format_version": "score_free_authority_v2",
+        "input_sha256": {},
+        "authority_membership_sha256": "0" * 64,
+        "implementation_source_sha256": {},
+        "counts": {},
+        "antibodies": [],
+        "antigens": [],
+        "pairs": [],
+        "quantile_schemes": [],
+        "forbidden_outcome_or_model_fields_accepted": False,
+    }
+    scientific["scientific_payload_sha256"] = hashlib.sha256(
+        SCRIPT.canonical_json_bytes(scientific)
+    ).hexdigest()
+    published = {
+        **scientific,
+        "verified_file_receipts": {
+            "train_authority": {},
+            "canonical_manifest": {},
+            "edge_ledger_vh": {},
+            "edge_ledger_vl": {},
+            "edge_ledger_concatenated_antibody": {},
+            "edge_ledger_antigen": {},
+        },
+        "publication_controller_sha256": "1" * 64,
+    }
+    published["publication_sha256"] = hashlib.sha256(
+        SCRIPT.canonical_json_bytes(published)
+    ).hexdigest()
+    return SCRIPT.canonical_json_bytes(published)
+
+
+def test_publication_envelope_is_verified_before_scientific_extraction() -> None:
+    scientific, envelope = SCRIPT.extract_scientific_authority(
+        _published_authority()
+    )
+    assert json.loads(scientific)["format_version"] == "score_free_authority_v2"
+    assert envelope["publication_controller_sha256"] == "1" * 64
+    assert envelope["scientific_file_sha256"] == hashlib.sha256(scientific).hexdigest()
+
+
+def test_publication_envelope_rejects_unknown_or_tampered_metadata() -> None:
+    unknown = json.loads(_published_authority())
+    unknown["unexpected"] = True
+    with pytest.raises(SCRIPT.V6BRowShardError, match="schema differs"):
+        SCRIPT.extract_scientific_authority(SCRIPT.canonical_json_bytes(unknown))
+    tampered = json.loads(_published_authority())
+    tampered["publication_controller_sha256"] = "2" * 64
+    with pytest.raises(SCRIPT.V6BRowShardError, match="publication digest differs"):
+        SCRIPT.extract_scientific_authority(SCRIPT.canonical_json_bytes(tampered))
