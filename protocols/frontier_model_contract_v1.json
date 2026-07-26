@@ -860,9 +860,26 @@
       "parent_v6_a_terminal_receipt_sha256": "e5b1db83df183406430dc118289b466b61d06f8533451c026a14eab0defa81fd",
       "policy_sha256": "197e464e1c73117523f413b1ffabdb553fb9b772fe071aa20630bf80d8e27f81",
       "protocol_sha256": "783a95eaf9522fb7f27c987f9b5d3f18b627fdfcd108356f6a743c1762461bba",
-      "status": "protocol_frozen_implementation_not_started",
+      "row_shard_telemetry_implementation": {
+        "full_ir_partition_is_lossless": true,
+        "full_variable_dictionary_required": true,
+        "inner_cross_group_rows_rejected": true,
+        "production_receipt_created": false,
+        "row_selection": "ceiling_one_tenth_per_declared_family_by_canonical_row_sha256",
+        "solver_invocation_authorized": false,
+        "source_sha256": {
+          "scripts/run_v6_b_row_shard_telemetry.py": "80414e1eb810c66776d19b9c04a2673f70dd32770cc02797ed565d17a730cf42",
+          "src/interaction_first/v6_b_decomposition.py": "a531e08cd1f00d82485ddbd0565b9b2edd625e5b584653d6b70b4c8f37828ea0",
+          "tests/test_run_v6_b_row_shard_telemetry.py": "eb22d112af3027c5dfb92653982e1db781a442704cb428733b311c70ac835915",
+          "tests/test_v6_b_decomposition.py": "f47345107ddd13163ead0246f1102c2e7362f193a6af545e32743ee2c38cc344"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 9,
+        "related_v6_tests_passed_under_each_hash_seed": 105,
+        "training_authorized": false
+      },
+      "status": "protocol_and_row_shard_telemetry_implemented_production_unrun",
       "training_authorized": false,
-      "claim_boundary": "A decomposition protocol is frozen after the V6-A registered dry-run stop. No V6-B solver model, telemetry receipt, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
+      "claim_boundary": "The decomposition protocol and telemetry-only full-IR partition are implemented and synthetically tested after the V6-A registered dry-run stop. No production V6-B telemetry receipt, solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
     },
     "claim_boundary": "No real PAIRFormer contact training, model selection, held-out scoring, new biological metric, metric improvement, large-scale PAIRFormer model run, or world-leading result."
   },
