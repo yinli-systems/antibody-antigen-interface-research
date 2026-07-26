@@ -92,6 +92,20 @@ def test_markdown_repeats_non_authorizing_boundary() -> None:
 
 
 def _published_authority() -> bytes:
+    pair_rows = [
+        {
+            "pair_id": "f" * 64,
+            "antibody_id": "antibody-a",
+            "antigen_id": "antigen-a",
+            "source_instance_ids": ["source-a"],
+        },
+        {
+            "pair_id": "0" * 64,
+            "antibody_id": "antibody-b",
+            "antigen_id": "antigen-b",
+            "source_instance_ids": ["source-b"],
+        },
+    ]
     scientific = {
         "format_version": "score_free_authority_v2",
         "input_sha256": {},
@@ -100,7 +114,7 @@ def _published_authority() -> bytes:
         "counts": {},
         "antibodies": [],
         "antigens": [],
-        "pairs": [],
+        "pairs": pair_rows,
         "quantile_schemes": [],
         "forbidden_outcome_or_model_fields_accepted": False,
     }
@@ -143,3 +157,27 @@ def test_publication_envelope_rejects_unknown_or_tampered_metadata() -> None:
     tampered["publication_controller_sha256"] = "2" * 64
     with pytest.raises(SCRIPT.V6BRowShardError, match="publication digest differs"):
         SCRIPT.extract_scientific_authority(SCRIPT.canonical_json_bytes(tampered))
+
+
+def test_pair_order_normalization_changes_only_record_order() -> None:
+    scientific, _ = SCRIPT.extract_scientific_authority(_published_authority())
+    normalized, receipt = SCRIPT.normalize_scientific_pair_order(scientific)
+    before = json.loads(scientific)["pairs"]
+    after = json.loads(normalized)["pairs"]
+    assert [row["pair_id"] for row in before] == ["f" * 64, "0" * 64]
+    assert [row["pair_id"] for row in after] == ["0" * 64, "f" * 64]
+    assert sorted(before, key=lambda row: row["pair_id"]) == after
+    assert receipt["pair_count"] == 2
+    assert receipt["semantic_fields_changed"] is False
+
+
+def test_pair_order_normalization_rejects_noncanonical_endpoint_order() -> None:
+    scientific, _ = SCRIPT.extract_scientific_authority(_published_authority())
+    payload = json.loads(scientific)
+    payload["pairs"].reverse()
+    payload.pop("scientific_payload_sha256")
+    payload["scientific_payload_sha256"] = hashlib.sha256(
+        SCRIPT.canonical_json_bytes(payload)
+    ).hexdigest()
+    with pytest.raises(SCRIPT.V6BRowShardError, match="canonical endpoint order"):
+        SCRIPT.normalize_scientific_pair_order(SCRIPT.canonical_json_bytes(payload))

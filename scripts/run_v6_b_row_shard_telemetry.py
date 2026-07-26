@@ -150,6 +150,79 @@ def extract_scientific_authority(
     }
 
 
+def normalize_scientific_pair_order(
+    scientific_bytes: bytes,
+) -> tuple[bytes, dict[str, object]]:
+    """Reorder whole pair records by pair ID after proving endpoint canonicality."""
+    scientific = _strict_json(scientific_bytes, "scientific authority")
+    rows = scientific.get("pairs")
+    if not isinstance(rows, list) or not rows:
+        raise V6BRowShardError("scientific authority pairs are empty or malformed")
+    required_fields = {
+        "pair_id",
+        "antibody_id",
+        "antigen_id",
+        "source_instance_ids",
+    }
+    if any(not isinstance(row, dict) or set(row) != required_fields for row in rows):
+        raise V6BRowShardError("scientific authority pair schema differs")
+    endpoint_order = sorted(
+        rows,
+        key=lambda row: (
+            str(row["antibody_id"]),
+            str(row["antigen_id"]),
+            str(row["pair_id"]),
+        ),
+    )
+    if rows != endpoint_order:
+        raise V6BRowShardError("published pair order is not canonical endpoint order")
+    pair_ids = [str(row["pair_id"]) for row in rows]
+    endpoints = [
+        (str(row["antibody_id"]), str(row["antigen_id"])) for row in rows
+    ]
+    if len(pair_ids) != len(set(pair_ids)):
+        raise V6BRowShardError("published pair IDs are duplicated")
+    if len(endpoints) != len(set(endpoints)):
+        raise V6BRowShardError("published pair endpoints are duplicated")
+    ordered = sorted(rows, key=lambda row: str(row["pair_id"]))
+    row_digest = lambda row: hashlib.sha256(canonical_json_bytes(row)).hexdigest()
+    original_record_multiset_sha256 = hashlib.sha256(
+        canonical_json_bytes(sorted(row_digest(row) for row in rows))
+    ).hexdigest()
+    original_order_sha256 = hashlib.sha256(
+        canonical_json_bytes(pair_ids)
+    ).hexdigest()
+    normalized_order_sha256 = hashlib.sha256(
+        canonical_json_bytes([str(row["pair_id"]) for row in ordered])
+    ).hexdigest()
+    scientific["pairs"] = ordered
+    scientific.pop("scientific_payload_sha256", None)
+    normalized_payload_sha256 = hashlib.sha256(
+        canonical_json_bytes(scientific)
+    ).hexdigest()
+    scientific["scientific_payload_sha256"] = normalized_payload_sha256
+    normalized_bytes = canonical_json_bytes(scientific)
+    if original_record_multiset_sha256 != hashlib.sha256(
+        canonical_json_bytes(sorted(row_digest(row) for row in ordered))
+    ).hexdigest():
+        raise V6BRowShardError("pair-order normalization changed a pair record")
+    return normalized_bytes, {
+        "operation": "whole_record_sort_by_lowercase_pair_id",
+        "original_order": "antibody_id_then_antigen_id_then_pair_id",
+        "pair_count": len(rows),
+        "unique_pair_id_count": len(set(pair_ids)),
+        "unique_endpoint_count": len(set(endpoints)),
+        "record_multiset_sha256": original_record_multiset_sha256,
+        "original_order_sha256": original_order_sha256,
+        "normalized_order_sha256": normalized_order_sha256,
+        "normalized_scientific_payload_sha256": normalized_payload_sha256,
+        "normalized_scientific_file_sha256": hashlib.sha256(
+            normalized_bytes
+        ).hexdigest(),
+        "semantic_fields_changed": False,
+    }
+
+
 def read_verified(path: Path, expected_sha256: str, label: str) -> bytes:
     """Read one regular file through a stable descriptor and verify its bytes."""
     expected = _digest(expected_sha256, label)
@@ -282,11 +355,14 @@ def build_receipt(
         != expected.get("score_free_authority_scientific_sha256")
     ):
         raise V6BRowShardError("scientific authority hash differs from V6-B policy")
+    normalized_authority, normalization = normalize_scientific_pair_order(
+        scientific_authority
+    )
     problem = direct_problem_from_authority_payload(
-        scientific_authority,
+        normalized_authority,
         edge_bytes,
         expected_authority_payload_sha256=str(
-            publication["scientific_file_sha256"]
+            normalization["normalized_scientific_file_sha256"]
         ),
         expected_counts=EXPECTED_COUNTS,
     )
@@ -337,6 +413,12 @@ def build_receipt(
             "scientific_authority_payload": publication[
                 "scientific_payload_sha256"
             ],
+            "normalized_scientific_authority_file": normalization[
+                "normalized_scientific_file_sha256"
+            ],
+            "normalized_scientific_authority_payload": normalization[
+                "normalized_scientific_payload_sha256"
+            ],
             "policy": policy_sha256,
             **{
                 f"edge_ledger_{view}": hashlib.sha256(edge_bytes[view]).hexdigest()
@@ -344,6 +426,7 @@ def build_receipt(
             },
         },
         "authority_publication": publication,
+        "authority_pair_order_normalization": normalization,
         "source_sha256": {
             "controller": controller_source_sha256,
             "direct_cp_sat_formulation": direct_source_sha256,
