@@ -589,6 +589,42 @@
           777
         ]
       },
+      "joint_solver_engineering_v1": {
+        "canonical_ir_format": "v6_a_canonical_joint_ir_v1",
+        "cp_sat_receipt_format": "v6_a_cp_sat_separation_receipt_v1",
+        "highs_receipt_format": "v6_a_highs_linear_projection_receipt_v1",
+        "declared_exact_gate_count": 66,
+        "implemented_fail_closed_conditions": [
+          "CP-SAT must return OPTIMAL or an INFEASIBLE proof",
+          "every declared exact gate must be evaluated for every candidate",
+          "primary statistics and independent audit receipts must be SHA-256 bound",
+          "independent audit disagreement rejects the candidate",
+          "a repeated, undeclared, or candidate-disagreeing conflict cut stops",
+          "every accepted linear assignment is independently recomputed with integer arithmetic",
+          "direct HiGHS requires an optimal zero-gap exact-row-audited result or an infeasibility proof"
+        ],
+        "highs_locked_development_probe": {
+          "highspy_version": "1.15.1",
+          "mip_logging_callback_only": true,
+          "parallel": "off",
+          "threads": 1,
+          "user_solution_callback_used": false
+        },
+        "independent_cp_sat_raw_authority_formulation_completed": false,
+        "production_python_3_10_solver_lock_completed": false,
+        "production_solver_run_completed": false,
+        "source_sha256": {
+          "pyproject.toml": "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342",
+          "src/interaction_first/v6_highs_backend.py": "e96c8bad2606ee048b6d802fd16da3f38f236cb099f11146b75d423399863e65",
+          "src/interaction_first/v6_joint_ir.py": "87e6514703fc27337b2f0b7ecbcb3d17fcbc9fd569d16c94fbdac3246fc9de5e",
+          "tests/test_v6_joint_ir.py": "0452c2ae685d7c614a5128810b75bbba6b884714083c2532055857fa7d033798"
+        },
+        "status": "shared_linear_projection_and_fail_closed_separation_engine_synthetically_hardened",
+        "targeted_tests_passed_under_each_hash_seed": 14,
+        "related_regression_tests_passed_under_each_hash_seed": 141,
+        "training_authorized": false,
+        "claim_boundary": "The current canonical IR is explicitly a v5 linear-projection adapter. Its CP-SAT and HiGHS receipts cannot certify the complete V6-A feasible region until the independent raw-authority CP-SAT formulation and production truth-chain audit are completed."
+      },
       "rejected_terminal_states": [
         "FEASIBLE",
         "UNKNOWN",
@@ -597,7 +633,7 @@
         "incomplete_separation",
         "audit_disagreement"
       ],
-      "status": "raw_truth_chain_implemented_and_synthetically_cross_audited_joint_solver_unimplemented",
+      "status": "truth_chain_and_joint_projection_engineering_hardened_independent_formulation_unimplemented",
       "training_prerequisites": [
         "audited_full_3_plus_9_assignment",
         "post_freeze_3d_interface_leakage_audit",
