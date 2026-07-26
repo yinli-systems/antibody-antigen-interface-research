@@ -110,6 +110,15 @@ first incumbent, primal and dual bounds, gap, node rate, separation iterations, 
 costs, and projected sequential-fixing cost. An unscalable result stops this version and
 requires a separately preregistered decomposition protocol.
 
+The single run is registered in
+`protocols/v6_a_canonical_dry_run_registration_v1.json`. Selection is independently
+applied to the antibody and antigen axes, uses lexicographically smallest canonical
+SHA-256 entity identifiers, and rounds each one-tenth count upward. Before graph or pair
+incidence access, the controller checks static necessary conditions implied by the
+unchanged three-fold disjointness and endpoint minima. A proof that the selected vertex
+universe cannot satisfy those integer bounds stops V6-A before solver construction; it
+is not a solver infeasibility claim about the full authority universe.
+
 After assignment freeze, a structural leakage hit from either preregistered structural
 audit path stops the version. The split is not repaired after opening interface labels.
 The power gate and all existing data-firewall rules remain mandatory before training.

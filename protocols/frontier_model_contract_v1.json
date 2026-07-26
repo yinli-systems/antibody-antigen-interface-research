@@ -708,6 +708,18 @@
         "independent_cp_sat_raw_authority_formulation_completed": true,
         "independent_cp_sat_proto_to_canonical_ir_completed": true,
         "synthetic_complete_66_gate_exact_separation_oracle_completed": true,
+        "canonical_10_percent_dry_run": {
+          "production_run_completed": false,
+          "registered_run_id": "v6_a_canonical_10pct_001",
+          "registration_sha256": "51a4b67bb4fe9cb9431ae31ca7a1cfdd16ec8d45381efdc17229ad17c471053a",
+          "selection": "per-axis ceiling of one tenth by lowercase SHA-256 entity ID before graph or pair-incidence access",
+          "source_sha256": {
+            "scripts/run_v6_canonical_dry_run_preflight.py": "368d8eaeba51f0256ae4801cbfcfb1d70fcf5493ee6794b4dca571e8e7b8278a",
+            "tests/test_v6_canonical_dry_run_preflight.py": "44439dba3cad17edf91f62a37a34c4b814f19f7476b803ba5b0a68040e594908"
+          },
+          "status": "single_run_registered_static_preflight_unrun",
+          "training_authorized": false
+        },
         "independent_cp_sat_evidence": {
           "authority_input": "externally hash-anchored score_free_authority_v2 plus four authority-bound edge ledgers",
           "forbidden_imports": [
@@ -790,8 +802,8 @@
           "tests/test_v6_joint_ir.py": "66170ce2a36d5ce76e17a9e4d86d8e9586bdc8064934faadb66219c7eebeefa9"
         },
         "status": "direct_ir_and_complete_66_gate_dual_oracle_synthetically_hardened_production_unrun",
-        "targeted_tests_passed_under_each_hash_seed": 23,
-        "related_regression_tests_passed_under_each_hash_seed": 149,
+        "targeted_tests_passed_under_each_hash_seed": 25,
+        "related_regression_tests_passed_under_each_hash_seed": 151,
         "training_authorized": false,
         "claim_boundary": "The independent direct CP-SAT formulation, common linear semantics, and complete 66-gate primary/independent exact oracle are synthetically verified. No receipt can certify the complete V6-A feasible region until production CP-SAT separation and the direct HiGHS projection audit both reach their accepted terminal states."
       },
