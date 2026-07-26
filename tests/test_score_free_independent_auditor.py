@@ -10,6 +10,8 @@ import json
 import os
 import sys
 import tempfile
+from collections import Counter
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -459,6 +461,110 @@ def test_independent_inner_fold_auditor_requires_outer_training_anchor() -> None
             expected_outer_fold_id="outer_0",
             expected_outer_training_pair_ids=outer_training_ids[:-1],
         )
+
+
+def test_independent_inner_auditor_recomputes_scope_local_pair_incidence() -> None:
+    authority = canonical_json_bytes(
+        {
+            "format_version": AUTHORITY_FORMAT_VERSION,
+            "authorized_split": "train",
+            "instance_ids": ["row0", "row1", "row2"],
+        }
+    )
+    manifest = (
+        b"INSTANCE,vh_seq,vl_seq,ag_seq\n"
+        b"row0,AAAAA,DDDDD,CCCCC\n"
+        b"row1,AAAAA,DDDDD,EEEEE\n"
+        b"row2,FFFFF,GGGGG,HHHHH\n"
+    )
+    ledgers = {
+        view: canonical_json_bytes(
+            {
+                "format_version": EDGE_LEDGER_FORMAT_VERSION,
+                "view": view,
+                "edges": [],
+            }
+        )
+        for view in ("vh", "vl", "concatenated_antibody", "antigen")
+    }
+    counts = AuthorityCounts(3, 3, 2, 3)
+    bundle = build_score_free_authority(
+        authority_bytes=authority,
+        manifest_bytes=manifest,
+        edge_ledger_bytes=ledgers,
+        expected_counts=counts,
+    )
+    complete_pairs = tuple(pair.score_free_pair() for pair in bundle.pairs)
+    shared_antibody = next(
+        row.entity_id for row in bundle.antibodies if row.pair_incidence_degree == 2
+    )
+    shared_pair = next(
+        pair for pair in complete_pairs if pair.antibody_id == shared_antibody
+    )
+    unique_pair = next(
+        pair for pair in complete_pairs if pair.antibody_id != shared_antibody
+    )
+    inner_pairs = tuple(sorted((shared_pair, unique_pair), key=lambda pair: pair.pair_id))
+    antibody_incidence = Counter(pair.antibody_id for pair in inner_pairs)
+    antigen_incidence = Counter(pair.antigen_id for pair in inner_pairs)
+    antibody_ids = set(antibody_incidence)
+    antigen_ids = set(antigen_incidence)
+    outer_training_ids = tuple(pair.pair_id for pair in inner_pairs)
+    audit = audit_inner_score_free_fold(
+        outer_fold_id="outer_0",
+        inner_fold_id="outer_0_inner_0",
+        complete_authority_pairs=complete_pairs,
+        outer_training_pair_ids=outer_training_ids,
+        inner_universe_pairs=inner_pairs,
+        antibody_profiles=tuple(
+            antibody_profile(
+                replace(
+                    row,
+                    pair_incidence_degree=antibody_incidence[row.entity_id],
+                )
+            )
+            for row in bundle.antibodies
+            if row.entity_id in antibody_ids
+        ),
+        antigen_profiles=tuple(
+            antigen_profile(
+                replace(
+                    row,
+                    pair_incidence_degree=antigen_incidence[row.entity_id],
+                )
+            )
+            for row in bundle.antigens
+            if row.entity_id in antigen_ids
+        ),
+        validation_pair_ids=(shared_pair.pair_id,),
+        training_pair_ids=(unique_pair.pair_id,),
+        shape_thresholds=INNER_FOLD_SHAPE_THRESHOLDS,
+        distribution_thresholds=INNER_DISTRIBUTION_THRESHOLDS,
+    )
+    independent_authority = reconstruct_score_free_authority(
+        authority_bytes=authority,
+        manifest_bytes=manifest,
+        edge_ledger_bytes=ledgers,
+        expected_primary_implementation_sha256=_primary_implementation_sha256(),
+        expected_counts={
+            "source_rows": counts.source_rows,
+            "exact_pairs": counts.exact_pairs,
+            "antibody_entities": counts.antibody_entities,
+            "antigen_entities": counts.antigen_entities,
+        },
+    )
+    receipt = audit_score_free_fold_candidate(
+        candidate_fold_bytes=canonical_json_bytes(audit.canonical_payload()),
+        authority_payload=independent_authority,
+        scope="inner",
+        expected_primary_source_sha256=primary_statistics_source_sha256(),
+        expected_outer_fold_id="outer_0",
+        expected_outer_training_pair_ids=outer_training_ids,
+    )
+    assert receipt["field_by_field_agreement"] is True
+    assert audit.antibody_profile_sha256 == audit.canonical_payload()[
+        "input_bindings"
+    ]["antibody_profile_sha256"]
 
 
 def test_small_exhaustive_assignments_match_both_statistics_implementations() -> None:

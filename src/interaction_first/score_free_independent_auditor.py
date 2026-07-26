@@ -738,6 +738,8 @@ def _profiles(
     authority_payload: Mapping[str, object],
     axis: str,
     required_ids: set[str],
+    *,
+    scoped_pair_incidence: Mapping[str, int] | None = None,
 ) -> dict[str, dict[str, object]]:
     key = "antibodies" if axis == "antibody" else "antigens"
     rows = authority_payload[key]
@@ -746,7 +748,15 @@ def _profiles(
     available = {str(row["entity_id"]): row for row in rows}
     if required_ids - available.keys():
         raise IndependentScoreFreeAuditError(f"fold references an unknown {axis}")
-    return {
+    if scoped_pair_incidence is not None:
+        if set(scoped_pair_incidence) != required_ids or any(
+            isinstance(value, bool) or not isinstance(value, int) or value < 1
+            for value in scoped_pair_incidence.values()
+        ):
+            raise IndependentScoreFreeAuditError(
+                f"scoped {axis} pair incidence is malformed"
+            )
+    result = {
         entity_id: {
             "entity_id": entity_id,
             "component_id": str(available[entity_id]["component_id"]),
@@ -755,6 +765,14 @@ def _profiles(
         }
         for entity_id in sorted(required_ids)
     }
+    if scoped_pair_incidence is not None:
+        for entity_id, profile in result.items():
+            values = profile["values"]
+            assert isinstance(values, dict)
+            values["log1p_pair_incidence_degree"] = _log1p(
+                scoped_pair_incidence[entity_id]
+            )
+    return result
 
 
 def _profile_digest(profiles: Mapping[str, Mapping[str, object]]) -> str:
@@ -1178,8 +1196,22 @@ def reconstruct_score_free_fold_payload(
     pairs = [pair_by_id[pair_id] for pair_id in universe_ids]
     antibody_ids = {str(pair["antibody_id"]) for pair in pairs}
     antigen_ids = {str(pair["antigen_id"]) for pair in pairs}
-    antibody_profiles = _profiles(authority_payload, "antibody", antibody_ids)
-    antigen_profiles = _profiles(authority_payload, "antigen", antigen_ids)
+    antibody_profiles = _profiles(
+        authority_payload,
+        "antibody",
+        antibody_ids,
+        scoped_pair_incidence=Counter(
+            str(pair["antibody_id"]) for pair in pairs
+        ),
+    )
+    antigen_profiles = _profiles(
+        authority_payload,
+        "antigen",
+        antigen_ids,
+        scoped_pair_incidence=Counter(
+            str(pair["antigen_id"]) for pair in pairs
+        ),
+    )
     validation_pairs = [pair for pair in pairs if pair["pair_id"] in validation_set]
     training_pairs = [pair for pair in pairs if pair["pair_id"] in training_set]
     validation_antibodies = {str(pair["antibody_id"]) for pair in validation_pairs}

@@ -647,7 +647,9 @@
           "cross-fold exact relative ranges",
           "pooled outer representativeness"
         ],
+        "inner_pair_incidence_recomputed_from_isolated_outer_training_universe": true,
         "production_audit_receipt_created": true,
+        "production_audit_receipt_current_source_replay_required": true,
         "production_audit_receipt": {
           "candidate_file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
           "candidate_scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
@@ -660,14 +662,14 @@
           "receipt_sha256": "52559592b14029425217e75c8c97a6380d2e136faedfbc864268537cbe6e207a",
           "training_authorized": false
         },
-        "related_regression_tests_passed_under_each_hash_seed": 157,
+        "related_regression_tests_passed_under_each_hash_seed": 147,
         "source_sha256": {
           "scripts/audit_score_free_authority_independent.py": "fb501add7ce098f6535d5b935a4f789057a42761dd36d919a86ea1a0f97edd88",
-          "src/interaction_first/score_free_independent_auditor.py": "ea125cf890b6990885417558c4777ef02a580058c95bcbb1b6ef5b9f08d5a218",
-          "tests/test_score_free_independent_auditor.py": "cb5d01049dd92f55f3afb0a2452e5ab2d0c8eec390587a5a0ab1d3d750cb470a"
+          "src/interaction_first/score_free_independent_auditor.py": "f8b10a4b92d2c2c56f167c1d6f5705677b6bedba802ffe23f12e32666b70ae81",
+          "tests/test_score_free_independent_auditor.py": "8f7a18ded956d19bbbc0040c9694c01558d2b09c4931bfac53619b4995c58eca"
         },
-        "status": "production_authority_reconstructed_from_raw_bytes_and_field_by_field_agreed_no_training_authority",
-        "targeted_tests_passed": 17,
+        "status": "scope_local_inner_incidence_hardened_production_authority_replay_required",
+        "targeted_tests_passed": 18,
         "tested_under_python_hash_seeds": [
           1,
           777
