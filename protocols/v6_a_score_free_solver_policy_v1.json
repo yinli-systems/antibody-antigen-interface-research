@@ -1,0 +1,142 @@
+{
+  "authorization": {
+    "contact_training_authorized": false,
+    "model_selection_authorized": false,
+    "outer_evaluation_authorized": false,
+    "score_free_engineering_authorized": true,
+    "split_gate0_authorized": false,
+    "test_access_authorized": false
+  },
+  "authority_train": {
+    "antibody_entities": 1383,
+    "antigen_entities": 1172,
+    "exact_pairs": 1830,
+    "membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+    "source_rows": 3229
+  },
+  "canonical_dry_run": {
+    "fraction_denominator": 10,
+    "fraction_numerator": 1,
+    "selection": "smallest_canonical_entity_digests_before_graph_open",
+    "single_registered_run": true
+  },
+  "complete_feasible_region": {
+    "acceptance_requires": [
+      "cp_sat_optimal_or_infeasible_terminal_status",
+      "all_exact_separation_gates_pass",
+      "independent_raw_source_auditor_pass",
+      "direct_highs_shared_linear_projection_audit_pass"
+    ],
+    "authoritative_backend": "cp_sat_plus_exact_decimal_fraction_separation",
+    "rejected_statuses": [
+      "FEASIBLE",
+      "UNKNOWN",
+      "timeout",
+      "nonzero_gap",
+      "incomplete_separation",
+      "audit_disagreement"
+    ]
+  },
+  "distribution_thresholds": {
+    "inner": {
+      "maximum_ks": [1, 4],
+      "maximum_smd_decimal": "0.40",
+      "maximum_tv": [1, 4]
+    },
+    "outer": {
+      "maximum_ks": [1, 5],
+      "maximum_smd_decimal": "0.35",
+      "maximum_tv": [1, 5]
+    },
+    "pooled_outer": {
+      "maximum_ks": [1, 5],
+      "maximum_smd_decimal": "0.25",
+      "maximum_tv": [3, 20]
+    }
+  },
+  "exact_separation": {
+    "cut_scope": "minimum_exact_fold_axis_role_membership_state_proven_invalid",
+    "cut_strategy": "deterministic_local_membership_conflict_cut",
+    "oracle_arithmetic": {
+      "chance_mrr": "fractions_fraction",
+      "decimal_precision": 50,
+      "ks": "fractions_fraction",
+      "rounding": "ROUND_HALF_EVEN",
+      "smd": "decimal_from_exact_rational_sample_moments",
+      "tv": "fractions_fraction"
+    },
+    "required_cut_fields": [
+      "iteration",
+      "gate_id",
+      "level_id",
+      "axis",
+      "role",
+      "membership_sha256",
+      "support_sha256",
+      "failure_payload_sha256",
+      "cut_sha256"
+    ]
+  },
+  "forbidden_split_inputs": [
+    "contact_density",
+    "paratope_size",
+    "epitope_size",
+    "affinity",
+    "assay_outcome",
+    "embedding",
+    "prediction",
+    "loss",
+    "rank",
+    "model_score",
+    "model_result"
+  ],
+  "format_version": "train_only_v6_a_score_free_solver_policy_v1",
+  "highs_linear_projection": {
+    "complete_score_free_feasible_region_authorized": false,
+    "forbidden_callbacks": [
+      "user_solution"
+    ],
+    "mip_abs_gap": 0.0,
+    "mip_rel_gap": 0.0,
+    "parallel": "off",
+    "random_seed": 2026072701,
+    "receipt_artifacts": [
+      "original_model",
+      "presolved_model",
+      "options",
+      "complete_log",
+      "solution",
+      "highs_info",
+      "variable_dictionary",
+      "matrix_sha256",
+      "mip_logging_trajectory"
+    ],
+    "threads": 1,
+    "wheel_and_runtime_lock": "freeze_after_isolated_compatibility_probe"
+  },
+  "lexicographic_stage_order": [
+    "maximize_outer_minimum_training_pairs",
+    "maximize_outer_total_training_pairs",
+    "minimize_outer_total_quarantine_pairs",
+    "minimize_outer_maximum_quarantine_pairs",
+    "maximize_inner_minimum_normalized_retention",
+    "maximize_inner_total_normalized_retention",
+    "minimize_validation_pair_target_deviation",
+    "minimize_validation_pair_range",
+    "minimize_effective_endpoint_range",
+    "minimize_exact_chance_mrr_range",
+    "minimize_incidence_density_range",
+    "minimize_quarantine_range",
+    "minimize_exact_representativeness_deviation",
+    "maximize_minimum_represented_components",
+    "canonical_sequential_zero_first_bit_fixing"
+  ],
+  "score_free_inputs": [
+    "authenticated_authority_train_allowlist",
+    "four_column_canonical_manifest",
+    "four_view_exact_edge_ledgers",
+    "observed_exact_pair_incidence"
+  ],
+  "smd_definition": "abs(mean_x_minus_mean_y)/sqrt((sample_var_x_plus_sample_var_y)/2)",
+  "stop_without_training": true
+}

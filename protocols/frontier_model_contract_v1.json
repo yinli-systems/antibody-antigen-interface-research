@@ -482,11 +482,44 @@
       ],
       "claim_boundary": "Synthetic score-free statistics and hard-gate engineering only. No real split feasibility, training authority, model result, biological metric, or SOTA evidence was produced."
     },
+    "v6_a_score_free_exact_solver": {
+      "authorization": {
+        "implementation_engineering": true,
+        "model_selection": false,
+        "outer_evaluation": false,
+        "split_gate0": false,
+        "training": false
+      },
+      "complete_feasible_region_authority": "cp_sat_plus_exact_decimal_fraction_separation_plus_independent_raw_source_audit",
+      "direct_highs_scope": "shared_linear_projection_only",
+      "format": "train_only_v6_a_score_free_solver_policy_v1",
+      "policy_path": "protocols/v6_a_score_free_solver_policy_v1.json",
+      "policy_sha256": "ac28232d8d59190f85c24c0bbfee7e4b8b9bbed28b29b0a91a097b49f7a27fa6",
+      "protocol_path": "protocols/V6_A_SCORE_FREE_EXACT_SOLVER_PROTOCOL.md",
+      "protocol_sha256": "a449a5305db8a912a18f6460b564cd33b7850a25de61dc2da00d77f4322ee9c7",
+      "rejected_terminal_states": [
+        "FEASIBLE",
+        "UNKNOWN",
+        "timeout",
+        "nonzero_gap",
+        "incomplete_separation",
+        "audit_disagreement"
+      ],
+      "status": "frozen_engineering_amendment_unimplemented",
+      "training_prerequisites": [
+        "audited_full_3_plus_9_assignment",
+        "post_freeze_3d_interface_leakage_audit",
+        "passed_frozen_attainable_precision_and_power_gate",
+        "fold_local_cache_equality_receipts"
+      ]
+    },
     "claim_boundary": "No real PAIRFormer contact training, model selection, held-out scoring, new biological metric, metric improvement, large-scale PAIRFormer model run, or world-leading result."
   },
   "protocol_documents": {
     "model_protocol": "TRAIN_ONLY_NESTED_PARTNER_RETRIEVAL_MODEL_PROTOCOL_V1_DRAFT.md",
-    "split_protocol": "TRAIN_ONLY_FOUR_VIEW_DUAL_AXIS_NEIGHBORHOOD_EXCLUSION_PROTOCOL_V0.md"
+    "split_protocol": "TRAIN_ONLY_FOUR_VIEW_DUAL_AXIS_NEIGHBORHOOD_EXCLUSION_PROTOCOL_V0.md",
+    "v6_a_solver_amendment": "V6_A_SCORE_FREE_EXACT_SOLVER_PROTOCOL.md",
+    "v6_a_solver_policy": "v6_a_score_free_solver_policy_v1.json"
   },
   "status": "prospective_contract_engineering_only",
   "stop_rules": [
