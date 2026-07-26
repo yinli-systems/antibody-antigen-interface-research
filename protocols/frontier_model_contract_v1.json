@@ -535,12 +535,12 @@
           "manifest_firewall": "only the first INSTANCE field is inspected before authorization; sequence columns are parsed only for authority-train identifiers",
           "production_inputs_created": false,
           "source_sha256": {
-            "scripts/derive_v6_score_free_inputs.py": "8ac94d8c42478a85128d2858c051280c52a8fb756502ae12e40d81050fdf204e",
-            "tests/test_derive_v6_score_free_inputs.py": "c785a1386441d3b9702051b5271e3d5e56ed649255dcf96905e743c90c58d99d"
+            "scripts/derive_v6_score_free_inputs.py": "325afcf49ba04acae2a2957a97d310b40cd4e96292c69b7677c568b0cdd24ccf",
+            "tests/test_derive_v6_score_free_inputs.py": "4c75d95c2e1b0f11fbefe73d2d1a14c73ef71c4dfdb1fc73a5e3c3e29a72c06d"
           },
-          "status": "synthetically_hardened_unrun_on_production_sources",
-          "targeted_tests_passed_under_each_hash_seed": 7,
-          "related_regression_tests_passed_under_each_hash_seed": 153,
+          "status": "synthetically_hardened_with_externally_anchored_hardlink_compatibility_unrun_on_production_sources",
+          "targeted_tests_passed_under_each_hash_seed": 8,
+          "related_regression_tests_passed_under_each_hash_seed": 154,
           "tested_under_python_hash_seeds": [
             1,
             777

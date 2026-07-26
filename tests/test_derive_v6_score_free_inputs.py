@@ -297,3 +297,27 @@ def test_create_file_is_exclusive(tmp_path: Path) -> None:
     with pytest.raises(FileExistsError):
         SCRIPT._create_file(destination, b"second\n")
     assert destination.read_bytes() == b"first\n"
+
+
+def test_authenticated_reader_accepts_hardlinks_and_rejects_symlinks(
+    tmp_path: Path,
+) -> None:
+    payload = b"externally anchored\n"
+    original = tmp_path / "original.json"
+    hardlink = tmp_path / "hardlink.json"
+    symlink = tmp_path / "symlink.json"
+    original.write_bytes(payload)
+    hardlink.hardlink_to(original)
+    symlink.symlink_to(original)
+    expected = hashlib.sha256(payload).hexdigest()
+    assert SCRIPT._read_regular_file_nofollow(
+        hardlink,
+        expected,
+        "hard-linked input",
+    ) == payload
+    with pytest.raises(OSError):
+        SCRIPT._read_regular_file_nofollow(
+            symlink,
+            expected,
+            "symbolic-linked input",
+        )

@@ -130,8 +130,8 @@ def _read_regular_file_nofollow(path: Path, expected_sha256: str, label: str) ->
     descriptor = os.open(absolute, flags)
     try:
         before = os.fstat(descriptor)
-        if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
-            raise InputDerivationError(f"{label} must be a single-link regular file")
+        if not stat.S_ISREG(before.st_mode):
+            raise InputDerivationError(f"{label} must be a regular file")
         chunks = []
         while True:
             chunk = os.read(descriptor, 8 * 1024 * 1024)
