@@ -12,6 +12,7 @@ from interaction_first.score_free_split_statistics import (
     OUTER_DISTRIBUTION_THRESHOLDS,
     POOLED_OUTER_DISTRIBUTION_THRESHOLDS,
 )
+from interaction_first.score_free_authority import membership_sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,6 +102,16 @@ def test_model_contract_binds_exact_protocol_bytes() -> None:
         "split_gate0": False,
         "training": False,
     }
+
+
+def test_authority_membership_hash_uses_the_frozen_lf_framing() -> None:
+    policy = _load_json(POLICY_PATH)
+    assert policy["authority_train"]["membership_sha256"] == (
+        "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b"
+    )
+    assert membership_sha256(("b", "a", "a")) == hashlib.sha256(
+        b"a\nb\n"
+    ).hexdigest()
 
 
 def test_lexicographic_stages_are_unique_and_end_in_bit_fixing() -> None:

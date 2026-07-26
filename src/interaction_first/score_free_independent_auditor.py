@@ -212,9 +212,8 @@ def _membership_sha256(values: Iterable[str]) -> str:
     for member in members:
         checked = _identifier(member, "membership identifier")
         encoded = checked.encode("ascii")
-        digest.update(str(len(encoded)).encode("ascii"))
-        digest.update(b":")
         digest.update(encoded)
+        digest.update(b"\n")
     return digest.hexdigest()
 
 

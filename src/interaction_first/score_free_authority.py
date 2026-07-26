@@ -220,16 +220,15 @@ def canonical_payload_sha256(payload: object) -> str:
 
 
 def membership_sha256(values: Iterable[str]) -> str:
-    """Hash a sorted unique ASCII membership with length framing."""
+    """Hash sorted unique ASCII identifiers with the frozen LF framing."""
     unique = sorted(set(values))
     digest = hashlib.sha256()
     for value in unique:
         if not isinstance(value, str) or not value or not value.isascii():
             raise ScoreFreeAuthorityError("membership values must be non-empty ASCII")
         encoded = value.encode("ascii")
-        digest.update(str(len(encoded)).encode("ascii"))
-        digest.update(b":")
         digest.update(encoded)
+        digest.update(b"\n")
     return digest.hexdigest()
 
 

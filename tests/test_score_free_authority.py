@@ -127,6 +127,10 @@ def test_raw_derivation_reproduces_lengths_degrees_components_and_pairs() -> Non
         "antigen_entities": 4,
     }
     assert payload["scientific_payload_sha256"] == bundle.scientific_payload_sha256
+    expected_membership = hashlib.sha256(
+        b"row0\nrow1\nrow2\nrow3\nrow4\n"
+    ).hexdigest()
+    assert bundle.authority_membership_sha256 == expected_membership
 
 
 def test_authority_and_manifest_schemas_reject_forbidden_fields() -> None:
