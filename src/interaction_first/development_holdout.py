@@ -21,8 +21,8 @@ from .development_subset import AuthorizedInstance, DevelopmentSubsetError
 
 
 SOURCE_FORMAT = "pairscale_development_subset_v1"
-HOLDOUT_FORMAT = "pairscale_development_component_holdout_v1"
-RECEIPT_FORMAT = "pairscale_development_component_holdout_receipt_v1"
+HOLDOUT_FORMAT = "pairscale_development_component_holdout_v2"
+RECEIPT_FORMAT = "pairscale_development_component_holdout_receipt_v2"
 SELECTION_DOMAIN = "pairscale-development-component-holdout-v1"
 FORBIDDEN_FIELDS = frozenset(
     {
@@ -389,7 +389,7 @@ def build_component_holdout(
             "validation_or_test_data_accessed": False,
         },
     }
-    payload["assignment_sha256"] = canonical_sha256(payload)
+    payload["assignment_content_sha256"] = canonical_sha256(payload)
     return payload
 
 
@@ -408,7 +408,8 @@ def build_holdout_receipt(
         _sha256(digest, f"implementation_source_sha256[{name}]")
     receipt: dict[str, object] = {
         "format_version": RECEIPT_FORMAT,
-        "assignment_sha256": canonical_sha256(assignment),
+        "assignment_content_sha256": assignment["assignment_content_sha256"],
+        "assignment_file_sha256": canonical_sha256(assignment),
         "source_subset_sha256": assignment["source_subset_sha256"],
         "implementation_source_sha256": dict(
             sorted(implementation_source_sha256.items())

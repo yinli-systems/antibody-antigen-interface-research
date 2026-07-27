@@ -117,7 +117,10 @@ def main() -> None:
     print(
         json.dumps(
             {
-                "assignment_sha256": assignment["assignment_sha256"],
+                "assignment_content_sha256": assignment[
+                    "assignment_content_sha256"
+                ],
+                "assignment_file_sha256": receipt["assignment_file_sha256"],
                 "output_root": str(output_root),
                 "receipt_sha256": receipt["receipt_sha256"],
                 "train_instance_count": assignment["train"]["instance_count"],

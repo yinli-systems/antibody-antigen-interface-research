@@ -151,6 +151,15 @@ def test_receipt_binds_assignment_and_complete_source_inventory() -> None:
         assignment,
         implementation_source_sha256=sources,
     )
+    assert receipt["assignment_content_sha256"] == assignment[
+        "assignment_content_sha256"
+    ]
+    assert receipt["assignment_file_sha256"] == hashlib.sha256(
+        canonical_json_bytes(assignment)
+    ).hexdigest()
+    assert receipt["assignment_file_sha256"] != receipt[
+        "assignment_content_sha256"
+    ]
     assert receipt["confirmatory_authority_granted"] is False
     assert receipt["validation_or_test_data_accessed"] is False
     assert receipt["score_or_label_fields_accessed"] is False
