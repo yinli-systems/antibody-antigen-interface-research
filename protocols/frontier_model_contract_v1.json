@@ -952,6 +952,18 @@
         "user_solution_callback_used": false
       },
       "solver_neutral_projection_bundle_export_controller": {
+        "attempts": [
+          {
+            "bundle_exported": false,
+            "cp_sat_model_built": false,
+            "error": "module 'interaction_first.v6_b_production' has no attribute 'sha256_payload'",
+            "highs_solver_invoked": false,
+            "job_id": "1331704",
+            "output_directory_created": false,
+            "scheduler_state": "FAILED",
+            "status": "FAILED_BEFORE_MODEL_CONSTRUCTION_AND_OUTPUT_CREATION"
+          }
+        ],
         "cp_sat_model_built": false,
         "cp_sat_solver_invoked": false,
         "direct_raw_authority_reconstruction_required": true,
@@ -966,13 +978,16 @@
         },
         "registered_source_and_runtime_authentication_required": true,
         "source_sha256": {
+          "protocols/v6_b_projection_bundle_export_attempt_001.json": "21b73f10bf5b60f0fc69170b99052fcfde9aff14ba8ccd2758b6979cd5e9a470",
           "protocols/v6_b_projection_bundle_export_registration_v1.json": "a7cca25de4cd96683e70c59aebe79f74c985befdfb9ce17258fdc3f1aa69a587",
           "scripts/run_v6_b_projection_bundle_export.py": "b8d65c2a201835f5ed023313e7c4376dadcd8d3509af5be06b45684d58c009cc",
           "scripts/submit_v6_b_projection_bundle_export.sbatch": "942c035475714b80bc6ac606896917564672c78d5204a20e85e5582c1eb539ee",
           "src/interaction_first/v6_b_projection_bundle_export.py": "0ea461633ee0701775122decbab3c7553700a5004debefc5116b5663cd755edf",
           "tests/test_v6_b_projection_bundle_export.py": "b15b6b2870c059a1a47cac1ea014e6543867b77d057e4a0078f9b66cfc0ba17c",
-          "tests/test_v6_b_projection_bundle_export_registration.py": "2b8427f0e9974a40e5109213ee741fcfa3012b508be11bfd1554ddf3959e3e82"
+          "tests/test_v6_b_projection_bundle_export_registration.py": "2b8427f0e9974a40e5109213ee741fcfa3012b508be11bfd1554ddf3959e3e82",
+          "tests/test_v6_b_projection_bundle_export_submission.py": "3823f19d32997f2815151572378e6e7a2c6a420a1a89d495ae98c1b3c1d38e11"
         },
+        "attempt_evidence_tests_passed_under_each_hash_seed": 2,
         "registration_tests_passed_under_each_hash_seed": 3,
         "targeted_tests_passed_under_each_hash_seed": 8,
         "related_v6_tests_passed_under_each_hash_seed": 114,
