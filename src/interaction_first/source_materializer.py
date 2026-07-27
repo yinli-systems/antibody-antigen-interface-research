@@ -273,6 +273,111 @@ def materialize_registered_source(
     return inventory
 
 
+def verify_materialized_registered_source(
+    *,
+    plan_path: Path,
+    registry_root: Path,
+    source_root: Path,
+) -> Mapping[str, Any]:
+    """Independently verify a materialized source against its pinned authority."""
+
+    plan = load_download_plan(plan_path)
+    registry = load_source_registry(Path(registry_root) / plan.source_id)
+    validate_plan_against_registry(plan, registry)
+    source_root = Path(source_root).expanduser().absolute()
+    if (
+        source_root.name != plan.source_id
+        or source_root.is_symlink()
+        or not source_root.is_dir()
+    ):
+        raise SourceMaterializationError("materialized source root is invalid")
+    inventory_path = source_root / "raw_sha256.json"
+    if inventory_path.is_symlink() or not inventory_path.is_file():
+        raise SourceMaterializationError("raw inventory is missing or unsafe")
+    inventory_bytes = inventory_path.read_bytes()
+    inventory = _strict_json(inventory_bytes, "raw inventory")
+    _exact_fields(
+        inventory,
+        {
+            "files",
+            "format_version",
+            "materialized_at_utc",
+            "pinned_revision",
+            "source_id",
+            "status",
+        },
+        "raw inventory",
+    )
+    if (
+        inventory["format_version"] != RAW_INVENTORY_FORMAT
+        or inventory["status"] != "materialized"
+        or inventory["source_id"] != plan.source_id
+        or inventory["pinned_revision"] != plan.pinned_revision
+    ):
+        raise SourceMaterializationError("raw inventory identity differs")
+    _utc_string(inventory["materialized_at_utc"], "materialized_at_utc")
+    files = inventory["files"]
+    if type(files) is not list or not files:
+        raise SourceMaterializationError("raw inventory files are missing")
+    inventory_records: dict[str, Mapping[str, Any]] = {}
+    for index, record_value in enumerate(files):
+        record = _object(record_value, f"files[{index}]")
+        _exact_fields(record, {"path", "size_bytes", "sha256"}, "raw file")
+        path = _safe_relative_path(record["path"], "raw file path")
+        if path in inventory_records:
+            raise SourceMaterializationError("raw inventory paths are not unique")
+        _nonnegative_int(record["size_bytes"], "raw file size")
+        _digest(record["sha256"], _SHA256, "raw file SHA-256")
+        inventory_records[path] = record
+    if list(inventory_records) != sorted(inventory_records):
+        raise SourceMaterializationError("raw inventory paths are not sorted")
+    observed_paths: list[str] = []
+    for path in source_root.rglob("*"):
+        if path.is_symlink():
+            raise SourceMaterializationError("materialized source contains a symlink")
+        if path.is_file():
+            relative = path.relative_to(source_root).as_posix()
+            if relative != "raw_sha256.json":
+                observed_paths.append(relative)
+    if sorted(observed_paths) != sorted(inventory_records):
+        raise SourceMaterializationError("materialized files differ from raw inventory")
+    authority_record = inventory_records.get(".authority/provider_metadata.json")
+    if authority_record is None:
+        raise SourceMaterializationError("provider metadata is absent from raw inventory")
+    authority_path = source_root / ".authority" / "provider_metadata.json"
+    metadata_bytes = authority_path.read_bytes()
+    artifacts = derive_download_artifacts(plan, metadata_bytes)
+    artifact_by_path = {value.relative_path: value for value in artifacts}
+    expected_paths = sorted(
+        [".authority/provider_metadata.json", *artifact_by_path]
+    )
+    if sorted(inventory_records) != expected_paths:
+        raise SourceMaterializationError("raw inventory selection differs from plan")
+    for path, record in inventory_records.items():
+        absolute = _safe_destination(source_root, path)
+        if absolute.stat().st_size != record["size_bytes"]:
+            raise SourceMaterializationError("materialized file size differs from receipt")
+        sha256 = _file_sha256(absolute)
+        if sha256 != record["sha256"]:
+            raise SourceMaterializationError("materialized file SHA-256 differs from receipt")
+        artifact = artifact_by_path.get(path)
+        if artifact is not None:
+            _verify_downloaded_artifact(absolute, artifact)
+    verifier_source_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    return {
+        "authority_metadata_sha256": hashlib.sha256(metadata_bytes).hexdigest(),
+        "data_file_count": len(artifacts),
+        "format_version": "pairscale_materialization_verification_v1",
+        "plan_file_sha256": plan.file_sha256,
+        "pinned_revision": plan.pinned_revision,
+        "raw_inventory_file_sha256": hashlib.sha256(inventory_bytes).hexdigest(),
+        "source_id": plan.source_id,
+        "total_data_bytes": sum(value.size_bytes for value in artifacts),
+        "verified_at_utc": _utc_now(),
+        "verifier_source_sha256": verifier_source_sha256,
+    }
+
+
 def _derive_huggingface_artifacts(
     plan: DownloadPlan,
     metadata: Mapping[str, Any],
@@ -472,10 +577,36 @@ def _canonical_json_bytes(value: Mapping[str, Any]) -> bytes:
     return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
+def write_create_only_receipt(path: Path, value: Mapping[str, Any]) -> None:
+    """Write one canonical verification receipt without replacing prior evidence."""
+
+    path = Path(path).expanduser().absolute()
+    if path.parent.is_symlink() or not path.parent.is_dir():
+        raise SourceMaterializationError(
+            "receipt parent must be an existing non-symlink directory"
+        )
+    _write_create_only_or_verify(path, _canonical_json_bytes(value))
+
+
 def _utc_now() -> str:
     from datetime import datetime, timezone
 
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _utc_string(value: Any, name: str) -> str:
+    value = _nonempty_string(value, name)
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", value):
+        raise SourceMaterializationError(f"{name} must be UTC with second precision")
+    return value
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while chunk := handle.read(8 * 1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _strict_json(raw: bytes, name: str) -> Mapping[str, Any]:

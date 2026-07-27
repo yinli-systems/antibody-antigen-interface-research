@@ -18,6 +18,7 @@ from interaction_first.source_materializer import (
     load_download_plan,
     materialize_registered_source,
     validate_plan_against_registry,
+    verify_materialized_registered_source,
 )
 
 
@@ -227,6 +228,21 @@ def test_create_only_materialization_verifies_bytes_and_inventory(
     ]
     source_root = destination_root / source_id
     assert json.loads((source_root / "raw_sha256.json").read_text()) == inventory
+    verification = verify_materialized_registered_source(
+        plan_path=plan_path,
+        registry_root=registry_root,
+        source_root=source_root,
+    )
+    assert verification["data_file_count"] == 2
+    assert verification["total_data_bytes"] == 9
+    (source_root / "unexpected.txt").write_text("unexpected\n")
+    with pytest.raises(SourceMaterializationError, match="differ from raw inventory"):
+        verify_materialized_registered_source(
+            plan_path=plan_path,
+            registry_root=registry_root,
+            source_root=source_root,
+        )
+    (source_root / "unexpected.txt").unlink()
     (source_root / "weights.bin").write_bytes(b"evil")
     with pytest.raises(SourceMaterializationError, match="digest differs"):
         materialize_registered_source(
