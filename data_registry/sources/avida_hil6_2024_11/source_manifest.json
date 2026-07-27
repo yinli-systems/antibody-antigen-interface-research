@@ -7,7 +7,7 @@
     "unit": "VHH-antigen pairs"
   },
   "display_name": "AVIDa-hIL6",
-  "duplicate_groups_status": "not_computed",
+  "duplicate_groups_status": "complete",
   "format_version": "pairscale_source_manifest_v1",
   "pinned_revision": "cd783d573e015f83364e42287810ad597850aeed",
   "planned_roles": [

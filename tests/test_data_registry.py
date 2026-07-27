@@ -20,7 +20,7 @@ def _registry_root() -> Path:
     return Path(__file__).resolve().parents[1] / "data_registry" / "sources"
 
 
-def test_registered_sources_validate_and_are_not_prematurely_admitted() -> None:
+def test_registered_sources_validate_and_only_audited_avida_is_admitted() -> None:
     registries = load_registry_collection(_registry_root())
     assert [value.source_id for value in registries] == [
         "avida_hil6_2024_11",
@@ -34,12 +34,14 @@ def test_registered_sources_validate_and_are_not_prematurely_admitted() -> None:
             use_channel="noncommercial_research",
             purpose="training",
         )
-        assert not decision.admitted
-        assert "normalization_not_complete" in decision.reasons
-        assert "duplicate_groups_not_complete" in decision.reasons
         if registry.source_id == "avida_hil6_2024_11":
+            assert decision.admitted
+            assert decision.reasons == ()
             assert "raw_bytes_not_materialized" not in decision.reasons
         else:
+            assert not decision.admitted
+            assert "normalization_not_complete" in decision.reasons
+            assert "duplicate_groups_not_complete" in decision.reasons
             assert "raw_bytes_not_materialized" in decision.reasons
 
 
