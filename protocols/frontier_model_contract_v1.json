@@ -978,6 +978,15 @@
         "limits_unchanged_from_v2": true,
         "registration_sha256": "33a4520610d4f7f1c85c41cb1e24aa721740c282df8c62c10f44fdd2d768cd90",
         "related_v6_tests_passed_under_each_hash_seed": 127,
+        "scheduler_attempt": {
+          "attempt": 3,
+          "error": "runtime platform differs from registration",
+          "job_id": "1331564",
+          "journal_hash_chain_valid": true,
+          "model_built": false,
+          "solver_invoked": false,
+          "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
+        },
         "scheduler_adaptation": {
           "accelerator_visible_to_solver": false,
           "explicit_memory_request": false,
@@ -988,8 +997,10 @@
           "solver_workers": 1
         },
         "source_sha256": {
+          "protocols/v6_b_production_attempt_003.json": "814dea4f5e8fa5bed84959a918e0a31e9bbe32428829ad0a4ef4ab03cf453587",
           "protocols/v6_b_production_feasibility_registration_v3.json": "33a4520610d4f7f1c85c41cb1e24aa721740c282df8c62c10f44fdd2d768cd90",
-          "tests/test_v6_b_production_registration_v3.py": "7c8567478cd2d38d8178a7c3f961c0436be609bffb590c9f86a30a74df9e61f9"
+          "tests/test_v6_b_production_registration_v3.py": "7c8567478cd2d38d8178a7c3f961c0436be609bffb590c9f86a30a74df9e61f9",
+          "tests/test_v6_b_submission_evidence.py": "61034b393242f6e328af3e2ca7529597eb6b64310f75f327ae421c8d75d2830c"
         },
         "targeted_tests_passed_under_each_hash_seed": 10,
         "split_gate0_authorized": false,
