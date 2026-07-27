@@ -1,0 +1,230 @@
+{
+  "canonicalization": {
+    "digest_algorithm": "sha256",
+    "digest_input_encoding": "utf-8",
+    "digest_object_encoding": "rfc8785_json_canonicalization_scheme",
+    "entity_identity_scope": "biological_sequence_content_not_source_row",
+    "pair_identity_scope": "antibody_id_plus_antigen_id",
+    "sequence_alphabet": "ACDEFGHIKLMNPQRSTVWY",
+    "sequence_case": "uppercase"
+  },
+  "evidence_semantics": {
+    "measured_affinity": {
+      "binary_binding_role": "excluded",
+      "permitted_tasks": [
+        "affinity_ranking",
+        "assay_specific_calibration"
+      ]
+    },
+    "measured_binder": {
+      "binary_binding_role": "positive",
+      "permitted_tasks": [
+        "binary_binding",
+        "specificity_retrieval"
+      ]
+    },
+    "measured_mutation_effect": {
+      "binary_binding_role": "excluded",
+      "permitted_tasks": [
+        "mutation_effect_ranking",
+        "mutation_sign"
+      ]
+    },
+    "measured_nonbinder": {
+      "binary_binding_role": "negative",
+      "permitted_tasks": [
+        "binary_binding",
+        "specificity_retrieval"
+      ]
+    },
+    "observed_structural_positive": {
+      "binary_binding_role": "not_measured_binding_evidence",
+      "permitted_tasks": [
+        "distance",
+        "orientation",
+        "residue_pair_contact"
+      ]
+    },
+    "predicted_complex_candidate": {
+      "binary_binding_role": "excluded",
+      "permitted_tasks": [
+        "complex_quality_ranking",
+        "structure_candidate_classification"
+      ]
+    },
+    "synthetic_decoy": {
+      "binary_binding_role": "excluded",
+      "permitted_tasks": [
+        "ranking_control"
+      ]
+    },
+    "unknown_cross_pair": {
+      "binary_binding_role": "excluded",
+      "permitted_tasks": [
+        "positive_unlabeled_learning",
+        "ranking_control"
+      ]
+    }
+  },
+  "format_version": "pairbench_content_contract_v0",
+  "global_prohibitions": [
+    "complex_coordinates_in_track_s_or_m",
+    "cross_chain_distance_in_track_s_or_m",
+    "predicted_complex_candidate_as_experimental_binding_truth",
+    "raw_cross_assay_value_regression_without_unit_and_context",
+    "test_threshold_selection",
+    "unknown_cross_pair_as_binary_nonbinder"
+  ],
+  "input_tracks": {
+    "C": {
+      "allowed_feature_groups": [
+        "antibody_monomer_structure",
+        "antibody_sequence",
+        "antigen_monomer_structure",
+        "antigen_sequence",
+        "candidate_confidence",
+        "complex_candidate_coordinates",
+        "cross_chain_distance",
+        "monomer_surface_feature",
+        "monomer_uncertainty",
+        "pairformer_contact_consistency",
+        "sequence_derived_annotation"
+      ],
+      "label": "complex_candidate_aware"
+    },
+    "M": {
+      "allowed_feature_groups": [
+        "antibody_monomer_structure",
+        "antibody_sequence",
+        "antigen_monomer_structure",
+        "antigen_sequence",
+        "monomer_surface_feature",
+        "monomer_uncertainty",
+        "sequence_derived_annotation"
+      ],
+      "label": "monomer_structure_aware"
+    },
+    "S": {
+      "allowed_feature_groups": [
+        "antibody_sequence",
+        "antigen_sequence",
+        "sequence_derived_annotation"
+      ],
+      "label": "sequence_only"
+    }
+  },
+  "schema_name": "PAIRBench v0 content contract",
+  "schema_status": "development_not_frozen",
+  "tables": {
+    "assays.parquet": {
+      "primary_key": [
+        "assay_id"
+      ],
+      "required_fields": [
+        "assay_id",
+        "assay_type",
+        "construct_context",
+        "experiment_id",
+        "measurement_uncertainty",
+        "pair_id",
+        "raw_unit",
+        "raw_value",
+        "source_id",
+        "temperature_kelvin"
+      ]
+    },
+    "entities_antibody.parquet": {
+      "primary_key": [
+        "antibody_id"
+      ],
+      "required_fields": [
+        "annotation_status",
+        "antibody_format",
+        "antibody_id",
+        "cdr_boundaries",
+        "clonotype_id",
+        "construct_sequence",
+        "germline_j",
+        "germline_v",
+        "imgt_numbering",
+        "license_route",
+        "lineage_id",
+        "sequence_digest",
+        "source_id",
+        "vh_sequence",
+        "vl_sequence"
+      ]
+    },
+    "entities_antigen.parquet": {
+      "primary_key": [
+        "antigen_id"
+      ],
+      "required_fields": [
+        "annotation_status",
+        "antigen_family",
+        "antigen_id",
+        "chain_sequences",
+        "construct_sequences",
+        "fold_cluster_id",
+        "license_route",
+        "pdb_mappings",
+        "release_date",
+        "sequence_digest",
+        "source_id",
+        "structure_digest",
+        "uniprot_ids",
+        "variant_id"
+      ]
+    },
+    "pairs.parquet": {
+      "primary_key": [
+        "evidence_semantics",
+        "pair_id",
+        "source_record_id"
+      ],
+      "required_fields": [
+        "antibody_id",
+        "antigen_id",
+        "assay_id",
+        "binary_binding_target",
+        "evidence_semantics",
+        "pair_id",
+        "source_id",
+        "source_record_id"
+      ]
+    },
+    "residue_geometry.zarr": {
+      "primary_key": [
+        "antibody_residue_index",
+        "antigen_residue_index",
+        "structure_id"
+      ],
+      "required_fields": [
+        "antibody_residue_index",
+        "antigen_residue_index",
+        "contact_4p5a",
+        "distance_angstrom",
+        "orientation_axes",
+        "residue_presence_mask",
+        "structure_id"
+      ]
+    },
+    "structures.parquet": {
+      "primary_key": [
+        "structure_id"
+      ],
+      "required_fields": [
+        "candidate_metrics",
+        "coordinate_digest",
+        "coordinate_kind",
+        "model_name",
+        "model_version",
+        "pair_id",
+        "provenance_uri",
+        "recycles",
+        "seed",
+        "structure_id"
+      ]
+    }
+  }
+}
