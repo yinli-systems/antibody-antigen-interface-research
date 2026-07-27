@@ -12,6 +12,7 @@ from pathlib import Path, PurePosixPath
 import re
 import shutil
 import subprocess
+import tempfile
 from typing import Any, Mapping, Sequence
 from urllib.parse import quote
 
@@ -215,6 +216,7 @@ def materialize_registered_source(
     metadata_bytes = fetch_provider_metadata(plan, curl_binary=curl_binary)
     artifacts = derive_download_artifacts(plan, metadata_bytes)
     source_root = _prepare_source_root(destination_root, plan.source_id)
+    _validate_destination_path_semantics(artifacts, source_root)
     seed_root = _prepare_verified_seed_root(
         verified_seed_root,
         source_id=plan.source_id,
@@ -535,6 +537,37 @@ def _validate_selection(
         raise SourceMaterializationError("selected file count differs from plan")
     if sum(value.size_bytes for value in artifacts) != plan.expected_selected_bytes:
         raise SourceMaterializationError("selected byte count differs from plan")
+    paths = [value.relative_path for value in artifacts]
+    if paths != sorted(set(paths)):
+        raise SourceMaterializationError("selected artifact paths are not canonical and unique")
+
+
+def _validate_destination_path_semantics(
+    artifacts: Sequence[DownloadArtifact],
+    source_root: Path,
+) -> None:
+    groups: dict[str, list[str]] = {}
+    for artifact in artifacts:
+        groups.setdefault(artifact.relative_path.casefold(), []).append(
+            artifact.relative_path
+        )
+    collisions = [tuple(value) for value in groups.values() if len(value) > 1]
+    if collisions and not _destination_supports_case_distinct_names(source_root):
+        raise SourceMaterializationError(
+            "selected authority paths collide on a case-insensitive filesystem"
+        )
+
+
+def _destination_supports_case_distinct_names(root: Path) -> bool:
+    with tempfile.TemporaryDirectory(prefix=".pairscale-case-probe-", dir=root) as value:
+        probe = Path(value)
+        lower = probe / "case"
+        upper = probe / "CASE"
+        lower.write_bytes(b"lower")
+        if upper.exists():
+            return False
+        upper.write_bytes(b"upper")
+        return lower.stat().st_ino != upper.stat().st_ino
 
 
 def _run_curl(curl_binary: str, url: str, partial: Path) -> None:

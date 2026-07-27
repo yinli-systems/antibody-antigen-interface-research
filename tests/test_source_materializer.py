@@ -12,6 +12,7 @@ import pytest
 import interaction_first.source_materializer as materializer
 from interaction_first.data_registry import load_source_registry
 from interaction_first.source_materializer import (
+    DownloadArtifact,
     DownloadPlan,
     SourceMaterializationError,
     derive_download_artifacts,
@@ -171,6 +172,29 @@ def test_zenodo_derivation_rejects_selection_drift() -> None:
     )
     with pytest.raises(SourceMaterializationError, match="byte count differs"):
         derive_download_artifacts(plan, metadata_bytes)
+
+
+def test_case_colliding_authority_paths_require_case_sensitive_destination(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    artifacts = (
+        DownloadArtifact("path/A.pt", "https://example.org/A", 1, "md5", "0" * 32),
+        DownloadArtifact("path/a.pt", "https://example.org/a", 1, "md5", "1" * 32),
+    )
+    monkeypatch.setattr(
+        materializer,
+        "_destination_supports_case_distinct_names",
+        lambda root: False,
+    )
+    with pytest.raises(SourceMaterializationError, match="case-insensitive"):
+        materializer._validate_destination_path_semantics(artifacts, tmp_path)
+    monkeypatch.setattr(
+        materializer,
+        "_destination_supports_case_distinct_names",
+        lambda root: True,
+    )
+    materializer._validate_destination_path_semantics(artifacts, tmp_path)
 
 
 def test_create_only_materialization_verifies_bytes_and_inventory(
