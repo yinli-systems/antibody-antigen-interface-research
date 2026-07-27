@@ -348,9 +348,11 @@ def _bootstrap(
 
 
 def _score_map(instance_ids: list[str], values: Any) -> dict[str, float]:
+    if len(instance_ids) != len(values):
+        raise PairscaleHoldoutStatisticsError("partner score inventory differs")
     return {
         identifier: _finite(value, "partner score")
-        for identifier, value in zip(instance_ids, values, strict=True)
+        for identifier, value in zip(instance_ids, values)
     }
 
 
