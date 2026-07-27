@@ -1,0 +1,59 @@
+{
+  "format_version": "pairscale_external_result_record_v1",
+  "recorded_at_utc": "2026-07-27T13:31:00Z",
+  "scope": "authenticated_train_only_overfit_nonconfirmatory",
+  "claim_boundary": "training-set memorization and engineering controls only; no held-out, confirmatory, comparative, or state-of-the-art claim",
+  "git_commit": "90507c3034a6b516b6f037b95f4b72b42cf28edd",
+  "slurm": {
+    "job_id": 1332710,
+    "state": "COMPLETED",
+    "elapsed": "00:05:59",
+    "exit_code": "0:0",
+    "requested_resources": "1 RTX 5090, 16 CPUs, 64 GiB memory",
+    "batch_max_rss_kib": 2036704
+  },
+  "data": {
+    "complex_count": 32,
+    "candidate_pair_count": 1599727,
+    "positive_pair_count": 1303,
+    "cache_manifest_sha256": "325cf6b2eb196c42e44fbb6385514afbf3d08767d8b034114781cb51969bd29e",
+    "cache_receipt_file_sha256": "ac8ab0342554464c1042d128cbd96e9fb665760bb1025721232228b3b4ccb377"
+  },
+  "training": {
+    "completed_epoch": 110,
+    "global_step": 3520,
+    "negative_pair_subsampling": false,
+    "unknown_cross_pair_semantics": "ranking_control_only_not_a_measured_nonbinder",
+    "final_mean_loss_components": {
+      "contact_bce": 0.0031624340244889027,
+      "contact_ranking": 0.003644290465075528,
+      "partner_ranking": 0.00018343602109638368,
+      "total": 0.006852583512227284
+    }
+  },
+  "metrics": {
+    "macro_pair_auprc": 0.9868429396976074,
+    "pooled_pair_auprc": 0.9782688964363304,
+    "macro_precision_at_true_contact_count": 0.9642112365770031,
+    "macro_model_marginal_outer_auprc": 0.3046111898401584,
+    "macro_label_marginal_oracle_auprc": 0.14322871500726161,
+    "matched_partner_topk_win_rate": 1.0,
+    "matched_partner_topk_mean_delta": 12.276989600155503,
+    "double_centered_partner_win_rate": 1.0,
+    "double_centered_partner_mean_delta": 11.314874857664108
+  },
+  "gate": {
+    "numeric_checks_passed": true,
+    "checkpoint_resume_exactness": "blocked_in_this_commit_by_cuda_map_location_bug",
+    "complete_l0_passed": false,
+    "claim": "The numeric overfit checks passed, but this exact commit is not a complete L0 pass because its resume path was defective."
+  },
+  "artifacts": {
+    "cluster_root": "/ssd/scxi253/model_deployment/results/pairscale/contact32_ranked_seed17_90507c3",
+    "run_manifest_sha256": "a15d2ac0b4ed5e91776c7ddd2e2d3ebe564507be9fb7aff97801d5421ee56d10",
+    "epoch_metrics_sha256": "a4093ceeebd8edc70d7dacd0f20502e6a739e30ef988588450dcbc9c48b0cb68",
+    "final_report_sha256": "e1497f995b2d209cf09d489f3ca8f49ad4d3ddf3246fc950cf0c6525ffd23c91",
+    "final_checkpoint_sha256": "01357b1bc4712c75f5728a7307d51a654506742d996b8ce41580d5131ae71a1c",
+    "final_checkpoint_receipt_file_sha256": "7ec9fb1a76b215568100976bc86f7a4961bd9541adadce5388c1bdf1c52cf132"
+  }
+}
