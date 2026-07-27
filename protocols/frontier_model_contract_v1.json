@@ -883,6 +883,29 @@
         "related_v6_tests_passed_under_each_hash_seed": 130,
         "training_authorized": false
       },
+      "runtime_compatibility_probe": {
+        "exact_kernel_release_is_stable": false,
+        "model_built": false,
+        "required_runtime_anchors": [
+          "python_executable",
+          "python_version",
+          "ortools_version",
+          "ortools_module_sha256",
+          "system",
+          "machine",
+          "libc_family",
+          "libc_version",
+          "cuda_visible_devices"
+        ],
+        "runtime_package_and_abi_match_across_observations": true,
+        "solver_invoked": false,
+        "source_sha256": {
+          "protocols/v6_b_runtime_compatibility_probe_v1.json": "8eec5eb1b7eeecd2a4b0dba9d8e61b729489fa4017ba7a0e848088fa72cb1756",
+          "tests/test_v6_b_runtime_compatibility_probe.py": "07953e163122bdf51ef3b053cca8cabc24a314fe95c29daa0f529e9a3c59bd93"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 3,
+        "training_authorized": false
+      },
       "production_feasibility_controller": {
         "authenticated_raw_authority_reconstruction_required": true,
         "controller_exception_receipt_required": true,
