@@ -991,11 +991,19 @@
           "frozen_v1_source_modified": false,
           "production_module_private_hash_api_regression_tested": true,
           "registration_schema_v2_supported": true,
-          "registration_frozen": false,
-          "source_sha256": {
-            "src/interaction_first/v6_b_projection_bundle_export.py": "b5db80a33dfc6b80ae00e12fe2ebabc29adb69fb3220855ed52a1278610c6bc5",
-            "tests/test_v6_b_projection_bundle_export.py": "c91e048f6e9d6776af52606a238a9036c6d3ed8ade01058f80efe2ef11552e74"
+          "registration_frozen": true,
+          "registration_v2": {
+            "implementation_commit": "ad1c6eabc19842b46bee6049ddcdb498f881f9b4",
+            "registration_sha256": "6b66aaa7ac5438e947827f59a21831cabc0106a736e796490b6d6b47654eb092",
+            "scientific_identity_unchanged_from_v1": true
           },
+          "source_sha256": {
+            "protocols/v6_b_projection_bundle_export_registration_v2.json": "6b66aaa7ac5438e947827f59a21831cabc0106a736e796490b6d6b47654eb092",
+            "src/interaction_first/v6_b_projection_bundle_export.py": "b5db80a33dfc6b80ae00e12fe2ebabc29adb69fb3220855ed52a1278610c6bc5",
+            "tests/test_v6_b_projection_bundle_export.py": "c91e048f6e9d6776af52606a238a9036c6d3ed8ade01058f80efe2ef11552e74",
+            "tests/test_v6_b_projection_bundle_export_registration_v2.py": "0341a9929255bddb3738fab1533f3e5f50e9b209e97d52644222d1a66b368b49"
+          },
+          "registration_tests_passed_under_each_hash_seed": 3,
           "targeted_tests_passed_under_each_hash_seed": 10,
           "related_v6_tests_passed_under_each_hash_seed": 120
         },
