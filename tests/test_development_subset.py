@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -283,3 +285,91 @@ def test_cli_create_only_publication(tmp_path: Path) -> None:
     failed = subprocess.run(command, check=False, capture_output=True, text=True)
     assert failed.returncode != 0
     assert "create-only" in failed.stderr
+
+
+def test_canonical_32_64_256_outputs_are_cross_hash_seed_identical(
+    tmp_path: Path,
+) -> None:
+    repository_root = Path(__file__).resolve().parents[1]
+    script = repository_root / "scripts" / "build_pairscale_development_subsets.py"
+    inventory = _inventory(300)
+    authority_path = tmp_path / "AUTHORIZED_FOLD_INVENTORY.json"
+    policy_path = tmp_path / "policy.json"
+    authority_payload = {
+        "format_version": AUTHORIZATION_FORMAT,
+        "data_access_scope": DATA_ACCESS_SCOPE,
+        "split_role": "train",
+        "fold_id": inventory.fold_id,
+        "instances": [value.canonical_payload() for value in inventory.instances],
+        "positive_pairs": [list(value) for value in inventory.positive_pairs],
+        "excluded_pairs": [],
+    }
+    authority_path.write_bytes(canonical_json_bytes(authority_payload))
+    authority_sha256 = hashlib.sha256(authority_path.read_bytes()).hexdigest()
+    base_policy = _policy(inventory)
+    policy = DevelopmentPolicy(
+        protocol_sha256=base_policy.protocol_sha256,
+        authority_manifest_sha256=base_policy.authority_manifest_sha256,
+        cache_authorization_manifest_sha256=authority_sha256,
+        cache_manifest_sha256=base_policy.cache_manifest_sha256,
+        authority_membership_sha256=base_policy.authority_membership_sha256,
+        counts=base_policy.counts,
+    )
+    policy_path.write_bytes(canonical_json_bytes(policy.canonical_payload()))
+    output_roots: list[Path] = []
+    for hash_seed in ("0", "811"):
+        output_root = tmp_path / f"published-{hash_seed}"
+        output_roots.append(output_root)
+        command = [
+            sys.executable,
+            str(script),
+            "--authority-inventory",
+            str(authority_path),
+            "--expected-authority-sha256",
+            authority_sha256,
+            "--policy",
+            str(policy_path),
+            "--expected-policy-sha256",
+            policy.policy_sha256,
+            "--expected-builder-sha256",
+            hashlib.sha256(script.read_bytes()).hexdigest(),
+            "--output-root",
+            str(output_root),
+            "--sizes",
+            "32",
+            "64",
+            "256",
+            "--seed",
+            "17",
+            "--requested-at-utc",
+            "2026-07-27T17:00:00Z",
+            "--evaluated-at-utc",
+            "2026-07-27T17:01:00Z",
+        ]
+        environment = dict(os.environ)
+        environment["PYTHONHASHSEED"] = hash_seed
+        subprocess.run(
+            command,
+            check=True,
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
+    observed = []
+    for output_root in output_roots:
+        observed.append(
+            {
+                str(path.relative_to(output_root)): path.read_bytes()
+                for path in sorted(output_root.rglob("*"))
+                if path.is_file()
+            }
+        )
+    assert observed[0] == observed[1]
+    receipt = json.loads(
+        observed[0]["SUBSET_BUILD_RECEIPT.json"].decode("ascii")
+    )
+    assert [value["requested_size"] for value in receipt["subsets"]] == [
+        32,
+        64,
+        256,
+    ]
