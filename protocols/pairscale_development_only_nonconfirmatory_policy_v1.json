@@ -33,7 +33,7 @@
     "paper_result_claim",
     "sota_claim"
   ],
-  "protocol_sha256": "af8ca891ff00f544aa7cc0c5b2135fa95cea9a7052e0f705bb235a01eb62a723",
+  "protocol_sha256": "66e1b6d99dfc4287bde86043553a08f2a0ae55f1eb21596b548465f33aa09d19",
   "schema_version": "pairscale_development_policy_v1",
   "sealed_data_access_authorized": false,
   "test_data_access_authorized": false,

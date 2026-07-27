@@ -33,7 +33,8 @@ CLAIM_BOUNDARY = (
 )
 
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-_IDENTIFIER_RE = re.compile(
+_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:+/@-]{0,511}$")
+_RUN_ID_RE = re.compile(
     r"^[A-Za-z0-9](?:[A-Za-z0-9._:@+-]{0,254}[A-Za-z0-9])?$"
 )
 _UTC_TIMESTAMP_RE = re.compile(
@@ -216,7 +217,7 @@ class DevelopmentRequest:
     confirmatory_claim_requested: bool = False
 
     def __post_init__(self) -> None:
-        _validate_identifier(self.run_id, "run_id")
+        _validate_run_id(self.run_id, "run_id")
         if not isinstance(self.purpose, DevelopmentPurpose):
             raise DevelopmentAuthorityError(
                 "purpose must be a recognized DevelopmentPurpose"
@@ -300,7 +301,7 @@ class DevelopmentDecision:
             "subset_membership_sha256",
         ):
             _validate_sha256(getattr(self, name), name)
-        _validate_identifier(self.run_id, "run_id")
+        _validate_run_id(self.run_id, "run_id")
         if not isinstance(self.purpose, DevelopmentPurpose):
             raise DevelopmentAuthorityError("decision purpose is invalid")
         if (
@@ -434,7 +435,7 @@ def verify_development_decision(
 
     _validate_sha256(expected_policy_sha256, "expected_policy_sha256")
     _validate_sha256(expected_decision_sha256, "expected_decision_sha256")
-    _validate_identifier(expected_run_id, "expected_run_id")
+    _validate_run_id(expected_run_id, "expected_run_id")
     _validate_sha256(
         expected_subset_manifest_sha256,
         "expected_subset_manifest_sha256",
@@ -576,7 +577,7 @@ def canonical_sha256(payload: object) -> str:
 
 
 def membership_sha256(values: Iterable[str]) -> str:
-    """Hash sorted unique identifiers using unambiguous length framing."""
+    """Hash sorted unique identifiers using the frozen LF framing."""
 
     canonical = sorted(values)
     if len(set(canonical)) != len(canonical):
@@ -584,9 +585,8 @@ def membership_sha256(values: Iterable[str]) -> str:
     digest = hashlib.sha256()
     for value in canonical:
         _validate_identifier(value, "membership identifier")
-        encoded = value.encode("ascii")
-        digest.update(len(encoded).to_bytes(4, byteorder="big", signed=False))
-        digest.update(encoded)
+        digest.update(value.encode("ascii"))
+        digest.update(b"\n")
     return digest.hexdigest()
 
 
@@ -611,6 +611,16 @@ def _validate_identifier(value: Any, label: str) -> str:
         or _IDENTIFIER_RE.fullmatch(value) is None
     ):
         raise DevelopmentAuthorityError(f"{label} is not a canonical identifier")
+    return value
+
+
+def _validate_run_id(value: Any, label: str) -> str:
+    if (
+        not isinstance(value, str)
+        or not value.isascii()
+        or _RUN_ID_RE.fullmatch(value) is None
+    ):
+        raise DevelopmentAuthorityError(f"{label} is not a canonical run identifier")
     return value
 
 

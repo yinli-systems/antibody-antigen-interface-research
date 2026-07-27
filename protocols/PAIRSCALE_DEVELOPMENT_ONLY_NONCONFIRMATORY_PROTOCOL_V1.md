@@ -33,6 +33,11 @@ duplicates, and be an exact subset of that authority set. The subset manifest
 is separately content-addressed so that changing ordering, metadata, or
 membership invalidates the authorization.
 
+Membership digests reproduce the frozen engineering-cache convention: unique
+canonical ASCII identifiers are sorted, then each identifier is encoded as
+ASCII and terminated by one LF byte. Canonical identifiers cannot contain
+whitespace, so the framing is unambiguous.
+
 Only the literal source split `train` is accepted. Validation identifiers,
 validation sequences, validation labels, frozen or external test data, test
 predictions, and test-derived thresholds have no authorized input channel.

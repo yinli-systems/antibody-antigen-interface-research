@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import hashlib
 import json
 from pathlib import Path
 
@@ -224,6 +225,19 @@ def test_order_independence_and_all_purposes_are_authorized() -> None:
         assert _decision(_request(purpose=purpose)).authorized
 
 
+def test_membership_digest_reproduces_frozen_lf_framing() -> None:
+    values = ("instance-c", "instance-a", "pdb_00001g6v_K_+")
+    expected = hashlib.sha256(
+        b"instance-a\ninstance-c\npdb_00001g6v_K_+\n"
+    ).hexdigest()
+    assert membership_sha256(values) == expected
+
+
+def test_run_identifier_cannot_be_reinterpreted_as_a_path() -> None:
+    with pytest.raises(DevelopmentAuthorityError, match="run identifier"):
+        _request(run_id="../outside")
+
+
 def test_repository_policy_binds_protocol_and_locked_train_inventory() -> None:
     repository_root = Path(__file__).resolve().parents[1]
     protocol_path = (
@@ -237,8 +251,6 @@ def test_repository_policy_binds_protocol_and_locked_train_inventory() -> None:
         / "pairscale_development_only_nonconfirmatory_policy_v1.json"
     )
     policy = development_policy_from_json(policy_path.read_bytes())
-
-    import hashlib
 
     assert policy.protocol_sha256 == hashlib.sha256(
         protocol_path.read_bytes()
