@@ -18,6 +18,7 @@ from interaction_first.development_holdout import (
     build_component_holdout,
     build_holdout_receipt,
     connected_components,
+    parse_component_holdout_assignment,
     parse_score_free_subset,
     select_exact_holdout_components,
 )
@@ -167,6 +168,88 @@ def test_receipt_binds_assignment_and_complete_source_inventory() -> None:
         build_holdout_receipt(
             assignment,
             implementation_source_sha256={"partial": "a" * 64},
+        )
+
+
+def test_published_assignment_and_receipt_parse_with_all_anchors() -> None:
+    assignment = build_component_holdout(_subset(), holdout_pair_count=3, seed=29)
+    sources = {
+        name: str(index + 1) * 64
+        for index, name in enumerate(sorted(REQUIRED_IMPLEMENTATION_SOURCES))
+    }
+    receipt = build_holdout_receipt(
+        assignment,
+        implementation_source_sha256=sources,
+    )
+    assignment_bytes = canonical_json_bytes(assignment)
+    receipt_bytes = canonical_json_bytes(receipt)
+    parsed = parse_component_holdout_assignment(
+        assignment_bytes,
+        receipt_bytes,
+        expected_assignment_file_sha256=hashlib.sha256(
+            assignment_bytes
+        ).hexdigest(),
+        expected_assignment_content_sha256=assignment[
+            "assignment_content_sha256"
+        ],
+        expected_receipt_file_sha256=hashlib.sha256(receipt_bytes).hexdigest(),
+        expected_source_subset_sha256=_subset().subset_sha256,
+        expected_policy_sha256=_subset().policy_sha256,
+    )
+    assert len(parsed.train_instances) == 5
+    assert len(parsed.holdout_instances) == 3
+    assert not {
+        value.antibody_id for value in parsed.train_instances
+    }.intersection(value.antibody_id for value in parsed.holdout_instances)
+
+
+def test_assignment_parser_rejects_receipt_and_partition_tampering() -> None:
+    assignment = build_component_holdout(_subset(), holdout_pair_count=3, seed=29)
+    sources = {
+        name: str(index + 1) * 64
+        for index, name in enumerate(sorted(REQUIRED_IMPLEMENTATION_SOURCES))
+    }
+    receipt = build_holdout_receipt(
+        assignment,
+        implementation_source_sha256=sources,
+    )
+
+    def parse(changed_assignment: object, changed_receipt: object) -> None:
+        assignment_bytes = canonical_json_bytes(changed_assignment)
+        receipt_bytes = canonical_json_bytes(changed_receipt)
+        parse_component_holdout_assignment(
+            assignment_bytes,
+            receipt_bytes,
+            expected_assignment_file_sha256=hashlib.sha256(
+                assignment_bytes
+            ).hexdigest(),
+            expected_assignment_content_sha256=assignment[
+                "assignment_content_sha256"
+            ],
+            expected_receipt_file_sha256=hashlib.sha256(receipt_bytes).hexdigest(),
+            expected_source_subset_sha256=_subset().subset_sha256,
+            expected_policy_sha256=_subset().policy_sha256,
+        )
+
+    changed_assignment = json.loads(canonical_json_bytes(assignment))
+    changed_assignment["train"]["instances"][0]["antibody_id"] = (
+        changed_assignment["holdout"]["instances"][0]["antibody_id"]
+    )
+    with pytest.raises(DevelopmentHoldoutError, match="content digest mismatch"):
+        parse(changed_assignment, receipt)
+    changed_receipt = json.loads(canonical_json_bytes(receipt))
+    changed_receipt["confirmatory_authority_granted"] = True
+    with pytest.raises(DevelopmentHoldoutError, match="forbidden authority"):
+        parse(assignment, changed_receipt)
+
+
+def test_strict_parser_rejects_duplicate_json_keys() -> None:
+    raw = canonical_json_bytes(_source_payload()).rstrip(b"\n")
+    duplicate = raw[:-1] + b',"source_split":"train"}'
+    with pytest.raises(DevelopmentHoldoutError, match="duplicate JSON key"):
+        parse_score_free_subset(
+            duplicate,
+            expected_subset_sha256=hashlib.sha256(duplicate).hexdigest(),
         )
 
 

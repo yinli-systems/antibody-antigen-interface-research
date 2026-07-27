@@ -8,6 +8,7 @@ outputs, ranks, losses, or any interface-derived covariate.
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
@@ -66,6 +67,18 @@ class ScoreFreeSubset:
 
 
 @dataclass(frozen=True)
+class ComponentHoldoutAssignment:
+    """One authenticated train/holdout assignment for development only."""
+
+    assignment_file_sha256: str
+    assignment_content_sha256: str
+    source_subset_sha256: str
+    policy_sha256: str
+    train_instances: tuple[AuthorizedInstance, ...]
+    holdout_instances: tuple[AuthorizedInstance, ...]
+
+
+@dataclass(frozen=True)
 class EndpointComponent:
     """One connected component of the observed antibody--antigen graph."""
 
@@ -92,14 +105,7 @@ def parse_score_free_subset(
     actual_sha256 = hashlib.sha256(payload_bytes).hexdigest()
     if actual_sha256 != expected_subset_sha256:
         raise DevelopmentHoldoutError("subset SHA-256 mismatch")
-    try:
-        import json
-
-        payload = json.loads(payload_bytes)
-    except Exception as exc:
-        raise DevelopmentHoldoutError("subset is not valid JSON") from exc
-    if type(payload) is not dict:
-        raise DevelopmentHoldoutError("subset must be a JSON object")
+    payload = _strict_json_object(payload_bytes, "subset")
     _reject_forbidden_keys(payload)
     required = {
         "format_version",
@@ -178,6 +184,203 @@ def parse_score_free_subset(
         policy_sha256=_sha256(payload["policy_sha256"], "policy_sha256"),
         permission_name=str(payload["permission_name"]),
         source_split=str(payload["source_split"]),
+    )
+
+
+def parse_component_holdout_assignment(
+    assignment_bytes: bytes,
+    receipt_bytes: bytes,
+    *,
+    expected_assignment_file_sha256: str,
+    expected_assignment_content_sha256: str,
+    expected_receipt_file_sha256: str,
+    expected_source_subset_sha256: str,
+    expected_policy_sha256: str,
+) -> ComponentHoldoutAssignment:
+    """Authenticate and validate one published component holdout and receipt."""
+
+    for value, label in (
+        (expected_assignment_file_sha256, "expected_assignment_file_sha256"),
+        (expected_assignment_content_sha256, "expected_assignment_content_sha256"),
+        (expected_receipt_file_sha256, "expected_receipt_file_sha256"),
+        (expected_source_subset_sha256, "expected_source_subset_sha256"),
+        (expected_policy_sha256, "expected_policy_sha256"),
+    ):
+        _sha256(value, label)
+    assignment_file_sha256 = hashlib.sha256(assignment_bytes).hexdigest()
+    if assignment_file_sha256 != expected_assignment_file_sha256:
+        raise DevelopmentHoldoutError("assignment file SHA-256 mismatch")
+    if hashlib.sha256(receipt_bytes).hexdigest() != expected_receipt_file_sha256:
+        raise DevelopmentHoldoutError("receipt file SHA-256 mismatch")
+    payload = _strict_json_object(assignment_bytes, "assignment")
+    expected_top_fields = {
+        "format_version",
+        "permission_name",
+        "source_split",
+        "scope",
+        "claim_boundary",
+        "source_subset_sha256",
+        "policy_sha256",
+        "selection",
+        "source",
+        "train",
+        "holdout",
+        "separation_audit",
+        "assignment_content_sha256",
+    }
+    _exact_fields(payload, expected_top_fields, "assignment")
+    if payload["format_version"] != HOLDOUT_FORMAT:
+        raise DevelopmentHoldoutError("unsupported assignment format")
+    if payload["source_split"] != "train":
+        raise DevelopmentHoldoutError("assignment source is not train-only")
+    if payload["scope"] != "authority_train_only_development_double_cold":
+        raise DevelopmentHoldoutError("assignment scope differs")
+    if payload["claim_boundary"] != CLAIM_BOUNDARY:
+        raise DevelopmentHoldoutError("assignment claim boundary differs")
+    if payload["source_subset_sha256"] != expected_source_subset_sha256:
+        raise DevelopmentHoldoutError("assignment source subset digest differs")
+    if payload["policy_sha256"] != expected_policy_sha256:
+        raise DevelopmentHoldoutError("assignment policy digest differs")
+    claimed_content_sha256 = _sha256(
+        payload["assignment_content_sha256"],
+        "assignment_content_sha256",
+    )
+    if claimed_content_sha256 != expected_assignment_content_sha256:
+        raise DevelopmentHoldoutError("assignment content digest anchor differs")
+    content_payload = dict(payload)
+    content_payload.pop("assignment_content_sha256")
+    if canonical_sha256(content_payload) != claimed_content_sha256:
+        raise DevelopmentHoldoutError("assignment content digest mismatch")
+    selection = _object(payload["selection"], "selection")
+    _exact_fields(
+        selection,
+        {
+            "algorithm",
+            "domain_separator",
+            "seed",
+            "requested_holdout_pair_count",
+        },
+        "selection",
+    )
+    if selection["algorithm"] != (
+        "sha256_ordered_component_subset_sum_exact_pair_count"
+    ):
+        raise DevelopmentHoldoutError("assignment algorithm differs")
+    if selection["domain_separator"] != SELECTION_DOMAIN:
+        raise DevelopmentHoldoutError("assignment domain separator differs")
+    if type(selection["seed"]) is not int or selection["seed"] < 0:
+        raise DevelopmentHoldoutError("assignment seed is invalid")
+    requested_holdout_count = _positive_integer(
+        selection["requested_holdout_pair_count"],
+        "requested_holdout_pair_count",
+    )
+    source = _object(payload["source"], "source")
+    _exact_fields(
+        source,
+        {"instance_count", "component_count", "instance_membership_sha256"},
+        "source",
+    )
+    source_count = _positive_integer(source["instance_count"], "source count")
+    _positive_integer(source["component_count"], "source component count")
+    source_membership_sha256 = _sha256(
+        source["instance_membership_sha256"],
+        "source instance membership",
+    )
+    train_instances = _parse_partition(payload["train"], "train")
+    holdout_instances = _parse_partition(payload["holdout"], "holdout")
+    if len(holdout_instances) != requested_holdout_count:
+        raise DevelopmentHoldoutError("holdout count differs from selection")
+    if len(train_instances) + len(holdout_instances) != source_count:
+        raise DevelopmentHoldoutError("partition counts do not cover the source")
+    all_instances = (*train_instances, *holdout_instances)
+    if membership_sha256(value.instance_id for value in all_instances) != (
+        source_membership_sha256
+    ):
+        raise DevelopmentHoldoutError("partition membership differs from source")
+    train_antibodies = {value.antibody_id for value in train_instances}
+    train_antigens = {value.antigen_id for value in train_instances}
+    holdout_antibodies = {value.antibody_id for value in holdout_instances}
+    holdout_antigens = {value.antigen_id for value in holdout_instances}
+    if train_antibodies.intersection(holdout_antibodies):
+        raise DevelopmentHoldoutError("antibody endpoints cross the holdout")
+    if train_antigens.intersection(holdout_antigens):
+        raise DevelopmentHoldoutError("antigen endpoints cross the holdout")
+    separation = _object(payload["separation_audit"], "separation_audit")
+    _exact_fields(
+        separation,
+        {
+            "instance_overlap_count",
+            "antibody_overlap_count",
+            "antigen_overlap_count",
+            "contact_or_score_fields_accessed",
+            "validation_or_test_data_accessed",
+        },
+        "separation_audit",
+    )
+    if separation != {
+        "instance_overlap_count": 0,
+        "antibody_overlap_count": 0,
+        "antigen_overlap_count": 0,
+        "contact_or_score_fields_accessed": False,
+        "validation_or_test_data_accessed": False,
+    }:
+        raise DevelopmentHoldoutError("assignment separation audit did not pass")
+    receipt = _strict_json_object(receipt_bytes, "receipt")
+    _exact_fields(
+        receipt,
+        {
+            "format_version",
+            "assignment_content_sha256",
+            "assignment_file_sha256",
+            "source_subset_sha256",
+            "implementation_source_sha256",
+            "score_or_label_fields_accessed",
+            "validation_or_test_data_accessed",
+            "confirmatory_authority_granted",
+            "receipt_sha256",
+        },
+        "receipt",
+    )
+    if receipt["format_version"] != RECEIPT_FORMAT:
+        raise DevelopmentHoldoutError("unsupported receipt format")
+    if receipt["assignment_content_sha256"] != claimed_content_sha256:
+        raise DevelopmentHoldoutError("receipt content digest differs")
+    if receipt["assignment_file_sha256"] != assignment_file_sha256:
+        raise DevelopmentHoldoutError("receipt assignment file digest differs")
+    if receipt["source_subset_sha256"] != expected_source_subset_sha256:
+        raise DevelopmentHoldoutError("receipt source subset digest differs")
+    if any(
+        receipt[field] is not False
+        for field in (
+            "score_or_label_fields_accessed",
+            "validation_or_test_data_accessed",
+            "confirmatory_authority_granted",
+        )
+    ):
+        raise DevelopmentHoldoutError("receipt grants forbidden authority")
+    claimed_receipt_sha256 = _sha256(
+        receipt["receipt_sha256"],
+        "receipt_sha256",
+    )
+    receipt_payload = dict(receipt)
+    receipt_payload.pop("receipt_sha256")
+    if canonical_sha256(receipt_payload) != claimed_receipt_sha256:
+        raise DevelopmentHoldoutError("receipt content digest mismatch")
+    implementation_sources = _object(
+        receipt["implementation_source_sha256"],
+        "implementation_source_sha256",
+    )
+    if set(implementation_sources) != REQUIRED_IMPLEMENTATION_SOURCES:
+        raise DevelopmentHoldoutError("receipt source inventory differs")
+    for name, digest in implementation_sources.items():
+        _sha256(digest, f"implementation_source_sha256[{name}]")
+    return ComponentHoldoutAssignment(
+        assignment_file_sha256=assignment_file_sha256,
+        assignment_content_sha256=claimed_content_sha256,
+        source_subset_sha256=expected_source_subset_sha256,
+        policy_sha256=expected_policy_sha256,
+        train_instances=train_instances,
+        holdout_instances=holdout_instances,
     )
 
 
@@ -440,6 +643,135 @@ def _partition_payload(
         "instances": [value.canonical_payload() for value in instances],
         "component_sha256": sorted(value.component_sha256 for value in components),
     }
+
+
+def _parse_partition(
+    value: object,
+    name: str,
+) -> tuple[AuthorizedInstance, ...]:
+    partition = _object(value, name)
+    _exact_fields(
+        partition,
+        {
+            "instance_count",
+            "antibody_count",
+            "antigen_count",
+            "component_count",
+            "instance_membership_sha256",
+            "component_membership_sha256",
+            "instances",
+            "component_sha256",
+        },
+        name,
+    )
+    raw_instances = partition["instances"]
+    if type(raw_instances) is not list or not raw_instances:
+        raise DevelopmentHoldoutError(f"{name}.instances must be nonempty")
+    instances: list[AuthorizedInstance] = []
+    for index, raw in enumerate(raw_instances):
+        if type(raw) is not dict or set(raw) != {
+            "instance_id",
+            "antibody_id",
+            "antigen_id",
+        }:
+            raise DevelopmentHoldoutError(
+                f"{name}.instances[{index}] contains non-allowlisted fields"
+            )
+        instances.append(
+            AuthorizedInstance(
+                instance_id=raw["instance_id"],
+                antibody_id=raw["antibody_id"],
+                antigen_id=raw["antigen_id"],
+            )
+        )
+    result = tuple(instances)
+    if result != tuple(sorted(result, key=lambda item: item.instance_id)):
+        raise DevelopmentHoldoutError(f"{name}.instances are not sorted")
+    if len({item.instance_id for item in result}) != len(result):
+        raise DevelopmentHoldoutError(f"{name}.instances contain duplicates")
+    if _positive_integer(partition["instance_count"], f"{name} instance count") != len(
+        result
+    ):
+        raise DevelopmentHoldoutError(f"{name} instance count mismatch")
+    if _positive_integer(partition["antibody_count"], f"{name} antibody count") != len(
+        {item.antibody_id for item in result}
+    ):
+        raise DevelopmentHoldoutError(f"{name} antibody count mismatch")
+    if _positive_integer(partition["antigen_count"], f"{name} antigen count") != len(
+        {item.antigen_id for item in result}
+    ):
+        raise DevelopmentHoldoutError(f"{name} antigen count mismatch")
+    component_count = _positive_integer(
+        partition["component_count"],
+        f"{name} component count",
+    )
+    component_sha256 = partition["component_sha256"]
+    if type(component_sha256) is not list or len(component_sha256) != component_count:
+        raise DevelopmentHoldoutError(f"{name} component inventory count mismatch")
+    if component_sha256 != sorted(component_sha256):
+        raise DevelopmentHoldoutError(f"{name} component inventory is not sorted")
+    if len(set(component_sha256)) != len(component_sha256):
+        raise DevelopmentHoldoutError(f"{name} component inventory has duplicates")
+    for digest in component_sha256:
+        _sha256(digest, f"{name} component digest")
+    if partition["instance_membership_sha256"] != membership_sha256(
+        item.instance_id for item in result
+    ):
+        raise DevelopmentHoldoutError(f"{name} instance membership mismatch")
+    if partition["component_membership_sha256"] != membership_sha256(
+        component_sha256
+    ):
+        raise DevelopmentHoldoutError(f"{name} component membership mismatch")
+    return result
+
+
+def _strict_json_object(raw: bytes, name: str) -> dict[str, object]:
+    def reject_constant(value: str) -> None:
+        raise DevelopmentHoldoutError(f"non-finite JSON constant in {name}: {value}")
+
+    def reject_duplicates(pairs: list[tuple[str, object]]) -> dict[str, object]:
+        result: dict[str, object] = {}
+        for key, value in pairs:
+            if key in result:
+                raise DevelopmentHoldoutError(f"duplicate JSON key in {name}: {key}")
+            result[key] = value
+        return result
+
+    try:
+        value = json.loads(
+            raw.decode("utf-8", errors="strict"),
+            parse_constant=reject_constant,
+            object_pairs_hook=reject_duplicates,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DevelopmentHoldoutError(f"{name} is not valid JSON") from exc
+    if type(value) is not dict:
+        raise DevelopmentHoldoutError(f"{name} must be a JSON object")
+    return value
+
+
+def _object(value: object, name: str) -> dict[str, object]:
+    if type(value) is not dict:
+        raise DevelopmentHoldoutError(f"{name} must be an object")
+    return value
+
+
+def _exact_fields(
+    value: Mapping[str, object],
+    expected: set[str],
+    name: str,
+) -> None:
+    if set(value) != expected:
+        raise DevelopmentHoldoutError(
+            f"{name} fields differ; missing={sorted(expected - set(value))}, "
+            f"extra={sorted(set(value) - expected)}"
+        )
+
+
+def _positive_integer(value: object, name: str) -> int:
+    if type(value) is not int or value <= 0:
+        raise DevelopmentHoldoutError(f"{name} must be a positive integer")
+    return value
 
 
 def _reject_forbidden_keys(value: object, path: str = "$") -> None:
