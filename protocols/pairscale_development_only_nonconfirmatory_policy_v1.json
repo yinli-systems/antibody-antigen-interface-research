@@ -1,0 +1,41 @@
+{
+  "allowed_purposes": [
+    "architecture_ablation",
+    "baseline_development",
+    "loss_debugging",
+    "overfit_sanity",
+    "systems_profiling"
+  ],
+  "checkpoint_promotion_authorized": false,
+  "claim_boundary": "Authority-train-only development evidence for debugging and systems engineering; no validation, test, model-selection, confirmatory, biological generalization, SOTA, or world-leading claim.",
+  "confirmatory_claim_authorized": false,
+  "data_boundary": {
+    "authority_manifest_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+    "authority_membership_sha256": "e3465e558ab8231bb6280d038d07856846ab31608e6e8d3867da3348e85c0a4d",
+    "cache_authorization_manifest_sha256": "4227ec4c7bc8594c61a9b1b89f830febff8a4135b75c333c6420e99ec8efb749",
+    "cache_manifest_sha256": "eccf241f28dfa5e9eca0d95e8f445ae7da4cc8ec28c5b16ec5b078fafd0c3734",
+    "counts": {
+      "antibody_entities": 1383,
+      "antigen_entities": 1172,
+      "exact_pairs": 1830,
+      "source_instances": 3229
+    },
+    "source_split": "train"
+  },
+  "permission_name": "development_only_nonconfirmatory",
+  "prohibited_permissions": [
+    "checkpoint_promotion",
+    "confirmatory_claim",
+    "contact_training",
+    "external_test_inference",
+    "model_selection",
+    "outer_evaluation",
+    "paper_result_claim",
+    "sota_claim"
+  ],
+  "protocol_sha256": "af8ca891ff00f544aa7cc0c5b2135fa95cea9a7052e0f705bb235a01eb62a723",
+  "schema_version": "pairscale_development_policy_v1",
+  "sealed_data_access_authorized": false,
+  "test_data_access_authorized": false,
+  "validation_data_access_authorized": false
+}
