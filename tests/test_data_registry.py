@@ -42,7 +42,10 @@ def test_registered_sources_validate_and_only_audited_avida_is_admitted() -> Non
             assert not decision.admitted
             assert "normalization_not_complete" in decision.reasons
             assert "duplicate_groups_not_complete" in decision.reasons
-            if registry.source_id == "sabdab2_ml_zenodo_20083995":
+            if registry.source_id in {
+                "ppiref_zenodo_14845086",
+                "sabdab2_ml_zenodo_20083995",
+            }:
                 assert "raw_bytes_not_materialized" not in decision.reasons
             else:
                 assert "raw_bytes_not_materialized" in decision.reasons

@@ -1,8 +1,24 @@
 {
-  "files": [],
+  "files": [
+    {
+      "path": ".authority/provider_metadata.json",
+      "sha256": "67a6bdd309638a341cf2e0e3d0009c88520a5c9474db59a421f81160b547ed12",
+      "size_bytes": 7947
+    },
+    {
+      "path": "ppi_6A.zip",
+      "sha256": "dece33d55f1098c699fdddeac3e1cb38fa23c65f9eac36fec7d339190ddc8cd3",
+      "size_bytes": 6942465412
+    },
+    {
+      "path": "ppi_6A_stats.zip",
+      "sha256": "e3f73fc814b3143f3c1770b17437e527748149280580ba6db7c1cae86665e11d",
+      "size_bytes": 3101187796
+    }
+  ],
   "format_version": "pairscale_raw_sha256_inventory_v1",
-  "materialized_at_utc": null,
+  "materialized_at_utc": "2026-07-27T19:23:56Z",
   "pinned_revision": "zenodo-record-14845086",
   "source_id": "ppiref_zenodo_14845086",
-  "status": "not_materialized"
+  "status": "materialized"
 }
