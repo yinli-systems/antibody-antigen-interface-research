@@ -8,8 +8,8 @@
 #SBATCH --mem=64G
 #SBATCH --time=04:00:00
 #SBATCH --exclude=wqd10nah09g2
-#SBATCH --output=/tmp/pairscale-overfit32-%j.out
-#SBATCH --error=/tmp/pairscale-overfit32-%j.err
+#SBATCH --output=/ssd/scxi253/model_deployment/logs/pairscale-overfit32-%j.out
+#SBATCH --error=/ssd/scxi253/model_deployment/logs/pairscale-overfit32-%j.err
 
 set -euo pipefail
 

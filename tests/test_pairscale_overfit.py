@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import inspect
 
 import pytest
 
@@ -11,6 +12,7 @@ from interaction_first.pairscale_overfit import (
     contact_only_geometry_schema,
     deterministic_epoch_order,
     hard_negative_contact_ranking_loss,
+    run_overfit_training,
 )
 
 
@@ -31,6 +33,11 @@ def test_epoch_order_is_stateless_complete_and_epoch_specific() -> None:
     assert first == replay
     assert sorted(first) == list(range(32))
     assert first != second
+
+
+def test_resume_path_keeps_checkpoint_rng_tensors_on_cpu() -> None:
+    source = inspect.getsource(run_overfit_training)
+    assert 'map_location="cpu"' in source
 
 
 @pytest.mark.parametrize(

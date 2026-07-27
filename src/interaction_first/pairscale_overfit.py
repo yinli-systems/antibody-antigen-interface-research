@@ -754,7 +754,7 @@ def run_overfit_training(
             optimizer=optimizer,
             scheduler=scheduler,
             scaler=None,
-            map_location=device,
+            map_location="cpu",
             expected_provenance_hashes=provenance,
             expected_receipt_sha256=str(expected_resume_receipt_sha256),
             expected_rng_world_size=1,
