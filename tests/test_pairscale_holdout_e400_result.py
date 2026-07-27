@@ -12,10 +12,17 @@ RESULT_PATH = (
     / "pairscale"
     / "holdout256_pair_c220e77_e400.result.json"
 )
+STATISTICS_PATH = RESULT_PATH.with_name(
+    "holdout256_pair_c220e77_e400.cluster_statistics.json"
+)
 
 
 def _result() -> dict[str, object]:
     return json.loads(RESULT_PATH.read_text(encoding="utf-8"))
+
+
+def _statistics() -> dict[str, object]:
+    return json.loads(STATISTICS_PATH.read_text(encoding="utf-8"))
 
 
 def test_e400_result_binds_completed_cluster_run_and_artifacts() -> None:
@@ -83,3 +90,34 @@ def test_e400_result_forbids_selection_scaling_and_broad_claims() -> None:
         "confirmatory, checkpoint-promotion, biological-generalization, "
         "comparative, or state-of-the-art claim is authorized."
     )
+
+
+def test_e400_cluster_statistics_record_the_non_authorizing_inference() -> None:
+    statistics = _statistics()
+    assert statistics["bootstrap"] == {
+        "comparison_count": 4,
+        "confidence": 0.95,
+        "independent_component_count": 58,
+        "instance_count": 64,
+        "iterations": 10000,
+        "seed": 42,
+    }
+    comparisons = statistics["comparisons"]
+    model_marginal = comparisons[
+        "pair_head_minus_model_marginal_outer_auprc"
+    ]
+    label_oracle = comparisons[
+        "pair_head_minus_label_marginal_oracle_auprc"
+    ]
+    assert model_marginal["mean_difference"] == 0.08090246090844788
+    assert model_marginal["lower"] == 0.021880790496643328
+    assert label_oracle["mean_difference"] == 0.0018826687747820203
+    assert label_oracle["lower"] == -0.08891620114828451
+    assert statistics["gate_l1"]["checks"] == {
+        "double_centered_partner_lower_bound_above_zero": False,
+        "pair_head_exceeds_label_marginal_oracle_lower_bound_above_zero": False,
+        "pair_head_exceeds_model_marginal_lower_bound_above_zero": True,
+        "topk_partner_lower_bound_above_zero": False,
+    }
+    assert statistics["gate_l1"]["passed"] is False
+    assert statistics["gate_l1"]["scaling_authorized"] is False
