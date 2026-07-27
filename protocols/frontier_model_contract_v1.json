@@ -951,6 +951,24 @@
         "training_authorized": false,
         "user_solution_callback_used": false
       },
+      "solver_neutral_projection_bundle_export_controller": {
+        "cp_sat_model_built": false,
+        "cp_sat_solver_invoked": false,
+        "direct_raw_authority_reconstruction_required": true,
+        "formal_independent_cp_result_binding_required": true,
+        "highspy_imported": false,
+        "production_run_completed": false,
+        "registered_source_and_runtime_authentication_required": true,
+        "source_sha256": {
+          "scripts/run_v6_b_projection_bundle_export.py": "b8d65c2a201835f5ed023313e7c4376dadcd8d3509af5be06b45684d58c009cc",
+          "scripts/submit_v6_b_projection_bundle_export.sbatch": "942c035475714b80bc6ac606896917564672c78d5204a20e85e5582c1eb539ee",
+          "src/interaction_first/v6_b_projection_bundle_export.py": "0ea461633ee0701775122decbab3c7553700a5004debefc5116b5663cd755edf",
+          "tests/test_v6_b_projection_bundle_export.py": "b15b6b2870c059a1a47cac1ea014e6543867b77d057e4a0078f9b66cfc0ba17c"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 8,
+        "related_v6_tests_passed_under_each_hash_seed": 114,
+        "training_authorized": false
+      },
       "runtime_compatibility_probe": {
         "exact_kernel_release_is_stable": false,
         "model_built": false,
