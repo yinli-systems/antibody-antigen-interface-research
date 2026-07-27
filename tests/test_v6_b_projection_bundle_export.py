@@ -95,6 +95,11 @@ def _formal() -> dict[str, object]:
 
 def test_export_registration_is_non_authorizing_and_scheduler_compatible() -> None:
     assert validate_export_registration(_registration()) == _registration()
+    successor = _registration()
+    successor["format_version"] = (
+        "v6_b_linear_projection_bundle_export_registration_v2"
+    )
+    assert validate_export_registration(successor) == successor
     changed = _registration()
     changed["authorization"]["training"] = True
     with pytest.raises(ProjectionBundleExportError, match="authorizes"):

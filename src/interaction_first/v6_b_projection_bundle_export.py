@@ -19,7 +19,10 @@ from . import v6_joint_ir
 from . import v6_linear_projection_bundle as bundle_io
 
 
-REGISTRATION_FORMAT = "v6_b_linear_projection_bundle_export_registration_v1"
+REGISTRATION_FORMATS = {
+    "v6_b_linear_projection_bundle_export_registration_v1",
+    "v6_b_linear_projection_bundle_export_registration_v2",
+}
 RECEIPT_FORMAT = "v6_b_linear_projection_bundle_export_receipt_v1"
 
 
@@ -143,7 +146,7 @@ def validate_export_registration(
     }
     if set(registration) != required:
         raise ProjectionBundleExportError("export registration fields differ")
-    if registration.get("format_version") != REGISTRATION_FORMAT:
+    if registration.get("format_version") not in REGISTRATION_FORMATS:
         raise ProjectionBundleExportError("export registration format differs")
     authorization = registration.get("authorization")
     if (
