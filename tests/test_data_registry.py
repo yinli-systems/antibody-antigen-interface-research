@@ -35,9 +35,12 @@ def test_registered_sources_validate_and_are_not_prematurely_admitted() -> None:
             purpose="training",
         )
         assert not decision.admitted
-        assert "raw_bytes_not_materialized" in decision.reasons
         assert "normalization_not_complete" in decision.reasons
         assert "duplicate_groups_not_complete" in decision.reasons
+        if registry.source_id == "avida_hil6_2024_11":
+            assert "raw_bytes_not_materialized" not in decision.reasons
+        else:
+            assert "raw_bytes_not_materialized" in decision.reasons
 
 
 def test_asset_level_license_routing_separates_data_from_code() -> None:
