@@ -278,6 +278,18 @@ def validate_formal_cp_result(
     return checked
 
 
+def validate_production_registration_digest(
+    payload: Mapping[str, object],
+    *,
+    expected_sha256: str,
+) -> dict[str, object]:
+    """Validate frozen production bytes with its actual private hash helper."""
+    checked = production.validate_registration(payload)
+    if production._sha256_payload(checked) != expected_sha256:
+        raise ProjectionBundleExportError("production registration digest differs")
+    return checked
+
+
 def _authenticate_export_sources(
     registration: Mapping[str, object],
 ) -> dict[str, object]:
@@ -336,9 +348,10 @@ def execute_projection_bundle_export(
         or formal_reference.get("sha256") != formal_cp_result_file_sha256
     ):
         raise ProjectionBundleExportError("registered parent file digest differs")
-    checked_production = production.validate_registration(production_registration)
-    if production.sha256_payload(checked_production) != production_registration_sha256:
-        raise ProjectionBundleExportError("production registration digest differs")
+    checked_production = validate_production_registration_digest(
+        production_registration,
+        expected_sha256=production_registration_sha256,
+    )
     checked_formal = validate_formal_cp_result(
         formal_cp_result,
         expected_registration_sha256=production_registration_sha256,

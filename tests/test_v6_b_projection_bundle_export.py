@@ -16,6 +16,7 @@ from interaction_first.v6_b_projection_bundle_export import (
     sha256_payload,
     validate_export_registration,
     validate_formal_cp_result,
+    validate_production_registration_digest,
 )
 
 
@@ -112,6 +113,22 @@ def test_formal_cp_result_requires_exact_infeasibility_agreement() -> None:
     )
     with pytest.raises(ProjectionBundleExportError, match="state differs"):
         validate_formal_cp_result(changed, expected_registration_sha256=HASH)
+
+
+def test_exporter_uses_frozen_production_registration_hash_api() -> None:
+    root = Path(__file__).resolve().parents[1]
+    path = root / "protocols" / "v6_b_production_feasibility_registration_v4.json"
+    raw = path.read_bytes()
+    checked = validate_production_registration_digest(
+        json.loads(raw),
+        expected_sha256=hashlib.sha256(raw).hexdigest(),
+    )
+    assert checked["format_version"] == "v6_b_production_feasibility_registration_v4"
+    with pytest.raises(ProjectionBundleExportError, match="digest differs"):
+        validate_production_registration_digest(
+            checked,
+            expected_sha256=HASH,
+        )
 
 
 def test_bundle_export_publication_is_self_hashed_and_read_only(

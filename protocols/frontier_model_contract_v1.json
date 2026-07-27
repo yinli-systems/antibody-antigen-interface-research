@@ -987,6 +987,17 @@
           "tests/test_v6_b_projection_bundle_export_registration.py": "2b8427f0e9974a40e5109213ee741fcfa3012b508be11bfd1554ddf3959e3e82",
           "tests/test_v6_b_projection_bundle_export_submission.py": "3823f19d32997f2815151572378e6e7a2c6a420a1a89d495ae98c1b3c1d38e11"
         },
+        "successor_interface_fix": {
+          "frozen_v1_source_modified": false,
+          "production_module_private_hash_api_regression_tested": true,
+          "registration_frozen": false,
+          "source_sha256": {
+            "src/interaction_first/v6_b_projection_bundle_export.py": "7d008dcd71c094a8ce002103051937ce4af4924872f26ecae3470f92f0d98206",
+            "tests/test_v6_b_projection_bundle_export.py": "3ebfde8c290a55940b22a2ddeeb140766f4f5c0389aa79a0f8744abb05dd4ed4"
+          },
+          "targeted_tests_passed_under_each_hash_seed": 10,
+          "related_v6_tests_passed_under_each_hash_seed": 120
+        },
         "attempt_evidence_tests_passed_under_each_hash_seed": 2,
         "registration_tests_passed_under_each_hash_seed": 3,
         "targeted_tests_passed_under_each_hash_seed": 8,
