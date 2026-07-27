@@ -6,16 +6,24 @@
       "attribution_required": true,
       "commercial_use_permitted": true,
       "declared_license_spdx": "CC-BY-4.0",
-      "evidence_note": "SHA-256 covers the Zenodo API record bytes retrieved for this review; downstream release still requires legal review and source attribution.",
+      "evidence_digest_method": "zenodo_license_projection_v1",
+      "evidence_note": "SHA-256 covers the canonical Zenodo record identity, title, resource type, and license projection; dynamic access statistics are excluded and downstream release still requires legal review.",
+      "evidence_projection": {
+        "doi": "10.5281/zenodo.20083995",
+        "license_id": "cc-by-4.0",
+        "record_id": 20083995,
+        "resource_type": "dataset",
+        "title": "SAbDab2 Machine Learning Dataset"
+      },
       "evidence_revision": "10.5281/zenodo.20083995",
-      "evidence_sha256": "63dfd94ccd6bafe0b777d257e05ffe5d849220c577041517b89b9eceae6ca504",
+      "evidence_sha256": "47708048866bad912c9944589b6e62ad968caae71b6a68a2f287f3501a1ecb38",
       "evidence_url": "https://zenodo.org/api/records/20083995",
       "license_route": "commercial_ok"
     }
   ],
-  "format_version": "pairscale_license_receipt_v1",
+  "format_version": "pairscale_license_receipt_v2",
   "legal_review_required_for_release": true,
   "receipt_status": "reviewed",
-  "reviewed_at_utc": "2026-07-27T14:45:00Z",
+  "reviewed_at_utc": "2026-07-27T23:30:00Z",
   "source_id": "sabdab2_ml_zenodo_20083995"
 }

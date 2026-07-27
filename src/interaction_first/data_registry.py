@@ -9,9 +9,14 @@ from pathlib import Path
 import re
 from typing import Any, Mapping
 
+from .license_evidence import (
+    LicenseEvidenceError,
+    validate_evidence_declaration,
+)
+
 
 SOURCE_FORMAT = "pairscale_source_manifest_v1"
-LICENSE_FORMAT = "pairscale_license_receipt_v1"
+LICENSE_FORMAT = "pairscale_license_receipt_v2"
 RAW_FORMAT = "pairscale_raw_sha256_inventory_v1"
 NORMALIZATION_FORMAT = "pairscale_normalization_receipt_v1"
 SOURCE_FILENAMES = frozenset(
@@ -276,6 +281,8 @@ def _validate_license(payload: Mapping[str, Any]) -> None:
                 "attribution_required",
                 "evidence_url",
                 "evidence_revision",
+                "evidence_digest_method",
+                "evidence_projection",
                 "evidence_sha256",
                 "evidence_note",
             },
@@ -302,6 +309,10 @@ def _validate_license(payload: Mapping[str, Any]) -> None:
         _nonempty_string(asset["evidence_revision"], "evidence_revision")
         _sha256(asset["evidence_sha256"], "evidence_sha256")
         _nonempty_string(asset["evidence_note"], "evidence_note")
+        try:
+            validate_evidence_declaration(asset)
+        except LicenseEvidenceError as exc:
+            raise DataRegistryError(str(exc)) from exc
         identities.append((asset["asset_scope"], asset["asset_name"]))
     if identities != sorted(set(identities)):
         raise DataRegistryError("license assets must be sorted and unique")

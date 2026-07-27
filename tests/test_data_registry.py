@@ -123,6 +123,23 @@ def test_extra_file_and_unknown_license_fail_closed(tmp_path: Path) -> None:
     assert "data_license_unresolved" in decision.reasons
 
 
+def test_license_evidence_method_and_projection_fail_closed(tmp_path: Path) -> None:
+    source = _registry_root() / "ppiref_zenodo_14845086"
+    copied = tmp_path / source.name
+    copied.mkdir()
+    for path in source.iterdir():
+        (copied / path.name).write_bytes(path.read_bytes())
+    license_path = copied / "license_receipt.json"
+    payload = json.loads(license_path.read_text())
+    data_asset = next(
+        asset for asset in payload["assets"] if asset["asset_scope"] == "data"
+    )
+    data_asset["evidence_projection"]["license_id"] = "cc0-1.0"
+    license_path.write_text(json.dumps(payload, sort_keys=True) + "\n")
+    with pytest.raises(DataRegistryError, match="projection differs"):
+        load_source_registry(copied)
+
+
 def test_complete_registry_requires_raw_binding_and_can_be_admitted(
     tmp_path: Path,
 ) -> None:

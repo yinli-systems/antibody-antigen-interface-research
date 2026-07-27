@@ -6,10 +6,12 @@
       "attribution_required": true,
       "commercial_use_permitted": true,
       "declared_license_spdx": "MIT",
-      "evidence_note": "SHA-256 covers the official repository LICENSE bytes retrieved for this review.",
-      "evidence_revision": "anton-bushuiev/PPIRef main at 2026-07-27",
+      "evidence_digest_method": "raw_bytes_sha256_v1",
+      "evidence_note": "SHA-256 covers the official repository LICENSE bytes at the immutable Git commit.",
+      "evidence_projection": null,
+      "evidence_revision": "a2a5b6d01f958acac39418bda1a5a9e3b4d71b53",
       "evidence_sha256": "271d844a09443b97265107d7f0e80982fed2e94cff1feb60e5605cb5ae3da44b",
-      "evidence_url": "https://raw.githubusercontent.com/anton-bushuiev/PPIRef/main/LICENSE",
+      "evidence_url": "https://raw.githubusercontent.com/anton-bushuiev/PPIRef/a2a5b6d01f958acac39418bda1a5a9e3b4d71b53/LICENSE",
       "license_route": "commercial_ok"
     },
     {
@@ -18,16 +20,24 @@
       "attribution_required": true,
       "commercial_use_permitted": true,
       "declared_license_spdx": "CC-BY-4.0",
-      "evidence_note": "SHA-256 covers the Zenodo API record bytes retrieved for this review; the record declares the data license.",
+      "evidence_digest_method": "zenodo_license_projection_v1",
+      "evidence_note": "SHA-256 covers the canonical Zenodo record identity, title, resource type, and license projection; dynamic access statistics are excluded.",
+      "evidence_projection": {
+        "doi": "10.5281/zenodo.14845086",
+        "license_id": "cc-by-4.0",
+        "record_id": 14845086,
+        "resource_type": "dataset",
+        "title": "PPIRef"
+      },
       "evidence_revision": "10.5281/zenodo.14845086",
-      "evidence_sha256": "67a6bdd309638a341cf2e0e3d0009c88520a5c9474db59a421f81160b547ed12",
+      "evidence_sha256": "fc3677aa0d170f0f82f91c0a9e468394560f705b09712c9f215cf43c4011b6a4",
       "evidence_url": "https://zenodo.org/api/records/14845086",
       "license_route": "commercial_ok"
     }
   ],
-  "format_version": "pairscale_license_receipt_v1",
+  "format_version": "pairscale_license_receipt_v2",
   "legal_review_required_for_release": true,
   "receipt_status": "reviewed",
-  "reviewed_at_utc": "2026-07-27T14:45:00Z",
+  "reviewed_at_utc": "2026-07-27T23:30:00Z",
   "source_id": "ppiref_zenodo_14845086"
 }
