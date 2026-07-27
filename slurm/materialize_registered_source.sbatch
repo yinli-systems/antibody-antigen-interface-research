@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=pairscale-materialize
-#SBATCH --partition=vip
+#SBATCH --partition=vip_gpu_5090_scxi253
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=8G
 #SBATCH --time=12:00:00
@@ -16,6 +17,7 @@ set -euo pipefail
 : "${PAIR_DESTINATION_ROOT:?PAIR_DESTINATION_ROOT is required}"
 
 export PYTHONPATH="${PAIR_SOURCE_ROOT}/src"
+export CUDA_VISIBLE_DEVICES=""
 mkdir -p /ssd/scxi253/model_deployment/logs
 
 exec python3 "${PAIR_SOURCE_ROOT}/scripts/materialize_registered_source.py" \

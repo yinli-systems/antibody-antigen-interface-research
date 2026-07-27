@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 import pytest
 
@@ -112,6 +113,31 @@ def test_huggingface_derivation_authenticates_git_and_lfs_files() -> None:
     assert artifacts[1].upstream_algorithm == "sha256"
     with pytest.raises(SourceMaterializationError, match="metadata SHA-256 differs"):
         derive_download_artifacts(plan, metadata_bytes + b" ")
+
+
+def test_metadata_fetch_is_bounded_and_authenticates_stdout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    revision = "a" * 40
+    metadata_bytes, _ = _synthetic_huggingface_metadata(revision)
+    plan = _synthetic_plan(metadata_bytes=metadata_bytes, revision=revision)
+    observed_command: list[str] = []
+
+    def fake_run(
+        command: list[str],
+        *,
+        check: bool,
+        stdout: int,
+    ) -> subprocess.CompletedProcess[bytes]:
+        assert check
+        assert stdout == subprocess.PIPE
+        observed_command.extend(command)
+        return subprocess.CompletedProcess(command, 0, stdout=metadata_bytes)
+
+    monkeypatch.setattr(materializer.subprocess, "run", fake_run)
+    assert materializer.fetch_provider_metadata(plan) == metadata_bytes
+    assert observed_command[observed_command.index("--connect-timeout") + 1] == "30"
+    assert observed_command[observed_command.index("--max-time") + 1] == "300"
 
 
 def test_zenodo_derivation_rejects_selection_drift() -> None:
