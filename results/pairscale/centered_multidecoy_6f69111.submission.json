@@ -1,0 +1,68 @@
+{
+  "claim_boundary": "Training-start receipt only. This artifact does not contain holdout performance, checkpoint-selection evidence, scaling authorization, or a comparative claim.",
+  "cluster_tests": {
+    "python": "3.10.20",
+    "python_hash_seed_replays": [
+      {
+        "passed": 25,
+        "seed": 0
+      },
+      {
+        "passed": 25,
+        "seed": 811
+      }
+    ],
+    "torch": "2.13.0+cu130"
+  },
+  "data_anchors": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "assignment_receipt_file_sha256": "129097c6e720c939433d99f6fd72e298f06ae58830182bcdf5ffa8c27b61601e",
+    "authorization_manifest_sha256": "99d732f4512ca767e30f2d89c483c942703da3978d2ef9f108f6a8e50652e4d6",
+    "cache_receipt_file_sha256": "0a4b39fcc2977ef517fc8a7054734143fb3e2a5ecc4f0316955fcd08486eb58b",
+    "decision_sha256": "2231afea159869b920483744b7ed929d4f42f58cbbc2a86557dce9a6fc6fe31b",
+    "manifest_sha256": "833daf0eca62a0828a817a3592b351ec070f5f6f33062265f922fd160c96b714",
+    "policy_sha256": "436b0551573e5052b1c2d76038016f40d3e049d5fcab459d4787683ad4c6e6f8",
+    "subset_manifest_sha256": "a53cb6e673041a6a3dc26914a5d0ca577d571a2862604e6453abcaaea2382d62"
+  },
+  "format_version": "pairscale_centered_multidecoy_submission_receipt_v1",
+  "initial_health_check": {
+    "checked_at": "2026-07-28T04:52:09+08:00",
+    "decoy_assignment_file_sha256": "29bab271a7677cdd5cd499343c8ad347f03ea549612b1d354615d412eae7319c",
+    "decoy_count_per_train_complex": 4,
+    "decoy_row_count": 192,
+    "epoch": 3,
+    "global_step": 576,
+    "holdout_accessed": false,
+    "mean_training_loss_epoch_1": 2.3548730071634054,
+    "mean_training_loss_epoch_3": 1.8213898272564013,
+    "source_writable_regular_file_count": 0,
+    "stderr_bytes": 0
+  },
+  "job": {
+    "allocated_cpus": 16,
+    "allocated_gpus": 1,
+    "allocated_memory_gib": 64,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "id": 1333055,
+    "node": "wqd10nah10g2",
+    "output_root": "/ssd/scxi253/model_deployment/results/pairscale/centered_multidecoy_seed17_6f69111_e260",
+    "started_at": "2026-07-28T04:49:23+08:00",
+    "state_at_receipt": "RUNNING"
+  },
+  "locked_design": {
+    "checkpoint_selection": "none_epoch_260_only",
+    "decoy_policy": "score_free_length_matched_distinct_antigen_sha256_tie_break_v1",
+    "fixed_stop_epoch": 260,
+    "holdout_complex_count": 64,
+    "partner_objective": "double_centered_equal_mean_pairwise_softplus_v1",
+    "train_complex_count": 192
+  },
+  "source": {
+    "controller_sha256": "dc4b57a5d1cfc38b74d065f46ff56ae1c4232d86fc9825cdc153123ded4aea36",
+    "git_commit": "6f69111e4d0216093cc1d59e40096d755d43170d",
+    "protocol_file_sha256": "4d378d094ce5d418e1d2a5e5dff30bcfb9472676f591977e23900b4b10bb8a17",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_centered_multidecoy_source_6f69111",
+    "scheduler_script_sha256": "e164a9a19db59f6eff8eec23dcc8efd5fe797368e0fe547114df3ebdee89bde3"
+  }
+}
