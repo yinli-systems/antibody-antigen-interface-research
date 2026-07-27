@@ -15,6 +15,7 @@ ATTEMPT_003 = ROOT / "protocols" / "v6_b_production_attempt_003.json"
 ATTEMPT_004_SUBMISSION = (
     ROOT / "protocols" / "v6_b_production_attempt_004_submission.json"
 )
+ATTEMPT_004_RESULT = ROOT / "protocols" / "v6_b_production_attempt_004_result.json"
 
 
 def test_attempt_001_is_canonical_and_records_no_job_or_solver() -> None:
@@ -109,3 +110,31 @@ def test_attempt_004_snapshot_does_not_pretend_to_be_a_solver_result() -> None:
     ]
     assert payload["accelerator_visible_to_solver"] is False
     assert payload["submitted_resources"]["solver_workers"] == 1
+
+
+def test_attempt_004_result_is_canonical_and_preserves_primary_proof() -> None:
+    raw = ATTEMPT_004_RESULT.read_bytes()
+    payload = json.loads(raw)
+    assert raw == canonical_json_bytes(payload)
+    assert payload["job_id"] == "1331619"
+    assert payload["scheduler_state"] == "COMPLETED"
+    assert payload["primary_controller_complete"] is True
+    assert payload["primary_controller_proven_infeasible"] is True
+    assert payload["master_status"] == "INFEASIBLE"
+    assert payload["master_accepted_terminal"] is True
+    assert payload["candidate_present"] is False
+    assert payload["journal_hash_chain_valid"] is True
+    assert payload["final_receipt_self_hash_valid"] is True
+
+
+def test_attempt_004_result_requires_independent_linear_audits() -> None:
+    payload = json.loads(ATTEMPT_004_RESULT.read_bytes())
+    assert payload["status"] == (
+        "PRIMARY_MASTER_PROVEN_INFEASIBLE_PENDING_INDEPENDENT_LINEAR_AUDITS"
+    )
+    assert payload["cross_formulation_certified"] is False
+    assert payload["full_protocol_infeasibility_claim_authorized"] is False
+    assert payload["direct_highs_audit_completed"] is False
+    assert payload["exact_oracle_evaluation_count"] == 0
+    assert payload["split_gate0_authorized"] is False
+    assert payload["training_authorized"] is False
