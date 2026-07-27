@@ -124,6 +124,7 @@ class ContactMapTests(unittest.TestCase):
         from interaction_first.contacts import (
             SparseContactMap,
             load_contact_map,
+            load_contact_map_bytes,
             save_contact_map,
         )
 
@@ -144,7 +145,16 @@ class ContactMapTests(unittest.TestCase):
             path = Path(directory) / "contact.npz"
             save_contact_map(contact, path)
             loaded = load_contact_map(path, expected_instance_id="example")
+            loaded_from_bytes = load_contact_map_bytes(
+                path.read_bytes(),
+                expected_instance_id="example",
+                source_name="unit-test bytes",
+            )
         np.testing.assert_array_equal(loaded.pair_labels, contact.pair_labels)
+        np.testing.assert_array_equal(
+            loaded_from_bytes.pair_labels,
+            contact.pair_labels,
+        )
 
     def test_duplicate_candidate_pair_is_rejected(self) -> None:
         from interaction_first.contacts import SparseContactMap
