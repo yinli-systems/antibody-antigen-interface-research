@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shutil
 import subprocess
 from typing import Any, Mapping, Sequence
 from urllib.parse import quote
@@ -202,6 +203,7 @@ def materialize_registered_source(
     destination_root: Path,
     curl_binary: str = "curl",
     workers: int = 1,
+    verified_seed_root: Path | None = None,
 ) -> Mapping[str, Any]:
     """Download one registered source and emit a create-only raw inventory."""
 
@@ -213,6 +215,11 @@ def materialize_registered_source(
     metadata_bytes = fetch_provider_metadata(plan, curl_binary=curl_binary)
     artifacts = derive_download_artifacts(plan, metadata_bytes)
     source_root = _prepare_source_root(destination_root, plan.source_id)
+    seed_root = _prepare_verified_seed_root(
+        verified_seed_root,
+        source_id=plan.source_id,
+        metadata_bytes=metadata_bytes,
+    )
     authority_path = source_root / ".authority" / "provider_metadata.json"
     _ensure_safe_directory(source_root, PurePosixPath(".authority"))
     _write_create_only_or_verify(authority_path, metadata_bytes)
@@ -241,15 +248,23 @@ def materialize_registered_source(
             sha256 = _verify_downloaded_artifact(destination, artifact)
         else:
             partial = destination.with_name(f".{destination.name}.partial")
-            _run_curl(curl_binary, artifact.url, partial)
-            _verify_downloaded_artifact(partial, artifact)
-            try:
-                os.link(partial, destination)
-            except FileExistsError as exc:
-                raise SourceMaterializationError(
-                    "artifact appeared concurrently during materialization"
-                ) from exc
-            partial.unlink()
+            complete_partial = False
+            if partial.exists():
+                try:
+                    _verify_downloaded_artifact(partial, artifact)
+                    complete_partial = True
+                except SourceMaterializationError:
+                    complete_partial = False
+            if not complete_partial and seed_root is not None and not partial.exists():
+                complete_partial = _copy_verified_seed_artifact(
+                    seed_root=seed_root,
+                    partial=partial,
+                    artifact=artifact,
+                )
+            if not complete_partial:
+                _run_curl(curl_binary, artifact.url, partial)
+                _verify_downloaded_artifact(partial, artifact)
+            _publish_verified_partial(partial, destination, artifact)
             sha256 = _verify_downloaded_artifact(destination, artifact)
         return {
             "path": artifact.relative_path,
@@ -271,6 +286,62 @@ def materialize_registered_source(
     inventory_bytes = _canonical_json_bytes(inventory)
     _write_create_only_or_verify(source_root / "raw_sha256.json", inventory_bytes)
     return inventory
+
+
+def _prepare_verified_seed_root(
+    value: Path | None,
+    *,
+    source_id: str,
+    metadata_bytes: bytes,
+) -> Path | None:
+    if value is None:
+        return None
+    root = Path(value).expanduser().absolute()
+    authority = root / ".authority" / "provider_metadata.json"
+    if (
+        root.name != source_id
+        or root.is_symlink()
+        or not root.is_dir()
+        or authority.is_symlink()
+        or not authority.is_file()
+        or authority.read_bytes() != metadata_bytes
+    ):
+        raise SourceMaterializationError("verified seed root authority differs")
+    return root
+
+
+def _copy_verified_seed_artifact(
+    *,
+    seed_root: Path,
+    partial: Path,
+    artifact: DownloadArtifact,
+) -> bool:
+    seed = _safe_destination(seed_root, artifact.relative_path)
+    if seed.is_symlink() or not seed.is_file():
+        return False
+    try:
+        _verify_downloaded_artifact(seed, artifact)
+    except SourceMaterializationError:
+        return False
+    with seed.open("rb") as source, partial.open("xb") as destination:
+        shutil.copyfileobj(source, destination, length=8 * 1024 * 1024)
+    _verify_downloaded_artifact(partial, artifact)
+    return True
+
+
+def _publish_verified_partial(
+    partial: Path,
+    destination: Path,
+    artifact: DownloadArtifact,
+) -> None:
+    _verify_downloaded_artifact(partial, artifact)
+    try:
+        os.link(partial, destination)
+    except FileExistsError as exc:
+        raise SourceMaterializationError(
+            "artifact appeared concurrently during materialization"
+        ) from exc
+    partial.unlink()
 
 
 def verify_materialized_registered_source(

@@ -228,6 +228,27 @@ def test_create_only_materialization_verifies_bytes_and_inventory(
     ]
     source_root = destination_root / source_id
     assert json.loads((source_root / "raw_sha256.json").read_text()) == inventory
+    seeded_destination = tmp_path / "seeded-raw"
+
+    def reject_download(binary: str, url: str, partial: Path) -> None:
+        del binary, url, partial
+        pytest.fail("fully verified seed materialization must not download")
+
+    monkeypatch.setattr(materializer, "_run_curl", reject_download)
+    seeded_inventory = materialize_registered_source(
+        plan_path=plan_path,
+        registry_root=registry_root,
+        destination_root=seeded_destination,
+        workers=2,
+        verified_seed_root=source_root,
+    )
+    assert [value["sha256"] for value in seeded_inventory["files"]] == [
+        value["sha256"] for value in inventory["files"]
+    ]
+    assert (
+        seeded_destination / source_id / "weights.bin"
+    ).stat().st_ino != (source_root / "weights.bin").stat().st_ino
+    monkeypatch.setattr(materializer, "_run_curl", fake_curl)
     verification = verify_materialized_registered_source(
         plan_path=plan_path,
         registry_root=registry_root,
@@ -244,6 +265,26 @@ def test_create_only_materialization_verifies_bytes_and_inventory(
         )
     (source_root / "unexpected.txt").unlink()
     (source_root / "weights.bin").write_bytes(b"evil")
+    downloaded: list[str] = []
+
+    def record_download(binary: str, url: str, partial: Path) -> None:
+        filename = url.split("?", maxsplit=1)[0].rsplit("/", maxsplit=1)[-1]
+        downloaded.append(filename)
+        fake_curl(binary, url, partial)
+
+    monkeypatch.setattr(materializer, "_run_curl", record_download)
+    recovered_destination = tmp_path / "recovered-raw"
+    recovered_inventory = materialize_registered_source(
+        plan_path=plan_path,
+        registry_root=registry_root,
+        destination_root=recovered_destination,
+        workers=2,
+        verified_seed_root=source_root,
+    )
+    assert downloaded == ["weights.bin"]
+    assert [value["sha256"] for value in recovered_inventory["files"]] == [
+        value["sha256"] for value in inventory["files"]
+    ]
     with pytest.raises(SourceMaterializationError, match="digest differs"):
         materialize_registered_source(
             plan_path=plan_path,

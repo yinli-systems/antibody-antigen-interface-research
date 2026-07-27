@@ -17,6 +17,7 @@ def main() -> None:
     parser.add_argument("--destination-root", type=Path, required=True)
     parser.add_argument("--curl-binary", default="curl")
     parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument("--verified-seed-root", type=Path)
     arguments = parser.parse_args()
     inventory = materialize_registered_source(
         plan_path=arguments.plan,
@@ -24,6 +25,7 @@ def main() -> None:
         destination_root=arguments.destination_root,
         curl_binary=arguments.curl_binary,
         workers=arguments.workers,
+        verified_seed_root=arguments.verified_seed_root,
     )
     print(json.dumps(inventory, indent=2, sort_keys=True))
 
