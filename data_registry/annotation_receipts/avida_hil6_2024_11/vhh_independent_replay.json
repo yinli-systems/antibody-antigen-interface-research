@@ -1,0 +1,41 @@
+{
+  "annotation_counts": {
+    "accepted": 37200,
+    "input_antibodies": 38599,
+    "quarantine_reasons": {
+      "chain_type_differs": 79,
+      "construct_prefix_differs": 527,
+      "numbering_coordinate_duplicated": 1,
+      "numbering_not_list": 79,
+      "numbering_residues_differ": 80,
+      "query_bounds_invalid": 79,
+      "query_prefix_differs": 608,
+      "query_start_differs": 84,
+      "query_suffix_differs": 718,
+      "tool_reported_error": 79
+    },
+    "quarantined": 1399
+  },
+  "annotation_receipt_sha256": "6a2c34eefb38be3d699f891705d025b9850e4e978710edccce309f869bbc5961",
+  "audited_at_utc": "2026-07-27T17:37:00Z",
+  "auditor_source_sha256": "a9fea999a1c92b5dbe5f59140b3cbe14a91e2d4f38af2b9e006b3c471bf8c5a1",
+  "candidate_receipt_sha256": "eceb95ab6e94e711fd3a7ad48e6bf42bf05f6b0d2a455a7921597ec2b0832dbe",
+  "format_version": "pairbench_avida_vhh_independent_replay_v1",
+  "maximum_tool_score_absolute_difference": 0.0,
+  "normalization_blockers": [
+    "tier2_boundary_policy_not_frozen",
+    "unified_avida_normalization_receipt_pending"
+  ],
+  "normalization_eligible": false,
+  "protocol_sha256": "63d88b7ff3f37c80d9478cad27cb11d9099258f83e15b49c6313684a2c2d0cca",
+  "replay": {
+    "batch_size": 512,
+    "chunk_size": 4096,
+    "device": "cpu",
+    "ncpu": 4
+  },
+  "semantic_comparison": "exact_all_fields_with_1e-12_tool_score_tolerance",
+  "source_id": "avida_hil6_2024_11",
+  "status": "pass_vhh_annotation_strict_tier1",
+  "wheel_sha256": "6ac81caef04a9cad1af1ea320b35bdced620fe2bfdd0b8b17b98131495b584ca"
+}
