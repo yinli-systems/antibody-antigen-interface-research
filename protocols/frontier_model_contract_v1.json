@@ -925,6 +925,32 @@
         "v6_b_partition_or_cut_consumed": false,
         "training_authorized": false
       },
+      "solver_neutral_highs_projection_bundle": {
+        "bundle_authentication": {
+          "artifact_byte_size_and_sha256_required": true,
+          "canonical_metadata_self_hash_required": true,
+          "create_only_read_only_output": true,
+          "memory_mapped_array_loading": true,
+          "symbolic_links_rejected": true
+        },
+        "complete_score_free_region_authorized": false,
+        "direct_highs_run_completed": false,
+        "exact_float64_integer_envelope_required": true,
+        "highs_process_rejects_loaded_ortools": true,
+        "linear_projection_only": true,
+        "locked_single_thread_zero_gap_options": true,
+        "optimal_solution_requires_exact_integer_row_replay": true,
+        "source_sha256": {
+          "src/interaction_first/v6_highs_bundle_backend.py": "acb8b4a75fb590cd945482d58b82af6f322825709c95765f320b7802feb8ae81",
+          "src/interaction_first/v6_linear_projection_bundle.py": "26193f8f4f4bb049a43ec7f4b5d337ea55a4ea08fd13650335e9029e498e4dcd",
+          "tests/test_v6_highs_bundle_backend.py": "e9f854b148eab211a93a723b74b30e577bce68695c9b00266e07817ff060befc",
+          "tests/test_v6_linear_projection_bundle.py": "9b97d47afa14caefce6e6583be618200bee55c266e603e4d2cc61dd563abea93"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 7,
+        "related_v6_tests_passed_under_each_hash_seed": 110,
+        "training_authorized": false,
+        "user_solution_callback_used": false
+      },
       "runtime_compatibility_probe": {
         "exact_kernel_release_is_stable": false,
         "model_built": false,
