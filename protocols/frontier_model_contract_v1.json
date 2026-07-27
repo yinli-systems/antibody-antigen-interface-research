@@ -919,14 +919,15 @@
           "scheduler_memory_gb_per_gpu": 126
         },
         "sigterm_receipt_handler_installed": true,
+        "stable_abi_authentication_required_for_v4": true,
         "source_sha256": {
           "scripts/run_v6_b_production_feasibility.py": "57855e90a0a77ffff0c747aa69790f3623f90203c0a9a9684aa137e2a39d8a6b",
           "scripts/submit_v6_b_production_feasibility.sbatch": "99b609c0f6f0587be6c614c9fbfd0c076a0679bc58ad6ca9fde588b7f46150b3",
-          "src/interaction_first/v6_b_production.py": "2e0fce32e072b782f49546d72a08ce1155a2202d0c110973c60c97010d5ce16b",
-          "tests/test_v6_b_production.py": "757c5f97d1fe1093d7b9790df45d0df4184ee86b10a0281a93f64b34d6ec9429"
+          "src/interaction_first/v6_b_production.py": "90a170d1e6e5408a2a3006e9b9b496fe622e09cb8cb12747a975608a14eded01",
+          "tests/test_v6_b_production.py": "6988291e751f6485eda14ad17fed7005aacebd09e33553fcd2e361dda1afe323"
         },
-        "targeted_tests_passed_under_each_hash_seed": 17,
-        "related_v6_tests_passed_under_each_hash_seed": 123,
+        "targeted_tests_passed_under_each_hash_seed": 28,
+        "related_v6_tests_passed_under_each_hash_seed": 134,
         "split_gate0_authorized": false,
         "training_authorized": false
       },

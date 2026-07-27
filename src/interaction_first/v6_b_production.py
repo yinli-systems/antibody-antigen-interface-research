@@ -30,10 +30,11 @@ from . import (
 )
 
 
-REGISTRATION_FORMAT = "v6_b_production_feasibility_registration_v3"
+REGISTRATION_FORMAT = "v6_b_production_feasibility_registration_v4"
 SUPPORTED_REGISTRATION_FORMATS = {
     "v6_b_production_feasibility_registration_v1",
     "v6_b_production_feasibility_registration_v2",
+    "v6_b_production_feasibility_registration_v3",
     REGISTRATION_FORMAT,
 }
 ATTEMPT_FORMAT = "v6_b_production_feasibility_attempt_v1"
@@ -415,19 +416,54 @@ def validate_registration(payload: Mapping[str, object]) -> dict[str, object]:
             raise V6BProductionError(f"registered source {label} is malformed")
         _digest(reference.get("sha256"), f"registered source {label}")
     runtime = payload.get("runtime")
-    if not isinstance(runtime, Mapping) or set(runtime) != {
+    common_runtime_fields = {
         "python_executable",
         "python_version",
         "ortools_version",
-        "platform",
         "cp_sat_runtime_receipt_path",
         "cp_sat_runtime_receipt_sha256",
-    }:
+    }
+    expected_runtime_fields = common_runtime_fields | (
+        {"platform_abi"}
+        if registration_format == REGISTRATION_FORMAT
+        else {"platform"}
+    )
+    if not isinstance(runtime, Mapping) or set(runtime) != expected_runtime_fields:
         raise V6BProductionError("registration runtime schema differs")
     _digest(
         runtime.get("cp_sat_runtime_receipt_sha256"),
         "registered CP-SAT runtime receipt",
     )
+    if registration_format == REGISTRATION_FORMAT:
+        platform_abi = runtime.get("platform_abi")
+        if not isinstance(platform_abi, Mapping) or set(platform_abi) != {
+            "system",
+            "machine",
+            "libc_family",
+            "libc_version",
+            "ortools_module_sha256",
+            "kernel_release_bound",
+            "compatibility_probe_path",
+            "compatibility_probe_sha256",
+        }:
+            raise V6BProductionError("registration platform ABI schema differs")
+        if platform_abi.get("kernel_release_bound") is not False:
+            raise V6BProductionError("V4 must record rather than bind kernel release")
+        for name in ("system", "machine", "libc_family", "libc_version"):
+            value = platform_abi.get(name)
+            if not isinstance(value, str) or not value:
+                raise V6BProductionError(f"registered platform ABI {name} is empty")
+        _digest(
+            platform_abi.get("ortools_module_sha256"),
+            "registered OR-Tools module",
+        )
+        _digest(
+            platform_abi.get("compatibility_probe_sha256"),
+            "registered runtime compatibility probe",
+        )
+        probe_path = platform_abi.get("compatibility_probe_path")
+        if not isinstance(probe_path, str) or not Path(probe_path).is_absolute():
+            raise V6BProductionError("runtime compatibility probe path is not absolute")
     slurm = payload.get("slurm")
     common_slurm_fields = {
         "partition",
@@ -725,7 +761,76 @@ def _runtime_receipt(registration: Mapping[str, object]) -> dict[str, object]:
         raise V6BProductionError("Python version differs from registration")
     if ortools.__version__ != runtime["ortools_version"]:
         raise V6BProductionError("OR-Tools version differs from registration")
-    if observed_platform != runtime["platform"]:
+    runtime_format = registration.get("format_version")
+    platform_abi_receipt: dict[str, object] | None = None
+    if runtime_format == REGISTRATION_FORMAT:
+        platform_abi = runtime["platform_abi"]
+        assert isinstance(platform_abi, Mapping)
+        ortools_path = Path(str(ortools.__file__)).resolve(strict=True)
+        ortools_bytes = read_verified(
+            ortools_path,
+            str(platform_abi["ortools_module_sha256"]),
+            "OR-Tools module",
+        )
+        libc_family, libc_version = platform.libc_ver()
+        observed_abi = {
+            "system": platform.system(),
+            "machine": platform.machine(),
+            "libc_family": libc_family,
+            "libc_version": libc_version,
+            "ortools_module_sha256": _sha256_bytes(ortools_bytes),
+        }
+        expected_abi = {
+            name: platform_abi[name]
+            for name in (
+                "system",
+                "machine",
+                "libc_family",
+                "libc_version",
+                "ortools_module_sha256",
+            )
+        }
+        if observed_abi != expected_abi:
+            raise V6BProductionError("runtime platform ABI differs from registration")
+        probe_bytes = read_verified(
+            Path(str(platform_abi["compatibility_probe_path"])),
+            str(platform_abi["compatibility_probe_sha256"]),
+            "runtime compatibility probe",
+        )
+        probe = strict_json(probe_bytes, "runtime compatibility probe")
+        conclusion = probe.get("conclusion")
+        work = probe.get("scientific_or_solver_work")
+        stable = probe.get("stable_equality")
+        if (
+            probe.get("format_version") != "v6_b_runtime_compatibility_probe_v1"
+            or not isinstance(conclusion, Mapping)
+            or conclusion.get("runtime_package_and_abi_match_across_observations")
+            is not True
+            or conclusion.get("exact_kernel_release_is_stable") is not False
+            or not isinstance(work, Mapping)
+            or any(work.get(name) is not False for name in work)
+            or not isinstance(stable, Mapping)
+            or stable.get("system") != expected_abi["system"]
+            or stable.get("machine") != expected_abi["machine"]
+            or stable.get("libc")
+            != [expected_abi["libc_family"], expected_abi["libc_version"]]
+            or stable.get("ortools_module_sha256")
+            != expected_abi["ortools_module_sha256"]
+            or stable.get("ortools_version") != runtime["ortools_version"]
+            or stable.get("python_executable") != runtime["python_executable"]
+            or stable.get("python_version") != runtime["python_version"]
+        ):
+            raise V6BProductionError("runtime compatibility probe differs")
+        platform_abi_receipt = {
+            "expected": expected_abi,
+            "observed": observed_abi,
+            "kernel_release_bound": False,
+            "observed_platform": observed_platform,
+            "observed_kernel_release": platform.release(),
+            "observed_kernel_version": platform.version(),
+            "compatibility_probe_sha256": _sha256_bytes(probe_bytes),
+        }
+    elif observed_platform != runtime["platform"]:
         raise V6BProductionError("runtime platform differs from registration")
     cuda_visible = os.environ.get("CUDA_VISIBLE_DEVICES", "")
     if cuda_visible != "":
@@ -735,7 +840,7 @@ def _runtime_receipt(registration: Mapping[str, object]) -> dict[str, object]:
         str(runtime["cp_sat_runtime_receipt_sha256"]),
         "CP-SAT runtime receipt",
     )
-    return {
+    receipt = {
         "python_executable": str(registered_executable),
         "python_version": observed_python,
         "ortools_version": ortools.__version__,
@@ -745,6 +850,9 @@ def _runtime_receipt(registration: Mapping[str, object]) -> dict[str, object]:
         "cp_sat_runtime_receipt_sha256": _sha256_bytes(locked),
         "cp_sat_runtime_receipt_byte_size": len(locked),
     }
+    if platform_abi_receipt is not None:
+        receipt["platform_abi"] = platform_abi_receipt
+    return receipt
 
 
 def _registered_input_bytes(
