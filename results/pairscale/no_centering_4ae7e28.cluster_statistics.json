@@ -1,0 +1,188 @@
+{
+  "artifacts": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "assignment_receipt_file_sha256": "129097c6e720c939433d99f6fd72e298f06ae58830182bcdf5ffa8c27b61601e",
+    "no_centering_evaluation_sha256": "356ca6e7c62e94095c5b2eebe94768616f6e77024971198654a8eead6334ba27",
+    "reference_evaluation_sha256": "d43c46cb887f6b68387e1e9076e79cc76094cb1a567c633676d6313cc7f77b13"
+  },
+  "bootstrap": {
+    "comparison_count": 8,
+    "confidence": 0.95,
+    "independent_component_count": 58,
+    "instance_count": 64,
+    "iterations": 10000,
+    "seed": 42,
+    "unit": "connected_endpoint_component"
+  },
+  "centering_ablation": {
+    "checks": {
+      "reference_double_centered_partner_delta_exceeds_no_centering_lower_bound_above_zero": false,
+      "reference_pair_auprc_exceeds_no_centering_lower_bound_above_zero": false
+    },
+    "completed": true,
+    "interpretation_policy": "Effects are descriptive development-only evidence; the ablation does not independently authorize scaling."
+  },
+  "claim_boundary": "Development-only endpoint-disjoint centering ablation. No validation, test, confirmatory, checkpoint-promotion, scaling, biological-generalization, comparative-superiority, or state-of-the-art claim is authorized.",
+  "comparisons": {
+    "no_centering_matched_minus_decoy_double_centered_partner_score": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 0.6712183952331543,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -1.6873024508846337,
+      "mean_difference": 0.6712183952331543,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.0,
+      "seed": 42,
+      "upper": 3.1979088716062822,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "no_centering_matched_minus_decoy_raw_partner_score": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 1.5808841366670094,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -0.45352031139970467,
+      "mean_difference": 1.5808841366670094,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.0,
+      "seed": 42,
+      "upper": 3.9498836872587697,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "reference_matched_minus_decoy_double_centered_partner_score": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 3.8875388503074646,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -3.6886981195392003,
+      "mean_difference": 3.8875388503074646,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.0,
+      "seed": 42,
+      "upper": 11.483587230643518,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "reference_matched_minus_decoy_raw_partner_score": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 1.2337712722364813,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -0.6425291429748627,
+      "mean_difference": 1.2337712722364813,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.0,
+      "seed": 42,
+      "upper": 3.331005269020881,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "reference_minus_no_centering_double_centered_partner_delta": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 3.8875388503074646,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -3.754421655281179,
+      "mean_difference": 3.2163204550743103,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.6712183952331543,
+      "seed": 42,
+      "upper": 10.289580264848373,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "reference_minus_no_centering_macro_pair_auprc": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 0.14165895209956433,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -0.012377301275672926,
+      "mean_difference": -0.0036120408037099766,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.14527099290327433,
+      "seed": 42,
+      "upper": 0.004267058005207905,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "reference_minus_no_centering_precision_at_true_contact_count": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 0.14175523834267578,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -0.02163586282676632,
+      "mean_difference": -0.009250035226846512,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.15100527356952234,
+      "seed": 42,
+      "upper": 0.001972753902695561,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "reference_minus_no_centering_raw_partner_delta": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 1.2337712722364813,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -1.3608344567057455,
+      "mean_difference": -0.34711286443052813,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 1.5808841366670094,
+      "seed": 42,
+      "upper": 0.6916107782494566,
+      "validated_minimum_independent_cluster_floor": 10
+    }
+  },
+  "created_at_utc": "2026-07-27T20:15:00Z",
+  "format_version": "pairscale_centering_ablation_cluster_statistics_v1",
+  "gate_l1": {
+    "checks": {
+      "reference_double_centered_partner_decline_lower_bound_above_zero": false,
+      "reference_raw_partner_decline_lower_bound_above_zero": false
+    },
+    "failed_checks": [
+      "reference_double_centered_partner_decline_lower_bound_above_zero",
+      "reference_raw_partner_decline_lower_bound_above_zero"
+    ],
+    "passed": false,
+    "scaling_authorized": false,
+    "status": "failed_required_partner_specificity_checks",
+    "unresolved_required_controls": []
+  },
+  "source_implementation_sha256": {
+    "development_holdout.py": "06c82d906d123e2a72f68c9acc0377eb2bf3c4b2db130fb3751f65bd19e5b675",
+    "metrics.py": "dd0dc2403f492e7c551afc2cb059cb739710409520da81133d0bc4f2ebad9212",
+    "pairscale_centering_ablation_statistics.py": "0cb27ff81f46412b004d6ffc31ca35a43be0f899f91b809459c53611635cfc2a",
+    "pairscale_holdout_statistics.py": "65f8cd459c0d6be2b9445f053abf784a8961170614b14d5fbf8bb9eefd2531e8",
+    "pairscale_unary_statistics.py": "da14e5b6b10d938adea00005e009753d58273bb6d4ff5743efb539c2d38d8bdc"
+  }
+}
