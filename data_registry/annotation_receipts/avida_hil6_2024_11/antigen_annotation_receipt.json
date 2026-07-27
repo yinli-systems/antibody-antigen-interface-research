@@ -1,0 +1,33 @@
+{
+  "annotation_counts": {
+    "accepted": 31,
+    "input_antigens": 31,
+    "mutant_constructs": 30,
+    "quarantine_reasons": {},
+    "quarantined": 0,
+    "wild_type_constructs": 1
+  },
+  "candidate_receipt_sha256": "eceb95ab6e94e711fd3a7ad48e6bf42bf05f6b0d2a455a7921597ec2b0832dbe",
+  "created_at_utc": "2026-07-27T17:23:03Z",
+  "format_version": "pairbench_avida_antigen_annotation_receipt_v1",
+  "normalization_blockers": [
+    "independent_antigen_annotation_audit_pending",
+    "vhh_domain_boundary_annotation_pending"
+  ],
+  "normalization_eligible": false,
+  "outputs": [
+    {
+      "path": "ANTIGEN_BOUNDARY_ANNOTATIONS.parquet",
+      "sha256": "329e0fa22bef687c9c47627d90fcd03ad012592f97fa71af840fb54d774dad70",
+      "size_bytes": 11504
+    },
+    {
+      "path": "AUDIT_SUMMARY.json",
+      "sha256": "af024fa55ed8988cea9fe48223245612fc30255e773fc6cd17ca535d89165112",
+      "size_bytes": 1387
+    }
+  ],
+  "protocol_sha256": "63d88b7ff3f37c80d9478cad27cb11d9099258f83e15b49c6313684a2c2d0cca",
+  "source_id": "avida_hil6_2024_11",
+  "status": "annotation_complete_with_explicit_quarantine"
+}
