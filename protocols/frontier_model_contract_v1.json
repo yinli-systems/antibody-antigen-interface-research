@@ -1042,9 +1042,20 @@
           "scientific_inputs_changed": false,
           "stable_abi_bound": true
         },
+        "scheduler_attempt": {
+          "attempt": 4,
+          "authenticated_raw_authority_reconstructed": true,
+          "job_id": "1331619",
+          "journal_hash_chain_valid": true,
+          "model_built_at_snapshot": false,
+          "solver_invoked_at_snapshot": false,
+          "state_at_snapshot": "RUNNING"
+        },
         "source_sha256": {
+          "protocols/v6_b_production_attempt_004_submission.json": "ddc6e75715e74c54f8ffeb1ed731e6ab74c80ddb6affa5eca095dd4566a9c99b",
           "protocols/v6_b_production_feasibility_registration_v4.json": "22de9c83928ee82cba7c90aa1ae8b2f34943cb42c21ca283fea3ac14b3fbf12d",
-          "tests/test_v6_b_production_registration_v4.py": "c311d0b55c5674c7fcd68808107f7d41f32fd312926369e17479615c23b35abf"
+          "tests/test_v6_b_production_registration_v4.py": "c311d0b55c5674c7fcd68808107f7d41f32fd312926369e17479615c23b35abf",
+          "tests/test_v6_b_submission_evidence.py": "1ccfc41d21b3fc65c42b74f9750f36ec6d95ef9e552480456f5af3602ae9540a"
         },
         "targeted_tests_passed_under_each_hash_seed": 12,
         "split_gate0_authorized": false,
