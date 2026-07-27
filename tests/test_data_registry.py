@@ -42,7 +42,10 @@ def test_registered_sources_validate_and_only_audited_avida_is_admitted() -> Non
             assert not decision.admitted
             assert "normalization_not_complete" in decision.reasons
             assert "duplicate_groups_not_complete" in decision.reasons
-            assert "raw_bytes_not_materialized" in decision.reasons
+            if registry.source_id == "sabdab2_ml_zenodo_20083995":
+                assert "raw_bytes_not_materialized" not in decision.reasons
+            else:
+                assert "raw_bytes_not_materialized" in decision.reasons
 
 
 def test_asset_level_license_routing_separates_data_from_code() -> None:
