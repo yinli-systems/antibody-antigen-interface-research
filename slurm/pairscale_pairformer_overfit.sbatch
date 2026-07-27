@@ -28,6 +28,7 @@ EVAL_EVERY=${PAIRSCALE_EVAL_EVERY:-10}
 CHECKPOINT_EVERY=${PAIRSCALE_CHECKPOINT_EVERY:-10}
 PRECISION=${PAIRSCALE_PRECISION:-bf16}
 SEED=${PAIRSCALE_SEED:-17}
+EXPECTED_COMPLEX_COUNT=${PAIRSCALE_EXPECTED_COMPLEX_COUNT:-32}
 
 MANIFEST_SHA256=${PAIRSCALE_MANIFEST_SHA256:?PAIRSCALE_MANIFEST_SHA256 is required}
 RECEIPT_SHA256=${PAIRSCALE_RECEIPT_FILE_SHA256:?PAIRSCALE_RECEIPT_FILE_SHA256 is required}
@@ -39,6 +40,7 @@ AUTHORIZATION_SHA256=${PAIRSCALE_AUTHORIZATION_MANIFEST_SHA256:?PAIRSCALE_AUTHOR
 if [[ ! "$EPOCHS" =~ ^[1-9][0-9]*$ ]] \
   || [[ ! "$EVAL_EVERY" =~ ^[1-9][0-9]*$ ]] \
   || [[ ! "$CHECKPOINT_EVERY" =~ ^[1-9][0-9]*$ ]] \
+  || [[ ! "$EXPECTED_COMPLEX_COUNT" =~ ^[1-9][0-9]*$ ]] \
   || [[ ! "$SEED" =~ ^[0-9]+$ ]]; then
   echo "Epoch, interval, and seed settings must be canonical integers" >&2
   exit 2
@@ -117,4 +119,5 @@ fi
   --checkpoint-every "$CHECKPOINT_EVERY" \
   --precision "$PRECISION" \
   --seed "$SEED" \
+  --expected-complex-count "$EXPECTED_COMPLEX_COUNT" \
   "${RESUME_ARGUMENTS[@]}"

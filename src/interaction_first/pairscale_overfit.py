@@ -71,6 +71,7 @@ class PairscaleOverfitConfig:
     """Locked hyperparameters for one non-confirmatory overfit run."""
 
     seed: int = 17
+    expected_complex_count: int = 32
     epochs: int = 200
     learning_rate: float = 0.001
     minimum_learning_rate_fraction: float = 0.05
@@ -101,6 +102,7 @@ class PairscaleOverfitConfig:
         """Reject ambiguous, unsafe, or scientifically inconsistent settings."""
         for name in (
             "seed",
+            "expected_complex_count",
             "epochs",
             "d_model",
             "pair_dim",
@@ -703,8 +705,10 @@ def run_overfit_training(
     metrics_path = output_root / "epoch_metrics.jsonl"
     checkpoints_root = output_root / "checkpoints"
     examples = tuple(dataset[index] for index in range(len(dataset)))
-    if len(examples) != 32:
-        raise ValueError("The first PAIRScale overfit gate requires exactly 32 complexes")
+    if len(examples) != config.expected_complex_count:
+        raise ValueError(
+            "Authenticated complex count differs from expected_complex_count"
+        )
     configure_determinism(config.seed)
     if not torch.cuda.is_available():
         raise RuntimeError("This real-data overfit run requires CUDA")

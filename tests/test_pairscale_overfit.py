@@ -20,6 +20,7 @@ def test_configuration_and_contact_schema_are_explicit() -> None:
     config = PairscaleOverfitConfig()
     config.validate()
     assert config.canonical_payload()["gate_auprc"] == 0.95
+    assert config.canonical_payload()["expected_complex_count"] == 32
     schema = contact_only_geometry_schema()
     assert schema.contact_distance_bin_count == 2
     assert schema.num_distance_bins == 5

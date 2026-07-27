@@ -30,6 +30,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--checkpoint-every", type=int, default=10)
     parser.add_argument("--precision", choices=("fp32", "bf16"), default="bf16")
     parser.add_argument("--seed", type=int, default=17)
+    parser.add_argument("--expected-complex-count", type=int, default=32)
     parser.add_argument("--resume-checkpoint-root", type=Path)
     parser.add_argument("--resume-generation")
     parser.add_argument("--resume-receipt-sha256")
@@ -51,6 +52,7 @@ def main() -> None:
     )
     config = PairscaleOverfitConfig(
         seed=arguments.seed,
+        expected_complex_count=arguments.expected_complex_count,
         epochs=arguments.epochs,
         learning_rate=arguments.learning_rate,
         positive_weight=arguments.positive_weight,
