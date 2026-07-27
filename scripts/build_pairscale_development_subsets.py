@@ -112,9 +112,18 @@ def main() -> None:
         requested_at_utc=args.requested_at_utc,
         evaluated_at_utc=args.evaluated_at_utc,
     )
+    implementation_source_sha256 = {
+        "scripts/build_pairscale_development_subsets.py": builder_sha256,
+        "src/interaction_first/development_authority.py": _sha256_file(
+            SOURCE_ROOT / "interaction_first" / "development_authority.py"
+        ),
+        "src/interaction_first/development_subset.py": _sha256_file(
+            SOURCE_ROOT / "interaction_first" / "development_subset.py"
+        ),
+    }
     receipt = build_subset_receipt(
         subsets,
-        builder_source_sha256=builder_sha256,
+        implementation_source_sha256=implementation_source_sha256,
     )
 
     output_root = args.output_root.expanduser().absolute()

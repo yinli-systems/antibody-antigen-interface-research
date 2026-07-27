@@ -33,6 +33,13 @@ DATA_ACCESS_SCOPE = "train_only_fold_local"
 SUBSET_FORMAT = "pairscale_development_subset_v1"
 RECEIPT_FORMAT = "pairscale_development_subset_receipt_v1"
 SELECTION_DOMAIN = "pairscale-development-subset-v1"
+REQUIRED_IMPLEMENTATION_SOURCES = frozenset(
+    {
+        "scripts/build_pairscale_development_subsets.py",
+        "src/interaction_first/development_authority.py",
+        "src/interaction_first/development_subset.py",
+    }
+)
 _IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:+/@-]{0,511}$")
 
 
@@ -342,11 +349,16 @@ def build_development_subsets(
 def build_subset_receipt(
     subsets: Sequence[DevelopmentSubset],
     *,
-    builder_source_sha256: str,
+    implementation_source_sha256: Mapping[str, str],
 ) -> Mapping[str, object]:
     """Build a deterministic receipt over one complete nested subset family."""
 
-    _sha256(builder_source_sha256, "builder_source_sha256")
+    if set(implementation_source_sha256) != REQUIRED_IMPLEMENTATION_SOURCES:
+        raise DevelopmentSubsetError(
+            "implementation source keys differ from the locked set"
+        )
+    for name, digest in implementation_source_sha256.items():
+        _sha256(digest, f"implementation_source_sha256[{name}]")
     if not subsets:
         raise DevelopmentSubsetError("at least one subset is required")
     parent_hashes = {value.parent_authorization_sha256 for value in subsets}
@@ -363,7 +375,9 @@ def build_subset_receipt(
         "policy_sha256": next(iter(policy_hashes)),
         "seed": next(iter(seeds)),
         "selection_domain": SELECTION_DOMAIN,
-        "builder_source_sha256": builder_source_sha256,
+        "implementation_source_sha256": dict(
+            sorted(implementation_source_sha256.items())
+        ),
         "subsets": [
             {
                 "requested_size": value.requested_size,

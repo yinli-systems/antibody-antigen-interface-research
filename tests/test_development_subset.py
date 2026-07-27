@@ -18,6 +18,7 @@ from interaction_first.development_subset import (
     DATA_ACCESS_SCOPE,
     AuthorizedInstance,
     DevelopmentSubsetError,
+    REQUIRED_IMPLEMENTATION_SOURCES,
     TrainAuthorizationInventory,
     build_development_subsets,
     build_subset_receipt,
@@ -199,7 +200,10 @@ def test_receipt_binds_every_subset_and_denies_confirmatory_authority() -> None:
     subsets = _build()
     receipt = build_subset_receipt(
         subsets,
-        builder_source_sha256="a" * 64,
+        implementation_source_sha256={
+            name: str(index + 1) * 64
+            for index, name in enumerate(sorted(REQUIRED_IMPLEMENTATION_SOURCES))
+        },
     )
     assert receipt["confirmatory_authority_granted"] is False
     assert receipt["validation_or_test_data_accessed"] is False
@@ -210,6 +214,12 @@ def test_receipt_binds_every_subset_and_denies_confirmatory_authority() -> None:
     from interaction_first.development_authority import canonical_sha256
 
     assert claimed == canonical_sha256(digest_payload)
+
+    with pytest.raises(DevelopmentSubsetError, match="keys differ"):
+        build_subset_receipt(
+            subsets,
+            implementation_source_sha256={"builder": "a" * 64},
+        )
 
 
 def test_cli_create_only_publication(tmp_path: Path) -> None:
