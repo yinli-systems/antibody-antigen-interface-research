@@ -1,0 +1,21 @@
+{
+  "expected_selected_bytes": 3256516385,
+  "expected_selected_file_count": 5651,
+  "format_version": "pairscale_download_plan_v1",
+  "locator": {
+    "dataset_repo_id": "mansoorbaloch/chimera-bench"
+  },
+  "metadata_sha256": "3c5ab79904ff6469dae4d6e82faffd64c397c00f6555c0195dfd11cee905d6e6",
+  "metadata_url": "https://huggingface.co/api/datasets/mansoorbaloch/chimera-bench/revision/54d5a2a1e59a329db7a6c09184652ed225188940?blobs=true",
+  "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+  "provider": "huggingface_dataset",
+  "selectors": [
+    ".gitattributes",
+    "README.md",
+    "complex_features/*",
+    "metadata/*",
+    "splits/*",
+    "structures/*"
+  ],
+  "source_id": "chimera_bench_2026_05"
+}
