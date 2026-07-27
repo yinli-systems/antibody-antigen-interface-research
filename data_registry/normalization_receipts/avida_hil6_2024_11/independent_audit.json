@@ -1,0 +1,23 @@
+{
+  "audited_at_utc": "2026-07-27T18:17:15Z",
+  "auditor_source_sha256": "0e1aed837e8dc8b78aac053467a29a79210262f2d4e8e40614ce2c469dcd6b31",
+  "counts": {
+    "admitted_antibodies": 37200,
+    "admitted_antigens": 31,
+    "admitted_binders": 20275,
+    "admitted_nonbinders": 535666,
+    "admitted_pairs": 555941,
+    "quarantined_antibodies": 1399,
+    "quarantined_binders": 705,
+    "quarantined_nonbinders": 17245,
+    "quarantined_pairs": 17950
+  },
+  "format_version": "pairbench_avida_normalization_independent_audit_v1",
+  "normalization_receipt_sha256": "aee48d4cfa6ebf07e95326ddc06833747913e0260ff45abbfef1d973bffbf273",
+  "protocol_sha256": "180b740d73eb9485d089e450d7565c23e894e0a7c5e3444bcb74836baadb9161",
+  "semantic_comparison": "independent_entity_rekey_and_exact_source_order_pair_assay_replay",
+  "source_id": "avida_hil6_2024_11",
+  "status": "pass_tier1_normalization_independent_audit",
+  "tier2_admitted": false,
+  "unknown_cross_pairs_created": 0
+}
