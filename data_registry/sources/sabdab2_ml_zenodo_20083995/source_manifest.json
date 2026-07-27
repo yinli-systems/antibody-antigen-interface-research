@@ -1,0 +1,21 @@
+{
+  "canonical_record_url": "https://zenodo.org/records/20083995",
+  "confirmatory_evaluation_eligible": false,
+  "declared_scale": {
+    "count": 15641,
+    "source_claim_only": true,
+    "unit": "antibody-antigen structures"
+  },
+  "display_name": "SAbDab2 ML release",
+  "duplicate_groups_status": "not_computed",
+  "format_version": "pairscale_source_manifest_v1",
+  "pinned_revision": "zenodo-record-20083995",
+  "planned_roles": [
+    "antibody_structural_adaptation"
+  ],
+  "registered_at_utc": "2026-07-27T14:45:00Z",
+  "sealed_evaluation_source": false,
+  "source_class": "antibody_antigen_structure_corpus",
+  "source_id": "sabdab2_ml_zenodo_20083995",
+  "training_policy": "eligible_after_materialization"
+}

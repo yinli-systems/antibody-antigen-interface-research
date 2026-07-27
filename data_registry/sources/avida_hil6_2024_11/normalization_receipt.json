@@ -1,0 +1,9 @@
+{
+  "format_version": "pairscale_normalization_receipt_v1",
+  "input_raw_inventory_sha256": null,
+  "normalized_at_utc": null,
+  "normalizer_source_sha256": null,
+  "outputs": [],
+  "source_id": "avida_hil6_2024_11",
+  "status": "not_run"
+}

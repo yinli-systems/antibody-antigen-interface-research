@@ -1,0 +1,23 @@
+{
+  "canonical_record_url": "https://huggingface.co/datasets/COGNANO/AVIDa-hIL6",
+  "confirmatory_evaluation_eligible": false,
+  "declared_scale": {
+    "count": 573891,
+    "source_claim_only": true,
+    "unit": "VHH-antigen pairs"
+  },
+  "display_name": "AVIDa-hIL6",
+  "duplicate_groups_status": "not_computed",
+  "format_version": "pairscale_source_manifest_v1",
+  "pinned_revision": "cd783d573e015f83364e42287810ad597850aeed",
+  "planned_roles": [
+    "measured_binding_supervision",
+    "mutation_generalization",
+    "specificity_pretraining"
+  ],
+  "registered_at_utc": "2026-07-27T14:45:00Z",
+  "sealed_evaluation_source": false,
+  "source_class": "antibody_sequence_binding_dataset",
+  "source_id": "avida_hil6_2024_11",
+  "training_policy": "eligible_after_materialization"
+}

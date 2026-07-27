@@ -1,0 +1,22 @@
+{
+  "canonical_record_url": "https://huggingface.co/datasets/mansoorbaloch/chimera-bench",
+  "confirmatory_evaluation_eligible": true,
+  "declared_scale": {
+    "count": 2922,
+    "source_claim_only": true,
+    "unit": "antibody-antigen complexes"
+  },
+  "display_name": "CHIMERA benchmark",
+  "duplicate_groups_status": "not_computed",
+  "format_version": "pairscale_source_manifest_v1",
+  "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+  "planned_roles": [
+    "external_antigen_fold_evaluation",
+    "external_temporal_evaluation"
+  ],
+  "registered_at_utc": "2026-07-27T14:45:00Z",
+  "sealed_evaluation_source": true,
+  "source_class": "antibody_antigen_confirmatory_benchmark",
+  "source_id": "chimera_bench_2026_05",
+  "training_policy": "external_confirmatory_only"
+}

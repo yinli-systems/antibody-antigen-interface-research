@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "format_version": "pairscale_raw_sha256_inventory_v1",
+  "materialized_at_utc": null,
+  "pinned_revision": "cd783d573e015f83364e42287810ad597850aeed",
+  "source_id": "avida_hil6_2024_11",
+  "status": "not_materialized"
+}

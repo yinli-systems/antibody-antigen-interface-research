@@ -1,0 +1,33 @@
+{
+  "assets": [
+    {
+      "asset_name": "PPIRef repository code",
+      "asset_scope": "code",
+      "attribution_required": true,
+      "commercial_use_permitted": true,
+      "declared_license_spdx": "MIT",
+      "evidence_note": "SHA-256 covers the official repository LICENSE bytes retrieved for this review.",
+      "evidence_revision": "anton-bushuiev/PPIRef main at 2026-07-27",
+      "evidence_sha256": "271d844a09443b97265107d7f0e80982fed2e94cff1feb60e5605cb5ae3da44b",
+      "evidence_url": "https://raw.githubusercontent.com/anton-bushuiev/PPIRef/main/LICENSE",
+      "license_route": "commercial_ok"
+    },
+    {
+      "asset_name": "PPIRef Zenodo data",
+      "asset_scope": "data",
+      "attribution_required": true,
+      "commercial_use_permitted": true,
+      "declared_license_spdx": "CC-BY-4.0",
+      "evidence_note": "SHA-256 covers the Zenodo API record bytes retrieved for this review; the record declares the data license.",
+      "evidence_revision": "10.5281/zenodo.14845086",
+      "evidence_sha256": "67a6bdd309638a341cf2e0e3d0009c88520a5c9474db59a421f81160b547ed12",
+      "evidence_url": "https://zenodo.org/api/records/14845086",
+      "license_route": "commercial_ok"
+    }
+  ],
+  "format_version": "pairscale_license_receipt_v1",
+  "legal_review_required_for_release": true,
+  "receipt_status": "reviewed",
+  "reviewed_at_utc": "2026-07-27T14:45:00Z",
+  "source_id": "ppiref_zenodo_14845086"
+}
