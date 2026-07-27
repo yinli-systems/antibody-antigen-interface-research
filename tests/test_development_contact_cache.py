@@ -18,6 +18,10 @@ from interaction_first.development_contact_cache import (
     DevelopmentContactCacheError,
     materialize_development_contact_cache,
 )
+from interaction_first.development_contact_dataset import (
+    DevelopmentContactDataset,
+    DevelopmentContactDatasetError,
+)
 from interaction_first.development_subset import (
     AUTHORIZATION_FORMAT,
     DATA_ACCESS_SCOPE,
@@ -163,6 +167,44 @@ def test_materializes_only_authorized_embeddings_and_contacts(tmp_path: Path) ->
     assert len(list((root / "embeddings").glob("*.pt"))) == 2
     assert len(list((root / "contacts").glob("*.npz"))) == 2
     assert all(not path.stat().st_mode & 0o222 for path in root.rglob("*"))
+
+
+def test_training_dataset_verifies_all_external_cache_anchors(tmp_path: Path) -> None:
+    arguments = _fixture(tmp_path)
+    materialize_development_contact_cache(**arguments)
+    root = arguments["output_root"]
+    manifest_sha256 = _sha256(
+        (root / "PAIRSCALE_CONTACT_CACHE_MANIFEST.json").read_bytes()
+    )
+    receipt_sha256 = _sha256((root / "CONTACT_CACHE_BUILD_RECEIPT.json").read_bytes())
+    dataset = DevelopmentContactDataset(
+        root,
+        expected_manifest_sha256=manifest_sha256,
+        expected_receipt_file_sha256=receipt_sha256,
+        expected_policy_sha256=arguments["expected_policy_sha256"],
+        expected_decision_sha256=arguments["decision_sha256"],
+        expected_subset_manifest_sha256=arguments["subset_manifest_sha256"],
+        expected_authorization_manifest_sha256=(
+            arguments["subset_authorization_sha256"]
+        ),
+    )
+    assert len(dataset) == 2
+    assert dataset.antibody_input_dim == 5
+    assert dataset.antigen_input_dim == 7
+    assert sum(record.positive_pair_count for record in dataset.records) == 4
+
+    with pytest.raises(DevelopmentContactDatasetError, match="external anchor"):
+        DevelopmentContactDataset(
+            root,
+            expected_manifest_sha256="f" * 64,
+            expected_receipt_file_sha256=receipt_sha256,
+            expected_policy_sha256=arguments["expected_policy_sha256"],
+            expected_decision_sha256=arguments["decision_sha256"],
+            expected_subset_manifest_sha256=arguments["subset_manifest_sha256"],
+            expected_authorization_manifest_sha256=(
+                arguments["subset_authorization_sha256"]
+            ),
+        )
 
 
 def test_create_only_and_all_external_digests_fail_closed(tmp_path: Path) -> None:
