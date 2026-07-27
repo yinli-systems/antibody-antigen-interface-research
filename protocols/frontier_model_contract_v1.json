@@ -883,6 +883,23 @@
         "related_v6_tests_passed_under_each_hash_seed": 130,
         "training_authorized": false
       },
+      "independent_cp_linear_audit_controller": {
+        "complete_score_free_region_authorized": false,
+        "create_only_receipt_required": true,
+        "direct_raw_authority_reconstruction_required": true,
+        "historical_milp_matrix_consumed": false,
+        "production_run_completed": false,
+        "source_sha256": {
+          "scripts/run_v6_b_independent_cp_audit.py": "0d0e248b99eec8b5b46fdd88c61aea84cd68e7326c159116a7d1b2a55286cd34",
+          "scripts/submit_v6_b_independent_cp_audit.sbatch": "c16432424160be1be34cff08fbe9017788f3bbd27f8c17efc0ce17183daa63dd",
+          "src/interaction_first/v6_b_independent_cp_audit.py": "7c5eb7e556e3ce9118467da468922d2d7a185a3afac0da7c84886b7f2a221c6c",
+          "tests/test_v6_b_independent_cp_audit.py": "84bdb9bfc496522040dd5820ce175d0990b3bd0f21dc42177c590238d33318bd"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 16,
+        "related_v6_tests_passed_under_each_hash_seed": 146,
+        "v6_b_partition_or_cut_consumed": false,
+        "training_authorized": false
+      },
       "runtime_compatibility_probe": {
         "exact_kernel_release_is_stable": false,
         "model_built": false,
