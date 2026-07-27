@@ -872,7 +872,7 @@
         "integer_row_postsolve_audit_required": true,
         "master_cut_requires_primary_replay_and_independent_replay": true,
         "outer_exact_failures_are_master_cuts": true,
-        "production_run_completed": false,
+        "production_run_completed": true,
         "source_sha256": {
           "src/interaction_first/v6_b_decomposition.py": "fc15590316e3fb7fc248420093bc74dad3a57cfe0eae05985d2ee580675f6e40",
           "src/interaction_first/v6_b_independent_core_auditor.py": "0ac83a633f6dbea12c67b09bfb0850e60c70250312393aea6804a1fbe28edca9",
@@ -888,21 +888,38 @@
         "create_only_receipt_required": true,
         "direct_raw_authority_reconstruction_required": true,
         "historical_milp_matrix_consumed": false,
-        "production_run_completed": false,
+        "production_run_completed": true,
         "registration": {
           "implementation_commit": "c73630c1a485032dda223c1c24d058ff5c117a2b",
           "primary_result_file_sha256": "539cc1e32a12b892ae2fbb2ea9efbc985dc5c8a9ca5e7be51be198efd8c212b6",
           "registration_sha256": "881080f6c3615ed66acff27efb51792557e4dd665929adc259e679570f86434b",
           "v4_registration_sha256": "22de9c83928ee82cba7c90aa1ae8b2f34943cb42c21ca283fea3ac14b3fbf12d"
         },
+        "result": {
+          "authority_byte_agreement": true,
+          "direct_formulation_sha256": "4b1f51a2bc900d163875836bcae3101f7e828c7c0572f93a95877e2d2315ac39",
+          "direct_highs_audit_completed": false,
+          "full_protocol_infeasibility_claim_authorized": false,
+          "ir_sha256": "3fff0ee63e0346034ba0bc9ce306212523adc786f013aaf37a73bf57848ca05d",
+          "job_id": "1331650",
+          "linear_agreement_with_primary": true,
+          "projection_status": "INFEASIBLE",
+          "receipt_file_sha256": "8a7148c1b4888b3e03dced89fd5452efbf1a058ae92ef2eb5fc827f5d773854d",
+          "receipt_self_sha256": "fcdb3ee3fd776fff9f38348b5a441dd5e19553c158093c838b0c6da20e158725",
+          "scheduler_state": "COMPLETED",
+          "status": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT_PENDING_DIRECT_HIGHS"
+        },
         "source_sha256": {
+          "protocols/v6_b_independent_cp_audit_attempt_001_result.json": "09a3fcd97a0252c2e94bc7679a595c1052b3c074ec6ca3c694f5cd409b2280a3",
           "protocols/v6_b_independent_cp_audit_registration_v1.json": "881080f6c3615ed66acff27efb51792557e4dd665929adc259e679570f86434b",
           "scripts/run_v6_b_independent_cp_audit.py": "0d0e248b99eec8b5b46fdd88c61aea84cd68e7326c159116a7d1b2a55286cd34",
           "scripts/submit_v6_b_independent_cp_audit.sbatch": "c16432424160be1be34cff08fbe9017788f3bbd27f8c17efc0ce17183daa63dd",
           "src/interaction_first/v6_b_independent_cp_audit.py": "7c5eb7e556e3ce9118467da468922d2d7a185a3afac0da7c84886b7f2a221c6c",
           "tests/test_v6_b_independent_cp_audit.py": "84bdb9bfc496522040dd5820ce175d0990b3bd0f21dc42177c590238d33318bd",
-          "tests/test_v6_b_independent_cp_audit_registration.py": "397ac19f5bff00bfc2489c2b1e4f49e91fdbfefa5646fdf85738ce32c92fe1c1"
+          "tests/test_v6_b_independent_cp_audit_registration.py": "397ac19f5bff00bfc2489c2b1e4f49e91fdbfefa5646fdf85738ce32c92fe1c1",
+          "tests/test_v6_b_independent_cp_audit_result.py": "96e0f5916deab467d6b98b696cb2ccb1bfa1c6f19dc97ac67d44e0a18581f8c2"
         },
+        "formal_result_tests_passed_under_each_hash_seed": 3,
         "targeted_tests_passed_under_each_hash_seed": 16,
         "related_v6_tests_passed_under_each_hash_seed": 146,
         "v6_b_partition_or_cut_consumed": false,
@@ -937,7 +954,7 @@
         "direct_highs_audit_completed": false,
         "full_exact_oracle_evidence_journaled": true,
         "hash_chained_fsync_journal": true,
-        "production_run_completed": false,
+        "production_run_completed": true,
         "scheduler_memory_envelope": {
           "explicit_memory_request": false,
           "memory_allocation_policy": "partition_automatic_per_allocated_gpu",
