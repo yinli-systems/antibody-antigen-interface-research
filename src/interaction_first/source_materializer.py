@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 import fnmatch
 import hashlib
@@ -196,9 +197,12 @@ def materialize_registered_source(
     registry_root: Path,
     destination_root: Path,
     curl_binary: str = "curl",
+    workers: int = 1,
 ) -> Mapping[str, Any]:
     """Download one registered source and emit a create-only raw inventory."""
 
+    if type(workers) is not int or not 1 <= workers <= 32:
+        raise SourceMaterializationError("workers must be an integer from 1 to 32")
     plan = load_download_plan(plan_path)
     registry = load_source_registry(Path(registry_root) / plan.source_id)
     validate_plan_against_registry(plan, registry)
@@ -219,13 +223,20 @@ def materialize_registered_source(
         destination = _safe_destination(source_root, artifact.relative_path)
         relative_parent = PurePosixPath(artifact.relative_path).parent
         _ensure_safe_directory(source_root, relative_parent)
+        if destination.exists() and (
+            destination.is_symlink() or not destination.is_file()
+        ):
+            raise SourceMaterializationError("existing artifact is not a regular file")
+        partial = destination.with_name(f".{destination.name}.partial")
+        if partial.is_symlink() or (partial.exists() and not partial.is_file()):
+            raise SourceMaterializationError("partial artifact is not a regular file")
+
+    def materialize_one(artifact: DownloadArtifact) -> dict[str, Any]:
+        destination = _safe_destination(source_root, artifact.relative_path)
         if destination.exists():
-            if destination.is_symlink() or not destination.is_file():
-                raise SourceMaterializationError("existing artifact is not a regular file")
+            sha256 = _verify_downloaded_artifact(destination, artifact)
         else:
             partial = destination.with_name(f".{destination.name}.partial")
-            if partial.is_symlink() or (partial.exists() and not partial.is_file()):
-                raise SourceMaterializationError("partial artifact is not a regular file")
             _run_curl(curl_binary, artifact.url, partial)
             _verify_downloaded_artifact(partial, artifact)
             try:
@@ -235,14 +246,15 @@ def materialize_registered_source(
                     "artifact appeared concurrently during materialization"
                 ) from exc
             partial.unlink()
-        sha256 = _verify_downloaded_artifact(destination, artifact)
-        inventory_files.append(
-            {
-                "path": artifact.relative_path,
-                "size_bytes": artifact.size_bytes,
-                "sha256": sha256,
-            }
-        )
+            sha256 = _verify_downloaded_artifact(destination, artifact)
+        return {
+            "path": artifact.relative_path,
+            "size_bytes": artifact.size_bytes,
+            "sha256": sha256,
+        }
+
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        inventory_files.extend(executor.map(materialize_one, artifacts))
     inventory_files.sort(key=lambda value: value["path"])
     inventory = {
         "files": inventory_files,

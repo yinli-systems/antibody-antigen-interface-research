@@ -16,12 +16,14 @@ def main() -> None:
     parser.add_argument("--registry-root", type=Path, required=True)
     parser.add_argument("--destination-root", type=Path, required=True)
     parser.add_argument("--curl-binary", default="curl")
+    parser.add_argument("--workers", type=int, default=1)
     arguments = parser.parse_args()
     inventory = materialize_registered_source(
         plan_path=arguments.plan,
         registry_root=arguments.registry_root,
         destination_root=arguments.destination_root,
         curl_binary=arguments.curl_binary,
+        workers=arguments.workers,
     )
     print(json.dumps(inventory, indent=2, sort_keys=True))
 

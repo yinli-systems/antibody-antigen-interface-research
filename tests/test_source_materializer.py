@@ -192,6 +192,7 @@ def test_create_only_materialization_verifies_bytes_and_inventory(
         plan_path=plan_path,
         registry_root=registry_root,
         destination_root=destination_root,
+        workers=2,
     )
     assert [value["path"] for value in inventory["files"]] == [
         ".authority/provider_metadata.json",
