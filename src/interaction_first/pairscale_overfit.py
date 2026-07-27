@@ -76,6 +76,12 @@ class PairscaleOverfitConfig:
     minimum_learning_rate_fraction: float = 0.05
     weight_decay: float = 0.0
     positive_weight: float = 1024.0
+    contact_ranking_weight: float = 1.0
+    hard_negative_ratio: int = 8
+    contact_ranking_temperature: float = 1.0
+    partner_ranking_weight: float = 0.25
+    partner_ranking_margin: float = 0.10
+    partner_ranking_temperature: float = 1.0
     gradient_clip_norm: float = 5.0
     d_model: int = 192
     pair_dim: int = 96
@@ -104,6 +110,7 @@ class PairscaleOverfitConfig:
             "pair_chunk_size",
             "eval_every_epochs",
             "checkpoint_every_epochs",
+            "hard_negative_ratio",
         ):
             value = getattr(self, name)
             if name == "seed":
@@ -118,10 +125,19 @@ class PairscaleOverfitConfig:
             "minimum_learning_rate_fraction",
             "positive_weight",
             "gradient_clip_norm",
+            "contact_ranking_temperature",
+            "partner_ranking_margin",
+            "partner_ranking_temperature",
         ):
             _finite_positive(getattr(self, name), name)
-        if not math.isfinite(self.weight_decay) or self.weight_decay < 0.0:
-            raise ValueError("weight_decay must be finite and nonnegative")
+        for name in (
+            "weight_decay",
+            "contact_ranking_weight",
+            "partner_ranking_weight",
+        ):
+            value = getattr(self, name)
+            if not math.isfinite(value) or value < 0.0:
+                raise ValueError(f"{name} must be finite and nonnegative")
         if not math.isfinite(self.dropout) or not 0.0 <= self.dropout < 1.0:
             raise ValueError("dropout must be in [0, 1)")
         for name in (
@@ -247,6 +263,119 @@ def _forward_contact(model: Any, example: DevelopmentContactExample, device: Any
     return outputs, targets
 
 
+def _forward_cross_pair(
+    model: Any,
+    antibody_example: DevelopmentContactExample,
+    antigen_example: DevelopmentContactExample,
+    device: Any,
+) -> Mapping[str, Any]:
+    """Score an unknown cross-pair without creating a binary contact target."""
+    torch = _require_torch()
+    antibody = antibody_example.antibody_embeddings.to(device).unsqueeze(0)
+    antigen = antigen_example.antigen_embeddings.to(device).unsqueeze(0)
+    antibody_mask = torch.ones(
+        (1, int(antibody.shape[1])),
+        dtype=torch.bool,
+        device=device,
+    )
+    antigen_mask = torch.ones(
+        (1, int(antigen.shape[1])),
+        dtype=torch.bool,
+        device=device,
+    )
+    pair_mask = antibody_mask.unsqueeze(2) & antigen_mask.unsqueeze(1)
+    return model(
+        antibody,
+        antigen,
+        antibody_mask,
+        antigen_mask,
+        pair_mask,
+        return_pair_representations=False,
+        enabled_heads={"contact", "distance"},
+    )
+
+
+def hard_negative_contact_ranking_loss(
+    logits: Any,
+    targets: Any,
+    mask: Any,
+    *,
+    negative_ratio: int,
+    temperature: float,
+) -> Any:
+    """Rank every positive above the current hardest within-complex negatives."""
+    torch = _require_torch()
+    _positive_integer(negative_ratio, "negative_ratio")
+    temperature = _finite_positive(temperature, "temperature")
+    if not torch.is_tensor(logits) or logits.ndim != 3:
+        raise ValueError("logits must have shape [batch, antibody, antigen]")
+    if not torch.is_tensor(targets) or tuple(targets.shape) != tuple(logits.shape):
+        raise ValueError("targets must align with logits")
+    if not torch.is_tensor(mask) or mask.dtype != torch.bool or tuple(mask.shape) != tuple(logits.shape):
+        raise ValueError("mask must be boolean and align with logits")
+    losses: list[Any] = []
+    for batch_index in range(int(logits.shape[0])):
+        selected_logits = logits[batch_index][mask[batch_index]].float()
+        selected_targets = targets[batch_index][mask[batch_index]]
+        if not bool(torch.isfinite(selected_logits).all()):
+            raise ValueError("Candidate logits must be finite")
+        if not bool(((selected_targets == 0) | (selected_targets == 1)).all()):
+            raise ValueError("Candidate targets must be binary")
+        positive_logits = selected_logits[selected_targets == 1]
+        negative_logits = selected_logits[selected_targets == 0]
+        if positive_logits.numel() == 0 or negative_logits.numel() == 0:
+            raise ValueError("Ranking requires positive and negative candidates")
+        hard_count = min(
+            int(negative_logits.numel()),
+            int(positive_logits.numel()) * negative_ratio,
+        )
+        hard_negatives = torch.topk(
+            negative_logits,
+            k=hard_count,
+            sorted=False,
+        ).values
+        differences = (
+            hard_negatives.unsqueeze(0) - positive_logits.unsqueeze(1)
+        ) / temperature
+        losses.append(torch.nn.functional.softplus(differences).mean() * temperature)
+    return torch.stack(losses).mean()
+
+
+def matched_unknown_partner_ranking_loss(
+    matched_outputs: Mapping[str, Any],
+    decoy_outputs: Mapping[str, Any],
+    *,
+    positive_pair_count: int,
+    margin: float,
+    temperature: float,
+) -> Any:
+    """Rank a cognate pair above one unknown cross-pair without binary labeling."""
+    torch = _require_torch()
+    margin = _finite_positive(margin, "margin")
+    temperature = _finite_positive(temperature, "temperature")
+    matched_logits = matched_outputs["contact_logits"].float()
+    decoy_logits = decoy_outputs["contact_logits"].float()
+    matched_top = _top_k_mean(matched_logits[0], positive_pair_count)
+    decoy_top = _top_k_mean(decoy_logits[0], positive_pair_count)
+    _, matched_centered = double_centered_partner_score(
+        matched_logits,
+        matched_outputs["candidate_pair_mask"],
+        centering_iterations=32,
+    )
+    _, decoy_centered = double_centered_partner_score(
+        decoy_logits,
+        decoy_outputs["candidate_pair_mask"],
+        centering_iterations=32,
+    )
+    top_loss = torch.nn.functional.softplus(
+        (margin - matched_top + decoy_top) / temperature
+    ) * temperature
+    centered_loss = torch.nn.functional.softplus(
+        (margin - matched_centered[0] + decoy_centered[0]) / temperature
+    ) * temperature
+    return 0.5 * (top_loss + centered_loss)
+
+
 def train_one_epoch(
     *,
     model: Any,
@@ -255,13 +384,19 @@ def train_one_epoch(
     device: Any,
     config: PairscaleOverfitConfig,
     epoch: int,
-) -> tuple[float, int]:
+) -> tuple[Mapping[str, float], int]:
     """Train once over every authenticated complex with no pair subsampling."""
     torch = _require_torch()
     model.train()
-    loss_sum = 0.0
+    loss_sums = {
+        "total": 0.0,
+        "contact_bce": 0.0,
+        "contact_ranking": 0.0,
+        "partner_ranking": 0.0,
+    }
     step_count = 0
     use_bf16 = config.precision == "bf16" and device.type == "cuda"
+    decoy_indices = _select_cyclic_decoys(examples)
     for index in deterministic_epoch_order(len(examples), config.seed, epoch):
         optimizer.zero_grad(set_to_none=True)
         with torch.autocast(
@@ -270,11 +405,39 @@ def train_one_epoch(
             enabled=use_bf16,
         ):
             outputs, targets = _forward_contact(model, examples[index], device)
-            loss = masked_contact_bce_with_logits(
+            contact_bce = masked_contact_bce_with_logits(
                 outputs["contact_logits"],
                 targets,
                 outputs["candidate_pair_mask"],
                 positive_weight=config.positive_weight,
+            )
+            contact_ranking = hard_negative_contact_ranking_loss(
+                outputs["contact_logits"],
+                targets,
+                outputs["candidate_pair_mask"],
+                negative_ratio=config.hard_negative_ratio,
+                temperature=config.contact_ranking_temperature,
+            )
+            if config.partner_ranking_weight > 0.0:
+                decoy_outputs = _forward_cross_pair(
+                    model,
+                    examples[index],
+                    examples[decoy_indices[index]],
+                    device,
+                )
+                partner_ranking = matched_unknown_partner_ranking_loss(
+                    outputs,
+                    decoy_outputs,
+                    positive_pair_count=examples[index].positive_pair_count,
+                    margin=config.partner_ranking_margin,
+                    temperature=config.partner_ranking_temperature,
+                )
+            else:
+                partner_ranking = contact_bce.new_zeros(())
+            loss = (
+                contact_bce
+                + config.contact_ranking_weight * contact_ranking
+                + config.partner_ranking_weight * partner_ranking
             )
         if not bool(torch.isfinite(loss)):
             raise RuntimeError(f"Non-finite loss at epoch {epoch}, example {index}")
@@ -287,9 +450,17 @@ def train_one_epoch(
         if not bool(torch.isfinite(gradient_norm)):
             raise RuntimeError("Non-finite gradient norm")
         optimizer.step()
-        loss_sum += float(loss.detach().cpu())
+        for name, value in (
+            ("total", loss),
+            ("contact_bce", contact_bce),
+            ("contact_ranking", contact_ranking),
+            ("partner_ranking", partner_ranking),
+        ):
+            loss_sums[name] += float(value.detach().cpu())
         step_count += 1
-    return loss_sum / step_count, step_count
+    return {
+        name: value / step_count for name, value in loss_sums.items()
+    }, step_count
 
 
 def _top_k_mean(values: Any, count: int) -> Any:
@@ -395,28 +566,8 @@ def evaluate_overfit(
         for matched_index, decoy_index in enumerate(_select_cyclic_decoys(examples)):
             matched = examples[matched_index]
             decoy = examples[decoy_index]
-            antibody = matched.antibody_embeddings.to(device).unsqueeze(0)
-            antigen = decoy.antigen_embeddings.to(device).unsqueeze(0)
-            antibody_mask = torch.ones(
-                (1, int(antibody.shape[1])),
-                dtype=torch.bool,
-                device=device,
-            )
-            antigen_mask = torch.ones(
-                (1, int(antigen.shape[1])),
-                dtype=torch.bool,
-                device=device,
-            )
-            pair_mask = antibody_mask.unsqueeze(2) & antigen_mask.unsqueeze(1)
-            outputs = model(
-                antibody,
-                antigen,
-                antibody_mask,
-                antigen_mask,
-                pair_mask,
-                return_pair_representations=False,
-                enabled_heads={"contact", "distance"},
-            )
+            outputs = _forward_cross_pair(model, matched, decoy, device)
+            pair_mask = outputs["candidate_pair_mask"]
             logits = outputs["contact_logits"]
             decoy_top_scores.append(
                 float(_top_k_mean(logits[0], matched.positive_pair_count).cpu())
@@ -467,6 +618,9 @@ def evaluate_overfit(
         "held_out_evaluation_performed": False,
         "complete_candidate_domain": True,
         "negative_pair_subsampling": False,
+        "unknown_cross_pair_semantics": (
+            "ranking_control_only_not_a_measured_nonbinder"
+        ),
         "macro_pair_auprc": macro_auprc,
         "pooled_pair_auprc": average_precision(
             np.concatenate(pooled_labels),
@@ -629,7 +783,7 @@ def run_overfit_training(
     last_evaluation: Mapping[str, Any] | None = None
     last_receipt: Mapping[str, Any] | None = None
     for epoch in range(start_epoch, config.epochs + 1):
-        loss, steps = train_one_epoch(
+        losses, steps = train_one_epoch(
             model=model,
             optimizer=optimizer,
             examples=examples,
@@ -651,7 +805,8 @@ def run_overfit_training(
             "format_version": METRICS_FORMAT,
             "epoch": epoch,
             "global_step": global_step,
-            "mean_training_loss": loss,
+            "mean_training_loss": losses["total"],
+            "mean_loss_components": dict(losses),
             "learning_rate": float(scheduler.get_last_lr()[0]),
             "evaluation": last_evaluation if should_evaluate else None,
         }

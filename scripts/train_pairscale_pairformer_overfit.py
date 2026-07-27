@@ -23,6 +23,9 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--epochs", type=int, default=200)
     parser.add_argument("--learning-rate", type=float, default=0.001)
     parser.add_argument("--positive-weight", type=float, default=1024.0)
+    parser.add_argument("--contact-ranking-weight", type=float, default=1.0)
+    parser.add_argument("--hard-negative-ratio", type=int, default=8)
+    parser.add_argument("--partner-ranking-weight", type=float, default=0.25)
     parser.add_argument("--eval-every", type=int, default=10)
     parser.add_argument("--checkpoint-every", type=int, default=10)
     parser.add_argument("--precision", choices=("fp32", "bf16"), default="bf16")
@@ -51,6 +54,9 @@ def main() -> None:
         epochs=arguments.epochs,
         learning_rate=arguments.learning_rate,
         positive_weight=arguments.positive_weight,
+        contact_ranking_weight=arguments.contact_ranking_weight,
+        hard_negative_ratio=arguments.hard_negative_ratio,
+        partner_ranking_weight=arguments.partner_ranking_weight,
         eval_every_epochs=arguments.eval_every,
         checkpoint_every_epochs=arguments.checkpoint_every,
         precision=arguments.precision,

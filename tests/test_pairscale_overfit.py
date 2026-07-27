@@ -10,6 +10,7 @@ from interaction_first.pairscale_overfit import (
     PairscaleOverfitConfig,
     contact_only_geometry_schema,
     deterministic_epoch_order,
+    hard_negative_contact_ranking_loss,
 )
 
 
@@ -47,6 +48,34 @@ def test_invalid_training_configuration_fails_closed(field: str, value: object) 
     payload[field] = value
     with pytest.raises(ValueError):
         PairscaleOverfitConfig(**payload).validate()
+
+
+@pytest.mark.skipif(
+    importlib.util.find_spec("torch") is None,
+    reason="PyTorch is unavailable",
+)
+def test_hard_negative_ranking_prefers_separated_contact_logits() -> None:
+    import torch
+
+    targets = torch.tensor([[[1.0, 0.0, 0.0, 1.0]]])
+    mask = torch.ones_like(targets, dtype=torch.bool)
+    separated = torch.tensor([[[4.0, -1.0, -2.0, 3.0]]])
+    inverted = -separated
+    separated_loss = hard_negative_contact_ranking_loss(
+        separated,
+        targets,
+        mask,
+        negative_ratio=2,
+        temperature=1.0,
+    )
+    inverted_loss = hard_negative_contact_ranking_loss(
+        inverted,
+        targets,
+        mask,
+        negative_ratio=2,
+        temperature=1.0,
+    )
+    assert float(separated_loss) < float(inverted_loss)
 
 
 @pytest.mark.skipif(
