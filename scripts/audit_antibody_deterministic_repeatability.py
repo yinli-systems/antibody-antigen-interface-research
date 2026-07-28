@@ -41,6 +41,22 @@ MEMBERSHIP_KEYS = (
     "sequence_count",
     "update",
 )
+STATE_COORDINATE_KEYS = (
+    "backend",
+    "batch_quantum",
+    "consumed_residue_tokens",
+    "efficiency_protocol_sha256",
+    "length_bucket_boundaries",
+    "micro_batch_per_gpu",
+    "model_family_sha256",
+    "next_update",
+    "preset",
+    "sample_cursor",
+    "shard_manifest_sha256",
+    "target_residue_tokens",
+    "training_protocol_sha256",
+    "world_size",
+)
 
 
 def _load(path: Path) -> dict[str, object]:
@@ -171,7 +187,17 @@ def main() -> None:
             all(left[key] == right[key] for key in TRACE_KEYS)
             for left, right in zip(compiled["trace"], repeat["trace"])
         ),
-        "trainer_state": states["compiled_cudagraph"] == states["compiled_no_cudagraph"],
+        "trainer_state_coordinates": all(
+            states["compiled_cudagraph"][key]
+            == states["compiled_no_cudagraph"][key]
+            for key in STATE_COORDINATE_KEYS
+        ),
+        "trainer_state_execution_mode": (
+            states["compiled_cudagraph"]["optimization"]
+            == _optimization("compiled_cudagraph")
+            and states["compiled_no_cudagraph"]["optimization"]
+            == _optimization("compiled_no_cudagraph")
+        ),
     }
     reference = receipts["eager"]
     thresholds = protocol["correctness_gate"]
