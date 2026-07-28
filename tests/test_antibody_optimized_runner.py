@@ -22,6 +22,7 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     for field in (
         "bucketed_padding",
         "compile_blocks",
+        "compile_prewarm_buckets",
         "ddp_bucket_cap_mb",
         "fsdp_output_dtype",
         "fused_adamw",
@@ -30,6 +31,7 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     ):
         assert f'"{field}"' in source
     assert '"launch_argv"' in source
+    assert '"compile_prewarm_trace"' in source
     assert '"membership_sha256"' in source
     assert '"peak_allocated_memory_mib"' in source
     assert '"production_pretraining": False' in source
@@ -48,6 +50,7 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     source = SLURM.read_text(encoding="ascii")
     assert "run_antibody_pretraining_optimized.py" in source
     assert "ABF_COMPILE_BLOCKS" in source
+    assert "ABF_COMPILE_PREWARM_BUCKETS" in source
     assert "ABF_FUSED_ADAMW" in source
     assert "ABF_PINNED_STAGING" in source
     assert "ABF_BUCKETED_PADDING" in source

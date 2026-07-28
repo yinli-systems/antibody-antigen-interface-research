@@ -58,6 +58,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--backend", choices=("ddp", "fsdp2"), required=True)
     parser.add_argument("--resume-root", type=Path)
     parser.add_argument("--compile-blocks", action="store_true")
+    parser.add_argument("--compile-prewarm-buckets", action="store_true")
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
     parser.add_argument("--bucketed-padding", action="store_true")
@@ -78,6 +79,8 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("Pilot dimensions must be positive")
     if args.batch_quantum <= 0 or args.ddp_bucket_cap_mb <= 0:
         raise ValueError("Batch quantum and DDP bucket size must be positive")
+    if args.compile_prewarm_buckets and not args.compile_blocks:
+        raise ValueError("Compile prewarm requires compiled Transformer blocks")
     return args
 
 
@@ -221,6 +224,46 @@ def _optimizer(
     )
 
 
+def _prewarm_compiled_buckets(
+    model: torch.nn.Module,
+    *,
+    boundaries: tuple[int, ...],
+    device: torch.device,
+    micro_batch: int,
+    world_size: int,
+) -> list[dict[str, float | int]]:
+    trace: list[dict[str, float | int]] = []
+    model.train()
+    for width in boundaries:
+        model.zero_grad(set_to_none=True)
+        input_ids = torch.ones(
+            (micro_batch, width),
+            dtype=torch.long,
+            device=device,
+        )
+        type_ids = torch.ones_like(input_ids)
+        attention = torch.ones_like(input_ids, dtype=torch.bool)
+        labels = torch.full_like(input_ids, -100)
+        labels[:, 0] = 1
+        started = time.perf_counter()
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            output = model(input_ids, type_ids, attention, labels)
+            loss = output.loss_sum * world_size / (micro_batch * world_size)
+        loss.backward()
+        torch.cuda.synchronize()
+        elapsed = time.perf_counter() - started
+        trace.append(
+            {
+                "micro_batch_per_gpu": micro_batch,
+                "seconds": elapsed,
+                "width": width,
+            }
+        )
+    model.zero_grad(set_to_none=True)
+    dist.barrier()
+    return trace
+
+
 def main() -> None:
     args = _arguments()
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
@@ -274,6 +317,16 @@ def main() -> None:
     )
     optimizer = _optimizer(model, protocol, args.preset, args.fused_adamw)
 
+    compile_prewarm_trace: list[dict[str, float | int]] = []
+    if args.compile_prewarm_buckets:
+        compile_prewarm_trace = _prewarm_compiled_buckets(
+            model,
+            boundaries=boundaries,
+            device=device,
+            micro_batch=args.micro_batch,
+            world_size=world_size,
+        )
+
     model_family_sha256 = _sha256(args.model_family)
     training_protocol_sha256 = _sha256(args.training_protocol)
     cursor = 0
@@ -290,6 +343,7 @@ def main() -> None:
             "optimization": {
                 "bucketed_padding": args.bucketed_padding,
                 "compile_blocks": args.compile_blocks,
+                "compile_prewarm_buckets": args.compile_prewarm_buckets,
                 "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
                 "fsdp_output_dtype": args.fsdp_output_dtype,
                 "fused_adamw": args.fused_adamw,
@@ -451,6 +505,7 @@ def main() -> None:
     optimization = {
         "bucketed_padding": args.bucketed_padding,
         "compile_blocks": args.compile_blocks,
+        "compile_prewarm_buckets": args.compile_prewarm_buckets,
         "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
         "fsdp_output_dtype": args.fsdp_output_dtype,
         "fused_adamw": args.fused_adamw,
@@ -487,6 +542,7 @@ def main() -> None:
                 "batch_quantum": args.batch_quantum,
                 "checkpoint_format": checkpoint_format,
                 "claim_boundary": "Repeated-shard systems candidate; no production-corpus, biological, or state-of-the-art claim",
+                "compile_prewarm_trace": compile_prewarm_trace,
                 "data_preparation_seconds": data_preparation_seconds,
                 "device": torch.cuda.get_device_name(device),
                 "efficiency_protocol_sha256": efficiency_protocol_sha256,
