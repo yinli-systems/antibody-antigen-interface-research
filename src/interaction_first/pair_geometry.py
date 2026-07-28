@@ -319,6 +319,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
         marginal_temperature: float = 1.0,
         partner_score_temperature: float = 1.0,
         centering_iterations: int = 16,
+        contact_logit_mode: str = "distance_mass",
     ) -> None:
         require_torch()
         super().__init__()
@@ -395,6 +396,14 @@ class ProspectivePairGeometryModel(_ModuleBase):
             partner_score_temperature,
             "partner_score_temperature",
         )
+        if contact_logit_mode not in {
+            "distance_mass",
+            "unary_plus_interaction_residual",
+        }:
+            raise ValueError(
+                "contact_logit_mode must be 'distance_mass' or "
+                "'unary_plus_interaction_residual'"
+            )
 
         self.antibody_input_dim = antibody_input_dim
         self.antigen_input_dim = antigen_input_dim
@@ -409,6 +418,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
         self.marginal_temperature = marginal_temperature
         self.partner_score_temperature = partner_score_temperature
         self.centering_iterations = centering_iterations
+        self.contact_logit_mode = contact_logit_mode
 
         self.antibody_projection = nn.Sequential(
             nn.LayerNorm(antibody_input_dim),
@@ -450,6 +460,14 @@ class ProspectivePairGeometryModel(_ModuleBase):
             num_orientation_axes * num_orientation_bins,
         )
         self.interaction_head = nn.Linear(pair_dim, 1)
+        if contact_logit_mode == "unary_plus_interaction_residual":
+            self.antibody_unary_head = nn.Linear(d_model, 1)
+            self.antigen_unary_head = nn.Linear(d_model, 1)
+            self.specificity_head = nn.Linear(pair_dim, 1)
+        else:
+            self.antibody_unary_head = None
+            self.antigen_unary_head = None
+            self.specificity_head = None
 
     def _validate_inputs(
         self,
@@ -526,10 +544,16 @@ class ProspectivePairGeometryModel(_ModuleBase):
             result["pair_interactions"] = self.interaction_head(
                 pair_state
             ).squeeze(-1).masked_fill(~chunk_mask, 0.0)
+            if self.specificity_head is not None:
+                result["specificity_interaction_residual_logits"] = (
+                    self.specificity_head(pair_state)
+                    .squeeze(-1)
+                    .masked_fill(~chunk_mask, 0.0)
+                )
         return result
 
-    @staticmethod
     def _validate_enabled_heads(
+        self,
         enabled_heads: Collection[str] | None,
     ) -> frozenset[str]:
         """Return a nonempty, dependency-closed set of decoder heads."""
@@ -549,11 +573,22 @@ class ProspectivePairGeometryModel(_ModuleBase):
         unknown = sorted(normalized - allowed)
         if unknown:
             raise ValueError(f"enabled_heads contains unknown heads: {unknown}")
-        if "contact" in normalized and "distance" not in normalized:
-            raise ValueError(
-                "The contact head requires the distance head because contact "
-                "probability is derived from distance-bin mass"
-            )
+        if "contact" in normalized:
+            if (
+                self.contact_logit_mode == "distance_mass"
+                and "distance" not in normalized
+            ):
+                raise ValueError(
+                    "The contact head requires the distance head because contact "
+                    "probability is derived from distance-bin mass"
+                )
+            if (
+                self.contact_logit_mode == "unary_plus_interaction_residual"
+                and "interaction" not in normalized
+            ):
+                raise ValueError(
+                    "The decomposed contact head requires the interaction head"
+                )
         return normalized
 
     def forward(
@@ -587,6 +622,27 @@ class ProspectivePairGeometryModel(_ModuleBase):
         )
         antibody = antibody.masked_fill(~antibody_mask.unsqueeze(-1), 0.0)
         antigen = antigen.masked_fill(~antigen_mask.unsqueeze(-1), 0.0)
+        antibody_monomer = None
+        antigen_monomer = None
+        antibody_unary_logits = None
+        antigen_unary_logits = None
+        if self.contact_logit_mode == "unary_plus_interaction_residual":
+            if self.antibody_unary_head is None or self.antigen_unary_head is None:
+                raise RuntimeError("Decomposed contact heads were not initialized")
+            antibody_monomer = self.antibody_final_norm(antibody).masked_fill(
+                ~antibody_mask.unsqueeze(-1),
+                0.0,
+            )
+            antigen_monomer = self.antigen_final_norm(antigen).masked_fill(
+                ~antigen_mask.unsqueeze(-1),
+                0.0,
+            )
+            antibody_unary_logits = self.antibody_unary_head(
+                antibody_monomer
+            ).squeeze(-1).masked_fill(~antibody_mask, 0.0)
+            antigen_unary_logits = self.antigen_unary_head(
+                antigen_monomer
+            ).squeeze(-1).masked_fill(~antigen_mask, 0.0)
         for fusion_layer in self.fusion_layers:
             antibody, antigen = fusion_layer(
                 antibody,
@@ -612,6 +668,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
                 "distance_bin_logits",
                 "orientation_bin_logits",
                 "pair_interactions",
+                "specificity_interaction_residual_logits",
             )
         }
         antibody_length = int(antibody.shape[1])
@@ -649,7 +706,11 @@ class ProspectivePairGeometryModel(_ModuleBase):
             "paratope_mask": candidate_pair_mask.any(dim=2),
             "antibody_residue_representations": antibody,
             "antigen_residue_representations": antigen,
+            "contact_logit_mode": self.contact_logit_mode,
         }
+        if antibody_monomer is not None and antigen_monomer is not None:
+            output["antibody_monomer_representations"] = antibody_monomer
+            output["antigen_monomer_representations"] = antigen_monomer
         distance_logits = (
             torch.cat(head_chunks["distance_bin_logits"], dim=1)
             if head_chunks["distance_bin_logits"]
@@ -663,6 +724,14 @@ class ProspectivePairGeometryModel(_ModuleBase):
         pair_interactions = (
             torch.cat(head_chunks["pair_interactions"], dim=1)
             if head_chunks["pair_interactions"]
+            else None
+        )
+        specificity_interactions = (
+            torch.cat(
+                head_chunks["specificity_interaction_residual_logits"],
+                dim=1,
+            )
+            if head_chunks["specificity_interaction_residual_logits"]
             else None
         )
         distance_probabilities = None
@@ -700,20 +769,42 @@ class ProspectivePairGeometryModel(_ModuleBase):
                 dim=-1
             ).masked_fill(~candidate_pair_mask, 0.0)
         if "contact" in enabled_heads:
-            if distance_logits is None:
-                raise RuntimeError("Internal contact-to-distance dependency failed")
-            contact_log_mass = torch.logsumexp(
-                distance_logits[..., : self.contact_distance_bin_count],
-                dim=-1,
-            )
-            noncontact_log_mass = torch.logsumexp(
-                distance_logits[..., self.contact_distance_bin_count :],
-                dim=-1,
-            )
-            contact_logits = (contact_log_mass - noncontact_log_mass).masked_fill(
-                ~candidate_pair_mask,
-                0.0,
-            )
+            if self.contact_logit_mode == "distance_mass":
+                if distance_logits is None:
+                    raise RuntimeError("Internal contact-to-distance dependency failed")
+                contact_log_mass = torch.logsumexp(
+                    distance_logits[..., : self.contact_distance_bin_count],
+                    dim=-1,
+                )
+                noncontact_log_mass = torch.logsumexp(
+                    distance_logits[..., self.contact_distance_bin_count :],
+                    dim=-1,
+                )
+                contact_logits = (
+                    contact_log_mass - noncontact_log_mass
+                ).masked_fill(
+                    ~candidate_pair_mask,
+                    0.0,
+                )
+                output["contact_logit_source"] = "distance_bin_mass_ratio"
+            else:
+                if (
+                    antibody_unary_logits is None
+                    or antigen_unary_logits is None
+                    or pair_interactions is None
+                ):
+                    raise RuntimeError("Internal contact decomposition failed")
+                contact_logits = (
+                    antibody_unary_logits.unsqueeze(2)
+                    + antigen_unary_logits.unsqueeze(1)
+                    + pair_interactions
+                ).masked_fill(~candidate_pair_mask, 0.0)
+                output["antibody_unary_logits"] = antibody_unary_logits
+                output["antigen_unary_logits"] = antigen_unary_logits
+                output["contact_interaction_residual_logits"] = pair_interactions
+                output["contact_logit_source"] = (
+                    "antibody_unary_plus_antigen_unary_plus_interaction_residual"
+                )
             output["contact_logits"] = contact_logits
             output["contact_probabilities"] = _masked_probabilities(
                 contact_logits,
@@ -747,13 +838,37 @@ class ProspectivePairGeometryModel(_ModuleBase):
                 0.0,
             )
         if pair_interactions is not None:
-            centered_interactions, partner_score = double_centered_partner_score(
-                pair_interactions,
+            centered_pair_interactions, pair_interaction_score = (
+                double_centered_partner_score(
+                    pair_interactions,
+                    candidate_pair_mask,
+                    temperature=self.partner_score_temperature,
+                    centering_iterations=self.centering_iterations,
+                )
+            )
+            output["pair_interactions"] = pair_interactions
+            output["double_centered_pair_interactions"] = (
+                centered_pair_interactions
+            )
+            output["pair_interaction_score"] = pair_interaction_score
+        if specificity_interactions is not None:
+            centered_specificity, partner_score = double_centered_partner_score(
+                specificity_interactions,
                 candidate_pair_mask,
                 temperature=self.partner_score_temperature,
                 centering_iterations=self.centering_iterations,
             )
-            output["pair_interactions"] = pair_interactions
-            output["double_centered_pair_interactions"] = centered_interactions
             output["partner_score"] = partner_score
+            output["specificity_interaction_residual_logits"] = (
+                specificity_interactions
+            )
+            output[
+                "double_centered_specificity_interaction_residual_logits"
+            ] = centered_specificity
+            output["partner_score_source"] = (
+                "double_centered_independent_specificity_interaction_residual"
+            )
+        elif pair_interactions is not None:
+            output["partner_score"] = output["pair_interaction_score"]
+            output["partner_score_source"] = "double_centered_pair_interactions"
         return output
