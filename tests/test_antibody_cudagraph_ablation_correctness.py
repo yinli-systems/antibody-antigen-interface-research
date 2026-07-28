@@ -11,6 +11,9 @@ RESULT = (
 BUCKET144_RESULT = (
     ROOT / "results/pretraining/antibody_bucket144_correctness_v1.json"
 )
+DETERMINISTIC_RESULT = (
+    ROOT / "results/pretraining/antibody_deterministic_correctness_v1.json"
+)
 
 
 def test_cudagraph_ablation_auditor_is_ascii_and_syntax_valid() -> None:
@@ -64,5 +67,19 @@ def test_bucket144_candidate_preserves_membership_and_numerics() -> None:
     assert result["comparison_to_eager"][
         "final_loss_absolute_difference"
     ] < 0.000003
+    assert result["authorization"]["benchmark_500_updates"] is True
+    assert result["authorization"]["scale_16_gpu"] is False
+
+
+def test_deterministic_candidate_passes_numerical_correctness_only() -> None:
+    import json
+
+    result = json.loads(DETERMINISTIC_RESULT.read_text(encoding="ascii"))
+    assert result["required_deterministic_algorithms"] is True
+    assert result["membership_equal"] is True
+    assert result["comparison_to_eager"]["passed"] is True
+    assert result["summaries"]["compiled_no_cudagraph"][
+        "throughput_relative_to_eager"
+    ] < 1.04
     assert result["authorization"]["benchmark_500_updates"] is True
     assert result["authorization"]["scale_16_gpu"] is False
