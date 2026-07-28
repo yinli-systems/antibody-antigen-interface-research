@@ -19,6 +19,9 @@ ATTEMPT_FOUR = (
 ATTEMPT_FIVE = (
     ROOT / "results/pretraining/antibody_optimized_recovery_attempt_005_v1.json"
 )
+ATTEMPT_SIX = (
+    ROOT / "results/pretraining/antibody_optimized_rank_parity_attempt_006_v1.json"
+)
 
 
 def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
@@ -172,5 +175,32 @@ def test_fifth_attempt_proves_save_payload_before_load_mismatch() -> None:
         "serialized_optimizer_payload": False,
         "trainer_state": True,
     }
+    assert result["authorization"]["pilot_16_gpu"] is False
+    assert result["authorization"]["pilot_32_gpu"] is False
+
+
+def test_sixth_attempt_reproduces_rank_divergence_on_two_nodes() -> None:
+    import hashlib
+    import json
+
+    result = json.loads(ATTEMPT_SIX.read_text(encoding="ascii"))
+    assert result["failure"] == (
+        "Replicated final model state differs across DDP ranks"
+    )
+    assert [attempt["job_id"] for attempt in result["attempts"]] == [
+        "1336940",
+        "1336944",
+    ]
+    assert {attempt["hostname"] for attempt in result["attempts"]} == {
+        "wqd10nah10g2",
+        "wqd10nbj04g4",
+    }
+    for attempt, suffix in zip(result["attempts"], ("vip", "public")):
+        log = ROOT / (
+            "results/pretraining/"
+            f"antibody_optimized_rank_parity_attempt_006_{suffix}.err.txt"
+        )
+        assert hashlib.sha256(log.read_bytes()).hexdigest() == attempt["log_sha256"]
+        assert result["failure"] in log.read_text(encoding="ascii")
     assert result["authorization"]["pilot_16_gpu"] is False
     assert result["authorization"]["pilot_32_gpu"] is False
