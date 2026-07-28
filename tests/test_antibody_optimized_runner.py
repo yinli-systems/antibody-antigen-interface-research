@@ -80,6 +80,8 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     assert "torch.cuda.get_rng_state(device)" in source
     assert "_restore_rng_checkpoint(" in source
     assert '"checkpoint_rng_manifest_sha256"' in source
+    assert '"resume_loaded_model_sha256"' in source
+    assert '"resume_loaded_optimizer_sha256"' in source
     assert '"resume_rng_manifest_sha256"' in source
 
 

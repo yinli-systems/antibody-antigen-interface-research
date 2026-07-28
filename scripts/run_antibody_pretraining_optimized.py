@@ -538,6 +538,8 @@ def main() -> None:
     cursor = 0
     consumed = 0
     start_update = 0
+    resume_loaded_model_sha256 = None
+    resume_loaded_optimizer_sha256 = None
     resume_rng_manifest_sha256 = None
     if args.resume_root is not None:
         state = json.loads(
@@ -574,6 +576,13 @@ def main() -> None:
         consumed = int(state["consumed_residue_tokens"])
         start_update = int(state["next_update"])
         _load_dcp(model, optimizer, args.resume_root / "checkpoint")
+        module = model.module if hasattr(model, "module") else model
+        resume_loaded_model_sha256 = _distributed_tree_digest(
+            module.state_dict(), args.backend, rank
+        )
+        resume_loaded_optimizer_sha256 = _distributed_tree_digest(
+            optimizer.state_dict(), args.backend, rank
+        )
         resume_rng_manifest_sha256 = _restore_rng_checkpoint(
             args.resume_root / "checkpoint",
             rank=rank,
@@ -808,6 +817,10 @@ def main() -> None:
                 / (1024 * 1024),
                 "preset": args.preset,
                 "resume_used": args.resume_root is not None,
+                "resume_loaded_model_sha256": resume_loaded_model_sha256,
+                "resume_loaded_optimizer_sha256": (
+                    resume_loaded_optimizer_sha256
+                ),
                 "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
                 "runtime": {
                     "cuda": torch.version.cuda,

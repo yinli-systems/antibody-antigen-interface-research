@@ -28,6 +28,8 @@ def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"run_hostname"' in source
     assert '"--rng-manifest"' in source
     assert '"rng_manifest"' in source
+    assert '"loaded_model"' in source
+    assert '"loaded_optimizer"' in source
     assert 'f"rng/rank-{expected_rank:05d}.json"' in source
     assert "Recovery RNG rank file differs" in source
     assert "recorded_state_sha256 != observed_state_sha256" in source
