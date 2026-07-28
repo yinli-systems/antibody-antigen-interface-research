@@ -68,6 +68,25 @@ def _trace_equal(left: list[dict[str, object]], right: list[dict[str, object]]) 
     )
 
 
+def _validate_rank_digests(
+    receipt: dict[str, object],
+    *,
+    field: str,
+    scalar_field: str,
+    required: bool,
+) -> None:
+    values = receipt.get(field)
+    if required:
+        if (
+            not isinstance(values, list)
+            or len(values) != 8
+            or set(values) != {receipt.get(scalar_field)}
+        ):
+            raise RuntimeError(f"{field} does not prove eight-rank parity")
+    elif values is not None:
+        raise RuntimeError(f"Unexpected {field}")
+
+
 def _validate_receipt(
     receipt: dict[str, object],
     *,
@@ -142,6 +161,47 @@ def _validate_receipt(
                 raise RuntimeError(f"{label} DCP payload digests are invalid")
         elif digests != (None, None):
             raise RuntimeError(f"Unexpected {label} DCP payload digests")
+    rank_digest_groups = (
+        ("final_model", "final_model", True),
+        ("final_optimizer", "final_optimizer", True),
+        (
+            "checkpoint_payload_model",
+            "checkpoint_payload_model",
+            checkpoint_payload_digests_required,
+        ),
+        (
+            "checkpoint_payload_optimizer",
+            "checkpoint_payload_optimizer",
+            checkpoint_payload_digests_required,
+        ),
+        (
+            "resume_loaded_model",
+            "resume_loaded_model",
+            resume_loaded_digests_required,
+        ),
+        (
+            "resume_loaded_optimizer",
+            "resume_loaded_optimizer",
+            resume_loaded_digests_required,
+        ),
+        (
+            "resume_payload_model",
+            "resume_payload_model",
+            resume_payload_digests_required,
+        ),
+        (
+            "resume_payload_optimizer",
+            "resume_payload_optimizer",
+            resume_payload_digests_required,
+        ),
+    )
+    for field_prefix, scalar_prefix, required in rank_digest_groups:
+        _validate_rank_digests(
+            receipt,
+            field=f"{field_prefix}_rank_sha256",
+            scalar_field=f"{scalar_prefix}_sha256",
+            required=required,
+        )
     if receipt.get("parameter_moments", {}).get("count") != PARAMETER_COUNT:
         raise RuntimeError("Optimized recovery parameter count differs")
     if [item["update"] for item in receipt.get("trace", [])] != updates:

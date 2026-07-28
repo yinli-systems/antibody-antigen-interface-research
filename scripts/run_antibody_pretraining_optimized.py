@@ -39,6 +39,7 @@ from run_antibody_pretraining import (
     _parameter_moments,
     _publish,
     _sha256,
+    _tree_digest,
 )
 
 
@@ -240,6 +241,16 @@ def _optimizer(
     )
 
 
+def _replicated_rank_digests(value: object, label: str) -> list[str]:
+    """Prove that every DDP rank holds the same complete state tree."""
+    local_sha256 = _tree_digest(value)
+    gathered: list[str | None] = [None] * dist.get_world_size()
+    dist.all_gather_object(gathered, local_sha256)
+    if any(value is None for value in gathered) or len(set(gathered)) != 1:
+        raise RuntimeError(f"Replicated {label} state differs across DDP ranks")
+    return [str(value) for value in gathered]
+
+
 def _save_authenticated_dcp(
     model: torch.nn.Module,
     optimizer: torch.optim.Optimizer,
@@ -247,19 +258,41 @@ def _save_authenticated_dcp(
     *,
     backend: str,
     rank: int,
-) -> tuple[str | None, str | None]:
+) -> tuple[str | None, str | None, list[str] | None, list[str] | None]:
     """Save DCP state and return canonical pre-serialization digests."""
     import torch.distributed.checkpoint as dcp
     from torch.distributed.checkpoint.state_dict import get_state_dict
 
     model_state, optimizer_state = get_state_dict(model, optimizer)
-    model_sha256 = _distributed_tree_digest(model_state, backend, rank)
-    optimizer_sha256 = _distributed_tree_digest(optimizer_state, backend, rank)
-    dcp.save(
-        {"model": model_state, "optimizer": optimizer_state},
-        checkpoint_id=str(checkpoint_root),
+    model_rank_sha256 = None
+    optimizer_rank_sha256 = None
+    if backend == "ddp":
+        model_rank_sha256 = _replicated_rank_digests(model_state, "DCP model")
+        optimizer_rank_sha256 = _replicated_rank_digests(
+            optimizer_state, "DCP optimizer"
+        )
+        model_sha256 = model_rank_sha256[0]
+        optimizer_sha256 = optimizer_rank_sha256[0]
+        if rank == 0:
+            dcp.save(
+                {"model": model_state, "optimizer": optimizer_state},
+                checkpoint_id=str(checkpoint_root),
+                no_dist=True,
+            )
+        dist.barrier()
+    else:
+        model_sha256 = _distributed_tree_digest(model_state, backend, rank)
+        optimizer_sha256 = _distributed_tree_digest(optimizer_state, backend, rank)
+        dcp.save(
+            {"model": model_state, "optimizer": optimizer_state},
+            checkpoint_id=str(checkpoint_root),
+        )
+    return (
+        model_sha256,
+        optimizer_sha256,
+        model_rank_sha256,
+        optimizer_rank_sha256,
     )
-    return model_sha256, optimizer_sha256
 
 
 def _load_authenticated_dcp(
@@ -269,23 +302,46 @@ def _load_authenticated_dcp(
     *,
     backend: str,
     rank: int,
-) -> tuple[str | None, str | None]:
+) -> tuple[str | None, str | None, list[str] | None, list[str] | None]:
     """Load DCP state and hash the canonical payload before applying it."""
     import torch.distributed.checkpoint as dcp
     from torch.distributed.checkpoint.state_dict import get_state_dict, set_state_dict
 
     model_state, optimizer_state = get_state_dict(model, optimizer)
     state = {"model": model_state, "optimizer": optimizer_state}
-    dcp.load(state, checkpoint_id=str(checkpoint_root))
-    model_sha256 = _distributed_tree_digest(state["model"], backend, rank)
-    optimizer_sha256 = _distributed_tree_digest(state["optimizer"], backend, rank)
+    dcp.load(
+        state,
+        checkpoint_id=str(checkpoint_root),
+        no_dist=backend == "ddp",
+    )
+    model_rank_sha256 = None
+    optimizer_rank_sha256 = None
+    if backend == "ddp":
+        model_rank_sha256 = _replicated_rank_digests(
+            state["model"], "loaded DCP model payload"
+        )
+        optimizer_rank_sha256 = _replicated_rank_digests(
+            state["optimizer"], "loaded DCP optimizer payload"
+        )
+        model_sha256 = model_rank_sha256[0]
+        optimizer_sha256 = optimizer_rank_sha256[0]
+    else:
+        model_sha256 = _distributed_tree_digest(state["model"], backend, rank)
+        optimizer_sha256 = _distributed_tree_digest(
+            state["optimizer"], backend, rank
+        )
     set_state_dict(
         model,
         optimizer,
         model_state_dict=state["model"],
         optim_state_dict=state["optimizer"],
     )
-    return model_sha256, optimizer_sha256
+    return (
+        model_sha256,
+        optimizer_sha256,
+        model_rank_sha256,
+        optimizer_rank_sha256,
+    )
 
 
 def _prewarm_compiled_buckets(
@@ -576,8 +632,12 @@ def main() -> None:
     start_update = 0
     resume_loaded_model_sha256 = None
     resume_loaded_optimizer_sha256 = None
+    resume_loaded_model_rank_sha256 = None
+    resume_loaded_optimizer_rank_sha256 = None
     resume_payload_model_sha256 = None
     resume_payload_optimizer_sha256 = None
+    resume_payload_model_rank_sha256 = None
+    resume_payload_optimizer_rank_sha256 = None
     resume_rng_manifest_sha256 = None
     if args.resume_root is not None:
         state = json.loads(
@@ -616,6 +676,8 @@ def main() -> None:
         (
             resume_payload_model_sha256,
             resume_payload_optimizer_sha256,
+            resume_payload_model_rank_sha256,
+            resume_payload_optimizer_rank_sha256,
         ) = _load_authenticated_dcp(
             model,
             optimizer,
@@ -624,12 +686,24 @@ def main() -> None:
             rank=rank,
         )
         module = model.module if hasattr(model, "module") else model
-        resume_loaded_model_sha256 = _distributed_tree_digest(
-            module.state_dict(), args.backend, rank
-        )
-        resume_loaded_optimizer_sha256 = _distributed_tree_digest(
-            optimizer.state_dict(), args.backend, rank
-        )
+        if args.backend == "ddp":
+            resume_loaded_model_rank_sha256 = _replicated_rank_digests(
+                module.state_dict(), "applied model"
+            )
+            resume_loaded_optimizer_rank_sha256 = _replicated_rank_digests(
+                optimizer.state_dict(), "applied optimizer"
+            )
+            resume_loaded_model_sha256 = resume_loaded_model_rank_sha256[0]
+            resume_loaded_optimizer_sha256 = (
+                resume_loaded_optimizer_rank_sha256[0]
+            )
+        else:
+            resume_loaded_model_sha256 = _distributed_tree_digest(
+                module.state_dict(), args.backend, rank
+            )
+            resume_loaded_optimizer_sha256 = _distributed_tree_digest(
+                optimizer.state_dict(), args.backend, rank
+            )
         resume_rng_manifest_sha256 = _restore_rng_checkpoint(
             args.resume_root / "checkpoint",
             rank=rank,
@@ -782,12 +856,24 @@ def main() -> None:
     rng_state = _rng_state_payload(rank, device)
     parameter_moments = _parameter_moments(model, args.backend, rank)
     module = model.module if hasattr(model, "module") else model
-    final_model_sha256 = _distributed_tree_digest(
-        module.state_dict(), args.backend, rank
-    )
-    final_optimizer_sha256 = _distributed_tree_digest(
-        optimizer.state_dict(), args.backend, rank
-    )
+    final_model_rank_sha256 = None
+    final_optimizer_rank_sha256 = None
+    if args.backend == "ddp":
+        final_model_rank_sha256 = _replicated_rank_digests(
+            module.state_dict(), "final model"
+        )
+        final_optimizer_rank_sha256 = _replicated_rank_digests(
+            optimizer.state_dict(), "final optimizer"
+        )
+        final_model_sha256 = final_model_rank_sha256[0]
+        final_optimizer_sha256 = final_optimizer_rank_sha256[0]
+    else:
+        final_model_sha256 = _distributed_tree_digest(
+            module.state_dict(), args.backend, rank
+        )
+        final_optimizer_sha256 = _distributed_tree_digest(
+            optimizer.state_dict(), args.backend, rank
+        )
     optimization = {
         "bucketed_padding": args.bucketed_padding,
         "compile_blocks": args.compile_blocks,
@@ -803,6 +889,8 @@ def main() -> None:
     checkpoint_format = None
     checkpoint_payload_model_sha256 = None
     checkpoint_payload_optimizer_sha256 = None
+    checkpoint_payload_model_rank_sha256 = None
+    checkpoint_payload_optimizer_rank_sha256 = None
     checkpoint_rng_manifest_sha256 = None
     if not args.skip_checkpoint:
         checkpoint_format = "torch_distributed_checkpoint"
@@ -810,6 +898,8 @@ def main() -> None:
         (
             checkpoint_payload_model_sha256,
             checkpoint_payload_optimizer_sha256,
+            checkpoint_payload_model_rank_sha256,
+            checkpoint_payload_optimizer_rank_sha256,
         ) = _save_authenticated_dcp(
             model,
             optimizer,
@@ -864,6 +954,12 @@ def main() -> None:
                 "checkpoint_payload_optimizer_sha256": (
                     checkpoint_payload_optimizer_sha256
                 ),
+                "checkpoint_payload_model_rank_sha256": (
+                    checkpoint_payload_model_rank_sha256
+                ),
+                "checkpoint_payload_optimizer_rank_sha256": (
+                    checkpoint_payload_optimizer_rank_sha256
+                ),
                 "checkpoint_rng_manifest_sha256": (
                     checkpoint_rng_manifest_sha256
                 ),
@@ -876,7 +972,9 @@ def main() -> None:
                 ),
                 "efficiency_protocol_sha256": efficiency_protocol_sha256,
                 "final_model_sha256": final_model_sha256,
+                "final_model_rank_sha256": final_model_rank_sha256,
                 "final_optimizer_sha256": final_optimizer_sha256,
+                "final_optimizer_rank_sha256": final_optimizer_rank_sha256,
                 "format_version": "antibody_pretraining_optimized_pilot_v1",
                 "launch_argv": sys.argv[1:],
                 "length_bucket_boundaries": list(boundaries),
@@ -892,12 +990,24 @@ def main() -> None:
                 "preset": args.preset,
                 "resume_used": args.resume_root is not None,
                 "resume_loaded_model_sha256": resume_loaded_model_sha256,
+                "resume_loaded_model_rank_sha256": (
+                    resume_loaded_model_rank_sha256
+                ),
                 "resume_loaded_optimizer_sha256": (
                     resume_loaded_optimizer_sha256
                 ),
+                "resume_loaded_optimizer_rank_sha256": (
+                    resume_loaded_optimizer_rank_sha256
+                ),
                 "resume_payload_model_sha256": resume_payload_model_sha256,
+                "resume_payload_model_rank_sha256": (
+                    resume_payload_model_rank_sha256
+                ),
                 "resume_payload_optimizer_sha256": (
                     resume_payload_optimizer_sha256
+                ),
+                "resume_payload_optimizer_rank_sha256": (
+                    resume_payload_optimizer_rank_sha256
                 ),
                 "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
                 "runtime": {

@@ -86,6 +86,10 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     assert '"checkpoint_payload_optimizer_sha256"' in source
     assert '"resume_payload_model_sha256"' in source
     assert '"resume_payload_optimizer_sha256"' in source
+    assert '"final_model_rank_sha256"' in source
+    assert '"final_optimizer_rank_sha256"' in source
+    assert "_replicated_rank_digests(" in source
+    assert "no_dist=backend == \"ddp\"" in source
     assert '"resume_rng_manifest_sha256"' in source
     main_start = source.index("def main()")
     assert source.index(") = _load_authenticated_dcp(", main_start) < source.index(
