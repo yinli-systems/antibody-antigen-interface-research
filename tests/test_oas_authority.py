@@ -8,6 +8,7 @@ from antibody_pretraining.oas_authority import (
     OASAuthorityError,
     build_oas_authority_manifest,
     canonical_json_bytes,
+    validate_oas_authority_manifest,
     verify_manifest_self_hash,
 )
 
@@ -57,6 +58,7 @@ def test_build_authority_cross_checks_script_table_and_counts() -> None:
         "StudyB_2021",
     ]
     assert verify_manifest_self_hash(manifest)
+    validate_oas_authority_manifest(manifest)
     assert canonical_json_bytes(manifest).endswith(b"\n")
 
 
@@ -96,6 +98,25 @@ def test_manifest_self_hash_rejects_any_mutation() -> None:
     mutated["data_units"][0]["unique_sequences"] += 1
 
     assert not verify_manifest_self_hash(mutated)
+    with pytest.raises(OASAuthorityError, match="self-hash"):
+        validate_oas_authority_manifest(mutated)
+
+
+def test_manifest_validator_rejects_rehashed_semantic_tamper() -> None:
+    manifest = build_oas_authority_manifest(_html(), source_class="unpaired")
+    manifest["data_units"][0]["canonical_url"] = manifest["data_units"][1][
+        "canonical_url"
+    ]
+    unhashed = dict(manifest)
+    del unhashed["manifest_sha256"]
+    import hashlib
+
+    manifest["manifest_sha256"] = hashlib.sha256(
+        canonical_json_bytes(unhashed)
+    ).hexdigest()
+
+    with pytest.raises(OASAuthorityError, match="URL and path disagree"):
+        validate_oas_authority_manifest(manifest)
 
 
 def test_authority_rejects_unknown_source_class_and_malformed_html() -> None:

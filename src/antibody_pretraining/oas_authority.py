@@ -392,3 +392,98 @@ def verify_manifest_self_hash(manifest: Mapping[str, Any]) -> bool:
     del unhashed["manifest_sha256"]
     return _sha256(canonical_json_bytes(unhashed)) == claimed
 
+
+def validate_oas_authority_manifest(manifest: Mapping[str, Any]) -> None:
+    """Validate a loaded authority without trusting its embedded digest alone."""
+    if not isinstance(manifest, Mapping) or not verify_manifest_self_hash(manifest):
+        raise OASAuthorityError("Authority manifest self-hash is invalid")
+    if manifest.get("format_version") != FORMAT_VERSION:
+        raise OASAuthorityError("Authority manifest format is unsupported")
+    source = manifest.get("source")
+    if not isinstance(source, Mapping):
+        raise OASAuthorityError("Authority source block is missing")
+    source_class = _strict_source_class(source.get("source_class"))
+    if (
+        source.get("database") != "Observed Antibody Space"
+        or source.get("license") != "CC-BY-4.0"
+        or source.get("search_url") != SOURCE_SEARCH_URLS[source_class]
+        or not isinstance(source.get("raw_response_sha256"), str)
+        or not re.fullmatch(r"[0-9a-f]{64}", source["raw_response_sha256"])
+    ):
+        raise OASAuthorityError("Authority source block is inconsistent")
+    data_units = manifest.get("data_units")
+    if not isinstance(data_units, list) or not data_units:
+        raise OASAuthorityError("Authority contains no data units")
+
+    canonical_urls: list[str] = []
+    observed_studies: set[str] = set()
+    unique_sequence_sum = 0
+    previous_url: str | None = None
+    for index, entry in enumerate(data_units):
+        if not isinstance(entry, Mapping):
+            raise OASAuthorityError(f"Data unit {index} is not an object")
+        if set(entry) != {
+            "canonical_url",
+            "metadata",
+            "relative_unit",
+            "study",
+            "unique_sequences",
+        }:
+            raise OASAuthorityError(f"Data unit {index} has an unexpected schema")
+        relative_unit = entry["relative_unit"]
+        if not isinstance(relative_unit, str):
+            raise OASAuthorityError(f"Data unit {index} path is not text")
+        _validate_relative_unit(relative_unit)
+        expected_url = _canonical_official_url(
+            DIRECT_PREFIXES[source_class] + relative_unit,
+            source_class,
+        )
+        if entry["canonical_url"] != expected_url:
+            raise OASAuthorityError(f"Data unit {index} URL and path disagree")
+        if previous_url is not None and expected_url <= previous_url:
+            raise OASAuthorityError("Authority data units are not strictly sorted")
+        previous_url = expected_url
+        canonical_urls.append(expected_url)
+        study = entry["study"]
+        if (
+            not isinstance(study, str)
+            or not study
+            or relative_unit.split("/", 1)[0] != study
+        ):
+            raise OASAuthorityError(f"Data unit {index} study and path disagree")
+        observed_studies.add(study)
+        unique_sequences = entry["unique_sequences"]
+        if (
+            isinstance(unique_sequences, bool)
+            or not isinstance(unique_sequences, int)
+            or unique_sequences < 0
+        ):
+            raise OASAuthorityError(
+                f"Data unit {index} has an invalid unique sequence count"
+            )
+        unique_sequence_sum += unique_sequences
+        metadata = entry["metadata"]
+        if (
+            not isinstance(metadata, Mapping)
+            or any(
+                not isinstance(key, str) or not isinstance(value, str)
+                for key, value in metadata.items()
+            )
+        ):
+            raise OASAuthorityError(f"Data unit {index} metadata is invalid")
+
+    if len(canonical_urls) != len(set(canonical_urls)):
+        raise OASAuthorityError("Authority data-unit URLs are not unique")
+    studies = manifest.get("studies")
+    if studies != sorted(observed_studies):
+        raise OASAuthorityError("Authority study inventory is inconsistent")
+    summary = manifest.get("summary")
+    expected_summary = {
+        "data_unit_count": len(data_units),
+        "headline_study_count": len(observed_studies),
+        "headline_unique_sequence_count": unique_sequence_sum,
+        "observed_study_count": len(observed_studies),
+        "table_unique_sequence_count_sum": unique_sequence_sum,
+    }
+    if summary != expected_summary:
+        raise OASAuthorityError("Authority summary is inconsistent")
