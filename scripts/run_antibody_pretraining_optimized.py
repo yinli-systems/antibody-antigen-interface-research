@@ -247,8 +247,21 @@ def _replicated_rank_digests(value: object, label: str) -> list[str]:
     gathered: list[str | None] = [None] * dist.get_world_size()
     dist.all_gather_object(gathered, local_sha256)
     if any(value is None for value in gathered) or len(set(gathered)) != 1:
-        raise RuntimeError(f"Replicated {label} state differs across DDP ranks")
+        detail = json.dumps(gathered, separators=(",", ":"))
+        raise RuntimeError(
+            f"Replicated {label} state differs across DDP ranks: {detail}"
+        )
     return [str(value) for value in gathered]
+
+
+def _assert_scalar_rank_parity(value: float, label: str) -> list[float]:
+    """Fail when a deterministic DDP scalar differs exactly across ranks."""
+    gathered: list[float | None] = [None] * dist.get_world_size()
+    dist.all_gather_object(gathered, value)
+    if any(item is None for item in gathered) or len(set(gathered)) != 1:
+        detail = json.dumps(gathered, separators=(",", ":"))
+        raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+    return [float(item) for item in gathered]
 
 
 def _save_authenticated_dcp(
@@ -624,6 +637,12 @@ def main() -> None:
         world_size=world_size,
     )
     optimizer = _optimizer(model, protocol, args.preset, args.fused_adamw)
+    initial_model_rank_sha256 = None
+    if args.backend == "ddp":
+        module = model.module if hasattr(model, "module") else model
+        initial_model_rank_sha256 = _replicated_rank_digests(
+            module.state_dict(), "initial model"
+        )
 
     model_family_sha256 = _sha256(args.model_family)
     training_protocol_sha256 = _sha256(args.training_protocol)
@@ -830,6 +849,11 @@ def main() -> None:
                 protocol["gradient_clip_norm"],
             )
         )
+        if args.backend == "ddp" and args.deterministic_algorithms:
+            _assert_scalar_rank_parity(
+                gradient_norm,
+                f"post-reduction gradient norm at update {update + 1}",
+            )
         optimizer.step()
         torch.cuda.synchronize()
         elapsed = time.perf_counter() - started
@@ -976,6 +1000,7 @@ def main() -> None:
                 "final_optimizer_sha256": final_optimizer_sha256,
                 "final_optimizer_rank_sha256": final_optimizer_rank_sha256,
                 "format_version": "antibody_pretraining_optimized_pilot_v1",
+                "initial_model_rank_sha256": initial_model_rank_sha256,
                 "launch_argv": sys.argv[1:],
                 "length_bucket_boundaries": list(boundaries),
                 "membership_sha256": membership_digest.hexdigest(),

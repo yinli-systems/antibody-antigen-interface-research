@@ -88,7 +88,11 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     assert '"resume_payload_optimizer_sha256"' in source
     assert '"final_model_rank_sha256"' in source
     assert '"final_optimizer_rank_sha256"' in source
+    assert '"initial_model_rank_sha256"' in source
     assert "_replicated_rank_digests(" in source
+    assert "_assert_scalar_rank_parity(" in source
+    assert "post-reduction gradient norm at update" in source
+    assert "json.dumps(gathered" in source
     assert "no_dist=backend == \"ddp\"" in source
     assert '"resume_rng_manifest_sha256"' in source
     main_start = source.index("def main()")
