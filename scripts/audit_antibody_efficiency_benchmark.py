@@ -109,7 +109,12 @@ def _telemetry(path: Path) -> dict[str, float | int | str]:
     }
 
 
-def _validate_receipt(receipt: dict[str, object], protocol_sha256: str) -> None:
+def _validate_receipt(
+    name: str,
+    receipt: dict[str, object],
+    protocol_sha256: str,
+    require_disabled_compiled_cudagraphs: bool,
+) -> None:
     expected = {
         "backend": "ddp",
         "batch_quantum": 128,
@@ -130,6 +135,36 @@ def _validate_receipt(receipt: dict[str, object], protocol_sha256: str) -> None:
         "sabdab2_heldout_accessed": False,
     }:
         raise RuntimeError("Efficiency receipt used forbidden test inputs")
+    if require_disabled_compiled_cudagraphs:
+        common = {
+            "ddp_bucket_cap_mb": 25,
+            "fsdp_output_dtype": "bfloat16",
+            "length_bucketing": False,
+        }
+        expected_optimization = {
+            "eager": {
+                **common,
+                "bucketed_padding": False,
+                "compile_blocks": False,
+                "compile_prewarm_buckets": False,
+                "disable_compiled_cudagraphs": False,
+                "fused_adamw": False,
+                "pinned_staging": False,
+            },
+            "compiled": {
+                **common,
+                "bucketed_padding": True,
+                "compile_blocks": True,
+                "compile_prewarm_buckets": True,
+                "disable_compiled_cudagraphs": True,
+                "fused_adamw": True,
+                "pinned_staging": True,
+            },
+        }
+        if receipt.get("optimization") != expected_optimization[name]:
+            raise RuntimeError(f"Efficiency optimization differs for {name}")
+        if receipt.get("length_bucket_boundaries") != [96, 128, 160, 194]:
+            raise RuntimeError(f"Efficiency length buckets differ for {name}")
 
 
 def main() -> None:
@@ -140,6 +175,10 @@ def main() -> None:
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
     parser.add_argument("--source-archive-sha256", required=True)
     parser.add_argument("--runner-sha256", required=True)
+    parser.add_argument(
+        "--require-disabled-compiled-cudagraphs",
+        action="store_true",
+    )
     parser.add_argument("--label", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -157,8 +196,13 @@ def main() -> None:
     if protocol.get("format_version") != "antibody_efficiency_gate_v1":
         raise RuntimeError("Unexpected efficiency protocol")
     protocol_sha256 = _sha256(args.efficiency_protocol)
-    for receipt in receipts.values():
-        _validate_receipt(receipt, protocol_sha256)
+    for name, receipt in receipts.items():
+        _validate_receipt(
+            name,
+            receipt,
+            protocol_sha256,
+            args.require_disabled_compiled_cudagraphs,
+        )
 
     keys = (
         "consumed_residue_tokens",
@@ -229,6 +273,9 @@ def main() -> None:
         "gpu_telemetry": telemetry,
         "label": args.label,
         "membership_equal": membership_equal,
+        "required_disabled_compiled_cudagraphs": (
+            args.require_disabled_compiled_cudagraphs
+        ),
         "runs": {
             name: {
                 "job_id": job_ids[name],
