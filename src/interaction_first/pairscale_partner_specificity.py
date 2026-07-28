@@ -357,6 +357,38 @@ def require_specificity_partner_score(output: Mapping[str, Any]) -> Any:
     return score
 
 
+def raw_specificity_partner_score(
+    output: Mapping[str, Any],
+    *,
+    temperature: float = 1.0,
+) -> Any:
+    """Aggregate the uncentered independent residual for diagnostic controls."""
+    import torch
+
+    from .scoring import masked_logmeanexp_score
+
+    temperature = _finite_positive(temperature, "temperature")
+    if output.get("partner_score_source") != PARTNER_SCORE_SOURCE:
+        raise ValueError(
+            "Raw partner score requires the independent specificity residual"
+        )
+    residual = output.get("specificity_interaction_residual_logits")
+    mask = output.get("candidate_pair_mask")
+    if not torch.is_tensor(residual) or residual.ndim != 3:
+        raise ValueError(
+            "specificity residual must have shape [batch, antibody, antigen]"
+        )
+    if not torch.is_tensor(mask) or mask.dtype != torch.bool:
+        raise ValueError("candidate_pair_mask must be boolean")
+    if tuple(mask.shape) != tuple(residual.shape) or mask.device != residual.device:
+        raise ValueError("specificity residual and candidate mask must align")
+    return masked_logmeanexp_score(
+        residual.float().transpose(1, 2),
+        mask.transpose(1, 2),
+        temperature=temperature,
+    )
+
+
 def build_single_anchor_score_row(
     matched_output: Mapping[str, Any],
     decoy_outputs: Sequence[Mapping[str, Any]],
@@ -382,6 +414,7 @@ __all__ = [
     "build_single_anchor_score_row",
     "multi_positive_margin_loss",
     "multi_positive_retrieval_loss",
+    "raw_specificity_partner_score",
     "require_specificity_partner_score",
     "select_score_free_bidirectional_decoys",
 ]

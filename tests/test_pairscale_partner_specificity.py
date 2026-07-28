@@ -13,6 +13,7 @@ from interaction_first.pairscale_partner_specificity import (
     build_single_anchor_score_row,
     multi_positive_margin_loss,
     multi_positive_retrieval_loss,
+    raw_specificity_partner_score,
     require_specificity_partner_score,
     select_score_free_bidirectional_decoys,
 )
@@ -262,6 +263,32 @@ def test_score_row_accepts_only_independent_centered_residual_scores() -> None:
         require_specificity_partner_score(
             {
                 "partner_score": torch.tensor([3.0]),
+                "partner_score_source": "double_centered_pair_interactions",
+            }
+        )
+
+
+def test_raw_score_reads_only_the_independent_specificity_residual() -> None:
+    import torch
+
+    residual = torch.tensor([[[1.0, 2.0], [3.0, 4.0]]])
+    mask = torch.ones_like(residual, dtype=torch.bool)
+    output = {
+        "specificity_interaction_residual_logits": residual,
+        "candidate_pair_mask": mask,
+        "partner_score_source": (
+            "double_centered_independent_specificity_interaction_residual"
+        ),
+    }
+    score = raw_specificity_partner_score(output)
+    expected = torch.logsumexp(residual.reshape(1, -1), dim=1) - torch.log(
+        torch.tensor(4.0)
+    )
+    torch.testing.assert_close(score, expected)
+    with pytest.raises(ValueError, match="independent specificity"):
+        raw_specificity_partner_score(
+            {
+                **output,
                 "partner_score_source": "double_centered_pair_interactions",
             }
         )
