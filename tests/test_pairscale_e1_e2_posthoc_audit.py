@@ -162,3 +162,18 @@ def test_controller_authenticates_checkpoint_before_repeated_holdout_access() ->
     assert '"scaling_authorized": False' in source
     assert '"new_final_test_accessed": False' in source
     assert '"posthoc_implementation_source_sha256"' in source
+
+
+def test_scheduler_hash_locks_posthoc_controller_and_itself() -> None:
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "slurm"
+        / "pairscale_e1_e2_posthoc_audit.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "PAIRSCALE_CONTROLLER_SHA256" in source
+    assert "PAIRSCALE_SCHEDULER_SCRIPT_SHA256" in source
+    assert "observed_controller_sha256" in source
+    assert "observed_scheduler_sha256" in source
+    assert "PAIRScale" not in source
+    assert "--report-sha256" in source
+    assert "--original-access-receipt-sha256" in source
