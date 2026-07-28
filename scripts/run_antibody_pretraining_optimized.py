@@ -36,10 +36,8 @@ from antibody_pretraining.training_contract import (
 )
 from run_antibody_pretraining import (
     _distributed_tree_digest,
-    _load_dcp,
     _parameter_moments,
     _publish,
-    _save_dcp,
     _sha256,
 )
 
@@ -240,6 +238,54 @@ def _optimizer(
         eps=optimizer_spec["epsilon"],
         fused=fused,
     )
+
+
+def _save_authenticated_dcp(
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    checkpoint_root: Path,
+    *,
+    backend: str,
+    rank: int,
+) -> tuple[str | None, str | None]:
+    """Save DCP state and return canonical pre-serialization digests."""
+    import torch.distributed.checkpoint as dcp
+    from torch.distributed.checkpoint.state_dict import get_state_dict
+
+    model_state, optimizer_state = get_state_dict(model, optimizer)
+    model_sha256 = _distributed_tree_digest(model_state, backend, rank)
+    optimizer_sha256 = _distributed_tree_digest(optimizer_state, backend, rank)
+    dcp.save(
+        {"model": model_state, "optimizer": optimizer_state},
+        checkpoint_id=str(checkpoint_root),
+    )
+    return model_sha256, optimizer_sha256
+
+
+def _load_authenticated_dcp(
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    checkpoint_root: Path,
+    *,
+    backend: str,
+    rank: int,
+) -> tuple[str | None, str | None]:
+    """Load DCP state and hash the canonical payload before applying it."""
+    import torch.distributed.checkpoint as dcp
+    from torch.distributed.checkpoint.state_dict import get_state_dict, set_state_dict
+
+    model_state, optimizer_state = get_state_dict(model, optimizer)
+    state = {"model": model_state, "optimizer": optimizer_state}
+    dcp.load(state, checkpoint_id=str(checkpoint_root))
+    model_sha256 = _distributed_tree_digest(state["model"], backend, rank)
+    optimizer_sha256 = _distributed_tree_digest(state["optimizer"], backend, rank)
+    set_state_dict(
+        model,
+        optimizer,
+        model_state_dict=state["model"],
+        optim_state_dict=state["optimizer"],
+    )
+    return model_sha256, optimizer_sha256
 
 
 def _prewarm_compiled_buckets(
@@ -523,16 +569,6 @@ def main() -> None:
     )
     optimizer = _optimizer(model, protocol, args.preset, args.fused_adamw)
 
-    compile_prewarm_trace: list[dict[str, float | int]] = []
-    if args.compile_prewarm_buckets:
-        compile_prewarm_trace = _prewarm_compiled_buckets(
-            model,
-            boundaries=boundaries,
-            device=device,
-            micro_batch=args.micro_batch,
-            world_size=world_size,
-        )
-
     model_family_sha256 = _sha256(args.model_family)
     training_protocol_sha256 = _sha256(args.training_protocol)
     cursor = 0
@@ -540,6 +576,8 @@ def main() -> None:
     start_update = 0
     resume_loaded_model_sha256 = None
     resume_loaded_optimizer_sha256 = None
+    resume_payload_model_sha256 = None
+    resume_payload_optimizer_sha256 = None
     resume_rng_manifest_sha256 = None
     if args.resume_root is not None:
         state = json.loads(
@@ -575,7 +613,16 @@ def main() -> None:
         cursor = int(state["sample_cursor"])
         consumed = int(state["consumed_residue_tokens"])
         start_update = int(state["next_update"])
-        _load_dcp(model, optimizer, args.resume_root / "checkpoint")
+        (
+            resume_payload_model_sha256,
+            resume_payload_optimizer_sha256,
+        ) = _load_authenticated_dcp(
+            model,
+            optimizer,
+            args.resume_root / "checkpoint",
+            backend=args.backend,
+            rank=rank,
+        )
         module = model.module if hasattr(model, "module") else model
         resume_loaded_model_sha256 = _distributed_tree_digest(
             module.state_dict(), args.backend, rank
@@ -588,6 +635,16 @@ def main() -> None:
             rank=rank,
             world_size=world_size,
             device=device,
+        )
+
+    compile_prewarm_trace: list[dict[str, float | int]] = []
+    if args.compile_prewarm_buckets:
+        compile_prewarm_trace = _prewarm_compiled_buckets(
+            model,
+            boundaries=boundaries,
+            device=device,
+            micro_batch=args.micro_batch,
+            world_size=world_size,
         )
 
     trace: list[dict[str, float | int]] = []
@@ -744,11 +801,22 @@ def main() -> None:
         "pinned_staging": args.pinned_staging,
     }
     checkpoint_format = None
+    checkpoint_payload_model_sha256 = None
+    checkpoint_payload_optimizer_sha256 = None
     checkpoint_rng_manifest_sha256 = None
     if not args.skip_checkpoint:
         checkpoint_format = "torch_distributed_checkpoint"
         checkpoint_root = args.output / "checkpoint"
-        _save_dcp(model, optimizer, checkpoint_root)
+        (
+            checkpoint_payload_model_sha256,
+            checkpoint_payload_optimizer_sha256,
+        ) = _save_authenticated_dcp(
+            model,
+            optimizer,
+            checkpoint_root,
+            backend=args.backend,
+            rank=rank,
+        )
         checkpoint_rng_manifest_sha256 = _save_rng_checkpoint(
             checkpoint_root,
             rng_state,
@@ -790,6 +858,12 @@ def main() -> None:
                 "backend": args.backend,
                 "batch_quantum": args.batch_quantum,
                 "checkpoint_format": checkpoint_format,
+                "checkpoint_payload_model_sha256": (
+                    checkpoint_payload_model_sha256
+                ),
+                "checkpoint_payload_optimizer_sha256": (
+                    checkpoint_payload_optimizer_sha256
+                ),
                 "checkpoint_rng_manifest_sha256": (
                     checkpoint_rng_manifest_sha256
                 ),
@@ -820,6 +894,10 @@ def main() -> None:
                 "resume_loaded_model_sha256": resume_loaded_model_sha256,
                 "resume_loaded_optimizer_sha256": (
                     resume_loaded_optimizer_sha256
+                ),
+                "resume_payload_model_sha256": resume_payload_model_sha256,
+                "resume_payload_optimizer_sha256": (
+                    resume_payload_optimizer_sha256
                 ),
                 "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
                 "runtime": {

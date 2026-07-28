@@ -33,6 +33,9 @@ def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"rng_manifest"' in source
     assert '"loaded_model"' in source
     assert '"loaded_optimizer"' in source
+    assert '"saved_model_payload"' in source
+    assert '"serialized_model_payload"' in source
+    assert '"serialized_optimizer_payload"' in source
     assert '"auditor_source_sha256": _sha256(Path(__file__))' in source
     assert "Loaded checkpoint digests are invalid" in source
     assert 'f"rng/rank-{expected_rank:05d}.json"' in source

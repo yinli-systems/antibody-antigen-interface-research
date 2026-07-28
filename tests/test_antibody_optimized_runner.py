@@ -82,7 +82,15 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     assert '"checkpoint_rng_manifest_sha256"' in source
     assert '"resume_loaded_model_sha256"' in source
     assert '"resume_loaded_optimizer_sha256"' in source
+    assert '"checkpoint_payload_model_sha256"' in source
+    assert '"checkpoint_payload_optimizer_sha256"' in source
+    assert '"resume_payload_model_sha256"' in source
+    assert '"resume_payload_optimizer_sha256"' in source
     assert '"resume_rng_manifest_sha256"' in source
+    main_start = source.index("def main()")
+    assert source.index(") = _load_authenticated_dcp(", main_start) < source.index(
+        "compile_prewarm_trace:", main_start
+    )
 
 
 def test_length_bucketing_preserves_membership_by_construction() -> None:

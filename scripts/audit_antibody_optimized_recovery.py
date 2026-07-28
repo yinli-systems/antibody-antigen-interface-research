@@ -74,10 +74,12 @@ def _validate_receipt(
     resume_used: bool,
     updates: list[int],
     checkpoint_format: str | None,
+    checkpoint_payload_digests_required: bool,
     efficiency_protocol_sha256: str,
     expected_optimization: dict[str, object],
     checkpoint_rng_manifest_sha256: str | None,
     resume_loaded_digests_required: bool,
+    resume_payload_digests_required: bool,
     resume_rng_manifest_sha256: str | None,
 ) -> None:
     expected = {
@@ -116,6 +118,30 @@ def _validate_receipt(
             raise RuntimeError("Loaded checkpoint digests are invalid")
     elif loaded_digests != (None, None):
         raise RuntimeError("Non-resumed run reports loaded checkpoint digests")
+    payload_groups = {
+        "checkpoint": (
+            receipt.get("checkpoint_payload_model_sha256"),
+            receipt.get("checkpoint_payload_optimizer_sha256"),
+            checkpoint_payload_digests_required,
+        ),
+        "resume": (
+            receipt.get("resume_payload_model_sha256"),
+            receipt.get("resume_payload_optimizer_sha256"),
+            resume_payload_digests_required,
+        ),
+    }
+    for label, (model_digest, optimizer_digest, required) in payload_groups.items():
+        digests = (model_digest, optimizer_digest)
+        if required:
+            if any(
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+                for value in digests
+            ):
+                raise RuntimeError(f"{label} DCP payload digests are invalid")
+        elif digests != (None, None):
+            raise RuntimeError(f"Unexpected {label} DCP payload digests")
     if receipt.get("parameter_moments", {}).get("count") != PARAMETER_COUNT:
         raise RuntimeError("Optimized recovery parameter count differs")
     if [item["update"] for item in receipt.get("trace", [])] != updates:
@@ -270,10 +296,12 @@ def main() -> None:
         resume_used=False,
         updates=list(range(1, 21)),
         checkpoint_format=None,
+        checkpoint_payload_digests_required=False,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
         checkpoint_rng_manifest_sha256=None,
         resume_loaded_digests_required=False,
+        resume_payload_digests_required=False,
         resume_rng_manifest_sha256=None,
     )
     _validate_receipt(
@@ -281,10 +309,12 @@ def main() -> None:
         resume_used=False,
         updates=list(range(1, 11)),
         checkpoint_format="torch_distributed_checkpoint",
+        checkpoint_payload_digests_required=True,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
         checkpoint_rng_manifest_sha256=rng_manifest_sha256,
         resume_loaded_digests_required=False,
+        resume_payload_digests_required=False,
         resume_rng_manifest_sha256=None,
     )
     _validate_receipt(
@@ -292,10 +322,12 @@ def main() -> None:
         resume_used=True,
         updates=list(range(11, 21)),
         checkpoint_format=None,
+        checkpoint_payload_digests_required=False,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
         checkpoint_rng_manifest_sha256=None,
         resume_loaded_digests_required=True,
+        resume_payload_digests_required=True,
         resume_rng_manifest_sha256=rng_manifest_sha256,
     )
     _validate_state(
@@ -345,6 +377,18 @@ def main() -> None:
         "loaded_optimizer": (
             resumed["resume_loaded_optimizer_sha256"]
             == stage1["final_optimizer_sha256"]
+        ),
+        "saved_model_payload": (
+            stage1["checkpoint_payload_model_sha256"]
+            == stage1["final_model_sha256"]
+        ),
+        "serialized_model_payload": (
+            resumed["resume_payload_model_sha256"]
+            == stage1["checkpoint_payload_model_sha256"]
+        ),
+        "serialized_optimizer_payload": (
+            resumed["resume_payload_optimizer_sha256"]
+            == stage1["checkpoint_payload_optimizer_sha256"]
         ),
         "prefix_trace": _trace_equal(continuous["trace"][:10], stage1["trace"]),
         "resumed_trace": _trace_equal(continuous["trace"][10:], resumed["trace"]),
