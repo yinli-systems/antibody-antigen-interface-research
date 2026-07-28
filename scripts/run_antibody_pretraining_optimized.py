@@ -1,0 +1,527 @@
+#!/usr/bin/env python3
+"""Run a receipt-bound optimized antibody MLM training candidate."""
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import datetime
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import sys
+import time
+
+import numpy as np
+import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel
+
+from antibody_pretraining.dense_shard import load_dense_shard
+from antibody_pretraining.masking import apply_uniform_mlm
+from antibody_pretraining.model import (
+    AntibodyMaskedLanguageModel,
+    config_from_preset,
+    load_model_family,
+)
+from antibody_pretraining.tokenizer import PAD_ID
+from antibody_pretraining.training_contract import (
+    build_update_plan,
+    learning_rate_at_token,
+    load_training_protocol,
+)
+from run_antibody_pretraining import (
+    _distributed_tree_digest,
+    _load_dcp,
+    _parameter_moments,
+    _publish,
+    _save_dcp,
+    _sha256,
+)
+
+
+def _arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--shard", type=Path, required=True)
+    parser.add_argument("--manifest-sha256", required=True)
+    parser.add_argument("--model-family", type=Path, required=True)
+    parser.add_argument("--training-protocol", type=Path, required=True)
+    parser.add_argument("--efficiency-protocol", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--preset", choices=("abf_300m", "abf_650m"), required=True)
+    parser.add_argument("--steps", type=int, default=500)
+    parser.add_argument("--micro-batch", type=int, default=16)
+    parser.add_argument("--target-tokens", type=int, default=16384)
+    parser.add_argument("--batch-quantum", type=int, default=128)
+    parser.add_argument("--backend", choices=("ddp", "fsdp2"), required=True)
+    parser.add_argument("--resume-root", type=Path)
+    parser.add_argument("--compile-blocks", action="store_true")
+    parser.add_argument("--fused-adamw", action="store_true")
+    parser.add_argument("--pinned-staging", action="store_true")
+    parser.add_argument("--length-bucketing", action="store_true")
+    parser.add_argument(
+        "--length-bucket-boundaries",
+        default="96,128,160,194",
+    )
+    parser.add_argument(
+        "--fsdp-output-dtype",
+        choices=("bfloat16", "float32"),
+        default="bfloat16",
+    )
+    parser.add_argument("--ddp-bucket-cap-mb", type=int, default=25)
+    parser.add_argument("--skip-checkpoint", action="store_true")
+    args = parser.parse_args()
+    if args.steps <= 0 or args.micro_batch <= 0 or args.target_tokens <= 0:
+        raise ValueError("Pilot dimensions must be positive")
+    if args.batch_quantum <= 0 or args.ddp_bucket_cap_mb <= 0:
+        raise ValueError("Batch quantum and DDP bucket size must be positive")
+    return args
+
+
+def _load_efficiency_protocol(path: Path) -> tuple[dict[str, object], str]:
+    payload = path.read_bytes()
+    try:
+        protocol = json.loads(payload.decode("ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("Efficiency protocol must be ASCII JSON") from error
+    if protocol.get("format_version") != "antibody_efficiency_gate_v1":
+        raise ValueError("Unexpected efficiency protocol version")
+    return protocol, hashlib.sha256(payload).hexdigest()
+
+
+def _parse_boundaries(raw: str, maximum: int) -> tuple[int, ...]:
+    try:
+        boundaries = tuple(int(value) for value in raw.split(","))
+    except ValueError as error:
+        raise ValueError("Length bucket boundaries must be integers") from error
+    if (
+        not boundaries
+        or any(value <= 0 for value in boundaries)
+        or tuple(sorted(set(boundaries))) != boundaries
+        or boundaries[-1] != maximum
+    ):
+        raise ValueError("Length bucket boundaries must increase to model maximum")
+    return boundaries
+
+
+def _bucket_width(maximum_length: int, boundaries: tuple[int, ...]) -> int:
+    for boundary in boundaries:
+        if maximum_length <= boundary:
+            return boundary
+    raise RuntimeError("Sequence length exceeds the frozen bucket boundaries")
+
+
+def _ordered_indices(
+    indices: np.ndarray,
+    residue_lengths: np.ndarray,
+    enabled: bool,
+) -> np.ndarray:
+    if not enabled:
+        return indices
+    positions = np.arange(len(indices), dtype=np.int64)
+    order = np.lexsort((positions, residue_lengths[indices]))
+    ordered = indices[order]
+    if sorted(ordered.tolist()) != sorted(indices.tolist()):
+        raise RuntimeError("Length bucketing changed update membership")
+    return ordered
+
+
+def _membership_update(
+    digest: hashlib._Hash,
+    *,
+    update: int,
+    sample_cursor: int,
+    indices: np.ndarray,
+) -> None:
+    header = json.dumps(
+        {
+            "sample_cursor": sample_cursor,
+            "sequence_count": len(indices),
+            "update": update,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    digest.update(header + b"\0")
+    digest.update(np.asarray(indices, dtype="<i8").tobytes())
+
+
+def _stage_tensor(array: np.ndarray, pinned: bool) -> torch.Tensor:
+    tensor = torch.from_numpy(np.ascontiguousarray(array))
+    return tensor.pin_memory() if pinned else tensor
+
+
+def _compile_transformer_blocks(model: AntibodyMaskedLanguageModel) -> None:
+    for block in model.blocks:
+        block.compile(backend="inductor", fullgraph=True)
+
+
+def _wrap_model(
+    model: AntibodyMaskedLanguageModel,
+    *,
+    args: argparse.Namespace,
+    device: torch.device,
+    local_rank: int,
+    world_size: int,
+) -> torch.nn.Module:
+    if args.compile_blocks:
+        _compile_transformer_blocks(model)
+    if args.backend == "ddp":
+        return DistributedDataParallel(
+            model,
+            device_ids=[local_rank],
+            bucket_cap_mb=args.ddp_bucket_cap_mb,
+            gradient_as_bucket_view=True,
+            static_graph=True,
+        )
+    from torch.distributed.device_mesh import init_device_mesh
+    from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
+
+    mesh = init_device_mesh("cuda", (world_size,))
+    output_dtype = (
+        torch.bfloat16 if args.fsdp_output_dtype == "bfloat16" else torch.float32
+    )
+    policy = MixedPrecisionPolicy(
+        param_dtype=torch.bfloat16,
+        reduce_dtype=torch.float32,
+        output_dtype=output_dtype,
+    )
+    for block in model.blocks:
+        fully_shard(block, mesh=mesh, mp_policy=policy)
+    fully_shard(model, mesh=mesh, mp_policy=policy)
+    return model
+
+
+def _optimizer(
+    model: torch.nn.Module,
+    protocol: dict[str, object],
+    preset: str,
+    fused: bool,
+) -> torch.optim.Optimizer:
+    decay: list[torch.nn.Parameter] = []
+    no_decay: list[torch.nn.Parameter] = []
+    for parameter in model.parameters():
+        (decay if parameter.ndim >= 2 else no_decay).append(parameter)
+    optimizer_spec = protocol["optimizer"]
+    return torch.optim.AdamW(
+        [
+            {
+                "params": decay,
+                "weight_decay": optimizer_spec["weight_decay"],
+            },
+            {"params": no_decay, "weight_decay": 0.0},
+        ],
+        lr=protocol["presets"][preset]["learning_rate"],
+        betas=tuple(optimizer_spec["betas"]),
+        eps=optimizer_spec["epsilon"],
+        fused=fused,
+    )
+
+
+def main() -> None:
+    args = _arguments()
+    world_size = int(os.environ.get("WORLD_SIZE", "1"))
+    rank = int(os.environ.get("RANK", "0"))
+    local_rank = int(os.environ.get("LOCAL_RANK", "0"))
+    if world_size <= 1:
+        raise RuntimeError("The optimized runner requires distributed execution")
+    if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
+        raise RuntimeError("CUDA rank identity is invalid")
+    torch.cuda.set_device(local_rank)
+    device = torch.device("cuda", local_rank)
+    if rank == 0:
+        if args.output.exists():
+            raise ValueError("Output must be create-only")
+        args.output.mkdir(parents=True)
+    dist.init_process_group(
+        backend="nccl",
+        init_method="env://",
+        timeout=datetime.timedelta(minutes=10),
+        device_id=device,
+    )
+    dist.barrier()
+    torch.manual_seed(20260728)
+    torch.cuda.manual_seed_all(20260728)
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.cuda.reset_peak_memory_stats(device)
+
+    efficiency_protocol, efficiency_protocol_sha256 = _load_efficiency_protocol(
+        args.efficiency_protocol
+    )
+    shard = load_dense_shard(
+        args.shard,
+        expected_manifest_sha256=args.manifest_sha256,
+    )
+    family = load_model_family(args.model_family)
+    protocol = load_training_protocol(args.training_protocol)
+    boundaries = _parse_boundaries(
+        args.length_bucket_boundaries,
+        family["maximum_sequence_tokens"],
+    )
+    residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
+    model = AntibodyMaskedLanguageModel(config_from_preset(family, args.preset)).to(
+        device
+    )
+    model = _wrap_model(
+        model,
+        args=args,
+        device=device,
+        local_rank=local_rank,
+        world_size=world_size,
+    )
+    optimizer = _optimizer(model, protocol, args.preset, args.fused_adamw)
+
+    model_family_sha256 = _sha256(args.model_family)
+    training_protocol_sha256 = _sha256(args.training_protocol)
+    cursor = 0
+    consumed = 0
+    start_update = 0
+    if args.resume_root is not None:
+        state = json.loads(
+            (args.resume_root / "trainer_state.json").read_text(encoding="ascii")
+        )
+        expected = {
+            "backend": args.backend,
+            "efficiency_protocol_sha256": efficiency_protocol_sha256,
+            "model_family_sha256": model_family_sha256,
+            "optimization": {
+                "compile_blocks": args.compile_blocks,
+                "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+                "fsdp_output_dtype": args.fsdp_output_dtype,
+                "fused_adamw": args.fused_adamw,
+                "length_bucketing": args.length_bucketing,
+                "pinned_staging": args.pinned_staging,
+            },
+            "preset": args.preset,
+            "shard_manifest_sha256": args.manifest_sha256,
+            "training_protocol_sha256": training_protocol_sha256,
+            "world_size": world_size,
+        }
+        if any(state.get(key) != value for key, value in expected.items()):
+            raise RuntimeError("Resume provenance differs from this launch")
+        cursor = int(state["sample_cursor"])
+        consumed = int(state["consumed_residue_tokens"])
+        start_update = int(state["next_update"])
+        _load_dcp(model, optimizer, args.resume_root / "checkpoint")
+
+    trace: list[dict[str, float | int]] = []
+    membership_digest = hashlib.sha256()
+    data_preparation_seconds = 0.0
+    for update in range(start_update, start_update + args.steps):
+        preparation_started = time.perf_counter()
+        plan = build_update_plan(
+            residue_lengths,
+            sample_cursor=cursor,
+            target_residue_tokens=args.target_tokens,
+            batch_quantum_sequences=args.batch_quantum,
+            seed=protocol["random_seed"],
+        )
+        indices_for_compute = _ordered_indices(
+            plan.indices,
+            residue_lengths,
+            args.length_bucketing,
+        )
+        _membership_update(
+            membership_digest,
+            update=update + 1,
+            sample_cursor=cursor,
+            indices=plan.indices,
+        )
+        global_micro_batch = world_size * args.micro_batch
+        if len(indices_for_compute) % global_micro_batch:
+            raise RuntimeError("Batch quantum must divide the global micro batch")
+        prepared: list[tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = []
+        local_target_count = 0
+        for start in range(0, len(indices_for_compute), global_micro_batch):
+            local_start = start + rank * args.micro_batch
+            indices = indices_for_compute[local_start : local_start + args.micro_batch]
+            tokens = np.asarray(shard.tokens[indices], dtype=np.int64)
+            masked = apply_uniform_mlm(
+                tokens,
+                np.asarray(shard.sample_keys[indices]),
+                update=update,
+                seed=protocol["random_seed"],
+                mask_fraction=protocol["masking"]["fraction"],
+            )
+            maximum_length = int(np.asarray(shard.lengths[indices]).max())
+            width = (
+                _bucket_width(maximum_length, boundaries)
+                if args.length_bucketing
+                else maximum_length
+            )
+            prepared.append(
+                (
+                    _stage_tensor(masked.input_ids[:, :width], args.pinned_staging),
+                    _stage_tensor(masked.labels[:, :width], args.pinned_staging),
+                    _stage_tensor(
+                        np.asarray(shard.chain_types[indices], dtype=np.int64),
+                        args.pinned_staging,
+                    ),
+                )
+            )
+            local_target_count += masked.selected_target_count
+        target_tensor = torch.tensor(local_target_count, dtype=torch.long, device=device)
+        dist.all_reduce(target_tensor, op=dist.ReduceOp.SUM)
+        target_count = int(target_tensor)
+        if target_count <= 0:
+            raise RuntimeError("Update has no selected MLM targets")
+        data_preparation_seconds += time.perf_counter() - preparation_started
+
+        lr = learning_rate_at_token(
+            consumed,
+            peak_learning_rate=protocol["presets"][args.preset]["learning_rate"],
+            warmup_residue_tokens=protocol["schedule"]["warmup_residue_tokens"],
+            total_residue_tokens=protocol["schedule"]["total_residue_tokens"],
+            minimum_learning_rate_ratio=protocol["schedule"][
+                "minimum_learning_rate_ratio"
+            ],
+        )
+        for group in optimizer.param_groups:
+            group["lr"] = lr
+        optimizer.zero_grad(set_to_none=True)
+        started = time.perf_counter()
+        loss_sum_value = 0.0
+        for micro_index, (input_cpu, labels_cpu, chain_cpu) in enumerate(prepared):
+            synchronize = micro_index + 1 == len(prepared)
+            synchronization_context = (
+                model.no_sync()
+                if args.backend == "ddp" and not synchronize
+                else contextlib.nullcontext()
+            )
+            if args.backend == "fsdp2":
+                model.set_requires_gradient_sync(synchronize)
+            input_ids = input_cpu.to(
+                device,
+                non_blocking=args.pinned_staging,
+            )
+            labels = labels_cpu.to(device, non_blocking=args.pinned_staging)
+            chain = chain_cpu.to(device, non_blocking=args.pinned_staging)
+            attention = input_ids.ne(PAD_ID)
+            type_ids = chain[:, None].expand_as(input_ids).masked_fill(~attention, 0)
+            with synchronization_context:
+                with torch.autocast("cuda", dtype=torch.bfloat16):
+                    output = model(input_ids, type_ids, attention, labels)
+                    loss = output.loss_sum * world_size / target_count
+                loss.backward()
+            loss_sum_value += float(output.loss_sum.detach())
+        loss_tensor = torch.tensor(loss_sum_value, dtype=torch.float64, device=device)
+        dist.all_reduce(loss_tensor, op=dist.ReduceOp.SUM)
+        loss_sum_value = float(loss_tensor)
+        gradient_norm = float(
+            torch.nn.utils.clip_grad_norm_(
+                model.parameters(),
+                protocol["gradient_clip_norm"],
+            )
+        )
+        optimizer.step()
+        torch.cuda.synchronize()
+        elapsed = time.perf_counter() - started
+        if not math.isfinite(loss_sum_value) or not math.isfinite(gradient_norm):
+            raise RuntimeError("Training trace contains a non-finite value")
+        consumed += plan.residue_token_count
+        cursor = plan.next_sample_cursor
+        if rank == 0:
+            trace.append(
+                {
+                    "consumed_residue_tokens": consumed,
+                    "gradient_norm": gradient_norm,
+                    "learning_rate": lr,
+                    "loss": loss_sum_value / target_count,
+                    "micro_steps": len(prepared),
+                    "residue_tokens": plan.residue_token_count,
+                    "seconds": elapsed,
+                    "selected_targets": target_count,
+                    "sequence_count": len(plan.indices),
+                    "update": update + 1,
+                }
+            )
+
+    parameter_moments = _parameter_moments(model, args.backend, rank)
+    module = model.module if hasattr(model, "module") else model
+    final_model_sha256 = _distributed_tree_digest(
+        module.state_dict(), args.backend, rank
+    )
+    final_optimizer_sha256 = _distributed_tree_digest(
+        optimizer.state_dict(), args.backend, rank
+    )
+    optimization = {
+        "compile_blocks": args.compile_blocks,
+        "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+        "fsdp_output_dtype": args.fsdp_output_dtype,
+        "fused_adamw": args.fused_adamw,
+        "length_bucketing": args.length_bucketing,
+        "pinned_staging": args.pinned_staging,
+    }
+    trainer_state = {
+        "backend": args.backend,
+        "consumed_residue_tokens": consumed,
+        "efficiency_protocol_sha256": efficiency_protocol_sha256,
+        "model_family_sha256": model_family_sha256,
+        "next_update": start_update + args.steps,
+        "optimization": optimization,
+        "preset": args.preset,
+        "sample_cursor": cursor,
+        "shard_manifest_sha256": args.manifest_sha256,
+        "training_protocol_sha256": training_protocol_sha256,
+        "world_size": world_size,
+    }
+    checkpoint_format = None
+    if not args.skip_checkpoint:
+        checkpoint_format = "torch_distributed_checkpoint"
+        _save_dcp(model, optimizer, args.output / "checkpoint")
+    if rank == 0:
+        _publish(args.output / "trainer_state.json", trainer_state)
+        _publish(
+            args.output / "receipt.json",
+            {
+                "authorization": {
+                    "production_pretraining": False,
+                    "scientific_claim": False,
+                },
+                "backend": args.backend,
+                "batch_quantum": args.batch_quantum,
+                "checkpoint_format": checkpoint_format,
+                "claim_boundary": "Repeated-shard systems candidate; no production-corpus, biological, or state-of-the-art claim",
+                "data_preparation_seconds": data_preparation_seconds,
+                "device": torch.cuda.get_device_name(device),
+                "efficiency_protocol_sha256": efficiency_protocol_sha256,
+                "final_model_sha256": final_model_sha256,
+                "final_optimizer_sha256": final_optimizer_sha256,
+                "format_version": "antibody_pretraining_optimized_pilot_v1",
+                "launch_argv": sys.argv[1:],
+                "length_bucket_boundaries": list(boundaries),
+                "membership_sha256": membership_digest.hexdigest(),
+                "micro_batch_per_gpu": args.micro_batch,
+                "model_family_sha256": model_family_sha256,
+                "optimization": optimization,
+                "parameter_moments": parameter_moments,
+                "peak_allocated_memory_mib": torch.cuda.max_memory_allocated(device)
+                / (1024 * 1024),
+                "peak_reserved_memory_mib": torch.cuda.max_memory_reserved(device)
+                / (1024 * 1024),
+                "preset": args.preset,
+                "resume_used": args.resume_root is not None,
+                "runtime": {
+                    "cuda": torch.version.cuda,
+                    "cudnn": torch.backends.cudnn.version(),
+                    "torch": torch.__version__,
+                },
+                "shard_manifest_sha256": args.manifest_sha256,
+                "target_residue_tokens": args.target_tokens,
+                "test_access": {
+                    "downstream_labels_used": False,
+                    "sabdab2_heldout_accessed": False,
+                },
+                "trace": trace,
+                "training_protocol_sha256": training_protocol_sha256,
+                "world_size": world_size,
+            },
+        )
+    dist.barrier()
+    dist.destroy_process_group()
+
+
+if __name__ == "__main__":
+    main()
