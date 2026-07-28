@@ -20,6 +20,10 @@ ATTEMPT_FOUR = (
     ROOT
     / "results/pretraining/antibody_efficiency_benchmark_attempt_004_v1.json"
 )
+CUDAGRAPH_DISABLED = (
+    ROOT
+    / "results/pretraining/antibody_efficiency_benchmark_cudagraph_disabled_v1.json"
+)
 
 
 def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
@@ -119,4 +123,24 @@ def test_low_frequency_telemetry_attempt_preserves_exact_failure() -> None:
     assert 1.10 < result["summaries"]["compiled"][
         "p95_over_p50"
     ] < 1.101
+    assert result["authorization"]["scale_16_gpu"] is False
+
+
+def test_cudagraph_disabled_candidate_preserves_stability_failure() -> None:
+    import json
+
+    result = json.loads(CUDAGRAPH_DISABLED.read_text(encoding="ascii"))
+    assert result["label"] == "compiled_cudagraph_disabled_candidate"
+    assert result["required_disabled_compiled_cudagraphs"] is True
+    assert result["gate_passed"] is False
+    assert result["gates"] == {
+        "membership": True,
+        "memory": True,
+        "stability": False,
+        "throughput": True,
+    }
+    assert result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] > 1.28
+    assert result["summaries"]["compiled"]["p95_over_p50"] > 1.12
     assert result["authorization"]["scale_16_gpu"] is False
