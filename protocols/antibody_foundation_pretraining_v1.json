@@ -1,0 +1,112 @@
+{
+  "authorization": {
+    "authorized_at": "2026-07-28",
+    "authorized_scope": [
+      "public_oas_data_discovery_and_admission",
+      "antibody_language_model_pretraining",
+      "ddp_correctness_reference",
+      "fsdp2_training",
+      "deepspeed_zero_training",
+      "scale_testing_up_to_scheduler_qos"
+    ],
+    "independent_of_existing_downstream_protocols": true,
+    "user_authorized": true
+  },
+  "claim_boundary": {
+    "forbidden": [
+      "claim_that_oas_contains_antibody_antigen_pairs",
+      "claim_partner_specificity_from_pretraining_loss",
+      "claim_unrevealed_downstream_test_decontamination",
+      "read_sabdab2_heldout_material_for_pretraining",
+      "select_on_downstream_test_performance",
+      "sota_without_identical_benchmark_evidence",
+      "world_leading_without_identical_benchmark_evidence"
+    ],
+    "raw_data_and_model_weights_in_git": false
+  },
+  "data": {
+    "allowed_residues": "ACDEFGHIKLMNPQRSTVWYX",
+    "canonical_sequence_field_priority": [
+      "sequence_alignment_aa",
+      "sequence_aa"
+    ],
+    "exact_deduplication": true,
+    "license": "CC-BY-4.0",
+    "maximum_unpaired_length": 192,
+    "minimum_unpaired_length": 80,
+    "paired_maximum_total_length": 320,
+    "source": "Observed Antibody Space",
+    "source_discovery_method": "POST empty search to official service and preserve raw response",
+    "source_search_url_paired": "https://opig.stats.ox.ac.uk/webapps/oas/oas_paired/",
+    "source_search_url_unpaired": "https://opig.stats.ox.ac.uk/webapps/oas/oas_unpaired/",
+    "validation_group_precedence": [
+      "study_and_subject",
+      "study",
+      "source_data_unit"
+    ]
+  },
+  "distributed": {
+    "deepspeed_zero_stages_to_audit": [
+      2,
+      3
+    ],
+    "fsdp2_primary": true,
+    "maximum_synchronous_gpus_subject_to_scheduler": 64,
+    "minimum_gpu_memory_headroom_fraction": 0.15,
+    "offload_default": "disabled",
+    "scale_gpus": [
+      1,
+      8,
+      32,
+      64
+    ],
+    "strong_scaling_efficiency_minimum": {
+      "32": 0.8,
+      "64": 0.7
+    }
+  },
+  "format_version": "antibody_foundation_pretraining_protocol_v1",
+  "model_family": {
+    "activation": "swiglu",
+    "attention": "exact_scaled_dot_product_attention",
+    "attention_dropout": 0.0,
+    "correctness_candidate": "abf_35m",
+    "embedding_output_tied": true,
+    "normalization": "rmsnorm",
+    "position_encoding": "per_chain_rotary",
+    "primary_production_candidate": "abf_650m",
+    "training_dropout": 0.0,
+    "type": "bidirectional_transformer_encoder"
+  },
+  "objectives": {
+    "paired_continuation": [
+      "masked_language_modeling",
+      "bidirectional_native_heavy_light_retrieval"
+    ],
+    "uniform_mlm": {
+      "mask_fraction": 0.15,
+      "random_replacement_fraction": 0.1,
+      "selected_target_denominator": true,
+      "unchanged_fraction": 0.1
+    },
+    "unpaired_primary": "uniform_masked_language_modeling"
+  },
+  "optimization": {
+    "authoritative_progress_unit": "admitted_residue_tokens_consumed",
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "epsilon": 1e-08,
+    "gradient_clip_norm": 1.0,
+    "optimizer": "AdamW",
+    "precision": "bfloat16_compute_fp32_optimizer",
+    "schedule": "token_based_linear_warmup_cosine_decay",
+    "weight_decay": 0.1
+  },
+  "test_access": {
+    "downstream_heldout_access_authorized": false,
+    "pretraining_data_selection_may_use_downstream_metrics": false,
+    "sabdab2_heldout_access_authorized": false
+  }
+}
