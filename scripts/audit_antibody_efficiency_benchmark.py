@@ -114,6 +114,7 @@ def _validate_receipt(
     receipt: dict[str, object],
     protocol_sha256: str,
     require_disabled_compiled_cudagraphs: bool,
+    require_enabled_compiled_cudagraphs: bool,
     expected_length_bucket_boundaries: list[int],
     require_deterministic_algorithms: bool,
 ) -> None:
@@ -141,7 +142,7 @@ def _validate_receipt(
         receipt.get("deterministic_algorithms") is not True
     ):
         raise RuntimeError(f"Efficiency deterministic mode differs for {name}")
-    if require_disabled_compiled_cudagraphs:
+    if require_disabled_compiled_cudagraphs or require_enabled_compiled_cudagraphs:
         common = {
             "ddp_bucket_cap_mb": 25,
             "fsdp_output_dtype": "bfloat16",
@@ -164,7 +165,9 @@ def _validate_receipt(
                 "bucketed_padding": True,
                 "compile_blocks": True,
                 "compile_prewarm_buckets": True,
-                "disable_compiled_cudagraphs": True,
+                "disable_compiled_cudagraphs": (
+                    require_disabled_compiled_cudagraphs
+                ),
                 "fused_adamw": True,
                 "pinned_staging": True,
             },
@@ -190,6 +193,10 @@ def main() -> None:
         action="store_true",
     )
     parser.add_argument(
+        "--require-enabled-compiled-cudagraphs",
+        action="store_true",
+    )
+    parser.add_argument(
         "--expected-length-bucket-boundaries",
         default="96,128,160,194",
     )
@@ -197,6 +204,11 @@ def main() -> None:
     parser.add_argument("--label", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if (
+        args.require_disabled_compiled_cudagraphs
+        and args.require_enabled_compiled_cudagraphs
+    ):
+        raise RuntimeError("Compiled CUDAGraph policy is contradictory")
     try:
         expected_length_bucket_boundaries = [
             int(value) for value in args.expected_length_bucket_boundaries.split(",")
@@ -230,6 +242,7 @@ def main() -> None:
             receipt,
             protocol_sha256,
             args.require_disabled_compiled_cudagraphs,
+            args.require_enabled_compiled_cudagraphs,
             expected_length_bucket_boundaries,
             args.require_deterministic_algorithms,
         )
@@ -306,6 +319,9 @@ def main() -> None:
         "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
         "required_disabled_compiled_cudagraphs": (
             args.require_disabled_compiled_cudagraphs
+        ),
+        "required_enabled_compiled_cudagraphs": (
+            args.require_enabled_compiled_cudagraphs
         ),
         "required_deterministic_algorithms": (
             args.require_deterministic_algorithms

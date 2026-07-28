@@ -38,9 +38,11 @@ def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"stability"' in source
     assert '"throughput"' in source
     assert '"--require-disabled-compiled-cudagraphs"' in source
+    assert '"--require-enabled-compiled-cudagraphs"' in source
     assert '"--expected-length-bucket-boundaries"' in source
     assert '"--require-deterministic-algorithms"' in source
-    assert '"disable_compiled_cudagraphs": True' in source
+    assert '"disable_compiled_cudagraphs": (' in source
+    assert "require_disabled_compiled_cudagraphs" in source
 
 
 def test_efficiency_benchmark_auditor_preserves_failed_results() -> None:
