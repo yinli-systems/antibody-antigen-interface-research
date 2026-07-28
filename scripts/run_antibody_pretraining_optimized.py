@@ -66,6 +66,9 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--disable-compiled-cudagraphs", action="store_true")
     parser.add_argument("--deterministic-algorithms", action="store_true")
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
+    parser.add_argument("--audit-gradient-rank-parity", action="store_true")
+    parser.add_argument("--disable-ddp-gradient-as-bucket-view", action="store_true")
+    parser.add_argument("--disable-ddp-static-graph", action="store_true")
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
     parser.add_argument("--bucketed-padding", action="store_true")
@@ -90,6 +93,12 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("Compile prewarm requires compiled Transformer blocks")
     if args.disable_compiled_cudagraphs and not args.compile_blocks:
         raise ValueError("CUDAGraph control requires compiled Transformer blocks")
+    if args.backend != "ddp" and (
+        args.audit_gradient_rank_parity
+        or args.disable_ddp_gradient_as_bucket_view
+        or args.disable_ddp_static_graph
+    ):
+        raise ValueError("DDP diagnostics require the DDP backend")
     return args
 
 
@@ -194,8 +203,10 @@ def _wrap_model(
             model,
             device_ids=[local_rank],
             bucket_cap_mb=args.ddp_bucket_cap_mb,
-            gradient_as_bucket_view=True,
-            static_graph=True,
+            gradient_as_bucket_view=(
+                not args.disable_ddp_gradient_as_bucket_view
+            ),
+            static_graph=not args.disable_ddp_static_graph,
         )
     from torch.distributed.device_mesh import init_device_mesh
     from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
@@ -670,11 +681,16 @@ def main() -> None:
             "micro_batch_per_gpu": args.micro_batch,
             "model_family_sha256": model_family_sha256,
             "optimization": {
+                "audit_gradient_rank_parity": args.audit_gradient_rank_parity,
                 "bucketed_padding": args.bucketed_padding,
                 "compile_blocks": args.compile_blocks,
                 "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
                 "compile_prewarm_buckets": args.compile_prewarm_buckets,
                 "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+                "disable_ddp_gradient_as_bucket_view": (
+                    args.disable_ddp_gradient_as_bucket_view
+                ),
+                "disable_ddp_static_graph": args.disable_ddp_static_graph,
                 "deterministic_algorithms": args.deterministic_algorithms,
                 "fsdp_output_dtype": args.fsdp_output_dtype,
                 "fused_adamw": args.fused_adamw,
@@ -849,7 +865,7 @@ def main() -> None:
                 protocol["gradient_clip_norm"],
             )
         )
-        if args.backend == "ddp" and args.deterministic_algorithms:
+        if args.backend == "ddp" and args.audit_gradient_rank_parity:
             _assert_scalar_rank_parity(
                 gradient_norm,
                 f"post-reduction gradient norm at update {update + 1}",
@@ -899,11 +915,16 @@ def main() -> None:
             optimizer.state_dict(), args.backend, rank
         )
     optimization = {
+        "audit_gradient_rank_parity": args.audit_gradient_rank_parity,
         "bucketed_padding": args.bucketed_padding,
         "compile_blocks": args.compile_blocks,
         "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
         "compile_prewarm_buckets": args.compile_prewarm_buckets,
         "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+        "disable_ddp_gradient_as_bucket_view": (
+            args.disable_ddp_gradient_as_bucket_view
+        ),
+        "disable_ddp_static_graph": args.disable_ddp_static_graph,
         "deterministic_algorithms": args.deterministic_algorithms,
         "fsdp_output_dtype": args.fsdp_output_dtype,
         "fused_adamw": args.fused_adamw,

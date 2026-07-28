@@ -16,8 +16,8 @@ def test_optimized_runner_is_ascii_and_syntax_valid() -> None:
     ast.parse(source)
     assert 'options = {"triton.cudagraphs": False}' in source
     assert "block.compile(backend=\"inductor\", fullgraph=True, options=options)" in source
-    assert "gradient_as_bucket_view=True" in source
-    assert "static_graph=True" in source
+    assert "not args.disable_ddp_gradient_as_bucket_view" in source
+    assert "static_graph=not args.disable_ddp_static_graph" in source
     assert "fused=fused" in source
 
 
@@ -25,10 +25,13 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     source = RUNNER.read_text(encoding="ascii")
     for field in (
         "bucketed_padding",
+        "audit_gradient_rank_parity",
         "compile_blocks",
         "compile_prewarm_buckets",
         "disable_compiled_cudagraphs",
         "ddp_bucket_cap_mb",
+        "disable_ddp_gradient_as_bucket_view",
+        "disable_ddp_static_graph",
         "deterministic_algorithms",
         "fsdp_output_dtype",
         "fused_adamw",
@@ -116,6 +119,9 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "ABF_DISABLE_COMPILED_CUDAGRAPHS" in source
     assert "ABF_DETERMINISTIC_ALGORITHMS" in source
     assert "ABF_COMPILE_PREWARM_BUCKETS" in source
+    assert "ABF_AUDIT_GRADIENT_RANK_PARITY" in source
+    assert "ABF_DISABLE_DDP_GRADIENT_AS_BUCKET_VIEW" in source
+    assert "ABF_DISABLE_DDP_STATIC_GRAPH" in source
     assert "ABF_FUSED_ADAMW" in source
     assert "ABF_PINNED_STAGING" in source
     assert "ABF_BUCKETED_PADDING" in source
