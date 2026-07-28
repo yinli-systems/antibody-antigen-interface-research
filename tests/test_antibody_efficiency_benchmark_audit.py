@@ -1,5 +1,9 @@
 import ast
+import importlib.util
+import json
 from pathlib import Path
+
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +35,8 @@ DETERMINISTIC_BENCHMARK = (
     ROOT
     / "results/pretraining/antibody_efficiency_benchmark_deterministic_v1.json"
 )
+EFFICIENCY_PROTOCOL = ROOT / "protocols/antibody_efficiency_gate_v1.json"
+PAIRED_PROTOCOL = ROOT / "protocols/antibody_paired_efficiency_v1.json"
 
 
 def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
@@ -45,6 +51,9 @@ def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"--require-enabled-compiled-cudagraphs"' in source
     assert '"--expected-length-bucket-boundaries"' in source
     assert '"--require-deterministic-algorithms"' in source
+    assert '"--allocation-receipt"' in source
+    assert '"--paired-protocol"' in source
+    assert '"paired_allocation"' in source
     assert '"disable_compiled_cudagraphs": (' in source
     assert "require_disabled_compiled_cudagraphs" in source
 
@@ -180,8 +189,6 @@ def test_bucket144_candidate_passes_all_frozen_eight_gpu_gates() -> None:
 
 
 def test_deterministic_long_benchmark_preserves_throughput_failure() -> None:
-    import json
-
     result = json.loads(DETERMINISTIC_BENCHMARK.read_text(encoding="ascii"))
     assert result["label"] == "deterministic_cudagraph_candidate"
     assert result["required_enabled_compiled_cudagraphs"] is True
@@ -197,3 +204,56 @@ def test_deterministic_long_benchmark_preserves_throughput_failure() -> None:
         "throughput_relative_to_eager"
     ] < 1.0
     assert result["authorization"]["scale_16_gpu"] is False
+
+
+def test_paired_allocation_requires_same_job_and_hardware(tmp_path: Path) -> None:
+    spec = importlib.util.spec_from_file_location("efficiency_auditor", AUDITOR)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    allocation = {
+        "format_version": "antibody_paired_allocation_v1",
+        "gpu_count": 8,
+        "gpu_inventory": [{"uuid": f"GPU-{index}"} for index in range(8)],
+        "hostname": "node-a",
+        "pair_order": "eager,compiled",
+        "slurm": {
+            "job_id": "123",
+            "job_nodelist": "node-a",
+            "node_count": 1,
+        },
+        "test_access": {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        },
+        "topology": "GPU0 GPU1",
+    }
+    allocation_path = tmp_path / "allocation.json"
+    allocation_path.write_text(json.dumps(allocation), encoding="ascii")
+    receipt_allocation = {
+        "hostname": "node-a",
+        "slurm_job_id": "123",
+        "slurm_job_nodelist": "node-a",
+    }
+    receipts = {
+        "eager": {"allocation": receipt_allocation},
+        "compiled": {"allocation": receipt_allocation},
+    }
+    protocol_sha256 = module._sha256(EFFICIENCY_PROTOCOL)
+    result = module._paired_allocation(
+        allocation_path,
+        PAIRED_PROTOCOL,
+        receipts,
+        {"eager": "123", "compiled": "123"},
+        protocol_sha256,
+    )
+    assert result["hostname"] == "node-a"
+    assert result["pair_order"] == "eager,compiled"
+    with pytest.raises(RuntimeError, match="share"):
+        module._paired_allocation(
+            allocation_path,
+            PAIRED_PROTOCOL,
+            receipts,
+            {"eager": "123", "compiled": "124"},
+            protocol_sha256,
+        )

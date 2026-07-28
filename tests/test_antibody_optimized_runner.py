@@ -6,6 +6,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts/run_antibody_pretraining_optimized.py"
 SLURM = ROOT / "slurm/antibody_pretraining_efficiency_pilot.sbatch"
+PAIRED_SLURM = ROOT / "slurm/antibody_pretraining_paired_efficiency.sbatch"
+ALLOCATION_CAPTURE = ROOT / "scripts/capture_antibody_allocation.py"
+PAIRED_PROTOCOL = ROOT / "protocols/antibody_paired_efficiency_v1.json"
 
 
 def test_optimized_runner_is_ascii_and_syntax_valid() -> None:
@@ -40,6 +43,9 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     assert '"telemetry_interval_seconds"' in source
     assert '"production_pretraining": False' in source
     assert '"scientific_claim": False' in source
+    assert '"slurm_job_id"' in source
+    assert '"slurm_job_nodelist"' in source
+    assert "socket.gethostname()" in source
 
 
 def test_resume_state_binds_batch_and_bucket_geometry() -> None:
@@ -102,3 +108,38 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
         )
     )
     assert protocol["candidate_optimizations"]["compile"].startswith("regional")
+
+
+def test_paired_efficiency_launcher_uses_one_allocation_and_frozen_modes() -> None:
+    source = PAIRED_SLURM.read_text(encoding="ascii")
+    assert "#SBATCH --nodes=1" in source
+    assert "#SBATCH --gres=gpu:8" in source
+    assert 'PAIR_ORDER=${ABF_PAIR_ORDER:-eager,compiled}' in source
+    assert "eager,compiled|compiled,eager" in source
+    assert "capture_antibody_allocation.py" in source
+    assert '--pair-order "$PAIR_ORDER"' in source
+    assert "--steps 500" in source
+    assert "--deterministic-algorithms" in source
+    assert "--length-bucket-boundaries 96,128,144,194" in source
+    assert "--compile-blocks" in source
+    assert "--compile-prewarm-buckets" in source
+    assert "--bucketed-padding" in source
+    assert source.count("--nproc-per-node=8") == 1
+
+
+def test_allocation_capture_and_protocol_are_fail_closed() -> None:
+    source = ALLOCATION_CAPTURE.read_text(encoding="ascii")
+    ast.parse(source)
+    assert "os.O_EXCL" in source
+    assert "exactly eight visible GPUs" in source
+    assert '"nvidia-smi", "topo", "-m"' in source
+    assert 'choices=("eager,compiled", "compiled,eager")' in source
+    protocol = json.loads(PAIRED_PROTOCOL.read_text(encoding="ascii"))
+    assert protocol["allocation"] == {
+        "gpu_count": 8,
+        "hardware_identity_required": True,
+        "node_count": 1,
+        "same_slurm_job_required": True,
+    }
+    assert protocol["benchmark"]["candidate_updates"] == 500
+    assert protocol["benchmark"]["deterministic_algorithms"] is True

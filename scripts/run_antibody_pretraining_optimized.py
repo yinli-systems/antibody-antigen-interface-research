@@ -11,6 +11,7 @@ import json
 import math
 import os
 from pathlib import Path
+import socket
 import sys
 import time
 
@@ -573,6 +574,11 @@ def main() -> None:
         _publish(
             args.output / "receipt.json",
             {
+                "allocation": {
+                    "hostname": socket.gethostname(),
+                    "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+                    "slurm_job_nodelist": os.environ.get("SLURM_JOB_NODELIST"),
+                },
                 "authorization": {
                     "production_pretraining": False,
                     "scientific_claim": False,

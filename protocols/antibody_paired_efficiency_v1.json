@@ -1,0 +1,25 @@
+{
+  "allocation": {
+    "gpu_count": 8,
+    "hardware_identity_required": true,
+    "node_count": 1,
+    "same_slurm_job_required": true
+  },
+  "benchmark": {
+    "candidate_updates": 500,
+    "candidate_warmup_updates": 50,
+    "deterministic_algorithms": true,
+    "orders_permitted": [
+      "eager,compiled",
+      "compiled,eager"
+    ],
+    "same_membership_required": true
+  },
+  "claim_boundary": "Paired single-node systems benchmark only; no production, biological, scaling, or state-of-the-art claim",
+  "format_version": "antibody_paired_efficiency_v1",
+  "parent_efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

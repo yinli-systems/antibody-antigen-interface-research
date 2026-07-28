@@ -180,6 +180,90 @@ def _validate_receipt(
             raise RuntimeError(f"Efficiency length buckets differ for {name}")
 
 
+def _paired_allocation(
+    allocation_path: Path,
+    paired_protocol_path: Path,
+    receipts: dict[str, dict[str, object]],
+    job_ids: dict[str, str],
+    efficiency_protocol_sha256: str,
+) -> dict[str, object]:
+    allocation = _load(allocation_path)
+    paired_protocol = _load(paired_protocol_path)
+    if paired_protocol.get("format_version") != "antibody_paired_efficiency_v1":
+        raise RuntimeError("Unexpected paired efficiency protocol")
+    if paired_protocol.get("parent_efficiency_protocol_sha256") != (
+        efficiency_protocol_sha256
+    ):
+        raise RuntimeError("Paired protocol has the wrong parent")
+    if allocation.get("format_version") != "antibody_paired_allocation_v1":
+        raise RuntimeError("Unexpected paired allocation receipt")
+    if paired_protocol.get("allocation") != {
+        "gpu_count": 8,
+        "hardware_identity_required": True,
+        "node_count": 1,
+        "same_slurm_job_required": True,
+    }:
+        raise RuntimeError("Paired allocation policy changed")
+    benchmark = paired_protocol.get("benchmark")
+    if (
+        not isinstance(benchmark, dict)
+        or benchmark.get("candidate_updates") != 500
+        or benchmark.get("candidate_warmup_updates") != 50
+        or benchmark.get("deterministic_algorithms") is not True
+        or benchmark.get("same_membership_required") is not True
+        or benchmark.get("orders_permitted")
+        != ["eager,compiled", "compiled,eager"]
+        or allocation.get("pair_order") not in benchmark["orders_permitted"]
+    ):
+        raise RuntimeError("Paired benchmark policy changed")
+    slurm = allocation.get("slurm")
+    if not isinstance(slurm, dict):
+        raise RuntimeError("Paired allocation is missing Slurm identity")
+    expected_job_id = slurm.get("job_id")
+    if (
+        not isinstance(expected_job_id, str)
+        or not expected_job_id
+        or set(job_ids.values()) != {expected_job_id}
+        or allocation.get("gpu_count") != 8
+        or slurm.get("node_count") != 1
+    ):
+        raise RuntimeError("Runs do not share the required eight-GPU allocation")
+    expected_receipt_allocation = {
+        "hostname": allocation.get("hostname"),
+        "slurm_job_id": expected_job_id,
+        "slurm_job_nodelist": slurm.get("job_nodelist"),
+    }
+    if any(
+        receipt.get("allocation") != expected_receipt_allocation
+        for receipt in receipts.values()
+    ):
+        raise RuntimeError("Training receipt and paired allocation disagree")
+    inventory = allocation.get("gpu_inventory")
+    if (
+        not isinstance(inventory, list)
+        or len(inventory) != 8
+        or not all(isinstance(item, dict) for item in inventory)
+        or not all(item.get("uuid") for item in inventory)
+        or len({item.get("uuid") for item in inventory}) != 8
+        or not allocation.get("topology")
+        or allocation.get("test_access")
+        != {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        }
+    ):
+        raise RuntimeError("Paired allocation hardware identity is incomplete")
+    return {
+        "allocation_receipt_sha256": _sha256(allocation_path),
+        "gpu_uuids": [item["uuid"] for item in inventory],
+        "hostname": allocation["hostname"],
+        "pair_order": allocation["pair_order"],
+        "paired_protocol_sha256": _sha256(paired_protocol_path),
+        "slurm_job_id": expected_job_id,
+        "slurm_job_nodelist": slurm["job_nodelist"],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--receipt", action="append", default=[])
@@ -201,6 +285,8 @@ def main() -> None:
         default="96,128,160,194",
     )
     parser.add_argument("--require-deterministic-algorithms", action="store_true")
+    parser.add_argument("--allocation-receipt", type=Path)
+    parser.add_argument("--paired-protocol", type=Path)
     parser.add_argument("--label", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -245,6 +331,19 @@ def main() -> None:
             args.require_enabled_compiled_cudagraphs,
             expected_length_bucket_boundaries,
             args.require_deterministic_algorithms,
+        )
+    if (args.allocation_receipt is None) != (args.paired_protocol is None):
+        raise RuntimeError(
+            "Paired allocation receipt and protocol must be supplied together"
+        )
+    paired_allocation = None
+    if args.allocation_receipt is not None and args.paired_protocol is not None:
+        paired_allocation = _paired_allocation(
+            args.allocation_receipt,
+            args.paired_protocol,
+            receipts,
+            job_ids,
+            protocol_sha256,
         )
 
     keys = (
@@ -316,6 +415,7 @@ def main() -> None:
         "gpu_telemetry": telemetry,
         "label": args.label,
         "membership_equal": membership_equal,
+        "paired_allocation": paired_allocation,
         "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
         "required_disabled_compiled_cudagraphs": (
             args.require_disabled_compiled_cudagraphs
