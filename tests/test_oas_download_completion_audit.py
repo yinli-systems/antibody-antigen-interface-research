@@ -11,6 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/audit_oas_download_completion.py"
 SLURM = ROOT / "slurm/oas_download_completion_audit.sbatch"
+RESULT = ROOT / "results/pretraining/oas_download_completion_audit_v1.json"
 
 
 def _load_module():
@@ -159,3 +160,34 @@ def test_completion_slurm_hides_scheduler_gpu_and_pins_four_summaries() -> None:
     assert source.count("--summary") == 4
     assert "--task-count 4" in source
     assert "--auditor-source-sha256" in source
+
+
+def test_full_download_audit_proves_plan_coverage_without_overclaim() -> None:
+    module = _load_module()
+    result = json.loads(RESULT.read_text(encoding="ascii"))
+    unsigned = dict(result)
+    receipt_sha256 = unsigned.pop("receipt_sha256")
+    assert receipt_sha256 == hashlib.sha256(
+        module._canonical_json_bytes(unsigned)
+    ).hexdigest()
+    assert result["audit_passed"] is True
+    assert result["receipt_count"] == 6373
+    assert result["task_count"] == 4
+    assert result["counts"] == {
+        "compressed_bytes": 120714440652,
+        "source_records": 265834820,
+        "train_data_units": 6194,
+        "train_expected_prefilter_records": 250000000,
+        "validation_data_units": 179,
+        "validation_expected_prefilter_records": 1910348,
+    }
+    assert result["claim_boundary"] == {
+        "dense_materialization_complete": False,
+        "download_completion_only": True,
+        "production_pretraining_authorized": False,
+        "raw_compressed_bytes_rehashed": True,
+    }
+    assert result["test_access"] == {
+        "downstream_heldout_accessed": False,
+        "sabdab2_heldout_accessed": False,
+    }
