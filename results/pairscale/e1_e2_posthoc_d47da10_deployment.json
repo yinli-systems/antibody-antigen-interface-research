@@ -17,6 +17,16 @@
     "preserved_path": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_posthoc_source_d47da10_incomplete_20260728T0643Z",
     "status": "incomplete_and_not_authorized_for_execution"
   },
+  "post_deployment_compatibility_probe": {
+    "all_other_executed_sources_exact": true,
+    "allowed_source_difference": "pairscale_e1_e2_evaluation.py",
+    "epoch_40_checkpoint_generation": "epoch-0040-step-00007680",
+    "epoch_40_checkpoint_receipt_file_sha256": "7ae25d14c66b77f306c31531ff8a91bf7efc645c5b92ee2d6a1011a75bcc189e",
+    "frozen_evaluator_sha256": "2004e9886f7b39ff4ac3eef6df62f81be6f89c7edcc10d952602f9a5eaeb881c",
+    "holdout_access_receipt_exists": false,
+    "posthoc_evaluator_sha256": "9dd1a3dc493381c49e49ec176ebc728e8ae5ca3d2e51b0cbdee265a56c7a9f8b",
+    "scheduler_syntax_valid": true
+  },
   "remote_source_root": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_posthoc_source_d47da10",
   "scaling_authorized": false,
   "sha256": {
