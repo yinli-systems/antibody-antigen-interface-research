@@ -37,6 +37,7 @@
     "contact_mean_improvement_minimum": 0.005,
     "contact_worst_seed_improvement_minimum": -0.01,
     "exhaustive_recall_at_1_random_enrichment_minimum": 2.0,
+    "exhaustive_recall_at_1_seed_aggregation": "minimum_across_screening_seeds",
     "minimum_positive_screening_seeds_per_specificity_cell": 2,
     "require_all_four_specificity_bootstrap_lower_bounds_above_zero": true,
     "screening_seeds": [

@@ -46,8 +46,9 @@ hold for the fixed three-seed reports:
 3. at least two of three individual seed means are positive in every cell;
 4. the mean per-complex pair-AUPRC improvement over the in-model additive unary
    baseline is at least +0.005 and no seed has a mean improvement below -0.010;
-5. exhaustive R@1 enrichment is at least 2.0 times the exact random baseline
-   in both directions for both raw and centered residual scores; and
+5. the minimum exhaustive R@1 enrichment across the three seeds is at least
+   2.0 times the exact random baseline in both directions for both raw and
+   centered residual scores; and
 6. every required field and artifact agrees across the independent audits.
 
 Failure is retained as evidence and starts a new numbered repair protocol. It
@@ -77,4 +78,3 @@ pass the gate.
 
 Scaling remains blocked until Gates S, C, and R all pass under their complete
 contracts.
-
