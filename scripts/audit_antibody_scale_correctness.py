@@ -14,13 +14,9 @@ import statistics
 
 
 BACKENDS = ("ddp", "fsdp2", "zero2", "zero3")
-LIMITS = {
-    "ddp_fsdp2_gradient_norm_relative": 1e-3,
-    "ddp_fsdp2_loss_absolute": 5e-4,
-    "parameter_square_sum_per_parameter": 1e-10,
-    "parameter_sum_per_parameter": 1e-10,
-    "zero2_zero3_gradient_norm_relative": 1e-6,
-    "zero2_zero3_loss_absolute": 1e-7,
+PRESETS = {
+    "abf_300m": {"ddp_fsdp2_loss_absolute": 5e-4, "parameter_count": 308_365_312},
+    "abf_650m": {"ddp_fsdp2_loss_absolute": 2e-3, "parameter_count": 634_513_920},
 }
 
 
@@ -124,18 +120,30 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--receipt", action="append", default=[])
     parser.add_argument("--telemetry", action="append", default=[])
+    parser.add_argument("--preset", choices=tuple(PRESETS), default="abf_300m")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     receipt_paths = _bindings(args.receipt, "receipt")
     telemetry_paths = _bindings(args.telemetry, "telemetry")
+    parameter_count = PRESETS[args.preset]["parameter_count"]
+    limits = {
+        "ddp_fsdp2_gradient_norm_relative": 1e-3,
+        "ddp_fsdp2_loss_absolute": PRESETS[args.preset][
+            "ddp_fsdp2_loss_absolute"
+        ],
+        "parameter_square_sum_per_parameter": 1e-10,
+        "parameter_sum_per_parameter": 1e-10,
+        "zero2_zero3_gradient_norm_relative": 1e-6,
+        "zero2_zero3_loss_absolute": 1e-7,
+    }
     receipts = {backend: _load(path) for backend, path in receipt_paths.items()}
     for backend, receipt in receipts.items():
         if (
             receipt["backend"] != backend
-            or receipt["preset"] != "abf_300m"
+            or receipt["preset"] != args.preset
             or receipt["world_size"] != 8
             or len(receipt["trace"]) != 3
-            or receipt["parameter_moments"]["count"] != 308_365_312
+            or receipt["parameter_moments"]["count"] != parameter_count
         ):
             raise RuntimeError(f"Invalid 300M receipt for {backend}")
     keys = ("consumed_residue_tokens", "residue_tokens", "selected_targets", "update")
@@ -153,43 +161,48 @@ def main() -> None:
     }
     common_parameter_pass = all(
         comparison["parameter_square_sum_difference_per_parameter"]
-        <= LIMITS["parameter_square_sum_per_parameter"]
+        <= limits["parameter_square_sum_per_parameter"]
         and comparison["parameter_sum_difference_per_parameter"]
-        <= LIMITS["parameter_sum_per_parameter"]
+        <= limits["parameter_sum_per_parameter"]
         for comparison in comparisons.values()
     )
     numerical_pass = (
         membership_equal
         and common_parameter_pass
         and comparisons["ddp_fsdp2"]["gradient_norm_relative_maximum"]
-        <= LIMITS["ddp_fsdp2_gradient_norm_relative"]
+        <= limits["ddp_fsdp2_gradient_norm_relative"]
         and comparisons["ddp_fsdp2"]["loss_absolute_maximum"]
-        <= LIMITS["ddp_fsdp2_loss_absolute"]
+        <= limits["ddp_fsdp2_loss_absolute"]
         and comparisons["zero2_zero3"]["gradient_norm_relative_maximum"]
-        <= LIMITS["zero2_zero3_gradient_norm_relative"]
+        <= limits["zero2_zero3_gradient_norm_relative"]
         and comparisons["zero2_zero3"]["loss_absolute_maximum"]
-        <= LIMITS["zero2_zero3_loss_absolute"]
+        <= limits["zero2_zero3_loss_absolute"]
     )
+    authorization = {
+        "production_pretraining": False,
+        "scale_32_gpu": False,
+        "scale_64_gpu": False,
+    }
+    if args.preset == "abf_300m":
+        authorization.update({"benchmark_300m": numerical_pass, "pilot_650m": False})
+        display_preset = "300M"
+    else:
+        authorization.update({"benchmark_650m": numerical_pass, "pilot_1_3b": False})
+        display_preset = args.preset
     payload = {
-        "authorization": {
-            "benchmark_300m": numerical_pass,
-            "pilot_650m": False,
-            "production_pretraining": False,
-            "scale_32_gpu": False,
-            "scale_64_gpu": False,
-        },
-        "claim_boundary": "three-update 300M eight-GPU engineering correctness only; thresholds were fixed for this post-pilot audit and are not a scientific promotion rule",
+        "authorization": authorization,
+        "claim_boundary": f"three-update {display_preset} eight-GPU engineering correctness only; thresholds were fixed for this post-pilot audit and are not a scientific promotion rule",
         "comparisons": comparisons,
         "direct_ddp_zero_numerical_parity": False,
         "format_version": "antibody_scale_correctness_v1",
         "gpu_telemetry": {
             backend: _telemetry(telemetry_paths[backend]) for backend in BACKENDS
         },
-        "limits": LIMITS,
+        "limits": limits,
         "membership_equal": membership_equal,
         "numerical_pass": numerical_pass,
-        "parameter_count": 308_365_312,
-        "preset": "abf_300m",
+        "parameter_count": parameter_count,
+        "preset": args.preset,
         "receipt_sha256": {
             backend: _sha256(receipt_paths[backend]) for backend in BACKENDS
         },
