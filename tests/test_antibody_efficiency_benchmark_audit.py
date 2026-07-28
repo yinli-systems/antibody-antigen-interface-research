@@ -35,6 +35,7 @@ def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"stability"' in source
     assert '"throughput"' in source
     assert '"--require-disabled-compiled-cudagraphs"' in source
+    assert '"--expected-length-bucket-boundaries"' in source
     assert '"disable_compiled_cudagraphs": True' in source
 
 

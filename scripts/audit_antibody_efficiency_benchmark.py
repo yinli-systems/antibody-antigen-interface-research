@@ -114,6 +114,7 @@ def _validate_receipt(
     receipt: dict[str, object],
     protocol_sha256: str,
     require_disabled_compiled_cudagraphs: bool,
+    expected_length_bucket_boundaries: list[int],
 ) -> None:
     expected = {
         "backend": "ddp",
@@ -163,7 +164,9 @@ def _validate_receipt(
         }
         if receipt.get("optimization") != expected_optimization[name]:
             raise RuntimeError(f"Efficiency optimization differs for {name}")
-        if receipt.get("length_bucket_boundaries") != [96, 128, 160, 194]:
+        if receipt.get("length_bucket_boundaries") != (
+            expected_length_bucket_boundaries
+        ):
             raise RuntimeError(f"Efficiency length buckets differ for {name}")
 
 
@@ -179,9 +182,26 @@ def main() -> None:
         "--require-disabled-compiled-cudagraphs",
         action="store_true",
     )
+    parser.add_argument(
+        "--expected-length-bucket-boundaries",
+        default="96,128,160,194",
+    )
     parser.add_argument("--label", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    try:
+        expected_length_bucket_boundaries = [
+            int(value) for value in args.expected_length_bucket_boundaries.split(",")
+        ]
+    except ValueError as error:
+        raise RuntimeError("Expected length buckets must be integers") from error
+    if (
+        not expected_length_bucket_boundaries
+        or sorted(set(expected_length_bucket_boundaries))
+        != expected_length_bucket_boundaries
+        or expected_length_bucket_boundaries[-1] != 194
+    ):
+        raise RuntimeError("Expected length buckets must increase to 194")
     receipt_bindings = _bindings(args.receipt, "receipt")
     telemetry_bindings = _bindings(args.telemetry, "telemetry")
     job_ids = _bindings(args.job_id, "job ID")
@@ -202,6 +222,7 @@ def main() -> None:
             receipt,
             protocol_sha256,
             args.require_disabled_compiled_cudagraphs,
+            expected_length_bucket_boundaries,
         )
 
     keys = (
@@ -273,6 +294,7 @@ def main() -> None:
         "gpu_telemetry": telemetry,
         "label": args.label,
         "membership_equal": membership_equal,
+        "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
         "required_disabled_compiled_cudagraphs": (
             args.require_disabled_compiled_cudagraphs
         ),

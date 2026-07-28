@@ -59,6 +59,9 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "ABF_PINNED_STAGING" in source
     assert "ABF_BUCKETED_PADDING" in source
     assert "ABF_LENGTH_BUCKETING" in source
+    assert "ABF_LENGTH_BUCKET_BOUNDARIES" in source
+    assert 'LENGTH_BUCKET_BOUNDARIES:-96,128,160,194' in source
+    assert '--length-bucket-boundaries "$LENGTH_BUCKET_BOUNDARIES"' in source
     assert "ABF_RESUME_ROOT" in source
     assert "ABF_TELEMETRY_INTERVAL_SECONDS" in source
     assert 'TELEMETRY_INTERVAL_SECONDS:-30' in source
