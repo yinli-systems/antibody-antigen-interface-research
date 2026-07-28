@@ -246,6 +246,7 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         intra_chain_geometry_distance_max: float = 20.0,
         intra_chain_geometry_neighbor_k: int | None = 32,
         intra_chain_geometry_neighbor_radius: float | None = None,
+        intra_chain_geometry_attention_topology: str = "spatial",
     ) -> None:
         require_torch()
         super().__init__()
@@ -295,6 +296,7 @@ class PartnerSpecificInteractionModel(_ModuleBase):
                 distance_max=intra_chain_geometry_distance_max,
                 neighbor_k=intra_chain_geometry_neighbor_k,
                 neighbor_radius=intra_chain_geometry_neighbor_radius,
+                attention_topology=intra_chain_geometry_attention_topology,
                 dropout=dropout,
             )
             if intra_chain_geometry_layers > 0

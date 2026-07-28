@@ -175,6 +175,44 @@ def test_neighbor_graph_is_spatial_intra_chain_and_robust_to_missing_frames() ->
     )
 
 
+def test_dense_sequence_control_does_not_depend_on_frames_or_coordinates() -> None:
+    import torch
+
+    from interaction_first.intra_chain_geometry import (
+        build_backbone_frames,
+        build_intra_chain_relative_geometry,
+    )
+
+    backbone = _sample_backbone(1, 6)
+    backbone[0, 1] = torch.nan
+    residue_mask = torch.tensor([[True, True, True, True, True, False]])
+    chain_ids = torch.tensor([[0, 0, 0, 1, 1, -1]])
+    geometry = build_intra_chain_relative_geometry(
+        build_backbone_frames(backbone, residue_mask),
+        residue_mask,
+        chain_ids=chain_ids,
+        geometry_feature_mode="none",
+        neighbor_k=1,
+        neighbor_radius=0.1,
+        attention_topology="dense_sequence",
+    )
+
+    expected = torch.tensor(
+        [
+            [True, True, True, False, False, False],
+            [True, True, True, False, False, False],
+            [True, True, True, False, False, False],
+            [False, False, False, True, True, False],
+            [False, False, False, True, True, False],
+            [False, False, False, False, False, False],
+        ]
+    )
+    assert torch.equal(geometry.neighbor_mask[0], expected)
+    assert torch.equal(geometry.features, torch.zeros_like(geometry.features))
+    assert not geometry.geometry_valid_mask[0, 1].any()
+    assert not geometry.geometry_valid_mask[0, :, 1].any()
+
+
 @pytest.mark.parametrize(
     ("mode", "expected_channels"),
     (
@@ -225,13 +263,21 @@ def test_geometry_ablation_modes_have_identical_parameter_counts() -> None:
     from interaction_first.intra_chain_geometry import IntraChainGeometryEncoder
 
     counts = []
-    for mode in ("none", "distance", "distance_direction", "full_pose"):
+    configurations = (
+        ("none", "dense_sequence"),
+        ("none", "spatial"),
+        ("distance", "spatial"),
+        ("distance_direction", "spatial"),
+        ("full_pose", "spatial"),
+    )
+    for mode, topology in configurations:
         model = IntraChainGeometryEncoder(
             16,
             4,
             1,
             geometry_feature_mode=mode,
             num_rbf=8,
+            attention_topology=topology,
         )
         counts.append(sum(parameter.numel() for parameter in model.parameters()))
     assert len(set(counts)) == 1
@@ -246,6 +292,18 @@ def test_unknown_geometry_feature_mode_fails_closed() -> None:
             4,
             1,
             geometry_feature_mode="raw_global_xyz",
+        )
+
+
+def test_unknown_attention_topology_fails_closed() -> None:
+    from interaction_first.intra_chain_geometry import IntraChainGeometryEncoder
+
+    with pytest.raises(ValueError, match="attention_topology"):
+        IntraChainGeometryEncoder(
+            16,
+            4,
+            1,
+            attention_topology="coordinate_leaking_dense",
         )
 
 

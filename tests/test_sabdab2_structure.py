@@ -350,7 +350,7 @@ def test_materialized_cache_joins_embeddings_labels_and_batches(tmp_path: Path) 
     assert result["modes"][0]["selection_rule"].startswith("fixed final epoch")
 
 
-def test_four_classifier_modes_have_equal_parameters_and_finite_outputs() -> None:
+def test_five_classifier_controls_have_equal_parameters_and_finite_outputs() -> None:
     import torch
 
     from interaction_first.sabdab2_structure import IntraChainResidueClassifier
@@ -374,13 +374,21 @@ def test_four_classifier_modes_have_equal_parameters_and_finite_outputs() -> Non
         "antigen_missing_frame_mask": torch.zeros(1, 2, dtype=torch.bool),
     }
     counts = []
-    for mode in ("none", "distance", "distance_direction", "full_pose"):
+    configurations = (
+        ("none", "dense_sequence"),
+        ("none", "spatial"),
+        ("distance", "spatial"),
+        ("distance_direction", "spatial"),
+        ("full_pose", "spatial"),
+    )
+    for mode, topology in configurations:
         model = IntraChainResidueClassifier(
             antibody_input_dim=8,
             antigen_input_dim=8,
             d_model=16,
             num_heads=4,
             geometry_feature_mode=mode,
+            attention_topology=topology,
             num_rbf=8,
             dropout=0.0,
         ).eval()

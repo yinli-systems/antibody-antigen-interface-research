@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run an equal-parameter four-mode SAbDab2 self-attention ablation."""
+"""Run an equal-parameter five-mode SAbDab2 self-attention ablation."""
 
 from __future__ import annotations
 
@@ -37,8 +37,41 @@ from interaction_first.sabdab2_structure import (  # noqa: E402
 )
 
 
-MODES = ("none", "distance", "distance_direction", "full_pose")
-RESULT_FORMAT = "sabdab2_self_attention_geometry_ablation_v1"
+MODE_CONFIGS = {
+    "dense_sequence": {
+        "geometry_feature_mode": "none",
+        "attention_topology": "dense_sequence",
+    },
+    "topology_only": {
+        "geometry_feature_mode": "none",
+        "attention_topology": "spatial",
+    },
+    # Backward-compatible spelling used by the original four-mode runner.
+    "none": {
+        "geometry_feature_mode": "none",
+        "attention_topology": "spatial",
+    },
+    "distance": {
+        "geometry_feature_mode": "distance",
+        "attention_topology": "spatial",
+    },
+    "distance_direction": {
+        "geometry_feature_mode": "distance_direction",
+        "attention_topology": "spatial",
+    },
+    "full_pose": {
+        "geometry_feature_mode": "full_pose",
+        "attention_topology": "spatial",
+    },
+}
+MODES = (
+    "dense_sequence",
+    "topology_only",
+    "distance",
+    "distance_direction",
+    "full_pose",
+)
+RESULT_FORMAT = "sabdab2_self_attention_geometry_ablation_v2"
 
 
 def _arguments() -> argparse.Namespace:
@@ -48,7 +81,12 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--label-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--expected-cache-manifest-sha256", required=True)
-    parser.add_argument("--modes", nargs="+", choices=MODES, default=list(MODES))
+    parser.add_argument(
+        "--modes",
+        nargs="+",
+        choices=tuple(MODE_CONFIGS),
+        default=list(MODES),
+    )
     parser.add_argument("--seed", type=int, default=20260728)
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=4)
@@ -276,6 +314,7 @@ def _train_mode(
     expected_initial_sha256: str | None,
 ) -> tuple[dict[str, Any], str]:
     _set_seed(arguments.seed)
+    mode_config = MODE_CONFIGS[mode]
     train_loader = _loader(
         train_dataset,
         batch_size=arguments.batch_size,
@@ -299,10 +338,11 @@ def _train_mode(
         d_model=arguments.d_model,
         num_heads=arguments.num_heads,
         num_layers=arguments.num_layers,
-        geometry_feature_mode=mode,
+        geometry_feature_mode=mode_config["geometry_feature_mode"],
         num_rbf=arguments.num_rbf,
         neighbor_k=arguments.neighbor_k,
         neighbor_radius=arguments.neighbor_radius,
+        attention_topology=mode_config["attention_topology"],
         dropout=arguments.dropout,
     )
     initial_sha256 = _state_sha256(model)
@@ -384,6 +424,8 @@ def _train_mode(
     return (
         {
             "mode": mode,
+            "geometry_feature_mode": mode_config["geometry_feature_mode"],
+            "attention_topology": mode_config["attention_topology"],
             "parameter_count": parameter_count,
             "initial_state_sha256": initial_sha256,
             "final_checkpoint": checkpoint_path.name,
@@ -452,9 +494,15 @@ def main() -> None:
             "weight_decay": arguments.weight_decay,
             "precision": arguments.precision,
             "modes": arguments.modes,
-            "common_attention_graph": (
-                "same-chain spatial kNN/radius graph plus self edge; modes change only "
-                "zero-padded invariant edge-feature channels"
+            "mode_contract": {
+                mode: MODE_CONFIGS[mode]
+                for mode in arguments.modes
+            },
+            "spatial_attention_graph": (
+                "same-chain kNN/radius graph plus a safe self edge"
+            ),
+            "dense_sequence_attention_graph": (
+                "all real same-chain residue pairs independent of coordinates or frame validity"
             ),
         }
         mode_results = []

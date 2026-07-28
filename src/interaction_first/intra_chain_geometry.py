@@ -78,6 +78,15 @@ def _geometry_feature_dimension(mode: str, num_rbf: int) -> int:
     return num_rbf + 3 + 9 + 2
 
 
+def _attention_topology(value: str) -> str:
+    allowed = {"spatial", "dense_sequence"}
+    if value not in allowed:
+        raise ValueError(
+            "attention_topology must be 'spatial' or 'dense_sequence'"
+        )
+    return value
+
+
 def _safe_normalize(values: Any, eps: float = 1e-8) -> Any:
     denominator = torch.linalg.vector_norm(values, dim=-1, keepdim=True)
     return values / denominator.clamp_min(eps)
@@ -221,16 +230,23 @@ def build_intra_chain_relative_geometry(
     distance_max: float = 20.0,
     neighbor_k: int | None = 32,
     neighbor_radius: float | None = None,
+    attention_topology: str = "spatial",
 ) -> IntraChainRelativeGeometry:
-    """Construct invariant pair features and an intra-chain spatial graph.
+    """Construct invariant pair features and an intra-chain attention graph.
 
-    ``neighbor_k`` and ``neighbor_radius`` may be combined: the radius filter
-    is applied first and k-nearest valid residues are retained.  A self edge is
-    always present for each non-padding residue, including residues with
-    missing/degenerate backbone atoms, so attention never has an empty row.
-    Set both options to ``None`` for dense same-chain self-attention.
+    ``attention_topology='spatial'`` combines ``neighbor_k`` and
+    ``neighbor_radius``: the radius filter is applied first and k-nearest valid
+    residues are retained. A self edge is always present for every non-padding
+    residue, including residues with missing/degenerate backbone atoms.
+
+    ``attention_topology='dense_sequence'`` is the coordinate-independent
+    control. Every real residue attends to every real residue in the same
+    polymer chain, even when a frame is missing. Pair features remain masked by
+    frame validity, so using this topology with ``geometry_feature_mode='none'``
+    is a true dense sequence-only baseline with the same parameter shapes.
     """
     require_torch()
+    attention_topology = _attention_topology(attention_topology)
     neighbor_k = _optional_positive_integer(neighbor_k, "neighbor_k")
     neighbor_radius = _optional_positive_float(neighbor_radius, "neighbor_radius")
     num_rbf = _positive_integer(num_rbf, "num_rbf")
@@ -322,36 +338,39 @@ def build_intra_chain_relative_geometry(
         features = full_features
     features = features * geometry_valid[..., None].to(features.dtype)
 
-    spatial_candidates = geometry_valid
-    if neighbor_radius is not None:
-        spatial_candidates = spatial_candidates & (distance <= neighbor_radius)
-    if neighbor_k is not None:
-        selected_count = min(neighbor_k, residue_count)
-        candidate_distances = distance.masked_fill(~spatial_candidates, torch.inf)
-        nearest_distance, nearest_index = torch.topk(
-            candidate_distances,
-            k=selected_count,
-            dim=-1,
-            largest=False,
-            sorted=False,
-        )
-        spatial_neighbors = torch.zeros_like(spatial_candidates)
-        spatial_neighbors.scatter_(
-            dim=-1,
-            index=nearest_index,
-            src=torch.isfinite(nearest_distance),
-        )
-    else:
-        spatial_neighbors = spatial_candidates
-
-    identity = torch.eye(residue_count, dtype=torch.bool, device=origin.device)
-    self_edges = identity.unsqueeze(0) & residue_mask[:, :, None]
-    neighbor_mask = (spatial_neighbors | self_edges) & same_chain
-    neighbor_mask = (
-        neighbor_mask
+    real_same_chain_pairs = (
+        same_chain
         & residue_mask[:, :, None]
         & residue_mask[:, None, :]
     )
+    if attention_topology == "dense_sequence":
+        neighbor_mask = real_same_chain_pairs
+    else:
+        spatial_candidates = geometry_valid
+        if neighbor_radius is not None:
+            spatial_candidates = spatial_candidates & (distance <= neighbor_radius)
+        if neighbor_k is not None:
+            selected_count = min(neighbor_k, residue_count)
+            candidate_distances = distance.masked_fill(~spatial_candidates, torch.inf)
+            nearest_distance, nearest_index = torch.topk(
+                candidate_distances,
+                k=selected_count,
+                dim=-1,
+                largest=False,
+                sorted=False,
+            )
+            spatial_neighbors = torch.zeros_like(spatial_candidates)
+            spatial_neighbors.scatter_(
+                dim=-1,
+                index=nearest_index,
+                src=torch.isfinite(nearest_distance),
+            )
+        else:
+            spatial_neighbors = spatial_candidates
+
+        identity = torch.eye(residue_count, dtype=torch.bool, device=origin.device)
+        self_edges = identity.unsqueeze(0) & residue_mask[:, :, None]
+        neighbor_mask = (spatial_neighbors | self_edges) & real_same_chain_pairs
     return IntraChainRelativeGeometry(
         features=features,
         distance=distance,
@@ -521,6 +540,7 @@ class IntraChainGeometryEncoder(_ModuleBase):
         distance_max: float = 20.0,
         neighbor_k: int | None = 32,
         neighbor_radius: float | None = None,
+        attention_topology: str = "spatial",
         ffn_expansion: int = 4,
         dropout: float = 0.0,
     ) -> None:
@@ -535,6 +555,7 @@ class IntraChainGeometryEncoder(_ModuleBase):
         self.neighbor_radius = _optional_positive_float(
             neighbor_radius, "neighbor_radius"
         )
+        self.attention_topology = _attention_topology(attention_topology)
         num_layers = _positive_integer(num_layers, "num_layers")
         geometry_dim = _geometry_feature_dimension(
             self.geometry_feature_mode,
@@ -578,6 +599,7 @@ class IntraChainGeometryEncoder(_ModuleBase):
             distance_max=self.distance_max,
             neighbor_k=self.neighbor_k,
             neighbor_radius=self.neighbor_radius,
+            attention_topology=self.attention_topology,
         )
         layer_details = []
         for block in self.blocks:

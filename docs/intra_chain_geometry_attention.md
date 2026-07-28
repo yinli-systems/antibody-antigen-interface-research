@@ -155,27 +155,28 @@ while the stage is disabled fails loudly instead of silently ignoring structure.
 ## Locked first experiment
 
 `scripts/train_sabdab2_structure_ablation.py` keeps cross/partner fusion at zero,
-uses frozen sequence embeddings, and compares four edge-feature modes:
+uses frozen sequence embeddings, and compares five equal-parameter controls:
 
-1. spatial topology only (`none`);
-2. distance RBF;
-3. distance RBF plus local direction;
-4. full local relative pose plus sequence separation.
+1. dense same-chain sequence-only attention (`dense_sequence`);
+2. spatial topology only (`topology_only`);
+3. distance RBF;
+4. distance RBF plus local direction;
+5. full local relative pose plus sequence separation.
 
-All four use the same `k=32`, 16-A same-chain graph, pair-tensor width, geometry
-MLP, model initialization, optimizer, sample order, training budget, and fixed
-final-epoch reporting rule. Thus this run isolates edge-feature content; its
-`none` control is deliberately not a dense sequence-only Transformer because the
-spatial graph is held fixed. A separate dense control requires `neighbor_k=None`
-and `neighbor_radius=None` and would answer a different question.
+The four spatial modes use the same `k=32`, 16-A same-chain graph. All five use
+the same pair-tensor width, geometry MLP, model initialization, optimizer, sample
+order, training budget, and fixed-final-epoch reporting rule. The dense control
+uses `geometry_feature_mode="none"` and
+`attention_topology="dense_sequence"`, so its attention graph is independent of
+coordinates and frame validity. The topology-only control uses the same all-zero
+pair feature with `attention_topology="spatial"`; its only structural signal is
+which edges survive the kNN/radius graph.
 
-The feature selector accepts `none`, `distance`,
-`distance_direction`, or `full_pose`. For a true dense sequence-only control,
-use `geometry_feature_mode="none"`, `neighbor_k=None`, and
-`neighbor_radius=None`; the all-zero pair feature can only produce a
-head-wise constant that cancels inside the softmax. All modes keep the same
-fixed-width pair tensor and geometry MLP; unused channels are zeroed so the
-four ablations have identical trainable parameter counts.
+The feature selector accepts `none`, `distance`, `distance_direction`, or
+`full_pose`; the independent topology selector accepts `spatial` or
+`dense_sequence`. All modes keep the same fixed-width pair tensor and geometry
+MLP. Unused channels are zeroed, so all five ablations have identical trainable
+parameter counts.
 
 The training script reports residue-level paratope and epitope AUPRC/AUROC plus
 fixed-threshold metrics on validation. It does not perform validation-best

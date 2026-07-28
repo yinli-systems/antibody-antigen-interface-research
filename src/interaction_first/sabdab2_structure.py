@@ -1055,6 +1055,7 @@ class IntraChainResidueClassifier(nn.Module if nn is not None else object):
         num_rbf: int = 16,
         neighbor_k: int | None = 32,
         neighbor_radius: float | None = 16.0,
+        attention_topology: str = "spatial",
         dropout: float = 0.1,
     ) -> None:
         _require_torch()
@@ -1077,6 +1078,7 @@ class IntraChainResidueClassifier(nn.Module if nn is not None else object):
             num_rbf=num_rbf,
             neighbor_k=neighbor_k,
             neighbor_radius=neighbor_radius,
+            attention_topology=attention_topology,
             dropout=dropout,
         )
         self.antibody_norm = nn.LayerNorm(d_model)
