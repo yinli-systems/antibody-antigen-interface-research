@@ -8,6 +8,9 @@ RESULT = (
     ROOT
     / "results/pretraining/antibody_cudagraph_ablation_correctness_v1.json"
 )
+BUCKET144_RESULT = (
+    ROOT / "results/pretraining/antibody_bucket144_correctness_v1.json"
+)
 
 
 def test_cudagraph_ablation_auditor_is_ascii_and_syntax_valid() -> None:
@@ -48,3 +51,17 @@ def test_cudagraph_ablation_correctness_authorizes_only_long_benchmark() -> None
         "scale_16_gpu": False,
         "scale_32_gpu": False,
     }
+
+
+def test_bucket144_candidate_preserves_membership_and_numerics() -> None:
+    import json
+
+    result = json.loads(BUCKET144_RESULT.read_text(encoding="ascii"))
+    assert result["expected_length_bucket_boundaries"] == [96, 128, 144, 194]
+    assert result["membership_equal"] is True
+    assert result["comparison_to_eager"]["passed"] is True
+    assert result["comparison_to_eager"][
+        "final_loss_absolute_difference"
+    ] < 0.000003
+    assert result["authorization"]["benchmark_500_updates"] is True
+    assert result["authorization"]["scale_16_gpu"] is False
