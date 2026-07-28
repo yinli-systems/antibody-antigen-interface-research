@@ -4,6 +4,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDITOR = ROOT / "scripts/audit_antibody_optimized_recovery.py"
+ATTEMPT_ONE = (
+    ROOT / "results/pretraining/antibody_optimized_recovery_attempt_001_v1.json"
+)
 
 
 def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
@@ -17,9 +20,29 @@ def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
 
 def test_optimized_recovery_auditor_fails_closed_before_scale() -> None:
     source = AUDITOR.read_text(encoding="ascii")
-    assert "if not all(exact.values()):" in source
-    assert '"pilot_16_gpu": True' in source
+    assert "passed = all(exact.values())" in source
+    assert '"pilot_16_gpu": passed' in source
     assert '"pilot_32_gpu": False' in source
     assert '"production_pretraining": False' in source
     assert '"scientific_claim": False' in source
+    assert '"recovery_passed": passed' in source
     assert "os.O_EXCL" in source
+
+
+def test_first_optimized_recovery_attempt_preserves_nondeterminism() -> None:
+    import json
+
+    result = json.loads(ATTEMPT_ONE.read_text(encoding="ascii"))
+    assert result["recovery_passed"] is False
+    assert result["exact_equal"] == {
+        "final_model": False,
+        "final_optimizer": False,
+        "prefix_trace": False,
+        "resumed_trace": False,
+        "trainer_state": True,
+    }
+    assert result["trace_differences"][
+        "prefix_maximum_loss_absolute_difference"
+    ] > 0.0001
+    assert result["authorization"]["pilot_16_gpu"] is False
+    assert result["authorization"]["pilot_32_gpu"] is False

@@ -219,11 +219,28 @@ def main() -> None:
         "resumed_trace": _trace_equal(continuous["trace"][10:], resumed["trace"]),
         "trainer_state": continuous_state == resumed_state,
     }
-    if not all(exact.values()):
-        raise RuntimeError(f"Optimized exact recovery audit failed: {exact}")
+    passed = all(exact.values())
+    trace_differences = {
+        "prefix_maximum_gradient_norm_absolute_difference": max(
+            abs(float(left["gradient_norm"]) - float(right["gradient_norm"]))
+            for left, right in zip(continuous["trace"][:10], stage1["trace"])
+        ),
+        "prefix_maximum_loss_absolute_difference": max(
+            abs(float(left["loss"]) - float(right["loss"]))
+            for left, right in zip(continuous["trace"][:10], stage1["trace"])
+        ),
+        "resumed_maximum_gradient_norm_absolute_difference": max(
+            abs(float(left["gradient_norm"]) - float(right["gradient_norm"]))
+            for left, right in zip(continuous["trace"][10:], resumed["trace"])
+        ),
+        "resumed_maximum_loss_absolute_difference": max(
+            abs(float(left["loss"]) - float(right["loss"]))
+            for left, right in zip(continuous["trace"][10:], resumed["trace"])
+        ),
+    }
     payload = {
         "authorization": {
-            "pilot_16_gpu": True,
+            "pilot_16_gpu": passed,
             "pilot_32_gpu": False,
             "production_pretraining": False,
             "scientific_claim": False,
@@ -234,11 +251,13 @@ def main() -> None:
         "format_version": "antibody_optimized_recovery_audit_v1",
         "input_sha256": {name: _sha256(path) for name, path in paths.items()},
         "job_ids": args.job_id,
+        "recovery_passed": passed,
         "source": {
             "archive_sha256": args.source_archive_sha256,
             "runner_sha256": args.runner_sha256,
         },
         "test_access": TEST_ACCESS,
+        "trace_differences": trace_differences,
     }
     encoded = (
         json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
