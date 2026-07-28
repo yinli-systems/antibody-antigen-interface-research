@@ -16,6 +16,7 @@ import shutil
 import subprocess
 from typing import Any, Mapping, Sequence
 
+from .corpus_plan import CorpusPlanError, validate_corpus_plan
 from .oas_authority import (
     OASAuthorityError,
     canonical_json_bytes,
@@ -87,6 +88,37 @@ def load_authority_manifest(
     return manifest
 
 
+def load_corpus_plan(
+    path: Path,
+    *,
+    expected_file_sha256: str,
+    expected_payload_sha256: str,
+) -> dict[str, Any]:
+    """Load one byte-anchored and semantically validated corpus plan."""
+    for name, value in (
+        ("expected_file_sha256", expected_file_sha256),
+        ("expected_payload_sha256", expected_payload_sha256),
+    ):
+        if not isinstance(value, str) or not _SHA256_PATTERN.fullmatch(value):
+            raise OASDownloadError(f"{name} must be a lowercase SHA-256")
+    if not path.is_file() or path.is_symlink():
+        raise OASDownloadError("Corpus plan must be a regular file")
+    payload = path.read_bytes()
+    if hashlib.sha256(payload).hexdigest() != expected_file_sha256:
+        raise OASDownloadError("Corpus plan file digest differs")
+    try:
+        plan = json.loads(payload.decode("ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise OASDownloadError("Corpus plan is not ASCII JSON") from error
+    try:
+        validate_corpus_plan(plan)
+    except CorpusPlanError as error:
+        raise OASDownloadError("Corpus plan validation failed") from error
+    if plan["plan_sha256"] != expected_payload_sha256:
+        raise OASDownloadError("Corpus plan payload digest differs")
+    return plan
+
+
 def select_task_data_units(
     data_units: Sequence[Mapping[str, Any]],
     *,
@@ -115,6 +147,66 @@ def select_task_data_units(
     if maximum_units is not None:
         selected = selected[:maximum_units]
     return selected
+
+
+def select_planned_data_units(
+    authority_data_units: Sequence[Mapping[str, Any]],
+    planned_data_units: Sequence[Mapping[str, Any]],
+    *,
+    split: str,
+    task_id: int,
+    task_count: int,
+    maximum_units: int | None = None,
+) -> tuple[Mapping[str, Any], ...]:
+    """Resolve plan memberships to authority entries and select one modulo shard."""
+    if split not in {"all", "train", "validation"}:
+        raise OASDownloadError("split must be all, train, or validation")
+    authority_by_relative: dict[str, Mapping[str, Any]] = {}
+    for entry in authority_data_units:
+        relative = entry.get("relative_unit")
+        if not isinstance(relative, str) or relative in authority_by_relative:
+            raise OASDownloadError("Authority data-unit identities are not unique")
+        authority_by_relative[relative] = entry
+    resolved: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for membership in planned_data_units:
+        if membership.get("split") not in {"train", "validation"}:
+            raise OASDownloadError("Planned data-unit split is invalid")
+        if split != "all" and membership["split"] != split:
+            continue
+        relative = membership.get("relative_unit")
+        if not isinstance(relative, str) or relative in seen:
+            raise OASDownloadError("Planned data-unit identities are not unique")
+        seen.add(relative)
+        authority = authority_by_relative.get(relative)
+        if authority is None:
+            raise OASDownloadError("Planned data unit is absent from authority")
+        if (
+            authority.get("canonical_url") != membership.get("canonical_url")
+            or authority.get("study") != membership.get("study")
+            or authority.get("unique_sequences") != membership.get("source_records")
+        ):
+            raise OASDownloadError("Planned data unit disagrees with authority")
+        resolved_entry = dict(authority)
+        resolved_entry["corpus_plan_membership"] = {
+            "expected_selected_records": membership["expected_selected_records"],
+            "selection_fraction_denominator": membership[
+                "selection_fraction_denominator"
+            ],
+            "selection_fraction_numerator": membership[
+                "selection_fraction_numerator"
+            ],
+            "selection_hash_namespace": membership["selection_hash_namespace"],
+            "split": membership["split"],
+            "stratum": membership["stratum"],
+        }
+        resolved.append(resolved_entry)
+    return select_task_data_units(
+        resolved,
+        task_id=task_id,
+        task_count=task_count,
+        maximum_units=maximum_units,
+    )
 
 
 def _single_csv_record(line: bytes, label: str) -> str:
@@ -269,14 +361,17 @@ def download_data_unit(
     receipt_root: Path,
     authority_manifest_sha256: str,
     controller_source_sha256: str,
+    downloader_module_sha256: str,
     source_class: str,
     curl_binary: str,
     curl_version: str,
+    corpus_plan_payload_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Download, validate, and atomically admit one manifest-bound data unit."""
     for name, value in (
         ("authority_manifest_sha256", authority_manifest_sha256),
         ("controller_source_sha256", controller_source_sha256),
+        ("downloader_module_sha256", downloader_module_sha256),
     ):
         if not isinstance(value, str) or not _SHA256_PATTERN.fullmatch(value):
             raise OASDownloadError(f"{name} must be a lowercase SHA-256")
@@ -309,6 +404,7 @@ def download_data_unit(
             partial.parent.mkdir(parents=True, exist_ok=True)
             command = [
                 curl_binary,
+                "--silent",
                 "--proto",
                 "=https",
                 "--tlsv1.2",
@@ -360,6 +456,7 @@ def download_data_unit(
             "created_at": datetime.now(timezone.utc).isoformat(),
             "curl_version": curl_version,
             "data_row_count": inspection.data_row_count,
+            "downloader_module_sha256": downloader_module_sha256,
             "header_sha256": inspection.header_sha256,
             "metadata_sha256": inspection.metadata_sha256,
             "relative_unit": relative_unit,
@@ -372,6 +469,14 @@ def download_data_unit(
             "uncompressed_sha256": inspection.uncompressed_sha256,
             "unique_sequences": entry["unique_sequences"],
         }
+        if corpus_plan_payload_sha256 is not None:
+            if not _SHA256_PATTERN.fullmatch(corpus_plan_payload_sha256):
+                raise OASDownloadError("Corpus plan payload digest is invalid")
+            membership = entry.get("corpus_plan_membership")
+            if not isinstance(membership, Mapping):
+                raise OASDownloadError("Planned download has no plan membership")
+            receipt["corpus_plan_membership"] = dict(membership)
+            receipt["corpus_plan_payload_sha256"] = corpus_plan_payload_sha256
         receipt["receipt_sha256"] = hashlib.sha256(
             canonical_json_bytes(receipt)
         ).hexdigest()
@@ -386,6 +491,7 @@ def download_data_unit(
                 "compressed_bytes",
                 "compressed_sha256",
                 "data_row_count",
+                "downloader_module_sha256",
                 "header_sha256",
                 "metadata_sha256",
                 "relative_unit",
@@ -394,6 +500,11 @@ def download_data_unit(
                 "uncompressed_sha256",
                 "unique_sequences",
             )
+            if corpus_plan_payload_sha256 is not None:
+                immutable_fields += (
+                    "corpus_plan_membership",
+                    "corpus_plan_payload_sha256",
+                )
             if any(existing.get(field) != receipt[field] for field in immutable_fields):
                 raise OASDownloadError("Existing receipt disagrees with verified bytes")
         else:
@@ -407,4 +518,3 @@ def locate_curl() -> tuple[str, str]:
     if curl_binary is None:
         raise OASDownloadError("curl is required for resumable HTTPS downloads")
     return curl_binary, _curl_version(curl_binary)
-

@@ -14,12 +14,15 @@ import socket
 import sys
 from typing import Any
 
+import antibody_pretraining.oas_download as download_module
 from antibody_pretraining.oas_authority import canonical_json_bytes
 from antibody_pretraining.oas_download import (
     OASDownloadError,
     download_data_unit,
     load_authority_manifest,
+    load_corpus_plan,
     locate_curl,
+    select_planned_data_units,
     select_task_data_units,
 )
 
@@ -52,11 +55,16 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--manifest-file-sha256", required=True)
     parser.add_argument("--manifest-payload-sha256", required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--plan", type=Path)
+    parser.add_argument("--plan-file-sha256")
+    parser.add_argument("--plan-payload-sha256")
+    parser.add_argument("--split", choices=("all", "train", "validation"), default="all")
     parser.add_argument("--task-id", type=int, required=True)
     parser.add_argument("--task-count", type=int, required=True)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--maximum-units", type=int)
     parser.add_argument("--controller-source-sha256", required=True)
+    parser.add_argument("--downloader-module-sha256", required=True)
     parser.add_argument("--task-summary", type=Path, required=True)
     return parser
 
@@ -69,17 +77,54 @@ def main() -> int:
     observed_source_sha256 = _source_sha256()
     if observed_source_sha256 != args.controller_source_sha256:
         raise ValueError("Downloader controller source digest differs")
+    observed_module_sha256 = hashlib.sha256(
+        Path(download_module.__file__).read_bytes()
+    ).hexdigest()
+    if observed_module_sha256 != args.downloader_module_sha256:
+        raise ValueError("Downloader module source digest differs")
     manifest = load_authority_manifest(
         args.manifest,
         expected_file_sha256=args.manifest_file_sha256,
         expected_payload_sha256=args.manifest_payload_sha256,
     )
-    selected = select_task_data_units(
-        manifest["data_units"],
-        task_id=args.task_id,
-        task_count=args.task_count,
-        maximum_units=args.maximum_units,
+    plan_arguments = (
+        args.plan,
+        args.plan_file_sha256,
+        args.plan_payload_sha256,
     )
+    if any(value is not None for value in plan_arguments) and not all(
+        value is not None for value in plan_arguments
+    ):
+        raise ValueError("Plan path, file digest, and payload digest are atomic")
+    plan = None
+    if args.plan is not None:
+        plan = load_corpus_plan(
+            args.plan,
+            expected_file_sha256=args.plan_file_sha256,
+            expected_payload_sha256=args.plan_payload_sha256,
+        )
+        if (
+            plan["authority"]["manifest_payload_sha256"]
+            != manifest["manifest_sha256"]
+        ):
+            raise ValueError("Corpus plan and authority manifest disagree")
+        selected = select_planned_data_units(
+            manifest["data_units"],
+            plan["selected_data_units"],
+            split=args.split,
+            task_id=args.task_id,
+            task_count=args.task_count,
+            maximum_units=args.maximum_units,
+        )
+    else:
+        if args.split != "all":
+            raise ValueError("A split filter requires a corpus plan")
+        selected = select_task_data_units(
+            manifest["data_units"],
+            task_id=args.task_id,
+            task_count=args.task_count,
+            maximum_units=args.maximum_units,
+        )
     if not selected:
         raise OASDownloadError("Task shard contains no data units")
     source_class = manifest["source"]["source_class"]
@@ -100,9 +145,13 @@ def main() -> int:
                 receipt_root=receipt_root,
                 authority_manifest_sha256=manifest["manifest_sha256"],
                 controller_source_sha256=observed_source_sha256,
+                downloader_module_sha256=observed_module_sha256,
                 source_class=source_class,
                 curl_binary=curl_binary,
                 curl_version=curl_version,
+                corpus_plan_payload_sha256=(
+                    plan["plan_sha256"] if plan is not None else None
+                ),
             ): entry
             for entry in selected
         }
@@ -125,12 +174,20 @@ def main() -> int:
         "authority_manifest_payload_sha256": manifest["manifest_sha256"],
         "completed_at": datetime.now(timezone.utc).isoformat(),
         "controller_source_sha256": observed_source_sha256,
+        "corpus_plan_file_sha256": (
+            args.plan_file_sha256 if plan is not None else None
+        ),
+        "corpus_plan_payload_sha256": (
+            plan["plan_sha256"] if plan is not None else None
+        ),
         "curl_version": curl_version,
         "failed_count": len(failures),
         "failures": failures,
         "host": socket.gethostname(),
+        "downloader_module_sha256": observed_module_sha256,
         "selected_count": len(selected),
         "source_class": source_class,
+        "split": args.split,
         "success_count": len(successes),
         "successful_receipt_sha256": [
             receipt["receipt_sha256"] for receipt in successes
@@ -154,4 +211,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

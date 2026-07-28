@@ -17,6 +17,7 @@ from antibody_pretraining.oas_download import (
     OASDownloadError,
     inspect_gzip_data_unit,
     load_authority_manifest,
+    select_planned_data_units,
     select_task_data_units,
 )
 
@@ -164,3 +165,85 @@ def test_task_selection_rejects_invalid_ranges() -> None:
         select_task_data_units([], task_id=2, task_count=2)
     with pytest.raises(OASDownloadError, match="maximum_units"):
         select_task_data_units([], task_id=0, task_count=1, maximum_units=0)
+
+
+def test_planned_selection_resolves_authority_and_preserves_membership() -> None:
+    units = build_oas_authority_manifest(
+        _authority_html(), source_class="unpaired"
+    )["data_units"]
+    planned = [
+        {
+            "canonical_url": units[index]["canonical_url"],
+            "expected_selected_records": units[index]["unique_sequences"],
+            "relative_unit": units[index]["relative_unit"],
+            "selection_fraction_denominator": 1,
+            "selection_fraction_numerator": 1,
+            "selection_hash_namespace": str(index) * 64,
+            "source_records": units[index]["unique_sequences"],
+            "split": "train" if index < 2 else "validation",
+            "stratum": "human_heavy" if index < 2 else "human_light",
+            "study": units[index]["study"],
+        }
+        for index in range(3)
+    ]
+
+    selected = select_planned_data_units(
+        units,
+        planned,
+        split="train",
+        task_id=1,
+        task_count=2,
+    )
+
+    assert len(selected) == 1
+    assert selected[0]["relative_unit"].endswith("b.csv.gz")
+    assert selected[0]["corpus_plan_membership"]["split"] == "train"
+
+
+def test_planned_selection_rejects_authority_disagreement() -> None:
+    units = build_oas_authority_manifest(
+        _authority_html(), source_class="unpaired"
+    )["data_units"]
+    planned = [
+        {
+            "canonical_url": units[0]["canonical_url"],
+            "expected_selected_records": 1,
+            "relative_unit": units[0]["relative_unit"],
+            "selection_fraction_denominator": 1,
+            "selection_fraction_numerator": 1,
+            "selection_hash_namespace": "0" * 64,
+            "source_records": 999,
+            "split": "train",
+            "stratum": "human_heavy",
+            "study": units[0]["study"],
+        }
+    ]
+
+    with pytest.raises(OASDownloadError, match="disagrees with authority"):
+        select_planned_data_units(
+            units,
+            planned,
+            split="all",
+            task_id=0,
+            task_count=1,
+        )
+
+
+def test_committed_planned_download_pilot_is_plan_and_source_bound() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "results/pretraining/oas_planned_download_pilot_v2.json"
+    )
+    summary = json.loads(path.read_text(encoding="ascii"))
+    unsigned = dict(summary)
+    recorded = unsigned.pop("summary_sha256")
+
+    assert summary["failed_count"] == 0
+    assert summary["success_count"] == 1
+    assert summary["corpus_plan_payload_sha256"] == (
+        "fba741bc6666067f1601f2096d31507c1b38edb8af95118110eaf1cef7e059e0"
+    )
+    assert summary["downloader_module_sha256"] == (
+        "9fe04feba0cd6eb758e129ec547079bca85f693c74a55c0a82914cbbd4c687a4"
+    )
+    assert hashlib.sha256(canonical_json_bytes(unsigned)).hexdigest() == recorded
