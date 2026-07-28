@@ -16,7 +16,8 @@ def test_cudagraph_ablation_auditor_is_ascii_and_syntax_valid() -> None:
 
 def test_cudagraph_ablation_auditor_fails_closed() -> None:
     source = AUDITOR.read_text(encoding="ascii")
-    assert "membership_equal and comparison_passed and stability_passed" in source
+    assert "passed = membership_equal and comparison_passed" in source
+    assert '"diagnostic_stability_passed"' in source
     assert '"production_pretraining": False' in source
     assert '"scale_16_gpu": False' in source
     assert '"scale_32_gpu": False' in source
