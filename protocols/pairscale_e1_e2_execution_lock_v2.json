@@ -1,0 +1,99 @@
+{
+  "claim_boundary": "Development-only fixed-horizon E1/E2 repair with a byte-frozen unary representation path during phase 2. No untouched-final-test, confirmatory, checkpoint-promotion, scaling, comparative-superiority, SOTA, or world-leading claim is authorized.",
+  "evaluation": {
+    "development_holdout_access": "once_per_seed_after_immutable_epoch_260_checkpoint",
+    "development_holdout_is_untouched_final_test": false,
+    "exhaustive_bidirectional_retrieval_on_fixed_checkpoint": true,
+    "model_or_checkpoint_selection": false,
+    "new_final_test_access": false,
+    "unknown_cross_pairs_receive_binary_nonbinder_labels": false
+  },
+  "failed_predecessor": {
+    "diagnostic_file": "results/pairscale/e1_e2_bacc4bc_unary_drift_diagnostic.json",
+    "diagnostic_sha256": "0d52dee94d133c81a4fbe9a7d4864836143ff81cbef6b7215a78790f1eea59d2",
+    "jobs": [
+      1334012,
+      1334013,
+      1334014
+    ],
+    "reason": "shared_monomer_representation_drift_under_detached_unary_logits"
+  },
+  "format_version": "pairscale_e1_e2_execution_lock_v2",
+  "parameter_ownership": {
+    "pair_path_modules": [
+      "fusion_layers",
+      "antibody_pair_add",
+      "antigen_pair_add",
+      "antibody_pair_gate",
+      "antigen_pair_gate",
+      "pair_refinement",
+      "interaction_head",
+      "specificity_head"
+    ],
+    "unary_path_modules": [
+      "antibody_projection",
+      "antigen_projection",
+      "antibody_final_norm",
+      "antigen_final_norm",
+      "antibody_unary_head",
+      "antigen_unary_head"
+    ],
+    "unused_frozen_modules": [
+      "distance_head",
+      "orientation_head"
+    ]
+  },
+  "parent_protocols": {
+    "gate_audit_file": "protocols/pairscale_e1_e2_gate_audit_v1.json",
+    "gate_audit_sha256": "7c985acb4720316d73388cf62a7b3787bf21f0286612dd57b81591b041cc26f0",
+    "machine_protocol_file": "protocols/pairscale_e1_e2_partner_specificity_v1.json",
+    "machine_protocol_sha256": "91fa71d83972f4b7b72d733ba74ec6fcb41eba260f7e26a9506f7d6db22fae83",
+    "narrative_protocol_file": "protocols/PAIRSCALE_E1_E2_PARTNER_SPECIFICITY_PROTOCOL_V1.md",
+    "narrative_protocol_sha256": "3d0e50aafed98ef8bb93900acbc1d59803fa3cbf61d39619f37e1ab1859e555d",
+    "revision_narrative_file": "protocols/PAIRSCALE_E1_E2_UNARY_FREEZE_PROTOCOL_V2.md",
+    "revision_narrative_sha256": "f862aff8d3f1c6a5f5c699debd4f7603f910c3597e02855cf76a04b2fe32c372"
+  },
+  "screening_seeds": [
+    17,
+    42,
+    73
+  ],
+  "training": {
+    "checkpoint_every_epochs": 20,
+    "cognate_margin": 0.1,
+    "cognate_margin_temperature": 0.5,
+    "cognate_margin_weight": 0.25,
+    "contact_logit_mode": "unary_plus_interaction_residual",
+    "contact_ranking_temperature": 1.0,
+    "contact_ranking_weight": 1.0,
+    "d_model": 192,
+    "decoy_count_per_direction": 4,
+    "dropout": 0.0,
+    "epochs": 260,
+    "eval_every_epochs": 20,
+    "ffn_dim": 384,
+    "freeze_complete_unary_path_during_phase_2": true,
+    "gradient_clip_norm": 5.0,
+    "hard_negative_ratio": 8,
+    "joint_learning_rate_multiplier": 0.1,
+    "learning_rate": 0.001,
+    "num_fusion_layers": 2,
+    "num_heads": 6,
+    "pair_chunk_size": 64,
+    "pair_dim": 96,
+    "phase_1_unary_warmup_end_epoch": 20,
+    "phase_2_frozen_unary_residual_end_epoch": 220,
+    "phase_3_joint_finetune_end_epoch": 260,
+    "positive_weight": 1024.0,
+    "precision": "bf16",
+    "retrieval_temperature": 0.5,
+    "retrieval_weight": 0.25,
+    "specificity_score_source": "double_centered_independent_specificity_interaction_residual",
+    "weight_decay": 0.0
+  },
+  "unary_integrity": {
+    "epoch_20_to_220_parameter_state": "bitwise_identical",
+    "epoch_20_to_220_unary_logits_on_fixed_inputs": "bitwise_identical",
+    "unknown_parameter_policy": "fail_closed"
+  }
+}
