@@ -1,0 +1,106 @@
+{
+  "ablation_sequence": [
+    "B0_completed_centered_multidecoy_reference",
+    "B1_bidirectional_retrieval_and_margin",
+    "B2_unary_interaction_decomposition_and_independent_specificity_projection",
+    "B3_two_vs_four_interleaved_fusion_blocks_only_after_B2"
+  ],
+  "claim_boundary": "Development-only partner-specificity repair. No untouched-final-test access, confirmatory claim, checkpoint promotion, scaling authorization, comparative superiority, biological generalization, SOTA, or world-leading claim.",
+  "contact_decomposition": {
+    "formula": "contact_logit_ij=antibody_unary_logit_i+antigen_unary_logit_j+contact_interaction_residual_logit_ij",
+    "interaction_source": "fused_explicit_pair_state",
+    "specificity_projection_is_separate_from_contact_projection": true,
+    "specificity_score_input": "double_centered_specificity_interaction_residual_only",
+    "unary_source": "projected_monomer_residue_stream_before_cross_partner_fusion"
+  },
+  "current_backbone_fact": {
+    "explicit_pair_state": true,
+    "interleaved_bidirectional_fusion_layers": 2,
+    "late_fusion_only": false
+  },
+  "data_boundary": {
+    "development_assignment": "endpoint_disjoint_192_train_64_holdout_previously_used_for_model_comparison",
+    "development_holdout_is_untouched_final_test": false,
+    "new_final_test_access_authorized": false,
+    "unknown_cross_pair_semantics": "unlabeled_ranking_control_not_measured_nonbinder"
+  },
+  "decoy_policy": {
+    "directions": [
+      "antibody_to_antigen",
+      "antigen_to_antibody"
+    ],
+    "distinct_replaced_endpoint_required": true,
+    "exclude_complete_observed_pair_incidence": true,
+    "forbidden_selection_inputs": [
+      "affinity",
+      "contact_density",
+      "contact_target",
+      "embedding_value",
+      "epitope_size",
+      "loss",
+      "model_prediction",
+      "paratope_size",
+      "positive_pair_count",
+      "rank"
+    ],
+    "primary_order": "absolute_replaced_endpoint_length_difference_ascending",
+    "tie_break": "sha256(domain_colon_seed_colon_direction_colon_matched_instance_id_colon_candidate_instance_id)_then_candidate_instance_id"
+  },
+  "format_version": "pairscale_e1_e2_partner_specificity_protocol_v1",
+  "gates": {
+    "contact": {
+      "macro_pair_auprc_absolute_improvement_over_strongest_separable": 0.01,
+      "paired_component_bootstrap_lower_bound_above_zero": true,
+      "require_ap_lift_and_precision_at_k_same_direction": true
+    },
+    "robustness": {
+      "component_aware_paired_bootstrap": true,
+      "fixed_permutation_test": true,
+      "prespecified_strata": true,
+      "required_seed_count": 5
+    },
+    "specificity": {
+      "centered_and_raw_paired_component_bootstrap_lower_bounds_above_zero": true,
+      "homolog_matched_recall_at_1_enrichment_over_random_minimum": 3.0,
+      "positive_seed_minimum": 4,
+      "require_both_retrieval_directions": true
+    }
+  },
+  "losses": {
+    "contact": [
+      "per_complex_masked_weighted_bce",
+      "within_complex_hard_negative_pair_ranking"
+    ],
+    "specificity": [
+      "bidirectional_multi_positive_softmax_retrieval",
+      "bidirectional_cognate_vs_decoy_softplus_margin"
+    ],
+    "unknown_decoys_receive_binary_nonbinder_labels": false
+  },
+  "prohibitions": [
+    "no_early_stopping",
+    "no_development_holdout_checkpoint_selection",
+    "no_new_final_test_access",
+    "no_unknown_cross_pair_nonbinder_claim",
+    "no_specificity_score_from_unary_logits",
+    "no_scaling_before_gates_S_C_R",
+    "no_threshold_relaxation_after_results"
+  ],
+  "screening_seeds": [
+    17,
+    42,
+    73
+  ],
+  "tests_required_before_cluster_run": [
+    "exact_masked_additive_contact_reconstruction",
+    "monomer_unary_opposite_partner_invariance",
+    "centered_specificity_additive_main_effect_invariance",
+    "zero_unary_head_gradient_from_specificity_objectives",
+    "deterministic_symmetric_score_free_decoy_selection",
+    "observed_incidence_exclusion",
+    "multi_positive_loss_and_permutation_symmetry",
+    "finite_forward_backward_optimizer_path",
+    "exact_checkpoint_resume",
+    "legacy_distance_mass_regression"
+  ]
+}
