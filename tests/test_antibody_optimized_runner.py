@@ -74,6 +74,13 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     assert "warn_only=False" in source
     assert "torch.backends.cudnn.deterministic = args.deterministic_algorithms" in source
     assert "torch.backends.cudnn.benchmark = False" in source
+    assert "random.getstate()" in source
+    assert "np.random.get_state()" in source
+    assert "torch.get_rng_state()" in source
+    assert "torch.cuda.get_rng_state(device)" in source
+    assert "_restore_rng_checkpoint(" in source
+    assert '"checkpoint_rng_manifest_sha256"' in source
+    assert '"resume_rng_manifest_sha256"' in source
 
 
 def test_length_bucketing_preserves_membership_by_construction() -> None:

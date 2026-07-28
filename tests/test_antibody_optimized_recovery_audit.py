@@ -23,6 +23,11 @@ def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"--require-deterministic-algorithms"' in source
     assert '"--require-same-hostname"' in source
     assert '"run_hostname"' in source
+    assert '"--rng-manifest"' in source
+    assert '"rng_manifest"' in source
+    assert 'f"rng/rank-{expected_rank:05d}.json"' in source
+    assert "Recovery RNG rank file differs" in source
+    assert "recorded_state_sha256 != observed_state_sha256" in source
 
 
 def test_optimized_recovery_auditor_fails_closed_before_scale() -> None:

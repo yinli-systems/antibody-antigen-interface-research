@@ -76,11 +76,14 @@ def _validate_receipt(
     checkpoint_format: str | None,
     efficiency_protocol_sha256: str,
     expected_optimization: dict[str, object],
+    checkpoint_rng_manifest_sha256: str | None,
+    resume_rng_manifest_sha256: str | None,
 ) -> None:
     expected = {
         "backend": "ddp",
         "batch_quantum": 128,
         "checkpoint_format": checkpoint_format,
+        "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
         "efficiency_protocol_sha256": efficiency_protocol_sha256,
         "format_version": "antibody_pretraining_optimized_pilot_v1",
         "length_bucket_boundaries": EXPECTED_BUCKETS,
@@ -89,6 +92,7 @@ def _validate_receipt(
         "optimization": expected_optimization,
         "preset": "abf_650m",
         "resume_used": resume_used,
+        "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
         "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
         "target_residue_tokens": 16384,
         "test_access": TEST_ACCESS,
@@ -114,10 +118,12 @@ def _validate_state(
     next_update: int,
     consumed_residue_tokens: int,
     expected_optimization: dict[str, object],
+    checkpoint_rng_manifest_sha256: str | None,
 ) -> None:
     expected = {
         "backend": "ddp",
         "batch_quantum": 128,
+        "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
         "consumed_residue_tokens": consumed_residue_tokens,
         "length_bucket_boundaries": EXPECTED_BUCKETS,
         "micro_batch_per_gpu": 16,
@@ -142,6 +148,7 @@ def main() -> None:
     parser.add_argument("--stage1", type=Path, required=True)
     parser.add_argument("--resumed", type=Path, required=True)
     parser.add_argument("--checkpoint-manifest", type=Path, required=True)
+    parser.add_argument("--rng-manifest", type=Path)
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
     parser.add_argument("--source-archive-sha256", required=True)
     parser.add_argument("--runner-sha256", required=True)
@@ -158,6 +165,10 @@ def main() -> None:
         expected_optimization["disable_compiled_cudagraphs"] = False
     if args.require_deterministic_algorithms:
         expected_optimization["deterministic_algorithms"] = True
+    if args.require_deterministic_algorithms and args.rng_manifest is None:
+        raise RuntimeError("Deterministic recovery requires an RNG manifest")
+    if not args.require_deterministic_algorithms and args.rng_manifest is not None:
+        raise RuntimeError("Legacy recovery cannot attach an RNG manifest")
 
     paths = {
         "continuous_receipt": args.continuous / "receipt.json",
@@ -168,6 +179,8 @@ def main() -> None:
         "resumed_state": args.resumed / "trainer_state.json",
         "checkpoint_manifest": args.checkpoint_manifest,
     }
+    if args.rng_manifest is not None:
+        paths["rng_manifest"] = args.rng_manifest
     values = {name: _load(path) for name, path in paths.items() if name != "checkpoint_manifest"}
     efficiency_protocol_sha256 = _sha256(args.efficiency_protocol)
     if _load(args.efficiency_protocol).get("format_version") != "antibody_efficiency_gate_v1":
@@ -178,6 +191,65 @@ def main() -> None:
     continuous_state = values["continuous_state"]
     stage1_state = values["stage1_state"]
     resumed_state = values["resumed_state"]
+    rng_manifest_sha256 = None
+    if args.rng_manifest is not None:
+        rng_manifest = _load(args.rng_manifest)
+        unsigned_rng_manifest = dict(rng_manifest)
+        rng_manifest_sha256 = unsigned_rng_manifest.pop("manifest_sha256", None)
+        observed_rng_manifest_sha256 = hashlib.sha256(
+            (
+                json.dumps(
+                    unsigned_rng_manifest,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    allow_nan=False,
+                )
+                + "\n"
+            ).encode("ascii")
+        ).hexdigest()
+        if (
+            rng_manifest_sha256 != observed_rng_manifest_sha256
+            or rng_manifest.get("format_version")
+            != "antibody_rng_checkpoint_manifest_v1"
+            or rng_manifest.get("world_size") != 8
+            or len(rng_manifest.get("files", [])) != 8
+        ):
+            raise RuntimeError("Recovery RNG manifest failed validation")
+        for expected_rank, entry in enumerate(rng_manifest["files"]):
+            expected_path = f"rng/rank-{expected_rank:05d}.json"
+            if (
+                entry.get("rank") != expected_rank
+                or entry.get("path") != expected_path
+            ):
+                raise RuntimeError("Recovery RNG rank mapping differs")
+            state_path = args.rng_manifest.parent / expected_path
+            if (
+                not state_path.is_file()
+                or state_path.is_symlink()
+                or _sha256(state_path) != entry.get("file_sha256")
+            ):
+                raise RuntimeError("Recovery RNG rank file differs")
+            state = _load(state_path)
+            unsigned_state = dict(state)
+            recorded_state_sha256 = unsigned_state.pop("state_sha256", None)
+            observed_state_sha256 = hashlib.sha256(
+                (
+                    json.dumps(
+                        unsigned_state,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                        allow_nan=False,
+                    )
+                    + "\n"
+                ).encode("ascii")
+            ).hexdigest()
+            if (
+                state.get("format_version") != "antibody_rank_rng_state_v1"
+                or state.get("rank") != expected_rank
+                or recorded_state_sha256 != observed_state_sha256
+                or recorded_state_sha256 != entry.get("state_sha256")
+            ):
+                raise RuntimeError("Recovery RNG rank state differs")
     _validate_receipt(
         continuous,
         resume_used=False,
@@ -185,6 +257,8 @@ def main() -> None:
         checkpoint_format=None,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
+        checkpoint_rng_manifest_sha256=None,
+        resume_rng_manifest_sha256=None,
     )
     _validate_receipt(
         stage1,
@@ -193,6 +267,8 @@ def main() -> None:
         checkpoint_format="torch_distributed_checkpoint",
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
+        checkpoint_rng_manifest_sha256=rng_manifest_sha256,
+        resume_rng_manifest_sha256=None,
     )
     _validate_receipt(
         resumed,
@@ -201,24 +277,29 @@ def main() -> None:
         checkpoint_format=None,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
+        checkpoint_rng_manifest_sha256=None,
+        resume_rng_manifest_sha256=rng_manifest_sha256,
     )
     _validate_state(
         continuous_state,
         next_update=20,
         consumed_residue_tokens=int(continuous["trace"][-1]["consumed_residue_tokens"]),
         expected_optimization=expected_optimization,
+        checkpoint_rng_manifest_sha256=None,
     )
     _validate_state(
         stage1_state,
         next_update=10,
         consumed_residue_tokens=int(stage1["trace"][-1]["consumed_residue_tokens"]),
         expected_optimization=expected_optimization,
+        checkpoint_rng_manifest_sha256=rng_manifest_sha256,
     )
     _validate_state(
         resumed_state,
         next_update=20,
         consumed_residue_tokens=int(resumed["trace"][-1]["consumed_residue_tokens"]),
         expected_optimization=expected_optimization,
+        checkpoint_rng_manifest_sha256=None,
     )
     hostnames = {
         receipt.get("allocation", {}).get("hostname")
@@ -242,6 +323,15 @@ def main() -> None:
         "prefix_trace": _trace_equal(continuous["trace"][:10], stage1["trace"]),
         "resumed_trace": _trace_equal(continuous["trace"][10:], resumed["trace"]),
         "trainer_state": continuous_state == resumed_state,
+        "rng_manifest": (
+            rng_manifest_sha256 is None
+            or (
+                stage1.get("checkpoint_rng_manifest_sha256")
+                == rng_manifest_sha256
+                and resumed.get("resume_rng_manifest_sha256")
+                == rng_manifest_sha256
+            )
+        ),
     }
     passed = all(exact.values())
     trace_differences = {

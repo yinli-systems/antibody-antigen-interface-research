@@ -11,6 +11,7 @@ import json
 import math
 import os
 from pathlib import Path
+import random
 import socket
 import sys
 import time
@@ -281,6 +282,181 @@ def _prewarm_compiled_buckets(
     return trace
 
 
+def _rng_state_payload(rank: int, device: torch.device) -> dict[str, object]:
+    """Capture every process-local RNG stream without pickle serialization."""
+    python_state = random.getstate()
+    numpy_state = np.random.get_state()
+    payload = {
+        "format_version": "antibody_rank_rng_state_v1",
+        "numpy": {
+            "algorithm": numpy_state[0],
+            "cached_gaussian": float(numpy_state[4]),
+            "has_gaussian": int(numpy_state[3]),
+            "keys": [int(value) for value in numpy_state[1]],
+            "position": int(numpy_state[2]),
+        },
+        "python": {
+            "gaussian_next": python_state[2],
+            "internal_state": [int(value) for value in python_state[1]],
+            "version": int(python_state[0]),
+        },
+        "rank": rank,
+        "torch_cpu_state_hex": torch.get_rng_state().cpu().numpy().tobytes().hex(),
+        "torch_cuda_state_hex": (
+            torch.cuda.get_rng_state(device).cpu().numpy().tobytes().hex()
+        ),
+    }
+    payload["state_sha256"] = hashlib.sha256(
+        (
+            json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode("ascii")
+    ).hexdigest()
+    return payload
+
+
+def _validated_rng_state(path: Path, expected_rank: int) -> dict[str, object]:
+    if not path.is_file() or path.is_symlink():
+        raise RuntimeError("RNG state must be a regular non-symlink file")
+    try:
+        payload = json.loads(path.read_text(encoding="ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise RuntimeError("RNG state must be ASCII JSON") from error
+    if (
+        not isinstance(payload, dict)
+        or payload.get("format_version") != "antibody_rank_rng_state_v1"
+        or payload.get("rank") != expected_rank
+    ):
+        raise RuntimeError("RNG state identity differs")
+    unsigned = dict(payload)
+    recorded = unsigned.pop("state_sha256", None)
+    observed = hashlib.sha256(
+        (
+            json.dumps(unsigned, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode("ascii")
+    ).hexdigest()
+    if recorded != observed:
+        raise RuntimeError("RNG state self-hash differs")
+    return payload
+
+
+def _save_rng_checkpoint(
+    checkpoint_root: Path,
+    state: dict[str, object],
+    *,
+    rank: int,
+    world_size: int,
+) -> str:
+    """Publish one authenticated RNG state per rank and a shared manifest."""
+    rng_root = checkpoint_root / "rng"
+    if rank == 0:
+        rng_root.mkdir()
+    dist.barrier()
+    _publish(rng_root / f"rank-{rank:05d}.json", state)
+    dist.barrier()
+    manifest_path = checkpoint_root / "rng_manifest.json"
+    if rank == 0:
+        paths = sorted(rng_root.glob("rank-*.json"))
+        if len(paths) != world_size or any(path.is_symlink() for path in paths):
+            raise RuntimeError("RNG checkpoint rank inventory differs")
+        files = []
+        for expected_rank, path in enumerate(paths):
+            payload = _validated_rng_state(path, expected_rank)
+            files.append(
+                {
+                    "file_sha256": _sha256(path),
+                    "path": f"rng/{path.name}",
+                    "rank": expected_rank,
+                    "state_sha256": payload["state_sha256"],
+                }
+            )
+        manifest = {
+            "files": files,
+            "format_version": "antibody_rng_checkpoint_manifest_v1",
+            "world_size": world_size,
+        }
+        manifest["manifest_sha256"] = hashlib.sha256(
+            (
+                json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n"
+            ).encode("ascii")
+        ).hexdigest()
+        _publish(manifest_path, manifest)
+    dist.barrier()
+    manifest = json.loads(manifest_path.read_text(encoding="ascii"))
+    return str(manifest["manifest_sha256"])
+
+
+def _restore_rng_checkpoint(
+    checkpoint_root: Path,
+    *,
+    rank: int,
+    world_size: int,
+    device: torch.device,
+) -> str:
+    """Authenticate and restore one rank-local RNG checkpoint."""
+    manifest_path = checkpoint_root / "rng_manifest.json"
+    if not manifest_path.is_file() or manifest_path.is_symlink():
+        raise RuntimeError("RNG checkpoint manifest is absent")
+    manifest = json.loads(manifest_path.read_text(encoding="ascii"))
+    unsigned = dict(manifest)
+    recorded = unsigned.pop("manifest_sha256", None)
+    observed = hashlib.sha256(
+        (
+            json.dumps(unsigned, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode("ascii")
+    ).hexdigest()
+    files = manifest.get("files")
+    if (
+        recorded != observed
+        or manifest.get("format_version") != "antibody_rng_checkpoint_manifest_v1"
+        or manifest.get("world_size") != world_size
+        or not isinstance(files, list)
+        or len(files) != world_size
+    ):
+        raise RuntimeError("RNG checkpoint manifest differs")
+    entry = files[rank]
+    expected_path = f"rng/rank-{rank:05d}.json"
+    if entry.get("rank") != rank or entry.get("path") != expected_path:
+        raise RuntimeError("RNG checkpoint rank mapping differs")
+    state_path = checkpoint_root / expected_path
+    if _sha256(state_path) != entry.get("file_sha256"):
+        raise RuntimeError("RNG checkpoint file hash differs")
+    state = _validated_rng_state(state_path, rank)
+    if state.get("state_sha256") != entry.get("state_sha256"):
+        raise RuntimeError("RNG checkpoint state hash differs")
+    python_state = state["python"]
+    numpy_state = state["numpy"]
+    random.setstate(
+        (
+            int(python_state["version"]),
+            tuple(int(value) for value in python_state["internal_state"]),
+            python_state["gaussian_next"],
+        )
+    )
+    np.random.set_state(
+        (
+            str(numpy_state["algorithm"]),
+            np.asarray(numpy_state["keys"], dtype=np.uint32),
+            int(numpy_state["position"]),
+            int(numpy_state["has_gaussian"]),
+            float(numpy_state["cached_gaussian"]),
+        )
+    )
+    torch.set_rng_state(
+        torch.tensor(
+            list(bytes.fromhex(str(state["torch_cpu_state_hex"]))),
+            dtype=torch.uint8,
+        )
+    )
+    torch.cuda.set_rng_state(
+        torch.tensor(
+            list(bytes.fromhex(str(state["torch_cuda_state_hex"]))),
+            dtype=torch.uint8,
+        ),
+        device,
+    )
+    return str(recorded)
+
+
 def main() -> None:
     args = _arguments()
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
@@ -308,6 +484,8 @@ def main() -> None:
         device_id=device,
     )
     dist.barrier()
+    random.seed(20260728)
+    np.random.seed(20260728)
     torch.manual_seed(20260728)
     torch.cuda.manual_seed_all(20260728)
     torch.use_deterministic_algorithms(
@@ -360,6 +538,7 @@ def main() -> None:
     cursor = 0
     consumed = 0
     start_update = 0
+    resume_rng_manifest_sha256 = None
     if args.resume_root is not None:
         state = json.loads(
             (args.resume_root / "trainer_state.json").read_text(encoding="ascii")
@@ -395,6 +574,12 @@ def main() -> None:
         consumed = int(state["consumed_residue_tokens"])
         start_update = int(state["next_update"])
         _load_dcp(model, optimizer, args.resume_root / "checkpoint")
+        resume_rng_manifest_sha256 = _restore_rng_checkpoint(
+            args.resume_root / "checkpoint",
+            rank=rank,
+            world_size=world_size,
+            device=device,
+        )
 
     trace: list[dict[str, float | int]] = []
     membership_digest = hashlib.sha256()
@@ -528,6 +713,7 @@ def main() -> None:
                 }
             )
 
+    rng_state = _rng_state_payload(rank, device)
     parameter_moments = _parameter_moments(model, args.backend, rank)
     module = model.module if hasattr(model, "module") else model
     final_model_sha256 = _distributed_tree_digest(
@@ -548,9 +734,22 @@ def main() -> None:
         "length_bucketing": args.length_bucketing,
         "pinned_staging": args.pinned_staging,
     }
+    checkpoint_format = None
+    checkpoint_rng_manifest_sha256 = None
+    if not args.skip_checkpoint:
+        checkpoint_format = "torch_distributed_checkpoint"
+        checkpoint_root = args.output / "checkpoint"
+        _save_dcp(model, optimizer, checkpoint_root)
+        checkpoint_rng_manifest_sha256 = _save_rng_checkpoint(
+            checkpoint_root,
+            rng_state,
+            rank=rank,
+            world_size=world_size,
+        )
     trainer_state = {
         "backend": args.backend,
         "batch_quantum": args.batch_quantum,
+        "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
         "consumed_residue_tokens": consumed,
         "efficiency_protocol_sha256": efficiency_protocol_sha256,
         "length_bucket_boundaries": list(boundaries),
@@ -565,10 +764,6 @@ def main() -> None:
         "target_residue_tokens": args.target_tokens,
         "world_size": world_size,
     }
-    checkpoint_format = None
-    if not args.skip_checkpoint:
-        checkpoint_format = "torch_distributed_checkpoint"
-        _save_dcp(model, optimizer, args.output / "checkpoint")
     if rank == 0:
         _publish(args.output / "trainer_state.json", trainer_state)
         _publish(
@@ -586,6 +781,9 @@ def main() -> None:
                 "backend": args.backend,
                 "batch_quantum": args.batch_quantum,
                 "checkpoint_format": checkpoint_format,
+                "checkpoint_rng_manifest_sha256": (
+                    checkpoint_rng_manifest_sha256
+                ),
                 "claim_boundary": "Repeated-shard systems candidate; no production-corpus, biological, or state-of-the-art claim",
                 "compile_prewarm_trace": compile_prewarm_trace,
                 "data_preparation_seconds": data_preparation_seconds,
@@ -610,6 +808,7 @@ def main() -> None:
                 / (1024 * 1024),
                 "preset": args.preset,
                 "resume_used": args.resume_root is not None,
+                "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
                 "runtime": {
                     "cuda": torch.version.cuda,
                     "cudnn": torch.backends.cudnn.version(),
