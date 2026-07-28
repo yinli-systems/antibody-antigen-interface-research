@@ -98,6 +98,51 @@ def _tree_digest(value: object) -> str:
     return digest.hexdigest()
 
 
+def _distributed_tree_digest(value: object, backend: str, rank: int) -> str | None:
+    """Hash full tensor values while all FSDP ranks join materialization."""
+    digest = hashlib.sha256() if rank == 0 else None
+
+    def update(payload: bytes) -> None:
+        if digest is not None:
+            digest.update(payload)
+
+    def visit(item: object) -> None:
+        if isinstance(item, torch.Tensor):
+            tensor = (
+                item.full_tensor()
+                if backend == "fsdp2" and hasattr(item, "full_tensor")
+                else item
+            )
+            if rank == 0:
+                tensor = tensor.detach().cpu().contiguous()
+                header = json.dumps(
+                    {"dtype": str(tensor.dtype), "shape": list(tensor.shape)},
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("ascii")
+                update(b"tensor\0" + header + b"\0")
+                update(tensor.reshape(-1).view(torch.uint8).numpy().tobytes())
+        elif isinstance(item, dict):
+            update(b"dict\0")
+            for key in sorted(item, key=lambda current: str(current)):
+                visit(str(key))
+                visit(item[key])
+        elif isinstance(item, (list, tuple)):
+            update(b"sequence\0")
+            for child in item:
+                visit(child)
+        else:
+            update(
+                json.dumps(item, sort_keys=True, separators=(",", ":")).encode(
+                    "ascii"
+                )
+                + b"\0"
+            )
+
+    visit(value)
+    return digest.hexdigest() if digest is not None else None
+
+
 def _parameter_moments(model: torch.nn.Module, backend: str, rank: int) -> dict[str, float | int] | None:
     """Compute full-parameter moments for cross-backend numerical audits."""
     module = model.module if isinstance(model, DistributedDataParallel) else model
@@ -204,16 +249,16 @@ def main() -> None:
     model_family_sha256 = _sha256(args.model_family)
     training_protocol_sha256 = _sha256(args.training_protocol)
     if args.resume_root is not None:
-        if world_size != 1:
-            raise RuntimeError("This numbered recovery gate supports one process")
         state = json.loads(
             (args.resume_root / "trainer_state.json").read_text(encoding="ascii")
         )
         expected = {
             "model_family_sha256": model_family_sha256,
+            "backend": args.backend,
             "preset": args.preset,
             "shard_manifest_sha256": args.manifest_sha256,
             "training_protocol_sha256": training_protocol_sha256,
+            "world_size": world_size,
         }
         if any(state.get(key) != value for key, value in expected.items()):
             raise RuntimeError("Resume provenance differs from this launch")
@@ -281,13 +326,19 @@ def main() -> None:
         if rank == 0:
             trace.append({"consumed_residue_tokens": consumed, "gradient_norm": gradient_norm, "learning_rate": lr, "loss": loss_sum_value / target_count, "residue_tokens": plan.residue_token_count, "seconds": elapsed, "selected_targets": target_count, "update": update + 1})
     parameter_moments = _parameter_moments(model, args.backend, rank)
+    module = model.module if isinstance(model, DistributedDataParallel) else model
+    final_model_sha256 = _distributed_tree_digest(
+        module.state_dict(), args.backend, rank
+    )
+    final_optimizer_sha256 = _distributed_tree_digest(
+        optimizer.state_dict(), args.backend, rank
+    )
     if not args.skip_checkpoint:
         _save_dcp(model, optimizer, args.output / "checkpoint")
-    trainer_state = {"consumed_residue_tokens": consumed, "model_family_sha256": model_family_sha256, "next_update": start_update + args.steps, "preset": args.preset, "sample_cursor": cursor, "shard_manifest_sha256": args.manifest_sha256, "training_protocol_sha256": training_protocol_sha256}
+    trainer_state = {"backend": args.backend, "consumed_residue_tokens": consumed, "model_family_sha256": model_family_sha256, "next_update": start_update + args.steps, "preset": args.preset, "sample_cursor": cursor, "shard_manifest_sha256": args.manifest_sha256, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
     if rank == 0:
         _publish(args.output / "trainer_state.json", trainer_state)
-        can_hash_state = args.backend in {"single", "ddp"}
-        receipt = {"backend": args.backend, "checkpoint_format": None if args.skip_checkpoint else "torch_distributed_checkpoint", "claim_boundary": "engineering pilot only; no validation or downstream metric", "device": torch.cuda.get_device_name(local_rank), "final_model_sha256": _tree_digest((model.module if isinstance(model, DistributedDataParallel) else model).state_dict()) if can_hash_state else None, "final_optimizer_sha256": _tree_digest(optimizer.state_dict()) if can_hash_state else None, "format_version": "antibody_pretraining_pilot_v3", "model_family_sha256": model_family_sha256, "parameter_moments": parameter_moments, "preset": args.preset, "resume_used": args.resume_root is not None, "shard_manifest_sha256": args.manifest_sha256, "start_update": start_update, "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False}, "trace": trace, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
+        receipt = {"backend": args.backend, "checkpoint_format": None if args.skip_checkpoint else "torch_distributed_checkpoint", "claim_boundary": "engineering pilot only; no validation or downstream metric", "device": torch.cuda.get_device_name(local_rank), "final_model_sha256": final_model_sha256, "final_optimizer_sha256": final_optimizer_sha256, "format_version": "antibody_pretraining_pilot_v4", "model_family_sha256": model_family_sha256, "parameter_moments": parameter_moments, "preset": args.preset, "resume_used": args.resume_root is not None, "shard_manifest_sha256": args.manifest_sha256, "start_update": start_update, "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False}, "trace": trace, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
         _publish(args.output / "receipt.json", receipt)
     if world_size > 1:
         dist.barrier()

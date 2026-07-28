@@ -30,13 +30,19 @@ def main() -> None:
     }
     if not all(equal.values()):
         raise RuntimeError(f"DCP recovery differs: {equal}")
+    backend = continuous_state["backend"]
+    world_size = continuous_state["world_size"]
+    if backend != resumed_state["backend"] or world_size != resumed_state["world_size"]:
+        raise RuntimeError("Recovery backend or world size differs")
     payload = {
-        "claim_boundary": "single-GPU engineering recovery only",
+        "backend": backend,
+        "claim_boundary": f"{world_size}-GPU {backend} engineering recovery only",
         "equal": equal,
-        "format_version": "antibody_dcp_recovery_v1",
+        "format_version": "antibody_dcp_recovery_v2",
         "final_model_sha256": continuous["final_model_sha256"],
         "final_optimizer_sha256": continuous["final_optimizer_sha256"],
         "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False},
+        "world_size": world_size,
     }
     data = (json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n").encode("ascii")
     descriptor = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o444)
