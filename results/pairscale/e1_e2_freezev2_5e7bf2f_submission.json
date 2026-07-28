@@ -1,0 +1,90 @@
+{
+  "claim_boundary": "Engineering smoke and training-start evidence for a development-only repair. No holdout performance, Gate S/C/R, checkpoint selection, scaling, confirmatory, comparative, SOTA, or world-leading claim is authorized.",
+  "format_version": "pairscale_e1_e2_unary_freeze_submission_receipt_v2",
+  "predecessor_failure": {
+    "evidence_file": "results/pairscale/e1_e2_bacc4bc_unary_drift_diagnostic.json",
+    "evidence_sha256": "0d52dee94d133c81a4fbe9a7d4864836143ff81cbef6b7215a78790f1eea59d2",
+    "holdout_accessed": false,
+    "jobs": [
+      1334012,
+      1334013,
+      1334014
+    ]
+  },
+  "production_jobs": [
+    {
+      "allocated_cpus": 16,
+      "allocated_gpus": 1,
+      "allocated_memory_gib": 64,
+      "id": 1334172,
+      "node_at_receipt": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/e1e2_freezev2_seed17_5e7bf2f_e260",
+      "seed": 17,
+      "state_at_receipt": "RUNNING"
+    },
+    {
+      "allocated_cpus": 16,
+      "allocated_gpus": 1,
+      "allocated_memory_gib": 64,
+      "id": 1334173,
+      "node_at_receipt": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/e1e2_freezev2_seed42_5e7bf2f_e260",
+      "seed": 42,
+      "state_at_receipt": "RUNNING"
+    },
+    {
+      "allocated_cpus": 16,
+      "allocated_gpus": 1,
+      "allocated_memory_gib": 64,
+      "id": 1334174,
+      "node_at_receipt": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/e1e2_freezev2_seed73_5e7bf2f_e260",
+      "seed": 73,
+      "state_at_receipt": "RUNNING"
+    }
+  ],
+  "protocol": {
+    "execution_lock_file": "protocols/pairscale_e1_e2_execution_lock_v2.json",
+    "execution_lock_sha256": "9854c5f540b204fd9c439df0e75c3293d1f257714127e0ff61915905ae891238",
+    "phase_1": "epochs_1_to_20_complete_unary_path_only",
+    "phase_2": "epochs_21_to_220_complete_unary_path_frozen_pair_and_specificity_only",
+    "phase_3": "epochs_221_to_260_low_rate_joint_finetune",
+    "unused_geometry_heads": "frozen_all_phases"
+  },
+  "recorded_at": "2026-07-28T14:16:35+08:00",
+  "smoke": {
+    "checkpoint_sha256": "bcb2dfbea021783c156f1ee8a9123f4d4cc1d89408535756d4d122afacb7dc22",
+    "development_holdout_tensor_accessed": false,
+    "job_id": 1334166,
+    "new_final_test_accessed": false,
+    "passed": true,
+    "phase_2_unary_logits_exact": true,
+    "phase_2_unary_path_state_exact": true,
+    "report_sha256": "cec163b9942cf200dd57c2a67255ea89a74d95e20db05884b8a7404eb5058b2e",
+    "resume_model_state_exact": true,
+    "resume_optimizer_state_exact": true,
+    "slurm_elapsed": "00:00:21",
+    "slurm_exit_code": "0:0",
+    "unary_phase_2_reference_sha256": "7adc5d5e2fdc63c23777ccc2dba70d22966066ddfa5dd8ecd8e8809d4fbc45c2",
+    "unused_geometry_path_state_exact": true,
+    "unused_geometry_reference_sha256": "8b5c6601d39a07b7a22b82696531b826c5c5ff1686d908adfe49a4de05bc8700"
+  },
+  "source": {
+    "controller_sha256": "b43e1dff5e31fb4ae753a9c32193f3fd243c4a8ddad2bc56319f822016101538",
+    "git_commit": "5e7bf2fea439d907470a4c22ca682da8185f68be",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_source_5e7bf2f",
+    "scheduler_script_sha256": "9ae3bcc753f4e032d1ff7bf5aeb65a93b9d165d76ac43d9e7c683e4b322967c2",
+    "smoke_controller_sha256": "3baf4dfe842147c60f03ef3345f7572bfe9fed287967f10287bedb2a7040d8da",
+    "source_file_count": 504
+  },
+  "verification": {
+    "cluster_source_contains_python_cache": false,
+    "development_holdout_accessed_before_training": false,
+    "screening_seeds": [
+      17,
+      42,
+      73
+    ],
+    "targeted_regression_passes_per_hash_seed": 59
+  }
+}
