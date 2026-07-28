@@ -1,0 +1,40 @@
+{
+  "claim_boundary": {
+    "downloaded_data_unit_count": 0,
+    "downstream_heldout_accessed": false,
+    "manifest_discovery_is_not_data_admission": true,
+    "model_training_started": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "controller_source_sha256": "773c1baf3bb563cd9b37432ac3170b251af84bd80a462e56911f3dd3266c72ce",
+  "created_at": "2026-07-28T08:10:20.946738+00:00",
+  "fetch": {
+    "final_url": "https://opig.stats.ox.ac.uk/webapps/oas/oas_unpaired/",
+    "http_status": 200,
+    "response_content_type": "text/html"
+  },
+  "format_version": "oas_unpaired_authority_evidence_v1",
+  "manifest_file_sha256": "cdbfc4a478407200a63cd180934e87c81053b6e290415bac0631c6751b1949ea",
+  "manifest_payload_sha256": "ef9b13910446a9289c1acbb9734d5724b4b60b60fad6e21014802e49a375d0d7",
+  "oas_authority_source_sha256": "37269d8d8c696cbc4965685ba7a2bc4d973082234daaa9bbe5b7776911fe4d7c",
+  "raw_response_sha256": "4fc8d84e77d73d2b2d13709f515ac0e89089c571f932fa9faf4ad0f8d6dadd8b",
+  "source": {
+    "database": "Observed Antibody Space",
+    "license": "CC-BY-4.0",
+    "request": "empty HTTP POST",
+    "source_class": "unpaired"
+  },
+  "summary": {
+    "data_unit_count": 15580,
+    "headline_study_count": 91,
+    "headline_unique_sequence_count": 2428152691,
+    "observed_study_count": 91,
+    "table_unique_sequence_count_sum": 2428152691
+  },
+  "validation": {
+    "bulk_wget_urls_equal_rendered_table_urls": true,
+    "headline_study_count_equals_observed_studies": true,
+    "headline_unique_count_equals_table_sum": true,
+    "two_hash_seed_targeted_tests_passed": true
+  }
+}
