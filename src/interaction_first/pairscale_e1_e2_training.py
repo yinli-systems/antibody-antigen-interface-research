@@ -23,6 +23,7 @@ from .pairscale_e1_e2_evaluation import evaluate_e1_e2
 from .pairscale_e1_e2_step import (
     PairscaleE1E2Config,
     build_e1_e2_model,
+    parameter_path_state_sha256,
     train_one_epoch_e1_e2,
 )
 from .pairscale_holdout_training import split_dataset_indices
@@ -258,10 +259,16 @@ def run_e1_e2_screen(
         "development_holdout_complex_count": len(holdout_indices),
         "checkpoint_selection": "none_fixed_epoch_260_only",
         "early_stopping": False,
+        "phase_2_parameter_policy": "complete_unary_path_bitwise_frozen",
+        "unused_geometry_head_policy": "bitwise_frozen_all_phases",
     }
     start_epoch = 1
     global_step = 0
     resume_evidence: Mapping[str, Any] | None = None
+    unary_phase_2_reference_sha256: str | None = None
+    unary_epoch_220_sha256: str | None = None
+    unary_epoch_260_sha256: str | None = None
+    unused_path_reference_sha256 = parameter_path_state_sha256(model, "unused")
     resume_values = (
         resume_checkpoint_root,
         resume_generation,
@@ -282,8 +289,26 @@ def run_e1_e2_screen(
             expected_receipt_sha256=str(expected_resume_receipt_sha256),
             expected_rng_world_size=1,
         )
-        if resume_evidence["config"] != config_payload:
+        checkpoint_config = resume_evidence["config"]
+        if (
+            not isinstance(checkpoint_config, dict)
+            or checkpoint_config.get("base_config") != config_payload
+        ):
             raise ValueError("Resume checkpoint configuration differs")
+        integrity = checkpoint_config.get("integrity")
+        if not isinstance(integrity, dict):
+            raise ValueError("Resume checkpoint integrity state is missing")
+        restored_unused = integrity.get("unused_path_reference_sha256")
+        if restored_unused != unused_path_reference_sha256:
+            raise ValueError("Resume checkpoint unused-path state differs")
+        restored_unary = integrity.get("unary_phase_2_reference_sha256")
+        if restored_unary is not None:
+            _lower_sha256(restored_unary, "unary_phase_2_reference_sha256")
+            unary_phase_2_reference_sha256 = restored_unary
+        restored_epoch_220 = integrity.get("unary_epoch_220_sha256")
+        if restored_epoch_220 is not None:
+            _lower_sha256(restored_epoch_220, "unary_epoch_220_sha256")
+            unary_epoch_220_sha256 = restored_epoch_220
         start_epoch = int(resume_evidence["epoch"]) + 1
         global_step = int(resume_evidence["global_step"])
         if start_epoch > config.epochs:
@@ -332,6 +357,21 @@ def run_e1_e2_screen(
             decoy_panel=decoy_panel,
         )
         global_step += steps
+        unary_path_sha256 = parameter_path_state_sha256(model, "unary")
+        unused_path_sha256 = parameter_path_state_sha256(model, "unused")
+        if unused_path_sha256 != unused_path_reference_sha256:
+            raise RuntimeError("Unused geometry-head parameters changed")
+        if epoch == config.unary_warmup_end_epoch:
+            unary_phase_2_reference_sha256 = unary_path_sha256
+        elif config.unary_warmup_end_epoch < epoch <= config.residual_phase_end_epoch:
+            if unary_phase_2_reference_sha256 is None:
+                raise RuntimeError("Phase-2 unary reference is unavailable")
+            if unary_path_sha256 != unary_phase_2_reference_sha256:
+                raise RuntimeError("Complete unary path changed during phase 2")
+        if epoch == config.residual_phase_end_epoch:
+            unary_epoch_220_sha256 = unary_path_sha256
+        if epoch == config.epochs:
+            unary_epoch_260_sha256 = unary_path_sha256
         should_evaluate = (
             epoch == 1
             or epoch % config.eval_every_epochs == 0
@@ -360,6 +400,8 @@ def run_e1_e2_screen(
                 else None
             ),
             "development_holdout_evaluation": None,
+            "unary_path_state_sha256": unary_path_sha256,
+            "unused_geometry_path_state_sha256": unused_path_sha256,
         }
         _append_jsonl(metrics_path, payload)
         print(json.dumps(payload, sort_keys=True), flush=True)
@@ -367,6 +409,18 @@ def run_e1_e2_screen(
             epoch % config.checkpoint_every_epochs == 0
             or epoch == config.epochs
         ):
+            checkpoint_config = {
+                "base_config": config_payload,
+                "integrity": {
+                    "unary_phase_2_reference_sha256": (
+                        unary_phase_2_reference_sha256
+                    ),
+                    "unary_epoch_220_sha256": unary_epoch_220_sha256,
+                    "unused_path_reference_sha256": (
+                        unused_path_reference_sha256
+                    ),
+                },
+            }
             generation = f"epoch-{epoch:04d}-step-{global_step:08d}"
             receipt = create_checkpoint_generation(
                 checkpoints_root,
@@ -378,7 +432,7 @@ def run_e1_e2_screen(
                 epoch=epoch,
                 global_step=global_step,
                 provenance_hashes=provenance,
-                config=config_payload,
+                config=checkpoint_config,
             )
             last_receipt = {
                 **dict(receipt),
@@ -390,6 +444,16 @@ def run_e1_e2_screen(
         raise RuntimeError("E1/E2 run ended without final evidence")
     if int(last_receipt["epoch"]) != config.epochs:
         raise RuntimeError("Final immutable checkpoint is not epoch 260")
+    if (
+        unary_phase_2_reference_sha256 is None
+        or unary_epoch_220_sha256 != unary_phase_2_reference_sha256
+        or unary_epoch_260_sha256 is None
+    ):
+        raise RuntimeError("Unary-path integrity evidence is incomplete")
+    if parameter_path_state_sha256(model, "unused") != (
+        unused_path_reference_sha256
+    ):
+        raise RuntimeError("Unused geometry-head integrity failed")
 
     train_final_evaluation = evaluate_e1_e2(
         model=model,
@@ -415,6 +479,11 @@ def run_e1_e2_screen(
         "checkpoint_promotion_authorized": False,
         "confirmatory_claim_authorized": False,
         "scaling_authorized": False,
+        "phase_2_unary_path_bitwise_identical": True,
+        "unary_epoch_20_sha256": unary_phase_2_reference_sha256,
+        "unary_epoch_220_sha256": unary_epoch_220_sha256,
+        "unused_geometry_path_bitwise_identical": True,
+        "unused_geometry_path_sha256": unused_path_reference_sha256,
     }
     _create_json(output_root / "DEVELOPMENT_HOLDOUT_ACCESS_RECEIPT.json", access_receipt)
     holdout_examples = _load_examples(dataset, holdout_indices)
@@ -453,6 +522,14 @@ def run_e1_e2_screen(
         "development_holdout_evaluation": holdout_evaluation,
         "frozen_checkpoint": dict(last_receipt),
         "gate_status": "pending_cross_seed_component_bootstrap_and_permutation",
+        "parameter_path_integrity": {
+            "phase_2_unary_path_bitwise_identical": True,
+            "unary_epoch_20_sha256": unary_phase_2_reference_sha256,
+            "unary_epoch_220_sha256": unary_epoch_220_sha256,
+            "unary_epoch_260_sha256": unary_epoch_260_sha256,
+            "unused_geometry_path_bitwise_identical": True,
+            "unused_geometry_path_sha256": unused_path_reference_sha256,
+        },
     }
     _create_json(output_root / "FINAL_REPORT.json", report)
     return report

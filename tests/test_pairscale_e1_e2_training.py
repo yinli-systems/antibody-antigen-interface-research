@@ -17,6 +17,11 @@ from interaction_first.pairscale_e1_e2_training import (
     locked_e1_e2_config,
     run_e1_e2_screen,
 )
+from interaction_first.pairscale_e1_e2_step import (
+    PAIR_PATH_MODULES,
+    UNARY_PATH_MODULES,
+    UNUSED_FROZEN_MODULES,
+)
 from interaction_first.pairscale_partner_specificity import (
     select_score_free_bidirectional_decoys,
 )
@@ -55,11 +60,11 @@ def _examples() -> tuple[DevelopmentContactExample, ...]:
     return tuple(result)
 
 
-def test_execution_lock_matches_every_controller_training_field() -> None:
+def test_v2_execution_lock_matches_every_controller_training_field() -> None:
     lock_path = (
         Path(__file__).parents[1]
         / "protocols"
-        / "pairscale_e1_e2_execution_lock_v1.json"
+        / "pairscale_e1_e2_execution_lock_v2.json"
     )
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
     training = lock["training"]
@@ -98,7 +103,7 @@ def test_execution_lock_matches_every_controller_training_field() -> None:
     assert training["phase_1_unary_warmup_end_epoch"] == (
         payload["unary_warmup_end_epoch"]
     )
-    assert training["phase_2_detached_unary_residual_end_epoch"] == (
+    assert training["phase_2_frozen_unary_residual_end_epoch"] == (
         payload["residual_phase_end_epoch"]
     )
     assert training["phase_3_joint_finetune_end_epoch"] == payload["epochs"]
@@ -108,7 +113,34 @@ def test_execution_lock_matches_every_controller_training_field() -> None:
     assert training["specificity_score_source"] == (
         "double_centered_independent_specificity_interaction_residual"
     )
+    assert training["freeze_complete_unary_path_during_phase_2"] is True
+    assert payload["freeze_complete_unary_path_during_residual_phase"] is True
+    assert tuple(lock["parameter_ownership"]["unary_path_modules"]) == (
+        UNARY_PATH_MODULES
+    )
+    assert tuple(lock["parameter_ownership"]["pair_path_modules"]) == (
+        PAIR_PATH_MODULES
+    )
+    assert tuple(lock["parameter_ownership"]["unused_frozen_modules"]) == (
+        UNUSED_FROZEN_MODULES
+    )
     assert tuple(lock["screening_seeds"]) == SCREENING_SEEDS
+    diagnostic_path = (
+        Path(__file__).parents[1]
+        / lock["failed_predecessor"]["diagnostic_file"]
+    )
+    import hashlib
+
+    assert hashlib.sha256(diagnostic_path.read_bytes()).hexdigest() == (
+        lock["failed_predecessor"]["diagnostic_sha256"]
+    )
+    revision_path = (
+        Path(__file__).parents[1]
+        / lock["parent_protocols"]["revision_narrative_file"]
+    )
+    assert hashlib.sha256(revision_path.read_bytes()).hexdigest() == (
+        lock["parent_protocols"]["revision_narrative_sha256"]
+    )
     with pytest.raises(ValueError, match="preregistered"):
         locked_e1_e2_config(99)
 
@@ -149,11 +181,13 @@ def test_decoy_receipt_is_value_and_label_independent() -> None:
 def test_controller_freezes_checkpoint_before_any_holdout_deserialization() -> None:
     source = inspect.getsource(run_e1_e2_screen)
     checkpoint_gate = source.index('if int(last_receipt["epoch"])')
+    integrity_gate = source.index("Unary-path integrity evidence is incomplete")
     access_receipt = source.index("DEVELOPMENT_HOLDOUT_ACCESS_RECEIPT.json")
     holdout_load = source.index("holdout_examples = _load_examples")
-    assert checkpoint_gate < access_receipt < holdout_load
+    assert checkpoint_gate < integrity_gate < access_receipt < holdout_load
     assert '"new_final_test_accessed": False' in source
     assert '"scaling_authorized": False' in source
+    assert '"phase_2_unary_path_bitwise_identical": True' in source
     assert "include_exhaustive_retrieval=True" in source[holdout_load:]
 
 

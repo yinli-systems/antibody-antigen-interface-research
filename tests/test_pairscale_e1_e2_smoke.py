@@ -53,3 +53,8 @@ def test_smoke_requires_exact_model_and_optimizer_resume() -> None:
     assert "reference_optimizer_state" in source
     assert '"resume_model_state_exact": True' in source
     assert '"resume_optimizer_state_exact": True' in source
+    assert "unary_hash_before_phase_2" in source
+    assert "unary_logits_before_phase_2" in source
+    assert '"phase_2_unary_path_state_exact": True' in source
+    assert '"phase_2_unary_logits_exact": True' in source
+    assert '"unused_geometry_path_state_exact": True' in source

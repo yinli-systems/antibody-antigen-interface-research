@@ -108,7 +108,7 @@ fi
   --assignment-receipt "$ASSIGNMENT_ROOT/HOLDOUT_BUILD_RECEIPT.json" \
   --assignment-receipt-file-sha256 \
     "$PAIRSCALE_ASSIGNMENT_RECEIPT_FILE_SHA256" \
-  --protocol "$SOURCE_ROOT/protocols/pairscale_e1_e2_execution_lock_v1.json" \
+  --protocol "$SOURCE_ROOT/protocols/pairscale_e1_e2_execution_lock_v2.json" \
   --protocol-file-sha256 "$PAIRSCALE_PROTOCOL_FILE_SHA256" \
   --expected-controller-sha256 "$PAIRSCALE_CONTROLLER_SHA256" \
   --scheduler-script-sha256 "$PAIRSCALE_SCHEDULER_SCRIPT_SHA256" \

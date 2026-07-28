@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import hashlib
+import json
 import math
 from typing import Any, Mapping, Sequence
 
@@ -25,8 +27,31 @@ from .pairscale_partner_specificity import (
 
 
 PHASE_UNARY_WARMUP = "unary_warmup"
-PHASE_RESIDUAL_SPECIFICITY = "detached_unary_residual_specificity"
+PHASE_RESIDUAL_SPECIFICITY = "frozen_unary_residual_specificity"
 PHASE_JOINT_FINETUNE = "low_rate_joint_finetune"
+
+UNARY_PATH_MODULES = (
+    "antibody_projection",
+    "antigen_projection",
+    "antibody_final_norm",
+    "antigen_final_norm",
+    "antibody_unary_head",
+    "antigen_unary_head",
+)
+PAIR_PATH_MODULES = (
+    "fusion_layers",
+    "antibody_pair_add",
+    "antigen_pair_add",
+    "antibody_pair_gate",
+    "antigen_pair_gate",
+    "pair_refinement",
+    "interaction_head",
+    "specificity_head",
+)
+UNUSED_FROZEN_MODULES = (
+    "distance_head",
+    "orientation_head",
+)
 
 
 def _positive_integer(value: Any, name: str) -> int:
@@ -60,6 +85,7 @@ class PairscaleE1E2Config:
     epochs: int = 260
     unary_warmup_end_epoch: int = 20
     residual_phase_end_epoch: int = 220
+    freeze_complete_unary_path_during_residual_phase: bool = True
     learning_rate: float = 0.001
     joint_learning_rate_multiplier: float = 0.1
     weight_decay: float = 0.0
@@ -91,6 +117,10 @@ class PairscaleE1E2Config:
             raise ValueError("seed must be an integer")
         if self.seed < 0:
             raise ValueError("seed must be nonnegative")
+        if self.freeze_complete_unary_path_during_residual_phase is not True:
+            raise ValueError(
+                "freeze_complete_unary_path_during_residual_phase must be true"
+            )
         for name in (
             "epochs",
             "unary_warmup_end_epoch",
@@ -284,6 +314,112 @@ def set_phase_learning_rate(
     return learning_rate
 
 
+def _parameter_ownership(model: Any) -> Mapping[str, Mapping[str, Any]]:
+    """Assign every parameter to exactly one locked training path."""
+    named_parameters = dict(model.named_parameters())
+    name_by_identity = {id(value): name for name, value in named_parameters.items()}
+    if len(name_by_identity) != len(named_parameters):
+        raise RuntimeError("Model exposes aliased named parameters")
+    groups: dict[str, dict[str, Any]] = {
+        "unary": {},
+        "pair": {},
+        "unused": {},
+    }
+    seen: set[int] = set()
+    for group, module_names in (
+        ("unary", UNARY_PATH_MODULES),
+        ("pair", PAIR_PATH_MODULES),
+        ("unused", UNUSED_FROZEN_MODULES),
+    ):
+        for module_name in module_names:
+            module = getattr(model, module_name, None)
+            if module is None:
+                raise RuntimeError(
+                    f"Locked E1/E2 module {module_name} is unavailable"
+                )
+            for parameter in module.parameters():
+                identity = id(parameter)
+                if identity in seen:
+                    raise RuntimeError("A parameter belongs to multiple training paths")
+                name = name_by_identity.get(identity)
+                if name is None:
+                    raise RuntimeError("A module parameter is absent from the model")
+                groups[group][name] = parameter
+                seen.add(identity)
+    missing = sorted(
+        name for name, parameter in named_parameters.items() if id(parameter) not in seen
+    )
+    if missing:
+        raise RuntimeError(f"Unclassified E1/E2 parameters: {missing}")
+    return groups
+
+
+def set_phase_trainable_parameters(model: Any, phase: str) -> Mapping[str, Any]:
+    """Freeze complete paths so a fixed unary head cannot drift indirectly."""
+    groups = _parameter_ownership(model)
+    if phase == PHASE_UNARY_WARMUP:
+        trainable_groups = frozenset({"unary"})
+    elif phase == PHASE_RESIDUAL_SPECIFICITY:
+        trainable_groups = frozenset({"pair"})
+    elif phase == PHASE_JOINT_FINETUNE:
+        trainable_groups = frozenset({"unary", "pair"})
+    else:
+        raise ValueError("Unknown E1/E2 training phase")
+    for group_name, parameters in groups.items():
+        trainable = group_name in trainable_groups
+        for parameter in parameters.values():
+            parameter.requires_grad_(trainable)
+    trainable = [
+        parameter
+        for parameters in groups.values()
+        for parameter in parameters.values()
+        if parameter.requires_grad
+    ]
+    frozen = [
+        parameter
+        for parameters in groups.values()
+        for parameter in parameters.values()
+        if not parameter.requires_grad
+    ]
+    if not trainable:
+        raise RuntimeError("The selected E1/E2 phase has no trainable parameters")
+    return {
+        "trainable_parameter_count": sum(item.numel() for item in trainable),
+        "trainable_parameter_tensor_count": len(trainable),
+        "frozen_parameter_count": sum(item.numel() for item in frozen),
+        "frozen_parameter_tensor_count": len(frozen),
+        "unary_path_trainable": "unary" in trainable_groups,
+        "pair_path_trainable": "pair" in trainable_groups,
+        "unused_geometry_heads_trainable": False,
+    }
+
+
+def parameter_path_state_sha256(model: Any, path: str) -> str:
+    """Hash one complete parameter path with dtype and shape metadata."""
+    import torch
+
+    groups = _parameter_ownership(model)
+    if path not in groups:
+        raise ValueError("Parameter path must be unary, pair, or unused")
+    digest = hashlib.sha256()
+    for name, parameter in sorted(groups[path].items()):
+        tensor = parameter.detach().cpu().contiguous()
+        metadata = json.dumps(
+            {
+                "dtype": str(tensor.dtype),
+                "name": name,
+                "shape": list(tensor.shape),
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+        raw = tensor.reshape(-1).view(torch.uint8).numpy().tobytes()
+        for block in (metadata, raw):
+            digest.update(len(block).to_bytes(8, "big"))
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def train_one_epoch_e1_e2(
     *,
     model: Any,
@@ -293,13 +429,14 @@ def train_one_epoch_e1_e2(
     config: PairscaleE1E2Config,
     epoch: int,
     decoy_panel: BidirectionalDecoyPanel,
-) -> tuple[Mapping[str, float | str], int]:
+) -> tuple[Mapping[str, float | str | int | bool], int]:
     """Train one fixed epoch with separate contact and specificity paths."""
     import torch
 
     config.validate()
     decoy_panel.validate(len(examples))
     phase = training_phase(epoch, config)
+    phase_parameters = set_phase_trainable_parameters(model, phase)
     learning_rate = set_phase_learning_rate(optimizer, config, phase)
     model.train()
     loss_sums = {
@@ -389,8 +526,11 @@ def train_one_epoch_e1_e2(
         if not bool(torch.isfinite(loss)):
             raise RuntimeError(f"Non-finite loss at epoch {epoch}, example {index}")
         loss.backward()
+        trainable_parameters = [
+            parameter for parameter in model.parameters() if parameter.requires_grad
+        ]
         gradient_norm = torch.nn.utils.clip_grad_norm_(
-            model.parameters(),
+            trainable_parameters,
             config.gradient_clip_norm,
             error_if_nonfinite=True,
         )
@@ -406,11 +546,12 @@ def train_one_epoch_e1_e2(
         ):
             loss_sums[name] += float(value.detach().cpu())
         step_count += 1
-    result: dict[str, float | str] = {
+    result: dict[str, float | str | int | bool] = {
         name: value / step_count for name, value in loss_sums.items()
     }
     result["phase"] = phase
     result["learning_rate"] = learning_rate
+    result.update(phase_parameters)
     return result, step_count
 
 
@@ -419,7 +560,12 @@ __all__ = [
     "PHASE_RESIDUAL_SPECIFICITY",
     "PHASE_UNARY_WARMUP",
     "PairscaleE1E2Config",
+    "PAIR_PATH_MODULES",
+    "UNARY_PATH_MODULES",
+    "UNUSED_FROZEN_MODULES",
     "build_e1_e2_model",
+    "parameter_path_state_sha256",
+    "set_phase_trainable_parameters",
     "set_phase_learning_rate",
     "train_one_epoch_e1_e2",
     "training_phase",

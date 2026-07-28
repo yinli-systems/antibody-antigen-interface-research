@@ -12,9 +12,14 @@ from interaction_first.pairscale_e1_e2_step import (
     PHASE_JOINT_FINETUNE,
     PHASE_RESIDUAL_SPECIFICITY,
     PHASE_UNARY_WARMUP,
+    PAIR_PATH_MODULES,
+    UNARY_PATH_MODULES,
+    UNUSED_FROZEN_MODULES,
     PairscaleE1E2Config,
     _forward_cognate,
     build_e1_e2_model,
+    parameter_path_state_sha256,
+    set_phase_trainable_parameters,
     train_one_epoch_e1_e2,
     training_phase,
 )
@@ -91,6 +96,34 @@ def _clone_parameter(module, name: str):
     return parameter.detach().clone()
 
 
+def _clone_modules(model, module_names: tuple[str, ...]):
+    return {
+        f"{module_name}.{name}": parameter.detach().clone()
+        for module_name in module_names
+        for name, parameter in getattr(model, module_name).named_parameters()
+    }
+
+
+def _assert_state_exact(reference, observed) -> None:
+    import torch
+
+    assert set(reference) == set(observed)
+    for name in reference:
+        assert torch.equal(reference[name], observed[name]), name
+
+
+def _unary_logits(model, example):
+    import torch
+
+    model.eval()
+    with torch.inference_mode():
+        outputs, _, _ = _forward_cognate(model, example, torch.device("cpu"))
+    return (
+        outputs["antibody_unary_logits"].detach().clone(),
+        outputs["antigen_unary_logits"].detach().clone(),
+    )
+
+
 def test_phase_schedule_and_joint_learning_rate_are_frozen() -> None:
     config = _config()
     assert training_phase(1, config) == PHASE_UNARY_WARMUP
@@ -98,6 +131,10 @@ def test_phase_schedule_and_joint_learning_rate_are_frozen() -> None:
     assert training_phase(3, config) == PHASE_JOINT_FINETUNE
     with pytest.raises(ValueError, match="exceeds"):
         training_phase(4, config)
+    with pytest.raises(ValueError, match="must be true"):
+        PairscaleE1E2Config(
+            freeze_complete_unary_path_during_residual_phase=False
+        ).validate()
 
 
 def test_cognate_specificity_uses_complete_support_while_contact_uses_mask() -> None:
@@ -130,6 +167,8 @@ def test_three_phases_update_only_the_authorized_heads() -> None:
     dataset = SimpleNamespace(antibody_input_dim=5, antigen_input_dim=7)
     model = build_e1_e2_model(dataset, config)
     optimizer = torch.optim.SGD(model.parameters(), lr=config.learning_rate)
+    pair_before_warmup = _clone_modules(model, PAIR_PATH_MODULES)
+    unused_before_training = _clone_modules(model, UNUSED_FROZEN_MODULES)
     tracked = {
         "antibody_unary_head.weight": _clone_parameter(
             model,
@@ -169,11 +208,14 @@ def test_three_phases_update_only_the_authorized_heads() -> None:
         tracked["specificity_head.weight"],
         _clone_parameter(model, "specificity_head.weight"),
     )
+    _assert_state_exact(pair_before_warmup, _clone_modules(model, PAIR_PATH_MODULES))
+    assert warmup_metrics["unary_path_trainable"] is True
+    assert warmup_metrics["pair_path_trainable"] is False
 
-    unary_before_residual = _clone_parameter(
-        model,
-        "antibody_unary_head.weight",
-    )
+    unary_before_residual = _clone_modules(model, UNARY_PATH_MODULES)
+    unary_hash_before_residual = parameter_path_state_sha256(model, "unary")
+    pair_hash_before_residual = parameter_path_state_sha256(model, "pair")
+    unary_logits_before_residual = _unary_logits(model, examples[0])
     interaction_before_residual = _clone_parameter(
         model,
         "interaction_head.weight",
@@ -194,9 +236,22 @@ def test_three_phases_update_only_the_authorized_heads() -> None:
     assert residual_steps == len(examples)
     assert residual_metrics["phase"] == PHASE_RESIDUAL_SPECIFICITY
     assert float(residual_metrics["bidirectional_retrieval"]) > 0.0
-    torch.testing.assert_close(
+    _assert_state_exact(
         unary_before_residual,
-        _clone_parameter(model, "antibody_unary_head.weight"),
+        _clone_modules(model, UNARY_PATH_MODULES),
+    )
+    assert parameter_path_state_sha256(model, "unary") == (
+        unary_hash_before_residual
+    )
+    assert parameter_path_state_sha256(model, "pair") != pair_hash_before_residual
+    unary_logits_after_residual = _unary_logits(model, examples[0])
+    assert torch.equal(
+        unary_logits_before_residual[0],
+        unary_logits_after_residual[0],
+    )
+    assert torch.equal(
+        unary_logits_before_residual[1],
+        unary_logits_after_residual[1],
     )
     assert not torch.equal(
         interaction_before_residual,
@@ -206,6 +261,8 @@ def test_three_phases_update_only_the_authorized_heads() -> None:
         specificity_before_residual,
         _clone_parameter(model, "specificity_head.weight"),
     )
+    assert residual_metrics["unary_path_trainable"] is False
+    assert residual_metrics["pair_path_trainable"] is True
 
     unary_before_joint = _clone_parameter(model, "antibody_unary_head.weight")
     joint_metrics, joint_steps = train_one_epoch_e1_e2(
@@ -224,7 +281,27 @@ def test_three_phases_update_only_the_authorized_heads() -> None:
         unary_before_joint,
         _clone_parameter(model, "antibody_unary_head.weight"),
     )
+    assert joint_metrics["unary_path_trainable"] is True
+    assert joint_metrics["pair_path_trainable"] is True
+    assert joint_metrics["unused_geometry_heads_trainable"] is False
+    _assert_state_exact(
+        unused_before_training,
+        _clone_modules(model, UNUSED_FROZEN_MODULES),
+    )
     assert all(
         isinstance(value, str) or torch.isfinite(torch.tensor(value))
         for value in joint_metrics.values()
     )
+
+
+def test_parameter_ownership_rejects_an_unclassified_module() -> None:
+    import torch
+
+    dataset = SimpleNamespace(antibody_input_dim=5, antigen_input_dim=7)
+    model = build_e1_e2_model(dataset, _config())
+    model.unclassified = torch.nn.Linear(3, 3)
+    with pytest.raises(RuntimeError, match="Unclassified"):
+        set_phase_trainable_parameters(model, PHASE_UNARY_WARMUP)
+    with pytest.raises(ValueError, match="unary, pair, or unused"):
+        del model.unclassified
+        parameter_path_state_sha256(model, "unknown")

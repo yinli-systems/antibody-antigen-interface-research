@@ -21,7 +21,9 @@ from interaction_first.frontier_checkpoint import (
 )
 from interaction_first.pairscale_e1_e2_evaluation import evaluate_e1_e2
 from interaction_first.pairscale_e1_e2_step import (
+    _forward_cognate,
     build_e1_e2_model,
+    parameter_path_state_sha256,
     train_one_epoch_e1_e2,
 )
 from interaction_first.pairscale_e1_e2_training import (
@@ -102,6 +104,18 @@ def _cpu_clone(value: Any) -> Any:
     if isinstance(value, list):
         return [_cpu_clone(item) for item in value]
     return value
+
+
+def _unary_logits(model: Any, example: Any, device: Any) -> tuple[Any, Any]:
+    import torch
+
+    model.eval()
+    with torch.inference_mode():
+        output, _, _ = _forward_cognate(model, example, device)
+    return (
+        output["antibody_unary_logits"].detach().cpu().clone(),
+        output["antigen_unary_logits"].detach().cpu().clone(),
+    )
 
 
 def main() -> None:
@@ -208,6 +222,13 @@ def main() -> None:
         epoch=1,
         decoy_panel=panel,
     )
+    unary_hash_before_phase_2 = parameter_path_state_sha256(model, "unary")
+    unused_hash_before_phase_2 = parameter_path_state_sha256(model, "unused")
+    unary_logits_before_phase_2 = _unary_logits(
+        model,
+        examples[0],
+        device,
+    )
     checkpoint_root = output_root / "checkpoint"
     generation = "epoch-0001"
     receipt = create_checkpoint_generation(
@@ -232,6 +253,12 @@ def main() -> None:
         epoch=2,
         decoy_panel=panel,
     )
+    if parameter_path_state_sha256(model, "unary") != unary_hash_before_phase_2:
+        raise RuntimeError("Smoke unary path changed during phase 2")
+    if parameter_path_state_sha256(model, "unused") != unused_hash_before_phase_2:
+        raise RuntimeError("Smoke unused geometry path changed")
+    unary_logits_after_phase_2 = _unary_logits(model, examples[0], device)
+    _assert_exact(unary_logits_before_phase_2, unary_logits_after_phase_2)
     reference_model_state = _cpu_clone(model.state_dict())
     reference_optimizer_state = _cpu_clone(optimizer.state_dict())
 
@@ -269,6 +296,14 @@ def main() -> None:
     _assert_exact(
         reference_optimizer_state,
         _cpu_clone(replay_optimizer.state_dict()),
+    )
+    if parameter_path_state_sha256(replay_model, "unary") != (
+        unary_hash_before_phase_2
+    ):
+        raise RuntimeError("Replayed smoke unary path changed during phase 2")
+    _assert_exact(
+        unary_logits_before_phase_2,
+        _unary_logits(replay_model, examples[0], device),
     )
     epoch_3, steps_3 = train_one_epoch_e1_e2(
         model=replay_model,
@@ -312,6 +347,11 @@ def main() -> None:
         },
         "resume_model_state_exact": True,
         "resume_optimizer_state_exact": True,
+        "phase_2_unary_path_state_exact": True,
+        "phase_2_unary_logits_exact": True,
+        "unused_geometry_path_state_exact": True,
+        "unary_phase_2_reference_sha256": unary_hash_before_phase_2,
+        "unused_geometry_reference_sha256": unused_hash_before_phase_2,
         "evaluation": evaluation,
         "production_training_authorized_by_smoke": True,
         "production_scientific_gate_passed": False,
