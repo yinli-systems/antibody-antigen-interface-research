@@ -15,7 +15,7 @@ from .pairscale_partner_specificity import (
 )
 
 
-EVALUATION_FORMAT = "pairscale_e1_e2_development_evaluation_v1"
+EVALUATION_FORMAT = "pairscale_e1_e2_development_evaluation_v2"
 
 
 def _mean(values: Sequence[float]) -> float:
@@ -188,13 +188,34 @@ def evaluate_e1_e2(
             residual_probabilities = torch.sigmoid(
                 outputs["contact_interaction_residual_logits"]
             )[0].float().cpu().numpy()[mask]
-            metrics["unary_additive_auprc"] = average_precision(
+            unary_metrics = contact_map_metrics(
                 labels,
                 unary_probabilities,
             )
-            metrics["interaction_residual_auprc"] = average_precision(
+            residual_metrics = contact_map_metrics(
                 labels,
                 residual_probabilities,
+            )
+            metrics["unary_additive_auprc"] = unary_metrics["auprc"]
+            metrics["unary_additive_precision_at_true_contact_count"] = (
+                unary_metrics["precision_at_true_contact_count"]
+            )
+            metrics[
+                "unary_additive_precision_at_true_contact_count_tie_policy"
+            ] = unary_metrics["precision_at_true_contact_count_tie_policy"]
+            metrics["unary_additive_ap_lift"] = float(
+                (float(unary_metrics["auprc"]) - prevalence) / (1.0 - prevalence)
+            )
+            metrics["interaction_residual_auprc"] = residual_metrics["auprc"]
+            metrics["interaction_residual_precision_at_true_contact_count"] = (
+                residual_metrics["precision_at_true_contact_count"]
+            )
+            metrics[
+                "interaction_residual_precision_at_true_contact_count_tie_policy"
+            ] = residual_metrics["precision_at_true_contact_count_tie_policy"]
+            metrics["interaction_residual_ap_lift"] = float(
+                (float(residual_metrics["auprc"]) - prevalence)
+                / (1.0 - prevalence)
             )
             metrics["instance_id"] = example.instance_id
             metrics["antibody_id"] = example.antibody_id
@@ -301,8 +322,30 @@ def evaluate_e1_e2(
         "macro_unary_additive_auprc": _mean(
             [float(item["unary_additive_auprc"]) for item in per_complex]
         ),
+        "macro_unary_additive_precision_at_true_contact_count": _mean(
+            [
+                float(item["unary_additive_precision_at_true_contact_count"])
+                for item in per_complex
+            ]
+        ),
+        "macro_unary_additive_ap_lift": _mean(
+            [float(item["unary_additive_ap_lift"]) for item in per_complex]
+        ),
         "macro_interaction_residual_auprc": _mean(
             [float(item["interaction_residual_auprc"]) for item in per_complex]
+        ),
+        "macro_interaction_residual_precision_at_true_contact_count": _mean(
+            [
+                float(
+                    item[
+                        "interaction_residual_precision_at_true_contact_count"
+                    ]
+                )
+                for item in per_complex
+            ]
+        ),
+        "macro_interaction_residual_ap_lift": _mean(
+            [float(item["interaction_residual_ap_lift"]) for item in per_complex]
         ),
         "partner_controls": partner_controls,
         "exhaustive_bidirectional_retrieval": exhaustive,

@@ -87,14 +87,18 @@ def test_evaluation_reports_contact_decomposition_and_both_retrieval_axes() -> N
         include_partner_panel=True,
         include_exhaustive_retrieval=True,
     )
-    assert result["format_version"] == "pairscale_e1_e2_development_evaluation_v1"
+    assert result["format_version"] == "pairscale_e1_e2_development_evaluation_v2"
     assert result["model_selection_authorized"] is False
     assert result["unknown_cross_pairs_assigned_binary_labels"] is False
     assert result["complex_count"] == 6
     assert len(result["per_complex"]) == 6
     assert all(
         "unary_additive_auprc" in item
+        and "unary_additive_precision_at_true_contact_count" in item
+        and "unary_additive_ap_lift" in item
         and "interaction_residual_auprc" in item
+        and "interaction_residual_precision_at_true_contact_count" in item
+        and "interaction_residual_ap_lift" in item
         and "ap_lift" in item
         for item in result["per_complex"]
     )
@@ -122,7 +126,11 @@ def test_evaluation_reports_contact_decomposition_and_both_retrieval_axes() -> N
         result["pooled_pair_auprc"],
         result["macro_ap_lift"],
         result["macro_unary_additive_auprc"],
+        result["macro_unary_additive_precision_at_true_contact_count"],
+        result["macro_unary_additive_ap_lift"],
         result["macro_interaction_residual_auprc"],
+        result["macro_interaction_residual_precision_at_true_contact_count"],
+        result["macro_interaction_residual_ap_lift"],
     )
     assert all(torch.isfinite(torch.tensor(value)) for value in numeric)
 
