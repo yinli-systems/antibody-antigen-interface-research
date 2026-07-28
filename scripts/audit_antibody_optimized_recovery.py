@@ -1,0 +1,253 @@
+#!/usr/bin/env python3
+"""Audit exact DCP recovery of the optimized antibody training candidate."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+
+
+PARAMETER_COUNT = 634_513_920
+EXPECTED_MANIFEST_SHA256 = (
+    "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6"
+)
+EXPECTED_MODEL_FAMILY_SHA256 = (
+    "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015"
+)
+EXPECTED_TRAINING_PROTOCOL_SHA256 = (
+    "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b"
+)
+EXPECTED_BUCKETS = [96, 128, 144, 194]
+EXPECTED_OPTIMIZATION = {
+    "bucketed_padding": True,
+    "compile_blocks": True,
+    "compile_prewarm_buckets": True,
+    "ddp_bucket_cap_mb": 25,
+    "disable_compiled_cudagraphs": True,
+    "fsdp_output_dtype": "bfloat16",
+    "fused_adamw": True,
+    "length_bucketing": False,
+    "pinned_staging": True,
+}
+TEST_ACCESS = {
+    "downstream_labels_used": False,
+    "sabdab2_heldout_accessed": False,
+}
+TRACE_KEYS = (
+    "consumed_residue_tokens",
+    "gradient_norm",
+    "learning_rate",
+    "loss",
+    "micro_steps",
+    "residue_tokens",
+    "selected_targets",
+    "sequence_count",
+    "update",
+)
+
+
+def _load(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="ascii"))
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _trace_equal(left: list[dict[str, object]], right: list[dict[str, object]]) -> bool:
+    return len(left) == len(right) and all(
+        all(left_item[key] == right_item[key] for key in TRACE_KEYS)
+        for left_item, right_item in zip(left, right)
+    )
+
+
+def _validate_receipt(
+    receipt: dict[str, object],
+    *,
+    resume_used: bool,
+    updates: list[int],
+    checkpoint_format: str | None,
+    efficiency_protocol_sha256: str,
+) -> None:
+    expected = {
+        "backend": "ddp",
+        "batch_quantum": 128,
+        "checkpoint_format": checkpoint_format,
+        "efficiency_protocol_sha256": efficiency_protocol_sha256,
+        "format_version": "antibody_pretraining_optimized_pilot_v1",
+        "length_bucket_boundaries": EXPECTED_BUCKETS,
+        "micro_batch_per_gpu": 16,
+        "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
+        "optimization": EXPECTED_OPTIMIZATION,
+        "preset": "abf_650m",
+        "resume_used": resume_used,
+        "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
+        "target_residue_tokens": 16384,
+        "test_access": TEST_ACCESS,
+        "training_protocol_sha256": EXPECTED_TRAINING_PROTOCOL_SHA256,
+        "world_size": 8,
+    }
+    if any(receipt.get(key) != value for key, value in expected.items()):
+        raise RuntimeError("Optimized recovery receipt failed validation")
+    if receipt.get("parameter_moments", {}).get("count") != PARAMETER_COUNT:
+        raise RuntimeError("Optimized recovery parameter count differs")
+    if [item["update"] for item in receipt.get("trace", [])] != updates:
+        raise RuntimeError("Optimized recovery update coordinates differ")
+    arguments = receipt.get("launch_argv")
+    if not isinstance(arguments, list):
+        raise RuntimeError("Optimized recovery launch arguments are absent")
+    if ("--resume-root" in arguments) != resume_used:
+        raise RuntimeError("Optimized recovery resume launch switch differs")
+
+
+def _validate_state(
+    state: dict[str, object],
+    *,
+    next_update: int,
+    consumed_residue_tokens: int,
+) -> None:
+    expected = {
+        "backend": "ddp",
+        "batch_quantum": 128,
+        "consumed_residue_tokens": consumed_residue_tokens,
+        "length_bucket_boundaries": EXPECTED_BUCKETS,
+        "micro_batch_per_gpu": 16,
+        "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
+        "next_update": next_update,
+        "optimization": EXPECTED_OPTIMIZATION,
+        "preset": "abf_650m",
+        "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
+        "target_residue_tokens": 16384,
+        "training_protocol_sha256": EXPECTED_TRAINING_PROTOCOL_SHA256,
+        "world_size": 8,
+    }
+    if any(state.get(key) != value for key, value in expected.items()):
+        raise RuntimeError("Optimized recovery trainer state failed validation")
+    if int(state.get("sample_cursor", -1)) != next_update * 256:
+        raise RuntimeError("Optimized recovery sampler cursor differs")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--continuous", type=Path, required=True)
+    parser.add_argument("--stage1", type=Path, required=True)
+    parser.add_argument("--resumed", type=Path, required=True)
+    parser.add_argument("--checkpoint-manifest", type=Path, required=True)
+    parser.add_argument("--efficiency-protocol", type=Path, required=True)
+    parser.add_argument("--source-archive-sha256", required=True)
+    parser.add_argument("--runner-sha256", required=True)
+    parser.add_argument("--job-id", action="append", default=[])
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if len(args.job_id) != 3 or len(set(args.job_id)) != 3:
+        raise RuntimeError("Recovery audit requires three distinct job IDs")
+
+    paths = {
+        "continuous_receipt": args.continuous / "receipt.json",
+        "continuous_state": args.continuous / "trainer_state.json",
+        "stage1_receipt": args.stage1 / "receipt.json",
+        "stage1_state": args.stage1 / "trainer_state.json",
+        "resumed_receipt": args.resumed / "receipt.json",
+        "resumed_state": args.resumed / "trainer_state.json",
+        "checkpoint_manifest": args.checkpoint_manifest,
+    }
+    values = {name: _load(path) for name, path in paths.items() if name != "checkpoint_manifest"}
+    efficiency_protocol_sha256 = _sha256(args.efficiency_protocol)
+    if _load(args.efficiency_protocol).get("format_version") != "antibody_efficiency_gate_v1":
+        raise RuntimeError("Unexpected efficiency protocol")
+    continuous = values["continuous_receipt"]
+    stage1 = values["stage1_receipt"]
+    resumed = values["resumed_receipt"]
+    continuous_state = values["continuous_state"]
+    stage1_state = values["stage1_state"]
+    resumed_state = values["resumed_state"]
+    _validate_receipt(
+        continuous,
+        resume_used=False,
+        updates=list(range(1, 21)),
+        checkpoint_format=None,
+        efficiency_protocol_sha256=efficiency_protocol_sha256,
+    )
+    _validate_receipt(
+        stage1,
+        resume_used=False,
+        updates=list(range(1, 11)),
+        checkpoint_format="torch_distributed_checkpoint",
+        efficiency_protocol_sha256=efficiency_protocol_sha256,
+    )
+    _validate_receipt(
+        resumed,
+        resume_used=True,
+        updates=list(range(11, 21)),
+        checkpoint_format=None,
+        efficiency_protocol_sha256=efficiency_protocol_sha256,
+    )
+    _validate_state(
+        continuous_state,
+        next_update=20,
+        consumed_residue_tokens=int(continuous["trace"][-1]["consumed_residue_tokens"]),
+    )
+    _validate_state(
+        stage1_state,
+        next_update=10,
+        consumed_residue_tokens=int(stage1["trace"][-1]["consumed_residue_tokens"]),
+    )
+    _validate_state(
+        resumed_state,
+        next_update=20,
+        consumed_residue_tokens=int(resumed["trace"][-1]["consumed_residue_tokens"]),
+    )
+    manifest_lines = args.checkpoint_manifest.read_text(encoding="ascii").splitlines()
+    if not manifest_lines or not any(".metadata" in line for line in manifest_lines):
+        raise RuntimeError("DCP checkpoint manifest is incomplete")
+    exact = {
+        "final_model": (
+            continuous["final_model_sha256"] == resumed["final_model_sha256"]
+        ),
+        "final_optimizer": (
+            continuous["final_optimizer_sha256"]
+            == resumed["final_optimizer_sha256"]
+        ),
+        "prefix_trace": _trace_equal(continuous["trace"][:10], stage1["trace"]),
+        "resumed_trace": _trace_equal(continuous["trace"][10:], resumed["trace"]),
+        "trainer_state": continuous_state == resumed_state,
+    }
+    if not all(exact.values()):
+        raise RuntimeError(f"Optimized exact recovery audit failed: {exact}")
+    payload = {
+        "authorization": {
+            "pilot_16_gpu": True,
+            "pilot_32_gpu": False,
+            "production_pretraining": False,
+            "scientific_claim": False,
+        },
+        "checkpoint_manifest_sha256": _sha256(args.checkpoint_manifest),
+        "claim_boundary": "Eight-GPU repeated-shard DDP checkpoint recovery; no production-corpus, biological, strong-scaling, or state-of-the-art claim",
+        "exact_equal": exact,
+        "format_version": "antibody_optimized_recovery_audit_v1",
+        "input_sha256": {name: _sha256(path) for name, path in paths.items()},
+        "job_ids": args.job_id,
+        "source": {
+            "archive_sha256": args.source_archive_sha256,
+            "runner_sha256": args.runner_sha256,
+        },
+        "test_access": TEST_ACCESS,
+    }
+    encoded = (
+        json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        + "\n"
+    ).encode("ascii")
+    descriptor = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o444)
+    with os.fdopen(descriptor, "wb") as handle:
+        handle.write(encoded)
+
+
+if __name__ == "__main__":
+    main()
