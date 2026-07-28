@@ -16,6 +16,10 @@ ATTEMPT_THREE = (
     ROOT
     / "results/pretraining/antibody_efficiency_benchmark_attempt_003_v1.json"
 )
+ATTEMPT_FOUR = (
+    ROOT
+    / "results/pretraining/antibody_efficiency_benchmark_attempt_004_v1.json"
+)
 
 
 def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
@@ -92,4 +96,25 @@ def test_prewarm_attempt_preserves_near_threshold_failure() -> None:
         "throughput_relative_to_eager"
     ] < 1.25
     assert result["summaries"]["compiled"]["p95_over_p50"] > 1.15
+    assert result["authorization"]["scale_16_gpu"] is False
+
+
+def test_low_frequency_telemetry_attempt_preserves_exact_failure() -> None:
+    import json
+
+    result = json.loads(ATTEMPT_FOUR.read_text(encoding="ascii"))
+    assert result["label"] == "low_frequency_telemetry_attempt"
+    assert result["gate_passed"] is False
+    assert result["gates"] == {
+        "membership": True,
+        "memory": True,
+        "stability": False,
+        "throughput": True,
+    }
+    assert result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] > 1.25
+    assert 1.10 < result["summaries"]["compiled"][
+        "p95_over_p50"
+    ] < 1.101
     assert result["authorization"]["scale_16_gpu"] is False
