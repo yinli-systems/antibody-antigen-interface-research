@@ -98,12 +98,16 @@ def _summary(receipt: dict[str, object]) -> dict[str, float | int]:
     }
 
 
-def _validate_receipt(name: str, receipt: dict[str, object]) -> None:
+def _validate_receipt(
+    name: str,
+    receipt: dict[str, object],
+    expected_length_bucket_boundaries: list[int],
+) -> None:
     expected = {
         "backend": "ddp",
         "batch_quantum": 128,
         "format_version": "antibody_pretraining_optimized_pilot_v1",
-        "length_bucket_boundaries": [96, 128, 160, 194],
+        "length_bucket_boundaries": expected_length_bucket_boundaries,
         "micro_batch_per_gpu": 16,
         "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
         "optimization": EXPECTED_OPTIMIZATION[name],
@@ -134,8 +138,25 @@ def main() -> None:
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
     parser.add_argument("--source-archive-sha256", required=True)
     parser.add_argument("--runner-sha256", required=True)
+    parser.add_argument(
+        "--expected-length-bucket-boundaries",
+        default="96,128,160,194",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    try:
+        expected_length_bucket_boundaries = [
+            int(value) for value in args.expected_length_bucket_boundaries.split(",")
+        ]
+    except ValueError as error:
+        raise RuntimeError("Expected length buckets must be integers") from error
+    if (
+        not expected_length_bucket_boundaries
+        or sorted(set(expected_length_bucket_boundaries))
+        != expected_length_bucket_boundaries
+        or expected_length_bucket_boundaries[-1] != 194
+    ):
+        raise RuntimeError("Expected length buckets must increase to 194")
     receipt_bindings = _bindings(args.receipt, "receipt")
     job_ids = _bindings(args.job_id, "job ID")
     paths = {name: Path(value) for name, value in receipt_bindings.items()}
@@ -145,7 +166,7 @@ def main() -> None:
     if protocol.get("format_version") != "antibody_efficiency_gate_v1":
         raise RuntimeError("Unexpected efficiency protocol")
     for name, receipt in receipts.items():
-        _validate_receipt(name, receipt)
+        _validate_receipt(name, receipt, expected_length_bucket_boundaries)
         if receipt.get("efficiency_protocol_sha256") != protocol_sha256:
             raise RuntimeError(f"Efficiency protocol digest differs for {name}")
 
@@ -223,6 +244,7 @@ def main() -> None:
         },
         "efficiency_protocol_sha256": protocol_sha256,
         "format_version": "antibody_cudagraph_ablation_correctness_v1",
+        "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
         "membership_equal": membership_equal,
         "runs": {
             name: {
