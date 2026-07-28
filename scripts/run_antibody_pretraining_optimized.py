@@ -62,6 +62,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--backend", choices=("ddp", "fsdp2"), required=True)
     parser.add_argument("--resume-root", type=Path)
     parser.add_argument("--compile-blocks", action="store_true")
+    parser.add_argument("--disable-compiled-cudagraphs", action="store_true")
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
@@ -85,6 +86,8 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("Batch quantum and DDP bucket size must be positive")
     if args.compile_prewarm_buckets and not args.compile_blocks:
         raise ValueError("Compile prewarm requires compiled Transformer blocks")
+    if args.disable_compiled_cudagraphs and not args.compile_blocks:
+        raise ValueError("CUDAGraph control requires compiled Transformer blocks")
     return args
 
 
@@ -161,9 +164,14 @@ def _stage_tensor(array: np.ndarray, pinned: bool) -> torch.Tensor:
     return tensor.pin_memory() if pinned else tensor
 
 
-def _compile_transformer_blocks(model: AntibodyMaskedLanguageModel) -> None:
+def _compile_transformer_blocks(
+    model: AntibodyMaskedLanguageModel,
+    *,
+    disable_cudagraphs: bool,
+) -> None:
+    options = {"triton.cudagraphs": False} if disable_cudagraphs else None
     for block in model.blocks:
-        block.compile(backend="inductor", fullgraph=True)
+        block.compile(backend="inductor", fullgraph=True, options=options)
 
 
 def _wrap_model(
@@ -175,7 +183,10 @@ def _wrap_model(
     world_size: int,
 ) -> torch.nn.Module:
     if args.compile_blocks:
-        _compile_transformer_blocks(model)
+        _compile_transformer_blocks(
+            model,
+            disable_cudagraphs=args.disable_compiled_cudagraphs,
+        )
     if args.backend == "ddp":
         return DistributedDataParallel(
             model,
@@ -352,6 +363,7 @@ def main() -> None:
             "optimization": {
                 "bucketed_padding": args.bucketed_padding,
                 "compile_blocks": args.compile_blocks,
+                "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
                 "compile_prewarm_buckets": args.compile_prewarm_buckets,
                 "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
                 "fsdp_output_dtype": args.fsdp_output_dtype,
@@ -514,6 +526,7 @@ def main() -> None:
     optimization = {
         "bucketed_padding": args.bucketed_padding,
         "compile_blocks": args.compile_blocks,
+        "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
         "compile_prewarm_buckets": args.compile_prewarm_buckets,
         "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
         "fsdp_output_dtype": args.fsdp_output_dtype,

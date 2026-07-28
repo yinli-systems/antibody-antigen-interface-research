@@ -11,7 +11,8 @@ SLURM = ROOT / "slurm/antibody_pretraining_efficiency_pilot.sbatch"
 def test_optimized_runner_is_ascii_and_syntax_valid() -> None:
     source = RUNNER.read_text(encoding="ascii")
     ast.parse(source)
-    assert "block.compile(backend=\"inductor\", fullgraph=True)" in source
+    assert 'options = {"triton.cudagraphs": False}' in source
+    assert "block.compile(backend=\"inductor\", fullgraph=True, options=options)" in source
     assert "gradient_as_bucket_view=True" in source
     assert "static_graph=True" in source
     assert "fused=fused" in source
@@ -23,6 +24,7 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
         "bucketed_padding",
         "compile_blocks",
         "compile_prewarm_buckets",
+        "disable_compiled_cudagraphs",
         "ddp_bucket_cap_mb",
         "fsdp_output_dtype",
         "fused_adamw",
@@ -51,6 +53,7 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     source = SLURM.read_text(encoding="ascii")
     assert "run_antibody_pretraining_optimized.py" in source
     assert "ABF_COMPILE_BLOCKS" in source
+    assert "ABF_DISABLE_COMPILED_CUDAGRAPHS" in source
     assert "ABF_COMPILE_PREWARM_BUCKETS" in source
     assert "ABF_FUSED_ADAMW" in source
     assert "ABF_PINNED_STAGING" in source
