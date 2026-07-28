@@ -13,6 +13,9 @@ ATTEMPT_TWO = (
 ATTEMPT_THREE = (
     ROOT / "results/pretraining/antibody_optimized_recovery_attempt_003_v1.json"
 )
+ATTEMPT_FOUR = (
+    ROOT / "results/pretraining/antibody_optimized_recovery_attempt_004_v1.json"
+)
 
 
 def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
@@ -116,5 +119,28 @@ def test_third_attempt_authenticates_rng_but_preserves_graph_rng_failure() -> No
     assert result["trace_differences"][
         "resumed_maximum_loss_absolute_difference"
     ] > 0.001
+    assert result["authorization"]["pilot_16_gpu"] is False
+    assert result["authorization"]["pilot_32_gpu"] is False
+
+
+def test_fourth_attempt_localizes_failure_to_checkpoint_loading() -> None:
+    import json
+
+    result = json.loads(ATTEMPT_FOUR.read_text(encoding="ascii"))
+    assert result["recovery_passed"] is False
+    assert result["job_ids"] == ["1336849", "1336850", "1336851"]
+    assert result["auditor_source_sha256"] == (
+        "46e398664ec4dc3a408398140768b5e6ebf6e91c99fe50f32e676e693b43466a"
+    )
+    assert result["exact_equal"] == {
+        "final_model": False,
+        "final_optimizer": False,
+        "loaded_model": False,
+        "loaded_optimizer": False,
+        "prefix_trace": True,
+        "resumed_trace": False,
+        "rng_manifest": True,
+        "trainer_state": True,
+    }
     assert result["authorization"]["pilot_16_gpu"] is False
     assert result["authorization"]["pilot_32_gpu"] is False
