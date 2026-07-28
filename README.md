@@ -60,6 +60,20 @@ selection, held-out evaluation, or performance-improvement claim is authorized
 until the exact split, independent audits, fold-local cache equality, label
 provenance, and license receipts all pass.
 
+The phase-one intra-chain structure encoder is now implemented as an opt-in
+research module. It uses two parameter-unshared antibody/antigen self-attention
+stacks with sequence RoPE and invariant `N-CA-C` local-pose attention biases. It
+does not encode inter-chain geometry and does not change the default checkpoint
+path. See `docs/intra_chain_geometry_attention.md` for its tensor contract,
+authenticated SAbDab2 batch adapter, equal-parameter ablation protocol, and claim
+boundary. The real-data adapter fails closed on source hashes, strict-split audit,
+residue-axis mismatches, and valid/missing-frame inconsistencies; it reads only
+the intersection with the new release's native training role.
+
+The first equal-parameter, four-mode RTX 5090 run is recorded under
+`results/sabdab2_structure_self_attention/`. It is explicitly development-only:
+the small one-seed validation differences are not reported as benchmark gains.
+
 ## Claim boundary
 
 - The SPPIDER-seq adaptation uses concatenated VH and VL sequences and 4.5 A contact
