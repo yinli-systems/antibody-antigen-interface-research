@@ -55,6 +55,7 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "ABF_PINNED_STAGING" in source
     assert "ABF_BUCKETED_PADDING" in source
     assert "ABF_LENGTH_BUCKETING" in source
+    assert "ABF_RESUME_ROOT" in source
     assert "TORCHINDUCTOR_CACHE_DIR" in source
     protocol = json.loads(
         (ROOT / "protocols/antibody_efficiency_gate_v1.json").read_text(

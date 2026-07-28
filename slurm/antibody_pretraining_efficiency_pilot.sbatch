@@ -32,6 +32,7 @@ PINNED_STAGING=${ABF_PINNED_STAGING:-0}
 BUCKETED_PADDING=${ABF_BUCKETED_PADDING:-0}
 LENGTH_BUCKETING=${ABF_LENGTH_BUCKETING:-0}
 SKIP_CHECKPOINT=${ABF_SKIP_CHECKPOINT:-1}
+RESUME_ROOT=${ABF_RESUME_ROOT:-}
 case "$BACKEND" in ddp|fsdp2) ;; *) exit 2 ;; esac
 case "$PRESET" in abf_300m|abf_650m) ;; *) exit 2 ;; esac
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID-$PRESET-$BACKEND
@@ -71,5 +72,6 @@ test "$PINNED_STAGING" = 0 || ARGS+=(--pinned-staging)
 test "$BUCKETED_PADDING" = 0 || ARGS+=(--bucketed-padding)
 test "$LENGTH_BUCKETING" = 0 || ARGS+=(--length-bucketing)
 test "$SKIP_CHECKPOINT" = 0 || ARGS+=(--skip-checkpoint)
+test -z "$RESUME_ROOT" || ARGS+=(--resume-root "$RESUME_ROOT")
 "$PYTHON_BIN" -m torch.distributed.run --standalone --nproc-per-node=8 \
   "$SOURCE_ROOT/scripts/run_antibody_pretraining_optimized.py" "${ARGS[@]}"
