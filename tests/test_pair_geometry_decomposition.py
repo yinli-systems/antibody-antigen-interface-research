@@ -148,13 +148,57 @@ def test_unary_logits_are_invariant_to_the_opposite_partner() -> None:
 def test_specificity_score_cannot_read_or_update_unary_heads() -> None:
     import torch
 
+    from interaction_first.pairscale_partner_specificity import (
+        bidirectional_specificity_losses,
+        build_single_anchor_score_row,
+    )
+
     model = _model()
-    output = model(
-        *_inputs(),
+    antibody, antigen, antibody_mask, antigen_mask, candidate_mask = _inputs()
+    matched = model(
+        antibody[:1],
+        antigen[:1],
+        antibody_mask[:1],
+        antigen_mask[:1],
+        candidate_mask[:1],
         return_pair_representations=False,
         enabled_heads={"interaction"},
     )
-    output["partner_score"].sum().backward()
+    antigen_decoy = model(
+        antibody[:1],
+        antigen[:1] + 2.0,
+        antibody_mask[:1],
+        antigen_mask[:1],
+        candidate_mask[:1],
+        return_pair_representations=False,
+        enabled_heads={"interaction"},
+    )
+    antibody_decoy = model(
+        antibody[:1] - 3.0,
+        antigen[:1],
+        antibody_mask[:1],
+        antigen_mask[:1],
+        candidate_mask[:1],
+        return_pair_representations=False,
+        enabled_heads={"interaction"},
+    )
+    positive_mask = torch.tensor([[True, False]])
+    losses = bidirectional_specificity_losses(
+        antibody_to_antigen_scores=build_single_anchor_score_row(
+            matched,
+            [antigen_decoy],
+        ),
+        antibody_to_antigen_positive_mask=positive_mask,
+        antigen_to_antibody_scores=build_single_anchor_score_row(
+            matched,
+            [antibody_decoy],
+        ),
+        antigen_to_antibody_positive_mask=positive_mask,
+        retrieval_temperature=0.5,
+        margin=0.2,
+        margin_temperature=0.5,
+    )
+    (losses.retrieval + losses.margin).backward()
     assert model.specificity_head is not None
     assert model.specificity_head.weight.grad is not None
     assert bool(torch.isfinite(model.specificity_head.weight.grad).all())
