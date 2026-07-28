@@ -24,6 +24,9 @@ CUDAGRAPH_DISABLED = (
     ROOT
     / "results/pretraining/antibody_efficiency_benchmark_cudagraph_disabled_v1.json"
 )
+BUCKET144_BENCHMARK = (
+    ROOT / "results/pretraining/antibody_efficiency_benchmark_bucket144_v1.json"
+)
 
 
 def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
@@ -145,3 +148,25 @@ def test_cudagraph_disabled_candidate_preserves_stability_failure() -> None:
     ] > 1.28
     assert result["summaries"]["compiled"]["p95_over_p50"] > 1.12
     assert result["authorization"]["scale_16_gpu"] is False
+
+
+def test_bucket144_candidate_passes_all_frozen_eight_gpu_gates() -> None:
+    import json
+
+    result = json.loads(BUCKET144_BENCHMARK.read_text(encoding="ascii"))
+    assert result["label"] == "narrow_bucket_compiled_candidate"
+    assert result["expected_length_bucket_boundaries"] == [96, 128, 144, 194]
+    assert result["required_disabled_compiled_cudagraphs"] is True
+    assert result["gate_passed"] is True
+    assert all(result["gates"].values())
+    assert result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] > 1.30
+    assert result["summaries"]["compiled"]["p95_over_p50"] < 1.051
+    assert result["summaries"]["compiled"]["maximum_memory_fraction"] < 0.60
+    assert result["authorization"] == {
+        "production_pretraining": False,
+        "recovery_required_before_scale": True,
+        "scale_16_gpu": False,
+        "scale_32_gpu": False,
+    }
