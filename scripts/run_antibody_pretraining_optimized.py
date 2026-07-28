@@ -68,7 +68,6 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
     parser.add_argument("--audit-gradient-rank-parity", action="store_true")
     parser.add_argument("--disable-ddp-gradient-as-bucket-view", action="store_true")
-    parser.add_argument("--disable-ddp-static-graph", action="store_true")
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
     parser.add_argument("--bucketed-padding", action="store_true")
@@ -96,7 +95,6 @@ def _arguments() -> argparse.Namespace:
     if args.backend != "ddp" and (
         args.audit_gradient_rank_parity
         or args.disable_ddp_gradient_as_bucket_view
-        or args.disable_ddp_static_graph
     ):
         raise ValueError("DDP diagnostics require the DDP backend")
     return args
@@ -206,7 +204,7 @@ def _wrap_model(
             gradient_as_bucket_view=(
                 not args.disable_ddp_gradient_as_bucket_view
             ),
-            static_graph=not args.disable_ddp_static_graph,
+            static_graph=False,
         )
     from torch.distributed.device_mesh import init_device_mesh
     from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
@@ -690,7 +688,7 @@ def main() -> None:
                 "disable_ddp_gradient_as_bucket_view": (
                     args.disable_ddp_gradient_as_bucket_view
                 ),
-                "disable_ddp_static_graph": args.disable_ddp_static_graph,
+                "ddp_static_graph": False,
                 "deterministic_algorithms": args.deterministic_algorithms,
                 "fsdp_output_dtype": args.fsdp_output_dtype,
                 "fused_adamw": args.fused_adamw,
@@ -895,6 +893,14 @@ def main() -> None:
 
     rng_state = _rng_state_payload(rank, device)
     parameter_moments = _parameter_moments(model, args.backend, rank)
+    ddp_logging_data = None
+    if args.backend == "ddp":
+        raw_ddp_logging_data = model._get_ddp_logging_data()
+        ddp_logging_data = {
+            str(key): value
+            for key, value in sorted(raw_ddp_logging_data.items())
+            if isinstance(value, (bool, float, int, str))
+        }
     module = model.module if hasattr(model, "module") else model
     final_model_rank_sha256 = None
     final_optimizer_rank_sha256 = None
@@ -924,7 +930,7 @@ def main() -> None:
         "disable_ddp_gradient_as_bucket_view": (
             args.disable_ddp_gradient_as_bucket_view
         ),
-        "disable_ddp_static_graph": args.disable_ddp_static_graph,
+        "ddp_static_graph": False,
         "deterministic_algorithms": args.deterministic_algorithms,
         "fsdp_output_dtype": args.fsdp_output_dtype,
         "fused_adamw": args.fused_adamw,
@@ -1015,6 +1021,7 @@ def main() -> None:
                 "deterministic_algorithms": (
                     torch.are_deterministic_algorithms_enabled()
                 ),
+                "ddp_logging_data": ddp_logging_data,
                 "efficiency_protocol_sha256": efficiency_protocol_sha256,
                 "final_model_sha256": final_model_sha256,
                 "final_model_rank_sha256": final_model_rank_sha256,
