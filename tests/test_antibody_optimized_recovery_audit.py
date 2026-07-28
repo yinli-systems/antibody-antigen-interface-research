@@ -16,6 +16,9 @@ ATTEMPT_THREE = (
 ATTEMPT_FOUR = (
     ROOT / "results/pretraining/antibody_optimized_recovery_attempt_004_v1.json"
 )
+ATTEMPT_FIVE = (
+    ROOT / "results/pretraining/antibody_optimized_recovery_attempt_005_v1.json"
+)
 
 
 def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
@@ -143,6 +146,29 @@ def test_fourth_attempt_localizes_failure_to_checkpoint_loading() -> None:
         "prefix_trace": True,
         "resumed_trace": False,
         "rng_manifest": True,
+        "trainer_state": True,
+    }
+    assert result["authorization"]["pilot_16_gpu"] is False
+    assert result["authorization"]["pilot_32_gpu"] is False
+
+
+def test_fifth_attempt_proves_save_payload_before_load_mismatch() -> None:
+    import json
+
+    result = json.loads(ATTEMPT_FIVE.read_text(encoding="ascii"))
+    assert result["recovery_passed"] is False
+    assert result["job_ids"] == ["1336900", "1336901", "1336902"]
+    assert result["exact_equal"] == {
+        "final_model": False,
+        "final_optimizer": False,
+        "loaded_model": False,
+        "loaded_optimizer": False,
+        "prefix_trace": True,
+        "resumed_trace": False,
+        "rng_manifest": True,
+        "saved_model_payload": True,
+        "serialized_model_payload": False,
+        "serialized_optimizer_payload": False,
         "trainer_state": True,
     }
     assert result["authorization"]["pilot_16_gpu"] is False
