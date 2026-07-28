@@ -20,6 +20,7 @@ def test_optimized_runner_is_ascii_and_syntax_valid() -> None:
 def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     source = RUNNER.read_text(encoding="ascii")
     for field in (
+        "bucketed_padding",
         "compile_blocks",
         "ddp_bucket_cap_mb",
         "fsdp_output_dtype",
@@ -40,6 +41,7 @@ def test_length_bucketing_preserves_membership_by_construction() -> None:
     assert "np.lexsort" in source
     assert "Length bucketing changed update membership" in source
     assert "indices=plan.indices" in source
+    assert "args.bucketed_padding or args.length_bucketing" in source
 
 
 def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
@@ -48,6 +50,7 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "ABF_COMPILE_BLOCKS" in source
     assert "ABF_FUSED_ADAMW" in source
     assert "ABF_PINNED_STAGING" in source
+    assert "ABF_BUCKETED_PADDING" in source
     assert "ABF_LENGTH_BUCKETING" in source
     assert "TORCHINDUCTOR_CACHE_DIR" in source
     protocol = json.loads(

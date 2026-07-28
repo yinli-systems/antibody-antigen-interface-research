@@ -60,6 +60,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--compile-blocks", action="store_true")
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
+    parser.add_argument("--bucketed-padding", action="store_true")
     parser.add_argument("--length-bucketing", action="store_true")
     parser.add_argument(
         "--length-bucket-boundaries",
@@ -287,6 +288,7 @@ def main() -> None:
             "efficiency_protocol_sha256": efficiency_protocol_sha256,
             "model_family_sha256": model_family_sha256,
             "optimization": {
+                "bucketed_padding": args.bucketed_padding,
                 "compile_blocks": args.compile_blocks,
                 "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
                 "fsdp_output_dtype": args.fsdp_output_dtype,
@@ -348,7 +350,7 @@ def main() -> None:
             maximum_length = int(np.asarray(shard.lengths[indices]).max())
             width = (
                 _bucket_width(maximum_length, boundaries)
-                if args.length_bucketing
+                if args.bucketed_padding or args.length_bucketing
                 else maximum_length
             )
             prepared.append(
@@ -447,6 +449,7 @@ def main() -> None:
         optimizer.state_dict(), args.backend, rank
     )
     optimization = {
+        "bucketed_padding": args.bucketed_padding,
         "compile_blocks": args.compile_blocks,
         "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
         "fsdp_output_dtype": args.fsdp_output_dtype,

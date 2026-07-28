@@ -28,6 +28,7 @@ FSDP_OUTPUT_DTYPE=${ABF_FSDP_OUTPUT_DTYPE:-bfloat16}
 COMPILE_BLOCKS=${ABF_COMPILE_BLOCKS:-0}
 FUSED_ADAMW=${ABF_FUSED_ADAMW:-0}
 PINNED_STAGING=${ABF_PINNED_STAGING:-0}
+BUCKETED_PADDING=${ABF_BUCKETED_PADDING:-0}
 LENGTH_BUCKETING=${ABF_LENGTH_BUCKETING:-0}
 SKIP_CHECKPOINT=${ABF_SKIP_CHECKPOINT:-1}
 case "$BACKEND" in ddp|fsdp2) ;; *) exit 2 ;; esac
@@ -65,6 +66,7 @@ ARGS=(
 test "$COMPILE_BLOCKS" = 0 || ARGS+=(--compile-blocks)
 test "$FUSED_ADAMW" = 0 || ARGS+=(--fused-adamw)
 test "$PINNED_STAGING" = 0 || ARGS+=(--pinned-staging)
+test "$BUCKETED_PADDING" = 0 || ARGS+=(--bucketed-padding)
 test "$LENGTH_BUCKETING" = 0 || ARGS+=(--length-bucketing)
 test "$SKIP_CHECKPOINT" = 0 || ARGS+=(--skip-checkpoint)
 "$PYTHON_BIN" -m torch.distributed.run --standalone --nproc-per-node=8 \
