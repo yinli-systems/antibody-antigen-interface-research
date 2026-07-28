@@ -35,6 +35,9 @@ DETERMINISTIC_BENCHMARK = (
     ROOT
     / "results/pretraining/antibody_efficiency_benchmark_deterministic_v1.json"
 )
+PAIRED_BENCHMARK = (
+    ROOT / "results/pretraining/antibody_efficiency_benchmark_paired_v1.json"
+)
 EFFICIENCY_PROTOCOL = ROOT / "protocols/antibody_efficiency_gate_v1.json"
 PAIRED_PROTOCOL = ROOT / "protocols/antibody_paired_efficiency_v1.json"
 
@@ -257,3 +260,27 @@ def test_paired_allocation_requires_same_job_and_hardware(tmp_path: Path) -> Non
             {"eager": "123", "compiled": "124"},
             protocol_sha256,
         )
+
+
+def test_paired_deterministic_candidate_passes_all_efficiency_gates() -> None:
+    result = json.loads(PAIRED_BENCHMARK.read_text(encoding="ascii"))
+    assert result["label"] == (
+        "paired_same_allocation_deterministic_cudagraph_candidate"
+    )
+    assert result["gate_passed"] is True
+    assert all(result["gates"].values())
+    assert result["runs"]["eager"]["job_id"] == "1336684"
+    assert result["runs"]["compiled"]["job_id"] == "1336684"
+    assert result["paired_allocation"]["hostname"] == "wqd10nah10g2"
+    assert len(result["paired_allocation"]["gpu_uuids"]) == 8
+    assert result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] > 1.33
+    assert result["summaries"]["compiled"]["p95_over_p50"] < 1.09
+    assert result["summaries"]["compiled"]["maximum_memory_fraction"] < 0.60
+    assert result["authorization"] == {
+        "production_pretraining": False,
+        "recovery_required_before_scale": True,
+        "scale_16_gpu": False,
+        "scale_32_gpu": False,
+    }
