@@ -81,6 +81,8 @@ class PairscaleE1E2Config:
     ffn_dim: int = 384
     pair_chunk_size: int = 64
     dropout: float = 0.0
+    eval_every_epochs: int = 20
+    checkpoint_every_epochs: int = 20
     precision: str = "bf16"
 
     def validate(self) -> None:
@@ -101,6 +103,8 @@ class PairscaleE1E2Config:
             "num_fusion_layers",
             "ffn_dim",
             "pair_chunk_size",
+            "eval_every_epochs",
+            "checkpoint_every_epochs",
         ):
             _positive_integer(getattr(self, name), name)
         if not (
