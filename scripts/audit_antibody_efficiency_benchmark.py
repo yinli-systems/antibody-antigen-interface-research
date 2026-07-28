@@ -144,7 +144,10 @@ def _validate_receipt(
         raise RuntimeError(f"Efficiency deterministic mode differs for {name}")
     if require_disabled_compiled_cudagraphs or require_enabled_compiled_cudagraphs:
         common = {
+            "audit_gradient_rank_parity": False,
+            "ddp_static_graph": False,
             "ddp_bucket_cap_mb": 25,
+            "disable_ddp_gradient_as_bucket_view": False,
             "fsdp_output_dtype": "bfloat16",
             "length_bucketing": False,
         }
@@ -178,6 +181,33 @@ def _validate_receipt(
             expected_length_bucket_boundaries
         ):
             raise RuntimeError(f"Efficiency length buckets differ for {name}")
+    logging_data = receipt.get("ddp_logging_data")
+    if (
+        not isinstance(logging_data, dict)
+        or logging_data.get("backend_name") != "nccl"
+        or logging_data.get("world_size") != 8
+        or int(logging_data.get("num_buckets_reduced", 0)) <= 0
+    ):
+        raise RuntimeError(f"DDP logging evidence differs for {name}")
+    initial_rank_digests = receipt.get("initial_model_rank_sha256")
+    if (
+        not isinstance(initial_rank_digests, list)
+        or len(initial_rank_digests) != 8
+        or len(set(initial_rank_digests)) != 1
+    ):
+        raise RuntimeError(f"Initial eight-rank parity differs for {name}")
+    rank_digest_fields = (
+        ("final_model_rank_sha256", "final_model_sha256"),
+        ("final_optimizer_rank_sha256", "final_optimizer_sha256"),
+    )
+    for field, scalar_field in rank_digest_fields:
+        values = receipt.get(field)
+        if (
+            not isinstance(values, list)
+            or len(values) != 8
+            or set(values) != {receipt.get(scalar_field)}
+        ):
+            raise RuntimeError(f"Eight-rank parity differs for {name}:{field}")
 
 
 def _paired_allocation(
@@ -388,6 +418,7 @@ def main() -> None:
             <= protocol["efficiency_gate"]["maximum_memory_fraction"]
         ),
         "membership": membership_equal,
+        "rank_parity": True,
         "stability": (
             candidate["p95_over_p50"]
             <= protocol["efficiency_gate"]["maximum_p95_over_p50_step_time"]
@@ -436,6 +467,7 @@ def main() -> None:
         },
         "source": {
             "archive_sha256": args.source_archive_sha256,
+            "auditor_sha256": _sha256(Path(__file__)),
             "runner_sha256": args.runner_sha256,
         },
         "summaries": summaries,

@@ -57,6 +57,13 @@ def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"--allocation-receipt"' in source
     assert '"--paired-protocol"' in source
     assert '"paired_allocation"' in source
+    assert '"rank_parity": True' in source
+    assert '"initial_model_rank_sha256"' in source
+    assert '"final_model_rank_sha256"' in source
+    assert '"final_optimizer_rank_sha256"' in source
+    assert '"ddp_static_graph": False' in source
+    assert '"ddp_logging_data"' in source
+    assert '"auditor_sha256"' in source
     assert '"disable_compiled_cudagraphs": (' in source
     assert "require_disabled_compiled_cudagraphs" in source
 
