@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import datetime
+import enum
 import hashlib
 import json
 import os
@@ -86,6 +87,27 @@ def _tree_digest(value: object) -> str:
             digest.update(b"sequence\0")
             for child in item:
                 visit(child)
+        elif isinstance(item, type):
+            identity = f"{item.__module__}.{item.__qualname__}".encode("ascii")
+            digest.update(b"type\0" + identity + b"\0")
+        elif isinstance(item, enum.Enum):
+            identity = (
+                f"{item.__class__.__module__}.{item.__class__.__qualname__}"
+            ).encode("ascii")
+            digest.update(b"enum\0" + identity + b"\0")
+            visit(item.name)
+            visit(item.value)
+        elif isinstance(item, (torch.dtype, torch.device)):
+            digest.update(b"torch_identity\0" + str(item).encode("ascii") + b"\0")
+        elif (
+            hasattr(item, "__dict__")
+            and item.__class__.__module__.startswith("deepspeed.")
+        ):
+            identity = (
+                f"{item.__class__.__module__}.{item.__class__.__qualname__}"
+            ).encode("ascii")
+            digest.update(b"deepspeed_object\0" + identity + b"\0")
+            visit(vars(item))
         else:
             digest.update(
                 json.dumps(item, sort_keys=True, separators=(",", ":")).encode(
@@ -175,6 +197,67 @@ def _parameter_moments(model: torch.nn.Module, backend: str, rank: int) -> dict[
         "square_sum": square_total,
         "sum": total,
     }
+
+
+def _deepspeed_model_digest(
+    model: torch.nn.Module, backend: str, rank: int
+) -> str | None:
+    """Hash full DeepSpeed model values in canonical parameter-name order."""
+    import deepspeed
+
+    digest = hashlib.sha256() if rank == 0 else None
+    module = model.module
+    for name, parameter in sorted(module.named_parameters()):
+        context = (
+            deepspeed.zero.GatheredParameters([parameter], modifier_rank=None)
+            if backend == "zero3"
+            else contextlib.nullcontext()
+        )
+        with context:
+            if rank == 0:
+                value = parameter.detach().cpu().contiguous()
+                header = json.dumps(
+                    {
+                        "dtype": str(value.dtype),
+                        "name": name,
+                        "shape": list(value.shape),
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("ascii")
+                digest.update(b"parameter\0" + header + b"\0")
+                digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
+    if rank == 0:
+        for name, buffer in sorted(module.named_buffers()):
+            value = buffer.detach().cpu().contiguous()
+            header = json.dumps(
+                {
+                    "dtype": str(value.dtype),
+                    "name": name,
+                    "shape": list(value.shape),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("ascii")
+            digest.update(b"buffer\0" + header + b"\0")
+            digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
+        return digest.hexdigest()
+    return None
+
+
+def _deepspeed_optimizer_digest(
+    optimizer: torch.optim.Optimizer, rank: int, world_size: int
+) -> str | None:
+    """Hash every rank-local ZeRO optimizer partition in rank order."""
+    local_digest = _tree_digest(optimizer.state_dict())
+    partition_digests: list[str | None] = [None] * world_size
+    dist.all_gather_object(partition_digests, local_digest)
+    if rank != 0:
+        return None
+    payload = json.dumps(
+        partition_digests, sort_keys=True, separators=(",", ":")
+    ).encode("ascii")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def main() -> None:
@@ -320,7 +403,19 @@ def main() -> None:
         cursor = int(state["sample_cursor"])
         consumed = int(state["consumed_residue_tokens"])
         start_update = int(state["next_update"])
-        _load_dcp(model, optimizer, args.resume_root / "checkpoint")
+        if args.backend in {"zero2", "zero3"}:
+            load_path, client_state = model.load_checkpoint(
+                str(args.resume_root / "checkpoint"),
+                tag="step",
+                load_optimizer_states=True,
+                load_lr_scheduler_states=False,
+            )
+            if load_path is None or any(
+                client_state.get(key) != value for key, value in state.items()
+            ):
+                raise RuntimeError("DeepSpeed checkpoint provenance differs")
+        else:
+            _load_dcp(model, optimizer, args.resume_root / "checkpoint")
     trace = []
     for update in range(start_update, start_update + args.steps):
         plan = build_update_plan(residue_lengths, sample_cursor=cursor, target_residue_tokens=args.target_tokens, batch_quantum_sequences=args.batch_quantum, seed=protocol["random_seed"])
@@ -396,8 +491,10 @@ def main() -> None:
     parameter_moments = _parameter_moments(model, args.backend, rank)
     module = model.module if hasattr(model, "module") else model
     if args.backend in {"zero2", "zero3"}:
-        final_model_sha256 = None
-        final_optimizer_sha256 = None
+        final_model_sha256 = _deepspeed_model_digest(model, args.backend, rank)
+        final_optimizer_sha256 = _deepspeed_optimizer_digest(
+            optimizer, rank, world_size
+        )
     else:
         final_model_sha256 = _distributed_tree_digest(
             module.state_dict(), args.backend, rank
@@ -405,12 +502,25 @@ def main() -> None:
         final_optimizer_sha256 = _distributed_tree_digest(
             optimizer.state_dict(), args.backend, rank
         )
-    if not args.skip_checkpoint:
-        _save_dcp(model, optimizer, args.output / "checkpoint")
     trainer_state = {"backend": args.backend, "consumed_residue_tokens": consumed, "model_family_sha256": model_family_sha256, "next_update": start_update + args.steps, "preset": args.preset, "sample_cursor": cursor, "shard_manifest_sha256": args.manifest_sha256, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
+    checkpoint_format = None
+    if not args.skip_checkpoint:
+        if args.backend in {"zero2", "zero3"}:
+            checkpoint_format = "deepspeed_zero_checkpoint"
+            saved = model.save_checkpoint(
+                str(args.output / "checkpoint"),
+                tag="step",
+                client_state=trainer_state,
+                save_latest=True,
+            )
+            if not saved:
+                raise RuntimeError("DeepSpeed checkpoint save failed")
+        else:
+            checkpoint_format = "torch_distributed_checkpoint"
+            _save_dcp(model, optimizer, args.output / "checkpoint")
     if rank == 0:
         _publish(args.output / "trainer_state.json", trainer_state)
-        receipt = {"backend": args.backend, "checkpoint_format": None if args.skip_checkpoint else "torch_distributed_checkpoint", "claim_boundary": "engineering pilot only; no validation or downstream metric", "device": torch.cuda.get_device_name(local_rank), "final_model_sha256": final_model_sha256, "final_optimizer_sha256": final_optimizer_sha256, "format_version": "antibody_pretraining_pilot_v4", "model_family_sha256": model_family_sha256, "parameter_moments": parameter_moments, "preset": args.preset, "resume_used": args.resume_root is not None, "shard_manifest_sha256": args.manifest_sha256, "start_update": start_update, "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False}, "trace": trace, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
+        receipt = {"backend": args.backend, "checkpoint_format": checkpoint_format, "claim_boundary": "engineering pilot only; no validation or downstream metric", "device": torch.cuda.get_device_name(local_rank), "final_model_sha256": final_model_sha256, "final_optimizer_sha256": final_optimizer_sha256, "format_version": "antibody_pretraining_pilot_v4", "model_family_sha256": model_family_sha256, "parameter_moments": parameter_moments, "preset": args.preset, "resume_used": args.resume_root is not None, "shard_manifest_sha256": args.manifest_sha256, "start_update": start_update, "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False}, "trace": trace, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
         _publish(args.output / "receipt.json", receipt)
     if world_size > 1:
         dist.barrier()

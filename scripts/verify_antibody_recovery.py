@@ -29,16 +29,21 @@ def main() -> None:
         "trainer_state": continuous_state == resumed_state,
     }
     if not all(equal.values()):
-        raise RuntimeError(f"DCP recovery differs: {equal}")
+        raise RuntimeError(f"Checkpoint recovery differs: {equal}")
     backend = continuous_state["backend"]
     world_size = continuous_state["world_size"]
     if backend != resumed_state["backend"] or world_size != resumed_state["world_size"]:
         raise RuntimeError("Recovery backend or world size differs")
     payload = {
         "backend": backend,
+        "checkpoint_format": (
+            "deepspeed_zero_checkpoint"
+            if backend in {"zero2", "zero3"}
+            else "torch_distributed_checkpoint"
+        ),
         "claim_boundary": f"{world_size}-GPU {backend} engineering recovery only",
         "equal": equal,
-        "format_version": "antibody_dcp_recovery_v2",
+        "format_version": "antibody_training_recovery_v3",
         "final_model_sha256": continuous["final_model_sha256"],
         "final_optimizer_sha256": continuous["final_optimizer_sha256"],
         "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False},
