@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import datetime
 import hashlib
 import json
 import os
@@ -12,6 +14,8 @@ import time
 
 import numpy as np
 import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel
 
 from antibody_pretraining.dense_shard import load_dense_shard
 from antibody_pretraining.masking import apply_uniform_mlm
@@ -94,6 +98,33 @@ def _tree_digest(value: object) -> str:
     return digest.hexdigest()
 
 
+def _parameter_moments(model: torch.nn.Module, backend: str, rank: int) -> dict[str, float | int] | None:
+    """Compute full-parameter moments for cross-backend numerical audits."""
+    module = model.module if isinstance(model, DistributedDataParallel) else model
+    count = 0
+    total = 0.0
+    square_total = 0.0
+    absolute_maximum = 0.0
+    for parameter in module.parameters():
+        value = parameter
+        if backend == "fsdp2":
+            value = parameter.full_tensor()
+        if rank == 0:
+            value64 = value.detach().to(device="cpu", dtype=torch.float64)
+            count += value64.numel()
+            total += float(value64.sum())
+            square_total += float(value64.square().sum())
+            absolute_maximum = max(absolute_maximum, float(value64.abs().max()))
+    if rank != 0:
+        return None
+    return {
+        "absolute_maximum": absolute_maximum,
+        "count": count,
+        "square_sum": square_total,
+        "sum": total,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--shard", type=Path, required=True)
@@ -107,21 +138,55 @@ def main() -> None:
     parser.add_argument("--target-tokens", type=int, default=4096)
     parser.add_argument("--batch-quantum", type=int, default=32)
     parser.add_argument("--resume-root", type=Path)
+    parser.add_argument("--backend", choices=("single", "ddp", "fsdp2"), default="single")
+    parser.add_argument("--skip-checkpoint", action="store_true")
     args = parser.parse_args()
-    if args.output.exists() or args.steps <= 0 or args.micro_batch <= 0:
+    if args.steps <= 0 or args.micro_batch <= 0:
         raise ValueError("Output must be create-only and pilot sizes must be positive")
-    args.output.mkdir(parents=True)
-    if not torch.cuda.is_available() or torch.cuda.device_count() != 1:
-        raise RuntimeError("This gate requires exactly one visible CUDA GPU")
-    torch.cuda.set_device(0)
+    world_size = int(os.environ.get("WORLD_SIZE", "1"))
+    rank = int(os.environ.get("RANK", "0"))
+    local_rank = int(os.environ.get("LOCAL_RANK", "0"))
+    if args.backend == "single" and world_size != 1:
+        raise RuntimeError("The single backend requires one process")
+    if args.backend != "single" and world_size <= 1:
+        raise RuntimeError("Distributed backends require multiple processes")
+    if rank == 0:
+        if args.output.exists():
+            raise ValueError("Output must be create-only")
+        args.output.mkdir(parents=True)
+    if world_size > 1:
+        dist.init_process_group(
+            backend="nccl",
+            init_method="env://",
+            timeout=datetime.timedelta(minutes=5),
+        )
+        dist.barrier()
+    if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
+        raise RuntimeError("CUDA rank identity is invalid")
+    torch.cuda.set_device(local_rank)
     torch.manual_seed(20260728)
     torch.cuda.manual_seed_all(20260728)
     torch.backends.cuda.matmul.allow_tf32 = False
-    device = torch.device("cuda", 0)
+    device = torch.device("cuda", local_rank)
     shard = load_dense_shard(args.shard, expected_manifest_sha256=args.manifest_sha256)
     family = load_model_family(args.model_family)
     protocol = load_training_protocol(args.training_protocol)
     model = AntibodyMaskedLanguageModel(config_from_preset(family, args.preset)).to(device)
+    if args.backend == "ddp":
+        model = DistributedDataParallel(model, device_ids=[local_rank])
+    elif args.backend == "fsdp2":
+        from torch.distributed.device_mesh import init_device_mesh
+        from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
+
+        mesh = init_device_mesh("cuda", (world_size,))
+        policy = MixedPrecisionPolicy(
+            param_dtype=torch.bfloat16,
+            reduce_dtype=torch.float32,
+            output_dtype=torch.float32,
+        )
+        for block in model.blocks:
+            fully_shard(block, mesh=mesh, mp_policy=policy)
+        fully_shard(model, mesh=mesh, mp_policy=policy)
     decay, no_decay = [], []
     for parameter in model.parameters():
         (decay if parameter.ndim >= 2 else no_decay).append(parameter)
@@ -138,6 +203,8 @@ def main() -> None:
     model_family_sha256 = _sha256(args.model_family)
     training_protocol_sha256 = _sha256(args.training_protocol)
     if args.resume_root is not None:
+        if world_size != 1:
+            raise RuntimeError("This numbered recovery gate supports one process")
         state = json.loads(
             (args.resume_root / "trainer_state.json").read_text(encoding="ascii")
         )
@@ -156,16 +223,22 @@ def main() -> None:
     trace = []
     for update in range(start_update, start_update + args.steps):
         plan = build_update_plan(residue_lengths, sample_cursor=cursor, target_residue_tokens=args.target_tokens, batch_quantum_sequences=args.batch_quantum, seed=protocol["random_seed"])
-        if len(plan.indices) % args.micro_batch:
-            raise RuntimeError("Pilot batch quantum must divide the micro batch")
+        global_micro_batch = world_size * args.micro_batch
+        if len(plan.indices) % global_micro_batch:
+            raise RuntimeError("Pilot batch quantum must divide the global micro batch")
         prepared = []
         target_count = 0
-        for start in range(0, len(plan.indices), args.micro_batch):
-            indices = plan.indices[start : start + args.micro_batch]
+        for start in range(0, len(plan.indices), global_micro_batch):
+            local_start = start + rank * args.micro_batch
+            indices = plan.indices[local_start : local_start + args.micro_batch]
             tokens = np.asarray(shard.tokens[indices], dtype=np.int64)
             masked = apply_uniform_mlm(tokens, np.asarray(shard.sample_keys[indices]), update=update, seed=protocol["random_seed"], mask_fraction=protocol["masking"]["fraction"])
             prepared.append((indices, masked))
             target_count += masked.selected_target_count
+        if world_size > 1:
+            target_tensor = torch.tensor(target_count, dtype=torch.long, device=device)
+            dist.all_reduce(target_tensor, op=dist.ReduceOp.SUM)
+            target_count = int(target_tensor)
         if target_count <= 0:
             raise RuntimeError("Update has no selected MLM targets")
         lr = learning_rate_at_token(consumed, peak_learning_rate=protocol["presets"][args.preset]["learning_rate"], warmup_residue_tokens=protocol["schedule"]["warmup_residue_tokens"], total_residue_tokens=protocol["schedule"]["total_residue_tokens"], minimum_learning_rate_ratio=protocol["schedule"]["minimum_learning_rate_ratio"])
@@ -174,30 +247,50 @@ def main() -> None:
         optimizer.zero_grad(set_to_none=True)
         started = time.perf_counter()
         loss_sum_value = 0.0
-        for indices, masked in prepared:
+        for micro_index, (indices, masked) in enumerate(prepared):
+            synchronize = micro_index + 1 == len(prepared)
+            if args.backend == "ddp" and not synchronize:
+                synchronization_context = model.no_sync()
+            else:
+                synchronization_context = contextlib.nullcontext()
+            if args.backend == "fsdp2":
+                model.set_requires_gradient_sync(synchronize)
             width = int(np.asarray(shard.lengths[indices]).max())
             input_ids = torch.from_numpy(masked.input_ids[:, :width]).to(device)
             labels = torch.from_numpy(masked.labels[:, :width]).to(device)
             attention = input_ids.ne(PAD_ID)
             chain = torch.from_numpy(np.asarray(shard.chain_types[indices], dtype=np.int64)).to(device)
             type_ids = chain[:, None].expand_as(input_ids).masked_fill(~attention, 0)
-            with torch.autocast("cuda", dtype=torch.bfloat16):
-                output = model(input_ids, type_ids, attention, labels)
-                loss = output.loss_sum / target_count
-            loss.backward()
+            with synchronization_context:
+                with torch.autocast("cuda", dtype=torch.bfloat16):
+                    output = model(input_ids, type_ids, attention, labels)
+                    loss = output.loss_sum * world_size / target_count
+                loss.backward()
             loss_sum_value += float(output.loss_sum.detach())
+        if world_size > 1:
+            loss_tensor = torch.tensor(loss_sum_value, dtype=torch.float64, device=device)
+            dist.all_reduce(loss_tensor, op=dist.ReduceOp.SUM)
+            loss_sum_value = float(loss_tensor)
         gradient_norm = float(torch.nn.utils.clip_grad_norm_(model.parameters(), protocol["gradient_clip_norm"]))
         optimizer.step()
         torch.cuda.synchronize()
         elapsed = time.perf_counter() - started
         consumed += plan.residue_token_count
         cursor = plan.next_sample_cursor
-        trace.append({"consumed_residue_tokens": consumed, "gradient_norm": gradient_norm, "learning_rate": lr, "loss": loss_sum_value / target_count, "residue_tokens": plan.residue_token_count, "seconds": elapsed, "selected_targets": target_count, "update": update + 1})
-    _save_dcp(model, optimizer, args.output / "checkpoint")
+        if rank == 0:
+            trace.append({"consumed_residue_tokens": consumed, "gradient_norm": gradient_norm, "learning_rate": lr, "loss": loss_sum_value / target_count, "residue_tokens": plan.residue_token_count, "seconds": elapsed, "selected_targets": target_count, "update": update + 1})
+    parameter_moments = _parameter_moments(model, args.backend, rank)
+    if not args.skip_checkpoint:
+        _save_dcp(model, optimizer, args.output / "checkpoint")
     trainer_state = {"consumed_residue_tokens": consumed, "model_family_sha256": model_family_sha256, "next_update": start_update + args.steps, "preset": args.preset, "sample_cursor": cursor, "shard_manifest_sha256": args.manifest_sha256, "training_protocol_sha256": training_protocol_sha256}
-    _publish(args.output / "trainer_state.json", trainer_state)
-    receipt = {"backend": "single_gpu", "checkpoint_format": "torch_distributed_checkpoint", "claim_boundary": "engineering pilot only; no validation or downstream metric", "device": torch.cuda.get_device_name(0), "final_model_sha256": _tree_digest(model.state_dict()), "final_optimizer_sha256": _tree_digest(optimizer.state_dict()), "format_version": "antibody_pretraining_pilot_v2", "model_family_sha256": model_family_sha256, "preset": args.preset, "resume_used": args.resume_root is not None, "shard_manifest_sha256": args.manifest_sha256, "start_update": start_update, "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False}, "trace": trace, "training_protocol_sha256": training_protocol_sha256}
-    _publish(args.output / "receipt.json", receipt)
+    if rank == 0:
+        _publish(args.output / "trainer_state.json", trainer_state)
+        can_hash_state = args.backend in {"single", "ddp"}
+        receipt = {"backend": args.backend, "checkpoint_format": None if args.skip_checkpoint else "torch_distributed_checkpoint", "claim_boundary": "engineering pilot only; no validation or downstream metric", "device": torch.cuda.get_device_name(local_rank), "final_model_sha256": _tree_digest((model.module if isinstance(model, DistributedDataParallel) else model).state_dict()) if can_hash_state else None, "final_optimizer_sha256": _tree_digest(optimizer.state_dict()) if can_hash_state else None, "format_version": "antibody_pretraining_pilot_v3", "model_family_sha256": model_family_sha256, "parameter_moments": parameter_moments, "preset": args.preset, "resume_used": args.resume_root is not None, "shard_manifest_sha256": args.manifest_sha256, "start_update": start_update, "test_access": {"downstream_labels_used": False, "sabdab2_heldout_accessed": False}, "trace": trace, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
+        _publish(args.output / "receipt.json", receipt)
+    if world_size > 1:
+        dist.barrier()
+        dist.destroy_process_group()
 
 
 if __name__ == "__main__":
