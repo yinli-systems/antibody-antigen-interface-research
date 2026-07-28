@@ -145,7 +145,7 @@ def _distributed_tree_digest(value: object, backend: str, rank: int) -> str | No
 
 def _parameter_moments(model: torch.nn.Module, backend: str, rank: int) -> dict[str, float | int] | None:
     """Compute full-parameter moments for cross-backend numerical audits."""
-    module = model.module if isinstance(model, DistributedDataParallel) else model
+    module = model.module if hasattr(model, "module") else model
     count = 0
     total = 0.0
     square_total = 0.0
@@ -154,12 +154,19 @@ def _parameter_moments(model: torch.nn.Module, backend: str, rank: int) -> dict[
         value = parameter
         if backend == "fsdp2":
             value = parameter.full_tensor()
-        if rank == 0:
-            value64 = value.detach().to(device="cpu", dtype=torch.float64)
-            count += value64.numel()
-            total += float(value64.sum())
-            square_total += float(value64.square().sum())
-            absolute_maximum = max(absolute_maximum, float(value64.abs().max()))
+        if backend == "zero3":
+            import deepspeed
+
+            context = deepspeed.zero.GatheredParameters([parameter], modifier_rank=None)
+        else:
+            context = contextlib.nullcontext()
+        with context:
+            if rank == 0:
+                value64 = value.detach().to(device="cpu", dtype=torch.float64)
+                count += value64.numel()
+                total += float(value64.sum())
+                square_total += float(value64.square().sum())
+                absolute_maximum = max(absolute_maximum, float(value64.abs().max()))
     if rank != 0:
         return None
     return {
@@ -183,7 +190,11 @@ def main() -> None:
     parser.add_argument("--target-tokens", type=int, default=4096)
     parser.add_argument("--batch-quantum", type=int, default=32)
     parser.add_argument("--resume-root", type=Path)
-    parser.add_argument("--backend", choices=("single", "ddp", "fsdp2"), default="single")
+    parser.add_argument(
+        "--backend",
+        choices=("single", "ddp", "fsdp2", "zero2", "zero3"),
+        default="single",
+    )
     parser.add_argument("--skip-checkpoint", action="store_true")
     args = parser.parse_args()
     if args.steps <= 0 or args.micro_batch <= 0:
@@ -217,6 +228,7 @@ def main() -> None:
     shard = load_dense_shard(args.shard, expected_manifest_sha256=args.manifest_sha256)
     family = load_model_family(args.model_family)
     protocol = load_training_protocol(args.training_protocol)
+    residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
     model = AntibodyMaskedLanguageModel(config_from_preset(family, args.preset)).to(device)
     if args.backend == "ddp":
         model = DistributedDataParallel(model, device_ids=[local_rank])
@@ -242,7 +254,50 @@ def main() -> None:
         betas=tuple(protocol["optimizer"]["betas"]),
         eps=protocol["optimizer"]["epsilon"],
     )
-    residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
+    deepspeed_gradient_accumulation_steps = None
+    if args.backend in {"zero2", "zero3"}:
+        import deepspeed
+
+        first_plan = build_update_plan(
+            residue_lengths,
+            sample_cursor=0,
+            target_residue_tokens=args.target_tokens,
+            batch_quantum_sequences=args.batch_quantum,
+            seed=protocol["random_seed"],
+        )
+        global_micro_batch = world_size * args.micro_batch
+        if len(first_plan.indices) % global_micro_batch:
+            raise RuntimeError("DeepSpeed plan does not divide into global micro batches")
+        deepspeed_gradient_accumulation_steps = len(first_plan.indices) // global_micro_batch
+        stage = 2 if args.backend == "zero2" else 3
+        zero_config = {
+            "contiguous_gradients": True,
+            "overlap_comm": True,
+            "reduce_scatter": True,
+            "stage": stage,
+        }
+        if stage == 3:
+            zero_config.update(
+                {
+                    "stage3_gather_16bit_weights_on_model_save": False,
+                    "stage3_param_persistence_threshold": 100_000,
+                    "stage3_prefetch_bucket_size": 50_000_000,
+                }
+            )
+        engine_config = {
+            "gradient_accumulation_steps": deepspeed_gradient_accumulation_steps,
+            "gradient_clipping": protocol["gradient_clip_norm"],
+            "steps_per_print": 1_000_000_000,
+            "train_batch_size": len(first_plan.indices),
+            "train_micro_batch_size_per_gpu": args.micro_batch,
+            "wall_clock_breakdown": False,
+            "zero_optimization": zero_config,
+        }
+        model, optimizer, _, _ = deepspeed.initialize(
+            model=model,
+            optimizer=optimizer,
+            config=engine_config,
+        )
     cursor = 0
     consumed = 0
     start_update = 0
@@ -290,7 +345,8 @@ def main() -> None:
         lr = learning_rate_at_token(consumed, peak_learning_rate=protocol["presets"][args.preset]["learning_rate"], warmup_residue_tokens=protocol["schedule"]["warmup_residue_tokens"], total_residue_tokens=protocol["schedule"]["total_residue_tokens"], minimum_learning_rate_ratio=protocol["schedule"]["minimum_learning_rate_ratio"])
         for group in optimizer.param_groups:
             group["lr"] = lr
-        optimizer.zero_grad(set_to_none=True)
+        if args.backend not in {"zero2", "zero3"}:
+            optimizer.zero_grad(set_to_none=True)
         started = time.perf_counter()
         loss_sum_value = 0.0
         for micro_index, (indices, masked) in enumerate(prepared):
@@ -310,15 +366,27 @@ def main() -> None:
             with synchronization_context:
                 with torch.autocast("cuda", dtype=torch.bfloat16):
                     output = model(input_ids, type_ids, attention, labels)
-                    loss = output.loss_sum * world_size / target_count
-                loss.backward()
+                    loss_multiplier = world_size
+                    if args.backend in {"zero2", "zero3"}:
+                        if len(prepared) != deepspeed_gradient_accumulation_steps:
+                            raise RuntimeError("DeepSpeed accumulation window changed")
+                        loss_multiplier *= deepspeed_gradient_accumulation_steps
+                    loss = output.loss_sum * loss_multiplier / target_count
+                if args.backend in {"zero2", "zero3"}:
+                    model.backward(loss)
+                    model.step()
+                else:
+                    loss.backward()
             loss_sum_value += float(output.loss_sum.detach())
         if world_size > 1:
             loss_tensor = torch.tensor(loss_sum_value, dtype=torch.float64, device=device)
             dist.all_reduce(loss_tensor, op=dist.ReduceOp.SUM)
             loss_sum_value = float(loss_tensor)
-        gradient_norm = float(torch.nn.utils.clip_grad_norm_(model.parameters(), protocol["gradient_clip_norm"]))
-        optimizer.step()
+        if args.backend in {"zero2", "zero3"}:
+            gradient_norm = float(model.get_global_grad_norm())
+        else:
+            gradient_norm = float(torch.nn.utils.clip_grad_norm_(model.parameters(), protocol["gradient_clip_norm"]))
+            optimizer.step()
         torch.cuda.synchronize()
         elapsed = time.perf_counter() - started
         consumed += plan.residue_token_count
@@ -326,13 +394,17 @@ def main() -> None:
         if rank == 0:
             trace.append({"consumed_residue_tokens": consumed, "gradient_norm": gradient_norm, "learning_rate": lr, "loss": loss_sum_value / target_count, "residue_tokens": plan.residue_token_count, "seconds": elapsed, "selected_targets": target_count, "update": update + 1})
     parameter_moments = _parameter_moments(model, args.backend, rank)
-    module = model.module if isinstance(model, DistributedDataParallel) else model
-    final_model_sha256 = _distributed_tree_digest(
-        module.state_dict(), args.backend, rank
-    )
-    final_optimizer_sha256 = _distributed_tree_digest(
-        optimizer.state_dict(), args.backend, rank
-    )
+    module = model.module if hasattr(model, "module") else model
+    if args.backend in {"zero2", "zero3"}:
+        final_model_sha256 = None
+        final_optimizer_sha256 = None
+    else:
+        final_model_sha256 = _distributed_tree_digest(
+            module.state_dict(), args.backend, rank
+        )
+        final_optimizer_sha256 = _distributed_tree_digest(
+            optimizer.state_dict(), args.backend, rank
+        )
     if not args.skip_checkpoint:
         _save_dcp(model, optimizer, args.output / "checkpoint")
     trainer_state = {"backend": args.backend, "consumed_residue_tokens": consumed, "model_family_sha256": model_family_sha256, "next_update": start_update + args.steps, "preset": args.preset, "sample_cursor": cursor, "shard_manifest_sha256": args.manifest_sha256, "training_protocol_sha256": training_protocol_sha256, "world_size": world_size}
