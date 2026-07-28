@@ -34,7 +34,7 @@ LENGTH_BUCKETING=${ABF_LENGTH_BUCKETING:-0}
 SKIP_CHECKPOINT=${ABF_SKIP_CHECKPOINT:-1}
 RESUME_ROOT=${ABF_RESUME_ROOT:-}
 case "$BACKEND" in ddp|fsdp2) ;; *) exit 2 ;; esac
-case "$PRESET" in abf_300m|abf_650m) ;; *) exit 2 ;; esac
+case "$PRESET" in abf_300m|abf_650m|abf_1_3b) ;; *) exit 2 ;; esac
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID-$PRESET-$BACKEND
 test ! -e "$RUN_ROOT"
 mkdir -p "$OUTPUT_ROOT"

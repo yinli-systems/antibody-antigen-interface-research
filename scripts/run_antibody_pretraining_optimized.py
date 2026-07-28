@@ -50,7 +50,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--training-protocol", type=Path, required=True)
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--preset", choices=("abf_300m", "abf_650m"), required=True)
+    parser.add_argument(
+        "--preset",
+        choices=("abf_300m", "abf_650m", "abf_1_3b"),
+        required=True,
+    )
     parser.add_argument("--steps", type=int, default=500)
     parser.add_argument("--micro-batch", type=int, default=16)
     parser.add_argument("--target-tokens", type=int, default=16384)
