@@ -77,8 +77,7 @@ def _validate_receipt(
     efficiency_protocol_sha256: str,
     expected_optimization: dict[str, object],
     checkpoint_rng_manifest_sha256: str | None,
-    resume_loaded_model_sha256: str | None,
-    resume_loaded_optimizer_sha256: str | None,
+    resume_loaded_digests_required: bool,
     resume_rng_manifest_sha256: str | None,
 ) -> None:
     expected = {
@@ -93,8 +92,6 @@ def _validate_receipt(
         "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
         "optimization": expected_optimization,
         "preset": "abf_650m",
-        "resume_loaded_model_sha256": resume_loaded_model_sha256,
-        "resume_loaded_optimizer_sha256": resume_loaded_optimizer_sha256,
         "resume_used": resume_used,
         "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
         "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
@@ -105,6 +102,20 @@ def _validate_receipt(
     }
     if any(receipt.get(key) != value for key, value in expected.items()):
         raise RuntimeError("Optimized recovery receipt failed validation")
+    loaded_digests = (
+        receipt.get("resume_loaded_model_sha256"),
+        receipt.get("resume_loaded_optimizer_sha256"),
+    )
+    if resume_loaded_digests_required:
+        if any(
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+            for value in loaded_digests
+        ):
+            raise RuntimeError("Loaded checkpoint digests are invalid")
+    elif loaded_digests != (None, None):
+        raise RuntimeError("Non-resumed run reports loaded checkpoint digests")
     if receipt.get("parameter_moments", {}).get("count") != PARAMETER_COUNT:
         raise RuntimeError("Optimized recovery parameter count differs")
     if [item["update"] for item in receipt.get("trace", [])] != updates:
@@ -262,8 +273,7 @@ def main() -> None:
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
         checkpoint_rng_manifest_sha256=None,
-        resume_loaded_model_sha256=None,
-        resume_loaded_optimizer_sha256=None,
+        resume_loaded_digests_required=False,
         resume_rng_manifest_sha256=None,
     )
     _validate_receipt(
@@ -274,8 +284,7 @@ def main() -> None:
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
         checkpoint_rng_manifest_sha256=rng_manifest_sha256,
-        resume_loaded_model_sha256=None,
-        resume_loaded_optimizer_sha256=None,
+        resume_loaded_digests_required=False,
         resume_rng_manifest_sha256=None,
     )
     _validate_receipt(
@@ -286,8 +295,7 @@ def main() -> None:
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         expected_optimization=expected_optimization,
         checkpoint_rng_manifest_sha256=None,
-        resume_loaded_model_sha256=stage1["final_model_sha256"],
-        resume_loaded_optimizer_sha256=stage1["final_optimizer_sha256"],
+        resume_loaded_digests_required=True,
         resume_rng_manifest_sha256=rng_manifest_sha256,
     )
     _validate_state(
@@ -371,6 +379,7 @@ def main() -> None:
         ),
     }
     payload = {
+        "auditor_source_sha256": _sha256(Path(__file__)),
         "authorization": {
             "pilot_16_gpu": passed,
             "pilot_32_gpu": False,

@@ -30,6 +30,8 @@ def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"rng_manifest"' in source
     assert '"loaded_model"' in source
     assert '"loaded_optimizer"' in source
+    assert '"auditor_source_sha256": _sha256(Path(__file__))' in source
+    assert "Loaded checkpoint digests are invalid" in source
     assert 'f"rng/rank-{expected_rank:05d}.json"' in source
     assert "Recovery RNG rank file differs" in source
     assert "recorded_state_sha256 != observed_state_sha256" in source
