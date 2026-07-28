@@ -27,6 +27,10 @@ CUDAGRAPH_DISABLED = (
 BUCKET144_BENCHMARK = (
     ROOT / "results/pretraining/antibody_efficiency_benchmark_bucket144_v1.json"
 )
+DETERMINISTIC_BENCHMARK = (
+    ROOT
+    / "results/pretraining/antibody_efficiency_benchmark_deterministic_v1.json"
+)
 
 
 def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
@@ -173,3 +177,23 @@ def test_bucket144_candidate_passes_all_frozen_eight_gpu_gates() -> None:
         "scale_16_gpu": False,
         "scale_32_gpu": False,
     }
+
+
+def test_deterministic_long_benchmark_preserves_throughput_failure() -> None:
+    import json
+
+    result = json.loads(DETERMINISTIC_BENCHMARK.read_text(encoding="ascii"))
+    assert result["label"] == "deterministic_cudagraph_candidate"
+    assert result["required_enabled_compiled_cudagraphs"] is True
+    assert result["required_deterministic_algorithms"] is True
+    assert result["gate_passed"] is False
+    assert result["gates"] == {
+        "membership": True,
+        "memory": True,
+        "stability": True,
+        "throughput": False,
+    }
+    assert result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] < 1.0
+    assert result["authorization"]["scale_16_gpu"] is False
