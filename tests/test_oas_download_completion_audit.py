@@ -10,6 +10,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/audit_oas_download_completion.py"
+SLURM = ROOT / "slurm/oas_download_completion_audit.sbatch"
 
 
 def _load_module():
@@ -147,3 +148,14 @@ def test_complete_download_audit_rejects_raw_tampering(tmp_path: Path) -> None:
             expected_task_count=2,
             expected_auditor_source_sha256=module._file_sha256(SCRIPT),
         )
+
+
+def test_completion_slurm_hides_scheduler_gpu_and_pins_four_summaries() -> None:
+    source = SLURM.read_text(encoding="ascii")
+    assert "#SBATCH --partition=gpu_5090" in source
+    assert "#SBATCH --gres=gpu:1" in source
+    assert "export CUDA_VISIBLE_DEVICES=" in source
+    assert "audit_oas_download_completion.py" in source
+    assert source.count("--summary") == 4
+    assert "--task-count 4" in source
+    assert "--auditor-source-sha256" in source
