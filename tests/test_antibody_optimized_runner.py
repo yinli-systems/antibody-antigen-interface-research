@@ -41,6 +41,26 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     assert '"scientific_claim": False' in source
 
 
+def test_resume_state_binds_batch_and_bucket_geometry() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    expected_start = source.index("expected = {")
+    expected = source[
+        expected_start : source.index("trace: list", expected_start)
+    ]
+    trainer_start = source.index("trainer_state = {")
+    trainer = source[
+        trainer_start : source.index("checkpoint_format", trainer_start)
+    ]
+    for field in (
+        "batch_quantum",
+        "length_bucket_boundaries",
+        "micro_batch_per_gpu",
+        "target_residue_tokens",
+    ):
+        assert f'"{field}"' in expected
+        assert f'"{field}"' in trainer
+
+
 def test_length_bucketing_preserves_membership_by_construction() -> None:
     source = RUNNER.read_text(encoding="ascii")
     assert "np.lexsort" in source

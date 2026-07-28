@@ -358,7 +358,10 @@ def main() -> None:
         )
         expected = {
             "backend": args.backend,
+            "batch_quantum": args.batch_quantum,
             "efficiency_protocol_sha256": efficiency_protocol_sha256,
+            "length_bucket_boundaries": list(boundaries),
+            "micro_batch_per_gpu": args.micro_batch,
             "model_family_sha256": model_family_sha256,
             "optimization": {
                 "bucketed_padding": args.bucketed_padding,
@@ -374,6 +377,7 @@ def main() -> None:
             "preset": args.preset,
             "shard_manifest_sha256": args.manifest_sha256,
             "training_protocol_sha256": training_protocol_sha256,
+            "target_residue_tokens": args.target_tokens,
             "world_size": world_size,
         }
         if any(state.get(key) != value for key, value in expected.items()):
@@ -536,8 +540,11 @@ def main() -> None:
     }
     trainer_state = {
         "backend": args.backend,
+        "batch_quantum": args.batch_quantum,
         "consumed_residue_tokens": consumed,
         "efficiency_protocol_sha256": efficiency_protocol_sha256,
+        "length_bucket_boundaries": list(boundaries),
+        "micro_batch_per_gpu": args.micro_batch,
         "model_family_sha256": model_family_sha256,
         "next_update": start_update + args.steps,
         "optimization": optimization,
@@ -545,6 +552,7 @@ def main() -> None:
         "sample_cursor": cursor,
         "shard_manifest_sha256": args.manifest_sha256,
         "training_protocol_sha256": training_protocol_sha256,
+        "target_residue_tokens": args.target_tokens,
         "world_size": world_size,
     }
     checkpoint_format = None
