@@ -26,6 +26,7 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
         "compile_prewarm_buckets",
         "disable_compiled_cudagraphs",
         "ddp_bucket_cap_mb",
+        "deterministic_algorithms",
         "fsdp_output_dtype",
         "fused_adamw",
         "length_bucketing",
@@ -61,6 +62,14 @@ def test_resume_state_binds_batch_and_bucket_geometry() -> None:
         assert f'"{field}"' in trainer
 
 
+def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert "torch.use_deterministic_algorithms(" in source
+    assert "warn_only=False" in source
+    assert "torch.backends.cudnn.deterministic = args.deterministic_algorithms" in source
+    assert "torch.backends.cudnn.benchmark = False" in source
+
+
 def test_length_bucketing_preserves_membership_by_construction() -> None:
     source = RUNNER.read_text(encoding="ascii")
     assert "np.lexsort" in source
@@ -74,6 +83,7 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "run_antibody_pretraining_optimized.py" in source
     assert "ABF_COMPILE_BLOCKS" in source
     assert "ABF_DISABLE_COMPILED_CUDAGRAPHS" in source
+    assert "ABF_DETERMINISTIC_ALGORITHMS" in source
     assert "ABF_COMPILE_PREWARM_BUCKETS" in source
     assert "ABF_FUSED_ADAMW" in source
     assert "ABF_PINNED_STAGING" in source

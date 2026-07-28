@@ -63,6 +63,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--resume-root", type=Path)
     parser.add_argument("--compile-blocks", action="store_true")
     parser.add_argument("--disable-compiled-cudagraphs", action="store_true")
+    parser.add_argument("--deterministic-algorithms", action="store_true")
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
@@ -308,6 +309,12 @@ def main() -> None:
     dist.barrier()
     torch.manual_seed(20260728)
     torch.cuda.manual_seed_all(20260728)
+    torch.use_deterministic_algorithms(
+        args.deterministic_algorithms,
+        warn_only=False,
+    )
+    torch.backends.cudnn.deterministic = args.deterministic_algorithms
+    torch.backends.cudnn.benchmark = False
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.cuda.reset_peak_memory_stats(device)
 
@@ -369,6 +376,7 @@ def main() -> None:
                 "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
                 "compile_prewarm_buckets": args.compile_prewarm_buckets,
                 "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+                "deterministic_algorithms": args.deterministic_algorithms,
                 "fsdp_output_dtype": args.fsdp_output_dtype,
                 "fused_adamw": args.fused_adamw,
                 "length_bucketing": args.length_bucketing,
@@ -533,6 +541,7 @@ def main() -> None:
         "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
         "compile_prewarm_buckets": args.compile_prewarm_buckets,
         "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+        "deterministic_algorithms": args.deterministic_algorithms,
         "fsdp_output_dtype": args.fsdp_output_dtype,
         "fused_adamw": args.fused_adamw,
         "length_bucketing": args.length_bucketing,
@@ -575,6 +584,9 @@ def main() -> None:
                 "compile_prewarm_trace": compile_prewarm_trace,
                 "data_preparation_seconds": data_preparation_seconds,
                 "device": torch.cuda.get_device_name(device),
+                "deterministic_algorithms": (
+                    torch.are_deterministic_algorithms_enabled()
+                ),
                 "efficiency_protocol_sha256": efficiency_protocol_sha256,
                 "final_model_sha256": final_model_sha256,
                 "final_optimizer_sha256": final_optimizer_sha256,
