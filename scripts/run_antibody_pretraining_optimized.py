@@ -273,6 +273,11 @@ def main() -> None:
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
     rank = int(os.environ.get("RANK", "0"))
     local_rank = int(os.environ.get("LOCAL_RANK", "0"))
+    telemetry_interval_seconds = int(
+        os.environ.get("ABF_TELEMETRY_INTERVAL_SECONDS", "30")
+    )
+    if telemetry_interval_seconds <= 0:
+        raise ValueError("Telemetry interval must be positive")
     if world_size <= 1:
         raise RuntimeError("The optimized runner requires distributed execution")
     if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
@@ -573,6 +578,7 @@ def main() -> None:
                 },
                 "shard_manifest_sha256": args.manifest_sha256,
                 "target_residue_tokens": args.target_tokens,
+                "telemetry_interval_seconds": telemetry_interval_seconds,
                 "test_access": {
                     "downstream_labels_used": False,
                     "sabdab2_heldout_accessed": False,

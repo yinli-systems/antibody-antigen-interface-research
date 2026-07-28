@@ -34,6 +34,7 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     assert '"compile_prewarm_trace"' in source
     assert '"membership_sha256"' in source
     assert '"peak_allocated_memory_mib"' in source
+    assert '"telemetry_interval_seconds"' in source
     assert '"production_pretraining": False' in source
     assert '"scientific_claim": False' in source
 
@@ -56,6 +57,8 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "ABF_BUCKETED_PADDING" in source
     assert "ABF_LENGTH_BUCKETING" in source
     assert "ABF_RESUME_ROOT" in source
+    assert "ABF_TELEMETRY_INTERVAL_SECONDS" in source
+    assert 'TELEMETRY_INTERVAL_SECONDS:-30' in source
     assert "TORCHINDUCTOR_CACHE_DIR" in source
     protocol = json.loads(
         (ROOT / "protocols/antibody_efficiency_gate_v1.json").read_text(

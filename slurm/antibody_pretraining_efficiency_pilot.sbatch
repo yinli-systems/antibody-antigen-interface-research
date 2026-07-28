@@ -33,6 +33,7 @@ BUCKETED_PADDING=${ABF_BUCKETED_PADDING:-0}
 LENGTH_BUCKETING=${ABF_LENGTH_BUCKETING:-0}
 SKIP_CHECKPOINT=${ABF_SKIP_CHECKPOINT:-1}
 RESUME_ROOT=${ABF_RESUME_ROOT:-}
+TELEMETRY_INTERVAL_SECONDS=${ABF_TELEMETRY_INTERVAL_SECONDS:-30}
 case "$BACKEND" in ddp|fsdp2) ;; *) exit 2 ;; esac
 case "$PRESET" in abf_300m|abf_650m|abf_1_3b) ;; *) exit 2 ;; esac
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID-$PRESET-$BACKEND
@@ -46,7 +47,7 @@ export TORCH_NCCL_ASYNC_ERROR_HANDLING=1 NCCL_DEBUG=WARN
 export TORCHINDUCTOR_CACHE_DIR=$LOCAL_CACHE/inductor
 export TRITON_CACHE_DIR=$LOCAL_CACHE/triton
 export TORCH_EXTENSIONS_DIR=$LOCAL_CACHE/torch_extensions
-nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used,memory.total,power.draw --format=csv -l 2 > "$OUTPUT_ROOT/gpu-$SLURM_JOB_ID-$PRESET-$BACKEND.csv" &
+nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used,memory.total,power.draw --format=csv -l "$TELEMETRY_INTERVAL_SECONDS" > "$OUTPUT_ROOT/gpu-$SLURM_JOB_ID-$PRESET-$BACKEND.csv" &
 MONITOR_PID=$!
 trap 'kill "$MONITOR_PID" 2>/dev/null || true' EXIT
 ARGS=(
