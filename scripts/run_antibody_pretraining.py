@@ -150,6 +150,10 @@ def main() -> None:
         raise RuntimeError("The single backend requires one process")
     if args.backend != "single" and world_size <= 1:
         raise RuntimeError("Distributed backends require multiple processes")
+    if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
+        raise RuntimeError("CUDA rank identity is invalid")
+    torch.cuda.set_device(local_rank)
+    device = torch.device("cuda", local_rank)
     if rank == 0:
         if args.output.exists():
             raise ValueError("Output must be create-only")
@@ -159,15 +163,12 @@ def main() -> None:
             backend="nccl",
             init_method="env://",
             timeout=datetime.timedelta(minutes=5),
+            device_id=device,
         )
         dist.barrier()
-    if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
-        raise RuntimeError("CUDA rank identity is invalid")
-    torch.cuda.set_device(local_rank)
     torch.manual_seed(20260728)
     torch.cuda.manual_seed_all(20260728)
     torch.backends.cuda.matmul.allow_tf32 = False
-    device = torch.device("cuda", local_rank)
     shard = load_dense_shard(args.shard, expected_manifest_sha256=args.manifest_sha256)
     family = load_model_family(args.model_family)
     protocol = load_training_protocol(args.training_protocol)
