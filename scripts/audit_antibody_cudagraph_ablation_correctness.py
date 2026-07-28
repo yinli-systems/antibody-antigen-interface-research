@@ -102,7 +102,11 @@ def _validate_receipt(
     name: str,
     receipt: dict[str, object],
     expected_length_bucket_boundaries: list[int],
+    require_deterministic_algorithms: bool,
 ) -> None:
+    expected_optimization = dict(EXPECTED_OPTIMIZATION[name])
+    if require_deterministic_algorithms:
+        expected_optimization["deterministic_algorithms"] = True
     expected = {
         "backend": "ddp",
         "batch_quantum": 128,
@@ -110,7 +114,7 @@ def _validate_receipt(
         "length_bucket_boundaries": expected_length_bucket_boundaries,
         "micro_batch_per_gpu": 16,
         "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
-        "optimization": EXPECTED_OPTIMIZATION[name],
+        "optimization": expected_optimization,
         "preset": "abf_650m",
         "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
         "target_residue_tokens": 16384,
@@ -123,6 +127,11 @@ def _validate_receipt(
     }
     if any(receipt.get(key) != value for key, value in expected.items()):
         raise RuntimeError(f"Receipt fields differ for {name}")
+    if require_deterministic_algorithms:
+        if receipt.get("deterministic_algorithms") is not True:
+            raise RuntimeError(f"Deterministic mode differs for {name}")
+        if receipt["optimization"].get("deterministic_algorithms") is not True:
+            raise RuntimeError(f"Deterministic optimization differs for {name}")
     arguments = receipt.get("launch_argv")
     if not isinstance(arguments, list):
         raise RuntimeError(f"Launch arguments are not bound for {name}")
@@ -142,6 +151,7 @@ def main() -> None:
         "--expected-length-bucket-boundaries",
         default="96,128,160,194",
     )
+    parser.add_argument("--require-deterministic-algorithms", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:
@@ -166,7 +176,12 @@ def main() -> None:
     if protocol.get("format_version") != "antibody_efficiency_gate_v1":
         raise RuntimeError("Unexpected efficiency protocol")
     for name, receipt in receipts.items():
-        _validate_receipt(name, receipt, expected_length_bucket_boundaries)
+        _validate_receipt(
+            name,
+            receipt,
+            expected_length_bucket_boundaries,
+            args.require_deterministic_algorithms,
+        )
         if receipt.get("efficiency_protocol_sha256") != protocol_sha256:
             raise RuntimeError(f"Efficiency protocol digest differs for {name}")
 
@@ -246,6 +261,9 @@ def main() -> None:
         "format_version": "antibody_cudagraph_ablation_correctness_v1",
         "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
         "membership_equal": membership_equal,
+        "required_deterministic_algorithms": (
+            args.require_deterministic_algorithms
+        ),
         "runs": {
             name: {
                 "job_id": job_ids[name],

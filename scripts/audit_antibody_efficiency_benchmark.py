@@ -115,6 +115,7 @@ def _validate_receipt(
     protocol_sha256: str,
     require_disabled_compiled_cudagraphs: bool,
     expected_length_bucket_boundaries: list[int],
+    require_deterministic_algorithms: bool,
 ) -> None:
     expected = {
         "backend": "ddp",
@@ -136,12 +137,18 @@ def _validate_receipt(
         "sabdab2_heldout_accessed": False,
     }:
         raise RuntimeError("Efficiency receipt used forbidden test inputs")
+    if require_deterministic_algorithms and (
+        receipt.get("deterministic_algorithms") is not True
+    ):
+        raise RuntimeError(f"Efficiency deterministic mode differs for {name}")
     if require_disabled_compiled_cudagraphs:
         common = {
             "ddp_bucket_cap_mb": 25,
             "fsdp_output_dtype": "bfloat16",
             "length_bucketing": False,
         }
+        if require_deterministic_algorithms:
+            common["deterministic_algorithms"] = True
         expected_optimization = {
             "eager": {
                 **common,
@@ -186,6 +193,7 @@ def main() -> None:
         "--expected-length-bucket-boundaries",
         default="96,128,160,194",
     )
+    parser.add_argument("--require-deterministic-algorithms", action="store_true")
     parser.add_argument("--label", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -223,6 +231,7 @@ def main() -> None:
             protocol_sha256,
             args.require_disabled_compiled_cudagraphs,
             expected_length_bucket_boundaries,
+            args.require_deterministic_algorithms,
         )
 
     keys = (
@@ -297,6 +306,9 @@ def main() -> None:
         "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
         "required_disabled_compiled_cudagraphs": (
             args.require_disabled_compiled_cudagraphs
+        ),
+        "required_deterministic_algorithms": (
+            args.require_deterministic_algorithms
         ),
         "runs": {
             name: {

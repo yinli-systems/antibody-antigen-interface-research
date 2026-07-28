@@ -20,6 +20,7 @@ def test_cudagraph_ablation_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"disable_compiled_cudagraphs": True' in source
     assert '"--disable-compiled-cudagraphs" in arguments' in source
     assert '"--expected-length-bucket-boundaries"' in source
+    assert '"--require-deterministic-algorithms"' in source
 
 
 def test_cudagraph_ablation_auditor_fails_closed() -> None:
