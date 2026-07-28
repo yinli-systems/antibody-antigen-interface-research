@@ -16,6 +16,10 @@ def test_optimized_recovery_auditor_is_ascii_and_syntax_valid() -> None:
     assert '"prefix_trace": _trace_equal' in source
     assert '"resumed_trace": _trace_equal' in source
     assert '"length_bucket_boundaries": EXPECTED_BUCKETS' in source
+    assert '"--require-enabled-compiled-cudagraphs"' in source
+    assert '"--require-deterministic-algorithms"' in source
+    assert '"--require-same-hostname"' in source
+    assert '"run_hostname"' in source
 
 
 def test_optimized_recovery_auditor_fails_closed_before_scale() -> None:

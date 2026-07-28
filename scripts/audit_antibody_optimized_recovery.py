@@ -21,7 +21,7 @@ EXPECTED_TRAINING_PROTOCOL_SHA256 = (
     "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b"
 )
 EXPECTED_BUCKETS = [96, 128, 144, 194]
-EXPECTED_OPTIMIZATION = {
+LEGACY_OPTIMIZATION = {
     "bucketed_padding": True,
     "compile_blocks": True,
     "compile_prewarm_buckets": True,
@@ -75,6 +75,7 @@ def _validate_receipt(
     updates: list[int],
     checkpoint_format: str | None,
     efficiency_protocol_sha256: str,
+    expected_optimization: dict[str, object],
 ) -> None:
     expected = {
         "backend": "ddp",
@@ -85,7 +86,7 @@ def _validate_receipt(
         "length_bucket_boundaries": EXPECTED_BUCKETS,
         "micro_batch_per_gpu": 16,
         "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
-        "optimization": EXPECTED_OPTIMIZATION,
+        "optimization": expected_optimization,
         "preset": "abf_650m",
         "resume_used": resume_used,
         "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
@@ -112,6 +113,7 @@ def _validate_state(
     *,
     next_update: int,
     consumed_residue_tokens: int,
+    expected_optimization: dict[str, object],
 ) -> None:
     expected = {
         "backend": "ddp",
@@ -121,7 +123,7 @@ def _validate_state(
         "micro_batch_per_gpu": 16,
         "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
         "next_update": next_update,
-        "optimization": EXPECTED_OPTIMIZATION,
+        "optimization": expected_optimization,
         "preset": "abf_650m",
         "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
         "target_residue_tokens": 16384,
@@ -144,10 +146,18 @@ def main() -> None:
     parser.add_argument("--source-archive-sha256", required=True)
     parser.add_argument("--runner-sha256", required=True)
     parser.add_argument("--job-id", action="append", default=[])
+    parser.add_argument("--require-enabled-compiled-cudagraphs", action="store_true")
+    parser.add_argument("--require-deterministic-algorithms", action="store_true")
+    parser.add_argument("--require-same-hostname", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if len(args.job_id) != 3 or len(set(args.job_id)) != 3:
         raise RuntimeError("Recovery audit requires three distinct job IDs")
+    expected_optimization = dict(LEGACY_OPTIMIZATION)
+    if args.require_enabled_compiled_cudagraphs:
+        expected_optimization["disable_compiled_cudagraphs"] = False
+    if args.require_deterministic_algorithms:
+        expected_optimization["deterministic_algorithms"] = True
 
     paths = {
         "continuous_receipt": args.continuous / "receipt.json",
@@ -174,6 +184,7 @@ def main() -> None:
         updates=list(range(1, 21)),
         checkpoint_format=None,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
+        expected_optimization=expected_optimization,
     )
     _validate_receipt(
         stage1,
@@ -181,6 +192,7 @@ def main() -> None:
         updates=list(range(1, 11)),
         checkpoint_format="torch_distributed_checkpoint",
         efficiency_protocol_sha256=efficiency_protocol_sha256,
+        expected_optimization=expected_optimization,
     )
     _validate_receipt(
         resumed,
@@ -188,22 +200,34 @@ def main() -> None:
         updates=list(range(11, 21)),
         checkpoint_format=None,
         efficiency_protocol_sha256=efficiency_protocol_sha256,
+        expected_optimization=expected_optimization,
     )
     _validate_state(
         continuous_state,
         next_update=20,
         consumed_residue_tokens=int(continuous["trace"][-1]["consumed_residue_tokens"]),
+        expected_optimization=expected_optimization,
     )
     _validate_state(
         stage1_state,
         next_update=10,
         consumed_residue_tokens=int(stage1["trace"][-1]["consumed_residue_tokens"]),
+        expected_optimization=expected_optimization,
     )
     _validate_state(
         resumed_state,
         next_update=20,
         consumed_residue_tokens=int(resumed["trace"][-1]["consumed_residue_tokens"]),
+        expected_optimization=expected_optimization,
     )
+    hostnames = {
+        receipt.get("allocation", {}).get("hostname")
+        for receipt in (continuous, stage1, resumed)
+    }
+    if args.require_same_hostname and (
+        len(hostnames) != 1 or None in hostnames or "" in hostnames
+    ):
+        raise RuntimeError("Recovery runs do not share one authenticated hostname")
     manifest_lines = args.checkpoint_manifest.read_text(encoding="ascii").splitlines()
     if not manifest_lines or not any(".metadata" in line for line in manifest_lines):
         raise RuntimeError("DCP checkpoint manifest is incomplete")
@@ -251,6 +275,14 @@ def main() -> None:
         "format_version": "antibody_optimized_recovery_audit_v1",
         "input_sha256": {name: _sha256(path) for name, path in paths.items()},
         "job_ids": args.job_id,
+        "required_deterministic_algorithms": (
+            args.require_deterministic_algorithms
+        ),
+        "required_enabled_compiled_cudagraphs": (
+            args.require_enabled_compiled_cudagraphs
+        ),
+        "required_same_hostname": args.require_same_hostname,
+        "run_hostname": next(iter(hostnames)) if len(hostnames) == 1 else None,
         "recovery_passed": passed,
         "source": {
             "archive_sha256": args.source_archive_sha256,
