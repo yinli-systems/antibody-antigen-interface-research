@@ -8,6 +8,10 @@ ATTEMPT_ONE = (
     ROOT
     / "results/pretraining/antibody_efficiency_benchmark_attempt_001_v1.json"
 )
+ATTEMPT_TWO = (
+    ROOT
+    / "results/pretraining/antibody_efficiency_benchmark_attempt_002_v1.json"
+)
 
 
 def test_efficiency_benchmark_auditor_is_ascii_and_syntax_valid() -> None:
@@ -46,4 +50,23 @@ def test_variable_width_attempt_preserves_stability_failure() -> None:
         "throughput_relative_to_eager"
     ] > 1.29
     assert result["summaries"]["compiled"]["p95_over_p50"] > 1.24
+    assert result["authorization"]["scale_16_gpu"] is False
+
+
+def test_bucketed_lazy_compile_attempt_preserves_late_compile_failure() -> None:
+    import json
+
+    result = json.loads(ATTEMPT_TWO.read_text(encoding="ascii"))
+    assert result["label"] == "bucketed_lazy_compile_attempt"
+    assert result["gate_passed"] is False
+    assert result["gates"] == {
+        "membership": True,
+        "memory": True,
+        "stability": False,
+        "throughput": False,
+    }
+    assert result["summaries"]["compiled"]["maximum_step_seconds"] > 7.0
+    assert result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] < 0.81
     assert result["authorization"]["scale_16_gpu"] is False
