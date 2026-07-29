@@ -10,6 +10,21 @@ The repository covers three connected workstreams:
 2. Partner-retrieval experiments and specificity controls.
 3. MIPE reproduction and residue-pair interaction diagnostics.
 
+## Start here
+
+| Goal | Entry point |
+|---|---|
+| Understand the directory layout and preservation rules | [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md) |
+| Reproduce the interaction-first pipeline | [`docs/INTERACTION_FIRST_PIPELINE.md`](docs/INTERACTION_FIRST_PIPELINE.md) |
+| Review active and historical protocol evidence | [`protocols/README.md`](protocols/README.md) |
+| Find concise result summaries and claim boundaries | [`results/README.md`](results/README.md) |
+| Select the correct command-line or Slurm entry point | [`scripts/README.md`](scripts/README.md) |
+| Verify environment and artifact provenance | [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
+
+No evidence artifact is deleted merely because a newer protocol supersedes it.
+Several files are intentionally mirrored under `protocols/` and `results/` because
+existing receipts and validators may bind both their bytes and their paths.
+
 ## Locked SPPIDER-seq result
 
 The final ensemble was evaluated on 455 reused benchmark complexes grouped into 84
