@@ -18,7 +18,9 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import platform
 import re
+import sys
 import tempfile
 from typing import Any, Mapping, Sequence
 
@@ -287,6 +289,12 @@ def diagnose_constraint_families(
     all_families = tuple(
         family for family, _ in assumption_model.family_variable_indices
     )
+    try:
+        import ortools
+    except ImportError as error:
+        raise ConstraintFamilyDiagnosticError(
+            "OR-Tools is unavailable"
+        ) from error
     full_status, full_solver = _solve_subset(
         assumption_model,
         all_families,
@@ -303,13 +311,30 @@ def diagnose_constraint_families(
         "source_constraint_count": assumption_model.source_constraint_count,
         "source_variable_count": assumption_model.source_variable_count,
         "constraint_family_count": len(all_families),
+        "constraint_family_counts": dict(
+            direct_model.constraint_family_counts
+        ),
+        "constraint_family_sequence_sha256": _sha256_json(
+            list(direct_model.constraint_families)
+        ),
         "all_constraint_families": list(all_families),
+        "family_activation_indices": dict(
+            assumption_model.family_variable_indices
+        ),
+        "runtime": {
+            "ortools_version": ortools.__version__,
+            "platform": platform.platform(),
+            "python_executable": str(Path(sys.executable).resolve()),
+            "python_version": platform.python_version(),
+        },
         "solver": {
             "num_search_workers": 1,
             "random_seed": LOCKED_RANDOM_SEED,
             "randomize_search": False,
             "relative_gap_limit": 0.0,
             "absolute_gap_limit": 0.0,
+            "core_minimization_level": 2,
+            "find_multiple_cores": True,
             "maximum_time_seconds_per_solve": (
                 maximum_time_seconds_per_solve
             ),

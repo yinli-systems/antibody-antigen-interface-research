@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import copy
+from pathlib import Path
+import platform
+import sys
 
 import pytest
 
@@ -65,6 +68,23 @@ def test_infeasible_core_is_replayed_and_deletion_minimized() -> None:
     assert receipt["full_family_status"] == "INFEASIBLE"
     assert receipt["core_replay_status"] == "INFEASIBLE"
     assert receipt["sufficient_core"] == ["one", "zero"]
+    assert receipt["constraint_family_counts"] == {
+        "domain": 1,
+        "one": 1,
+        "zero": 1,
+    }
+    assert len(receipt["constraint_family_sequence_sha256"]) == 64
+    assert set(receipt["family_activation_indices"]) == {
+        "domain",
+        "one",
+        "zero",
+    }
+    assert receipt["runtime"]["python_executable"] == str(
+        Path(sys.executable).resolve()
+    )
+    assert receipt["runtime"]["python_version"] == platform.python_version()
+    assert receipt["solver"]["core_minimization_level"] == 2
+    assert receipt["solver"]["find_multiple_cores"] is True
     assert receipt["minimality_checks"] == [
         {
             "removed_family": "one",
