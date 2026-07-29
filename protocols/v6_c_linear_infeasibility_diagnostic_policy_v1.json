@@ -1,0 +1,59 @@
+{
+  "authority_counts": {
+    "antibodies": 1383,
+    "antigens": 1172,
+    "observed_pairs": 1830,
+    "source_rows": 3229
+  },
+  "authorization": {
+    "full_protocol_infeasibility_claim": false,
+    "model_selection": false,
+    "outer_evaluation": false,
+    "split_gate0": false,
+    "test_access": false,
+    "threshold_change": false,
+    "training": false
+  },
+  "core_policy": {
+    "all_families_status_required": "INFEASIBLE",
+    "canonical_deletion_order": true,
+    "excluded_families_fixed_false": true,
+    "final_single_deletion_statuses": [
+      "FEASIBLE",
+      "OPTIMAL"
+    ],
+    "minimum_cardinality_claim_authorized": false,
+    "replay_status_required": "INFEASIBLE"
+  },
+  "forbidden_inputs": [
+    "affinity",
+    "assay_outcome",
+    "contact_density",
+    "contact_labels",
+    "embeddings",
+    "losses",
+    "model_results",
+    "model_scores",
+    "outer_labels",
+    "paratope_or_epitope_size",
+    "predictions",
+    "ranks",
+    "test_bytes"
+  ],
+  "format_version": "v6_c_linear_infeasibility_diagnostic_policy_v1",
+  "parent_requirements": {
+    "direct_highs": "DIRECT_HIGHS_LINEAR_INFEASIBLE_AGREEMENT",
+    "independent_cp_sat": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT",
+    "primary_cp_sat": "PROVEN_INFEASIBLE",
+    "same_linear_projection_required": true
+  },
+  "solver": {
+    "absolute_gap_limit": 0.0,
+    "accepted_infeasibility_status": "INFEASIBLE",
+    "find_multiple_cores": true,
+    "num_search_workers": 1,
+    "random_seed": 2026072701,
+    "randomize_search": false,
+    "relative_gap_limit": 0.0
+  }
+}
