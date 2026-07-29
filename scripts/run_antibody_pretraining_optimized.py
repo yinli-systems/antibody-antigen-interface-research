@@ -342,20 +342,13 @@ def _save_authenticated_dcp(
         )
         model_sha256 = model_rank_sha256[0]
         optimizer_sha256 = optimizer_rank_sha256[0]
-        if rank == 0:
-            dcp.save(
-                {"model": model_state, "optimizer": optimizer_state},
-                checkpoint_id=str(checkpoint_root),
-                no_dist=True,
-            )
-        dist.barrier()
     else:
         model_sha256 = _distributed_tree_digest(model_state, backend, rank)
         optimizer_sha256 = _distributed_tree_digest(optimizer_state, backend, rank)
-        dcp.save(
-            {"model": model_state, "optimizer": optimizer_state},
-            checkpoint_id=str(checkpoint_root),
-        )
+    dcp.save(
+        {"model": model_state, "optimizer": optimizer_state},
+        checkpoint_id=str(checkpoint_root),
+    )
     return (
         model_sha256,
         optimizer_sha256,
@@ -381,7 +374,6 @@ def _load_authenticated_dcp(
     dcp.load(
         state,
         checkpoint_id=str(checkpoint_root),
-        no_dist=backend == "ddp",
     )
     model_rank_sha256 = None
     optimizer_rank_sha256 = None

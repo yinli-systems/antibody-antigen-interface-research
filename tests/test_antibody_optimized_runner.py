@@ -101,7 +101,10 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     assert "_assert_scalar_rank_parity(" in source
     assert "post-reduction gradient norm at update" in source
     assert "json.dumps(gathered" in source
-    assert "no_dist=backend == \"ddp\"" in source
+    assert "no_dist=True" not in source
+    assert "no_dist=backend == \"ddp\"" not in source
+    assert source.count("dcp.save(") == 1
+    assert source.count("dcp.load(") == 1
     assert '"resume_rng_manifest_sha256"' in source
     main_start = source.index("def main()")
     assert source.index(") = _load_authenticated_dcp(", main_start) < source.index(
