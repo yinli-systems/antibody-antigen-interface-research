@@ -240,17 +240,16 @@ def validate_direct_highs_registration(
     assert isinstance(primary_reference, Mapping)
     assert isinstance(independent_reference, Mapping)
     if primary_reference["required_fields"] != {
-        "decomposition_terminal_status": "PROVEN_INFEASIBLE",
-        "master_status": "INFEASIBLE",
-        "primary_controller_proven_infeasible": True,
-        "full_protocol_infeasibility_claim_authorized": False,
+        "terminal_status": "PROVEN_INFEASIBLE",
+        "direct_highs_fixed_assignment_audit_completed": False,
         "split_gate0_authorized": False,
         "training_authorized": False,
     }:
         raise DirectHighsAuditError("primary CP required fields differ")
     if independent_reference["required_fields"] != {
-        "projection_status": "INFEASIBLE",
-        "linear_agreement_with_primary": True,
+        "terminal_status": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT",
+        "primary_independent_linear_agreement": True,
+        "direct_highs_audit_completed": False,
         "full_protocol_infeasibility_claim_authorized": False,
         "split_gate0_authorized": False,
         "training_authorized": False,
