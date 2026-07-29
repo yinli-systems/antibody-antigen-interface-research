@@ -202,6 +202,57 @@ def test_pair_representations_can_be_omitted_for_lower_peak_retention() -> None:
     torch.testing.assert_close(retained["partner_score"], omitted["partner_score"])
 
 
+def test_optional_intra_chain_geometry_runs_before_partner_fusion() -> None:
+    import torch
+
+    from interaction_first.pair_geometry import ProspectivePairGeometryModel
+
+    antibody, antigen, antibody_mask, antigen_mask, candidate_mask = _inputs()
+    model = ProspectivePairGeometryModel(
+        antibody_input_dim=7,
+        antigen_input_dim=11,
+        d_model=16,
+        pair_dim=12,
+        num_heads=4,
+        num_fusion_layers=0,
+        intra_chain_geometry_layers=1,
+        intra_chain_geometry_neighbor_k=3,
+        ffn_dim=32,
+        geometry_schema=_schema(),
+        pair_chunk_size=2,
+        dropout=0.0,
+    )
+    antibody_backbone = torch.randn(2, 5, 3, 3)
+    antigen_backbone = torch.randn(2, 6, 3, 3)
+    output = model(
+        antibody,
+        antigen,
+        antibody_mask,
+        antigen_mask,
+        candidate_mask,
+        antibody_backbone=antibody_backbone,
+        antigen_backbone=antigen_backbone,
+        return_intra_chain_attention=True,
+    )
+    assert output["intra_chain_geometry_enabled"] is True
+    assert output["intra_chain_geometry"] is not None
+    assert len(output["intra_chain_geometry"]["antibody"]["layers"]) == 1
+    assert len(output["intra_chain_geometry"]["antigen"]["layers"]) == 1
+    output["contact_logits"].square().mean().backward()
+    assert (
+        model.intra_chain_geometry
+        .antibody_encoder.blocks[0]
+        .geometry_bias.network[-1].weight.grad
+        is not None
+    )
+    assert (
+        model.intra_chain_geometry
+        .antigen_encoder.blocks[0]
+        .geometry_bias.network[-1].weight.grad
+        is not None
+    )
+
+
 def test_enabled_heads_skip_disabled_decoders_and_enforce_dependencies() -> None:
     import torch
 

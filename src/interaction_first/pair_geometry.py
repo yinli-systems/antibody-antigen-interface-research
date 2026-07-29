@@ -28,6 +28,7 @@ from .scoring import (
     masked_logmeanexp_score,
     pool_pair_marginals,
 )
+from .intra_chain_geometry import DualIntraChainGeometryEncoder
 from .pair_geometry_schema import PAIR_ORIENTATION, PairGeometrySchema
 
 
@@ -306,6 +307,12 @@ class ProspectivePairGeometryModel(_ModuleBase):
         pair_dim: int = 128,
         num_heads: int = 8,
         num_fusion_layers: int = 2,
+        intra_chain_geometry_layers: int = 0,
+        intra_chain_geometry_feature_mode: str = "full_pose",
+        intra_chain_geometry_num_rbf: int = 16,
+        intra_chain_geometry_distance_max: float = 20.0,
+        intra_chain_geometry_neighbor_k: int | None = 32,
+        intra_chain_geometry_neighbor_radius: float | None = None,
         ffn_dim: int = 512,
         geometry_schema: PairGeometrySchema | None = None,
         num_distance_bins: int | None = None,
@@ -377,6 +384,12 @@ class ProspectivePairGeometryModel(_ModuleBase):
             raise ValueError("num_fusion_layers must be a nonnegative integer")
         if num_fusion_layers < 0:
             raise ValueError("num_fusion_layers must be a nonnegative integer")
+        if (
+            isinstance(intra_chain_geometry_layers, bool)
+            or not isinstance(intra_chain_geometry_layers, int)
+            or intra_chain_geometry_layers < 0
+        ):
+            raise ValueError("intra_chain_geometry_layers must be a nonnegative integer")
         if d_model % num_heads != 0:
             raise ValueError("d_model must be divisible by num_heads")
         if contact_distance_bin_count >= num_distance_bins:
@@ -429,6 +442,21 @@ class ProspectivePairGeometryModel(_ModuleBase):
             nn.LayerNorm(antigen_input_dim),
             nn.Linear(antigen_input_dim, d_model),
             nn.GELU(),
+        )
+        self.intra_chain_geometry = (
+            DualIntraChainGeometryEncoder(
+                d_model,
+                num_heads,
+                intra_chain_geometry_layers,
+                geometry_feature_mode=intra_chain_geometry_feature_mode,
+                num_rbf=intra_chain_geometry_num_rbf,
+                distance_max=intra_chain_geometry_distance_max,
+                neighbor_k=intra_chain_geometry_neighbor_k,
+                neighbor_radius=intra_chain_geometry_neighbor_radius,
+                dropout=dropout,
+            )
+            if intra_chain_geometry_layers > 0
+            else None
         )
         self.fusion_layers = nn.ModuleList(
             EarlyBidirectionalResidueFusion(
@@ -601,6 +629,13 @@ class ProspectivePairGeometryModel(_ModuleBase):
         *,
         return_pair_representations: bool = True,
         enabled_heads: Collection[str] | None = None,
+        antibody_backbone: Any | None = None,
+        antigen_backbone: Any | None = None,
+        antibody_chain_ids: Any | None = None,
+        antigen_chain_ids: Any | None = None,
+        antibody_positions: Any | None = None,
+        antigen_positions: Any | None = None,
+        return_intra_chain_attention: bool = False,
     ) -> dict[str, Any]:
         """Return only requested candidate-masked pair-geometry predictions."""
         self._validate_inputs(
@@ -622,6 +657,40 @@ class ProspectivePairGeometryModel(_ModuleBase):
         )
         antibody = antibody.masked_fill(~antibody_mask.unsqueeze(-1), 0.0)
         antigen = antigen.masked_fill(~antigen_mask.unsqueeze(-1), 0.0)
+        intra_chain_details = None
+        if self.intra_chain_geometry is not None:
+            if antibody_backbone is None or antigen_backbone is None:
+                raise ValueError(
+                    "antibody_backbone and antigen_backbone are required when "
+                    "intra-chain geometry is enabled"
+                )
+            antibody, antigen, intra_chain_details = self.intra_chain_geometry(
+                antibody,
+                antigen,
+                antibody_mask,
+                antigen_mask,
+                antibody_backbone,
+                antigen_backbone,
+                antibody_chain_ids=antibody_chain_ids,
+                antigen_chain_ids=antigen_chain_ids,
+                antibody_positions=antibody_positions,
+                antigen_positions=antigen_positions,
+                return_attention=return_intra_chain_attention,
+            )
+        elif any(
+            value is not None
+            for value in (
+                antibody_backbone,
+                antigen_backbone,
+                antibody_chain_ids,
+                antigen_chain_ids,
+                antibody_positions,
+                antigen_positions,
+            )
+        ):
+            raise ValueError(
+                "Set intra_chain_geometry_layers > 0 before supplying structure inputs"
+            )
         antibody_monomer = None
         antigen_monomer = None
         antibody_unary_logits = None
@@ -707,6 +776,8 @@ class ProspectivePairGeometryModel(_ModuleBase):
             "antibody_residue_representations": antibody,
             "antigen_residue_representations": antigen,
             "contact_logit_mode": self.contact_logit_mode,
+            "intra_chain_geometry_enabled": self.intra_chain_geometry is not None,
+            "intra_chain_geometry": intra_chain_details,
         }
         if antibody_monomer is not None and antigen_monomer is not None:
             output["antibody_monomer_representations"] = antibody_monomer

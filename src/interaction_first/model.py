@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from typing import Any, Sequence
 
+from .intra_chain_geometry import DualIntraChainGeometryEncoder
 from .scoring import normalized_partner_score, pool_pair_marginals
 
 try:
@@ -239,6 +240,13 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         score_top_fraction: float = 0.01,
         center_partner_score: bool = True,
         cross_attention_gate_initial_logit: float = -2.0,
+        intra_chain_geometry_layers: int = 0,
+        intra_chain_geometry_feature_mode: str = "full_pose",
+        intra_chain_geometry_num_rbf: int = 16,
+        intra_chain_geometry_distance_max: float = 20.0,
+        intra_chain_geometry_neighbor_k: int | None = 32,
+        intra_chain_geometry_neighbor_radius: float | None = None,
+        intra_chain_geometry_attention_topology: str = "spatial",
     ) -> None:
         require_torch()
         super().__init__()
@@ -271,6 +279,28 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             nn.Linear(antibody_input_dim, d_model),
             nn.SiLU(),
             nn.Dropout(dropout),
+        )
+        if (
+            isinstance(intra_chain_geometry_layers, bool)
+            or not isinstance(intra_chain_geometry_layers, int)
+            or intra_chain_geometry_layers < 0
+        ):
+            raise ValueError("intra_chain_geometry_layers must be a nonnegative integer")
+        self.intra_chain_geometry = (
+            DualIntraChainGeometryEncoder(
+                d_model,
+                num_heads,
+                intra_chain_geometry_layers,
+                geometry_feature_mode=intra_chain_geometry_feature_mode,
+                num_rbf=intra_chain_geometry_num_rbf,
+                distance_max=intra_chain_geometry_distance_max,
+                neighbor_k=intra_chain_geometry_neighbor_k,
+                neighbor_radius=intra_chain_geometry_neighbor_radius,
+                attention_topology=intra_chain_geometry_attention_topology,
+                dropout=dropout,
+            )
+            if intra_chain_geometry_layers > 0
+            else None
         )
         self.blocks = nn.ModuleList(
             BidirectionalCrossAttentionBlock(
@@ -322,6 +352,14 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         antigen_mask: Any | None = None,
         antibody_mask: Any | None = None,
         candidate_pair_mask: Any | None = None,
+        *,
+        antigen_backbone: Any | None = None,
+        antibody_backbone: Any | None = None,
+        antigen_chain_ids: Any | None = None,
+        antibody_chain_ids: Any | None = None,
+        antigen_positions: Any | None = None,
+        antibody_positions: Any | None = None,
+        return_intra_chain_attention: bool = False,
     ) -> dict[str, Any]:
         """Encode a batch and return pair logits, marginals, and a ranking score."""
         if antigen_features.ndim != 3 or antibody_features.ndim != 3:
@@ -341,6 +379,40 @@ class PartnerSpecificInteractionModel(_ModuleBase):
 
         antigen = self.antigen_projection(antigen_features)
         antibody = self.antibody_projection(antibody_features)
+        intra_chain_details = None
+        if self.intra_chain_geometry is not None:
+            if antigen_backbone is None or antibody_backbone is None:
+                raise ValueError(
+                    "antigen_backbone and antibody_backbone are required when "
+                    "intra-chain geometry is enabled"
+                )
+            antibody, antigen, intra_chain_details = self.intra_chain_geometry(
+                antibody,
+                antigen,
+                antibody_mask,
+                antigen_mask,
+                antibody_backbone,
+                antigen_backbone,
+                antibody_chain_ids=antibody_chain_ids,
+                antigen_chain_ids=antigen_chain_ids,
+                antibody_positions=antibody_positions,
+                antigen_positions=antigen_positions,
+                return_attention=return_intra_chain_attention,
+            )
+        elif any(
+            value is not None
+            for value in (
+                antigen_backbone,
+                antibody_backbone,
+                antigen_chain_ids,
+                antibody_chain_ids,
+                antigen_positions,
+                antibody_positions,
+            )
+        ):
+            raise ValueError(
+                "Set intra_chain_geometry_layers > 0 before supplying structure inputs"
+            )
         for block in self.blocks:
             antigen, antibody = block(antigen, antibody, antigen_mask, antibody_mask)
         antigen = self.final_antigen_norm(antigen)
@@ -415,6 +487,8 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             "complex_score": complex_score,
             "antigen_embeddings": antigen,
             "antibody_embeddings": antibody,
+            "intra_chain_geometry_enabled": self.intra_chain_geometry is not None,
+            "intra_chain_geometry": intra_chain_details,
         }
 
 
