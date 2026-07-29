@@ -1,0 +1,194 @@
+{
+  "acceptance": {
+    "allocation_and_provenance": {
+      "exact_eight_rank_final_state_parity_required": true,
+      "exact_gradient_rank_parity_required_every_update": true,
+      "isolated_compile_cache_each_run": true,
+      "same_allocation_required": true,
+      "same_training_membership_within_seed_required": true
+    },
+    "efficiency": {
+      "maximum_memory_fraction": 0.75,
+      "maximum_p95_over_p50_step_time_each_run": 1.1,
+      "minimum_bf16_relative_to_fp32_compiled_each_seed": 1.2,
+      "minimum_bf16_relative_to_fp32_compiled_pooled": 1.2,
+      "minimum_bf16_relative_to_safe_eager_each_seed": 1.25,
+      "minimum_bf16_relative_to_safe_eager_pooled": 1.25,
+      "warmup_updates_excluded": 50
+    },
+    "evaluation_noninferiority": {
+      "bootstrap_confidence": 0.95,
+      "bootstrap_iterations": 10000,
+      "bootstrap_seed": 2026072901,
+      "comparisons": [
+        {
+          "candidate": "fp32_compiled",
+          "reference": "safe_eager"
+        },
+        {
+          "candidate": "bf16_selected",
+          "reference": "fp32_compiled"
+        },
+        {
+          "candidate": "bf16_selected",
+          "reference": "safe_eager"
+        }
+      ],
+      "maximum_masked_cross_entropy_relative_increase_each_seed": 0.01,
+      "maximum_masked_cross_entropy_relative_increase_upper_bound": 0.01,
+      "maximum_masked_accuracy_absolute_decrease_each_seed": 0.005,
+      "maximum_masked_accuracy_absolute_decrease_upper_bound": 0.005,
+      "paired_unit": "evaluation_sample_key_after_averaging_mask_streams_and_seeds",
+      "require_all_comparisons": true,
+      "require_strict_finite_metrics": true
+    },
+    "learning": {
+      "maximum_post_over_pre_masked_cross_entropy_each_run": 0.95,
+      "minimum_post_minus_pre_masked_accuracy_each_run": 0.01
+    },
+    "short_horizon_numerical": {
+      "maximum_gradient_norm_relative_difference": 0.01,
+      "maximum_loss_absolute_difference": 0.005,
+      "reference": "safe_eager",
+      "required_updates": 20
+    }
+  },
+  "allocation": {
+    "gpu_count": 8,
+    "hardware_identity_required": true,
+    "node_count": 1,
+    "same_slurm_job_required": true
+  },
+  "authorization": {
+    "exact_recovery_execution_after_gate_passes": true,
+    "pilot_16_gpu": false,
+    "pilot_32_gpu": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "benchmark": {
+    "candidate_warmup_updates": 50,
+    "modes": {
+      "bf16_selected": {
+        "batched_grad_copy": true,
+        "communication_dtype": "bfloat16",
+        "compile_blocks": true
+      },
+      "fp32_compiled": {
+        "batched_grad_copy": false,
+        "communication_dtype": "float32",
+        "compile_blocks": true
+      },
+      "safe_eager": {
+        "batched_grad_copy": false,
+        "communication_dtype": "float32",
+        "compile_blocks": false
+      }
+    },
+    "run_order": [
+      "seed17_safe_eager",
+      "seed17_fp32_compiled",
+      "seed17_bf16_selected",
+      "seed42_bf16_selected",
+      "seed42_safe_eager",
+      "seed42_fp32_compiled",
+      "seed73_fp32_compiled",
+      "seed73_bf16_selected",
+      "seed73_safe_eager"
+    ],
+    "training_seeds": [
+      17,
+      42,
+      73
+    ],
+    "updates_per_run": 500
+  },
+  "claim_boundary": {
+    "allowed": [
+      "eight_gpu_systems_efficiency",
+      "dense_pilot_mlm_numerical_noninferiority",
+      "eligibility_for_a_separate_exact_recovery_gate"
+    ],
+    "forbidden": [
+      "biological_generalization",
+      "downstream_model_quality",
+      "oas_production_pretraining",
+      "partner_specificity",
+      "sixteen_or_thirty_two_gpu_scale_authorization",
+      "state_of_the_art",
+      "world_leading"
+    ],
+    "reason": "The dense pilot lacks row-level study and subject identities, so its digest split is a systems parity panel rather than a biological generalization benchmark."
+  },
+  "evaluation": {
+    "aggregation": {
+      "masked_accuracy": "correct_selected_tokens_divided_by_selected_tokens",
+      "masked_cross_entropy": "loss_sum_divided_by_selected_tokens",
+      "per_sample_metrics_required": true
+    },
+    "mask_streams": [
+      {
+        "seed": 2026072901,
+        "update": 1000001
+      },
+      {
+        "seed": 2026072901,
+        "update": 1000003
+      },
+      {
+        "seed": 2026072901,
+        "update": 1000033
+      },
+      {
+        "seed": 2026072901,
+        "update": 1000037
+      }
+    ],
+    "mode": "eval_no_grad_bfloat16_autocast",
+    "stages": [
+      "before_training",
+      "after_update_500"
+    ]
+  },
+  "failure_preservation": {
+    "attribution_result_sha256": "7adc722d101adb1ad3e6871e291b117e66a0d5ce9ef40eda0f7b6fbe0e7dedfd",
+    "failed_v1_gate_result_sha256": "91befd50f2826065830e4cfbf0af3d09e8542218f4c930053d7d4e5db1cb76cb",
+    "v1_gate_remains_failed": true,
+    "v1_thresholds_are_not_reinterpreted": true
+  },
+  "format_version": "antibody_ddp_scientific_parity_gate_v2",
+  "parent": {
+    "communication_gate_protocol_sha256": "ae3825f7bdbec939f5487a315e5c1401dd6c2766ea5a639c1a8d0be87b952cd8",
+    "efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb"
+  },
+  "pilot_split": {
+    "dense_manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
+    "evaluation_count": 812,
+    "expected_record_count": 8112,
+    "ranking_digest": "sha256(namespace_ascii_bytes || 0x00 || sample_key_uint64_little_endian)",
+    "selection": "lowest_ranking_digest_without_ties",
+    "split_namespace": "antibody-ddp-scientific-parity-gate-v2",
+    "training_count": 7300
+  },
+  "research_basis": [
+    {
+      "consequence": "Bitwise-identical long-horizon floating-point trajectories are not a valid universal requirement.",
+      "title": "PyTorch numerical accuracy",
+      "url": "https://docs.pytorch.org/docs/stable/notes/numerical_accuracy.html"
+    },
+    {
+      "consequence": "Compilation parity is assessed with long training curves and independent evaluation outcomes.",
+      "title": "Maximizing Training Throughput Using PyTorch FSDP and torch.compile",
+      "url": "https://pytorch.org/blog/maximizing-training-throughput/"
+    },
+    {
+      "consequence": "The BF16 communication hook intentionally changes gradient reduction precision and is experimental.",
+      "title": "PyTorch DDP communication hooks",
+      "url": "https://docs.pytorch.org/docs/stable/ddp_comm_hooks.html"
+    }
+  ],
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
