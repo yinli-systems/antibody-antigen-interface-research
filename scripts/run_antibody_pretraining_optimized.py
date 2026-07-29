@@ -20,6 +20,7 @@ import numpy as np
 import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel
+import torch.nn.functional as F
 
 from antibody_pretraining.dense_shard import load_dense_shard
 from antibody_pretraining.masking import apply_uniform_mlm
@@ -51,6 +52,9 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--training-protocol", type=Path, required=True)
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
     parser.add_argument("--ddp-communication-protocol", type=Path)
+    parser.add_argument("--parity-protocol", type=Path)
+    parser.add_argument("--parity-split-root", type=Path)
+    parser.add_argument("--run-seed", type=int)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--preset",
@@ -111,6 +115,23 @@ def _arguments() -> argparse.Namespace:
         or args.ddp_communication_dtype != "float32"
     ) and args.ddp_communication_protocol is None:
         raise ValueError("DDP communication optimization requires its protocol")
+    parity_arguments = (
+        args.parity_protocol,
+        args.parity_split_root,
+        args.run_seed,
+    )
+    if any(value is not None for value in parity_arguments) and not all(
+        value is not None for value in parity_arguments
+    ):
+        raise ValueError("Parity protocol, split, and run seed are indivisible")
+    if args.run_seed is not None and args.run_seed < 0:
+        raise ValueError("Run seed must be non-negative")
+    if args.parity_protocol is not None and (
+        args.resume_root is not None or not args.skip_checkpoint
+    ):
+        raise ValueError(
+            "Parity gate runs prohibit resume and require skipped checkpoints"
+        )
     return args
 
 
@@ -150,6 +171,141 @@ def _load_ddp_communication_protocol(
     ):
         raise ValueError("Unexpected DDP communication protocol")
     return protocol, hashlib.sha256(payload).hexdigest()
+
+
+def _canonical_json_bytes(payload: object) -> bytes:
+    return (
+        json.dumps(
+            payload,
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode("ascii")
+
+
+def _load_parity_execution(
+    protocol_path: Path,
+    split_root: Path,
+    *,
+    shard: object,
+    manifest_sha256: str,
+    efficiency_protocol_sha256: str,
+    run_seed: int,
+    steps: int,
+    backend: str,
+    world_size: int,
+) -> tuple[
+    dict[str, object],
+    str,
+    dict[str, object],
+    str,
+    np.ndarray,
+    np.ndarray,
+]:
+    protocol_payload = protocol_path.read_bytes()
+    try:
+        protocol = json.loads(protocol_payload.decode("ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise RuntimeError("Parity protocol must be ASCII JSON") from error
+    protocol_sha256 = hashlib.sha256(protocol_payload).hexdigest()
+    if (
+        protocol.get("format_version")
+        != "antibody_ddp_scientific_parity_gate_v2"
+        or protocol.get("parent", {}).get("efficiency_protocol_sha256")
+        != efficiency_protocol_sha256
+        or protocol.get("pilot_split", {}).get(
+            "dense_manifest_payload_sha256"
+        )
+        != manifest_sha256
+        or run_seed not in protocol.get("benchmark", {}).get(
+            "training_seeds", []
+        )
+        or steps != protocol.get("benchmark", {}).get("updates_per_run")
+        or backend != "ddp"
+        or world_size != protocol.get("allocation", {}).get("gpu_count")
+        or protocol.get("test_access")
+        != {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        }
+    ):
+        raise RuntimeError("Parity execution differs from the frozen protocol")
+    receipt_path = split_root / "receipt.json"
+    split_file_sha256 = _sha256(receipt_path)
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise RuntimeError("Parity split receipt must be ASCII JSON") from error
+    unsigned = dict(receipt)
+    recorded_receipt_sha256 = unsigned.pop("receipt_sha256", None)
+    if (
+        receipt.get("format_version")
+        != "antibody_ddp_parity_split_receipt_v2"
+        or receipt.get("dense_manifest_payload_sha256") != manifest_sha256
+        or receipt.get("source", {}).get("protocol_sha256")
+        != protocol_sha256
+        or recorded_receipt_sha256
+        != hashlib.sha256(_canonical_json_bytes(unsigned)).hexdigest()
+    ):
+        raise RuntimeError("Parity split receipt differs")
+    arrays = {}
+    for name, expected in receipt.get("files", {}).items():
+        path = split_root / name
+        if _sha256(path) != expected.get("sha256"):
+            raise RuntimeError(f"Parity split file digest differs: {name}")
+        array = np.load(path, mmap_mode="r", allow_pickle=False)
+        if (
+            list(array.shape) != expected.get("shape")
+            or str(array.dtype) != expected.get("dtype")
+        ):
+            raise RuntimeError(f"Parity split array schema differs: {name}")
+        arrays[name] = array
+    required = {
+        "evaluation_indices.npy",
+        "evaluation_sample_keys.npy",
+        "training_indices.npy",
+        "training_sample_keys.npy",
+    }
+    if set(arrays) != required:
+        raise RuntimeError("Parity split array inventory differs")
+    training = np.asarray(arrays["training_indices.npy"], dtype=np.int64)
+    evaluation = np.asarray(arrays["evaluation_indices.npy"], dtype=np.int64)
+    sample_keys = np.asarray(shard.sample_keys)
+    split_policy = protocol["pilot_split"]
+    if (
+        len(sample_keys) != split_policy["expected_record_count"]
+        or len(training) != split_policy["training_count"]
+        or len(evaluation) != split_policy["evaluation_count"]
+        or np.any(training < 0)
+        or np.any(evaluation < 0)
+        or np.any(training >= len(sample_keys))
+        or np.any(evaluation >= len(sample_keys))
+        or len(np.intersect1d(training, evaluation)) != 0
+        or not np.array_equal(
+            np.union1d(training, evaluation),
+            np.arange(len(sample_keys), dtype=np.int64),
+        )
+        or not np.array_equal(
+            sample_keys[training],
+            arrays["training_sample_keys.npy"],
+        )
+        or not np.array_equal(
+            sample_keys[evaluation],
+            arrays["evaluation_sample_keys.npy"],
+        )
+    ):
+        raise RuntimeError("Parity split membership differs")
+    return (
+        protocol,
+        protocol_sha256,
+        receipt,
+        split_file_sha256,
+        training,
+        evaluation,
+    )
 
 
 def _parse_boundaries(raw: str, maximum: int) -> tuple[int, ...]:
@@ -212,6 +368,165 @@ def _membership_update(
 def _stage_tensor(array: np.ndarray, pinned: bool) -> torch.Tensor:
     tensor = torch.from_numpy(np.ascontiguousarray(array))
     return tensor.pin_memory() if pinned else tensor
+
+
+def _evaluate_parity_panel(
+    model: torch.nn.Module,
+    *,
+    shard: object,
+    evaluation_indices: np.ndarray,
+    mask_streams: list[dict[str, int]],
+    boundaries: tuple[int, ...],
+    device: torch.device,
+    micro_batch: int,
+    rank: int,
+    world_size: int,
+) -> dict[str, object] | None:
+    """Score fixed MLM masks without changing training membership or state."""
+    if not len(evaluation_indices) or not mask_streams:
+        raise RuntimeError("Parity evaluation panel and masks must be nonempty")
+    expected_keys = np.asarray(
+        shard.sample_keys[evaluation_indices],
+        dtype=np.uint64,
+    )
+    local_indices = np.asarray(
+        evaluation_indices[rank::world_size],
+        dtype=np.int64,
+    )
+    accumulators = {
+        int(shard.sample_keys[index]): {
+            "correct": 0,
+            "loss_sum": 0.0,
+            "selected_targets": 0,
+        }
+        for index in local_indices
+    }
+    was_training = model.training
+    model.eval()
+    with torch.no_grad():
+        for stream in mask_streams:
+            for start in range(0, len(local_indices), micro_batch):
+                valid_indices = local_indices[start : start + micro_batch]
+                valid_count = len(valid_indices)
+                if valid_count == 0:
+                    continue
+                if valid_count < micro_batch:
+                    padded_indices = np.pad(
+                        valid_indices,
+                        (0, micro_batch - valid_count),
+                        mode="edge",
+                    )
+                else:
+                    padded_indices = valid_indices
+                tokens = np.asarray(
+                    shard.tokens[padded_indices],
+                    dtype=np.int64,
+                )
+                sample_keys = np.asarray(
+                    shard.sample_keys[padded_indices],
+                    dtype=np.uint64,
+                )
+                masked = apply_uniform_mlm(
+                    tokens,
+                    sample_keys,
+                    update=int(stream["update"]),
+                    seed=int(stream["seed"]),
+                    mask_fraction=0.15,
+                )
+                maximum_length = int(
+                    np.asarray(shard.lengths[padded_indices]).max()
+                )
+                width = _bucket_width(maximum_length, boundaries)
+                input_ids = torch.from_numpy(
+                    np.ascontiguousarray(masked.input_ids[:, :width])
+                ).to(device)
+                labels = torch.from_numpy(
+                    np.ascontiguousarray(masked.labels[:, :width])
+                ).to(device)
+                chain = torch.from_numpy(
+                    np.asarray(
+                        shard.chain_types[padded_indices],
+                        dtype=np.int64,
+                    )
+                ).to(device)
+                attention = input_ids.ne(PAD_ID)
+                type_ids = chain[:, None].expand_as(input_ids).masked_fill(
+                    ~attention,
+                    0,
+                )
+                with torch.autocast("cuda", dtype=torch.bfloat16):
+                    output = model(input_ids, type_ids, attention)
+                selected = labels.ne(-100)
+                losses = F.cross_entropy(
+                    output.logits.float().flatten(0, 1),
+                    labels.flatten(),
+                    ignore_index=-100,
+                    reduction="none",
+                ).view_as(labels)
+                correct = (
+                    output.logits.argmax(dim=-1).eq(labels) & selected
+                ).sum(dim=1)
+                loss_sums = losses.sum(dim=1)
+                target_counts = selected.sum(dim=1)
+                for offset in range(valid_count):
+                    key = int(sample_keys[offset])
+                    accumulator = accumulators[key]
+                    accumulator["correct"] += int(correct[offset])
+                    accumulator["loss_sum"] += float(loss_sums[offset])
+                    accumulator["selected_targets"] += int(
+                        target_counts[offset]
+                    )
+    if was_training:
+        model.train()
+    local_records = []
+    for sample_key in sorted(accumulators):
+        item = accumulators[sample_key]
+        target_count = int(item["selected_targets"])
+        if target_count <= 0:
+            raise RuntimeError("Parity evaluation sample has no MLM targets")
+        local_records.append(
+            {
+                "masked_accuracy": item["correct"] / target_count,
+                "masked_cross_entropy": item["loss_sum"] / target_count,
+                "sample_key": sample_key,
+                **item,
+            }
+        )
+    gathered: list[list[dict[str, object]] | None] = [None] * world_size
+    dist.all_gather_object(gathered, local_records)
+    if rank != 0:
+        return None
+    records = sorted(
+        (
+            record
+            for rank_records in gathered
+            if rank_records is not None
+            for record in rank_records
+        ),
+        key=lambda record: int(record["sample_key"]),
+    )
+    observed_keys = np.asarray(
+        [record["sample_key"] for record in records],
+        dtype=np.uint64,
+    )
+    if (
+        len(records) != len(evaluation_indices)
+        or not np.array_equal(observed_keys, np.sort(expected_keys))
+    ):
+        raise RuntimeError("Parity evaluation sample accounting differs")
+    total_loss = sum(float(record["loss_sum"]) for record in records)
+    total_correct = sum(int(record["correct"]) for record in records)
+    total_targets = sum(
+        int(record["selected_targets"]) for record in records
+    )
+    return {
+        "masked_accuracy": total_correct / total_targets,
+        "masked_cross_entropy": total_loss / total_targets,
+        "mask_stream_count": len(mask_streams),
+        "sample_count": len(records),
+        "samples": records,
+        "selected_targets": total_targets,
+    }
 
 
 def _compile_transformer_blocks(
@@ -622,6 +937,9 @@ def _restore_rng_checkpoint(
 
 def main() -> None:
     args = _arguments()
+    effective_seed = (
+        args.run_seed if args.run_seed is not None else 20260728
+    )
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
     rank = int(os.environ.get("RANK", "0"))
     local_rank = int(os.environ.get("LOCAL_RANK", "0"))
@@ -647,10 +965,10 @@ def main() -> None:
         device_id=device,
     )
     dist.barrier()
-    random.seed(20260728)
-    np.random.seed(20260728)
-    torch.manual_seed(20260728)
-    torch.cuda.manual_seed_all(20260728)
+    random.seed(effective_seed)
+    np.random.seed(effective_seed)
+    torch.manual_seed(effective_seed)
+    torch.cuda.manual_seed_all(effective_seed)
     torch.use_deterministic_algorithms(
         args.deterministic_algorithms,
         warn_only=False,
@@ -687,11 +1005,41 @@ def main() -> None:
     )
     family = load_model_family(args.model_family)
     protocol = load_training_protocol(args.training_protocol)
+    parity_protocol = None
+    parity_protocol_sha256 = None
+    parity_split_receipt = None
+    parity_split_receipt_file_sha256 = None
+    parity_training_indices = None
+    parity_evaluation_indices = None
+    if args.parity_protocol is not None:
+        (
+            parity_protocol,
+            parity_protocol_sha256,
+            parity_split_receipt,
+            parity_split_receipt_file_sha256,
+            parity_training_indices,
+            parity_evaluation_indices,
+        ) = _load_parity_execution(
+            args.parity_protocol,
+            args.parity_split_root,
+            shard=shard,
+            manifest_sha256=args.manifest_sha256,
+            efficiency_protocol_sha256=efficiency_protocol_sha256,
+            run_seed=effective_seed,
+            steps=args.steps,
+            backend=args.backend,
+            world_size=world_size,
+        )
     boundaries = _parse_boundaries(
         args.length_bucket_boundaries,
         family["maximum_sequence_tokens"],
     )
-    residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
+    all_residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
+    residue_lengths = (
+        all_residue_lengths[parity_training_indices]
+        if parity_training_indices is not None
+        else all_residue_lengths
+    )
     model = AntibodyMaskedLanguageModel(config_from_preset(family, args.preset)).to(
         device
     )
@@ -819,6 +1167,22 @@ def main() -> None:
             device=device,
         )
 
+    pretraining_evaluation = None
+    if parity_protocol is not None:
+        dist.barrier()
+        pretraining_evaluation = _evaluate_parity_panel(
+            model,
+            shard=shard,
+            evaluation_indices=parity_evaluation_indices,
+            mask_streams=parity_protocol["evaluation"]["mask_streams"],
+            boundaries=boundaries,
+            device=device,
+            micro_batch=args.micro_batch,
+            rank=rank,
+            world_size=world_size,
+        )
+        dist.barrier()
+
     trace: list[dict[str, float | int]] = []
     membership_digest = hashlib.sha256()
     data_preparation_seconds = 0.0
@@ -829,18 +1193,28 @@ def main() -> None:
             sample_cursor=cursor,
             target_residue_tokens=args.target_tokens,
             batch_quantum_sequences=args.batch_quantum,
-            seed=protocol["random_seed"],
+            seed=effective_seed,
         )
-        indices_for_compute = _ordered_indices(
+        logical_indices_for_compute = _ordered_indices(
             plan.indices,
             residue_lengths,
             args.length_bucketing,
+        )
+        indices_for_compute = (
+            parity_training_indices[logical_indices_for_compute]
+            if parity_training_indices is not None
+            else logical_indices_for_compute
+        )
+        membership_indices = (
+            parity_training_indices[plan.indices]
+            if parity_training_indices is not None
+            else plan.indices
         )
         _membership_update(
             membership_digest,
             update=update + 1,
             sample_cursor=cursor,
-            indices=plan.indices,
+            indices=membership_indices,
         )
         global_micro_batch = world_size * args.micro_batch
         if len(indices_for_compute) % global_micro_batch:
@@ -855,7 +1229,7 @@ def main() -> None:
                 tokens,
                 np.asarray(shard.sample_keys[indices]),
                 update=update,
-                seed=protocol["random_seed"],
+                seed=effective_seed,
                 mask_fraction=protocol["masking"]["fraction"],
             )
             maximum_length = int(np.asarray(shard.lengths[indices]).max())
@@ -956,6 +1330,22 @@ def main() -> None:
                 }
             )
 
+    posttraining_evaluation = None
+    if parity_protocol is not None:
+        dist.barrier()
+        posttraining_evaluation = _evaluate_parity_panel(
+            model,
+            shard=shard,
+            evaluation_indices=parity_evaluation_indices,
+            mask_streams=parity_protocol["evaluation"]["mask_streams"],
+            boundaries=boundaries,
+            device=device,
+            micro_batch=args.micro_batch,
+            rank=rank,
+            world_size=world_size,
+        )
+        dist.barrier()
+
     rng_state = _rng_state_payload(rank, device)
     parameter_moments = _parameter_moments(model, args.backend, rank)
     ddp_logging_data = None
@@ -1045,10 +1435,21 @@ def main() -> None:
         "model_family_sha256": model_family_sha256,
         "next_update": start_update + args.steps,
         "optimization": optimization,
+        "parity_protocol_sha256": parity_protocol_sha256,
+        "parity_split_receipt_file_sha256": (
+            parity_split_receipt_file_sha256
+        ),
+        "parity_split_receipt_sha256": (
+            parity_split_receipt.get("receipt_sha256")
+            if parity_split_receipt is not None
+            else None
+        ),
         "preset": args.preset,
+        "run_seed": effective_seed,
         "sample_cursor": cursor,
         "shard_manifest_sha256": args.manifest_sha256,
         "training_protocol_sha256": training_protocol_sha256,
+        "training_universe_count": len(residue_lengths),
         "target_residue_tokens": args.target_tokens,
         "world_size": world_size,
     }
@@ -1084,7 +1485,14 @@ def main() -> None:
                 "checkpoint_rng_manifest_sha256": (
                     checkpoint_rng_manifest_sha256
                 ),
-                "claim_boundary": "Repeated-shard systems candidate; no production-corpus, biological, or state-of-the-art claim",
+                "claim_boundary": (
+                    "Training-excluded dense-pilot MLM systems parity only; "
+                    "no production-corpus, biological, scaling, or "
+                    "state-of-the-art claim"
+                    if parity_protocol is not None
+                    else "Repeated-shard systems candidate; no "
+                    "production-corpus, biological, or state-of-the-art claim"
+                ),
                 "compile_prewarm_trace": compile_prewarm_trace,
                 "data_preparation_seconds": data_preparation_seconds,
                 "device": torch.cuda.get_device_name(device),
@@ -1108,12 +1516,27 @@ def main() -> None:
                 "micro_batch_per_gpu": args.micro_batch,
                 "model_family_sha256": model_family_sha256,
                 "optimization": optimization,
+                "parity_evaluation_count": (
+                    len(parity_evaluation_indices)
+                    if parity_evaluation_indices is not None
+                    else None
+                ),
+                "parity_protocol_sha256": parity_protocol_sha256,
+                "parity_split_receipt_file_sha256": (
+                    parity_split_receipt_file_sha256
+                ),
+                "parity_split_receipt_sha256": (
+                    parity_split_receipt.get("receipt_sha256")
+                    if parity_split_receipt is not None
+                    else None
+                ),
                 "parameter_moments": parameter_moments,
                 "peak_allocated_memory_mib": torch.cuda.max_memory_allocated(device)
                 / (1024 * 1024),
                 "peak_reserved_memory_mib": torch.cuda.max_memory_reserved(device)
                 / (1024 * 1024),
                 "preset": args.preset,
+                "pretraining_evaluation": pretraining_evaluation,
                 "resume_used": args.resume_root is not None,
                 "resume_loaded_model_sha256": resume_loaded_model_sha256,
                 "resume_loaded_model_rank_sha256": (
@@ -1145,6 +1568,8 @@ def main() -> None:
                     "torch": torch.__version__,
                 },
                 "shard_manifest_sha256": args.manifest_sha256,
+                "posttraining_evaluation": posttraining_evaluation,
+                "run_seed": effective_seed,
                 "target_residue_tokens": args.target_tokens,
                 "telemetry_interval_seconds": telemetry_interval_seconds,
                 "test_access": {
@@ -1153,6 +1578,7 @@ def main() -> None:
                 },
                 "trace": trace,
                 "training_protocol_sha256": training_protocol_sha256,
+                "training_universe_count": len(residue_lengths),
                 "world_size": world_size,
             },
         )

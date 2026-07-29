@@ -56,6 +56,45 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     assert "socket.gethostname()" in source
 
 
+def test_parity_mode_binds_split_seed_and_training_membership() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    for argument in (
+        "--parity-protocol",
+        "--parity-split-root",
+        "--run-seed",
+    ):
+        assert argument in source
+    assert "Parity protocol, split, and run seed are indivisible" in source
+    assert "Parity gate runs prohibit resume" in source
+    assert "parity_training_indices[plan.indices]" in source
+    assert "seed=effective_seed" in source
+    assert '"parity_protocol_sha256"' in source
+    assert '"parity_split_receipt_file_sha256"' in source
+    assert '"parity_split_receipt_sha256"' in source
+    assert '"training_universe_count"' in source
+
+
+def test_parity_mode_scores_fixed_panel_before_and_after_training() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert source.count("_evaluate_parity_panel(") == 3
+    helper = source[
+        source.index("def _evaluate_parity_panel(") :
+        source.index("def _compile_transformer_blocks(")
+    ]
+    assert "model.eval()" in helper
+    assert "with torch.no_grad():" in helper
+    assert "F.cross_entropy(" in helper
+    assert "output.logits.argmax(dim=-1)" in helper
+    assert "dist.all_gather_object(gathered, local_records)" in helper
+    main = source[source.index("def main()") :]
+    pre = main.index("pretraining_evaluation = _evaluate_parity_panel(")
+    loop = main.index("for update in range(")
+    post = main.index("posttraining_evaluation = _evaluate_parity_panel(")
+    assert pre < loop < post
+    assert '"pretraining_evaluation"' in main
+    assert '"posttraining_evaluation"' in main
+
+
 def test_resume_state_binds_batch_and_bucket_geometry() -> None:
     source = RUNNER.read_text(encoding="ascii")
     expected_start = source.index("expected = {")
@@ -141,7 +180,9 @@ def test_length_bucketing_preserves_membership_by_construction() -> None:
     source = RUNNER.read_text(encoding="ascii")
     assert "np.lexsort" in source
     assert "Length bucketing changed update membership" in source
-    assert "indices=plan.indices" in source
+    assert "logical_indices_for_compute = _ordered_indices(" in source
+    assert "membership_indices = (" in source
+    assert "parity_training_indices[plan.indices]" in source
     assert "args.bucketed_padding or args.length_bucketing" in source
 
 
