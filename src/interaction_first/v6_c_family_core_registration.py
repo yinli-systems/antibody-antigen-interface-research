@@ -57,6 +57,7 @@ SOURCE_LABELS = {
     "controller",
     "cp_formulation",
     "diagnostic",
+    "freezer",
     "independent_auditor",
     "joint_ir",
     "launcher",
