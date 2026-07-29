@@ -1,0 +1,16 @@
+{
+  "expected_selected_bytes": 876381859,
+  "expected_selected_file_count": 1,
+  "format_version": "pairscale_download_plan_v1",
+  "locator": {
+    "record_id": 20083995
+  },
+  "metadata_sha256": "63dfd94ccd6bafe0b777d257e05ffe5d849220c577041517b89b9eceae6ca504",
+  "metadata_url": "https://zenodo.org/api/records/20083995",
+  "pinned_revision": "zenodo-record-20083995",
+  "provider": "zenodo_record",
+  "selectors": [
+    "splits.tar.gz"
+  ],
+  "source_id": "sabdab2_ml_zenodo_20083995"
+}

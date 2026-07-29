@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import io
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -184,10 +185,19 @@ def save_contact_map(contact_map: SparseContactMap, path: Path) -> None:
     os.replace(temporary, path)
 
 
-def load_contact_map(path: Path, expected_instance_id: str | None = None) -> SparseContactMap:
-    """Load and validate one contact-map artifact without pickle support."""
+def load_contact_map_bytes(
+    raw: bytes,
+    *,
+    expected_instance_id: str | None = None,
+    source_name: str = "authenticated contact bytes",
+) -> SparseContactMap:
+    """Load one contact map from previously authenticated immutable bytes."""
     np = _require_numpy()
-    with np.load(path, allow_pickle=False) as artifact:
+    if not isinstance(raw, bytes) or not raw:
+        raise ValueError("Contact artifact bytes must be nonempty bytes")
+    if not isinstance(source_name, str) or not source_name:
+        raise ValueError("source_name must be a nonempty string")
+    with np.load(io.BytesIO(raw), allow_pickle=False) as artifact:
         required = {
             "format_version",
             "instance_id",
@@ -200,9 +210,9 @@ def load_contact_map(path: Path, expected_instance_id: str | None = None) -> Spa
             "pair_labels",
         }
         if set(artifact.files) != required:
-            raise ValueError(f"Unexpected contact artifact keys in {path}")
+            raise ValueError(f"Unexpected contact artifact keys in {source_name}")
         if str(artifact["format_version"].item()) != FORMAT_VERSION:
-            raise ValueError(f"Unsupported contact artifact format in {path}")
+            raise ValueError(f"Unsupported contact artifact format in {source_name}")
         result = SparseContactMap(
             instance_id=str(artifact["instance_id"].item()),
             antibody_length=int(artifact["antibody_length"].item()),
@@ -215,5 +225,16 @@ def load_contact_map(path: Path, expected_instance_id: str | None = None) -> Spa
         )
     result.validate()
     if expected_instance_id is not None and result.instance_id != expected_instance_id:
-        raise ValueError(f"Contact artifact identity mismatch in {path}")
+        raise ValueError(f"Contact artifact identity mismatch in {source_name}")
     return result
+
+
+def load_contact_map(path: Path, expected_instance_id: str | None = None) -> SparseContactMap:
+    """Load and validate one contact-map artifact without pickle support."""
+    with Path(path).open("rb") as handle:
+        raw = handle.read()
+    return load_contact_map_bytes(
+        raw,
+        expected_instance_id=expected_instance_id,
+        source_name=str(path),
+    )

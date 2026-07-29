@@ -1,0 +1,168 @@
+{
+  "artifacts": {
+    "DECOY_ASSIGNMENT.json": "29bab271a7677cdd5cd499343c8ad347f03ea549612b1d354615d412eae7319c",
+    "FINAL_REPORT.json": "dc82a7c3dc736d3063d4442a14ff47a9e9f4d3eafe0d1b543be2f9becedeca81",
+    "HOLDOUT_ACCESS_RECEIPT.json": "2c57ef027edce7f469f68a3b0a054f7ba9cd63dd32e0cfad4a833cec8f6c18e1",
+    "HOLDOUT_EVALUATION.json": "dc8d24830105856234f76d8bfd8caa7b6eecbab7aa8517680ec877fa576cce94",
+    "RUN_MANIFEST.json": "2b334bfce8f04a50ddecbb52c0f6a7987aaa61737f814cc86008eb0da0b9c8a5",
+    "checkpoint.pt": "5e5790693210fee5dd3e27f63d1b425d97275fcc0304199d7898c343f26c9255",
+    "checkpoint_receipt.json": "5e160304fd0182f13116662de9b6dbfedb1efe53c31d9230867069fbc60dd0eb",
+    "train_epoch_metrics.jsonl": "5bf299bc3381b8499d61d539ea8be94dfaff06edcac131246d23a317940aaa84"
+  },
+  "claim_boundary": "Development-only endpoint-disjoint partner-objective repair evidence. The required partner-specificity confidence intervals cross zero, Gate L1 failed, and scaling remains blocked. No validation, test, confirmatory, checkpoint-promotion, biological-generalization, comparative-superiority, state-of-the-art, or world-leading claim is authorized.",
+  "cluster_statistics": {
+    "file": "results/pairscale/centered_multidecoy_6f69111.cluster_statistics.json",
+    "file_sha256": "cb6dda0a33fdbf303ba38a17f10c0c20bcd6a59e84185fd9a559d7b14894b104",
+    "independent_component_count": 58,
+    "instance_count": 64,
+    "iterations": 10000,
+    "replays": [
+      {
+        "environment": "cluster_python_3.10.20",
+        "output_sha256": "cb6dda0a33fdbf303ba38a17f10c0c20bcd6a59e84185fd9a559d7b14894b104",
+        "python_hash_seed": 0
+      },
+      {
+        "environment": "cluster_python_3.10.20",
+        "output_sha256": "cb6dda0a33fdbf303ba38a17f10c0c20bcd6a59e84185fd9a559d7b14894b104",
+        "python_hash_seed": 811
+      },
+      {
+        "environment": "local_python",
+        "output_sha256": "cb6dda0a33fdbf303ba38a17f10c0c20bcd6a59e84185fd9a559d7b14894b104",
+        "python_hash_seed": 177
+      }
+    ],
+    "seed": 42,
+    "unit": "connected_endpoint_component"
+  },
+  "comparisons": {
+    "repair_matched_minus_decoy_double_centered_partner_score": {
+      "lower_95": -2.4279977397645096,
+      "mean_difference": 4.635539457201958,
+      "upper_95": 12.138805802273593
+    },
+    "repair_matched_minus_decoy_raw_partner_score": {
+      "lower_95": -0.4729158135042303,
+      "mean_difference": 1.1080582467839122,
+      "upper_95": 2.8678136285783573
+    },
+    "repair_minus_antibody_only_macro_pair_auprc": {
+      "lower_95": 0.04275157874498507,
+      "mean_difference": 0.13376179141167724,
+      "upper_95": 0.24917535339578173
+    },
+    "repair_minus_antigen_only_macro_pair_auprc": {
+      "lower_95": 0.04779045934557833,
+      "mean_difference": 0.13758375440829182,
+      "upper_95": 0.25140202868980416
+    },
+    "repair_minus_no_centering_macro_pair_auprc": {
+      "lower_95": -0.010916793348511747,
+      "mean_difference": -0.002684746595312389,
+      "upper_95": 0.004608950217733775
+    },
+    "repair_minus_reference_macro_pair_auprc": {
+      "lower_95": -0.006869100637307694,
+      "mean_difference": 0.0009272942083975872,
+      "upper_95": 0.00854349358068646
+    },
+    "repair_minus_separable_upper_envelope_macro_pair_auprc": {
+      "lower_95": 0.02133990577792791,
+      "mean_difference": 0.08555404845829664,
+      "upper_95": 0.16728667916129897
+    }
+  },
+  "format_version": "pairscale_centered_multidecoy_result_v1",
+  "gate_l1": {
+    "checks": {
+      "repair_double_centered_partner_decline_lower_bound_above_zero": false,
+      "repair_exceeds_antibody_only_lower_bound_above_zero": true,
+      "repair_exceeds_antigen_only_lower_bound_above_zero": true,
+      "repair_exceeds_separable_upper_envelope_lower_bound_above_zero": true,
+      "repair_raw_partner_decline_lower_bound_above_zero": false
+    },
+    "failed_checks": [
+      "repair_double_centered_partner_decline_lower_bound_above_zero",
+      "repair_raw_partner_decline_lower_bound_above_zero"
+    ],
+    "passed_required_statistical_checks": false,
+    "scaling_authorized": false,
+    "status": "failed_required_partner_specificity_checks",
+    "unresolved_required_controls": []
+  },
+  "holdout_evaluation": {
+    "access_count_within_runner": 1,
+    "checkpoint_promotion_authorized": false,
+    "double_centered_partner_mean_delta": 4.635539457201958,
+    "double_centered_partner_win_rate": 0.5625,
+    "instance_count": 64,
+    "macro_pair_auprc": 0.14258624630796196,
+    "macro_precision_at_true_contact_count": 0.14521193425070036,
+    "matched_partner_topk_mean_delta": 1.1080582467839122,
+    "matched_partner_topk_win_rate": 0.59375,
+    "model_selection_authorized": false,
+    "pooled_pair_auprc": 0.06833790769248647,
+    "scaling_authorized": false
+  },
+  "interpretation": {
+    "negative_result": "The centered multi-decoy objective strongly fit the training set but did not establish endpoint-disjoint partner-specific generalization. Both required matched-versus-decoy confidence intervals cross zero, and macro pair-AUPRC did not significantly improve over either frozen pair-model predecessor.",
+    "supported": "The repair pair head remains significantly better than antibody-only, antigen-only, its own model marginal, and the conservative per-complex separable upper envelope on the frozen development holdout.",
+    "unsupported": "The evidence does not authorize PPIRef pretraining, distributed scale-up, checkpoint promotion, a partner-specificity claim, or any state-of-the-art claim."
+  },
+  "job": {
+    "allocated_cpus": 16,
+    "allocated_gpus": 1,
+    "allocated_memory_gib": 64,
+    "elapsed": "02:18:36",
+    "exit_code": "0:0",
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "id": 1333055,
+    "max_rss_kib": 2889612,
+    "node": "wqd10nah10g2",
+    "state": "COMPLETED"
+  },
+  "local_evidence_root": "/Users/alice/Downloads/pairscale_centered_multidecoy_results_6f69111",
+  "locked_design": {
+    "checkpoint_selection": "none_epoch_260_only",
+    "decoy_count_per_train_complex": 4,
+    "decoy_policy": "score_free_length_matched_distinct_antigen_sha256_tie_break_v1",
+    "early_stopping_used": false,
+    "fixed_stop_epoch": 260,
+    "global_step": 49920,
+    "holdout_complex_count": 64,
+    "partner_objective": "double_centered_equal_mean_pairwise_softplus_v1",
+    "train_complex_count": 192
+  },
+  "recorded_at_utc": "2026-07-27T22:10:00Z",
+  "sealed_sources": {
+    "statistics": {
+      "cluster_test_replays": [
+        "13_passed_python_hash_seed_0",
+        "13_passed_python_hash_seed_811"
+      ],
+      "git_commit": "b216c937c6137e2526c6b07989b9d9d8728f039d",
+      "root": "/ssd/scxi253/model_deployment/jobs/pairscale_multidecoy_statistics_b216c93",
+      "writable_regular_file_count": 0
+    },
+    "training": {
+      "cluster_test_replays": [
+        "25_passed_python_hash_seed_0",
+        "25_passed_python_hash_seed_811"
+      ],
+      "git_commit": "6f69111e4d0216093cc1d59e40096d755d43170d",
+      "root": "/ssd/scxi253/model_deployment/jobs/pairscale_centered_multidecoy_source_6f69111",
+      "writable_regular_file_count": 0
+    }
+  },
+  "train_evaluation": {
+    "double_centered_partner_mean_delta": 22.488547166188557,
+    "double_centered_partner_win_rate": 0.859375,
+    "macro_pair_auprc": 0.8380231930549252,
+    "macro_precision_at_true_contact_count": 0.7766075119769128,
+    "matched_partner_topk_mean_delta": 1.7401223157842953,
+    "matched_partner_topk_win_rate": 0.7760416666666666,
+    "pooled_pair_auprc": 0.8370598153809364,
+    "train_minus_holdout_macro_pair_auprc": 0.6954369467469632
+  }
+}

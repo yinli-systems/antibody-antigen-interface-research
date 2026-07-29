@@ -1,0 +1,94 @@
+{
+  "artifact_hashes": {
+    "audit_receipt_sha256": "58252b03f2965f5942b64a8df5737fb3d9081bbb5cbbf5d8984dbac5b799db87",
+    "independent_verification_sha256": "ea670b3855570bbfee7d832144a47f5494a631105a9c233ba3f7f38f21494c52",
+    "per_complex_predictions_sha256": "732a548553b13e672dc2faf55f8ab20fd1505751f922f32389cba4550cff10c3",
+    "statistics_sha256": "e93f09eaed83f5d8e519ddca6b94c9afca29022008f40c6863fc14330b158f87"
+  },
+  "checkpoint_authority": {
+    "ablation_result_sha256": "7dfdeb1e9725500addf02f0f52e658def4c0d5adfec9df68e964c803bf6e321e",
+    "run_receipt_sha256": "2c5d57dc4c742bf8066577c9095d756d6157263f045a01c129d423e0b62cda68",
+    "structure_cache_manifest_sha256": "2580e41ced744ade8a16fa94ae4b9b22bda5e85b7477a71ae1344ed732bf3e6d"
+  },
+  "claim_boundary": "Development-only per-complex marginal paratope/epitope inference from the sealed AB03 A100 final checkpoints, replayed on local CPU in FP32 and independently audited. This is not partner-specific, frozen-test, external-generalization, or SOTA evidence.",
+  "comparisons": {
+    "distance_direction_minus_topology_only": {
+      "epitope_auprc": {
+        "bootstrap_ci95": [
+          -0.00680919954165986,
+          0.02039353334365103
+        ],
+        "mean_difference": 0.008236787738859145,
+        "one_sided_component_sign_flip_p": 0.19518048195180482,
+        "positive_complex_fraction": 0.6388888888888888
+      },
+      "joint_macro_auprc": {
+        "bootstrap_ci95": [
+          0.0018361400435432569,
+          0.016695394050107493
+        ],
+        "holm_adjusted_one_sided_p": 0.08249175082491751,
+        "mean_difference": 0.009875616101635724,
+        "one_sided_component_sign_flip_p": 0.027497250274972504,
+        "positive_complex_fraction": 0.7222222222222222
+      },
+      "paratope_auprc": {
+        "bootstrap_ci95": [
+          0.0019555353999356835,
+          0.023374644364839627
+        ],
+        "mean_difference": 0.011514444464412292,
+        "one_sided_component_sign_flip_p": 0.024797520247975203,
+        "positive_complex_fraction": 0.6111111111111112
+      }
+    }
+  },
+  "format_version": "sabdab2_geometry_a100_paired_statistics_summary_v1",
+  "historical_metric_replay": {
+    "check_count": 20,
+    "passed_count": 20,
+    "tolerance": 0.01
+  },
+  "independent_verification": {
+    "check_count": 441,
+    "status": "passed"
+  },
+  "modes": {
+    "distance": {
+      "epitope_auprc": 0.3092290263515096,
+      "joint_macro_auprc": 0.48000297834306266,
+      "paratope_auprc": 0.6507769303346156
+    },
+    "distance_direction": {
+      "epitope_auprc": 0.313943751497519,
+      "joint_macro_auprc": 0.49293632521201036,
+      "paratope_auprc": 0.6719288989265016
+    },
+    "full_pose": {
+      "epitope_auprc": 0.3121273411894826,
+      "joint_macro_auprc": 0.49218169828833563,
+      "paratope_auprc": 0.6722360553871886
+    },
+    "topology_only": {
+      "epitope_auprc": 0.3057069637586599,
+      "joint_macro_auprc": 0.48306070911037463,
+      "paratope_auprc": 0.6604144544620894
+    }
+  },
+  "primary_gate": {
+    "confirmatory_superiority_authorized": false,
+    "multiseed_requirement_satisfied": false,
+    "single_seed_statistical_gate_passed": false,
+    "status": "failed_single_seed_statistical_gate"
+  },
+  "resampling": {
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 20260729,
+    "confidence": 0.95,
+    "independent_endpoint_component_count": 16,
+    "permutation_iterations": 10000,
+    "permutation_seed": 20260730,
+    "unit": "exact antibody-antigen endpoint-connected component",
+    "validation_instance_count": 36
+  }
+}

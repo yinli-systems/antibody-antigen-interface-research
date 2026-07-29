@@ -1,0 +1,203 @@
+{
+  "audited_at_utc": "2026-07-27T23:50:00Z",
+  "audited_repository_head": "b13169416a3bc52ffae653bb38472da051006b57",
+  "broader_scientific_state": {
+    "gate_l1_passed": false,
+    "latest_partner_specificity_evidence": {
+      "double_centered_mean_difference": 4.635539457201958,
+      "double_centered_95_ci": [
+        -2.4279977397645096,
+        12.138805802273593
+      ],
+      "raw_mean_difference": 1.1080582467839122,
+      "raw_95_ci": [
+        -0.4729158135042303,
+        2.8678136285783573
+      ],
+      "result_file": "results/pairscale/centered_multidecoy_6f69111.result.json",
+      "result_file_sha256": "ff3448c0281cf75d30d2c350633ff132067f7ee14391c32a0cbe7b18d9d9e400"
+    },
+    "model_scaling_authorized": false,
+    "scope_limit": "This audit completes only the six foundational tasks shown in the referenced checklist. It does not complete the broader PAIRScale roadmap or authorize a partner-specificity, confirmatory, SOTA, or world-leading claim."
+  },
+  "completion_status": "complete_within_exact_six_step_scope",
+  "format_version": "pairscale_initial_six_step_completion_audit_v1",
+  "requirements": [
+    {
+      "evidence": [
+        {
+          "commit": "e61a3a9",
+          "path": "protocols/PAIRSCALE_DEVELOPMENT_ONLY_NONCONFIRMATORY_PROTOCOL_V1.md",
+          "sha256": "66e1b6d99dfc4287bde86043553a08f2a0ae55f1eb21596b548465f33aa09d19"
+        },
+        {
+          "path": "protocols/pairscale_development_only_nonconfirmatory_policy_v1.json",
+          "sha256": "aac9528cd35e27598238f101097d35c8c94ef83dde30e7fe0ffa3d0e7d1cac83"
+        },
+        {
+          "path": "tests/test_development_authority.py",
+          "test_count": 12
+        }
+      ],
+      "id": 1,
+      "requirement": "Freeze the development-only nonconfirmatory authority and claim-boundary protocol",
+      "status": "complete"
+    },
+    {
+      "evidence": [
+        {
+          "commit": "816e924",
+          "path": "src/interaction_first/development_subset.py",
+          "sha256": "22bf72f8649469fb8e36f6c45c9882b4c90123f1a3e600a7bcdf8e9ab3d97e3c"
+        },
+        {
+          "commit": "66611e0",
+          "path": "scripts/build_pairscale_development_subsets.py",
+          "sha256": "5ca98276feb4ca1cb5da3500fa34f152bec39417e2ad50d2dd39657ba61e5bd1"
+        },
+        {
+          "commit": "b13169416a3bc52ffae653bb38472da051006b57",
+          "evidence": "The canonical 32/64/256 outputs are byte-identical under PYTHONHASHSEED=0 and 811 and remain nested, train-only, score-free, create-only artifacts.",
+          "path": "tests/test_development_subset.py",
+          "test_count": 8
+        }
+      ],
+      "id": 2,
+      "requirement": "Implement and adversarially test deterministic 32/64/256-complex train-only manifests",
+      "status": "complete"
+    },
+    {
+      "evidence": [
+        {
+          "commit": "1852415",
+          "path": "src/interaction_first/pairscale_overfit.py",
+          "sha256": "2d680ab89391ee5881d94d25786dca065897435f1a12092513c82126db05e41e"
+        },
+        {
+          "commit": "eb52ca9",
+          "path": "src/interaction_first/pairscale_unary_controls.py",
+          "sha256": "08d93d13e9dc77f810b59eea59fdbc99affb419cc3396e19edc85250b47cc9e0"
+        },
+        {
+          "path": "results/pairscale/unary_controls_graph_audit.json",
+          "sha256": "56960cd6a6c66be3738212d8ebe15981bfdfef94ec16ec2d2833e5dcb39a9b31"
+        },
+        {
+          "path": "results/pairscale/unary_controls_d5b91dd.result.json",
+          "sha256": "bfc510546ea2272f4d006d3e7c8ee6d94a42a54234b2ffd03c35c8f6b728ef6b"
+        }
+      ],
+      "id": 3,
+      "requirement": "Implement the overfit and unary/marginal/partner-permutation control harness",
+      "status": "complete"
+    },
+    {
+      "evidence": [
+        {
+          "commits": [
+            "e61a3a9",
+            "816e924",
+            "66611e0",
+            "1852415",
+            "90507c3",
+            "e8dd421",
+            "d458b76",
+            "318cafe",
+            "eb52ca9",
+            "13d2fd52268b919fca5ab82d64e938e6e379918b",
+            "b13169416a3bc52ffae653bb38472da051006b57"
+          ],
+          "remote_branch": "origin/agent/pairformer-gate0-v4",
+          "remote_head_at_audit": "b13169416a3bc52ffae653bb38472da051006b57"
+        },
+        {
+          "local_regression_result": "47 passed, 3 skipped because local PyTorch is unavailable",
+          "torch_coverage_evidence": "results/pairscale/unary_controls_graph_audit.json plus completed cluster training and exact-resume jobs"
+        }
+      ],
+      "id": 4,
+      "requirement": "Run regression tests, commit, and push each evidence unit",
+      "status": "complete"
+    },
+    {
+      "evidence": [
+        {
+          "job_id": 1332729,
+          "result": "COMPLETED 0:0",
+          "elapsed": "00:05:57",
+          "resources": "1 GPU, 16 CPU, 64 GiB"
+        },
+        {
+          "exact_resume_job_id": 1332737,
+          "result": "COMPLETED 0:0",
+          "elapsed": "00:03:13"
+        },
+        {
+          "checkpoint_resume_byte_exact": true,
+          "final_checkpoint_sha256": "1eb8e0653dca2c46805dbf0b17b36ba2ba916f4e6702362b535835fb489da048",
+          "macro_pair_auprc": 0.9868429396976074,
+          "macro_precision_at_true_contact_count": 0.9642112365770031,
+          "matched_partner_topk_win_rate": 1.0,
+          "path": "results/pairscale/contact32_ranked_seed17_e8dd421.result.json",
+          "result_file_sha256": "de4bdbc9267a3ffa899908fcf16f13a856792eba6225f68508c01d23a161db97",
+          "train_only_l0_passed": true
+        },
+        {
+          "cluster_roots": [
+            "/ssd/scxi253/model_deployment/results/pairscale/contact32_ranked_seed17_e8dd421",
+            "/ssd/scxi253/model_deployment/results/pairscale/contact32_ranked_resume50_e8dd421"
+          ],
+          "writable_regular_file_count_each": 0
+        }
+      ],
+      "id": 5,
+      "requirement": "Stage and launch the 32-complex overfit experiment on the cluster",
+      "status": "complete"
+    },
+    {
+      "evidence": [
+        {
+          "commit": "318cafe",
+          "path": "src/interaction_first/data_registry.py",
+          "sha256": "fcc31c3bce334c99b61f9d8a38df3119f3da8f5270a6b4c75f4d21a053a22c2c"
+        },
+        {
+          "asset_count": 7,
+          "all_primary_source_checks_passed": true,
+          "commit": "13d2fd52268b919fca5ab82d64e938e6e379918b",
+          "path": "data_registry/evidence_verification/primary_source_license_2026-07-28.json",
+          "sha256": "cf5e92cc281489a21534389ba0a4a145b065bb49a963a6d1607fd9ba33729e1e"
+        },
+        {
+          "registered_sources": [
+            "avida_hil6_2024_11",
+            "chimera_bench_2026_05",
+            "ppiref_zenodo_14845086",
+            "sabdab2_ml_zenodo_20083995"
+          ],
+          "routing": {
+            "avida_hil6_2024_11": "noncommercial_only_training_after_completed_audit",
+            "chimera_bench_2026_05": "external_confirmatory_only_and_currently_not_materialized",
+            "ppiref_zenodo_14845086": "raw_authenticated_but_normalization_incomplete",
+            "sabdab2_ml_zenodo_20083995": "raw_authenticated_but_normalization_incomplete"
+          }
+        }
+      ],
+      "id": 6,
+      "requirement": "Create the data and license registry foundation with verified primary-source metadata",
+      "status": "complete"
+    }
+  ],
+  "verification_summary": {
+    "all_six_requirements_complete": true,
+    "cluster_jobs_rechecked_at_audit": [
+      1332729,
+      1332737,
+      1332782,
+      1332818,
+      1333055
+    ],
+    "primary_source_license_assets_verified": 7,
+    "remote_head_matched_local_before_audit_commit": true
+  }
+}

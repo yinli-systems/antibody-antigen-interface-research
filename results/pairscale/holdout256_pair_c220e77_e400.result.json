@@ -1,0 +1,88 @@
+{
+  "artifacts": {
+    "checkpoint_generation": "epoch-0260-step-00049920",
+    "checkpoint_receipt_file_sha256": "07f352b0022b7f37089480317d88bf4f7491efb6b270cb287909516233a00a62",
+    "checkpoint_sha256": "7208e2a1e3c0870bc20cb2e037394312957ddac0a38badd7800c053c673e47b9",
+    "final_report_sha256": "6f68e26d927e56a25e4ffd0379ca87293ca34d9cbd907ea1c829348a858dfc28",
+    "holdout_access_receipt_sha256": "1bab0a211cab992b9c80a3f1c3dbe64febf74485b942895dea7ac2b6d1034628",
+    "holdout_evaluation_sha256": "d43c46cb887f6b68387e1e9076e79cc76094cb1a567c633676d6313cc7f77b13",
+    "run_manifest_sha256": "d6029c86196a1252ac7d97fb3bbee67b68b02a90290f83a40f06be481b3efd11",
+    "train_epoch_metrics_sha256": "aae1c3d0a7c17594bce750432eee58c3b96ad50d22d0cde52b4ded9c2e4620ad"
+  },
+  "claim_boundary": "Development-only endpoint-disjoint evidence. No validation, test, confirmatory, checkpoint-promotion, biological-generalization, comparative, or state-of-the-art claim is authorized.",
+  "cluster": {
+    "allocated_cpus": 16,
+    "allocated_gpus": 1,
+    "allocated_memory_gib": 64,
+    "elapsed": "01:17:52",
+    "exit_code": "0:0",
+    "job_id": 1332891,
+    "max_rss_kib": 2922688,
+    "state": "COMPLETED"
+  },
+  "format_version": "pairscale_development_holdout_result_record_v1",
+  "holdout_evaluation": {
+    "double_centered_partner_mean_delta": 3.8875388503074646,
+    "double_centered_partner_win_rate": 0.515625,
+    "gate_passed": false,
+    "instance_count": 64,
+    "macro_label_marginal_oracle_auprc": 0.1397762833247823,
+    "macro_model_marginal_outer_auprc": 0.06075649119111645,
+    "macro_pair_auprc": 0.14165895209956433,
+    "macro_precision_at_true_contact_count": 0.14175523834267578,
+    "matched_partner_topk_mean_delta": 1.2337712722364813,
+    "matched_partner_topk_win_rate": 0.546875,
+    "model_selection_authorized": false,
+    "pooled_pair_auprc": 0.06683278800951427
+  },
+  "holdout_evidence": {
+    "access_condition": "train_only_l0_gate_passed",
+    "access_count_within_runner": 1,
+    "checkpoint_promotion_authorized": false,
+    "confirmatory_claim_authorized": false,
+    "evaluation_performed": true,
+    "model_selection_authorized": false
+  },
+  "identity": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "assignment_receipt_file_sha256": "129097c6e720c939433d99f6fd72e298f06ae58830182bcdf5ffa8c27b61601e",
+    "cache_manifest_sha256": "833daf0eca62a0828a817a3592b351ec070f5f6f33062265f922fd160c96b714",
+    "cache_receipt_file_sha256": "0a4b39fcc2977ef517fc8a7054734143fb3e2a5ecc4f0316955fcd08486eb58b",
+    "controller_sha256": "61be62392fa0f64213b8df507d9272c7eab95d980deae3738d4ace0f0757bb5c",
+    "scheduler_script_sha256": "67f936e27443f2845f83c2f0e2f9abafd9ff4b7ba9279e907061513213c365fb",
+    "training_source_commit": "c220e77"
+  },
+  "recorded_at_utc": "2026-07-27T17:40:06Z",
+  "scientific_decision": {
+    "gate_l1_status": "failed_partner_specific_generalization_pending_unary_controls_and_bootstrap",
+    "model_scaling_authorized": false,
+    "next_required_evidence": [
+      "antibody_only_control",
+      "antigen_only_control",
+      "paired_cluster_bootstrap",
+      "strongest_separable_marginal_control"
+    ]
+  },
+  "status": "completed_train_l0_passed_holdout_partner_specificity_failed_no_selection",
+  "train_evaluation": {
+    "completed_epoch": 260,
+    "double_centered_partner_mean_delta": 38.14614534378052,
+    "double_centered_partner_win_rate": 1.0,
+    "gate_checks": {
+      "macro_pair_auprc": true,
+      "macro_precision_at_true_contact_count": true,
+      "matched_partner_topk_win_rate": true,
+      "partner_permutation_mean_decline": true
+    },
+    "global_step": 49920,
+    "macro_label_marginal_oracle_auprc": 0.13130451092075132,
+    "macro_model_marginal_outer_auprc": 0.24706349156857046,
+    "macro_pair_auprc": 0.9705578256152209,
+    "macro_precision_at_true_contact_count": 0.9195963483305615,
+    "matched_partner_topk_mean_delta": 8.544220824803537,
+    "matched_partner_topk_win_rate": 1.0,
+    "pooled_pair_auprc": 0.9585498555989836,
+    "train_l0_gate_passed": true
+  }
+}

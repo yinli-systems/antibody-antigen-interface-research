@@ -1,0 +1,12 @@
+{
+  "authority_metadata_sha256": "3c5ab79904ff6469dae4d6e82faffd64c397c00f6555c0195dfd11cee905d6e6",
+  "data_file_count": 5651,
+  "format_version": "pairscale_materialization_verification_v1",
+  "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+  "plan_file_sha256": "01a4c4e120d4862410229e63b6cc514b56ac35b96de42e2acd102ba029e9e205",
+  "raw_inventory_file_sha256": "c8e081eba3b0f132b41c57c954cfbcf604554a62ba6f166d703dc0d9aea8262a",
+  "source_id": "chimera_bench_2026_05",
+  "total_data_bytes": 3256516385,
+  "verified_at_utc": "2026-07-27T17:31:33Z",
+  "verifier_source_sha256": "e9b7160ad93d26b4d716d09019e61ff3fb87fced4e780032fbf88189743a3edf"
+}

@@ -1,0 +1,52 @@
+{
+  "annotation_counts": {
+    "accepted": 37200,
+    "input_antibodies": 38599,
+    "quarantine_reasons": {
+      "chain_type_differs": 79,
+      "construct_prefix_differs": 527,
+      "numbering_coordinate_duplicated": 1,
+      "numbering_not_list": 79,
+      "numbering_residues_differ": 80,
+      "query_bounds_invalid": 79,
+      "query_prefix_differs": 608,
+      "query_start_differs": 84,
+      "query_suffix_differs": 718,
+      "tool_reported_error": 79
+    },
+    "quarantined": 1399
+  },
+  "annotator_source_sha256": "dc27993942615ce6f313bb40d0321da2c7ce512ead4d20b83d46176cb978b233",
+  "candidate_receipt_sha256": "eceb95ab6e94e711fd3a7ad48e6bf42bf05f6b0d2a455a7921597ec2b0832dbe",
+  "created_at_utc": "2026-07-27T17:18:35Z",
+  "execution": {
+    "inference_batch_size": 512,
+    "input_chunk_size": 4096,
+    "ncpu": 4
+  },
+  "format_version": "pairbench_avida_vhh_annotation_audit_v1",
+  "input_antibody_table_sha256": "a253648900624160577dc5122c3795b072ce48ea7eaacefb2912483033b6512a",
+  "normalization_blockers": [
+    "antigen_chain_boundary_annotation_pending",
+    "independent_vhh_annotation_audit_pending"
+  ],
+  "normalization_eligible": false,
+  "protocol_sha256": "63d88b7ff3f37c80d9478cad27cb11d9099258f83e15b49c6313684a2c2d0cca",
+  "runtime": {
+    "anarcii_version": "2.0.8",
+    "batch_device": "cpu",
+    "model_parameters_sha256": "4d8e5fc9d8580f5e26a190a21853dd3f3770fbf83ce45a46a53d92b083063c39",
+    "model_weights_sha256": "03e9d07d13a3ec98a9d9fe57a0b2ff0853218aa2d7bdd50a25b6d83ff2bea2e0",
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "python_version": "3.12.13",
+    "torch_version": "2.13.0",
+    "wheel_sha256": "6ac81caef04a9cad1af1ea320b35bdced620fe2bfdd0b8b17b98131495b584ca"
+  },
+  "source_id": "avida_hil6_2024_11",
+  "table": {
+    "path": "VHH_BOUNDARY_ANNOTATIONS.parquet",
+    "sha256": "365cacbbaf5103f0eba2b695c9ff3199be07c84d5f573ddf4a318b6effce73f1",
+    "size_bytes": 7372069
+  },
+  "unknown_or_dropped_antibodies": 0
+}

@@ -1,0 +1,110 @@
+{
+  "artifacts": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "assignment_receipt_file_sha256": "129097c6e720c939433d99f6fd72e298f06ae58830182bcdf5ffa8c27b61601e",
+    "evaluation_sha256": "d43c46cb887f6b68387e1e9076e79cc76094cb1a567c633676d6313cc7f77b13"
+  },
+  "bootstrap": {
+    "comparison_count": 4,
+    "confidence": 0.95,
+    "independent_component_count": 58,
+    "instance_count": 64,
+    "iterations": 10000,
+    "seed": 42
+  },
+  "claim_boundary": "Development-only endpoint-disjoint evidence. No validation, test, confirmatory, checkpoint-promotion, biological-generalization, comparative, or state-of-the-art claim is authorized.",
+  "comparisons": {
+    "matched_minus_decoy_double_centered_score": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 58.87920930981636,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -3.6886981195392003,
+      "mean_difference": 3.8875388503074646,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 54.991670459508896,
+      "seed": 42,
+      "upper": 11.483587230643518,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "matched_minus_decoy_topk_score": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 4.333487451542169,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -0.6425291429748627,
+      "mean_difference": 1.2337712722364813,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 3.0997161793056875,
+      "seed": 42,
+      "upper": 3.331005269020881,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "pair_head_minus_label_marginal_oracle_auprc": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 0.14165895209956436,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": -0.08891620114828451,
+      "mean_difference": 0.0018826687747820203,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.1397762833247823,
+      "seed": 42,
+      "upper": 0.11453779719263582,
+      "validated_minimum_independent_cluster_floor": 10
+    },
+    "pair_head_minus_model_marginal_outer_auprc": {
+      "authorization_reason": "independent_cluster_minimum_satisfied",
+      "candidate_mean": 0.14165895209956436,
+      "cluster_count": 58,
+      "confidence": 0.95,
+      "inferential_authorized": true,
+      "instance_count": 64,
+      "insufficient_cluster_policy": "raise",
+      "iterations": 10000,
+      "lower": 0.021880790496643328,
+      "mean_difference": 0.08090246090844788,
+      "minimum_independent_cluster_count": 10,
+      "reference_mean": 0.06075649119111647,
+      "seed": 42,
+      "upper": 0.15568386084625258,
+      "validated_minimum_independent_cluster_floor": 10
+    }
+  },
+  "created_at_utc": "2026-07-27T18:00:19Z",
+  "format_version": "pairscale_development_holdout_cluster_statistics_v1",
+  "gate_l1": {
+    "checks": {
+      "double_centered_partner_lower_bound_above_zero": false,
+      "pair_head_exceeds_label_marginal_oracle_lower_bound_above_zero": false,
+      "pair_head_exceeds_model_marginal_lower_bound_above_zero": true,
+      "topk_partner_lower_bound_above_zero": false
+    },
+    "passed": false,
+    "scaling_authorized": false,
+    "status": "failed_current_partner_specificity_evidence",
+    "unresolved_required_controls": [
+      "antibody_only_control",
+      "antigen_only_control",
+      "strongest_separable_marginal_control_independent_replay"
+    ]
+  },
+  "source_implementation_sha256": {
+    "development_holdout.py": "06c82d906d123e2a72f68c9acc0377eb2bf3c4b2db130fb3751f65bd19e5b675",
+    "metrics.py": "dd0dc2403f492e7c551afc2cb059cb739710409520da81133d0bc4f2ebad9212",
+    "pairscale_holdout_statistics.py": "e4f17cd209c30377797af50aa65b001f7e2a95073adab232619466207a225155"
+  }
+}

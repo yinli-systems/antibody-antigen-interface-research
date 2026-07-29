@@ -1,0 +1,58 @@
+{
+  "format_version": "pairscale_external_result_record_v1",
+  "recorded_at_utc": "2026-07-27T13:07:00Z",
+  "scope": "authenticated_train_only_overfit_nonconfirmatory",
+  "claim_boundary": "training-set memorization and engineering controls only; no held-out, confirmatory, comparative, or state-of-the-art claim",
+  "git_commit": "1852415ad807b5d1b4af2ace77d27fb8a520bb89",
+  "slurm": {
+    "job_id": 1332674,
+    "state": "COMPLETED",
+    "elapsed": "00:06:01",
+    "exit_code": "0:0",
+    "requested_resources": "1 RTX 5090, 16 CPUs, 64 GiB memory",
+    "batch_max_rss_kib": 2206020
+  },
+  "data": {
+    "complex_count": 32,
+    "candidate_pair_count": 1599727,
+    "positive_pair_count": 1303,
+    "cache_manifest_sha256": "325cf6b2eb196c42e44fbb6385514afbf3d08767d8b034114781cb51969bd29e",
+    "cache_receipt_file_sha256": "ac8ab0342554464c1042d128cbd96e9fb665760bb1025721232228b3b4ccb377"
+  },
+  "training": {
+    "completed_epoch": 200,
+    "global_step": 6400,
+    "final_mean_training_loss": 0.023198665978270583,
+    "final_learning_rate": 0.00005,
+    "negative_pair_subsampling": false
+  },
+  "metrics": {
+    "macro_pair_auprc": 0.42138594137548585,
+    "pooled_pair_auprc": 0.3887180633431852,
+    "macro_precision_at_true_contact_count": 0.39180667213198783,
+    "macro_model_marginal_outer_auprc": 0.17601591878981118,
+    "macro_label_marginal_oracle_auprc": 0.14322871500726161,
+    "matched_partner_topk_win_rate": 0.75,
+    "matched_partner_topk_mean_delta": 0.4571620710194111,
+    "double_centered_partner_win_rate": 0.75,
+    "double_centered_partner_mean_delta": 0.2652009129524231
+  },
+  "gate": {
+    "passed": false,
+    "checks": {
+      "macro_pair_auprc_at_least_0.95": false,
+      "macro_precision_at_true_contact_count_at_least_0.90": false,
+      "matched_partner_topk_win_rate_at_least_0.95": false,
+      "partner_permutation_mean_decline_above_0": true
+    },
+    "checkpoint_resume_exactness": "not_yet_tested_by_forked_replay"
+  },
+  "artifacts": {
+    "cluster_root": "/ssd/scxi253/model_deployment/results/pairscale/contact32_overfit_seed17_1852415",
+    "run_manifest_sha256": "4ad12af71290a06296eb3574f18e0fad95688370dfc68645119ac86c7426a27b",
+    "epoch_metrics_sha256": "f5b7dcdeb7126eded0d030054f123bfeb8ae842efe1693f1547f67bfa8bf7ddd",
+    "final_report_sha256": "c0382711964b8bd8905e42ed7c8b418f3acbeeec6bb9dd83be88d6c9b83d2f06",
+    "final_checkpoint_sha256": "b637cdee456d055e84ee1dd344155c0d3d20b85711e8a2354b7f9515b77bdc36",
+    "final_checkpoint_receipt_file_sha256": "09c87d633137527a4f929249b63c46e956a03bafa26466d36cf7927afb9dc24a"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "audit_scope": "architecture_level_partner_feature_isolation",
+  "cuda_available_during_audit": false,
+  "cuda_runtime": "13.0",
+  "device": "cpu",
+  "executed_at_utc": "2026-07-27T18:35:25Z",
+  "format_version": "pairscale_unary_control_graph_audit_v1",
+  "hash_seed_runs": [
+    {
+      "passed": 7,
+      "python_hash_seed": 0,
+      "skipped": 0
+    },
+    {
+      "passed": 7,
+      "python_hash_seed": 811,
+      "skipped": 0
+    }
+  ],
+  "host": "ln01",
+  "interpretation": "Both controls are bitwise invariant to arbitrary forbidden-partner feature values, expose no autograd path to that stream, and produce strictly row-only or column-only logits. This CPU audit is an architecture test, not a training or performance result.",
+  "python": "3.10.20",
+  "source_sha256": "08d93d13e9dc77f810b59eea59fdbc99affb419cc3396e19edc85250b47cc9e0",
+  "test_sha256": "454520bfb3e6e08ad92b3cfafb26763f203bd4698ce44705b693ae00fff06cce",
+  "torch": "2.13.0+cu130"
+}

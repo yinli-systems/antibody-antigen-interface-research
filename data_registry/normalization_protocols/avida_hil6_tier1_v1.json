@@ -1,0 +1,68 @@
+{
+  "admission": {
+    "antigen": {
+      "accepted_annotation_status": "mature_chain_verified_single_variant",
+      "content_identity_field": "mature_chain_sequence_digest",
+      "expected_accepted": 31,
+      "expected_quarantined": 0,
+      "require_empty_quarantine_reasons": true
+    },
+    "pair": {
+      "admit_only_if_both_normalized_entities_are_admitted": true,
+      "expected_admitted_binders": 20275,
+      "expected_admitted_nonbinders": 535666,
+      "expected_admitted_rows": 555941,
+      "expected_quarantined_binders": 705,
+      "expected_quarantined_nonbinders": 17245,
+      "expected_quarantined_rows": 17950,
+      "preserve_measured_binary_target": true,
+      "unknown_cross_pairs_created": 0
+    },
+    "vhh": {
+      "accepted_annotation_status": "imgt_heavy_domain_verified",
+      "content_identity_field": "domain_sequence_digest",
+      "expected_accepted": 37200,
+      "expected_quarantined": 1399,
+      "require_empty_quarantine_reasons": true,
+      "tier2_policy": "not_admitted_future_separately_frozen_ablation_only"
+    }
+  },
+  "canonical_outputs": {
+    "admitted_tables": [
+      "assays.parquet",
+      "duplicate_groups.parquet",
+      "entities_antibody.parquet",
+      "entities_antigen.parquet",
+      "pairs.parquet"
+    ],
+    "entity_rekey_table": "entity_rekey.parquet",
+    "quarantine_tables": [
+      "quarantined_antibodies.parquet",
+      "quarantined_pairs.parquet"
+    ],
+    "raw_construct_provenance_preserved": true
+  },
+  "format_version": "pairbench_avida_tier1_admission_protocol_v1",
+  "input_bindings": {
+    "antigen_annotation_receipt_sha256": "f3ef2e93a6399b54201617fd41cf82b93deb28d9cf5d0b54fb0cb92ac775b0dd",
+    "antigen_audit_summary_sha256": "af024fa55ed8988cea9fe48223245612fc30255e773fc6cd17ca535d89165112",
+    "antigen_independent_audit_sha256": "d2a1e2e937c5a5b138510cf4002a90e7a97410eb4beb0acbb6c30ba84ae0ec2d",
+    "annotation_protocol_sha256": "63d88b7ff3f37c80d9478cad27cb11d9099258f83e15b49c6313684a2c2d0cca",
+    "candidate_receipt_sha256": "eceb95ab6e94e711fd3a7ad48e6bf42bf05f6b0d2a455a7921597ec2b0832dbe",
+    "pairbench_contract_sha256": "c0bfa5f852dd685968f3d32dbfc690c5205bbb2463f0228fc32801a60dbd7cb7",
+    "vhh_annotation_receipt_sha256": "6a2c34eefb38be3d699f891705d025b9850e4e978710edccce309f869bbc5961",
+    "vhh_audit_summary_sha256": "e03894a991e2a908f6624bfcca432215f4561af4445ffccce19537a65ee5bce4",
+    "vhh_independent_replay_sha256": "7444fb7da7e33b0f6418535f3a179060cb506b8fc8296fcd24cc9546a650a378"
+  },
+  "license_route": "noncommercial_only",
+  "prohibitions": [
+    "admit_tier2_without_new_protocol",
+    "convert_unknown_cross_pair_to_nonbinder",
+    "drop_quarantine_accounting",
+    "infer_failed_vhh_boundaries",
+    "merge_construct_and_domain_identity",
+    "use_avida_for_commercial_training"
+  ],
+  "source_id": "avida_hil6_2024_11",
+  "status": "frozen_tier1_only"
+}

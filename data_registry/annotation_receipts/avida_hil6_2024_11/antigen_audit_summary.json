@@ -1,0 +1,36 @@
+{
+  "annotation_counts": {
+    "accepted": 31,
+    "input_antigens": 31,
+    "mutant_constructs": 30,
+    "quarantine_reasons": {},
+    "quarantined": 0,
+    "wild_type_constructs": 1
+  },
+  "annotator_source_sha256": "b0a5c531e26c0509e16554b9166b3b0821e19e16ee5c0b3a06ae2fd771483d27",
+  "authority": {
+    "accession": "P05231",
+    "entry_version": 258,
+    "json_sha256": "e507d4a8f6c19d58ccedeaec1ca72435a18dbe18f9bd4d901b3f07776323d0e2",
+    "last_annotation_update_date": "2026-06-10",
+    "mature_chain_feature_id": "PRO_0000015582",
+    "sequence_version": 1
+  },
+  "candidate_receipt_sha256": "eceb95ab6e94e711fd3a7ad48e6bf42bf05f6b0d2a455a7921597ec2b0832dbe",
+  "created_at_utc": "2026-07-27T17:23:03Z",
+  "format_version": "pairbench_avida_antigen_annotation_audit_v1",
+  "input_antigen_table_sha256": "8e7b58bc07f2dba2cbaade1ed7f458aa3305a43b9c7ebd17877d72a7af5904b4",
+  "normalization_blockers": [
+    "independent_antigen_annotation_audit_pending",
+    "vhh_domain_boundary_annotation_pending"
+  ],
+  "normalization_eligible": false,
+  "protocol_sha256": "63d88b7ff3f37c80d9478cad27cb11d9099258f83e15b49c6313684a2c2d0cca",
+  "source_id": "avida_hil6_2024_11",
+  "table": {
+    "path": "ANTIGEN_BOUNDARY_ANNOTATIONS.parquet",
+    "sha256": "329e0fa22bef687c9c47627d90fcd03ad012592f97fa71af840fb54d774dad70",
+    "size_bytes": 11504
+  },
+  "unknown_or_dropped_antigens": 0
+}

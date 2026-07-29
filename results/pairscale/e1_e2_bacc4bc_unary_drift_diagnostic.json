@@ -1,0 +1,97 @@
+{
+  "action": {
+    "development_holdout_access_receipt_created": false,
+    "development_holdout_evaluation_created": false,
+    "final_report_created": false,
+    "jobs_cancelled_before_holdout_access": true,
+    "next_protocol": "freeze the complete unary representation path during residual-specificity training and verify byte-exact unary state/output invariance"
+  },
+  "claim_boundary": "Authority-train diagnostic evidence only. No development-holdout performance, checkpoint selection, scaling, confirmatory, comparative, SOTA, or world-leading claim is authorized.",
+  "detected_at": "2026-07-28T13:55:10+08:00",
+  "diagnosis": {
+    "contact_phase_detached_unary_logits": true,
+    "failure": "The additive unary baseline collapsed after residual-specificity training began, making pair-minus-unary improvement scientifically confounded.",
+    "mechanism": "The unary heads received no direct specificity gradient, but the antibody and antigen projection streams plus the shared final normalization remained trainable through the pair and specificity paths.",
+    "phase_2_complete_unary_path_frozen": false,
+    "repair_required": true
+  },
+  "format_version": "pairscale_e1_e2_unary_drift_diagnostic_v1",
+  "jobs": [
+    {
+      "checkpoint_epoch_40_receipt_sha256": "28bcd3074fb3d4e0e41032ba8c5a6125b534acd75c0d154c3d1190d04d9cd851",
+      "checkpoint_epoch_40_sha256": "bff5776425e23e08c1ce27137c29ee0e5068b0687f6c30ac3a899d5e404a51d0",
+      "elapsed": "00:30:22",
+      "final_recorded_epoch": 47,
+      "job_id": 1334012,
+      "seed": 17,
+      "slurm_state": "CANCELLED by 1256",
+      "train_epoch_metrics_sha256": "c39f197bd09788a1e547b957bfbc2dc6b8cdb3996977f2d9a1048478558f694c"
+    },
+    {
+      "checkpoint_epoch_40_receipt_sha256": "483ff85b99ff98bf1cfa40d53c0403caf4fdf60e6a98f2f3770e001a15b499d9",
+      "checkpoint_epoch_40_sha256": "5bb69005683b9ee05bdf7da59d6ec600fc933c441d2fdc1e0b7ed97156b05ba5",
+      "elapsed": "00:30:22",
+      "final_recorded_epoch": 47,
+      "job_id": 1334013,
+      "seed": 42,
+      "slurm_state": "CANCELLED by 1256",
+      "train_epoch_metrics_sha256": "8f412f4519a7a40893e1d17c68dc26112f0975a900950d54f0043d0a79051759"
+    },
+    {
+      "checkpoint_epoch_40_receipt_sha256": "534477c92f8e1d6e5927781c9b085de06bf406ea68ec8fb88f1bd30ec7264b0c",
+      "checkpoint_epoch_40_sha256": "01471a71674b40b7e1fb89ebdd2755a94f023a7b6791010d281fa43805d29f52",
+      "elapsed": "00:30:22",
+      "final_recorded_epoch": 47,
+      "job_id": 1334014,
+      "seed": 73,
+      "slurm_state": "CANCELLED by 1256",
+      "train_epoch_metrics_sha256": "39c9370259bd3d2692554b6af92431ac6c9bb76792117416f39f5f63353d0b59"
+    }
+  ],
+  "source": {
+    "git_commit": "bacc4bca6c5ca41abad5d31419f9778d81826442",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_source_bacc4bc"
+  },
+  "train_only_diagnostic": {
+    "epoch_20": {
+      "17": {
+        "macro_interaction_residual_auprc": 0.002905753560109485,
+        "macro_pair_auprc": 0.18569783649643812,
+        "macro_unary_additive_auprc": 0.21099397972762624,
+        "pair_minus_unary_auprc": -0.025296143231188117
+      },
+      "42": {
+        "macro_interaction_residual_auprc": 0.001120027498036732,
+        "macro_pair_auprc": 0.18573388511672195,
+        "macro_unary_additive_auprc": 0.20841857020958662,
+        "pair_minus_unary_auprc": -0.02268468509286467
+      },
+      "73": {
+        "macro_interaction_residual_auprc": 0.001856441799819776,
+        "macro_pair_auprc": 0.1969364397407468,
+        "macro_unary_additive_auprc": 0.21022607099609322,
+        "pair_minus_unary_auprc": -0.013289631255346435
+      }
+    },
+    "epoch_40": {
+      "17": {
+        "macro_interaction_residual_auprc": 0.1636035854065588,
+        "macro_pair_auprc": 0.30689723209556763,
+        "macro_unary_additive_auprc": 0.023404556704898074,
+        "pair_minus_unary_auprc": 0.2834926753906696
+      },
+      "42": {
+        "macro_interaction_residual_auprc": 0.09787313441344174,
+        "macro_pair_auprc": 0.21408794099113504,
+        "macro_unary_additive_auprc": 0.018959567489566977,
+        "pair_minus_unary_auprc": 0.19512837350156806
+      },
+      "73": {
+        "macro_interaction_residual_auprc": 0.270247067118215,
+        "macro_pair_auprc": 0.43539405224643096,
+        "macro_unary_additive_auprc": 0.022343807600443303,
+        "pair_minus_unary_auprc": 0.41305024464598766
+      }
+    }
+  }
+}

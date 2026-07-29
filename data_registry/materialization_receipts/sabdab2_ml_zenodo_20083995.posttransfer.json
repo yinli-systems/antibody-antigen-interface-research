@@ -1,0 +1,38 @@
+{
+  "cross_location_byte_identity": true,
+  "format_version": "pairscale_posttransfer_materialization_receipt_v1",
+  "independently_recomputed_at_utc": "2026-07-27T19:27:43Z",
+  "locations": [
+    {
+      "kind": "local_evidence_copy",
+      "raw_inventory_sha256": "24cff0a708f8a1af018956777d2b6e4a2f0bb983de7ab8b19fd26a23475255cd",
+      "root": "/Users/alice/Downloads/pairscale_registered_raw_5f5fe4e/sabdab2_ml_zenodo_20083995"
+    },
+    {
+      "kind": "cluster_training_copy",
+      "raw_inventory_sha256": "931ab1c965549c401f55406952186c36104ba8c2de53afcd519473c64a30b130",
+      "root": "/ssd/scxi253/model_deployment/data/pairscale_registered_raw_b6b86f1/sabdab2_ml_zenodo_20083995"
+    }
+  ],
+  "observed_files": [
+    {
+      "path": ".authority/provider_metadata.json",
+      "sha256": "63dfd94ccd6bafe0b777d257e05ffe5d849220c577041517b89b9eceae6ca504",
+      "size_bytes": 9106
+    },
+    {
+      "path": "splits.tar.gz",
+      "sha256": "54e3b9cdae5f5ff57a4210866f87e86686203556eea6a033200ff55c0f81e2b7",
+      "size_bytes": 876381859
+    }
+  ],
+  "plan": {
+    "expected_selected_bytes": 876381859,
+    "expected_selected_file_count": 1,
+    "file_sha256": "5d0cbf1dca2be86e0d98b48852c6e5e429261b9785c0c17bc1fb6a3acb34e491",
+    "path": "data_registry/download_plans/sabdab2_ml_zenodo_20083995.json"
+  },
+  "raw_archive_authentication_passed": true,
+  "source_id": "sabdab2_ml_zenodo_20083995",
+  "status": "materialized_not_normalized_not_training_admitted"
+}

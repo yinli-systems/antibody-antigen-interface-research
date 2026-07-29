@@ -1,0 +1,55 @@
+{
+  "claim_boundary": "Development-only fixed-horizon E1/E2 screening on the reused endpoint-disjoint assignment. No untouched-final-test, confirmatory, checkpoint-promotion, scaling, comparative-superiority, SOTA, or world-leading claim is authorized.",
+  "evaluation": {
+    "development_holdout_access": "once_per_seed_after_immutable_epoch_260_checkpoint",
+    "development_holdout_is_untouched_final_test": false,
+    "exhaustive_bidirectional_retrieval_on_fixed_checkpoint": true,
+    "model_or_checkpoint_selection": false,
+    "new_final_test_access": false,
+    "unknown_cross_pairs_receive_binary_nonbinder_labels": false
+  },
+  "format_version": "pairscale_e1_e2_execution_lock_v1",
+  "parent_protocols": {
+    "machine_protocol_file": "protocols/pairscale_e1_e2_partner_specificity_v1.json",
+    "machine_protocol_sha256": "91fa71d83972f4b7b72d733ba74ec6fcb41eba260f7e26a9506f7d6db22fae83",
+    "narrative_protocol_file": "protocols/PAIRSCALE_E1_E2_PARTNER_SPECIFICITY_PROTOCOL_V1.md",
+    "narrative_protocol_sha256": "3d0e50aafed98ef8bb93900acbc1d59803fa3cbf61d39619f37e1ab1859e555d"
+  },
+  "screening_seeds": [
+    17,
+    42,
+    73
+  ],
+  "training": {
+    "checkpoint_every_epochs": 20,
+    "cognate_margin": 0.1,
+    "cognate_margin_temperature": 0.5,
+    "cognate_margin_weight": 0.25,
+    "contact_logit_mode": "unary_plus_interaction_residual",
+    "contact_ranking_temperature": 1.0,
+    "contact_ranking_weight": 1.0,
+    "d_model": 192,
+    "decoy_count_per_direction": 4,
+    "dropout": 0.0,
+    "epochs": 260,
+    "eval_every_epochs": 20,
+    "ffn_dim": 384,
+    "gradient_clip_norm": 5.0,
+    "hard_negative_ratio": 8,
+    "joint_learning_rate_multiplier": 0.1,
+    "learning_rate": 0.001,
+    "num_fusion_layers": 2,
+    "num_heads": 6,
+    "pair_chunk_size": 64,
+    "pair_dim": 96,
+    "phase_1_unary_warmup_end_epoch": 20,
+    "phase_2_detached_unary_residual_end_epoch": 220,
+    "phase_3_joint_finetune_end_epoch": 260,
+    "positive_weight": 1024.0,
+    "precision": "bf16",
+    "retrieval_temperature": 0.5,
+    "retrieval_weight": 0.25,
+    "specificity_score_source": "double_centered_independent_specificity_interaction_residual",
+    "weight_decay": 0.0
+  }
+}

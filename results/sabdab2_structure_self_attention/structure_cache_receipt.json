@@ -1,0 +1,1 @@
+{"claim_boundary":"Development-only structural ablation cache; no confirmatory, held-out, external, clinical, or performance-improvement claim.","format_version":"sabdab2_intra_chain_structure_receipt_v1","manifest_sha256":"2580e41ced744ade8a16fa94ae4b9b22bda5e85b7477a71ae1344ed732bf3e6d","record_count":3028,"role_counts":{"train":2985,"validation":43}}

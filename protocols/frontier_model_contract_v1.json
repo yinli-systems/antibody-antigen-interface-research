@@ -1,0 +1,1312 @@
+{
+  "authorization": {
+    "contact_training_authorized": false,
+    "engineering_gate_authorized": true,
+    "frozen_test_access_authorized": false,
+    "model_selection_authorized": false,
+    "outer_evaluation_authorized": false,
+    "reason": "Engineering contracts exist, but all six externally anchored Gate 0 receipts are not present. The exact joint split has no verified result or independent audit. Scientific training, model selection, outer evaluation, and frozen-test access remain blocked."
+  },
+  "candidate_order": [
+    "D0_dual_encoder_locked",
+    "R1_joint_reranker",
+    "R2_joint_reranker_contact"
+  ],
+  "claim_boundary": {
+    "engineering_gate": "Train-only systems and optimization evidence; no biological performance claim.",
+    "forbidden": [
+      "global S2",
+      "lineage-independent",
+      "measured non-binder for an unobserved pair",
+      "pristine blind test",
+      "state of the art without an identical benchmark",
+      "world-leading without identical benchmark evidence"
+    ],
+    "scientific_boundary_name": "foldwise direct-80/80 four-view homology-separated C3, S2-like"
+  },
+  "data": {
+    "antiberty": {
+      "embedding_dim": 512,
+      "model_name": "AntiBERTy_md_smooth",
+      "weights_sha256": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137"
+    },
+    "authority_manifest_sha256": "e228d5106f5befabf3240ba6d134e2bbc142f948a5d40154a219599d40928d3b",
+    "authority_train_counts": {
+      "antibody_entities": 1383,
+      "antigen_entities": 1172,
+      "exact_pairs": 1830,
+      "source_instances": 3229
+    },
+    "canonical_manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+    "esm2": {
+      "embedding_dim": 1280,
+      "model_name": "facebook/esm2_t33_650M_UR50D",
+      "weights_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+      "window_length": 960,
+      "window_stride": 800
+    },
+    "engineering_cache": {
+      "authorization_manifest_sha256": "4227ec4c7bc8594c61a9b1b89f830febff8a4135b75c333c6420e99ec8efb749",
+      "cache_manifest_sha256": "eccf241f28dfa5e9eca0d95e8f445ae7da4cc8ec28c5b16ec5b078fafd0c3734",
+      "claim_boundary": "Complete authority-train cache for systems and optimization engineering only; it does not authorize validation, model selection, or biological performance claims.",
+      "exact_pair_count": 1830,
+      "excluded_pair_count": 0,
+      "selected_antibody_count": 1383,
+      "selected_antigen_count": 1172,
+      "selected_instance_count": 1830,
+      "selected_instance_membership_sha256": "e3465e558ab8231bb6280d038d07856846ab31608e6e8d3867da3348e85c0a4d",
+      "whole_pool_materialized": false
+    },
+    "engineering_cache_v2_contract": {
+      "status": "unlaunched",
+      "builder_sha256": "01ecb05c13f85de764047429501542ba6131ae6a69175f08350d3a4c9cd63895",
+      "slurm_sha256": "a94f9e26de65ed71ed5dddfaf9869d4e89e38eb07e7190c665793a9494845e82",
+      "loader_sha256": "3b90e89c68bd75d52dc01bbc03acbff9f4d59ba5dcd3e6c16e561c7c64a8030b",
+      "externally_anchored_authority_and_store_manifests_required": true,
+      "exact_allowlist_equality_required": true,
+      "legacy_self_issued_subset_authority_compatible": false,
+      "claim_boundary": "Engineering cache contract only. It has not been launched and produces no training, validation, biological-performance, or SOTA evidence."
+    },
+    "firewall": {
+      "controller_may_read_membership_only_for_all_splits": true,
+      "model_cache_inventory_must_equal_fold_allowlist": true,
+      "model_process_may_mount_whole_pool_cache": false,
+      "nontrain_sequence_or_label_parsing": false
+    },
+    "input_regimes": [
+      {
+        "id": "sequence_only",
+        "role": "primary_initial_track"
+      },
+      {
+        "id": "predicted_or_independent_monomers",
+        "role": "primary_deployable_structure_track"
+      },
+      {
+        "id": "native_bound_chain_conformations",
+        "role": "bound-conformation oracle upper bound"
+      }
+    ],
+    "license_receipts": {
+      "local_snapshot_redistribution_authorized": false,
+      "status": "pending_source-specific receipt"
+    }
+  },
+  "distributed_execution": {
+    "backend": "nccl",
+    "bf16_forward": true,
+    "ddp": {
+      "broadcast_buffers": false,
+      "find_unused_parameters": false,
+      "gradient_as_bucket_view": true,
+      "static_graph_confirmed_for_d0_engineering_path": true,
+      "static_graph_requires_runtime_confirmation": false
+    },
+    "fixed_work_scaling_ranks": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "gather_gradient_backend": {
+      "default": "local_slice_ddp_exact",
+      "diagnostic_only": [
+        "exact_all_reduce",
+        "legacy_autograd"
+      ],
+      "requirements": [
+        "Every rank computes the identical full-global scalar objective.",
+        "The gather and standard DDP reducer use the same fixed process group.",
+        "DDP retains its standard fixed-world-size parameter-gradient averaging.",
+        "Join, uneven effective-world-size semantics, and communication hooks that change DDP averaging are forbidden."
+      ],
+      "semantics": "Forward uses detached rank-major all-gather and replaces only the local-rank slice with a live identity. Its backward scales only the local embedding gradient by the fixed world size, which standard DDP parameter-gradient averaging cancels. Post-gather shared parameters such as temperature are not scaled, and no backward collective is used."
+    },
+    "gradient_accumulation": {
+      "intermediate_microsteps_use_no_sync": true
+    },
+    "production_routing_rule": {
+      "measured_default_ranks_per_job": 4,
+      "measured_gpu_seconds_efficient_ranks_per_job": 2,
+      "minimum_parallel_efficiency_for_single_job_scale_out": 0.6,
+      "otherwise": "Use the best measured ranks per job and scale through independent fold-by-seed tasks.",
+      "robust_fixed_work_evidence": {
+        "global_batch_size": 16,
+        "optimizer_steps_per_run": 400,
+        "seeds": [
+          17,
+          42,
+          73
+        ],
+        "world_size_4_examples_per_second_mean": 191.0664,
+        "world_size_4_throughput_cv": 0.07671,
+        "world_size_8_examples_per_second_mean": 168.6196,
+        "world_size_8_throughput_cv": 0.40423
+      },
+      "throughput_unit": "valid residue pairs per second",
+      "timing_excludes": [
+        "initial cache verification",
+        "checkpoint serialization",
+        "process-group initialization"
+      ]
+    },
+    "rank_count_must_not_exceed_visible_gpu_count": true,
+    "runtime_lock": {
+      "cuda_build_version": "13.0",
+      "cudnn_version_integer": 92000,
+      "manifest_file_sha256": "de522a0b3f067e08d4fac1a4dd52351ca5f7bc8d416ca600c8db1d5b97371868",
+      "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_partner_v1/runtime_locks/frontier_torch213_runtime_manifest.json",
+      "manifest_runtime_state_sha256": "dd38b66d7058da66c1858963dccd4174c46d7a27b4eb0932a363b55e8d8e4e57",
+      "nccl_version": "2.29.7",
+      "pip_check_passed": true,
+      "python_version": "3.10.20",
+      "scope_classification": "isolated_virtual_environment",
+      "torch_version": "2.13.0+cu130"
+    },
+    "tail_policy": "deterministic padding with a globally gathered validity mask; padded slots cannot be positives, negatives, or loss denominators",
+    "finite_cache_runtime_contract": {
+      "sampler_format": "frontier_exact_distributed_batch_sampler_v2",
+      "cursor_format": "frontier_training_cursor_v2",
+      "scope": "finite_authority_train_cache_only",
+      "maximum_int64_indices_per_rank": 16777216,
+      "maximum_permutation_bytes_per_rank": 134217728,
+      "billion_scale_supported": false,
+      "fixed_world_standard_ddp_required": true,
+      "equal_nonempty_local_slot_width_required": true,
+      "unsupported": [
+        "DDP Join",
+        "elastic world size",
+        "custom gradient-averaging hooks",
+        "true zero-slot ranks",
+        "sharded distributed checkpoints"
+      ],
+      "source_sha256": {
+        "src/interaction_first/frontier_batching.py": "a3ac04b43357a8fec452ee676158598f1d99d7bf4efd1bea69569adc612f01fe",
+        "src/interaction_first/frontier_checkpoint.py": "912dddc6db07804e21a0807d19b3262b2afe79db5641c9412eac4b3689b9dc7f",
+        "src/interaction_first/frontier_data.py": "3b90e89c68bd75d52dc01bbc03acbff9f4d59ba5dcd3e6c16e561c7c64a8030b",
+        "src/interaction_first/frontier_distributed.py": "9c9c533b85eb0decbd4d75a898fc13e52f69f92a274ca92d63f6a9a5120b1cb6",
+        "src/interaction_first/frontier_model.py": "f170c4858cb20e27222c0602f9ec4f4656a095944434a8d9f11d53e7c4f4e357",
+        "src/interaction_first/frontier_training.py": "5c0e2d0d51c9ab30dcc8962a270bdc5f34a0d255f12534108bc856c162641da2"
+      },
+      "claim_boundary": "Finite-cache systems engineering only. Billion-scale pretraining requires a separately audited stateless/block shuffle or sharded index."
+    },
+    "launch_contract": {
+      "distributed_launch_contract_sha256": "4c9831f35a11ea49cb8ed5beecd1d33f9cbafa8830b15eff2139e35ec90df136",
+      "runtime_manifest_generator_sha256": "4f488dcadcf543d87ab97c1019af2cd5e81e76ca1a18119573120078eea3a26d",
+      "scale_runbook_sha256": "df022a34544870c5603cb5eed23dd59393a8a26b61c349e92197b9757c93328b",
+      "qos_max_nodes_per_job": 8,
+      "qos_max_gpus_per_job": 64,
+      "synchronous_96_gpu_authorized": false,
+      "fsdp2_implemented": false,
+      "status": "prospective_unlaunched"
+    },
+    "topology": {
+      "gpu": "NVIDIA GeForce RTX 5090 32 GB",
+      "configured_partition_nodes": 12,
+      "configured_partition_gpus": 96,
+      "measured_default_engineering_nodes_per_job": 1,
+      "qos_maximum_nodes_per_job": 8,
+      "qos_maximum_ranks_per_job": 64,
+      "nvlink_assumed": false
+    }
+  },
+  "evaluation": {
+    "contact_candidate_domain": "numbering-defined antibody CDR residues by isolated-antigen surface residues",
+    "contact_cutoff_angstrom": 4.5,
+    "contact_primary_metric": "per-complex macro native-pair AUPRC",
+    "minimum_seeds": [
+      17,
+      42,
+      73
+    ],
+    "partner_specificity": [
+      "composition-preserving partner shuffle",
+      "antibody-only and antigen-only ablations",
+      "unary additive and outer-product marginal baselines",
+      "bidirectional retrieval MRR and Recall@1/5/10",
+      "paired cluster-bootstrap confidence interval"
+    ],
+    "test_policy": "Freeze candidate, seeds, checkpoints, score aggregation, threshold, and one-shot registry before any frozen-test inference."
+  },
+  "execution_profiles": {
+    "contract_d0": {
+      "contract_model_id": "D0_dual_encoder_locked",
+      "max_steps_override_authorized": false,
+      "required_cli_scheduler": "cosine_annealing_warm_restarts",
+      "status": "prospective train-only contract settings; scientific execution remains subject to the authorization gates"
+    },
+    "engineering_diagnostic": {
+      "contract_model_claim_authorized": false,
+      "default_cli_scheduler": "linear_warmup_cosine",
+      "status": "backward-compatible systems and optimization diagnostics only"
+    }
+  },
+  "format_version": "frontier_model_contract_v1",
+  "models": {
+    "D0_dual_encoder_locked": {
+      "antibody_pooling": "residue projection then masked length mean with learned heavy/light chain-type vectors",
+      "antigen_pooling": "residue projection then masked length mean",
+      "dropout": 0.0,
+      "embedding_dim": 128,
+      "epochs": 58,
+      "global_batch_exact_pairs": 1024,
+      "loss": "symmetric multi-positive InfoNCE",
+      "optimizer": {
+        "betas": [
+          0.9,
+          0.98
+        ],
+        "epsilon": 1e-08,
+        "learning_rate": 0.001,
+        "name": "AdamW",
+        "weight_decay": 0.2
+      },
+      "projection_hidden_dim": 256,
+      "scheduler": {
+        "eta_min": 0.0,
+        "name": "CosineAnnealingWarmRestarts",
+        "period_epochs": 10,
+        "period_multiplier": 2,
+        "period_steps_derivation": "period_epochs * steps_per_epoch",
+        "step_unit": "optimizer_step"
+      },
+      "temperature": 0.07
+    },
+    "R1_joint_reranker": {
+      "attention_dropout": 0.1,
+      "attention_heads": 8,
+      "bidirectional_cross_attention_layers": 2,
+      "epochs": 40,
+      "ffn_dim": 512,
+      "global_batch_exact_pairs": 32,
+      "gradient_clip_norm": 1.0,
+      "optimizer": {
+        "betas": [
+          0.9,
+          0.98
+        ],
+        "epsilon": 1e-08,
+        "learning_rate": 0.0001,
+        "name": "AdamW",
+        "weight_decay": 0.01
+      },
+      "residual_dropout": 0.1,
+      "rerank_top_k_per_direction": 64,
+      "retrieval_temperature": 0.07,
+      "scheduler": {
+        "cosine_decay_to_zero": true,
+        "linear_warmup_fraction": 0.05
+      },
+      "width": 256
+    },
+    "R2_joint_reranker_contact": {
+      "contact_head_dim": 64,
+      "contact_loss": "equal positive-class and negative-class means, then equal exact-pair means",
+      "contact_loss_weight": 0.1,
+      "contact_training_authorized": false,
+      "inherits": "R1_joint_reranker",
+      "required_contact_gate": "independent mmCIF parser, chain mapping, resolved mask, label provenance, and fold-local cache receipt"
+    }
+  },
+  "prospective_pairformer_engineering": {
+    "status": "untrained_engineering_candidate",
+    "gate0_status": "blocked",
+    "real_pairformer_training_completed": false,
+    "biological_metric_improvement_observed": false,
+    "large_scale_pairformer_model_run_completed": false,
+    "source_sha256": {
+      "src/interaction_first/data_admission.py": "bc65a6302c351e68eb47440b60ecc3d1d25e8d24d0bbd6e91714f02be8fbbc3d",
+      "src/interaction_first/gate0_authority.py": "69dfe20462e4e4e2749ddb1b3494d41210087046fe7d3cfb49ff929a7996287c",
+      "src/interaction_first/geometry_labels.py": "fe972c92a7cfc33dcc75ebdfa43806cef60a6527b4306a7b8f4aadf6361dac3a",
+      "src/interaction_first/hard_negative_contract.py": "420e5d301b842901f1c069005b3e78367d35a9ea435587e2135ea288253e6047",
+      "src/interaction_first/pair_geometry.py": "301c3635d29a1a54d25053dd63ec9fabddc630474fe0c084a9c771850b02b4f7",
+      "src/interaction_first/pair_geometry_losses.py": "e20d2cfb77620c91f2525eda5070d42f296e2eece9ecea685b6142da64e103b5",
+      "src/interaction_first/pair_geometry_schema.py": "3cd35754390277d7bb1b1843f5d0323cfd5b66a5bc5e420f77a1031899347ff2",
+      "src/interaction_first/pairformer_evaluator.py": "72f199b2fb236f5dffca63bcd0ec1b1c85e646c0adddc7b90ca80bb39c5624ed",
+      "src/interaction_first/pairformer_training_step.py": "4532e762a184d391085c51f998497d59f10d0150a4c81e891ecd51bd776a3c70"
+    },
+    "contract_boundaries": {
+      "data_admission_is_metadata_only": true,
+      "unknown_pairs_are_binary_nonbinders": false,
+      "gate0_identifiers_are_digital_signatures": false,
+      "outer_or_external_evaluation_authorized_by_gate0": false,
+      "training_step_is_production_hot_path": false,
+      "training_step_tests_launch_multi_process_collectives": false,
+      "pair_outputs_remain_quadratic": true
+    },
+    "verification": {
+      "focused_tests_passed": 428,
+      "focused_subtests_passed": 4,
+      "data_admission_tests_passed": 51,
+      "hard_negative_tests_passed": 34,
+      "gate0_authority_tests_passed": 47,
+      "pairformer_training_step_tests_passed": 36,
+      "full_suite_passed": 771,
+      "full_suite_failed": 40,
+      "full_suite_skipped": 1,
+      "full_suite_warnings": 9,
+      "full_suite_subtests_passed": 37,
+      "full_suite_status": "non_passing",
+      "full_suite_failure_boundary": "Thirty-eight deterministic pre-existing fixture/dependency failures: 37 stale exported-layout or missing-physical-fixture failures and one Biopython 1.83 pin versus the local 1.87 environment; plus two sandbox/network-blocked multiprocessing Gloo failures. Zero new regressions were identified."
+    },
+    "joint_split_last_verified": {
+      "slurm_job_id": 1320525,
+      "observed_at": "2026-07-26T13:03:39+08:00",
+      "state": "FAILED",
+      "elapsed": "12:01:16",
+      "exit_code": "1:0",
+      "terminal_reason": "HiGHS time limit reached with no primal solution",
+      "joint_time_limit_seconds": 43200,
+      "nested_assignment_present": false,
+      "independent_audit_receipt_present": false,
+      "builder_log_sha256": "6159a2ddd7a787348a6d077492a4502f1f46adb30035d8a1a060d8208600f0a7",
+      "terminal_state_is_infeasibility_proof": false,
+      "artifact_schema_generation": "v2_superseded",
+      "accepted_by_current_v5_workflow": false,
+      "authorized": false
+    },
+    "nested_core_feasibility_v5_precursor": {
+      "status": "unlaunched_non_authorizing_precursor",
+      "format": "train_only_nested_direct80_four_view_neighborhood_folds_v5",
+      "train_authority": "gate0_physical_train_only_allowlist_v1",
+      "locked_joint_policy_sha256": "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd",
+      "implementation_commit": "cb2a7a271a2bb14b4a262ba2e9b5124edad72df1",
+      "outer_fold_count": 3,
+      "dependent_inner_fold_count_per_outer": 3,
+      "exhaustive_boundary_view_audit_count": 48,
+      "accepted_artifact_generations": {
+        "v2": false,
+        "v3": false,
+        "v4": false,
+        "v5_provisional_discovery": false,
+        "v5_externally_pinned_replay_after_independent_audit": true
+      },
+      "physical_train_only_allowlist_required": true,
+      "exact_four_column_train_only_canonical_manifest_required": true,
+      "full_authority_split_or_test_manifest_may_be_mounted_or_read": false,
+      "nofollow_same_descriptor_reads_required": true,
+      "isolated_python_staged_application_source_count": 3,
+      "workflow": [
+        "create-only provisional_discovery publishes a candidate membership digest and append-only attempt ledger",
+        "an external controller freezes the candidate membership digest",
+        "a separate numbered externally_pinned_replay reproduces the frozen digest",
+        "an independent replay audit may accept only the pinned replay"
+      ],
+      "full_authority_component_gate": {
+        "identity_source": "transitive_connected_components_of_complete_authority_train_direct_graphs",
+        "canonical_identifier": "lexicographically_minimum_entity_identifier",
+        "outer_minimum_components_per_axis": 25,
+        "inner_minimum_components_per_axis": 20,
+        "component_presence_encoding": "exact_binary_or_over_effective_validation_endpoints",
+        "inner_levels_retain_complete_graph_component_identity": true,
+        "builder_selected_vector_binds_both_axes": true,
+        "auditor_independently_reconstructs_complete_graph_components": true,
+        "proves_global_s2_or_lineage_independence": false
+      },
+      "source_sha256": {
+        "src/interaction_first/nested_joint_milp.py": "798a54752caaa830bf3a5162854ecdf75028b1b2086c57a90df7798bb045883e",
+        "scripts/build_train_only_nested_neighborhood_folds.py": "9bb3c0284f76b0d0bae0cc2744ee26bf89ee94b978e7d41acff0c763852bc320",
+        "scripts/audit_train_only_nested_neighborhood_folds.py": "9ed89f767f1e6b02a74eda182fc2a9982a3a235e46b6a976d2b319bf4df3cb04",
+        "slurm/frontier_nested_split_build_audit.sbatch": "520d8ba64e5f08231c2c7e91d959ba70830b72d6faeb843bf2b8ede9b0d9caf4",
+        "tests/test_nested_joint_milp.py": "2d6d46e61a58b608d79299b15c3ae3e35cd8a7667a9626e8127e516acce6816c",
+        "tests/test_train_only_nested_neighborhood_folds.py": "5c021ff4c3fa9637ad2004c3cfaedcb37b168fbb395671cee81d3d4be0828cbb"
+      },
+      "targeted_tests_passed": 81,
+      "targeted_tests_passed_under_hash_seeds": [
+        1,
+        777
+      ],
+      "related_combined_tests_passed": 237,
+      "authorizes_split_domain_gate0": false,
+      "authorizes_training_model_selection_or_evaluation": false,
+      "does_not_prove": [
+        "locked V0 full-retention-first lexicographic objective stages",
+        "integration of locked representativeness and remaining balance gates into the v5 joint MILP",
+        "deterministic sequential variable fixing or canonical tie-break trace",
+        "precision or power receipt",
+        "remaining runtime closure",
+        "organizational independence",
+        "a second independent MILP",
+        "transitive lineage independence",
+        "independent historical solver execution",
+        "any other Gate 0 domain"
+      ],
+      "full_graph_reconstruction_production_audit_cost_measured": false,
+      "production_solver_memory_and_runtime_measured": false,
+      "claim_boundary": "No v5 real run or result exists. Even an independently audited, externally pinned v5 replay is only a non-authorizing exact core-feasibility precursor with full-authority component minima; it cannot close Gate 0 or authorize training, model selection, or evaluation."
+    },
+    "score_free_split_statistics_v1": {
+      "status": "synthetic_engineering_oracle_only",
+      "implementation_commit": "8343c3b526d185d56a8cf3b73c3f8c9165cf02c6",
+      "allowed_input_scope": [
+        "typed train-only sequence-length summaries",
+        "typed train-only direct-degree and component summaries",
+        "observed exact positive-pair incidence",
+        "already scoped outer or inner endpoint universes"
+      ],
+      "forbidden_input_classes": [
+        "contact or interface labels",
+        "paratope or epitope sizes",
+        "affinity or assay outcomes",
+        "embeddings, predictions, losses, ranks, or model scores"
+      ],
+      "implemented_gates": [
+        "tie-preserving type-1 quintile schemes with explicit missing-VL bins",
+        "50-digit Decimal SMD with exact rational means and sample variances",
+        "exact Fraction histogram total variation and empirical KS",
+        "outer, pooled-outer, and inner distribution threshold contracts",
+        "exact pair, endpoint, component, retention, and quarantine shape gates",
+        "singleton-positive fractions, bipartite density, and exact finite-library chance MRR",
+        "exact three-fold relative-range gates and pooled entity-disjoint outer checks",
+        "canonical audit digests binding thresholds, universe/training/validation memberships, and quantile cuts"
+      ],
+      "source_sha256": {
+        "src/interaction_first/score_free_split_statistics.py": "e9b2a2667d52cc1b7785b95fc195666696b202212ad2aa136b551d044a29fecf",
+        "tests/test_score_free_split_statistics.py": "e63d50b145e6d5c4f1bcf52ea16bff4e30c7432add36303556a0503c23a53751"
+      },
+      "targeted_tests_passed": 20,
+      "targeted_tests_passed_under_hash_seeds": [
+        1,
+        777
+      ],
+      "related_combined_tests_passed": 257,
+      "authorizes_split_domain_gate0": false,
+      "authorizes_training_model_selection_or_evaluation": false,
+      "remaining_boundaries": [
+        "typed summaries are not yet independently derived from authenticated raw sequence and graph sources",
+        "the oracle is not integrated into the v5 joint MILP or independent replay auditor",
+        "no real authority-train fold was audited",
+        "homology-edge and zero-crossing audits remain separate",
+        "no independently implemented second statistics oracle exists",
+        "no isolated inner-scope source firewall receipt exists"
+      ],
+      "claim_boundary": "Synthetic score-free statistics and hard-gate engineering only. No real split feasibility, training authority, model result, biological metric, or SOTA evidence was produced."
+    },
+    "v6_a_score_free_exact_solver": {
+      "authorization": {
+        "implementation_engineering": true,
+        "model_selection": false,
+        "outer_evaluation": false,
+        "split_gate0": false,
+        "training": false
+      },
+      "complete_feasible_region_authority": "cp_sat_plus_exact_decimal_fraction_separation_plus_independent_raw_source_audit",
+      "direct_highs_scope": "shared_linear_projection_only",
+      "format": "train_only_v6_a_score_free_solver_policy_v1",
+      "policy_path": "protocols/v6_a_score_free_solver_policy_v1.json",
+      "policy_sha256": "ac28232d8d59190f85c24c0bbfee7e4b8b9bbed28b29b0a91a097b49f7a27fa6",
+      "protocol_path": "protocols/V6_A_SCORE_FREE_EXACT_SOLVER_PROTOCOL.md",
+      "protocol_sha256": "086f6afd7e3835f35e17879a205b753ce0641626bfa6205cce5cecaa33c293ee",
+      "raw_source_authority": {
+        "accepted_input_channels": [
+          "externally anchored physical train-only authority allowlist",
+          "externally anchored exact four-column canonical sequence manifest",
+          "externally anchored direct-edge ledgers for VH, VL, concatenated antibody, and antigen views"
+        ],
+        "canonical_format": "score_free_authority_v2",
+        "create_only_publication": true,
+        "derived_without_external_summaries": [
+          "sequence lengths and missing VL",
+          "four-view direct and antibody-union degrees",
+          "complete-graph component identity and size",
+          "observed exact-pair incidence degrees",
+          "axis-scoped quantile cuts"
+        ],
+        "locked_inventory": {
+          "antibody_entities": 1383,
+          "antigen_entities": 1172,
+          "exact_pairs": 1830,
+          "source_rows": 3229
+        },
+        "nofollow_same_descriptor_hash_and_read": true,
+        "physical_input_derivation_controller": {
+          "authenticated_historical_scope": "train-authority membership and exact four-view direct graphs only",
+          "create_only_outputs": [
+            "train_authority_allowlist.json",
+            "train_canonical_manifest.csv",
+            "edge_ledger_vh.json",
+            "edge_ledger_vl.json",
+            "edge_ledger_concatenated_antibody.json",
+            "edge_ledger_antigen.json",
+            "derivation_receipt.json"
+          ],
+          "historical_fold_assignment_reused": false,
+          "historical_fold_feasibility_claim_reused": false,
+          "manifest_firewall": "only the first INSTANCE field is inspected before authorization; sequence columns are parsed only for authority-train identifiers",
+          "production_inputs_created": true,
+          "production_receipt": {
+            "authority_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+            "file_sha256": "c0112d107b6b95b3db2d28d11ab1d96b4245323fa9c59f1c2939df1b8ba3ae5f",
+            "graph_edge_counts": {
+              "antigen": 16273,
+              "concatenated_antibody": 19318,
+              "vh": 33202,
+              "vl": 52877
+            },
+            "manifest_firewall": {
+              "authorized_sequence_rows_parsed": 3229,
+              "non_authorized_sequence_rows_parsed": 0,
+              "physical_source_rows_scanned": 3663,
+              "source_newline_convention": "CRLF"
+            },
+            "output_directory": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/derivation_from_v2_assignment_4f08bdce",
+            "output_sha256": {
+              "edge_ledger_antigen.json": "0fbc267e96376635fde00afdc5fbd665d95ed4f691ffb23f6d229842eca0be36",
+              "edge_ledger_concatenated_antibody.json": "158d41b4e83878eb6a302f262fa1d24173ff541d6787b50283e268f35d5aeb2a",
+              "edge_ledger_vh.json": "b0e725b8dc9da91f8180a3bed5f95642ba341393cabc4ec42c5a4154cc44a15d",
+              "edge_ledger_vl.json": "c92a59af623259818290b1105a9dad4a9d2c4574d675fdad4ec10ce45ad9a099",
+              "train_authority_allowlist.json": "c05800f507ae91105099d731e691d45e4ab95b029d76a2d352ed9ea0c10adceb",
+              "train_canonical_manifest.csv": "7a7b24ed59fed5d8debc089de52b6eeb454ec4b027376a18270537a743432bd1"
+            },
+            "self_receipt_sha256": "229d895193809e9970074bc178573027ec8095ad28fcd03c473dec565c402e1d",
+            "training_authorized": false
+          },
+          "source_sha256": {
+            "scripts/derive_v6_score_free_inputs.py": "ff5dcb68e6257bbf07e2f82b53ee4a2dc08aee801519234e9ee1f3e56fa3f901",
+            "tests/test_derive_v6_score_free_inputs.py": "aa78a67f45dd2a572a0381bbb9fa76e0031edbd3b4a48cdc50352ae9a04601f3"
+          },
+          "status": "production_physical_inputs_created_and_independently_rehashed_no_training_authority",
+          "targeted_tests_passed_under_each_hash_seed": 9,
+          "related_regression_tests_passed_under_each_hash_seed": 155,
+          "tested_under_python_hash_seeds": [
+            1,
+            777
+          ]
+        },
+        "production_bundle_created": true,
+        "production_bundle_receipt": {
+          "authority_membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+          "counts": {
+            "antibody_entities": 1383,
+            "antigen_entities": 1172,
+            "exact_pairs": 1830,
+            "source_rows": 3229
+          },
+          "file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
+          "forbidden_outcome_or_model_fields_accepted": false,
+          "output_path": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/primary_authority_97f362d/score_free_authority_v2.json",
+          "publication_controller_sha256": "f31e67c5a2cf8495e5ebdef3d5bfb91e7b95c175c826f282b24d425877f9bed9",
+          "publication_sha256": "cfea44099d73c7dc6d3ec6047e6a4630759b0777627d46a87e6caac905168ec8",
+          "scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+          "training_authorized": false
+        },
+        "source_sha256": {
+          "scripts/build_score_free_authority.py": "f31e67c5a2cf8495e5ebdef3d5bfb91e7b95c175c826f282b24d425877f9bed9",
+          "src/interaction_first/score_free_authority.py": "41a6874158163f8cb28f29fc2f524daf92b48b53576c0197e5f5c2f223205ee9",
+          "tests/test_score_free_authority.py": "5ee4d4a8610c39c5e99869465503aa8a55af8e687480a40bff4960fd6ae1d28d"
+        },
+        "status": "production_authority_bundle_created_rehashed_and_independently_agreed_no_training_authority",
+        "authority_membership_hash_scheme": "sorted_unique_ascii_identifiers_with_one_LF_each",
+        "authority_membership_expected_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+        "related_regression_tests_passed": 157,
+        "targeted_tests_passed": 9,
+        "tested_under_python_hash_seeds": [
+          1,
+          777
+        ]
+      },
+      "score_free_statistics_v2": {
+        "cross_fold_and_pooled_receipts_bind_all_fold_receipt_hashes": true,
+        "fold_receipt_bindings": [
+          "pair inventory",
+          "axis-specific profiles including component identity",
+          "thresholds",
+          "quantile cuts and missing-value bins",
+          "role memberships",
+          "statistics implementation source"
+        ],
+        "inner_scope_receipt": "exact inner-universe membership must equal the externally selected outer-training membership",
+        "production_fold_receipts_created": false,
+        "schemas": [
+          "score_free_fold_audit_v2",
+          "score_free_cross_fold_balance_v2",
+          "score_free_pooled_outer_audit_v2",
+          "score_free_inner_universe_scope_receipt_v1"
+        ],
+        "source_sha256": {
+          "src/interaction_first/score_free_split_statistics.py": "4274c75b2e523fb1617546355771331e83b1645ee3ab598dccb321e3bad236f0",
+          "tests/test_score_free_split_statistics.py": "7ef32a47d4b52d47ccd51538d038eaaf38fc92b56b4027a844cc03bbaba90661"
+        },
+        "status": "synthetically_hardened_unrun_on_production_folds",
+        "targeted_tests_passed": 22
+      },
+      "independent_score_free_auditor": {
+        "authority_reconstruction": "independent raw-byte canonicalization, graph reconstruction, covariate derivation, and quantile construction",
+        "create_only_machine_and_markdown_receipts": true,
+        "exhaustive_assignment_checks": 50,
+        "forbidden_imports": [
+          "score_free_authority",
+          "score_free_split_statistics",
+          "nested_joint_milp"
+        ],
+        "fold_statistics_recomputed": [
+          "50-digit pooled-sample SMD",
+          "exact TV and KS",
+          "retention, quarantine, endpoint, and component shape",
+          "singleton fractions, bipartite density, and exact chance MRR",
+          "cross-fold exact relative ranges",
+          "pooled outer representativeness"
+        ],
+        "inner_pair_incidence_recomputed_from_isolated_outer_training_universe": true,
+        "historical_production_audit_receipts": [
+          {
+            "independent_auditor_source_sha256": "ea125cf890b6990885417558c4777ef02a580058c95bcbb1b6ef5b9f08d5a218",
+            "output_directory": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/independent_authority_audit_97f362d",
+            "receipt_file_sha256": "134a5af8cd89858dd7cd9d59cec44020c3b9d6bba942861416d65c89ff9ccf20",
+            "receipt_sha256": "52559592b14029425217e75c8c97a6380d2e136faedfbc864268537cbe6e207a"
+          }
+        ],
+        "production_audit_receipt_created": true,
+        "production_audit_receipt_current_source_replay_required": false,
+        "production_audit_receipt": {
+          "candidate_file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
+          "candidate_scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+          "field_by_field_agreement": true,
+          "independent_scientific_payload_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+          "independent_auditor_source_sha256": "f8b10a4b92d2c2c56f167c1d6f5705677b6bedba802ffe23f12e32666b70ae81",
+          "markdown_sha256": "80b305da7879476287f6f4f2c3194fb544ea520ca0dc8576c0c73e50035dfa0f",
+          "output_directory": "/ssd/scxi253/model_deployment/data/frontier_v6_a_authority_inputs/independent_authority_audit_021675b",
+          "passed": true,
+          "receipt_file_sha256": "54b06e2102ac79c98da02302149e01a1318cc4b4d5de0bcb4fa115bc6894bb4b",
+          "receipt_sha256": "4b1076073cf7305363217277245de763f2aca1d8ce2861177a824ec2af70a6c4",
+          "training_authorized": false
+        },
+        "related_regression_tests_passed_under_each_hash_seed": 147,
+        "source_sha256": {
+          "scripts/audit_score_free_authority_independent.py": "fb501add7ce098f6535d5b935a4f789057a42761dd36d919a86ea1a0f97edd88",
+          "src/interaction_first/score_free_independent_auditor.py": "f8b10a4b92d2c2c56f167c1d6f5705677b6bedba802ffe23f12e32666b70ae81",
+          "tests/test_score_free_independent_auditor.py": "8f7a18ded956d19bbbc0040c9694c01558d2b09c4931bfac53619b4995c58eca"
+        },
+        "status": "current_scope_local_source_replayed_from_raw_bytes_and_field_by_field_agreed_no_training_authority",
+        "targeted_tests_passed": 18,
+        "tested_under_python_hash_seeds": [
+          1,
+          777
+        ]
+      },
+      "joint_solver_engineering_v1": {
+        "canonical_ir_format": "v6_a_canonical_joint_ir_v1",
+        "cp_sat_receipt_format": "v6_a_cp_sat_separation_receipt_v1",
+        "highs_receipt_format": "v6_a_highs_linear_projection_receipt_v1",
+        "declared_exact_gate_count": 66,
+        "implemented_fail_closed_conditions": [
+          "CP-SAT must return OPTIMAL or an INFEASIBLE proof",
+          "every declared exact gate must be evaluated for every candidate",
+          "primary statistics and independent audit receipts must be SHA-256 bound",
+          "independent audit disagreement rejects the candidate",
+          "a repeated, undeclared, or candidate-disagreeing conflict cut stops",
+          "every accepted linear assignment is independently recomputed with integer arithmetic",
+          "direct HiGHS requires an optimal zero-gap exact-row-audited result or an infeasibility proof"
+        ],
+        "highs_locked_development_probe": {
+          "highspy_version": "1.15.1",
+          "mip_logging_callback_only": true,
+          "parallel": "off",
+          "threads": 1,
+          "user_solution_callback_used": false
+        },
+        "independent_cp_sat_raw_authority_formulation_completed": true,
+        "independent_cp_sat_proto_to_canonical_ir_completed": true,
+        "synthetic_complete_66_gate_exact_separation_oracle_completed": true,
+        "canonical_10_percent_dry_run": {
+          "production_run_completed": true,
+          "production_receipt": {
+            "complete_exact_candidate_present": false,
+            "cp_sat_invoked": false,
+            "graph_or_pair_incidence_accessed": false,
+            "highs_invoked": false,
+            "output_directory": "/ssd/scxi253/model_deployment/results/v6_a_canonical_10pct_001",
+            "peak_rss_kib": 22792,
+            "pre_graph_infeasibility_proven": true,
+            "receipt_file_sha256": "48bac8420b7eacb31086c77ca0f04660004f6e1ba5387bbe9f4259b12ae23952",
+            "receipt_sha256": "e5b1db83df183406430dc118289b466b61d06f8533451c026a14eab0defa81fd",
+            "report_sha256": "db3ffb6d2cbb2c6bf79b8042c2274a7acaa1eada51e2ac9dff3432b44f4e657e",
+            "required_distinct_outer_validation_entities_per_axis": 180,
+            "selected_antibody_count": 139,
+            "selected_antigen_count": 118,
+            "terminal_status": "STATIC_NECESSARY_CONDITION_INFEASIBLE",
+            "training_authorized": false
+          },
+          "registered_run_id": "v6_a_canonical_10pct_001",
+          "registration_sha256": "51a4b67bb4fe9cb9431ae31ca7a1cfdd16ec8d45381efdc17229ad17c471053a",
+          "selection": "per-axis ceiling of one tenth by lowercase SHA-256 entity ID before graph or pair-incidence access",
+          "source_sha256": {
+            "scripts/run_v6_canonical_dry_run_preflight.py": "368d8eaeba51f0256ae4801cbfcfb1d70fcf5493ee6794b4dca571e8e7b8278a",
+            "tests/test_v6_canonical_dry_run_preflight.py": "44439dba3cad17edf91f62a37a34c4b814f19f7476b803ba5b0a68040e594908"
+          },
+          "status": "single_run_consumed_static_pre_graph_infeasibility_proven_v6_a_stopped",
+          "training_authorized": false
+        },
+        "independent_cp_sat_evidence": {
+          "authority_input": "externally hash-anchored score_free_authority_v2 plus four authority-bound edge ledgers",
+          "forbidden_imports": [
+            "nested_joint_milp",
+            "v6_joint_ir",
+            "v6_highs_backend"
+          ],
+          "historical_milp_rows_or_indices_consumed": false,
+          "highs_artifacts_consumed": false,
+          "small_instance_exhaustive_outer_states": 64,
+          "small_instance_shared_variable_count": 132,
+          "small_instance_shared_constraint_count": 566,
+          "status_agreement": "64_of_64_OPTIMAL_or_INFEASIBLE_states",
+          "exact_separation_integrated_with_production_authority": false
+        },
+        "production_python_3_10_solver_lock_completed": true,
+        "production_solver_runtime_controller": {
+          "bootstrap": {
+            "official_virtualenv_no_download_mode": true,
+            "virtualenv_seed_network_download_disabled": true,
+            "virtualenv_version": "20.35.4",
+            "wheel_sha256": {
+              "distlib-0.4.3-py2.py3-none-any.whl": "4b0ce306c966eb73bc3a7b6abad017c556dadd92c44701562cd528ac7fde4d5b",
+              "filelock-3.32.0-py3-none-any.whl": "d396bea984af47333ef05e50eae7eff88c84256de6112aea0ec48a233c064fe3",
+              "platformdirs-4.11.0-py3-none-any.whl": "360ccded2b7fce0af0ff80cc8f5942a1c5d99b0e856033acb030bfc634709e74",
+              "typing_extensions-4.16.0-py3-none-any.whl": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+              "virtualenv-20.35.4-py3-none-any.whl": "c21c9cede36c9753eeade68ba7d523529f228a403463376cf821eaae2b650f1b"
+            }
+          },
+          "direct_versions": {
+            "highspy": "1.15.1",
+            "ortools": "9.15.6755"
+          },
+          "immutability_audit": {
+            "physical_directory_and_regular_file_writable_count": 0,
+            "virtualenv_interpreter_symlink_count": 6,
+            "virtualenv_symlink_display_mode_is_not_inode_writability": true
+          },
+          "native_library_process_isolation_required": true,
+          "production_receipts": {
+            "cp_sat": {
+              "backend_environment_contains_highspy": false,
+              "file_sha256": "1c776db49d548f0789174514a047b5f7a665da21fe14471bde0c14eca9fa3b82",
+              "receipt_sha256": "4d0250cf77213fe0aa812fce14bccab0c001d105a7285ecca67081c36177250a",
+              "smoke_status": "OPTIMAL",
+              "wheel_count": 11
+            },
+            "highs": {
+              "backend_environment_contains_ortools": false,
+              "file_sha256": "2523cb24fae64d116e97dee4fd3365c767a639e1e84fbeabadf1fa8aca961951",
+              "mip_gap": "0.0",
+              "receipt_sha256": "0de4eb38a60b7def89772ea557e4b0d803c573e8b83504e8f44b3eda2ce26fa3",
+              "smoke_status": "kOptimal",
+              "wheel_count": 2
+            },
+            "python_version": "3.10.12",
+            "root": "/ssd/scxi253/model_deployment/envs/v6_a_solver_runtime_63f71f0_v2",
+            "source_sha256": "91a80ef18535d77ba7bbbc005374ad05bd1eb49a6a966c63b91b6c2982474bc2"
+          },
+          "receipt_format": "v6_a_solver_runtime_lock_v1",
+          "source_sha256": {
+            "scripts/lock_v6_solver_runtime.py": "91a80ef18535d77ba7bbbc005374ad05bd1eb49a6a966c63b91b6c2982474bc2",
+            "tests/test_lock_v6_solver_runtime.py": "61031024512f9cbab690ba9de2ce3a8d873d197968fc2d616b531e8139c8aec8"
+          },
+          "status": "separate_cp_sat_and_highs_python_3_10_runtimes_frozen_and_independently_audited",
+          "targeted_tests_passed_under_each_hash_seed": 5,
+          "related_v6_tests_passed_under_each_hash_seed": 24,
+          "training_authorized": false
+        },
+        "production_solver_run_completed": false,
+        "source_sha256": {
+          "pyproject.toml": "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342",
+          "src/interaction_first/v6_highs_backend.py": "e96c8bad2606ee048b6d802fd16da3f38f236cb099f11146b75d423399863e65",
+          "src/interaction_first/v6_exact_separation_oracle.py": "902b838cf6ba7c39d51f774497f855a8bec455b7942804c8031f88e09c575cef",
+          "src/interaction_first/v6_joint_ir.py": "595043922213c0e5c95d6a8563e64decaa1d7783d1aa668c6e23e7a099b8fe32",
+          "src/interaction_first/v6_cp_sat_formulation.py": "d07e2a402c63fe1fe642bb0f80162c8850bfef1d17a18e8d3fb4afde40b3a9dd",
+          "tests/test_v6_cp_sat_formulation.py": "75683f124963e304d370c96f3a526212c09c562135630922f12efde731f68885",
+          "tests/test_v6_exact_separation_oracle.py": "2408ad1b61e224df06ee31f51b0bac08f056b67b4df0588430c2e1e7dc9b6841",
+          "tests/test_v6_a_protocol.py": "daf42ca88fcf9cbe74b3d69ce0d86de437f83e2ac37b2bf208a6a9424663c6b2",
+          "tests/test_v6_joint_ir.py": "66170ce2a36d5ce76e17a9e4d86d8e9586bdc8064934faadb66219c7eebeefa9"
+        },
+        "status": "v6_a_stopped_by_registered_ten_percent_static_preflight_new_decomposition_protocol_required",
+        "targeted_tests_passed_under_each_hash_seed": 25,
+        "related_regression_tests_passed_under_each_hash_seed": 151,
+        "training_authorized": false,
+        "claim_boundary": "The independent direct CP-SAT formulation, common linear semantics, and complete 66-gate primary/independent exact oracle are synthetically verified. No receipt can certify the complete V6-A feasible region until production CP-SAT separation and the direct HiGHS projection audit both reach their accepted terminal states."
+      },
+      "rejected_terminal_states": [
+        "FEASIBLE",
+        "UNKNOWN",
+        "timeout",
+        "nonzero_gap",
+        "incomplete_separation",
+        "audit_disagreement"
+      ],
+      "status": "stopped_after_registered_ten_percent_pre_graph_infeasibility_not_a_full_authority_infeasibility_claim",
+      "training_prerequisites": [
+        "audited_full_3_plus_9_assignment",
+        "post_freeze_3d_interface_leakage_audit",
+        "passed_frozen_attainable_precision_and_power_gate",
+        "fold_local_cache_equality_receipts"
+      ]
+    },
+    "v6_b_decomposition": {
+      "authorization": {
+        "implementation_engineering": true,
+        "model_selection": false,
+        "outer_evaluation": false,
+        "split_gate0": false,
+        "training": false
+      },
+      "execution": {
+        "full_authority_only": true,
+        "inner_subproblem_count": 3,
+        "logic_based_master_cuts_require_replayed_assumption_support": true,
+        "row_shard_can_authorize_feasibility": false,
+        "row_shard_can_authorize_training": false,
+        "row_shard_samples_entities_or_pairs": false,
+        "total_exact_gate_count": 66
+      },
+      "logic_based_linear_controller": {
+        "accepted_terminal_statuses": [
+          "OPTIMAL",
+          "INFEASIBLE"
+        ],
+        "append_only_progress_event_self_hash_required": true,
+        "append_only_progress_sink_failure_is_terminal": true,
+        "assumption_support_must_be_nonempty": true,
+        "exhaustive_three_group_outer_states_checked": 8,
+        "full_66_gate_exact_oracle_integrated": true,
+        "inner_exact_failures_are_local_cuts": true,
+        "independent_replay_directly_rebuilds_selected_proto_rows": true,
+        "integer_row_postsolve_audit_required": true,
+        "master_cut_requires_primary_replay_and_independent_replay": true,
+        "outer_exact_failures_are_master_cuts": true,
+        "production_run_completed": true,
+        "source_sha256": {
+          "src/interaction_first/v6_b_decomposition.py": "fc15590316e3fb7fc248420093bc74dad3a57cfe0eae05985d2ee580675f6e40",
+          "src/interaction_first/v6_b_independent_core_auditor.py": "0ac83a633f6dbea12c67b09bfb0850e60c70250312393aea6804a1fbe28edca9",
+          "tests/test_v6_b_decomposition.py": "9580a0389df4ad2e6a91fda327dfbaefcbc213f30fb8b4fcd0be502dbcc18458",
+          "tests/test_v6_b_independent_core_auditor.py": "5a42d09877548a6ef0f658f2c0d5526a5105243d86cdc2e83447b59a10b40001"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 24,
+        "related_v6_tests_passed_under_each_hash_seed": 130,
+        "training_authorized": false
+      },
+      "independent_cp_linear_audit_controller": {
+        "complete_score_free_region_authorized": false,
+        "create_only_receipt_required": true,
+        "direct_raw_authority_reconstruction_required": true,
+        "historical_milp_matrix_consumed": false,
+        "production_run_completed": true,
+        "registration": {
+          "implementation_commit": "c73630c1a485032dda223c1c24d058ff5c117a2b",
+          "primary_result_file_sha256": "539cc1e32a12b892ae2fbb2ea9efbc985dc5c8a9ca5e7be51be198efd8c212b6",
+          "registration_sha256": "881080f6c3615ed66acff27efb51792557e4dd665929adc259e679570f86434b",
+          "v4_registration_sha256": "22de9c83928ee82cba7c90aa1ae8b2f34943cb42c21ca283fea3ac14b3fbf12d"
+        },
+        "result": {
+          "authority_byte_agreement": true,
+          "direct_formulation_sha256": "4b1f51a2bc900d163875836bcae3101f7e828c7c0572f93a95877e2d2315ac39",
+          "direct_highs_audit_completed": false,
+          "full_protocol_infeasibility_claim_authorized": false,
+          "ir_sha256": "3fff0ee63e0346034ba0bc9ce306212523adc786f013aaf37a73bf57848ca05d",
+          "job_id": "1331650",
+          "linear_agreement_with_primary": true,
+          "projection_status": "INFEASIBLE",
+          "receipt_file_sha256": "8a7148c1b4888b3e03dced89fd5452efbf1a058ae92ef2eb5fc827f5d773854d",
+          "receipt_self_sha256": "fcdb3ee3fd776fff9f38348b5a441dd5e19553c158093c838b0c6da20e158725",
+          "scheduler_state": "COMPLETED",
+          "status": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT_PENDING_DIRECT_HIGHS"
+        },
+        "source_sha256": {
+          "protocols/v6_b_independent_cp_audit_attempt_001_result.json": "09a3fcd97a0252c2e94bc7679a595c1052b3c074ec6ca3c694f5cd409b2280a3",
+          "protocols/v6_b_independent_cp_audit_registration_v1.json": "881080f6c3615ed66acff27efb51792557e4dd665929adc259e679570f86434b",
+          "scripts/run_v6_b_independent_cp_audit.py": "0d0e248b99eec8b5b46fdd88c61aea84cd68e7326c159116a7d1b2a55286cd34",
+          "scripts/submit_v6_b_independent_cp_audit.sbatch": "c16432424160be1be34cff08fbe9017788f3bbd27f8c17efc0ce17183daa63dd",
+          "src/interaction_first/v6_b_independent_cp_audit.py": "7c5eb7e556e3ce9118467da468922d2d7a185a3afac0da7c84886b7f2a221c6c",
+          "tests/test_v6_b_independent_cp_audit.py": "84bdb9bfc496522040dd5820ce175d0990b3bd0f21dc42177c590238d33318bd",
+          "tests/test_v6_b_independent_cp_audit_registration.py": "397ac19f5bff00bfc2489c2b1e4f49e91fdbfefa5646fdf85738ce32c92fe1c1",
+          "tests/test_v6_b_independent_cp_audit_result.py": "96e0f5916deab467d6b98b696cb2ccb1bfa1c6f19dc97ac67d44e0a18581f8c2"
+        },
+        "formal_result_tests_passed_under_each_hash_seed": 3,
+        "targeted_tests_passed_under_each_hash_seed": 16,
+        "related_v6_tests_passed_under_each_hash_seed": 146,
+        "v6_b_partition_or_cut_consumed": false,
+        "training_authorized": false
+      },
+      "solver_neutral_highs_projection_bundle": {
+        "bundle_authentication": {
+          "artifact_byte_size_and_sha256_required": true,
+          "canonical_metadata_self_hash_required": true,
+          "create_only_read_only_output": true,
+          "memory_mapped_array_loading": true,
+          "symbolic_links_rejected": true
+        },
+        "complete_score_free_region_authorized": false,
+        "direct_highs_run_completed": false,
+        "exact_float64_integer_envelope_required": true,
+        "highs_process_rejects_loaded_ortools": true,
+        "linear_projection_only": true,
+        "locked_single_thread_zero_gap_options": true,
+        "optimal_solution_requires_exact_integer_row_replay": true,
+        "source_sha256": {
+          "src/interaction_first/v6_highs_bundle_backend.py": "acb8b4a75fb590cd945482d58b82af6f322825709c95765f320b7802feb8ae81",
+          "src/interaction_first/v6_linear_projection_bundle.py": "26193f8f4f4bb049a43ec7f4b5d337ea55a4ea08fd13650335e9029e498e4dcd",
+          "tests/test_v6_highs_bundle_backend.py": "e9f854b148eab211a93a723b74b30e577bce68695c9b00266e07817ff060befc",
+          "tests/test_v6_linear_projection_bundle.py": "9b97d47afa14caefce6e6583be618200bee55c266e603e4d2cc61dd563abea93"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 7,
+        "related_v6_tests_passed_under_each_hash_seed": 110,
+        "training_authorized": false,
+        "user_solution_callback_used": false
+      },
+      "solver_neutral_projection_bundle_export_controller": {
+        "attempts": [
+          {
+            "bundle_exported": false,
+            "cp_sat_model_built": false,
+            "error": "module 'interaction_first.v6_b_production' has no attribute 'sha256_payload'",
+            "highs_solver_invoked": false,
+            "job_id": "1331704",
+            "output_directory_created": false,
+            "scheduler_state": "FAILED",
+            "status": "FAILED_BEFORE_MODEL_CONSTRUCTION_AND_OUTPUT_CREATION"
+          },
+          {
+            "bundle_sha256": "03815396ae85f8af794795d537aff0f6badbf41b22aa823fbe3813144f9f2355",
+            "cp_sat_model_built": true,
+            "cp_sat_solver_invoked": false,
+            "highs_solver_invoked": false,
+            "job_id": "1331854",
+            "registration_sha256": "6b66aaa7ac5438e947827f59a21831cabc0106a736e796490b6d6b47654eb092",
+            "scheduler_state": "COMPLETED",
+            "status": "FULL_LINEAR_PROJECTION_BUNDLE_EXPORTED_PENDING_DIRECT_HIGHS"
+          }
+        ],
+        "cp_sat_model_built": false,
+        "cp_sat_solver_invoked": false,
+        "direct_raw_authority_reconstruction_required": true,
+        "formal_independent_cp_result_binding_required": true,
+        "highspy_imported": false,
+        "production_run_completed": true,
+        "registration": {
+          "formal_cp_result_file_sha256": "8a7148c1b4888b3e03dced89fd5452efbf1a058ae92ef2eb5fc827f5d773854d",
+          "formal_cp_result_receipt_sha256": "fcdb3ee3fd776fff9f38348b5a441dd5e19553c158093c838b0c6da20e158725",
+          "implementation_commit": "adcf93881afe4734574b236301683160cb4314f4",
+          "registration_sha256": "a7cca25de4cd96683e70c59aebe79f74c985befdfb9ce17258fdc3f1aa69a587"
+        },
+        "registered_source_and_runtime_authentication_required": true,
+        "source_sha256": {
+          "protocols/v6_b_projection_bundle_export_attempt_002_result.json": "da0dfd8a7b1418d0c5f665718cb56a52163115baa60eea7494781b23642214c6",
+          "protocols/v6_b_projection_bundle_export_attempt_001.json": "21b73f10bf5b60f0fc69170b99052fcfde9aff14ba8ccd2758b6979cd5e9a470",
+          "protocols/v6_b_projection_bundle_export_registration_v1.json": "a7cca25de4cd96683e70c59aebe79f74c985befdfb9ce17258fdc3f1aa69a587",
+          "scripts/run_v6_b_projection_bundle_export.py": "b8d65c2a201835f5ed023313e7c4376dadcd8d3509af5be06b45684d58c009cc",
+          "scripts/submit_v6_b_projection_bundle_export.sbatch": "942c035475714b80bc6ac606896917564672c78d5204a20e85e5582c1eb539ee",
+          "src/interaction_first/v6_b_projection_bundle_export.py": "0ea461633ee0701775122decbab3c7553700a5004debefc5116b5663cd755edf",
+          "tests/test_v6_b_projection_bundle_export.py": "b15b6b2870c059a1a47cac1ea014e6543867b77d057e4a0078f9b66cfc0ba17c",
+          "tests/test_v6_b_projection_bundle_export_result.py": "da400d15050ed3f0becd2948bc67631b4903b0a0d6a0aa39c27c27e37d2ad626",
+          "tests/test_v6_b_projection_bundle_export_registration.py": "2b8427f0e9974a40e5109213ee741fcfa3012b508be11bfd1554ddf3959e3e82",
+          "tests/test_v6_b_projection_bundle_export_submission.py": "3823f19d32997f2815151572378e6e7a2c6a420a1a89d495ae98c1b3c1d38e11"
+        },
+        "successor_interface_fix": {
+          "frozen_v1_source_modified": false,
+          "production_module_private_hash_api_regression_tested": true,
+          "registration_schema_v2_supported": true,
+          "registration_frozen": true,
+          "registration_v2": {
+            "implementation_commit": "ad1c6eabc19842b46bee6049ddcdb498f881f9b4",
+            "registration_sha256": "6b66aaa7ac5438e947827f59a21831cabc0106a736e796490b6d6b47654eb092",
+            "scientific_identity_unchanged_from_v1": true
+          },
+          "source_sha256": {
+            "protocols/v6_b_projection_bundle_export_registration_v2.json": "6b66aaa7ac5438e947827f59a21831cabc0106a736e796490b6d6b47654eb092",
+            "src/interaction_first/v6_b_projection_bundle_export.py": "b5db80a33dfc6b80ae00e12fe2ebabc29adb69fb3220855ed52a1278610c6bc5",
+            "tests/test_v6_b_projection_bundle_export.py": "c91e048f6e9d6776af52606a238a9036c6d3ed8ade01058f80efe2ef11552e74",
+            "tests/test_v6_b_projection_bundle_export_registration_v2.py": "0341a9929255bddb3738fab1533f3e5f50e9b209e97d52644222d1a66b368b49"
+          },
+          "registration_tests_passed_under_each_hash_seed": 3,
+          "targeted_tests_passed_under_each_hash_seed": 10,
+          "related_v6_tests_passed_under_each_hash_seed": 120
+        },
+        "attempt_evidence_tests_passed_under_each_hash_seed": 2,
+        "registration_tests_passed_under_each_hash_seed": 3,
+        "targeted_tests_passed_under_each_hash_seed": 8,
+        "related_v6_tests_passed_under_each_hash_seed": 114,
+        "successful_result_tests_passed_under_each_hash_seed": 3,
+        "training_authorized": false
+      },
+      "runtime_compatibility_probe": {
+        "exact_kernel_release_is_stable": false,
+        "model_built": false,
+        "required_runtime_anchors": [
+          "python_executable",
+          "python_version",
+          "ortools_version",
+          "ortools_module_sha256",
+          "system",
+          "machine",
+          "libc_family",
+          "libc_version",
+          "cuda_visible_devices"
+        ],
+        "runtime_package_and_abi_match_across_observations": true,
+        "solver_invoked": false,
+        "source_sha256": {
+          "protocols/v6_b_runtime_compatibility_probe_v1.json": "8eec5eb1b7eeecd2a4b0dba9d8e61b729489fa4017ba7a0e848088fa72cb1756",
+          "tests/test_v6_b_runtime_compatibility_probe.py": "07953e163122bdf51ef3b053cca8cabc24a314fe95c29daa0f529e9a3c59bd93"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 3,
+        "training_authorized": false
+      },
+      "production_feasibility_controller": {
+        "authenticated_raw_authority_reconstruction_required": true,
+        "controller_exception_receipt_required": true,
+        "direct_highs_audit_completed": false,
+        "full_exact_oracle_evidence_journaled": true,
+        "hash_chained_fsync_journal": true,
+        "production_run_completed": true,
+        "scheduler_memory_envelope": {
+          "explicit_memory_request": false,
+          "memory_allocation_policy": "partition_automatic_per_allocated_gpu",
+          "scheduler_memory_gb_per_gpu": 126
+        },
+        "sigterm_receipt_handler_installed": true,
+        "stable_abi_authentication_required_for_v4": true,
+        "source_sha256": {
+          "scripts/run_v6_b_production_feasibility.py": "57855e90a0a77ffff0c747aa69790f3623f90203c0a9a9684aa137e2a39d8a6b",
+          "scripts/submit_v6_b_production_feasibility.sbatch": "99b609c0f6f0587be6c614c9fbfd0c076a0679bc58ad6ca9fde588b7f46150b3",
+          "src/interaction_first/v6_b_production.py": "90a170d1e6e5408a2a3006e9b9b496fe622e09cb8cb12747a975608a14eded01",
+          "tests/test_v6_b_production.py": "6988291e751f6485eda14ad17fed7005aacebd09e33553fcd2e361dda1afe323"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 28,
+        "related_v6_tests_passed_under_each_hash_seed": 134,
+        "split_gate0_authorized": false,
+        "training_authorized": false
+      },
+      "production_feasibility_registration": {
+        "implementation_commit": "9aeeb76c602ebb428cc4348b17b9c2c59a53048d",
+        "limits": {
+          "maximum_combined_candidates": 10000,
+          "maximum_master_iterations": 1000,
+          "maximum_time_seconds_per_solve": 21600
+        },
+        "registration_sha256": "e4cb9329b248c12ec1b1b81cca84c61d109c91131812f543e3a773d221899175",
+        "scheduler_preflight": {
+          "attempt": 1,
+          "job_submitted": false,
+          "model_built": false,
+          "reason": "The site submission policy requires one to eight GPUs for every single-node job in gpu_5090 and rejected the registered zero-GPU request.",
+          "solver_invoked": false,
+          "status": "SCHEDULER_REJECTED_ZERO_GPU_REQUEST"
+        },
+        "related_v6_tests_passed_under_each_hash_seed": 141,
+        "slurm": {
+          "cpus_per_task": 8,
+          "gpus_requested": 0,
+          "memory_gib": 96,
+          "nodes": 1,
+          "partition": "gpu_5090",
+          "tasks": 1,
+          "wall_time": "48:00:00"
+        },
+        "source_sha256": {
+          "protocols/v6_b_production_feasibility_registration_v1.json": "e4cb9329b248c12ec1b1b81cca84c61d109c91131812f543e3a773d221899175",
+          "protocols/v6_b_production_submission_attempt_001.json": "206976c3f8772a496b42a35adee18d55968310b7deb8fcf701f4c77ace8eb65f",
+          "tests/test_v6_b_production_registration.py": "926b57137160e17d3a7c77797a23f6a27b29a89e27e568e2117596662aff798e",
+          "tests/test_v6_b_submission_evidence.py": "4c1e393fd3c5427a45de078c25ab4b2cb137e2f16983f5366257d350d791ef5e"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 11,
+        "split_gate0_authorized": false,
+        "training_authorized": false
+      },
+      "production_feasibility_registration_v2": {
+        "implementation_commit": "5df239d0efba88028a569868b584242cccc3c491",
+        "limits_unchanged_from_v1": true,
+        "registration_sha256": "bdfca4e4884569dd2e47e02caec6f62c5a1ae9de202a1af6c92cc516f3db05b5",
+        "related_v6_tests_passed_under_each_hash_seed": 145,
+        "scheduler_preflight": {
+          "attempt": 2,
+          "job_submitted": false,
+          "model_built": false,
+          "reason": "The gpu_5090 partition automatically assigns 126 GB per allocated GPU and rejected the registered explicit 96 GiB --mem request.",
+          "solver_invoked": false,
+          "status": "SCHEDULER_REJECTED_EXPLICIT_MEMORY_REQUEST"
+        },
+        "scheduler_adaptation": {
+          "accelerator_visible_to_solver": false,
+          "allocated_gpu_purpose": "site_scheduler_requirement_only",
+          "gpus_requested": 1,
+          "scientific_inputs_changed": false,
+          "solver_workers": 1
+        },
+        "source_sha256": {
+          "protocols/v6_b_production_feasibility_registration_v2.json": "bdfca4e4884569dd2e47e02caec6f62c5a1ae9de202a1af6c92cc516f3db05b5",
+          "protocols/v6_b_production_submission_attempt_002.json": "2b2681d727e13bee1736d6af701d391730d0ba494ce0745f5b6c36e84be75245",
+          "tests/test_v6_b_production_registration_v2.py": "ebc37da8cee0c5d05b5582236a14f4da45997dc6b4742c3347b23444e31fd346",
+          "tests/test_v6_b_submission_evidence.py": "f0f54ffdc4cac414cda0077e5232a0a3ac91fbcacd2fc41bbadf218b1af7e164"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 15,
+        "split_gate0_authorized": false,
+        "training_authorized": false
+      },
+      "production_feasibility_registration_v3": {
+        "implementation_commit": "675c95c2a0bd67e5801a07de65fca01bb0ef7362",
+        "limits_unchanged_from_v2": true,
+        "registration_sha256": "33a4520610d4f7f1c85c41cb1e24aa721740c282df8c62c10f44fdd2d768cd90",
+        "related_v6_tests_passed_under_each_hash_seed": 127,
+        "scheduler_attempt": {
+          "attempt": 3,
+          "error": "runtime platform differs from registration",
+          "job_id": "1331564",
+          "journal_hash_chain_valid": true,
+          "model_built": false,
+          "solver_invoked": false,
+          "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
+        },
+        "scheduler_adaptation": {
+          "accelerator_visible_to_solver": false,
+          "explicit_memory_request": false,
+          "gpus_requested": 1,
+          "memory_allocation_policy": "partition_automatic_per_allocated_gpu",
+          "scheduler_memory_gb_per_gpu": 126,
+          "scientific_inputs_changed": false,
+          "solver_workers": 1
+        },
+        "source_sha256": {
+          "protocols/v6_b_production_attempt_003.json": "814dea4f5e8fa5bed84959a918e0a31e9bbe32428829ad0a4ef4ab03cf453587",
+          "protocols/v6_b_production_feasibility_registration_v3.json": "33a4520610d4f7f1c85c41cb1e24aa721740c282df8c62c10f44fdd2d768cd90",
+          "tests/test_v6_b_production_registration_v3.py": "7c8567478cd2d38d8178a7c3f961c0436be609bffb590c9f86a30a74df9e61f9",
+          "tests/test_v6_b_submission_evidence.py": "61034b393242f6e328af3e2ca7529597eb6b64310f75f327ae421c8d75d2830c"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 10,
+        "split_gate0_authorized": false,
+        "training_authorized": false
+      },
+      "production_feasibility_registration_v4": {
+        "implementation_commit": "7b77974dafd545ae2a2feac056201eb58408157e",
+        "registration_sha256": "22de9c83928ee82cba7c90aa1ae8b2f34943cb42c21ca283fea3ac14b3fbf12d",
+        "related_v6_tests_passed_under_each_hash_seed": 138,
+        "runtime_adaptation": {
+          "kernel_release_bound": false,
+          "locked_cp_sat_runtime_receipt_preserved": true,
+          "locked_ortools_module_sha256": "67121c783ab4f9bf749a4e667d49458f885d105cc42c3805a1154faf10d329bf",
+          "locked_runtime_compatibility_probe_sha256": "8eec5eb1b7eeecd2a4b0dba9d8e61b729489fa4017ba7a0e848088fa72cb1756",
+          "scientific_inputs_changed": false,
+          "stable_abi_bound": true
+        },
+        "scheduler_attempt": {
+          "attempt": 4,
+          "authenticated_raw_authority_reconstructed": true,
+          "candidate_present": false,
+          "cross_formulation_certified": false,
+          "decomposition_terminal_status": "PROVEN_INFEASIBLE",
+          "full_protocol_infeasibility_claim_authorized": false,
+          "job_id": "1331619",
+          "journal_hash_chain_valid": true,
+          "master_status": "INFEASIBLE",
+          "model_built": true,
+          "solver_invoked": true,
+          "state": "COMPLETED"
+        },
+        "source_sha256": {
+          "protocols/v6_b_production_attempt_004_result.json": "452eb8d464c9e07803c3db7dd71292dbfbedec3c83c48a99d021e8f38ec8895b",
+          "protocols/v6_b_production_attempt_004_submission.json": "ddc6e75715e74c54f8ffeb1ed731e6ab74c80ddb6affa5eca095dd4566a9c99b",
+          "protocols/v6_b_production_feasibility_registration_v4.json": "22de9c83928ee82cba7c90aa1ae8b2f34943cb42c21ca283fea3ac14b3fbf12d",
+          "tests/test_v6_b_production_registration_v4.py": "c311d0b55c5674c7fcd68808107f7d41f32fd312926369e17479615c23b35abf",
+          "tests/test_v6_b_submission_evidence.py": "b1f84e3db3a81d6f6733d79e27dd2fb8586144d723bcbfdad41a9e1e3105a3e6"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 12,
+        "split_gate0_authorized": false,
+        "training_authorized": false
+      },
+      "parent_v6_a_terminal_receipt_sha256": "e5b1db83df183406430dc118289b466b61d06f8533451c026a14eab0defa81fd",
+      "policy_sha256": "197e464e1c73117523f413b1ffabdb553fb9b772fe071aa20630bf80d8e27f81",
+      "protocol_sha256": "783a95eaf9522fb7f27c987f9b5d3f18b627fdfcd108356f6a743c1762461bba",
+      "row_shard_telemetry_implementation": {
+        "full_ir_partition_is_lossless": true,
+        "full_variable_dictionary_required": true,
+        "inner_cross_group_rows_rejected": true,
+        "production_attempts": [
+          {
+            "authority_or_split_failure": false,
+            "output_created": false,
+            "reason": "The frozen direct CP-SAT parser expected the scientific authority schema and rejected the three authenticated publication-envelope fields before model construction.",
+            "source_sha256": "80414e1eb810c66776d19b9c04a2673f70dd32770cc02797ed565d17a730cf42",
+            "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
+          },
+          {
+            "authority_or_split_failure": false,
+            "output_created": false,
+            "reason": "The publication envelope passed, but the frozen direct CP-SAT parser expected pair-ID order while the authority builder canonically emits unique pairs in endpoint order.",
+            "source_sha256": "921f87a3545ccb6a31e8bd714cfa9e22f8692ec772deda692a0b5c7a2bcf85aa",
+            "status": "FAILED_BEFORE_MODEL_CONSTRUCTION"
+          },
+          {
+            "authority_or_split_failure": false,
+            "output_created": false,
+            "reason": "Full-authority model construction passed, but the OR-Tools 9.15 pybind CpModelProto does not expose protobuf SerializeToString.",
+            "source_sha256": "24b0b06fad3f6d48101fa3d8bef9e791afd9ca4a8ae79d78588254c01ef7f8d0",
+            "status": "FAILED_AFTER_MODEL_CONSTRUCTION_BEFORE_TELEMETRY_PUBLICATION"
+          }
+        ],
+        "production_receipt": {
+          "available_memory_bytes": 336155590656,
+          "construction_elapsed_ns": 432446437814,
+          "full_nonzero_count": 10365708,
+          "full_row_count": 2693786,
+          "full_variable_count": 163464,
+          "inner_gate_counts": [
+            16,
+            16,
+            16
+          ],
+          "inner_row_counts": [
+            680024,
+            680024,
+            680024
+          ],
+          "master_gate_count": 18,
+          "master_row_count": 653714,
+          "observed_peak_rss_bytes": 8344076288,
+          "output_directory": "/ssd/scxi253/model_deployment/results/v6_b_row_shard_telemetry_004",
+          "partition_sha256": "ac675898b79bc1bbc7277ffe156874fc75e5a0435f9ac2bfec07fa10c5db51cf",
+          "receipt_file_sha256": "655514d9cc9961c258d939a6b2f2811632ad272a7d499a0c9bd8adf1ca75cee2",
+          "receipt_sha256": "de140384b0fe4f13f6daf67a0abfef9bee36b2352d8865b726e8ec040aade649",
+          "report_sha256": "ccff3a504e27f1f1ec92c053074609d4d2f4b1482024b1f1f6e086af02296745",
+          "required_available_bytes_with_headroom": 11125435051,
+          "resource_headroom_passed": true,
+          "selected_nonzero_count": 1090171,
+          "selected_row_count": 269433,
+          "serialized_full_model_bytes": 539726954,
+          "solver_invoked": false,
+          "terminal_status": "TELEMETRY_HEADROOM_PASSED",
+          "training_authorized": false
+        },
+        "production_receipt_created": true,
+        "row_selection": "ceiling_one_tenth_per_declared_family_by_canonical_row_sha256",
+        "solver_invocation_authorized": false,
+        "source_sha256": {
+          "scripts/run_v6_b_row_shard_telemetry.py": "033dc98f0940c0da02f2d8e4e904eb1dd3d9043d6a212fbd10f6fc914e617f0d",
+          "src/interaction_first/v6_b_decomposition.py": "a531e08cd1f00d82485ddbd0565b9b2edd625e5b584653d6b70b4c8f37828ea0",
+          "tests/test_run_v6_b_row_shard_telemetry.py": "25d31775cd2da2f0c8c88abb67d2bc706189a22ca0871ff5b3987a0ca3cc78f7",
+          "tests/test_v6_b_decomposition.py": "f47345107ddd13163ead0246f1102c2e7362f193a6af545e32743ee2c38cc344"
+        },
+        "targeted_tests_passed_under_each_hash_seed": 15,
+        "related_v6_tests_passed_under_each_hash_seed": 111,
+        "training_authorized": false
+      },
+      "status": "row_shard_telemetry_passed_complete_exact_decomposition_controller_synthetically_hardened_production_unrun",
+      "training_authorized": false,
+      "claim_boundary": "The production full-authority IR was constructed and passed the telemetry-only 25 percent resource-headroom check without solver invocation. No V6-B decomposition solver result, candidate, split, Gate 0 result, training, evaluation, metric, scaling result, or SOTA evidence exists."
+    },
+    "claim_boundary": "No real PAIRFormer contact training, model selection, held-out scoring, new biological metric, metric improvement, large-scale PAIRFormer model run, or world-leading result."
+  },
+  "protocol_documents": {
+    "model_protocol": "TRAIN_ONLY_NESTED_PARTNER_RETRIEVAL_MODEL_PROTOCOL_V1_DRAFT.md",
+    "split_protocol": "TRAIN_ONLY_FOUR_VIEW_DUAL_AXIS_NEIGHBORHOOD_EXCLUSION_PROTOCOL_V0.md",
+    "v6_a_solver_amendment": "V6_A_SCORE_FREE_EXACT_SOLVER_PROTOCOL.md",
+    "v6_a_solver_policy": "v6_a_score_free_solver_policy_v1.json",
+    "v6_b_decomposition_protocol": "V6_B_LOGIC_BASED_DECOMPOSITION_PROTOCOL.md",
+    "v6_b_decomposition_policy": "v6_b_logic_based_decomposition_policy_v1.json"
+  },
+  "status": "prospective_contract_engineering_only",
+  "stop_rules": [
+    "Any input, source, encoder, runtime, cache, authorization, or allowlist hash differs.",
+    "A model process can access an endpoint or row outside its exact fold-local inventory.",
+    "Any current experiment parses authority-validation or frozen-test sequence, coordinate, label, prediction, or score data.",
+    "Any outer or inner split boundary or independent audit fails.",
+    "A validation or test score changes a fold, candidate, hyperparameter, seed, mask, index, threshold, or checkpoint.",
+    "A nondeterministic kernel, non-finite tensor, missing positive, malformed contact map, or incomplete candidate library is observed."
+  ]
+}
