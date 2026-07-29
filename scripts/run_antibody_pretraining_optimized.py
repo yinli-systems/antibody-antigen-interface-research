@@ -732,6 +732,7 @@ def main() -> None:
     resume_payload_model_rank_sha256 = None
     resume_payload_optimizer_rank_sha256 = None
     resume_rng_manifest_sha256 = None
+    resume_rng_checkpoint_root = None
     if args.resume_root is not None:
         state = json.loads(
             (args.resume_root / "trainer_state.json").read_text(encoding="ascii")
@@ -807,12 +808,7 @@ def main() -> None:
             resume_loaded_optimizer_sha256 = _distributed_tree_digest(
                 optimizer.state_dict(), args.backend, rank
             )
-        resume_rng_manifest_sha256 = _restore_rng_checkpoint(
-            args.resume_root / "checkpoint",
-            rank=rank,
-            world_size=world_size,
-            device=device,
-        )
+        resume_rng_checkpoint_root = args.resume_root / "checkpoint"
 
     compile_prewarm_trace: list[dict[str, float | int]] = []
     if args.compile_prewarm_buckets:
@@ -822,6 +818,13 @@ def main() -> None:
             device=device,
             micro_batch=args.micro_batch,
             world_size=world_size,
+        )
+    if resume_rng_checkpoint_root is not None:
+        resume_rng_manifest_sha256 = _restore_rng_checkpoint(
+            resume_rng_checkpoint_root,
+            rank=rank,
+            world_size=world_size,
+            device=device,
         )
 
     trace: list[dict[str, float | int]] = []
@@ -1141,6 +1144,9 @@ def main() -> None:
                     resume_payload_optimizer_rank_sha256
                 ),
                 "resume_rng_manifest_sha256": resume_rng_manifest_sha256,
+                "resume_rng_restored_after_compile_prewarm": (
+                    resume_rng_checkpoint_root is not None
+                ),
                 "runtime": {
                     "cuda": torch.version.cuda,
                     "cudnn": torch.backends.cudnn.version(),

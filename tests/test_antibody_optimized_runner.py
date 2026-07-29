@@ -109,6 +109,19 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     )
 
 
+def test_resume_restores_rng_after_compile_prewarm() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    main_start = source.index("def main()")
+    prewarm = source.index(
+        "compile_prewarm_trace = _prewarm_compiled_buckets(", main_start
+    )
+    restore = source.index(
+        "resume_rng_manifest_sha256 = _restore_rng_checkpoint(", main_start
+    )
+    assert restore > prewarm
+    assert '"resume_rng_restored_after_compile_prewarm"' in source
+
+
 def test_ddp_communication_optimizations_are_protocol_and_runtime_bound() -> None:
     source = RUNNER.read_text(encoding="ascii")
     assert "batched_grad_copy=args.ddp_batched_grad_copy" in source
