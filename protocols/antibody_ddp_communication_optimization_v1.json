@@ -1,0 +1,61 @@
+{
+  "authorization": {
+    "pilot_16_gpu": false,
+    "pilot_32_gpu": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "candidates": [
+    {
+      "batched_grad_copy": false,
+      "communication_dtype": "float32",
+      "label": "fp32_control"
+    },
+    {
+      "batched_grad_copy": true,
+      "communication_dtype": "float32",
+      "label": "fp32_batched_copy"
+    },
+    {
+      "batched_grad_copy": false,
+      "communication_dtype": "bfloat16",
+      "label": "bf16_compress"
+    },
+    {
+      "batched_grad_copy": true,
+      "communication_dtype": "bfloat16",
+      "label": "bf16_compress_batched_copy"
+    }
+  ],
+  "claim_boundary": "Repeated-shard eight-GPU DDP communication engineering only; no production-corpus, biological, scaling, or state-of-the-art claim",
+  "correctness": {
+    "downstream_labels_permitted": false,
+    "exact_eight_rank_gradient_parity_required_every_update": true,
+    "exact_eight_rank_model_and_optimizer_parity_required": true,
+    "inherit_parent_numerical_thresholds": true,
+    "same_membership_required": true,
+    "updates": 20
+  },
+  "format_version": "antibody_ddp_communication_optimization_v1",
+  "parent_efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+  "promotion": {
+    "candidate_selection": "highest_throughput_among_all_correctness_passing_candidates",
+    "paired_gate_updates_per_mode": 500,
+    "scale_requires_exact_recovery": true,
+    "thresholds_may_be_relaxed": false
+  },
+  "runtime": {
+    "bf16_hook_api": "torch.distributed.algorithms.ddp_comm_hooks.default_hooks.bf16_compress_hook",
+    "minimum_nccl_version_exclusive": "2.9.6",
+    "required_backend": "nccl",
+    "required_torch_major_minor": "2.13"
+  },
+  "sources": [
+    "https://docs.pytorch.org/docs/stable/ddp_comm_hooks.html",
+    "https://docs.pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html"
+  ],
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
