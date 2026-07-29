@@ -1,0 +1,12 @@
+{
+  "artifact_count": 58,
+  "content_sha256": "e9d589fcaa6e81ed88ba8a35b321c53501bc743a7a5ec780aab8982d26e80246",
+  "errors": [
+    "Live runtime state differs from the locked state: expected=dd38b66d7058da66c1858963dccd4174c46d7a27b4eb0932a363b55e8d8e4e57, observed=15ce269e21349b539fe82eb65d8840fe6f7d4995e55915a92811c7443cbcb821, changed_sections=['frameworks']"
+  ],
+  "file_sha256": "de522a0b3f067e08d4fac1a4dd52351ca5f7bc8d416ca600c8db1d5b97371868",
+  "live_state_checked": true,
+  "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_partner_v1/runtime_locks/frontier_torch213_runtime_manifest.json",
+  "runtime_state_sha256": "dd38b66d7058da66c1858963dccd4174c46d7a27b4eb0932a363b55e8d8e4e57",
+  "valid": false
+}

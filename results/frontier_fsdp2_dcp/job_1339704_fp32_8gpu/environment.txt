@@ -1,0 +1,87 @@
+job_id=1339704
+node=wqd10nah10g2
+source_root=/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_dcp_source_afbc0abe03be
+run_root=/ssd/scxi253/model_deployment/results/frontier_fsdp2_dcp_v1_attempts/slurm-1339704
+source_sha256=c5260f1e60d7fdf360d35799dcca5a751cea113cb6ef76a5259776bcf16ee805
+runtime_manifest_sha256=5e8c0ecf201876d0559331299187e4a8b8820124d79bdb24b9973b3b57e24202
+launch_manifest_sha256=ba1dade2d0a80617991d098b3fa5b47bb9690cfd3e36be0f74d7302195d3dba6
+parallelism=fsdp2
+precision=float32
+world_size=8
+visible_gpu_count=8
+claim_boundary=synthetic FSDP2 and DCP correctness only; no efficiency or biological metric claim
+2026-07-30T05:15:08+08:00
+Thu Jul 30 05:15:08 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.82.07              Driver Version: 580.82.07      CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 5090        On  |   00000000:16:00.0 Off |                  N/A |
+|  0%   24C    P8             24W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 5090        On  |   00000000:36:00.0 Off |                  N/A |
+|  0%   26C    P8             24W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA GeForce RTX 5090        On  |   00000000:46:00.0 Off |                  N/A |
+|  0%   25C    P8             24W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA GeForce RTX 5090        On  |   00000000:56:00.0 Off |                  N/A |
+|  0%   24C    P8             32W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA GeForce RTX 5090        On  |   00000000:98:00.0 Off |                  N/A |
+|  0%   24C    P8             15W /  575W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA GeForce RTX 5090        On  |   00000000:B8:00.0 Off |                  N/A |
+|  0%   23C    P8             25W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA GeForce RTX 5090        On  |   00000000:C8:00.0 Off |                  N/A |
+|  0%   21C    P8             29W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA GeForce RTX 5090        On  |   00000000:D8:00.0 Off |                  N/A |
+|  0%   23C    P8             20W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+	[4mGPU0	GPU1	GPU2	GPU3	GPU4	GPU5	GPU6	GPU7	NIC0	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
+GPU0	 X 	NODE	NODE	NODE	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU1	NODE	 X 	NODE	NODE	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU2	NODE	NODE	 X 	NODE	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU3	NODE	NODE	NODE	 X 	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU4	SYS	SYS	SYS	SYS	 X 	NODE	NODE	NODE	SYS	32-39,96-103	1		N/A
+GPU5	SYS	SYS	SYS	SYS	NODE	 X 	NODE	NODE	SYS	32-39,96-103	1		N/A
+GPU6	SYS	SYS	SYS	SYS	NODE	NODE	 X 	NODE	SYS	32-39,96-103	1		N/A
+GPU7	SYS	SYS	SYS	SYS	NODE	NODE	NODE	 X 	SYS	32-39,96-103	1		N/A
+NIC0	NODE	NODE	NODE	NODE	SYS	SYS	SYS	SYS	 X 				
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+
+NIC Legend:
+
+  NIC0: mlx5_bond_0
+
+2026-07-30T05:15:30+08:00
