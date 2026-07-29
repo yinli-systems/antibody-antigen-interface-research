@@ -7,6 +7,7 @@ import copy
 import pytest
 
 from interaction_first.v6_constraint_family_diagnostic import (
+    _clone_with_assumption_subset,
     ConstraintFamilyDiagnosticError,
     build_family_assumption_model,
     diagnose_constraint_families,
@@ -84,6 +85,32 @@ def test_infeasible_core_is_replayed_and_deletion_minimized() -> None:
     assert receipt["training_authorized"] is False
     assert receipt["outer_evaluation_authorized"] is False
     assert receipt["test_access_authorized"] is False
+
+
+def test_unassumed_families_are_explicitly_inactive() -> None:
+    cp_model = pytest.importorskip("ortools.sat.python.cp_model")
+    diagnostic = build_family_assumption_model(
+        _direct_model(infeasible=True)
+    )
+    subset = _clone_with_assumption_subset(diagnostic, ["zero"])
+    solver = cp_model.CpSolver()
+    status = solver.solve(subset)
+    assert solver.status_name(status) == "OPTIMAL"
+    assert solver.value(
+        subset.get_bool_var_from_proto_index(
+            diagnostic.family_index["zero"]
+        )
+    ) == 1
+    assert solver.value(
+        subset.get_bool_var_from_proto_index(
+            diagnostic.family_index["one"]
+        )
+    ) == 0
+    assert solver.value(
+        subset.get_bool_var_from_proto_index(
+            diagnostic.family_index["domain"]
+        )
+    ) == 0
 
 
 def test_feasible_model_produces_no_infeasibility_claim() -> None:

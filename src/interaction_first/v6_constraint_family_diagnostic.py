@@ -222,6 +222,29 @@ def _solve_subset(
 ) -> tuple[str, Any]:
     from ortools.sat.python import cp_model
 
+    model = _clone_with_assumption_subset(
+        assumption_model,
+        active_families,
+    )
+    solver = cp_model.CpSolver()
+    solver.parameters.num_search_workers = 1
+    solver.parameters.random_seed = LOCKED_RANDOM_SEED
+    solver.parameters.randomize_search = False
+    solver.parameters.relative_gap_limit = 0.0
+    solver.parameters.absolute_gap_limit = 0.0
+    solver.parameters.core_minimization_level = 2
+    solver.parameters.find_multiple_cores = True
+    if maximum_time_seconds is not None:
+        solver.parameters.max_time_in_seconds = maximum_time_seconds
+    status = solver.solve(model)
+    return solver.status_name(status), solver
+
+
+def _clone_with_assumption_subset(
+    assumption_model: FamilyAssumptionModel,
+    active_families: Sequence[str],
+) -> Any:
+    """Clone a diagnostic model with exact active and inactive family states."""
     family_index = dict(assumption_model.family_variable_indices)
     normalized = tuple(sorted(active_families))
     if len(normalized) != len(set(normalized)):
@@ -241,18 +264,11 @@ def _solve_subset(
             for family in normalized
         ]
     )
-    solver = cp_model.CpSolver()
-    solver.parameters.num_search_workers = 1
-    solver.parameters.random_seed = LOCKED_RANDOM_SEED
-    solver.parameters.randomize_search = False
-    solver.parameters.relative_gap_limit = 0.0
-    solver.parameters.absolute_gap_limit = 0.0
-    solver.parameters.core_minimization_level = 2
-    solver.parameters.find_multiple_cores = True
-    if maximum_time_seconds is not None:
-        solver.parameters.max_time_in_seconds = maximum_time_seconds
-    status = solver.solve(model)
-    return solver.status_name(status), solver
+    for family in sorted(set(family_index) - set(normalized)):
+        model.add(
+            model.get_bool_var_from_proto_index(family_index[family]) == 0
+        )
+    return model
 
 
 def diagnose_constraint_families(
