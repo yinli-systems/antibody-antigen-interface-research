@@ -289,6 +289,28 @@ def test_launch_manifest_binds_runtime_source_topology_and_mode(
         )
 
 
+def test_launch_manifest_explicitly_supports_fsdp2_engineering() -> None:
+    payload = build_launch_manifest(
+        source_sha256="1" * 64,
+        runtime_manifest_sha256="2" * 64,
+        runtime_verification_sha256="3" * 64,
+        nodes=1,
+        gpus_per_node=8,
+        processes_per_node=8,
+        world_size=8,
+        backend="nccl",
+        parallelism="fsdp2",
+        precision="bfloat16",
+        scope="synthetic_fsdp2_dcp_smoke",
+    )
+    assert payload["execution"] == {
+        "backend": "nccl",
+        "parallelism": "fsdp2",
+        "precision": "bfloat16",
+    }
+    assert "Synthetic correctness" in payload["claim_boundary"]
+
+
 def test_launch_manifest_rejects_unreviewed_96_gpu_plan() -> None:
     with pytest.raises(LaunchContractError, match="nodes"):
         build_launch_manifest(
