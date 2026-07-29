@@ -1,0 +1,33 @@
+{
+  "audited_at_utc": "2026-07-27T16:47:05Z",
+  "auditor_source_sha256": "ef571eb09f9648801b1f103cac3898e335f2f511dbc07057d3124de1cbf3e361",
+  "candidate_receipt_sha256": "eceb95ab6e94e711fd3a7ad48e6bf42bf05f6b0d2a455a7921597ec2b0832dbe",
+  "counts": {
+    "antibodies": 38599,
+    "antigens": 31,
+    "binders": 20980,
+    "conflicting_pairs": 0,
+    "exact_duplicate_groups": 0,
+    "exact_duplicate_records": 0,
+    "nonbinders": 552911,
+    "rows": 573891,
+    "subject_names": [
+      "wizzy"
+    ],
+    "subject_sexes": [
+      "male"
+    ],
+    "subject_species": [
+      "alpaca"
+    ],
+    "unique_pairs": 573891
+  },
+  "format_version": "pairbench_avida_independent_audit_v1",
+  "input_raw_inventory_sha256": "cafcf8f29c746b4fcf164e62f5a6b07da0f545e33dd563a85f1c20dda2c5489e",
+  "normalizer_source_sha256": "160cc4cae9e1213df6dfa6427f09fa193a8323112d8628bdff6870e5e8d21559",
+  "pairbench_contract_sha256": "c0bfa5f852dd685968f3d32dbfc690c5205bbb2463f0228fc32801a60dbd7cb7",
+  "registry_normalization_eligible": false,
+  "semantic_comparison": "exact_row_order_and_content",
+  "source_id": "avida_hil6_2024_11",
+  "status": "pass_candidate_remains_blocked"
+}

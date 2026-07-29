@@ -124,6 +124,7 @@ class ContactMapTests(unittest.TestCase):
         from interaction_first.contacts import (
             SparseContactMap,
             load_contact_map,
+            load_contact_map_bytes,
             save_contact_map,
         )
 
@@ -144,7 +145,16 @@ class ContactMapTests(unittest.TestCase):
             path = Path(directory) / "contact.npz"
             save_contact_map(contact, path)
             loaded = load_contact_map(path, expected_instance_id="example")
+            loaded_from_bytes = load_contact_map_bytes(
+                path.read_bytes(),
+                expected_instance_id="example",
+                source_name="unit-test bytes",
+            )
         np.testing.assert_array_equal(loaded.pair_labels, contact.pair_labels)
+        np.testing.assert_array_equal(
+            loaded_from_bytes.pair_labels,
+            contact.pair_labels,
+        )
 
     def test_duplicate_candidate_pair_is_rejected(self) -> None:
         from interaction_first.contacts import SparseContactMap
@@ -218,6 +228,264 @@ class AntibodyMetadataTests(unittest.TestCase):
 
 @unittest.skipUnless(importlib.util.find_spec("torch"), "PyTorch is unavailable")
 class ModelTests(unittest.TestCase):
+    @staticmethod
+    def _candidate_mask_model() -> object:
+        from interaction_first.model import PartnerSpecificInteractionModel
+
+        return PartnerSpecificInteractionModel(
+            antigen_input_dim=8,
+            antibody_input_dim=8,
+            d_model=16,
+            pair_dim=8,
+            num_heads=4,
+            num_layers=0,
+            dropout=0.0,
+            score_pooling="top_fraction",
+            score_top_fraction=0.01,
+            score_top_k=3,
+        )
+
+    def test_candidate_pair_mask_controls_every_pair_derived_output(self) -> None:
+        import torch
+
+        from interaction_first.scoring import (
+            normalized_partner_score,
+            pool_pair_marginals,
+        )
+
+        torch.manual_seed(29)
+        model = self._candidate_mask_model().eval()
+        antigen = torch.randn(1, 4, 8)
+        antibody = torch.randn(1, 3, 8)
+        candidate_mask = torch.tensor(
+            [
+                [
+                    [True, True, False],
+                    [False, True, False],
+                    [False, False, False],
+                    [False, False, False],
+                ]
+            ]
+        )
+        outputs = model(
+            antigen,
+            antibody,
+            candidate_pair_mask=candidate_mask,
+        )
+
+        torch.testing.assert_close(outputs["pair_mask"], candidate_mask)
+        self.assertTrue(outputs["axis_pair_mask"].all())
+        self.assertTrue(
+            torch.equal(
+                outputs["pair_probabilities"][~candidate_mask],
+                torch.zeros_like(outputs["pair_probabilities"][~candidate_mask]),
+            )
+        )
+        torch.testing.assert_close(
+            outputs["epitope_supervision_mask"],
+            candidate_mask.any(dim=2),
+        )
+        torch.testing.assert_close(
+            outputs["paratope_supervision_mask"],
+            candidate_mask.any(dim=1),
+        )
+        self.assertTrue(
+            torch.equal(
+                outputs["epitope_probability"][:, 2:],
+                torch.zeros_like(outputs["epitope_probability"][:, 2:]),
+            )
+        )
+        self.assertEqual(
+            outputs["paratope_probability"][0, 2].detach().item(),
+            0.0,
+        )
+
+        expected_marginals = pool_pair_marginals(
+            outputs["pair_logits"],
+            candidate_mask,
+            pooling=model.marginal_pooling,
+            top_k=model.marginal_top_k,
+            temperature=model.marginal_temperature,
+        )
+        torch.testing.assert_close(
+            outputs["pair_epitope_probability"],
+            expected_marginals[0],
+        )
+        torch.testing.assert_close(
+            outputs["pair_paratope_probability"],
+            expected_marginals[1],
+        )
+        expected_score = normalized_partner_score(
+            outputs["interaction_logits"],
+            candidate_mask,
+            pooling="top_fraction",
+            temperature=model.score_temperature,
+            top_fraction=model.score_top_fraction,
+            min_count=model.score_top_k,
+            center=model.center_partner_score,
+        )
+        torch.testing.assert_close(outputs["complex_score"], expected_score)
+
+    def test_candidate_mask_rejects_padded_pairs(self) -> None:
+        import torch
+
+        model = self._candidate_mask_model().eval()
+        antigen = torch.randn(1, 3, 8)
+        antibody = torch.randn(1, 2, 8)
+        antigen_mask = torch.tensor([[True, True, False]])
+        antibody_mask = torch.ones(1, 2, dtype=torch.bool)
+        candidate_mask = torch.ones(1, 3, 2, dtype=torch.bool)
+        with self.assertRaisesRegex(ValueError, "padded residue"):
+            model(
+                antigen,
+                antibody,
+                antigen_mask,
+                antibody_mask,
+                candidate_mask,
+            )
+
+    def test_loss_ignores_candidate_unsupported_node_targets(self) -> None:
+        import torch
+
+        from interaction_first.losses import (
+            InteractionLossWeights,
+            interaction_first_loss,
+        )
+
+        torch.manual_seed(31)
+        model = self._candidate_mask_model().eval()
+        antigen = torch.randn(1, 4, 8)
+        antibody = torch.randn(1, 3, 8)
+        candidate_mask = torch.tensor(
+            [
+                [
+                    [True, True, False],
+                    [False, True, False],
+                    [False, False, False],
+                    [False, False, False],
+                ]
+            ]
+        )
+        outputs = model(
+            antigen,
+            antibody,
+            candidate_pair_mask=candidate_mask,
+        )
+        pair_targets = torch.zeros_like(outputs["pair_logits"])
+        antigen_mask = torch.ones(1, 4, dtype=torch.bool)
+        antibody_mask = torch.ones(1, 3, dtype=torch.bool)
+        epitope_targets = torch.zeros(1, 4)
+        paratope_targets = torch.zeros(1, 3)
+        altered_epitope = epitope_targets.clone()
+        altered_paratope = paratope_targets.clone()
+        altered_epitope[:, 2:] = 1.0
+        altered_paratope[:, 2:] = 1.0
+        weights = InteractionLossWeights(
+            edge=0.0,
+            epitope_bce=1.0,
+            paratope_bce=1.0,
+            epitope_dice=0.0,
+            paratope_dice=0.0,
+            partner_rank=0.0,
+        )
+        baseline, _ = interaction_first_loss(
+            outputs,
+            pair_targets,
+            epitope_targets,
+            paratope_targets,
+            antigen_mask,
+            antibody_mask,
+            weights=weights,
+        )
+        altered, _ = interaction_first_loss(
+            outputs,
+            pair_targets,
+            altered_epitope,
+            altered_paratope,
+            antigen_mask,
+            antibody_mask,
+            weights=weights,
+        )
+        torch.testing.assert_close(baseline, altered)
+
+    def test_pair_marginal_consistency_backpropagates_to_both_views(self) -> None:
+        import torch
+
+        from interaction_first.losses import (
+            InteractionLossWeights,
+            interaction_first_loss,
+        )
+
+        torch.manual_seed(37)
+        model = self._candidate_mask_model()
+        antigen = torch.randn(1, 4, 8)
+        antibody = torch.randn(1, 3, 8)
+        candidate_mask = torch.tensor(
+            [
+                [
+                    [True, True, False],
+                    [True, False, True],
+                    [False, True, True],
+                    [True, False, False],
+                ]
+            ]
+        )
+        outputs = model(
+            antigen,
+            antibody,
+            candidate_pair_mask=candidate_mask,
+        )
+        pair_targets = torch.zeros_like(outputs["pair_logits"])
+        epitope_targets = torch.zeros(1, 4)
+        paratope_targets = torch.zeros(1, 3)
+        weights = InteractionLossWeights(
+            edge=0.0,
+            epitope_bce=0.0,
+            paratope_bce=0.0,
+            epitope_dice=0.0,
+            paratope_dice=0.0,
+            epitope_consistency=1.0,
+            paratope_consistency=1.0,
+            partner_rank=0.0,
+        )
+        loss, components = interaction_first_loss(
+            outputs,
+            pair_targets,
+            epitope_targets,
+            paratope_targets,
+            torch.ones(1, 4, dtype=torch.bool),
+            torch.ones(1, 3, dtype=torch.bool),
+            weights=weights,
+        )
+        loss.backward()
+        self.assertGreater(
+            components["epitope_consistency"].detach().item(),
+            0.0,
+        )
+        self.assertGreater(
+            components["paratope_consistency"].detach().item(),
+            0.0,
+        )
+        self.assertIsNotNone(model.decoder.ag_query.weight.grad)
+        self.assertIsNotNone(model.epitope_head.weight.grad)
+        self.assertIsNotNone(model.paratope_head.weight.grad)
+
+    def test_score_top_k_must_be_a_positive_integer(self) -> None:
+        from interaction_first.model import PartnerSpecificInteractionModel
+
+        for invalid in (0, -1, 1.5, True):
+            with self.subTest(invalid=invalid):
+                with self.assertRaisesRegex(ValueError, "score_top_k"):
+                    PartnerSpecificInteractionModel(
+                        antigen_input_dim=8,
+                        antibody_input_dim=8,
+                        d_model=16,
+                        pair_dim=8,
+                        num_heads=4,
+                        num_layers=0,
+                        score_top_k=invalid,
+                    )
+
     def test_partner_score_is_invariant_to_explicit_unary_biases(self) -> None:
         import torch
 

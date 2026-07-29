@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "format_version": "pairscale_raw_sha256_inventory_v1",
+  "materialized_at_utc": null,
+  "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+  "source_id": "chimera_bench_2026_05",
+  "status": "not_materialized"
+}

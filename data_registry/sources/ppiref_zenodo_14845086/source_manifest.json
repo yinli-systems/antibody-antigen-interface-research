@@ -1,0 +1,21 @@
+{
+  "canonical_record_url": "https://zenodo.org/records/14845086",
+  "confirmatory_evaluation_eligible": false,
+  "declared_scale": {
+    "count": 831382,
+    "source_claim_only": true,
+    "unit": "protein-protein interface files"
+  },
+  "display_name": "PPIRef",
+  "duplicate_groups_status": "not_computed",
+  "format_version": "pairscale_source_manifest_v1",
+  "pinned_revision": "zenodo-record-14845086",
+  "planned_roles": [
+    "geometry_pretraining"
+  ],
+  "registered_at_utc": "2026-07-27T14:45:00Z",
+  "sealed_evaluation_source": false,
+  "source_class": "protein_interface_geometry_corpus",
+  "source_id": "ppiref_zenodo_14845086",
+  "training_policy": "eligible_after_materialization"
+}

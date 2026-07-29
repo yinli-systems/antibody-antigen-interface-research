@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": ".authority/provider_metadata.json",
+      "sha256": "b297c8acbcc6c45f2c1edef32d484111aa48442e8d2820ef4464b631b147fcbc",
+      "size_bytes": 1659
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "78d6c9b12ea5a17e9d70c0e70973075d482d59193c336a645a706d537d41098b",
+      "size_bytes": 2470
+    },
+    {
+      "path": "AVIDa-hIL6.csv",
+      "sha256": "917d90f111d759edc3440f577458d42ef89ff0315b186d6c266c120143b20cde",
+      "size_bytes": 104655792
+    },
+    {
+      "path": "README.md",
+      "sha256": "fec4c7e1eaff265cd666abc4d34d4e747bf9deda3200b5f58978b6b0201790cc",
+      "size_bytes": 2467
+    },
+    {
+      "path": "antigen_sequences.csv",
+      "sha256": "8f023581932e626ba1e2da4f7f861b998b8fcb7516aedb785d831f8c36984e68",
+      "size_bytes": 7133
+    }
+  ],
+  "format_version": "pairscale_raw_sha256_inventory_v1",
+  "materialized_at_utc": "2026-07-27T15:45:39Z",
+  "pinned_revision": "cd783d573e015f83364e42287810ad597850aeed",
+  "source_id": "avida_hil6_2024_11",
+  "status": "materialized"
+}

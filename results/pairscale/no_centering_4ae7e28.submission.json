@@ -1,0 +1,52 @@
+{
+  "claim_boundary": "Development-only endpoint-disjoint no-centering ablation. No holdout metric, model-selection, checkpoint-promotion, confirmatory, scaling, comparative-superiority, or state-of-the-art claim is authorized by this submission receipt.",
+  "formal_run": {
+    "job_id": 1333007,
+    "node_at_receipt": "wqd10nah10g2",
+    "output_root": "/ssd/scxi253/model_deployment/results/pairscale/no_centering_raw_topk_seed17_4ae7e28_e260",
+    "run_manifest_sha256": "933dddfb30eda1f5477e39855b28a569e9915de88bcb1790c6f30630f06e98d8",
+    "state_at_receipt": "RUNNING"
+  },
+  "format_version": "pairscale_no_centering_submission_v1",
+  "input_anchors": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "cache_manifest_sha256": "833daf0eca62a0828a817a3592b351ec070f5f6f33062265f922fd160c96b714",
+    "protocol_file_sha256": "498e881a23df2d01eacc939031a3ab49a7108426b55b47e9425a981ffc3a6c92"
+  },
+  "preflight": {
+    "checkpoint_receipt_sha256": "8e3679aff7e7ef7c7a5f430ce6be56aae7208724bb73c5b9dbd06fefbeb3a9bf",
+    "checkpoint_sha256": "717b07dbfe89ae01426284f5a4e6cd40eaaa1586862e4897f2ce9b38316fa128",
+    "device": "NVIDIA GeForce RTX 5090",
+    "holdout_tensor_accessed": false,
+    "losses": {
+      "contact_bce": 1.4914629459381104,
+      "contact_ranking": 1.129842221736908,
+      "partner_ranking_raw_topk": 0.8622404336929321,
+      "total": 2.836865186691284
+    },
+    "state": "COMPLETED",
+    "torch": "2.13.0+cu130"
+  },
+  "reference_equivalence": {
+    "assignment_equal": true,
+    "dataset_equal": true,
+    "scheduler_horizon_epochs": 400,
+    "training_config_equal": true,
+    "treatment_only_difference": "raw_topk_only_no_centering"
+  },
+  "resources": {
+    "cpu_count": 16,
+    "gpu_count": 1,
+    "memory_gib": 64,
+    "partition": "vip_gpu_5090_scxi253",
+    "time_limit": "04:00:00"
+  },
+  "sealed_source": {
+    "controller_sha256": "73384ae6eeaa0a431219b31d1eb992564e0a3c7e730e2131e6da257066dcafce",
+    "git_commit": "4ae7e287b7d12c9fbcb3b18d0f06c7669bbb2da2",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_no_centering_source_4ae7e28",
+    "scheduler_sha256": "eebb08f79c94b998210faf71fad5ac9108f062f1684fcea7c27ed0b4c6563aea",
+    "writable_regular_file_count": 0
+  }
+}

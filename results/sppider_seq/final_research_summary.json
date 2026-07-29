@@ -6,7 +6,9 @@
   "protocol": {
     "canonical_test_cluster_count": 84,
     "canonical_test_instance_count": 455,
-    "final_test_opened_after_model_and_threshold_selection": true,
+    "final_recipe_and_threshold_selected_on_validation_before_final_v3_evaluation": true,
+    "benchmark_previously_evaluated_by_prior_runs": true,
+    "pristine_one_shot_confirmatory_test": false,
     "paired_cluster_bootstrap_replicates": 1000,
     "train_instance_count": 2727,
     "train_validation_cluster_overlap_count": 0,

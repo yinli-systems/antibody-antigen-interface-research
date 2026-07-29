@@ -1,0 +1,17 @@
+{
+  "expected_selected_bytes": 10043653208,
+  "expected_selected_file_count": 2,
+  "format_version": "pairscale_download_plan_v1",
+  "locator": {
+    "record_id": 14845086
+  },
+  "metadata_sha256": "67a6bdd309638a341cf2e0e3d0009c88520a5c9474db59a421f81160b547ed12",
+  "metadata_url": "https://zenodo.org/api/records/14845086",
+  "pinned_revision": "zenodo-record-14845086",
+  "provider": "zenodo_record",
+  "selectors": [
+    "ppi_6A.zip",
+    "ppi_6A_stats.zip"
+  ],
+  "source_id": "ppiref_zenodo_14845086"
+}

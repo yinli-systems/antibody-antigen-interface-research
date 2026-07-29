@@ -1,0 +1,908 @@
+{
+  "schema_version": "pairformer-gate-manifest-v1",
+  "created_at": "2026-07-25T12:16:09+08:00",
+  "engineering_reconciled_at": "2026-07-27T00:06:19+08:00",
+  "research_source_cutoff": "2026-07-25",
+  "status": "prospective_draft_blocked_at_gate_0",
+  "authority": {
+    "does_not_modify_or_override": "protocols/frontier_model_contract_v1.json",
+    "contact_training_authorized": false,
+    "model_selection_authorized": false,
+    "outer_evaluation_authorized": false,
+    "external_test_inference_authorized": false,
+    "reason": "The current direct nested split fails locked retention and quarantine gates. Externally anchored data/license, exact joint split, independent leakage-audit, fold-cache-equality, runtime-lock, and immutable-manifest receipts are not all present. Gate 0 remains blocked."
+  },
+  "scientific_question": "Can a model recover cognate antibody-antigen residue-pair geometry and rank the correct partner under dual-novel and chronological generalization rather than learning separable marginal interface propensity?",
+  "evidence_classes": {
+    "local_measured": "Project-generated evidence bound to artifact provenance.",
+    "author_reported": "Primary-source or official-card value not reproduced locally and not directly comparable without an identical benchmark.",
+    "aspirational": "Prospective target or stop rule that is not an achieved result."
+  },
+  "local_evidence": {
+    "mipe_800": {
+      "artifact": "work/MIPE_800_FINAL_EVALUATION.md",
+      "artifact_sha256": "77920f15c0c5951a96d0afb73ea6742e63cdd0b1724346567539aa9e3c4d9d30",
+      "native_pair_mean_bidirectional_macro_auprc": 0.00342,
+      "native_pair_macro_auprc_ci95": [
+        0.00305,
+        0.00381
+      ],
+      "predicted_marginal_outer_product_macro_auprc": 0.04045,
+      "validation_best_epitope_micro_auprc": 0.2804,
+      "claim_boundary": "Historical SAbDab2 evaluation. The supplied external split had pre-scoring schema access and is not a pristine blind test."
+    },
+    "local_data_inventory": {
+      "sabdab2": {
+        "instance_or_contact_artifact_count": 3663,
+        "development_count": 3229,
+        "sealed_count": 434
+      },
+      "asep": {
+        "graph_or_structure_asset_count": 1723,
+        "corrected_id_count": 1721
+      },
+      "claim_boundary": "Inventory evidence only; no row is admitted to a new benchmark and no label access is authorized by these counts."
+    },
+    "authority_train_cache": {
+      "exact_pair_count": 1830,
+      "antibody_entity_count": 1383,
+      "antigen_entity_count": 1172,
+      "cache_manifest_sha256": "eccf241f28dfa5e9eca0d95e8f445ae7da4cc8ec28c5b16ec5b078fafd0c3734",
+      "authorization_manifest_sha256": "4227ec4c7bc8594c61a9b1b89f830febff8a4135b75c333c6420e99ec8efb749",
+      "contains_validation_or_test": false,
+      "claim_boundary": "Train-only systems and optimization engineering."
+    },
+    "direct_nested_split_attempt": {
+      "slurm_job_id": 1319544,
+      "alignment_pair_count": 709501,
+      "orientations_per_pair": 2,
+      "boundary_count": 12,
+      "sequence_view_count": 4,
+      "threshold_crossing_count": 0,
+      "outer_training_pair_counts": [
+        942,
+        970,
+        989
+      ],
+      "outer_training_pair_minimum": 1098,
+      "outer_quarantine_pair_counts": [
+        759,
+        730,
+        712
+      ],
+      "outer_quarantine_pair_maximum": 603,
+      "authorized": false,
+      "interpretation": "The exact alignment boundary is clean, but the direct assignment is not a valid scientific split."
+    },
+    "distributed_engineering": {
+      "ledger": "work/FRONTIER_DDP_DIAGNOSTIC_LEDGER.json",
+      "full_cache_d0_job_id": 1312073,
+      "full_cache_d0_world_size": 4,
+      "full_cache_d0_epochs": 58,
+      "two_to_four_gpu_incremental_strong_scaling_efficiency": 0.7012,
+      "eight_gpu_fixed_work_default_authorized": false,
+      "claim_boundary": "Systems evidence only; no biological performance or compute-saturation claim."
+    },
+    "prospective_pairformer_engineering": {
+      "status": "untrained_api_level_candidate",
+      "scientific_training_authorized": false,
+      "source_sha256": {
+        "src/interaction_first/data_admission.py": "bc65a6302c351e68eb47440b60ecc3d1d25e8d24d0bbd6e91714f02be8fbbc3d",
+        "src/interaction_first/gate0_authority.py": "69dfe20462e4e4e2749ddb1b3494d41210087046fe7d3cfb49ff929a7996287c",
+        "src/interaction_first/geometry_labels.py": "fe972c92a7cfc33dcc75ebdfa43806cef60a6527b4306a7b8f4aadf6361dac3a",
+        "src/interaction_first/hard_negative_contract.py": "420e5d301b842901f1c069005b3e78367d35a9ea435587e2135ea288253e6047",
+        "src/interaction_first/pair_geometry_schema.py": "3cd35754390277d7bb1b1843f5d0323cfd5b66a5bc5e420f77a1031899347ff2",
+        "src/interaction_first/pair_geometry.py": "301c3635d29a1a54d25053dd63ec9fabddc630474fe0c084a9c771850b02b4f7",
+        "src/interaction_first/pair_geometry_losses.py": "e20d2cfb77620c91f2525eda5070d42f296e2eece9ecea685b6142da64e103b5",
+        "src/interaction_first/pairformer_evaluator.py": "72f199b2fb236f5dffca63bcd0ec1b1c85e646c0adddc7b90ca80bb39c5624ed",
+        "src/interaction_first/pairformer_training_step.py": "4532e762a184d391085c51f998497d59f10d0150a4c81e891ecd51bd776a3c70"
+      },
+      "admission_contract": {
+        "metadata_only": true,
+        "external_policy_digest_required": true,
+        "external_source_registry_digest_required": true,
+        "five_stage_lineage_required": true,
+        "independent_per_axis_duplicate_audits_required": true,
+        "does_not_prove": [
+          "referenced dataset bytes",
+          "scientific truth",
+          "legal interpretation",
+          "auditor identity"
+        ]
+      },
+      "hard_negative_contract": {
+        "format_generation": "v2",
+        "unknown_unmeasured_pair_binary_target": null,
+        "externally_anchored_complete_manifest_required": true,
+        "measured_evidence_exact_pair_binding_required": true,
+        "train_only_role_required": true,
+        "domain_and_candidate_policy_parity_required": true
+      },
+      "gate0_authority_contract": {
+        "required_gate_count": 6,
+        "external_complete_receipt_digest_per_gate_required": true,
+        "external_policy_and_decision_digests_required": true,
+        "producer_auditor_distinct_when_required": true,
+        "identity_fields_are_digital_signatures": false,
+        "may_authorize": [
+          "contact_training",
+          "model_selection"
+        ],
+        "may_authorize_outer_or_external_evaluation": false
+      },
+      "label_contract": {
+        "format_version": "pair_geometry_labels_v2",
+        "primary_contact_cutoff_angstrom": 4.5,
+        "sensitivity_contact_cutoffs_angstrom": [
+          5.0,
+          6.0,
+          8.0
+        ],
+        "negative_or_exact_distance_requires_both_residues_complete": true,
+        "observed_positive_may_be_valid_when_residue_is_incomplete": true,
+        "orientation_schema": "relative_pose_5d_periodic_bins_v1",
+        "orientation_axis_count": 5,
+        "orientation_bin_count": 24,
+        "coordinate_unit_locked_to_angstrom": true,
+        "source_and_policy_hash_binding_required": true
+      },
+      "model_and_objective_contract": {
+        "early_bidirectional_fusion": true,
+        "explicit_candidate_pair_tensor": true,
+        "contact_is_coupled_to_distance_bin_mass": true,
+        "pair_derived_marginals": true,
+        "matched_decoy_hinge_not_generic_infonce": true,
+        "equal_per_complex_geometry_loss_reduction": true,
+        "candidate_derived_node_support": true,
+        "schema_mismatch_fails_closed": true,
+        "disabled_decoder_heads_skip_graph_construction": true,
+        "active_pair_output_remains_quadratic": true
+      },
+      "evaluation_contract": {
+        "frozen_residue_domain_hash_required": true,
+        "complete_cartesian_pair_mask_required": true,
+        "negative_subsampling_allowed": false,
+        "tie_invariant_top_k_and_risk_coverage": true,
+        "true_pairwise_partner_win_rate": true,
+        "bootstrap_replicates": 10000,
+        "minimum_independent_clusters": 10,
+        "below_minimum_cluster_inference_authorizing": false
+      },
+      "training_step_contract": {
+        "role": "train_only",
+        "sum_reduction_required": true,
+        "rank_local_mean_allowed": false,
+        "fixed_world_standard_ddp_averaging_required": true,
+        "external_batch_and_collective_authorities_required": true,
+        "reference_retains_all_microbatch_graphs": true,
+        "multi_process_collectives_launched_by_module_tests": false,
+        "production_hot_path_ready": false
+      },
+      "verification": {
+        "original_geometry_focused_tests_passed": 206,
+        "focused_subtests_passed": 4,
+        "reconciled_focused_tests_passed": 428,
+        "new_contract_tests_passed": {
+          "data_admission": 51,
+          "hard_negative": 34,
+          "gate0_authority": 47,
+          "pairformer_training_step": 36
+        },
+        "full_suite_passed": 771,
+        "full_suite_failed": 40,
+        "full_suite_skipped": 1,
+        "full_suite_warnings": 9,
+        "full_suite_subtests_passed": 37,
+        "full_suite_claim_authorized": false,
+        "full_suite_failure_boundary": "Thirty-eight deterministic pre-existing fixture/dependency failures: 37 stale exported-layout or missing-physical-fixture failures and one Biopython 1.83 pin versus the local 1.87 environment; plus two sandbox/network-blocked multiprocessing Gloo failures. Zero new regressions were identified. The full suite is not represented as passing."
+      },
+      "claim_boundary": "Engineering correctness only. No real-data PAIRFormer training, model selection, held-out scoring, biological metric improvement, docking improvement, or SOTA claim."
+    },
+    "joint_core_milp_attempt": {
+      "slurm_job_id": 1320525,
+      "source_manifest_sha256": "9305019326d891995c64591d066f644ed1eb5e38281aa250ed3f3699622cce43",
+      "output_root": "/ssd/scxi253/model_deployment/results/frontier_partner_v1/nested_split_joint_core_v1_sourcec7208d2c_20260725a/slurm-1320525",
+      "last_observed_at": "2026-07-26T13:03:39+08:00",
+      "last_observed_state": "FAILED",
+      "elapsed": "12:01:16",
+      "exit_code": "1:0",
+      "terminal_reason": "HiGHS time limit reached with no primal solution",
+      "joint_time_limit_seconds": 43200,
+      "nested_assignment_present": false,
+      "independent_audit_receipt_present": false,
+      "builder_log_sha256": "6159a2ddd7a787348a6d077492a4502f1f46adb30035d8a1a060d8208600f0a7",
+      "terminal_state_is_infeasibility_proof": false,
+      "artifact_schema_generation": "v2_superseded",
+      "accepted_by_current_v5_workflow": false,
+      "authorized": false,
+      "claim_boundary": "The superseded v2 solve exhausted its 43200-second limit without a primal solution, assignment, or audit receipt. This proves neither feasibility nor infeasibility and cannot authorize the v5 workflow."
+    },
+    "nested_core_feasibility_v5_precursor": {
+      "status": "unlaunched_non_authorizing_precursor",
+      "format": "train_only_nested_direct80_four_view_neighborhood_folds_v5",
+      "train_authority": "gate0_physical_train_only_allowlist_v1",
+      "locked_joint_policy_sha256": "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd",
+      "implementation_commit": "cb2a7a271a2bb14b4a262ba2e9b5124edad72df1",
+      "outer_fold_count": 3,
+      "dependent_inner_fold_count_per_outer": 3,
+      "boundary_count": 12,
+      "sequence_view_count": 4,
+      "exhaustive_boundary_view_audit_count": 48,
+      "accepted_artifact_generations": {
+        "v2": false,
+        "v3": false,
+        "v4": false,
+        "v5_provisional_discovery": false,
+        "v5_externally_pinned_replay_after_independent_audit": true
+      },
+      "physical_train_only_allowlist_required": true,
+      "exact_four_column_train_only_canonical_manifest_required": true,
+      "full_authority_split_or_test_manifest_may_be_mounted_or_read": false,
+      "nofollow_same_descriptor_reads_required": true,
+      "isolated_python_staged_application_source_count": 3,
+      "workflow": [
+        "create-only provisional_discovery publishes a candidate membership digest and append-only attempt ledger",
+        "an external controller freezes the candidate membership digest",
+        "a separate numbered externally_pinned_replay reproduces the frozen digest",
+        "an independent replay audit may accept only the pinned replay"
+      ],
+      "full_authority_component_gate": {
+        "identity_source": "transitive_connected_components_of_complete_authority_train_direct_graphs",
+        "canonical_identifier": "lexicographically_minimum_entity_identifier",
+        "outer_minimum_components_per_axis": 25,
+        "inner_minimum_components_per_axis": 20,
+        "component_presence_encoding": "exact_binary_or_over_effective_validation_endpoints",
+        "inner_levels_retain_complete_graph_component_identity": true,
+        "builder_selected_vector_binds_both_axes": true,
+        "auditor_independently_reconstructs_complete_graph_components": true,
+        "proves_global_s2_or_lineage_independence": false
+      },
+      "source_sha256": {
+        "src/interaction_first/nested_joint_milp.py": "798a54752caaa830bf3a5162854ecdf75028b1b2086c57a90df7798bb045883e",
+        "scripts/build_train_only_nested_neighborhood_folds.py": "9bb3c0284f76b0d0bae0cc2744ee26bf89ee94b978e7d41acff0c763852bc320",
+        "scripts/audit_train_only_nested_neighborhood_folds.py": "9ed89f767f1e6b02a74eda182fc2a9982a3a235e46b6a976d2b319bf4df3cb04",
+        "slurm/frontier_nested_split_build_audit.sbatch": "520d8ba64e5f08231c2c7e91d959ba70830b72d6faeb843bf2b8ede9b0d9caf4",
+        "tests/test_nested_joint_milp.py": "2d6d46e61a58b608d79299b15c3ae3e35cd8a7667a9626e8127e516acce6816c",
+        "tests/test_train_only_nested_neighborhood_folds.py": "5c021ff4c3fa9637ad2004c3cfaedcb37b168fbb395671cee81d3d4be0828cbb"
+      },
+      "targeted_tests_passed": 81,
+      "targeted_tests_passed_under_hash_seeds": [
+        1,
+        777
+      ],
+      "related_combined_tests_passed": 237,
+      "authorizes_split_domain_gate0": false,
+      "authorizes_training_model_selection_or_evaluation": false,
+      "does_not_prove": [
+        "locked V0 full-retention-first lexicographic objective stages",
+        "integration of locked representativeness and remaining balance gates into the v5 joint MILP",
+        "deterministic sequential variable fixing or canonical tie-break trace",
+        "precision or power receipt",
+        "remaining runtime closure",
+        "organizational independence",
+        "a second independent MILP",
+        "transitive lineage independence",
+        "independent historical solver execution",
+        "any other Gate 0 domain"
+      ],
+      "full_graph_reconstruction_production_audit_cost_measured": false,
+      "production_solver_memory_and_runtime_measured": false,
+      "claim_boundary": "No v5 real run or result exists. Even an independently audited, externally pinned v5 replay is only a non-authorizing exact core-feasibility precursor with full-authority component minima; it cannot close Gate 0 or authorize training, model selection, or evaluation."
+    },
+    "score_free_split_statistics_v1": {
+      "status": "synthetic_engineering_oracle_only",
+      "implementation_commit": "8343c3b526d185d56a8cf3b73c3f8c9165cf02c6",
+      "allowed_input_scope": [
+        "typed train-only sequence-length summaries",
+        "typed train-only direct-degree and component summaries",
+        "observed exact positive-pair incidence",
+        "already scoped outer or inner endpoint universes"
+      ],
+      "forbidden_input_classes": [
+        "contact or interface labels",
+        "paratope or epitope sizes",
+        "affinity or assay outcomes",
+        "embeddings, predictions, losses, ranks, or model scores"
+      ],
+      "implemented_gates": [
+        "tie-preserving type-1 quintile schemes with explicit missing-VL bins",
+        "50-digit Decimal SMD with exact rational means and sample variances",
+        "exact Fraction histogram total variation and empirical KS",
+        "outer, pooled-outer, and inner distribution threshold contracts",
+        "exact pair, endpoint, component, retention, and quarantine shape gates",
+        "singleton-positive fractions, bipartite density, and exact finite-library chance MRR",
+        "exact three-fold relative-range gates and pooled entity-disjoint outer checks",
+        "canonical audit digests binding thresholds, universe/training/validation memberships, and quantile cuts"
+      ],
+      "source_sha256": {
+        "src/interaction_first/score_free_split_statistics.py": "e9b2a2667d52cc1b7785b95fc195666696b202212ad2aa136b551d044a29fecf",
+        "tests/test_score_free_split_statistics.py": "e63d50b145e6d5c4f1bcf52ea16bff4e30c7432add36303556a0503c23a53751"
+      },
+      "targeted_tests_passed": 20,
+      "targeted_tests_passed_under_hash_seeds": [
+        1,
+        777
+      ],
+      "related_combined_tests_passed": 257,
+      "authorizes_split_domain_gate0": false,
+      "authorizes_training_model_selection_or_evaluation": false,
+      "remaining_boundaries": [
+        "typed summaries are not yet independently derived from authenticated raw sequence and graph sources",
+        "the oracle is not integrated into the v5 joint MILP or independent replay auditor",
+        "no real authority-train fold was audited",
+        "homology-edge and zero-crossing audits remain separate",
+        "no independently implemented second statistics oracle exists",
+        "no isolated inner-scope source firewall receipt exists"
+      ],
+      "claim_boundary": "Synthetic score-free statistics and hard-gate engineering only. No real split feasibility, training authority, model result, biological metric, or SOTA evidence was produced."
+    },
+    "engineering_cache_v2": {
+      "status": "unlaunched_engineering_contract",
+      "source_sha256": {
+        "scripts/build_frontier_engineering_cache.py": "01ecb05c13f85de764047429501542ba6131ae6a69175f08350d3a4c9cd63895",
+        "slurm/frontier_engineering_cache.sbatch": "a94f9e26de65ed71ed5dddfaf9869d4e89e38eb07e7190c665793a9494845e82",
+        "src/interaction_first/frontier_data.py": "3b90e89c68bd75d52dc01bbc03acbff9f4d59ba5dcd3e6c16e561c7c64a8030b"
+      },
+      "external_authority_and_store_anchors_required": true,
+      "exact_allowlist_equality_required": true,
+      "hash_before_deserialization": true,
+      "create_only_sealed_publication": true,
+      "legacy_self_issued_subset_authority_compatible": false,
+      "focused_downstream_tests_passed": 86,
+      "independent_builder_loader_tests_passed": 24,
+      "claim_boundary": "Engineering cache contract only. No cache was built or launched under v2; no real or sealed data was accessed; no training or metric result was produced."
+    },
+    "finite_cache_runtime": {
+      "status": "unlaunched_engineering_contract",
+      "source_sha256": {
+        "src/interaction_first/frontier_batching.py": "a3ac04b43357a8fec452ee676158598f1d99d7bf4efd1bea69569adc612f01fe",
+        "src/interaction_first/frontier_checkpoint.py": "912dddc6db07804e21a0807d19b3262b2afe79db5641c9412eac4b3689b9dc7f",
+        "src/interaction_first/frontier_data.py": "3b90e89c68bd75d52dc01bbc03acbff9f4d59ba5dcd3e6c16e561c7c64a8030b",
+        "src/interaction_first/frontier_distributed.py": "9c9c533b85eb0decbd4d75a898fc13e52f69f92a274ca92d63f6a9a5120b1cb6",
+        "src/interaction_first/frontier_model.py": "f170c4858cb20e27222c0602f9ec4f4656a095944434a8d9f11d53e7c4f4e357",
+        "src/interaction_first/frontier_training.py": "5c0e2d0d51c9ab30dcc8962a270bdc5f34a0d255f12534108bc856c162641da2"
+      },
+      "sampler_scope": "finite_authority_train_cache_only",
+      "maximum_int64_indices_per_rank": 16777216,
+      "maximum_permutation_bytes_per_rank": 134217728,
+      "billion_scale_supported": false,
+      "fixed_world_standard_ddp_required": true,
+      "unsupported": [
+        "DDP Join",
+        "elastic world size",
+        "custom gradient-averaging hooks",
+        "true zero-slot ranks",
+        "sharded distributed checkpoints"
+      ],
+      "global_scores_and_masks_remain_quadratic": true,
+      "frontier_tests_passed": 94,
+      "frontier_multi_process_tests_deselected": 2,
+      "claim_boundary": "Finite-cache runtime engineering only; no biological, model-scaling, or efficiency result."
+    },
+    "launch_and_scale_contract": {
+      "status": "unlaunched_prospective_contract",
+      "source_sha256": {
+        "scripts/distributed_launch_contract.py": "4c9831f35a11ea49cb8ed5beecd1d33f9cbafa8830b15eff2139e35ec90df136",
+        "scripts/generate_runtime_manifest.py": "4f488dcadcf543d87ab97c1019af2cd5e81e76ca1a18119573120078eea3a26d",
+        "protocols/PAIRFORMER_SCALE_RUNBOOK_V1.md": "df022a34544870c5603cb5eed23dd59393a8a26b61c349e92197b9757c93328b"
+      },
+      "qos_maximum_nodes_per_job": 8,
+      "qos_maximum_gpus_per_job": 64,
+      "synchronous_96_gpu_authorized": false,
+      "fsdp2_implemented": false,
+      "launch_and_runtime_manifest_tests_passed": 42,
+      "claim_boundary": "No 8-, 32-, or 64-GPU PAIRFormer model training, scale-efficiency result, or scientific metric was produced."
+    }
+  },
+  "author_reported_references": [
+    {
+      "id": "epiformer",
+      "source": "https://arxiv.org/abs/2606.04154",
+      "processed_asep_complexes": 1721,
+      "epitope_ratio": {
+        "auroc": 0.924,
+        "auprc": 0.493,
+        "f1": 0.482,
+        "mcc": 0.464
+      },
+      "epitope_group": {
+        "auroc": 0.826,
+        "auprc": 0.29,
+        "f1": 0.305,
+        "mcc": 0.29
+      },
+      "local_reproduction_status": "not_reproduced_under_this_protocol",
+      "reuse_status": "Audited public repository had no explicit license or released checkpoint."
+    },
+    {
+      "id": "contact",
+      "source": "https://arxiv.org/abs/2605.21600",
+      "benchmark": "CHIMERA antigen-fold",
+      "fnat": 0.69,
+      "dockq": 0.73,
+      "epitope_f1": 0.82,
+      "local_reproduction_status": "not_reproduced_under_this_protocol",
+      "reuse_status": "Repository reuse requires an explicit license receipt."
+    },
+    {
+      "id": "aamfm",
+      "source": "https://arxiv.org/abs/2607.20057",
+      "base_model": "ESM3-open 1.4B",
+      "antibody_sequence_predicted_structure_examples_approx": 1400000,
+      "trainable_adapter_parameters_approx": 5100000,
+      "preference_pairs_approx": 30000,
+      "reported_hardware": "one NVIDIA A800 80 GB",
+      "prospective_wet_lab_sufficiency": false,
+      "reuse_status": "Audited repository lacked data, weights, and an explicit license; upstream ESM3 terms apply."
+    },
+    {
+      "id": "chimera_bench",
+      "source": "https://arxiv.org/abs/2603.13431",
+      "complexes": 2922,
+      "unique_pdb_structures": 2721,
+      "split_count": 3,
+      "license": "CC-BY-4.0 data; MIT code"
+    },
+    {
+      "id": "asep",
+      "source": "https://github.com/biochunan/AsEP-dataset",
+      "official_complexes": 1723,
+      "epiformer_processed_complexes": 1721,
+      "license": "CC-BY-4.0 data; MIT code"
+    },
+    {
+      "id": "oas",
+      "source": "https://opig.stats.ox.ac.uk/webapps/oas/",
+      "sequence_count_statement": "more than one billion",
+      "semantic_type": "antibody repertoire sequences, not antibody-antigen interaction pairs",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "data_registry": [
+    {
+      "id": "oas",
+      "audited_scale": ">1B antibody repertoire sequences",
+      "role": "antibody language-model pretraining",
+      "license": "CC-BY-4.0",
+      "local_state": "not_acquired",
+      "commercial_use_blocked_by_this_entry": false
+    },
+    {
+      "id": "avida_hil6",
+      "audited_scale": {
+        "labels": 573891,
+        "bind": 20980,
+        "non_bind": 552911
+      },
+      "role": "measured mutation-sensitive binder/non-binder specificity",
+      "license": "CC-BY-NC-4.0",
+      "local_state": "not_acquired",
+      "commercial_use_blocked_by_this_entry": true
+    },
+    {
+      "id": "avida_sars_cov_2",
+      "audited_scale": {
+        "labels": 77003,
+        "bind": 22002,
+        "non_bind": 55001
+      },
+      "role": "measured variant generalization and escape specificity",
+      "license": "CC-BY-NC-4.0",
+      "local_state": "not_acquired",
+      "commercial_use_blocked_by_this_entry": true
+    },
+    {
+      "id": "chimera_bench",
+      "audited_scale": {
+        "complexes": 2922,
+        "unique_pdb_structures": 2721
+      },
+      "role": "structure, interface, design, and hard-split evaluation",
+      "license": "CC-BY-4.0 data; MIT code",
+      "local_state": "not_acquired",
+      "revision_pin_required": true
+    },
+    {
+      "id": "asep",
+      "audited_scale": {
+        "official_complexes": 1723,
+        "corrected_or_processed_complexes": 1721
+      },
+      "role": "epitope, paratope, and pair geometry",
+      "license": "CC-BY-4.0 data; MIT code",
+      "local_state": "assets_present_but_not_admitted",
+      "cardinality_freeze_required": true
+    },
+    {
+      "id": "abrank",
+      "audited_scale": {
+        "affinity_assays": 381713,
+        "antibody_clusters": 237,
+        "antigen_clusters": 190
+      },
+      "role": "affinity ranking",
+      "license": "CC-BY-NC-SA distribution with heterogeneous upstream-source receipts required",
+      "local_state": "not_acquired",
+      "commercial_use_blocked_by_this_entry": true
+    },
+    {
+      "id": "abbibench",
+      "audited_scale": "version-dependent; paper and live-card counts differ",
+      "role": "affinity maturation and mutation ranking",
+      "license": "CC-BY-4.0",
+      "local_state": "not_acquired",
+      "revision_pin_required": true
+    },
+    {
+      "id": "generated_structures_and_decoys",
+      "audited_scale": "not_yet_generated",
+      "role": "predicted monomers, docking poses, and counterfactual hard negatives",
+      "license": "inherits all source-data and model-license restrictions",
+      "measured_label": false
+    }
+  ],
+  "admission_requirements": [
+    "Pinned source revision and acquisition timestamp.",
+    "Raw-file and normalized-artifact SHA-256 manifests.",
+    "Source-to-normalized row lineage.",
+    "License and redistribution receipt.",
+    "Raw, QC, deduplicated, admitted, experimental-label, predicted-structure, decoy, and residue-token counts.",
+    "Cross-source exact and near-duplicate audit on both molecular sides.",
+    "No generated structure, score, or synthetic decoy represented as experimental evidence."
+  ],
+  "compute_contract": {
+    "partition_inventory": {
+      "node_count": 12,
+      "gpus_per_node": 8,
+      "configured_gpu_count": 96,
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "memory_mib_per_gpu": 32607,
+      "nvlink": false
+    },
+    "scheduler_limit": {
+      "qos_max_nodes_per_job": 8,
+      "maximum_gpus_per_job": 64,
+      "maximum_96_gpu_synchronous_job_authorized": false
+    },
+    "network_observation": {
+      "fabric": "dual 25-Gb links, ConnectX-6 Lx, no NVLink",
+      "validated_job_ids": [
+        1313384,
+        1313385,
+        1313386,
+        1313387,
+        1313388,
+        1313389
+      ],
+      "all_reduce_correct": true,
+      "all_reduce_64_mib": {
+        "latency_p50_ms": 38.44,
+        "bus_bandwidth_gb_per_second": 3.4367
+      },
+      "all_reduce_512_mib": {
+        "latency_p50_ms": 861.49,
+        "latency_p95_ms": 1309.65,
+        "bus_bandwidth_gb_per_second": 1.2269
+      },
+      "interpretation": "Topology diagnostic only; large-message jitter is material and no model-scaling claim follows."
+    },
+    "routing": [
+      "Use independent fold, seed, data-generation, hard-negative, and ablation jobs as the default scale-out axis.",
+      "Prefer measured 2-4 GPU jobs for the current D0 path.",
+      "Profile 8-GPU pods before larger-model training.",
+      "Use up to 64 synchronous GPUs only after collective, dataloader, checkpoint, and recovery gates pass.",
+      "Do not claim a 96-GPU synchronous run without a new scheduler grant and verified cross-job rendezvous."
+    ],
+    "required_reporting": [
+      "actual world size and node count",
+      "model and trainable parameter count",
+      "admitted samples and residue tokens",
+      "GPU-hours and useful residues per second",
+      "parallel efficiency and communication percentiles",
+      "peak host and GPU memory",
+      "checkpoint and recovery time",
+      "failed-job rate",
+      "source, runtime, container, data, and checkpoint hashes"
+    ]
+  },
+  "firewall": {
+    "controller_may_read_all_split_membership_only": true,
+    "model_process_may_mount_whole_pool": false,
+    "model_process_may_parse_nontrain_sequences": false,
+    "model_process_may_parse_nontrain_labels": false,
+    "model_process_may_parse_nontrain_structures_or_contacts": false,
+    "fold_cache_inventory_must_equal_allowlist": true,
+    "outer_fold_scoring_during_training": false,
+    "test_schema_access_is_exposure": true,
+    "historical_mipe_test_label": "provided external test-split evaluation with pre-scoring schema access",
+    "fresh_prospective_test_must_remain_sealed": true,
+    "all_exposure_and_failure_events_append_only": true
+  },
+  "split_contract": {
+    "format_generation": "train_only_nested_direct80_four_view_neighborhood_folds_v5_core_feasibility_precursor",
+    "locked_joint_policy_sha256": "5ddf8b4efef6ae7aed29fd529e613ee12f3b4d0caeddc23d1a320f73bca344fd",
+    "outer_fold_count": 3,
+    "inner_folds_per_outer": 3,
+    "joint_assignment_required": true,
+    "exact_decomposition_permitted_if_equivalence_proved": true,
+    "sequential_single_level_may_be_called_joint": false,
+    "primary_novelty": "dual antibody and antigen direct-80/80 separation across all declared sequence views",
+    "additional_required_audits": [
+      "full Fv, VH, VL, concatenated CDR, CDR-H3, germline, and canonical-loop similarity",
+      "antigen sequence, family, fold, and surface-patch similarity",
+      "epitope-group novelty",
+      "chronological separation",
+      "nearest global and interface structural neighbor",
+      "retention, quarantine, class prevalence, antigen size, epitope size, species, and resolution"
+    ],
+    "approximate_search_may_certify_zero_crossings": false,
+    "current_status": "blocked_v5_core_feasibility_precursor_cannot_close_split_domain_gate0"
+  },
+  "model_ladder": [
+    {
+      "id": "D0",
+      "description": "Locked dual encoder with bidirectional cognate-partner retrieval.",
+      "scientific_training_authorized": false
+    },
+    {
+      "id": "R1",
+      "description": "Early bidirectional residue fusion with partner ranking.",
+      "scientific_training_authorized": false
+    },
+    {
+      "id": "R2",
+      "description": "R1 plus an explicit antibody-residue by antigen-residue contact head.",
+      "scientific_training_authorized": false
+    },
+    {
+      "id": "PAIRFormer-S",
+      "description": "Contact, distance, orientation, interaction-type, confidence, and uncertainty heads with secondary or derived marginals.",
+      "scientific_training_authorized": false
+    }
+  ],
+  "scale_ladder_parameters": [
+    100000000,
+    300000000,
+    650000000,
+    1300000000
+  ],
+  "hard_negative_families": [
+    "same-antigen matched wrong antibody",
+    "same-antibody matched wrong antigen",
+    "mutation-induced binding flips",
+    "wrong epitope patch",
+    "near-native incorrect docking pose",
+    "native paratope on an incorrect antigen patch",
+    "composition-preserving partner shuffle",
+    "antibody-null and antigen-null",
+    "coordinate shuffle and surface-feature shuffle"
+  ],
+  "evaluation": {
+    "primary_contact_definition": "any non-hydrogen atom pair within 4.5 angstrom",
+    "contact_cutoff_sensitivity_angstrom": [
+      5.0,
+      6.0,
+      8.0
+    ],
+    "primary_pair_metric": "per-complex macro full-matrix AUPRC",
+    "required_pair_metrics": [
+      "macro AUPRC",
+      "AUROC",
+      "MCC",
+      "F1 or Dice",
+      "Precision@K",
+      "Recall@K",
+      "conditional row ranking",
+      "conditional column ranking"
+    ],
+    "required_retrieval_metrics": [
+      "bidirectional Recall@1",
+      "bidirectional Recall@5",
+      "bidirectional Recall@10",
+      "MRR",
+      "normalized rank",
+      "pairwise win rate"
+    ],
+    "required_calibration_metrics": [
+      "NLL",
+      "Brier score",
+      "adaptive ECE",
+      "risk-coverage"
+    ],
+    "required_controls": [
+      "strongest separable unary, additive, or outer-product marginal baseline",
+      "degree-aware random or permutation baseline",
+      "raw frozen embedding baseline",
+      "antibody-only and antigen-only baselines",
+      "null and composition baselines",
+      "matched wrong-partner controls"
+    ],
+    "bootstrap_replicates": 10000,
+    "bootstrap_unit": "leakage component or biologically appropriate cluster",
+    "screening_seed_count_minimum": 3,
+    "promoted_final_seed_count_minimum": 5,
+    "micro_metrics_are_secondary": true,
+    "evaluation_negative_subsampling_allowed": false,
+    "validation_only_threshold_and_calibration": true
+  },
+  "freeze_order": [
+    "Freeze raw data, normalized entities, chain mappings, labels, split inputs, code, and runtime manifests.",
+    "Construct and independently audit exact joint outer and dependent inner splits.",
+    "Materialize and verify fold-local allowlisted caches.",
+    "Use inner validation only for model, loss, hard-negative, epoch, checkpoint, threshold, and calibration selection.",
+    "Freeze source, runtime, seeds, candidate, checkpoint rule, score aggregation, threshold, calibration, and one-shot registry.",
+    "Score each outer fold once under the preregistered analysis.",
+    "Freeze the promoted final model before one-shot chronological or external inference.",
+    "Keep a fresh prospective set sealed until the complete final freeze."
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "name": "integrity_legality_and_split_authority",
+      "status": "blocked",
+      "pass_requirements": [
+        "All admitted data have pinned revisions, hashes, lineage, and license receipts.",
+        "Exact joint three-outer plus nine-dependent-inner assignment passes.",
+        "Independent leakage, retention, quarantine, distribution, and cache-equality audits pass.",
+        "Runtime, source, split, label, and cache manifests are immutable."
+      ],
+      "authorized_before_pass": "train-only systems engineering only"
+    },
+    {
+      "id": "G1",
+      "name": "genuine_partner_dependence",
+      "status": "not_started",
+      "depends_on": [
+        "G0"
+      ],
+      "pass_requirements": [
+        "The 95% paired cluster-bootstrap lower bound for macro pair-AUPRC improvement over the strongest separable marginal baseline is above zero.",
+        "Matched partner shuffle produces significant deterioration.",
+        "Bidirectional cognate retrieval exceeds degree-aware permutation and D0.",
+        "Unary, null, composition, and similarity controls do not explain the gain.",
+        "The direction is consistent across the fixed seed set and major antigen strata."
+      ],
+      "failure_action": "Improve labels, candidate masks, partner supervision, and hard negatives; do not increase scale."
+    },
+    {
+      "id": "G2",
+      "name": "useful_scaling",
+      "status": "not_started",
+      "depends_on": [
+        "G1"
+      ],
+      "pass_requirements": [
+        "Run the 100M, 300M, 650M, and 1.3B ladder under identical hard-split conditions.",
+        "Continue beyond 650M only with approximately one absolute AUPRC point or more hard-endpoint improvement and stable uncertainty.",
+        "Systems profiling establishes acceptable throughput per GPU-hour and recovery."
+      ],
+      "failure_action": "Stop parameter scaling and redirect compute to data quality, geometry, and hard-negative mining."
+    },
+    {
+      "id": "G3",
+      "name": "docking_utility",
+      "status": "not_started",
+      "depends_on": [
+        "G2"
+      ],
+      "pass_requirements": [
+        "Pair-to-restraint conversion is frozen on validation.",
+        "Identical chronological benchmark shows paired DockQ-success and interface-RMSD improvement.",
+        "Calibrated restraints beat binary top-k restraints.",
+        "High-confidence false-restraint rate does not materially increase."
+      ],
+      "failure_action": "Improve calibration, orientation, uncertainty, or restraint conversion before any utility claim."
+    },
+    {
+      "id": "G4",
+      "name": "prospective_experimental_confirmation",
+      "status": "not_started",
+      "depends_on": [
+        "G3"
+      ],
+      "pass_requirements": [
+        "Institutional and experimental approvals are recorded.",
+        "At least three unseen antigens are tested with blind, frozen candidate selection.",
+        "SPR or BLI, expression, SEC, aggregation, stability, and epitope or escape validation are prespecified.",
+        "Predicted structures and model scores are not represented as measured binding evidence."
+      ]
+    }
+  ],
+  "aspirational_targets": [
+    {
+      "task": "AsEP unseen epitope-group",
+      "strong": {
+        "auprc_minimum": 0.35
+      },
+      "stretch": {
+        "auprc_minimum": 0.4,
+        "f1_minimum": 0.38,
+        "mcc_minimum": 0.38
+      },
+      "achieved": null
+    },
+    {
+      "task": "strict dual or chronological residue-pair contact",
+      "strong": {
+        "macro_auprc_minimum": 0.12
+      },
+      "stretch": {
+        "macro_auprc_range": [
+          0.15,
+          0.2
+        ]
+      },
+      "achieved": null
+    },
+    {
+      "task": "partner-specific pair gain",
+      "strong": {
+        "macro_auprc_gain_minimum": 0.06
+      },
+      "stretch": {
+        "macro_auprc_gain_minimum": 0.08,
+        "ci95_lower_bound_minimum_exclusive": 0.05
+      },
+      "achieved": null
+    },
+    {
+      "task": "cognate partner retrieval",
+      "strong": {
+        "recall_at_1_minimum": 0.7
+      },
+      "stretch": {
+        "recall_at_1_minimum": 0.8,
+        "mrr_minimum": 0.85
+      },
+      "achieved": null
+    },
+    {
+      "task": "identical chronological docking benchmark",
+      "strong": {
+        "acceptable_success_rate_minimum": 0.45
+      },
+      "stretch": {
+        "acceptable_success_rate_minimum": 0.5
+      },
+      "achieved": null
+    },
+    {
+      "task": "prospective wet-lab confirmation",
+      "strong": {
+        "minimum_unseen_antigens": 3,
+        "binder_hit_rate_minimum": 0.1
+      },
+      "stretch": {
+        "top_96_binder_hit_rate_minimum": 0.2,
+        "best_kd_nm_maximum": 10.0
+      },
+      "achieved": null
+    }
+  ],
+  "claim_policy": {
+    "forbidden_without_identical_benchmark_evidence": [
+      "state of the art",
+      "world-leading",
+      "best",
+      "superior"
+    ],
+    "identical_benchmark_fields": [
+      "raw dataset revision and admitted complex IDs",
+      "training data and train-validation-test assignments",
+      "antibody and antigen novelty rules",
+      "chronological cutoff",
+      "input regime and structure provenance",
+      "candidate residue domain and resolved mask",
+      "contact cutoff",
+      "metric implementation and aggregation unit",
+      "seed and checkpoint-selection policy",
+      "threshold and calibration policy",
+      "uncertainty procedure"
+    ],
+    "author_reported_values_are_context_only": true,
+    "target_values_may_be_reported_as_achieved": false,
+    "generated_data_may_be_called_experimental": false,
+    "oas_may_be_called_antibody_antigen_pairs": false,
+    "test_policy_may_change_after_scoring": false
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "format_version": "pairscale_development_holdout_diagnostic_result_v1",
+  "recorded_at_utc": "2026-07-27T14:57:29Z",
+  "git_commit": "c220e77fcd59910bbc59ac576a37e37a38d27689",
+  "scope": "authority_train_only_development_double_cold",
+  "claim_boundary": "One-epoch execution-path diagnostic only; no holdout, model-selection, confirmatory, comparative, biological-generalization, or state-of-the-art claim.",
+  "slurm": {
+    "job_id": 1332844,
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "00:01:23",
+    "batch_max_rss_kib": 2555388
+  },
+  "data": {
+    "source_complex_count": 256,
+    "train_complex_count": 192,
+    "holdout_complex_count": 64,
+    "train_candidate_pair_count": 8841483,
+    "train_positive_pair_count": 8507,
+    "cache_manifest_sha256": "833daf0eca62a0828a817a3592b351ec070f5f6f33062265f922fd160c96b714",
+    "cache_receipt_file_sha256": "0a4b39fcc2977ef517fc8a7054734143fb3e2a5ecc4f0316955fcd08486eb58b",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_receipt_file_sha256": "129097c6e720c939433d99f6fd72e298f06ae58830182bcdf5ffa8c27b61601e"
+  },
+  "training": {
+    "completed_epoch": 1,
+    "global_step": 192,
+    "train_macro_pair_auprc": 0.01581057273198464,
+    "train_macro_precision_at_true_contact_count": 0.017979682638852055,
+    "train_l0_gate_passed": false
+  },
+  "holdout_firewall": {
+    "holdout_tensor_accessed_before_training_freeze": false,
+    "holdout_access_receipt_created": false,
+    "holdout_evaluation_created": false,
+    "holdout_access_count_within_runner": 0,
+    "passed": true
+  },
+  "artifact_sha256": {
+    "run_manifest": "43687fa5be6d6bef7e01d38c152b8aec45d55e48ec602d3521663fff64350a3b",
+    "train_epoch_metrics": "7beb9f62fcd8425b29c3a891250d3d03b32b91caac7d3732cd92dbc0af392afa",
+    "final_report": "25a185ccbaf839bb42d6f8b26b3865a9adbe94b9854754489516d90bf6e983d7",
+    "checkpoint": "9f6e73aa43b16c01ea22fa8f8c96e771657f802d4a9ad62a34198e9a7922e000",
+    "checkpoint_receipt_file": "91c6f6e43822437b200dad69decc726deaa11e0b4d0af137e6084af883910de6"
+  },
+  "diagnostic_passed": true
+}

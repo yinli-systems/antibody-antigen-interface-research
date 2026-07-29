@@ -1,0 +1,126 @@
+{
+  "claim_boundary": "Development-only endpoint-disjoint unary-control evidence. No validation, test, confirmatory, checkpoint-promotion, scaling, biological-generalization, comparative-superiority, or state-of-the-art claim is authorized.",
+  "cluster_statistics": {
+    "file": "results/pairscale/unary_controls_d5b91dd.cluster_statistics.json",
+    "file_sha256": "d79f22f9ef1c390906ce470a1f918bcf8fc7e5c31ad00a988c269dfde4f44c66",
+    "independent_component_count": 58,
+    "iterations": 10000,
+    "python_hash_seed_replay": [
+      {
+        "output_sha256": "d79f22f9ef1c390906ce470a1f918bcf8fc7e5c31ad00a988c269dfde4f44c66",
+        "python": "3.10.20",
+        "seed": 0
+      },
+      {
+        "output_sha256": "d79f22f9ef1c390906ce470a1f918bcf8fc7e5c31ad00a988c269dfde4f44c66",
+        "python": "3.10.20",
+        "seed": 811
+      }
+    ],
+    "seed": 42
+  },
+  "controls": {
+    "antibody_only": {
+      "checkpoint": {
+        "epoch": 260,
+        "file_sha256": "67cd725b68ef3f9b342c6b218e24b65d45bfec0a968f9c23a3280b071577519e",
+        "hash_matches_access_receipt": true,
+        "hash_matches_final_report": true,
+        "read_only": true,
+        "receipt_file_sha256": "65c8105f0d5a889768414976b8276e7be874ae069d0e6a40d91727f6d3280779",
+        "receipt_read_only": true
+      },
+      "completed_epoch": 260,
+      "global_step": 49920,
+      "holdout_access_count": 1,
+      "holdout_macro_pair_auprc": 0.008824454896284698,
+      "holdout_macro_precision_at_true_contact_count": 0.010161263034473436,
+      "holdout_pooled_pair_auprc": 0.005333596782354895,
+      "job": {
+        "elapsed": "00:08:41",
+        "exit_code": "0:0",
+        "id": 1332998,
+        "max_rss_kib": 2342248,
+        "node": "wqd10nah10g2",
+        "state": "COMPLETED"
+      },
+      "output_hashes": {
+        "FINAL_REPORT.json": "0b630dfc00a77f84369750a22e64ad7efe1a924c825821070616a69b271bf0ff",
+        "HOLDOUT_ACCESS_RECEIPT.json": "be3ad1752f7be774f6c4e96bb7ff584ffa92dfb51db96a8e95e0b8a701599f3b",
+        "HOLDOUT_EVALUATION.json": "ffd4d3aec14db67135d0f329c840562612c167727b624f9e054812a681093273",
+        "RUN_MANIFEST.json": "eb197808b91f46d24f0c9c33fabf9f48d5911d22b295612c22fa18f63add8212",
+        "train_epoch_metrics.jsonl": "a7ded1e579793a1b746e31a898dec7ec6aa5781950394347d52f20f7d8bab2f4"
+      }
+    },
+    "antigen_only": {
+      "checkpoint": {
+        "epoch": 260,
+        "file_sha256": "d8681efd51851e4e1bc0655f2434750597d92ea80aa37c7edebc5e24d09e07b1",
+        "hash_matches_access_receipt": true,
+        "hash_matches_final_report": true,
+        "read_only": true,
+        "receipt_file_sha256": "981b0ff2f34417868c40e0baac2b3cebec0e2d1348e26c053fd47ca22215eceb",
+        "receipt_read_only": true
+      },
+      "completed_epoch": 260,
+      "global_step": 49920,
+      "holdout_access_count": 1,
+      "holdout_macro_pair_auprc": 0.005002491899670115,
+      "holdout_macro_precision_at_true_contact_count": 0.00445090604862444,
+      "holdout_pooled_pair_auprc": 0.002408273009775188,
+      "job": {
+        "elapsed": "00:09:07",
+        "exit_code": "0:0",
+        "id": 1332999,
+        "max_rss_kib": 2563924,
+        "node": "wqd10nah10g2",
+        "state": "COMPLETED"
+      },
+      "output_hashes": {
+        "FINAL_REPORT.json": "b2579cb5eb56d8c2da433a4d1b2358923fbcdd0aa115faf2b013056f77750bf1",
+        "HOLDOUT_ACCESS_RECEIPT.json": "24dd410fac3e706a10834b9d19a84e56d4fe7d31c867f4dd6cbd7150c744ff37",
+        "HOLDOUT_EVALUATION.json": "9efa9e7c2654b765ae270bcecc2b00490fb5e84fef98276804842a138ed4e9e9",
+        "RUN_MANIFEST.json": "35d77f7a30639e9e109038e53dc76ef64990a3ee30f2ce019ec8716d0cbd8579",
+        "train_epoch_metrics.jsonl": "cb6d46e29d476aa23fe6332310a8e92c943cab31e2424d7355b71dafa9f49c83"
+      }
+    }
+  },
+  "format_version": "pairscale_unary_controls_result_v1",
+  "gate_l1": {
+    "passed": false,
+    "reasons": [
+      "matched-versus-decoy top-k component-bootstrap confidence interval crosses zero",
+      "matched-versus-decoy double-centered component-bootstrap confidence interval crosses zero",
+      "no-centering ablation remains unresolved"
+    ],
+    "scaling_authorized": false,
+    "status": "failed_required_partner_specificity_checks"
+  },
+  "interpretation": {
+    "supported": "The complete pair model significantly exceeds both architecture-level unary controls and a conservative separable upper envelope on this frozen development holdout.",
+    "unsupported": "The current evidence does not establish statistically reliable matched-partner discrimination and does not authorize large-scale model training."
+  },
+  "local_evidence_root": "/Users/alice/Downloads/pairscale_unary_results_d5b91dd",
+  "pair_model_comparisons": {
+    "pair_minus_antibody_only_macro_auprc": {
+      "lower_95": 0.04255310517128122,
+      "mean_difference": 0.13283449720327967,
+      "upper_95": 0.24852938782348677
+    },
+    "pair_minus_antigen_only_macro_auprc": {
+      "lower_95": 0.047439813324620744,
+      "mean_difference": 0.13665646019989425,
+      "upper_95": 0.2508978074011803
+    },
+    "pair_minus_per_instance_separable_upper_envelope_macro_auprc": {
+      "lower_95": 0.020505075450122305,
+      "mean_difference": 0.07966268129729667,
+      "upper_95": 0.15473197249799758
+    }
+  },
+  "sealed_source": {
+    "git_commit": "d5b91dd014afc0611d24e2f61f8cb39df11dde2b",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_unary_source_d5b91dd",
+    "writable_regular_file_count": 0
+  }
+}

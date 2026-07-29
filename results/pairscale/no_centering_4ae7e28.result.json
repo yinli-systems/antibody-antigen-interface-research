@@ -1,0 +1,164 @@
+{
+  "claim_boundary": "Development-only endpoint-disjoint centering-ablation evidence. No validation, test, confirmatory, checkpoint-promotion, scaling, biological-generalization, comparative-superiority, or state-of-the-art claim is authorized.",
+  "cluster_statistics": {
+    "file": "results/pairscale/no_centering_4ae7e28.cluster_statistics.json",
+    "file_sha256": "c2c60f851cb9e9a87c3aa048791fb8a52b5f38c82b234609d144a0ee6d76ef6e",
+    "independent_component_count": 58,
+    "instance_count": 64,
+    "iterations": 10000,
+    "python_hash_seed_replay": [
+      {
+        "output_sha256": "c2c60f851cb9e9a87c3aa048791fb8a52b5f38c82b234609d144a0ee6d76ef6e",
+        "python": "3.10.20",
+        "seed": 0
+      },
+      {
+        "output_sha256": "c2c60f851cb9e9a87c3aa048791fb8a52b5f38c82b234609d144a0ee6d76ef6e",
+        "python": "3.10.20",
+        "seed": 811
+      }
+    ],
+    "seed": 42,
+    "unit": "connected_endpoint_component"
+  },
+  "comparison": {
+    "reference_minus_no_centering_double_centered_partner_delta": {
+      "lower_95": -3.754421655281179,
+      "mean_difference": 3.2163204550743103,
+      "upper_95": 10.289580264848373
+    },
+    "reference_minus_no_centering_macro_pair_auprc": {
+      "lower_95": -0.012377301275672926,
+      "mean_difference": -0.0036120408037099766,
+      "upper_95": 0.004267058005207905
+    },
+    "reference_minus_no_centering_precision_at_true_contact_count": {
+      "lower_95": -0.02163586282676632,
+      "mean_difference": -0.009250035226846512,
+      "upper_95": 0.001972753902695561
+    },
+    "reference_minus_no_centering_raw_partner_delta": {
+      "lower_95": -1.3608344567057455,
+      "mean_difference": -0.34711286443052813,
+      "upper_95": 0.6916107782494566
+    }
+  },
+  "format_version": "pairscale_no_centering_ablation_result_v1",
+  "gate_l1": {
+    "completed_required_controls": [
+      "antibody_only_control",
+      "antigen_only_control",
+      "per_instance_separable_upper_envelope",
+      "matched_partner_permutation",
+      "no_centering_ablation"
+    ],
+    "failed_checks": [
+      "no-centering did not significantly reduce macro pair AUPRC",
+      "reference matched-versus-decoy raw partner-score confidence interval crosses zero",
+      "reference matched-versus-decoy double-centered partner-score confidence interval crosses zero"
+    ],
+    "passed": false,
+    "scaling_authorized": false,
+    "status": "failed_required_partner_specificity_checks",
+    "unresolved_required_controls": []
+  },
+  "interpretation": {
+    "supported": "The frozen pair model significantly exceeds antibody-only, antigen-only, the model marginal, and a conservative per-complex separable upper envelope on this development holdout.",
+    "unsupported": "The evidence does not show that double-centering improves pair AUPRC or that either frozen pair model reliably distinguishes matched from deterministic cyclic decoy partners. PPIRef scale-up is not authorized by Gate L1."
+  },
+  "local_evidence_root": "/Users/alice/Downloads/pairscale_no_centering_results_4ae7e28",
+  "no_centering_run": {
+    "artifacts": {
+      "FINAL_REPORT.json": "86aba2a3571ee417dc3f4efcc954371c280ce1e13f59e3e1987d322ba9ea601b",
+      "HOLDOUT_ACCESS_RECEIPT.json": "7002f4903f52f89447f8eaf1c7b819884b1dbf3cf0d0f2988b4f4dbb33fe978b",
+      "HOLDOUT_EVALUATION.json": "356ca6e7c62e94095c5b2eebe94768616f6e77024971198654a8eead6334ba27",
+      "RUN_MANIFEST.json": "933dddfb30eda1f5477e39855b28a569e9915de88bcb1790c6f30630f06e98d8",
+      "train_epoch_metrics.jsonl": "d562017e2c330457f4c513ff3506e2ef57387b94cb407333ba70bc183ab054b9"
+    },
+    "checkpoint": {
+      "epoch": 260,
+      "file_sha256": "d23a4c8d059d377ccf7c00fa77091d7d62564a2a89df0d98659c662bbaaeb107",
+      "hash_matches_access_receipt": true,
+      "hash_matches_final_report": true,
+      "hash_matches_receipt": true,
+      "read_only": true,
+      "receipt_file_sha256": "d97a19997669950f539947d67a70df9997f2dd12768c979f28d2f6bb046d88a3",
+      "receipt_read_only": true
+    },
+    "completed_epoch": 260,
+    "early_stopping_used": false,
+    "global_step": 49920,
+    "holdout_deserialization_count_within_runner": 1,
+    "job": {
+      "elapsed": "00:58:02",
+      "exit_code": "0:0",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "id": 1333007,
+      "max_rss_kib": 2906344,
+      "node": "wqd10nah10g2",
+      "state": "COMPLETED"
+    },
+    "output_root": "/ssd/scxi253/model_deployment/results/pairscale/no_centering_raw_topk_seed17_4ae7e28_e260",
+    "writable_regular_file_count_after_freeze": 0
+  },
+  "observed_metrics": {
+    "no_centering": {
+      "double_centered_partner_mean_delta": 0.6712183952331543,
+      "double_centered_partner_win_rate": 0.484375,
+      "macro_pair_auprc": 0.14527099290327433,
+      "macro_precision_at_true_contact_count": 0.15100527356952234,
+      "matched_partner_topk_mean_delta": 1.5808841366670094,
+      "matched_partner_topk_win_rate": 0.5625,
+      "pooled_pair_auprc": 0.07344535498694202
+    },
+    "reference_with_double_centering_training": {
+      "double_centered_partner_mean_delta": 3.8875388503074646,
+      "double_centered_partner_win_rate": 0.515625,
+      "macro_pair_auprc": 0.14165895209956433,
+      "macro_precision_at_true_contact_count": 0.14175523834267578,
+      "matched_partner_topk_mean_delta": 1.2337712722364813,
+      "matched_partner_topk_win_rate": 0.546875,
+      "pooled_pair_auprc": 0.06683278800951427
+    }
+  },
+  "partner_specificity_confidence_intervals": {
+    "no_centering_double_centered_matched_minus_decoy": {
+      "lower_95": -1.6873024508846337,
+      "mean_difference": 0.6712183952331543,
+      "upper_95": 3.1979088716062822
+    },
+    "no_centering_raw_matched_minus_decoy": {
+      "lower_95": -0.45352031139970467,
+      "mean_difference": 1.5808841366670094,
+      "upper_95": 3.9498836872587697
+    },
+    "reference_double_centered_matched_minus_decoy": {
+      "lower_95": -3.6886981195392003,
+      "mean_difference": 3.8875388503074646,
+      "upper_95": 11.483587230643518
+    },
+    "reference_raw_matched_minus_decoy": {
+      "lower_95": -0.6425291429748627,
+      "mean_difference": 1.2337712722364813,
+      "upper_95": 3.331005269020881
+    }
+  },
+  "previous_unary_evidence": {
+    "pair_minus_antibody_only_macro_auprc_lower_95": 0.04255310517128122,
+    "pair_minus_antigen_only_macro_auprc_lower_95": 0.047439813324620744,
+    "pair_minus_per_instance_separable_upper_envelope_macro_auprc_lower_95": 0.020505075450122305,
+    "result_file": "results/pairscale/unary_controls_d5b91dd.result.json"
+  },
+  "sealed_sources": {
+    "centering_statistics": {
+      "git_commit": "b2585d74f4729409b1684505db7ad2752368fb04",
+      "root": "/ssd/scxi253/model_deployment/jobs/pairscale_centering_statistics_b2585d7_v3",
+      "writable_regular_file_count": 0
+    },
+    "no_centering_training": {
+      "git_commit": "4ae7e287b7d12c9fbcb3b18d0f06c7669bbb2da2",
+      "root": "/ssd/scxi253/model_deployment/jobs/pairscale_no_centering_source_4ae7e28",
+      "writable_regular_file_count": 0
+    }
+  }
+}

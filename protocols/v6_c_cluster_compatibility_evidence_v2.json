@@ -1,0 +1,56 @@
+{
+  "authorization": {
+    "full_protocol_infeasibility_claim": false,
+    "model_selection": false,
+    "outer_evaluation": false,
+    "split_gate0": false,
+    "test_access": false,
+    "threshold_change": false,
+    "training": false
+  },
+  "format_version": "v6_c_cluster_compatibility_evidence_v2",
+  "observed_at_cst": "2026-07-30T01:05:12+08:00",
+  "runtime": {
+    "ortools_version": "9.15.6755",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+    "python_executable": "/ssd/scxi253/model_deployment/envs/v6_a_solver_runtime_63f71f0_v2/cp_sat_venv/bin/python",
+    "python_version": "3.10.12"
+  },
+  "smoke": {
+    "all_families_status": "INFEASIBLE",
+    "core_replay_status": "INFEASIBLE",
+    "irreducibility_proven": true,
+    "production_solver_work": false,
+    "scientific_work": false,
+    "sufficient_core": [
+      "one",
+      "zero"
+    ],
+    "synthetic_model_only": true,
+    "synthetic_solver_smoke": true,
+    "test_bytes_accessed": false
+  },
+  "source": {
+    "commit": "89b906090e650608ba32dbbdb1bf3e3a9ef0a908",
+    "controller_sha256": "1242385aa4bf3a4e6ec25a8bfc847864463bfc84cedc87e4042aa44fb83506ee",
+    "diagnostic_sha256": "b08eb8deb9a876826975481ead08dd355a53a385c69fbb077b428ebf92e97062",
+    "direct_highs_registration_validator_sha256": "47e738ddd4c8ce35d146304d95d66b976d60a195559bcbcfebde624d037b5027",
+    "freezer_sha256": "dea96de43d1cb954c6e2e80daa72f6658238a0c8507c8a6ff9bf50b2050b779a",
+    "git_archive_exact_commit": true,
+    "git_tree_sha1": "5a47a985c71df010af4b230ae0e160a37bfbea36",
+    "launcher_sha256": "1059b4f8338e2451a6c907b45736874a3a60154ebe5b6428677d466ff47c21d7",
+    "local_remote_manifest_agreement": true,
+    "policy_sha256": "dd75bd2930f63524bdf96a79e3767508a6b932f748d6ee5b2e85f8a6532301bb",
+    "production_audit_sha256": "4b6619c1f8fc2ae440d3091279db42adeddd98b88f7bb7c62e52c58b8844e56b",
+    "registration_validator_sha256": "53007d036ce80db5bbc1540d9749ec66e816287f880df32572492cfce620cad3",
+    "remote_file_count": 809,
+    "remote_root": "/ssd/scxi253/model_deployment/jobs/v6_c_family_core_source_89b906090e65",
+    "remote_root_mode": "dr-x------",
+    "source_manifest_sha256": "fff4ec43c0f0a82274f530ac757bb80b6eb394036833e8f049367fa826628878"
+  },
+  "supersedes": {
+    "evidence_path": "protocols/v6_c_cluster_compatibility_evidence_v1.json",
+    "reason": "V6-C now binds the exact Direct-HiGHS registration and its validator source.",
+    "source_commit": "144ad81a777c7efb79990cc4c50a27204375a065"
+  }
+}

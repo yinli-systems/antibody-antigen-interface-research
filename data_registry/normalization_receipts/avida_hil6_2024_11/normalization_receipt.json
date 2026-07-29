@@ -1,0 +1,67 @@
+{
+  "counts": {
+    "admitted_antibodies": 37200,
+    "admitted_antigens": 31,
+    "admitted_binders": 20275,
+    "admitted_nonbinders": 535666,
+    "admitted_pairs": 555941,
+    "quarantined_antibodies": 1399,
+    "quarantined_binders": 705,
+    "quarantined_nonbinders": 17245,
+    "quarantined_pairs": 17950
+  },
+  "created_at_utc": "2026-07-27T18:12:29Z",
+  "format_version": "pairbench_avida_normalization_receipt_v1",
+  "normalizer_source_sha256": "88dbc5111a2163c604a640d155414e22c53896b4b0ecf2a87131845e61250df4",
+  "outputs": [
+    {
+      "path": "AUDIT_SUMMARY.json",
+      "sha256": "53ac8e34bce5a49695b6080db9c1ef7a40dc767144cd3457b88a08bba1e0d0c7",
+      "size_bytes": 2247
+    },
+    {
+      "path": "assays.parquet",
+      "sha256": "9eec0e38052ec3c961311ed9c11195fba1e4c69ca56336c6d94fbe53ac8d4908",
+      "size_bytes": 40779487
+    },
+    {
+      "path": "duplicate_groups.parquet",
+      "sha256": "f09e2ffca8933458b07858bbbeeb7a399e573b6f641c98d7b08ad778ddab6a44",
+      "size_bytes": 1097
+    },
+    {
+      "path": "entities_antibody.parquet",
+      "sha256": "cb30ec80a01a50a1926e759036acbae54bf92d6b1d1f1fcfe076b8080142c26d",
+      "size_bytes": 5850355
+    },
+    {
+      "path": "entities_antigen.parquet",
+      "sha256": "05b8df568caf1ed6972b4c1cad6e6476c59301ec2865c06c3df06c3e57db0fbe",
+      "size_bytes": 9246
+    },
+    {
+      "path": "entity_rekey.parquet",
+      "sha256": "71295145af9a58599d664a3b9ee0b6d8e3d707c0e0eb3ba9cb8c39136b78e62c",
+      "size_bytes": 5461842
+    },
+    {
+      "path": "pairs.parquet",
+      "sha256": "781f01dadb03d397bb3e07ff36bf153e2f174e97228a99abc39cd46364658676",
+      "size_bytes": 60927980
+    },
+    {
+      "path": "quarantined_antibodies.parquet",
+      "sha256": "9900efcf8d537b3c05283aa3b06e154093a88cb05fe468b42426a66a5c66e713",
+      "size_bytes": 194347
+    },
+    {
+      "path": "quarantined_pairs.parquet",
+      "sha256": "1dc2624921667b71588c625e692d899a1b85e42a7f60b67d2abaedf8c305e648",
+      "size_bytes": 1416239
+    }
+  ],
+  "pairbench_training_eligible": true,
+  "protocol_sha256": "180b740d73eb9485d089e450d7565c23e894e0a7c5e3444bcb74836baadb9161",
+  "source_id": "avida_hil6_2024_11",
+  "status": "normalized_tier1_with_explicit_quarantine"
+}

@@ -1,0 +1,65 @@
+{
+  "claim_boundary": "Development-only E1/E2 screening and gate audit. No checkpoint selection, confirmatory claim, scaling authorization, comparative-superiority claim, SOTA claim, or world-leading claim.",
+  "development_holdout_is_untouched_final_test": false,
+  "final_gates": {
+    "C": {
+      "macro_pair_auprc_improvement_over_strongest_separable_minimum": 0.01,
+      "paired_component_bootstrap_lower_bound_above_zero": true,
+      "require_ap_lift_and_precision_at_true_k_positive": true
+    },
+    "R": {
+      "component_bootstrap_iterations": 10000,
+      "component_bootstrap_seed": 42017,
+      "fixed_component_sign_permutation_seed": 73137,
+      "fixed_component_sign_permutation_samples": 100000,
+      "prespecified_strata": [
+        "protein_vs_peptide_antigen",
+        "antigen_length",
+        "interface_size",
+        "multichain_antigen",
+        "identity_novelty"
+      ],
+      "required_seed_count": 5
+    },
+    "S": {
+      "homolog_matched_recall_at_1_random_enrichment_minimum": 3.0,
+      "positive_seed_minimum": 4,
+      "require_both_directions": true,
+      "require_centered_and_raw_residual": true,
+      "required_seed_count": 5
+    }
+  },
+  "five_seed_extension": {
+    "additional_seeds": [
+      101,
+      137
+    ],
+    "contact_mean_improvement_minimum": 0.005,
+    "contact_worst_seed_improvement_minimum": -0.01,
+    "exhaustive_recall_at_1_random_enrichment_minimum": 2.0,
+    "exhaustive_recall_at_1_seed_aggregation": "minimum_across_screening_seeds",
+    "minimum_positive_screening_seeds_per_specificity_cell": 2,
+    "require_all_four_specificity_bootstrap_lower_bounds_above_zero": true,
+    "screening_seeds": [
+      17,
+      42,
+      73
+    ]
+  },
+  "format_version": "pairscale_e1_e2_gate_audit_protocol_v1",
+  "inference": {
+    "cluster_unit": "connected_antibody_antigen_component_rebuilt_from_assignment",
+    "confidence": 0.95,
+    "iterations": 10000,
+    "seed": 42017,
+    "seed_aggregation": "mean_per_instance_before_component_bootstrap"
+  },
+  "missing_evidence_policy": "pending_fail_closed",
+  "specificity_cells": [
+    "antibody_to_antigen.raw_residual",
+    "antibody_to_antigen.centered_residual",
+    "antigen_to_antibody.raw_residual",
+    "antigen_to_antibody.centered_residual"
+  ],
+  "unknown_cross_pair_semantics": "unlabeled_ranking_control_not_measured_nonbinder"
+}

@@ -12,7 +12,7 @@
 
 ## 2. 最终测试结果
 
-决策阈值只用 strict validation set 选择，然后锁定后一次性用于 frozen test。AUROC/AUPRC 与阈值无关；F1/MCC 使用 validation MCC-optimal threshold。
+决策阈值只用 strict validation set 选择，并在 `final_v3` 评估前锁定；AUROC/AUPRC 与阈值无关，F1/MCC 使用 validation MCC-optimal threshold。需要说明，同一 benchmark 在 `final_v3` 之前已经用于 zero-shot 和旧 `trained_seed42` 评估，因此这里的纪律是“最终 recipe 不根据 final-v3 test 结果重新选择”，而不是 pristine one-shot blind test。
 
 | Role | Residues | Threshold | AUROC (95% cluster CI) | AUPRC (95% cluster CI) | F1 (95% cluster CI) | MCC (95% cluster CI) |
 |---|---:|---:|---:|---:|---:|---:|
@@ -56,7 +56,7 @@ epitope AUPRC 的绝对提升为 0.03036，相对旧值 0.11509 约提升 **26.4
 | Paratope | 0.95874 ± 0.00059 | 0.67940 ± 0.00598 |
 | Epitope | 0.73928 ± 0.00776 | 0.15415 ± 0.00683 |
 
-seed 稳定性支持最终 recipe 不是只对 seed 42 偶然有效。最终 frozen test 只使用预先锁定的 seed 42 ensemble 和 thresholds，不在 test 上重新挑模型。
+seed 稳定性支持最终 recipe 不是只对 seed 42 偶然有效。`final_v3` 使用预先锁定的 seed 42 ensemble 和 thresholds，评估后不再根据 test 指标重新挑模型；但 benchmark 更早已有基线结果，不能把这次研究描述为首次开启的盲测。
 
 ## 6. Partner-specificity control
 

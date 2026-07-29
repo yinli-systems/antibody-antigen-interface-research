@@ -1,0 +1,58 @@
+{
+  "format_version": "pairscale_exact_resume_result_v1",
+  "recorded_at_utc": "2026-07-27T13:39:00Z",
+  "scope": "authenticated_train_only_checkpoint_engineering_nonconfirmatory",
+  "git_commit": "e8dd42156f7aa3b781c664df1bd4d50822e12c22",
+  "configuration": {
+    "epochs": 20,
+    "fork_epoch": 10,
+    "seed": 17,
+    "complex_count": 32,
+    "precision": "bf16",
+    "device_count": 1
+  },
+  "uninterrupted": {
+    "slurm_job_id": 1332722,
+    "state": "COMPLETED",
+    "elapsed": "00:01:20",
+    "run_manifest_sha256": "9cbef701d273666ec9caa17d85cbbf990fd423db5bb0ecaaf5689607db9366be",
+    "epoch10_receipt_file_sha256": "bf330637f700ffe100efb229a1b974552d68c62d6a406c4d080f41f2c5b8d829",
+    "final_report_sha256": "aecf5603e9ab3b0308eb11caa92ceabb42410f0870ff56885e68e3b24af0f934"
+  },
+  "forked": {
+    "slurm_job_id": 1332723,
+    "state": "COMPLETED",
+    "elapsed": "00:00:39",
+    "run_manifest_sha256": "a6a5cffe3d97317ec9d209fd18ebab648ee8900ae9bcbd8a8b928ae314cc918e",
+    "final_report_sha256": "57839620cde3353427370c67b14e7ca5b583b16f9dfc7b1fa465aabe328e1b76"
+  },
+  "comparison": {
+    "final_checkpoint_sha256_uninterrupted": "b66fdfafa4b7c0af06afaa45bc03526253fcbbfce21912fda1ef869d6c1aae66",
+    "final_checkpoint_sha256_forked": "b66fdfafa4b7c0af06afaa45bc03526253fcbbfce21912fda1ef869d6c1aae66",
+    "final_receipt_file_sha256_uninterrupted": "892f310dab6d2dc3538ed620a73d6bb2119796797396a648e8f8e839baa2f01e",
+    "final_receipt_file_sha256_forked": "892f310dab6d2dc3538ed620a73d6bb2119796797396a648e8f8e839baa2f01e",
+    "checkpoint_bytes_equal": true,
+    "continuation_epoch_metrics_bytes_equal": true,
+    "exact_resume_passed": true
+  },
+  "failed_attempts_preserved": [
+    {
+      "slurm_job_id": 1332698,
+      "state": "FAILED",
+      "exit_code": "2:0",
+      "cause": "A truncated policy SHA-256 was rejected by the Slurm preflight before training."
+    },
+    {
+      "slurm_job_id": 1332715,
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "cause": "The first resume attempt exposed the CUDA map-location RNG bug; its output directory remained empty."
+    },
+    {
+      "slurm_job_id": 1332721,
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "cause": "The reproduced failure log proved that CUDA map-location violated the CPU uint8 RNG schema."
+    }
+  ]
+}

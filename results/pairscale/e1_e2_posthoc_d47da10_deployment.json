@@ -1,0 +1,43 @@
+{
+  "claim_boundary": "Deployment receipt only. No development holdout, new final test, checkpoint prediction, or model score was read by this deployment step.",
+  "deployed_at_utc": "2026-07-28T06:56:56Z",
+  "deployed_file_count": 359,
+  "deployment_content": [
+    "pyproject.toml",
+    "scripts",
+    "slurm",
+    "src",
+    "tests"
+  ],
+  "format_version": "pairscale_e1_e2_posthoc_source_deployment_v1",
+  "git_commit": "d47da1022926bf0e013ebb08b9dcbed70997e856",
+  "new_final_test_accessed": false,
+  "partial_first_transfer": {
+    "preserved_file_count": 93,
+    "preserved_path": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_posthoc_source_d47da10_incomplete_20260728T0643Z",
+    "status": "incomplete_and_not_authorized_for_execution"
+  },
+  "post_deployment_compatibility_probe": {
+    "all_other_executed_sources_exact": true,
+    "allowed_source_difference": "pairscale_e1_e2_evaluation.py",
+    "epoch_40_checkpoint_generation": "epoch-0040-step-00007680",
+    "epoch_40_checkpoint_receipt_file_sha256": "7ae25d14c66b77f306c31531ff8a91bf7efc645c5b92ee2d6a1011a75bcc189e",
+    "frozen_evaluator_sha256": "2004e9886f7b39ff4ac3eef6df62f81be6f89c7edcc10d952602f9a5eaeb881c",
+    "holdout_access_receipt_exists": false,
+    "posthoc_evaluator_sha256": "9dd1a3dc493381c49e49ec176ebc728e8ae5ca3d2e51b0cbdee265a56c7a9f8b",
+    "scheduler_syntax_valid": true
+  },
+  "remote_source_root": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_posthoc_source_d47da10",
+  "scaling_authorized": false,
+  "sha256": {
+    "scripts/audit_pairscale_e1_e2_checkpoint.py": "2572f5a2975b0eab0439f716d51f584517c03da884249068a7ff9bf45a19657e",
+    "slurm/pairscale_e1_e2_posthoc_audit.sbatch": "7b34e790467da779552075771c669cf8fefd633543eda87e40903141335f61a5",
+    "src/interaction_first/pairscale_e1_e2_evaluation.py": "9dd1a3dc493381c49e49ec176ebc728e8ae5ca3d2e51b0cbdee265a56c7a9f8b",
+    "src/interaction_first/pairscale_e1_e2_posthoc_audit.py": "c0c304e1aede404f8225c38ed9cf4feac5509337cfd7ba80c7f69a1c04d4e48b"
+  },
+  "source_tree_checks": {
+    "critical_hashes_match_local_commit": true,
+    "git_directory_absent": true,
+    "pycache_directories_absent": true
+  }
+}

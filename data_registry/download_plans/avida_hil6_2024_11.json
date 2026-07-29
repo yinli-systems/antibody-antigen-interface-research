@@ -1,0 +1,19 @@
+{
+  "expected_selected_bytes": 104667862,
+  "expected_selected_file_count": 4,
+  "format_version": "pairscale_download_plan_v1",
+  "locator": {
+    "dataset_repo_id": "COGNANO/AVIDa-hIL6"
+  },
+  "metadata_sha256": "b297c8acbcc6c45f2c1edef32d484111aa48442e8d2820ef4464b631b147fcbc",
+  "metadata_url": "https://huggingface.co/api/datasets/COGNANO/AVIDa-hIL6/revision/cd783d573e015f83364e42287810ad597850aeed?blobs=true",
+  "pinned_revision": "cd783d573e015f83364e42287810ad597850aeed",
+  "provider": "huggingface_dataset",
+  "selectors": [
+    ".gitattributes",
+    "AVIDa-hIL6.csv",
+    "README.md",
+    "antigen_sequences.csv"
+  ],
+  "source_id": "avida_hil6_2024_11"
+}

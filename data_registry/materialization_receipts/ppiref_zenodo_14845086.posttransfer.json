@@ -1,0 +1,36 @@
+{
+  "format_version": "pairscale_posttransfer_materialization_receipt_v1",
+  "independent_hash_exit_code": 0,
+  "independently_recomputed_at_utc": "2026-07-27T19:39:21Z",
+  "location": {
+    "kind": "cluster_training_copy",
+    "raw_inventory_sha256": "68f3d2b18aab987920189636bbbe356564014811a457daf9d3768ba12c8a3ca2",
+    "root": "/ssd/scxi253/model_deployment/data/pairscale_registered_raw_b6b86f1/ppiref_zenodo_14845086"
+  },
+  "observed_files": [
+    {
+      "path": ".authority/provider_metadata.json",
+      "sha256": "67a6bdd309638a341cf2e0e3d0009c88520a5c9474db59a421f81160b547ed12",
+      "size_bytes": 7947
+    },
+    {
+      "path": "ppi_6A.zip",
+      "sha256": "dece33d55f1098c699fdddeac3e1cb38fa23c65f9eac36fec7d339190ddc8cd3",
+      "size_bytes": 6942465412
+    },
+    {
+      "path": "ppi_6A_stats.zip",
+      "sha256": "e3f73fc814b3143f3c1770b17437e527748149280580ba6db7c1cae86665e11d",
+      "size_bytes": 3101187796
+    }
+  ],
+  "plan": {
+    "expected_selected_bytes": 10043653208,
+    "expected_selected_file_count": 2,
+    "file_sha256": "b5c504949ccf2fdb1b5ddc6f061b90cf52616024fa7f4b5be3ad159c6826c019",
+    "path": "data_registry/download_plans/ppiref_zenodo_14845086.json"
+  },
+  "raw_archive_authentication_passed": true,
+  "source_id": "ppiref_zenodo_14845086",
+  "status": "materialized_not_normalized_not_training_admitted"
+}

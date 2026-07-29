@@ -1,0 +1,81 @@
+{
+  "claim_boundary": "Development-only endpoint-disjoint unary-control training. No holdout metric, model-selection, checkpoint-promotion, confirmatory, scaling, comparative-superiority, or state-of-the-art claim is authorized by this submission receipt.",
+  "format_version": "pairscale_unary_controls_submission_v1",
+  "formal_runs": [
+    {
+      "control_side": "antibody_only",
+      "first_epoch": {
+        "global_step": 192,
+        "mean_training_loss": 2.1430725026875734,
+        "train_macro_model_marginal_outer_auprc": 0.011349910347435705,
+        "train_macro_pair_auprc": 0.011349910347435705
+      },
+      "job_id": 1332998,
+      "node": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/unary_antibody_only_seed17_d5b91dd_e260",
+      "run_manifest_sha256": "eb197808b91f46d24f0c9c33fabf9f48d5911d22b295612c22fa18f63add8212",
+      "started_at": "2026-07-28T02:54:02+08:00",
+      "state_at_receipt": "RUNNING"
+    },
+    {
+      "control_side": "antigen_only",
+      "first_epoch": {
+        "global_step": 192,
+        "mean_training_loss": 2.4379690811038017,
+        "train_macro_model_marginal_outer_auprc": 0.00393310879280158,
+        "train_macro_pair_auprc": 0.00393310879280158
+      },
+      "job_id": 1332999,
+      "node": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/unary_antigen_only_seed17_d5b91dd_e260",
+      "run_manifest_sha256": "35d77f7a30639e9e109038e53dc76ef64990a3ee30f2ce019ec8716d0cbd8579",
+      "started_at": "2026-07-28T02:54:02+08:00",
+      "state_at_receipt": "RUNNING"
+    }
+  ],
+  "input_anchors": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "cache_manifest_sha256": "833daf0eca62a0828a817a3592b351ec070f5f6f33062265f922fd160c96b714",
+    "protocol_file_sha256": "75fae4bbf219a59d54ba97814b5c87b0fdc18675252e637b6cbc20c9f4dc7e67"
+  },
+  "preflight": {
+    "attempt_1": {
+      "failure": "Diagnostic supplied one complex while the shared epoch-order helper requires at least two complexes for cyclic-decoy construction, even when partner-ranking weight is zero.",
+      "holdout_tensor_accessed": false,
+      "job_id": 1332994,
+      "state": "FAILED"
+    },
+    "attempt_2": {
+      "antibody_only": {
+        "checkpoint_receipt_sha256": "a1156236b25a9d3bd53ad32546937cceba0d8f1f9a528b9dded7cb79c1d9dee4",
+        "checkpoint_sha256": "0dc0ef06f954c7bd935610e41381a03f0f82351ed441681b7044f51af08b01cc",
+        "total_loss": 3.16057026386261
+      },
+      "antigen_only": {
+        "checkpoint_receipt_sha256": "70544f522d0fd4a4266cc8c3fd0f57be44933ac762a022e010d11dd528a1d7b1",
+        "checkpoint_sha256": "c77b5bc6596a5c8d61f3de67250481c3710f7854ac5783d5f94b0cfeabb3ff19",
+        "total_loss": 3.2285003662109375
+      },
+      "device": "NVIDIA GeForce RTX 5090",
+      "holdout_tensor_accessed": false,
+      "job_id": 1332997,
+      "state": "COMPLETED",
+      "torch": "2.13.0+cu130"
+    }
+  },
+  "resources_per_formal_run": {
+    "cpu_count": 12,
+    "gpu_count": 1,
+    "memory_gib": 48,
+    "partition": "vip_gpu_5090_scxi253",
+    "time_limit": "04:00:00"
+  },
+  "sealed_source": {
+    "controller_sha256": "23eca00e49cc9121d7099cc37c7a9a7e0ec511eff1c031291e647cee555e4985",
+    "git_commit": "d5b91dd014afc0611d24e2f61f8cb39df11dde2b",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_unary_source_d5b91dd",
+    "scheduler_sha256": "e4ec1e9aa913af1d7b96aad1c03f320217bb52c45d97d38c9a84d613a581e5b3",
+    "writable_regular_file_count": 0
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "claim_boundary": "Engineering smoke and training-start evidence only. The smoke used eight authority-train complexes and cannot support a scientific performance, Gate S/C/R, scaling, confirmatory, SOTA, or world-leading claim. The 192/64 development holdout is reused development data, not an untouched final test.",
+  "data_anchors": {
+    "assignment_content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "assignment_file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "assignment_receipt_file_sha256": "129097c6e720c939433d99f6fd72e298f06ae58830182bcdf5ffa8c27b61601e",
+    "authorization_manifest_sha256": "99d732f4512ca767e30f2d89c483c942703da3978d2ef9f108f6a8e50652e4d6",
+    "cache_receipt_file_sha256": "0a4b39fcc2977ef517fc8a7054734143fb3e2a5ecc4f0316955fcd08486eb58b",
+    "decision_sha256": "2231afea159869b920483744b7ed929d4f42f58cbbc2a86557dce9a6fc6fe31b",
+    "manifest_sha256": "833daf0eca62a0828a817a3592b351ec070f5f6f33062265f922fd160c96b714",
+    "policy_sha256": "436b0551573e5052b1c2d76038016f40d3e049d5fcab459d4787683ad4c6e6f8",
+    "subset_manifest_sha256": "a53cb6e673041a6a3dc26914a5d0ca577d571a2862604e6453abcaaea2382d62"
+  },
+  "format_version": "pairscale_e1_e2_submission_receipt_v1",
+  "production_jobs": [
+    {
+      "allocated_cpus": 16,
+      "allocated_gpus": 1,
+      "allocated_memory_gib": 64,
+      "id": 1334012,
+      "node_at_receipt": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/e1e2_seed17_bacc4bc_e260",
+      "seed": 17,
+      "state_at_receipt": "RUNNING"
+    },
+    {
+      "allocated_cpus": 16,
+      "allocated_gpus": 1,
+      "allocated_memory_gib": 64,
+      "id": 1334013,
+      "node_at_receipt": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/e1e2_seed42_bacc4bc_e260",
+      "seed": 42,
+      "state_at_receipt": "RUNNING"
+    },
+    {
+      "allocated_cpus": 16,
+      "allocated_gpus": 1,
+      "allocated_memory_gib": 64,
+      "id": 1334014,
+      "node_at_receipt": "wqd10nah10g2",
+      "output_root": "/ssd/scxi253/model_deployment/results/pairscale/e1e2_seed73_bacc4bc_e260",
+      "seed": 73,
+      "state_at_receipt": "RUNNING"
+    }
+  ],
+  "protocol": {
+    "checkpoint_selection": "none_fixed_epoch_260_only",
+    "decoy_semantics": "score_free_unknown_cross_pairs_are_ranking_controls_not_nonbinders",
+    "epochs": 260,
+    "model_family": "unary_plus_interaction_residual_with_independent_specificity_head",
+    "phase_1": "epochs_1_to_20_unary_warmup",
+    "phase_2": "epochs_21_to_220_detached_unary_residual_specificity",
+    "phase_3": "epochs_221_to_260_low_rate_joint_finetune",
+    "scaling_authorized": false,
+    "seeds": [
+      17,
+      42,
+      73
+    ]
+  },
+  "recorded_at": "2026-07-28T13:25:28+08:00",
+  "smoke": {
+    "checkpoint_file_sha256": "6b10210041a714b4cc57b7d987fa0c9d2236c2c5eaca717d1972f0f157c4dbb9",
+    "checkpoint_receipt_file_sha256": "9a35bd1cc5d2af46e678feb5693ffce0b7b7bc6f10b06db1c127c8fb5ce12e7f",
+    "completed_elapsed_seconds": 21,
+    "cuda_device_name": "NVIDIA GeForce RTX 5090",
+    "development_holdout_tensor_accessed": false,
+    "exact_resume_model_state": true,
+    "exact_resume_optimizer_state": true,
+    "job_id": 1334010,
+    "new_final_test_accessed": false,
+    "passed": true,
+    "report_sha256": "5a3253dad647ca232484e4c695a644595758fbd4230ac7f954315b70eb23c6e7",
+    "scope": "eight_canonical_authority_train_complexes",
+    "slurm_exit_code": "0:0",
+    "torch_version": "2.13.0+cu130"
+  },
+  "source": {
+    "controller_sha256": "b43e1dff5e31fb4ae753a9c32193f3fd243c4a8ddad2bc56319f822016101538",
+    "git_commit": "bacc4bca6c5ca41abad5d31419f9778d81826442",
+    "protocol_file_sha256": "ca35e3eeaf48ff5833c77e74278174917f4631da3af405f03fca127f39b8a39b",
+    "root": "/ssd/scxi253/model_deployment/jobs/pairscale_e1_e2_source_bacc4bc",
+    "scheduler_script_sha256": "92db01a4460e6585aa1e668db46d0d5f01458856669a671e65ae21fbac65fb11",
+    "smoke_controller_sha256": "e945b33c2b18bf9d8da0449a554088395b8f04d6c6a7fbba34780017c6550a9a",
+    "smoke_scheduler_script_sha256": "04ab4649d856b93fe38ac7b39a00acf96ef718cc58daa4cfbe8463e1c0e637d7"
+  },
+  "verification": {
+    "clean_cluster_source_file_count": 495,
+    "cluster_source_contains_python_cache": false,
+    "focused_smoke_regression_tests_passed": 28,
+    "largest_targeted_e1_e2_regression_tests_passed": 93,
+    "remote_git_head_matched_local_before_receipt": true
+  }
+}

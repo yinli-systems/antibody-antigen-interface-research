@@ -1,0 +1,95 @@
+{
+  "assignment": {
+    "content_sha256": "4b8d44123db5cdc3c7838c2372a4bf31ed2892a30a6d9a35881a4ce91129f91f",
+    "file_sha256": "d8295b4377fb7dadfebf7b2a091f2d47f3902c7609d35aa56e2775673ad4b379",
+    "holdout_complex_count": 64,
+    "train_complex_count": 192
+  },
+  "claim_boundary": "Development-only endpoint-disjoint partner-objective repair. Unknown cross-pairs are ranking controls, not measured non-binders. No model selection, checkpoint promotion, confirmatory, scaling, comparative-superiority, biological-generalization, or state-of-the-art claim is authorized.",
+  "decoy_policy": {
+    "count_per_matched_complex": 4,
+    "distinct_antigen_ids_required": true,
+    "forbidden_selection_inputs": [
+      "affinity",
+      "contact_density",
+      "contact_target",
+      "embedding_value",
+      "epitope_size",
+      "loss",
+      "model_prediction",
+      "paratope_size",
+      "positive_pair_count",
+      "rank"
+    ],
+    "primary_order": "absolute_antigen_length_difference_ascending",
+    "required_cross_pair_semantics": "unknown_cross_pair_ranking_control_only_not_a_measured_nonbinder",
+    "tie_break": "sha256(seed_colon_matched_instance_id_colon_candidate_instance_id)_then_candidate_instance_id"
+  },
+  "evaluation": {
+    "access_policy": "deserialize_holdout_once_after_epoch_260_checkpoint_is_immutable",
+    "checkpoint_selection": "none_fixed_epoch_only",
+    "cluster_bootstrap_seed": 42,
+    "cluster_bootstrap_unit": "connected_endpoint_component",
+    "cluster_bootstrap_samples": 10000,
+    "holdout_access_count": 1,
+    "legacy_cyclic_decoy_panel_retained_for_reference_comparability": true,
+    "model_selection_authorized": false,
+    "primary_metric": "per_complex_macro_native_pair_auprc"
+  },
+  "failed_predecessor_evidence": {
+    "centering_ablation_result": "results/pairscale/no_centering_4ae7e28.result.json",
+    "centering_ablation_result_sha256": "ec9aba646dfb822d50c03d27795a2554434feb8b001c1c965600c57760958927",
+    "failure": "Neither matched-partner confidence interval excluded zero, and removing centering did not significantly reduce macro pair AUPRC."
+  },
+  "fixed_training_stop_epoch": 260,
+  "format_version": "pairscale_centered_multidecoy_repair_protocol_v1",
+  "optimization": {
+    "checkpoint_every_epochs": 10,
+    "contact_ranking_temperature": 1.0,
+    "contact_ranking_weight": 1.0,
+    "cosine_scheduler_horizon_epochs": 400,
+    "dropout": 0.0,
+    "eval_every_epochs": 10,
+    "gradient_clip_norm": 5.0,
+    "hard_negative_ratio": 8,
+    "learning_rate": 0.001,
+    "minimum_learning_rate_fraction": 0.05,
+    "partner_ranking_margin": 0.1,
+    "partner_ranking_temperature": 1.0,
+    "partner_ranking_weight": 0.25,
+    "positive_weight": 1024.0,
+    "precision": "bf16",
+    "seed": 17,
+    "weight_decay": 0.0
+  },
+  "partner_objective": {
+    "aggregation": "equal_mean_of_pairwise_softplus_losses",
+    "formula": "mean_j temperature*softplus((margin-matched_double_centered_score+decoy_j_double_centered_score)/temperature)",
+    "matched_score": "masked_logmeanexp_of_double_centered_contact_logits",
+    "raw_topk_score_in_training_loss": false
+  },
+  "prohibitions": [
+    "no_early_stopping",
+    "no_holdout_based_epoch_selection",
+    "no_holdout_based_checkpoint_selection",
+    "no_measured_nonbinder_claim_for_unknown_cross_pairs",
+    "no_raw_topk_score_in_partner_training_loss",
+    "no_validation_or_test_access",
+    "no_scaling_authorization"
+  ],
+  "reference_configuration": {
+    "all_architecture_and_non_partner_objective_fields_identical": true,
+    "completed_epoch": 260,
+    "result_file": "results/pairscale/no_centering_4ae7e28.result.json",
+    "seed": 17
+  },
+  "release_gate": {
+    "large_scale_pretraining_remains_blocked": true,
+    "required_before_any_scale_up": [
+      "pair_minus_strongest_separable_baseline_component_bootstrap_lower_bound_above_zero",
+      "matched_minus_decoy_raw_partner_score_component_bootstrap_lower_bound_above_zero",
+      "matched_minus_decoy_double_centered_partner_score_component_bootstrap_lower_bound_above_zero",
+      "no_unresolved_required_control"
+    ]
+  }
+}

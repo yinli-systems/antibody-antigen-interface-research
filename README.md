@@ -10,6 +10,21 @@ The repository covers three connected workstreams:
 2. Partner-retrieval experiments and specificity controls.
 3. MIPE reproduction and residue-pair interaction diagnostics.
 
+## Start here
+
+| Goal | Entry point |
+|---|---|
+| Understand the directory layout and preservation rules | [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md) |
+| Reproduce the interaction-first pipeline | [`docs/INTERACTION_FIRST_PIPELINE.md`](docs/INTERACTION_FIRST_PIPELINE.md) |
+| Review active and historical protocol evidence | [`protocols/README.md`](protocols/README.md) |
+| Find concise result summaries and claim boundaries | [`results/README.md`](results/README.md) |
+| Select the correct command-line or Slurm entry point | [`scripts/README.md`](scripts/README.md) |
+| Verify environment and artifact provenance | [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
+
+No evidence artifact is deleted merely because a newer protocol supersedes it.
+Several files are intentionally mirrored under `protocols/` and `results/` because
+existing receipts and validators may bind both their bytes and their paths.
+
 ## Locked SPPIDER-seq result
 
 The final ensemble was evaluated on 455 reused benchmark complexes grouped into 84
@@ -34,11 +49,51 @@ the preregistered cross-attention reranker protocol.
 
 ## MIPE status
 
-The released-code-compatible five-fold run has authenticated partial checkpoints,
-but the 800-epoch experiment is not complete. The released code, appendix, and
-paper disagree on important settings, including learning rate, checkpoint
-selection, graph construction, and dataset counts. These discrepancies are
-documented rather than silently reconciled.
+The released-code-compatible five-fold 800-epoch reconstruction and frozen
+evaluation are complete. The native mean-bidirectional residue-pair macro AUPRC
+is `0.00342` (95% cluster-bootstrap CI `0.00305--0.00381`), compared with
+`0.04045` for the predicted-marginal outer-product baseline. The
+validation-best epitope micro AUPRC is `0.2804`. These results support the
+project's diagnosis that the reconstructed model does not recover useful native
+pair correspondence, even when its marginal interface predictions are more
+informative.
+
+The supplied external split had pre-scoring schema access and is therefore
+reported as a provided external test-split evaluation, not as a pristine blind
+test. The released code, appendix, and paper disagree on important settings,
+including learning rate, checkpoint selection, graph construction, and dataset
+counts. Those discrepancies are documented rather than silently reconciled.
+
+## PAIRFormer status
+
+The prospective PAIRFormer path is blocked at Gate 0. Candidate-mask semantics,
+partner-specific controls, calibration metrics, an explicit
+contact--distance--orientation decoder, and an exact joint three-outer plus
+nine-inner split formulation have been implemented and tested. They are
+engineering candidates only: no PAIRFormer biological training, model
+selection, held-out evaluation, or performance-improvement claim is authorized
+until the exact split, independent audits, fold-local cache equality, label
+provenance, and license receipts all pass.
+
+The phase-one intra-chain structure encoder is now implemented as an opt-in
+research module. It uses two parameter-unshared antibody/antigen self-attention
+stacks with sequence RoPE and invariant `N-CA-C` local-pose attention biases. It
+does not encode inter-chain geometry and does not change the default checkpoint
+path. See `docs/intra_chain_geometry_attention.md` for its tensor contract,
+authenticated SAbDab2 batch adapter, equal-parameter ablation protocol, and claim
+boundary. The real-data adapter fails closed on source hashes, strict-split audit,
+residue-axis mismatches, and valid/missing-frame inconsistencies; it reads only
+the intersection with the new release's native training role.
+
+The equal-parameter geometry study is recorded under
+`results/sabdab2_structure_self_attention/`. In addition to the original RTX
+5090 development run, it now contains a sealed two-A100 reproduction, an
+independent verifier for its 54-file archive and 8,727-file data authority,
+three-seed pooled stability evidence, and a per-complex replay from the exact
+A100 final checkpoints. Direction-aware geometry remains positive relative to
+topology-only across the three archived seeds, but the preregistered
+multiplicity-adjusted and five-seed superiority gate does not pass. The result
+is explicitly development-only and is not reported as a benchmark gain.
 
 ## Claim boundary
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from typing import Any, Sequence
 
+from .intra_chain_geometry import DualIntraChainGeometryEncoder
 from .scoring import normalized_partner_score, pool_pair_marginals
 
 try:
@@ -239,6 +240,13 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         score_top_fraction: float = 0.01,
         center_partner_score: bool = True,
         cross_attention_gate_initial_logit: float = -2.0,
+        intra_chain_geometry_layers: int = 0,
+        intra_chain_geometry_feature_mode: str = "full_pose",
+        intra_chain_geometry_num_rbf: int = 16,
+        intra_chain_geometry_distance_max: float = 20.0,
+        intra_chain_geometry_neighbor_k: int | None = 32,
+        intra_chain_geometry_neighbor_radius: float | None = None,
+        intra_chain_geometry_attention_topology: str = "spatial",
     ) -> None:
         require_torch()
         super().__init__()
@@ -252,6 +260,12 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             raise ValueError("score_pooling must be 'logmeanexp' or 'top_fraction'")
         if marginal_temperature <= 0.0 or score_temperature <= 0.0:
             raise ValueError("Pooling temperatures must be positive")
+        if (
+            isinstance(score_top_k, bool)
+            or not isinstance(score_top_k, int)
+            or score_top_k <= 0
+        ):
+            raise ValueError("score_top_k must be a positive integer")
         if not 0.0 < score_top_fraction <= 1.0:
             raise ValueError("score_top_fraction must be in (0, 1]")
         self.antigen_projection = nn.Sequential(
@@ -265,6 +279,28 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             nn.Linear(antibody_input_dim, d_model),
             nn.SiLU(),
             nn.Dropout(dropout),
+        )
+        if (
+            isinstance(intra_chain_geometry_layers, bool)
+            or not isinstance(intra_chain_geometry_layers, int)
+            or intra_chain_geometry_layers < 0
+        ):
+            raise ValueError("intra_chain_geometry_layers must be a nonnegative integer")
+        self.intra_chain_geometry = (
+            DualIntraChainGeometryEncoder(
+                d_model,
+                num_heads,
+                intra_chain_geometry_layers,
+                geometry_feature_mode=intra_chain_geometry_feature_mode,
+                num_rbf=intra_chain_geometry_num_rbf,
+                distance_max=intra_chain_geometry_distance_max,
+                neighbor_k=intra_chain_geometry_neighbor_k,
+                neighbor_radius=intra_chain_geometry_neighbor_radius,
+                attention_topology=intra_chain_geometry_attention_topology,
+                dropout=dropout,
+            )
+            if intra_chain_geometry_layers > 0
+            else None
         )
         self.blocks = nn.ModuleList(
             BidirectionalCrossAttentionBlock(
@@ -316,6 +352,14 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         antigen_mask: Any | None = None,
         antibody_mask: Any | None = None,
         candidate_pair_mask: Any | None = None,
+        *,
+        antigen_backbone: Any | None = None,
+        antibody_backbone: Any | None = None,
+        antigen_chain_ids: Any | None = None,
+        antibody_chain_ids: Any | None = None,
+        antigen_positions: Any | None = None,
+        antibody_positions: Any | None = None,
+        return_intra_chain_attention: bool = False,
     ) -> dict[str, Any]:
         """Encode a batch and return pair logits, marginals, and a ranking score."""
         if antigen_features.ndim != 3 or antibody_features.ndim != 3:
@@ -335,6 +379,40 @@ class PartnerSpecificInteractionModel(_ModuleBase):
 
         antigen = self.antigen_projection(antigen_features)
         antibody = self.antibody_projection(antibody_features)
+        intra_chain_details = None
+        if self.intra_chain_geometry is not None:
+            if antigen_backbone is None or antibody_backbone is None:
+                raise ValueError(
+                    "antigen_backbone and antibody_backbone are required when "
+                    "intra-chain geometry is enabled"
+                )
+            antibody, antigen, intra_chain_details = self.intra_chain_geometry(
+                antibody,
+                antigen,
+                antibody_mask,
+                antigen_mask,
+                antibody_backbone,
+                antigen_backbone,
+                antibody_chain_ids=antibody_chain_ids,
+                antigen_chain_ids=antigen_chain_ids,
+                antibody_positions=antibody_positions,
+                antigen_positions=antigen_positions,
+                return_attention=return_intra_chain_attention,
+            )
+        elif any(
+            value is not None
+            for value in (
+                antigen_backbone,
+                antibody_backbone,
+                antigen_chain_ids,
+                antibody_chain_ids,
+                antigen_positions,
+                antibody_positions,
+            )
+        ):
+            raise ValueError(
+                "Set intra_chain_geometry_layers > 0 before supplying structure inputs"
+            )
         for block in self.blocks:
             antigen, antibody = block(antigen, antibody, antigen_mask, antibody_mask)
         antigen = self.final_antigen_norm(antigen)
@@ -344,41 +422,62 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         interaction_logits = decoder["interaction_logits"]
         axis_mask = antigen_mask.unsqueeze(2) & antibody_mask.unsqueeze(1)
         if candidate_pair_mask is None:
-            edge_supervision_mask = axis_mask
+            pair_mask = axis_mask
         else:
-            if candidate_pair_mask.dtype != torch.bool or candidate_pair_mask.shape != pair_logits.shape:
-                raise ValueError("candidate_pair_mask must be boolean and aligned to pair logits")
-            edge_supervision_mask = axis_mask & candidate_pair_mask
-        if torch.any(edge_supervision_mask.reshape(edge_supervision_mask.shape[0], -1).sum(dim=1) == 0):
+            if (
+                not torch.is_tensor(candidate_pair_mask)
+                or candidate_pair_mask.dtype != torch.bool
+                or tuple(candidate_pair_mask.shape) != tuple(pair_logits.shape)
+            ):
+                raise ValueError(
+                    "candidate_pair_mask must be boolean and aligned to pair logits"
+                )
+            if candidate_pair_mask.device != pair_logits.device:
+                raise ValueError(
+                    "candidate_pair_mask must use the same device as pair logits"
+                )
+            if bool(torch.any(candidate_pair_mask & ~axis_mask)):
+                raise ValueError(
+                    "candidate_pair_mask cannot select padded residue positions"
+                )
+            pair_mask = candidate_pair_mask
+        if torch.any(
+            pair_mask.reshape(pair_mask.shape[0], -1).sum(dim=1) == 0
+        ):
             raise ValueError("Every item must contain at least one valid candidate pair")
 
-        pair_probabilities = torch.sigmoid(pair_logits)
+        pair_probabilities = torch.sigmoid(pair_logits).masked_fill(~pair_mask, 0.0)
         pair_epitope_probability, pair_paratope_probability = self._marginals(
-            pair_logits, pair_probabilities, axis_mask
+            pair_logits, pair_probabilities, pair_mask
         )
+        epitope_supervision_mask = pair_mask.any(dim=2)
+        paratope_supervision_mask = pair_mask.any(dim=1)
         epitope_logits = self.epitope_head(antigen).squeeze(-1)
         paratope_logits = self.paratope_head(antibody).squeeze(-1)
         epitope_probability = torch.sigmoid(epitope_logits).masked_fill(
-            ~antigen_mask, 0.0
+            ~epitope_supervision_mask, 0.0
         )
         paratope_probability = torch.sigmoid(paratope_logits).masked_fill(
-            ~antibody_mask, 0.0
+            ~paratope_supervision_mask, 0.0
         )
         complex_score = normalized_partner_score(
             interaction_logits,
-            axis_mask,
+            pair_mask,
             pooling=self.score_pooling,
             temperature=self.score_temperature,
             top_fraction=self.score_top_fraction,
+            min_count=self.score_top_k,
             center=self.center_partner_score,
-            centering_iterations=1,
         )
         return {
             "pair_logits": pair_logits,
             "interaction_logits": interaction_logits,
             "pair_probabilities": pair_probabilities,
-            "pair_mask": axis_mask,
-            "edge_supervision_mask": edge_supervision_mask,
+            "axis_pair_mask": axis_mask,
+            "pair_mask": pair_mask,
+            "edge_supervision_mask": pair_mask,
+            "epitope_supervision_mask": epitope_supervision_mask,
+            "paratope_supervision_mask": paratope_supervision_mask,
             "epitope_logits": epitope_logits,
             "paratope_logits": paratope_logits,
             "epitope_probability": epitope_probability,
@@ -388,6 +487,8 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             "complex_score": complex_score,
             "antigen_embeddings": antigen,
             "antibody_embeddings": antibody,
+            "intra_chain_geometry_enabled": self.intra_chain_geometry is not None,
+            "intra_chain_geometry": intra_chain_details,
         }
 
 

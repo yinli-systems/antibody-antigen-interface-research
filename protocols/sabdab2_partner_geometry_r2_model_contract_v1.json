@@ -1,0 +1,99 @@
+{
+  "format_version": "sabdab2_partner_geometry_r2_model_contract_v1",
+  "status": "prospective_implementation_frozen_training_blocked_at_gate_0",
+  "parent_protocol": {
+    "path": "protocols/sabdab2_partner_geometry_r2_v1.json",
+    "sha256": "222d7ae589aff485a79d65aa9fae4209064c433f50e6bcdd81ccfeae941ca222"
+  },
+  "source_bindings": {
+    "pair_geometry": {
+      "path": "src/interaction_first/pair_geometry.py",
+      "sha256": "6ab870971aad4e9f4bf55d45d9a0a2ba4b104becfa0c44d3639a4f4d3c42912c"
+    },
+    "intra_chain_geometry": {
+      "path": "src/interaction_first/intra_chain_geometry.py",
+      "sha256": "3210855d17aac1babced863615a0dc3468f850b55d049b18cd623f054559ed70"
+    },
+    "pair_geometry_schema": {
+      "path": "src/interaction_first/pair_geometry_schema.py",
+      "sha256": "3cd35754390277d7bb1b1843f5d0323cfd5b66a5bc5e420f77a1031899347ff2"
+    },
+    "r2_model_contract": {
+      "path": "src/interaction_first/r2_model_contract.py",
+      "sha256": "f12542bd4b6a18a047f921c0bb36e232481366366b15dd3d1f6f9aa7e5d9201f"
+    }
+  },
+  "model": {
+    "candidate_id": "R2",
+    "class_name": "ProspectivePairGeometryModel",
+    "antibody_input_dim": 512,
+    "antigen_input_dim": 1280,
+    "d_model": 256,
+    "pair_dim": 128,
+    "num_heads": 8,
+    "num_fusion_layers": 2,
+    "ffn_dim": 512,
+    "dropout": 0.1,
+    "intra_chain_geometry": {
+      "parameters_shared_between_partners": false,
+      "num_layers": 1,
+      "feature_mode": "distance_direction",
+      "attention_topology": "spatial",
+      "num_rbf": 16,
+      "distance_max_angstrom": 20.0,
+      "neighbor_k": 32,
+      "neighbor_radius_angstrom": 16.0,
+      "bound_inter_chain_geometry_allowed": false
+    },
+    "pair_representation": {
+      "orientation": "antibody_by_antigen",
+      "construction": [
+        "projected_antibody_residue",
+        "projected_antigen_residue",
+        "elementwise_gated_interaction"
+      ],
+      "num_update_layers": 2,
+      "update_num_heads": 8,
+      "update_ffn_dim": 256,
+      "update_order": [
+        "antigen_axis_within_antibody_row",
+        "antibody_axis_within_antigen_column",
+        "feed_forward"
+      ],
+      "antibody_axis_chunk_size": 64
+    },
+    "prediction": {
+      "enabled_heads": [
+        "contact",
+        "distance",
+        "orientation",
+        "interaction"
+      ],
+      "contact_logit_mode": "unary_plus_interaction_residual",
+      "marginal_pooling": "logmeanexp",
+      "marginal_top_k": 3,
+      "marginal_temperature": 1.0,
+      "partner_score_temperature": 1.0,
+      "double_centering_iterations": 16,
+      "confidence": "one_minus_mean_normalized_distance_orientation_entropy",
+      "uncertainty": "mean_normalized_distance_orientation_entropy"
+    }
+  },
+  "runtime_schema": {
+    "pair_geometry_schema_sha256": "externally_frozen_per_admitted_label_contract",
+    "antibody_backbone_required": true,
+    "antigen_backbone_required": true,
+    "antibody_chain_ids_required": true,
+    "antigen_chain_ids_required": true,
+    "candidate_pair_mask_required": true,
+    "complete_candidate_domain_required_for_evaluation": true
+  },
+  "authorization": {
+    "source_implementation": true,
+    "synthetic_forward_and_backward_tests": true,
+    "scientific_training": false,
+    "model_selection": false,
+    "outer_evaluation": false,
+    "external_test_access": false
+  }
+}

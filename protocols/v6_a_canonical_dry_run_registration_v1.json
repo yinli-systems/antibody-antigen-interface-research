@@ -1,0 +1,32 @@
+{
+  "authority_file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
+  "authority_inventory": {
+    "antibody_entities": 1383,
+    "antigen_entities": 1172,
+    "exact_pairs": 1830,
+    "source_rows": 3229
+  },
+  "format_version": "v6_a_canonical_dry_run_registration_v1",
+  "necessary_condition": {
+    "minimum_validation_endpoints_per_axis_per_fold": 60,
+    "outer_fold_count": 3,
+    "outer_holdout_entities_are_disjoint": true
+  },
+  "parent_policy_sha256": "ac28232d8d59190f85c24c0bbfee7e4b8b9bbed28b29b0a91a097b49f7a27fa6",
+  "registered_run_id": "v6_a_canonical_10pct_001",
+  "selection": {
+    "axis_scope": "independently_per_antibody_and_antigen_axis",
+    "fraction_denominator": 10,
+    "fraction_numerator": 1,
+    "graph_or_pair_incidence_may_be_inspected_before_selection": false,
+    "order": "lowercase_sha256_entity_id_lexicographic",
+    "rounding": "ceiling"
+  },
+  "single_registered_run": true,
+  "source_sha256": {
+    "primary_statistics": "4274c75b2e523fb1617546355771331e83b1645ee3ab598dccb321e3bad236f0",
+    "v6_cp_sat_formulation": "d07e2a402c63fe1fe642bb0f80162c8850bfef1d17a18e8d3fb4afde40b3a9dd"
+  },
+  "stop_rule": "any_static_necessary_condition_failure_terminates_v6_a_before_graph_open_and_requires_a_new_numbered_decomposition_protocol",
+  "training_authorized": false
+}

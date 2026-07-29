@@ -1,0 +1,37 @@
+{
+  "assets": [
+    {
+      "asset_name": "CHIMERA benchmark code",
+      "asset_scope": "code",
+      "attribution_required": true,
+      "commercial_use_permitted": true,
+      "declared_license_spdx": "MIT",
+      "evidence_digest_method": "raw_bytes_sha256_v1",
+      "evidence_note": "SHA-256 covers the official dataset card at the pinned revision, which declares the code license separately from the data license.",
+      "evidence_projection": null,
+      "evidence_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+      "evidence_sha256": "5ae39ee2062d5b8d02479d19851b4174cacf7053f4848f50a36df137aa829bc3",
+      "evidence_url": "https://huggingface.co/datasets/mansoorbaloch/chimera-bench/raw/54d5a2a1e59a329db7a6c09184652ed225188940/README.md",
+      "license_route": "commercial_ok"
+    },
+    {
+      "asset_name": "CHIMERA benchmark data",
+      "asset_scope": "data",
+      "attribution_required": true,
+      "commercial_use_permitted": true,
+      "declared_license_spdx": "CC-BY-4.0",
+      "evidence_digest_method": "raw_bytes_sha256_v1",
+      "evidence_note": "SHA-256 covers the official dataset card at the pinned revision; protocol policy independently reserves these data for confirmatory evaluation.",
+      "evidence_projection": null,
+      "evidence_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+      "evidence_sha256": "5ae39ee2062d5b8d02479d19851b4174cacf7053f4848f50a36df137aa829bc3",
+      "evidence_url": "https://huggingface.co/datasets/mansoorbaloch/chimera-bench/raw/54d5a2a1e59a329db7a6c09184652ed225188940/README.md",
+      "license_route": "commercial_ok"
+    }
+  ],
+  "format_version": "pairscale_license_receipt_v2",
+  "legal_review_required_for_release": true,
+  "receipt_status": "reviewed",
+  "reviewed_at_utc": "2026-07-27T23:30:00Z",
+  "source_id": "chimera_bench_2026_05"
+}

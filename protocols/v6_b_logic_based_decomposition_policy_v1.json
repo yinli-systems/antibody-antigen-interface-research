@@ -1,0 +1,145 @@
+{
+  "authorization": {
+    "contact_training_authorized": false,
+    "implementation_engineering_authorized": true,
+    "model_selection_authorized": false,
+    "outer_evaluation_authorized": false,
+    "split_gate0_authorized": false,
+    "test_access_authorized": false
+  },
+  "authority_train": {
+    "antibody_entities": 1383,
+    "antigen_entities": 1172,
+    "exact_pairs": 1830,
+    "membership_sha256": "442095581ae9bf3c7440c1a818612298b5f81e5a62ef46f431e0867b9c8b466b",
+    "score_free_authority_file_sha256": "d277f53a600cbd78db8d1e8f5ce01c11a32d94d38fb87c30ed4ab50e21e36547",
+    "score_free_authority_scientific_sha256": "4fa1807f76528d2cc22711c7cfaf17f22db1617cfaa6875727dd1c39f307cdbd",
+    "source_rows": 3229
+  },
+  "complete_feasible_region": {
+    "acceptance_requires": [
+      "outer_master_OPTIMAL",
+      "three_inner_subproblems_OPTIMAL",
+      "all_66_exact_gates_pass",
+      "independent_raw_source_auditor_field_by_field_agreement",
+      "direct_highs_fixed_assignment_linear_projection_OPTIMAL_zero_gap"
+    ],
+    "authoritative_backend": "full_authority_cp_sat_logic_based_decomposition_plus_exact_decimal_fraction_separation",
+    "highs_complete_region_authorized": false,
+    "rejected_statuses": [
+      "FEASIBLE",
+      "UNKNOWN",
+      "MODEL_INVALID",
+      "timeout",
+      "nonzero_gap",
+      "incomplete_separation",
+      "audit_disagreement"
+    ]
+  },
+  "decomposition": {
+    "candidate_order": "canonical_assignment_sha256_lexicographic",
+    "inner_groups": 3,
+    "inner_universe": "exact_pairs_and_endpoints_in_the_corresponding_outer_training_role",
+    "master_scope": "all_full_authority_outer_variables_and_outer_only_integer_rows",
+    "subproblem_build": "independently_from_authenticated_authority_and_signed_outer_membership",
+    "subproblem_forbidden_inputs": [
+      "master_matrix",
+      "master_generated_rows",
+      "master_variable_indices",
+      "highs_matrix",
+      "historical_fold_assignment"
+    ]
+  },
+  "distribution_thresholds": {
+    "inner": {
+      "maximum_ks": [1, 4],
+      "maximum_smd_decimal": "0.40",
+      "maximum_tv": [1, 4]
+    },
+    "outer": {
+      "maximum_ks": [1, 5],
+      "maximum_smd_decimal": "0.35",
+      "maximum_tv": [1, 5]
+    },
+    "pooled_outer": {
+      "maximum_ks": [1, 5],
+      "maximum_smd_decimal": "0.25",
+      "maximum_tv": [3, 20]
+    }
+  },
+  "exact_gate_partition": {
+    "inner_gate_count_per_outer_fold": 16,
+    "inner_groups": 3,
+    "outer_gate_count": 18,
+    "total_gate_count": 66
+  },
+  "forbidden_split_inputs": [
+    "contact_density",
+    "paratope_size",
+    "epitope_size",
+    "affinity",
+    "assay_outcome",
+    "embedding",
+    "prediction",
+    "loss",
+    "rank",
+    "model_score",
+    "model_result"
+  ],
+  "format_version": "train_only_v6_b_logic_based_decomposition_policy_v1",
+  "inner_infeasibility_cut": {
+    "acceptance_sequence": [
+      "solve_with_signed_outer_training_membership_assumptions",
+      "require_INFEASIBLE_and_record_sufficient_assumptions",
+      "rebuild_from_raw_authority_with_only_core_membership_fixed",
+      "require_replay_INFEASIBLE",
+      "independent_raw_authority_rebuild_and_replay",
+      "add_exact_signed_support_boolean_no_good"
+    ],
+    "assumption_core_claim": "sufficient_not_necessarily_minimum",
+    "fallback_full_outer_state_cut_authorized": false,
+    "required_receipt_fields": [
+      "iteration",
+      "outer_candidate_sha256",
+      "outer_fold",
+      "inner_model_sha256",
+      "signed_support",
+      "signed_support_sha256",
+      "first_response_sha256",
+      "replay_model_sha256",
+      "replay_response_sha256",
+      "independent_replay_sha256",
+      "cut_sha256"
+    ]
+  },
+  "parent_v6_a_terminal_evidence": {
+    "receipt_file_sha256": "48bac8420b7eacb31086c77ca0f04660004f6e1ba5387bbe9f4259b12ae23952",
+    "receipt_sha256": "e5b1db83df183406430dc118289b466b61d06f8533451c026a14eab0defa81fd",
+    "terminal_status": "STATIC_NECESSARY_CONDITION_INFEASIBLE",
+    "v6_a_full_authority_infeasibility_claim": false,
+    "v6_a_stopped": true
+  },
+  "row_shard_telemetry": {
+    "eligible_row_fraction_denominator": 10,
+    "eligible_row_fraction_numerator": 1,
+    "full_variable_dictionary_required": true,
+    "minimum_projected_resource_headroom_fraction": [1, 4],
+    "pair_or_vertex_sampling_authorized": false,
+    "row_selection": "smallest_lowercase_sha256_of_canonical_row_payload_per_declared_family_with_ceiling_rounding",
+    "solver_invocation_authorized": false,
+    "telemetry_can_authorize_feasibility": false,
+    "telemetry_can_authorize_training": false
+  },
+  "source_bindings": {
+    "independent_auditor_sha256": "f8b10a4b92d2c2c56f167c1d6f5705677b6bedba802ffe23f12e32666b70ae81",
+    "v6_a_exact_oracle_sha256": "902b838cf6ba7c39d51f774497f855a8bec455b7942804c8031f88e09c575cef",
+    "v6_a_policy_sha256": "ac28232d8d59190f85c24c0bbfee7e4b8b9bbed28b29b0a91a097b49f7a27fa6"
+  },
+  "training_remains_blocked_until": [
+    "full_decomposed_lexicographic_assignment_frozen_and_pinned_replay_equal",
+    "independent_12_fold_48_boundary_66_gate_audit_pass",
+    "post_freeze_3d_interface_leakage_audit_pass",
+    "frozen_power_gate_pass",
+    "fold_local_cache_equality_receipts_pass"
+  ]
+}
