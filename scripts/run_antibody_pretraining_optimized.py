@@ -50,6 +50,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--model-family", type=Path, required=True)
     parser.add_argument("--training-protocol", type=Path, required=True)
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
+    parser.add_argument("--ddp-communication-protocol", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--preset",
@@ -68,6 +69,12 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
     parser.add_argument("--audit-gradient-rank-parity", action="store_true")
     parser.add_argument("--disable-ddp-gradient-as-bucket-view", action="store_true")
+    parser.add_argument("--ddp-batched-grad-copy", action="store_true")
+    parser.add_argument(
+        "--ddp-communication-dtype",
+        choices=("float32", "bfloat16"),
+        default="float32",
+    )
     parser.add_argument("--fused-adamw", action="store_true")
     parser.add_argument("--pinned-staging", action="store_true")
     parser.add_argument("--bucketed-padding", action="store_true")
@@ -94,9 +101,16 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("CUDAGraph control requires compiled Transformer blocks")
     if args.backend != "ddp" and (
         args.audit_gradient_rank_parity
+        or args.ddp_batched_grad_copy
+        or args.ddp_communication_dtype != "float32"
         or args.disable_ddp_gradient_as_bucket_view
     ):
         raise ValueError("DDP diagnostics require the DDP backend")
+    if (
+        args.ddp_batched_grad_copy
+        or args.ddp_communication_dtype != "float32"
+    ) and args.ddp_communication_protocol is None:
+        raise ValueError("DDP communication optimization requires its protocol")
     return args
 
 
@@ -108,6 +122,33 @@ def _load_efficiency_protocol(path: Path) -> tuple[dict[str, object], str]:
         raise ValueError("Efficiency protocol must be ASCII JSON") from error
     if protocol.get("format_version") != "antibody_efficiency_gate_v1":
         raise ValueError("Unexpected efficiency protocol version")
+    return protocol, hashlib.sha256(payload).hexdigest()
+
+
+def _load_ddp_communication_protocol(
+    path: Path | None,
+    *,
+    efficiency_protocol_sha256: str,
+) -> tuple[dict[str, object] | None, str | None]:
+    if path is None:
+        return None, None
+    payload = path.read_bytes()
+    try:
+        protocol = json.loads(payload.decode("ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("DDP communication protocol must be ASCII JSON") from error
+    if (
+        protocol.get("format_version")
+        != "antibody_ddp_communication_optimization_v1"
+        or protocol.get("parent_efficiency_protocol_sha256")
+        != efficiency_protocol_sha256
+        or protocol.get("test_access")
+        != {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        }
+    ):
+        raise ValueError("Unexpected DDP communication protocol")
     return protocol, hashlib.sha256(payload).hexdigest()
 
 
@@ -197,15 +238,21 @@ def _wrap_model(
             disable_cudagraphs=args.disable_compiled_cudagraphs,
         )
     if args.backend == "ddp":
-        return DistributedDataParallel(
+        wrapped = DistributedDataParallel(
             model,
             device_ids=[local_rank],
             bucket_cap_mb=args.ddp_bucket_cap_mb,
+            batched_grad_copy=args.ddp_batched_grad_copy,
             gradient_as_bucket_view=(
                 not args.disable_ddp_gradient_as_bucket_view
             ),
             static_graph=False,
         )
+        if args.ddp_communication_dtype == "bfloat16":
+            from torch.distributed.algorithms.ddp_comm_hooks import default_hooks
+
+            wrapped.register_comm_hook(None, default_hooks.bf16_compress_hook)
+        return wrapped
     from torch.distributed.device_mesh import init_device_mesh
     from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
 
@@ -624,6 +671,24 @@ def main() -> None:
     efficiency_protocol, efficiency_protocol_sha256 = _load_efficiency_protocol(
         args.efficiency_protocol
     )
+    (
+        ddp_communication_protocol,
+        ddp_communication_protocol_sha256,
+    ) = _load_ddp_communication_protocol(
+        args.ddp_communication_protocol,
+        efficiency_protocol_sha256=efficiency_protocol_sha256,
+    )
+    if ddp_communication_protocol is not None and not any(
+        candidate.get("batched_grad_copy") == args.ddp_batched_grad_copy
+        and candidate.get("communication_dtype")
+        == args.ddp_communication_dtype
+        for candidate in ddp_communication_protocol["candidates"]
+    ):
+        raise RuntimeError("DDP communication candidate is not registered")
+    if args.ddp_communication_dtype == "bfloat16":
+        nccl_version = tuple(int(value) for value in torch.cuda.nccl.version())
+        if nccl_version <= (2, 9, 6) or not torch.__version__.startswith("2.13."):
+            raise RuntimeError("BF16 DDP communication runtime is unsupported")
     shard = load_dense_shard(
         args.shard,
         expected_manifest_sha256=args.manifest_sha256,
@@ -675,6 +740,9 @@ def main() -> None:
             "backend": args.backend,
             "batch_quantum": args.batch_quantum,
             "efficiency_protocol_sha256": efficiency_protocol_sha256,
+            "ddp_communication_protocol_sha256": (
+                ddp_communication_protocol_sha256
+            ),
             "length_bucket_boundaries": list(boundaries),
             "micro_batch_per_gpu": args.micro_batch,
             "model_family_sha256": model_family_sha256,
@@ -685,6 +753,8 @@ def main() -> None:
                 "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
                 "compile_prewarm_buckets": args.compile_prewarm_buckets,
                 "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+                "ddp_batched_grad_copy": args.ddp_batched_grad_copy,
+                "ddp_communication_dtype": args.ddp_communication_dtype,
                 "disable_ddp_gradient_as_bucket_view": (
                     args.disable_ddp_gradient_as_bucket_view
                 ),
@@ -927,6 +997,8 @@ def main() -> None:
         "disable_compiled_cudagraphs": args.disable_compiled_cudagraphs,
         "compile_prewarm_buckets": args.compile_prewarm_buckets,
         "ddp_bucket_cap_mb": args.ddp_bucket_cap_mb,
+        "ddp_batched_grad_copy": args.ddp_batched_grad_copy,
+        "ddp_communication_dtype": args.ddp_communication_dtype,
         "disable_ddp_gradient_as_bucket_view": (
             args.disable_ddp_gradient_as_bucket_view
         ),
@@ -970,6 +1042,9 @@ def main() -> None:
         "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
         "consumed_residue_tokens": consumed,
         "efficiency_protocol_sha256": efficiency_protocol_sha256,
+        "ddp_communication_protocol_sha256": (
+            ddp_communication_protocol_sha256
+        ),
         "length_bucket_boundaries": list(boundaries),
         "micro_batch_per_gpu": args.micro_batch,
         "model_family_sha256": model_family_sha256,
@@ -1023,6 +1098,9 @@ def main() -> None:
                 ),
                 "ddp_logging_data": ddp_logging_data,
                 "efficiency_protocol_sha256": efficiency_protocol_sha256,
+                "ddp_communication_protocol_sha256": (
+                    ddp_communication_protocol_sha256
+                ),
                 "final_model_sha256": final_model_sha256,
                 "final_model_rank_sha256": final_model_rank_sha256,
                 "final_optimizer_sha256": final_optimizer_sha256,

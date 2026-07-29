@@ -32,6 +32,8 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
         "compile_prewarm_buckets",
         "disable_compiled_cudagraphs",
         "ddp_bucket_cap_mb",
+        "ddp_batched_grad_copy",
+        "ddp_communication_dtype",
         "disable_ddp_gradient_as_bucket_view",
         "ddp_static_graph",
         "deterministic_algorithms",
@@ -42,6 +44,7 @@ def test_optimized_receipt_binds_every_efficiency_switch() -> None:
     ):
         assert f'"{field}"' in source
     assert '"launch_argv"' in source
+    assert '"ddp_communication_protocol_sha256"' in source
     assert '"compile_prewarm_trace"' in source
     assert '"membership_sha256"' in source
     assert '"peak_allocated_memory_mib"' in source
@@ -106,6 +109,18 @@ def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     )
 
 
+def test_ddp_communication_optimizations_are_protocol_and_runtime_bound() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert "batched_grad_copy=args.ddp_batched_grad_copy" in source
+    assert "default_hooks.bf16_compress_hook" in source
+    assert "wrapped.register_comm_hook" in source
+    assert 'nccl_version <= (2, 9, 6)' in source
+    assert 'torch.__version__.startswith("2.13.")' in source
+    assert "DDP communication candidate is not registered" in source
+    assert "antibody_ddp_communication_optimization_v1" in source
+    assert '"ddp_communication_protocol_sha256"' in source
+
+
 def test_length_bucketing_preserves_membership_by_construction() -> None:
     source = RUNNER.read_text(encoding="ascii")
     assert "np.lexsort" in source
@@ -123,6 +138,9 @@ def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
     assert "ABF_COMPILE_PREWARM_BUCKETS" in source
     assert "ABF_AUDIT_GRADIENT_RANK_PARITY" in source
     assert "ABF_DISABLE_DDP_GRADIENT_AS_BUCKET_VIEW" in source
+    assert "ABF_DDP_BATCHED_GRAD_COPY" in source
+    assert "ABF_DDP_COMMUNICATION_DTYPE" in source
+    assert "ABF_DDP_COMMUNICATION_PROTOCOL" in source
     assert "ABF_DISABLE_DDP_STATIC_GRAPH" not in source
     assert "ABF_FUSED_ADAMW" in source
     assert "ABF_PINNED_STAGING" in source
