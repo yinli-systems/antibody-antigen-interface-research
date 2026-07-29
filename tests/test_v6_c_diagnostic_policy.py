@@ -39,9 +39,9 @@ def test_v6_c_policy_is_fail_closed() -> None:
         "v6_c_linear_infeasibility_diagnostic_policy_v1"
     )
     assert policy["authority_counts"] == {
-        "antibodies": 1383,
-        "antigens": 1172,
-        "observed_pairs": 1830,
+        "antibody_entities": 1383,
+        "antigen_entities": 1172,
+        "exact_pairs": 1830,
         "source_rows": 3229,
     }
     assert set(policy["authorization"].values()) == {False}

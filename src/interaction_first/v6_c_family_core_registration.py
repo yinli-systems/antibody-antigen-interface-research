@@ -9,10 +9,10 @@ from typing import Any, Mapping
 
 REGISTRATION_FORMAT = "v6_c_family_core_audit_registration_v1"
 EXPECTED_COUNTS = {
+    "antibody_entities": 1383,
+    "antigen_entities": 1172,
+    "exact_pairs": 1830,
     "source_rows": 3229,
-    "observed_pairs": 1830,
-    "antibodies": 1383,
-    "antigens": 1172,
 }
 EXPECTED_DIMENSIONS = {
     "rows": 2693786,
@@ -53,6 +53,7 @@ EXPECTED_PARENT_REQUIRED_FIELDS = {
     },
 }
 SOURCE_LABELS = {
+    "audit",
     "controller",
     "cp_formulation",
     "diagnostic",
@@ -99,18 +100,6 @@ def _require_absolute_path(value: Any, name: str) -> str:
             f"{name} must be an absolute ASCII path"
         )
     return value
-
-
-def _validate_file_reference(value: Any, name: str) -> Mapping[str, Any]:
-    reference = _require_mapping(
-        value,
-        {"path", "file_sha256", "receipt_sha256"},
-        name,
-    )
-    _require_absolute_path(reference["path"], f"{name} path")
-    _require_digest(reference["file_sha256"], f"{name} file")
-    _require_digest(reference["receipt_sha256"], f"{name} receipt")
-    return reference
 
 
 def validate_family_core_registration(
