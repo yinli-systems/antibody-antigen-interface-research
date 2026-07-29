@@ -100,4 +100,3 @@ before rebuilding the authority-train split. The old thresholds and all failed
 receipts remain visible. Structural leakage, power, nested five-seed training,
 outer refit, and one-shot test evaluation remain downstream and blocked until
 a new split is frozen and independently replayed.
-
