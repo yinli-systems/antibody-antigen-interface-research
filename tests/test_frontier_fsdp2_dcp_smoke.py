@@ -43,10 +43,16 @@ def test_synthetic_batch_is_stateless_and_rank_partitionable() -> None:
 def test_state_difference_reports_and_gates_drift() -> None:
     expected = {"weight": torch.tensor([0.0, 2.0])}
     observed = {"weight": torch.tensor([1e-6, 2.001])}
-    difference = _state_difference(observed, expected)
+    difference = _state_difference(
+        observed,
+        expected,
+        absolute_tolerance=0.01,
+        relative_tolerance=0.01,
+    )
     assert difference["tensor_count"] == 1
     assert difference["element_count"] == 2
     assert difference["max_absolute"] == pytest.approx(0.001, abs=1e-7)
+    assert difference["max_scaled_error"] < 1.0
     _assert_difference(
         difference,
         absolute_tolerance=0.01,
@@ -55,10 +61,22 @@ def test_state_difference_reports_and_gates_drift() -> None:
     )
     with pytest.raises(RuntimeError, match="exceeded parity tolerance"):
         _assert_difference(
-            difference,
+            _state_difference(
+                observed,
+                expected,
+                absolute_tolerance=1e-5,
+                relative_tolerance=1e-5,
+            ),
             absolute_tolerance=1e-5,
             relative_tolerance=1e-5,
             label="fixture",
+        )
+    with pytest.raises(FloatingPointError, match="non-finite"):
+        _state_difference(
+            {"weight": torch.tensor([float("nan")])},
+            {"weight": torch.tensor([0.0])},
+            absolute_tolerance=1e-5,
+            relative_tolerance=1e-5,
         )
 
 

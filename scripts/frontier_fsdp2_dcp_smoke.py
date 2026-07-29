@@ -251,12 +251,18 @@ def _full_model_state(model: torch.nn.Module) -> dict[str, Any]:
 def _state_difference(
     observed: Mapping[str, Any],
     expected: Mapping[str, Any],
+    *,
+    absolute_tolerance: float,
+    relative_tolerance: float,
 ) -> dict[str, float | int]:
-    """Return maximum absolute and relative tensor differences."""
+    """Return exact elementwise allclose diagnostics."""
+    if absolute_tolerance < 0.0 or relative_tolerance < 0.0:
+        raise ValueError("State-comparison tolerances must be non-negative")
     if set(observed) != set(expected):
         raise RuntimeError("Compared model states have different keys")
     maximum_absolute = 0.0
     maximum_relative = 0.0
+    maximum_scaled_error = 0.0
     tensor_count = 0
     element_count = 0
     for name in sorted(observed):
@@ -270,21 +276,45 @@ def _state_difference(
         right_tensor = right.detach().cpu().float()
         if tuple(left_tensor.shape) != tuple(right_tensor.shape):
             raise RuntimeError(f"Tensor state shape differs for {name}")
+        if not bool(torch.isfinite(left_tensor).all()) or not bool(
+            torch.isfinite(right_tensor).all()
+        ):
+            raise FloatingPointError(f"Compared tensor state is non-finite for {name}")
         absolute = (left_tensor - right_tensor).abs()
-        denominator = torch.maximum(right_tensor.abs(), torch.full_like(right_tensor, 1e-12))
+        relative_denominator = torch.maximum(
+            right_tensor.abs(),
+            torch.full_like(right_tensor, 1e-12),
+        )
+        allowed = absolute_tolerance + relative_tolerance * right_tensor.abs()
+        scaled = torch.where(
+            allowed > 0.0,
+            absolute / allowed,
+            torch.where(
+                absolute == 0.0,
+                torch.zeros_like(absolute),
+                torch.full_like(absolute, float("inf")),
+            ),
+        )
         maximum_absolute = max(
             maximum_absolute,
             float(absolute.max()) if absolute.numel() else 0.0,
         )
         maximum_relative = max(
             maximum_relative,
-            float((absolute / denominator).max()) if absolute.numel() else 0.0,
+            float((absolute / relative_denominator).max())
+            if absolute.numel()
+            else 0.0,
+        )
+        maximum_scaled_error = max(
+            maximum_scaled_error,
+            float(scaled.max()) if scaled.numel() else 0.0,
         )
         tensor_count += 1
         element_count += int(left_tensor.numel())
     return {
         "max_absolute": maximum_absolute,
         "max_relative": maximum_relative,
+        "max_scaled_error": maximum_scaled_error,
         "tensor_count": tensor_count,
         "element_count": element_count,
     }
@@ -297,11 +327,8 @@ def _assert_difference(
     relative_tolerance: float,
     label: str,
 ) -> None:
-    """Fail closed when a state comparison exceeds either locked tolerance."""
-    if (
-        float(difference["max_absolute"]) > absolute_tolerance
-        and float(difference["max_relative"]) > relative_tolerance
-    ):
+    """Fail closed when any element exceeds its allclose tolerance."""
+    if float(difference["max_scaled_error"]) > 1.0:
         raise RuntimeError(
             f"{label} exceeded parity tolerance: {dict(difference)}, "
             f"atol={absolute_tolerance}, rtol={relative_tolerance}"
@@ -531,8 +558,18 @@ def main() -> None:
                 name: value.detach().cpu()
                 for name, value in reference.state_dict().items()
             }
-            fsdp_reference_difference = _state_difference(uninterrupted_state, reference_state)
-            restart_difference = _state_difference(restored_state, uninterrupted_state)
+            fsdp_reference_difference = _state_difference(
+                uninterrupted_state,
+                reference_state,
+                absolute_tolerance=args.absolute_tolerance,
+                relative_tolerance=args.relative_tolerance,
+            )
+            restart_difference = _state_difference(
+                restored_state,
+                uninterrupted_state,
+                absolute_tolerance=0.0,
+                relative_tolerance=0.0,
+            )
             _assert_difference(
                 fsdp_reference_difference,
                 absolute_tolerance=args.absolute_tolerance,
