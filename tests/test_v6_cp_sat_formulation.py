@@ -210,6 +210,14 @@ def test_all_64_outer_holdout_states_match_the_shared_linear_projection() -> Non
     assert sum(dict(direct.constraint_family_counts).values()) == len(
         projection.linear_constraints
     )
+    assert len(direct.constraint_families) == len(
+        direct.model.Proto().constraints
+    )
+    observed_family_counts = {
+        family: direct.constraint_families.count(family)
+        for family in set(direct.constraint_families)
+    }
+    assert observed_family_counts == dict(direct.constraint_family_counts)
     assert len(direct.model.Proto().constraints) == len(projection.linear_constraints)
     rebuilt = build_independent_cp_sat_formulation(
         problem,
