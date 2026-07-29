@@ -1,0 +1,44 @@
+{
+  "authorization": {
+    "full_protocol_infeasibility_claim": false,
+    "model_selection": false,
+    "outer_evaluation": false,
+    "split_gate0": false,
+    "test_access": false,
+    "threshold_change": false,
+    "training": false
+  },
+  "format_version": "v6_c_cluster_compatibility_evidence_v1",
+  "observed_at_cst": "2026-07-30T00:46:48+08:00",
+  "runtime": {
+    "ortools_version": "9.15.6755",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+    "python_executable": "/ssd/scxi253/model_deployment/envs/v6_a_solver_runtime_63f71f0_v2/cp_sat_venv/bin/python",
+    "python_version": "3.10.12"
+  },
+  "smoke": {
+    "all_families_status": "INFEASIBLE",
+    "core_replay_status": "INFEASIBLE",
+    "irreducibility_proven": true,
+    "production_solver_work": false,
+    "scientific_work": false,
+    "sufficient_core": [
+      "one",
+      "zero"
+    ],
+    "synthetic_model_only": true,
+    "synthetic_solver_smoke": true,
+    "test_bytes_accessed": false
+  },
+  "source": {
+    "commit": "144ad81a777c7efb79990cc4c50a27204375a065",
+    "controller_sha256": "1242385aa4bf3a4e6ec25a8bfc847864463bfc84cedc87e4042aa44fb83506ee",
+    "diagnostic_sha256": "b08eb8deb9a876826975481ead08dd355a53a385c69fbb077b428ebf92e97062",
+    "launcher_sha256": "1059b4f8338e2451a6c907b45736874a3a60154ebe5b6428677d466ff47c21d7",
+    "policy_sha256": "dd75bd2930f63524bdf96a79e3767508a6b932f748d6ee5b2e85f8a6532301bb",
+    "production_audit_sha256": "2882f9a530155b3d887c6d840a695bbf34b8fe736179946744e43cd59352bff0",
+    "remote_file_count": 807,
+    "remote_root": "/ssd/scxi253/model_deployment/jobs/v6_c_family_core_source_144ad81a777c",
+    "remote_root_mode": "dr-x------"
+  }
+}
