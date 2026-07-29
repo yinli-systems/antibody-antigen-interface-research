@@ -61,6 +61,17 @@ class PairComplexEvaluationInput:
 
 
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+R2_REQUIRED_CONTROL_NAMES = (
+    "matched_partner_shuffle",
+    "antibody_only",
+    "antigen_only",
+    "null",
+    "composition_only",
+    "strongest_separable_marginal",
+    "degree_aware_random",
+    "topology_only",
+    "raw_frozen_embedding",
+)
 
 
 def _nonempty_identifier(value: Any, name: str) -> str:
@@ -1270,6 +1281,52 @@ def evaluate_named_partner_controls(
     }
 
 
+def evaluate_partner_geometry_r2_controls(
+    matched_scores: Sequence[float],
+    controls_by_name: Mapping[str, Any],
+    matched_candidate_pair_counts: Sequence[int],
+    control_candidate_pair_counts_by_name: Mapping[str, Any],
+    *,
+    matched_axis_valid_counts: Any,
+    control_axis_valid_counts_by_name: Mapping[str, Any],
+    matched_candidate_domain_sha256: Sequence[str],
+    control_candidate_domain_sha256_by_name: Mapping[str, Any],
+    matched_candidate_mask_sha256: Sequence[str],
+    control_candidate_mask_sha256_by_name: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Evaluate exactly the frozen R2 control panel with support parity."""
+    observed_names = set(controls_by_name)
+    required_names = set(R2_REQUIRED_CONTROL_NAMES)
+    if observed_names != required_names:
+        missing = sorted(required_names - observed_names)
+        unexpected = sorted(observed_names - required_names)
+        raise ValueError(
+            "R2 partner-control inventory differs: "
+            f"missing={missing}, unexpected={unexpected}"
+        )
+    result = evaluate_named_partner_controls(
+        matched_scores,
+        controls_by_name,
+        matched_candidate_pair_counts,
+        control_candidate_pair_counts_by_name,
+        matched_axis_valid_counts=matched_axis_valid_counts,
+        control_axis_valid_counts_by_name=control_axis_valid_counts_by_name,
+        matched_candidate_domain_sha256=matched_candidate_domain_sha256,
+        control_candidate_domain_sha256_by_name=(
+            control_candidate_domain_sha256_by_name
+        ),
+        matched_candidate_mask_sha256=matched_candidate_mask_sha256,
+        control_candidate_mask_sha256_by_name=(
+            control_candidate_mask_sha256_by_name
+        ),
+    )
+    return {
+        "evaluation_contract": "sabdab2_partner_geometry_r2_control_panel_v1",
+        "required_control_names": list(R2_REQUIRED_CONTROL_NAMES),
+        **result,
+    }
+
+
 def paired_cluster_bootstrap_comparison(
     candidate_by_instance: Mapping[str, float],
     reference_by_instance: Mapping[str, float],
@@ -1352,6 +1409,7 @@ __all__ = [
     "build_pair_domain_manifest",
     "evaluate_bidirectional_cognate_retrieval",
     "evaluate_named_partner_controls",
+    "evaluate_partner_geometry_r2_controls",
     "evaluate_partner_geometry_r2_retrieval",
     "evaluate_pair_complex",
     "evaluate_pair_dataset",
@@ -1359,4 +1417,5 @@ __all__ = [
     "pair_domain_manifest_sha256",
     "pair_evaluation_mask_sha256",
     "paired_cluster_bootstrap_comparison",
+    "R2_REQUIRED_CONTROL_NAMES",
 ]
