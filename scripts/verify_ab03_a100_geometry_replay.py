@@ -199,6 +199,44 @@ def _multiseed_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
     }
     if set(metrics) != required_modes:
         raise ValueError("Multi-seed modes differ from the frozen contract")
+    contract = payload.get("scientific_contract")
+    if not isinstance(contract, Mapping):
+        raise ValueError("Multi-seed scientific contract is absent")
+    configuration = contract.get("configuration_without_seed")
+    if not isinstance(configuration, Mapping):
+        raise ValueError("Multi-seed configuration is absent")
+    configured_modes = configuration.get("modes")
+    mode_order = contract.get("mode_order")
+    if (
+        not isinstance(configured_modes, list)
+        or set(configured_modes) != required_modes
+        or not isinstance(mode_order, list)
+        or mode_order != configured_modes
+    ):
+        raise ValueError("Multi-seed mode order differs from the frozen contract")
+    runtime_contract = contract.get("runtime_contract")
+    data_contract = contract.get("data")
+    if not isinstance(runtime_contract, Mapping):
+        raise ValueError("Multi-seed runtime contract is absent")
+    if (
+        not isinstance(data_contract, Mapping)
+        or data_contract.get("native_release_test_cif_read") is not False
+    ):
+        raise ValueError("Multi-seed data contract crosses the native-test boundary")
+    model_parameter_count = contract.get("model_parameter_count")
+    if (
+        isinstance(model_parameter_count, bool)
+        or not isinstance(model_parameter_count, int)
+        or model_parameter_count <= 0
+    ):
+        raise ValueError("Multi-seed model parameter count is invalid")
+    inputs = payload.get("inputs")
+    if not isinstance(inputs, list) or len(inputs) != len(seeds):
+        raise ValueError("Multi-seed input receipts are invalid")
+    for input_receipt in inputs:
+        if not isinstance(input_receipt, Mapping):
+            raise ValueError("Multi-seed input receipt is invalid")
+        _digest(input_receipt.get("sha256"), "multi-seed input SHA-256")
 
     recomputation_checks = 0
     values_by_mode: dict[str, dict[str, list[float]]] = {}
@@ -253,6 +291,10 @@ def _multiseed_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "seeds": seeds,
         "seed_count": len(seeds),
+        "source_input_count": len(inputs),
+        "model_parameter_count": model_parameter_count,
+        "data_contract": dict(data_contract),
+        "runtime_contract": dict(runtime_contract),
         "recomputation_check_count": recomputation_checks,
         "comparisons_vs_topology_only": comparisons,
     }
@@ -310,6 +352,8 @@ def verify_archive(path: Path, expected_archive_sha256: str) -> dict[str, Any]:
         raise ValueError("A100 result does not retain the native-test boundary")
     if seal.get("replay_result_sha256") != _sha256_bytes(files[RESULT_MEMBER]):
         raise ValueError("Seal does not authenticate the replay result")
+    if scientific.get("replay_result_sha256") != _sha256_bytes(files[RESULT_MEMBER]):
+        raise ValueError("Scientific receipt does not authenticate the replay result")
     if run_receipt.get("result_sha256") != _sha256_bytes(files[RESULT_MEMBER]):
         raise ValueError("Run receipt does not authenticate the replay result")
     if seal.get("scientific_receipt_sha256") != _sha256_bytes(
@@ -336,6 +380,13 @@ def verify_archive(path: Path, expected_archive_sha256: str) -> dict[str, Any]:
         raise ValueError("Data authority file count differs")
 
     multiseed_summary = _multiseed_summary(multiseed)
+    if multiseed_summary["data_contract"] != result.get("data"):
+        raise ValueError("Multi-seed and exact-replay data contracts differ")
+    if (
+        multiseed_summary["model_parameter_count"]
+        != run_receipt.get("model_parameter_count")
+    ):
+        raise ValueError("Multi-seed and exact-replay model sizes differ")
     environment = scientific.get("environment")
     if not isinstance(environment, Mapping):
         raise ValueError("A100 environment receipt is absent")

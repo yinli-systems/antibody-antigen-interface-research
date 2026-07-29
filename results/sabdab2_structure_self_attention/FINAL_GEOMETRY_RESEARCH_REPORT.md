@@ -162,6 +162,14 @@ members, malformed digests, recomputation disagreement, failed gates, and
 manifest disagreement. It recomputed 80 multi-seed summary statistics and
 verified the seal, original-run, evidence, and data-authority manifests.
 
+The exact replay receipt records PyTorch 2.5.1 and CUDA 12.4, whereas the
+historical three-seed scientific contract records PyTorch 2.2.1 and CUDA 12.1.
+Both bind the same model size, cohort hashes, fixed budget, and A100 device, and
+the replay stays within the frozen numerical tolerance. They are nevertheless
+different software runtimes. The three-seed aggregation is therefore reported
+as authenticated stability evidence, not as a same-runtime confirmatory
+replication.
+
 ## Results
 
 ### Fixed-final A100 pooled-residue result
@@ -302,4 +310,3 @@ The strongest defensible statement is:
 
 No frozen test, partner-specific, external-generalization, clinical, benchmark-
 improvement, or SOTA claim is authorized.
-

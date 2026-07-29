@@ -32,7 +32,11 @@ def test_a100_replay_verification_retains_all_claim_boundaries() -> None:
     assert replay["scientific_replay"]["gate_count"] == 48
     assert replay["scientific_replay"]["native_test_read"] is False
     assert replay["multiseed"]["seed_count"] == 3
+    assert replay["multiseed"]["source_input_count"] == 3
+    assert replay["multiseed"]["model_parameter_count"] == 271670
     assert replay["multiseed"]["recomputation_check_count"] == 80
+    assert replay["runtime"]["torch"] == "2.5.1"
+    assert replay["multiseed"]["runtime_contract"]["torch"] == "2.2.1"
     assert "does not authorize" in replay["claim_boundary"]
 
 
@@ -68,4 +72,3 @@ def test_research_report_contains_sources_results_and_next_gate() -> None:
     )
     for term in required_terms:
         assert term in report
-

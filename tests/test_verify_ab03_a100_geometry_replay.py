@@ -59,6 +59,38 @@ def _multiseed_payload() -> dict[str, object]:
         "format_version": "sabdab2_self_attention_geometry_multiseed_v1",
         "seeds": seeds,
         "seed_count": len(seeds),
+        "inputs": [
+            {"path": f"seed_{seed}.json", "sha256": f"{index + 1:064x}"}
+            for index, seed in enumerate(seeds)
+        ],
+        "scientific_contract": {
+            "configuration_without_seed": {
+                "modes": [
+                    "dense_sequence",
+                    "topology_only",
+                    "distance",
+                    "distance_direction",
+                    "full_pose",
+                ]
+            },
+            "mode_order": [
+                "dense_sequence",
+                "topology_only",
+                "distance",
+                "distance_direction",
+                "full_pose",
+            ],
+            "model_parameter_count": 271670,
+            "runtime_contract": {
+                "torch": "2.2.1",
+                "cuda": "12.1",
+            },
+            "data": {
+                "native_release_test_cif_read": False,
+                "train_instance_count": 2676,
+                "validation_instance_count": 36,
+            },
+        },
         "metrics": metrics,
     }
 
@@ -99,4 +131,3 @@ def test_manifest_rejects_duplicate_path() -> None:
     payload = f"{digest}  result.json\n{digest}  result.json\n".encode("ascii")
     with pytest.raises(ValueError, match="duplicate path"):
         SCRIPT._manifest(payload, "manifest")
-
