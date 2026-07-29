@@ -9,6 +9,7 @@ import pytest
 from interaction_first.v6_c_family_core_registration import (
     EXPECTED_COUNTS,
     EXPECTED_DIMENSIONS,
+    EXPECTED_PARENT_REQUIRED_FIELDS,
     EXPECTED_PARENT_STATUSES,
     SOURCE_LABELS,
     V6CFamilyCoreRegistrationError,
@@ -23,15 +24,9 @@ def _reference() -> dict[str, object]:
             "file_sha256": digest,
             "path": f"/evidence/{label}.json",
             "receipt_sha256": digest,
-            "required_fields": {
-                "full_protocol_infeasibility_claim_authorized": False,
-                "split_gate0_authorized": False,
-                "terminal_status": status,
-                "test_access_authorized": False,
-                "training_authorized": False,
-            },
+            "required_fields": EXPECTED_PARENT_REQUIRED_FIELDS[label],
         }
-        for label, status in EXPECTED_PARENT_STATUSES.items()
+        for label in EXPECTED_PARENT_STATUSES
     }
     return {
         "authorization": {

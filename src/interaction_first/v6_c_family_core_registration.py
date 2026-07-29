@@ -24,6 +24,34 @@ EXPECTED_PARENT_STATUSES = {
     "independent_cp": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT",
     "direct_highs": "DIRECT_HIGHS_LINEAR_INFEASIBLE_AGREEMENT",
 }
+EXPECTED_PARENT_REQUIRED_FIELDS = {
+    "primary_cp": {
+        "direct_highs_fixed_assignment_audit_completed": False,
+        "split_gate0_authorized": False,
+        "terminal_status": "PROVEN_INFEASIBLE",
+        "training_authorized": False,
+    },
+    "independent_cp": {
+        "direct_highs_audit_completed": False,
+        "full_protocol_infeasibility_claim_authorized": False,
+        "primary_independent_linear_agreement": True,
+        "split_gate0_authorized": False,
+        "terminal_status": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT",
+        "training_authorized": False,
+    },
+    "direct_highs": {
+        "complete_score_free_feasible_region_certified": False,
+        "cross_solver_linear_agreement": True,
+        "direct_highs_audit_completed": True,
+        "full_protocol_infeasibility_claim_authorized": False,
+        "model_selection_authorized": False,
+        "outer_evaluation_authorized": False,
+        "split_gate0_authorized": False,
+        "terminal_status": "DIRECT_HIGHS_LINEAR_INFEASIBLE_AGREEMENT",
+        "test_access_authorized": False,
+        "training_authorized": False,
+    },
+}
 SOURCE_LABELS = {
     "controller",
     "cp_formulation",
@@ -171,27 +199,18 @@ def validate_family_core_registration(
         )
         required = _require_mapping(
             parent["required_fields"],
-            {
-                "full_protocol_infeasibility_claim_authorized",
-                "split_gate0_authorized",
-                "terminal_status",
-                "test_access_authorized",
-                "training_authorized",
-            },
+            set(EXPECTED_PARENT_REQUIRED_FIELDS[label]),
             f"V6-C parent {label} required fields",
         )
-        if (
-            required["terminal_status"] != expected_status
-            or any(
-                required[name] is not False
-                for name in (
-                    "full_protocol_infeasibility_claim_authorized",
-                    "split_gate0_authorized",
-                    "test_access_authorized",
-                    "training_authorized",
-                )
+        expected_required = EXPECTED_PARENT_REQUIRED_FIELDS[label]
+        if any(
+            (
+                required[name] is not expected_value
+                if isinstance(expected_value, bool)
+                else required[name] != expected_value
             )
-        ):
+            for name, expected_value in expected_required.items()
+        ) or required["terminal_status"] != expected_status:
             raise V6CFamilyCoreRegistrationError(
                 f"V6-C parent {label} required fields differ"
             )
@@ -397,6 +416,7 @@ def validate_family_core_registration(
 __all__ = [
     "EXPECTED_COUNTS",
     "EXPECTED_DIMENSIONS",
+    "EXPECTED_PARENT_REQUIRED_FIELDS",
     "EXPECTED_PARENT_STATUSES",
     "REGISTRATION_FORMAT",
     "SOURCE_LABELS",
