@@ -151,6 +151,7 @@ def test_three_parent_lineage_and_nested_highs_receipt_are_bound(
             "bundle_sha256": bundle_sha256,
         },
         "cp_consensus_status": "INFEASIBLE",
+        "registration_sha256": "d" * 64,
         "independent_cp_receipt": independent,
         "primary_cp_receipt": primary,
         "solver_receipt": {
@@ -177,6 +178,7 @@ def test_three_parent_lineage_and_nested_highs_receipt_are_bound(
     registration = {
         "expected": {
             "bundle_sha256": bundle_sha256,
+            "direct_highs_registration_sha256": "d" * 64,
             "dimensions": EXPECTED_DIMENSIONS,
         },
         "parent_results": references,
@@ -193,6 +195,25 @@ def test_three_parent_lineage_and_nested_highs_receipt_are_bound(
     assert authenticated["direct_highs"]["terminal_status"] == (
         "DIRECT_HIGHS_LINEAR_INFEASIBLE_AGREEMENT"
     )
+    altered_direct = _write_receipt(
+        tmp_path / "direct-altered.json",
+        {
+            **direct_unsigned,
+            "registration_sha256": "c" * 64,
+        },
+    )
+    registration["parent_results"]["direct_highs"] = {
+        **altered_direct,
+        "required_fields": EXPECTED_PARENT_REQUIRED_FIELDS["direct_highs"],
+    }
+    with pytest.raises(
+        audit.V6CFamilyCoreAuditError,
+        match="linear proof differs",
+    ):
+        audit._authenticate_parent_results(
+            registration,
+            v6_b_registration_sha256=v6_b_sha256,
+        )
 
 
 def test_publish_is_create_only_and_non_authorizing(

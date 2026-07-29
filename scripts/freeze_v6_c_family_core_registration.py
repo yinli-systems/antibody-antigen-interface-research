@@ -12,6 +12,7 @@ import re
 from typing import Any, Mapping
 
 from interaction_first import v6_b_production as production
+from interaction_first import v6_b_direct_highs_audit as direct_registration_io
 from interaction_first import v6_c_family_core_audit as audit
 from interaction_first.v6_c_family_core_registration import (
     EXPECTED_COUNTS,
@@ -29,6 +30,9 @@ SOURCE_PATHS = {
     "controller": "scripts/run_v6_c_family_core_audit.py",
     "cp_formulation": "src/interaction_first/v6_cp_sat_formulation.py",
     "diagnostic": "src/interaction_first/v6_constraint_family_diagnostic.py",
+    "direct_highs_registration_validator": (
+        "src/interaction_first/v6_b_direct_highs_audit.py"
+    ),
     "freezer": "scripts/freeze_v6_c_family_core_registration.py",
     "independent_auditor": (
         "src/interaction_first/score_free_independent_auditor.py"
@@ -48,10 +52,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--implementation-commit", required=True)
     parser.add_argument("--v6-b-registration", type=Path, required=True)
+    parser.add_argument(
+        "--direct-highs-registration",
+        type=Path,
+        required=True,
+    )
     parser.add_argument("--primary-cp-result", type=Path, required=True)
     parser.add_argument("--independent-cp-result", type=Path, required=True)
     parser.add_argument("--direct-highs-result", type=Path, required=True)
-    parser.add_argument("--source-linear-projection-sha256", required=True)
     parser.add_argument(
         "--maximum-time-seconds-per-solve",
         type=int,
@@ -144,14 +152,6 @@ def freeze_registration(arguments: argparse.Namespace) -> dict[str, object]:
     ):
         raise ValueError("V6-C implementation commit is malformed")
     if (
-        not isinstance(arguments.source_linear_projection_sha256, str)
-        or _SHA256.fullmatch(
-            arguments.source_linear_projection_sha256
-        )
-        is None
-    ):
-        raise ValueError("V6-C linear projection digest is malformed")
-    if (
         isinstance(arguments.maximum_time_seconds_per_solve, bool)
         or arguments.maximum_time_seconds_per_solve < 1
     ):
@@ -200,6 +200,26 @@ def freeze_registration(arguments: argparse.Namespace) -> dict[str, object]:
         ),
         "direct-HiGHS result",
     )
+    direct_registration_bytes, direct_registration = _read_canonical(
+        arguments.direct_highs_registration,
+        "direct-HiGHS registration",
+    )
+    direct_registration = (
+        direct_registration_io.validate_direct_highs_registration(
+            direct_registration
+        )
+    )
+    direct_registration_sha256 = hashlib.sha256(
+        direct_registration_bytes
+    ).hexdigest()
+    if (
+        direct_registration_io.sha256_payload(direct_registration)
+        != direct_registration_sha256
+        or direct_payload.get("registration_sha256")
+        != direct_registration_sha256
+    ):
+        raise ValueError("direct-HiGHS registration lineage differs")
+    direct_expected = direct_registration["expected"]
     bundle_receipt = direct_payload.get("bundle_export_receipt")
     if not isinstance(bundle_receipt, Mapping):
         raise ValueError("direct-HiGHS bundle receipt is absent")
@@ -208,6 +228,12 @@ def freeze_registration(arguments: argparse.Namespace) -> dict[str, object]:
         bundle_sha256
     ) is None:
         raise ValueError("direct-HiGHS bundle digest is malformed")
+    if (
+        bundle_sha256
+        != direct_registration["bundle_export"]["bundle_sha256"]
+        or direct_expected["dimensions"] != EXPECTED_DIMENSIONS
+    ):
+        raise ValueError("direct-HiGHS registered projection differs")
 
     runtime = v6_b["runtime"]
     platform_abi = runtime.get("platform_abi")
@@ -233,9 +259,12 @@ def freeze_registration(arguments: argparse.Namespace) -> dict[str, object]:
         "expected": {
             "authority_counts": EXPECTED_COUNTS,
             "bundle_sha256": bundle_sha256,
+            "direct_highs_registration_sha256": (
+                direct_registration_sha256
+            ),
             "dimensions": EXPECTED_DIMENSIONS,
             "source_linear_projection_sha256": (
-                arguments.source_linear_projection_sha256
+                direct_expected["source_linear_projection_sha256"]
             ),
         },
         "format_version": "v6_c_family_core_audit_registration_v1",

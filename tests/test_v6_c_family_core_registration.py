@@ -41,6 +41,7 @@ def _reference() -> dict[str, object]:
         "expected": {
             "authority_counts": EXPECTED_COUNTS,
             "bundle_sha256": digest,
+            "direct_highs_registration_sha256": digest,
             "dimensions": EXPECTED_DIMENSIONS,
             "source_linear_projection_sha256": digest,
         },
@@ -115,6 +116,7 @@ def test_valid_registration_is_preserved() -> None:
         ("visible_gpu", "Slurm isolation"),
         ("minimization", "core minimization"),
         ("runtime_digest", "OR-Tools module"),
+        ("direct_registration_digest", "direct-HiGHS registration"),
         ("count_bool", "authority counts"),
         ("task_bool", "Slurm isolation"),
     ],
@@ -142,6 +144,8 @@ def test_registration_mutations_fail_closed(
         registration["limits"]["minimize_core"] = False
     elif mutation == "runtime_digest":
         registration["runtime"]["ortools_module_sha256"] = "bad"
+    elif mutation == "direct_registration_digest":
+        registration["expected"]["direct_highs_registration_sha256"] = "bad"
     elif mutation == "count_bool":
         registration["expected"]["authority_counts"]["source_rows"] = True
     elif mutation == "task_bool":

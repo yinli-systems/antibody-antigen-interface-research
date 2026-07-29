@@ -57,6 +57,7 @@ SOURCE_LABELS = {
     "controller",
     "cp_formulation",
     "diagnostic",
+    "direct_highs_registration_validator",
     "freezer",
     "independent_auditor",
     "joint_ir",
@@ -210,6 +211,7 @@ def validate_family_core_registration(
         {
             "authority_counts",
             "bundle_sha256",
+            "direct_highs_registration_sha256",
             "dimensions",
             "source_linear_projection_sha256",
         },
@@ -244,6 +246,10 @@ def validate_family_core_registration(
             "V6-C projection dimensions differ"
         )
     _require_digest(expected["bundle_sha256"], "V6-C projection bundle")
+    _require_digest(
+        expected["direct_highs_registration_sha256"],
+        "V6-C direct-HiGHS registration",
+    )
     _require_digest(
         expected["source_linear_projection_sha256"],
         "V6-C linear projection",

@@ -185,6 +185,8 @@ def _authenticate_parent_results(
     if (
         not isinstance(bundle_anchor, Mapping)
         or bundle_anchor.get("bundle_sha256") != expected["bundle_sha256"]
+        or direct.get("registration_sha256")
+        != expected["direct_highs_registration_sha256"]
         or not isinstance(solver_anchor, Mapping)
         or solver_anchor.get("linear_projection_infeasible") is not True
         or solver_anchor.get("linear_projection_certified") is not True
