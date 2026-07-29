@@ -38,6 +38,10 @@ DETERMINISTIC_BENCHMARK = (
 PAIRED_BENCHMARK = (
     ROOT / "results/pretraining/antibody_efficiency_benchmark_paired_v1.json"
 )
+SAFE_PAIRED_BENCHMARK = (
+    ROOT
+    / "results/pretraining/antibody_safe_paired_efficiency_attempt_011_v1.json"
+)
 EFFICIENCY_PROTOCOL = ROOT / "protocols/antibody_efficiency_gate_v1.json"
 PAIRED_PROTOCOL = ROOT / "protocols/antibody_paired_efficiency_v1.json"
 
@@ -291,3 +295,25 @@ def test_paired_deterministic_candidate_passes_all_efficiency_gates() -> None:
         "scale_16_gpu": False,
         "scale_32_gpu": False,
     }
+
+
+def test_safe_ddp_paired_candidate_preserves_throughput_failure() -> None:
+    result = json.loads(SAFE_PAIRED_BENCHMARK.read_text(encoding="ascii"))
+    assert result["label"] == "safe_ddp_paired_cudagraph_candidate"
+    assert result["gate_passed"] is False
+    assert result["gates"] == {
+        "membership": True,
+        "memory": True,
+        "rank_parity": True,
+        "stability": True,
+        "throughput": False,
+    }
+    assert result["paired_allocation"]["slurm_job_id"] == "1337046"
+    assert result["runs"]["eager"]["job_id"] == "1337046"
+    assert result["runs"]["compiled"]["job_id"] == "1337046"
+    assert 1.16 < result["summaries"]["compiled"][
+        "throughput_relative_to_eager"
+    ] < 1.18
+    assert result["summaries"]["compiled"]["p95_over_p50"] < 1.03
+    assert result["authorization"]["scale_16_gpu"] is False
+    assert result["authorization"]["scale_32_gpu"] is False
