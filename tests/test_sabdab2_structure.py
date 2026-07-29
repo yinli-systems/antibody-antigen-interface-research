@@ -317,6 +317,7 @@ def test_materialized_cache_joins_embeddings_labels_and_batches(tmp_path: Path) 
             _sha256(cache_root / "STRUCTURE_CACHE_MANIFEST.json"),
             "--modes",
             "none",
+            "distance_direction",
             "--epochs",
             "1",
             "--batch-size",
@@ -348,6 +349,80 @@ def test_materialized_cache_joins_embeddings_labels_and_batches(tmp_path: Path) 
     assert result["data"]["train_instance_count"] == 1
     assert result["data"]["validation_instance_count"] == 1
     assert result["modes"][0]["selection_rule"].startswith("fixed final epoch")
+
+    audit_root = tmp_path / "checkpoint_audit"
+    subprocess.run(
+        [
+            sys.executable,
+            str(
+                Path(__file__).resolve().parents[1]
+                / "scripts"
+                / "audit_sabdab2_geometry_checkpoints.py"
+            ),
+            "--cache-root",
+            str(cache_root),
+            "--embedding-root",
+            str(embedding_root),
+            "--label-root",
+            str(label_root),
+            "--ablation-root",
+            str(output_root),
+            "--output-root",
+            str(audit_root),
+            "--expected-cache-manifest-sha256",
+            _sha256(cache_root / "STRUCTURE_CACHE_MANIFEST.json"),
+            "--expected-result-sha256",
+            _sha256(output_root / "SABDAB2_SELF_ATTENTION_ABLATION.json"),
+            "--expected-run-receipt-sha256",
+            _sha256(output_root / "RUN_RECEIPT.json"),
+            "--batch-size",
+            "1",
+            "--workers",
+            "0",
+            "--precision",
+            "fp32",
+            "--device",
+            "cpu",
+            "--bootstrap-iterations",
+            "20",
+            "--permutation-iterations",
+            "20",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    audit = json.loads((audit_root / "AUDIT_RECEIPT.json").read_text())
+    statistics = json.loads(
+        (audit_root / "GEOMETRY_ABLATION_STATISTICS.json").read_text()
+    )
+    assert audit["status"] == "passed"
+    assert audit["historical_metric_check_count"] == 10
+    assert statistics["primary_gate"]["confirmatory_superiority_authorized"] is False
+
+    verification_path = tmp_path / "independent_verification.json"
+    subprocess.run(
+        [
+            sys.executable,
+            str(
+                Path(__file__).resolve().parents[1]
+                / "scripts"
+                / "verify_sabdab2_geometry_audit.py"
+            ),
+            "--audit-root",
+            str(audit_root),
+            "--expected-audit-receipt-sha256",
+            _sha256(audit_root / "AUDIT_RECEIPT.json"),
+            "--output",
+            str(verification_path),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    verification = json.loads(verification_path.read_text())
+    assert verification["status"] == "passed"
+    assert verification["confirmatory_superiority_authorized"] is False
 
 
 def test_five_classifier_controls_have_equal_parameters_and_finite_outputs() -> None:
