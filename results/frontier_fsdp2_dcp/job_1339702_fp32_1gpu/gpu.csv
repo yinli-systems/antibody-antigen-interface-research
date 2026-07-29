@@ -1,0 +1,7 @@
+timestamp, index, name, utilization.gpu [%], memory.used [MiB], memory.total [MiB], power.draw [W]
+2026/07/30 05:14:16.519, 0, NVIDIA GeForce RTX 5090, 0 %, 0 MiB, 32607 MiB, 23.66 W
+2026/07/30 05:14:18.531, 0, NVIDIA GeForce RTX 5090, 0 %, 0 MiB, 32607 MiB, 23.31 W
+2026/07/30 05:14:20.531, 0, NVIDIA GeForce RTX 5090, 0 %, 3 MiB, 32607 MiB, 24.03 W
+2026/07/30 05:14:22.532, 0, NVIDIA GeForce RTX 5090, 0 %, 3 MiB, 32607 MiB, 23.08 W
+2026/07/30 05:14:24.532, 0, NVIDIA GeForce RTX 5090, 0 %, 1135 MiB, 32607 MiB, 63.81 W
+2026/07/30 05:14:26.533, 0, NVIDIA GeForce RTX 5090, 0 %, 1271 MiB, 32607 MiB, 68.21 W
