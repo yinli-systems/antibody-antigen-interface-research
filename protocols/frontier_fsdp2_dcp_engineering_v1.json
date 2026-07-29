@@ -73,6 +73,7 @@
     "fp8_enabled": false,
     "gradient_semantics": "equal_local_batch_mean_followed_by_FSDP2_reduce_scatter_average",
     "optimizer_created_after_sharding": true,
+    "scalar_parameter_adapter": "explicit_length_one_promotion_before_sharding_with_reference_parity",
     "sharding_order": "reranker_blocks_bottom_up_then_root",
     "strategy": "FSDP2"
   },

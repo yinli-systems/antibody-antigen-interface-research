@@ -15,6 +15,7 @@ from interaction_first.frontier_fsdp2 import (
     FSDP2ContractError,
     load_dcp_generation,
     percentile,
+    promote_scalar_parameters_for_fsdp2,
     save_dcp_generation,
     validate_fsdp2_runtime,
     verify_dcp_generation,
@@ -154,6 +155,30 @@ def test_percentile_uses_locked_linear_interpolation() -> None:
     assert percentile(values, 1.0) == 4.0
     with pytest.raises(FSDP2ContractError, match="cannot be empty"):
         percentile([], 0.5)
+
+
+def test_scalar_parameter_adapter_preserves_broadcast_math() -> None:
+    class ScalarBias(torch.nn.Module):
+        """Expose one trainable scalar in a broadcast addition."""
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.bias = torch.nn.Parameter(torch.tensor(-4.0))
+
+        def forward(self, value: torch.Tensor) -> torch.Tensor:
+            return value + self.bias
+
+    model = ScalarBias()
+    inputs = torch.arange(6, dtype=torch.float32).reshape(2, 3)
+    before = model(inputs).detach().clone()
+    promoted = promote_scalar_parameters_for_fsdp2(model)
+    after = model(inputs)
+    assert promoted == ("bias",)
+    assert model.bias.shape == (1,)
+    torch.testing.assert_close(after, before, rtol=0.0, atol=0.0)
+    after.sum().backward()
+    assert model.bias.grad is not None
+    assert model.bias.grad.shape == (1,)
 
 
 def test_dcp_generation_round_trip_restores_model_and_optimizer(

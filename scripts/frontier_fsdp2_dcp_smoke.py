@@ -30,6 +30,7 @@ from interaction_first.frontier_fsdp2 import (
     fully_shard_reranker,
     load_dcp_generation,
     percentile,
+    promote_scalar_parameters_for_fsdp2,
     save_dcp_generation,
     validate_fsdp2_runtime,
 )
@@ -77,8 +78,8 @@ def _initialize_distributed(expected_world_size: int) -> tuple[int, int, torch.d
     local_rank = int(os.environ["LOCAL_RANK"])
     world_size = int(os.environ["WORLD_SIZE"])
     torch.cuda.set_device(local_rank)
-    dist.init_process_group(backend="nccl")
     device = torch.device("cuda", local_rank)
+    dist.init_process_group(backend="nccl", device_id=device)
     validate_distributed_identity(
         rank=rank,
         local_rank=local_rank,
@@ -410,9 +411,24 @@ def main() -> None:
             else None
         )
         model = _build_model(args.seed, device)
+        promoted_model_parameters = promote_scalar_parameters_for_fsdp2(model)
+        if promoted_model_parameters != ("contact_head.bias",):
+            raise RuntimeError(
+                "The FSDP2 scalar-parameter adapter changed unexpectedly: "
+                f"{promoted_model_parameters}"
+            )
         fully_shard_reranker(model, precision=args.precision)
         optimizer = _optimizer(model)
         reference = _build_model(args.seed, device) if rank == 0 else None
+        if reference is not None:
+            promoted_reference_parameters = promote_scalar_parameters_for_fsdp2(
+                reference
+            )
+            if promoted_reference_parameters != ("contact_head.bias",):
+                raise RuntimeError(
+                    "The reference scalar-parameter adapter changed unexpectedly: "
+                    f"{promoted_reference_parameters}"
+                )
         reference_optimizer = _optimizer(reference) if reference is not None else None
         step_receipts: list[dict[str, Any]] = []
         for step in range(args.steps_before_checkpoint):
@@ -483,6 +499,12 @@ def main() -> None:
             reference_continuation_loss = 0.0
         uninterrupted_state = _full_model_state(model)
         restored = _build_model(args.seed, device)
+        promoted_restored_parameters = promote_scalar_parameters_for_fsdp2(restored)
+        if promoted_restored_parameters != ("contact_head.bias",):
+            raise RuntimeError(
+                "The restored scalar-parameter adapter changed unexpectedly: "
+                f"{promoted_restored_parameters}"
+            )
         fully_shard_reranker(restored, precision=args.precision)
         restored_optimizer = _optimizer(restored)
         load_started = time.perf_counter()

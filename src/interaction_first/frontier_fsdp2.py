@@ -182,6 +182,34 @@ def validate_fsdp2_runtime(
     }
 
 
+def promote_scalar_parameters_for_fsdp2(model: Any) -> tuple[str, ...]:
+    """Promote scalar parameters to length-one vectors without changing math.
+
+    Public FSDP2 rejects zero-dimensional parameters because no tensor
+    dimension exists to shard. Length-one parameters broadcast identically in
+    the current R2 heads and remain compatible with optimizer construction
+    after sharding. The adapter is explicit and source-bound so an unmodified
+    historical checkpoint cannot be silently loaded into this path.
+    """
+    torch = _require_torch()
+    if not isinstance(model, torch.nn.Module):
+        raise FSDP2ContractError("model must be a PyTorch module")
+    promoted: list[str] = []
+    module_names = {module: name for name, module in model.named_modules()}
+    for module in model.modules():
+        prefix = module_names[module]
+        for name, parameter in tuple(module.named_parameters(recurse=False)):
+            if parameter.ndim != 0:
+                continue
+            replacement = torch.nn.Parameter(
+                parameter.detach().reshape(1),
+                requires_grad=parameter.requires_grad,
+            )
+            setattr(module, name, replacement)
+            promoted.append(f"{prefix}.{name}" if prefix else name)
+    return tuple(sorted(promoted))
+
+
 def fully_shard_reranker(
     model: Any,
     *,
@@ -199,6 +227,7 @@ def fully_shard_reranker(
         raise FSDP2ContractError("model must expose a ModuleList named blocks")
     if len(model.blocks) == 0:
         raise FSDP2ContractError("model.blocks cannot be empty")
+    promote_scalar_parameters_for_fsdp2(model)
     try:
         from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
     except (ImportError, AttributeError) as error:
