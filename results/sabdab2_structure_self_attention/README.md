@@ -79,11 +79,31 @@ direction has a reproducible development signal, driven primarily by the
 paratope side; the current data do not establish a corresponding epitope gain,
 and full relative pose does not beat the simpler direction representation.
 
-This per-complex analysis used the backed-up RTX 5090 final checkpoints and a
-local CPU inference replay. An independent implementation reproduced 441
+This first per-complex analysis used the backed-up RTX 5090 final checkpoints
+and a local CPU inference replay. An independent implementation reproduced 441
 metrics, endpoint-component, bootstrap, permutation, and claim-boundary checks.
-The A100 exact replay remains separate engineering evidence until the same
-per-complex audit is rerun from its exact A100 checkpoints.
+
+## AB03/A100 sealed reproduction
+
+The complete AB03 archive was pulled back and verified independently. It binds
+the exact two-A100 run, parent and additive runtime images, all final
+checkpoints, 8,727 case-sensitive data-authority files, the original-run
+manifest, an external seal, and three fixed-budget seed results. All 48
+scientific replay gates pass. The archive SHA-256 is
+`b6365093db7305b2d054c8a801e9aed002423156aae328075faf73466ab9c75b`.
+
+The exact A100 checkpoints were then replayed for per-complex inference in FP32
+on local CPU. The direction-minus-topology joint macro-AUPRC difference is
+`+0.009876`, with endpoint-component bootstrap 95% CI
+`[+0.001836, +0.016695]` and unadjusted one-sided sign-flip
+`p=0.027497`. Its three-comparison Holm-adjusted p-value is `0.082492`;
+the strict gate therefore remains failed. The independent implementation again
+passed 441 checks.
+
+The three archived A100 seeds give pooled direction-minus-topology joint AUPRC
+deltas of `+0.017724`, `+0.008886`, and `+0.000886`. This is useful stability
+evidence, but those seeds are not the five seeds frozen later in the
+confirmatory protocol and cannot satisfy that requirement retroactively.
 
 ## Files
 
@@ -97,6 +117,13 @@ per-complex audit is rerun from its exact A100 checkpoints.
   uncertainty, independent-verification counts, artifact hashes, and strict
   gate result. Raw per-residue prediction payloads are intentionally excluded
   from Git and retained in the local audit archive.
+- `ab03_a100_replay_verification.json`: independent archive, manifest, runtime,
+  gate, and three-seed recomputation receipt.
+- `a100_checkpoint_paired_statistics_summary.json`: lightweight per-complex
+  statistics and hashes from the exact A100 final checkpoints.
+- `FINAL_GEOMETRY_RESEARCH_REPORT.md`: literature synthesis, implementation
+  rationale, complete evidence interpretation, and the next partner-specific
+  experiment.
 
 ## Claim boundary
 

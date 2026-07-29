@@ -70,9 +70,15 @@ boundary. The real-data adapter fails closed on source hashes, strict-split audi
 residue-axis mismatches, and valid/missing-frame inconsistencies; it reads only
 the intersection with the new release's native training role.
 
-The first equal-parameter, four-mode RTX 5090 run is recorded under
-`results/sabdab2_structure_self_attention/`. It is explicitly development-only:
-the small one-seed validation differences are not reported as benchmark gains.
+The equal-parameter geometry study is recorded under
+`results/sabdab2_structure_self_attention/`. In addition to the original RTX
+5090 development run, it now contains a sealed two-A100 reproduction, an
+independent verifier for its 54-file archive and 8,727-file data authority,
+three-seed pooled stability evidence, and a per-complex replay from the exact
+A100 final checkpoints. Direction-aware geometry remains positive relative to
+topology-only across the three archived seeds, but the preregistered
+multiplicity-adjusted and five-seed superiority gate does not pass. The result
+is explicitly development-only and is not reported as a benchmark gain.
 
 ## Claim boundary
 
