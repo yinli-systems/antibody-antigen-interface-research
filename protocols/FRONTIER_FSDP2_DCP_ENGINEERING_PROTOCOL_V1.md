@@ -23,6 +23,10 @@ historical DDP receipt.
   every bidirectional cross-attention block and then to the root reranker.
 - The frozen D0 retriever is excluded from sharding.
 - The AdamW optimizer is constructed only after sharding.
+- Trainable scalar parameters are explicitly promoted to length-one vectors
+  before sharding because public FSDP2 rejects zero-dimensional parameters.
+  The same adapter is applied to the unsharded reference, broadcasting is
+  unchanged, and the promoted parameter names are checked exactly.
 - FP32 eager is the first correctness mode. BF16 is allowed only after the
   corresponding FP32 run passes.
 - `torch.compile`, FP8, asynchronous checkpointing, DeepSpeed, elastic process
