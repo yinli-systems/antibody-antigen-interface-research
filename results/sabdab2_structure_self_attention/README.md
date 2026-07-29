@@ -42,6 +42,49 @@ The numerical pattern is a development signal only. This is one seed, a short
 budget, a small validation intersection, and has no confidence interval or
 held-out confirmation. It does not establish a benchmark improvement.
 
+## Paired complex-level checkpoint audit
+
+After the original pooled result was frozen, protocol
+`SABDAB2_GEOMETRY_CONFIRMATORY_PROTOCOL_V1.md` preregistered a per-complex,
+endpoint-component analysis. Immutable final checkpoints were replayed without
+checkpoint selection. The replay reproduced all 20 historical pooled
+AUPRC/AUROC values within the locked absolute tolerance `0.01`; the largest
+device-related difference was `0.002471`.
+
+Per-complex rather than pooled-residue macro-AUPRC is:
+
+| Edge features | Paratope | Epitope | Joint macro |
+|---|---:|---:|---:|
+| topology only | 0.647477 | 0.302444 | 0.474961 |
+| distance RBF | 0.648636 | 0.308101 | 0.478369 |
+| distance + local direction | **0.672316** | **0.306036** | **0.489176** |
+| full relative pose | 0.666767 | 0.302240 | 0.484504 |
+
+The 36 validation complexes form 16 exact antibody-antigen
+endpoint-connected components. With 10,000 paired component bootstrap
+replicates and 10,000 component sign-flip permutations:
+
+| Preregistered comparison | Mean AUPRC difference | Paired 95% CI | One-sided p |
+|---|---:|---:|---:|
+| joint distance+direction - topology | +0.014215 | [+0.001939, +0.022948] | 0.027397 |
+| paratope distance+direction - topology | +0.024839 | [+0.018324, +0.031041] | 0.000100 |
+| epitope distance+direction - topology | +0.003592 | [-0.015970, +0.017186] | 0.357464 |
+| full pose - distance+direction, joint | -0.004672 | [-0.011390, +0.005731] | descriptive |
+
+The joint effect is positive in 34 of 36 complexes. Nevertheless, the
+preregistered three-comparison Holm-adjusted one-sided p-value is `0.082192`,
+and the multi-seed requirement is not complete. The strict superiority gate
+therefore **does not pass**. The defensible conclusion is narrower: local
+direction has a reproducible development signal, driven primarily by the
+paratope side; the current data do not establish a corresponding epitope gain,
+and full relative pose does not beat the simpler direction representation.
+
+This per-complex analysis used the backed-up RTX 5090 final checkpoints and a
+local CPU inference replay. An independent implementation reproduced 441
+metrics, endpoint-component, bootstrap, permutation, and claim-boundary checks.
+The A100 exact replay remains separate engineering evidence until the same
+per-complex audit is rerun from its exact A100 checkpoints.
+
 ## Files
 
 - `ablation.json`: exact configuration, cohort digests, runtime, and all epoch
@@ -50,6 +93,10 @@ held-out confirmation. It does not establish a benchmark improvement.
 - `run_receipt.json`: result digest and final cohort counts.
 - `structure_cache_receipt.json`: authenticated cache manifest digest and
   pre-length-cap record counts.
+- `paired_statistics_summary.json`: preregistered complex-level effects,
+  uncertainty, independent-verification counts, artifact hashes, and strict
+  gate result. Raw per-residue prediction payloads are intentionally excluded
+  from Git and retained in the local audit archive.
 
 ## Claim boundary
 
