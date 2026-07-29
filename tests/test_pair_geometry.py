@@ -39,7 +39,7 @@ def _schema():
     )
 
 
-def _model(*, pair_chunk_size: int = 2):
+def _model(*, pair_chunk_size: int = 2, num_pair_update_layers: int = 0):
     from interaction_first.pair_geometry import ProspectivePairGeometryModel
 
     return ProspectivePairGeometryModel(
@@ -55,6 +55,7 @@ def _model(*, pair_chunk_size: int = 2):
         contact_distance_bin_count=3,
         num_orientation_axes=3,
         num_orientation_bins=6,
+        num_pair_update_layers=num_pair_update_layers,
         pair_chunk_size=pair_chunk_size,
         dropout=0.0,
         centering_iterations=32,
@@ -191,6 +192,125 @@ def test_chunk_size_changes_peak_construction_not_numerical_results() -> None:
         torch.testing.assert_close(chunked_output[key], unchunked_output[key])
 
 
+def test_pair_axial_updates_are_chunk_invariant_and_execute_both_axes() -> None:
+    import torch
+
+    chunked = _model(
+        pair_chunk_size=2,
+        num_pair_update_layers=2,
+    ).eval()
+    unchunked = _model(
+        pair_chunk_size=64,
+        num_pair_update_layers=2,
+    ).eval()
+    unchunked.load_state_dict(chunked.state_dict())
+
+    chunked_output = chunked(*_inputs())
+    unchunked_output = unchunked(*_inputs())
+    assert chunked_output["num_pair_update_layers"] == 2
+    assert chunked_output["pair_update_order"] == (
+        "antigen_axis_within_antibody_row",
+        "antibody_axis_within_antigen_column",
+        "feed_forward",
+    )
+    for key in (
+        "pair_representations",
+        "contact_logits",
+        "distance_bin_logits",
+        "orientation_bin_logits",
+        "pair_interactions",
+        "partner_score",
+    ):
+        torch.testing.assert_close(chunked_output[key], unchunked_output[key])
+
+    omitted_output = chunked(*_inputs(), return_pair_representations=False)
+    assert omitted_output["pair_representations"] is None
+    torch.testing.assert_close(
+        chunked_output["contact_logits"],
+        omitted_output["contact_logits"],
+    )
+
+    chunked_output["contact_logits"][
+        chunked_output["candidate_pair_mask"]
+    ].square().mean().backward()
+    for layer in chunked.pair_update_layers:
+        assert layer.row_attention.in_proj_weight.grad is not None
+        assert layer.column_attention.in_proj_weight.grad is not None
+        assert bool(torch.isfinite(layer.row_attention.in_proj_weight.grad).all())
+        assert bool(torch.isfinite(layer.column_attention.in_proj_weight.grad).all())
+
+
+def test_pair_axial_block_is_mask_safe_with_empty_rows_and_columns() -> None:
+    import torch
+
+    from interaction_first.pair_geometry import BipartitePairAxialUpdateBlock
+
+    torch.manual_seed(20260729)
+    block = BipartitePairAxialUpdateBlock(
+        pair_dim=12,
+        num_heads=4,
+        ffn_dim=24,
+        dropout=0.0,
+    ).eval()
+    pair_state = torch.randn(2, 4, 5, 12, requires_grad=True)
+    pair_mask = torch.zeros(2, 4, 5, dtype=torch.bool)
+    pair_mask[0, 0, :3] = True
+    pair_mask[0, 2, 1:5] = True
+    pair_mask[1, 1, 0] = True
+    pair_mask[1, 3, 2:4] = True
+
+    output = block(pair_state, pair_mask)
+    altered_state = pair_state.detach().clone()
+    altered_state[~pair_mask] = 1e6
+    altered_output = block(altered_state, pair_mask)
+
+    assert bool(torch.isfinite(output).all())
+    assert torch.equal(output[~pair_mask], torch.zeros_like(output[~pair_mask]))
+    torch.testing.assert_close(output[pair_mask], altered_output[pair_mask])
+    output[pair_mask].square().mean().backward()
+    assert pair_state.grad is not None
+    assert bool(torch.isfinite(pair_state.grad).all())
+
+
+def test_pair_axial_configuration_fails_closed() -> None:
+    from interaction_first.pair_geometry import (
+        BipartitePairAxialUpdateBlock,
+        ProspectivePairGeometryModel,
+    )
+
+    with pytest.raises(ValueError, match="nonnegative integer"):
+        ProspectivePairGeometryModel(
+            7,
+            11,
+            geometry_schema=_schema(),
+            num_pair_update_layers=-1,
+        )
+    with pytest.raises(ValueError, match="nonnegative integer"):
+        ProspectivePairGeometryModel(
+            7,
+            11,
+            geometry_schema=_schema(),
+            num_pair_update_layers=True,
+        )
+    with pytest.raises(ValueError, match="pair_dim must be divisible"):
+        ProspectivePairGeometryModel(
+            7,
+            11,
+            d_model=16,
+            pair_dim=10,
+            num_heads=4,
+            geometry_schema=_schema(),
+            num_pair_update_layers=1,
+        )
+    with pytest.raises(ValueError, match="pair_dim must be divisible"):
+        BipartitePairAxialUpdateBlock(
+            pair_dim=10,
+            num_heads=4,
+            ffn_dim=20,
+            dropout=0.0,
+        )
+
+
 def test_pair_representations_can_be_omitted_for_lower_peak_retention() -> None:
     import torch
 
@@ -322,10 +442,13 @@ def test_partner_score_is_invariant_to_additive_row_and_column_effects() -> None
     torch.testing.assert_close(centered.mean(dim=2), torch.zeros(2, 5), atol=1e-6, rtol=0)
 
 
-def test_padded_feature_values_cannot_change_candidate_outputs() -> None:
+@pytest.mark.parametrize("num_pair_update_layers", [0, 2])
+def test_padded_feature_values_cannot_change_candidate_outputs(
+    num_pair_update_layers: int,
+) -> None:
     import torch
 
-    model = _model().eval()
+    model = _model(num_pair_update_layers=num_pair_update_layers).eval()
     inputs = list(_inputs())
     original = model(*inputs)
     changed = [value.clone() for value in inputs]
