@@ -15,6 +15,7 @@ from interaction_first.pairformer_evaluator import (
     evaluate_named_partner_controls,
     evaluate_pair_complex,
     evaluate_pair_dataset,
+    evaluate_partner_geometry_r2_retrieval,
     holm_bonferroni_correction,
     pair_domain_manifest_sha256,
     pair_evaluation_mask_sha256,
@@ -385,6 +386,49 @@ def test_bidirectional_retrieval_reports_conservative_ties() -> None:
     assert row["pairwise_tie_rate"] == pytest.approx(1.0 / 3.0)
     assert "antigen_to_antibody" in result
     assert "macro_bidirectional" in result
+
+
+def test_bidirectional_retrieval_supports_protocol_fractional_ranks() -> None:
+    scores = np.asarray(
+        [
+            [1.0, 0.5, 0.2],
+            [0.4, 0.4, 0.1],
+            [0.3, 0.2, 0.3],
+        ]
+    )
+    cognates = np.eye(3, dtype=bool)
+    result = evaluate_partner_geometry_r2_retrieval(
+        scores,
+        cognates,
+        np.ones_like(cognates),
+    )
+    row = result["antibody_to_antigen"]
+
+    assert result["evaluation_contract"] == (
+        "prospective_pairformer_exhaustive_retrieval_v3_fractional_rank"
+    )
+    assert result["rank_tie_policy"] == "fractional"
+    assert row["recall_at_1"] == pytest.approx(1.0 / 3.0)
+    assert row["mean_reciprocal_rank"] == pytest.approx(7.0 / 9.0)
+    assert row["mean_rank"] == pytest.approx(4.0 / 3.0)
+    assert row["mean_normalized_rank"] == pytest.approx(1.0 / 6.0)
+    assert row["retrieval_rank_tie_policy"] == (
+        "best_cognate_rank_is_one_plus_strictly_greater_noncognates_plus_"
+        "one_half_tied_noncognates"
+    )
+
+
+def test_bidirectional_retrieval_rejects_unknown_rank_tie_policy() -> None:
+    scores = np.eye(3)
+    cognates = np.eye(3, dtype=bool)
+
+    with pytest.raises(ValueError, match="rank_tie_policy"):
+        evaluate_bidirectional_cognate_retrieval(
+            scores,
+            cognates,
+            np.ones_like(cognates),
+            rank_tie_policy="ordinal",
+        )
 
 
 def test_bidirectional_retrieval_uses_every_cognate_noncognate_pair() -> None:
