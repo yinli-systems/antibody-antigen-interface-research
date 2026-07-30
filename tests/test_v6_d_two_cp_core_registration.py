@@ -31,6 +31,7 @@ def _reference() -> dict[str, object]:
         "expected": {
             "authority_counts": EXPECTED_COUNTS,
             "dimensions": EXPECTED_DIMENSIONS,
+            "ir_sha256": digest,
             "source_linear_projection_sha256": digest,
         },
         "format_version": "v6_d_two_cp_core_audit_registration_v1",
