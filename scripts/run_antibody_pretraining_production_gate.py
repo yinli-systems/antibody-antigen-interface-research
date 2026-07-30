@@ -519,16 +519,16 @@ def main() -> None:
         )
         prepared: list[tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = []
         local_target_count = 0
-        for indices in local_micro_batches:
-            batch = corpus.batch(
-                indices,
-                fields=(
-                    "chain_types.npy",
-                    "lengths.npy",
-                    "sample_keys.npy",
-                    "tokens.npy",
-                ),
-            )
+        grouped_batches = corpus.batch_groups(
+            local_micro_batches,
+            fields=(
+                "chain_types.npy",
+                "lengths.npy",
+                "sample_keys.npy",
+                "tokens.npy",
+            ),
+        )
+        for batch in grouped_batches:
             masked = apply_uniform_mlm(
                 batch["tokens.npy"].astype(np.int64, copy=False),
                 batch["sample_keys.npy"],

@@ -85,6 +85,17 @@ def test_loader_authenticates_graph_and_gathers_both_splits(
                 fields=("tokens.npy", "sample_keys.npy"),
             )
             assert set(selected) == {"tokens.npy", "sample_keys.npy"}
+            grouped = corpus.batch_groups(
+                (
+                    np.asarray([0], dtype=np.int64),
+                    np.asarray([0, 0], dtype=np.int64),
+                ),
+                fields=("tokens.npy", "sample_keys.npy"),
+            )
+            assert len(grouped) == 2
+            assert grouped[0]["tokens.npy"].shape == (1, 194)
+            assert grouped[1]["tokens.npy"].shape == (2, 194)
+            assert np.array_equal(grouped[1]["tokens.npy"], selected["tokens.npy"])
             assert np.array_equal(
                 corpus.residue_lengths(np.asarray([0])),
                 batch["lengths.npy"][:1].astype(np.int64) - 2,
@@ -98,6 +109,10 @@ def test_loader_authenticates_graph_and_gathers_both_splits(
                 corpus.batch(np.asarray([1], dtype=np.int64))
             with pytest.raises(ProductionCorpusError, match="one-dimensional"):
                 corpus.batch(np.asarray([[0]], dtype=np.int64))
+            with pytest.raises(ProductionCorpusError, match="Batch groups"):
+                corpus.batch_groups(())
+            with pytest.raises(ProductionCorpusError, match="Batch groups"):
+                corpus.batch_groups((np.asarray([[0]], dtype=np.int64),))
     finally:
         fixture_module._make_writable(fixture["output"])
 

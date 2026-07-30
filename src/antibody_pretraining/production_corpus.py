@@ -191,6 +191,35 @@ class ProductionCorpus:
         """Release all cached array descriptors."""
         self.array_cache.close()
 
+    def batch_groups(
+        self,
+        index_groups: Iterable[np.ndarray],
+        *,
+        fields: Iterable[str] | None = None,
+    ) -> tuple[dict[str, np.ndarray], ...]:
+        """Gather an update once, then restore its ordered microbatch groups."""
+        groups = tuple(np.asarray(indices) for indices in index_groups)
+        if not groups or any(group.ndim != 1 for group in groups):
+            raise ProductionCorpusError(
+                "Batch groups must contain one-dimensional index arrays"
+            )
+        sizes = tuple(len(group) for group in groups)
+        merged = np.concatenate(groups)
+        gathered = self.batch(merged, fields=fields)
+        output: list[dict[str, np.ndarray]] = []
+        offset = 0
+        for size in sizes:
+            output.append(
+                {
+                    name: values[offset : offset + size]
+                    for name, values in gathered.items()
+                }
+            )
+            offset += size
+        if offset != len(merged):
+            raise AssertionError("Grouped batch accounting differs")
+        return tuple(output)
+
     def residue_lengths(self, indices: np.ndarray) -> np.ndarray:
         """Read residue counts without materializing the corpus-wide length vector."""
         encoded_lengths = self.batch(indices, fields=("lengths.npy",))["lengths.npy"]
