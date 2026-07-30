@@ -8,14 +8,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REGISTRATION = ROOT / "protocols/antibody_ddp_scientific_parity_registration_v1.json"
+REGISTRATION = ROOT / "protocols/antibody_ddp_scientific_parity_registration_v2.json"
 
 
 def test_registration_binds_the_complete_executed_source_closure() -> None:
     """Reject source drift across the launcher, runner, and imported package."""
     payload = json.loads(REGISTRATION.read_text(encoding="ascii"))
-    assert payload["format_version"] == "antibody_ddp_scientific_parity_registration_v1"
-    assert payload["implementation_commit"] == "03d04e57e4ad943ef85edf4084f10b7e39f65d8e"
+    assert payload["format_version"] == "antibody_ddp_scientific_parity_registration_v2"
+    assert payload["implementation_parent_commit"] == (
+        "72b3e195c818b4442397bb95994e95c8c81ce900"
+    )
     for relative, expected in payload["source_files"].items():
         assert hashlib.sha256((ROOT / relative).read_bytes()).hexdigest() == expected
     assert payload["execution_sha256"] == hashlib.sha256(
@@ -41,4 +43,11 @@ def test_registration_uses_public_resources_and_remains_non_authorizing() -> Non
     assert payload["test_access"] == {
         "downstream_labels_used": False,
         "sabdab2_heldout_accessed": False,
+    }
+    assert payload["runtime"]["schema_version"] == "frontier.runtime-manifest.v2"
+    assert payload["registration_reason"] == {
+        "failed_job_id": "1340529",
+        "failure_stage": "runtime_live_state_verification",
+        "observed_changed_sections": ["platform"],
+        "scientific_runs_started": False,
     }

@@ -343,7 +343,10 @@ def main() -> None:
     gate = _load(args.gate)
     if execution.get("format_version") != "antibody_ddp_scientific_parity_execution_v2_1":
         raise ValueError("Unexpected execution protocol")
-    if registration.get("format_version") != "antibody_ddp_scientific_parity_registration_v1":
+    if registration.get("format_version") not in {
+        "antibody_ddp_scientific_parity_registration_v1",
+        "antibody_ddp_scientific_parity_registration_v2",
+    }:
         raise ValueError("Unexpected registration")
     if gate.get("format_version") != "antibody_ddp_scientific_parity_gate_v2":
         raise ValueError("Unexpected gate protocol")
