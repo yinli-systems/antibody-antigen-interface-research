@@ -119,6 +119,7 @@ def _authenticate_parents(
         independent.get("registration_sha256") != v6_b_registration_sha256
         or independent.get("primary_result_file_sha256")
         != references["primary_cp"]["file_sha256"]
+        or independent.get("ir_sha256") != registration["expected"]["parent_ir_sha256"]
     ):
         raise V6DTwoCPCoreAuditError("independent CP lineage differs")
     primary_projection = primary.get("decomposition_result")
@@ -372,7 +373,6 @@ def _reconstruct_direct_model(
         dimensions != expected["dimensions"]
         or ir.source_linear_projection_sha256
         != expected["source_linear_projection_sha256"]
-        or ir.ir_sha256 != expected["ir_sha256"]
     ):
         raise V6DTwoCPCoreAuditError("rebuilt projection identity differs")
     identity = {

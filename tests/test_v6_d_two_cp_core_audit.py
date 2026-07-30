@@ -135,10 +135,51 @@ def test_parent_authentication_rejects_wrong_lineage(
         lambda reference, label: (primary if "primary" in label else independent),
     )
     registration = {
+        "expected": {"parent_ir_sha256": "parent-ir"},
         "parent_results": {
             "primary_cp": {"file_sha256": "p"},
             "independent_cp": {"file_sha256": "i"},
-        }
+        },
+    }
+    with pytest.raises(audit.V6DTwoCPCoreAuditError, match="lineage"):
+        audit._authenticate_parents(
+            registration,
+            v6_b_registration_sha256="a" * 64,
+        )
+
+
+def test_parent_authentication_binds_parent_ir_digest(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    primary = {
+        "registration_sha256": "a" * 64,
+        "terminal_status": "PROVEN_INFEASIBLE",
+        "decomposition_result": {
+            "terminal_status": "PROVEN_INFEASIBLE",
+            "candidate_present": False,
+        },
+    }
+    independent = {
+        "registration_sha256": "a" * 64,
+        "primary_result_file_sha256": "p",
+        "terminal_status": "INDEPENDENT_DIRECT_CP_INFEASIBLE_AGREEMENT",
+        "ir_sha256": "wrong-ir",
+        "projection_receipt": {
+            "status": "INFEASIBLE",
+            "accepted_projection_terminal_status": True,
+        },
+    }
+    monkeypatch.setattr(
+        audit,
+        "_read_registered_receipt",
+        lambda reference, label: primary if "primary" in label else independent,
+    )
+    registration = {
+        "expected": {"parent_ir_sha256": "expected-ir"},
+        "parent_results": {
+            "primary_cp": {"file_sha256": "p"},
+            "independent_cp": {"file_sha256": "i"},
+        },
     }
     with pytest.raises(audit.V6DTwoCPCoreAuditError, match="lineage"):
         audit._authenticate_parents(

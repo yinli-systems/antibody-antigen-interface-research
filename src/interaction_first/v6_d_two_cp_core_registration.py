@@ -127,7 +127,7 @@ def validate_two_cp_core_registration(
         {
             "authority_counts",
             "dimensions",
-            "ir_sha256",
+            "parent_ir_sha256",
             "source_linear_projection_sha256",
         },
         "V6-D expected identity",
@@ -156,7 +156,7 @@ def validate_two_cp_core_registration(
         expected["source_linear_projection_sha256"],
         "V6-D linear projection",
     )
-    _digest(expected["ir_sha256"], "V6-D joint IR")
+    _digest(expected["parent_ir_sha256"], "V6-D parent joint IR")
 
     policy = _mapping(
         registration["policy"],
