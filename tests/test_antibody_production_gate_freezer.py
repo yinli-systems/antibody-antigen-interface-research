@@ -26,6 +26,9 @@ def test_gate_freezer_locks_exact_recovery_roles_and_no_scale() -> None:
     assert '"resumed": run(steps=2, checkpoint=False, resume=True)' in source
     assert '"preset": "abf_650m"' in source
     assert '"world_size": 1' in source
+    assert '"grouped_update_read": True' in source
+    assert '"maximum_open_arrays": 1024' in source
+    assert '"minimum_soft_open_file_limit": 4096' in source
     assert '"production_pretraining": False' in source
     assert '"scale_out": False' in source
     assert '"scientific_claim": False' in source

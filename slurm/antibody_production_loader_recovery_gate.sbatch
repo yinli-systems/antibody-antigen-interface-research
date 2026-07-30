@@ -30,6 +30,15 @@ BATCH_QUANTUM=${ABF_BATCH_QUANTUM:-128}
 RUN_SEED=${ABF_RUN_SEED:-17}
 LENGTH_BUCKET_BOUNDARIES=${ABF_LENGTH_BUCKET_BOUNDARIES:-96,128,160,194}
 DDP_BUCKET_CAP_MB=${ABF_DDP_BUCKET_CAP_MB:-25}
+MAXIMUM_OPEN_ARRAYS=${ABF_MAXIMUM_OPEN_ARRAYS:-1024}
+MINIMUM_SOFT_OPEN_FILE_LIMIT=${ABF_MINIMUM_SOFT_OPEN_FILE_LIMIT:-4096}
+
+HARD_OPEN_FILE_LIMIT=$(ulimit -Hn)
+if [[ "$HARD_OPEN_FILE_LIMIT" != "unlimited" ]]; then
+  (( HARD_OPEN_FILE_LIMIT >= MINIMUM_SOFT_OPEN_FILE_LIMIT ))
+fi
+ulimit -Sn "$MINIMUM_SOFT_OPEN_FILE_LIMIT"
+test "$(ulimit -Sn)" = "$MINIMUM_SOFT_OPEN_FILE_LIMIT"
 
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID
 test ! -e "$RUN_ROOT"
@@ -66,6 +75,8 @@ COMMON_ARGS=(
   --run-seed "$RUN_SEED"
   --length-bucket-boundaries "$LENGTH_BUCKET_BOUNDARIES"
   --ddp-bucket-cap-mb "$DDP_BUCKET_CAP_MB"
+  --maximum-open-arrays "$MAXIMUM_OPEN_ARRAYS"
+  --minimum-soft-open-file-limit "$MINIMUM_SOFT_OPEN_FILE_LIMIT"
   --compile-blocks
   --disable-compiled-cudagraphs
   --compile-prewarm-buckets

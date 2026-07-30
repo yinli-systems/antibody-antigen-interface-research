@@ -12,6 +12,7 @@ import math
 import os
 from pathlib import Path
 import random
+import resource
 import socket
 import sys
 import time
@@ -90,6 +91,8 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--run-seed", type=int, required=True)
     parser.add_argument("--length-bucket-boundaries", required=True)
     parser.add_argument("--ddp-bucket-cap-mb", type=int, default=25)
+    parser.add_argument("--maximum-open-arrays", type=int, required=True)
+    parser.add_argument("--minimum-soft-open-file-limit", type=int, required=True)
     parser.add_argument("--compile-blocks", action="store_true")
     parser.add_argument("--disable-compiled-cudagraphs", action="store_true")
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
@@ -107,11 +110,15 @@ def _arguments() -> argparse.Namespace:
             args.target_tokens,
             args.batch_quantum,
             args.ddp_bucket_cap_mb,
+            args.maximum_open_arrays,
+            args.minimum_soft_open_file_limit,
         )
     ):
         raise ValueError("Gate dimensions must be positive")
     if args.run_seed < 0:
         raise ValueError("Run seed must be non-negative")
+    if args.minimum_soft_open_file_limit < args.maximum_open_arrays + 512:
+        raise ValueError("Open-file limit does not preserve descriptor headroom")
     if args.compile_prewarm_buckets and not args.compile_blocks:
         raise ValueError("Compile prewarm requires compiled Transformer blocks")
     if args.disable_compiled_cudagraphs and not args.compile_blocks:
@@ -187,6 +194,24 @@ def _data_contract(args: argparse.Namespace) -> dict[str, object]:
     }
 
 
+def _data_loader_contract(args: argparse.Namespace) -> dict[str, object]:
+    return {
+        "grouped_update_read": True,
+        "maximum_open_arrays": args.maximum_open_arrays,
+        "minimum_soft_open_file_limit": args.minimum_soft_open_file_limit,
+    }
+
+
+def _open_file_limits() -> tuple[int, int]:
+    """Return finite receipt-safe soft and hard descriptor limits."""
+    soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+    normalized = tuple(
+        sys.maxsize if value == resource.RLIM_INFINITY else int(value)
+        for value in (soft, hard)
+    )
+    return normalized[0], normalized[1]
+
+
 def _implementation_contract() -> dict[str, str]:
     """Bind every project source file executed by the isolated gate."""
     files = (
@@ -241,11 +266,15 @@ def _validate_launch(
     execution = protocol.get("execution")
     if execution != {
         "backend": "ddp",
+        "data_loader": _data_loader_contract(args),
         "length_bucket_boundaries": args.length_bucket_boundaries,
         "optimization": _optimization(args),
         "world_size": world_size,
     }:
         raise RuntimeError("Launch execution settings differ from the gate protocol")
+    soft_open_file_limit, _ = _open_file_limits()
+    if soft_open_file_limit < args.minimum_soft_open_file_limit:
+        raise RuntimeError("Soft open-file limit is below the frozen minimum")
     if len(gate_protocol_sha256) != 64:
         raise AssertionError("Gate protocol digest is invalid")
 
@@ -352,6 +381,7 @@ def main() -> None:
         "expected_independent_audit_payload_sha256": (
             args.production_corpus_independent_audit_payload_sha256
         ),
+        "maximum_open_arrays": args.maximum_open_arrays,
     }
     corpus = None
     if local_rank == 0:
@@ -429,6 +459,7 @@ def main() -> None:
         expected_state = {
             "batch_quantum": args.batch_quantum,
             "data_source": _data_contract(args),
+            "data_loader": _data_loader_contract(args),
             "efficiency_protocol_sha256": efficiency_protocol_sha256,
             "gate_protocol_sha256": gate_protocol_sha256,
             "length_bucket_boundaries": list(boundaries),
@@ -673,6 +704,7 @@ def main() -> None:
         "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
         "consumed_residue_tokens": consumed,
         "data_source": _data_contract(args),
+        "data_loader": _data_loader_contract(args),
         "efficiency_protocol_sha256": efficiency_protocol_sha256,
         "gate_protocol_sha256": gate_protocol_sha256,
         "length_bucket_boundaries": list(boundaries),
@@ -689,6 +721,7 @@ def main() -> None:
         "world_size": world_size,
     }
     if rank == 0:
+        soft_open_file_limit, hard_open_file_limit = _open_file_limits()
         _publish(args.output / "trainer_state.json", trainer_state)
         _publish(
             args.output / "receipt.json",
@@ -715,9 +748,16 @@ def main() -> None:
                 "corpus_open": {
                     "array_file_hashes_verified_by_local_rank_zero": True,
                     "follower_validation": "size_dtype_shape_after_barrier",
+                    "hard_open_file_limit": hard_open_file_limit,
+                    "maximum_open_arrays": args.maximum_open_arrays,
+                    "minimum_soft_open_file_limit": (
+                        args.minimum_soft_open_file_limit
+                    ),
                     "node_count": 1,
                     "rank_hosts": rank_hosts,
+                    "soft_open_file_limit": soft_open_file_limit,
                 },
+                "data_loader": _data_loader_contract(args),
                 "data_preparation_seconds": data_preparation_seconds,
                 "data_source": _data_contract(args),
                 "device": torch.cuda.get_device_name(device),

@@ -60,6 +60,13 @@ def _fixture(tmp_path: Path):
         ).hexdigest(),
         "authorization": authorization,
         "format_version": "antibody_production_loader_recovery_gate_v1",
+        "execution": {
+            "data_loader": {
+                "grouped_update_read": True,
+                "maximum_open_arrays": 1024,
+                "minimum_soft_open_file_limit": 4096,
+            }
+        },
         "implementation": {"runner.py": "6" * 64},
         "inputs": {
             **data,
@@ -95,6 +102,7 @@ def _fixture(tmp_path: Path):
         "allocation": {"hostname": "node"},
         "authorization": authorization,
         "data_source": data,
+        "data_loader": protocol["execution"]["data_loader"],
         "efficiency_protocol_sha256": "7" * 64,
         "format_version": "antibody_production_loader_recovery_run_v1",
         "gate_protocol_sha256": protocol_sha256,
@@ -228,6 +236,22 @@ def test_recovery_auditor_rejects_optimizer_checkpoint_drift(
     receipt[field] = "0" * 64
     _write(receipt_path, receipt)
     with pytest.raises(auditor.RecoveryAuditError, match="Checkpoint payload"):
+        auditor.audit_recovery(
+            gate_protocol_path=protocol,
+            continuous_root=roots["continuous"],
+            stage1_root=roots["stage1"],
+            resumed_root=roots["resumed"],
+        )
+
+
+def test_recovery_auditor_rejects_data_loader_contract_drift(tmp_path: Path) -> None:
+    auditor = _load_auditor()
+    protocol, roots = _fixture(tmp_path)
+    receipt_path = roots["resumed"] / "receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="ascii"))
+    receipt["data_loader"]["maximum_open_arrays"] = 128
+    _write(receipt_path, receipt)
+    with pytest.raises(auditor.RecoveryAuditError, match="provenance differs"):
         auditor.audit_recovery(
             gate_protocol_path=protocol,
             continuous_root=roots["continuous"],

@@ -148,6 +148,11 @@ def freeze_gate(
         },
         "execution": {
             "backend": "ddp",
+            "data_loader": {
+                "grouped_update_read": True,
+                "maximum_open_arrays": 1024,
+                "minimum_soft_open_file_limit": 4096,
+            },
             "length_bucket_boundaries": "96,128,160,194",
             "optimization": optimization,
             "world_size": 1,

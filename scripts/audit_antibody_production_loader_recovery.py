@@ -155,6 +155,7 @@ def audit_recovery(
     receipts = {name: item["receipt"] for name, item in runs.items()}
     states = {name: item["state"] for name, item in runs.items()}
     common_receipt_fields = (
+        "data_loader",
         "data_source",
         "efficiency_protocol_sha256",
         "gate_protocol_sha256",
@@ -178,6 +179,10 @@ def audit_recovery(
         raise RecoveryAuditError("Run does not bind the supplied gate protocol")
     if reference.get("implementation") != protocol.get("implementation"):
         raise RecoveryAuditError("Run implementation differs from the protocol")
+    if reference.get("data_loader") != protocol.get("execution", {}).get(
+        "data_loader"
+    ):
+        raise RecoveryAuditError("Run data-loader contract differs from the protocol")
     expected_data = {
         key: value
         for key, value in protocol.get("inputs", {}).items()

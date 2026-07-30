@@ -51,3 +51,19 @@ def test_recovery_launcher_uses_frozen_safe_compiled_candidate() -> None:
     ):
         assert switch in source
     assert "--ddp-communication-dtype" not in source
+
+
+def test_recovery_launcher_raises_and_binds_the_open_file_budget() -> None:
+    source = SLURM.read_text(encoding="ascii")
+    assert 'MAXIMUM_OPEN_ARRAYS=${ABF_MAXIMUM_OPEN_ARRAYS:-1024}' in source
+    assert (
+        'MINIMUM_SOFT_OPEN_FILE_LIMIT=${ABF_MINIMUM_SOFT_OPEN_FILE_LIMIT:-4096}'
+        in source
+    )
+    assert 'HARD_OPEN_FILE_LIMIT=$(ulimit -Hn)' in source
+    assert 'ulimit -Sn "$MINIMUM_SOFT_OPEN_FILE_LIMIT"' in source
+    assert '--maximum-open-arrays "$MAXIMUM_OPEN_ARRAYS"' in source
+    assert (
+        '--minimum-soft-open-file-limit "$MINIMUM_SOFT_OPEN_FILE_LIMIT"'
+        in source
+    )
