@@ -372,6 +372,7 @@ def _reconstruct_direct_model(
         dimensions != expected["dimensions"]
         or ir.source_linear_projection_sha256
         != expected["source_linear_projection_sha256"]
+        or ir.ir_sha256 != expected["ir_sha256"]
     ):
         raise V6DTwoCPCoreAuditError("rebuilt projection identity differs")
     identity = {
