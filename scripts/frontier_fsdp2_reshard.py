@@ -84,6 +84,14 @@ def _emit_stage(*, rank: int, stage: str) -> None:
     )
 
 
+def _broadcast_rank_zero_failure(message: str | None, *, rank: int) -> None:
+    """Broadcast rank-zero validation failures before later collectives."""
+    payload = [message if rank == 0 else None]
+    dist.broadcast_object_list(payload, src=0)
+    if payload[0] is not None:
+        raise RuntimeError(f"Rank-zero cross-world gate failed: {payload[0]}")
+
+
 def _source_digest(repository_root: Path) -> str:
     """Bind every executable source file used by the cross-world replay."""
     return source_tree_digest(repository_root, SOURCE_PATHS)
@@ -391,25 +399,36 @@ def _load_mode(
     _emit_stage(rank=rank, stage="before_checkpoint_full_model_state")
     loaded_state = _full_model_state(model)
     _emit_stage(rank=rank, stage="after_checkpoint_full_model_state")
+    checkpoint_failure = None
     if rank == 0:
-        checkpoint_reference = _load_reference(
-            Path(save_result["checkpoint_reference"]["path"]),
-            save_result["checkpoint_reference"]["sha256"],
-        )
-        checkpoint_difference = _state_difference(
-            loaded_state,
-            checkpoint_reference,
-            absolute_tolerance=0.0,
-            relative_tolerance=0.0,
-        )
-        _assert_difference(
-            checkpoint_difference,
-            absolute_tolerance=0.0,
-            relative_tolerance=0.0,
-            label="Cross-world checkpoint load",
-        )
+        try:
+            _emit_stage(rank=rank, stage="before_checkpoint_reference_load")
+            checkpoint_reference = _load_reference(
+                Path(save_result["checkpoint_reference"]["path"]),
+                save_result["checkpoint_reference"]["sha256"],
+            )
+            _emit_stage(rank=rank, stage="after_checkpoint_reference_load")
+            _emit_stage(rank=rank, stage="before_checkpoint_state_difference")
+            checkpoint_difference = _state_difference(
+                loaded_state,
+                checkpoint_reference,
+                absolute_tolerance=0.0,
+                relative_tolerance=0.0,
+            )
+            _emit_stage(rank=rank, stage="after_checkpoint_state_difference")
+            _assert_difference(
+                checkpoint_difference,
+                absolute_tolerance=0.0,
+                relative_tolerance=0.0,
+                label="Cross-world checkpoint load",
+            )
+            _emit_stage(rank=rank, stage="after_checkpoint_state_assertion")
+        except Exception as error:  # noqa: BLE001
+            checkpoint_difference = {}
+            checkpoint_failure = f"{type(error).__name__}: {error}"
     else:
         checkpoint_difference = {}
+    _broadcast_rank_zero_failure(checkpoint_failure, rank=rank)
     batch = _local_batch(rank=rank, world_size=world_size, device=device)
     _emit_stage(rank=rank, stage="before_continuation_train_step")
     local_loss, _ = _train_step(model, optimizer, batch, precision=args.precision)
@@ -420,60 +439,76 @@ def _load_mode(
     _emit_stage(rank=rank, stage="before_continuation_full_model_state")
     continued_state = _full_model_state(model)
     _emit_stage(rank=rank, stage="after_continuation_full_model_state")
+    continuation_failure = None
+    result = None
     if rank == 0:
-        continuation_reference = _load_reference(
-            Path(save_result["continuation_reference"]["path"]),
-            save_result["continuation_reference"]["sha256"],
-        )
-        continuation_difference = _state_difference(
-            continued_state,
-            continuation_reference,
-            absolute_tolerance=args.absolute_tolerance,
-            relative_tolerance=args.relative_tolerance,
-        )
-        _assert_difference(
-            continuation_difference,
-            absolute_tolerance=args.absolute_tolerance,
-            relative_tolerance=args.relative_tolerance,
-            label="Cross-world optimizer continuation",
-        )
-        expected_loss = float(save_result["continuation_global_loss"])
-        allowed_loss = args.absolute_tolerance + args.relative_tolerance * abs(
-            expected_loss
-        )
-        loss_absolute_difference = abs(continuation_global_loss - expected_loss)
-        if (
-            not math.isfinite(loss_absolute_difference)
-            or loss_absolute_difference > allowed_loss
-        ):
-            raise RuntimeError("Cross-world continuation loss exceeds tolerance")
-        result = {
-            "format": RESULT_FORMAT,
-            "status": "passed",
-            "mode": "load",
-            "claim_boundary": FSDP2_CLAIM_BOUNDARY,
-            "source_sha256": observed_source,
-            "launch_manifest_sha256": args.expected_launch_manifest_sha256,
-            "source_save_result": str(args.source_save_result.resolve()),
-            "source_save_result_sha256": args.expected_save_result_sha256,
-            "precision": args.precision,
-            "source_world_size": save_result["source_world_size"],
-            "load_world_size": world_size,
-            "global_batch_size": GLOBAL_BATCH_SIZE,
-            "checkpoint_receipt_content_sha256": loaded_receipt["content_sha256"],
-            "checkpoint_state_difference": checkpoint_difference,
-            "continuation_state_difference": continuation_difference,
-            "expected_continuation_global_loss": expected_loss,
-            "observed_continuation_global_loss": continuation_global_loss,
-            "continuation_loss_absolute_difference": loss_absolute_difference,
-            "absolute_tolerance": args.absolute_tolerance,
-            "relative_tolerance": args.relative_tolerance,
-            "runtime": dict(runtime_receipt),
-            "outer_or_test_access": False,
-            "biological_training_authorized": False,
-        }
+        try:
+            _emit_stage(rank=rank, stage="before_continuation_reference_load")
+            continuation_reference = _load_reference(
+                Path(save_result["continuation_reference"]["path"]),
+                save_result["continuation_reference"]["sha256"],
+            )
+            _emit_stage(rank=rank, stage="after_continuation_reference_load")
+            _emit_stage(rank=rank, stage="before_continuation_state_difference")
+            continuation_difference = _state_difference(
+                continued_state,
+                continuation_reference,
+                absolute_tolerance=args.absolute_tolerance,
+                relative_tolerance=args.relative_tolerance,
+            )
+            _emit_stage(rank=rank, stage="after_continuation_state_difference")
+            _assert_difference(
+                continuation_difference,
+                absolute_tolerance=args.absolute_tolerance,
+                relative_tolerance=args.relative_tolerance,
+                label="Cross-world optimizer continuation",
+            )
+            _emit_stage(rank=rank, stage="after_continuation_state_assertion")
+            expected_loss = float(save_result["continuation_global_loss"])
+            allowed_loss = args.absolute_tolerance + args.relative_tolerance * abs(
+                expected_loss
+            )
+            loss_absolute_difference = abs(continuation_global_loss - expected_loss)
+            if (
+                not math.isfinite(loss_absolute_difference)
+                or loss_absolute_difference > allowed_loss
+            ):
+                raise RuntimeError("Cross-world continuation loss exceeds tolerance")
+            result = {
+                "format": RESULT_FORMAT,
+                "status": "passed",
+                "mode": "load",
+                "claim_boundary": FSDP2_CLAIM_BOUNDARY,
+                "source_sha256": observed_source,
+                "launch_manifest_sha256": args.expected_launch_manifest_sha256,
+                "source_save_result": str(args.source_save_result.resolve()),
+                "source_save_result_sha256": args.expected_save_result_sha256,
+                "precision": args.precision,
+                "source_world_size": save_result["source_world_size"],
+                "load_world_size": world_size,
+                "global_batch_size": GLOBAL_BATCH_SIZE,
+                "checkpoint_receipt_content_sha256": loaded_receipt["content_sha256"],
+                "checkpoint_state_difference": checkpoint_difference,
+                "continuation_state_difference": continuation_difference,
+                "expected_continuation_global_loss": expected_loss,
+                "observed_continuation_global_loss": continuation_global_loss,
+                "continuation_loss_absolute_difference": loss_absolute_difference,
+                "absolute_tolerance": args.absolute_tolerance,
+                "relative_tolerance": args.relative_tolerance,
+                "runtime": dict(runtime_receipt),
+                "outer_or_test_access": False,
+                "biological_training_authorized": False,
+            }
+        except Exception as error:  # noqa: BLE001
+            continuation_failure = f"{type(error).__name__}: {error}"
+    _broadcast_rank_zero_failure(continuation_failure, rank=rank)
+    if rank == 0:
+        if result is None:
+            raise RuntimeError("Rank-zero result is unavailable after a passing gate")
+        _emit_stage(rank=rank, stage="before_result_publish")
         publish_create_only_json(output_root / "result.json", result)
         os.chmod(output_root / "result.json", 0o444)
+        _emit_stage(rank=rank, stage="after_result_publish")
         print(
             json.dumps(
                 {

@@ -57,6 +57,23 @@ def test_multinode_gate_preserves_scientific_and_performance_boundaries() -> Non
     assert "testdata" not in source
 
 
+def test_cross_world_gate_uses_the_frozen_precision_tolerances() -> None:
+    source = LAUNCHER.read_text(encoding="ascii")
+    assert "--absolute-tolerance 2e-5" not in source
+    assert "--relative-tolerance 2e-4" not in source
+    assert source.count('--absolute-tolerance "$ABSOLUTE_TOLERANCE"') == 2
+    assert source.count('--relative-tolerance "$RELATIVE_TOLERANCE"') == 2
+
+
+def test_cross_world_gate_broadcasts_rank_zero_validation_failures() -> None:
+    source = (
+        ROOT / "scripts/frontier_fsdp2_reshard.py"
+    ).read_text(encoding="ascii")
+    assert "dist.broadcast_object_list(payload, src=0)" in source
+    assert "_broadcast_rank_zero_failure(checkpoint_failure, rank=rank)" in source
+    assert "_broadcast_rank_zero_failure(continuation_failure, rank=rank)" in source
+
+
 def test_every_multinode_entrypoint_binds_the_launcher_source() -> None:
     for relative in (
         "scripts/frontier_fsdp2_dcp_smoke.py",
