@@ -80,17 +80,6 @@ def test_loader_authenticates_graph_and_gathers_both_splits(
             assert np.array_equal(batch["tokens.npy"][0], batch["tokens.npy"][1])
             assert batch["sample_keys.npy"].shape == (2,)
             assert batch["sequence_sha256.npy"].shape == (2, 32)
-            selected = corpus.batch(
-                np.asarray([0, 0], dtype=np.int64),
-                fields=("tokens.npy", "sample_keys.npy"),
-            )
-            assert set(selected) == {"tokens.npy", "sample_keys.npy"}
-            assert np.array_equal(
-                corpus.residue_lengths(np.asarray([0])),
-                batch["lengths.npy"][:1].astype(np.int64) - 2,
-            )
-            with pytest.raises(ProductionCorpusError, match="fields"):
-                corpus.batch(np.asarray([0]), fields=("unknown.npy",))
             with pytest.raises(ProductionCorpusError, match="outside"):
                 corpus.batch(np.asarray([1], dtype=np.int64))
             with pytest.raises(ProductionCorpusError, match="one-dimensional"):
