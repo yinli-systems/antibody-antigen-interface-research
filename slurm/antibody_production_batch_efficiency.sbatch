@@ -20,7 +20,7 @@ MANIFEST_SHA256=${ABF_MANIFEST_SHA256:?ABF_MANIFEST_SHA256 is required}
 PROTOCOL_SHA256=${ABF_PROTOCOL_SHA256:?ABF_PROTOCOL_SHA256 is required}
 RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?ABF_RUNTIME_MANIFEST_SHA256 is required}
-PROTOCOL=${SOURCE_ROOT}/protocols/antibody_production_batch_efficiency_v2.json
+PROTOCOL=${SOURCE_ROOT}/protocols/antibody_production_batch_efficiency_v3.json
 SPLIT_ROOT=${SOURCE_ROOT}/results/pretraining/antibody_ddp_parity_split_v2
 RUN_ROOT=${OUTPUT_ROOT}/slurm-${SLURM_JOB_ID}
 LOCAL_BASE=${SLURM_TMPDIR:-/tmp}
@@ -101,7 +101,7 @@ manifest_sha256 = sys.argv[4]
 runtime_manifest = Path(sys.argv[5])
 runtime_manifest_sha256 = sys.argv[6]
 protocol = json.loads(protocol_path.read_text(encoding="ascii"))
-if protocol.get("format_version") != "antibody_production_batch_efficiency_protocol_v2":
+if protocol.get("format_version") != "antibody_production_batch_efficiency_protocol_v3":
     raise SystemExit("Unexpected production-batch protocol")
 if protocol["inputs"]["dense_manifest_payload_sha256"] != manifest_sha256:
     raise SystemExit("Dense manifest differs from the protocol")
@@ -111,7 +111,7 @@ bindings = {
     "mfu_protocol_sha256": "protocols/antibody_foundation_scale_v2.json",
     "model_family_sha256": "protocols/antibody_model_family_v1.json",
     "parity_evaluation_indices_sha256": "results/pretraining/antibody_ddp_parity_split_v2/evaluation_indices.npy",
-    "parity_extension_protocol_sha256": "protocols/antibody_ddp_scientific_parity_extension_600_v1.json",
+    "parity_extension_protocol_sha256": "protocols/antibody_ddp_scientific_parity_extension_600_seed17_v1.json",
     "parity_protocol_sha256": "protocols/antibody_ddp_scientific_parity_gate_v2.json",
     "parity_split_receipt_file_sha256": "results/pretraining/antibody_ddp_parity_split_v2/receipt.json",
     "parity_training_indices_sha256": "results/pretraining/antibody_ddp_parity_split_v2/training_indices.npy",
@@ -179,9 +179,9 @@ run_mode() {
     --efficiency-protocol "${SOURCE_ROOT}/protocols/antibody_efficiency_gate_v1.json"
     --ddp-communication-protocol "${SOURCE_ROOT}/protocols/antibody_ddp_communication_optimization_v1.json"
     --parity-protocol "${SOURCE_ROOT}/protocols/antibody_ddp_scientific_parity_gate_v2.json"
-    --parity-extension-protocol "${SOURCE_ROOT}/protocols/antibody_ddp_scientific_parity_extension_600_v1.json"
+    --parity-extension-protocol "${SOURCE_ROOT}/protocols/antibody_ddp_scientific_parity_extension_600_seed17_v1.json"
     --parity-split-root "${SPLIT_ROOT}"
-    --run-seed 97
+    --run-seed 17
     --output "${mode_root}/run"
     --preset abf_650m
     --steps 600

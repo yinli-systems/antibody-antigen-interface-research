@@ -11,7 +11,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 WRAPPER = ROOT / "scripts/run_antibody_pretraining_parity_extension.py"
-EXTENSION = ROOT / "protocols/antibody_ddp_scientific_parity_extension_600_v1.json"
+EXTENSION = (
+    ROOT / "protocols/antibody_ddp_scientific_parity_extension_600_seed17_v1.json"
+)
 PARITY = ROOT / "protocols/antibody_ddp_scientific_parity_gate_v2.json"
 SPLIT = ROOT / "results/pretraining/antibody_ddp_parity_split_v2"
 
@@ -36,7 +38,7 @@ def _base_arguments(output: Path, *, steps: int = 600) -> list[str]:
         "--steps",
         str(steps),
         "--run-seed",
-        "97",
+        "17",
         "--skip-checkpoint",
     ]
 
@@ -53,6 +55,7 @@ def test_extension_authenticates_parent_split_and_launch(
         _base_arguments(tmp_path / "run"),
     )
     assert value["execution"]["parent_updates_per_run"] == 500
+    assert value["execution"]["run_seed"] == 17
     assert value["execution"]["updates_per_run"] == 600
     assert len(digest) == 64
     assert output == tmp_path / "run"

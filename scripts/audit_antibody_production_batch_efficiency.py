@@ -386,9 +386,10 @@ def audit_production_batch(
     protocol_path: Path,
 ) -> dict[str, Any]:
     protocol, protocol_raw = _load(protocol_path, canonical=False)
-    if protocol.get("format_version") != "antibody_production_batch_efficiency_protocol_v2":
+    if protocol.get("format_version") != "antibody_production_batch_efficiency_protocol_v3":
         raise ProductionBatchAuditError("Production-batch protocol format differs")
     expected_updates = int(protocol["batch"]["updates_per_run"])
+    expected_seed = int(protocol["measurement"]["run_seed"])
     if protocol["measurement"]["crossover_run_order"] != [name for name, _ in RUNS]:
         raise ProductionBatchAuditError("Crossover run order differs")
     if _sha256(run_root / "protocol.json") != hashlib.sha256(protocol_raw).hexdigest():
@@ -408,7 +409,7 @@ def audit_production_batch(
             or receipt.get("backend") != "ddp"
             or receipt.get("world_size") != 8
             or receipt.get("device") != HARDWARE
-            or receipt.get("run_seed") != 97
+            or receipt.get("run_seed") != expected_seed
             or receipt.get("preset") != "abf_650m"
             or receipt.get("batch_quantum") != 512
             or receipt.get("micro_batch_per_gpu") != 16

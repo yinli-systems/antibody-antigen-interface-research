@@ -9,17 +9,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL_V1 = ROOT / "protocols/antibody_production_batch_efficiency_v1.json"
-PROTOCOL = ROOT / "protocols/antibody_production_batch_efficiency_v2.json"
-EXTENSION = ROOT / "protocols/antibody_ddp_scientific_parity_extension_600_v1.json"
+PROTOCOL_V2 = ROOT / "protocols/antibody_production_batch_efficiency_v2.json"
+PROTOCOL = ROOT / "protocols/antibody_production_batch_efficiency_v3.json"
+EXTENSION = (
+    ROOT / "protocols/antibody_ddp_scientific_parity_extension_600_seed17_v1.json"
+)
 SLURM = ROOT / "slurm/antibody_production_batch_efficiency.sbatch"
 
 
 def test_protocol_uses_production_batching_with_safe_fp32_reduction() -> None:
     """Increase accumulation while excluding the failed BF16 communication hook."""
     value = json.loads(PROTOCOL.read_text(encoding="ascii"))
-    assert value["format_version"] == "antibody_production_batch_efficiency_protocol_v2"
+    assert value["format_version"] == "antibody_production_batch_efficiency_protocol_v3"
     assert value["parent_protocol_file_sha256"] == hashlib.sha256(
-        PROTOCOL_V1.read_bytes()
+        PROTOCOL_V2.read_bytes()
     ).hexdigest()
     assert value["batch"] == {
         "batch_quantum_sequences": 512,
@@ -58,7 +61,7 @@ def test_protocol_binds_every_source_and_evaluation_input() -> None:
             "evaluation_indices.npy"
         ),
         "parity_extension_protocol_sha256": (
-            "protocols/antibody_ddp_scientific_parity_extension_600_v1.json"
+            "protocols/antibody_ddp_scientific_parity_extension_600_seed17_v1.json"
         ),
         "parity_protocol_sha256": "protocols/antibody_ddp_scientific_parity_gate_v2.json",
         "parity_split_receipt_file_sha256": (
@@ -85,7 +88,7 @@ def test_extension_preserves_split_and_non_authorizing_boundary() -> None:
     assert value["execution"] == {
         "gpu_count": 8,
         "parent_updates_per_run": 500,
-        "run_seed": 97,
+        "run_seed": 17,
         "updates_per_run": 600,
     }
     assert value["parent_parity_protocol_sha256"] == hashlib.sha256(
@@ -99,6 +102,18 @@ def test_extension_preserves_split_and_non_authorizing_boundary() -> None:
     assert value["test_access"]["sabdab2_heldout_accessed"] is False
 
 
+def test_protocol_history_preserves_both_fail_closed_attempts() -> None:
+    """Keep each pre-update incompatibility as immutable parent evidence."""
+    v2 = json.loads(PROTOCOL_V2.read_text(encoding="ascii"))
+    v3 = json.loads(PROTOCOL.read_text(encoding="ascii"))
+    assert v2["parent_protocol_file_sha256"] == hashlib.sha256(
+        PROTOCOL_V1.read_bytes()
+    ).hexdigest()
+    assert v2["correction"]["failed_attempt"]["job_id"] == 1_342_810
+    assert v3["correction"]["failed_attempt"]["job_id"] == 1_342_862
+    assert v3["measurement"]["run_seed"] == 17
+
+
 def test_slurm_launcher_is_single_node_eight_gpu_crossover() -> None:
     """Run four same-allocation measurements with the frozen safe candidate."""
     source = SLURM.read_text(encoding="ascii")
@@ -108,7 +123,7 @@ def test_slurm_launcher_is_single_node_eight_gpu_crossover() -> None:
     assert "--target-tokens 262144" in source
     assert "--batch-quantum 512" in source
     assert "--steps 600" in source
-    assert "antibody_production_batch_efficiency_v2.json" in source
+    assert "antibody_production_batch_efficiency_v3.json" in source
     assert "--parity-extension-protocol" in source
     assert source.count("--ddp-communication-dtype float32") == 1
     assert "--ddp-communication-dtype bfloat16" not in source

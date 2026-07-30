@@ -56,20 +56,22 @@ precision semantics, and hardware.
 
 ## Production-batch crossover correction
 
-Job `1342810` acquired one eight-RTX-5090 node and failed before its first
-optimizer update. The v1 crossover requested 600 updates while the reused
-scientific-parity v2 protocol allowed exactly 500; the runner correctly
-rejected the disagreement. Its immutable artifact manifest and training log
-remain bound in the v2 crossover protocol.
+Jobs `1342810` and `1342862` each acquired one eight-RTX-5090 node and failed
+before their first optimizer update. The v1 crossover requested 600 updates
+while the reused scientific-parity v2 protocol allowed exactly 500. The first
+extension retained independent seed 97 while the parent registered only seeds
+17, 42, and 73. In both cases the runner correctly rejected the disagreement.
+The immutable artifact manifests and training logs remain bound through the v2
+and v3 crossover protocol chain.
 
 The corrected execution does not weaken either protocol. A separate
-non-authorizing parity extension preserves the frozen split and seed while
-allowing 600 systems-only updates, which yields 100 excluded warmup updates and
-500 measured updates. A source-bound wrapper delegates all model, optimizer,
-data, masking, and evaluation work to the unchanged historical runner and
-publishes a create-only sidecar receipt. The auditor independently binds that
-sidecar to the base receipt, trainer state, extension protocol, wrapper, and
-unchanged base runner.
+non-authorizing parity extension uses registered seed 17, preserves the frozen
+split, and allows 600 systems-only updates, which yields 100 excluded warmup
+updates and 500 measured updates. A source-bound wrapper delegates all model,
+optimizer, data, masking, and evaluation work to the unchanged historical
+runner and publishes a create-only sidecar receipt. The auditor independently
+binds that sidecar to the base receipt, trainer state, extension protocol,
+wrapper, and unchanged base runner.
 
 ## Data and scientific quality
 
