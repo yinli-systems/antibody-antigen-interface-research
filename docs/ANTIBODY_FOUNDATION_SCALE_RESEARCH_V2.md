@@ -54,6 +54,23 @@ GPU utilization, data-preparation time, communication time where observable,
 and GPU-hours. A speedup is valid only for identical membership, global work,
 precision semantics, and hardware.
 
+## Production-batch crossover correction
+
+Job `1342810` acquired one eight-RTX-5090 node and failed before its first
+optimizer update. The v1 crossover requested 600 updates while the reused
+scientific-parity v2 protocol allowed exactly 500; the runner correctly
+rejected the disagreement. Its immutable artifact manifest and training log
+remain bound in the v2 crossover protocol.
+
+The corrected execution does not weaken either protocol. A separate
+non-authorizing parity extension preserves the frozen split and seed while
+allowing 600 systems-only updates, which yields 100 excluded warmup updates and
+500 measured updates. A source-bound wrapper delegates all model, optimizer,
+data, masking, and evaluation work to the unchanged historical runner and
+publishes a create-only sidecar receipt. The auditor independently binds that
+sidecar to the base receipt, trainer state, extension protocol, wrapper, and
+unchanged base runner.
+
 ## Data and scientific quality
 
 Phase A trains on the globally deduplicated, study-audited OAS unpaired corpus.
@@ -109,4 +126,3 @@ pilot shard is never reported as measured production training.
   <https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html>
 - Large-scale paired antibody language models:
   <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012646>
-

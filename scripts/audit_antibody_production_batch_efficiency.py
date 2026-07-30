@@ -16,7 +16,7 @@ from typing import Any, Mapping
 import numpy as np
 
 
-FORMAT_VERSION = "antibody_production_batch_efficiency_result_v1"
+FORMAT_VERSION = "antibody_production_batch_efficiency_result_v2"
 RUNS = (
     ("safe_eager_r1", "safe_eager"),
     ("fp32_compiled_r1", "fp32_compiled"),
@@ -126,10 +126,10 @@ def _expected_optimization(mode: str) -> dict[str, Any]:
     }
 
 
-def _validate_trace(receipt: Mapping[str, Any]) -> None:
+def _validate_trace(receipt: Mapping[str, Any], expected_updates: int = 600) -> None:
     trace = receipt.get("trace")
-    if not isinstance(trace, list) or len(trace) != 600:
-        raise ProductionBatchAuditError("Every run must contain exactly 600 updates")
+    if not isinstance(trace, list) or len(trace) != expected_updates:
+        raise ProductionBatchAuditError("Training trace length differs")
     previous_consumed = 0
     for expected_update, item in enumerate(trace, start=1):
         if not isinstance(item, Mapping) or item.get("update") != expected_update:
@@ -338,14 +338,57 @@ def _verify_artifacts(run_root: Path) -> dict[str, Any]:
     }
 
 
+def _extension_sidecar(
+    mode_root: Path,
+    protocol: Mapping[str, Any],
+) -> dict[str, Any]:
+    path = mode_root / "run/parity_extension_receipt.json"
+    value, _ = _load(path)
+    unsigned = dict(value)
+    claimed = unsigned.pop("receipt_sha256", None)
+    launch = value.get("launch_argv")
+    if (
+        claimed != hashlib.sha256(_canonical_json_bytes(unsigned)).hexdigest()
+        or value.get("format_version")
+        != "antibody_pretraining_parity_extension_receipt_v1"
+        or value.get("authorization")
+        != {
+            "model_selection": False,
+            "production_pretraining": False,
+            "scientific_claim": False,
+        }
+        or value.get("test_access") != protocol["test_access"]
+        or value.get("extension_protocol_sha256")
+        != protocol["inputs"]["parity_extension_protocol_sha256"]
+        or value.get("base_runner_sha256") != protocol["inputs"]["runner_sha256"]
+        or value.get("wrapper_sha256")
+        != protocol["inputs"]["runner_wrapper_sha256"]
+        or value.get("base_receipt_file_sha256")
+        != _sha256(mode_root / "run/receipt.json")
+        or value.get("base_trainer_state_file_sha256")
+        != _sha256(mode_root / "run/trainer_state.json")
+        or not isinstance(launch, list)
+        or "--parity-extension-protocol" not in launch
+        or launch.count("--steps") != 1
+        or launch[launch.index("--steps") + 1]
+        != str(protocol["batch"]["updates_per_run"])
+    ):
+        raise ProductionBatchAuditError("Parity extension sidecar differs")
+    return {
+        "file_sha256": _sha256(path),
+        "receipt_sha256": claimed,
+    }
+
+
 def audit_production_batch(
     *,
     run_root: Path,
     protocol_path: Path,
 ) -> dict[str, Any]:
     protocol, protocol_raw = _load(protocol_path, canonical=False)
-    if protocol.get("format_version") != "antibody_production_batch_efficiency_protocol_v1":
+    if protocol.get("format_version") != "antibody_production_batch_efficiency_protocol_v2":
         raise ProductionBatchAuditError("Production-batch protocol format differs")
+    expected_updates = int(protocol["batch"]["updates_per_run"])
     if protocol["measurement"]["crossover_run_order"] != [name for name, _ in RUNS]:
         raise ProductionBatchAuditError("Crossover run order differs")
     if _sha256(run_root / "protocol.json") != hashlib.sha256(protocol_raw).hexdigest():
@@ -353,6 +396,7 @@ def audit_production_batch(
     artifact_audit = _verify_artifacts(run_root)
     receipts: dict[str, dict[str, Any]] = {}
     evaluations: dict[str, tuple[np.ndarray, np.ndarray, np.ndarray]] = {}
+    extension_sidecars: dict[str, dict[str, Any]] = {}
     telemetry: dict[str, dict[str, Any]] = {}
     allocation_identity = None
     for name, mode in RUNS:
@@ -376,22 +420,29 @@ def audit_production_batch(
             or receipt.get("authorization")
             != {"production_pretraining": False, "scientific_claim": False}
             or receipt.get("test_access") != protocol["test_access"]
-            or state.get("next_update") != 600
+            or state.get("next_update") != expected_updates
             or state.get("training_universe_count") != 7300
             or state.get("optimization") != expected_optimization
         ):
             raise ProductionBatchAuditError(f"Receipt or state differs for {name}")
         expected_inputs = {
-            "ddp_communication_protocol_sha256": protocol["inputs"]["communication_protocol_sha256"],
-            "efficiency_protocol_sha256": protocol["inputs"]["efficiency_protocol_sha256"],
+            "ddp_communication_protocol_sha256": protocol["inputs"][
+                "communication_protocol_sha256"
+            ],
+            "efficiency_protocol_sha256": protocol["inputs"][
+                "efficiency_protocol_sha256"
+            ],
             "model_family_sha256": protocol["inputs"]["model_family_sha256"],
             "parity_protocol_sha256": protocol["inputs"]["parity_protocol_sha256"],
-            "parity_split_receipt_file_sha256": protocol["inputs"]["parity_split_receipt_file_sha256"],
+            "parity_split_receipt_file_sha256": protocol["inputs"][
+                "parity_split_receipt_file_sha256"
+            ],
             "shard_manifest_sha256": protocol["inputs"]["dense_manifest_payload_sha256"],
             "training_protocol_sha256": protocol["inputs"]["training_protocol_sha256"],
         }
         if any(receipt.get(key) != value for key, value in expected_inputs.items()):
             raise ProductionBatchAuditError(f"Input provenance differs for {name}")
+        extension_sidecars[name] = _extension_sidecar(run_root / name, protocol)
         identity = tuple(
             receipt.get("allocation", {}).get(field)
             for field in ("hostname", "slurm_job_id", "slurm_job_nodelist")
@@ -400,7 +451,7 @@ def audit_production_batch(
             allocation_identity = identity
         elif identity != allocation_identity:
             raise ProductionBatchAuditError("Runs did not share one allocation")
-        _validate_trace(receipt)
+        _validate_trace(receipt, expected_updates)
         _rank_state_digest(receipt, "initial_model")
         _rank_state_digest(receipt, "final_model")
         _rank_state_digest(receipt, "final_optimizer")
@@ -523,10 +574,13 @@ def audit_production_batch(
         ]
         replicate_ranges[mode] = (max(values) - min(values)) / min(values)
     gates = {
-        "artifact_integrity": artifact_audit["manifest_verified"] and not artifact_audit["writable_paths"],
+        "artifact_integrity": artifact_audit["manifest_verified"]
+        and not artifact_audit["writable_paths"],
         "approximate_mfu": pooled_modes["fp32_compiled"]["approximate_6n_mfu"]
         >= acceptance["minimum_approximate_6n_mfu"],
-        "evaluation_noninferiority": all(value["passed"] for value in noninferiority.values()),
+        "evaluation_noninferiority": all(
+            value["passed"] for value in noninferiority.values()
+        ),
         "membership": membership_equal,
         "memory": all(
             value["maximum_memory_fraction"] <= acceptance["maximum_memory_fraction"]
@@ -568,6 +622,7 @@ def audit_production_batch(
             "run_root": str(run_root.resolve()),
         },
         "membership_equal": membership_equal,
+        "parity_extension_sidecars": extension_sidecars,
         "noninferiority": noninferiority,
         "pooled": {
             "compiled_relative_to_eager": pooled_ratio,

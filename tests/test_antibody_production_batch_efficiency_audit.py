@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import math
 from pathlib import Path
 import sys
@@ -113,3 +114,53 @@ def test_rank_state_digest_requires_all_eight_replicas() -> None:
     receipt["final_model_rank_sha256"][-1] = "b" * 64
     with pytest.raises(module.ProductionBatchAuditError, match="parity differs"):
         module._rank_state_digest(receipt, "final_model")
+
+
+def test_extension_sidecar_binds_base_receipts_and_sources(tmp_path: Path) -> None:
+    """Authenticate the wrapper sidecar independently from the base runner."""
+    module = _load_module()
+    run_root = tmp_path / "mode/run"
+    run_root.mkdir(parents=True)
+    (run_root / "receipt.json").write_bytes(b"{}\n")
+    (run_root / "trainer_state.json").write_bytes(b"{}\n")
+    protocol = {
+        "batch": {"updates_per_run": 600},
+        "inputs": {
+            "parity_extension_protocol_sha256": "a" * 64,
+            "runner_sha256": "b" * 64,
+            "runner_wrapper_sha256": "c" * 64,
+        },
+        "test_access": {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        },
+    }
+    payload = {
+        "authorization": {
+            "model_selection": False,
+            "production_pretraining": False,
+            "scientific_claim": False,
+        },
+        "base_receipt_file_sha256": hashlib.sha256(b"{}\n").hexdigest(),
+        "base_runner_sha256": "b" * 64,
+        "base_trainer_state_file_sha256": hashlib.sha256(b"{}\n").hexdigest(),
+        "claim_boundary": "systems only",
+        "extension_protocol_sha256": "a" * 64,
+        "format_version": "antibody_pretraining_parity_extension_receipt_v1",
+        "launch_argv": [
+            "--parity-extension-protocol",
+            "/protocol.json",
+            "--steps",
+            "600",
+        ],
+        "test_access": protocol["test_access"],
+        "wrapper_sha256": "c" * 64,
+    }
+    payload["receipt_sha256"] = hashlib.sha256(
+        module._canonical_json_bytes(payload)
+    ).hexdigest()
+    (run_root / "parity_extension_receipt.json").write_bytes(
+        module._canonical_json_bytes(payload)
+    )
+    result = module._extension_sidecar(tmp_path / "mode", protocol)
+    assert result["receipt_sha256"] == payload["receipt_sha256"]
