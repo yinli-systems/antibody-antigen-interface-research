@@ -83,3 +83,25 @@ def test_profile_launcher_locks_the_authoritative_window() -> None:
     assert "--warmup-steps 50" in launcher
     assert "--measured-steps 500" in launcher
     assert "synthetic_fsdp2_warmed_profile" in launcher
+
+
+def test_multinode_scaling_contract_is_fixed_batch_and_gated() -> None:
+    """Freeze the 8-to-32-to-64 strong-scaling comparison before execution."""
+    scaling = _protocol()["strong_scaling_gate"]
+    assert isinstance(scaling, dict)
+    assert scaling["baseline_world_size"] == 8
+    assert scaling["fixed_global_batch_size"] == 64
+    assert scaling["local_batch_by_world_size"] == {"8": 8, "32": 2, "64": 1}
+    assert scaling["minimum_efficiency"] == {"32": 0.8, "64": 0.7}
+    assert len(scaling["prerequisites"]) == 3
+
+
+def test_multinode_launcher_uses_torchrun_rendezvous_and_public_policy() -> None:
+    """Require explicit node ranks and no forbidden memory override."""
+    launcher = (
+        REPOSITORY_ROOT / "slurm/frontier_fsdp2_multinode_profile.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --mem=" not in launcher
+    assert "--node-rank=\"$SLURM_PROCID\"" in launcher
+    assert "--rdzv-endpoint=\"$MASTER_ADDR:$MASTER_PORT\"" in launcher
+    assert "synthetic_fsdp2_multinode_strong_scaling_profile" in launcher
