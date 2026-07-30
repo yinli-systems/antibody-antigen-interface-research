@@ -30,6 +30,25 @@ failure, not evidence of corpus corruption or model instability. The failure
 stderr is preserved, and the replacement loader uses a bounded read-only mmap
 cache while retaining complete array hashing and schema validation.
 
+Replacement job `1343030` completed the uninterrupted four-update run, the
+two-update checkpoint run, and the two-update resumed run on all 224,887,833
+training records. Its original auditor failed because it compared the DCP
+optimizer payload hash, which uses canonical parameter names, directly against
+the applied runtime optimizer hash, which uses optimizer parameter IDs. A
+corrected independent re-audit keeps both checks separate: saved DCP payload
+equals loaded DCP payload, and applied optimizer state equals the stage-one
+runtime optimizer state. It also proves identical final model, final optimizer,
+scientific trace, and trainer coordinates. The corrected receipt self-hash is
+`7347f5c3101f631200f09b175e574ae197a579eac2e9a479fd6790ab1e547f9f`.
+This remains a non-authorizing one-GPU gate result; a newly frozen replay using
+the corrected auditor is still required before production training.
+
+The same run measured 19.19 seconds of data preparation versus 4.05 seconds of
+GPU update time across the four uninterrupted updates. The next source revision
+therefore gathers each rank's complete update by shard once and then restores
+the original microbatch order. This preserves membership and masking semantics
+but must pass a new dynamic recovery/performance replay before promotion.
+
 The preregistered eight-RTX-5090 parity experiment completed nine 500-update
 runs for seeds 17, 42, and 73. Regional compilation, fused AdamW, pinned staging,
 and stable padding buckets were effective. BF16 gradient compression reached
