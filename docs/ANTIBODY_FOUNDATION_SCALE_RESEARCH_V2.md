@@ -70,6 +70,21 @@ up to 1,024 authenticated training-field maps in a deterministic read-only LRU.
 This is intended to remove map reopen churn; the complete array hash and schema
 checks remain unchanged.
 
+Job `1343051` executed that frozen configuration and passed the same four exact
+recovery conditions. The audit file SHA-256 is
+`6dac4ab3f5a1de3f9c70abdc217cdf3913aa8db46ee48ee6e74f78547f265538` and the
+verified receipt self-hash is
+`42ef213ad569aa8874a057613351a587787edf996d4c1b3c7a9df82854dc8b5f`.
+The observed soft and hard descriptor limits were both 131,072, while the
+receipt continued to bind the protocol minimum of 4,096 and cache capacity of
+1,024. Four-update data preparation fell again, from 13.82 to 3.97 seconds, a
+71.26 percent reduction; compared with the original 19.19-second path, the
+cumulative reduction is 79.30 percent. End-to-end measured preparation plus GPU
+update time fell from 23.23 to 7.93 seconds without changing the final model,
+optimizer, memberships, masks, losses, gradient norms, learning rates, or
+trainer coordinates. This is the promoted loader implementation for the next
+real-OAS eight-GPU gate; it still does not by itself authorize production.
+
 The preregistered eight-RTX-5090 parity experiment completed nine 500-update
 runs for seeds 17, 42, and 73. Regional compilation, fused AdamW, pinned staging,
 and stable padding buckets were effective. BF16 gradient compression reached
@@ -150,9 +165,11 @@ split protocol.
 
 ## Scale ladder
 
-1. Complete the replacement one-GPU loader/recovery gate. Newly frozen job
-   `1343046` passed exact recovery. Job `1342989` remains the preserved failed
-   loader attempt, and job `1343030` remains the corrected retrospective audit.
+1. Complete the replacement one-GPU loader/recovery gate. Newly frozen jobs
+   `1343046` and `1343051` passed exact recovery; the latter also passed the
+   protocol-bound descriptor-cache optimization. Job `1342989` remains the
+   preserved failed loader attempt, and job `1343030` remains the corrected
+   retrospective audit.
 2. Run a fresh three-seed eight-GPU 650M gate with production batch geometry,
    FP32 gradient reduction, at least 500 measured updates, and a training-excluded
    OAS validation panel.
