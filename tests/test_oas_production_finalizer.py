@@ -99,7 +99,12 @@ def _make_writable(root: Path) -> None:
             path.chmod(stat.S_IRUSR | stat.S_IWUSR)
 
 
-def _fixture(tmp_path: Path, *, protocol_version: str = "v1"):
+def _fixture(
+    tmp_path: Path,
+    *,
+    protocol_version: str = "v1",
+    pretty_protocol: bool = False,
+):
     reducer = _load_module(REDUCER, f"oas_reducer_{tmp_path.name}")
     finalizer = _load_module(FINALIZER, f"oas_finalizer_{tmp_path.name}")
     output = tmp_path / "corpus"
@@ -153,7 +158,11 @@ def _fixture(tmp_path: Path, *, protocol_version: str = "v1"):
         },
     }
     protocol_path = tmp_path / "protocol.json"
-    protocol_bytes = _canonical(protocol)
+    protocol_bytes = (
+        (json.dumps(protocol, indent=2, sort_keys=True) + "\n").encode("ascii")
+        if pretty_protocol
+        else _canonical(protocol)
+    )
     protocol_path.write_bytes(protocol_bytes)
     protocol_sha256 = hashlib.sha256(protocol_bytes).hexdigest()
     map_receipt = {
@@ -311,10 +320,33 @@ def test_v2_finalizer_requires_complete_idle_gpu_evidence(
     monkeypatch.setenv("OAS_SCHEDULER_RESERVED_GPU_COUNT", "1")
     monkeypatch.setenv("SLURM_JOB_GPUS", "0")
     monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
-    fixture = _fixture(tmp_path, protocol_version="v2")
+    fixture = _fixture(
+        tmp_path,
+        protocol_version="v2",
+        pretty_protocol=True,
+    )
     try:
         receipt = _finalize(fixture)
         assert receipt["authorization"]["large_scale_pretraining"] is False
         assert receipt["counts"]["unique_records"] == 2
+    finally:
+        _make_writable(fixture["output"])
+
+
+def test_v1_finalizer_retains_canonical_protocol_requirement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Do not broaden the V2 scheduler-workaround exception to V1."""
+    monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
+    monkeypatch.delenv("SLURM_JOB_GPUS", raising=False)
+    monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
+    fixture = _fixture(tmp_path, pretty_protocol=True)
+    try:
+        with pytest.raises(
+            fixture["finalizer"].ProductionFinalizeError,
+            match="identity differs",
+        ):
+            _finalize(fixture)
     finally:
         _make_writable(fixture["output"])

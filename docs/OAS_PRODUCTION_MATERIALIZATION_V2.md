@@ -9,9 +9,10 @@ must reserve one GPU to obtain CPU resources, even though corpus
 materialization is CPU-only.
 
 The reserved GPU is not a throughput claim and is not part of the computation.
-The batch supervisor, mapper, and reducer all fail unless exactly one scheduler
-GPU is assigned, `CUDA_VISIBLE_DEVICES` is empty, and the v2 resource policy
-forbids GPU compute. Each terminal receipt records that boundary.
+The batch supervisor, mapper, reducer, finalizer, and independent replay all
+fail unless exactly one scheduler GPU is assigned, `CUDA_VISIBLE_DEVICES` is
+empty, and the v2 resource policy forbids GPU compute. Each terminal receipt
+records that boundary.
 
 ## Execution topology
 
@@ -33,9 +34,19 @@ Successful mapping and reduction do not authorize training. The finalized
 corpus must still pass the independent full-replay auditor and the one-GPU
 loader/checkpoint gate. No downstream held-out data is accessed by this stage.
 
+The independent replay is implemented without importing the mapper, reducer,
+record-layout module, or tokenizer. It decodes all fixed-width records,
+reconstructs exact validation precedence and minimum-ordinal selection,
+retokenizes every selected sequence, compares every NumPy value, and verifies
+the complete mapper, reducer, shard-manifest, corpus-manifest, source, and
+resource-receipt graph. Its create-only pass receipt remains non-authorizing;
+only a later one-GPU loader and cross-world-size checkpoint/recovery gate can
+authorize the corpus for training.
+
 ## Local evidence
 
-The targeted v1/v2 mapper, reducer, finalizer, supervisor, protocol, and Slurm
-tests pass under two Python hash seeds. Full repository collection requires the
-optional local `torch`, `pyarrow`, and `ortools` dependencies and is therefore a
-separate environment-level check rather than evidence produced by this unit.
+The targeted v1/v2 mapper, reducer, finalizer, supervisor, independent replay,
+protocol, and Slurm tests pass under two Python hash seeds. Full repository
+collection requires the optional local `torch`, `pyarrow`, and `ortools`
+dependencies and is therefore a separate environment-level check rather than
+evidence produced by this unit.

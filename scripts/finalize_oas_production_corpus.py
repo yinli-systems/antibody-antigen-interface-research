@@ -122,6 +122,43 @@ def _nonnegative_integer(value: object, label: str) -> int:
     return value
 
 
+def _resource_receipt(protocol: Mapping[str, Any]) -> dict[str, Any]:
+    """Prove that finalization performs no work on its reserved GPU."""
+    if os.environ.get("CUDA_VISIBLE_DEVICES", "") not in {"", "NoDevFiles"}:
+        raise ProductionFinalizeError("Production finalization must not expose a GPU")
+    policy = protocol.get("resource_policy")
+    if not isinstance(policy, Mapping):
+        raise ProductionFinalizeError("Production resource policy is absent")
+    assigned_value = os.environ.get("SLURM_JOB_GPUS") or os.environ.get(
+        "SLURM_STEP_GPUS"
+    )
+    assigned_count = len(
+        [value for value in (assigned_value or "").split(",") if value]
+    )
+    allocation = policy.get("gpu_allocation_during_materialization", False)
+    if allocation is False:
+        if assigned_count:
+            raise ProductionFinalizeError("Slurm assigned a GPU to CPU finalization")
+        return {
+            "cuda_visible_devices": False,
+            "gpu_compute_permitted": False,
+            "scheduler_reserved_gpu_count": 0,
+            "scheduler_reserved_gpu_mode": "none",
+        }
+    if allocation != "scheduler_mandated_idle_only":
+        raise ProductionFinalizeError("Production GPU-allocation policy differs")
+    expected = policy.get("scheduler_reserved_gpu_count")
+    declared = os.environ.get("OAS_SCHEDULER_RESERVED_GPU_COUNT")
+    if expected != 1 or declared != "1" or assigned_count != 1:
+        raise ProductionFinalizeError("Scheduler-reserved idle GPU evidence differs")
+    return {
+        "cuda_visible_devices": False,
+        "gpu_compute_permitted": False,
+        "scheduler_reserved_gpu_count": 1,
+        "scheduler_reserved_gpu_mode": "scheduler_mandated_idle_only",
+    }
+
+
 def _assert_frozen_tree(root: Path) -> None:
     if not root.is_dir() or root.is_symlink():
         raise ProductionFinalizeError("Published artifact root is absent or symbolic")
@@ -461,13 +498,18 @@ def finalize_production_corpus(
             raise ProductionFinalizeError(f"{label} source digest differs")
     protocol_raw = protocol_path.read_bytes()
     protocol = _strict_json_bytes(protocol_raw, "Production protocol")
+    protocol_format = protocol.get("format_version")
     if (
-        protocol_raw != _canonical_json_bytes(protocol)
+        (
+            protocol_format == "oas_production_materialization_protocol_v1"
+            and protocol_raw != _canonical_json_bytes(protocol)
+        )
         or hashlib.sha256(protocol_raw).hexdigest() != protocol_file_sha256
-        or protocol.get("format_version") not in SUPPORTED_PROTOCOL_FORMATS
+        or protocol_format not in SUPPORTED_PROTOCOL_FORMATS
         or protocol.get("test_access") != TEST_ACCESS
     ):
         raise ProductionFinalizeError("Production protocol identity differs")
+    resource_receipt = _resource_receipt(protocol)
     execution = protocol.get("execution")
     inputs = protocol.get("inputs")
     if not isinstance(execution, Mapping) or not isinstance(inputs, Mapping):
@@ -490,7 +532,7 @@ def finalize_production_corpus(
         output_root,
         task_count=task_count,
         bucket_count=bucket_count,
-        protocol_format=str(protocol["format_version"]),
+        protocol_format=str(protocol_format),
     )
     if map_totals["source_rows"] != inputs.get("source_record_count"):
         raise ProductionFinalizeError("Map source rows differ from the protocol")
@@ -507,7 +549,7 @@ def finalize_production_corpus(
         map_receipts=map_receipts,
         map_identity=map_identity,
         expected_source_sha256=expected_reducer_sources,
-        protocol_format=str(protocol["format_version"]),
+        protocol_format=str(protocol_format),
     )
     if totals["input_records"] != map_totals["accepted_records"]:
         raise ProductionFinalizeError(
@@ -530,6 +572,7 @@ def finalize_production_corpus(
         "global_order": "bucket_ascending_then_sequence_sha256_ascending",
         "map_identity": map_identity,
         "protocol_file_sha256": protocol_file_sha256,
+        "resource_receipt": resource_receipt,
         "source_sha256": {
             "finalizer": controller_source_sha256,
             "reducer": reducer_source_sha256,
@@ -554,6 +597,7 @@ def finalize_production_corpus(
         "manifest_file_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
         "manifest_payload_sha256": manifest["manifest_sha256"],
         "protocol_file_sha256": protocol_file_sha256,
+        "resource_receipt": resource_receipt,
         "test_access": TEST_ACCESS,
     }
     receipt["receipt_sha256"] = hashlib.sha256(

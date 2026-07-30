@@ -16,8 +16,12 @@ V1 = ROOT / "protocols/oas_production_materialization_v1.json"
 V2 = ROOT / "protocols/oas_production_materialization_v2.json"
 MAPPER = ROOT / "scripts/map_oas_production_records.py"
 REDUCER = ROOT / "scripts/reduce_oas_production_bucket.py"
+FINALIZER = ROOT / "scripts/finalize_oas_production_corpus.py"
+AUDITOR = ROOT / "scripts/audit_oas_production_corpus_independent.py"
 MAP_SLURM = ROOT / "slurm/oas_production_map_batched_v2.sbatch"
 REDUCE_SLURM = ROOT / "slurm/oas_production_reduce_batched_v2.sbatch"
+FINALIZE_SLURM = ROOT / "slurm/oas_production_finalize_v2.sbatch"
+AUDIT_SLURM = ROOT / "slurm/oas_production_independent_audit_v1.sbatch"
 
 
 def _load(path: Path, name: str):
@@ -104,6 +108,39 @@ def test_v2_resource_receipt_requires_assignment_but_hides_cuda(
         module._resource_receipt(protocol)
 
 
+@pytest.mark.parametrize(
+    ("controller", "error_type"),
+    (
+        (FINALIZER, "ProductionFinalizeError"),
+        (AUDITOR, "IndependentCorpusAuditError"),
+    ),
+)
+def test_v2_postprocessing_also_hides_reserved_gpu(
+    controller: Path,
+    error_type: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Bind finalization and replay to the same scheduler workaround."""
+    module = _load(controller, f"postprocess_resource_{controller.stem}")
+    protocol = json.loads(V2.read_text(encoding="ascii"))
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "")
+    monkeypatch.setenv("OAS_SCHEDULER_RESERVED_GPU_COUNT", "1")
+    monkeypatch.setenv("SLURM_JOB_GPUS", "0")
+    monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
+    assert module._resource_receipt(protocol)["scheduler_reserved_gpu_count"] == 1
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "0")
+    with pytest.raises(getattr(module, error_type), match="must not expose"):
+        module._resource_receipt(protocol)
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "")
+    monkeypatch.setenv("SLURM_JOB_GPUS", "0,1")
+    with pytest.raises(getattr(module, error_type), match="evidence differs"):
+        module._resource_receipt(protocol)
+    monkeypatch.setenv("SLURM_JOB_GPUS", "0")
+    monkeypatch.delenv("SLURM_JOB_GPUS")
+    with pytest.raises(getattr(module, error_type), match="evidence differs"):
+        module._resource_receipt(protocol)
+
+
 def test_batched_slurm_jobs_reserve_one_gpu_for_eight_cpu_workers() -> None:
     """Prevent array-scale GPU waste and accidental CUDA visibility."""
     for path, task_count in ((MAP_SLURM, 32), (REDUCE_SLURM, 256)):
@@ -118,3 +155,15 @@ def test_batched_slurm_jobs_reserve_one_gpu_for_eight_cpu_workers() -> None:
         assert "export OAS_SCHEDULER_RESERVED_GPU_COUNT=1" in source
         assert "oas_production_materialization_v2.json" in source
         assert "OAS_SUPERVISOR_SHA256" in source
+
+
+def test_postprocessing_slurm_jobs_reserve_but_hide_one_gpu() -> None:
+    """Keep finalization and independent replay CPU-only and source-bound."""
+    for path in (FINALIZE_SLURM, AUDIT_SLURM):
+        source = path.read_text(encoding="ascii")
+        assert "#SBATCH --partition=gpu_5090" in source
+        assert "#SBATCH --cpus-per-task=8" in source
+        assert "#SBATCH --gres=gpu:1" in source
+        assert "export CUDA_VISIBLE_DEVICES=" in source
+        assert "export OAS_SCHEDULER_RESERVED_GPU_COUNT=1" in source
+        assert "oas_production_materialization_v2.json" in source
