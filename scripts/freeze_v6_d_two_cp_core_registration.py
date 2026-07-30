@@ -207,7 +207,7 @@ def freeze_registration(arguments: argparse.Namespace) -> dict[str, object]:
         "expected": {
             "authority_counts": EXPECTED_COUNTS,
             "dimensions": EXPECTED_DIMENSIONS,
-            "ir_sha256": ir_sha256,
+            "parent_ir_sha256": ir_sha256,
             "source_linear_projection_sha256": (
                 arguments.source_linear_projection_sha256
             ),
