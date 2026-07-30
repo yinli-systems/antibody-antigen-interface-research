@@ -87,7 +87,10 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export OMP_NUM_THREADS=4
 export TOKENIZERS_PARALLELISM=false
 export TORCH_NCCL_ASYNC_ERROR_HANDLING=1
-export NCCL_DEBUG=WARN
+export NCCL_SOCKET_IFNAME=${FRONTIER_NCCL_SOCKET_IFNAME:-=bond0}
+export NCCL_IB_DISABLE=${FRONTIER_NCCL_IB_DISABLE:-1}
+export NCCL_DEBUG=${FRONTIER_NCCL_DEBUG:-INFO}
+export NCCL_DEBUG_SUBSYS=${FRONTIER_NCCL_DEBUG_SUBSYS:-INIT,NET,ENV}
 
 case "$MODE" in
   dcp_smoke)
@@ -247,6 +250,10 @@ srun --nodes=4 --ntasks=4 --ntasks-per-node=1 --label nvidia-smi -L \
   echo "source_sha256=$SOURCE_SHA256"
   echo "runtime_manifest_sha256=$RUNTIME_MANIFEST_SHA256"
   echo "launch_manifest_sha256=$LAUNCH_MANIFEST_SHA256"
+  echo "nccl_socket_ifname=$NCCL_SOCKET_IFNAME"
+  echo "nccl_ib_disable=$NCCL_IB_DISABLE"
+  echo "nccl_debug=$NCCL_DEBUG"
+  echo "nccl_debug_subsys=$NCCL_DEBUG_SUBSYS"
   echo "claim_boundary=synthetic multi-node correctness or profiling only; no biological metric or scaling claim"
   date --iso-8601=seconds
 } > "$RUN_ROOT/environment.txt"
