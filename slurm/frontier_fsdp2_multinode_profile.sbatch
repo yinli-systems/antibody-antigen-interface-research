@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=frontier-multinode-profile
 #SBATCH --partition=gpu_5090
+#SBATCH --qos=gpugpu
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=1
 #SBATCH --gres=gpu:8
