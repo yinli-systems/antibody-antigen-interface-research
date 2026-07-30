@@ -8,11 +8,27 @@ document does not authorize downstream test access or a state-of-the-art claim.
 ## Evidence that changes the next step
 
 The authenticated OAS download contains 265,834,820 source rows across 6,373
-data units and 120,714,440,652 compressed bytes. The complete production corpus
-has not yet passed row filtering, global exact deduplication, validation
-precedence, independent replay, or a loader/recovery gate. Large-scale training
-must therefore begin with corpus materialization rather than a longer repeat of
-the 8,112-sequence dense pilot.
+data units and 120,714,440,652 compressed bytes. Full materialization and an
+independent replay have now passed. Exact filtering, global deduplication, and
+validation precedence produced 224,887,833 unique training records and
+1,743,380 unique validation records. The remaining corpus-admission blocker is
+the loader/checkpoint-recovery gate, not corpus construction.
+
+The exact read-only scale audit in job `1343027` counted 25,259,993,406 unique
+training residue tokens and 196,927,742 validation residue tokens across all
+512 train/validation shards. Its receipt self-hash is
+`be2ec8831d231a53285459b5ddf2173d7ce3133406aa9e996d2ee83906c70c99`.
+The preregistered 1.3B data gate required 30,000,000,000 unique training residue
+tokens and therefore failed. Repeating examples does not satisfy this gate;
+the 1.3B pilot remains locked unless a separately authenticated corpus extends
+the unique-token inventory.
+
+The first loader/recovery attempt, job `1342989`, failed before training because
+the original loader retained every shard array as an open memory map and
+exceeded the process file-descriptor limit. This is a loader implementation
+failure, not evidence of corpus corruption or model instability. The failure
+stderr is preserved, and the replacement loader uses a bounded read-only mmap
+cache while retaining complete array hashing and schema validation.
 
 The preregistered eight-RTX-5090 parity experiment completed nine 500-update
 runs for seeds 17, 42, and 73. Regional compilation, fused AdamW, pinned staging,
@@ -94,7 +110,9 @@ split protocol.
 
 ## Scale ladder
 
-1. Complete OAS materialization, independent replay, and one-GPU loader/recovery.
+1. Complete the replacement one-GPU loader/recovery gate. Materialization and
+   independent replay are complete; job `1342989` is the preserved failed
+   loader attempt.
 2. Run a fresh three-seed eight-GPU 650M gate with production batch geometry,
    FP32 gradient reduction, at least 500 measured updates, and a training-excluded
    OAS validation panel.
@@ -105,8 +123,10 @@ split protocol.
    least 0.80, p95/p50 at most 1.20, and identical scientific direction.
 6. Train the 650M production run to the frozen consumed-token budget only after
    all preceding gates pass.
-7. Admit a 1.2B--1.4B FSDP2 pilot only if validation loss or frozen transfer
-   quality per GPU-hour improves over 650M. Parameter count alone is not a gate.
+7. Admit a 1.2B--1.4B FSDP2 pilot only after an independently authenticated
+   corpus reaches the frozen 30B unique-residue-token threshold and validation
+   loss or frozen transfer quality per GPU-hour improves over 650M. Parameter
+   count or repeated exposure alone is not a gate.
 
 The 64-GPU stage remains locked until 32 GPUs pass with efficiency at least
 0.70. A queued allocation, scheduler estimate, synthetic input, or repeated
