@@ -180,42 +180,65 @@ export FRONTIER_PYTHON_BIN=$PYTHON_BIN
 export FRONTIER_SOURCE_ROOT=$SOURCE_ROOT
 export FRONTIER_RUNTIME_MANIFEST=$RUNTIME_MANIFEST
 export FRONTIER_RUNTIME_MANIFEST_SHA256=$RUNTIME_MANIFEST_SHA256
-srun \
-  --nodes=4 \
-  --ntasks=4 \
-  --ntasks-per-node=1 \
-  --cpu-bind=none \
-  bash -c '
-    set -euo pipefail
-    node=$(hostname)
-    receipt="$FRONTIER_VERIFY_ROOT/runtime-$SLURM_PROCID-$node.json"
-    status=116
-    for attempt in 1 2 3; do
-      payload="$FRONTIER_VERIFY_ROOT/runtime-$SLURM_PROCID-$node.attempt-$attempt.payload"
-      stderr="$FRONTIER_VERIFY_ROOT/runtime-$SLURM_PROCID-$node.attempt-$attempt.stderr"
-      attempt_status="$FRONTIER_VERIFY_ROOT/runtime-$SLURM_PROCID-$node.attempt-$attempt.status"
-      set +e
-      "$FRONTIER_PYTHON_BIN" \
-        "$FRONTIER_SOURCE_ROOT/scripts/generate_runtime_manifest.py" verify \
-        --manifest "$FRONTIER_RUNTIME_MANIFEST" \
-        --expected-file-sha256 "$FRONTIER_RUNTIME_MANIFEST_SHA256" \
-        > "$payload" 2> "$stderr"
-      status=$?
-      set -e
-      printf "attempt=%s\nexit_code=%s\n" "$attempt" "$status" > "$attempt_status"
-      if [[ "$status" == "0" ]]; then
-        ln "$payload" "$receipt"
-        exit 0
-      fi
-      if [[ "$status" != "116" ]]; then
-        exit "$status"
-      fi
-      sleep "$((attempt * 2))"
-    done
-    exit "$status"
-  '
+RUNTIME_VERIFY_STATUS=116
+RUNTIME_VERIFY_SUCCESS_ROOT=
+for launch_attempt in 1 2 3; do
+  export FRONTIER_VERIFY_ATTEMPT_ROOT=$FRONTIER_VERIFY_ROOT/launch-$launch_attempt
+  mkdir "$FRONTIER_VERIFY_ATTEMPT_ROOT"
+  set +e
+  srun \
+    --nodes=4 \
+    --ntasks=4 \
+    --ntasks-per-node=1 \
+    --cpu-bind=none \
+    bash -c '
+      set -euo pipefail
+      node=$(hostname)
+      receipt="$FRONTIER_VERIFY_ATTEMPT_ROOT/runtime-$SLURM_PROCID-$node.json"
+      status=116
+      for attempt in 1 2 3; do
+        payload="$FRONTIER_VERIFY_ATTEMPT_ROOT/runtime-$SLURM_PROCID-$node.attempt-$attempt.payload"
+        stderr="$FRONTIER_VERIFY_ATTEMPT_ROOT/runtime-$SLURM_PROCID-$node.attempt-$attempt.stderr"
+        attempt_status="$FRONTIER_VERIFY_ATTEMPT_ROOT/runtime-$SLURM_PROCID-$node.attempt-$attempt.status"
+        set +e
+        "$FRONTIER_PYTHON_BIN" \
+          "$FRONTIER_SOURCE_ROOT/scripts/generate_runtime_manifest.py" verify \
+          --manifest "$FRONTIER_RUNTIME_MANIFEST" \
+          --expected-file-sha256 "$FRONTIER_RUNTIME_MANIFEST_SHA256" \
+          > "$payload" 2> "$stderr"
+        status=$?
+        set -e
+        printf "attempt=%s\nexit_code=%s\n" "$attempt" "$status" > "$attempt_status"
+        if [[ "$status" == "0" ]]; then
+          ln "$payload" "$receipt"
+          exit 0
+        fi
+        if [[ "$status" != "116" ]]; then
+          exit "$status"
+        fi
+        sleep "$((attempt * 2))"
+      done
+      exit "$status"
+    '
+  RUNTIME_VERIFY_STATUS=$?
+  set -e
+  printf "launch_attempt=%s\nexit_code=%s\n" \
+    "$launch_attempt" "$RUNTIME_VERIFY_STATUS" \
+    > "$FRONTIER_VERIFY_ROOT/launch-$launch_attempt.status"
+  if [[ "$RUNTIME_VERIFY_STATUS" == "0" ]]; then
+    RUNTIME_VERIFY_SUCCESS_ROOT=$FRONTIER_VERIFY_ATTEMPT_ROOT
+    break
+  fi
+  if [[ "$RUNTIME_VERIFY_STATUS" != "116" ]]; then
+    exit "$RUNTIME_VERIFY_STATUS"
+  fi
+  sleep "$((launch_attempt * 2))"
+done
+if [[ "$RUNTIME_VERIFY_STATUS" != "0" || -z "$RUNTIME_VERIFY_SUCCESS_ROOT" ]]; then
+  exit "$RUNTIME_VERIFY_STATUS"
+fi
 
-"$PYTHON_BIN" - "$RUN_ROOT/runtime_by_node" "$RUNTIME_MANIFEST_SHA256" <<'PY'
+"$PYTHON_BIN" - "$RUNTIME_VERIFY_SUCCESS_ROOT" "$RUNTIME_MANIFEST_SHA256" <<'PY'
 import json
 import pathlib
 import sys
@@ -244,7 +267,7 @@ PY
   --output "$RUN_ROOT/launch_manifest.json" \
   --source-sha256 "$SOURCE_SHA256" \
   --runtime-manifest-sha256 "$RUNTIME_MANIFEST_SHA256" \
-  --runtime-verification "$(find "$RUN_ROOT/runtime_by_node" -type f | LC_ALL=C sort | head -n 1)" \
+  --runtime-verification "$(find "$RUNTIME_VERIFY_SUCCESS_ROOT" -name 'runtime-*.json' -type f | LC_ALL=C sort | head -n 1)" \
   --nodes 4 \
   --gpus-per-node 2 \
   --processes-per-node 2 \
