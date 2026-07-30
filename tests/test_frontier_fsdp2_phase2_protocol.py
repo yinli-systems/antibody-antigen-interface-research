@@ -51,3 +51,24 @@ def test_launcher_receipts_and_forwards_numerical_tolerances() -> None:
     ):
         assert name in launcher
     assert "#SBATCH --mem=" not in launcher
+
+
+def test_cross_world_replay_is_bidirectional_and_fixed_batch() -> None:
+    """Require both topology directions under identical global examples."""
+    replay = _protocol()["cross_world_replay"]
+    assert isinstance(replay, dict)
+    assert replay["directions"] == ["one_to_eight", "eight_to_one"]
+    assert replay["fixed_global_batch_size"] == 8
+    assert replay["full_checkpoint_state_must_be_exact"] is True
+    assert replay["source_result_requires_external_sha256"] is True
+
+
+def test_cross_world_launcher_is_public_partition_compatible() -> None:
+    """Keep public GPU memory policy and source-result anchoring explicit."""
+    launcher = (
+        REPOSITORY_ROOT / "slurm/frontier_fsdp2_reshard.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --mem=" not in launcher
+    assert "FRONTIER_SOURCE_SAVE_RESULT_SHA256" in launcher
+    assert "--expected-save-result-sha256" in launcher
+    assert "synthetic_fsdp2_cross_world_reshard" in launcher
