@@ -227,6 +227,7 @@ def test_complete_map_task_streams_and_publishes_exact_records(tmp_path: Path) -
     try:
         assert receipt["counts"] == {
             "accepted_records": 2,
+            "plan_fraction_rejected": 0,
             "plan_fraction_selected": 2,
             "source_rows": 2,
         }

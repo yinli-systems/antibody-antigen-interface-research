@@ -9,42 +9,56 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 V1 = ROOT / "protocols/oas_production_postprocess_runtime_v1.json"
-PROTOCOL = ROOT / "protocols/oas_production_postprocess_runtime_v2.json"
+V2 = ROOT / "protocols/oas_production_postprocess_runtime_v2.json"
+PROTOCOL = ROOT / "protocols/oas_production_postprocess_runtime_v3.json"
 MATERIALIZATION = ROOT / "protocols/oas_production_materialization_v3.json"
-SLURM_FILES = (
+V2_SLURM_FILES = (
     ROOT / "slurm/oas_production_reduce_batched_v3.sbatch",
     ROOT / "slurm/oas_production_finalize_v3.sbatch",
-    ROOT / "slurm/oas_production_independent_audit_v3.sbatch",
 )
+AUDIT_SLURM = ROOT / "slurm/oas_production_independent_audit_v3.sbatch"
 PYTHON_BIN = "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python"
 
 
 def test_protocol_binds_observed_failure_and_parent_semantics() -> None:
     protocol = json.loads(PROTOCOL.read_text(encoding="ascii"))
     assert protocol["format_version"] == (
-        "oas_production_postprocess_runtime_protocol_v2"
+        "oas_production_postprocess_runtime_protocol_v3"
     )
     assert protocol["parent_materialization_protocol_file_sha256"] == (
         hashlib.sha256(MATERIALIZATION.read_bytes()).hexdigest()
     )
     failed = protocol["correction"]["failed_attempt"]
     assert protocol["parent_postprocess_protocol_file_sha256"] == hashlib.sha256(
-        V1.read_bytes()
+        V2.read_bytes()
     ).hexdigest()
-    assert failed["job_id"] == 1342946
+    assert failed["job_id"] == 1342955
     assert failed["terminal_state"] == "FAILED"
     assert failed["exit_code"] == "1:0"
-    assert failed["failed_reduce_tasks"] == 256
-    assert failed["all_failed_task_stderr_sha256"] == (
-        "d9f42fb903258fe0dc42b4cc4ecdcd06ba7337ab9dcd9c6bc19197ab4969f1c4"
+    assert failed["slurm_stderr_file_sha256"] == (
+        "b7ea6839fcc972f5b28c6e240c204cd84a9af5544c8f40754717397bcc73ae77"
     )
     assert protocol["scope"] == {
-        "mapped_data_reused_without_mutation": True,
+        "finalized_artifacts_reused_without_mutation": True,
         "mapper_rerun": False,
+        "reducer_rerun": False,
         "scientific_semantics_changed": False,
-        "stages_relaunched": ["reduce", "finalize", "independent_audit"],
+        "stages_relaunched": ["independent_audit"],
     }
+    assert protocol["compatibility_rule"]["plan_fraction_selected_required"] is True
+    assert protocol["compatibility_rule"][
+        "future_mapper_receipts_emit_explicit_zero_base_counters"
+    ] is True
     assert protocol["authorization"]["large_scale_pretraining"] is False
+
+
+def test_v2_protocol_remains_bound_to_the_reducer_root_failure() -> None:
+    """Preserve the earlier postprocessing correction as parent evidence."""
+    protocol = json.loads(V2.read_text(encoding="ascii"))
+    assert protocol["parent_postprocess_protocol_file_sha256"] == hashlib.sha256(
+        V1.read_bytes()
+    ).hexdigest()
+    assert protocol["correction"]["failed_attempt"]["job_id"] == 1_342_946
 
 
 def test_protocol_binds_verified_runtime() -> None:
@@ -70,20 +84,26 @@ def test_protocol_binds_verified_runtime() -> None:
 
 
 def test_all_postprocessing_launchers_are_runtime_and_correction_bound() -> None:
-    for path in SLURM_FILES:
+    for path in (*V2_SLURM_FILES, AUDIT_SLURM):
         source = path.read_text(encoding="ascii")
         assert f"PYTHON_BIN={PYTHON_BIN}" in source
         assert "OAS_RUNTIME_MANIFEST" in source
         assert "OAS_RUNTIME_MANIFEST_SHA256" in source
         assert "OAS_POSTPROCESS_PROTOCOL_SHA256" in source
-        assert "oas_production_postprocess_runtime_v2.json" in source
         assert "generate_runtime_manifest.py\" verify" in source
         assert "--expected-file-sha256" in source
         assert "exec python3" not in source
+    for path in V2_SLURM_FILES:
+        assert "oas_production_postprocess_runtime_v2.json" in path.read_text(
+            encoding="ascii"
+        )
+    assert "oas_production_postprocess_runtime_v3.json" in AUDIT_SLURM.read_text(
+        encoding="ascii"
+    )
 
 
 def test_reducer_children_use_the_same_locked_interpreter() -> None:
-    source = SLURM_FILES[0].read_text(encoding="ascii")
+    source = V2_SLURM_FILES[0].read_text(encoding="ascii")
     assert "OAS_MATERIALIZATION_ROOT" in source
     assert "OAS_MAP_ROOT" not in source
     assert '--map-root "${OAS_MATERIALIZATION_ROOT}"' in source

@@ -1,0 +1,55 @@
+{
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false,
+    "training_after_independent_audit_only": true
+  },
+  "claim_boundary": "Corrects only independent-auditor compatibility with two immutable V3 mapper receipts whose mathematically zero plan-rejection counters were omitted; mapped records, reduced shards, membership, filtering, deduplication, and scientific semantics remain unchanged",
+  "compatibility_rule": {
+    "future_mapper_receipts_emit_explicit_zero_base_counters": true,
+    "implicit_plan_fraction_rejected_zero_allowed": true,
+    "implicit_zero_condition": "plan_fraction_selected is present and exactly equals source_rows",
+    "plan_fraction_selected_required": true,
+    "quality_accounting_still_required": "accepted_records plus all quality_rejected counters equals plan_fraction_selected"
+  },
+  "correction": {
+    "failed_attempt": {
+      "auditor_source_sha256": "f96f1453074daf25b6aba909cbd0d6e513e22e36209bf4c0c9f23bccda43a031",
+      "corpus_finalize_receipt_file_sha256": "c888ce65d0f99d0ffe6933bed65668996b4a3e2c422b4519b8988e7b14f91b4c",
+      "corpus_manifest_file_sha256": "849b401368ec3613d806399a81b7d76861adf45daf71bfc64761ffe9ecad940a",
+      "exit_code": "1:0",
+      "job_id": 1342955,
+      "mapper_0008_receipt_file_sha256": "4fc73bef20e5f1db3a823be184687ba1ee8157d7a387737a12ea85e4611337a2",
+      "mapper_0011_receipt_file_sha256": "2d31ed07405983f03cd4404e769e91aaf0cf53273a21fe790ae5415cf1697e31",
+      "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_production_materialization_v3_aa61253_attempt_002",
+      "slurm_stderr_file_sha256": "b7ea6839fcc972f5b28c6e240c204cd84a9af5544c8f40754717397bcc73ae77",
+      "slurm_stdout_file_sha256": "15a4ee9ffc4808a8c3c8982d39783f98fed7d88e792d71b1892ed7fec7f9482f",
+      "terminal_state": "FAILED"
+    },
+    "observed": "Mapper 0008 and mapper 0011 each selected every source row, so their Counter-based receipts omitted plan_fraction_rejected instead of serializing its exact value zero. All 32 mapper receipts otherwise satisfy selected plus rejected equals source rows and accepted plus quality rejected equals selected.",
+    "reason": "The V3 independent auditor required both plan counters to be physically present even when a missing rejected counter was uniquely inferable as zero, while the mapper serialized only nonzero Counter entries.",
+    "resolution": "Accept an omitted rejected counter only when selected is present and equals source rows, retain every other schema and conservation check, and make future mapper receipts serialize explicit zero base counters. Re-run only the independent audit against the frozen map, reduce, finalize, and manifest bytes."
+  },
+  "format_version": "oas_production_postprocess_runtime_protocol_v3",
+  "parent_materialization_protocol_file_sha256": "aa61253f035cd19126a39e3cc82bbb3e053695043400ebf976a7ad1f2fb80543",
+  "parent_postprocess_protocol_file_sha256": "0f21a8a46afaa11580de7e0e43e8998cb5cfbb5949dab7994bce3b830be9581f",
+  "runtime": {
+    "manifest_content_sha256": "e33841cc19be4e7c3bb5522194f7d34c7cd518ec967949529094567a6004cfcb",
+    "manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_007.json",
+    "manifest_runtime_state_sha256": "13502176182985a33a1a31833bc8f999f16856c6f917daa45c29bf7e83a09192",
+    "numpy_version": "1.26.4",
+    "python_executable": "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python",
+    "python_version": "3.10.20"
+  },
+  "scope": {
+    "finalized_artifacts_reused_without_mutation": true,
+    "mapper_rerun": false,
+    "reducer_rerun": false,
+    "scientific_semantics_changed": false,
+    "stages_relaunched": [
+      "independent_audit"
+    ]
+  }
+}

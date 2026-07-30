@@ -649,7 +649,14 @@ def _map_one_unit(
     if raw_path.stat().st_size != receipt.get("compressed_bytes"):
         raise ProductionMapError("Raw compressed byte count differs")
 
-    unit_counts: Counter[str] = Counter()
+    unit_counts: Counter[str] = Counter(
+        {
+            "accepted_records": 0,
+            "plan_fraction_rejected": 0,
+            "plan_fraction_selected": 0,
+            "source_rows": 0,
+        }
+    )
     unit_status: Counter[str] = Counter()
     compressed_file = raw_path.open("rb")
     compressed_counter = _DigestingRawReader(compressed_file)

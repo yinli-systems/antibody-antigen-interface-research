@@ -102,6 +102,66 @@ def _sha256_value(value: object, label: str) -> str:
     return value
 
 
+def _validated_mapper_counts(
+    counts: object,
+    *,
+    protocol_format: str,
+) -> dict[str, int]:
+    """Validate mapper accounting while preserving inferable legacy zeros."""
+    if (
+        not isinstance(counts, Mapping)
+        or "accepted_records" not in counts
+        or "source_rows" not in counts
+        or any(
+            key
+            not in {
+                "accepted_records",
+                "plan_fraction_rejected",
+                "plan_fraction_selected",
+                "source_rows",
+            }
+            and not key.startswith("quality_rejected:")
+            for key in counts
+        )
+    ):
+        raise IndependentCorpusAuditError("Mapper count schema differs")
+    validated = {
+        key: _nonnegative_integer(value, f"Mapper count {key}")
+        for key, value in counts.items()
+    }
+    selected_present = "plan_fraction_selected" in validated
+    rejected_present = "plan_fraction_rejected" in validated
+    if protocol_format == "oas_production_materialization_protocol_v3":
+        if not selected_present:
+            raise IndependentCorpusAuditError("Mapper row accounting differs")
+        if (
+            not rejected_present
+            and validated["plan_fraction_selected"] != validated["source_rows"]
+        ):
+            raise IndependentCorpusAuditError("Mapper row accounting differs")
+        validated.setdefault("plan_fraction_rejected", 0)
+    has_plan_accounting = selected_present and "plan_fraction_rejected" in validated
+    selected = validated.get("plan_fraction_selected", 0)
+    rejected = validated.get("plan_fraction_rejected", 0)
+    quality_rejected = sum(
+        value
+        for key, value in validated.items()
+        if key.startswith("quality_rejected:")
+    )
+    if (
+        has_plan_accounting
+        and (
+            selected + rejected != validated["source_rows"]
+            or validated["accepted_records"] + quality_rejected != selected
+        )
+    ) or (
+        not has_plan_accounting
+        and validated["accepted_records"] > validated["source_rows"]
+    ):
+        raise IndependentCorpusAuditError("Mapper row accounting differs")
+    return validated
+
+
 def _resource_receipt(protocol: Mapping[str, Any]) -> dict[str, Any]:
     """Prove that independent replay performs no work on its reserved GPU."""
     if os.environ.get("CUDA_VISIBLE_DEVICES", "") not in {"", "NoDevFiles"}:
@@ -461,54 +521,7 @@ def _map_inventory(
         elif current_study_count != study_count:
             raise IndependentCorpusAuditError("Mapper study vocabularies disagree")
         counts = receipt.get("counts", {})
-        if (
-            not isinstance(counts, Mapping)
-            or "accepted_records" not in counts
-            or "source_rows" not in counts
-            or any(
-                key
-                not in {
-                    "accepted_records",
-                    "plan_fraction_rejected",
-                    "plan_fraction_selected",
-                    "source_rows",
-                }
-                and not key.startswith("quality_rejected:")
-                for key in counts
-            )
-        ):
-            raise IndependentCorpusAuditError("Mapper count schema differs")
-        validated_counts = {
-            key: _nonnegative_integer(value, f"Mapper count {key}")
-            for key, value in counts.items()
-        }
-        selected = validated_counts.get("plan_fraction_selected", 0)
-        rejected = validated_counts.get("plan_fraction_rejected", 0)
-        quality_rejected = sum(
-            value
-            for key, value in validated_counts.items()
-            if key.startswith("quality_rejected:")
-        )
-        has_plan_accounting = {
-            "plan_fraction_selected",
-            "plan_fraction_rejected",
-        }.issubset(validated_counts)
-        if (
-            protocol_format == "oas_production_materialization_protocol_v3"
-            and not has_plan_accounting
-        ) or (
-            has_plan_accounting
-            and (
-                selected + rejected != validated_counts["source_rows"]
-                or validated_counts["accepted_records"] + quality_rejected
-                != selected
-            )
-        ) or (
-            not has_plan_accounting
-            and validated_counts["accepted_records"]
-            > validated_counts["source_rows"]
-        ):
-            raise IndependentCorpusAuditError("Mapper row accounting differs")
+        _validated_mapper_counts(counts, protocol_format=protocol_format)
         normalization_counts = receipt.get("metadata_normalization_counts")
         if protocol_format == "oas_production_materialization_protocol_v3":
             if not isinstance(normalization_counts, Mapping):

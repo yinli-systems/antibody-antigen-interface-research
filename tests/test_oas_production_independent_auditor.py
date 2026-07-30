@@ -103,6 +103,52 @@ def test_independent_decoder_rejects_digest_tamper() -> None:
         auditor._decode_record(payload, bucket=0, study_count=1)
 
 
+def test_v3_mapper_accounting_accepts_only_an_inferable_legacy_zero() -> None:
+    """Treat an omitted rejected counter as zero only when source equality proves it."""
+    auditor = _load(AUDITOR, "independent_v3_mapper_count_compatibility")
+    legacy = {
+        "accepted_records": 8,
+        "plan_fraction_selected": 10,
+        "quality_rejected:invalid_sequence": 2,
+        "source_rows": 10,
+    }
+    observed = auditor._validated_mapper_counts(
+        legacy,
+        protocol_format="oas_production_materialization_protocol_v3",
+    )
+    assert observed["plan_fraction_rejected"] == 0
+    with pytest.raises(
+        auditor.IndependentCorpusAuditError,
+        match="row accounting differs",
+    ):
+        auditor._validated_mapper_counts(
+            {
+                "accepted_records": 8,
+                "plan_fraction_selected": 10,
+                "quality_rejected:invalid_sequence": 2,
+                "source_rows": 11,
+            },
+            protocol_format="oas_production_materialization_protocol_v3",
+        )
+
+
+def test_v3_mapper_accounting_requires_selected_counter() -> None:
+    """Do not generalize the legacy-zero exception to missing selected evidence."""
+    auditor = _load(AUDITOR, "independent_v3_mapper_selected_required")
+    with pytest.raises(
+        auditor.IndependentCorpusAuditError,
+        match="row accounting differs",
+    ):
+        auditor._validated_mapper_counts(
+            {
+                "accepted_records": 8,
+                "plan_fraction_rejected": 2,
+                "source_rows": 10,
+            },
+            protocol_format="oas_production_materialization_protocol_v3",
+        )
+
+
 def test_independent_auditor_rejects_reanchored_manifest_reference(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
