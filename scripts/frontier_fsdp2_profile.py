@@ -50,6 +50,7 @@ SOURCE_PATHS = (
     "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_profile.sbatch",
     "slurm/frontier_fsdp2_multinode_profile.sbatch",
+    "slurm/frontier_fsdp2_multinode_gate.sbatch",
     "src/interaction_first/__init__.py",
     "src/interaction_first/asymmetric_retrieval.py",
     "src/interaction_first/contacts.py",
@@ -107,7 +108,9 @@ def main() -> None:
     parser.add_argument("--measured-steps", type=int, default=500)
     parser.add_argument("--batch-size-per-rank", type=int, default=2)
     parser.add_argument("--seed", type=int, default=20260730)
-    parser.add_argument("--precision", choices=("float32", "bfloat16"), default="bfloat16")
+    parser.add_argument(
+        "--precision", choices=("float32", "bfloat16"), default="bfloat16"
+    )
     parser.add_argument("--parallelism", choices=("fsdp2",), required=True)
     parser.add_argument("--expected-world-size", type=int, required=True)
     parser.add_argument("--expected-source-sha256", required=True)
@@ -118,7 +121,9 @@ def main() -> None:
     if not args.synthetic_only:
         raise ValueError("--synthetic-only is mandatory")
     if args.warmup_steps != 50 or args.measured_steps != 500:
-        raise ValueError("The authoritative profile requires 50 warmup and 500 measured steps")
+        raise ValueError(
+            "The authoritative profile requires 50 warmup and 500 measured steps"
+        )
     if args.batch_size_per_rank < 1:
         raise ValueError("Batch size per rank must be positive")
     repository_root = Path(__file__).resolve().parents[1]
@@ -156,7 +161,9 @@ def main() -> None:
         output_root = args.output_root.resolve()
         if rank == 0:
             if output_root.exists() or output_root.is_symlink():
-                raise FileExistsError(f"Refusing to overwrite output root: {output_root}")
+                raise FileExistsError(
+                    f"Refusing to overwrite output root: {output_root}"
+                )
             output_root.mkdir(parents=True)
         dist.barrier()
         local_indices = range(
@@ -292,10 +299,14 @@ def main() -> None:
                 "authoritative_timing": "maximum rank wall time for each aligned optimizer step",
                 "step_seconds": _percentile_map(per_step_global_seconds),
                 "global_examples_per_second": _percentile_map(examples_per_second),
-                "global_residue_tokens_per_second": _percentile_map(residue_tokens_per_second),
+                "global_residue_tokens_per_second": _percentile_map(
+                    residue_tokens_per_second
+                ),
                 "checkpoint": {
                     "save_seconds_max": checkpoint_receipt["save_seconds_max"],
-                    "load_seconds_max": max(float(value) for value in load_seconds_by_rank),
+                    "load_seconds_max": max(
+                        float(value) for value in load_seconds_by_rank
+                    ),
                     "receipt_content_sha256": checkpoint_receipt["content_sha256"],
                     "loaded_receipt_content_sha256": loaded_receipt["content_sha256"],
                     "restore_state_difference": restore_difference,
@@ -306,7 +317,17 @@ def main() -> None:
             }
             publish_create_only_json(output_root / "result.json", result)
             os.chmod(output_root / "result.json", 0o444)
-            print(json.dumps({"status": "passed", "world_size": world_size, "measured_steps": args.measured_steps}, sort_keys=True), flush=True)
+            print(
+                json.dumps(
+                    {
+                        "status": "passed",
+                        "world_size": world_size,
+                        "measured_steps": args.measured_steps,
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
         dist.barrier()
     finally:
         if dist.is_initialized():
