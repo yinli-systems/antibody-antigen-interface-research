@@ -48,6 +48,7 @@ SOURCE_PATHS = (
     "scripts/frontier_fsdp2_dcp_smoke.py",
     "scripts/frontier_fsdp2_profile.py",
     "slurm/frontier_fsdp2_profile.sbatch",
+    "slurm/frontier_fsdp2_multinode_profile.sbatch",
     "src/interaction_first/frontier_fsdp2.py",
     "src/interaction_first/frontier_model.py",
 )
@@ -274,6 +275,11 @@ def main() -> None:
                 "batch_size_per_rank": args.batch_size_per_rank,
                 "global_examples_per_step": global_examples,
                 "global_residue_tokens_per_step": global_residue_tokens,
+                "scaling_coordinate": {
+                    "fixed_global_examples": global_examples,
+                    "world_size": world_size,
+                    "batch_size_per_rank": args.batch_size_per_rank,
+                },
                 "authoritative_timing": "maximum rank wall time for each aligned optimizer step",
                 "step_seconds": _percentile_map(per_step_global_seconds),
                 "global_examples_per_second": _percentile_map(examples_per_second),
