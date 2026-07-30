@@ -5,7 +5,10 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from antibody_pretraining.production_update_plan import build_indexed_update_plan
+from antibody_pretraining.production_update_plan import (
+    build_indexed_update_plan,
+    partition_update_indices,
+)
 from antibody_pretraining.training_contract import (
     TrainingContractError,
     build_update_plan,
@@ -52,4 +55,40 @@ def test_indexed_update_plan_rejects_malformed_length_lookup() -> None:
             target_residue_tokens=10,
             batch_quantum_sequences=4,
             seed=17,
+        )
+
+
+def test_partition_update_indices_is_disjoint_complete_and_ordered() -> None:
+    indices = np.arange(48, dtype=np.int64)
+    by_rank = [
+        partition_update_indices(
+            indices,
+            micro_batch_per_rank=4,
+            world_size=3,
+            rank=rank,
+        )
+        for rank in range(3)
+    ]
+    assert all(len(value) == 4 for value in by_rank)
+    recovered: list[int] = []
+    for micro_step in range(4):
+        for rank in range(3):
+            recovered.extend(by_rank[rank][micro_step].tolist())
+    assert recovered == indices.tolist()
+
+
+def test_partition_update_indices_rejects_invalid_geometry() -> None:
+    with pytest.raises(TrainingContractError, match="divisible"):
+        partition_update_indices(
+            np.arange(10, dtype=np.int64),
+            micro_batch_per_rank=2,
+            world_size=3,
+            rank=0,
+        )
+    with pytest.raises(TrainingContractError, match="valid range"):
+        partition_update_indices(
+            np.arange(12, dtype=np.int64),
+            micro_batch_per_rank=2,
+            world_size=3,
+            rank=3,
         )

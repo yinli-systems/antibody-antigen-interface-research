@@ -46,6 +46,7 @@ class ProductionCorpusContract:
     manifest_payload_sha256: str
     protocol_file_sha256: str
     split: str
+    array_file_hashes_verified: bool = True
     training_authorized: bool = False
 
 
@@ -231,6 +232,7 @@ def _load_shard(
     bucket: int,
     split: str,
     reference: Mapping[str, Any],
+    verify_array_file_hashes: bool,
 ) -> _Shard:
     """Authenticate and memory-map one complete reducer shard."""
     root = _safe_shard_root(output_root, reference.get("relative_root"))
@@ -261,7 +263,10 @@ def _load_shard(
         path = root / name
         if (
             path.stat().st_size != file_reference.get("bytes")
-            or _file_sha256(path) != file_reference.get("sha256")
+            or (
+                verify_array_file_hashes
+                and _file_sha256(path) != file_reference.get("sha256")
+            )
         ):
             raise ProductionCorpusError(f"Shard file differs: {name}")
         array = np.load(path, mmap_mode="r", allow_pickle=False)
@@ -286,10 +291,13 @@ def load_production_corpus(
     independent_audit_path: Path,
     expected_independent_audit_file_sha256: str,
     expected_independent_audit_payload_sha256: str,
+    verify_array_file_hashes: bool = True,
 ) -> ProductionCorpus:
     """Authenticate the full evidence graph and open one read-only split."""
     if split not in {"train", "validation"}:
         raise ProductionCorpusError("Corpus split is invalid")
+    if not isinstance(verify_array_file_hashes, bool):
+        raise ProductionCorpusError("Array hash-verification mode is invalid")
     for value, label in (
         (expected_manifest_file_sha256, "Manifest file digest"),
         (expected_manifest_payload_sha256, "Manifest payload digest"),
@@ -358,6 +366,7 @@ def load_production_corpus(
             bucket=bucket["bucket"],
             split=split,
             reference=bucket["shards"][split],
+            verify_array_file_hashes=verify_array_file_hashes,
         )
         for bucket in buckets
     )
@@ -376,6 +385,7 @@ def load_production_corpus(
             manifest_payload_sha256=expected_manifest_payload_sha256,
             protocol_file_sha256=expected_protocol_file_sha256,
             split=split,
+            array_file_hashes_verified=verify_array_file_hashes,
         ),
         manifest=manifest,
         offsets=offsets,

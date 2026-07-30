@@ -145,3 +145,43 @@ def test_loader_rejects_reanchored_independent_audit(
             )
     finally:
         fixture_module._make_writable(fixture["output"])
+
+
+def test_schema_only_follower_open_skips_array_rehash(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
+    monkeypatch.delenv("SLURM_JOB_GPUS", raising=False)
+    monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
+    fixture_module, fixture, finalization, audit_path, audit = _fixture(tmp_path)
+    import antibody_pretraining.production_corpus as corpus_module
+
+    original_sha256 = corpus_module._file_sha256
+
+    def reject_array_hash(path: Path) -> str:
+        if path.suffix == ".npy":
+            raise AssertionError("Follower open rehashed a corpus array")
+        return original_sha256(path)
+
+    try:
+        monkeypatch.setattr(corpus_module, "_file_sha256", reject_array_hash)
+        corpus = load_production_corpus(
+            fixture["output"],
+            split="train",
+            expected_manifest_file_sha256=finalization["manifest_file_sha256"],
+            expected_manifest_payload_sha256=finalization[
+                "manifest_payload_sha256"
+            ],
+            expected_protocol_file_sha256=fixture["protocol_sha256"],
+            independent_audit_path=audit_path,
+            expected_independent_audit_file_sha256=hashlib.sha256(
+                audit_path.read_bytes()
+            ).hexdigest(),
+            expected_independent_audit_payload_sha256=audit["receipt_sha256"],
+            verify_array_file_hashes=False,
+        )
+        assert corpus.contract.array_file_hashes_verified is False
+        assert len(corpus) == 1
+    finally:
+        fixture_module._make_writable(fixture["output"])

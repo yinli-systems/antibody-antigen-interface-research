@@ -65,3 +65,40 @@ def build_indexed_update_plan(
         residue_token_count=residue_count,
         sample_cursor=sample_cursor,
     )
+
+
+def partition_update_indices(
+    indices: np.ndarray,
+    *,
+    micro_batch_per_rank: int,
+    world_size: int,
+    rank: int,
+) -> tuple[np.ndarray, ...]:
+    """Partition one global update into synchronized rank-local microbatches."""
+    requested = np.asarray(indices)
+    if requested.dtype.kind not in {"i", "u"} or requested.ndim != 1:
+        raise TrainingContractError(
+            "Update indices must be a one-dimensional integer array"
+        )
+    dimensions = (micro_batch_per_rank, world_size, rank)
+    if any(
+        isinstance(value, bool) or not isinstance(value, int)
+        for value in dimensions
+    ):
+        raise TrainingContractError("Partition dimensions must be integers")
+    if micro_batch_per_rank <= 0 or world_size <= 0 or not 0 <= rank < world_size:
+        raise TrainingContractError(
+            "Partition dimensions are outside their valid range"
+        )
+    global_micro_batch = micro_batch_per_rank * world_size
+    if len(requested) % global_micro_batch:
+        raise TrainingContractError(
+            "Global update is not divisible by the global microbatch"
+        )
+    return tuple(
+        requested[
+            start + rank * micro_batch_per_rank :
+            start + (rank + 1) * micro_batch_per_rank
+        ]
+        for start in range(0, len(requested), global_micro_batch)
+    )

@@ -27,7 +27,10 @@ from antibody_pretraining.model import (
     load_model_family,
 )
 from antibody_pretraining.production_corpus import load_production_corpus
-from antibody_pretraining.production_update_plan import build_indexed_update_plan
+from antibody_pretraining.production_update_plan import (
+    build_indexed_update_plan,
+    partition_update_indices,
+)
 from antibody_pretraining.tokenizer import PAD_ID
 from antibody_pretraining.training_contract import (
     learning_rate_at_token,
@@ -282,8 +285,9 @@ def main() -> None:
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
     rank = int(os.environ.get("RANK", "0"))
     local_rank = int(os.environ.get("LOCAL_RANK", "0"))
-    if world_size != 1:
-        raise RuntimeError("The production loader recovery gate requires one GPU")
+    local_world_size = int(os.environ.get("LOCAL_WORLD_SIZE", str(world_size)))
+    if world_size <= 0 or world_size != local_world_size:
+        raise RuntimeError("The production loader gate requires one local GPU node")
     if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
         raise RuntimeError("CUDA rank identity is invalid")
     torch.cuda.set_device(local_rank)
@@ -299,6 +303,10 @@ def main() -> None:
         device_id=device,
     )
     dist.barrier()
+    rank_hosts: list[str | None] = [None] * world_size
+    dist.all_gather_object(rank_hosts, socket.gethostname())
+    if len(set(rank_hosts)) != 1:
+        raise RuntimeError("The production loader gate requires one shared host")
     random.seed(args.run_seed)
     np.random.seed(args.run_seed)
     torch.manual_seed(args.run_seed)
@@ -326,24 +334,49 @@ def main() -> None:
         efficiency_protocol_sha256=efficiency_protocol_sha256,
         world_size=world_size,
     )
-    corpus = load_production_corpus(
-        args.production_corpus_root,
-        split="train",
-        expected_manifest_file_sha256=(
+    corpus_arguments = {
+        "split": "train",
+        "expected_manifest_file_sha256": (
             args.production_corpus_manifest_file_sha256
         ),
-        expected_manifest_payload_sha256=(
+        "expected_manifest_payload_sha256": (
             args.production_corpus_manifest_payload_sha256
         ),
-        expected_protocol_file_sha256=args.production_corpus_protocol_file_sha256,
-        independent_audit_path=args.production_corpus_independent_audit,
-        expected_independent_audit_file_sha256=(
+        "expected_protocol_file_sha256": (
+            args.production_corpus_protocol_file_sha256
+        ),
+        "independent_audit_path": args.production_corpus_independent_audit,
+        "expected_independent_audit_file_sha256": (
             args.production_corpus_independent_audit_file_sha256
         ),
-        expected_independent_audit_payload_sha256=(
+        "expected_independent_audit_payload_sha256": (
             args.production_corpus_independent_audit_payload_sha256
         ),
-    )
+    }
+    corpus = None
+    if local_rank == 0:
+        corpus = load_production_corpus(
+            args.production_corpus_root,
+            **corpus_arguments,
+            verify_array_file_hashes=True,
+        )
+    dist.barrier()
+    if local_rank != 0:
+        corpus = load_production_corpus(
+            args.production_corpus_root,
+            **corpus_arguments,
+            verify_array_file_hashes=False,
+        )
+    if corpus is None:
+        raise AssertionError("Production corpus was not opened")
+    expected_hash_mode = local_rank == 0
+    if corpus.contract.array_file_hashes_verified is not expected_hash_mode:
+        raise RuntimeError("Distributed corpus hash-verification mode differs")
+    corpus_counts: list[int | None] = [None] * world_size
+    dist.all_gather_object(corpus_counts, len(corpus))
+    if len(set(corpus_counts)) != 1:
+        raise RuntimeError("Distributed corpus record counts differ")
+    dist.barrier()
     boundaries = engine._parse_boundaries(
         args.length_bucket_boundaries,
         family["maximum_sequence_tokens"],
@@ -478,12 +511,15 @@ def main() -> None:
             sample_cursor=cursor,
             indices=plan.indices,
         )
-        if len(compute_indices) % args.micro_batch:
-            raise RuntimeError("Batch quantum must divide the micro batch")
+        local_micro_batches = partition_update_indices(
+            compute_indices,
+            micro_batch_per_rank=args.micro_batch,
+            world_size=world_size,
+            rank=rank,
+        )
         prepared: list[tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = []
         local_target_count = 0
-        for start in range(0, len(compute_indices), args.micro_batch):
-            indices = compute_indices[start : start + args.micro_batch]
+        for indices in local_micro_batches:
             batch = corpus.batch(
                 indices,
                 fields=(
@@ -565,7 +601,7 @@ def main() -> None:
             with sync_context:
                 with torch.autocast("cuda", dtype=torch.bfloat16):
                     output = model(input_ids, type_ids, attention, labels)
-                    loss = output.loss_sum / target_count
+                    loss = output.loss_sum * world_size / target_count
                 loss.backward()
             loss_sum_value += float(output.loss_sum.detach())
         loss_tensor = torch.tensor(loss_sum_value, dtype=torch.float64, device=device)
@@ -676,6 +712,12 @@ def main() -> None:
                     "production-pretraining, scale, biological, or SOTA claim"
                 ),
                 "compile_prewarm_trace": compile_prewarm_trace,
+                "corpus_open": {
+                    "array_file_hashes_verified_by_local_rank_zero": True,
+                    "follower_validation": "size_dtype_shape_after_barrier",
+                    "node_count": 1,
+                    "rank_hosts": rank_hosts,
+                },
                 "data_preparation_seconds": data_preparation_seconds,
                 "data_source": _data_contract(args),
                 "device": torch.cuda.get_device_name(device),
