@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SLURM = ROOT / "slurm/antibody_production_loader_recovery_gate.sbatch"
+PIPELINE_SLURM = ROOT / "slurm/antibody_production_recovery_pipeline.sbatch"
 
 
 def test_recovery_launcher_uses_one_gpu_and_public_partition() -> None:
@@ -12,8 +13,18 @@ def test_recovery_launcher_uses_one_gpu_and_public_partition() -> None:
     assert "#SBATCH --partition=gpu_5090" in source
     assert "#SBATCH --gres=gpu:1" in source
     assert "#SBATCH --cpus-per-task=8" in source
+    assert "#SBATCH --mem" not in source
     assert "vip_gpu_5090_scxi253" not in source
     assert "--nproc-per-node=1" in source
+
+
+def test_recovery_pipeline_obeys_public_partition_qos() -> None:
+    source = PIPELINE_SLURM.read_text(encoding="ascii")
+    assert "#SBATCH --partition=gpu_5090" in source
+    assert "#SBATCH --gres=gpu:1" in source
+    assert "#SBATCH --cpus-per-task=8" in source
+    assert "#SBATCH --mem" not in source
+    assert "vip_gpu_5090_scxi253" not in source
 
 
 def test_recovery_launcher_runs_exact_three_part_comparison() -> None:
