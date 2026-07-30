@@ -50,6 +50,7 @@ SOURCE_PATHS = (
     "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_profile.sbatch",
     "slurm/frontier_fsdp2_multinode_profile.sbatch",
+    "src/interaction_first/asymmetric_retrieval.py",
     "src/interaction_first/frontier_fsdp2.py",
     "src/interaction_first/frontier_model.py",
 )

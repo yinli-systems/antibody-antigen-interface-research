@@ -40,7 +40,9 @@ from interaction_first.frontier_model import ProtocolD0Retriever, ProtocolRerank
 SOURCE_PATHS = (
     "scripts/distributed_launch_contract.py",
     "scripts/frontier_fsdp2_dcp_smoke.py",
+    "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_dcp_smoke.sbatch",
+    "src/interaction_first/asymmetric_retrieval.py",
     "src/interaction_first/frontier_fsdp2.py",
     "src/interaction_first/frontier_model.py",
 )
