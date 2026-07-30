@@ -36,6 +36,92 @@ class RowDecision:
     rejection_reason: str | None
 
 
+@dataclass(frozen=True)
+class CompiledUnpairedRowEvaluator:
+    """Apply one validated immutable policy without per-row schema checks."""
+
+    authority_chain: str
+    boolean_requirements: tuple[tuple[str, bool], ...]
+    fatal_markers: tuple[str, ...]
+    maximum_length: int
+    minimum_length: int
+    sequence_field_priority: tuple[str, ...]
+
+    @classmethod
+    def from_policy(
+        cls,
+        policy: Mapping[str, Any],
+        *,
+        authority_chain: str,
+    ) -> CompiledUnpairedRowEvaluator:
+        """Validate and freeze all policy fields used by the row hot path."""
+        validate_filter_policy(policy)
+        if authority_chain not in {"Heavy", "Light"}:
+            raise PreprocessingError("Authority chain must be Heavy or Light")
+        return cls(
+            authority_chain=authority_chain,
+            boolean_requirements=tuple(policy["boolean_requirements"].items()),
+            fatal_markers=tuple(
+                marker.lower()
+                for marker in policy["anarci_status"][
+                    "fatal_case_insensitive_markers"
+                ]
+            ),
+            maximum_length=int(policy["maximum_length"]),
+            minimum_length=int(policy["minimum_length"]),
+            sequence_field_priority=tuple(policy["sequence_field_priority"]),
+        )
+
+    def evaluate(self, row: Mapping[str, Any]) -> RowDecision:
+        """Evaluate one row under the already validated immutable policy."""
+        for field, required in self.boolean_requirements:
+            observed = _parse_oas_boolean(row.get(field))
+            if observed is None:
+                return RowDecision(None, f"invalid_boolean_{field}")
+            if observed is not required:
+                return RowDecision(None, f"failed_{field}")
+        sequence = _sequence_from_row(row, list(self.sequence_field_priority))
+        if sequence is None:
+            return RowDecision(None, "missing_sequence")
+        try:
+            canonical = validate_residue_sequence(
+                sequence,
+                minimum_length=self.minimum_length,
+                maximum_length=self.maximum_length,
+            )
+        except TokenizerError as error:
+            message = str(error)
+            reason = "invalid_length" if "length" in message else "invalid_residue"
+            return RowDecision(None, reason)
+        try:
+            chain_type = normalize_locus(row.get("locus", ""))
+        except TokenizerError:
+            return RowDecision(None, "invalid_locus")
+        if self.authority_chain == "Heavy" and chain_type != "heavy":
+            return RowDecision(None, "authority_locus_disagreement")
+        if self.authority_chain == "Light" and chain_type not in {
+            "kappa",
+            "lambda",
+        }:
+            return RowDecision(None, "authority_locus_disagreement")
+        status = row.get("ANARCI_status")
+        if not isinstance(status, str):
+            return RowDecision(None, "missing_anarci_status")
+        lowered = status.lower()
+        if any(marker in lowered for marker in self.fatal_markers):
+            return RowDecision(None, "fatal_anarci_status")
+        sequence_sha256 = hashlib.sha256(canonical.encode("ascii")).hexdigest()
+        return RowDecision(
+            AcceptedSequence(
+                chain_type=chain_type,
+                sequence=canonical,
+                sequence_sha256=sequence_sha256,
+                status_flags=_status_flags(status),
+            ),
+            None,
+        )
+
+
 def load_filter_policy(path: Path) -> tuple[dict[str, Any], str]:
     """Load one byte-anchored ASCII filtering policy."""
     payload = path.read_bytes()
@@ -134,55 +220,11 @@ def evaluate_unpaired_row(
     policy: Mapping[str, Any],
 ) -> RowDecision:
     """Apply productive, frame, residue, locus, length, and ANARCI gates."""
-    validate_filter_policy(policy)
-    for field, required in policy["boolean_requirements"].items():
-        observed = _parse_oas_boolean(row.get(field))
-        if observed is None:
-            return RowDecision(None, f"invalid_boolean_{field}")
-        if observed is not required:
-            return RowDecision(None, f"failed_{field}")
-    sequence = _sequence_from_row(row, policy["sequence_field_priority"])
-    if sequence is None:
-        return RowDecision(None, "missing_sequence")
-    try:
-        canonical = validate_residue_sequence(
-            sequence,
-            minimum_length=policy["minimum_length"],
-            maximum_length=policy["maximum_length"],
-        )
-    except TokenizerError as error:
-        message = str(error)
-        reason = "invalid_length" if "length" in message else "invalid_residue"
-        return RowDecision(None, reason)
-    try:
-        chain_type = normalize_locus(row.get("locus", ""))
-    except TokenizerError:
-        return RowDecision(None, "invalid_locus")
-    if authority_chain == "Heavy" and chain_type != "heavy":
-        return RowDecision(None, "authority_locus_disagreement")
-    if authority_chain == "Light" and chain_type not in {"kappa", "lambda"}:
-        return RowDecision(None, "authority_locus_disagreement")
-    if authority_chain not in {"Heavy", "Light"}:
-        raise PreprocessingError("Authority chain must be Heavy or Light")
-    status = row.get("ANARCI_status")
-    if not isinstance(status, str):
-        return RowDecision(None, "missing_anarci_status")
-    lowered = status.lower()
-    if any(
-        marker.lower() in lowered
-        for marker in policy["anarci_status"]["fatal_case_insensitive_markers"]
-    ):
-        return RowDecision(None, "fatal_anarci_status")
-    sequence_sha256 = hashlib.sha256(canonical.encode("ascii")).hexdigest()
-    return RowDecision(
-        AcceptedSequence(
-            chain_type=chain_type,
-            sequence=canonical,
-            sequence_sha256=sequence_sha256,
-            status_flags=_status_flags(status),
-        ),
-        None,
+    evaluator = CompiledUnpairedRowEvaluator.from_policy(
+        policy,
+        authority_chain=authority_chain,
     )
+    return evaluator.evaluate(row)
 
 
 def selected_by_plan_fraction(
