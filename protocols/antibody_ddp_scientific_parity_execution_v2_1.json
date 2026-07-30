@@ -1,0 +1,98 @@
+{
+  "allocation": {
+    "gpu_count": 8,
+    "hardware": "NVIDIA GeForce RTX 5090",
+    "node_count": 1,
+    "same_slurm_job_for_all_runs": true
+  },
+  "authorization": {
+    "exact_recovery": false,
+    "pilot_16_gpu": false,
+    "pilot_32_gpu": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "execution": {
+    "backend": "ddp",
+    "batch_quantum_sequences": 128,
+    "checkpoint": "disabled_for_gate",
+    "deterministic_algorithms": true,
+    "evaluation_mask_fraction": 0.15,
+    "length_bucket_boundaries": [
+      96,
+      128,
+      144,
+      194
+    ],
+    "micro_batch_per_gpu": 16,
+    "preset": "abf_650m",
+    "resume": "prohibited",
+    "target_residue_tokens_per_update": 16384,
+    "updates_per_run": 500
+  },
+  "format_version": "antibody_ddp_scientific_parity_execution_v2_1",
+  "inputs": {
+    "communication_protocol_sha256": "899f064b21a8f3b8cb6fc9c291ee19b414df1d35623c3fc18ab9fc7fbc923953",
+    "dense_manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
+    "efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+    "gate_protocol_sha256": "81d1a2131f0e39ae53139ff8d9d3bc9ea8a7e4201ff604085cd69869de42a6dc",
+    "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
+    "split_files": {
+      "evaluation_indices.npy": "4bb76f37f6456f6f74e7ee760c3584f9d4393b75e2512410d49c4e958bc8846c",
+      "evaluation_sample_keys.npy": "494a7c6bdfcd858cf63675db75af99bd3460a3f817931a15a9c46dd652fe37e2",
+      "training_indices.npy": "294d2b9588c52efd8d8043b8378540a55975ad8292a3352131a4a1fdd7f983a6",
+      "training_sample_keys.npy": "ec7dc7420e9566cffbb3c41a4977ab73828414dcfe4e838e58808c34624b2e27"
+    },
+    "split_receipt_file_sha256": "ceb2baa6b5c8e99ef54a2f56530f5e7b559f7b1e949a72b6f731606b6b455ddc",
+    "split_receipt_sha256": "def8244ad6b5c549959f31b8e7a637416ab0e9a7cb33a8dd73389681d5261c60",
+    "training_protocol_sha256": "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b"
+  },
+  "implementation": {
+    "run_antibody_pretraining_optimized.py": "5f93efe9b0a4c1509908dbf89337c249aefc06f54a4d97be02af7d1da35c67b9"
+  },
+  "modes": {
+    "bf16_selected": {
+      "bucketed_padding": true,
+      "compile_blocks": true,
+      "compile_prewarm_buckets": true,
+      "ddp_batched_grad_copy": true,
+      "ddp_communication_dtype": "bfloat16",
+      "fused_adamw": true,
+      "pinned_staging": true
+    },
+    "fp32_compiled": {
+      "bucketed_padding": true,
+      "compile_blocks": true,
+      "compile_prewarm_buckets": true,
+      "ddp_batched_grad_copy": false,
+      "ddp_communication_dtype": "float32",
+      "fused_adamw": true,
+      "pinned_staging": true
+    },
+    "safe_eager": {
+      "bucketed_padding": false,
+      "compile_blocks": false,
+      "compile_prewarm_buckets": false,
+      "ddp_batched_grad_copy": false,
+      "ddp_communication_dtype": "float32",
+      "fused_adamw": false,
+      "pinned_staging": false
+    }
+  },
+  "parent_gate_protocol": "antibody_ddp_scientific_parity_gate_v2",
+  "run_order": [
+    "seed17_safe_eager",
+    "seed17_fp32_compiled",
+    "seed17_bf16_selected",
+    "seed42_bf16_selected",
+    "seed42_safe_eager",
+    "seed42_fp32_compiled",
+    "seed73_fp32_compiled",
+    "seed73_bf16_selected",
+    "seed73_safe_eager"
+  ],
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
