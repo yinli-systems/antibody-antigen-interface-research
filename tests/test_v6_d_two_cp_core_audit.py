@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -144,3 +145,44 @@ def test_parent_authentication_rejects_wrong_lineage(
             registration,
             v6_b_registration_sha256="a" * 64,
         )
+
+
+def test_runtime_uses_invoked_venv_path_without_resolving_symlink(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed = {}
+
+    class FakePath(type(Path())):
+        def absolute(self) -> Path:
+            observed["absolute"] = True
+            return self
+
+        def resolve(self, *args: object, **kwargs: object) -> Path:
+            if str(self) == sys.executable:
+                raise AssertionError("invoked Python path must not be resolved")
+            return super().resolve(*args, **kwargs)
+
+    monkeypatch.setattr(audit, "Path", FakePath)
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "")
+    import ortools
+
+    ortools_path = Path(str(ortools.__file__)).resolve(strict=True)
+    libc_family, libc_version = audit.platform.libc_ver()
+    registration = {
+        "runtime": {
+            "cp_sat_runtime_receipt_path": "/runtime/receipt.json",
+            "cp_sat_runtime_receipt_sha256": "a" * 64,
+            "libc_family": libc_family,
+            "libc_version": libc_version,
+            "machine": audit.platform.machine(),
+            "ortools_module_sha256": audit._sha256_file(ortools_path),
+            "ortools_version": ortools.__version__,
+            "python_executable": str(FakePath(sys.executable).absolute()),
+            "python_version": audit.platform.python_version(),
+            "system": audit.platform.system(),
+        }
+    }
+    monkeypatch.setattr(audit.production, "read_verified", lambda *a, **k: b"x")
+    receipt = audit._authenticate_runtime(registration)
+    assert receipt["python_executable"] == registration["runtime"]["python_executable"]
+    assert observed["absolute"] is True

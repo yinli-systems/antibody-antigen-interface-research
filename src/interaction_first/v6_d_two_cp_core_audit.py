@@ -221,7 +221,7 @@ def _authenticate_runtime(registration: Mapping[str, Any]) -> dict[str, Any]:
             Path(str(ortools.__file__)).resolve(strict=True)
         ),
         "ortools_version": ortools.__version__,
-        "python_executable": str(Path(sys.executable).resolve()),
+        "python_executable": str(Path(sys.executable).absolute()),
         "python_version": platform.python_version(),
         "system": platform.system(),
     }
