@@ -258,3 +258,70 @@ def test_loader_enforces_bounded_array_cache(
             )
     finally:
         fixture_module._make_writable(fixture["output"])
+
+
+def test_grouped_batch_preserves_cross_shard_order(tmp_path: Path) -> None:
+    import antibody_pretraining.production_corpus as corpus_module
+
+    shards = []
+    for shard_id, token_offset in enumerate((10, 20)):
+        root = tmp_path / f"shard-{shard_id}"
+        root.mkdir()
+        arrays = {
+            "lengths.npy": np.asarray([4, 5], dtype=np.uint16),
+            "tokens.npy": np.asarray(
+                [
+                    [token_offset, token_offset + 1],
+                    [token_offset + 2, token_offset + 3],
+                ],
+                dtype=np.uint8,
+            ),
+        }
+        references = {}
+        for name, values in arrays.items():
+            path = root / name
+            np.save(path, values, allow_pickle=False)
+            mapped = np.load(path, mmap_mode="r", allow_pickle=False)
+            references[name] = corpus_module._ArrayReference(
+                dtype=mapped.dtype,
+                path=path,
+                shape=tuple(mapped.shape),
+            )
+            corpus_module._close_memmap(mapped)
+        shards.append(
+            corpus_module._Shard(
+                arrays=references,
+                bucket=shard_id,
+                record_count=2,
+                root=root,
+            )
+        )
+    corpus = corpus_module.ProductionCorpus(
+        contract=corpus_module.ProductionCorpusContract(
+            independent_audit_file_sha256="1" * 64,
+            independent_audit_payload_sha256="2" * 64,
+            manifest_file_sha256="3" * 64,
+            manifest_payload_sha256="4" * 64,
+            protocol_file_sha256="5" * 64,
+            split="train",
+        ),
+        manifest={},
+        offsets=np.asarray([0, 2, 4], dtype=np.int64),
+        shards=tuple(shards),
+        array_cache=corpus_module._BoundedArrayCache(2),
+    )
+    try:
+        grouped = corpus.batch_groups(
+            (
+                np.asarray([3, 0], dtype=np.int64),
+                np.asarray([2, 1], dtype=np.int64),
+            ),
+            fields=("lengths.npy", "tokens.npy"),
+        )
+        assert grouped[0]["lengths.npy"].tolist() == [5, 4]
+        assert grouped[1]["lengths.npy"].tolist() == [4, 5]
+        assert grouped[0]["tokens.npy"].tolist() == [[22, 23], [10, 11]]
+        assert grouped[1]["tokens.npy"].tolist() == [[20, 21], [12, 13]]
+        assert corpus.array_cache.open_array_count == 2
+    finally:
+        corpus.close()
