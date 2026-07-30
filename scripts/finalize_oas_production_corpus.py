@@ -23,6 +23,7 @@ SHARD_FORMAT = "oas_production_dense_bucket_shard_v1"
 SUPPORTED_PROTOCOL_FORMATS = {
     "oas_production_materialization_protocol_v1",
     "oas_production_materialization_protocol_v2",
+    "oas_production_materialization_protocol_v3",
 }
 TEST_ACCESS = {
     "downstream_metrics_used": False,
@@ -224,7 +225,10 @@ def _load_map_receipts(
             raise ProductionFinalizeError(
                 "Map receipt is not a complete production task"
             )
-        if protocol_format == "oas_production_materialization_protocol_v2" and (
+        if protocol_format in {
+            "oas_production_materialization_protocol_v2",
+            "oas_production_materialization_protocol_v3",
+        } and (
             receipt.get("resource_receipt")
             != {
                 "cuda_visible_devices": False,
@@ -391,7 +395,10 @@ def _load_reduce_receipts(
             or boundary.get("large_scale_pretraining_authorized") is not False
         ):
             raise ProductionFinalizeError("Reducer receipt identity differs")
-        if protocol_format == "oas_production_materialization_protocol_v2" and (
+        if protocol_format in {
+            "oas_production_materialization_protocol_v2",
+            "oas_production_materialization_protocol_v3",
+        } and (
             receipt.get("resource_receipt")
             != {
                 "cuda_visible_devices": False,

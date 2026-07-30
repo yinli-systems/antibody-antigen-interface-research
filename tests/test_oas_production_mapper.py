@@ -49,10 +49,16 @@ def _self_hashed(value: dict[str, object], field: str) -> bytes:
     return _canonical(value)
 
 
-def _oas_bytes() -> tuple[bytes, bytes, bytes, bytes]:
+def _oas_bytes(
+    metadata_field: str | None = None,
+) -> tuple[bytes, bytes, bytes, bytes]:
     metadata_buffer = io.StringIO(newline="")
     csv.writer(metadata_buffer, lineterminator="\n").writerow(
-        [json.dumps({"Chain": "Heavy", "Unique sequences": 2})]
+        [
+            metadata_field
+            if metadata_field is not None
+            else json.dumps({"Chain": "Heavy", "Unique sequences": 2})
+        ]
     )
     metadata = metadata_buffer.getvalue().encode("utf-8")
     header_fields = (
@@ -78,11 +84,11 @@ def _oas_bytes() -> tuple[bytes, bytes, bytes, bytes]:
     return compressed_buffer.getvalue(), uncompressed, metadata, header
 
 
-def _fixture(tmp_path: Path):
+def _fixture(tmp_path: Path, *, metadata_field: str | None = None):
     module = _load_module()
     download_root = tmp_path / "downloads"
     relative = "study/csv/unit.csv.gz"
-    compressed, uncompressed, metadata, header = _oas_bytes()
+    compressed, uncompressed, metadata, header = _oas_bytes(metadata_field)
     raw_path = download_root / "raw/unpaired" / relative
     raw_path.parent.mkdir(parents=True)
     raw_path.write_bytes(compressed)
@@ -268,3 +274,131 @@ def test_strict_json_and_existing_publication_fail_closed(tmp_path: Path) -> Non
                 Path(record_module.__file__).read_bytes()
             ).hexdigest(),
         )
+
+
+def test_v3_maps_only_independently_bound_age_nan(tmp_path: Path) -> None:
+    module = _load_module()
+    field = '{"Age":NaN,"Chain":"Heavy","Unique sequences":2}'
+    fixture = _fixture(tmp_path, metadata_field=field)
+    relative = "study/csv/unit.csv.gz"
+    raw_path = fixture["download_root"] / "raw/unpaired" / relative
+    with gzip.open(raw_path, "rt", encoding="utf-8", newline="") as handle:
+        metadata_line = handle.readline()
+    normalized = {"Age": None, "Chain": "Heavy", "Unique sequences": 2}
+    normalization = {
+        "affected_units": [
+            {
+                "decoded_metadata_sha256": hashlib.sha256(
+                    field.encode("utf-8")
+                ).hexdigest(),
+                "normalized_metadata_sha256": hashlib.sha256(
+                    _canonical(normalized)
+                ).hexdigest(),
+                "raw_metadata_line_sha256": hashlib.sha256(
+                    metadata_line.encode("utf-8")
+                ).hexdigest(),
+                "relative_unit": relative,
+            }
+        ],
+        "format_version": "oas_metadata_normalization_protocol_v1",
+        "normalization": {"affected_unit_count": 1},
+    }
+    normalization_path = tmp_path / "normalization.json"
+    normalization_raw = _canonical(normalization)
+    normalization_path.write_bytes(normalization_raw)
+    normalization_sha256 = hashlib.sha256(normalization_raw).hexdigest()
+    normalization_audit = {
+        "audit_passed": True,
+        "authorization": {
+            "large_scale_pretraining": False,
+            "production_corpus_use": False,
+            "scientific_claim": False,
+        },
+        "counts": {
+            "affected_units": 1,
+            "scanned_units": 1,
+            "strict_units": 0,
+        },
+        "format_version": "oas_metadata_normalization_independent_audit_v1",
+        "normalization_protocol_file_sha256": normalization_sha256,
+        "test_access": module.TEST_ACCESS,
+    }
+    normalization_audit_path = tmp_path / "normalization-audit.json"
+    normalization_audit_raw = _self_hashed(
+        normalization_audit,
+        "receipt_sha256",
+    )
+    normalization_audit_path.write_bytes(normalization_audit_raw)
+    protocol = json.loads(fixture["protocol"].read_text(encoding="ascii"))
+    protocol["format_version"] = "oas_production_materialization_protocol_v3"
+    protocol["inputs"].update(
+        {
+            "metadata_normalization_audit_file_sha256": hashlib.sha256(
+                normalization_audit_raw
+            ).hexdigest(),
+            "metadata_normalization_audit_payload_sha256": normalization_audit[
+                "receipt_sha256"
+            ],
+            "metadata_normalization_protocol_file_sha256": normalization_sha256,
+        }
+    )
+    protocol_raw = _canonical(protocol)
+    fixture["protocol"].write_bytes(protocol_raw)
+    fixture["protocol_sha256"] = hashlib.sha256(protocol_raw).hexdigest()
+    receipt = module.map_production_task(
+        task_id=0,
+        task_count=1,
+        download_root=fixture["download_root"],
+        plan_path=fixture["plan"],
+        download_audit_path=fixture["audit"],
+        filter_policy_path=fixture["filter"],
+        protocol_path=fixture["protocol"],
+        protocol_file_sha256=fixture["protocol_sha256"],
+        output_root=fixture["output"],
+        expected_controller_source_sha256=hashlib.sha256(SCRIPT.read_bytes()).hexdigest(),
+        expected_preprocessing_source_sha256=hashlib.sha256(
+            Path(preprocessing_module.__file__).read_bytes()
+        ).hexdigest(),
+        expected_record_source_sha256=hashlib.sha256(
+            Path(record_module.__file__).read_bytes()
+        ).hexdigest(),
+        normalization_protocol_path=normalization_path,
+        normalization_audit_path=normalization_audit_path,
+    )
+    published = fixture["output"] / "map/mapper-0000"
+    try:
+        assert receipt["metadata_normalization_counts"] == {"age_nan_to_null": 1}
+        assert receipt["unit_receipts"][0]["metadata_normalization"] == (
+            "age_nan_to_null"
+        )
+        assert receipt["audit_bindings"][
+            "metadata_normalization_audit_payload_sha256"
+        ] == normalization_audit["receipt_sha256"]
+    finally:
+        _make_writable(published)
+
+
+def test_metadata_exception_rejects_all_unregistered_nonfinite_values() -> None:
+    module = _load_module()
+    with pytest.raises(module.ProductionMapError, match="unauthorized"):
+        module._decode_oas_metadata(
+            '{"Age":NaN}',
+            metadata_line='"{""Age"":NaN}"\n',
+            relative_unit="study/csv/unit.csv.gz",
+            exceptions={},
+        )
+    for payload in ('{"Age":Infinity}', '{"Age":[NaN]}', '{"Other":NaN}'):
+        with pytest.raises(module.ProductionMapError, match="unauthorized"):
+            module._decode_oas_metadata(
+                payload,
+                metadata_line=payload + "\n",
+                relative_unit="study/csv/unit.csv.gz",
+                exceptions={
+                    "study/csv/unit.csv.gz": {
+                        "decoded_metadata_sha256": "0" * 64,
+                        "normalized_metadata_sha256": "0" * 64,
+                        "raw_metadata_line_sha256": "0" * 64,
+                        "relative_unit": "study/csv/unit.csv.gz",
+                    }
+                },
+            )

@@ -396,12 +396,14 @@ def _map_inventory(
     int,
     list[dict[str, Any]],
     dict[str, Any],
+    dict[str, int],
 ]:
     inventories = []
     receipt_references = []
     source_rows = 0
     accepted_records = 0
     study_count = -1
+    metadata_normalization_totals = {"age_nan_to_null": 0, "strict_json": 0}
     common_identity: dict[str, Any] | None = None
     for task_id in range(task_count):
         root = output_root / "map" / f"mapper-{task_id:04d}"
@@ -419,7 +421,11 @@ def _map_inventory(
         ):
             raise IndependentCorpusAuditError("Mapper completion identity differs")
         if (
-            protocol_format == "oas_production_materialization_protocol_v2"
+            protocol_format
+            in {
+                "oas_production_materialization_protocol_v2",
+                "oas_production_materialization_protocol_v3",
+            }
             and receipt.get("resource_receipt") != IDLE_GPU_RESOURCE_RECEIPT
         ):
             raise IndependentCorpusAuditError("Mapper idle-GPU evidence differs")
@@ -455,11 +461,96 @@ def _map_inventory(
         elif current_study_count != study_count:
             raise IndependentCorpusAuditError("Mapper study vocabularies disagree")
         counts = receipt.get("counts", {})
-        if not isinstance(counts, Mapping) or set(counts) != {
-            "accepted_records",
-            "source_rows",
-        }:
+        if (
+            not isinstance(counts, Mapping)
+            or "accepted_records" not in counts
+            or "source_rows" not in counts
+            or any(
+                key
+                not in {
+                    "accepted_records",
+                    "plan_fraction_rejected",
+                    "plan_fraction_selected",
+                    "source_rows",
+                }
+                and not key.startswith("quality_rejected:")
+                for key in counts
+            )
+        ):
             raise IndependentCorpusAuditError("Mapper count schema differs")
+        validated_counts = {
+            key: _nonnegative_integer(value, f"Mapper count {key}")
+            for key, value in counts.items()
+        }
+        selected = validated_counts.get("plan_fraction_selected", 0)
+        rejected = validated_counts.get("plan_fraction_rejected", 0)
+        quality_rejected = sum(
+            value
+            for key, value in validated_counts.items()
+            if key.startswith("quality_rejected:")
+        )
+        has_plan_accounting = {
+            "plan_fraction_selected",
+            "plan_fraction_rejected",
+        }.issubset(validated_counts)
+        if (
+            protocol_format == "oas_production_materialization_protocol_v3"
+            and not has_plan_accounting
+        ) or (
+            has_plan_accounting
+            and (
+                selected + rejected != validated_counts["source_rows"]
+                or validated_counts["accepted_records"] + quality_rejected
+                != selected
+            )
+        ) or (
+            not has_plan_accounting
+            and validated_counts["accepted_records"]
+            > validated_counts["source_rows"]
+        ):
+            raise IndependentCorpusAuditError("Mapper row accounting differs")
+        normalization_counts = receipt.get("metadata_normalization_counts")
+        if protocol_format == "oas_production_materialization_protocol_v3":
+            if not isinstance(normalization_counts, Mapping):
+                raise IndependentCorpusAuditError(
+                    "Mapper metadata-normalization counts differ"
+                )
+            validated_normalization_counts = {
+                key: _nonnegative_integer(value, f"Mapper normalization {key}")
+                for key, value in normalization_counts.items()
+            }
+            if (
+                any(
+                    key not in metadata_normalization_totals
+                    for key in validated_normalization_counts
+                )
+                or sum(validated_normalization_counts.values())
+                != receipt.get("unit_count")
+            ):
+                raise IndependentCorpusAuditError(
+                    "Mapper metadata-normalization counts differ"
+                )
+            observed_unit_counts = {"age_nan_to_null": 0, "strict_json": 0}
+            units = receipt.get("unit_receipts")
+            if not isinstance(units, list) or len(units) != receipt.get("unit_count"):
+                raise IndependentCorpusAuditError("Mapper unit inventory differs")
+            for unit in units:
+                if not isinstance(unit, Mapping):
+                    raise IndependentCorpusAuditError("Mapper unit receipt is invalid")
+                mode = unit.get("metadata_normalization")
+                if mode not in observed_unit_counts:
+                    raise IndependentCorpusAuditError(
+                        "Mapper unit normalization mode differs"
+                    )
+                observed_unit_counts[mode] += 1
+            if {
+                key: value for key, value in observed_unit_counts.items() if value
+            } != validated_normalization_counts:
+                raise IndependentCorpusAuditError(
+                    "Mapper unit normalization accounting differs"
+                )
+            for key, value in observed_unit_counts.items():
+                metadata_normalization_totals[key] += value
         source_rows += _nonnegative_integer(counts["source_rows"], "Mapper source rows")
         accepted_records += _nonnegative_integer(
             counts["accepted_records"], "Mapper accepted records"
@@ -502,6 +593,7 @@ def _map_inventory(
         study_count,
         receipt_references,
         common_identity,
+        metadata_normalization_totals,
     )
 
 
@@ -562,7 +654,11 @@ def _audit_bucket(
     ):
         raise IndependentCorpusAuditError("Reducer completion identity differs")
     if (
-        protocol_format == "oas_production_materialization_protocol_v2"
+        protocol_format
+        in {
+            "oas_production_materialization_protocol_v2",
+            "oas_production_materialization_protocol_v3",
+        }
         and reducer.get("resource_receipt") != IDLE_GPU_RESOURCE_RECEIPT
     ):
         raise IndependentCorpusAuditError("Reducer idle-GPU evidence differs")
@@ -624,6 +720,7 @@ def audit_corpus(
         protocol.get("format_version") not in {
             "oas_production_materialization_protocol_v1",
             "oas_production_materialization_protocol_v2",
+            "oas_production_materialization_protocol_v3",
         }
         or manifest.get("format_version") != MANIFEST_FORMAT
         or manifest.get("protocol_file_sha256") != hashlib.sha256(protocol_raw).hexdigest()
@@ -688,6 +785,7 @@ def audit_corpus(
         study_count,
         map_receipts,
         map_identity,
+        metadata_normalization_counts,
     ) = _map_inventory(
         output_root,
         task_count=task_count,
@@ -696,6 +794,15 @@ def audit_corpus(
     )
     if manifest.get("map_identity") != map_identity:
         raise IndependentCorpusAuditError("Manifest map identity differs")
+    if protocol_format == "oas_production_materialization_protocol_v3":
+        normalization = protocol.get("metadata_normalization")
+        if not isinstance(normalization, Mapping) or metadata_normalization_counts != {
+            "age_nan_to_null": normalization.get("affected_unit_count"),
+            "strict_json": normalization.get("strict_unit_count"),
+        }:
+            raise IndependentCorpusAuditError(
+                "Global metadata-normalization accounting differs"
+            )
     protocol_file_sha256 = hashlib.sha256(protocol_raw).hexdigest()
     buckets = []
     with ThreadPoolExecutor(max_workers=worker_count) as pool:
@@ -754,6 +861,7 @@ def audit_corpus(
             "protocol_file_sha256": hashlib.sha256(protocol_raw).hexdigest(),
         },
         "resource_receipt": resource_receipt,
+        "metadata_normalization_counts": metadata_normalization_counts,
         "test_access": TEST_ACCESS,
         "worker_count": worker_count,
     }

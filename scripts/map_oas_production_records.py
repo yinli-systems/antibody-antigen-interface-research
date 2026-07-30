@@ -18,7 +18,7 @@ from collections import Counter
 from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, BinaryIO
+from typing import Any, BinaryIO, NamedTuple
 
 import antibody_pretraining.preprocessing as preprocessing_module
 import antibody_pretraining.production_materialization as record_module
@@ -37,6 +37,7 @@ FORMAT_VERSION = "oas_production_map_task_receipt_v1"
 SUPPORTED_PROTOCOL_FORMATS = {
     "oas_production_materialization_protocol_v1",
     "oas_production_materialization_protocol_v2",
+    "oas_production_materialization_protocol_v3",
 }
 TEST_ACCESS = {
     "downstream_metrics_used": False,
@@ -46,6 +47,12 @@ TEST_ACCESS = {
 
 class ProductionMapError(RuntimeError):
     """Report an authenticated-input or production-map failure."""
+
+
+class _NonFiniteJSONConstant(NamedTuple):
+    """Retain a non-finite token without constructing a floating-point value."""
+
+    spelling: str
 
 
 def _resource_receipt(protocol: Mapping[str, Any]) -> dict[str, Any]:
@@ -189,6 +196,66 @@ def _strict_json_text(payload: str, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ProductionMapError(f"{label} must contain one JSON object")
     return value
+
+
+def _decode_oas_metadata(
+    payload: str,
+    *,
+    metadata_line: str,
+    relative_unit: str,
+    exceptions: Mapping[str, Mapping[str, str]],
+) -> tuple[dict[str, Any], str]:
+    """Decode strict metadata or one byte-bound top-level Age NaN exception."""
+    try:
+        value = json.loads(
+            payload,
+            object_pairs_hook=_reject_duplicate_pairs,
+            parse_constant=lambda spelling: _NonFiniteJSONConstant(spelling),
+        )
+    except (json.JSONDecodeError, ValueError) as error:
+        raise ProductionMapError("OAS metadata must be valid JSON") from error
+    if not isinstance(value, dict):
+        raise ProductionMapError("OAS metadata must contain one JSON object")
+
+    nonfinite_paths: list[tuple[str, ...]] = []
+
+    def visit(item: Any, path: tuple[str, ...]) -> None:
+        if isinstance(item, _NonFiniteJSONConstant):
+            nonfinite_paths.append(path)
+        elif isinstance(item, dict):
+            for key, child in item.items():
+                visit(child, (*path, key))
+        elif isinstance(item, list):
+            for index, child in enumerate(item):
+                visit(child, (*path, str(index)))
+
+    visit(value, ())
+    expected = exceptions.get(relative_unit)
+    if not nonfinite_paths:
+        if expected is not None:
+            raise ProductionMapError("Expected metadata exception is absent")
+        return value, "strict_json"
+    token = value.get("Age")
+    if (
+        expected is None
+        or nonfinite_paths != [("Age",)]
+        or not isinstance(token, _NonFiniteJSONConstant)
+        or token.spelling != "NaN"
+    ):
+        raise ProductionMapError("OAS metadata has an unauthorized non-finite value")
+    observed = {
+        "decoded_metadata_sha256": hashlib.sha256(payload.encode("utf-8")).hexdigest(),
+        "raw_metadata_line_sha256": hashlib.sha256(
+            metadata_line.encode("utf-8")
+        ).hexdigest(),
+    }
+    if any(observed[key] != expected.get(key) for key in observed):
+        raise ProductionMapError("OAS metadata exception bytes differ")
+    value["Age"] = None
+    normalized_sha256 = hashlib.sha256(_canonical_json_bytes(value)).hexdigest()
+    if normalized_sha256 != expected.get("normalized_metadata_sha256"):
+        raise ProductionMapError("OAS normalized metadata digest differs")
+    return value, "age_nan_to_null"
 
 
 def _canonical_json_bytes(payload: object) -> bytes:
@@ -386,6 +453,99 @@ def _validate_protocol_inputs(
     return protocol, plan, audit, policy
 
 
+def _metadata_normalization_exceptions(
+    *,
+    protocol: Mapping[str, Any],
+    normalization_protocol_path: Path | None,
+    normalization_audit_path: Path | None,
+) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
+    """Authenticate the independent scan before exposing narrow exceptions."""
+    if protocol.get("format_version") != "oas_production_materialization_protocol_v3":
+        if normalization_protocol_path is not None or normalization_audit_path is not None:
+            raise ProductionMapError("Legacy protocols cannot accept metadata exceptions")
+        return {}, {}
+    if normalization_protocol_path is None or normalization_audit_path is None:
+        raise ProductionMapError("Metadata-normalization evidence is required")
+    inputs = protocol.get("inputs")
+    if not isinstance(inputs, Mapping):
+        raise ProductionMapError("Protocol input anchors are absent")
+    normalization, normalization_raw = _load_json_file(
+        normalization_protocol_path,
+        "Metadata-normalization protocol",
+    )
+    audit, audit_raw = _load_json_file(
+        normalization_audit_path,
+        "Metadata-normalization audit",
+    )
+    normalization_file_sha256 = hashlib.sha256(normalization_raw).hexdigest()
+    audit_file_sha256 = hashlib.sha256(audit_raw).hexdigest()
+    if (
+        normalization_file_sha256
+        != inputs.get("metadata_normalization_protocol_file_sha256")
+        or audit_file_sha256
+        != inputs.get("metadata_normalization_audit_file_sha256")
+        or normalization.get("format_version")
+        != "oas_metadata_normalization_protocol_v1"
+        or audit.get("format_version")
+        != "oas_metadata_normalization_independent_audit_v1"
+        or audit.get("audit_passed") is not True
+        or audit.get("normalization_protocol_file_sha256")
+        != normalization_file_sha256
+        or _verify_self_hash(
+            audit,
+            "receipt_sha256",
+            "Metadata-normalization audit",
+        )
+        != inputs.get("metadata_normalization_audit_payload_sha256")
+        or audit.get("test_access") != TEST_ACCESS
+        or audit.get("authorization")
+        != {
+            "large_scale_pretraining": False,
+            "production_corpus_use": False,
+            "scientific_claim": False,
+        }
+    ):
+        raise ProductionMapError("Metadata-normalization evidence differs")
+    affected = normalization.get("affected_units")
+    expected_count = normalization.get("normalization", {}).get("affected_unit_count")
+    if not isinstance(affected, list) or len(affected) != expected_count:
+        raise ProductionMapError("Metadata-normalization inventory differs")
+    exceptions: dict[str, dict[str, str]] = {}
+    required = {
+        "decoded_metadata_sha256",
+        "normalized_metadata_sha256",
+        "raw_metadata_line_sha256",
+        "relative_unit",
+    }
+    for item in affected:
+        if not isinstance(item, dict) or set(item) != required:
+            raise ProductionMapError("Metadata-normalization entry schema differs")
+        relative = _safe_relative_unit(item.get("relative_unit"))
+        if relative in exceptions:
+            raise ProductionMapError("Metadata-normalization unit is duplicated")
+        for key in required - {"relative_unit"}:
+            value = item.get(key)
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise ProductionMapError("Metadata-normalization digest is invalid")
+        exceptions[relative] = dict(item)
+    if audit.get("counts") != {
+        "affected_units": len(exceptions),
+        "scanned_units": protocol["inputs"]["download_receipt_count"],
+        "strict_units": protocol["inputs"]["download_receipt_count"]
+        - len(exceptions),
+    }:
+        raise ProductionMapError("Metadata-normalization audit counts differ")
+    return exceptions, {
+        "metadata_normalization_audit_file_sha256": audit_file_sha256,
+        "metadata_normalization_audit_payload_sha256": audit["receipt_sha256"],
+        "metadata_normalization_protocol_file_sha256": normalization_file_sha256,
+    }
+
+
 def _validate_plan_units(
     plan: Mapping[str, Any],
 ) -> tuple[list[dict[str, Any]], list[str]]:
@@ -471,6 +631,8 @@ def _map_one_unit(
     bucket_writer: _BucketWriter,
     counters: Counter[str],
     status_counts: Counter[str],
+    metadata_exceptions: Mapping[str, Mapping[str, str]],
+    metadata_normalization_counts: Counter[str],
 ) -> dict[str, Any]:
     """Authenticate, stream, filter, and map one complete OAS gzip unit."""
     relative = unit["relative_unit"]
@@ -506,10 +668,13 @@ def _map_one_unit(
         header_line = text_stream.readline()
         if not metadata_line or not header_line:
             raise ProductionMapError("OAS unit lacks metadata or header")
-        metadata = _strict_json_text(
+        metadata, metadata_normalization = _decode_oas_metadata(
             _single_csv_field(metadata_line, "OAS metadata line"),
-            "OAS metadata",
+            metadata_line=metadata_line,
+            relative_unit=relative,
+            exceptions=metadata_exceptions,
         )
+        metadata_normalization_counts[metadata_normalization] += 1
         try:
             header = tuple(next(csv.reader([header_line])))
         except (csv.Error, StopIteration) as error:
@@ -606,6 +771,7 @@ def _map_one_unit(
         "receipt_file_sha256": hashlib.sha256(receipt_bytes).hexdigest(),
         "receipt_payload_sha256": receipt_payload_sha256,
         "relative_unit": relative,
+        "metadata_normalization": metadata_normalization,
         "status_flag_counts": dict(sorted(unit_status.items())),
         "unit_index": unit_index,
         "uncompressed_bytes": observations["uncompressed_bytes"],
@@ -677,6 +843,8 @@ def map_production_task(
     expected_controller_source_sha256: str,
     expected_preprocessing_source_sha256: str,
     expected_record_source_sha256: str,
+    normalization_protocol_path: Path | None = None,
+    normalization_audit_path: Path | None = None,
     pilot_maximum_data_units: int | None = None,
 ) -> dict[str, Any]:
     """Execute one fail-closed modulo map task and atomically publish it."""
@@ -702,6 +870,11 @@ def map_production_task(
         plan_path=plan_path,
         download_audit_path=download_audit_path,
         filter_policy_path=filter_policy_path,
+    )
+    metadata_exceptions, normalization_bindings = _metadata_normalization_exceptions(
+        protocol=protocol,
+        normalization_protocol_path=normalization_protocol_path,
+        normalization_audit_path=normalization_audit_path,
     )
     execution = protocol.get("execution")
     if not isinstance(execution, dict) or task_count != execution.get("map_task_count"):
@@ -761,6 +934,7 @@ def map_production_task(
     bucket_writer = _BucketWriter(bucket_root)
     counters: Counter[str] = Counter()
     status_counts: Counter[str] = Counter()
+    metadata_normalization_counts: Counter[str] = Counter()
     unit_receipts = []
     try:
         for unit_index, unit in assigned:
@@ -782,6 +956,8 @@ def map_production_task(
                     bucket_writer=bucket_writer,
                     counters=counters,
                     status_counts=status_counts,
+                    metadata_exceptions=metadata_exceptions,
+                    metadata_normalization_counts=metadata_normalization_counts,
                 )
             )
         bucket_writer.close()
@@ -798,6 +974,7 @@ def map_production_task(
                 "plan_file_sha256": protocol["inputs"]["plan_file_sha256"],
                 "plan_payload_sha256": plan["plan_sha256"],
                 "protocol_file_sha256": protocol_file_sha256,
+                **normalization_bindings,
             },
             "bucket_inventory": bucket_inventory,
             "claim_boundary": {
@@ -811,6 +988,9 @@ def map_production_task(
             "counts": dict(sorted(counters.items())),
             "format_version": FORMAT_VERSION,
             "host": socket.gethostname(),
+            "metadata_normalization_counts": dict(
+                sorted(metadata_normalization_counts.items())
+            ),
             "resource_receipt": resource_receipt,
             "source_sha256": {
                 "controller": expected_controller_source_sha256,
@@ -860,6 +1040,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--controller-source-sha256", required=True)
     parser.add_argument("--preprocessing-source-sha256", required=True)
     parser.add_argument("--record-source-sha256", required=True)
+    parser.add_argument("--metadata-normalization-protocol", type=Path)
+    parser.add_argument("--metadata-normalization-audit", type=Path)
     parser.add_argument("--pilot-maximum-data-units", type=int)
     return parser
 
@@ -880,6 +1062,8 @@ def main() -> int:
         expected_controller_source_sha256=arguments.controller_source_sha256,
         expected_preprocessing_source_sha256=arguments.preprocessing_source_sha256,
         expected_record_source_sha256=arguments.record_source_sha256,
+        normalization_protocol_path=arguments.metadata_normalization_protocol,
+        normalization_audit_path=arguments.metadata_normalization_audit,
         pilot_maximum_data_units=arguments.pilot_maximum_data_units,
     )
     sys.stdout.buffer.write(_canonical_json_bytes(receipt))

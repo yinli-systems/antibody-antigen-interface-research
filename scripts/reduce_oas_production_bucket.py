@@ -38,6 +38,7 @@ SHARD_FORMAT = "oas_production_dense_bucket_shard_v1"
 SUPPORTED_PROTOCOL_FORMATS = {
     "oas_production_materialization_protocol_v1",
     "oas_production_materialization_protocol_v2",
+    "oas_production_materialization_protocol_v3",
 }
 MAXIMUM_SEQUENCE_TOKENS = 194
 TEST_ACCESS = {
