@@ -83,6 +83,7 @@ def test_profile_launcher_locks_the_authoritative_window() -> None:
     assert "--warmup-steps 50" in launcher
     assert "--measured-steps 500" in launcher
     assert "synthetic_fsdp2_warmed_profile" in launcher
+    assert "envs/frontier_torch213/bin/python" in launcher
 
 
 def test_multinode_scaling_contract_is_fixed_batch_and_gated() -> None:
