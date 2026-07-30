@@ -22,7 +22,7 @@ REGISTRATION_SHA256=${ABF_REGISTRATION_SHA256:?ABF_REGISTRATION_SHA256 is requir
 RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?ABF_RUNTIME_MANIFEST_SHA256 is required}
 EXECUTION_PROTOCOL=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_execution_v2_1.json
-REGISTRATION=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_registration_v3.json
+REGISTRATION=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_registration_v4.json
 GATE_PROTOCOL=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_gate_v2.json
 SPLIT_ROOT=$SOURCE_ROOT/results/pretraining/antibody_ddp_parity_split_v2
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID
@@ -139,7 +139,7 @@ if payload.get("inputs", {}).get("dense_manifest_payload_sha256") != manifest_sh
 registration = json.loads(registration_path.read_text(encoding="ascii"))
 if (
     registration.get("format_version")
-    != "antibody_ddp_scientific_parity_registration_v3"
+    != "antibody_ddp_scientific_parity_registration_v4"
     or registration.get("execution_sha256")
     != hashlib.sha256(execution_path.read_bytes()).hexdigest()
     or registration.get("data", {}).get("manifest_payload_sha256")

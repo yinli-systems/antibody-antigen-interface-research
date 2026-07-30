@@ -347,6 +347,7 @@ def main() -> None:
         "antibody_ddp_scientific_parity_registration_v1",
         "antibody_ddp_scientific_parity_registration_v2",
         "antibody_ddp_scientific_parity_registration_v3",
+        "antibody_ddp_scientific_parity_registration_v4",
     }:
         raise ValueError("Unexpected registration")
     if gate.get("format_version") != "antibody_ddp_scientific_parity_gate_v2":

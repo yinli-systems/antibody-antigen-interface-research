@@ -8,15 +8,15 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REGISTRATION = ROOT / "protocols/antibody_ddp_scientific_parity_registration_v3.json"
+REGISTRATION = ROOT / "protocols/antibody_ddp_scientific_parity_registration_v4.json"
 
 
 def test_registration_binds_the_complete_executed_source_closure() -> None:
     """Reject source drift across the launcher, runner, and imported package."""
     payload = json.loads(REGISTRATION.read_text(encoding="ascii"))
-    assert payload["format_version"] == "antibody_ddp_scientific_parity_registration_v3"
+    assert payload["format_version"] == "antibody_ddp_scientific_parity_registration_v4"
     assert payload["implementation_parent_commit"] == (
-        "aac463ccfcce0fcd07bc9fecf1562998200e015e"
+        "fd004a76e16407f1b3e4add5b108a68bebe761a7"
     )
     for relative, expected in payload["source_files"].items():
         assert hashlib.sha256((ROOT / relative).read_bytes()).hexdigest() == expected
@@ -56,5 +56,10 @@ def test_registration_uses_public_resources_and_remains_non_authorizing() -> Non
             "failure_stage": "runtime_live_state_verification",
             "job_id": "1340859",
             "observed_changed_sections": ["frameworks"],
+        },
+        {
+            "failure_stage": "runtime_live_state_verification",
+            "job_id": "1340972",
+            "observed_changed_sections": ["environment"],
         },
     ]
