@@ -47,6 +47,7 @@ SOURCE_PATHS = (
     "scripts/distributed_launch_contract.py",
     "scripts/frontier_fsdp2_dcp_smoke.py",
     "scripts/frontier_fsdp2_profile.py",
+    "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_profile.sbatch",
     "slurm/frontier_fsdp2_multinode_profile.sbatch",
     "src/interaction_first/frontier_fsdp2.py",
