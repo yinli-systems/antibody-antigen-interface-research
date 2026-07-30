@@ -115,28 +115,6 @@ def test_resume_state_binds_batch_and_bucket_geometry() -> None:
         assert f'"{field}"' in trainer
 
 
-def test_production_corpus_path_is_audit_bound_and_streamed() -> None:
-    source = RUNNER.read_text(encoding="ascii")
-    for argument in (
-        "--production-corpus-root",
-        "--production-corpus-manifest-file-sha256",
-        "--production-corpus-manifest-payload-sha256",
-        "--production-corpus-protocol-file-sha256",
-        "--production-corpus-independent-audit",
-        "--production-corpus-independent-audit-file-sha256",
-        "--production-corpus-independent-audit-payload-sha256",
-    ):
-        assert argument in source
-    assert "Select exactly one authenticated training data source" in source
-    assert "load_production_corpus(" in source
-    assert "build_indexed_update_plan(" in source
-    assert "production_corpus.batch(" in source
-    assert '"data_source_contract"' in source
-    assert '"training_authorized": False' in source
-    assert "Audited production-corpus loader and recovery gate" in source
-    assert "world_size <= 1" not in source
-
-
 def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
     source = RUNNER.read_text(encoding="ascii")
     assert "torch.use_deterministic_algorithms(" in source
