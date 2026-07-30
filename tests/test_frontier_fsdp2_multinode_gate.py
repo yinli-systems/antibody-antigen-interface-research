@@ -35,6 +35,8 @@ def test_multinode_gate_binds_runtime_on_every_node_and_uses_world_eight() -> No
         'if [[ "$RUNTIME_VERIFY_STATUS" != "116" ]]',
         "RUNTIME_VERIFY_SUCCESS_ROOT",
         "FRONTIER_VERIFY_ATTEMPT_ROOT",
+        "srun --overlap --nodes=4",
+        "--overlap",
         'ln "$payload" "$receipt"',
         'printf "attempt=%s\\nexit_code=%s\\n"',
         "--gpus-per-node 2",
