@@ -15,6 +15,16 @@
     "optimizer_state_required": true,
     "same_world_size_continuation_required": true
   },
+  "cross_world_replay": {
+    "directions": [
+      "one_to_eight",
+      "eight_to_one"
+    ],
+    "fixed_global_batch_size": 8,
+    "full_checkpoint_state_must_be_exact": true,
+    "optimizer_continuation_uses_frozen_precision_tolerance": true,
+    "source_result_requires_external_sha256": true
+  },
   "claim_boundary": "Synthetic train-only systems evidence. No biological performance, scaling-efficiency, production-readiness, SOTA, or world-leading claim is authorized.",
   "execution_order": [
     "local_static_and_single-process_DCP_tests",
