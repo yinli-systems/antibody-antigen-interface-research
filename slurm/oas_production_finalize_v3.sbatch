@@ -25,7 +25,7 @@ umask 077
 : "${SLURM_JOB_GPUS:?One scheduler-reserved GPU is required}"
 
 PYTHON_BIN=/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python
-POSTPROCESS_PROTOCOL="${OAS_SOURCE_ROOT}/protocols/oas_production_postprocess_runtime_v1.json"
+POSTPROCESS_PROTOCOL="${OAS_SOURCE_ROOT}/protocols/oas_production_postprocess_runtime_v2.json"
 
 test -x "${PYTHON_BIN}"
 test -f "${OAS_RUNTIME_MANIFEST}"
