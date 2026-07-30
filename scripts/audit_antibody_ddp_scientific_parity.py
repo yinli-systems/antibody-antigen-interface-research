@@ -346,6 +346,7 @@ def main() -> None:
     if registration.get("format_version") not in {
         "antibody_ddp_scientific_parity_registration_v1",
         "antibody_ddp_scientific_parity_registration_v2",
+        "antibody_ddp_scientific_parity_registration_v3",
     }:
         raise ValueError("Unexpected registration")
     if gate.get("format_version") != "antibody_ddp_scientific_parity_gate_v2":
