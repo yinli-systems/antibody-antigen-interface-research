@@ -86,6 +86,14 @@ def test_profile_launcher_locks_the_authoritative_window() -> None:
     assert "envs/frontier_torch213/bin/python" in launcher
 
 
+def test_profile_digest_binds_runtime_verifier() -> None:
+    """Bind the verifier that authorizes the pinned runtime receipt."""
+    source = (
+        REPOSITORY_ROOT / "scripts/frontier_fsdp2_profile.py"
+    ).read_text(encoding="utf-8")
+    assert '"scripts/generate_runtime_manifest.py"' in source
+
+
 def test_multinode_scaling_contract_is_fixed_batch_and_gated() -> None:
     """Freeze the 8-to-32-to-64 strong-scaling comparison before execution."""
     scaling = _protocol()["strong_scaling_gate"]
