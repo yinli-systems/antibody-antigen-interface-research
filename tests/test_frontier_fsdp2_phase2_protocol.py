@@ -72,3 +72,14 @@ def test_cross_world_launcher_is_public_partition_compatible() -> None:
     assert "FRONTIER_SOURCE_SAVE_RESULT_SHA256" in launcher
     assert "--expected-save-result-sha256" in launcher
     assert "synthetic_fsdp2_cross_world_reshard" in launcher
+
+
+def test_profile_launcher_locks_the_authoritative_window() -> None:
+    """Require the registered warmup and measured step counts in the launcher."""
+    launcher = (
+        REPOSITORY_ROOT / "slurm/frontier_fsdp2_profile.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --mem=" not in launcher
+    assert "--warmup-steps 50" in launcher
+    assert "--measured-steps 500" in launcher
+    assert "synthetic_fsdp2_warmed_profile" in launcher
