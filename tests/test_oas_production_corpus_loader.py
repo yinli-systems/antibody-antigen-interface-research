@@ -89,6 +89,9 @@ def test_loader_authenticates_graph_and_gathers_both_splits(
                 corpus.residue_lengths(np.asarray([0])),
                 batch["lengths.npy"][:1].astype(np.int64) - 2,
             )
+            assert corpus.array_cache.open_array_count <= 128
+            corpus.close()
+            assert corpus.array_cache.open_array_count == 0
             with pytest.raises(ProductionCorpusError, match="fields"):
                 corpus.batch(np.asarray([0]), fields=("unknown.npy",))
             with pytest.raises(ProductionCorpusError, match="outside"):
@@ -183,5 +186,60 @@ def test_schema_only_follower_open_skips_array_rehash(
         )
         assert corpus.contract.array_file_hashes_verified is False
         assert len(corpus) == 1
+    finally:
+        fixture_module._make_writable(fixture["output"])
+
+
+def test_loader_enforces_bounded_array_cache(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
+    monkeypatch.delenv("SLURM_JOB_GPUS", raising=False)
+    monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
+    fixture_module, fixture, finalization, audit_path, audit = _fixture(tmp_path)
+    try:
+        corpus = load_production_corpus(
+            fixture["output"],
+            split="train",
+            expected_manifest_file_sha256=finalization["manifest_file_sha256"],
+            expected_manifest_payload_sha256=finalization[
+                "manifest_payload_sha256"
+            ],
+            expected_protocol_file_sha256=fixture["protocol_sha256"],
+            independent_audit_path=audit_path,
+            expected_independent_audit_file_sha256=hashlib.sha256(
+                audit_path.read_bytes()
+            ).hexdigest(),
+            expected_independent_audit_payload_sha256=audit["receipt_sha256"],
+            maximum_open_arrays=2,
+        )
+        corpus.batch(
+            np.asarray([0], dtype=np.int64),
+            fields=("tokens.npy", "lengths.npy", "sample_keys.npy"),
+        )
+        assert corpus.array_cache.open_array_count == 2
+        corpus.close()
+        assert corpus.array_cache.open_array_count == 0
+        with pytest.raises(ProductionCorpusError, match="cache limit"):
+            load_production_corpus(
+                fixture["output"],
+                split="train",
+                expected_manifest_file_sha256=finalization[
+                    "manifest_file_sha256"
+                ],
+                expected_manifest_payload_sha256=finalization[
+                    "manifest_payload_sha256"
+                ],
+                expected_protocol_file_sha256=fixture["protocol_sha256"],
+                independent_audit_path=audit_path,
+                expected_independent_audit_file_sha256=hashlib.sha256(
+                    audit_path.read_bytes()
+                ).hexdigest(),
+                expected_independent_audit_payload_sha256=audit[
+                    "receipt_sha256"
+                ],
+                maximum_open_arrays=0,
+            )
     finally:
         fixture_module._make_writable(fixture["output"])

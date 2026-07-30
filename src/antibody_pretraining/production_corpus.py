@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+from collections import OrderedDict
 from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import stat
+import threading
 from typing import Any, Iterable, Mapping
 
 import numpy as np
@@ -30,6 +32,7 @@ TEST_ACCESS = {
     "downstream_metrics_used": False,
     "sabdab2_heldout_accessed": False,
 }
+DEFAULT_MAX_OPEN_ARRAYS = 128
 
 
 class ProductionCorpusError(RuntimeError):
@@ -51,16 +54,87 @@ class ProductionCorpusContract:
 
 
 @dataclass(frozen=True)
-class _Shard:
-    """Expose one authenticated bucket shard through read-only memory maps."""
+class _ArrayReference:
+    """Describe one authenticated array without keeping its file open."""
 
-    arrays: Mapping[str, np.ndarray]
+    dtype: np.dtype[Any]
+    path: Path
+    shape: tuple[int, ...]
+
+
+def _close_memmap(array: np.ndarray) -> None:
+    """Close a NumPy memory map without assuming every array is a memmap."""
+    mapping = getattr(array, "_mmap", None)
+    if mapping is not None:
+        mapping.close()
+
+
+class _BoundedArrayCache:
+    """Keep a deterministic LRU of read-only arrays below the process FD limit."""
+
+    def __init__(self, maximum_open_arrays: int) -> None:
+        if (
+            isinstance(maximum_open_arrays, bool)
+            or not isinstance(maximum_open_arrays, int)
+            or maximum_open_arrays <= 0
+        ):
+            raise ProductionCorpusError("Open-array cache limit is invalid")
+        self._arrays: OrderedDict[tuple[int, str], np.ndarray] = OrderedDict()
+        self._maximum_open_arrays = maximum_open_arrays
+        self._lock = threading.RLock()
+
+    def read(
+        self,
+        *,
+        key: tuple[int, str],
+        reference: _ArrayReference,
+        indices: np.ndarray,
+    ) -> np.ndarray:
+        """Read indexed rows and retain at most the configured number of maps."""
+        with self._lock:
+            array = self._arrays.pop(key, None)
+            if array is None:
+                array = np.load(reference.path, mmap_mode="r", allow_pickle=False)
+                if (
+                    array.dtype != reference.dtype
+                    or tuple(array.shape) != reference.shape
+                    or array.flags.writeable
+                ):
+                    _close_memmap(array)
+                    raise ProductionCorpusError(
+                        f"Cached array schema differs: {reference.path.name}"
+                    )
+            self._arrays[key] = array
+            while len(self._arrays) > self._maximum_open_arrays:
+                _, evicted = self._arrays.popitem(last=False)
+                _close_memmap(evicted)
+            return np.asarray(array[indices]).copy()
+
+    def close(self) -> None:
+        """Close every retained memory map."""
+        with self._lock:
+            while self._arrays:
+                _, array = self._arrays.popitem(last=False)
+                _close_memmap(array)
+
+    @property
+    def open_array_count(self) -> int:
+        """Expose the current descriptor count for audit and tests."""
+        with self._lock:
+            return len(self._arrays)
+
+
+@dataclass(frozen=True)
+class _Shard:
+    """Expose one authenticated bucket shard through closed array references."""
+
+    arrays: Mapping[str, _ArrayReference]
     bucket: int
     record_count: int
     root: Path
 
 
-@dataclass(frozen=True)
+@dataclass
 class ProductionCorpus:
     """Provide vectorized global indexing over immutable bucket shards."""
 
@@ -68,6 +142,7 @@ class ProductionCorpus:
     manifest: Mapping[str, Any]
     offsets: np.ndarray
     shards: tuple[_Shard, ...]
+    array_cache: _BoundedArrayCache
 
     def __len__(self) -> int:
         return int(self.offsets[-1])
@@ -97,15 +172,24 @@ class ProductionCorpus:
         shard_ids = np.searchsorted(self.offsets[1:], requested, side="right")
         output: dict[str, np.ndarray] = {}
         for name in requested_fields:
-            shape = (len(requested), *self.shards[0].arrays[name].shape[1:])
-            output[name] = np.empty(shape, dtype=self.shards[0].arrays[name].dtype)
+            reference = self.shards[0].arrays[name]
+            shape = (len(requested), *reference.shape[1:])
+            output[name] = np.empty(shape, dtype=reference.dtype)
         for shard_id in np.unique(shard_ids):
             positions = np.flatnonzero(shard_ids == shard_id)
             local = requested[positions] - self.offsets[shard_id]
             shard = self.shards[int(shard_id)]
             for name, target in output.items():
-                target[positions] = shard.arrays[name][local]
+                target[positions] = self.array_cache.read(
+                    key=(int(shard_id), name),
+                    reference=shard.arrays[name],
+                    indices=local,
+                )
         return output
+
+    def close(self) -> None:
+        """Release all cached array descriptors."""
+        self.array_cache.close()
 
     def residue_lengths(self, indices: np.ndarray) -> np.ndarray:
         """Read residue counts without materializing the corpus-wide length vector."""
@@ -256,7 +340,7 @@ def _load_shard(
     record_count = manifest.get("record_count")
     if isinstance(record_count, bool) or not isinstance(record_count, int) or record_count < 0:
         raise ProductionCorpusError("Shard record count is invalid")
-    arrays: dict[str, np.ndarray] = {}
+    arrays: dict[str, _ArrayReference] = {}
     for name, file_reference in files.items():
         if not isinstance(file_reference, Mapping):
             raise ProductionCorpusError("Shard file reference is invalid")
@@ -270,14 +354,21 @@ def _load_shard(
         ):
             raise ProductionCorpusError(f"Shard file differs: {name}")
         array = np.load(path, mmap_mode="r", allow_pickle=False)
-        if (
-            str(array.dtype) != file_reference.get("dtype")
-            or list(array.shape) != file_reference.get("shape")
-            or array.shape[0] != record_count
-            or array.flags.writeable
-        ):
-            raise ProductionCorpusError(f"Shard array schema differs: {name}")
-        arrays[name] = array
+        try:
+            if (
+                str(array.dtype) != file_reference.get("dtype")
+                or list(array.shape) != file_reference.get("shape")
+                or array.shape[0] != record_count
+                or array.flags.writeable
+            ):
+                raise ProductionCorpusError(f"Shard array schema differs: {name}")
+            arrays[name] = _ArrayReference(
+                dtype=array.dtype,
+                path=path,
+                shape=tuple(array.shape),
+            )
+        finally:
+            _close_memmap(array)
     return _Shard(arrays=arrays, bucket=bucket, record_count=record_count, root=root)
 
 
@@ -292,12 +383,14 @@ def load_production_corpus(
     expected_independent_audit_file_sha256: str,
     expected_independent_audit_payload_sha256: str,
     verify_array_file_hashes: bool = True,
+    maximum_open_arrays: int = DEFAULT_MAX_OPEN_ARRAYS,
 ) -> ProductionCorpus:
     """Authenticate the full evidence graph and open one read-only split."""
     if split not in {"train", "validation"}:
         raise ProductionCorpusError("Corpus split is invalid")
     if not isinstance(verify_array_file_hashes, bool):
         raise ProductionCorpusError("Array hash-verification mode is invalid")
+    array_cache = _BoundedArrayCache(maximum_open_arrays)
     for value, label in (
         (expected_manifest_file_sha256, "Manifest file digest"),
         (expected_manifest_payload_sha256, "Manifest payload digest"),
@@ -390,4 +483,5 @@ def load_production_corpus(
         manifest=manifest,
         offsets=offsets,
         shards=shards,
+        array_cache=array_cache,
     )
