@@ -31,13 +31,13 @@ import subprocess
 import sys
 import sysconfig
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = "frontier.runtime-manifest.v2"
-GENERATOR_VERSION = "1.1.0"
+SCHEMA_VERSION = "frontier.runtime-manifest.v3"
+GENERATOR_VERSION = "1.2.0"
 HASH_ALGORITHM = "sha256"
 CANONICALIZATION = "UTF-8 JSON; sort_keys=true; separators=(',', ':')"
 DEFAULT_PIP_CHECK_TIMEOUT_SECONDS = 120
@@ -72,6 +72,35 @@ class PytorchProbe:
 
     metadata: Mapping[str, Any]
     library_candidates: tuple[tuple[str, Path], ...] = ()
+    collection_context: Mapping[str, Any] = field(default_factory=dict)
+
+
+_PYTORCH_RUNTIME_CONFIGURATION_PREFIXES = (
+    "  - CPU capability usage:",
+    "  - CUDA Runtime ",
+    "  - NVCC architecture flags:",
+    "  - CuDNN ",
+    "  - Magma ",
+)
+
+
+def _split_pytorch_build_configuration(
+    configuration: str | None,
+) -> tuple[str | None, list[str]]:
+    """Separate stable build settings from node-dependent capability telemetry."""
+    if configuration is None:
+        return None, []
+    stable_lines: list[str] = []
+    runtime_lines: list[str] = []
+    for line in configuration.splitlines():
+        if line.startswith(_PYTORCH_RUNTIME_CONFIGURATION_PREFIXES):
+            runtime_lines.append(line)
+        else:
+            stable_lines.append(line)
+    stable = "\n".join(stable_lines)
+    if configuration.endswith("\n"):
+        stable += "\n"
+    return stable, runtime_lines
 
 
 def _canonical_json_bytes(value: Any) -> bytes:
@@ -369,6 +398,9 @@ def _probe_pytorch() -> PytorchProbe:
     cudnn_raw = safe_call(lambda: torch.backends.cudnn.version())
     cuda_compiled_raw = safe_call(lambda: torch._C._cuda_getCompiledVersion())
     configuration = safe_call(lambda: torch.__config__.show())
+    stable_configuration, runtime_configuration = _split_pytorch_build_configuration(
+        str(configuration) if configuration is not None else None
+    )
     metadata = {
         "available": True,
         "version": str(torch.__version__),
@@ -387,11 +419,15 @@ def _probe_pytorch() -> PytorchProbe:
             "version_components": _version_sequence(nccl_raw),
         },
         "cxx11_abi": safe_call(lambda: bool(torch.compiled_with_cxx11_abi())),
-        "build_configuration": (
-            str(configuration) if configuration is not None else None
-        ),
+        "build_configuration": stable_configuration,
     }
-    return PytorchProbe(metadata=metadata, library_candidates=tuple(candidates))
+    return PytorchProbe(
+        metadata=metadata,
+        library_candidates=tuple(candidates),
+        collection_context={
+            "runtime_build_capability_lines": runtime_configuration,
+        },
+    )
 
 
 def _python_shared_library_candidates() -> list[tuple[str, Path]]:
@@ -616,6 +652,12 @@ def build_manifest(
     **collection_options: Any,
 ) -> dict[str, Any]:
     """Build an integrity-bound manifest without writing it."""
+    observed_pytorch = collection_options.get("pytorch_probe", _UNSET)
+    if observed_pytorch is _UNSET:
+        observed_pytorch = _probe_pytorch()
+        collection_options["pytorch_probe"] = observed_pytorch
+    if not isinstance(observed_pytorch, PytorchProbe):
+        raise TypeError("pytorch_probe must be a PytorchProbe")
     runtime_state = collect_runtime_state(environment_root, **collection_options)
     platform_probe = collection_options.get("platform_probe")
     observed_platform = dict((platform_probe or _platform_observation)())
@@ -629,6 +671,9 @@ def build_manifest(
         },
         "collection_context": {
             "collected_at_utc": collected_at_utc or _utc_now(),
+            "frameworks": {
+                "pytorch": dict(observed_pytorch.collection_context),
+            },
             "host": collection_host if collection_host is not None else platform.node(),
             "observed_platform": observed_platform,
         },

@@ -265,6 +265,75 @@ def test_stable_platform_abi_excludes_kernel_and_processor_variation() -> None:
     )
 
 
+def test_pytorch_build_configuration_excludes_runtime_capability_lines() -> None:
+    """Keep dynamic node capability observations outside the equality state."""
+    common = "PyTorch built with:\n  - GCC 13.3\n  - Build settings: USE_CUDA=1\n"
+    login = common.replace(
+        "  - Build settings:",
+        "  - CPU capability usage: AVX2\n  - Build settings:",
+    )
+    compute = common.replace(
+        "  - Build settings:",
+        "  - CPU capability usage: AVX512\n"
+        "  - CUDA Runtime 13.0\n"
+        "  - NVCC architecture flags: sm_120\n"
+        "  - CuDNN 92.0\n"
+        "  - Magma 2.6.1\n"
+        "  - Build settings:",
+    )
+
+    login_stable, login_runtime = runtime_manifest._split_pytorch_build_configuration(
+        login
+    )
+    compute_stable, compute_runtime = (
+        runtime_manifest._split_pytorch_build_configuration(compute)
+    )
+
+    assert login_stable == compute_stable == common
+    assert login_runtime == ["  - CPU capability usage: AVX2"]
+    assert len(compute_runtime) == 5
+
+
+def test_manifest_retains_runtime_capabilities_as_non_equality_telemetry(
+    tmp_path: Path,
+) -> None:
+    """Preserve excluded capability evidence in the signed collection context."""
+    root = tmp_path / "environment"
+    distributions, pytorch, shared_library = _synthetic_inputs(root)
+    pytorch = PytorchProbe(
+        metadata=pytorch.metadata,
+        library_candidates=(("nccl_shared_library", shared_library),),
+        collection_context={
+            "runtime_build_capability_lines": [
+                "  - CPU capability usage: AVX512",
+                "  - CUDA Runtime 13.0",
+            ]
+        },
+    )
+    with mock.patch.object(
+        runtime_manifest,
+        "_python_shared_library_candidates",
+        return_value=[],
+    ):
+        manifest = build_manifest(
+            root,
+            collected_at_utc="2026-07-25T00:00:00Z",
+            collection_host="synthetic-host",
+            distribution_provider=lambda: distributions,
+            pip_check_result=_pip_check(),
+            pytorch_probe=pytorch,
+            platform_probe=_platform,
+        )
+
+    assert manifest["collection_context"]["frameworks"]["pytorch"] == (
+        pytorch.collection_context
+    )
+    assert (
+        "runtime_build_capability_lines"
+        not in manifest["runtime_state"]["frameworks"]["pytorch"]
+    )
+
+
 def test_live_verifier_accepts_node_telemetry_variation(tmp_path: Path) -> None:
     root = tmp_path / "environment"
     manifest, distributions, pytorch = _build_synthetic_manifest(root)
