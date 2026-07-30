@@ -4,17 +4,16 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import math
 import os
 import uuid
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 import torch
 import torch.distributed as dist
-
 from distributed_launch_contract import (
     LaunchContractError,
     publish_create_only_json,
@@ -36,6 +35,7 @@ from frontier_fsdp2_dcp_smoke import (
     _synthetic_batch,
     _train_step,
 )
+
 from interaction_first.frontier_fsdp2 import (
     FSDP2_CLAIM_BOUNDARY,
     fully_shard_reranker,
@@ -44,7 +44,6 @@ from interaction_first.frontier_fsdp2 import (
     save_dcp_generation,
     validate_fsdp2_runtime,
 )
-
 
 SOURCE_PATHS = (
     "scripts/distributed_launch_contract.py",
@@ -68,6 +67,21 @@ RESULT_FORMAT = "frontier_fsdp2_cross_world_reshard_result_v1"
 GLOBAL_BATCH_SIZE = 8
 GENERATION = "step_000003"
 SEED = 20260730
+
+
+def _emit_stage(*, rank: int, stage: str) -> None:
+    """Emit a flush-safe rank-local stage marker for hang diagnosis."""
+    print(
+        json.dumps(
+            {
+                "event": "frontier_fsdp2_reshard_stage",
+                "rank": rank,
+                "stage": stage,
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
 
 
 def _source_digest(repository_root: Path) -> str:
@@ -357,7 +371,10 @@ def _load_mode(
         != save_result["synthetic_manifest_sha256"]
     ):
         raise LaunchContractError("Save and load synthetic fixture identities differ")
+    _emit_stage(rank=rank, stage="before_build_sharded")
     model, optimizer = _build_sharded(precision=args.precision, device=device)
+    _emit_stage(rank=rank, stage="after_build_sharded")
+    _emit_stage(rank=rank, stage="before_load_dcp_generation")
     loaded_receipt = load_dcp_generation(
         save_result["checkpoint_root"],
         save_result["generation"],
@@ -365,12 +382,15 @@ def _load_mode(
         optimizer=optimizer,
         expected_provenance_hashes=save_result["provenance_hashes"],
     )
+    _emit_stage(rank=rank, stage="after_load_dcp_generation")
     if (
         loaded_receipt["content_sha256"]
         != save_result["checkpoint_receipt_content_sha256"]
     ):
         raise LaunchContractError("Loaded checkpoint receipt differs from save result")
+    _emit_stage(rank=rank, stage="before_checkpoint_full_model_state")
     loaded_state = _full_model_state(model)
+    _emit_stage(rank=rank, stage="after_checkpoint_full_model_state")
     if rank == 0:
         checkpoint_reference = _load_reference(
             Path(save_result["checkpoint_reference"]["path"]),
@@ -391,9 +411,15 @@ def _load_mode(
     else:
         checkpoint_difference = {}
     batch = _local_batch(rank=rank, world_size=world_size, device=device)
+    _emit_stage(rank=rank, stage="before_continuation_train_step")
     local_loss, _ = _train_step(model, optimizer, batch, precision=args.precision)
+    _emit_stage(rank=rank, stage="after_continuation_train_step")
+    _emit_stage(rank=rank, stage="before_continuation_global_loss")
     continuation_global_loss = _global_mean_scalar(local_loss, device)
+    _emit_stage(rank=rank, stage="after_continuation_global_loss")
+    _emit_stage(rank=rank, stage="before_continuation_full_model_state")
     continued_state = _full_model_state(model)
+    _emit_stage(rank=rank, stage="after_continuation_full_model_state")
     if rank == 0:
         continuation_reference = _load_reference(
             Path(save_result["continuation_reference"]["path"]),
