@@ -94,6 +94,26 @@ def test_profile_digest_binds_runtime_verifier() -> None:
     assert '"scripts/generate_runtime_manifest.py"' in source
 
 
+def test_all_engineering_digests_bind_transitive_model_and_runtime_sources() -> None:
+    """Prevent a passing receipt from omitting an executed model dependency."""
+    for relative in (
+        "scripts/frontier_fsdp2_dcp_smoke.py",
+        "scripts/frontier_fsdp2_reshard.py",
+        "scripts/frontier_fsdp2_profile.py",
+    ):
+        source = (REPOSITORY_ROOT / relative).read_text(encoding="utf-8")
+        assert '"scripts/generate_runtime_manifest.py"' in source
+        assert '"src/interaction_first/asymmetric_retrieval.py"' in source
+    for relative in (
+        "slurm/frontier_fsdp2_dcp_smoke.sbatch",
+        "slurm/frontier_fsdp2_reshard.sbatch",
+        "slurm/frontier_fsdp2_profile.sbatch",
+        "slurm/frontier_fsdp2_multinode_profile.sbatch",
+    ):
+        launcher = (REPOSITORY_ROOT / relative).read_text(encoding="utf-8")
+        assert "envs/frontier_torch213/bin/python" in launcher
+
+
 def test_multinode_scaling_contract_is_fixed_batch_and_gated() -> None:
     """Freeze the 8-to-32-to-64 strong-scaling comparison before execution."""
     scaling = _protocol()["strong_scaling_gate"]
