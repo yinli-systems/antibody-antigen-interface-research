@@ -1,0 +1,45 @@
+{
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false,
+    "training_after_independent_audit_only": true
+  },
+  "claim_boundary": "Corrects only the Python runtime used by OAS reduce, finalize, and independent-audit launchers; it does not change mapped bytes, corpus membership, filtering, deduplication, scientific semantics, or authorize training",
+  "correction": {
+    "failed_attempt": {
+      "all_failed_task_stderr_sha256": "4da8984221d6c0ee2cbca099a4d3e741209971262dfa3a8871cdf94732998eb8",
+      "batch_receipt_file_sha256": "4ac21818b03caac3c1422756367674b17dd87fa2205903b68f30efb23f84ceed",
+      "batch_receipt_payload_sha256": "a12f62f8fa5caeeb3f0d7bc0ef7ea729245c73d7a27b4c0472ae9469cf759f55",
+      "exit_code": "1:0",
+      "failed_reduce_tasks": 256,
+      "job_id": 1342897,
+      "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_production_materialization_v3_aa61253_attempt_002",
+      "slurm_stderr_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "terminal_state": "FAILED"
+    },
+    "reason": "Every reducer subprocess exited before reading mapped records because the compute-node system python3 lacked NumPy: ModuleNotFoundError: No module named 'numpy'.",
+    "resolution": "Preserve the completed map outputs and failed receipts, then relaunch only reduce, finalize, and independent audit with the file-hash-verified frontier_torch213 runtime."
+  },
+  "format_version": "oas_production_postprocess_runtime_protocol_v1",
+  "parent_materialization_protocol_file_sha256": "aa61253f035cd19126a39e3cc82bbb3e053695043400ebf976a7ad1f2fb80543",
+  "runtime": {
+    "manifest_content_sha256": "e33841cc19be4e7c3bb5522194f7d34c7cd518ec967949529094567a6004cfcb",
+    "manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_007.json",
+    "manifest_runtime_state_sha256": "13502176182985a33a1a31833bc8f999f16856c6f917daa45c29bf7e83a09192",
+    "numpy_version": "1.26.4",
+    "python_executable": "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python",
+    "python_version": "3.10.20"
+  },
+  "scope": {
+    "mapped_data_reused_without_mutation": true,
+    "mapper_rerun": false,
+    "scientific_semantics_changed": false,
+    "stages_relaunched": [
+      "reduce",
+      "finalize",
+      "independent_audit"
+    ]
+  }
+}
