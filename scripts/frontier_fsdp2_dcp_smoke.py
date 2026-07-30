@@ -42,6 +42,7 @@ SOURCE_PATHS = (
     "scripts/frontier_fsdp2_dcp_smoke.py",
     "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_dcp_smoke.sbatch",
+    "slurm/frontier_fsdp2_multinode_gate.sbatch",
     "src/interaction_first/__init__.py",
     "src/interaction_first/asymmetric_retrieval.py",
     "src/interaction_first/contacts.py",
@@ -230,7 +231,9 @@ def _train_step(
 
 def _optimizer(model: torch.nn.Module) -> torch.optim.Optimizer:
     """Create the locked optimizer after optional sharding."""
-    trainable = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    trainable = [
+        parameter for parameter in model.parameters() if parameter.requires_grad
+    ]
     return torch.optim.AdamW(
         trainable,
         lr=1e-4,
@@ -310,9 +313,7 @@ def _state_difference(
         )
         maximum_relative = max(
             maximum_relative,
-            float((absolute / relative_denominator).max())
-            if absolute.numel()
-            else 0.0,
+            float((absolute / relative_denominator).max()) if absolute.numel() else 0.0,
         )
         maximum_scaled_error = max(
             maximum_scaled_error,
@@ -366,7 +367,9 @@ def main() -> None:
     parser.add_argument("--steps-before-checkpoint", type=int, default=3)
     parser.add_argument("--batch-size-per-rank", type=int, default=2)
     parser.add_argument("--seed", type=int, default=20260730)
-    parser.add_argument("--precision", choices=("float32", "bfloat16"), default="float32")
+    parser.add_argument(
+        "--precision", choices=("float32", "bfloat16"), default="float32"
+    )
     parser.add_argument("--parallelism", choices=("fsdp2",), required=True)
     parser.add_argument("--expected-world-size", type=int, required=True)
     parser.add_argument("--expected-source-sha256", required=True)
@@ -417,7 +420,9 @@ def main() -> None:
         output_root = args.output_root.resolve()
         if rank == 0:
             if output_root.exists() or output_root.is_symlink():
-                raise FileExistsError(f"Refusing to overwrite output root: {output_root}")
+                raise FileExistsError(
+                    f"Refusing to overwrite output root: {output_root}"
+                )
             output_root.mkdir(parents=True)
         dist.barrier()
         global_size = world_size * args.batch_size_per_rank
@@ -592,7 +597,9 @@ def main() -> None:
                 label="DCP continuation",
             )
             if abs(restored_global_loss - continuation_global_loss) > 1e-8:
-                raise RuntimeError("DCP continuation loss differs from uninterrupted execution")
+                raise RuntimeError(
+                    "DCP continuation loss differs from uninterrupted execution"
+                )
         else:
             fsdp_reference_difference = {}
             restart_difference = {}

@@ -52,6 +52,7 @@ SOURCE_PATHS = (
     "scripts/frontier_fsdp2_reshard.py",
     "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_reshard.sbatch",
+    "slurm/frontier_fsdp2_multinode_gate.sbatch",
     "src/interaction_first/__init__.py",
     "src/interaction_first/asymmetric_retrieval.py",
     "src/interaction_first/contacts.py",
@@ -97,7 +98,10 @@ def _load_reference(path: Path, expected_sha256: str) -> dict[str, Any]:
     value = torch.load(path, map_location="cpu", weights_only=True)
     if not isinstance(value, dict) or not value:
         raise LaunchContractError("Reference state must be a non-empty dictionary")
-    if any(not isinstance(name, str) or not torch.is_tensor(tensor) for name, tensor in value.items()):
+    if any(
+        not isinstance(name, str) or not torch.is_tensor(tensor)
+        for name, tensor in value.items()
+    ):
         raise LaunchContractError("Reference state contains an invalid entry")
     return value
 
@@ -312,7 +316,13 @@ def _save_mode(
         }
         publish_create_only_json(output_root / "result.json", result)
         os.chmod(output_root / "result.json", 0o444)
-        print(json.dumps({"status": "passed", "mode": "save", "world_size": world_size}, sort_keys=True), flush=True)
+        print(
+            json.dumps(
+                {"status": "passed", "mode": "save", "world_size": world_size},
+                sort_keys=True,
+            ),
+            flush=True,
+        )
 
 
 def _load_mode(
@@ -330,7 +340,9 @@ def _load_mode(
         raise ValueError("Load mode requires the source save result and its SHA-256")
     save_result = _strict_save_result(
         args.source_save_result.resolve(),
-        require_sha256(args.expected_save_result_sha256, field="expected_save_result_sha256"),
+        require_sha256(
+            args.expected_save_result_sha256, field="expected_save_result_sha256"
+        ),
     )
     if save_result["source_sha256"] != observed_source:
         raise LaunchContractError("Save and load source digests differ")
@@ -340,7 +352,10 @@ def _load_mode(
         raise LaunchContractError("Cross-world replay requires different world sizes")
     batch_size = GLOBAL_BATCH_SIZE // world_size
     fixture = _fixture(world_size, batch_size)
-    if _sha256_json(_stable_fixture(fixture)) != save_result["synthetic_manifest_sha256"]:
+    if (
+        _sha256_json(_stable_fixture(fixture))
+        != save_result["synthetic_manifest_sha256"]
+    ):
         raise LaunchContractError("Save and load synthetic fixture identities differ")
     model, optimizer = _build_sharded(precision=args.precision, device=device)
     loaded_receipt = load_dcp_generation(
@@ -350,7 +365,10 @@ def _load_mode(
         optimizer=optimizer,
         expected_provenance_hashes=save_result["provenance_hashes"],
     )
-    if loaded_receipt["content_sha256"] != save_result["checkpoint_receipt_content_sha256"]:
+    if (
+        loaded_receipt["content_sha256"]
+        != save_result["checkpoint_receipt_content_sha256"]
+    ):
         raise LaunchContractError("Loaded checkpoint receipt differs from save result")
     loaded_state = _full_model_state(model)
     if rank == 0:
@@ -394,9 +412,14 @@ def _load_mode(
             label="Cross-world optimizer continuation",
         )
         expected_loss = float(save_result["continuation_global_loss"])
-        allowed_loss = args.absolute_tolerance + args.relative_tolerance * abs(expected_loss)
+        allowed_loss = args.absolute_tolerance + args.relative_tolerance * abs(
+            expected_loss
+        )
         loss_absolute_difference = abs(continuation_global_loss - expected_loss)
-        if not math.isfinite(loss_absolute_difference) or loss_absolute_difference > allowed_loss:
+        if (
+            not math.isfinite(loss_absolute_difference)
+            or loss_absolute_difference > allowed_loss
+        ):
             raise RuntimeError("Cross-world continuation loss exceeds tolerance")
         result = {
             "format": RESULT_FORMAT,
@@ -425,7 +448,18 @@ def _load_mode(
         }
         publish_create_only_json(output_root / "result.json", result)
         os.chmod(output_root / "result.json", 0o444)
-        print(json.dumps({"status": "passed", "mode": "load", "source_world_size": save_result["source_world_size"], "load_world_size": world_size}, sort_keys=True), flush=True)
+        print(
+            json.dumps(
+                {
+                    "status": "passed",
+                    "mode": "load",
+                    "source_world_size": save_result["source_world_size"],
+                    "load_world_size": world_size,
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
 
 
 def main() -> None:
@@ -434,7 +468,9 @@ def main() -> None:
     parser.add_argument("--mode", choices=("save", "load"), required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--steps-before-checkpoint", type=int, default=3)
-    parser.add_argument("--precision", choices=("float32", "bfloat16"), default="float32")
+    parser.add_argument(
+        "--precision", choices=("float32", "bfloat16"), default="float32"
+    )
     parser.add_argument("--parallelism", choices=("fsdp2",), required=True)
     parser.add_argument("--expected-world-size", type=int, required=True)
     parser.add_argument("--expected-source-sha256", required=True)
@@ -471,7 +507,9 @@ def main() -> None:
         output_root = args.output_root.resolve()
         if rank == 0:
             if output_root.exists() or output_root.is_symlink():
-                raise FileExistsError(f"Refusing to overwrite output root: {output_root}")
+                raise FileExistsError(
+                    f"Refusing to overwrite output root: {output_root}"
+                )
             output_root.mkdir(parents=True)
         dist.barrier()
         if args.mode == "save":
