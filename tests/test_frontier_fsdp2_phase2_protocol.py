@@ -103,7 +103,17 @@ def test_all_engineering_digests_bind_transitive_model_and_runtime_sources() -> 
     ):
         source = (REPOSITORY_ROOT / relative).read_text(encoding="utf-8")
         assert '"scripts/generate_runtime_manifest.py"' in source
-        assert '"src/interaction_first/asymmetric_retrieval.py"' in source
+        for dependency in (
+            "__init__.py",
+            "asymmetric_retrieval.py",
+            "contacts.py",
+            "intra_chain_geometry.py",
+            "partners.py",
+            "runtime.py",
+            "sabdab2_structure.py",
+            "splits.py",
+        ):
+            assert f'"src/interaction_first/{dependency}"' in source
     for relative in (
         "slurm/frontier_fsdp2_dcp_smoke.sbatch",
         "slurm/frontier_fsdp2_reshard.sbatch",

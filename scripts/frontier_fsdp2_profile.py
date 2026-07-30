@@ -50,9 +50,16 @@ SOURCE_PATHS = (
     "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_profile.sbatch",
     "slurm/frontier_fsdp2_multinode_profile.sbatch",
+    "src/interaction_first/__init__.py",
     "src/interaction_first/asymmetric_retrieval.py",
+    "src/interaction_first/contacts.py",
     "src/interaction_first/frontier_fsdp2.py",
     "src/interaction_first/frontier_model.py",
+    "src/interaction_first/intra_chain_geometry.py",
+    "src/interaction_first/partners.py",
+    "src/interaction_first/runtime.py",
+    "src/interaction_first/sabdab2_structure.py",
+    "src/interaction_first/splits.py",
 )
 PROFILE_FORMAT = "frontier_fsdp2_warmed_profile_result_v1"
 PROFILE_CLAIM_BOUNDARY = (

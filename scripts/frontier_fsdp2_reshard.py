@@ -52,9 +52,16 @@ SOURCE_PATHS = (
     "scripts/frontier_fsdp2_reshard.py",
     "scripts/generate_runtime_manifest.py",
     "slurm/frontier_fsdp2_reshard.sbatch",
+    "src/interaction_first/__init__.py",
     "src/interaction_first/asymmetric_retrieval.py",
+    "src/interaction_first/contacts.py",
     "src/interaction_first/frontier_fsdp2.py",
     "src/interaction_first/frontier_model.py",
+    "src/interaction_first/intra_chain_geometry.py",
+    "src/interaction_first/partners.py",
+    "src/interaction_first/runtime.py",
+    "src/interaction_first/sabdab2_structure.py",
+    "src/interaction_first/splits.py",
 )
 RESULT_FORMAT = "frontier_fsdp2_cross_world_reshard_result_v1"
 GLOBAL_BATCH_SIZE = 8
