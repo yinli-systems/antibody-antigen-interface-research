@@ -11,8 +11,7 @@ The authenticated OAS download contains 265,834,820 source rows across 6,373
 data units and 120,714,440,652 compressed bytes. Full materialization and an
 independent replay have now passed. Exact filtering, global deduplication, and
 validation precedence produced 224,887,833 unique training records and
-1,743,380 unique validation records. The remaining corpus-admission blocker is
-the loader/checkpoint-recovery gate, not corpus construction.
+1,743,380 unique validation records.
 
 The exact read-only scale audit in job `1343027` counted 25,259,993,406 unique
 training residue tokens and 196,927,742 validation residue tokens across all
@@ -40,14 +39,36 @@ equals loaded DCP payload, and applied optimizer state equals the stage-one
 runtime optimizer state. It also proves identical final model, final optimizer,
 scientific trace, and trainer coordinates. The corrected receipt self-hash is
 `7347f5c3101f631200f09b175e574ae197a579eac2e9a479fd6790ab1e547f9f`.
-This remains a non-authorizing one-GPU gate result; a newly frozen replay using
-the corrected auditor is still required before production training.
+This remains a non-authorizing retrospective result. A newly frozen replay was
+therefore required before the recovery implementation could be promoted.
 
 The same run measured 19.19 seconds of data preparation versus 4.05 seconds of
 GPU update time across the four uninterrupted updates. The next source revision
 therefore gathers each rank's complete update by shard once and then restores
 the original microbatch order. This preserves membership and masking semantics
 but must pass a new dynamic recovery/performance replay before promotion.
+
+Newly frozen job `1343046` completed in 7 minutes 19 seconds with exit code
+zero. Its source-bound independent auditor passed all four exact-recovery
+conditions: final model equality, final optimizer equality, scientific-trace
+equality excluding timing, and terminal trainer-coordinate equality. The
+create-only audit file SHA-256 is
+`89dd12ca7999de230642d4e7f0b6c0d0ee168286bdccc56236a089f7ac79df4b` and its
+verified receipt self-hash is
+`de7914b594dff66031ebd26f60a39ba747afa49b5da91d39816eb1e8b52b844e`.
+The uninterrupted and resumed terminal model digest is
+`d3a97e0d20bdd534fb45afd64876df8466e2b0f6a1d2928c9d619d2f507187c7`;
+the corresponding optimizer digest is
+`20329fb916ac11361a5b9452c496d551d1f35ffc24bc543fbea95cc0de5242ae`.
+
+The grouped read reduced uninterrupted four-update data preparation from 19.19
+to 13.82 seconds, a 27.96 percent reduction, while preserving every scientific
+trace value and terminal state. The gate still spent 13.82 seconds preparing
+data versus 4.05 seconds in GPU updates, so it does not authorize production.
+The next frozen replay raises the soft file-descriptor limit to 4,096 and keeps
+up to 1,024 authenticated training-field maps in a deterministic read-only LRU.
+This is intended to remove map reopen churn; the complete array hash and schema
+checks remain unchanged.
 
 The preregistered eight-RTX-5090 parity experiment completed nine 500-update
 runs for seeds 17, 42, and 73. Regional compilation, fused AdamW, pinned staging,
@@ -129,9 +150,9 @@ split protocol.
 
 ## Scale ladder
 
-1. Complete the replacement one-GPU loader/recovery gate. Materialization and
-   independent replay are complete; job `1342989` is the preserved failed
-   loader attempt.
+1. Complete the replacement one-GPU loader/recovery gate. Newly frozen job
+   `1343046` passed exact recovery. Job `1342989` remains the preserved failed
+   loader attempt, and job `1343030` remains the corrected retrospective audit.
 2. Run a fresh three-seed eight-GPU 650M gate with production batch geometry,
    FP32 gradient reduction, at least 500 measured updates, and a training-excluded
    OAS validation panel.
