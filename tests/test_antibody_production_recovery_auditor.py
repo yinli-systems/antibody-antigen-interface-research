@@ -120,6 +120,8 @@ def _fixture(tmp_path: Path):
             "checkpoint_model_sha256": "d" * 64,
             "checkpoint_optimizer_sha256": "e" * 64,
             "checkpoint_rng_manifest_sha256": "f" * 64,
+            "final_model_sha256": "d" * 64,
+            "final_optimizer_sha256": "1" * 64,
             "membership_sha256": "g" * 64,
             "resume_used": False,
             "run_role": "stage1",
@@ -131,7 +133,7 @@ def _fixture(tmp_path: Path):
             "final_optimizer_sha256": "b" * 64,
             "membership_sha256": "h" * 64,
             "resume_loaded_model_sha256": "d" * 64,
-            "resume_loaded_optimizer_sha256": "e" * 64,
+            "resume_loaded_optimizer_sha256": "1" * 64,
             "resume_payload_model_sha256": "d" * 64,
             "resume_payload_optimizer_sha256": "e" * 64,
             "resume_rng_manifest_sha256": "f" * 64,
@@ -183,6 +185,7 @@ def test_recovery_auditor_accepts_exact_fixture(tmp_path: Path) -> None:
         stage1_root=roots["stage1"],
         resumed_root=roots["resumed"],
     )
+    assert len(result["auditor_sha256"]) == 64
     assert result["exact_recovery"] == {
         "final_model_equal": True,
         "final_optimizer_equal": True,
@@ -199,6 +202,29 @@ def test_recovery_auditor_rejects_trace_drift(tmp_path: Path) -> None:
     receipt["trace"][0]["loss"] += 0.001
     _write(receipt_path, receipt)
     with pytest.raises(auditor.RecoveryAuditError, match="scientific traces"):
+        auditor.audit_recovery(
+            gate_protocol_path=protocol,
+            continuous_root=roots["continuous"],
+            stage1_root=roots["stage1"],
+            resumed_root=roots["resumed"],
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    ("resume_payload_optimizer_sha256", "resume_loaded_optimizer_sha256"),
+)
+def test_recovery_auditor_rejects_optimizer_checkpoint_drift(
+    tmp_path: Path,
+    field: str,
+) -> None:
+    auditor = _load_auditor()
+    protocol, roots = _fixture(tmp_path)
+    receipt_path = roots["resumed"] / "receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="ascii"))
+    receipt[field] = "0" * 64
+    _write(receipt_path, receipt)
+    with pytest.raises(auditor.RecoveryAuditError, match="Checkpoint payload"):
         auditor.audit_recovery(
             gate_protocol_path=protocol,
             continuous_root=roots["continuous"],

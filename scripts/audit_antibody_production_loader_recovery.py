@@ -216,14 +216,17 @@ def audit_recovery(
         or not _is_sha256(stage1_receipt.get("checkpoint_model_sha256"))
         or not _is_sha256(stage1_receipt.get("checkpoint_optimizer_sha256"))
         or not _is_sha256(stage1_receipt.get("checkpoint_rng_manifest_sha256"))
+        or stage1_receipt.get("checkpoint_model_sha256")
+        != stage1_receipt.get("final_model_sha256")
+        or not _is_sha256(stage1_receipt.get("final_optimizer_sha256"))
         or resumed_receipt.get("resume_payload_model_sha256")
         != stage1_receipt.get("checkpoint_model_sha256")
         or resumed_receipt.get("resume_payload_optimizer_sha256")
         != stage1_receipt.get("checkpoint_optimizer_sha256")
         or resumed_receipt.get("resume_loaded_model_sha256")
-        != stage1_receipt.get("checkpoint_model_sha256")
+        != stage1_receipt.get("final_model_sha256")
         or resumed_receipt.get("resume_loaded_optimizer_sha256")
-        != stage1_receipt.get("checkpoint_optimizer_sha256")
+        != stage1_receipt.get("final_optimizer_sha256")
         or resumed_receipt.get("resume_rng_manifest_sha256")
         != stage1_receipt.get("checkpoint_rng_manifest_sha256")
     ):
@@ -259,6 +262,7 @@ def audit_recovery(
         for name, item in runs.items()
     }
     return {
+        "auditor_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "authorization": {
             "production_pretraining": False,
             "scale_out": False,
