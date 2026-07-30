@@ -29,8 +29,10 @@ from antibody_pretraining.model import (
     config_from_preset,
     load_model_family,
 )
+from antibody_pretraining.production_corpus import load_production_corpus
 from antibody_pretraining.tokenizer import PAD_ID
 from antibody_pretraining.training_contract import (
+    build_indexed_update_plan,
     build_update_plan,
     learning_rate_at_token,
     load_training_protocol,
@@ -46,8 +48,15 @@ from run_antibody_pretraining import (
 
 def _arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--shard", type=Path, required=True)
-    parser.add_argument("--manifest-sha256", required=True)
+    parser.add_argument("--shard", type=Path)
+    parser.add_argument("--manifest-sha256")
+    parser.add_argument("--production-corpus-root", type=Path)
+    parser.add_argument("--production-corpus-manifest-file-sha256")
+    parser.add_argument("--production-corpus-manifest-payload-sha256")
+    parser.add_argument("--production-corpus-protocol-file-sha256")
+    parser.add_argument("--production-corpus-independent-audit", type=Path)
+    parser.add_argument("--production-corpus-independent-audit-file-sha256")
+    parser.add_argument("--production-corpus-independent-audit-payload-sha256")
     parser.add_argument("--model-family", type=Path, required=True)
     parser.add_argument("--training-protocol", type=Path, required=True)
     parser.add_argument("--efficiency-protocol", type=Path, required=True)
@@ -95,6 +104,28 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--ddp-bucket-cap-mb", type=int, default=25)
     parser.add_argument("--skip-checkpoint", action="store_true")
     args = parser.parse_args()
+    dense_arguments = (args.shard, args.manifest_sha256)
+    production_arguments = (
+        args.production_corpus_root,
+        args.production_corpus_manifest_file_sha256,
+        args.production_corpus_manifest_payload_sha256,
+        args.production_corpus_protocol_file_sha256,
+        args.production_corpus_independent_audit,
+        args.production_corpus_independent_audit_file_sha256,
+        args.production_corpus_independent_audit_payload_sha256,
+    )
+    if any(value is not None for value in dense_arguments) and not all(
+        value is not None for value in dense_arguments
+    ):
+        raise ValueError("Dense shard arguments are indivisible")
+    if any(value is not None for value in production_arguments) and not all(
+        value is not None for value in production_arguments
+    ):
+        raise ValueError("Production corpus arguments are indivisible")
+    if all(value is not None for value in dense_arguments) == all(
+        value is not None for value in production_arguments
+    ):
+        raise ValueError("Select exactly one authenticated training data source")
     if args.steps <= 0 or args.micro_batch <= 0 or args.target_tokens <= 0:
         raise ValueError("Pilot dimensions must be positive")
     if args.batch_quantum <= 0 or args.ddp_bucket_cap_mb <= 0:
@@ -132,6 +163,8 @@ def _arguments() -> argparse.Namespace:
         raise ValueError(
             "Parity gate runs prohibit resume and require skipped checkpoints"
         )
+    if args.production_corpus_root is not None and args.parity_protocol is not None:
+        raise ValueError("Dense pilot parity does not apply to the production corpus")
     return args
 
 
@@ -332,13 +365,16 @@ def _bucket_width(maximum_length: int, boundaries: tuple[int, ...]) -> int:
 
 def _ordered_indices(
     indices: np.ndarray,
-    residue_lengths: np.ndarray,
+    selected_residue_lengths: np.ndarray,
     enabled: bool,
 ) -> np.ndarray:
     if not enabled:
         return indices
+    lengths = np.asarray(selected_residue_lengths)
+    if lengths.shape != indices.shape or lengths.dtype.kind not in {"i", "u"}:
+        raise RuntimeError("Selected residue lengths differ from update membership")
     positions = np.arange(len(indices), dtype=np.int64)
-    order = np.lexsort((positions, residue_lengths[indices]))
+    order = np.lexsort((positions, lengths))
     ordered = indices[order]
     if sorted(ordered.tolist()) != sorted(indices.tolist()):
         raise RuntimeError("Length bucketing changed update membership")
@@ -948,8 +984,8 @@ def main() -> None:
     )
     if telemetry_interval_seconds <= 0:
         raise ValueError("Telemetry interval must be positive")
-    if world_size <= 1:
-        raise RuntimeError("The optimized runner requires distributed execution")
+    if world_size <= 0:
+        raise RuntimeError("Distributed world size must be positive")
     if not torch.cuda.is_available() or local_rank >= torch.cuda.device_count():
         raise RuntimeError("CUDA rank identity is invalid")
     torch.cuda.set_device(local_rank)
@@ -999,10 +1035,58 @@ def main() -> None:
         nccl_version = tuple(int(value) for value in torch.cuda.nccl.version())
         if nccl_version <= (2, 9, 6) or not torch.__version__.startswith("2.13."):
             raise RuntimeError("BF16 DDP communication runtime is unsupported")
-    shard = load_dense_shard(
-        args.shard,
-        expected_manifest_sha256=args.manifest_sha256,
-    )
+    production_corpus = None
+    if args.shard is not None:
+        shard = load_dense_shard(
+            args.shard,
+            expected_manifest_sha256=args.manifest_sha256,
+        )
+        data_source_contract = {
+            "kind": "dense_shard",
+            "manifest_payload_sha256": args.manifest_sha256,
+        }
+    else:
+        shard = None
+        production_corpus = load_production_corpus(
+            args.production_corpus_root,
+            split="train",
+            expected_manifest_file_sha256=(
+                args.production_corpus_manifest_file_sha256
+            ),
+            expected_manifest_payload_sha256=(
+                args.production_corpus_manifest_payload_sha256
+            ),
+            expected_protocol_file_sha256=(
+                args.production_corpus_protocol_file_sha256
+            ),
+            independent_audit_path=args.production_corpus_independent_audit,
+            expected_independent_audit_file_sha256=(
+                args.production_corpus_independent_audit_file_sha256
+            ),
+            expected_independent_audit_payload_sha256=(
+                args.production_corpus_independent_audit_payload_sha256
+            ),
+        )
+        data_source_contract = {
+            "independent_audit_file_sha256": (
+                args.production_corpus_independent_audit_file_sha256
+            ),
+            "independent_audit_payload_sha256": (
+                args.production_corpus_independent_audit_payload_sha256
+            ),
+            "kind": "audited_oas_production_corpus",
+            "manifest_file_sha256": (
+                args.production_corpus_manifest_file_sha256
+            ),
+            "manifest_payload_sha256": (
+                args.production_corpus_manifest_payload_sha256
+            ),
+            "protocol_file_sha256": (
+                args.production_corpus_protocol_file_sha256
+            ),
+            "split": "train",
+            "training_authorized": False,
+        }
     family = load_model_family(args.model_family)
     protocol = load_training_protocol(args.training_protocol)
     parity_protocol = None
@@ -1012,6 +1096,8 @@ def main() -> None:
     parity_training_indices = None
     parity_evaluation_indices = None
     if args.parity_protocol is not None:
+        if shard is None:
+            raise AssertionError("Production corpus parity must fail during parsing")
         (
             parity_protocol,
             parity_protocol_sha256,
@@ -1034,12 +1120,22 @@ def main() -> None:
         args.length_bucket_boundaries,
         family["maximum_sequence_tokens"],
     )
-    all_residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
-    residue_lengths = (
-        all_residue_lengths[parity_training_indices]
-        if parity_training_indices is not None
-        else all_residue_lengths
-    )
+    if production_corpus is None:
+        all_residue_lengths = np.asarray(shard.lengths, dtype=np.int64) - 2
+        residue_lengths = (
+            all_residue_lengths[parity_training_indices]
+            if parity_training_indices is not None
+            else all_residue_lengths
+        )
+        training_universe_count = len(residue_lengths)
+
+        def residue_length_lookup(indices: np.ndarray) -> np.ndarray:
+            return residue_lengths[indices]
+
+    else:
+        residue_lengths = None
+        training_universe_count = len(production_corpus)
+        residue_length_lookup = production_corpus.residue_lengths
     model = AntibodyMaskedLanguageModel(config_from_preset(family, args.preset)).to(
         device
     )
@@ -1112,6 +1208,8 @@ def main() -> None:
             "target_residue_tokens": args.target_tokens,
             "world_size": world_size,
         }
+        if production_corpus is not None:
+            expected["data_source_contract"] = data_source_contract
         if any(state.get(key) != value for key, value in expected.items()):
             raise RuntimeError("Resume provenance differs from this launch")
         cursor = int(state["sample_cursor"])
@@ -1188,16 +1286,26 @@ def main() -> None:
     data_preparation_seconds = 0.0
     for update in range(start_update, start_update + args.steps):
         preparation_started = time.perf_counter()
-        plan = build_update_plan(
-            residue_lengths,
-            sample_cursor=cursor,
-            target_residue_tokens=args.target_tokens,
-            batch_quantum_sequences=args.batch_quantum,
-            seed=effective_seed,
-        )
+        if production_corpus is None:
+            plan = build_update_plan(
+                residue_lengths,
+                sample_cursor=cursor,
+                target_residue_tokens=args.target_tokens,
+                batch_quantum_sequences=args.batch_quantum,
+                seed=effective_seed,
+            )
+        else:
+            plan = build_indexed_update_plan(
+                record_count=training_universe_count,
+                residue_length_lookup=residue_length_lookup,
+                sample_cursor=cursor,
+                target_residue_tokens=args.target_tokens,
+                batch_quantum_sequences=args.batch_quantum,
+                seed=effective_seed,
+            )
         logical_indices_for_compute = _ordered_indices(
             plan.indices,
-            residue_lengths,
+            residue_length_lookup(plan.indices),
             args.length_bucketing,
         )
         indices_for_compute = (
@@ -1224,15 +1332,42 @@ def main() -> None:
         for start in range(0, len(indices_for_compute), global_micro_batch):
             local_start = start + rank * args.micro_batch
             indices = indices_for_compute[local_start : local_start + args.micro_batch]
-            tokens = np.asarray(shard.tokens[indices], dtype=np.int64)
+            if production_corpus is None:
+                tokens = np.asarray(shard.tokens[indices], dtype=np.int64)
+                sample_keys = np.asarray(shard.sample_keys[indices])
+                encoded_lengths = np.asarray(shard.lengths[indices])
+                chain_types = np.asarray(
+                    shard.chain_types[indices],
+                    dtype=np.int64,
+                )
+            else:
+                production_batch = production_corpus.batch(
+                    indices,
+                    fields=(
+                        "chain_types.npy",
+                        "lengths.npy",
+                        "sample_keys.npy",
+                        "tokens.npy",
+                    ),
+                )
+                tokens = production_batch["tokens.npy"].astype(
+                    np.int64,
+                    copy=False,
+                )
+                sample_keys = production_batch["sample_keys.npy"]
+                encoded_lengths = production_batch["lengths.npy"]
+                chain_types = production_batch["chain_types.npy"].astype(
+                    np.int64,
+                    copy=False,
+                )
             masked = apply_uniform_mlm(
                 tokens,
-                np.asarray(shard.sample_keys[indices]),
+                sample_keys,
                 update=update,
                 seed=effective_seed,
                 mask_fraction=protocol["masking"]["fraction"],
             )
-            maximum_length = int(np.asarray(shard.lengths[indices]).max())
+            maximum_length = int(encoded_lengths.max())
             width = (
                 _bucket_width(maximum_length, boundaries)
                 if args.bucketed_padding or args.length_bucketing
@@ -1243,7 +1378,7 @@ def main() -> None:
                     _stage_tensor(masked.input_ids[:, :width], args.pinned_staging),
                     _stage_tensor(masked.labels[:, :width], args.pinned_staging),
                     _stage_tensor(
-                        np.asarray(shard.chain_types[indices], dtype=np.int64),
+                        chain_types,
                         args.pinned_staging,
                     ),
                 )
@@ -1426,6 +1561,7 @@ def main() -> None:
         "batch_quantum": args.batch_quantum,
         "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
         "consumed_residue_tokens": consumed,
+        "data_source_contract": data_source_contract,
         "efficiency_protocol_sha256": efficiency_protocol_sha256,
         "ddp_communication_protocol_sha256": (
             ddp_communication_protocol_sha256
@@ -1449,7 +1585,7 @@ def main() -> None:
         "sample_cursor": cursor,
         "shard_manifest_sha256": args.manifest_sha256,
         "training_protocol_sha256": training_protocol_sha256,
-        "training_universe_count": len(residue_lengths),
+        "training_universe_count": training_universe_count,
         "target_residue_tokens": args.target_tokens,
         "world_size": world_size,
     }
@@ -1490,10 +1626,17 @@ def main() -> None:
                     "no production-corpus, biological, scaling, or "
                     "state-of-the-art claim"
                     if parity_protocol is not None
-                    else "Repeated-shard systems candidate; no "
-                    "production-corpus, biological, or state-of-the-art claim"
+                    else (
+                        "Audited production-corpus loader and recovery gate; "
+                        "no production-pretraining authorization, biological, "
+                        "scaling, or state-of-the-art claim"
+                        if production_corpus is not None
+                        else "Repeated-shard systems candidate; no "
+                        "production-corpus, biological, or state-of-the-art claim"
+                    )
                 ),
                 "compile_prewarm_trace": compile_prewarm_trace,
+                "data_source_contract": data_source_contract,
                 "data_preparation_seconds": data_preparation_seconds,
                 "device": torch.cuda.get_device_name(device),
                 "deterministic_algorithms": (
@@ -1578,7 +1721,7 @@ def main() -> None:
                 },
                 "trace": trace,
                 "training_protocol_sha256": training_protocol_sha256,
-                "training_universe_count": len(residue_lengths),
+                "training_universe_count": training_universe_count,
                 "world_size": world_size,
             },
         )
