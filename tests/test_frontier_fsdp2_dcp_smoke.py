@@ -11,6 +11,7 @@ import torch
 from frontier_fsdp2_dcp_smoke import (
     SOURCE_PATHS,
     _assert_difference,
+    _broadcast_rank_zero_error,
     _source_digest,
     _state_difference,
     _synthetic_batch,
@@ -80,6 +81,29 @@ def test_state_difference_reports_and_gates_drift() -> None:
         )
 
 
+def test_rank_zero_failure_is_broadcast_before_later_collectives(monkeypatch) -> None:
+    calls: list[tuple[list[str | None], int]] = []
+
+    def broadcast(payload: list[str | None], *, src: int) -> None:
+        calls.append((list(payload), src))
+
+    monkeypatch.setattr(torch.distributed, "broadcast_object_list", broadcast)
+    with pytest.raises(RuntimeError, match="rank-zero failure"):
+        _broadcast_rank_zero_error("rank-zero failure", rank=0)
+    assert calls == [(["rank-zero failure"], 0)]
+
+
+def test_nonzero_rank_receives_failure_before_later_collectives(monkeypatch) -> None:
+    def broadcast(payload: list[str | None], *, src: int) -> None:
+        assert payload == [None]
+        assert src == 0
+        payload[0] = "rank-zero failure"
+
+    monkeypatch.setattr(torch.distributed, "broadcast_object_list", broadcast)
+    with pytest.raises(RuntimeError, match="rank-zero failure"):
+        _broadcast_rank_zero_error(None, rank=3)
+
+
 def test_fsdp2_slurm_launcher_is_fail_closed() -> None:
     content = (REPOSITORY_ROOT / "slurm/frontier_fsdp2_dcp_smoke.sbatch").read_text(
         encoding="utf-8"
@@ -106,8 +130,7 @@ def test_fsdp2_slurm_launcher_is_fail_closed() -> None:
 def test_machine_protocol_preserves_scientific_firewall() -> None:
     protocol = json.loads(
         (
-            REPOSITORY_ROOT
-            / "protocols/frontier_fsdp2_dcp_engineering_v1.json"
+            REPOSITORY_ROOT / "protocols/frontier_fsdp2_dcp_engineering_v1.json"
         ).read_text(encoding="utf-8")
     )
     assert protocol["format"] == "frontier_fsdp2_dcp_engineering_protocol_v1"
