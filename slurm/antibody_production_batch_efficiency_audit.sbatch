@@ -20,8 +20,18 @@ PROTOCOL_SHA256=${ABF_PROTOCOL_SHA256:?ABF_PROTOCOL_SHA256 is required}
 AUDITOR_SHA256=${ABF_AUDITOR_SHA256:?ABF_AUDITOR_SHA256 is required}
 RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?required}
-PROTOCOL=${SOURCE_ROOT}/protocols/antibody_production_batch_efficiency_v3.json
-AUDITOR=${SOURCE_ROOT}/scripts/audit_antibody_production_batch_efficiency.py
+PROTOCOL_BASENAME=${ABF_PROTOCOL_BASENAME:-antibody_production_batch_efficiency_v3.json}
+AUDITOR_BASENAME=${ABF_AUDITOR_BASENAME:-audit_antibody_production_batch_efficiency.py}
+if [[ ! "${PROTOCOL_BASENAME}" =~ ^[A-Za-z0-9._-]+\.json$ ]]; then
+  echo "The protocol basename is unsafe" >&2
+  exit 2
+fi
+if [[ ! "${AUDITOR_BASENAME}" =~ ^[A-Za-z0-9._-]+\.py$ ]]; then
+  echo "The auditor basename is unsafe" >&2
+  exit 2
+fi
+PROTOCOL=${SOURCE_ROOT}/protocols/${PROTOCOL_BASENAME}
+AUDITOR=${SOURCE_ROOT}/scripts/${AUDITOR_BASENAME}
 
 for path in "${PYTHON_BIN}" "${SOURCE_ROOT}" "${RUN_ROOT}" \
   "${OUTPUT}" "${RUNTIME_MANIFEST}"; do

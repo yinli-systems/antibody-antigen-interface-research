@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL_V1 = ROOT / "protocols/antibody_production_batch_efficiency_v1.json"
 PROTOCOL_V2 = ROOT / "protocols/antibody_production_batch_efficiency_v2.json"
 PROTOCOL = ROOT / "protocols/antibody_production_batch_efficiency_v3.json"
+COMPILE_ONLY = ROOT / "protocols/antibody_compile_only_confirmation_v1.json"
 EXTENSION = (
     ROOT / "protocols/antibody_ddp_scientific_parity_extension_600_seed17_v1.json"
 )
@@ -124,9 +125,36 @@ def test_slurm_launcher_is_single_node_eight_gpu_crossover() -> None:
     assert "--batch-quantum 512" in source
     assert "--steps 600" in source
     assert "antibody_production_batch_efficiency_v3.json" in source
+    assert "ABF_PROTOCOL_BASENAME" in source
+    assert 'args+=("${CANDIDATE_ARGS[@]}")' in source
     assert "--parity-extension-protocol" in source
     assert source.count("--ddp-communication-dtype float32") == 1
     assert "--ddp-communication-dtype bfloat16" not in source
     assert "run_mode safe_eager_r1 safe_eager" in source
     assert "run_mode fp32_compiled_r2 fp32_compiled" in source
     assert "--skip-checkpoint" in source
+
+
+def test_compile_only_confirmation_preserves_strict_long_horizon_gates() -> None:
+    """Exclude the failed fused factor without weakening any acceptance gate."""
+    value = json.loads(COMPILE_ONLY.read_text(encoding="ascii"))
+    parent = json.loads(PROTOCOL.read_text(encoding="ascii"))
+    assert value["format_version"] == parent["format_version"]
+    assert value["acceptance"] == {
+        **parent["acceptance"],
+        "bootstrap_seed": 2026073103,
+    }
+    assert value["batch"] == parent["batch"]
+    assert value["optimization"]["candidate"] == {
+        "bucketed_padding": False,
+        "compile_blocks": True,
+        "compile_prewarm_buckets": True,
+        "fused_adamw": False,
+        "pinned_staging": False,
+    }
+    assert value["evidence_precedence"]["full_bundle_long_horizon"]["failed_gates"] == [
+        "evaluation_noninferiority",
+        "step_stability",
+    ]
+    assert value["authorization"]["production_pretraining"] is False
+    assert value["authorization"]["scale_16_gpu"] is False

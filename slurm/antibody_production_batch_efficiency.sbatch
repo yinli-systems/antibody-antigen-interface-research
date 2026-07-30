@@ -20,7 +20,12 @@ MANIFEST_SHA256=${ABF_MANIFEST_SHA256:?ABF_MANIFEST_SHA256 is required}
 PROTOCOL_SHA256=${ABF_PROTOCOL_SHA256:?ABF_PROTOCOL_SHA256 is required}
 RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?ABF_RUNTIME_MANIFEST_SHA256 is required}
-PROTOCOL=${SOURCE_ROOT}/protocols/antibody_production_batch_efficiency_v3.json
+PROTOCOL_BASENAME=${ABF_PROTOCOL_BASENAME:-antibody_production_batch_efficiency_v3.json}
+if [[ ! "${PROTOCOL_BASENAME}" =~ ^[A-Za-z0-9._-]+\.json$ ]]; then
+  echo "The protocol basename is unsafe" >&2
+  exit 2
+fi
+PROTOCOL=${SOURCE_ROOT}/protocols/${PROTOCOL_BASENAME}
 SPLIT_ROOT=${SOURCE_ROOT}/results/pretraining/antibody_ddp_parity_split_v2
 RUN_ROOT=${OUTPUT_ROOT}/slurm-${SLURM_JOB_ID}
 LOCAL_BASE=${SLURM_TMPDIR:-/tmp}
@@ -135,6 +140,29 @@ PY
   --expected-file-sha256 "${RUNTIME_MANIFEST_SHA256}" \
   > "${RUN_ROOT}/runtime_verification.json"
 cp "${PROTOCOL}" "${RUN_ROOT}/protocol.json"
+mapfile -t CANDIDATE_ARGS < <(
+  "${PYTHON_BIN}" - "${PROTOCOL}" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+candidate = json.loads(Path(sys.argv[1]).read_text(encoding="ascii"))["optimization"]["candidate"]
+switches = {
+    "bucketed_padding": "--bucketed-padding",
+    "compile_blocks": "--compile-blocks",
+    "compile_prewarm_buckets": "--compile-prewarm-buckets",
+    "fused_adamw": "--fused-adamw",
+    "pinned_staging": "--pinned-staging",
+}
+if set(candidate) != set(switches) or any(not isinstance(value, bool) for value in candidate.values()):
+    raise SystemExit("Candidate optimization flags are invalid")
+if not candidate["compile_blocks"] or candidate["compile_prewarm_buckets"] is not True:
+    raise SystemExit("The compiled candidate must use regional compilation and prewarm")
+for key, switch in switches.items():
+    if candidate[key]:
+        print(switch)
+PY
+)
 {
   echo "job_id=${SLURM_JOB_ID}"
   echo "node=$(hostname)"
@@ -198,13 +226,7 @@ run_mode() {
     --skip-checkpoint
   )
   if [[ "${mode}" == fp32_compiled ]]; then
-    args+=(
-      --compile-blocks
-      --compile-prewarm-buckets
-      --fused-adamw
-      --pinned-staging
-      --bucketed-padding
-    )
+    args+=("${CANDIDATE_ARGS[@]}")
   elif [[ "${mode}" != safe_eager ]]; then
     echo "Unknown production-batch mode" >&2
     exit 2

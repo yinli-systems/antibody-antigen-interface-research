@@ -21,6 +21,8 @@ def test_audit_launcher_is_create_only_and_runtime_bound() -> None:
     assert "ABF_AUDITOR_SHA256" in source
     assert "ABF_RUNTIME_MANIFEST" in source
     assert "ABF_RUNTIME_MANIFEST_SHA256" in source
+    assert "ABF_PROTOCOL_BASENAME" in source
+    assert "ABF_AUDITOR_BASENAME" in source
     assert 'test ! -e "${OUTPUT}"' in source
     assert "generate_runtime_manifest.py\" verify" in source
     assert "--expected-file-sha256" in source
