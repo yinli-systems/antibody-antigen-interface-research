@@ -5,7 +5,6 @@
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:8
 #SBATCH --cpus-per-task=32
-#SBATCH --mem=120G
 #SBATCH --time=00:45:00
 #SBATCH --output=/tmp/frontier-fsdp2-dcp-%j.out
 #SBATCH --error=/tmp/frontier-fsdp2-dcp-%j.err
