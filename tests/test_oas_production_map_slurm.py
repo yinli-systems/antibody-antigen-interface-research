@@ -8,7 +8,7 @@ SLURM = ROOT / "slurm/oas_production_map_array.sbatch"
 
 def test_map_array_is_cpu_only_and_protocol_bound() -> None:
     source = SLURM.read_text(encoding="ascii")
-    assert "#SBATCH --partition=gpu_5090" in source
+    assert "#SBATCH --partition" not in source
     assert "#SBATCH --array=0-31%16" in source
     assert "#SBATCH --gres" not in source
     assert "#SBATCH --gpus" not in source
@@ -25,5 +25,6 @@ def test_map_array_is_cpu_only_and_protocol_bound() -> None:
         "OAS_CONTROLLER_SHA256",
         "OAS_PREPROCESSING_SHA256",
         "OAS_RECORD_SHA256",
+        "OAS_CPU_PARTITION",
     ):
         assert f"${{{variable}:?" in source

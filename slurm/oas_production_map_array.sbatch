@@ -1,6 +1,5 @@
 #!/bin/bash
 #SBATCH --job-name=oas-prod-map-v1
-#SBATCH --partition=gpu_5090
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
@@ -21,6 +20,7 @@ umask 077
 : "${OAS_CONTROLLER_SHA256:?OAS_CONTROLLER_SHA256 is required}"
 : "${OAS_PREPROCESSING_SHA256:?OAS_PREPROCESSING_SHA256 is required}"
 : "${OAS_RECORD_SHA256:?OAS_RECORD_SHA256 is required}"
+: "${OAS_CPU_PARTITION:?OAS_CPU_PARTITION records the external CPU partition}"
 : "${SLURM_ARRAY_TASK_ID:?SLURM_ARRAY_TASK_ID is required}"
 
 export CUDA_VISIBLE_DEVICES=

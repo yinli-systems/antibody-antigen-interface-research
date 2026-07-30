@@ -1,0 +1,114 @@
+{
+  "claim_boundary": {
+    "full_materialization_complete": false,
+    "large_scale_pretraining_authorized": false,
+    "pilot_only": true,
+    "scientific_claim": false
+  },
+  "execution": {
+    "host": "ln01",
+    "scheduler_gpu_allocated": false,
+    "source_root": "/ssd/scxi253/model_deployment/jobs/oas_foundation_source_32456f829dc9",
+    "source_root_mode": "0555"
+  },
+  "format_version": "oas_production_map_canary_evidence_v1",
+  "independent_audit": {
+    "accepted_records": 3,
+    "audit_passed": true,
+    "imported_mapper": false,
+    "mapper_receipt_file_sha256": "e787cc111b8bc3ccc464af9f64f296f6f1ff16e23c22559e151961343179b616",
+    "mapper_receipt_payload_sha256": "9d9ee49e4a343fafe9083a93e2518bd87c57af5591b0d8a7ae2ae5582d83409a"
+  },
+  "mapper_receipt": {
+    "audit_bindings": {
+      "download_audit_file_sha256": "58557ba1ff7b1f30b48a0d5ac167b2ceb734770ced4d38ec4bf77bb25d55dbd2",
+      "download_audit_payload_sha256": "f767d026f17e06a8532a7d687605a3cee2d4eaad0b406f52e8a34e441458683b",
+      "filter_policy_file_sha256": "5f7e360ff731805fd87f33297c4cba09b9f5c07ddf73c96d4850db54b09106e7",
+      "plan_file_sha256": "45f7d002400dd81d9afa5f6b7daff6b6e67d7557aa2e379a031a5ac3b1f2b1b0",
+      "plan_payload_sha256": "fba741bc6666067f1601f2096d31507c1b38edb8af95118110eaf1cef7e059e0",
+      "protocol_file_sha256": "5682dfe3a798a30b55a2281d214726e81621aba052458ef04f8dcb65dc88ee70"
+    },
+    "bucket_inventory": [
+      {
+        "bucket": 3,
+        "bytes": 240,
+        "file_sha256": "77ea26219a421cb9bd40de2325ed072221fe78989ed4bc78fec135fa184e99c8",
+        "records": 1
+      },
+      {
+        "bucket": 49,
+        "bytes": 240,
+        "file_sha256": "6c3d3836448d1072fcfe69ce14334e85cc2e058e1358d1ca51203c4a9f8aa6e6",
+        "records": 1
+      },
+      {
+        "bucket": 142,
+        "bytes": 240,
+        "file_sha256": "db70ca51f48ca0d8a3c30676e8bf0ae7ccbc1630a22ffb7aefada1f9ca637695",
+        "records": 1
+      }
+    ],
+    "claim_boundary": {
+      "global_dedup_complete": false,
+      "large_scale_pretraining_authorized": false,
+      "map_task_complete": false,
+      "pilot_only": true,
+      "scientific_claim": false
+    },
+    "completed_at": "2026-07-30T06:36:36.347027+00:00",
+    "counts": {
+      "accepted_records": 3,
+      "plan_fraction_selected": 3,
+      "source_rows": 3
+    },
+    "format_version": "oas_production_map_task_receipt_v1",
+    "host": "ln01",
+    "receipt_sha256": "9d9ee49e4a343fafe9083a93e2518bd87c57af5591b0d8a7ae2ae5582d83409a",
+    "source_sha256": {
+      "controller": "8724d866d932f4371e7c40f76f60f3dfc38ed787fb7739f6517ef6350d2c79fc",
+      "map_record": "049dfe629f50f2c404bfc0078b751dc84b5527dfef05d61a0b0381a9c4855ba0",
+      "preprocessing": "5d6cc46bc2c8dddc3310aeaa1db1a9b17b0ec86be9ced46ebb0ceb9589c1cf49"
+    },
+    "status_flag_counts": {
+      "shorter": 3
+    },
+    "study_count": 90,
+    "study_vocabulary_sha256": "d295ba170b334dbdb3a2a2b920121ae4c923fe4fcafd1f0c307448876a38b633",
+    "task_count": 32,
+    "task_id": 1,
+    "test_access": {
+      "downstream_metrics_used": false,
+      "sabdab2_heldout_accessed": false
+    },
+    "unit_count": 1,
+    "unit_receipts": [
+      {
+        "counts": {
+          "accepted_records": 3,
+          "plan_fraction_selected": 3,
+          "source_rows": 3
+        },
+        "raw_compressed_bytes": 3085,
+        "raw_compressed_sha256": "36334e3620f99ef88b082ca10664125fbe00b4b23508718b7f3753299713b9c3",
+        "receipt_file_sha256": "66e50fcc9f1fb50fdc2339a933e066b8c11e342a48d2002e425bcd9af386a9ea",
+        "receipt_payload_sha256": "1a5bec2b81a71eae7a73737819987d2d96cddfda2ad57e2bb3fb193f0ad3cad7",
+        "relative_unit": "Banerjee_2017/csv/SRR5060321_Heavy_IGHA.csv.gz",
+        "status_flag_counts": {
+          "shorter": 3
+        },
+        "uncompressed_bytes": 15342,
+        "uncompressed_sha256": "ac7ddf2a884ef408412a9f309fc13512c11e2a4d1ea6589a78f5f8ad66198fa4",
+        "unit_index": 1
+      }
+    ]
+  },
+  "scheduler_probe": {
+    "cpu_only_submission_accepted": false,
+    "partition": "gpu_5090",
+    "reason": "Cluster submission policy requires every public GPU-partition job to request between one and eight GPUs"
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

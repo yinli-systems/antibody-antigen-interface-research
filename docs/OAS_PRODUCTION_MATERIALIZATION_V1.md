@@ -51,3 +51,18 @@ inventory and validation-precedence rule.
 Only that independent audit plus a one-GPU loader/checkpoint replay can mark
 the corpus eligible for a separately registered pretraining run. This stage
 does not authorize training, downstream evaluation, or a scientific claim.
+
+## Real-input canary and scheduler boundary
+
+The first authenticated real-OAS canary mapped all three rows from plan unit
+index 1, recomputed both compressed and uncompressed SHA-256 digests, and
+published three read-only bucket records. An independent fixed-record replay
+that imported neither the mapper nor its record module passed. This remains a
+format canary, not evidence of full-corpus throughput or global deduplication.
+
+The current public ParaCloud partitions reject CPU-only Slurm submissions and
+require every job to request at least one GPU. Materialization therefore stops
+before the 32-task array instead of reserving unused accelerators. The generic
+array launcher deliberately has no GPU-partition directive; it must be
+submitted with a separately authorized CPU partition recorded in
+`OAS_CPU_PARTITION`. The thresholds and CPU-only resource policy are unchanged.
