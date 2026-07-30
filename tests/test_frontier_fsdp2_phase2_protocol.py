@@ -102,6 +102,7 @@ def test_multinode_launcher_uses_torchrun_rendezvous_and_public_policy() -> None
         REPOSITORY_ROOT / "slurm/frontier_fsdp2_multinode_profile.sbatch"
     ).read_text(encoding="utf-8")
     assert "#SBATCH --mem=" not in launcher
+    assert "#SBATCH --qos=gpugpu" in launcher
     assert "--node-rank=\"$SLURM_PROCID\"" in launcher
     assert "--rdzv-endpoint=\"$MASTER_ADDR:$MASTER_PORT\"" in launcher
     assert "synthetic_fsdp2_multinode_strong_scaling_profile" in launcher
