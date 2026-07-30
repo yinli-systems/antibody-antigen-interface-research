@@ -133,8 +133,10 @@ def audit_recovery(
 ) -> dict[str, Any]:
     """Validate provenance and exact uninterrupted-versus-resumed equality."""
     protocol, protocol_file_sha256 = _load(gate_protocol_path)
+    auditor_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     if (
         protocol.get("format_version") != GATE_FORMAT
+        or protocol.get("auditor_sha256") != auditor_sha256
         or protocol.get("test_access") != TEST_ACCESS
         or protocol.get("authorization")
         != {
@@ -262,7 +264,7 @@ def audit_recovery(
         for name, item in runs.items()
     }
     return {
-        "auditor_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "auditor_sha256": auditor_sha256,
         "authorization": {
             "production_pretraining": False,
             "scale_out": False,

@@ -92,6 +92,7 @@ def freeze_gate(
     model_family = source_root / "protocols/antibody_model_family_v1.json"
     training_protocol = source_root / "protocols/antibody_training_v1.json"
     efficiency_protocol = source_root / "protocols/antibody_efficiency_gate_v1.json"
+    auditor = source_root / "scripts/audit_antibody_production_loader_recovery.py"
     inputs = {
         "efficiency_protocol_file_sha256": _file_sha256(efficiency_protocol),
         "independent_audit_file_sha256": independent_audit_file_sha256,
@@ -128,6 +129,7 @@ def freeze_gate(
         }
 
     return {
+        "auditor_sha256": _file_sha256(auditor),
         "authorization": {
             "loader_recovery_gate": True,
             "production_pretraining": False,

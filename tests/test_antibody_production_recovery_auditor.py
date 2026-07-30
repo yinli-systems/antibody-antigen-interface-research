@@ -55,6 +55,9 @@ def _fixture(tmp_path: Path):
         "split": "train",
     }
     protocol = {
+        "auditor_sha256": __import__("hashlib").sha256(
+            AUDITOR.read_bytes()
+        ).hexdigest(),
         "authorization": authorization,
         "format_version": "antibody_production_loader_recovery_gate_v1",
         "implementation": {"runner.py": "6" * 64},
