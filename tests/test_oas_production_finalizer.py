@@ -99,7 +99,7 @@ def _make_writable(root: Path) -> None:
             path.chmod(stat.S_IRUSR | stat.S_IWUSR)
 
 
-def _fixture(tmp_path: Path):
+def _fixture(tmp_path: Path, *, protocol_version: str = "v1"):
     reducer = _load_module(REDUCER, f"oas_reducer_{tmp_path.name}")
     finalizer = _load_module(FINALIZER, f"oas_finalizer_{tmp_path.name}")
     output = tmp_path / "corpus"
@@ -124,15 +124,29 @@ def _fixture(tmp_path: Path):
                 "records": 1,
             }
         )
+    if protocol_version not in {"v1", "v2"}:
+        raise AssertionError("Unsupported fixture protocol version")
+    resource_policy = {"shared_storage_minimum_free_bytes": 0}
+    if protocol_version == "v2":
+        resource_policy.update(
+            {
+                "gpu_allocation_during_materialization": (
+                    "scheduler_mandated_idle_only"
+                ),
+                "scheduler_reserved_gpu_count": 1,
+            }
+        )
     protocol = {
         "execution": {
             "bucket_count": 2,
             "map_task_count": 1,
             "reduce_task_count": 2,
         },
-        "format_version": "oas_production_materialization_protocol_v1",
+        "format_version": (
+            f"oas_production_materialization_protocol_{protocol_version}"
+        ),
         "inputs": {"source_record_count": 2},
-        "resource_policy": {"shared_storage_minimum_free_bytes": 0},
+        "resource_policy": resource_policy,
         "test_access": {
             "downstream_metrics_used": False,
             "sabdab2_heldout_accessed": False,
@@ -175,6 +189,13 @@ def _fixture(tmp_path: Path):
             "sabdab2_heldout_accessed": False,
         },
     }
+    if protocol_version == "v2":
+        map_receipt["resource_receipt"] = {
+            "cuda_visible_devices": False,
+            "gpu_compute_permitted": False,
+            "scheduler_reserved_gpu_count": 1,
+            "scheduler_reserved_gpu_mode": "scheduler_mandated_idle_only",
+        }
     (mapper / "receipt.json").write_bytes(_self_hashed(map_receipt, "receipt_sha256"))
     _freeze(mapper)
     source_sha256 = {
@@ -277,5 +298,23 @@ def test_finalizer_rejects_reducer_identity_tamper(
         ):
             _finalize(fixture)
         assert not (fixture["output"] / "corpus_manifest.json").exists()
+    finally:
+        _make_writable(fixture["output"])
+
+
+def test_v2_finalizer_requires_complete_idle_gpu_evidence(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Authenticate the scheduler workaround across map, reduce, and finalize."""
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "")
+    monkeypatch.setenv("OAS_SCHEDULER_RESERVED_GPU_COUNT", "1")
+    monkeypatch.setenv("SLURM_JOB_GPUS", "0")
+    monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
+    fixture = _fixture(tmp_path, protocol_version="v2")
+    try:
+        receipt = _finalize(fixture)
+        assert receipt["authorization"]["large_scale_pretraining"] is False
+        assert receipt["counts"]["unique_records"] == 2
     finally:
         _make_writable(fixture["output"])

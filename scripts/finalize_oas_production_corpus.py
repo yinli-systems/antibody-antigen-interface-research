@@ -20,6 +20,10 @@ MANIFEST_FORMAT = "oas_production_corpus_manifest_v1"
 MAP_FORMAT = "oas_production_map_task_receipt_v1"
 REDUCE_FORMAT = "oas_production_reduce_bucket_receipt_v1"
 SHARD_FORMAT = "oas_production_dense_bucket_shard_v1"
+SUPPORTED_PROTOCOL_FORMATS = {
+    "oas_production_materialization_protocol_v1",
+    "oas_production_materialization_protocol_v2",
+}
 TEST_ACCESS = {
     "downstream_metrics_used": False,
     "sabdab2_heldout_accessed": False,
@@ -157,6 +161,7 @@ def _load_map_receipts(
     *,
     task_count: int,
     bucket_count: int,
+    protocol_format: str,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, int]]:
     receipts = []
     common_identity: dict[str, Any] | None = None
@@ -182,6 +187,16 @@ def _load_map_receipts(
             raise ProductionFinalizeError(
                 "Map receipt is not a complete production task"
             )
+        if protocol_format == "oas_production_materialization_protocol_v2" and (
+            receipt.get("resource_receipt")
+            != {
+                "cuda_visible_devices": False,
+                "gpu_compute_permitted": False,
+                "scheduler_reserved_gpu_count": 1,
+                "scheduler_reserved_gpu_mode": "scheduler_mandated_idle_only",
+            }
+        ):
+            raise ProductionFinalizeError("Map idle-GPU resource evidence differs")
         identity = _map_identity(receipt)
         if common_identity is None:
             common_identity = identity
@@ -306,6 +321,7 @@ def _load_reduce_receipts(
     map_receipts: list[dict[str, Any]],
     map_identity: Mapping[str, Any],
     expected_source_sha256: Mapping[str, str],
+    protocol_format: str,
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     buckets = []
     totals = {
@@ -338,6 +354,16 @@ def _load_reduce_receipts(
             or boundary.get("large_scale_pretraining_authorized") is not False
         ):
             raise ProductionFinalizeError("Reducer receipt identity differs")
+        if protocol_format == "oas_production_materialization_protocol_v2" and (
+            receipt.get("resource_receipt")
+            != {
+                "cuda_visible_devices": False,
+                "gpu_compute_permitted": False,
+                "scheduler_reserved_gpu_count": 1,
+                "scheduler_reserved_gpu_mode": "scheduler_mandated_idle_only",
+            }
+        ):
+            raise ProductionFinalizeError("Reducer idle-GPU resource evidence differs")
         references = receipt.get("mapper_receipts")
         if not isinstance(references, list) or len(references) != task_count:
             raise ProductionFinalizeError("Reducer mapper receipt inventory differs")
@@ -438,8 +464,7 @@ def finalize_production_corpus(
     if (
         protocol_raw != _canonical_json_bytes(protocol)
         or hashlib.sha256(protocol_raw).hexdigest() != protocol_file_sha256
-        or protocol.get("format_version")
-        != "oas_production_materialization_protocol_v1"
+        or protocol.get("format_version") not in SUPPORTED_PROTOCOL_FORMATS
         or protocol.get("test_access") != TEST_ACCESS
     ):
         raise ProductionFinalizeError("Production protocol identity differs")
@@ -465,6 +490,7 @@ def finalize_production_corpus(
         output_root,
         task_count=task_count,
         bucket_count=bucket_count,
+        protocol_format=str(protocol["format_version"]),
     )
     if map_totals["source_rows"] != inputs.get("source_record_count"):
         raise ProductionFinalizeError("Map source rows differ from the protocol")
@@ -481,6 +507,7 @@ def finalize_production_corpus(
         map_receipts=map_receipts,
         map_identity=map_identity,
         expected_source_sha256=expected_reducer_sources,
+        protocol_format=str(protocol["format_version"]),
     )
     if totals["input_records"] != map_totals["accepted_records"]:
         raise ProductionFinalizeError(

@@ -35,6 +35,10 @@ from antibody_pretraining.tokenizer import (
 
 FORMAT_VERSION = "oas_production_reduce_bucket_receipt_v1"
 SHARD_FORMAT = "oas_production_dense_bucket_shard_v1"
+SUPPORTED_PROTOCOL_FORMATS = {
+    "oas_production_materialization_protocol_v1",
+    "oas_production_materialization_protocol_v2",
+}
 MAXIMUM_SEQUENCE_TOKENS = 194
 TEST_ACCESS = {
     "downstream_metrics_used": False,
@@ -44,6 +48,43 @@ TEST_ACCESS = {
 
 class ProductionReduceError(RuntimeError):
     """Report an invalid map inventory or exact-reduction failure."""
+
+
+def _resource_receipt(protocol: Mapping[str, Any]) -> dict[str, Any]:
+    """Prove that any scheduler-reserved GPU remains hidden and unused."""
+    if os.environ.get("CUDA_VISIBLE_DEVICES", "") not in {"", "NoDevFiles"}:
+        raise ProductionReduceError("Production reduction must not expose a GPU")
+    policy = protocol.get("resource_policy")
+    if not isinstance(policy, Mapping):
+        raise ProductionReduceError("Production resource policy is absent")
+    assigned_value = os.environ.get("SLURM_JOB_GPUS") or os.environ.get(
+        "SLURM_STEP_GPUS"
+    )
+    assigned_count = len(
+        [value for value in (assigned_value or "").split(",") if value]
+    )
+    allocation = policy.get("gpu_allocation_during_materialization", False)
+    if allocation is False:
+        if assigned_count:
+            raise ProductionReduceError("Slurm assigned a GPU to CPU-only reduction")
+        return {
+            "cuda_visible_devices": False,
+            "gpu_compute_permitted": False,
+            "scheduler_reserved_gpu_count": 0,
+            "scheduler_reserved_gpu_mode": "none",
+        }
+    if allocation != "scheduler_mandated_idle_only":
+        raise ProductionReduceError("Production GPU-allocation policy differs")
+    expected = policy.get("scheduler_reserved_gpu_count")
+    declared = os.environ.get("OAS_SCHEDULER_RESERVED_GPU_COUNT")
+    if expected != 1 or declared != "1" or assigned_count != 1:
+        raise ProductionReduceError("Scheduler-reserved idle GPU evidence differs")
+    return {
+        "cuda_visible_devices": False,
+        "gpu_compute_permitted": False,
+        "scheduler_reserved_gpu_count": 1,
+        "scheduler_reserved_gpu_mode": "scheduler_mandated_idle_only",
+    }
 
 
 @dataclass(frozen=True)
@@ -495,18 +536,14 @@ def reduce_production_bucket(
         or not 0 <= bucket < BUCKET_COUNT
     ):
         raise ProductionReduceError("Bucket is outside the frozen domain")
-    if os.environ.get("CUDA_VISIBLE_DEVICES", "") not in {"", "NoDevFiles"}:
-        raise ProductionReduceError("Production reduction must not consume a GPU")
-    if any(os.environ.get(name) for name in ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS")):
-        raise ProductionReduceError("Slurm assigned a GPU to CPU-only reduction")
     protocol, protocol_bytes = _load_json(protocol_path, "Protocol")
     _require_sha256(protocol_file_sha256, "Protocol file digest")
     if (
         hashlib.sha256(protocol_bytes).hexdigest() != protocol_file_sha256
-        or protocol.get("format_version")
-        != "oas_production_materialization_protocol_v1"
+        or protocol.get("format_version") not in SUPPORTED_PROTOCOL_FORMATS
     ):
         raise ProductionReduceError("Production protocol identity differs")
+    resource_receipt = _resource_receipt(protocol)
     execution = protocol.get("execution")
     if not isinstance(execution, Mapping):
         raise ProductionReduceError("Production execution policy is absent")
@@ -582,6 +619,7 @@ def reduce_production_bucket(
             "counts": counts,
             "format_version": FORMAT_VERSION,
             "host": socket.gethostname(),
+            "resource_receipt": resource_receipt,
             "mapper_receipts": mapper_receipts,
             "protocol_file_sha256": protocol_file_sha256,
             "shard_manifests": {

@@ -34,6 +34,10 @@ from antibody_pretraining.production_materialization import (
 )
 
 FORMAT_VERSION = "oas_production_map_task_receipt_v1"
+SUPPORTED_PROTOCOL_FORMATS = {
+    "oas_production_materialization_protocol_v1",
+    "oas_production_materialization_protocol_v2",
+}
 TEST_ACCESS = {
     "downstream_metrics_used": False,
     "sabdab2_heldout_accessed": False,
@@ -42,6 +46,43 @@ TEST_ACCESS = {
 
 class ProductionMapError(RuntimeError):
     """Report an authenticated-input or production-map failure."""
+
+
+def _resource_receipt(protocol: Mapping[str, Any]) -> dict[str, Any]:
+    """Prove that a scheduler-reserved GPU remains hidden and unused."""
+    if os.environ.get("CUDA_VISIBLE_DEVICES", "") not in {"", "NoDevFiles"}:
+        raise ProductionMapError("Production materialization must not expose a GPU")
+    policy = protocol.get("resource_policy")
+    if not isinstance(policy, Mapping):
+        raise ProductionMapError("Production resource policy is absent")
+    assigned_value = os.environ.get("SLURM_JOB_GPUS") or os.environ.get(
+        "SLURM_STEP_GPUS"
+    )
+    assigned_count = len(
+        [value for value in (assigned_value or "").split(",") if value]
+    )
+    allocation = policy.get("gpu_allocation_during_materialization", False)
+    if allocation is False:
+        if assigned_count:
+            raise ProductionMapError("Slurm assigned a GPU to CPU-only materialization")
+        return {
+            "cuda_visible_devices": False,
+            "gpu_compute_permitted": False,
+            "scheduler_reserved_gpu_count": 0,
+            "scheduler_reserved_gpu_mode": "none",
+        }
+    if allocation != "scheduler_mandated_idle_only":
+        raise ProductionMapError("Production GPU-allocation policy differs")
+    expected = policy.get("scheduler_reserved_gpu_count")
+    declared = os.environ.get("OAS_SCHEDULER_RESERVED_GPU_COUNT")
+    if expected != 1 or declared != "1" or assigned_count != 1:
+        raise ProductionMapError("Scheduler-reserved idle GPU evidence differs")
+    return {
+        "cuda_visible_devices": False,
+        "gpu_compute_permitted": False,
+        "scheduler_reserved_gpu_count": 1,
+        "scheduler_reserved_gpu_mode": "scheduler_mandated_idle_only",
+    }
 
 
 class _DigestingRawReader(io.RawIOBase):
@@ -290,7 +331,7 @@ def _validate_protocol_inputs(
     protocol, protocol_bytes = _load_json_file(protocol_path, "Protocol")
     if hashlib.sha256(protocol_bytes).hexdigest() != protocol_file_sha256:
         raise ProductionMapError("Protocol file digest differs")
-    if protocol.get("format_version") != "oas_production_materialization_protocol_v1":
+    if protocol.get("format_version") not in SUPPORTED_PROTOCOL_FORMATS:
         raise ProductionMapError("Protocol format differs")
     inputs = protocol.get("inputs")
     if not isinstance(inputs, dict):
@@ -677,10 +718,7 @@ def map_production_task(
         or pilot_maximum_data_units <= 0
     ):
         raise ProductionMapError("Pilot maximum must be a positive integer")
-    if os.environ.get("CUDA_VISIBLE_DEVICES", "") not in {"", "NoDevFiles"}:
-        raise ProductionMapError("Production materialization must not consume a GPU")
-    if any(os.environ.get(name) for name in ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS")):
-        raise ProductionMapError("Slurm assigned a GPU to CPU-only materialization")
+    resource_receipt = _resource_receipt(protocol)
     minimum_free = protocol.get("resource_policy", {}).get(
         "shared_storage_minimum_free_bytes"
     )
@@ -773,6 +811,7 @@ def map_production_task(
             "counts": dict(sorted(counters.items())),
             "format_version": FORMAT_VERSION,
             "host": socket.gethostname(),
+            "resource_receipt": resource_receipt,
             "source_sha256": {
                 "controller": expected_controller_source_sha256,
                 "map_record": expected_record_source_sha256,
