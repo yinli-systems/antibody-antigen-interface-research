@@ -42,6 +42,7 @@ TEST_ACCESS = {
     "downstream_labels_used": False,
     "sabdab2_heldout_accessed": False,
 }
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _arguments() -> argparse.Namespace:
@@ -183,6 +184,23 @@ def _data_contract(args: argparse.Namespace) -> dict[str, object]:
     }
 
 
+def _implementation_contract() -> dict[str, str]:
+    """Bind every project source file executed by the isolated gate."""
+    files = (
+        "scripts/run_antibody_pretraining.py",
+        "scripts/run_antibody_pretraining_optimized.py",
+        "scripts/run_antibody_pretraining_production_gate.py",
+        "src/antibody_pretraining/dense_shard.py",
+        "src/antibody_pretraining/masking.py",
+        "src/antibody_pretraining/model.py",
+        "src/antibody_pretraining/production_corpus.py",
+        "src/antibody_pretraining/production_update_plan.py",
+        "src/antibody_pretraining/tokenizer.py",
+        "src/antibody_pretraining/training_contract.py",
+    )
+    return {relative: engine._sha256(ROOT / relative) for relative in files}
+
+
 def _validate_launch(
     args: argparse.Namespace,
     protocol: dict[str, object],
@@ -196,8 +214,10 @@ def _validate_launch(
     run = protocol.get("runs", {}).get(args.run_role)
     expected = {
         "batch_quantum_sequences": args.batch_quantum,
+        "checkpoint": not args.skip_checkpoint,
         "micro_batch_per_gpu": args.micro_batch,
         "preset": args.preset,
+        "resume": args.resume_root is not None,
         "run_seed": args.run_seed,
         "steps": args.steps,
         "target_residue_tokens": args.target_tokens,
@@ -213,6 +233,8 @@ def _validate_launch(
     }
     if inputs != expected_inputs:
         raise RuntimeError("Launch input evidence differs from the gate protocol")
+    if protocol.get("implementation") != _implementation_contract():
+        raise RuntimeError("Executed source differs from the gate protocol")
     execution = protocol.get("execution")
     if execution != {
         "backend": "ddp",
@@ -663,6 +685,7 @@ def main() -> None:
                 "format_version": FORMAT_VERSION,
                 "gate_protocol_sha256": gate_protocol_sha256,
                 "initial_model_sha256": initial_model_sha256,
+                "implementation": _implementation_contract(),
                 "launch_argv": sys.argv[1:],
                 "membership_sha256": membership_digest.hexdigest(),
                 "model_family_sha256": model_family_sha256,
