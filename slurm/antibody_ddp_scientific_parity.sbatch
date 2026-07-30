@@ -18,13 +18,17 @@ OUTPUT_ROOT=${ABF_OUTPUT_ROOT:?ABF_OUTPUT_ROOT is required}
 SHARD_ROOT=${ABF_SHARD_ROOT:?ABF_SHARD_ROOT is required}
 MANIFEST_SHA256=${ABF_MANIFEST_SHA256:?ABF_MANIFEST_SHA256 is required}
 EXECUTION_SHA256=${ABF_EXECUTION_SHA256:?ABF_EXECUTION_SHA256 is required}
+REGISTRATION_SHA256=${ABF_REGISTRATION_SHA256:?ABF_REGISTRATION_SHA256 is required}
+RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
+RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?ABF_RUNTIME_MANIFEST_SHA256 is required}
 EXECUTION_PROTOCOL=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_execution_v2_1.json
+REGISTRATION=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_registration_v1.json
 GATE_PROTOCOL=$SOURCE_ROOT/protocols/antibody_ddp_scientific_parity_gate_v2.json
 SPLIT_ROOT=$SOURCE_ROOT/results/pretraining/antibody_ddp_parity_split_v2
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID
 LOCAL_BASE=${SLURM_TMPDIR:-/tmp}
 
-for absolute_path in "$PYTHON_BIN" "$SOURCE_ROOT" "$OUTPUT_ROOT" "$SHARD_ROOT" "$LOCAL_BASE"; do
+for absolute_path in "$PYTHON_BIN" "$SOURCE_ROOT" "$OUTPUT_ROOT" "$SHARD_ROOT" "$LOCAL_BASE" "$RUNTIME_MANIFEST"; do
   if [[ "$absolute_path" != /* ]]; then
     echo "All runtime, source, output, data, and scratch paths must be absolute" >&2
     exit 2
@@ -39,12 +43,26 @@ if [[ ! "$MANIFEST_SHA256" =~ ^[0-9a-f]{64}$ ]] \
   echo "Manifest and execution anchors must be lowercase SHA-256 digests" >&2
   exit 2
 fi
-if [[ ! -x "$PYTHON_BIN" || ! -d "$SHARD_ROOT" || ! -f "$EXECUTION_PROTOCOL" ]]; then
+if [[ ! "$REGISTRATION_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+  echo "Registration anchor must be a lowercase SHA-256 digest" >&2
+  exit 2
+fi
+if [[ ! "$RUNTIME_MANIFEST_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+  echo "Runtime anchor must be a lowercase SHA-256 digest" >&2
+  exit 2
+fi
+if [[ ! -x "$PYTHON_BIN" || ! -d "$SHARD_ROOT" \
+  || ! -f "$EXECUTION_PROTOCOL" || ! -f "$REGISTRATION" \
+  || ! -f "$RUNTIME_MANIFEST" ]]; then
   echo "The runtime, dense shard, or execution protocol is unavailable" >&2
   exit 2
 fi
 if [[ "$(sha256sum "$EXECUTION_PROTOCOL" | awk '{print $1}')" != "$EXECUTION_SHA256" ]]; then
   echo "The execution protocol differs from its external anchor" >&2
+  exit 2
+fi
+if [[ "$(sha256sum "$REGISTRATION" | awk '{print $1}')" != "$REGISTRATION_SHA256" ]]; then
+  echo "The registration differs from its external anchor" >&2
   exit 2
 fi
 if [[ -e "$RUN_ROOT" ]]; then
@@ -100,20 +118,41 @@ if [[ "$RTX_5090_COUNT" != "8" ]]; then
   exit 2
 fi
 
-"$PYTHON_BIN" - "$EXECUTION_PROTOCOL" "$SOURCE_ROOT" "$MANIFEST_SHA256" <<'PY'
+"$PYTHON_BIN" - "$EXECUTION_PROTOCOL" "$REGISTRATION" "$SOURCE_ROOT" "$SHARD_ROOT" "$MANIFEST_SHA256" "$RUNTIME_MANIFEST" "$RUNTIME_MANIFEST_SHA256" <<'PY'
 import hashlib
 import json
 import pathlib
 import sys
 
 execution_path = pathlib.Path(sys.argv[1])
-source_root = pathlib.Path(sys.argv[2])
-manifest_sha256 = sys.argv[3]
+registration_path = pathlib.Path(sys.argv[2])
+source_root = pathlib.Path(sys.argv[3])
+shard_root = pathlib.Path(sys.argv[4])
+manifest_sha256 = sys.argv[5]
+runtime_manifest = pathlib.Path(sys.argv[6])
+runtime_manifest_sha256 = sys.argv[7]
 payload = json.loads(execution_path.read_text(encoding="ascii"))
 if payload.get("format_version") != "antibody_ddp_scientific_parity_execution_v2_1":
     raise SystemExit("Unexpected execution protocol")
 if payload.get("inputs", {}).get("dense_manifest_payload_sha256") != manifest_sha256:
     raise SystemExit("Dense manifest differs from the execution protocol")
+registration = json.loads(registration_path.read_text(encoding="ascii"))
+if (
+    registration.get("format_version")
+    != "antibody_ddp_scientific_parity_registration_v1"
+    or registration.get("execution_sha256")
+    != hashlib.sha256(execution_path.read_bytes()).hexdigest()
+    or registration.get("data", {}).get("manifest_payload_sha256")
+    != manifest_sha256
+):
+    raise SystemExit("Unexpected scientific parity registration")
+if (
+    registration.get("runtime", {}).get("manifest_path")
+    != str(runtime_manifest)
+    or registration.get("runtime", {}).get("manifest_file_sha256")
+    != runtime_manifest_sha256
+):
+    raise SystemExit("Runtime registration differs")
 paths = {
     "gate_protocol_sha256": "protocols/antibody_ddp_scientific_parity_gate_v2.json",
     "efficiency_protocol_sha256": "protocols/antibody_efficiency_gate_v1.json",
@@ -125,6 +164,13 @@ for key, relative in paths.items():
     observed = hashlib.sha256((source_root / relative).read_bytes()).hexdigest()
     if observed != payload["inputs"][key]:
         raise SystemExit(f"Execution input differs: {relative}")
+for relative, expected in registration.get("source_files", {}).items():
+    candidate = source_root / relative
+    if hashlib.sha256(candidate.read_bytes()).hexdigest() != expected:
+        raise SystemExit(f"Registered source differs: {relative}")
+for name, expected in registration.get("data", {}).get("files", {}).items():
+    if hashlib.sha256((shard_root / name).read_bytes()).hexdigest() != expected:
+        raise SystemExit(f"Registered dense-shard file differs: {name}")
 runner = source_root / "scripts/run_antibody_pretraining_optimized.py"
 if hashlib.sha256(runner.read_bytes()).hexdigest() != payload["implementation"][runner.name]:
     raise SystemExit("Optimized runner differs from the execution protocol")
@@ -136,7 +182,13 @@ if hashlib.sha256((split_root / "receipt.json").read_bytes()).hexdigest() != pay
     raise SystemExit("Parity split receipt differs")
 PY
 
+"$PYTHON_BIN" "$SOURCE_ROOT/scripts/generate_runtime_manifest.py" verify \
+  --manifest "$RUNTIME_MANIFEST" \
+  --expected-file-sha256 "$RUNTIME_MANIFEST_SHA256" \
+  > "$RUN_ROOT/runtime_verification.json"
+
 cp "$EXECUTION_PROTOCOL" "$RUN_ROOT/execution_protocol.json"
+cp "$REGISTRATION" "$RUN_ROOT/registration.json"
 {
   echo "job_id=$SLURM_JOB_ID"
   echo "node=$(hostname)"
@@ -146,6 +198,9 @@ cp "$EXECUTION_PROTOCOL" "$RUN_ROOT/execution_protocol.json"
   echo "shard_root=$SHARD_ROOT"
   echo "manifest_sha256=$MANIFEST_SHA256"
   echo "execution_sha256=$EXECUTION_SHA256"
+  echo "registration_sha256=$REGISTRATION_SHA256"
+  echo "runtime_manifest=$RUNTIME_MANIFEST"
+  echo "runtime_manifest_sha256=$RUNTIME_MANIFEST_SHA256"
   echo "world_size=8"
   echo "run_count=9"
   echo "updates_per_run=500"

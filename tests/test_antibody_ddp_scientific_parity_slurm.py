@@ -25,6 +25,11 @@ def test_launcher_binds_inputs_and_keeps_evaluation_out_of_training() -> None:
     source = LAUNCHER.read_text(encoding="ascii")
     for required in (
         "ABF_EXECUTION_SHA256",
+        "ABF_REGISTRATION_SHA256",
+        "ABF_RUNTIME_MANIFEST",
+        "ABF_RUNTIME_MANIFEST_SHA256",
+        "antibody_ddp_scientific_parity_registration_v1.json",
+        "generate_runtime_manifest.py",
         "antibody_ddp_scientific_parity_execution_v2_1.json",
         "antibody_ddp_scientific_parity_gate_v2.json",
         "antibody_ddp_parity_split_v2",
