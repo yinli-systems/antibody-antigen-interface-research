@@ -134,8 +134,8 @@ case "$MODE" in
       --parallelism fsdp2
       --expected-world-size "$WORLD_SIZE"
       --expected-source-sha256 "$SOURCE_SHA256"
-      --absolute-tolerance 2e-5
-      --relative-tolerance 2e-4
+      --absolute-tolerance "$ABSOLUTE_TOLERANCE"
+      --relative-tolerance "$RELATIVE_TOLERANCE"
       --synthetic-only
     )
     if [[ "$MODE" == "reshard_load" ]]; then
