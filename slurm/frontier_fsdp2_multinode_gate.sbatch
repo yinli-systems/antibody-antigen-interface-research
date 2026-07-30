@@ -29,6 +29,14 @@ NPROC_PER_NODE=2
 GLOBAL_BATCH_SIZE=64
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID
 
+if [[ "$PRECISION" == "bfloat16" ]]; then
+  ABSOLUTE_TOLERANCE=0.005
+  RELATIVE_TOLERANCE=0.02
+else
+  ABSOLUTE_TOLERANCE=2e-5
+  RELATIVE_TOLERANCE=2e-4
+fi
+
 if [[ ! "$MODE" =~ ^(dcp_smoke|reshard_save|reshard_load|profile)$ ]]; then
   echo "FRONTIER_GATE_MODE is outside the reviewed set" >&2
   exit 2
@@ -107,8 +115,8 @@ case "$MODE" in
       --parallelism fsdp2
       --expected-world-size "$WORLD_SIZE"
       --expected-source-sha256 "$SOURCE_SHA256"
-      --absolute-tolerance 2e-5
-      --relative-tolerance 2e-4
+      --absolute-tolerance "$ABSOLUTE_TOLERANCE"
+      --relative-tolerance "$RELATIVE_TOLERANCE"
       --synthetic-only
     )
     ;;
@@ -247,6 +255,8 @@ srun --nodes=4 --ntasks=4 --ntasks-per-node=1 --label nvidia-smi -L \
   echo "precision=$PRECISION"
   echo "world_size=$WORLD_SIZE"
   echo "gpus_per_node=$NPROC_PER_NODE"
+  echo "absolute_tolerance=$ABSOLUTE_TOLERANCE"
+  echo "relative_tolerance=$RELATIVE_TOLERANCE"
   echo "source_sha256=$SOURCE_SHA256"
   echo "runtime_manifest_sha256=$RUNTIME_MANIFEST_SHA256"
   echo "launch_manifest_sha256=$LAUNCH_MANIFEST_SHA256"

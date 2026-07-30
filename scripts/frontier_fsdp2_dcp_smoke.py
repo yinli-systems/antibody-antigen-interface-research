@@ -352,6 +352,14 @@ def _gather_rank_objects(value: Any, world_size: int) -> list[Any]:
     return values
 
 
+def _broadcast_rank_zero_error(message: str | None, *, rank: int) -> None:
+    """Broadcast a rank-zero gate failure before any later collective."""
+    payload = [message if rank == 0 else None]
+    dist.broadcast_object_list(payload, src=0)
+    if payload[0] is not None:
+        raise RuntimeError(f"Rank-zero parity gate failed: {payload[0]}")
+
+
 def _global_mean_scalar(value: float, device: torch.device) -> float:
     """Average one rank-local scalar for reference-loss comparison."""
     tensor = torch.tensor(value, dtype=torch.float64, device=device)
@@ -566,43 +574,56 @@ def main() -> None:
         )
         restored_global_loss = _global_mean_scalar(restored_loss, device)
         restored_state = _full_model_state(restored)
+        parity_error: str | None = None
         if rank == 0:
-            assert reference is not None
-            reference_state = {
-                name: value.detach().cpu()
-                for name, value in reference.state_dict().items()
-            }
-            fsdp_reference_difference = _state_difference(
-                uninterrupted_state,
-                reference_state,
-                absolute_tolerance=args.absolute_tolerance,
-                relative_tolerance=args.relative_tolerance,
-            )
-            restart_difference = _state_difference(
-                restored_state,
-                uninterrupted_state,
-                absolute_tolerance=0.0,
-                relative_tolerance=0.0,
-            )
-            _assert_difference(
-                fsdp_reference_difference,
-                absolute_tolerance=args.absolute_tolerance,
-                relative_tolerance=args.relative_tolerance,
-                label="FSDP2 versus single-process reference",
-            )
-            _assert_difference(
-                restart_difference,
-                absolute_tolerance=0.0,
-                relative_tolerance=0.0,
-                label="DCP continuation",
-            )
-            if abs(restored_global_loss - continuation_global_loss) > 1e-8:
-                raise RuntimeError(
-                    "DCP continuation loss differs from uninterrupted execution"
+            try:
+                assert reference is not None
+                reference_state = {
+                    name: value.detach().cpu()
+                    for name, value in reference.state_dict().items()
+                }
+                fsdp_reference_difference = _state_difference(
+                    uninterrupted_state,
+                    reference_state,
+                    absolute_tolerance=args.absolute_tolerance,
+                    relative_tolerance=args.relative_tolerance,
                 )
+                restart_difference = _state_difference(
+                    restored_state,
+                    uninterrupted_state,
+                    absolute_tolerance=0.0,
+                    relative_tolerance=0.0,
+                )
+                _assert_difference(
+                    fsdp_reference_difference,
+                    absolute_tolerance=args.absolute_tolerance,
+                    relative_tolerance=args.relative_tolerance,
+                    label="FSDP2 versus single-process reference",
+                )
+                _assert_difference(
+                    restart_difference,
+                    absolute_tolerance=0.0,
+                    relative_tolerance=0.0,
+                    label="DCP continuation",
+                )
+                if abs(restored_global_loss - continuation_global_loss) > 1e-8:
+                    raise RuntimeError(
+                        "DCP continuation loss differs from uninterrupted execution"
+                    )
+            except (
+                AssertionError,
+                FloatingPointError,
+                LaunchContractError,
+                RuntimeError,
+                ValueError,
+            ) as error:
+                fsdp_reference_difference = {}
+                restart_difference = {}
+                parity_error = f"{type(error).__name__}: {error}"
         else:
             fsdp_reference_difference = {}
             restart_difference = {}
+        _broadcast_rank_zero_error(parity_error, rank=rank)
         rank_payload = {
             "rank": rank,
             "steps": step_receipts,
