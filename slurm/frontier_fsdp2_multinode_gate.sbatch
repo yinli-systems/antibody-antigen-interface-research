@@ -187,6 +187,7 @@ for launch_attempt in 1 2 3; do
   mkdir "$FRONTIER_VERIFY_ATTEMPT_ROOT"
   set +e
   srun \
+    --overlap \
     --nodes=4 \
     --ntasks=4 \
     --ntasks-per-node=1 \
@@ -286,7 +287,7 @@ printf '%s\0' "${RUN_ARGUMENTS[@]}" > "$RUN_ROOT/arguments.bin"
 
 MASTER_ADDR=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
 MASTER_PORT=$((20000 + SLURM_JOB_ID % 20000))
-srun --nodes=4 --ntasks=4 --ntasks-per-node=1 --label nvidia-smi -L \
+srun --overlap --nodes=4 --ntasks=4 --ntasks-per-node=1 --label nvidia-smi -L \
   > "$RUN_ROOT/gpu_inventory.txt"
 {
   echo "job_id=$SLURM_JOB_ID"
@@ -317,6 +318,7 @@ export FRONTIER_ARGUMENTS_FILE=$RUN_ROOT/arguments.bin
 export FRONTIER_RUN_LOG_ROOT=$RUN_ROOT/node_logs
 mkdir "$FRONTIER_RUN_LOG_ROOT"
 srun \
+  --overlap \
   --nodes=4 \
   --ntasks=4 \
   --ntasks-per-node=1 \
