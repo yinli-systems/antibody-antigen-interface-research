@@ -7,7 +7,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 
@@ -146,18 +146,65 @@ def build_update_plan(
         raise TrainingContractError("Every admitted sequence must contain residues")
     if target_residue_tokens <= 0 or batch_quantum_sequences <= 0:
         raise TrainingContractError("Update target and batch quantum must be positive")
+    return build_indexed_update_plan(
+        record_count=len(lengths),
+        residue_length_lookup=lambda indices: lengths[indices],
+        sample_cursor=sample_cursor,
+        target_residue_tokens=target_residue_tokens,
+        batch_quantum_sequences=batch_quantum_sequences,
+        seed=seed,
+    )
+
+
+def build_indexed_update_plan(
+    *,
+    record_count: int,
+    residue_length_lookup: Callable[[np.ndarray], np.ndarray],
+    sample_cursor: int,
+    target_residue_tokens: int,
+    batch_quantum_sequences: int,
+    seed: int,
+) -> UpdatePlan:
+    """Plan an update through bounded indexed reads from a sharded corpus."""
+    values = (
+        record_count,
+        sample_cursor,
+        target_residue_tokens,
+        batch_quantum_sequences,
+        seed,
+    )
+    if any(isinstance(value, bool) or not isinstance(value, int) for value in values):
+        raise TrainingContractError("Indexed planner arguments must be integers")
+    if (
+        record_count <= 0
+        or sample_cursor < 0
+        or target_residue_tokens <= 0
+        or batch_quantum_sequences <= 0
+        or seed < 0
+    ):
+        raise TrainingContractError(
+            "Indexed planner arguments are outside their valid range"
+        )
     selected: list[np.ndarray] = []
     residue_count = 0
     cursor = sample_cursor
     while residue_count < target_residue_tokens:
         quantum = sample_indices(
-            record_count=len(lengths),
+            record_count=record_count,
             sample_cursor=cursor,
             sample_count=batch_quantum_sequences,
             seed=seed,
         )
+        lengths = np.asarray(residue_length_lookup(quantum))
+        if (
+            lengths.ndim != 1
+            or lengths.shape != quantum.shape
+            or lengths.dtype.kind not in {"i", "u"}
+            or np.any(lengths <= 0)
+        ):
+            raise TrainingContractError("Indexed residue lengths are invalid")
         selected.append(quantum)
-        residue_count += int(lengths[quantum].sum(dtype=np.int64))
+        residue_count += int(lengths.sum(dtype=np.int64))
         cursor += batch_quantum_sequences
     indices = np.concatenate(selected)
     return UpdatePlan(

@@ -7,7 +7,7 @@ import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import stat
-from typing import Any, Mapping
+from typing import Any, Iterable, Mapping
 
 import numpy as np
 
@@ -71,7 +71,12 @@ class ProductionCorpus:
     def __len__(self) -> int:
         return int(self.offsets[-1])
 
-    def batch(self, indices: np.ndarray) -> dict[str, np.ndarray]:
+    def batch(
+        self,
+        indices: np.ndarray,
+        *,
+        fields: Iterable[str] | None = None,
+    ) -> dict[str, np.ndarray]:
         """Gather one arbitrary global-index batch while preserving input order."""
         requested = np.asarray(indices)
         if requested.dtype.kind not in {"i", "u"} or requested.ndim != 1:
@@ -83,9 +88,14 @@ class ProductionCorpus:
         requested = requested.astype(np.int64, copy=False)
         if requested.size and (requested.min() < 0 or requested.max() >= len(self)):
             raise ProductionCorpusError("Batch index is outside the corpus")
+        requested_fields = tuple(
+            sorted(EXPECTED_ARRAYS if fields is None else set(fields))
+        )
+        if not requested_fields or not set(requested_fields).issubset(EXPECTED_ARRAYS):
+            raise ProductionCorpusError("Requested batch fields are invalid")
         shard_ids = np.searchsorted(self.offsets[1:], requested, side="right")
         output: dict[str, np.ndarray] = {}
-        for name in EXPECTED_ARRAYS:
+        for name in requested_fields:
             shape = (len(requested), *self.shards[0].arrays[name].shape[1:])
             output[name] = np.empty(shape, dtype=self.shards[0].arrays[name].dtype)
         for shard_id in np.unique(shard_ids):
@@ -95,6 +105,14 @@ class ProductionCorpus:
             for name, target in output.items():
                 target[positions] = shard.arrays[name][local]
         return output
+
+    def residue_lengths(self, indices: np.ndarray) -> np.ndarray:
+        """Read residue counts without materializing the corpus-wide length vector."""
+        encoded_lengths = self.batch(indices, fields=("lengths.npy",))["lengths.npy"]
+        residue_lengths = encoded_lengths.astype(np.int64) - 2
+        if np.any(residue_lengths <= 0):
+            raise ProductionCorpusError("Encoded sequence has no residue tokens")
+        return residue_lengths
 
 
 def _canonical_json_bytes(value: Any) -> bytes:
