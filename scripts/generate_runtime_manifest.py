@@ -5,8 +5,9 @@ The manifest has two complementary integrity layers:
 
 * ``content_sha256`` authenticates every byte-significant JSON field except the
   digest object itself.
-* ``runtime_state_sha256`` identifies the reproducible software state while
-  excluding collection time and host name.
+* ``runtime_state_sha256`` identifies the reproducible software and stable ABI
+  state while excluding collection time, host name, exact kernel build, and
+  processor model.
 
 The command performs no network access and does not inspect model or dataset
 artifacts. Run it with the interpreter belonging to the environment being
@@ -29,14 +30,14 @@ import stat
 import subprocess
 import sys
 import sysconfig
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping, Sequence
+from typing import Any
 
-
-SCHEMA_VERSION = "frontier.runtime-manifest.v1"
-GENERATOR_VERSION = "1.0.0"
+SCHEMA_VERSION = "frontier.runtime-manifest.v2"
+GENERATOR_VERSION = "1.1.0"
 HASH_ALGORITHM = "sha256"
 CANONICALIZATION = "UTF-8 JSON; sort_keys=true; separators=(',', ':')"
 DEFAULT_PIP_CHECK_TIMEOUT_SECONDS = 120
@@ -45,8 +46,9 @@ _UNSET = object()
 
 CLAIM_BOUNDARY = {
     "attests": (
-        "The recorded software metadata and file hashes describe the runtime "
-        "state visible to this interpreter at collection time."
+        "The recorded software metadata, stable platform ABI, and file hashes "
+        "describe the runtime state visible to this interpreter at collection "
+        "time."
     ),
     "does_not_attest": (
         "This manifest does not establish hardware equivalence, deterministic "
@@ -153,13 +155,9 @@ def _parse_pyvenv_cfg(path: Path) -> dict[str, str]:
         key, separator, value = stripped.partition("=")
         normalized_key = key.strip().lower().replace("-", "_")
         if not separator or not normalized_key:
-            raise ManifestError(
-                f"Malformed pyvenv.cfg line {line_number}: {path}"
-            )
+            raise ManifestError(f"Malformed pyvenv.cfg line {line_number}: {path}")
         if normalized_key in result:
-            raise ManifestError(
-                f"Duplicate pyvenv.cfg key {normalized_key!r}: {path}"
-            )
+            raise ManifestError(f"Duplicate pyvenv.cfg key {normalized_key!r}: {path}")
         result[normalized_key] = value.strip()
     return result
 
@@ -275,8 +273,7 @@ def _run_pip_check(
         completed = subprocess.run(
             command,
             stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             check=False,
             timeout=timeout_seconds,
             env=command_environment,
@@ -297,12 +294,8 @@ def _run_pip_check(
             "timeout_seconds": timeout_seconds,
             "exit_code": None,
             "ok": False,
-            "stdout": (error.stdout or b"").decode(
-                "utf-8", errors="replace"
-            ).strip(),
-            "stderr": (error.stderr or b"").decode(
-                "utf-8", errors="replace"
-            ).strip(),
+            "stdout": (error.stdout or b"").decode("utf-8", errors="replace").strip(),
+            "stderr": (error.stderr or b"").decode("utf-8", errors="replace").strip(),
             "failure": "timeout",
         }
     except OSError as error:
@@ -335,7 +328,7 @@ def _probe_pytorch() -> PytorchProbe:
     """Read PyTorch build metadata without requiring CUDA device access."""
     try:
         import torch
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 - framework import failures are evidence.
         return PytorchProbe(
             metadata={
                 "available": False,
@@ -369,7 +362,7 @@ def _probe_pytorch() -> PytorchProbe:
     def safe_call(function: Callable[[], Any]) -> Any:
         try:
             return function()
-        except Exception:
+        except Exception:  # noqa: BLE001 - optional framework probes must be bounded.
             return None
 
     nccl_raw = safe_call(lambda: torch.cuda.nccl.version())
@@ -389,15 +382,11 @@ def _probe_pytorch() -> PytorchProbe:
                 int(cuda_compiled_raw) if cuda_compiled_raw is not None else None
             ),
         },
-        "cudnn": {
-            "version_integer": int(cudnn_raw) if cudnn_raw is not None else None
-        },
+        "cudnn": {"version_integer": int(cudnn_raw) if cudnn_raw is not None else None},
         "nccl": {
             "version_components": _version_sequence(nccl_raw),
         },
-        "cxx11_abi": safe_call(
-            lambda: bool(torch.compiled_with_cxx11_abi())
-        ),
+        "cxx11_abi": safe_call(lambda: bool(torch.compiled_with_cxx11_abi())),
         "build_configuration": (
             str(configuration) if configuration is not None else None
         ),
@@ -455,8 +444,8 @@ def _collect_shared_libraries(
     return captured
 
 
-def _platform_state() -> dict[str, Any]:
-    """Capture platform properties relevant to binary compatibility."""
+def _platform_observation() -> dict[str, Any]:
+    """Capture stable ABI fields plus node-specific platform telemetry."""
     libc_name, libc_version = platform.libc_ver()
     architecture_bits, architecture_linkage = platform.architecture()
     return {
@@ -470,6 +459,21 @@ def _platform_state() -> dict[str, Any]:
             "linkage": architecture_linkage,
         },
         "libc": {"name": libc_name or None, "version": libc_version or None},
+    }
+
+
+def _stable_platform_abi(observation: Mapping[str, Any]) -> dict[str, Any]:
+    """Keep binary-compatibility fields while excluding node-varying telemetry."""
+    required = {"system", "machine", "architecture", "libc"}
+    if not required.issubset(observation):
+        raise ManifestError("Platform observation lacks stable ABI fields")
+    return {
+        "system": observation["system"],
+        "machine": observation["machine"],
+        "architecture": observation["architecture"],
+        "libc": observation["libc"],
+        "kernel_release_bound": False,
+        "processor_model_bound": False,
     }
 
 
@@ -502,14 +506,10 @@ def _environment_state(
     root = environment_root.resolve(strict=True)
     pyvenv_path = root / "pyvenv.cfg"
     pyvenv_artifact = (
-        _capture_file(pyvenv_path, role="pyvenv_cfg")
-        if pyvenv_path.is_file()
-        else None
+        _capture_file(pyvenv_path, role="pyvenv_cfg") if pyvenv_path.is_file() else None
     )
     pyvenv_values = _parse_pyvenv_cfg(pyvenv_path) if pyvenv_artifact else {}
-    include_system = _parse_boolean(
-        pyvenv_values.get("include_system_site_packages")
-    )
+    include_system = _parse_boolean(pyvenv_values.get("include_system_site_packages"))
     prefix = Path(sys.prefix).resolve()
     base_prefix = Path(sys.base_prefix).resolve()
     outside_locations = sorted(
@@ -575,9 +575,7 @@ def collect_runtime_state(
         if pip_check_result is _UNSET
         else dict(pip_check_result)
     )
-    observed_pytorch = (
-        _probe_pytorch() if pytorch_probe is _UNSET else pytorch_probe
-    )
+    observed_pytorch = _probe_pytorch() if pytorch_probe is _UNSET else pytorch_probe
     if not isinstance(observed_pytorch, PytorchProbe):
         raise TypeError("pytorch_probe must be a PytorchProbe")
     candidates = _python_shared_library_candidates()
@@ -588,8 +586,8 @@ def collect_runtime_state(
     state = {
         "environment": _environment_state(root, distributions),
         "python": _python_state(),
-        "platform": dict(
-            (platform_probe or _platform_state)()
+        "platform_abi": _stable_platform_abi(
+            dict((platform_probe or _platform_observation)())
         ),
         "frameworks": {"pytorch": dict(observed_pytorch.metadata)},
         "package_health": {"pip_check": observed_pip_check},
@@ -602,8 +600,11 @@ def collect_runtime_state(
 
 def _utc_now() -> str:
     """Return a second-resolution RFC 3339 UTC timestamp."""
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace(
-        "+00:00", "Z"
+    return (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
     )
 
 
@@ -615,9 +616,9 @@ def build_manifest(
     **collection_options: Any,
 ) -> dict[str, Any]:
     """Build an integrity-bound manifest without writing it."""
-    runtime_state = collect_runtime_state(
-        environment_root, **collection_options
-    )
+    runtime_state = collect_runtime_state(environment_root, **collection_options)
+    platform_probe = collection_options.get("platform_probe")
+    observed_platform = dict((platform_probe or _platform_observation)())
     generator_path = Path(__file__).resolve()
     payload: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
@@ -629,6 +630,7 @@ def build_manifest(
         "collection_context": {
             "collected_at_utc": collected_at_utc or _utc_now(),
             "host": collection_host if collection_host is not None else platform.node(),
+            "observed_platform": observed_platform,
         },
         "runtime_state": runtime_state,
         "claim_boundary": CLAIM_BOUNDARY,
@@ -636,9 +638,7 @@ def build_manifest(
     payload["integrity"] = {
         "algorithm": HASH_ALGORITHM,
         "canonicalization": CANONICALIZATION,
-        "runtime_state_sha256": _sha256_bytes(
-            _canonical_json_bytes(runtime_state)
-        ),
+        "runtime_state_sha256": _sha256_bytes(_canonical_json_bytes(runtime_state)),
         "content_sha256": _sha256_bytes(_canonical_json_bytes(payload)),
     }
     return payload
@@ -646,6 +646,7 @@ def build_manifest(
 
 def _strict_json_bytes(payload_bytes: bytes, *, source: str) -> dict[str, Any]:
     """Parse finite UTF-8 JSON bytes while rejecting duplicate object keys."""
+
     def reject_duplicates(pairs: Sequence[tuple[str, Any]]) -> dict[str, Any]:
         result: dict[str, Any] = {}
         for key, value in pairs:
@@ -702,7 +703,9 @@ def _read_manifest_once(path: Path) -> tuple[bytes, int]:
     try:
         descriptor = os.open(path, flags)
     except OSError as error:
-        raise ManifestError(f"Cannot open manifest without symlink traversal: {path}") from error
+        raise ManifestError(
+            f"Cannot open manifest without symlink traversal: {path}"
+        ) from error
     try:
         metadata = os.fstat(descriptor)
         if not stat.S_ISREG(metadata.st_mode):
@@ -813,9 +816,11 @@ def _compare_runtime_states(
         if expected.get(key) != observed.get(key)
     )
     return [
-        "Live runtime state differs from the locked state: "
-        f"expected={expected_digest}, observed={observed_digest}, "
-        f"changed_sections={changed_sections}"
+        (
+            "Live runtime state differs from the locked state: "
+            f"expected={expected_digest}, observed={observed_digest}, "
+            f"changed_sections={changed_sections}"
+        )
     ]
 
 
@@ -833,9 +838,10 @@ def verify_manifest(
     errors: list[str] = []
     observed_file_digest: str | None = None
     observed_mode: int | None = None
-    if expected_file_sha256 is not None and re.fullmatch(
-        r"[0-9a-f]{64}", expected_file_sha256
-    ) is None:
+    if (
+        expected_file_sha256 is not None
+        and re.fullmatch(r"[0-9a-f]{64}", expected_file_sha256) is None
+    ):
         return {
             "valid": False,
             "manifest_path": str(path),
@@ -843,9 +849,10 @@ def verify_manifest(
             "live_state_checked": False,
             "errors": ["expected_file_sha256 is not a SHA-256 digest"],
         }
-    if expected_content_sha256 is not None and re.fullmatch(
-        r"[0-9a-f]{64}", expected_content_sha256
-    ) is None:
+    if (
+        expected_content_sha256 is not None
+        and re.fullmatch(r"[0-9a-f]{64}", expected_content_sha256) is None
+    ):
         return {
             "valid": False,
             "manifest_path": str(path),
@@ -913,9 +920,7 @@ def verify_manifest(
             f"observed={observed_state_digest}"
         )
     if require_read_only and observed_mode is not None and observed_mode & 0o222:
-        errors.append(
-            f"Manifest is writable: path={path}, mode={observed_mode:04o}"
-        )
+        errors.append(f"Manifest is writable: path={path}, mode={observed_mode:04o}")
 
     artifacts = list(_iter_artifacts(manifest))
     for artifact in artifacts:
@@ -935,9 +940,7 @@ def verify_manifest(
                 observed_state = collect_runtime_state(
                     environment_root, **collection_options
                 )
-                errors.extend(
-                    _compare_runtime_states(runtime_state, observed_state)
-                )
+                errors.extend(_compare_runtime_states(runtime_state, observed_state))
             except (ManifestError, OSError, TypeError) as error:
                 errors.append(f"Cannot collect live runtime state: {error}")
     return {
@@ -977,13 +980,16 @@ def atomic_write_manifest(
     parent = output.parent
     if not parent.is_dir():
         raise ManifestError(f"Output directory does not exist: {parent}")
-    serialized = json.dumps(
-        manifest,
-        sort_keys=True,
-        indent=2,
-        ensure_ascii=False,
-        allow_nan=False,
-    ).encode("utf-8") + b"\n"
+    serialized = (
+        json.dumps(
+            manifest,
+            sort_keys=True,
+            indent=2,
+            ensure_ascii=False,
+            allow_nan=False,
+        ).encode("utf-8")
+        + b"\n"
+    )
     temporary = parent / f".{output.name}.tmp-{os.getpid()}-{secrets.token_hex(8)}"
     descriptor: int | None = None
     try:
@@ -1061,9 +1067,7 @@ def _build_parser() -> argparse.ArgumentParser:
     create.add_argument("--allow-non-isolated", action="store_true")
     create.add_argument("--allow-unhealthy-packages", action="store_true")
 
-    verify = subparsers.add_parser(
-        "verify", help="Verify an existing runtime manifest"
-    )
+    verify = subparsers.add_parser("verify", help="Verify an existing runtime manifest")
     verify.add_argument("--manifest", type=Path, required=True)
     verify.add_argument(
         "--no-live-state",
