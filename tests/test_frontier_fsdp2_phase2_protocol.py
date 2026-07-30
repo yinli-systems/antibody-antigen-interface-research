@@ -50,3 +50,4 @@ def test_launcher_receipts_and_forwards_numerical_tolerances() -> None:
         "relative_tolerance=$RELATIVE_TOLERANCE",
     ):
         assert name in launcher
+    assert "#SBATCH --mem=" not in launcher
