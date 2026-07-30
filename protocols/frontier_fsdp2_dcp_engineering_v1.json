@@ -50,6 +50,9 @@
     "num_layers": 2
   },
   "numerical_gate": {
+    "BF16_absolute_tolerance": 0.005,
+    "BF16_relative_tolerance": 0.02,
+    "BF16_tolerances_frozen_before_execution": true,
     "BF16_tolerances_must_be_frozen_before_execution": true,
     "FP32_default_absolute_tolerance": 2e-05,
     "FP32_default_relative_tolerance": 0.0002,
@@ -89,6 +92,8 @@
     "explicit_no_outer_or_test_access"
   ],
   "scale_gate": {
+    "profile_measured_steps": 500,
+    "profile_warmup_steps": 50,
     "one_GPU_must_pass_before_eight_GPU": true,
     "thirty_two_GPU_authorized": false,
     "throughput_claim_before_warm_profile": false,

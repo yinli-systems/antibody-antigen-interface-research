@@ -24,6 +24,8 @@ PRECISION=${FRONTIER_PRECISION:-float32}
 NPROC=${FRONTIER_NPROC:-8}
 STEPS=${FRONTIER_STEPS_BEFORE_CHECKPOINT:-3}
 BATCH_SIZE_PER_RANK=${FRONTIER_BATCH_SIZE_PER_RANK:-2}
+ABSOLUTE_TOLERANCE=${FRONTIER_ABSOLUTE_TOLERANCE:-2e-5}
+RELATIVE_TOLERANCE=${FRONTIER_RELATIVE_TOLERANCE:-2e-4}
 RUN_ROOT=$OUTPUT_ROOT/slurm-$SLURM_JOB_ID
 LOCAL_BASE=${SLURM_TMPDIR:-/tmp}
 
@@ -58,6 +60,18 @@ if [[ ! "$STEPS" =~ ^[1-9][0-9]*$ ]] \
   echo "Step and batch counts must be positive integers" >&2
   exit 2
 fi
+"$PYTHON_BIN" - "$ABSOLUTE_TOLERANCE" "$RELATIVE_TOLERANCE" <<'PY'
+import math
+import sys
+
+for name, raw in zip(("absolute", "relative"), sys.argv[1:], strict=True):
+    try:
+        value = float(raw)
+    except ValueError as error:
+        raise SystemExit(f"{name} tolerance is not numeric") from error
+    if not math.isfinite(value) or value <= 0.0:
+        raise SystemExit(f"{name} tolerance must be finite and positive")
+PY
 if [[ ! "$SOURCE_SHA256" =~ ^[0-9a-f]{64}$ ]] \
   || [[ ! "$RUNTIME_MANIFEST_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
   echo "Source and runtime anchors must be lowercase SHA-256 digests" >&2
@@ -187,6 +201,8 @@ MONITOR_PID=$!
   echo "parallelism=fsdp2"
   echo "precision=$PRECISION"
   echo "world_size=$NPROC"
+  echo "absolute_tolerance=$ABSOLUTE_TOLERANCE"
+  echo "relative_tolerance=$RELATIVE_TOLERANCE"
   echo "visible_gpu_count=$VISIBLE_GPU_COUNT"
   echo "claim_boundary=synthetic FSDP2 and DCP correctness only; no efficiency or biological metric claim"
   date --iso-8601=seconds
@@ -208,6 +224,8 @@ MONITOR_PID=$!
   --expected-source-sha256 "$SOURCE_SHA256" \
   --launch-manifest "$RUN_ROOT/launch_manifest.json" \
   --expected-launch-manifest-sha256 "$LAUNCH_MANIFEST_SHA256" \
+  --absolute-tolerance "$ABSOLUTE_TOLERANCE" \
+  --relative-tolerance "$RELATIVE_TOLERANCE" \
   --synthetic-only \
   2>&1 | tee "$RUN_ROOT/fsdp2.log"
 

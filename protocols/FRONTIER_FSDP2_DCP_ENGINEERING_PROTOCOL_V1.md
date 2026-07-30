@@ -1,6 +1,7 @@
 # Frontier FSDP2 and DCP Engineering Protocol V1
 
-Status: implemented locally; GPU evidence pending.
+Status: FP32 one-GPU and eight-GPU correctness passed; BF16, cross-world-size
+replay, and warmed profiling remain pending.
 
 This protocol adds an independent FSDP2 and PyTorch Distributed Checkpoint
 path for the existing R2 reranker. It is deliberately restricted to synthetic,
@@ -61,6 +62,20 @@ The default FP32 gate is `atol=2e-5`, `rtol=2e-4`. The restart gate is exactly
 zero. Any non-finite value, missing key, unexpected key, source mismatch,
 provenance mismatch, shard tamper, existing output, or rank-zero publication
 failure terminates the run.
+
+Before any BF16 execution, the BF16 gate is frozen as `atol=0.005` and
+`rtol=0.02`. These values are approximately 0.64 and 2.56 times the BF16 unit
+roundoff, respectively. The same elementwise scaled-error rule used for FP32
+is authoritative; a maximum scaled error above one fails. Same-world-size DCP
+continuation remains exact even in BF16 because both paths restore identical
+FP32 master parameters and optimizer state before executing the same kernels.
+
+The future performance profile is frozen at 50 unmeasured warmup steps followed
+by 500 measured optimizer steps. Throughput must use the slowest-rank step time,
+not the sum or mean of rank-local rates, and must report p50, p95, p99, peak
+memory, checkpoint save/load time, global examples per second, and global
+residue tokens per second. Profiling the reduced fixture is an engineering
+measurement only and cannot authorize a full-model efficiency claim.
 
 ## Execution order
 
