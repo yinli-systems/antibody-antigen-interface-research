@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=126G
 #SBATCH --time=02:00:00
 #SBATCH --output=/ssd/scxi253/model_deployment/results/pretraining/abf-oas-recovery-%j.out
@@ -38,7 +38,7 @@ mkdir -p "$RUN_ROOT"
 export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$SOURCE_ROOT/src:$SOURCE_ROOT/scripts
 LOCAL_CACHE=${SLURM_TMPDIR:-/tmp}/abf-oas-recovery-$SLURM_JOB_ID
 mkdir -p "$LOCAL_CACHE/inductor" "$LOCAL_CACHE/triton" "$LOCAL_CACHE/torch_extensions"
-export CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=8
+export CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=4
 export TORCH_NCCL_ASYNC_ERROR_HANDLING=1 NCCL_DEBUG=WARN
 export TORCHINDUCTOR_CACHE_DIR=$LOCAL_CACHE/inductor
 export TRITON_CACHE_DIR=$LOCAL_CACHE/triton

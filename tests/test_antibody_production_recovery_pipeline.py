@@ -11,6 +11,7 @@ def test_pipeline_uses_public_one_gpu_allocation() -> None:
     source = PIPELINE.read_text(encoding="ascii")
     assert "#SBATCH --partition=gpu_5090" in source
     assert "#SBATCH --gres=gpu:1" in source
+    assert "#SBATCH --cpus-per-task=8" in source
     assert "vip_gpu_5090_scxi253" not in source
 
 

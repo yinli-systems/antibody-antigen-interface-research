@@ -11,6 +11,7 @@ def test_recovery_launcher_uses_one_gpu_and_public_partition() -> None:
     source = SLURM.read_text(encoding="ascii")
     assert "#SBATCH --partition=gpu_5090" in source
     assert "#SBATCH --gres=gpu:1" in source
+    assert "#SBATCH --cpus-per-task=8" in source
     assert "vip_gpu_5090_scxi253" not in source
     assert "--nproc-per-node=1" in source
 
