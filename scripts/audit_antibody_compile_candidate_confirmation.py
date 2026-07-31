@@ -13,7 +13,8 @@ import audit_antibody_production_batch_efficiency as parent
 
 FORMAT_VERSION = "antibody_compile_candidate_confirmation_result_v1"
 SIDECAR_FORMAT = "antibody_compile_candidate_confirmation_receipt_v1"
-DIAGNOSTIC_FORMAT = "antibody_compile_numerics_diagnostic_result_v1"
+DIAGNOSTIC_FORMAT = "antibody_compile_numerics_diagnostic_result_v2"
+AMENDMENT_FORMAT = "antibody_compile_numerics_audit_amendment_v2"
 RUNS = (
     ("safe_eager_r1", "safe_eager"),
     ("fp32_compiled_r1", "candidate"),
@@ -26,6 +27,16 @@ AUTHORIZATION = {
     "scale_16_gpu": False,
     "scale_32_gpu": False,
     "scientific_claim": False,
+}
+AMENDMENT_CORRECTION = {
+    "automatic_gc_semantics": (
+        "gc.disable prevents automatic cyclic collection but does not forbid "
+        "explicit gc.collect calls"
+    ),
+    "collection_counters": (
+        "reported as telemetry and not interpreted as proof of automatic "
+        "collection"
+    ),
 }
 
 
@@ -67,14 +78,20 @@ def _validate_diagnostic(
     protocol: Mapping[str, Any],
     diagnostic_protocol_path: Path,
     diagnostic_audit_path: Path,
+    audit_amendment_path: Path,
 ) -> tuple[str, dict[str, bool], dict[str, str]]:
     diagnostic_protocol, diagnostic_protocol_raw = parent._load(
         diagnostic_protocol_path,
         canonical=False,
     )
     diagnostic_audit = _self_hashed(diagnostic_audit_path)
+    audit_amendment, amendment_raw = parent._load(
+        audit_amendment_path,
+        canonical=False,
+    )
     protocol_sha256 = hashlib.sha256(diagnostic_protocol_raw).hexdigest()
     audit_file_sha256 = parent._sha256(diagnostic_audit_path)
+    amendment_file_sha256 = hashlib.sha256(amendment_raw).hexdigest()
     selected = diagnostic_audit.get("selected_candidate_for_strict_confirmation")
     selection = protocol.get("confirmation_selection", {})
     comparison = diagnostic_audit.get("comparisons", {}).get(selected, {})
@@ -87,12 +104,39 @@ def _validate_diagnostic(
     }
     if (
         diagnostic_audit.get("format_version") != DIAGNOSTIC_FORMAT
+        or audit_amendment.get("format_version") != AMENDMENT_FORMAT
+        or audit_amendment.get("correction") != AMENDMENT_CORRECTION
+        or audit_amendment.get("failed_parent_interpretation")
+        != {
+            "field": "python_gc.stats_delta[*].collections",
+            "preserved": True,
+            "reason": (
+                "Explicit gc.collect calls remain legal while automatic "
+                "cyclic garbage collection is disabled"
+            ),
+        }
+        or audit_amendment.get("parent_protocol_file_sha256")
+        != protocol_sha256
+        or audit_amendment.get("authorization") != AUTHORIZATION
+        or audit_amendment.get("test_access") != protocol.get("test_access")
+        or audit_amendment.get("amended_auditor_sha256")
+        != diagnostic_audit.get("inputs", {}).get("auditor_sha256")
+        or audit_amendment.get("parent_auditor_sha256")
+        != diagnostic_audit.get("inputs", {}).get("parent_auditor_sha256")
+        or diagnostic_audit.get("audit_amendment")
+        != {
+            "amendment_file_sha256": amendment_file_sha256,
+            "correction": AMENDMENT_CORRECTION,
+            "failed_parent_interpretation_preserved": True,
+        }
         or diagnostic_audit.get("diagnostic_valid") is not True
         or diagnostic_audit.get("candidate_found") is not True
         or comparison.get("eligible_for_strict_confirmation") is not True
         or set(comparison.get("gates", {})) != expected_gates
         or not all(comparison.get("gates", {}).values())
         or selection.get("diagnostic_protocol_file_sha256") != protocol_sha256
+        or selection.get("audit_amendment_file_sha256")
+        != amendment_file_sha256
         or selection.get("diagnostic_audit_file_sha256") != audit_file_sha256
         or selection.get("diagnostic_audit_receipt_sha256")
         != diagnostic_audit.get("receipt_sha256")
@@ -101,6 +145,8 @@ def _validate_diagnostic(
         != diagnostic_protocol.get("modes", {}).get(selected)
         or protocol.get("inputs", {}).get("diagnostic_protocol_file_sha256")
         != protocol_sha256
+        or protocol.get("inputs", {}).get("audit_amendment_file_sha256")
+        != amendment_file_sha256
         or protocol.get("inputs", {}).get("diagnostic_audit_file_sha256")
         != audit_file_sha256
         or protocol.get("optimization", {}).get("execution_controls")
@@ -117,6 +163,7 @@ def _validate_diagnostic(
             "Diagnostic candidate selection evidence differs"
         )
     return selected, selection["selected_mode_flags"], {
+        "audit_amendment_file_sha256": amendment_file_sha256,
         "diagnostic_audit_file_sha256": audit_file_sha256,
         "diagnostic_audit_receipt_sha256": diagnostic_audit["receipt_sha256"],
         "diagnostic_protocol_file_sha256": protocol_sha256,
@@ -198,6 +245,7 @@ def audit_confirmation(
     protocol_path: Path,
     diagnostic_protocol_path: Path,
     diagnostic_audit_path: Path,
+    audit_amendment_path: Path,
 ) -> dict[str, Any]:
     """Audit the full crossover and its immutable diagnostic selection."""
     protocol, protocol_raw = parent._load(protocol_path, canonical=False)
@@ -214,6 +262,7 @@ def audit_confirmation(
         protocol=protocol,
         diagnostic_protocol_path=diagnostic_protocol_path,
         diagnostic_audit_path=diagnostic_audit_path,
+        audit_amendment_path=audit_amendment_path,
     )
     original = parent._expected_optimization
     parent._expected_optimization = _expected_optimization
@@ -260,6 +309,7 @@ def main() -> int:
     parser.add_argument("--protocol", type=Path, required=True)
     parser.add_argument("--diagnostic-protocol", type=Path, required=True)
     parser.add_argument("--diagnostic-audit", type=Path, required=True)
+    parser.add_argument("--audit-amendment", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     arguments = parser.parse_args()
     result = audit_confirmation(
@@ -267,6 +317,7 @@ def main() -> int:
         protocol_path=arguments.protocol,
         diagnostic_protocol_path=arguments.diagnostic_protocol,
         diagnostic_audit_path=arguments.diagnostic_audit,
+        audit_amendment_path=arguments.audit_amendment,
     )
     parent._publish(arguments.output, result)
     return 0 if result["gate_passed"] else 1

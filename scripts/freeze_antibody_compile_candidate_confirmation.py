@@ -12,8 +12,9 @@ import stat
 from typing import Any
 
 
-DIAGNOSTIC_FORMAT = "antibody_compile_numerics_diagnostic_result_v1"
+DIAGNOSTIC_FORMAT = "antibody_compile_numerics_diagnostic_result_v2"
 DIAGNOSTIC_PROTOCOL_FORMAT = "antibody_compile_numerics_diagnostic_protocol_v1"
+AMENDMENT_FORMAT = "antibody_compile_numerics_audit_amendment_v2"
 OUTPUT_FORMAT = "antibody_production_batch_efficiency_protocol_v3"
 ALLOWED_CANDIDATES = {
     "compile_default",
@@ -31,6 +32,16 @@ AUTHORIZATION = {
 TEST_ACCESS = {
     "downstream_labels_used": False,
     "sabdab2_heldout_accessed": False,
+}
+AMENDMENT_CORRECTION = {
+    "automatic_gc_semantics": (
+        "gc.disable prevents automatic cyclic collection but does not forbid "
+        "explicit gc.collect calls"
+    ),
+    "collection_counters": (
+        "reported as telemetry and not interpreted as proof of automatic "
+        "collection"
+    ),
 }
 
 
@@ -89,22 +100,52 @@ def freeze_confirmation(
     diagnostic_protocol_file_sha256: str,
     diagnostic_audit_path: Path,
     diagnostic_audit_file_sha256: str,
+    audit_amendment_path: Path,
+    audit_amendment_file_sha256: str,
 ) -> dict[str, Any]:
     """Build a fail-closed crossover protocol from one audited candidate."""
     diagnostic_protocol, observed_protocol_sha256 = _load(
         diagnostic_protocol_path
     )
     diagnostic_audit, observed_audit_sha256 = _load(diagnostic_audit_path)
+    audit_amendment, observed_amendment_sha256 = _load(audit_amendment_path)
     if observed_protocol_sha256 != diagnostic_protocol_file_sha256:
         raise ConfirmationFreezeError("Diagnostic protocol external anchor differs")
     if observed_audit_sha256 != diagnostic_audit_file_sha256:
         raise ConfirmationFreezeError("Diagnostic audit external anchor differs")
+    if observed_amendment_sha256 != audit_amendment_file_sha256:
+        raise ConfirmationFreezeError("Audit amendment external anchor differs")
     diagnostic_receipt_sha256 = _self_hash(diagnostic_audit)
     candidate = diagnostic_audit.get("selected_candidate_for_strict_confirmation")
     comparison = diagnostic_audit.get("comparisons", {}).get(candidate, {})
     if (
         diagnostic_protocol.get("format_version") != DIAGNOSTIC_PROTOCOL_FORMAT
         or diagnostic_audit.get("format_version") != DIAGNOSTIC_FORMAT
+        or audit_amendment.get("format_version") != AMENDMENT_FORMAT
+        or audit_amendment.get("correction") != AMENDMENT_CORRECTION
+        or audit_amendment.get("failed_parent_interpretation")
+        != {
+            "field": "python_gc.stats_delta[*].collections",
+            "preserved": True,
+            "reason": (
+                "Explicit gc.collect calls remain legal while automatic "
+                "cyclic garbage collection is disabled"
+            ),
+        }
+        or audit_amendment.get("parent_protocol_file_sha256")
+        != diagnostic_protocol_file_sha256
+        or audit_amendment.get("authorization") != AUTHORIZATION
+        or audit_amendment.get("test_access") != TEST_ACCESS
+        or audit_amendment.get("amended_auditor_sha256")
+        != diagnostic_audit.get("inputs", {}).get("auditor_sha256")
+        or audit_amendment.get("parent_auditor_sha256")
+        != diagnostic_audit.get("inputs", {}).get("parent_auditor_sha256")
+        or diagnostic_audit.get("audit_amendment")
+        != {
+            "amendment_file_sha256": audit_amendment_file_sha256,
+            "correction": AMENDMENT_CORRECTION,
+            "failed_parent_interpretation_preserved": True,
+        }
         or diagnostic_audit.get("inputs", {}).get("protocol_file_sha256")
         != diagnostic_protocol_file_sha256
         or diagnostic_audit.get("authorization") != AUTHORIZATION
@@ -225,6 +266,7 @@ def freeze_confirmation(
             "training, scale, biological, downstream, or state-of-the-art claim"
         ),
         "confirmation_selection": {
+            "audit_amendment_file_sha256": audit_amendment_file_sha256,
             "diagnostic_audit_file_sha256": diagnostic_audit_file_sha256,
             "diagnostic_audit_receipt_sha256": diagnostic_receipt_sha256,
             "diagnostic_protocol_file_sha256": diagnostic_protocol_file_sha256,
@@ -250,6 +292,7 @@ def freeze_confirmation(
             "dense_manifest_payload_sha256": inputs[
                 "dense_manifest_payload_sha256"
             ],
+            "audit_amendment_file_sha256": audit_amendment_file_sha256,
             "diagnostic_audit_file_sha256": diagnostic_audit_file_sha256,
             "diagnostic_protocol_file_sha256": diagnostic_protocol_file_sha256,
             "efficiency_protocol_sha256": inputs["efficiency_protocol_sha256"],
@@ -329,6 +372,8 @@ def main() -> None:
     parser.add_argument("--diagnostic-protocol-file-sha256", required=True)
     parser.add_argument("--diagnostic-audit", type=Path, required=True)
     parser.add_argument("--diagnostic-audit-file-sha256", required=True)
+    parser.add_argument("--audit-amendment", type=Path, required=True)
+    parser.add_argument("--audit-amendment-file-sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
     arguments = parser.parse_args()
     value = freeze_confirmation(
@@ -339,6 +384,10 @@ def main() -> None:
         ),
         diagnostic_audit_path=arguments.diagnostic_audit,
         diagnostic_audit_file_sha256=arguments.diagnostic_audit_file_sha256,
+        audit_amendment_path=arguments.audit_amendment,
+        audit_amendment_file_sha256=(
+            arguments.audit_amendment_file_sha256
+        ),
     )
     _publish(arguments.output, value)
 

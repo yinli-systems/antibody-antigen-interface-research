@@ -17,6 +17,7 @@ AUDITOR = ROOT / "scripts/audit_antibody_compile_candidate_confirmation.py"
 SLURM = ROOT / "slurm/antibody_compile_candidate_confirmation.sbatch"
 AUDIT_SLURM = ROOT / "slurm/antibody_compile_candidate_confirmation_audit.sbatch"
 DIAGNOSTIC_PROTOCOL = ROOT / "protocols/antibody_compile_numerics_diagnostic_v1.json"
+AUDIT_AMENDMENT = ROOT / "protocols/antibody_compile_numerics_audit_amendment_v2.json"
 
 
 def _load(name: str, path: Path):
@@ -44,7 +45,11 @@ def _canonical(value: object) -> bytes:
     ).encode("ascii")
 
 
-def _diagnostic_audit(protocol_sha256: str) -> dict[str, object]:
+def _diagnostic_audit(
+    protocol_sha256: str,
+    amendment_sha256: str,
+) -> dict[str, object]:
+    amendment = json.loads(AUDIT_AMENDMENT.read_text(encoding="ascii"))
     value: dict[str, object] = {
         "authorization": {
             "configuration_promotion": False,
@@ -67,8 +72,26 @@ def _diagnostic_audit(protocol_sha256: str) -> dict[str, object]:
             }
         },
         "diagnostic_valid": True,
-        "format_version": "antibody_compile_numerics_diagnostic_result_v1",
-        "inputs": {"protocol_file_sha256": protocol_sha256},
+        "audit_amendment": {
+            "amendment_file_sha256": amendment_sha256,
+            "correction": {
+                "automatic_gc_semantics": (
+                    "gc.disable prevents automatic cyclic collection but does "
+                    "not forbid explicit gc.collect calls"
+                ),
+                "collection_counters": (
+                    "reported as telemetry and not interpreted as proof of "
+                    "automatic collection"
+                ),
+            },
+            "failed_parent_interpretation_preserved": True,
+        },
+        "format_version": "antibody_compile_numerics_diagnostic_result_v2",
+        "inputs": {
+            "auditor_sha256": amendment["amended_auditor_sha256"],
+            "parent_auditor_sha256": amendment["parent_auditor_sha256"],
+            "protocol_file_sha256": protocol_sha256,
+        },
         "selected_candidate_for_strict_confirmation": (
             "compile_accuracy_gc_off"
         ),
@@ -91,7 +114,8 @@ def test_sources_are_ascii_and_syntax_valid() -> None:
 def test_freezer_selects_only_the_audited_candidate(tmp_path: Path) -> None:
     freezer = _load("compile_candidate_freezer", FREEZER)
     protocol_sha256 = hashlib.sha256(DIAGNOSTIC_PROTOCOL.read_bytes()).hexdigest()
-    audit = _diagnostic_audit(protocol_sha256)
+    amendment_sha256 = hashlib.sha256(AUDIT_AMENDMENT.read_bytes()).hexdigest()
+    audit = _diagnostic_audit(protocol_sha256, amendment_sha256)
     audit_path = tmp_path / "diagnostic-audit.json"
     audit_path.write_bytes(_canonical(audit))
     result = freezer.freeze_confirmation(
@@ -102,6 +126,8 @@ def test_freezer_selects_only_the_audited_candidate(tmp_path: Path) -> None:
         diagnostic_audit_file_sha256=hashlib.sha256(
             audit_path.read_bytes()
         ).hexdigest(),
+        audit_amendment_path=AUDIT_AMENDMENT,
+        audit_amendment_file_sha256=amendment_sha256,
     )
     assert result["confirmation_selection"]["selected_candidate"] == (
         "compile_accuracy_gc_off"
@@ -119,12 +145,14 @@ def test_freezer_selects_only_the_audited_candidate(tmp_path: Path) -> None:
     assert result["inputs"]["confirmation_auditor_sha256"] == hashlib.sha256(
         AUDITOR.read_bytes()
     ).hexdigest()
+    assert result["inputs"]["audit_amendment_file_sha256"] == amendment_sha256
 
 
 def test_freezer_rejects_a_diagnostic_without_a_candidate(tmp_path: Path) -> None:
     freezer = _load("compile_candidate_freezer_reject", FREEZER)
     protocol_sha256 = hashlib.sha256(DIAGNOSTIC_PROTOCOL.read_bytes()).hexdigest()
-    audit = _diagnostic_audit(protocol_sha256)
+    amendment_sha256 = hashlib.sha256(AUDIT_AMENDMENT.read_bytes()).hexdigest()
+    audit = _diagnostic_audit(protocol_sha256, amendment_sha256)
     audit["candidate_found"] = False
     audit.pop("receipt_sha256")
     audit["receipt_sha256"] = hashlib.sha256(_canonical(audit)).hexdigest()
@@ -139,11 +167,55 @@ def test_freezer_rejects_a_diagnostic_without_a_candidate(tmp_path: Path) -> Non
             diagnostic_audit_file_sha256=hashlib.sha256(
                 audit_path.read_bytes()
             ).hexdigest(),
+            audit_amendment_path=AUDIT_AMENDMENT,
+            audit_amendment_file_sha256=amendment_sha256,
         )
     except freezer.ConfirmationFreezeError as error:
         assert "does not authorize" in str(error)
     else:
         raise AssertionError("A failed diagnostic must not freeze a confirmation")
+
+
+def test_freezer_rejects_parent_audit_format_and_amendment_drift(
+    tmp_path: Path,
+) -> None:
+    freezer = _load("compile_candidate_freezer_amendment", FREEZER)
+    protocol_sha256 = hashlib.sha256(DIAGNOSTIC_PROTOCOL.read_bytes()).hexdigest()
+    amendment_sha256 = hashlib.sha256(AUDIT_AMENDMENT.read_bytes()).hexdigest()
+    for case in ("parent_format", "amendment_drift"):
+        audit = _diagnostic_audit(protocol_sha256, amendment_sha256)
+        amendment_path = AUDIT_AMENDMENT
+        if case == "parent_format":
+            audit["format_version"] = (
+                "antibody_compile_numerics_diagnostic_result_v1"
+            )
+        else:
+            amendment = json.loads(AUDIT_AMENDMENT.read_text(encoding="ascii"))
+            amendment["correction"]["collection_counters"] = "relaxed"
+            amendment_path = tmp_path / "drifted-amendment.json"
+            amendment_path.write_bytes(_canonical(amendment))
+        audit.pop("receipt_sha256")
+        audit["receipt_sha256"] = hashlib.sha256(_canonical(audit)).hexdigest()
+        audit_path = tmp_path / f"{case}-audit.json"
+        audit_path.write_bytes(_canonical(audit))
+        try:
+            freezer.freeze_confirmation(
+                source_root=ROOT,
+                diagnostic_protocol_path=DIAGNOSTIC_PROTOCOL,
+                diagnostic_protocol_file_sha256=protocol_sha256,
+                diagnostic_audit_path=audit_path,
+                diagnostic_audit_file_sha256=hashlib.sha256(
+                    audit_path.read_bytes()
+                ).hexdigest(),
+                audit_amendment_path=amendment_path,
+                audit_amendment_file_sha256=hashlib.sha256(
+                    amendment_path.read_bytes()
+                ).hexdigest(),
+            )
+        except freezer.ConfirmationFreezeError as error:
+            assert "does not authorize" in str(error)
+        else:
+            raise AssertionError(f"Invalid evidence passed: {case}")
 
 
 def test_confirmation_auditor_excludes_unselected_optimizations() -> None:
@@ -171,4 +243,5 @@ def test_launchers_bind_eight_gpu_crossover_and_independent_audit() -> None:
     assert "audit_antibody_compile_candidate_confirmation.py" in audit_source
     assert '--diagnostic-protocol "${DIAGNOSTIC_PROTOCOL}"' in audit_source
     assert '--diagnostic-audit "${DIAGNOSTIC_AUDIT}"' in audit_source
+    assert '--audit-amendment "${AUDIT_AMENDMENT}"' in audit_source
     assert "CUDA_VISIBLE_DEVICES=" in audit_source

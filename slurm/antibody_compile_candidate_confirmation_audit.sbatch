@@ -18,10 +18,12 @@ RUN_ROOT=${ABF_RUN_ROOT:?ABF_RUN_ROOT is required}
 PROTOCOL=${ABF_PROTOCOL:?ABF_PROTOCOL is required}
 DIAGNOSTIC_PROTOCOL=${ABF_DIAGNOSTIC_PROTOCOL:?ABF_DIAGNOSTIC_PROTOCOL is required}
 DIAGNOSTIC_AUDIT=${ABF_DIAGNOSTIC_AUDIT:?ABF_DIAGNOSTIC_AUDIT is required}
+AUDIT_AMENDMENT=${ABF_AUDIT_AMENDMENT:?ABF_AUDIT_AMENDMENT is required}
 OUTPUT=${ABF_AUDIT_OUTPUT:?ABF_AUDIT_OUTPUT is required}
 PROTOCOL_SHA256=${ABF_PROTOCOL_SHA256:?required}
 DIAGNOSTIC_PROTOCOL_SHA256=${ABF_DIAGNOSTIC_PROTOCOL_SHA256:?required}
 DIAGNOSTIC_AUDIT_SHA256=${ABF_DIAGNOSTIC_AUDIT_SHA256:?required}
+AUDIT_AMENDMENT_SHA256=${ABF_AUDIT_AMENDMENT_SHA256:?required}
 AUDITOR_SHA256=${ABF_AUDITOR_SHA256:?required}
 RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?required}
@@ -29,7 +31,7 @@ AUDITOR=${SOURCE_ROOT}/scripts/audit_antibody_compile_candidate_confirmation.py
 
 for path in "${PYTHON_BIN}" "${SOURCE_ROOT}" "${RUN_ROOT}" "${PROTOCOL}" \
   "${DIAGNOSTIC_PROTOCOL}" "${DIAGNOSTIC_AUDIT}" "${OUTPUT}" \
-  "${RUNTIME_MANIFEST}"; do
+  "${AUDIT_AMENDMENT}" "${RUNTIME_MANIFEST}"; do
   if [[ "${path}" != /* ]]; then
     echo "All audit paths must be absolute" >&2
     exit 2
@@ -37,7 +39,7 @@ for path in "${PYTHON_BIN}" "${SOURCE_ROOT}" "${RUN_ROOT}" "${PROTOCOL}" \
 done
 for digest in "${PROTOCOL_SHA256}" "${DIAGNOSTIC_PROTOCOL_SHA256}" \
   "${DIAGNOSTIC_AUDIT_SHA256}" "${AUDITOR_SHA256}" \
-  "${RUNTIME_MANIFEST_SHA256}"; do
+  "${AUDIT_AMENDMENT_SHA256}" "${RUNTIME_MANIFEST_SHA256}"; do
   if [[ ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
     echo "All audit anchors must be lowercase SHA-256 digests" >&2
     exit 2
@@ -51,6 +53,7 @@ test ! -e "${OUTPUT}"
 test "$(sha256sum "${PROTOCOL}" | awk '{print $1}')" = "${PROTOCOL_SHA256}"
 test "$(sha256sum "${DIAGNOSTIC_PROTOCOL}" | awk '{print $1}')" = "${DIAGNOSTIC_PROTOCOL_SHA256}"
 test "$(sha256sum "${DIAGNOSTIC_AUDIT}" | awk '{print $1}')" = "${DIAGNOSTIC_AUDIT_SHA256}"
+test "$(sha256sum "${AUDIT_AMENDMENT}" | awk '{print $1}')" = "${AUDIT_AMENDMENT_SHA256}"
 test "$(sha256sum "${AUDITOR}" | awk '{print $1}')" = "${AUDITOR_SHA256}"
 
 export CUDA_VISIBLE_DEVICES=
@@ -66,4 +69,5 @@ exec "${PYTHON_BIN}" "${AUDITOR}" \
   --protocol "${PROTOCOL}" \
   --diagnostic-protocol "${DIAGNOSTIC_PROTOCOL}" \
   --diagnostic-audit "${DIAGNOSTIC_AUDIT}" \
+  --audit-amendment "${AUDIT_AMENDMENT}" \
   --output "${OUTPUT}"
