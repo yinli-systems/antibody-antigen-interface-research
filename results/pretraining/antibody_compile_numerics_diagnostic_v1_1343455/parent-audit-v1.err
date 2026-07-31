@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/model_deployment/jobs/antibody_compile_numerics_f00644c_attempt_001/scripts/audit_antibody_compile_numerics_diagnostic.py", line 559, in <module>
+    raise SystemExit(main())
+  File "/ssd/scxi253/model_deployment/jobs/antibody_compile_numerics_f00644c_attempt_001/scripts/audit_antibody_compile_numerics_diagnostic.py", line 550, in main
+    result = audit_compile_numerics(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_compile_numerics_f00644c_attempt_001/scripts/audit_antibody_compile_numerics_diagnostic.py", line 328, in audit_compile_numerics
+    diagnostic_sidecars[name] = _diagnostic_sidecar(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_compile_numerics_f00644c_attempt_001/scripts/audit_antibody_compile_numerics_diagnostic.py", line 128, in _diagnostic_sidecar
+    raise CompileNumericsAuditError(
+__main__.CompileNumericsAuditError: Python-GC collected while disabled: compile_gc_off
