@@ -177,16 +177,17 @@ def _sidecar(
             for left, right, difference in zip(before, after, delta)
             for key in ("collected", "collections", "uncollectable")
         )
-        or (
-            flags["disable_python_gc"]
-            and any(item["collections"] != 0 for item in delta)
-        )
     ):
         raise parent.ProductionBatchAuditError(
             f"Confirmation GC statistics differ: {mode_root.name}"
         )
     return {
+        "automatic_gc_disabled_during_run": flags["disable_python_gc"],
+        "collection_counters_include_explicit_calls": True,
         "file_sha256": parent._sha256(path),
+        "observed_collection_counter_delta": [
+            item["collections"] for item in delta
+        ],
         "receipt_sha256": value["receipt_sha256"],
     }
 

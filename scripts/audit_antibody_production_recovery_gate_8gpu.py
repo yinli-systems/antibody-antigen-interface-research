@@ -167,14 +167,15 @@ def _candidate_sidecar(
             for left, right, difference in zip(before, after, delta)
             for key in ("collected", "collections", "uncollectable")
         )
-        or (
-            controls["disable_python_gc"]
-            and any(item["collections"] != 0 for item in delta)
-        )
     ):
         raise parent.RecoveryAuditError(f"Candidate GC statistics differ: {root}")
     return {
+        "automatic_gc_disabled_during_run": controls["disable_python_gc"],
+        "collection_counters_include_explicit_calls": True,
         "file_sha256": parent._file_sha256(path),
+        "observed_collection_counter_delta": [
+            item["collections"] for item in delta
+        ],
         "receipt_sha256": value["receipt_sha256"],
     }
 
