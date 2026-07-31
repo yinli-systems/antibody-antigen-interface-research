@@ -125,6 +125,28 @@ cp "${GATE_PROTOCOL}" "${RUN_ROOT}/protocol.json"
   nvidia-smi topo -m
 } > "${RUN_ROOT}/environment.txt"
 
+DISABLE_COMPILED_CUDAGRAPHS=$("${PYTHON_BIN}" - "${GATE_PROTOCOL}" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+value = json.loads(Path(sys.argv[1]).read_text(encoding="ascii"))
+controls = value["candidate_selection"]["execution_controls"]
+backend_controls = {
+    "compile_backend": "inductor",
+    "disable_compiled_cudagraphs": True,
+    "disable_python_gc": True,
+}
+legacy_keys = {"accuracy_first_bf16_reduction", "disable_python_gc"}
+if controls == backend_controls:
+    print("true")
+elif set(controls) == legacy_keys:
+    print("false")
+else:
+    raise SystemExit("Candidate execution controls differ")
+PY
+)
+
 COMMON_ARGS=(
   --candidate-gate-protocol "${GATE_PROTOCOL}"
   --production-corpus-root "${CORPUS_ROOT}"
@@ -150,6 +172,12 @@ COMMON_ARGS=(
   --compile-blocks
   --compile-prewarm-buckets
 )
+if [[ "${DISABLE_COMPILED_CUDAGRAPHS}" == true ]]; then
+  COMMON_ARGS+=(--disable-compiled-cudagraphs)
+elif [[ "${DISABLE_COMPILED_CUDAGRAPHS}" != false ]]; then
+  echo "CUDAGraph control must be true or false" >&2
+  exit 2
+fi
 
 run_gate() {
   local role=$1

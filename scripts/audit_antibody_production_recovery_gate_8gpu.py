@@ -16,7 +16,10 @@ FORMAT_VERSION = "antibody_production_loader_recovery_audit_8gpu_v1"
 RUN_FORMAT = "antibody_production_loader_recovery_run_v1"
 GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
 SIDECAR_FORMAT = "antibody_production_candidate_gate_receipt_v1"
-CONFIRMATION_FORMAT = "antibody_compile_candidate_confirmation_result_v1"
+CONFIRMATION_FORMATS = {
+    "antibody_compile_candidate_confirmation_result_v1",
+    "antibody_compile_candidate_confirmation_result_v2",
+}
 AUTHORIZATION = {
     "loader_recovery_gate": True,
     "production_pretraining": False,
@@ -33,6 +36,11 @@ CONFIRMATION_AUTHORIZATION = {
 TEST_ACCESS = {
     "downstream_labels_used": False,
     "sabdab2_heldout_accessed": False,
+}
+BACKEND_CONTROLS = {
+    "compile_backend": "inductor",
+    "disable_compiled_cudagraphs": True,
+    "disable_python_gc": True,
 }
 
 
@@ -80,7 +88,7 @@ def _validate_confirmation(
         confirmation_protocol_path
     )
     confirmation_audit = _self_hashed(confirmation_audit_path)
-    confirmation_audit_file_sha256 = parent._file_sha256(
+    confirmation_audit_file_sha256 = artifact_parent._sha256(
         confirmation_audit_path
     )
     selection = protocol.get("candidate_selection", {})
@@ -91,7 +99,7 @@ def _validate_confirmation(
         "execution_controls"
     )
     if (
-        confirmation_audit.get("format_version") != CONFIRMATION_FORMAT
+        confirmation_audit.get("format_version") not in CONFIRMATION_FORMATS
         or confirmation_audit.get("gate_passed") is not True
         or confirmation_audit.get("authorization") != CONFIRMATION_AUTHORIZATION
         or confirmation_audit.get("test_access") != TEST_ACCESS
@@ -107,6 +115,33 @@ def _validate_confirmation(
         != confirmation_audit.get("receipt_sha256")
         or selection.get("selected_candidate") != candidate
         or selection.get("execution_controls") != controls
+        or selection.get(
+            "confirmation_format",
+            "antibody_compile_candidate_confirmation_result_v1",
+        )
+        != confirmation_audit.get("format_version")
+        or (
+            controls
+            not in (
+                {
+                    "accuracy_first_bf16_reduction": False,
+                    "disable_python_gc": False,
+                },
+                {
+                    "accuracy_first_bf16_reduction": False,
+                    "disable_python_gc": True,
+                },
+                {
+                    "accuracy_first_bf16_reduction": True,
+                    "disable_python_gc": False,
+                },
+                {
+                    "accuracy_first_bf16_reduction": True,
+                    "disable_python_gc": True,
+                },
+            )
+            and controls != BACKEND_CONTROLS
+        )
     ):
         raise parent.RecoveryAuditError("Candidate promotion evidence differs")
     return {
@@ -123,7 +158,7 @@ def _candidate_sidecar(
     *,
     protocol: Mapping[str, Any],
     protocol_sha256: str,
-) -> dict[str, str]:
+) -> dict[str, Any]:
     path = root / "production_candidate_gate_receipt.json"
     value = _self_hashed(path)
     selection = protocol["candidate_selection"]
@@ -139,14 +174,17 @@ def _candidate_sidecar(
         or value.get("execution_controls") != controls
         or value.get("wrapper_sha256") != selection["wrapper_sha256"]
         or value.get("base_receipt_file_sha256")
-        != parent._file_sha256(root / "receipt.json")
+        != artifact_parent._sha256(root / "receipt.json")
         or value.get("base_trainer_state_file_sha256")
-        != parent._file_sha256(root / "trainer_state.json")
+        != artifact_parent._sha256(root / "trainer_state.json")
         or reduction
         != {
             "after_restore": True,
             "before": True,
-            "during_run": not controls["accuracy_first_bf16_reduction"],
+            "during_run": not controls.get(
+                "accuracy_first_bf16_reduction",
+                False,
+            ),
         }
         or python_gc.get("enabled_after_restore") is not True
         or python_gc.get("enabled_during_run")
@@ -172,7 +210,12 @@ def _candidate_sidecar(
     return {
         "automatic_gc_disabled_during_run": controls["disable_python_gc"],
         "collection_counters_include_explicit_calls": True,
-        "file_sha256": parent._file_sha256(path),
+        "compile_backend": controls.get("compile_backend"),
+        "compiled_cudagraphs_disabled": controls.get(
+            "disable_compiled_cudagraphs",
+            False,
+        ),
+        "file_sha256": artifact_parent._sha256(path),
         "observed_collection_counter_delta": [
             item["collections"] for item in delta
         ],
@@ -197,7 +240,7 @@ def audit_recovery_8gpu(
         or protocol.get("authorization") != AUTHORIZATION
         or protocol.get("test_access") != TEST_ACCESS
         or protocol.get("execution", {}).get("world_size") != 8
-        or protocol.get("auditor_sha256") != parent._file_sha256(Path(__file__))
+        or protocol.get("auditor_sha256") != artifact_parent._sha256(Path(__file__))
     ):
         raise parent.RecoveryAuditError("Eight-GPU gate protocol differs")
     promotion = _validate_confirmation(

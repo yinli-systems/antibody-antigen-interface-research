@@ -15,7 +15,10 @@ from antibody_pretraining.production_corpus import load_production_corpus
 
 
 FORMAT_VERSION = "antibody_production_loader_recovery_gate_v1"
-CONFIRMATION_FORMAT = "antibody_compile_candidate_confirmation_result_v1"
+CONFIRMATION_FORMATS = {
+    "antibody_compile_candidate_confirmation_result_v1",
+    "antibody_compile_candidate_confirmation_result_v2",
+}
 AUTHORIZATION = {
     "loader_recovery_gate": True,
     "production_pretraining": False,
@@ -32,6 +35,11 @@ CONFIRMATION_AUTHORIZATION = {
 TEST_ACCESS = {
     "downstream_labels_used": False,
     "sabdab2_heldout_accessed": False,
+}
+BACKEND_CONTROLS = {
+    "compile_backend": "inductor",
+    "disable_compiled_cudagraphs": True,
+    "disable_python_gc": True,
 }
 IMPLEMENTATION_FILES = (
     "scripts/run_antibody_pretraining.py",
@@ -129,42 +137,49 @@ def freeze_gate(
         "execution_controls"
     )
     if (
-        confirmation_audit.get("format_version") != CONFIRMATION_FORMAT
+        confirmation_audit.get("format_version") not in CONFIRMATION_FORMATS
         or confirmation_audit.get("gate_passed") is not True
         or confirmation_audit.get("authorization") != CONFIRMATION_AUTHORIZATION
         or confirmation_audit.get("test_access") != TEST_ACCESS
         or confirmation_audit.get("confirmed_candidate") != selected
         or confirmation_audit.get("inputs", {}).get("protocol_file_sha256")
         != confirmation_protocol_file_sha256
-        or controls
-        not in (
-            {
-                "accuracy_first_bf16_reduction": False,
-                "disable_python_gc": False,
-            },
-            {
-                "accuracy_first_bf16_reduction": False,
-                "disable_python_gc": True,
-            },
-            {
-                "accuracy_first_bf16_reduction": True,
-                "disable_python_gc": False,
-            },
-            {
-                "accuracy_first_bf16_reduction": True,
-                "disable_python_gc": True,
-            },
+        or (
+            controls
+            not in (
+                {
+                    "accuracy_first_bf16_reduction": False,
+                    "disable_python_gc": False,
+                },
+                {
+                    "accuracy_first_bf16_reduction": False,
+                    "disable_python_gc": True,
+                },
+                {
+                    "accuracy_first_bf16_reduction": True,
+                    "disable_python_gc": False,
+                },
+                {
+                    "accuracy_first_bf16_reduction": True,
+                    "disable_python_gc": True,
+                },
+            )
+            and controls != BACKEND_CONTROLS
         )
     ):
         raise EightGpuGateFreezeError(
             "Compile confirmation does not authorize a recovery gate"
         )
+    confirmation_version = confirmation_audit["format_version"]
+    confirmation_suffix = "_v2" if confirmation_version.endswith("_v2") else ""
     expected_sources = {
         "confirmation_auditor_sha256": (
-            "scripts/audit_antibody_compile_candidate_confirmation.py"
+            "scripts/audit_antibody_compile_candidate_confirmation"
+            f"{confirmation_suffix}.py"
         ),
         "confirmation_wrapper_sha256": (
-            "scripts/run_antibody_compile_candidate_confirmation.py"
+            "scripts/run_antibody_compile_candidate_confirmation"
+            f"{confirmation_suffix}.py"
         ),
         "runner_sha256": "scripts/run_antibody_pretraining_optimized.py",
         "runner_wrapper_sha256": (
@@ -222,7 +237,7 @@ def freeze_gate(
         "compile_prewarm_buckets": True,
         "ddp_bucket_cap_mb": 25,
         "deterministic_algorithms": True,
-        "disable_compiled_cudagraphs": False,
+        "disable_compiled_cudagraphs": controls == BACKEND_CONTROLS,
         "fused_adamw": False,
         "length_bucketing": False,
         "pinned_staging": False,
@@ -254,6 +269,7 @@ def freeze_gate(
                 confirmation_protocol_file_sha256
             ),
             "execution_controls": controls,
+            "confirmation_format": confirmation_version,
             "selected_candidate": selected,
             "wrapper_sha256": _sha256(wrapper),
         },
