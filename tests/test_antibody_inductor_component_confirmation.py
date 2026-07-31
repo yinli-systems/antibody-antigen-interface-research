@@ -243,6 +243,12 @@ def test_freezer_preserves_selected_scope_and_unchanged_gates(
         "maximum_masked_cross_entropy_relative_increase"
     ] == 0.01
     assert frozen["acceptance"]["compiled_relative_to_eager_pooled"] == 1.05
+    assert frozen["optimization"]["execution_controls"] == {
+        "compile_backend": "inductor",
+        "compile_scope": scope,
+        "disable_compiled_cudagraphs": True,
+        "disable_python_gc": True,
+    }
     assert frozen["authorization"]["production_pretraining"] is False
     assert frozen["measurement"]["crossover_run_order"] == [
         "safe_eager_r1",

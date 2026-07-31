@@ -12,6 +12,8 @@ from pathlib import Path
 import sys
 from typing import Any
 
+import run_antibody_inductor_component_localization as localization
+
 
 FORMAT_VERSION = "antibody_production_candidate_gate_receipt_v1"
 GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
@@ -29,6 +31,11 @@ BACKEND_CONTROLS = {
     "compile_backend": "inductor",
     "disable_compiled_cudagraphs": True,
     "disable_python_gc": True,
+}
+COMPONENT_SCOPES = {"attention", "ffn"}
+COMPONENT_CANDIDATE_SCOPES = {
+    "inductor_attention_only": "attention",
+    "inductor_ffn_only": "ffn",
 }
 
 
@@ -102,14 +109,37 @@ def _stats_delta(
     ]
 
 
+def _component_backend_controls(value: Any) -> bool:
+    return (
+        isinstance(value, dict)
+        and set(value)
+        == {
+            "compile_backend",
+            "compile_scope",
+            "disable_compiled_cudagraphs",
+            "disable_python_gc",
+        }
+        and value["compile_backend"] == "inductor"
+        and value["compile_scope"] in COMPONENT_SCOPES
+        and value["disable_compiled_cudagraphs"] is True
+        and value["disable_python_gc"] is True
+    )
+
+
 def _validate_launch(
     protocol: dict[str, Any], arguments: list[str]
 ) -> tuple[Path, dict[str, Any]]:
     selection = protocol.get("candidate_selection", {})
     controls = selection.get("execution_controls")
+    selected_candidate = selection.get("selected_candidate")
+    component_controls_valid = (
+        _component_backend_controls(controls)
+        and COMPONENT_CANDIDATE_SCOPES.get(selected_candidate)
+        == controls["compile_scope"]
+    )
     if (
         selection.get("configuration_promotion_verified") is not True
-        or not isinstance(selection.get("selected_candidate"), str)
+        or not isinstance(selected_candidate, str)
         or (
             controls
             not in (
@@ -131,6 +161,7 @@ def _validate_launch(
                 },
             )
             and controls != BACKEND_CONTROLS
+            and not component_controls_valid
         )
         or selection.get("wrapper_sha256") != _sha256(Path(__file__))
     ):
@@ -148,7 +179,10 @@ def _validate_launch(
         or "--compile-prewarm-buckets" not in arguments
     ):
         raise ProductionCandidateGateError("Confirmed regional compile is absent")
-    expected_cudagraph_control = controls == BACKEND_CONTROLS
+    expected_cudagraph_control = (
+        controls == BACKEND_CONTROLS
+        or _component_backend_controls(controls)
+    )
     if (
         "--disable-compiled-cudagraphs" in arguments
     ) is not expected_cudagraph_control:
@@ -163,7 +197,10 @@ def _validate_launch(
         raise ProductionCandidateGateError(
             "Recovery launch contains an unconfirmed optimization"
         )
-    base = Path(__file__).resolve().parent / "run_antibody_pretraining_production_gate.py"
+    base = (
+        Path(__file__).resolve().parent
+        / "run_antibody_pretraining_production_gate.py"
+    )
     if _sha256(base) != selection.get("base_runner_sha256"):
         raise ProductionCandidateGateError("Production runner binding differs")
     return output, controls
@@ -254,18 +291,27 @@ def main() -> None:
         *,
         disable_cudagraphs: bool,
     ) -> None:
-        if controls != BACKEND_CONTROLS or not disable_cudagraphs:
+        if (
+            controls != BACKEND_CONTROLS
+            and not _component_backend_controls(controls)
+        ) or not disable_cudagraphs:
             raise ProductionCandidateGateError(
                 "Runtime compiler backend controls differ"
             )
-        for block in model.blocks:
-            block.compile(
-                backend="inductor",
-                fullgraph=True,
-                options={"triton.cudagraphs": False},
+        if _component_backend_controls(controls):
+            localization._compile_scoped(
+                model,
+                scope=controls["compile_scope"],
             )
+        else:
+            for block in model.blocks:
+                block.compile(
+                    backend="inductor",
+                    fullgraph=True,
+                    options={"triton.cudagraphs": False},
+                )
 
-    if controls == BACKEND_CONTROLS:
+    if controls == BACKEND_CONTROLS or _component_backend_controls(controls):
         base.engine._compile_transformer_blocks = compile_with_frozen_backend
     if controls["disable_python_gc"]:
         gc.disable()

@@ -19,6 +19,7 @@ SIDECAR_FORMAT = "antibody_production_candidate_gate_receipt_v1"
 CONFIRMATION_FORMATS = {
     "antibody_compile_candidate_confirmation_result_v1",
     "antibody_compile_candidate_confirmation_result_v2",
+    "antibody_inductor_component_confirmation_result_v1",
 }
 AUTHORIZATION = {
     "loader_recovery_gate": True,
@@ -42,6 +43,28 @@ BACKEND_CONTROLS = {
     "disable_compiled_cudagraphs": True,
     "disable_python_gc": True,
 }
+COMPONENT_SCOPES = {"attention", "ffn"}
+COMPONENT_CANDIDATE_SCOPES = {
+    "inductor_attention_only": "attention",
+    "inductor_ffn_only": "ffn",
+}
+
+
+def _component_backend_controls(value: Any) -> bool:
+    return (
+        isinstance(value, dict)
+        and set(value)
+        == {
+            "compile_backend",
+            "compile_scope",
+            "disable_compiled_cudagraphs",
+            "disable_python_gc",
+        }
+        and value["compile_backend"] == "inductor"
+        and value["compile_scope"] in COMPONENT_SCOPES
+        and value["disable_compiled_cudagraphs"] is True
+        and value["disable_python_gc"] is True
+    )
 
 
 def _self_hashed(path: Path) -> dict[str, Any]:
@@ -92,18 +115,59 @@ def _validate_confirmation(
         confirmation_audit_path
     )
     selection = protocol.get("candidate_selection", {})
-    candidate = confirmation_protocol.get("confirmation_selection", {}).get(
+    confirmation_version = confirmation_audit.get("format_version")
+    component_confirmation = (
+        confirmation_version
+        == "antibody_inductor_component_confirmation_result_v1"
+    )
+    selection_key = (
+        "component_confirmation_selection"
+        if component_confirmation
+        else "confirmation_selection"
+    )
+    confirmed_key = (
+        "confirmed_component_candidate"
+        if component_confirmation
+        else "confirmed_candidate"
+    )
+    candidate = confirmation_protocol.get(selection_key, {}).get(
         "selected_candidate"
     )
     controls = confirmation_protocol.get("optimization", {}).get(
         "execution_controls"
     )
+    if component_confirmation:
+        controls_valid = (
+            _component_backend_controls(controls)
+            and COMPONENT_CANDIDATE_SCOPES.get(candidate)
+            == controls["compile_scope"]
+        )
+    else:
+        controls_valid = controls in (
+            {
+                "accuracy_first_bf16_reduction": False,
+                "disable_python_gc": False,
+            },
+            {
+                "accuracy_first_bf16_reduction": False,
+                "disable_python_gc": True,
+            },
+            {
+                "accuracy_first_bf16_reduction": True,
+                "disable_python_gc": False,
+            },
+            {
+                "accuracy_first_bf16_reduction": True,
+                "disable_python_gc": True,
+            },
+            BACKEND_CONTROLS,
+        )
     if (
         confirmation_audit.get("format_version") not in CONFIRMATION_FORMATS
         or confirmation_audit.get("gate_passed") is not True
         or confirmation_audit.get("authorization") != CONFIRMATION_AUTHORIZATION
         or confirmation_audit.get("test_access") != TEST_ACCESS
-        or confirmation_audit.get("confirmed_candidate") != candidate
+        or confirmation_audit.get(confirmed_key) != candidate
         or confirmation_audit.get("inputs", {}).get("protocol_file_sha256")
         != confirmation_protocol_sha256
         or selection.get("configuration_promotion_verified") is not True
@@ -120,28 +184,7 @@ def _validate_confirmation(
             "antibody_compile_candidate_confirmation_result_v1",
         )
         != confirmation_audit.get("format_version")
-        or (
-            controls
-            not in (
-                {
-                    "accuracy_first_bf16_reduction": False,
-                    "disable_python_gc": False,
-                },
-                {
-                    "accuracy_first_bf16_reduction": False,
-                    "disable_python_gc": True,
-                },
-                {
-                    "accuracy_first_bf16_reduction": True,
-                    "disable_python_gc": False,
-                },
-                {
-                    "accuracy_first_bf16_reduction": True,
-                    "disable_python_gc": True,
-                },
-            )
-            and controls != BACKEND_CONTROLS
-        )
+        or not controls_valid
     ):
         raise parent.RecoveryAuditError("Candidate promotion evidence differs")
     return {
@@ -211,6 +254,7 @@ def _candidate_sidecar(
         "automatic_gc_disabled_during_run": controls["disable_python_gc"],
         "collection_counters_include_explicit_calls": True,
         "compile_backend": controls.get("compile_backend"),
+        "compile_scope": controls.get("compile_scope"),
         "compiled_cudagraphs_disabled": controls.get(
             "disable_compiled_cudagraphs",
             False,

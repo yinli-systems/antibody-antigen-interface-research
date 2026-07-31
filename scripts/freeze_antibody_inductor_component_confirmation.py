@@ -298,6 +298,12 @@ def freeze_confirmation(
         },
         "optimization": {
             "candidate": flags,
+            "execution_controls": {
+                "compile_backend": "inductor",
+                "compile_scope": flags["compile_scope"],
+                "disable_compiled_cudagraphs": True,
+                "disable_python_gc": True,
+            },
             "safe_eager": localization.MODES["safe_eager"],
         },
         "protocol_variant": PROTOCOL_VARIANT,

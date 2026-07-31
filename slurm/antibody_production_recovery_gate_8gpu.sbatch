@@ -137,8 +137,32 @@ backend_controls = {
     "disable_compiled_cudagraphs": True,
     "disable_python_gc": True,
 }
+component_keys = {
+    "compile_backend",
+    "compile_scope",
+    "disable_compiled_cudagraphs",
+    "disable_python_gc",
+}
 legacy_keys = {"accuracy_first_bf16_reduction", "disable_python_gc"}
-if controls == backend_controls:
+component_controls = (
+    set(controls) == component_keys
+    and controls["compile_backend"] == "inductor"
+    and controls["compile_scope"] in {"attention", "ffn"}
+    and controls["disable_compiled_cudagraphs"] is True
+    and controls["disable_python_gc"] is True
+)
+component_candidate_scopes = {
+    "inductor_attention_only": "attention",
+    "inductor_ffn_only": "ffn",
+}
+component_controls = (
+    component_controls
+    and component_candidate_scopes.get(
+        value["candidate_selection"].get("selected_candidate")
+    )
+    == controls["compile_scope"]
+)
+if controls == backend_controls or component_controls:
     print("true")
 elif set(controls) == legacy_keys:
     print("false")
