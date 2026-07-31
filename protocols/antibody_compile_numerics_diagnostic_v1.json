@@ -1,0 +1,115 @@
+{
+  "acceptance": {
+    "bootstrap_confidence": 0.95,
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 2026073105,
+    "maximum_masked_accuracy_absolute_decrease": 0.005,
+    "maximum_masked_cross_entropy_relative_increase": 0.01,
+    "maximum_memory_fraction": 0.8,
+    "maximum_p95_over_p50_step_time": 1.1,
+    "maximum_reference_throughput_relative_range": 0.05,
+    "maximum_short_horizon_gradient_norm_relative_difference": 0.01,
+    "maximum_short_horizon_loss_absolute_difference": 0.005,
+    "minimum_candidate_relative_throughput": 1.05,
+    "short_horizon_updates": 20,
+    "warmup_updates_excluded": 100
+  },
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false,
+    "scientific_claim": false
+  },
+  "batch": {
+    "batch_quantum_sequences": 512,
+    "global_residue_token_target_per_update": 262144,
+    "micro_batch_per_gpu": 16,
+    "updates_per_run": 600
+  },
+  "claim_boundary": "Training-excluded 600-update compile numerics and Python-GC attribution only; no configuration promotion, production-corpus training, biological generalization, downstream metric, multi-node scaling, or state-of-the-art claim",
+  "failed_parent_gate": {
+    "audit_file_sha256": "06cb74083bd79eec8a5f5abefc99ebc4c2d90634d9d4cba96d1d5dd973028c4d",
+    "audit_job_id": 1343025,
+    "audit_receipt_sha256": "9887b28baedac3ea465f4add59a5e340e4c01d4402877c0c4b0d6be65a65d317",
+    "failed_gates": [
+      "evaluation_noninferiority",
+      "step_stability"
+    ],
+    "training_job_id": 1343024
+  },
+  "format_version": "antibody_compile_numerics_diagnostic_protocol_v1",
+  "hardware": {
+    "gpu_count": 8,
+    "gpu_model": "NVIDIA GeForce RTX 5090",
+    "node_count": 1
+  },
+  "inputs": {
+    "audit_launcher_sha256": "ac19ea1a4b91608b784c8f5c07ae5adb3744e7e9ddc9bb23cc8f351d907c10c0",
+    "auditor_sha256": "82ed36dd28213cf1b37a9f828f36aa2de5f3389664e194b58783085e82503371",
+    "base_runner_sha256": "5f93efe9b0a4c1509908dbf89337c249aefc06f54a4d97be02af7d1da35c67b9",
+    "communication_protocol_sha256": "899f064b21a8f3b8cb6fc9c291ee19b414df1d35623c3fc18ab9fc7fbc923953",
+    "dense_manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
+    "diagnostic_wrapper_sha256": "d62857bf748764291580694aadfb43f2d925a378ab8d63a462086e047b05e471",
+    "efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+    "extension_protocol_sha256": "f362c1b4c7a48b395c6069ed81b2fd261afae62286d55af9222be2876d42b322",
+    "failed_parent_audit_file_sha256": "06cb74083bd79eec8a5f5abefc99ebc4c2d90634d9d4cba96d1d5dd973028c4d",
+    "launcher_sha256": "47fe360d747807963c69fde9aca58622d19ce1dd03a06a77934718b5c15b17de",
+    "mfu_protocol_sha256": "8b194a223c19c20656478011e7c6d10c42a7c94660ce8e3bf9d862d18e34ee51",
+    "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
+    "parity_evaluation_indices_sha256": "4bb76f37f6456f6f74e7ee760c3584f9d4393b75e2512410d49c4e958bc8846c",
+    "parity_protocol_sha256": "81d1a2131f0e39ae53139ff8d9d3bc9ea8a7e4201ff604085cd69869de42a6dc",
+    "parity_split_receipt_file_sha256": "ceb2baa6b5c8e99ef54a2f56530f5e7b559f7b1e949a72b6f731606b6b455ddc",
+    "parity_training_indices_sha256": "294d2b9588c52efd8d8043b8378540a55975ad8292a3352131a4a1fdd7f983a6",
+    "parity_wrapper_sha256": "b30580ff0520b58306987ac3105a67d1fcacedc9dd57da41a1796f67582659c3",
+    "training_protocol_sha256": "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b"
+  },
+  "measurement": {
+    "run_order": [
+      "safe_eager_r1",
+      "compile_default",
+      "compile_gc_off",
+      "compile_accuracy",
+      "compile_accuracy_gc_off",
+      "safe_eager_r2"
+    ],
+    "run_seed": 17,
+    "same_allocation_required": true,
+    "training_evaluation_panel": "training_excluded_digest_panel_from_scientific_parity_v2"
+  },
+  "modes": {
+    "compile_accuracy": {
+      "accuracy_first_bf16_reduction": true,
+      "compile_blocks": true,
+      "disable_python_gc": false
+    },
+    "compile_accuracy_gc_off": {
+      "accuracy_first_bf16_reduction": true,
+      "compile_blocks": true,
+      "disable_python_gc": true
+    },
+    "compile_default": {
+      "accuracy_first_bf16_reduction": false,
+      "compile_blocks": true,
+      "disable_python_gc": false
+    },
+    "compile_gc_off": {
+      "accuracy_first_bf16_reduction": false,
+      "compile_blocks": true,
+      "disable_python_gc": true
+    },
+    "safe_eager": {
+      "accuracy_first_bf16_reduction": false,
+      "compile_blocks": false,
+      "disable_python_gc": false
+    }
+  },
+  "selection": {
+    "ranking": "highest useful residue-token throughput among candidates passing every frozen gate",
+    "required_successor": "new source-bound two-repetition 600-update crossover confirmation before configuration promotion"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
