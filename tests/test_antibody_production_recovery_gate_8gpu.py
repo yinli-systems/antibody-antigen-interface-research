@@ -1,0 +1,267 @@
+"""Test the confirmed-candidate eight-GPU real-OAS recovery gate."""
+
+from __future__ import annotations
+
+import ast
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import sys
+
+
+ROOT = Path(__file__).resolve().parents[1]
+FREEZER = ROOT / "scripts/freeze_antibody_production_recovery_gate_8gpu.py"
+WRAPPER = ROOT / "scripts/run_antibody_pretraining_production_candidate_gate.py"
+AUDITOR = ROOT / "scripts/audit_antibody_production_recovery_gate_8gpu.py"
+SLURM = ROOT / "slurm/antibody_production_recovery_gate_8gpu.sbatch"
+AUDIT_SLURM = ROOT / "slurm/antibody_production_recovery_gate_8gpu_audit.sbatch"
+
+
+def _load(name: str, path: Path):
+    scripts = str(ROOT / "scripts")
+    source = str(ROOT / "src")
+    for item in (scripts, source):
+        if item not in sys.path:
+            sys.path.insert(0, item)
+    specification = importlib.util.spec_from_file_location(name, path)
+    assert specification is not None and specification.loader is not None
+    module = importlib.util.module_from_spec(specification)
+    sys.modules[name] = module
+    specification.loader.exec_module(module)
+    return module
+
+
+def _canonical(value: object) -> bytes:
+    return (
+        json.dumps(
+            value,
+            allow_nan=False,
+            ensure_ascii=True,
+            separators=(",", ":"),
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("ascii")
+
+
+def _sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _confirmation_protocol() -> dict[str, object]:
+    return {
+        "confirmation_selection": {
+            "selected_candidate": "compile_accuracy",
+        },
+        "inputs": {
+            "confirmation_auditor_sha256": _sha(
+                ROOT / "scripts/audit_antibody_compile_candidate_confirmation.py"
+            ),
+            "confirmation_wrapper_sha256": _sha(
+                ROOT / "scripts/run_antibody_compile_candidate_confirmation.py"
+            ),
+            "runner_sha256": _sha(
+                ROOT / "scripts/run_antibody_pretraining_optimized.py"
+            ),
+            "runner_wrapper_sha256": _sha(
+                ROOT / "scripts/run_antibody_pretraining_parity_extension.py"
+            ),
+        },
+        "optimization": {
+            "execution_controls": {
+                "accuracy_first_bf16_reduction": True,
+                "disable_python_gc": False,
+            }
+        },
+    }
+
+
+def _confirmation_audit(protocol_sha256: str) -> dict[str, object]:
+    value: dict[str, object] = {
+        "authorization": {
+            "configuration_promotion": True,
+            "production_pretraining": False,
+            "scale_16_gpu": False,
+            "scale_32_gpu": False,
+            "scientific_claim": False,
+        },
+        "confirmed_candidate": "compile_accuracy",
+        "format_version": (
+            "antibody_compile_candidate_confirmation_result_v1"
+        ),
+        "gate_passed": True,
+        "inputs": {"protocol_file_sha256": protocol_sha256},
+        "test_access": {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        },
+    }
+    value["receipt_sha256"] = hashlib.sha256(_canonical(value)).hexdigest()
+    return value
+
+
+def test_sources_are_ascii_and_syntax_valid() -> None:
+    for path in (FREEZER, WRAPPER, AUDITOR):
+        source = path.read_text(encoding="ascii")
+        ast.parse(source)
+        assert "SOTA claim" in source
+
+
+def test_freezer_requires_passing_confirmation_and_locks_world_size(
+    tmp_path: Path,
+) -> None:
+    freezer = _load("oas_recovery_8gpu_freezer", FREEZER)
+    confirmation_protocol = _confirmation_protocol()
+    protocol_path = tmp_path / "confirmation-protocol.json"
+    protocol_path.write_bytes(_canonical(confirmation_protocol))
+    protocol_sha256 = _sha(protocol_path)
+    confirmation_audit = _confirmation_audit(protocol_sha256)
+    audit_path = tmp_path / "confirmation-audit.json"
+    audit_path.write_bytes(_canonical(confirmation_audit))
+
+    class Corpus:
+        manifest = {"counts": {"unique_validation_records": 1_743_380}}
+
+        def __len__(self) -> int:
+            return 224_887_833
+
+    freezer.load_production_corpus = lambda *args, **kwargs: Corpus()
+    result = freezer.freeze_gate(
+        source_root=ROOT,
+        corpus_root=tmp_path / "corpus",
+        manifest_file_sha256="1" * 64,
+        manifest_payload_sha256="2" * 64,
+        corpus_protocol_file_sha256="3" * 64,
+        independent_audit_path=tmp_path / "corpus-audit.json",
+        independent_audit_file_sha256="4" * 64,
+        independent_audit_payload_sha256="5" * 64,
+        confirmation_protocol_path=protocol_path,
+        confirmation_protocol_file_sha256=protocol_sha256,
+        confirmation_audit_path=audit_path,
+        confirmation_audit_file_sha256=_sha(audit_path),
+    )
+    assert result["execution"]["world_size"] == 8
+    assert result["execution"]["optimization"] == {
+        "bucketed_padding": False,
+        "compile_blocks": True,
+        "compile_prewarm_buckets": True,
+        "ddp_bucket_cap_mb": 25,
+        "deterministic_algorithms": True,
+        "disable_compiled_cudagraphs": False,
+        "fused_adamw": False,
+        "length_bucketing": False,
+        "pinned_staging": False,
+    }
+    assert result["runs"]["continuous"]["target_residue_tokens"] == 262_144
+    assert result["runs"]["continuous"]["batch_quantum_sequences"] == 512
+    assert result["candidate_selection"]["execution_controls"] == {
+        "accuracy_first_bf16_reduction": True,
+        "disable_python_gc": False,
+    }
+    assert result["authorization"]["production_pretraining"] is False
+
+
+def test_freezer_rejects_failed_confirmation(tmp_path: Path) -> None:
+    freezer = _load("oas_recovery_8gpu_freezer_reject", FREEZER)
+    protocol = _confirmation_protocol()
+    protocol_path = tmp_path / "confirmation-protocol.json"
+    protocol_path.write_bytes(_canonical(protocol))
+    audit = _confirmation_audit(_sha(protocol_path))
+    audit["gate_passed"] = False
+    audit.pop("receipt_sha256")
+    audit["receipt_sha256"] = hashlib.sha256(_canonical(audit)).hexdigest()
+    audit_path = tmp_path / "failed-confirmation.json"
+    audit_path.write_bytes(_canonical(audit))
+    try:
+        freezer.freeze_gate(
+            source_root=ROOT,
+            corpus_root=tmp_path / "corpus",
+            manifest_file_sha256="1" * 64,
+            manifest_payload_sha256="2" * 64,
+            corpus_protocol_file_sha256="3" * 64,
+            independent_audit_path=tmp_path / "corpus-audit.json",
+            independent_audit_file_sha256="4" * 64,
+            independent_audit_payload_sha256="5" * 64,
+            confirmation_protocol_path=protocol_path,
+            confirmation_protocol_file_sha256=_sha(protocol_path),
+            confirmation_audit_path=audit_path,
+            confirmation_audit_file_sha256=_sha(audit_path),
+        )
+    except freezer.EightGpuGateFreezeError as error:
+        assert "does not authorize" in str(error)
+    else:
+        raise AssertionError("A failed confirmation must not freeze a gate")
+
+
+def test_wrapper_accepts_only_the_confirmed_compile_controls(
+    tmp_path: Path,
+) -> None:
+    wrapper = _load("oas_recovery_8gpu_wrapper", WRAPPER)
+    gate = {
+        "authorization": {
+            "loader_recovery_gate": True,
+            "production_pretraining": False,
+            "scale_out": False,
+            "scientific_claim": False,
+        },
+        "candidate_selection": {
+            "base_runner_sha256": _sha(
+                ROOT / "scripts/run_antibody_pretraining_production_gate.py"
+            ),
+            "configuration_promotion_verified": True,
+            "execution_controls": {
+                "accuracy_first_bf16_reduction": True,
+                "disable_python_gc": False,
+            },
+            "selected_candidate": "compile_accuracy",
+            "wrapper_sha256": _sha(WRAPPER),
+        },
+        "format_version": "antibody_production_loader_recovery_gate_v1",
+        "test_access": {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        },
+    }
+    gate_path = tmp_path / "gate.json"
+    gate_path.write_bytes(_canonical(gate))
+    output = tmp_path / "output"
+    observed_output, controls = wrapper._validate_launch(
+        gate,
+        [
+            "--gate-protocol",
+            str(gate_path),
+            "--output",
+            str(output),
+            "--compile-blocks",
+            "--compile-prewarm-buckets",
+        ],
+    )
+    assert observed_output == output
+    assert controls["accuracy_first_bf16_reduction"] is True
+
+
+def test_launchers_use_public_partition_and_exact_three_part_recovery() -> None:
+    source = SLURM.read_text(encoding="ascii")
+    assert "#SBATCH --partition=gpu_5090" in source
+    assert "#SBATCH --gres=gpu:8" in source
+    assert "--nproc-per-node=8" in source
+    assert "--target-tokens 262144" in source
+    assert "--batch-quantum 512" in source
+    assert "run_gate continuous 4 --skip-checkpoint" in source
+    assert "run_gate stage1 2" in source
+    assert 'run_gate resumed 2 --resume-root "${RUN_ROOT}/stage1" --skip-checkpoint' in source
+    assert "--compile-blocks" in source
+    assert "--compile-prewarm-buckets" in source
+    for switch in (
+        "--fused-adamw",
+        "--pinned-staging",
+        "--bucketed-padding",
+        "--length-bucketing",
+        "--disable-compiled-cudagraphs",
+    ):
+        assert switch not in source
+    audit_source = AUDIT_SLURM.read_text(encoding="ascii")
+    assert "audit_antibody_production_recovery_gate_8gpu.py" in audit_source
+    assert '--artifact-root "${RUN_ROOT}"' in audit_source
+    assert "CUDA_VISIBLE_DEVICES=" in audit_source
