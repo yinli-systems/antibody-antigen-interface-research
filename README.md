@@ -60,6 +60,23 @@ selection, held-out evaluation, or performance-improvement claim is authorized
 until the exact split, independent audits, fold-local cache equality, label
 provenance, and license receipts all pass.
 
+## Antibody foundation-pretraining status
+
+The authenticated OAS corpus contains 224,887,833 unique training records and
+25,259,993,406 unique training residue tokens. Exact checkpoint recovery on the
+real corpus passes, and a protocol-bound 1,024-array memory-mapped loader reduced
+measured continuous-run data preparation from 19.19 seconds to 3.97 seconds in
+the recovery gate.
+
+An eight-RTX-5090, 600-update, two-repetition compile-only confirmation measured
+202,795 useful residue tokens/s and 46.1% approximate 6N MFU, versus 150,991
+tokens/s and 34.3% for eager execution. The candidate remains disqualified:
+post-training masked cross-entropy was 2.03% worse than eager against a frozen
+1% noninferiority margin, and compiled p95/p50 step-time ratios were 1.137 and
+1.128 against a 1.10 ceiling. The failed gate, receipts, and telemetry are kept
+under `results/pretraining/antibody_compile_only_confirmation_v1_1343024/`.
+No production-scale pretraining or 16/32-GPU result is claimed from this pilot.
+
 ## Claim boundary
 
 - The SPPIDER-seq adaptation uses concatenated VH and VL sequences and 4.5 A contact
