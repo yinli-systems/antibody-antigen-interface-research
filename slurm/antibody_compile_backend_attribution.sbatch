@@ -6,8 +6,8 @@
 #SBATCH --gres=gpu:8
 #SBATCH --cpus-per-task=32
 #SBATCH --time=02:30:00
-#SBATCH --output=/tmp/abf-compile-backends-%j.out
-#SBATCH --error=/tmp/abf-compile-backends-%j.err
+#SBATCH --output=/ssd/scxi253/model_deployment/logs/abf-compile-backends-%j.out
+#SBATCH --error=/ssd/scxi253/model_deployment/logs/abf-compile-backends-%j.err
 
 set -euo pipefail
 umask 077

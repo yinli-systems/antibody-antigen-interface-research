@@ -92,6 +92,15 @@ def _stats_delta(
     ]
 
 
+def _parse_wrapper_arguments(
+    arguments: list[str],
+) -> tuple[argparse.Namespace, list[str]]:
+    parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
+    parser.add_argument("--backend-attribution-protocol", type=Path, required=True)
+    parser.add_argument("--backend-attribution-mode", required=True)
+    return parser.parse_known_args(arguments)
+
+
 def _validate_launch(
     protocol: dict[str, Any],
     *,
@@ -209,11 +218,8 @@ def _publish(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("--backend-attribution-protocol", type=Path, required=True)
-    parser.add_argument("--backend-attribution-mode", required=True)
-    parsed, base_arguments = parser.parse_known_args()
     original_arguments = sys.argv[1:]
+    parsed, base_arguments = _parse_wrapper_arguments(original_arguments)
     protocol, protocol_sha256 = _load_protocol(
         parsed.backend_attribution_protocol
     )

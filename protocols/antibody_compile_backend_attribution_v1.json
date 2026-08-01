@@ -28,6 +28,16 @@
     "updates_per_run": 500
   },
   "claim_boundary": "Training-excluded 500-update Dynamo, AOTAutograd, and Inductor backend attribution on one eight-GPU allocation; no configuration promotion, production-corpus training, biological generalization, downstream metric, multi-node scaling, or state-of-the-art claim",
+  "correction": {
+    "failed_launch_attempt": {
+      "candidate_found": false,
+      "evidence_file": "results/pretraining/antibody_compile_backend_attribution_launch_failure_v1_1343791.json",
+      "job_id": 1343791,
+      "reason": "argparse long-option abbreviation made the base trainer --backend option ambiguous",
+      "training_updates_started": false
+    },
+    "repair": "Disable long-option abbreviation only in the attribution wrapper and retain the exact base trainer arguments"
+  },
   "failed_parent_diagnostic": {
     "audit_file_sha256": "03a456d2c1be8cb652969510257c58b36166051401b89e311a917a04db42d57c",
     "audit_receipt_sha256": "9105267db36e6b8879ce269f85cf09e168d7d6047754018e30585cf5ae1715bd",
@@ -48,14 +58,15 @@
     "dense_manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
     "efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
     "failed_parent_audit_file_sha256": "03a456d2c1be8cb652969510257c58b36166051401b89e311a917a04db42d57c",
-    "launcher_sha256": "5fcb5174d42d5343cb6a590aa0d0b73aaff7b123c6aa2225adb4ca95d78258d3",
+    "failed_launch_evidence_sha256": "ed1b0d462c7564adf27e89869af9dad377733b6f80c1f824205b9395bad29752",
+    "launcher_sha256": "847a32065b5da18f5b165f8c6df0156b3c5e0b16d059a45c9208a1505d2c8da0",
     "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
     "parity_evaluation_indices_sha256": "4bb76f37f6456f6f74e7ee760c3584f9d4393b75e2512410d49c4e958bc8846c",
     "parity_protocol_sha256": "81d1a2131f0e39ae53139ff8d9d3bc9ea8a7e4201ff604085cd69869de42a6dc",
     "parity_split_receipt_file_sha256": "ceb2baa6b5c8e99ef54a2f56530f5e7b559f7b1e949a72b6f731606b6b455ddc",
     "parity_training_indices_sha256": "294d2b9588c52efd8d8043b8378540a55975ad8292a3352131a4a1fdd7f983a6",
     "training_protocol_sha256": "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b",
-    "wrapper_sha256": "3ae8133fe7181625e92ac1c1f1cb9772b9008e5b145aec42a9f2343ed3df2d9c"
+    "wrapper_sha256": "dac878c9990250ecd9166637337a7035c1d7e1560ebbc38ef7719c989770f757"
   },
   "measurement": {
     "promotable_runs": [

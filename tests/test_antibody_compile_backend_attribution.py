@@ -16,6 +16,10 @@ AUDITOR = ROOT / "scripts/audit_antibody_compile_backend_attribution.py"
 PROTOCOL = ROOT / "protocols/antibody_compile_backend_attribution_v1.json"
 SLURM = ROOT / "slurm/antibody_compile_backend_attribution.sbatch"
 AUDIT_SLURM = ROOT / "slurm/antibody_compile_backend_attribution_audit.sbatch"
+LAUNCH_FAILURE = (
+    ROOT
+    / "results/pretraining/antibody_compile_backend_attribution_launch_failure_v1_1343791.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -68,6 +72,7 @@ def test_protocol_binds_every_implementation_and_input() -> None:
         / "protocols/antibody_efficiency_gate_v1.json",
         "failed_parent_audit_file_sha256": ROOT
         / "results/pretraining/antibody_compile_numerics_diagnostic_v1_1343455/independent-audit-v2.json",
+        "failed_launch_evidence_sha256": LAUNCH_FAILURE,
         "launcher_sha256": SLURM,
         "model_family_sha256": ROOT
         / "protocols/antibody_model_family_v1.json",
@@ -135,6 +140,49 @@ def test_wrapper_accepts_only_registered_backend_controls(tmp_path: Path) -> Non
         raise AssertionError("Inductor attribution must disable CUDAGraphs")
 
 
+def test_wrapper_passes_exact_base_backend_option_through() -> None:
+    wrapper = _load("compile_backend_wrapper_parser", WRAPPER)
+    parsed, base_arguments = wrapper._parse_wrapper_arguments(
+        [
+            "--backend-attribution-protocol",
+            str(PROTOCOL),
+            "--backend-attribution-mode",
+            "safe_eager",
+            "--backend",
+            "ddp",
+        ]
+    )
+    assert parsed.backend_attribution_mode == "safe_eager"
+    assert base_arguments == ["--backend", "ddp"]
+
+
+def test_failed_launch_is_preserved_and_cannot_authorize() -> None:
+    raw = LAUNCH_FAILURE.read_bytes()
+    failure = json.loads(raw.decode("ascii"))
+    assert raw == (
+        json.dumps(
+            failure,
+            allow_nan=False,
+            ensure_ascii=True,
+            separators=(",", ":"),
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("ascii")
+    assert failure["job"]["job_id"] == 1_343_791
+    assert failure["job"]["state"] == "FAILED"
+    assert failure["outcome"] == {
+        "candidate_found": False,
+        "compiler_arms_completed": [],
+        "training_updates_started": False,
+    }
+    assert failure["failure_artifacts"]["run_root_writable_file_count"] == 0
+    assert failure["test_access"] == {
+        "downstream_labels_used": False,
+        "sabdab2_heldout_accessed": False,
+    }
+
+
 def test_auditor_preserves_backend_specific_receipt_controls() -> None:
     auditor = _load("compile_backend_auditor", AUDITOR)
     protocol = json.loads(PROTOCOL.read_text(encoding="ascii"))
@@ -161,6 +209,8 @@ def test_launchers_freeze_five_runs_and_cpu_only_audit() -> None:
         "inductor_no_cudagraphs_gc_off true true"
     ) in source
     assert source.count("run_mode safe_eager_") == 2
+    assert "/ssd/scxi253/model_deployment/logs/abf-compile-backends-%j.out" in source
+    assert "/tmp/abf-compile-backends-%j.out" not in source
     audit_source = AUDIT_SLURM.read_text(encoding="ascii")
     assert "CUDA_VISIBLE_DEVICES=" in audit_source
     assert "audit_antibody_compile_backend_attribution.py" in audit_source
