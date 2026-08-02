@@ -1,0 +1,90 @@
+{
+  "claim_rule": "This additive ledger authenticates newly identified 2026 partner-specific authorities and comparability blockers only. No listed model has been retrained on the FrameContact double-cold split or scored on a FrameContact frozen test, and published metrics are not head-to-head FrameContact results.",
+  "comparison_contract": {
+    "antigen_structure_and_both_endpoint_disjoint_roles_required": true,
+    "contact_cutoff_axes_angstrom": [4.5, 6.0, 8.0],
+    "contact_cutoff_axes_are_reporting_not_test_selection": true,
+    "five_paired_seeds": [17, 42, 73, 101, 137],
+    "frozen_test_one_time_gate_required": true,
+    "full_sequence_retrieval_must_be_separated_from_true_interface_mask_retrieval": true,
+    "identical_candidate_pool_and_pair_scope_required": true,
+    "published_numbers_are_literature_context_only": true,
+    "same_antigen_different_antibody_counterfactual_required": true,
+    "validation_only_checkpoint_threshold_and_calibration_required": true
+  },
+  "format_version": "framecontact_baseline_lock_v6",
+  "frozen_on": "2026-08-01",
+  "frontier_additions": {
+    "aamfm": {
+      "architecture_boundary": "ESM3 continual pretraining, antigen GearNet geometric-interface adapter, supervised antigen-conditioned CDR design, and Cal-DPO using a structural preference signal",
+      "comparability_boundary": "AAMFM is a CDR generation model conditioned on antigen structure and supplied epitope/interface information. It is a downstream co-design comparator, not an epitope-discovery, contact-map, or partner-retrieval baseline. The repository requires separately obtained ESM3 weights, antigen features, SAbDab data, RAbD data and checkpoints.",
+      "identical_split_runs": 0,
+      "license_boundary": "No LICENSE or COPYING file was present at the pinned one-commit source revision; source is inspected only and is not copied into FrameContact.",
+      "official_paper": "https://arxiv.org/abs/2607.20057",
+      "official_source": "https://github.com/XL-S224/AAMFM",
+      "official_weight_present": false,
+      "result_status": "not_run",
+      "source_commit_time": "2026-07-22T11:02:26Z",
+      "source_revision": "36036588de55f9bd1675dbbf92d726e3ce8db941"
+    },
+    "calm": {
+      "architecture_boundary": "AntiBERTy antibody encoder and ESM2 antigen encoder trained with symmetric multi-positive contrastive learning; the manuscript's cross-attentive autoregressive decoder is proposed but not trained or benchmarked",
+      "comparability_boundary": "CALM reports pool-dependent bidirectional retrieval on antigen-sequence-clustered splits. The 40/60/80 percent regimes do not enforce antibody-cluster or antigen-structure disjointness. Full-sequence retrieval and true 5 A paratope/epitope-mask retrieval are separate experiments and must not be conflated. CALM does not report residue contact localization.",
+      "identical_split_runs": 0,
+      "license_boundary": "The bioRxiv manuscript is CC-BY 4.0, but the promised research prototype, processed splits and checkpoints were not publicly linked at audit time; no implementation is copied or inferred.",
+      "official_paper": "https://doi.org/10.64898/2026.02.25.707916",
+      "paper_pdf_sha256": "740c10781b2c3bee8a6e98e34301080126792225e87cb0ecdcc32a577ca78cbd",
+      "result_status": "not_run",
+      "source_revision": null
+    },
+    "pepnet": {
+      "architecture_boundary": "Atomic point-cloud encoder with atom-to-residue hierarchical aggregation, RoPE, masked-feature pretraining and an antigen-antibody cross-attention epitope decoder",
+      "comparability_boundary": "The repository carries AsEP ratio/group train, validation and test ID lists and two labeled sample NPZ files. It reports epitope classification rather than a full residue-pair contact map or reciprocal partner retrieval. Its official split, crop, atom scope and threshold protocol must remain isolated from the unopened FrameContact external test and cannot replace double-cold retraining.",
+      "identical_split_runs": 0,
+      "license_boundary": "MIT license at the pinned revision; license file SHA-256 is authenticated below.",
+      "official_checkpoint_present": false,
+      "official_paper": "https://doi.org/10.1093/bib/bbag067",
+      "official_source": "https://github.com/Zhijian-Xu/PEPNet",
+      "pinned_files": {
+        "LICENSE": "0e2aa08be6a6d5584a2aa09610f7d569af4423bd845a458b19e148fcdaa2f706",
+        "cfgs/finetune_group.yaml": "c8f2202e24d1a2fa1683223f858fa12e4e4348875a1fd1a9f341b9c59165ea70",
+        "data/AsEP/epitope-group/test.txt": "4fb61221e01a5ca5fe8c59ac719a7c0815e91dda16aca597067560f18b17115b",
+        "data/AsEP/epitope-group/train.txt": "ac2fd27de5f5c4ccfce8da2c326923bfcf1ece6d1c44ad91f69f88853ecab8f0",
+        "data/AsEP/epitope-group/val.txt": "7f9c0cba9dd3092573b6c15cfe9b9374e484e8e8a7f1e05e680068f8cc0e7c52"
+      },
+      "result_status": "not_run",
+      "source_commit_time": "2026-01-06T02:24:17Z",
+      "source_revision": "fa0fb4002c5294a094bf4d050098692067e545f4"
+    },
+    "sppider_seq": {
+      "architecture_boundary": "Frozen ESM2 residue embeddings followed by query-to-partner cross-attention and a residue-level interaction-site classifier; the manuscript release contains separate receptor-centric and peptide-centric checkpoints",
+      "comparability_boundary": "The released models target generic receptor/peptide PPI-site prediction, not antibody-antigen residue contacts. They do not expose a residue-pair contact head or antigen-fold split. External inference and identical-split retraining must be reported separately, and the user's earlier SAbDab2 retraining cannot be replaced by published generic-PPI metrics.",
+      "checkpoints": {
+        "models/crossattn_pep_run07_best.pt": {
+          "bytes": 32813717,
+          "serialization": "PyTorch zip containing data.pkl; do not deserialize outside an isolated audited environment",
+          "sha256": "c359fcdb5751d94d3a1cdc01bb285cb06ff2aade604a992ecdc9e8642252cfe0"
+        },
+        "models/crossattn_rec_run27_best.pt": {
+          "bytes": 32813717,
+          "serialization": "PyTorch zip containing data.pkl; do not deserialize outside an isolated audited environment",
+          "sha256": "de00e13dd1edbe7a4eb76e3cbf298ba65abe2ef44cd85d9ce12dff5b5e01c113"
+        }
+      },
+      "identical_split_runs": 0,
+      "license_boundary": "GPL-3.0-only repository. Keep execution as a separate external baseline environment; do not copy its implementation into the permissive FrameContact source tree.",
+      "license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "official_paper": "https://doi.org/10.1093/bioinformatics/btag388",
+      "official_source": "https://github.com/aporollo-lab/SPPIDER-seq",
+      "result_status": "not_run",
+      "source_commit_time": "2026-04-27T23:45:04Z",
+      "source_revision": "9c12e8c826ad4e47b00477cab56f6d58715d8f60",
+      "source_tag": "v2.0-manuscript"
+    }
+  },
+  "parent": {
+    "path": "baselines/BASELINE_LOCK_V5.json",
+    "reason": "Add 2026 antibody-specific localization, retrieval and downstream design authorities without rewriting the previously frozen Handshake, ProstT5, DeepSSInter and ProTact ledger.",
+    "sha256": "6692708d2fb79b0ea10e5a7cdfe28adad2164cba7d74aa9d5b568cda9c5f842f"
+  }
+}

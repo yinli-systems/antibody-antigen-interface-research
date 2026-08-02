@@ -1,0 +1,118 @@
+{
+  "format_version": "framecontact_baseline_lock_v4",
+  "frozen_on": "2026-07-31",
+  "parent": {
+    "path": "baselines/BASELINE_LOCK_V3.json",
+    "sha256": "a792935235380671fe3a2e45604eba24cc8d5e6c8db6ddb44b62ac67fc05e2d0",
+    "reason": "record authenticated official external sources, the real Boltz-1 Pairformer extraction and runnable adapter, and explicit dependency or comparability blockers without rewriting v3"
+  },
+  "comparison_contract": {
+    "identical_sabdab2_split_required": true,
+    "identical_authenticated_pair_labels_required": true,
+    "identical_five_seeds_required": [17, 42, 73, 101, 137],
+    "validation_only_selection_required": true,
+    "frozen_test_one_time_gate_required": true,
+    "native_upstream_metrics_not_compared_as_framecontact_results": true,
+    "source_or_checkpoint_authentication_does_not_imply_benchmark_result": true
+  },
+  "external_baselines": {
+    "gvp_gnn": {
+      "official_source": "https://github.com/drorlab/gvp-pytorch",
+      "local_source_path": "../external/gvp-pytorch",
+      "source_revision": "316eea7cd6446dd928e5975634152ec3b28e65f5",
+      "local_source_present_at_freeze": true,
+      "adapter_status": "not_implemented",
+      "dependency_boundary": {
+        "torch_geometric_present_at_freeze": false,
+        "torch_scatter_present_at_freeze": false,
+        "official_runtime_available": false
+      },
+      "identical_split_runs": 0,
+      "result_status": "not_run"
+    },
+    "egnn": {
+      "official_source": "https://github.com/vgsatorras/egnn",
+      "local_source_path": "../external/egnn",
+      "source_revision": "e9ca6c0c3e1d30a7598efbd66034121b4af8dccc",
+      "local_source_present_at_freeze": true,
+      "adapter_status": "not_implemented",
+      "comparability_boundary": "The upstream model updates node coordinates and consumes graph edges; an authenticated FrameContact task adapter, matched edge construction, and identical-split training protocol do not yet exist.",
+      "identical_split_runs": 0,
+      "result_status": "not_run"
+    },
+    "flash_invariant_point_attention": {
+      "official_source": "https://github.com/flagshippioneering/flash_ipa",
+      "local_source_path": "../external/flash_ipa",
+      "source_revision": "fdeca12cedda766c5dc8ac484cc9eb4b78738500",
+      "local_source_present_at_freeze": true,
+      "adapter_status": "source_pinned_interface_not_wired",
+      "dependency_boundary": {
+        "flash_attn_present_at_freeze": false,
+        "supported_cuda_kernel_runtime_verified": false
+      },
+      "internal_frozen_frame_ipa_equivalent_to_complete_ipa": false,
+      "identical_split_runs": 0,
+      "result_status": "not_run"
+    },
+    "boltz1_pairformer": {
+      "official_source": "https://github.com/jwohlwend/boltz",
+      "local_source_path": "../external/boltz",
+      "source_revision": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+      "local_source_present_at_freeze": true,
+      "official_checkpoint": {
+        "local_path": "../external/boltz-checkpoints/boltz1_conf.ckpt",
+        "bytes": 3595352714,
+        "sha256": "fea245d912c570ec117b2277c2719f312a6fc109c07b6f6ef741690ee775c2f5",
+        "authenticated": true
+      },
+      "extracted_pairformer_artifact": {
+        "local_path": "../external/boltz-checkpoints/boltz1_pairformer.pt",
+        "bytes": 590425219,
+        "sha256": "9307036782c09f988c0d428a9e8c5bdcde604d1742e357982ad3b2ec6d27282f",
+        "receipt_path": "../external/boltz-checkpoints/BOLTZ1_PAIRFORMER_EXTRACTION_RECEIPT.json",
+        "receipt_sha256": "e11f3b505d7db0362643800a9fce60b1789d0c47e7ecf07c4d9efbf12da40582",
+        "state_prefix": "pairformer_module.",
+        "state_tensor_count": 2544,
+        "architecture": {
+          "token_s": 384,
+          "token_z": 128,
+          "num_blocks": 48,
+          "num_heads": 16,
+          "dropout": 0.25,
+          "pairwise_head_width": 32,
+          "pairwise_num_heads": 4
+        }
+      },
+      "adapter": {
+        "implementation": "src/interaction_first/boltz_pairformer_adapter.py",
+        "contact_model": "src/interaction_first/pairformer_framecontact.py",
+        "extraction_script": "scripts/extract_boltz1_pairformer_checkpoint.py",
+        "smoke_script": "scripts/smoke_boltz1_pairformer_adapter.py",
+        "training_entry": "scripts/train_pairformer_baseline.py",
+        "development_protocol": "protocols/framecontact_pairformer_baseline_v1.json",
+        "requirements_lock": "baselines/requirements-boltz-pairformer.txt",
+        "requirements_lock_sha256": "341355ccdfeb381d8c456a83b3ab81aca330ff373c23808304d7041e3c408d8b",
+        "status": "implemented_and_unit_tested",
+        "structure_batch_bridge": "real N/CA/C plus chain_ids and missing-frame masks are converted to intra-chain SE(3)-invariant pair features",
+        "dual_encoder_parameters_shared": false,
+        "pretrained_pairformer_frozen_by_default": true,
+        "new_trainable_components": "single-input, pair-input, and output projections"
+      },
+      "real_weight_smoke": {
+        "receipt_path": "receipts/BOLTZ1_PAIRFORMER_LOCAL_SMOKE_20260731.json",
+        "receipt_sha256": "269d184a384ddb13868073945109afa26b4671b62b006cefe2a8dfd623f81985",
+        "device": "cpu",
+        "strict_state_load": true,
+        "real_weight_forward": true,
+        "pairformer_parameter_count": 147400704,
+        "biological_data_read": false,
+        "benchmark_result": false
+      },
+      "comparability_boundary": "This is an adapted pretrained Pairformer trunk. Native Boltz preprocessing and structure-prediction heads are not reproduced; no identical-split five-seed FrameContact baseline or frozen-test score exists.",
+      "native_boltz_pipeline_reproduced": false,
+      "identical_split_runs": 0,
+      "result_status": "not_run"
+    }
+  },
+  "claim_rule": "Only the Boltz-1 Pairformer source, checkpoint provenance, strict extraction, structure-batch adapter, and synthetic real-weight forward are verified. No GVP, EGNN, complete IPA, Pairformer biological benchmark, A100 performance, frozen-test, or external-generalization result is claimed."
+}

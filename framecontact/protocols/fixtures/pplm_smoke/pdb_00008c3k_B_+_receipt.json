@@ -1,0 +1,12 @@
+{
+  "format_version": "framecontact_pplm_train_fixture_v1",
+  "claim_boundary": "Authenticated SAbDab2 antigen-fold train-role sequence fixture for official-checkpoint engineering smoke only; no validation/test metric or model-performance claim.",
+  "instance_id": "pdb_00008c3k_B_+",
+  "role": "train",
+  "antibody_length": 111,
+  "antigen_length": 59,
+  "antibody_sequence_sha256": "caac8d59caa6b7b672620c482d29f4b97c5718a63cf0e0c49bd662ac35576896",
+  "antigen_sequence_sha256": "f7849ffe629d55d9d03ea9f473582df16d77ba2ec1d705c543511ad19d82d05e",
+  "split_manifest_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+  "structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0"
+}

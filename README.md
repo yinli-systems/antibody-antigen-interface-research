@@ -18,6 +18,7 @@ residues are generally interface-prone?
 | SPPIDER-seq adaptation | SAbDab2 adapters, training/evaluation, cluster bootstrap, calibration, sequence-similarity audit, and matched-partner permutation | Locked reused-benchmark marginal result; not native residue-pair prediction and not a pristine blind test |
 | MIPE reconstruction | Released-code-compatible training/evaluation adapters and directional cross-attention export | Historical 800-epoch summary is protocol-bound; the only MIPE result payload committed here is a separate 100-epoch held-out export |
 | Intra-chain geometry | Distance, receiver-frame direction, and full relative-pose attention biases with parameter-unshared antibody/antigen encoders | Two-A100 replay and three historical seeds are development evidence; the preregistered five-seed superiority gate did not pass and the outer test remains unread |
+| FrameContact | Parameter-unshared geometry self-attention, explicit binary-contact/distogram pair heads, unary/contact/gated residue heads, localized triangle consistency, gauge-fixed interaction attribution, and reciprocal partner controls | Antigen-fold development arrays are still running; matched-epoch signals are mixed, frozen/external tests remain unopened, and no benchmark-improvement claim is authorized |
 | Partner retrieval and PairScale | Dual encoders, bidirectional retrieval, native pair/contact models, hard-negative and one-sided controls, calibration, and fixed-budget runners | Development-only experiments did not pass the required partner-specificity gates; no candidate is promoted |
 | Partner-geometry R2 / PAIRFormer | Explicit antibody-by-antigen pair state, bidirectional fusion, axial pair updates, contact/distance/orientation heads, losses, evaluator, execution plan, and one-shot freeze controls | Implementation complete; biological training, selection, and outer/test evaluation remain blocked at Gate 0 |
 | V6 score-free split authority | Raw-byte authority reconstruction, independent auditor, exact statistics, joint IR, CP-SAT formulation, separation oracle, HiGHS projection backend, and V6-B/V6-C diagnostics | The linear projection was reported infeasible by the primary and independent CP-SAT paths, but the required direct-HiGHS terminal receipt is not committed; this does not authorize a full-protocol infeasibility claim or training |
@@ -133,6 +134,13 @@ it is not yet a complete proof about every nonlinear score-free gate. No
 threshold was relaxed and no test data were used to resolve the split.
 
 ## Code architecture
+
+The current FrameContact research snapshot is preserved as an isolated,
+independently installable subproject under [`framecontact/`](framecontact/README.md).
+Its package name overlaps with historical `interaction_first` modules in this
+repository, so it is intentionally not flattened into the root `src/` tree.
+FrameContact protocols, source-tree manifests, and Slurm entry points must be
+run from that subproject root to preserve their authenticated relative paths.
 
 Reusable code lives in [`src/interaction_first/`](src/interaction_first/). The
 small export surface in `interaction_first.__init__` covers the stable contact,

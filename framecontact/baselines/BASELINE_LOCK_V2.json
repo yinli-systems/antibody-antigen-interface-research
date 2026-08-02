@@ -1,0 +1,69 @@
+{
+  "format_version": "framecontact_baseline_lock_v2",
+  "frozen_on": "2026-07-30",
+  "parent": {
+    "path": "baselines/BASELINE_LOCK.json",
+    "sha256": "ad2cb747ee80601c5214b4844266eaf045d913bb705136cfae892ec9496ca859",
+    "reason": "add partner-aware and pose-learning baselines without rewriting v1"
+  },
+  "comparison_contract": {
+    "internal_models_use_identical_authenticated_split_and_pair_labels": true,
+    "all_internal_models_report_seeds": [17, 42, 73, 101, 137],
+    "external_native_benchmarks_are_reported_separately": true,
+    "source_revision_does_not_imply_adapter_or_result": true,
+    "no_result_exists_without_run_and_scorer_receipts": true
+  },
+  "runnable_internal_baselines": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "framecontact",
+    "framecontact_interleaved"
+  ],
+  "new_external_sources": [
+    {
+      "name": "AsEP-WALLE",
+      "official_source": "https://github.com/biochunan/AsEP-dataset",
+      "source_revision": "2b653d7bb5aea57c156b90297e3adf6afa290452",
+      "scientific_role": "official antibody-specific epitope and bipartite-link benchmark",
+      "adapter_status": "not_implemented",
+      "result_status": "not_run"
+    },
+    {
+      "name": "EpiFormer",
+      "official_source": "https://github.com/mansoor181/epiformer",
+      "source_revision": "a08935b30b288ac0e51d61ac75c5a8b712c6ea3a",
+      "scientific_role": "interleaved bidirectional cross-attention baseline on native AsEP tasks",
+      "caveat": "June 2026 v1 preprint; repository had three commits at audit time; published split is not the FrameContact antigen-fold split",
+      "adapter_status": "not_implemented",
+      "result_status": "not_run"
+    },
+    {
+      "name": "SPPIDER-seq",
+      "official_source": "https://github.com/aporollo-lab/SPPIDER-seq",
+      "source_revision": "241d08e1dcee6d5f4ca444468db96a4707ec6f10",
+      "scientific_role": "partner-aware sequence-only cross-attention control",
+      "caveat": "the published training dataset excluded antibody-epitope complexes; antibody-antigen use is transfer, not an in-domain reproduction",
+      "adapter_status": "not_implemented",
+      "result_status": "not_run"
+    },
+    {
+      "name": "SE3Bind",
+      "official_source": "https://github.com/lamoureux-lab/SE3Bind",
+      "source_revision": "0b332820f332dfa1ac1acd4ec5b558f40dc29a74",
+      "scientific_role": "future latent-pose and docking-energy reference",
+      "caveat": "binding-affinity and re-docking tasks are not residue-contact or epitope baselines",
+      "adapter_status": "not_implemented",
+      "result_status": "not_run"
+    }
+  ],
+  "not_eligible_as_a_runnable_baseline": [
+    {
+      "name": "ABConformer",
+      "reason": "the September 2025 preprint states code will be released upon acceptance; no authenticated official implementation was available at audit time"
+    }
+  ],
+  "claim_rule": "Pinned upstream commits and papers are provenance only. They authorize no reproduced metric, SAbDab2 comparison, external-generalization claim, or checkpoint claim."
+}

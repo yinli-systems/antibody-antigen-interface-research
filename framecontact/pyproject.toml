@@ -1,0 +1,32 @@
+[project]
+name = "framecontact"
+version = "0.3.0"
+description = "Geometry-aware partner-specific antibody-antigen contact modeling"
+requires-python = ">=3.10"
+dependencies = [
+  "biopython>=1.83",
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "scikit-learn",
+  "scipy",
+  "torch",
+  "torchmetrics",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+# Only the decision report renders figures, and it writes the underlying
+# trajectory data either way, so matplotlib stays out of the training path.
+figures = ["matplotlib>=3.8"]
+pairformer = [
+  "einops==0.8.0",
+  "einx==0.3.0",
+  "fairscale==0.4.13",
+  "hydra-core==1.3.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+pythonpath = ["src", "."]

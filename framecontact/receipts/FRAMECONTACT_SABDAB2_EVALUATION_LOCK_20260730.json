@@ -1,0 +1,106 @@
+{
+  "format_version": "framecontact_sabdab2_evaluation_lock_v1",
+  "frozen_on": "2026-07-30",
+  "status": "frozen_before_any_persisted_or_observed_sabdab2_antigen_fold_validation_prediction",
+  "parent_protocol": {
+    "path": "protocols/framecontact_primary_v5.json",
+    "sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+    "receipt_sha256": "395b8d86648abb348b41ef2513319c86ca20e3e235eb070dd81fb4516a760537"
+  },
+  "training_execution": {
+    "formal_array_job_id": "1342688",
+    "source_manifest_sha256": "1a9c5b0f950c8723de1c04fbe439ee9f32b8960425863d91a66ff471ac43a995",
+    "source_tree_sha256": "1c603454c6a85a33846a15cdfe8a181d710bdc2f249863a1ca09bf0fd803d906",
+    "source_files_writable_at_submission": 0,
+    "initial_array_throttle": 1,
+    "validation_output_observed_at_lock": false
+  },
+  "data_authorities": {
+    "structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0",
+    "contact_manifest_sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33",
+    "embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545",
+    "split_manifest_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+    "test_reciprocal_partner_panel_sha256": "ea70fef770448302fb4ed1ccd7da51a1cc56cba5ea153076e077971735874bd1",
+    "same_antigen_authority_receipt_sha256": "845df2e4ba4c76dcaea24b0bff4e2d0727deb1fb382fe4c907c85b96f913692e",
+    "same_antigen_test_panel_sha256": "a8ea170fef18c5637f4ac6f9abae79958c21b5ad4c2f4a4cc60db1c57996ac60"
+  },
+  "same_antigen_different_antibody": {
+    "panel_selection": "label-free exact antigen sequence identity with different antibody sequence and antibody cluster; deterministic maximum 31 alternates per focal",
+    "test_exact_antigen_group_count": 27,
+    "test_focal_instance_count": 164,
+    "test_ordered_pair_count": 1710,
+    "primary_stratum": "both complexes contain at least one positive epitope residue and true epitope Jaccard is at most 0.50",
+    "primary_metric": "group-weighted directed assignment margin",
+    "directed_assignment_margin": "0.5 * ([AP(cognate map,focal target)-AP(cognate map,alternate target)] + [AP(swapped map,alternate target)-AP(swapped map,focal target)])",
+    "success_guard": "both directional assignment margins must be positive; arbitrary map change is not success",
+    "bootstrap": {
+      "unit": "exact antigen sequence group",
+      "replicates": 10000,
+      "seed": 20260730
+    }
+  },
+  "zero_positive_policy": {
+    "pooled_metrics": "retain every candidate and residue from zero-positive complexes",
+    "positive_required_macro_metrics": "mark per-complex AP and ranked recall ineligible rather than silently assign zero or delete the complex",
+    "reporting": "include eligible count, ineligible count, explicit instance IDs, and policy text",
+    "known_schema_qc_counts": {
+      "train": 1,
+      "validation": 0,
+      "test": 1
+    }
+  },
+  "final_clean_metrics": {
+    "contact": "pooled AUPRC/AUROC/precision/recall/F1/MCC/Brier/ECE-15/reliability/calibration slope plus positive-eligible mean per-complex AUPRC and P@K/recall@K",
+    "marginals": "pooled epitope and paratope discrimination, threshold metrics, Brier, ECE-15, reliability, calibration intercept/slope, and positive-eligible mean per-complex AUPRC",
+    "macro_uncertainty": "10000-replicate antigen-cluster bootstrap for contact and epitope; antibody-cluster bootstrap for paratope; never labeled as pooled-AUPRC confidence intervals",
+    "specificity": "both reciprocal interaction-only margins, top-1, mean reciprocal rank, median rank, and 10000-replicate cluster bootstrap",
+    "calibration_source": "temperatures and thresholds frozen on validation only; final calibration regression is descriptive and never modifies predictions"
+  },
+  "required_interventions": {
+    "partner_counterfactual": "two frozen reciprocal 31-wrong-partner panels",
+    "geometry_shuffle": true,
+    "local_frame_corruption": true,
+    "degree_matched_neighbor_graph_rewiring": true,
+    "coordinate_noise_angstrom": [
+      0.1,
+      0.25,
+      0.5
+    ],
+    "independent_monomer_se3": {
+      "comparison": "every clean contact, interaction-only, epitope, and paratope probability element",
+      "maximum_absolute_probability_difference_tolerance": 0.001
+    }
+  },
+  "source_hashes": {
+    "evaluate_framecontact_sabdab2_ensemble_test.py": "122650985338b5cedd0b452958aceaf20e9ce43d45546f72ac9ddd7a4d1e6b3a",
+    "train_framecontact.py_evaluation_helpers": "0f58e90596c540079196980cd2e604a470d759642d74e0d25732b8f4caa92722",
+    "build_sabdab2_same_antigen_challenge.py": "ac784b6f42eaa17574679cb1a57c0153cc0e7fd50b2dd4263dc80e7a6a102320",
+    "same_antigen_challenge.py": "3dcb1443238eb5c0f202674c3979f877d86128e356e658b946649f4e25584c62",
+    "framecontact_metrics.py": "6b49c70aff29c8b088f482e7ed7f84eacf25f237a29679a8a941a31a4ff873fb",
+    "framecontact.py": "cfe6d8c6f0004b7f70e149a5c308b0131e26826616d11f73324a53b58e078cff",
+    "intra_chain_geometry.py": "fc9443a70cdf62ef3c9d8b2ddc3a767692a23d8c07f291c22203f415f912dbc3"
+  },
+  "validation_gpu_smoke": {
+    "receipt_sha256": "7c74025cc6e36c64eb7d4d8bce4c0c3c3798286a22495eaee27c7231b1b0d9b9",
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "same_antigen_groups": 12,
+    "ordered_pairs": 12,
+    "primary_pairs": 7,
+    "axis_ineligible_pairs": 0,
+    "se3_max_absolute_probability_difference": 0.0,
+    "optimizer_step_performed": false,
+    "test_role_loaded": false,
+    "claim_boundary": "Randomly initialized validation-only execution and invariance proof, not model performance."
+  },
+  "evidence_boundary_at_lock": {
+    "sabdab2_antigen_fold_validation_predictions_observed": false,
+    "sabdab2_antigen_fold_validation_metrics_observed": false,
+    "sabdab2_antigen_fold_test_predictions_observed": false,
+    "sabdab2_antigen_fold_test_metrics_observed": false,
+    "test_manifest_aggregate_label_counts_previously_accessed_for_schema_qc": true,
+    "same_antigen_test_identity_panel_task_labels_read": false,
+    "asep_official_test_opened": false,
+    "chimera_canonical_codesign_run": false
+  },
+  "claim_boundary": "This receipt freezes SAbDab2 evaluation semantics and code before any persisted or user-observed antigen-fold validation result. It contains no biological performance result and does not authorize an A100, external-test, state-of-the-art, or CHIMERA co-design claim."
+}

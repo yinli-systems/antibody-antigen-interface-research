@@ -1,0 +1,13 @@
+             JOBID PARTITION             NAME ST       TIME NODELIST(REASON)
+   1345108_[5-9%5]  gpu_4090     fc-distogram PD       0:00 (JobArrayTaskLimit)
+  1345042_[5-14%5]  gpu_4090      fc-res-head PD       0:00 (JobArrayTaskLimit)
+         1345108_3  gpu_4090     fc-distogram  R   14:37:09 wqd10nba06g2
+         1345108_4  gpu_4090     fc-distogram  R   14:37:09 wqd10nba06g2
+         1345108_0  gpu_4090     fc-distogram  R   14:37:10 wqd10naf04g1
+         1345108_1  gpu_4090     fc-distogram  R   14:37:10 wqd10nba06g2
+         1345108_2  gpu_4090     fc-distogram  R   14:37:10 wqd10nba06g2
+         1345042_0  gpu_4090      fc-res-head  R   15:55:52 wqd10naf04g1
+         1345042_1  gpu_4090      fc-res-head  R   15:55:52 wqd10nah05g4
+         1345042_2  gpu_4090      fc-res-head  R   15:55:52 wqd10nah05g4
+         1345042_3  gpu_4090      fc-res-head  R   15:55:52 wqd10nah05g4
+         1345042_4  gpu_4090      fc-res-head  R   15:55:52 wqd10nah05g4

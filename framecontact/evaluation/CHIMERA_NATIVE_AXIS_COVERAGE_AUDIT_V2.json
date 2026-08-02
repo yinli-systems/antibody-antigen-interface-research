@@ -1,0 +1,2435 @@
+{
+  "adapted_complexes": {
+    "1ikf_H_L_C": {
+      "antibody_missing_frames": 0,
+      "antibody_residues": 442,
+      "antibody_valid_frames": 442,
+      "antigen_missing_frames": 0,
+      "antigen_residues": 2,
+      "antigen_valid_frames": 2,
+      "artifact_path": "artifacts/05/05fa7d96a9ceafb0de46e3731ab3ae175813430bc79de2e59d0921d479483b19.npz",
+      "artifact_sha256": "80bfea93c9d4cbf66ad9f965350ba43c62c6e361f1b6e84b25a4b4d30062f674",
+      "epitope_positives": 1,
+      "native_contact_pair_count": 3,
+      "paratope_positives": 3,
+      "provided_contact_pair_count": 3,
+      "source_feature_digest": "09ba7690e15f4bf95159c44cb5ab08edca9ca694e4440801b2c38fb79011a443",
+      "source_feature_path": "complex_features/1ikf_H_L_C.pt",
+      "split_memberships": [
+        "antigen_fold.test"
+      ]
+    },
+    "8s6t_A_B_C": {
+      "antibody_missing_frames": 0,
+      "antibody_residues": 426,
+      "antibody_valid_frames": 426,
+      "antigen_missing_frames": 1,
+      "antigen_residues": 2,
+      "antigen_valid_frames": 1,
+      "artifact_path": "artifacts/90/901dee3bf55f37bbe8ce07898394e3916b9d788270b146726bf26c1fff834209.npz",
+      "artifact_sha256": "a595f3cbab874da4d84fe9eda90dab18b26a00e0a59c8f1a3c490cba9ffb017b",
+      "epitope_positives": 1,
+      "native_contact_pair_count": 1,
+      "paratope_positives": 1,
+      "provided_contact_pair_count": 1,
+      "source_feature_digest": "49f0a061774e99d9229834554cf5ac43f09eed3c52833860a86ee15fa9cb0add",
+      "source_feature_path": "complex_features/8s6t_A_B_C.pt",
+      "split_memberships": [
+        "temporal.test"
+      ]
+    },
+    "9ei9_A_D_C": {
+      "antibody_missing_frames": 0,
+      "antibody_residues": 231,
+      "antibody_valid_frames": 231,
+      "antigen_missing_frames": 0,
+      "antigen_residues": 324,
+      "antigen_valid_frames": 324,
+      "artifact_path": "artifacts/4e/4e7ecd3e8b44dfa9a4e653b125ca5edf968e6d0a88ca9d2af61c7999e77883fb.npz",
+      "artifact_sha256": "1364ba93f86215217cf34623edb00a8711dd7d4c6ff372283b47959b21b76aa0",
+      "epitope_positives": 1,
+      "native_contact_pair_count": 2,
+      "paratope_positives": 2,
+      "provided_contact_pair_count": 2,
+      "source_feature_digest": "8608293c1cec4c8c0581043f390d585c476a32ca25517feb20f30ba2c61e6d1b",
+      "source_feature_path": "complex_features/9ei9_A_D_C.pt",
+      "split_memberships": [
+        "temporal.test"
+      ]
+    }
+  },
+  "adapter_mode": "native_atom14_axis_post_access_v2",
+  "claim_boundary": "Post-access coverage and secondary robustness analysis only; changing the mapping after test access cannot create a new confirmatory result.",
+  "confirmatory_interpretation_permitted": false,
+  "created_at_utc": "2026-07-29T20:48:00.316481+00:00",
+  "dataset_id": "mansoorbaloch/chimera-bench",
+  "exclusion_reason_counts": {
+    "native atom14 contact distances disagree with provided contacts": 3,
+    "native atom14 contacts cannot account for provided annotations": 555
+  },
+  "materialization_manifest_sha256": "a64333508007254c5d301e6e0eecddfd7591fd1e82b8ecf7c209cdb3a5440b12",
+  "metrics_computed": false,
+  "model_scores_read": false,
+  "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+  "post_access_method_change": true,
+  "protocol_sha256": "174dd6231d934a17c0e1093f01aea784b7b1a5f6818f4fc748969327609560d8",
+  "receipt_sha256": "d2fdf0a557bfac3a1f39645c4df8aed5c7eba09ac5691f9589e252dfb47deed3",
+  "schema_version": "chimera_native_axis_coverage_audit_v2",
+  "split_sha256": {
+    "antigen_fold.test": "941973a1b6c887b9dfca31adddd6d678f016f7033f54ae50dd848af7670e645c",
+    "temporal.test": "b5cd009f8ea7f3d1d26f23f416b28a5934dc4824fa763355f5c3bca3b1ba4796"
+  },
+  "splits": {
+    "antigen_fold.test": {
+      "confirmatory_coverage_gate_passed": false,
+      "coverage": 0.003424657534246575,
+      "coverage_gate_passed": false,
+      "eligible": 292,
+      "excluded": 291,
+      "excluded_complexes": [
+        {
+          "complex_id": "8u1p_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8u1p_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5i_F_E_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5i_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1fsk_F_E_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7n0u_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7mxl_J_K_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7mxl_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dfi_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dfg_I_M_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dfh_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6xqw_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jbq_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9fm0_A_C_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6cyf_F_E_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8oxw_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8rmx_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8rmx_E_F_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8qcm_F_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7jr7_E_F_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5nj3_C_D_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7mlh_C_A_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6oy4_D_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vk1_F_E_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7so5_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5vqm_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7so7_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vyn_N_O_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vyn_L_M_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dd6_J_N_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ivx_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2qqk_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ivw_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6hf1_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8aon_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5d96_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5ucb_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5uea_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5eii_A_B_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kur_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c2h_B_C_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c2h_I_J_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7amr_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8tfn_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1nfd_H_G_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4ypg_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4z5r_U_T_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4z5r_Z_Y_X",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6ztr_H_L_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6cxy_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6vel_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dyx_H_L_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dz4_H_L_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ty1_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7k66_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7cj2_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8df1_O_P_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7m3n_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6nn3_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7lj5_E_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pis_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4nzr_H_L_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4nzt_H_L_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nrc_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nrc_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8fym_I_G_J",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8fym_E_D_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1e6j_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1afv_K_M_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zd5_K_L_J",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zd5_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7ce2_Z_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7oh0_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8wej_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8kei_C_E_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7df1_F_J_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8kdi_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5ngv_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7mrz_X_Y_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mqr_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vti_D_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7lr4_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7lr3_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7urx_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6al5_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5h_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5h_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5mhr_I_H_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5mhr_M_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ath_E_F_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ath_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6w7s_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6wh9_B_C_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6vtw_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1kcs_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6vbp_C_D_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2v17_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vdl_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8onk_K_J_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8t03_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5ye3_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8gho_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mlk_J_N_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ukh_K_O_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6mqc_A_B_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8d47_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6snd_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pdr_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6xli_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5v6m_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7u8g_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7kqk_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6f7t_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4oqt_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2ck0_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pbv_D_C_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5fgc_E_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1h0d_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9d41_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5ijk_B_D_Y",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2otu_B_A_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8tmy_C_D_N",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hi6_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8rmo_H_L_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6cdo_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5mu0_K_L_V",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5h35_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6ldx_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9vnp_C_A_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8f5n_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6i9i_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dlf_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4n9g_H_L_Y",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7njz_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6lz4_D_E_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pwn_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1xgy_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8fa9_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5nph_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7t86_H_L_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3uji_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7ucx_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dtr_E_F_J",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4nrx_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7rlx_A_B_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5dmg_E_F_X",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2hh0_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mx1_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4glr_J_K_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dn7_D_H_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dyy_A_B_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pdu_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cr9_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3kr3_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9fkd_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3mly_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1qkz_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pds_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7k75_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8us8_H_L_R",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5dd0_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9z3b_H_G_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6vgr_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c7f_A_B_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6wfy_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6x78_B_A_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6ldy_H_L_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6o26_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5ig7_G_H_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3pnw_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ux6_B_A_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6ncp_C_D_E",
+          "reason": "native atom14 contact distances disagree with provided contacts"
+        },
+        {
+          "complex_id": "7m55_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6mqr_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6p60_J_K_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4ojf_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zxw_A_B_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6x1u_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vgn_A_B_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6bzu_E_F_K",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4jzo_G_H_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2hrp_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7um3_I_M_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ffe_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8shw_C_A_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6o3l_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dgw_E_F_K",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3cxd_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4o4y_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7n08_H_L_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5u3j_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6ukj_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3mlr_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6fy3_X_Y_Z",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1frg_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6cdm_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3sge_J_I_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7vaz_D_C_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5vzy_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3ifn_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7rnj_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8jio_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6r0x_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6m58_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6umx_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2j4w_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4jo3_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7rpu_A_B_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7w71_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4rdq_K_J_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pef_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5fgb_E_B_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7n0x_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6dc8_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2eh8_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2uud_H_L_S",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8xs3_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7eyc_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6obd_H_L_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7u09_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8g2m_H_L_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7q6c_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6pi7_F_E_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mxi_E_F_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7mfr_B_A_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6vry_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6db6_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4n8c_I_M_Y",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3mnz_B_A_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3ghe_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1oaz_J_N_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8og0_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6plh_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8f5i_X_Y_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7rm3_C_D_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3eyf_D_C_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5dsc_E_F_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9j8a_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5vkd_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6vbo_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7nx3_B_C_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6dcw_H_L_T",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6dc9_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7wg3_E_A_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5eoq_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3h0t_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6s3d_E_F_O",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8fas_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2brr_Y_X_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6sf6_A_B_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c7d_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4xmk_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8slb_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4jg1_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6uud_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "1nsn_H_L_S",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9bp1_H_D_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8ag1_h_l_a",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4xvj_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pi9_C_D_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4aei_J_N_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6mqm_J_K_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8fdc_A_B_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3iet_D_C_Q",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2hfg_H_L_R",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6u6u_H_L_R",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6bqb_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5vyf_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "3mj9_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2w65_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9myl_A_B_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6bzy_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4gag_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6cez_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6mqe_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8dgx_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6o24_A_B_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4qww_D_C_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6nyq_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2zuq_F_E_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "7tow_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "4dgy_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9q1l_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5ikc_B_A_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9blx_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jub_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8fb8_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "6mtp_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "5xcs_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8tmz_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "2yc1_D_E_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        }
+      ],
+      "usable": 1
+    },
+    "temporal.test": {
+      "confirmatory_coverage_gate_passed": false,
+      "coverage": 0.006825938566552901,
+      "coverage_gate_passed": false,
+      "eligible": 293,
+      "excluded": 291,
+      "excluded_complexes": [
+        {
+          "complex_id": "9fns_E_F_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9fq3_E_F_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zh7_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9fnt_E_F_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9gu0_F_C_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9r2e_A_B_Q",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c2h_B_C_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ggp_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9quw_D_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c2h_I_J_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9qub_F_E_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9f91_E_F_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mib_O_Q_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mih_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cu5_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ehl_I_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mi0_P_R_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mib_P_R_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9msy_O_Q_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mj3_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9msy_P_R_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mid_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8r4n_H_L_N",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zeu_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zeu_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mic_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mif_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ml5_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9d7i_J_I_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ml9_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ml8_P_Q_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ml6_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ml4_P_Q_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9iut_D_E_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9d7p_J_I_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cmc_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8zpq_H_L_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ghj_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cmc_P_Q_T",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cmc_F_G_J",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9fm0_A_C_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jqv_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c7x_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9l2k_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jqu_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jqp_H_I_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jq6_J_K_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8rex_H_I_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9oas_J_K_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8s73_C_D_N",
+          "reason": "native atom14 contact distances disagree with provided contacts"
+        },
+        {
+          "complex_id": "9oaq_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9oao_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8yry_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9o54_D_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cf7_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9oap_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cf6_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cps_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9oar_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cfa_F_E_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8s6v_A_B_M",
+          "reason": "native atom14 contact distances disagree with provided contacts"
+        },
+        {
+          "complex_id": "9dm7_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9bt5_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dlf_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ccu_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ccs_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kyo_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ccw_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9j8a_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8yvn_E_I_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cfg_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8vtd_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8yvl_J_H_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cct_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jt1_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jt1_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nrc_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nrc_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9rm2_M_N_O",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cr9_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mpw_H_L_S",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mx1_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9fys_I_M_Z",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9uxd_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jik_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mqv_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nab_D_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n0d_E_D_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mew_E_D_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9h6u_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jie_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jij_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jin_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jim_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9njy_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9do2_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mla_G_J_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dn2_J_N_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jd1_B_A_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jcy_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mlk_J_N_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9e21_H_L_S",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9bqw_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9o4q_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9o4n_G_K_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mq8_J_N_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9o4p_F_J_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mqa_I_M_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mq7_I_M_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mqd_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cyh_E_I_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9o4o_F_J_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ejf_O_P_K",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mq9_J_N_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9q8l_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvd_D_F_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvd_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvf_B_A_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9d41_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9irc_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kve_E_G_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mi3_B_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvd_E_G_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kve_D_F_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ml1_S_T_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9irb_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kve_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nph_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ogt_J_M_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9naq_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c1s_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mj1_F_G_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9npi_C_B_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9md6_F_J_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9bx5_H_L_P",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9md3_G_K_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9md4_E_I_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9md5_G_K_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9byf_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9md2_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9b6w_H_I_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jzq_C_D_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jzq_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pdy_D_G_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9uvi_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pwn_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "8s72_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dd6_J_N_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9px5_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hco_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9s8w_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9p97_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9cds_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jmb_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mqr_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9vhz_A_B_Q",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9osr_K_R_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9js7_J_M_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lf8_D_C_S",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lf8_F_E_R",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dst_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9leo_A_B_H",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9leo_C_D_H",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c6y_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9c7s_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dvd_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9i1q_K_G_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5i_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5i_F_E_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5h_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kur_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9k3t_h_l_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5h_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lra_H_L_K",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9k3t_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lrf_H_L_K",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jy1_R_Q_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9bhh_T_S_H",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hh9_E_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ubq_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mkn_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9sfx_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9sfx_B_A_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9sg2_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9sgh_A_B_I",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9eze_E_F_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9k6y_H_L_R",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9uk5_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9omg_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9puo_D_E_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ook_H_L_h",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9bop_E_F_U",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nqz_G_F_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9oom_J_N_f",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9p4c_H_L_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9oog_I_M_d",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9n5z_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kmc_E_F_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hxo_I_M_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9x1h_I_M_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pw4_C_D_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9qt3_N_O_M",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9vca_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kkj_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9me7_I_M_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lue_A_B_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lue_C_D_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lue_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ia3_B_A_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9me5_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lu3_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mr1_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9me7_J_N_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9i59_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mr2_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9i59_X_Y_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9jy2_B_A_e",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9me6_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hi6_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9xgo_H_L_N",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ofo_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9eht_E_D_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pi9_C_D_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pv4_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pv5_H_L_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvk_C_D_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pv5_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvk_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kvk_A_B_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pv3_H_L_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pv3_B_C_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kzz_J_N_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9kze_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9z3q_B_A_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9z3q_D_C_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9l15_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pzv_J_K_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pzx_J_K_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hkq_D_E_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9vx3_D_E_F",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pzv_H_I_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9nww_D_C_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9l1o_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pd2_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9m5b_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9p1m_D_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9p1m_F_E_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9og2_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9py7_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pf9_H_L_G",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9og1_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9og2_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9osx_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9v0n_H_F_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9yka_F_G_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9v0s_G_I_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9uza_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9uzb_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9pru_B_A_W",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9v0q_A_C_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9v0p_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9p8x_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ua5_H_D_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ua5_G_K_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9vdy_H_L_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9xqb_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9ls3_D_E_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9msc_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9gvn_E_F_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mnt_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9l9y_A_B_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mnu_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9hv9_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9msc_A_B_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mnq_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mns_H_L_E",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9e6j_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9uv4_J_N_B",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9z3b_H_G_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lly_F_M_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9q1l_A_B_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9o3d_A_B_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9dzj_G_K_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9j4c_H_L_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lly_J_O_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9mz8_B_A_D",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9loe_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9log_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lp0_D_E_C",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9lof_B_C_A",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        },
+        {
+          "complex_id": "9vnp_C_A_L",
+          "reason": "native atom14 contacts cannot account for provided annotations"
+        }
+      ],
+      "usable": 2
+    }
+  },
+  "unique_eligible_complexes": 561,
+  "unique_excluded_complexes": 558,
+  "unique_usable_complexes": 3
+}

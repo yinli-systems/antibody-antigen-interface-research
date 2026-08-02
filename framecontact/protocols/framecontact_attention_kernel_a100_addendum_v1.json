@@ -1,0 +1,86 @@
+{
+  "schema_version": "framecontact_attention_kernel_a100_addendum_v1",
+  "recorded_on": "2026-08-01",
+  "parent_protocol": "protocols/framecontact_attention_kernel_amendment_v1.json",
+  "scope": "authenticated synthetic A100 correctness, latency, and allocator addendum",
+  "execution": {
+    "host": "ab03",
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "compute_capability": [8, 0],
+    "torch": "2.5.1",
+    "cuda": "12.4",
+    "cudnn": 90100,
+    "container_image": "liyin/sabdab2-geometry-a100-replay:sklearn-1.6.1-872701e1",
+    "container_image_id": "sha256:700902df319a2b2ebb8e455f0402cd435c5928582ea9170ba23c89d79116551c",
+    "container_network": "none",
+    "gpu_index": 0,
+    "package_archive_sha256": "2760235d7cde987d86d5b465641a1ddd054b2fddba9acf55de12f436b5492fc5",
+    "source_manifest_sha256": "50195990a8d1d9eb3ca5a03a433daf7ed51056b627d3a84e1a0695200ad855b9",
+    "source_tree_sha256": "9cbeaa92aaeee0a8207f35c4a59e7cc8ae57788eca97f43fa30aebbb9c5c982c",
+    "runner_sha256": "6cd0e07371373c04059906ee873fed0bee16ab67ab659bb332a6dc1d2eb755e8",
+    "benchmark_receipt": {
+      "path": "receipts/attention-kernel-a100-v3-ab03/BENCHMARK.json",
+      "sha256": "8f853bee439630d2e9784359b0a8869fa9556c4366415334e69ef046c29e9687"
+    },
+    "run_receipt": {
+      "path": "receipts/attention-kernel-a100-v3-ab03/RUN_RECEIPT.json",
+      "sha256": "71a0bde2894afac74d9eacd4b4de6dfa06dacbe701e8eafb1d720167194f9243"
+    }
+  },
+  "correctness": {
+    "fp32_output_max_abs": 7.450580596923828e-7,
+    "fp32_max_gradient_abs": 5.960464477539062e-7,
+    "fp32_tolerance": 5e-5,
+    "bf16_output_max_abs": 0.0078125,
+    "bf16_max_gradient_abs": 0.0078125,
+    "bf16_tolerance": 0.03,
+    "covers": "query, key, value, and arbitrary additive-bias gradients with a nontrivial boolean mask",
+    "passed": true
+  },
+  "full_model_bf16_synthetic": [
+    {
+      "antibody_length": 220,
+      "antigen_length": 128,
+      "pair_count": 28160,
+      "training_median_speedup_sdpa_over_reference": 1.063186994352331,
+      "training_peak_memory_ratio_sdpa_over_reference": 0.939041400898482,
+      "inference_median_speedup_sdpa_over_reference": 1.046116363317518
+    },
+    {
+      "antibody_length": 220,
+      "antigen_length": 512,
+      "pair_count": 112640,
+      "training_median_speedup_sdpa_over_reference": 1.0679002667516415,
+      "training_peak_memory_ratio_sdpa_over_reference": 0.9189414435536241,
+      "inference_median_speedup_sdpa_over_reference": 1.01908331800782
+    },
+    {
+      "antibody_length": 231,
+      "antigen_length": 2363,
+      "pair_count": 545853,
+      "training_median_speedup_sdpa_over_reference": 1.007152332496707,
+      "training_peak_memory_ratio_sdpa_over_reference": 0.9135797509838326,
+      "inference_median_speedup_sdpa_over_reference": 1.0203392491175987
+    }
+  ],
+  "failed_attempt_audit": {
+    "version": "v2",
+    "status": "benchmark_completed_but_receipt_finalization_failed",
+    "failure": "root-owned atomic BENCHMARK.json had mode 0600 and was unreadable by the host account",
+    "remediation": "both verification and benchmark containers now run with the invoking UID and GID; v3 was rerun in a new create-only result directory",
+    "v2_promoted": false
+  },
+  "promotion_boundary": {
+    "a100_kernel_correctness_claim_authorized": true,
+    "a100_shape_specific_latency_and_allocator_claim_authorized": true,
+    "blanket_faster_inference_claim_authorized": false,
+    "training_throughput_claim_authorized": false,
+    "custom_fused_kernel_claim_authorized": false,
+    "model_quality_claim_authorized": false,
+    "frozen_test_claim_authorized": false,
+    "external_generalization_claim_authorized": false,
+    "state_of_the_art_claim_authorized": false,
+    "current_frozen_training_changed": false,
+    "default_kernel_changed": false
+  }
+}

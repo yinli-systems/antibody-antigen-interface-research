@@ -1,0 +1,160 @@
+"""Auditable geometry-aware antibody--antigen modeling components.
+
+The public API is loaded lazily.  In particular, provenance and split-audit
+utilities must remain usable in a minimal CPU environment that does not have
+the training stack (PyTorch) installed.
+"""
+
+from __future__ import annotations
+
+from importlib import import_module
+from typing import Any
+
+
+_EXPORT_MODULES = {
+    "AttentionDiagnosticsAccumulator": "attention_diagnostics",
+    "CrossAttentionDiagnosticsAccumulator": "attention_diagnostics",
+    "BackboneFrames": "intra_chain_geometry",
+    "DualIntraChainGeometryEncoder": "intra_chain_geometry",
+    "GeometryBiasedSelfAttentionBlock": "intra_chain_geometry",
+    "GeometryHeadBias": "intra_chain_geometry",
+    "IntraChainGeometryEncoder": "intra_chain_geometry",
+    "IntraChainRelativeGeometry": "intra_chain_geometry",
+    "InvariantPointHeadBias": "intra_chain_geometry",
+    "apply_sequence_rope": "intra_chain_geometry",
+    "build_backbone_frames": "intra_chain_geometry",
+    "build_intra_chain_relative_geometry": "intra_chain_geometry",
+    "gaussian_rbf": "intra_chain_geometry",
+    "IntraChainResidueClassifier": "sabdab2_structure",
+    "Sabdab2StructureBatchCollator": "sabdab2_structure",
+    "Sabdab2StructureEmbeddingDataset": "sabdab2_structure",
+    "StructureCacheError": "sabdab2_structure",
+    "materialize_structure_cache": "sabdab2_structure",
+    "materialize_structure_cohort_cache": "sabdab2_structure",
+    "Sabdab2ContactBatchCollator": "sabdab2_contacts",
+    "Sabdab2ContactDataset": "sabdab2_contacts",
+    "materialize_contact_cache": "sabdab2_contacts",
+    "Sabdab2PairGeometryBatchCollator": "sabdab2_pair_geometry",
+    "Sabdab2PairGeometryDataset": "sabdab2_pair_geometry",
+    "materialize_pair_geometry_cache": "sabdab2_pair_geometry",
+    "BidirectionalContactGatedCrossAttention": "framecontact",
+    "ContactGatedCrossAttention": "framecontact",
+    "DualFactorizedIntraChainEncoder": "framecontact",
+    "FactorizedIntraChainEncoder": "framecontact",
+    "FrameContactModel": "framecontact",
+    "PairContactHead": "framecontact",
+    "PairDistogramHead": "framecontact",
+    "contact_logit_from_distogram": "framecontact",
+    "inject_pair_contact_prior": "framecontact",
+    "masked_logmeanexp": "framecontact",
+    "masked_length_normalized_noisy_or_logits": "framecontact",
+    "masked_noisy_or_logits": "framecontact",
+    "CalibratedProbabilityEnsemble": "framecontact_ensemble",
+    "build_rewired_neighbor_override": "framecontact_interventions",
+    "corrupt_local_frames": "framecontact_interventions",
+    "degree_matched_graph_rewiring": "framecontact_interventions",
+    "derangement": "framecontact_interventions",
+    "geometry_shuffle": "framecontact_interventions",
+    "independent_monomer_rigid_transform": "framecontact_interventions",
+    "partner_shuffle": "framecontact_interventions",
+    "perturb_coordinates": "framecontact_interventions",
+    "rewire_neighbor_mask": "framecontact_interventions",
+    "StructuralNoveltyError": "structural_novelty",
+    "audit_antigen_structure_split": "structural_novelty",
+    "write_structural_audit": "structural_novelty",
+    "FrameContactLossWeights": "framecontact_objective",
+    "FrameContactObjective": "framecontact_objective",
+    "ValidationTemperatureScaler": "framecontact_objective",
+    "balanced_binary_loss_per_complex": "framecontact_objective",
+    "distogram_bin_centers": "framecontact_objective",
+    "distogram_cross_entropy_per_complex": "framecontact_objective",
+    "expected_distance_from_distogram": "framecontact_objective",
+    "local_edm_realizability_loss": "framecontact_objective",
+    "select_local_antigen_patch": "framecontact_objective",
+    "sparse_triangle_inequality_loss": "framecontact_objective",
+    "top_fraction_contact_score": "framecontact_objective",
+    "PPLM_ATTENTION_REDUCTION": "paired_sequence_features",
+    "PPLMPairedConditioner": "paired_sequence_features",
+    "PPLMPairFeatureStore": "paired_sequence_features",
+    "load_pplm_pair_feature_artifact": "paired_sequence_features",
+    "paired_feature_cache_key": "paired_sequence_features",
+    "reduce_pplm_inter_attention": "paired_sequence_features",
+    "validate_paired_sequence_tensors": "paired_sequence_features",
+    "binary_classification_metrics": "framecontact_metrics",
+    "bootstrap_cluster_weighted_margin": "framecontact_metrics",
+    "bootstrap_group_weighted_values": "framecontact_metrics",
+    "expected_calibration_error": "framecontact_metrics",
+    "logistic_calibration_regression": "framecontact_metrics",
+    "partner_retrieval_metrics": "framecontact_metrics",
+    "positive_required_average_precision": "framecontact_metrics",
+    "ranked_pair_metrics": "framecontact_metrics",
+    "PartnerPanelError": "partner_panel",
+    "build_partner_panel": "partner_panel",
+    "RECIPROCAL_PARTNER_PANEL_FORMAT": "reciprocal_partner_panel",
+    "ReciprocalPartnerPanelError": "reciprocal_partner_panel",
+    "build_reciprocal_partner_panel": "reciprocal_partner_panel",
+    "LABEL_FREE_SAME_ANTIGEN_CHALLENGE_FORMAT": "same_antigen_challenge",
+    "aggregate_same_antigen_pair_metrics": "same_antigen_challenge",
+    "bootstrap_same_antigen_group_metrics": "same_antigen_challenge",
+    "build_label_free_same_antigen_challenge_entries": "same_antigen_challenge",
+    "score_same_antigen_pair": "same_antigen_challenge",
+    "authenticate_sabdab2_development_selection": "sabdab2_frozen_test",
+    "authenticate_sabdab2_test_opening": "sabdab2_frozen_test",
+    "consume_sabdab2_score_once": "sabdab2_frozen_test",
+    "sabdab2_evaluation_source_hashes": "sabdab2_frozen_test",
+    "bind_partner_metadata_to_split": "sabdab2_partner_metadata",
+    "materialize_partner_metadata_base": "sabdab2_partner_metadata",
+    "ChimeraExternalError": "chimera_external",
+    "adapt_chimera_complex": "chimera_external",
+    "load_chimera_feature_archive": "chimera_external",
+    "load_chimera_split": "chimera_external",
+    "verify_chimera_frozen_authority": "chimera_external",
+    "parse_usalign_tm_scores": "usalign_boundary",
+    "run_usalign_boundary_spot_checks": "usalign_boundary",
+    "build_split_panel_matrix": "panel_matrix",
+    "materialize_asep_authority": "asep_authority",
+    "load_asep_dataset_lock": "asep_authority",
+    "audit_asep_inner_archives": "asep_authority",
+    "materialize_asep_split_manifests": "asep_authority",
+    "AsepExternalError": "asep_external",
+    "AsepDevelopmentDataset": "asep_external",
+    "adapt_asep_structure_bytes": "asep_external",
+    "extract_asep_antigen_pdb_bytes": "asep_external",
+    "extract_asep_label_free_structure_metadata": "asep_external",
+    "audit_asep_development_graphs": "asep_external",
+    "audit_asep_development_structures": "asep_external",
+    "load_asep_graph_bytes": "asep_external",
+    "materialize_asep_development_cache": "asep_external",
+    "materialize_asep_partner_metadata": "asep_external",
+    "normalize_asep_graph": "asep_external",
+    "authenticate_asep_development_selection": "asep_frozen_test",
+    "asep_evaluation_source_hashes": "asep_frozen_test",
+    "materialize_asep_label_free_test_metadata": "asep_frozen_test",
+    "AsepFrozenTestDataset": "asep_frozen_test",
+    "materialize_asep_frozen_test_cache": "asep_frozen_test",
+    "AsepDecontaminationError": "asep_decontamination",
+    "audit_asep_sabdab2_decontamination": "asep_decontamination",
+    "prepare_asep_sabdab2_cross_foldseek": "asep_cross_foldseek",
+    "finalize_asep_sabdab2_cross_foldseek": "asep_cross_foldseek",
+    "build_asep_label_free_test_partner_panel": "asep_test_partner_panel",
+    "DualOfficialBoltzPairformerMonomerEncoder": "boltz_pairformer_adapter",
+    "OfficialBoltzPairformerAdapter": "boltz_pairformer_adapter",
+    "OfficialBoltzPairformerMonomerEncoder": "boltz_pairformer_adapter",
+    "AdaptedBoltzPairformerContactModel": "pairformer_framecontact",
+}
+
+__all__ = sorted(_EXPORT_MODULES)
+
+
+def __getattr__(name: str) -> Any:
+    """Import one public symbol on first access."""
+    module_name = _EXPORT_MODULES.get(name)
+    if module_name is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    value = getattr(import_module(f".{module_name}", __name__), name)
+    globals()[name] = value
+    return value
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | set(__all__))
