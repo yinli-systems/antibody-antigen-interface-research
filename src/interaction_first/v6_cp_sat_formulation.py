@@ -608,6 +608,7 @@ class _DirectBuilder:
         self.model = cp_model.CpModel()
         self.variables: dict[VariableKey, object] = {}
         self.constraint_family_counts: dict[str, int] = {}
+        self.constraint_families: list[str] = []
 
     def variable(self, *parts: object) -> object:
         key = tuple(str(part) for part in parts)
@@ -618,7 +619,15 @@ class _DirectBuilder:
         return self.variables[key]
 
     def add(self, expression: object, family: str) -> None:
+        family = _identifier(family, "constraint family")
+        before = len(self.model.Proto().constraints)
         self.model.add(expression)
+        after = len(self.model.Proto().constraints)
+        if after != before + 1:
+            raise DirectCPSatError(
+                "one builder.add call must create exactly one CP-SAT constraint"
+            )
+        self.constraint_families.append(family)
         self.constraint_family_counts[family] = (
             self.constraint_family_counts.get(family, 0) + 1
         )
@@ -652,6 +661,7 @@ class DirectCPModel:
     variables: Mapping[VariableKey, object]
     authority_payload_sha256: str
     constraint_family_counts: tuple[tuple[str, int], ...]
+    constraint_families: tuple[str, ...]
     formulation_sha256: str
 
 
@@ -1134,6 +1144,9 @@ def build_independent_cp_sat_formulation(
         "authority_payload_sha256": problem.authority_payload_sha256,
         "variable_keys": [list(key) for key in variable_keys],
         "constraint_family_counts": dict(sorted(builder.constraint_family_counts.items())),
+        "constraint_family_sequence_sha256": _sha256(
+            builder.constraint_families
+        ),
         "cp_model_proto_sha256": hashlib.sha256(model_bytes).hexdigest(),
         "ortools_version": ortools.__version__,
         "implementation_source_sha256": implementation_source_sha256(),
@@ -1145,6 +1158,7 @@ def build_independent_cp_sat_formulation(
         variables=dict(builder.variables),
         authority_payload_sha256=problem.authority_payload_sha256,
         constraint_family_counts=tuple(sorted(builder.constraint_family_counts.items())),
+        constraint_families=tuple(builder.constraint_families),
         formulation_sha256=_sha256(formulation_payload),
     )
 

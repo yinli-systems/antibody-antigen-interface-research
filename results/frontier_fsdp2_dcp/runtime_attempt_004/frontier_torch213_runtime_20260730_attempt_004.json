@@ -1,0 +1,1013 @@
+{
+  "claim_boundary": {
+    "attests": "The recorded software metadata and file hashes describe the runtime state visible to this interpreter at collection time.",
+    "data_access": "The generator does not read model artifacts, training data, validation data, held-out data, or test data.",
+    "does_not_attest": "This manifest does not establish hardware equivalence, deterministic training, scientific validity, benchmark comparability, biological performance, or state-of-the-art performance."
+  },
+  "collection_context": {
+    "collected_at_utc": "2026-07-29T20:59:32Z",
+    "host": "wqd10nah10g2"
+  },
+  "generator": {
+    "name": "generate_runtime_manifest.py",
+    "source": {
+      "is_symlink": false,
+      "mode": "0444",
+      "path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_dcp_source_2d69f3fc7b10/scripts/generate_runtime_manifest.py",
+      "resolved_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_dcp_source_2d69f3fc7b10/scripts/generate_runtime_manifest.py",
+      "role": "manifest_generator",
+      "sha256": "4f488dcadcf543d87ab97c1019af2cd5e81e76ca1a18119573120078eea3a26d",
+      "size_bytes": 40589,
+      "symlink_target": null
+    },
+    "version": "1.0.0"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON; sort_keys=true; separators=(',', ':')",
+    "content_sha256": "d1ee08f64a689a17dafdd8be31d63214b6b3862e757feb2d348c424ea678596f",
+    "runtime_state_sha256": "15ce269e21349b539fe82eb65d8840fe6f7d4995e55915a92811c7443cbcb821"
+  },
+  "runtime_state": {
+    "environment": {
+      "executable_lexically_within_root": true,
+      "include_system_site_packages": false,
+      "outside_distribution_locations": [],
+      "prefix_matches_root": true,
+      "python_no_user_site": true,
+      "pyvenv_cfg": {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/pyvenv.cfg",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/pyvenv.cfg",
+        "role": "pyvenv_cfg",
+        "sha256": "ea91bbb3eefed2565a948518809915086925da285f4d24f4b12e4ad74c9e9e42",
+        "size_bytes": 106,
+        "symlink_target": null
+      },
+      "pyvenv_values": {
+        "home": "/ssd/scxi253/model_deployment/envs/mipe/bin",
+        "include_system_site_packages": "false",
+        "version": "3.10.20"
+      },
+      "root": "/ssd/scxi253/model_deployment/envs/frontier_torch213",
+      "scope_classification": "isolated_virtual_environment",
+      "sys_base_prefix": "/ssd/scxi253/model_deployment/envs/mipe",
+      "sys_prefix": "/ssd/scxi253/model_deployment/envs/frontier_torch213",
+      "user_site_enabled": false
+    },
+    "frameworks": {
+      "pytorch": {
+        "available": true,
+        "build_configuration": "PyTorch built with:\n  - GCC 13.3\n  - C++ Version: 202002\n  - Intel(R) oneAPI Math Kernel Library Version 2024.2-Product Build 20240605 for Intel(R) 64 architecture applications\n  - Intel(R) MKL-DNN v3.12.0 (Git Hash 80afa71049cd69a3df32adcccb623b12cd7baa22)\n  - OpenMP 201511 (a.k.a. OpenMP 4.5)\n  - LAPACK is enabled (usually provided by MKL)\n  - NNPACK is enabled\n  - CPU capability usage: AVX512\n  - CUDA Runtime 13.0\n  - NVCC architecture flags: -gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_90,code=sm_90;-gencode;arch=compute_100,code=sm_100;-gencode;arch=compute_120,code=sm_120\n  - CuDNN 92.0  (built against CUDA 13.2)\n  - Magma 2.6.1\n  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, COMMIT_SHA=cf30153c4c131c8164ee7798e5022d810682e2cb, CUDA_FLAGS= -DLIBCUDACXX_ENABLE_SIMPLIFIED_COMPLEX_OPERATIONS -Xfatbin -compress-all -DONNX_NAMESPACE=onnx_torch -gencode arch=compute_75,code=sm_75 -gencode arch=compute_80,code=sm_80 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_90,code=sm_90 -gencode arch=compute_100,code=sm_100 -gencode arch=compute_120,code=sm_120 -Xcudafe --diag_suppress=cc_clobber_ignored,--diag_suppress=field_without_dll_interface,--diag_suppress=base_class_has_different_dll_interface,--diag_suppress=dll_interface_conflict_none_assumed,--diag_suppress=dll_interface_conflict_dllexport_assumed,--diag_suppress=bad_friend_decl --expt-relaxed-constexpr --expt-extended-lambda -Xfatbin -compress-all --threads 2 -compress-mode=size -Wno-deprecated-gpu-targets --expt-extended-lambda -DCUB_WRAPPED_NAMESPACE=at_cuda_detail -DDISABLE_CUSPARSE_DEPRECATED -DCUDA_HAS_FP16=1 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -DC10_NODEPRECATED, CUDA_VERSION=13.0, CUDNN_VERSION=9.20.0, CXX_COMPILER=/opt/rh/gcc-toolset-13/root/usr/bin/c++, CXX_FLAGS= -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DHAS_CUPTI -DUSE_FBGEMM -DUSE_MSLK -DUSE_PYTORCH_QNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -DC10_NODEPRECATED -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=range-loop-construct -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-unknown-pragmas -Wno-unused-parameter -Wno-strict-overflow -Wno-strict-aliasing -Wno-stringop-overflow -Wsuggest-override -Wno-psabi -Wno-error=old-style-cast -faligned-new -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-dangling-reference -Wno-error=dangling-reference -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, TORCH_VERSION=2.13.0, USE_CUDA=1, USE_CUDNN=ON, USE_CUSPARSELT=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_GLOO=ON, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, USE_ROCM_KERNEL_ASSERT=OFF, USE_XCCL=OFF, USE_XPU=OFF, \n",
+        "cuda": {
+          "build_version": "13.0",
+          "compiled_version_integer": 13000
+        },
+        "cudnn": {
+          "version_integer": 92000
+        },
+        "cxx11_abi": true,
+        "debug_build": false,
+        "git_version": "cf30153c4c131c8164ee7798e5022d810682e2cb",
+        "module": {
+          "is_symlink": false,
+          "mode": "0444",
+          "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/__init__.py",
+          "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/__init__.py",
+          "role": "pytorch_module",
+          "sha256": "cf40c075c95864036e835795756d69b8cccfafa76f3bcde5eba9d06065ccd3d1",
+          "size_bytes": 111841,
+          "symlink_target": null
+        },
+        "native_extension": {
+          "is_symlink": false,
+          "mode": "0555",
+          "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/_C.cpython-310-x86_64-linux-gnu.so",
+          "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/_C.cpython-310-x86_64-linux-gnu.so",
+          "role": "pytorch_native_extension",
+          "sha256": "819a187ea3b1f4d781200fe73fba3264689835d2285f7e6d10b986257a802dce",
+          "size_bytes": 16993,
+          "symlink_target": null
+        },
+        "nccl": {
+          "version_components": [
+            2,
+            29,
+            7
+          ]
+        },
+        "version": "2.13.0+cu130"
+      }
+    },
+    "installed_distributions": [
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_bindings-13.3.1.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_bindings-13.3.1.dist-info/RECORD",
+            "role": "distribution:cuda-bindings:RECORD",
+            "sha256": "f70e2542d9d3d9977cea13c42d11b894f3a5bff1ff7954acb4ccbb76a7907217",
+            "size_bytes": 10473,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_bindings-13.3.1.dist-info",
+        "name": "cuda-bindings",
+        "normalized_name": "cuda-bindings",
+        "version": "13.3.1"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_pathfinder-1.6.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_pathfinder-1.6.0.dist-info/RECORD",
+            "role": "distribution:cuda-pathfinder:RECORD",
+            "sha256": "cf0c92be91859fe66b05505070c88e844a38d2d18257a6bf5fda50054be86f23",
+            "size_bytes": 6194,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_pathfinder-1.6.0.dist-info",
+        "name": "cuda-pathfinder",
+        "normalized_name": "cuda-pathfinder",
+        "version": "1.6.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_toolkit-13.0.3.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_toolkit-13.0.3.0.dist-info/RECORD",
+            "role": "distribution:cuda-toolkit:RECORD",
+            "sha256": "be82975316765be12c731f65c0771d402a7a4883988d1a5f459b16c0aab5c477",
+            "size_bytes": 331,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/cuda_toolkit-13.0.3.0.dist-info",
+        "name": "cuda-toolkit",
+        "normalized_name": "cuda-toolkit",
+        "version": "13.0.3.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/filelock-3.29.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/filelock-3.29.0.dist-info/RECORD",
+            "role": "distribution:filelock:RECORD",
+            "sha256": "c4d818b331d03eacd12f42f11da12576ef6e71b309bfbbccdfbb3af811072269",
+            "size_bytes": 2380,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/filelock-3.29.0.dist-info",
+        "name": "filelock",
+        "normalized_name": "filelock",
+        "version": "3.29.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/fsspec-2026.4.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/fsspec-2026.4.0.dist-info/RECORD",
+            "role": "distribution:fsspec:RECORD",
+            "sha256": "b6fe2fe0543dd1142c3272acfbc53076752c7df721837a74d4c2137d849bcfc2",
+            "size_bytes": 8419,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/fsspec-2026.4.0.dist-info",
+        "name": "fsspec",
+        "normalized_name": "fsspec",
+        "version": "2026.4.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/jinja2-3.1.6.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/jinja2-3.1.6.dist-info/RECORD",
+            "role": "distribution:jinja2:RECORD",
+            "sha256": "ebc4b8e8e5dd080f0947ea69c6e6183727268101e36df935f38bf37626e17128",
+            "size_bytes": 3706,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/jinja2-3.1.6.dist-info",
+        "name": "Jinja2",
+        "normalized_name": "jinja2",
+        "version": "3.1.6"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/markupsafe-3.0.3.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/markupsafe-3.0.3.dist-info/RECORD",
+            "role": "distribution:markupsafe:RECORD",
+            "sha256": "4b73c2b62907834e396cb0cdbb5c49a0b4055870058912d901cab7942af42980",
+            "size_bytes": 1207,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/markupsafe-3.0.3.dist-info",
+        "name": "MarkupSafe",
+        "normalized_name": "markupsafe",
+        "version": "3.0.3"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/mpmath-1.3.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/mpmath-1.3.0.dist-info/RECORD",
+            "role": "distribution:mpmath:RECORD",
+            "sha256": "6addc39d2c326e3206d58794e896fc0b2f549e5a6fa4bd3aa7d096611ff584ae",
+            "size_bytes": 12773,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/mpmath-1.3.0.dist-info",
+        "name": "mpmath",
+        "normalized_name": "mpmath",
+        "version": "1.3.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/networkx-3.4.2.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/networkx-3.4.2.dist-info/RECORD",
+            "role": "distribution:networkx:RECORD",
+            "sha256": "6003a78ba33b75717f8fd2faa7050497b264999d230b3e065e0221fff306b59e",
+            "size_bytes": 99355,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/networkx-3.4.2.dist-info",
+        "name": "networkx",
+        "normalized_name": "networkx",
+        "version": "3.4.2"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/numpy-1.26.4.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/numpy-1.26.4.dist-info/RECORD",
+            "role": "distribution:numpy:RECORD",
+            "sha256": "21fe33c6cc1e791912f37637900cb66509f78c266fe767ee2d49ccf36a2e54e8",
+            "size_bytes": 115444,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/numpy-1.26.4.dist-info",
+        "name": "numpy",
+        "normalized_name": "numpy",
+        "version": "1.26.4"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cublas-13.1.1.3.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cublas-13.1.1.3.dist-info/RECORD",
+            "role": "distribution:nvidia-cublas:RECORD",
+            "sha256": "b77d18a6a9a739817310a2a8ba310d2d9015ae2fdf2012506ed8ed4da8e95e8d",
+            "size_bytes": 1362,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cublas-13.1.1.3.dist-info",
+        "name": "nvidia-cublas",
+        "normalized_name": "nvidia-cublas",
+        "version": "13.1.1.3"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_cupti-13.0.85.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_cupti-13.0.85.dist-info/RECORD",
+            "role": "distribution:nvidia-cuda-cupti:RECORD",
+            "sha256": "cd0e5fd6b1482324c32a2f1bec026a7476b7fdd5945d74f7c38a5ffa481c071a",
+            "size_bytes": 4677,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_cupti-13.0.85.dist-info",
+        "name": "nvidia-cuda-cupti",
+        "normalized_name": "nvidia-cuda-cupti",
+        "version": "13.0.85"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_nvrtc-13.0.88.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_nvrtc-13.0.88.dist-info/RECORD",
+            "role": "distribution:nvidia-cuda-nvrtc:RECORD",
+            "sha256": "feb5e212257b3aac517943060c250545f535301d7fa3c191bcbb36ba04744b80",
+            "size_bytes": 1049,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_nvrtc-13.0.88.dist-info",
+        "name": "nvidia-cuda-nvrtc",
+        "normalized_name": "nvidia-cuda-nvrtc",
+        "version": "13.0.88"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_runtime-13.0.96.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_runtime-13.0.96.dist-info/RECORD",
+            "role": "distribution:nvidia-cuda-runtime:RECORD",
+            "sha256": "443de57800e9c58620fc37b70fc391bbd5ee3c9fb612d453fbbd5aa4635d7a79",
+            "size_bytes": 9898,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cuda_runtime-13.0.96.dist-info",
+        "name": "nvidia-cuda-runtime",
+        "normalized_name": "nvidia-cuda-runtime",
+        "version": "13.0.96"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cudnn_cu13-9.20.0.48.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cudnn_cu13-9.20.0.48.dist-info/RECORD",
+            "role": "distribution:nvidia-cudnn-cu13:RECORD",
+            "sha256": "5def090f7ea54f95e411212231c8041f0b69958d9cb555b58dcc3ad9a6313dd6",
+            "size_bytes": 2685,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cudnn_cu13-9.20.0.48.dist-info",
+        "name": "nvidia-cudnn-cu13",
+        "normalized_name": "nvidia-cudnn-cu13",
+        "version": "9.20.0.48"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cufft-12.0.0.61.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cufft-12.0.0.61.dist-info/RECORD",
+            "role": "distribution:nvidia-cufft:RECORD",
+            "sha256": "b6fdf1b8f8b6efe03c9751b9ab807d9d31c8929c481be08cddcc3a6c2a9cd5c1",
+            "size_bytes": 1081,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cufft-12.0.0.61.dist-info",
+        "name": "nvidia-cufft",
+        "normalized_name": "nvidia-cufft",
+        "version": "12.0.0.61"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cufile-1.15.1.6.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cufile-1.15.1.6.dist-info/RECORD",
+            "role": "distribution:nvidia-cufile:RECORD",
+            "sha256": "169df085952dcba197c3f7893244b063cbd75f3cee5b9a2988d273f0eff87a54",
+            "size_bytes": 819,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cufile-1.15.1.6.dist-info",
+        "name": "nvidia-cufile",
+        "normalized_name": "nvidia-cufile",
+        "version": "1.15.1.6"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_curand-10.4.0.35.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_curand-10.4.0.35.dist-info/RECORD",
+            "role": "distribution:nvidia-curand:RECORD",
+            "sha256": "e43492a8980bf4ea0a405a5abc6eccad605630479441674de42dcf000fece5b1",
+            "size_bytes": 2286,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_curand-10.4.0.35.dist-info",
+        "name": "nvidia-curand",
+        "normalized_name": "nvidia-curand",
+        "version": "10.4.0.35"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusolver-12.0.4.66.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusolver-12.0.4.66.dist-info/RECORD",
+            "role": "distribution:nvidia-cusolver:RECORD",
+            "sha256": "7b7c32d787a853ebbe2e854db340780cda70b01515dd584067c30d58f775c4c1",
+            "size_bytes": 1327,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusolver-12.0.4.66.dist-info",
+        "name": "nvidia-cusolver",
+        "normalized_name": "nvidia-cusolver",
+        "version": "12.0.4.66"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusparse-12.6.3.3.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusparse-12.6.3.3.dist-info/RECORD",
+            "role": "distribution:nvidia-cusparse:RECORD",
+            "sha256": "905ef4711e5b313ab35c4c32d1611ac2296622ca891f943dabd995757080bb78",
+            "size_bytes": 836,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusparse-12.6.3.3.dist-info",
+        "name": "nvidia-cusparse",
+        "normalized_name": "nvidia-cusparse",
+        "version": "12.6.3.3"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusparselt_cu13-0.8.1.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusparselt_cu13-0.8.1.dist-info/RECORD",
+            "role": "distribution:nvidia-cusparselt-cu13:RECORD",
+            "sha256": "018aaeffbbdc374a4a5d0227ba11692c4ee1a0444444d841e6f89c991bfbdeb3",
+            "size_bytes": 755,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_cusparselt_cu13-0.8.1.dist-info",
+        "name": "nvidia-cusparselt-cu13",
+        "normalized_name": "nvidia-cusparselt-cu13",
+        "version": "0.8.1"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nccl_cu13-2.29.7.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nccl_cu13-2.29.7.dist-info/RECORD",
+            "role": "distribution:nvidia-nccl-cu13:RECORD",
+            "sha256": "453a21840563dd834b02963b6740d73f06b4283bb3bdde324f3fc0ff9fe4cb58",
+            "size_bytes": 6471,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nccl_cu13-2.29.7.dist-info",
+        "name": "nvidia-nccl-cu13",
+        "normalized_name": "nvidia-nccl-cu13",
+        "version": "2.29.7"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvjitlink-13.3.33.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvjitlink-13.3.33.dist-info/RECORD",
+            "role": "distribution:nvidia-nvjitlink:RECORD",
+            "sha256": "b781695bf9f04753a5f0846b24f60a8ec8d244c2ca1b8bdd81d859804658a6c7",
+            "size_bytes": 745,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvjitlink-13.3.33.dist-info",
+        "name": "nvidia-nvjitlink",
+        "normalized_name": "nvidia-nvjitlink",
+        "version": "13.3.33"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvshmem_cu13-3.4.5.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvshmem_cu13-3.4.5.dist-info/RECORD",
+            "role": "distribution:nvidia-nvshmem-cu13:RECORD",
+            "sha256": "b997d9bbc91176e3141888d0741dbf38ed9a821b85e934dc9078cd047966f378",
+            "size_bytes": 7173,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvshmem_cu13-3.4.5.dist-info",
+        "name": "nvidia-nvshmem-cu13",
+        "normalized_name": "nvidia-nvshmem-cu13",
+        "version": "3.4.5"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvtx-13.0.85.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvtx-13.0.85.dist-info/RECORD",
+            "role": "distribution:nvidia-nvtx:RECORD",
+            "sha256": "ff1c34d50e539649776e5a7a6711b833c998dc6022d8bb4d4e466f6eba995d70",
+            "size_bytes": 4445,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia_nvtx-13.0.85.dist-info",
+        "name": "nvidia-nvtx",
+        "normalized_name": "nvidia-nvtx",
+        "version": "13.0.85"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/pip-23.0.1.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/pip-23.0.1.dist-info/RECORD",
+            "role": "distribution:pip:RECORD",
+            "sha256": "62422356462fbe389ffb26c808fe98c4aadc34028162db82a4b9888541faa3d7",
+            "size_bytes": 77163,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/pip-23.0.1.dist-info",
+        "name": "pip",
+        "normalized_name": "pip",
+        "version": "23.0.1"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/setuptools-79.0.1.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/setuptools-79.0.1.dist-info/RECORD",
+            "role": "distribution:setuptools:RECORD",
+            "sha256": "54249305756563a063cea1402177f7dd95f9d5a589a379effa5b801c35a87321",
+            "size_bytes": 75738,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/setuptools-79.0.1.dist-info",
+        "name": "setuptools",
+        "normalized_name": "setuptools",
+        "version": "79.0.1"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/sympy-1.14.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/sympy-1.14.0.dist-info/RECORD",
+            "role": "distribution:sympy:RECORD",
+            "sha256": "bfb8a9c41181b86c065fe5efd13f360beb94c62ce0fa092632aa2add8dece4c8",
+            "size_bytes": 245673,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/sympy-1.14.0.dist-info",
+        "name": "sympy",
+        "normalized_name": "sympy",
+        "version": "1.14.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch-2.13.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch-2.13.0.dist-info/RECORD",
+            "role": "distribution:torch:RECORD",
+            "sha256": "4e074b9be9955fa85cf5b8bcb4bee20665ad321d20cda6c25a34fef74e00ab36",
+            "size_bytes": 1455627,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch-2.13.0.dist-info",
+        "name": "torch",
+        "normalized_name": "torch",
+        "version": "2.13.0"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/triton-3.7.1.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/triton-3.7.1.dist-info/RECORD",
+            "role": "distribution:triton:RECORD",
+            "sha256": "b6548dcb70f6470f57820dbe366a193eb104c033d1d2e7ec7435151afbdd747c",
+            "size_bytes": 44996,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/triton-3.7.1.dist-info",
+        "name": "triton",
+        "normalized_name": "triton",
+        "version": "3.7.1"
+      },
+      {
+        "evidence": {
+          "direct_url": null,
+          "record": {
+            "is_symlink": false,
+            "mode": "0444",
+            "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/typing_extensions-4.15.0.dist-info/RECORD",
+            "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/typing_extensions-4.15.0.dist-info/RECORD",
+            "role": "distribution:typing-extensions:RECORD",
+            "sha256": "5e21080a5e74590acd62ba8bb2f90a43d4f27c60f108c8ef2550e476dff4bcf6",
+            "size_bytes": 679,
+            "symlink_target": null
+          }
+        },
+        "location": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages",
+        "metadata_directory": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/typing_extensions-4.15.0.dist-info",
+        "name": "typing_extensions",
+        "normalized_name": "typing-extensions",
+        "version": "4.15.0"
+      }
+    ],
+    "package_health": {
+      "pip_check": {
+        "command": [
+          "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python",
+          "-m",
+          "pip",
+          "check"
+        ],
+        "exit_code": 0,
+        "ok": true,
+        "stderr": "",
+        "stdout": "No broken requirements found.",
+        "timeout_seconds": 120
+      }
+    },
+    "platform": {
+      "architecture": {
+        "bits": "64bit",
+        "linkage": "ELF"
+      },
+      "libc": {
+        "name": "glibc",
+        "version": "2.35"
+      },
+      "machine": "x86_64",
+      "processor": "x86_64",
+      "release": "5.15.0-119-generic",
+      "system": "Linux",
+      "version": "#129-Ubuntu SMP Fri Aug 2 19:25:20 UTC 2024"
+    },
+    "python": {
+      "abi": {
+        "abiflags": "",
+        "platform": "linux-x86_64",
+        "soabi": "cpython-310-x86_64-linux-gnu"
+      },
+      "build": [
+        "main",
+        "Jun 11 2026 03:31:56"
+      ],
+      "cache_tag": "cpython-310",
+      "compiler": "GCC 14.3.0",
+      "executable": {
+        "is_symlink": true,
+        "mode": "0777",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/mipe/bin/python3.10",
+        "role": "python_interpreter",
+        "sha256": "9ccc0a9b1f9cdd3343d79a1700eb82fb7b056c45e4c6a15fc867ff5ff4cb91ac",
+        "size_bytes": 17331920,
+        "symlink_target": "/ssd/scxi253/model_deployment/envs/mipe/bin/python"
+      },
+      "hexversion": 50992368,
+      "implementation": "CPython",
+      "implementation_version": "3.10.20",
+      "version": "3.10.20",
+      "version_info": [
+        3,
+        10,
+        20,
+        "final",
+        0
+      ]
+    },
+    "shared_libraries": [
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "b88025af76979b3f1af208790195093684fe01cb8d190528856058f988016660",
+        "size_bytes": 129240,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_adv.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_adv.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "7702094a50dbea5b8244df01af8e9d3565309d3996bbc8ca96b6c7a207d2d6bd",
+        "size_bytes": 109169104,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_cnn.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_cnn.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "e830c5cba875ebeb8ed3cfde5cc038a2703692ce714a8a4ff28666ac8e2c5732",
+        "size_bytes": 4203904,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_engines_precompiled.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_engines_precompiled.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "e5133109f710c215d72fdc8f1d9be187f4760f5f32e57cc8c57515ea9e91455e",
+        "size_bytes": 245391920,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_engines_runtime_compiled.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_engines_runtime_compiled.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "28db2a6f433a184e264d927b183c47ecaf72dc65ed58245a6d2380f980e29cd3",
+        "size_bytes": 29386664,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_graph.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_graph.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "35c099d318433a88d292775676a51a07d2dd152c3ae799b1c21a75b40f78e456",
+        "size_bytes": 4460192,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_heuristic.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_heuristic.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "a41eb9baa9ccc9e2d6c9f2ca226021b54c8ee2df4abf3a91e41687847b481228",
+        "size_bytes": 60822040,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_ops.so.9",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/cudnn/lib/libcudnn_ops.so.9",
+        "role": "cudnn_shared_library",
+        "sha256": "705d3dcf9b209fdbeeecd8aaec5fcd0f6f55de5661e1c1388b5a4b8fd29db7c3",
+        "size_bytes": 39855888,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0444",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/nccl/lib/libnccl.so.2",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/nvidia/nccl/lib/libnccl.so.2",
+        "role": "nccl_shared_library",
+        "sha256": "aa957cdfb91b516eae0d54a28e9ee5db52730d02e0ab45580efc3c19a68327a4",
+        "size_bytes": 236524880,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/_C.cpython-310-x86_64-linux-gnu.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/_C.cpython-310-x86_64-linux-gnu.so",
+        "role": "pytorch_native_extension",
+        "sha256": "819a187ea3b1f4d781200fe73fba3264689835d2285f7e6d10b986257a802dce",
+        "size_bytes": 16993,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libc10.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libc10.so",
+        "role": "pytorch_shared_library",
+        "sha256": "b83ea50e9171c7e3455c19f9ff2c7d21d457a7b8231e9c4ea1b6e032ae1156d5",
+        "size_bytes": 1623185,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libc10_cuda.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libc10_cuda.so",
+        "role": "pytorch_shared_library",
+        "sha256": "54da13d79545600a1822a72b179a58295c1915f8ea0194a89066437c3ac48c1a",
+        "size_bytes": 634081,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libcaffe2_nvrtc.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libcaffe2_nvrtc.so",
+        "role": "pytorch_shared_library",
+        "sha256": "359285ffd0b1a9509e537a66f68be20317b3c3bcebfcfcd9bd2c030b65cb40fd",
+        "size_bytes": 22737,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libgomp.so.1",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libgomp.so.1",
+        "role": "pytorch_shared_library",
+        "sha256": "e28fb2896a3d612b46a27d7f8ef840d34c9efbc29b70a044c42095fb94856890",
+        "size_bytes": 254009,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libshm.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libshm.so",
+        "role": "pytorch_shared_library",
+        "sha256": "f16b69a620993c61f2471857fbba27d6343ce282c632e5743633f8b3e6d70ed0",
+        "size_bytes": 57065,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch.so",
+        "role": "pytorch_shared_library",
+        "sha256": "29c72a63050601514ff9af6399bb027ee8b4030b97017579458d16ceac90d999",
+        "size_bytes": 89185,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_cpu.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_cpu.so",
+        "role": "pytorch_shared_library",
+        "sha256": "657a070fac708beaedb2dd95fefc9db454c8e82e3e41894cdb4711227348d830",
+        "size_bytes": 438418417,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so",
+        "role": "pytorch_shared_library",
+        "sha256": "181dfc4fe86bf8eb4726604ea13b18581b15cf4d5f6e52f538daa41016edc19a",
+        "size_bytes": 469850385,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_cuda_linalg.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_cuda_linalg.so",
+        "role": "pytorch_shared_library",
+        "sha256": "83a9ea9e7c8f82029eb1328e6e68ec45e578864ae0c4c2a3d235e64b07175fe2",
+        "size_bytes": 43936785,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_global_deps.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_global_deps.so",
+        "role": "pytorch_shared_library",
+        "sha256": "22e580920a618c7c45e2aae16752f0bdfb23ae9a31150ae8f4066bbe8020e104",
+        "size_bytes": 17017,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_nvshmem.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_nvshmem.so",
+        "role": "pytorch_shared_library",
+        "sha256": "badf5e3f9fbb9f7b13e198318ffb6ff019808aacf46488ec09843f90a310541a",
+        "size_bytes": 4007569,
+        "symlink_target": null
+      },
+      {
+        "is_symlink": false,
+        "mode": "0555",
+        "path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_python.so",
+        "resolved_path": "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/lib/libtorch_python.so",
+        "role": "pytorch_shared_library",
+        "sha256": "e298fa096bcabf5002f8347460699450d58b1f94b002a1a4ff0ff60cd1cd2bce",
+        "size_bytes": 32159385,
+        "symlink_target": null
+      }
+    ]
+  },
+  "schema_version": "frontier.runtime-manifest.v1"
+}

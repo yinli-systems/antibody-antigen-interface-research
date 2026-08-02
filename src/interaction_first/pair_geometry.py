@@ -28,6 +28,7 @@ from .scoring import (
     masked_logmeanexp_score,
     pool_pair_marginals,
 )
+from .intra_chain_geometry import DualIntraChainGeometryEncoder
 from .pair_geometry_schema import PAIR_ORIENTATION, PairGeometrySchema
 
 
@@ -289,12 +290,162 @@ class EarlyBidirectionalResidueFusion(_ModuleBase):
         return antibody, antigen
 
 
+class BipartitePairAxialUpdateBlock(_ModuleBase):
+    """Update explicit pair states along both residue axes without mask leakage."""
+
+    def __init__(
+        self,
+        pair_dim: int,
+        num_heads: int,
+        ffn_dim: int,
+        dropout: float,
+    ) -> None:
+        require_torch()
+        super().__init__()
+        pair_dim = _positive_integer(pair_dim, "pair_dim")
+        num_heads = _positive_integer(num_heads, "num_heads")
+        ffn_dim = _positive_integer(ffn_dim, "ffn_dim")
+        dropout = _dropout_probability(dropout)
+        if pair_dim % num_heads != 0:
+            raise ValueError("pair_dim must be divisible by pair update num_heads")
+
+        self.pair_dim = pair_dim
+        self.row_norm = nn.LayerNorm(pair_dim)
+        self.column_norm = nn.LayerNorm(pair_dim)
+        self.row_attention = nn.MultiheadAttention(
+            pair_dim,
+            num_heads,
+            dropout=dropout,
+            batch_first=True,
+        )
+        self.column_attention = nn.MultiheadAttention(
+            pair_dim,
+            num_heads,
+            dropout=dropout,
+            batch_first=True,
+        )
+        self.row_gate = nn.Parameter(torch.tensor(-2.0))
+        self.column_gate = nn.Parameter(torch.tensor(-2.0))
+        self.ffn_norm = nn.LayerNorm(pair_dim)
+        self.ffn = nn.Sequential(
+            nn.Linear(pair_dim, ffn_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(ffn_dim, pair_dim),
+        )
+        self.residual_dropout = nn.Dropout(dropout)
+
+    @staticmethod
+    def _validate_inputs(pair_state: Any, pair_mask: Any, pair_dim: int) -> None:
+        """Reject malformed or non-finite pair states before attention."""
+        if not torch.is_tensor(pair_state):
+            raise TypeError("pair_state must be a PyTorch tensor")
+        if pair_state.ndim != 4 or int(pair_state.shape[-1]) != pair_dim:
+            raise ValueError(
+                "pair_state must have shape "
+                "[batch, antibody_residue, antigen_residue, pair_dim]"
+            )
+        if not torch.is_floating_point(pair_state):
+            raise ValueError("pair_state must use a floating-point dtype")
+        if any(int(size) == 0 for size in pair_state.shape):
+            raise ValueError("pair_state cannot contain an empty dimension")
+        if not torch.is_tensor(pair_mask):
+            raise TypeError("pair_mask must be a PyTorch tensor")
+        if pair_mask.dtype != torch.bool or pair_mask.ndim != 3:
+            raise ValueError("pair_mask must be a three-dimensional boolean tensor")
+        if tuple(pair_mask.shape) != tuple(pair_state.shape[:3]):
+            raise ValueError("pair_mask must align with pair_state")
+        if pair_mask.device != pair_state.device:
+            raise ValueError("pair_mask and pair_state must share a device")
+        if bool((pair_mask.flatten(1).sum(dim=1) == 0).any()):
+            raise ValueError("Every item must contain at least one candidate pair")
+        if not bool(torch.isfinite(pair_state[pair_mask]).all()):
+            raise ValueError("Candidate pair states must be finite")
+
+    @staticmethod
+    def _attend_nonempty_sequences(
+        attention: Any,
+        sequences: Any,
+        sequence_mask: Any,
+    ) -> Any:
+        """Apply attention only to rows with at least one unmasked key."""
+        valid_sequences = sequence_mask.any(dim=1)
+        valid_indices = valid_sequences.nonzero(as_tuple=False).squeeze(-1)
+        selected_sequences = sequences.index_select(0, valid_indices)
+        selected_mask = sequence_mask.index_select(0, valid_indices)
+        selected_output, _ = attention(
+            selected_sequences,
+            selected_sequences,
+            selected_sequences,
+            key_padding_mask=~selected_mask,
+            need_weights=False,
+        )
+        selected_output = selected_output.masked_fill(
+            ~selected_mask.unsqueeze(-1),
+            0.0,
+        )
+        output = torch.zeros_like(sequences)
+        return output.index_copy(0, valid_indices, selected_output)
+
+    def forward(self, pair_state: Any, pair_mask: Any) -> Any:
+        """Apply antigen-row attention, antibody-column attention, and an FFN."""
+        self._validate_inputs(pair_state, pair_mask, self.pair_dim)
+        batch_size, antibody_length, antigen_length, pair_dim = pair_state.shape
+        pair_state = pair_state.masked_fill(~pair_mask.unsqueeze(-1), 0.0)
+
+        row_sequences = self.row_norm(pair_state).reshape(
+            batch_size * antibody_length,
+            antigen_length,
+            pair_dim,
+        )
+        row_mask = pair_mask.reshape(
+            batch_size * antibody_length,
+            antigen_length,
+        )
+        row_update = self._attend_nonempty_sequences(
+            self.row_attention,
+            row_sequences,
+            row_mask,
+        ).reshape_as(pair_state)
+        pair_state = pair_state + torch.sigmoid(self.row_gate) * (
+            self.residual_dropout(row_update)
+        )
+        pair_state = pair_state.masked_fill(~pair_mask.unsqueeze(-1), 0.0)
+
+        column_state = pair_state.transpose(1, 2)
+        column_sequences = self.column_norm(column_state).reshape(
+            batch_size * antigen_length,
+            antibody_length,
+            pair_dim,
+        )
+        column_mask = pair_mask.transpose(1, 2).reshape(
+            batch_size * antigen_length,
+            antibody_length,
+        )
+        column_update = self._attend_nonempty_sequences(
+            self.column_attention,
+            column_sequences,
+            column_mask,
+        ).reshape_as(column_state).transpose(1, 2)
+        pair_state = pair_state + torch.sigmoid(self.column_gate) * (
+            self.residual_dropout(column_update)
+        )
+        pair_state = pair_state.masked_fill(~pair_mask.unsqueeze(-1), 0.0)
+
+        pair_state = pair_state + self.residual_dropout(
+            self.ffn(self.ffn_norm(pair_state))
+        )
+        return pair_state.masked_fill(~pair_mask.unsqueeze(-1), 0.0)
+
+
 class ProspectivePairGeometryModel(_ModuleBase):
     """Predict candidate-masked contacts and geometry from explicit pair states.
 
     The implementation chunks the antibody axis during pair construction to
     limit peak intermediate memory. Returning pair representations remains
     optional because the complete tensor is quadratic in sequence length.
+    Enabling axial pair updates necessarily materializes the complete pair
+    state before decoding because column attention crosses antibody chunks.
     """
 
     def __init__(
@@ -306,12 +457,21 @@ class ProspectivePairGeometryModel(_ModuleBase):
         pair_dim: int = 128,
         num_heads: int = 8,
         num_fusion_layers: int = 2,
+        intra_chain_geometry_layers: int = 0,
+        intra_chain_geometry_feature_mode: str = "full_pose",
+        intra_chain_geometry_num_rbf: int = 16,
+        intra_chain_geometry_distance_max: float = 20.0,
+        intra_chain_geometry_neighbor_k: int | None = 32,
+        intra_chain_geometry_neighbor_radius: float | None = None,
         ffn_dim: int = 512,
         geometry_schema: PairGeometrySchema | None = None,
         num_distance_bins: int | None = None,
         contact_distance_bin_count: int | None = None,
         num_orientation_axes: int | None = None,
         num_orientation_bins: int | None = None,
+        num_pair_update_layers: int = 0,
+        pair_update_num_heads: int | None = None,
+        pair_update_ffn_dim: int | None = None,
         pair_chunk_size: int = 64,
         dropout: float = 0.1,
         marginal_pooling: str = "logmeanexp",
@@ -377,8 +537,37 @@ class ProspectivePairGeometryModel(_ModuleBase):
             raise ValueError("num_fusion_layers must be a nonnegative integer")
         if num_fusion_layers < 0:
             raise ValueError("num_fusion_layers must be a nonnegative integer")
+        if (
+            isinstance(num_pair_update_layers, bool)
+            or not isinstance(num_pair_update_layers, int)
+            or num_pair_update_layers < 0
+        ):
+            raise ValueError("num_pair_update_layers must be a nonnegative integer")
+        if (
+            isinstance(intra_chain_geometry_layers, bool)
+            or not isinstance(intra_chain_geometry_layers, int)
+            or intra_chain_geometry_layers < 0
+        ):
+            raise ValueError("intra_chain_geometry_layers must be a nonnegative integer")
         if d_model % num_heads != 0:
             raise ValueError("d_model must be divisible by num_heads")
+        if pair_update_num_heads is None:
+            pair_update_num_heads = num_heads
+        pair_update_num_heads = _positive_integer(
+            pair_update_num_heads,
+            "pair_update_num_heads",
+        )
+        if pair_update_ffn_dim is None:
+            pair_update_ffn_dim = 2 * pair_dim
+        pair_update_ffn_dim = _positive_integer(
+            pair_update_ffn_dim,
+            "pair_update_ffn_dim",
+        )
+        if num_pair_update_layers > 0 and pair_dim % pair_update_num_heads != 0:
+            raise ValueError(
+                "pair_dim must be divisible by pair_update_num_heads when "
+                "pair updates are enabled"
+            )
         if contact_distance_bin_count >= num_distance_bins:
             raise ValueError(
                 "contact_distance_bin_count must be smaller than num_distance_bins"
@@ -412,6 +601,9 @@ class ProspectivePairGeometryModel(_ModuleBase):
         self.contact_distance_bin_count = contact_distance_bin_count
         self.num_orientation_axes = num_orientation_axes
         self.num_orientation_bins = num_orientation_bins
+        self.num_pair_update_layers = num_pair_update_layers
+        self.pair_update_num_heads = pair_update_num_heads
+        self.pair_update_ffn_dim = pair_update_ffn_dim
         self.pair_chunk_size = pair_chunk_size
         self.marginal_pooling = marginal_pooling
         self.marginal_top_k = marginal_top_k
@@ -429,6 +621,21 @@ class ProspectivePairGeometryModel(_ModuleBase):
             nn.LayerNorm(antigen_input_dim),
             nn.Linear(antigen_input_dim, d_model),
             nn.GELU(),
+        )
+        self.intra_chain_geometry = (
+            DualIntraChainGeometryEncoder(
+                d_model,
+                num_heads,
+                intra_chain_geometry_layers,
+                geometry_feature_mode=intra_chain_geometry_feature_mode,
+                num_rbf=intra_chain_geometry_num_rbf,
+                distance_max=intra_chain_geometry_distance_max,
+                neighbor_k=intra_chain_geometry_neighbor_k,
+                neighbor_radius=intra_chain_geometry_neighbor_radius,
+                dropout=dropout,
+            )
+            if intra_chain_geometry_layers > 0
+            else None
         )
         self.fusion_layers = nn.ModuleList(
             EarlyBidirectionalResidueFusion(
@@ -453,6 +660,15 @@ class ProspectivePairGeometryModel(_ModuleBase):
             nn.Dropout(dropout),
             nn.Linear(2 * pair_dim, pair_dim),
             nn.LayerNorm(pair_dim),
+        )
+        self.pair_update_layers = nn.ModuleList(
+            BipartitePairAxialUpdateBlock(
+                pair_dim=pair_dim,
+                num_heads=pair_update_num_heads,
+                ffn_dim=pair_update_ffn_dim,
+                dropout=dropout,
+            )
+            for _ in range(num_pair_update_layers)
         )
         self.distance_head = nn.Linear(pair_dim, num_distance_bins)
         self.orientation_head = nn.Linear(
@@ -500,15 +716,14 @@ class ProspectivePairGeometryModel(_ModuleBase):
             raise ValueError("All residue masks must share a device")
         _validate_pair_mask(candidate_pair_mask, antibody_mask, antigen_mask)
 
-    def _pair_chunk(
+    def _pair_state_chunk(
         self,
         antibody: Any,
         antigen_add: Any,
         antigen_gate: Any,
         chunk_mask: Any,
-        enabled_heads: frozenset[str],
-    ) -> dict[str, Any]:
-        """Construct one antibody-axis chunk and execute only requested heads."""
+    ) -> Any:
+        """Construct one candidate-masked antibody-axis pair-state chunk."""
         antibody_add = self.antibody_pair_add(antibody).unsqueeze(2)
         antibody_gate = self.antibody_pair_gate(antibody).unsqueeze(2)
         pair_seed = (
@@ -517,8 +732,15 @@ class ProspectivePairGeometryModel(_ModuleBase):
             + antibody_gate * antigen_gate.unsqueeze(1)
         )
         pair_state = self.pair_refinement(pair_seed)
-        pair_state = pair_state.masked_fill(~chunk_mask.unsqueeze(-1), 0.0)
+        return pair_state.masked_fill(~chunk_mask.unsqueeze(-1), 0.0)
 
+    def _decode_pair_state(
+        self,
+        pair_state: Any,
+        chunk_mask: Any,
+        enabled_heads: frozenset[str],
+    ) -> dict[str, Any]:
+        """Execute only requested prediction heads on a prepared pair state."""
         result = {"pair_representations": pair_state}
         if "distance" in enabled_heads:
             result["distance_bin_logits"] = self.distance_head(
@@ -551,6 +773,23 @@ class ProspectivePairGeometryModel(_ModuleBase):
                     .masked_fill(~chunk_mask, 0.0)
                 )
         return result
+
+    def _pair_chunk(
+        self,
+        antibody: Any,
+        antigen_add: Any,
+        antigen_gate: Any,
+        chunk_mask: Any,
+        enabled_heads: frozenset[str],
+    ) -> dict[str, Any]:
+        """Construct and decode one antibody-axis chunk."""
+        pair_state = self._pair_state_chunk(
+            antibody,
+            antigen_add,
+            antigen_gate,
+            chunk_mask,
+        )
+        return self._decode_pair_state(pair_state, chunk_mask, enabled_heads)
 
     def _validate_enabled_heads(
         self,
@@ -601,6 +840,13 @@ class ProspectivePairGeometryModel(_ModuleBase):
         *,
         return_pair_representations: bool = True,
         enabled_heads: Collection[str] | None = None,
+        antibody_backbone: Any | None = None,
+        antigen_backbone: Any | None = None,
+        antibody_chain_ids: Any | None = None,
+        antigen_chain_ids: Any | None = None,
+        antibody_positions: Any | None = None,
+        antigen_positions: Any | None = None,
+        return_intra_chain_attention: bool = False,
     ) -> dict[str, Any]:
         """Return only requested candidate-masked pair-geometry predictions."""
         self._validate_inputs(
@@ -622,6 +868,40 @@ class ProspectivePairGeometryModel(_ModuleBase):
         )
         antibody = antibody.masked_fill(~antibody_mask.unsqueeze(-1), 0.0)
         antigen = antigen.masked_fill(~antigen_mask.unsqueeze(-1), 0.0)
+        intra_chain_details = None
+        if self.intra_chain_geometry is not None:
+            if antibody_backbone is None or antigen_backbone is None:
+                raise ValueError(
+                    "antibody_backbone and antigen_backbone are required when "
+                    "intra-chain geometry is enabled"
+                )
+            antibody, antigen, intra_chain_details = self.intra_chain_geometry(
+                antibody,
+                antigen,
+                antibody_mask,
+                antigen_mask,
+                antibody_backbone,
+                antigen_backbone,
+                antibody_chain_ids=antibody_chain_ids,
+                antigen_chain_ids=antigen_chain_ids,
+                antibody_positions=antibody_positions,
+                antigen_positions=antigen_positions,
+                return_attention=return_intra_chain_attention,
+            )
+        elif any(
+            value is not None
+            for value in (
+                antibody_backbone,
+                antigen_backbone,
+                antibody_chain_ids,
+                antigen_chain_ids,
+                antibody_positions,
+                antigen_positions,
+            )
+        ):
+            raise ValueError(
+                "Set intra_chain_geometry_layers > 0 before supplying structure inputs"
+            )
         antibody_monomer = None
         antigen_monomer = None
         antibody_unary_logits = None
@@ -672,24 +952,60 @@ class ProspectivePairGeometryModel(_ModuleBase):
             )
         }
         antibody_length = int(antibody.shape[1])
-        for start in range(0, antibody_length, self.pair_chunk_size):
-            end = min(start + self.pair_chunk_size, antibody_length)
-            chunk = self._pair_chunk(
-                antibody[:, start:end],
-                antigen_add,
-                antigen_gate,
-                candidate_pair_mask[:, start:end],
-                enabled_heads,
+        chunk_ranges = tuple(
+            (
+                start,
+                min(start + self.pair_chunk_size, antibody_length),
             )
-            if return_pair_representations:
-                pair_chunks.append(chunk["pair_representations"])
-            for name in head_chunks:
-                if name in chunk:
-                    head_chunks[name].append(chunk[name])
-
-        pair_representations = (
-            torch.cat(pair_chunks, dim=1) if return_pair_representations else None
+            for start in range(0, antibody_length, self.pair_chunk_size)
         )
+        if self.pair_update_layers:
+            initial_pair_chunks = [
+                self._pair_state_chunk(
+                    antibody[:, start:end],
+                    antigen_add,
+                    antigen_gate,
+                    candidate_pair_mask[:, start:end],
+                )
+                for start, end in chunk_ranges
+            ]
+            updated_pair_state = torch.cat(initial_pair_chunks, dim=1)
+            for pair_update_layer in self.pair_update_layers:
+                updated_pair_state = pair_update_layer(
+                    updated_pair_state,
+                    candidate_pair_mask,
+                )
+            for start, end in chunk_ranges:
+                chunk = self._decode_pair_state(
+                    updated_pair_state[:, start:end],
+                    candidate_pair_mask[:, start:end],
+                    enabled_heads,
+                )
+                for name in head_chunks:
+                    if name in chunk:
+                        head_chunks[name].append(chunk[name])
+            pair_representations = (
+                updated_pair_state if return_pair_representations else None
+            )
+        else:
+            for start, end in chunk_ranges:
+                chunk = self._pair_chunk(
+                    antibody[:, start:end],
+                    antigen_add,
+                    antigen_gate,
+                    candidate_pair_mask[:, start:end],
+                    enabled_heads,
+                )
+                if return_pair_representations:
+                    pair_chunks.append(chunk["pair_representations"])
+                for name in head_chunks:
+                    if name in chunk:
+                        head_chunks[name].append(chunk[name])
+            pair_representations = (
+                torch.cat(pair_chunks, dim=1)
+                if return_pair_representations
+                else None
+            )
         output: dict[str, Any] = {
             "pair_orientation": PAIR_ORIENTATION,
             "executed_heads": tuple(
@@ -707,6 +1023,14 @@ class ProspectivePairGeometryModel(_ModuleBase):
             "antibody_residue_representations": antibody,
             "antigen_residue_representations": antigen,
             "contact_logit_mode": self.contact_logit_mode,
+            "num_pair_update_layers": self.num_pair_update_layers,
+            "pair_update_order": (
+                "antigen_axis_within_antibody_row",
+                "antibody_axis_within_antigen_column",
+                "feed_forward",
+            ),
+            "intra_chain_geometry_enabled": self.intra_chain_geometry is not None,
+            "intra_chain_geometry": intra_chain_details,
         }
         if antibody_monomer is not None and antigen_monomer is not None:
             output["antibody_monomer_representations"] = antibody_monomer

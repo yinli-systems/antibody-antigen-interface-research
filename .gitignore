@@ -4,9 +4,16 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
 .venv/
 venv/
 env/
+build/
+dist/
+.ipynb_checkpoints/
 
 *.pt
 *.pth
@@ -31,8 +38,11 @@ cache/
 third_party/
 
 .DS_Store
+.idea/
+.vscode/
 *.swp
 *.tmp
+*.log
 .env
 .env.*
 secrets.*

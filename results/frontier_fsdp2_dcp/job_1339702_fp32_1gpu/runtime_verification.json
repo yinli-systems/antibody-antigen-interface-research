@@ -1,0 +1,10 @@
+{
+  "artifact_count": 58,
+  "content_sha256": "d1ee08f64a689a17dafdd8be31d63214b6b3862e757feb2d348c424ea678596f",
+  "errors": [],
+  "file_sha256": "5e8c0ecf201876d0559331299187e4a8b8820124d79bdb24b9973b3b57e24202",
+  "live_state_checked": true,
+  "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_004.json",
+  "runtime_state_sha256": "15ce269e21349b539fe82eb65d8840fe6f7d4995e55915a92811c7443cbcb821",
+  "valid": true
+}

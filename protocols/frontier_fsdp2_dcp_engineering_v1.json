@@ -1,0 +1,138 @@
+{
+  "authorization": {
+    "biological_training": false,
+    "engineering_synthetic_only": true,
+    "frozen_test_access": false,
+    "model_selection": false,
+    "outer_evaluation": false
+  },
+  "checkpoint": {
+    "backend": "torch.distributed.checkpoint",
+    "cross_world_size_claim_requires_separate_replay": true,
+    "generation_publication": "create-only staged directory followed by atomic rename",
+    "inventory": "exact regular-file names, byte counts, and SHA-256 digests",
+    "mode": "synchronous",
+    "optimizer_state_required": true,
+    "same_world_size_continuation_required": true
+  },
+  "cross_world_replay": {
+    "directions": [
+      "one_to_eight",
+      "eight_to_one"
+    ],
+    "fixed_global_batch_size": 8,
+    "full_checkpoint_state_must_be_exact": true,
+    "optimizer_continuation_uses_frozen_precision_tolerance": true,
+    "source_result_requires_external_sha256": true
+  },
+  "claim_boundary": "Synthetic train-only systems evidence. No biological performance, scaling-efficiency, production-readiness, SOTA, or world-leading claim is authorized.",
+  "execution_order": [
+    "local_static_and_single-process_DCP_tests",
+    "one_GPU_FP32_reference_and_restart",
+    "eight_GPU_FP32_FSDP2_parity_and_restart",
+    "eight_GPU_BF16_parity_only_after_FP32_passes",
+    "cross_world_size_DCP_replay",
+    "warmed_throughput_profile_only_after_all_correctness_gates_pass"
+  ],
+  "forbidden_in_v1": [
+    "outer_or_frozen_test_data",
+    "biological_labels_or_metrics",
+    "torch_compile",
+    "FP8",
+    "asynchronous_checkpointing",
+    "DeepSpeed",
+    "elastic_world_size_during_an_optimizer_step",
+    "custom_gradient_reduction_hooks",
+    "early_stopping_or_checkpoint_selection"
+  ],
+  "format": "frontier_fsdp2_dcp_engineering_protocol_v1",
+  "model_fixture": {
+    "antibody_input_dim": 24,
+    "antibody_length": 7,
+    "antigen_input_dim": 32,
+    "antigen_length": 9,
+    "contact_pair_dim": 16,
+    "d_model": 32,
+    "dropout": 0.0,
+    "ffn_dim": 64,
+    "model": "ProtocolReranker_R2_reduced_code_path_equivalent_fixture",
+    "num_heads": 4,
+    "num_layers": 2
+  },
+  "numerical_gate": {
+    "BF16_absolute_tolerance": 0.005,
+    "BF16_relative_tolerance": 0.02,
+    "BF16_tolerances_frozen_before_execution": true,
+    "BF16_tolerances_must_be_frozen_before_execution": true,
+    "FP32_default_absolute_tolerance": 2e-05,
+    "FP32_default_relative_tolerance": 0.0002,
+    "dcp_continuation_absolute_tolerance": 0.0,
+    "dcp_continuation_relative_tolerance": 0.0,
+    "reference": "one_process_full_global_batch_with_identical_initialization_optimizer_and_sample_order"
+  },
+  "optimizer": {
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "epsilon": 1e-08,
+    "learning_rate": 0.0001,
+    "name": "AdamW",
+    "weight_decay": 0.01
+  },
+  "parallelism": {
+    "api": "torch.distributed.fsdp.fully_shard",
+    "compile_enabled": false,
+    "fp8_enabled": false,
+    "gradient_semantics": "equal_local_batch_mean_followed_by_FSDP2_reduce_scatter_average",
+    "optimizer_created_after_sharding": true,
+    "scalar_parameter_adapter": "explicit_length_one_promotion_before_sharding_with_reference_parity",
+    "sharding_order": "reranker_blocks_bottom_up_then_root",
+    "strategy": "FSDP2"
+  },
+  "required_receipts": [
+    "sealed_source_digest",
+    "runtime_manifest_and_live_verification",
+    "launch_manifest",
+    "rank_topology_and_GPU_inventory",
+    "per_rank_step_times_and_peak_memory",
+    "single_process_parameter_parity",
+    "DCP_file_hash_inventory",
+    "uninterrupted_vs_restarted_continuation_parity",
+    "explicit_no_outer_or_test_access"
+  ],
+  "scale_gate": {
+    "profile_measured_steps": 500,
+    "profile_warmup_steps": 50,
+    "one_GPU_must_pass_before_eight_GPU": true,
+    "thirty_two_GPU_authorized": false,
+    "throughput_claim_before_warm_profile": false,
+    "warmed_steps_required_for_future_efficiency_claim": 500
+  },
+  "strong_scaling_gate": {
+    "baseline_world_size": 8,
+    "fixed_global_batch_size": 64,
+    "local_batch_by_world_size": {
+      "8": 8,
+      "32": 2,
+      "64": 1
+    },
+    "minimum_efficiency": {
+      "32": 0.8,
+      "64": 0.7
+    },
+    "efficiency_formula": "(T8 / TN) / (N / 8)",
+    "prerequisites": [
+      "BF16_eight_GPU_correctness_passed",
+      "bidirectional_cross_world_DCP_replay_passed",
+      "eight_GPU_fixed_batch_profile_passed"
+    ]
+  },
+  "synthetic_fixture": {
+    "batch_partition": "rank_major_equal_local_batch",
+    "contact_targets": "two_deterministic_positive_pairs_per_example",
+    "generator": "stateless_CPU_generator_seeded_by_global_index",
+    "global_batch": "world_size_times_batch_size_per_rank",
+    "seed": 20260730
+  }
+}

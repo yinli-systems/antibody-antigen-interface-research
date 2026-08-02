@@ -407,7 +407,7 @@ def build_launch_manifest(
         )
     if backend not in {"nccl", "gloo"}:
         raise LaunchContractError("Unsupported distributed backend")
-    if parallelism not in {"ddp", "collective_diagnostic"}:
+    if parallelism not in {"ddp", "fsdp2", "collective_diagnostic"}:
         raise LaunchContractError("Unsupported launch parallelism")
     if precision not in {"float32", "bfloat16", "mixed_collective_dtypes"}:
         raise LaunchContractError("Unsupported launch precision")
@@ -591,7 +591,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--backend", choices=("nccl", "gloo"), required=True)
     parser.add_argument(
         "--parallelism",
-        choices=("ddp", "collective_diagnostic"),
+        choices=("ddp", "fsdp2", "collective_diagnostic"),
         required=True,
     )
     parser.add_argument(
