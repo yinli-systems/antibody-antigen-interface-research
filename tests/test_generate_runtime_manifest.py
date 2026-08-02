@@ -10,9 +10,8 @@ from pathlib import Path
 from typing import Any
 from unittest import mock
 
-import pytest
-
 import generate_runtime_manifest as runtime_manifest
+import pytest
 from generate_runtime_manifest import (
     ManifestError,
     PytorchProbe,
@@ -56,10 +55,7 @@ def _write_distribution(
     direct_url: bool = False,
 ) -> SyntheticDistribution:
     site_packages = root / "lib" / "python3.11" / "site-packages"
-    metadata_directory = (
-        site_packages
-        / f"{name.replace('-', '_')}-{version}.dist-info"
-    )
+    metadata_directory = site_packages / f"{name.replace('-', '_')}-{version}.dist-info"
     metadata_directory.mkdir(parents=True)
     (metadata_directory / "RECORD").write_text(
         f"{name}/__init__.py,,\n", encoding="utf-8"
@@ -81,9 +77,7 @@ def _synthetic_inputs(
 ) -> tuple[list[SyntheticDistribution], PytorchProbe, Path]:
     root.mkdir()
     (root / "pyvenv.cfg").write_text(
-        "home = /opt/python\n"
-        "include-system-site-packages = false\n"
-        "version = 3.11.9\n",
+        "home = /opt/python\ninclude-system-site-packages = false\nversion = 3.11.9\n",
         encoding="utf-8",
     )
     distributions = [
@@ -232,24 +226,141 @@ def test_manifest_records_versions_scope_libraries_and_claim_boundary(
     assert state["environment"]["include_system_site_packages"] is False
     assert state["environment"]["prefix_matches_root"] is False
     assert state["package_health"]["pip_check"]["ok"] is True
+    assert state["platform_abi"] == {
+        "architecture": {"bits": "64bit", "linkage": "ELF"},
+        "kernel_release_bound": False,
+        "libc": {"name": "glibc", "version": "2.39"},
+        "machine": "x86_64",
+        "processor_model_bound": False,
+        "system": "Linux",
+    }
     assert [item["normalized_name"] for item in state["installed_distributions"]] == [
         "alpha-package",
         "zulu-package",
     ]
     assert any(
-        item["role"] == "nccl_shared_library"
-        for item in state["shared_libraries"]
+        item["role"] == "nccl_shared_library" for item in state["shared_libraries"]
     )
     assert "state-of-the-art" in manifest["claim_boundary"]["does_not_attest"]
     assert manifest["integrity"]["runtime_state_sha256"] == _sha256_bytes(
         _canonical_json_bytes(state)
     )
-    unsigned = {
-        key: value for key, value in manifest.items() if key != "integrity"
-    }
+    unsigned = {key: value for key, value in manifest.items() if key != "integrity"}
     assert manifest["integrity"]["content_sha256"] == _sha256_bytes(
         _canonical_json_bytes(unsigned)
     )
+
+
+def test_stable_platform_abi_excludes_kernel_and_processor_variation() -> None:
+    first = _platform()
+    second = {
+        **first,
+        "release": "different-kernel-release",
+        "version": "different-kernel-build",
+        "processor": "different-node-processor",
+    }
+
+    assert runtime_manifest._stable_platform_abi(first) == (
+        runtime_manifest._stable_platform_abi(second)
+    )
+
+
+def test_pytorch_build_configuration_excludes_runtime_capability_lines() -> None:
+    """Keep dynamic node capability observations outside the equality state."""
+    common = "PyTorch built with:\n  - GCC 13.3\n  - Build settings: USE_CUDA=1\n"
+    login = common.replace(
+        "  - Build settings:",
+        "  - CPU capability usage: AVX2\n  - Build settings:",
+    )
+    compute = common.replace(
+        "  - Build settings:",
+        "  - CPU capability usage: AVX512\n"
+        "  - CUDA Runtime 13.0\n"
+        "  - NVCC architecture flags: sm_120\n"
+        "  - CuDNN 92.0\n"
+        "  - Magma 2.6.1\n"
+        "  - Build settings:",
+    )
+
+    login_stable, login_runtime = runtime_manifest._split_pytorch_build_configuration(
+        login
+    )
+    compute_stable, compute_runtime = (
+        runtime_manifest._split_pytorch_build_configuration(compute)
+    )
+
+    assert login_stable == compute_stable == common
+    assert login_runtime == ["  - CPU capability usage: AVX2"]
+    assert len(compute_runtime) == 5
+
+
+def test_manifest_retains_runtime_capabilities_as_non_equality_telemetry(
+    tmp_path: Path,
+) -> None:
+    """Preserve excluded capability evidence in the signed collection context."""
+    root = tmp_path / "environment"
+    distributions, pytorch, shared_library = _synthetic_inputs(root)
+    pytorch = PytorchProbe(
+        metadata=pytorch.metadata,
+        library_candidates=(("nccl_shared_library", shared_library),),
+        collection_context={
+            "runtime_build_capability_lines": [
+                "  - CPU capability usage: AVX512",
+                "  - CUDA Runtime 13.0",
+            ]
+        },
+    )
+    with mock.patch.object(
+        runtime_manifest,
+        "_python_shared_library_candidates",
+        return_value=[],
+    ):
+        manifest = build_manifest(
+            root,
+            collected_at_utc="2026-07-25T00:00:00Z",
+            collection_host="synthetic-host",
+            distribution_provider=lambda: distributions,
+            pip_check_result=_pip_check(),
+            pytorch_probe=pytorch,
+            platform_probe=_platform,
+        )
+
+    assert manifest["collection_context"]["frameworks"]["pytorch"] == (
+        pytorch.collection_context
+    )
+    assert (
+        "runtime_build_capability_lines"
+        not in manifest["runtime_state"]["frameworks"]["pytorch"]
+    )
+
+
+def test_live_verifier_accepts_node_telemetry_variation(tmp_path: Path) -> None:
+    root = tmp_path / "environment"
+    manifest, distributions, pytorch = _build_synthetic_manifest(root)
+    output = tmp_path / "runtime-manifest.json"
+    atomic_write_manifest(output, manifest)
+    second_platform = {
+        **_platform(),
+        "release": "other-kernel",
+        "version": "other-kernel-build",
+        "processor": "other-processor",
+    }
+
+    with mock.patch.object(
+        runtime_manifest,
+        "_python_shared_library_candidates",
+        return_value=[],
+    ):
+        report = verify_manifest(
+            output,
+            check_live_state=True,
+            distribution_provider=lambda: distributions,
+            pip_check_result=_pip_check(),
+            pytorch_probe=pytorch,
+            platform_probe=lambda: second_platform,
+        )
+
+    assert report["valid"] is True, report["errors"]
 
 
 def test_atomic_write_is_read_only_create_only_and_preserves_existing_bytes(
@@ -314,8 +425,7 @@ def test_verifier_detects_recorded_artifact_tampering(
     report = verify_manifest(output, check_live_state=False)
     assert report["valid"] is False
     assert any(
-        "pyvenv_cfg" in error and "mismatch" in error
-        for error in report["errors"]
+        "pyvenv_cfg" in error and "mismatch" in error for error in report["errors"]
     )
 
 

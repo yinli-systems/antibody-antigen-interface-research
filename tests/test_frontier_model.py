@@ -226,6 +226,30 @@ class FrontierModelTests(unittest.TestCase):
         self.assertNotIn("contact_targets", parameters)
         self.assertNotIn("contact_labels", parameters)
 
+    def test_reranker_outputs_do_not_expose_tensor_views(self) -> None:
+        import torch
+
+        from interaction_first.frontier_model import ProtocolReranker
+
+        model = ProtocolReranker(
+            self._coarse(),
+            antibody_input_dim=12,
+            antigen_input_dim=16,
+            d_model=16,
+            num_heads=4,
+            num_layers=2,
+            ffn_dim=32,
+            dropout=0.0,
+            contact_pair_dim=8,
+        ).eval()
+        output = model(*self._inputs())
+        viewed = [
+            name
+            for name, value in output.items()
+            if torch.is_tensor(value) and value._base is not None
+        ]
+        self.assertEqual(viewed, [])
+
     def test_indexed_pair_scoring_matches_direct_selected_inputs(self) -> None:
         import torch
 
