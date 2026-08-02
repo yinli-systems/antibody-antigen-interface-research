@@ -1,0 +1,51 @@
+{
+  "claim_boundary": "Artifact-location and digest index only; no model or benchmark claim.",
+  "documents": {
+    "research_audit": {
+      "path": "docs/FRAMECONTACT_DOUBLE_COLD_SPLIT_AUDIT_20260801.md",
+      "sha256": "e5b932e6117762320b67bbc0d667dd09b113f48e280c862acaaa3131d407eb53"
+    },
+    "teacher_update": {
+      "path": "docs/TEACHER_UPDATE_20260801_DOUBLE_COLD_AND_RESEARCH.md",
+      "sha256": "2b515cda5c1fd1a38195ad9bf9f6d4e41c41615e033827fe2f326609be1da09e"
+    }
+  },
+  "engineering_receipt": {
+    "path": "receipts/double-cold-split-v1-1346323/ENGINEERING_RECEIPT.json",
+    "sha256": "4d549a72ef6660d32187efe436457a7ca5f1a1a6fe9c1b1b11eba8e2fd00dac2"
+  },
+  "format_version": "framecontact_double_cold_handoff_index_v1",
+  "next_authorized_action": "Wait for the unchanged development arrays, freeze their validation-only selection, then launch from-scratch double-cold train/validation runs. Do not materialize or score the double-cold test role before the opening gate is frozen.",
+  "remote": {
+    "development_panels": {
+      "receipt": "/ssd/scxi253/model_deployment/data/framecontact_20260730/development_panels_double_cold_v1/DEVELOPMENT_PANEL_BUNDLE_RECEIPT.json",
+      "receipt_sha256": "65d64b024717c28ff9e288cb7504dfa4e354222332363381c41450fe551438c2",
+      "root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/development_panels_double_cold_v1"
+    },
+    "partner_metadata": {
+      "metadata_sha256": "c1fd6b93bb063be0c17ae3bc8cb287136a19e71fae825f300482cf88fffee75d",
+      "receipt_sha256": "3030f3462481248307c2ee1aea8f4398e690de11542db941c79dd8d98fafa4d5",
+      "root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/partner_metadata_double_cold_v1"
+    },
+    "source": {
+      "full_pytest_log": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-evidence-v6/FULL_PYTEST.log",
+      "full_pytest_log_sha256": "2f2f0177597e56849f60f87048a19752c39e3d50bb1ac7d35f804cb9b57e10d2",
+      "manifest": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-evidence-v6/SOURCE_MANIFEST.json",
+      "manifest_sha256": "bd9a38f195ea2b5369261586ba65508b55f0d2ae7337c351219bdf5b9b7e355c",
+      "root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v6",
+      "tree_sha256": "1c3898942a997c4d79338f646957549819d31b3aff11ec6e527de8f5a3ae3b62"
+    },
+    "split": {
+      "manifest": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v4/antigen_fold.csv",
+      "manifest_sha256": "07b20645982971e9ff0004ac297d9a03ac0278269b4e8d84628fb0cbbb87804d",
+      "receipt_sha256": "728c9a256fc88d7a72f63e5c95366c3555df28672163ff5a3d3a35d0586f017a",
+      "root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v4",
+      "shortcut_audit_sha256": "144c8d45cac1b7589f40bcdb4358979587361a6fa0363d47f4dac6a85be4e061"
+    }
+  },
+  "test_access": {
+    "double_cold_test_labels_read": false,
+    "double_cold_test_panel_materialized": false,
+    "double_cold_test_predictions_read": false
+  }
+}

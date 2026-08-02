@@ -1,0 +1,83 @@
+{
+  "claim_boundary": "Counterfactual contact-lift attribution diagnostics, source, dependency, and regression-test evidence only. The candidate is default-off and has not been registered, trained, model-selected, frozen-tested, externally evaluated, or shown to improve a biological metric. Diagnostic entropy or support values are not selection thresholds. This receipt contains no A100, benchmark-superiority, novelty, or state-of-the-art claim.",
+  "format_version": "framecontact_double_cold_source_engineering_receipt_v6",
+  "local_regression": {
+    "python": "3.12.13",
+    "result": "298 passed in 17.77s",
+    "scope": "Full local suite with src, pinned Boltz checkout, fairscale, einops 0.8.0, and einx on PYTHONPATH; bytecode and pytest cache disabled."
+  },
+  "parent": {
+    "path": "receipts/double-cold-source-v16-final/ENGINEERING_RECEIPT.json",
+    "reason": "Add per-complex zero-lift, positive-mass, entropy, effective-support, and top-1-mass diagnostics so a retrieval score cannot hide a dead or diffuse contact bottleneck.",
+    "sha256": "065377bc037c5a0c388839e75d2c98e25f0f06807b4ed8853fd3c30afd3c7868"
+  },
+  "remote_environment": {
+    "base_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "pandas": "2.3.3",
+    "pyarrow": "17.0.0",
+    "pyarrow_target": "/ssd/scxi253/model_deployment/data/framecontact_20260730/runtime-deps/pyarrow-17.0.0-py310",
+    "pytest_target": "/tmp/scxi253-v6d-pytest-841",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128"
+  },
+  "remote_regression": {
+    "command_controls": [
+      "source tree created at a previously absent version path",
+      "per-directory resumable transfer with explicit authenticated allowlist",
+      "symlink and cache rejection before and after execution",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "pytest -p no:cacheprovider",
+      "basetemp under /dev/shm",
+      "manifest verification after pytest"
+    ],
+    "result": "293 passed, 5 skipped in 78.00s",
+    "skip_boundary": "All five skips require the pinned Boltz source unavailable on the remote login environment; no FrameContact, objective, training-harness, split, gate, or evidence test was skipped or failed.",
+    "source_cache_or_symlink_artifacts_after_run": 0
+  },
+  "attribution_diagnostic_delta": {
+    "checkpoint_selection_use": false,
+    "frozen_or_external_threshold_tuning": false,
+    "metrics": [
+      "zero_total_weight_complex_count",
+      "positive_weight_fraction",
+      "normalized_entropy",
+      "effective_support",
+      "top1_mass_fraction"
+    ],
+    "scopes": [
+      "antibody residue noisy-OR weights",
+      "antigen residue noisy-OR weights",
+      "pair counterfactual contact lift"
+    ],
+    "sha256": {
+      "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "e0210f211165090e02d814797978e7f473383e2bf8098d142c1c40610b555204",
+      "scripts/train_framecontact.py": "20bf54317975eff749ce48936b9d3802decee0e5a480f84c558483aca9e15351",
+      "tests/test_train_framecontact_reciprocal.py": "a07e44ccd515e1e25d0406da6d00ecacf72c4a322b623ca605869dd0e7d8babc"
+    }
+  },
+  "sha256": {
+    "FULL_PYTEST_WITH_DEPS.log": "6301c821d7a53f2cbf7ec65ef0960b0f0c7a5ef7322f283b293cc14c8641e61d",
+    "LOCAL_FULL_PYTEST.log": "aa21a738ad5f7586e9c8374d6a8587d8f494c7ca8e79b1eedbc968f1d9b16d9a",
+    "MANIFEST_BUILD.log": "83a0623c5d9ed0f852aa9e5945dc3db564309e67a96ddc7e22456621297ba6ba",
+    "POST_TEST_MANIFEST_VERIFY.json": "3b52ec1ad4de1ac045b41975d91150b577bd798131342be4381880556c58da78",
+    "SOURCE_MANIFEST.json": "a1b656b6cc45015aa89b0cd8925aa96d81c786ce80f53272ea6d3836ee287733"
+  },
+  "source": {
+    "included_directories": [
+      "scripts",
+      "src",
+      "protocols",
+      "tests",
+      "slurm",
+      "docs",
+      "baselines",
+      "evaluation",
+      "fixtures",
+      "receipts",
+      "reports"
+    ],
+    "manifest_record_count": 528,
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v17",
+    "tree_sha256": "fa98415c6b4c5e3666e79bdedf6c3d85c14f2790c1fbb8d19e2d74d34fbe2c07"
+  }
+}

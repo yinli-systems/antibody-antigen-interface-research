@@ -1,0 +1,8 @@
+{
+  "archive": "framecontact-a100-smoke-v3.tar.gz",
+  "archive_sha256": "2760235d7cde987d86d5b465641a1ddd054b2fddba9acf55de12f436b5492fc5",
+  "archive_size_bytes": 369356,
+  "file_count": 206,
+  "manifest_sha256": "73a03351deab87bf3c12d777dae5489ec2268a33f4d475593f0b812dbe987e9c",
+  "schema_version": 1
+}

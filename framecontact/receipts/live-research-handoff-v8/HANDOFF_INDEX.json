@@ -1,0 +1,56 @@
+{
+  "claim_boundary": "Development-validation delta handoff over authenticated v7. It adds a read-only five-seed matched-epoch-18 audit, complete extracted metric trajectories, a deterministic figure, a teacher-ready update, and a primary-literature delta. It does not select a checkpoint, modify the running arrays, train the contact-bottleneck candidate, open a frozen or official external test, or authorize external-generalization, A100 model-quality, biological-benchmark, novelty, or state-of-the-art claims.",
+  "files": {
+    "README.md": "296b21c625d981dba7d441d1ac0c349f27b5796e4ff53a53fd25153f9ef12257",
+    "docs/FRAMECONTACT_FRONTIER_RESEARCH_20260801.md": "ef40732e225aab18adbee83757219b010aaf5c0f60856cceeecc0b47e857bfb0",
+    "docs/TEACHER_UPDATE_20260801_MATCHED_EPOCH18.md": "f1f7311561498c3d231a6e2b3f56e8f8127d7c6a917326dbdc84fa438f7e88d0",
+    "receipts/live-array-audit-20260801T145157Z/README.md": "bfb0d04960d918ce98eba111e346d896d3442f7453c1e8a93957ba7a184b78ef",
+    "receipts/live-array-audit-20260801T145157Z/SHA256SUMS": "c78102979039c637cb7b1a2b706bc845b03ee5a192fdb90bf5a7d22d239cb931",
+    "receipts/live-array-audit-20260801T145157Z/distogram-compact.json": "006e2ca61b807686dd78aca51d4370c95bad4e355dfe3f28461925406c0080c9",
+    "receipts/live-array-audit-20260801T145157Z/distogram-full.json": "28d12e8bbb5d351ff69b30a4b73aebcc8c5eb83bd7ad2d86ad22f578531b0e89",
+    "receipts/live-array-audit-20260801T145157Z/distogram-minus-unary.json": "1df9b3805c0d75a5242c0d4a821f02464f89e629eba1e68ea2f3eb662fca9156",
+    "receipts/live-array-audit-20260801T145157Z/matched-development-trajectories.png": "2490b039d660540b98d51c0002ca0163853877d88feae8533f708ea1707a6d6b",
+    "receipts/live-array-audit-20260801T145157Z/render_trajectory.py": "ec7cfd93b15f86cc45e3d7dcb211f1a58b6cf552d1e6418fd72edf2055cd124d",
+    "receipts/live-array-audit-20260801T145157Z/residue-head-compact.json": "99b51c7e1ea354e79e2aed12079498d6018bdeadce030dba46252989731df5ff",
+    "receipts/live-array-audit-20260801T145157Z/residue-head-full.json": "2265ced86d35e5d3a3b3c0442343a1e75d0dafff2404f3ebdcdbe225f414d55a",
+    "receipts/live-research-handoff-v7/HANDOFF_INDEX.json": "a04eddfbd2e77eec5da5e6da53279c6fe4aa6a61983a7fd5cab375c8fdb49d61"
+  },
+  "format_version": "framecontact_live_research_handoff_delta_v3",
+  "live_audit": {
+    "audit_utc": "2026-08-01T14:51:57Z",
+    "arrays": {
+      "1345042": {
+        "active_condition": "framecontact_unary_only",
+        "synchronized_epoch": 21,
+        "worker_gpu_class": "RTX 4090"
+      },
+      "1345108": {
+        "active_condition": "framecontact_distogram",
+        "synchronized_epoch": 18,
+        "worker_gpu_class": "RTX 4090"
+      }
+    },
+    "matched_epoch": 18,
+    "matched_epoch_distogram_minus_unary": {
+      "contact_fixed_raw_precision": 0.0026357497449130242,
+      "contact_fixed_raw_recall": -0.0783044252183632,
+      "contact_pooled_auprc": 0.00044079512702325656,
+      "epitope_pooled_auprc": 0.0038829992646166626,
+      "paratope_pooled_auprc": -0.030223058168034455,
+      "retrieval_worst_directional_margin": 0.00137919616485615
+    },
+    "test_or_model_selection_accessed": false
+  },
+  "parent_handoff": {
+    "index_path": "receipts/live-research-handoff-v7/HANDOFF_INDEX.json",
+    "index_sha256": "a04eddfbd2e77eec5da5e6da53279c6fe4aa6a61983a7fd5cab375c8fdb49d61",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v7"
+  },
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v8",
+  "source_authority": {
+    "changed_by_this_delta": false,
+    "manifest_sha256": "a1b656b6cc45015aa89b0cd8925aa96d81c786ce80f53272ea6d3836ee287733",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v17",
+    "tree_sha256": "fa98415c6b4c5e3666e79bdedf6c3d85c14f2790c1fbb8d19e2d74d34fbe2c07"
+  }
+}

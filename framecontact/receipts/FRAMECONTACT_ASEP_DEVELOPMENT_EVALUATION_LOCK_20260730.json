@@ -1,0 +1,48 @@
+{
+  "schema_version": "framecontact_asep_development_evaluation_lock_v1",
+  "frozen_utc": "2026-07-30T14:26:25Z",
+  "authority": {
+    "development_cache_manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "protocol_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+    "protocol_receipt_sha256": "370f36155e54be15c9b5ef4460a768a5c82a36bf561a206424b9d09e0d0b05fb",
+    "training_partner_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+    "validation_partner_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec",
+    "same_antigen_challenge_sha256": "846d551f736545cfcdf92788d57f94ee4776c138108d5d093c814c51fabd3a96",
+    "official_test_materialized": false,
+    "official_test_labels_read": false,
+    "official_test_predictions_read": false
+  },
+  "source": {
+    "training_source_manifest_sha256": "444ca83ab78c39f53a3c11885980a8e59e40ee4ad5f63897391743f46ad1a751",
+    "freeze_asep_development_ensemble_py_sha256": "072876679441bd67a3ba3b3ee9fe36b0494f94b37f41d1201267196e233c077b",
+    "evaluate_asep_same_antigen_challenge_py_sha256": "52b7eefc49d10c928269f47decfb6dc22651c9fff7aab5c9b9587f67fc53f3b8",
+    "slurm_freeze_ensemble_sha256": "21da4d6e05079f20e030b8a87f860502933f0e5bab777064a10c4a614abb3f74",
+    "slurm_same_antigen_sha256": "9e5e56ca50dfe5ee58241a6663d5fbfc00211421a840544156480db53d3ba5d6"
+  },
+  "evaluation_rule": {
+    "seeds": [17, 42, 73, 101, 137],
+    "conditions": [
+      "sequence_dense",
+      "spatial_topology",
+      "distance",
+      "distance_direction",
+      "full_pose",
+      "frozen_frame_ipa",
+      "framecontact",
+      "framecontact_interleaved"
+    ],
+    "member_weighting": "uniform_1_over_5",
+    "member_calibration": "each member validation temperature before elementwise probability averaging",
+    "ensemble_calibration": "one additional temperature and task thresholds fit on development validation",
+    "same_antigen_metric": "directed assignment margin requiring cognate retention and target-epitope migration",
+    "same_antigen_use": "post-selection development diagnostic only; prohibited from model or checkpoint selection",
+    "bootstrap": "10000 antigen-cluster resamples with seed 20260730"
+  },
+  "remote_execution": {
+    "hardware_claim": "ParaCloud NVIDIA GeForce RTX 4090; not AB03 or A100 evidence",
+    "development_training_job": "1342460",
+    "ensemble_dependency_job": "1342511",
+    "same_antigen_dependency_job": "1342514"
+  },
+  "claim_boundary": "This locks validation-only ensemble and counterfactual evaluation before development training finishes. It contains no completed model result and authorizes no official-test or external-benchmark claim."
+}

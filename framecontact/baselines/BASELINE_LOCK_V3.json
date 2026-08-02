@@ -1,0 +1,118 @@
+{
+  "format_version": "framecontact_baseline_lock_v3",
+  "frozen_on": "2026-07-30",
+  "parent": {
+    "path": "baselines/BASELINE_LOCK_V2.json",
+    "sha256": "bbd87a5a8af47a950a563d82f2ce3fce2503bd5e01d4382874ffde3b33a39fcb",
+    "reason": "record the implemented invariant-point baseline and authenticated AsEP v1.2.0 data authority without rewriting v2"
+  },
+  "runnable_internal_baselines": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "frozen_frame_ipa",
+    "framecontact",
+    "framecontact_interleaved"
+  ],
+  "internal_baseline_boundaries": {
+    "frozen_frame_ipa": {
+      "implementation": "learned query/key points in fixed N-CA-C residue frames used as an invariant per-head self-attention bias",
+      "not_equivalent_to": "the complete AlphaFold Invariant Point Attention block",
+      "result_status": "not_run"
+    }
+  },
+  "asep_v1_2_0_authority": {
+    "dataset_lock_path": "baselines/ASEP_DATASET_LOCK.json",
+    "dataset_lock_sha256": "24fb22d6367b22027bf0d774d1b96cfde8bcbf82e585686f48ceb56e6d860b62",
+    "archive_sha256": "07889a0eab3dd5efbdf4ad141497d2287cbd9350bd95212fc9bb0a2028c41cff",
+    "authority_receipt_sha256": "4d5bcc16507156817b5615cb1d6a2b09dbb5c042685496bc76c6074d5f2be06a",
+    "inner_archive_audit_sha256": "5aefadb56469ccc7ecc4a795778b576ca303f2e8418e0b453ee44d18013050b0",
+    "instance_count": 1723,
+    "identifier_graph_structure_axes_equal": true,
+    "inner_archive_audit_split_payload_opened": false,
+    "split_manifest_authority": {
+      "receipt_sha256": "dcced3e48531edabf5ba4410147cfae444d81dbfada985058d99bd246367a704",
+      "split_dict_opened_with_torch_weights_only": true,
+      "epitope_group_manifest_sha256": "9fd1a031eef62202b48e1240c0259f27316d1d63862b11f8ee862ffb6998a86f",
+      "epitope_ratio_manifest_sha256": "6191ef626d916623df670df30463175cde439890723c48539a2a5fe510132625",
+      "role_counts_per_method": {
+        "train": 1383,
+        "validation": 170,
+        "test": 170
+      },
+      "methods_have_different_role_for_n_instances": 579,
+      "task_labels_read": false,
+      "model_predictions_or_scores_read": false
+    },
+    "development_graph_audit": {
+      "split_method": "epitope_group",
+      "receipt_sha256": "40553ed7f1c05a1d4f377c0bc6571035390df93e3b47acc13a8c1394a4236e9a",
+      "manifest_sha256": "4d3367fc5fa67b2be127e2c54ee46a952e158734d581dc89a5c5d6e493a447d4",
+      "train_count": 1383,
+      "validation_count": 170,
+      "development_labels_read_for_adapter_validation": true,
+      "official_test_graph_tensors_opened": false,
+      "official_test_labels_read": false,
+      "all_pair_contacts_reproduce_residue_marginals": true,
+      "torch_load_weights_only": true
+    },
+    "development_structure_audit": {
+      "receipt_sha256": "6b61161ac53e6ed03187c6e3f06b4802b39607bcfe26b9e998e6a278b307621d",
+      "manifest_sha256": "6b29affc00e466130ff0ee6cf39d21c144f622930a94c5b470cd75d1db7636d2",
+      "development_instance_count": 1553,
+      "antibody_valid_frames": 93988,
+      "antibody_total_nodes": 94026,
+      "antigen_valid_frames": 449396,
+      "antigen_total_nodes": 450362,
+      "missing_or_alignment_ambiguous_frames_masked": true,
+      "official_test_pdb_members_opened": false
+    },
+    "development_runnable_cache": {
+      "manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+      "receipt_sha256": "3a282b179ee151d9d4b24cc87366323670a76719bdf0542a2fc1aa164c0f5269",
+      "record_count": 1553,
+      "train_count": 1383,
+      "validation_count": 170,
+      "cache_file_bytes": 1277000455,
+      "all_artifacts_consumed_and_contact_marginals_revalidated": true,
+      "official_test_members_materialized": false,
+      "feature_boundary": "official AsEP ESM2-35M and IgFold embeddings; not the SAbDab2 ESM2-650M feature authority"
+    },
+    "development_reciprocal_panels": {
+      "metadata_sha256": "04d9a36e7c3c5228f1e4bcad46a00cdc3dde1556d25fc9693d9d28dc4680753b",
+      "metadata_receipt_sha256": "7eab710d3d213439be2894c8fc3d78cad792779d211c8ef2c08be1160c963c6c",
+      "train_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+      "validation_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec",
+      "panel_size_per_direction": 31,
+      "directions": [
+        "fixed_antibody_wrong_antigen",
+        "fixed_antigen_wrong_antibody"
+      ],
+      "candidate_ranking_uses_task_labels": false,
+      "sequence_cluster_boundary": "exact full chain sequence only; structural-cluster panel upgrade pending"
+    },
+    "asep_development_protocol": {
+      "path": "protocols/framecontact_asep_epitope_group_v1.json",
+      "protocol_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+      "receipt_sha256": "370f36155e54be15c9b5ef4460a768a5c82a36bf561a206424b9d09e0d0b05fb",
+      "maximum_epochs": 100,
+      "early_stopping_patience": 15,
+      "seeds": [
+        17,
+        42,
+        73,
+        101,
+        137
+      ],
+      "model_fitting_started_at_freeze": false,
+      "official_test_sealed_at_freeze": true
+    },
+    "authority_materialization_task_labels_read": false,
+    "model_predictions_or_scores_read": false,
+    "model_adapter_status": "restricted graph and N-CA-C structure axes implemented, development-audited, and materialized as a runnable train-validation cache",
+    "result_status": "not_run"
+  },
+  "claim_rule": "Runnable source code and authenticated data are prerequisites only. No biological benchmark claim exists without frozen checkpoints, a decontamination receipt, a one-time scorer receipt, and reported uncertainty."
+}

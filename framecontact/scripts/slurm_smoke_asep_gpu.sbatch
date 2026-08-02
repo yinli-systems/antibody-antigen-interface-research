@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=fc-asep-smoke
+#SBATCH --partition=gpu_4090
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=4
+#SBATCH --time=00:30:00
+#SBATCH --output=fc-asep-smoke-%j.out
+#SBATCH --error=fc-asep-smoke-%j.err
+
+set -euo pipefail
+
+: "${FRAMECONTACT_REPOSITORY_ROOT:?missing FRAMECONTACT_REPOSITORY_ROOT}"
+: "${FRAMECONTACT_ASEP_CACHE_ROOT:?missing FRAMECONTACT_ASEP_CACHE_ROOT}"
+: "${FRAMECONTACT_ASEP_CACHE_MANIFEST_SHA256:?missing FRAMECONTACT_ASEP_CACHE_MANIFEST_SHA256}"
+: "${FRAMECONTACT_PYTHON_BIN:?missing FRAMECONTACT_PYTHON_BIN}"
+: "${FRAMECONTACT_SMOKE_OUTPUT:?missing FRAMECONTACT_SMOKE_OUTPUT}"
+
+cd "${FRAMECONTACT_REPOSITORY_ROOT}"
+export CUBLAS_WORKSPACE_CONFIG="${CUBLAS_WORKSPACE_CONFIG:-:4096:8}"
+export PYTHONPATH="${FRAMECONTACT_REPOSITORY_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
+
+"${FRAMECONTACT_PYTHON_BIN}" scripts/smoke_asep_framecontact_gpu.py \
+  --cache-root "${FRAMECONTACT_ASEP_CACHE_ROOT}" \
+  --cache-manifest-sha256 "${FRAMECONTACT_ASEP_CACHE_MANIFEST_SHA256}" \
+  --output "${FRAMECONTACT_SMOKE_OUTPUT}" \
+  --device cuda \
+  --precision bf16

@@ -1,0 +1,34 @@
+# Local environments and interpreter caches
+.venv/
+.venv-*/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Test, lint, coverage, and packaging artifacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local scratch space and downloaded papers
+/tmp/
+
+# Model weights and large generated tensor artifacts
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# Editor and operating-system metadata
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
