@@ -1,0 +1,53 @@
+{
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false,
+    "training_after_independent_audit_only": true
+  },
+  "claim_boundary": "Corrects only the reducer materialization-root launcher contract after the locked runtime was verified; it does not change mapped bytes, corpus membership, filtering, deduplication, scientific semantics, or authorize training",
+  "correction": {
+    "failed_attempt": {
+      "all_failed_task_stderr_sha256": "d9f42fb903258fe0dc42b4cc4ecdcd06ba7337ab9dcd9c6bc19197ab4969f1c4",
+      "batch_receipt_file_sha256": "956949551c1d49d59831e28ad3369d5eaea61cd4105695a4972d9aa1d59ebc4a",
+      "batch_receipt_payload_sha256": "72f2c49cf052377e6def52f746935e555fa9001e4cf7f2099e44f3ba8544876b",
+      "exit_code": "1:0",
+      "failed_reduce_tasks": 256,
+      "job_id": 1342946,
+      "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_production_materialization_v3_aa61253_attempt_002",
+      "slurm_stderr_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "slurm_stdout_file_sha256": "5c9aa124d3b5ea07998bfe10ffbd4b2808eb3196715817667c9b1a1d93297caf",
+      "terminal_state": "FAILED"
+    },
+    "reason": "The launcher supplied the published map directory as --map-root, but the reducer contract resolves mapper inputs below <materialization-root>/map/mapper-XXXX.",
+    "resolution": "Replace the ambiguous OAS_MAP_ROOT environment variable with OAS_MATERIALIZATION_ROOT, bind it to the directory containing map, reduce, and work, and preserve all prior map and failure evidence."
+  },
+  "format_version": "oas_production_postprocess_runtime_protocol_v2",
+  "input_contract": {
+    "environment_variable": "OAS_MATERIALIZATION_ROOT",
+    "expected_map_receipt_count": 32,
+    "mapper_path_template": "<materialization-root>/map/mapper-{mapper_id:04d}",
+    "must_equal_output_root": true
+  },
+  "parent_materialization_protocol_file_sha256": "aa61253f035cd19126a39e3cc82bbb3e053695043400ebf976a7ad1f2fb80543",
+  "parent_postprocess_protocol_file_sha256": "c1d8197bd04c46809c9c5baab1654ed91509fccf5403c34db333164632f7eb08",
+  "runtime": {
+    "manifest_content_sha256": "e33841cc19be4e7c3bb5522194f7d34c7cd518ec967949529094567a6004cfcb",
+    "manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_007.json",
+    "manifest_runtime_state_sha256": "13502176182985a33a1a31833bc8f999f16856c6f917daa45c29bf7e83a09192",
+    "numpy_version": "1.26.4",
+    "python_executable": "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python",
+    "python_version": "3.10.20"
+  },
+  "scope": {
+    "mapped_data_reused_without_mutation": true,
+    "mapper_rerun": false,
+    "scientific_semantics_changed": false,
+    "stages_relaunched": [
+      "reduce",
+      "finalize",
+      "independent_audit"
+    ]
+  }
+}

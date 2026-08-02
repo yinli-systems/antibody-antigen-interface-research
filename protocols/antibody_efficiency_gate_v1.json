@@ -1,0 +1,100 @@
+{
+  "authorization": {
+    "benchmark_16_gpu": true,
+    "benchmark_32_gpu": true,
+    "benchmark_64_gpu": false,
+    "production_pretraining": false,
+    "systems_only_1_3b_pilot": false
+  },
+  "benchmark": {
+    "candidate_warmup_updates": 50,
+    "candidate_updates": 500,
+    "fixed_membership_fields": [
+      "consumed_residue_tokens",
+      "residue_tokens",
+      "selected_targets",
+      "update"
+    ],
+    "hardware_reference": "NVIDIA GeForce RTX 5090",
+    "minimum_measured_updates": 450,
+    "reference_backend": "ddp",
+    "reference_micro_batch_per_gpu": 16,
+    "world_size": 8
+  },
+  "candidate_optimizations": {
+    "activation_checkpointing": "selective_only_when_required_by_memory_gate",
+    "attention": "pytorch_sdpa_runtime_selected_backend",
+    "compile": "regional_fullgraph_transformer_blocks_before_fsdp2",
+    "data_staging": "pinned_host_tensors_with_nonblocking_h2d",
+    "fsdp2_output_dtype": "bfloat16",
+    "length_bucketing": "stable_within_update_membership_only",
+    "optimizer": "fused_adamw_when_runtime_probe_passes",
+    "production_backend_preference": "fastest_gate_passing_backend"
+  },
+  "claim_boundary": "Systems optimization protocol only. It does not authorize production pretraining, a biological metric claim, or a state-of-the-art claim.",
+  "correctness_gate": {
+    "comparison": "same_seed_same_membership_same_micro_batch_eager_bf16_reference",
+    "downstream_labels_permitted": false,
+    "maximum_final_loss_absolute_difference": 0.005,
+    "maximum_gradient_norm_relative_difference": 0.01,
+    "maximum_parameter_moment_relative_difference": 0.00001,
+    "minimum_compared_updates": 10,
+    "recovery": "exact_model_optimizer_sampler_scheduler_trace_replay_required"
+  },
+  "efficiency_gate": {
+    "maximum_memory_fraction": 0.75,
+    "maximum_p95_over_p50_step_time": 1.1,
+    "minimum_throughput_relative_to_safe_reference": 1.25,
+    "throughput_unit": "non_padding_residue_tokens_per_second",
+    "total_gpu_memory_mib": 32607
+  },
+  "format_version": "antibody_efficiency_gate_v1",
+  "large_model_gate": {
+    "minimum_admitted_unique_residue_tokens": 30000000000,
+    "minimum_safe_650m_efficiency_gain": 1.25,
+    "production_requires_scientific_promotion": true,
+    "systems_pilot_parameter_range": [
+      1200000000,
+      1400000000
+    ]
+  },
+  "precision_ladder": [
+    "bfloat16_reference",
+    "bfloat16_compile",
+    "fp8_transformer_engine_only_after_identical_work_parity"
+  ],
+  "scale_gate": {
+    "16_gpu_minimum_efficiency": 0.85,
+    "32_gpu_minimum_efficiency": 0.8,
+    "64_gpu_minimum_efficiency": 0.7,
+    "fixed_global_work_required": true,
+    "maximum_p95_over_p50_step_time": 1.2,
+    "required_sequence": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "scale_only_after_previous_stage_passes": true
+  },
+  "scientific_gate": {
+    "model_selection_inputs": [
+      "oas_validation_mlm_loss",
+      "oas_validation_masked_accuracy",
+      "native_heavy_light_retrieval",
+      "gpu_hour_efficiency"
+    ],
+    "required_downstream_controls": [
+      "matched_partner_shuffle",
+      "antibody_only",
+      "antigen_only",
+      "degree_aware_random",
+      "strongest_separable_marginal"
+    ],
+    "test_set_model_selection_permitted": false
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

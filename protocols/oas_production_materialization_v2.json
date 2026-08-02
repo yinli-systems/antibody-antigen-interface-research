@@ -1,0 +1,110 @@
+{
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false,
+    "training_after_independent_audit_only": true
+  },
+  "claim_boundary": "Authenticated OAS production-corpus materialization with one scheduler-mandated idle GPU per allocation; no GPU compute, model training, biological metric, downstream test access, or state-of-the-art claim",
+  "deduplication": {
+    "canonical_key": "sha256(canonical_residue_sequence_ascii)",
+    "cross_split_rule": "validation_wins_and_all_matching_training_records_are_removed",
+    "hash_collision_policy": "fail_if_equal_sha256_has_different_canonical_sequence_bytes",
+    "sample_key": "first_8_sha256_bytes_big_endian",
+    "sample_key_collision_policy": "fail_on_distinct_sequence_digests_with_equal_uint64_sample_key",
+    "within_split_representative": "minimum_authority_ordinal",
+    "within_split_rule": "one_record_per_canonical_sequence_digest"
+  },
+  "execution": {
+    "bucket_count": 256,
+    "bucket_function": "first_sha256_byte",
+    "logical_tasks_per_scheduler_allocation": {
+      "map": 32,
+      "reduce": 256
+    },
+    "map_concurrency_limit": 8,
+    "map_task_count": 32,
+    "mapper_assignment": "selected_data_unit_index_modulo_32",
+    "reduce_concurrency_limit": 8,
+    "reduce_task_count": 256,
+    "stage_order": [
+      "map_and_filter",
+      "verify_all_map_receipts",
+      "reduce_exact_dedup",
+      "finalize_manifest",
+      "independent_full_replay_audit",
+      "one_gpu_loader_and_checkpoint_gate"
+    ]
+  },
+  "format_version": "oas_production_materialization_protocol_v2",
+  "inputs": {
+    "download_completion_audit_file_sha256": "58557ba1ff7b1f30b48a0d5ac167b2ceb734770ced4d38ec4bf77bb25d55dbd2",
+    "download_completion_audit_payload_sha256": "f767d026f17e06a8532a7d687605a3cee2d4eaad0b406f52e8a34e441458683b",
+    "download_receipt_count": 6373,
+    "filter_policy_file_sha256": "5f7e360ff731805fd87f33297c4cba09b9f5c07ddf73c96d4850db54b09106e7",
+    "plan_file_sha256": "45f7d002400dd81d9afa5f6b7daff6b6e67d7557aa2e379a031a5ac3b1f2b1b0",
+    "plan_payload_sha256": "fba741bc6666067f1601f2096d31507c1b38edb8af95118110eaf1cef7e059e0",
+    "raw_compressed_bytes": 120714440652,
+    "raw_inventory_sha256": "9bf131fd0e79e3c3a0f112a087fabc441010924dff773b67752ae191ce11ce44",
+    "source_record_count": 265834820
+  },
+  "map_record": {
+    "authority_ordinal": "uint64_equal_to_data_unit_index_shift_left_32_bitwise_or_physical_row_index",
+    "byte_order": "big_endian",
+    "fields": [
+      "sequence_sha256_32_bytes",
+      "authority_ordinal_uint64",
+      "split_uint8",
+      "chain_type_uint8",
+      "stratum_uint8",
+      "status_flags_uint8",
+      "study_id_uint16",
+      "sequence_length_uint16",
+      "sequence_ascii_zero_padded_192_bytes"
+    ],
+    "fixed_record_bytes": 240
+  },
+  "output": {
+    "corpus_format": "sharded_fixed_width_numpy_v1",
+    "global_order": "sha256_digest_ascending_within_bucket_order_0_to_255",
+    "maximum_encoded_tokens": 194,
+    "preserved_metadata": [
+      "chain_type",
+      "sequence_length",
+      "stratum",
+      "study_id",
+      "bounded_anarci_status_flags",
+      "sample_key"
+    ],
+    "splits": [
+      "train",
+      "validation"
+    ]
+  },
+  "parent_protocol_file_sha256": "5682dfe3a798a30b55a2281d214726e81621aba052458ef04f8dcb65dc88ee70",
+  "quality_gates": {
+    "all_download_receipts_reverified": true,
+    "all_raw_compressed_sha256_recomputed_during_mapping": true,
+    "all_source_rows_accounted": true,
+    "complete_map_and_reduce_receipt_inventory": true,
+    "create_only_outputs": true,
+    "cross_split_exact_duplicate_count_reported": true,
+    "independent_auditor_imports_no_mapper_or_reducer": true,
+    "no_writable_final_artifacts": true,
+    "production_dedup_complete_required": true,
+    "validation_studies_absent_from_training_units": true
+  },
+  "resource_policy": {
+    "cuda_visible_devices_required_empty": true,
+    "gpu_allocation_during_materialization": "scheduler_mandated_idle_only",
+    "gpu_compute_permitted": false,
+    "maximum_parallel_cpu_workers": 8,
+    "scheduler_reserved_gpu_count": 1,
+    "shared_storage_minimum_free_bytes": 1000000000000,
+    "temporary_and_final_outputs_are_separate": true
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

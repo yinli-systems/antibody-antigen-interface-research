@@ -1,0 +1,28 @@
+{
+  "amended_auditor_sha256": "5293c0503a5312ba9e1c762c40e85a8f9ff62dd9127e254e658f2f2b5a490c92",
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Audit-only correction of Python cyclic-GC semantics for immutable job 1343455; no training change, candidate promotion, production training, biological metric, scale authorization, or state-of-the-art claim",
+  "correction": {
+    "automatic_gc_semantics": "gc.disable prevents automatic cyclic collection but does not forbid explicit gc.collect calls",
+    "collection_counters": "reported as telemetry and not interpreted as proof of automatic collection"
+  },
+  "failed_parent_interpretation": {
+    "field": "python_gc.stats_delta[*].collections",
+    "preserved": true,
+    "reason": "Explicit gc.collect calls remain legal while automatic cyclic garbage collection is disabled"
+  },
+  "format_version": "antibody_compile_numerics_audit_amendment_v2",
+  "job_id": 1343455,
+  "parent_auditor_sha256": "82ed36dd28213cf1b37a9f828f36aa2de5f3389664e194b58783085e82503371",
+  "parent_protocol_file_sha256": "7aceadbd92dde80c8bd37b15387f31f5503e9f63ffd8176f6a922e8440c7afce",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

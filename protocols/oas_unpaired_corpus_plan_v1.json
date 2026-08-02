@@ -1,0 +1,79 @@
+{
+  "authority": {
+    "expected_data_unit_count": 15580,
+    "expected_study_count": 91,
+    "expected_unique_sequence_count": 2428152691,
+    "manifest_file_sha256": "cdbfc4a478407200a63cd180934e87c81053b6e290415bac0631c6751b1949ea",
+    "manifest_payload_sha256": "ef9b13910446a9289c1acbb9734d5724b4b60b60fad6e21014802e49a375d0d7",
+    "source_class": "unpaired"
+  },
+  "format_version": "oas_unpaired_corpus_plan_spec_v1",
+  "namespace": "abf_oas_unpaired_250m_v1",
+  "excluded_authority_studies": [
+    {
+      "reason": "The upstream directory is a maintenance label without a canonical study identifier; retain it in authority totals but exclude it from the training and validation corpus.",
+      "study": "backup"
+    }
+  ],
+  "record_selection": {
+    "exact_duplicate_policy": "canonical_sequence_digest_then_authority_order",
+    "partial_unit_filter": "sha256_integer_below_exact_fraction",
+    "validation_train_duplicate_policy": "remove_from_training",
+    "validation_units_are_never_training_units": true
+  },
+  "study_allocation": {
+    "maximum_share_denominator": 8,
+    "maximum_share_numerator": 1,
+    "minimum_study_cap_records": 0,
+    "stratum_maximum_share_overrides": {
+      "nonhuman_light": {
+        "denominator": 3,
+        "numerator": 2,
+        "reason": "Only 10 authority studies contain nonhuman light chains and two are held out; this explicit rare-stratum exception is required for a 1.5M-record target."
+      }
+    },
+    "weight": "square_root_available_records"
+  },
+  "test_access": {
+    "downstream_heldout_accessed": false,
+    "downstream_metrics_used": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "training_expected_prefilter_records": {
+    "human_heavy": 180000000,
+    "human_light": 45000000,
+    "nonhuman_heavy": 23500000,
+    "nonhuman_light": 1500000
+  },
+  "validation": {
+    "cohorts": [
+      {
+        "count": 4,
+        "minimum_stratum_records": {
+          "human_heavy": 10000,
+          "human_light": 10000
+        },
+        "name": "human_mixed_chain"
+      },
+      {
+        "count": 2,
+        "minimum_stratum_records": {
+          "nonhuman_heavy": 10000
+        },
+        "name": "nonhuman_heavy"
+      },
+      {
+        "count": 2,
+        "minimum_stratum_records": {
+          "nonhuman_light": 10000
+        },
+        "name": "nonhuman_light"
+      }
+    ],
+    "maximum_eligible_study_records": 25000000,
+    "minimum_eligible_study_records": 100000,
+    "sample_records_per_study": 250000,
+    "selection": "cohort_constrained_sha256_order",
+    "unit_and_record_selection_are_loss_independent": true
+  }
+}

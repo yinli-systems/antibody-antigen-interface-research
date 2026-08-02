@@ -1,0 +1,55 @@
+{
+  "acceptance": {
+    "exact_eight_rank_final_model_and_optimizer_parity_required": true,
+    "exact_gradient_rank_parity_required_every_update": true,
+    "maximum_memory_fraction": 0.75,
+    "maximum_p95_over_p50_step_time_each_run": 1.1,
+    "maximum_replicate_throughput_relative_range": 0.05,
+    "minimum_selected_throughput_relative_to_safe_reference_each_round": 1.25,
+    "minimum_selected_throughput_relative_to_safe_reference_pooled": 1.25,
+    "numerical_thresholds_inherited_from_parent": true
+  },
+  "allocation": {
+    "gpu_count": 8,
+    "hardware_identity_required": true,
+    "node_count": 1,
+    "same_slurm_job_required": true
+  },
+  "authorization": {
+    "pilot_16_gpu": false,
+    "pilot_32_gpu": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "benchmark": {
+    "candidate_warmup_updates": 50,
+    "deterministic_algorithms": true,
+    "isolated_compile_cache_each_run": true,
+    "replicates_per_mode": 2,
+    "run_order": [
+      "safe_eager_r1",
+      "fp32_compiled_r1",
+      "bf16_selected_r1",
+      "bf16_selected_r2",
+      "fp32_compiled_r2",
+      "safe_eager_r2"
+    ],
+    "same_membership_required": true,
+    "updates_per_run": 500
+  },
+  "claim_boundary": "Counterbalanced repeated-shard eight-GPU systems gate only; no production-corpus, biological, scaling, or state-of-the-art claim",
+  "format_version": "antibody_ddp_communication_paired_gate_v1",
+  "parent_communication_grid_result_sha256": "be70bbe938dbf0190f695b756b34b458ad0ca405f79debeaec48c58f6f03462a",
+  "parent_communication_protocol_sha256": "899f064b21a8f3b8cb6fc9c291ee19b414df1d35623c3fc18ab9fc7fbc923953",
+  "parent_efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+  "selected_candidate": {
+    "batched_grad_copy": true,
+    "communication_dtype": "bfloat16",
+    "compile_blocks": true,
+    "label": "bf16_compress_batched_copy"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_d6606ff_attempt_005/scripts/audit_antibody_production_loader_recovery.py", line 314, in <module>
+    main()
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_d6606ff_attempt_005/scripts/audit_antibody_production_loader_recovery.py", line 304, in main
+    result = audit_recovery(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_d6606ff_attempt_005/scripts/audit_antibody_production_loader_recovery.py", line 230, in audit_recovery
+    raise RecoveryAuditError("Checkpoint payload or applied state differs")
+__main__.RecoveryAuditError: Checkpoint payload or applied state differs

@@ -1,0 +1,67 @@
+{
+  "authorization": {
+    "exact_recovery": false,
+    "pilot_16_gpu": false,
+    "pilot_32_gpu": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "data": {
+    "files": {
+      "chain_types.npy": "d8c1ec7c86df9f14cdf5246e81569eb131d1ae47ea95ac7fcb7058c7558600a0",
+      "lengths.npy": "7e138e2044378729976ac1cfaf92202a582ad68f752454c0f7366f683b8a543a",
+      "manifest.json": "16bc7901df9d288d3d812fad9815eecc186a969449073badd3b8a0b96ede9e15",
+      "sample_keys.npy": "6efecab963b3b467eda27fcd2d12a5fba352621a562e968ef6f4c4087db1728d",
+      "tokens.npy": "12169fac2a18349f526df0600fd9f9fc495bc6a98397c93968b1af50253f4a34"
+    },
+    "manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
+    "record_count": 8112,
+    "root": "/ssd/scxi253/model_deployment/data/oas_pretraining/dense_pilot_v1"
+  },
+  "execution_sha256": "60286ba17be18e667903734b888f5e6a5810c75821298de966d44d2e37811938",
+  "format_version": "antibody_ddp_scientific_parity_registration_v2",
+  "implementation_parent_commit": "72b3e195c818b4442397bb95994e95c8c81ce900",
+  "registration_reason": {
+    "failed_job_id": "1340529",
+    "failure_stage": "runtime_live_state_verification",
+    "observed_changed_sections": [
+      "platform"
+    ],
+    "scientific_runs_started": false
+  },
+  "runtime": {
+    "manifest_content_sha256": "a96c448896894e313c83f875d2e1e4c900f471f5e12696553eb732a6f5659e34",
+    "manifest_file_sha256": "c6746ac9d4b2007ea2cdbcac542b826867f20912149b02bb602d18612f7de267",
+    "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_005.json",
+    "manifest_runtime_state_sha256": "8621bac46cdfe116d767eeeb5377bdddcc326031772d9fdc5aeac358dd0d95c9",
+    "python_executable": "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python",
+    "schema_version": "frontier.runtime-manifest.v2"
+  },
+  "slurm": {
+    "cpus_per_task": 32,
+    "explicit_memory_request": false,
+    "gpus": 8,
+    "nodes": 1,
+    "partition": "gpu_5090",
+    "tasks": 1,
+    "wall_time": "03:00:00"
+  },
+  "source_files": {
+    "scripts/generate_runtime_manifest.py": "ccf6a1a561d50bb5d42f96c399a9363d9797738a1f84ae466ddd2b5efe051999",
+    "scripts/run_antibody_pretraining.py": "06c837792ae23c0d326f37ad54b8e1ed5756eba77182a48b4eaa70901dbc5b6f",
+    "scripts/run_antibody_pretraining_optimized.py": "5f93efe9b0a4c1509908dbf89337c249aefc06f54a4d97be02af7d1da35c67b9",
+    "slurm/antibody_ddp_scientific_parity.sbatch": "d1d1f25c385f0b4531f62b07b308f51860062e7bbc91c1d7dcd128c38218cd05",
+    "src/antibody_pretraining/__init__.py": "44eaf3a397b742280734572d87cf7690eed542e8cfc889066fdbb45326683f7a",
+    "src/antibody_pretraining/dense_shard.py": "5ae52fd7081749c1c35e41733f100ef877e1559c1c591c21263a5375c6ad7b82",
+    "src/antibody_pretraining/masking.py": "764a5bb179ef30dbb82c9ee1a7e932889d3f58dca2f2c4de3f3408115c9228be",
+    "src/antibody_pretraining/model.py": "f33e90400f6e7a55a434adbc72534fc7c971b7e60b946763c410287f1cc412c3",
+    "src/antibody_pretraining/oas_authority.py": "108089e49fdbd5d0fd11d0294543384bbc32e6ad71a72d6195a79573f98872fb",
+    "src/antibody_pretraining/tokenizer.py": "270a90b6c092a2890d0d84209578d4ba1e9b8c871c5377b57b5c72e3af24e274",
+    "src/antibody_pretraining/training_contract.py": "0c3546288c6f4be0bdb9c8cf15826547b88ebe94141d502c95a505a1ccb0467e"
+  },
+  "source_root": "/ssd/scxi253/model_deployment/jobs/antibody_ddp_scientific_parity_attempt_002",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

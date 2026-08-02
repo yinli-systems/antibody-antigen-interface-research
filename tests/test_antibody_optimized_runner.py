@@ -1,0 +1,253 @@
+import ast
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+RUNNER = ROOT / "scripts/run_antibody_pretraining_optimized.py"
+SLURM = ROOT / "slurm/antibody_pretraining_efficiency_pilot.sbatch"
+PAIRED_SLURM = ROOT / "slurm/antibody_pretraining_paired_efficiency.sbatch"
+ALLOCATION_CAPTURE = ROOT / "scripts/capture_antibody_allocation.py"
+PAIRED_PROTOCOL = ROOT / "protocols/antibody_paired_efficiency_v1.json"
+
+
+def test_optimized_runner_is_ascii_and_syntax_valid() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    ast.parse(source)
+    assert 'options = {"triton.cudagraphs": False}' in source
+    assert "block.compile(backend=\"inductor\", fullgraph=True, options=options)" in source
+    assert "not args.disable_ddp_gradient_as_bucket_view" in source
+    assert "static_graph=False" in source
+    assert "_get_ddp_logging_data()" in source
+    assert '"ddp_logging_data"' in source
+    assert "fused=fused" in source
+
+
+def test_optimized_receipt_binds_every_efficiency_switch() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    for field in (
+        "bucketed_padding",
+        "audit_gradient_rank_parity",
+        "compile_blocks",
+        "compile_prewarm_buckets",
+        "disable_compiled_cudagraphs",
+        "ddp_bucket_cap_mb",
+        "ddp_batched_grad_copy",
+        "ddp_communication_dtype",
+        "disable_ddp_gradient_as_bucket_view",
+        "ddp_static_graph",
+        "deterministic_algorithms",
+        "fsdp_output_dtype",
+        "fused_adamw",
+        "length_bucketing",
+        "pinned_staging",
+    ):
+        assert f'"{field}"' in source
+    assert '"launch_argv"' in source
+    assert '"ddp_communication_protocol_sha256"' in source
+    assert '"compile_prewarm_trace"' in source
+    assert '"membership_sha256"' in source
+    assert '"peak_allocated_memory_mib"' in source
+    assert '"telemetry_interval_seconds"' in source
+    assert '"production_pretraining": False' in source
+    assert '"scientific_claim": False' in source
+    assert '"slurm_job_id"' in source
+    assert '"slurm_job_nodelist"' in source
+    assert "socket.gethostname()" in source
+
+
+def test_parity_mode_binds_split_seed_and_training_membership() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    for argument in (
+        "--parity-protocol",
+        "--parity-split-root",
+        "--run-seed",
+    ):
+        assert argument in source
+    assert "Parity protocol, split, and run seed are indivisible" in source
+    assert "Parity gate runs prohibit resume" in source
+    assert "parity_training_indices[plan.indices]" in source
+    assert "seed=effective_seed" in source
+    assert '"parity_protocol_sha256"' in source
+    assert '"parity_split_receipt_file_sha256"' in source
+    assert '"parity_split_receipt_sha256"' in source
+    assert '"training_universe_count"' in source
+
+
+def test_parity_mode_scores_fixed_panel_before_and_after_training() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert source.count("_evaluate_parity_panel(") == 3
+    helper = source[
+        source.index("def _evaluate_parity_panel(") :
+        source.index("def _compile_transformer_blocks(")
+    ]
+    assert "model.eval()" in helper
+    assert "with torch.no_grad():" in helper
+    assert "F.cross_entropy(" in helper
+    assert "output.logits.argmax(dim=-1)" in helper
+    assert "dist.all_gather_object(gathered, local_records)" in helper
+    main = source[source.index("def main()") :]
+    pre = main.index("pretraining_evaluation = _evaluate_parity_panel(")
+    loop = main.index("for update in range(")
+    post = main.index("posttraining_evaluation = _evaluate_parity_panel(")
+    assert pre < loop < post
+    assert '"pretraining_evaluation"' in main
+    assert '"posttraining_evaluation"' in main
+
+
+def test_resume_state_binds_batch_and_bucket_geometry() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    expected_start = source.index("expected = {")
+    expected = source[
+        expected_start : source.index("trace: list", expected_start)
+    ]
+    trainer_start = source.index("trainer_state = {")
+    trainer = source[
+        trainer_start : source.index("checkpoint_format", trainer_start)
+    ]
+    for field in (
+        "batch_quantum",
+        "length_bucket_boundaries",
+        "micro_batch_per_gpu",
+        "target_residue_tokens",
+    ):
+        assert f'"{field}"' in expected
+        assert f'"{field}"' in trainer
+
+
+def test_deterministic_candidate_fails_on_unsupported_algorithms() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert "torch.use_deterministic_algorithms(" in source
+    assert "warn_only=False" in source
+    assert "torch.backends.cudnn.deterministic = args.deterministic_algorithms" in source
+    assert "torch.backends.cudnn.benchmark = False" in source
+    assert "random.getstate()" in source
+    assert "np.random.get_state()" in source
+    assert "torch.get_rng_state()" in source
+    assert "torch.cuda.get_rng_state(device)" in source
+    assert "_restore_rng_checkpoint(" in source
+    assert '"checkpoint_rng_manifest_sha256"' in source
+    assert '"resume_loaded_model_sha256"' in source
+    assert '"resume_loaded_optimizer_sha256"' in source
+    assert '"checkpoint_payload_model_sha256"' in source
+    assert '"checkpoint_payload_optimizer_sha256"' in source
+    assert '"resume_payload_model_sha256"' in source
+    assert '"resume_payload_optimizer_sha256"' in source
+    assert '"final_model_rank_sha256"' in source
+    assert '"final_optimizer_rank_sha256"' in source
+    assert '"initial_model_rank_sha256"' in source
+    assert "_replicated_rank_digests(" in source
+    assert "_assert_scalar_rank_parity(" in source
+    assert "post-reduction gradient norm at update" in source
+    assert "json.dumps(gathered" in source
+    assert "no_dist=True" not in source
+    assert "no_dist=backend == \"ddp\"" not in source
+    assert source.count("dcp.save(") == 1
+    assert source.count("dcp.load(") == 1
+    assert '"resume_rng_manifest_sha256"' in source
+    main_start = source.index("def main()")
+    assert source.index(") = _load_authenticated_dcp(", main_start) < source.index(
+        "compile_prewarm_trace:", main_start
+    )
+
+
+def test_resume_restores_rng_after_compile_prewarm() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    main_start = source.index("def main()")
+    prewarm = source.index(
+        "compile_prewarm_trace = _prewarm_compiled_buckets(", main_start
+    )
+    restore = source.index(
+        "resume_rng_manifest_sha256 = _restore_rng_checkpoint(", main_start
+    )
+    assert restore > prewarm
+    assert '"resume_rng_restored_after_compile_prewarm"' in source
+
+
+def test_ddp_communication_optimizations_are_protocol_and_runtime_bound() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert "batched_grad_copy=args.ddp_batched_grad_copy" in source
+    assert "default_hooks.bf16_compress_hook" in source
+    assert "wrapped.register_comm_hook" in source
+    assert 'nccl_version <= (2, 9, 6)' in source
+    assert 'torch.__version__.startswith("2.13.")' in source
+    assert "DDP communication candidate is not registered" in source
+    assert "antibody_ddp_communication_optimization_v1" in source
+    assert '"ddp_communication_protocol_sha256"' in source
+
+
+def test_length_bucketing_preserves_membership_by_construction() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert "np.lexsort" in source
+    assert "Length bucketing changed update membership" in source
+    assert "logical_indices_for_compute = _ordered_indices(" in source
+    assert "membership_indices = (" in source
+    assert "parity_training_indices[plan.indices]" in source
+    assert "args.bucketed_padding or args.length_bucketing" in source
+
+
+def test_efficiency_slurm_exposes_pinned_optimization_flags() -> None:
+    source = SLURM.read_text(encoding="ascii")
+    assert "run_antibody_pretraining_optimized.py" in source
+    assert "ABF_COMPILE_BLOCKS" in source
+    assert "ABF_DISABLE_COMPILED_CUDAGRAPHS" in source
+    assert "ABF_DETERMINISTIC_ALGORITHMS" in source
+    assert "ABF_COMPILE_PREWARM_BUCKETS" in source
+    assert "ABF_AUDIT_GRADIENT_RANK_PARITY" in source
+    assert "ABF_DISABLE_DDP_GRADIENT_AS_BUCKET_VIEW" in source
+    assert "ABF_DDP_BATCHED_GRAD_COPY" in source
+    assert "ABF_DDP_COMMUNICATION_DTYPE" in source
+    assert "ABF_DDP_COMMUNICATION_PROTOCOL" in source
+    assert "ABF_DISABLE_DDP_STATIC_GRAPH" not in source
+    assert "ABF_FUSED_ADAMW" in source
+    assert "ABF_PINNED_STAGING" in source
+    assert "ABF_BUCKETED_PADDING" in source
+    assert "ABF_LENGTH_BUCKETING" in source
+    assert "ABF_LENGTH_BUCKET_BOUNDARIES" in source
+    assert 'LENGTH_BUCKET_BOUNDARIES:-96,128,160,194' in source
+    assert '--length-bucket-boundaries "$LENGTH_BUCKET_BOUNDARIES"' in source
+    assert "ABF_RESUME_ROOT" in source
+    assert "ABF_TELEMETRY_INTERVAL_SECONDS" in source
+    assert 'TELEMETRY_INTERVAL_SECONDS:-30' in source
+    assert "TORCHINDUCTOR_CACHE_DIR" in source
+    protocol = json.loads(
+        (ROOT / "protocols/antibody_efficiency_gate_v1.json").read_text(
+            encoding="ascii"
+        )
+    )
+    assert protocol["candidate_optimizations"]["compile"].startswith("regional")
+
+
+def test_paired_efficiency_launcher_uses_one_allocation_and_frozen_modes() -> None:
+    source = PAIRED_SLURM.read_text(encoding="ascii")
+    assert "#SBATCH --nodes=1" in source
+    assert "#SBATCH --gres=gpu:8" in source
+    assert 'PAIR_ORDER=${ABF_PAIR_ORDER:-eager,compiled}' in source
+    assert "eager,compiled|compiled,eager" in source
+    assert "capture_antibody_allocation.py" in source
+    assert '--pair-order "$PAIR_ORDER"' in source
+    assert "--steps 500" in source
+    assert "--deterministic-algorithms" in source
+    assert "--length-bucket-boundaries 96,128,144,194" in source
+    assert "--compile-blocks" in source
+    assert "--compile-prewarm-buckets" in source
+    assert "--bucketed-padding" in source
+    assert source.count("--nproc-per-node=8") == 1
+
+
+def test_allocation_capture_and_protocol_are_fail_closed() -> None:
+    source = ALLOCATION_CAPTURE.read_text(encoding="ascii")
+    ast.parse(source)
+    assert "os.O_EXCL" in source
+    assert "exactly eight visible GPUs" in source
+    assert '"nvidia-smi", "topo", "-m"' in source
+    assert 'choices=("eager,compiled", "compiled,eager")' in source
+    protocol = json.loads(PAIRED_PROTOCOL.read_text(encoding="ascii"))
+    assert protocol["allocation"] == {
+        "gpu_count": 8,
+        "hardware_identity_required": True,
+        "node_count": 1,
+        "same_slurm_job_required": True,
+    }
+    assert protocol["benchmark"]["candidate_updates"] == 500
+    assert protocol["benchmark"]["deterministic_algorithms"] is True

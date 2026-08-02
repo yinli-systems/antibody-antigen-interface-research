@@ -1,0 +1,489 @@
+#!/usr/bin/env python3
+"""Audit a 500-update same-membership antibody efficiency benchmark."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import statistics
+
+
+CANDIDATES = ("eager", "compiled")
+EXPECTED_MANIFEST_SHA256 = (
+    "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6"
+)
+EXPECTED_MODEL_FAMILY_SHA256 = (
+    "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015"
+)
+EXPECTED_TRAINING_PROTOCOL_SHA256 = (
+    "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b"
+)
+
+
+def _load(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="ascii"))
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _bindings(values: list[str], label: str) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for value in values:
+        name, separator, item = value.partition("=")
+        if not separator or name not in CANDIDATES or name in result or not item:
+            raise RuntimeError(f"Invalid {label} binding: {value}")
+        result[name] = item
+    if set(result) != set(CANDIDATES):
+        raise RuntimeError(f"{label} bindings must cover {CANDIDATES}")
+    return result
+
+
+def _quantile(values: list[float], fraction: float) -> float:
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * fraction
+    lower = int(math.floor(position))
+    upper = int(math.ceil(position))
+    if lower == upper:
+        return ordered[lower]
+    return ordered[lower] * (upper - position) + ordered[upper] * (position - lower)
+
+
+def _summary(receipt: dict[str, object], warmup: int) -> dict[str, float | int]:
+    trace = receipt["trace"]
+    if len(trace) != 500 or warmup >= len(trace):
+        raise RuntimeError("Efficiency benchmark must contain 500 updates")
+    measured = trace[warmup:]
+    seconds = [float(item["seconds"]) for item in measured]
+    if not all(math.isfinite(value) and value > 0.0 for value in seconds):
+        raise RuntimeError("Efficiency benchmark contains invalid timing")
+    residue_tokens = sum(int(item["residue_tokens"]) for item in measured)
+    p50 = _quantile(seconds, 0.5)
+    p95 = _quantile(seconds, 0.95)
+    return {
+        "maximum_step_seconds": max(seconds),
+        "measured_updates": len(measured),
+        "p50_step_seconds": p50,
+        "p95_over_p50": p95 / p50,
+        "p95_step_seconds": p95,
+        "residue_tokens": residue_tokens,
+        "residue_tokens_per_second": residue_tokens / sum(seconds),
+        "warmup_updates_excluded": warmup,
+    }
+
+
+def _number(value: str) -> float:
+    return float(value.strip().split()[0])
+
+
+def _telemetry(path: Path) -> dict[str, float | int | str]:
+    with path.open("r", encoding="ascii", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    active: list[tuple[float, float, float]] = []
+    for row in rows:
+        normalized = {key.strip(): value for key, value in row.items()}
+        utilization = _number(normalized["utilization.gpu [%]"])
+        memory = _number(normalized["memory.used [MiB]"])
+        power = _number(normalized["power.draw [W]"])
+        if memory > 100.0:
+            active.append((utilization, memory, power))
+    if not active:
+        raise RuntimeError(f"No active GPU telemetry in {path}")
+    return {
+        "active_samples": len(active),
+        "file_sha256": _sha256(path),
+        "gpu_utilization_mean_percent": statistics.fmean(row[0] for row in active),
+        "gpu_utilization_median_percent": statistics.median(row[0] for row in active),
+        "maximum_memory_mib": max(row[1] for row in active),
+        "mean_power_watts": statistics.fmean(row[2] for row in active),
+    }
+
+
+def _validate_receipt(
+    name: str,
+    receipt: dict[str, object],
+    protocol_sha256: str,
+    require_disabled_compiled_cudagraphs: bool,
+    require_enabled_compiled_cudagraphs: bool,
+    expected_length_bucket_boundaries: list[int],
+    require_deterministic_algorithms: bool,
+) -> None:
+    expected = {
+        "backend": "ddp",
+        "batch_quantum": 128,
+        "efficiency_protocol_sha256": protocol_sha256,
+        "format_version": "antibody_pretraining_optimized_pilot_v1",
+        "micro_batch_per_gpu": 16,
+        "model_family_sha256": EXPECTED_MODEL_FAMILY_SHA256,
+        "preset": "abf_650m",
+        "shard_manifest_sha256": EXPECTED_MANIFEST_SHA256,
+        "target_residue_tokens": 16384,
+        "training_protocol_sha256": EXPECTED_TRAINING_PROTOCOL_SHA256,
+        "world_size": 8,
+    }
+    if any(receipt.get(key) != value for key, value in expected.items()):
+        raise RuntimeError("Efficiency receipt has invalid frozen fields")
+    if receipt.get("test_access") != {
+        "downstream_labels_used": False,
+        "sabdab2_heldout_accessed": False,
+    }:
+        raise RuntimeError("Efficiency receipt used forbidden test inputs")
+    if require_deterministic_algorithms and (
+        receipt.get("deterministic_algorithms") is not True
+    ):
+        raise RuntimeError(f"Efficiency deterministic mode differs for {name}")
+    if require_disabled_compiled_cudagraphs or require_enabled_compiled_cudagraphs:
+        common = {
+            "audit_gradient_rank_parity": False,
+            "ddp_static_graph": False,
+            "ddp_bucket_cap_mb": 25,
+            "disable_ddp_gradient_as_bucket_view": False,
+            "fsdp_output_dtype": "bfloat16",
+            "length_bucketing": False,
+        }
+        if require_deterministic_algorithms:
+            common["deterministic_algorithms"] = True
+        expected_optimization = {
+            "eager": {
+                **common,
+                "bucketed_padding": False,
+                "compile_blocks": False,
+                "compile_prewarm_buckets": False,
+                "disable_compiled_cudagraphs": False,
+                "fused_adamw": False,
+                "pinned_staging": False,
+            },
+            "compiled": {
+                **common,
+                "bucketed_padding": True,
+                "compile_blocks": True,
+                "compile_prewarm_buckets": True,
+                "disable_compiled_cudagraphs": (
+                    require_disabled_compiled_cudagraphs
+                ),
+                "fused_adamw": True,
+                "pinned_staging": True,
+            },
+        }
+        if receipt.get("optimization") != expected_optimization[name]:
+            raise RuntimeError(f"Efficiency optimization differs for {name}")
+        if receipt.get("length_bucket_boundaries") != (
+            expected_length_bucket_boundaries
+        ):
+            raise RuntimeError(f"Efficiency length buckets differ for {name}")
+    logging_data = receipt.get("ddp_logging_data")
+    if (
+        not isinstance(logging_data, dict)
+        or logging_data.get("backend_name") != "nccl"
+        or logging_data.get("world_size") != 8
+        or int(logging_data.get("num_buckets_reduced", 0)) <= 0
+    ):
+        raise RuntimeError(f"DDP logging evidence differs for {name}")
+    initial_rank_digests = receipt.get("initial_model_rank_sha256")
+    if (
+        not isinstance(initial_rank_digests, list)
+        or len(initial_rank_digests) != 8
+        or len(set(initial_rank_digests)) != 1
+    ):
+        raise RuntimeError(f"Initial eight-rank parity differs for {name}")
+    rank_digest_fields = (
+        ("final_model_rank_sha256", "final_model_sha256"),
+        ("final_optimizer_rank_sha256", "final_optimizer_sha256"),
+    )
+    for field, scalar_field in rank_digest_fields:
+        values = receipt.get(field)
+        if (
+            not isinstance(values, list)
+            or len(values) != 8
+            or set(values) != {receipt.get(scalar_field)}
+        ):
+            raise RuntimeError(f"Eight-rank parity differs for {name}:{field}")
+
+
+def _paired_allocation(
+    allocation_path: Path,
+    paired_protocol_path: Path,
+    receipts: dict[str, dict[str, object]],
+    job_ids: dict[str, str],
+    efficiency_protocol_sha256: str,
+) -> dict[str, object]:
+    allocation = _load(allocation_path)
+    paired_protocol = _load(paired_protocol_path)
+    if paired_protocol.get("format_version") != "antibody_paired_efficiency_v1":
+        raise RuntimeError("Unexpected paired efficiency protocol")
+    if paired_protocol.get("parent_efficiency_protocol_sha256") != (
+        efficiency_protocol_sha256
+    ):
+        raise RuntimeError("Paired protocol has the wrong parent")
+    if allocation.get("format_version") != "antibody_paired_allocation_v1":
+        raise RuntimeError("Unexpected paired allocation receipt")
+    if paired_protocol.get("allocation") != {
+        "gpu_count": 8,
+        "hardware_identity_required": True,
+        "node_count": 1,
+        "same_slurm_job_required": True,
+    }:
+        raise RuntimeError("Paired allocation policy changed")
+    benchmark = paired_protocol.get("benchmark")
+    if (
+        not isinstance(benchmark, dict)
+        or benchmark.get("candidate_updates") != 500
+        or benchmark.get("candidate_warmup_updates") != 50
+        or benchmark.get("deterministic_algorithms") is not True
+        or benchmark.get("same_membership_required") is not True
+        or benchmark.get("orders_permitted")
+        != ["eager,compiled", "compiled,eager"]
+        or allocation.get("pair_order") not in benchmark["orders_permitted"]
+    ):
+        raise RuntimeError("Paired benchmark policy changed")
+    slurm = allocation.get("slurm")
+    if not isinstance(slurm, dict):
+        raise RuntimeError("Paired allocation is missing Slurm identity")
+    expected_job_id = slurm.get("job_id")
+    if (
+        not isinstance(expected_job_id, str)
+        or not expected_job_id
+        or set(job_ids.values()) != {expected_job_id}
+        or allocation.get("gpu_count") != 8
+        or slurm.get("node_count") != 1
+    ):
+        raise RuntimeError("Runs do not share the required eight-GPU allocation")
+    expected_receipt_allocation = {
+        "hostname": allocation.get("hostname"),
+        "slurm_job_id": expected_job_id,
+        "slurm_job_nodelist": slurm.get("job_nodelist"),
+    }
+    if any(
+        receipt.get("allocation") != expected_receipt_allocation
+        for receipt in receipts.values()
+    ):
+        raise RuntimeError("Training receipt and paired allocation disagree")
+    inventory = allocation.get("gpu_inventory")
+    if (
+        not isinstance(inventory, list)
+        or len(inventory) != 8
+        or not all(isinstance(item, dict) for item in inventory)
+        or not all(item.get("uuid") for item in inventory)
+        or len({item.get("uuid") for item in inventory}) != 8
+        or not allocation.get("topology")
+        or allocation.get("test_access")
+        != {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        }
+    ):
+        raise RuntimeError("Paired allocation hardware identity is incomplete")
+    return {
+        "allocation_receipt_sha256": _sha256(allocation_path),
+        "gpu_uuids": [item["uuid"] for item in inventory],
+        "hostname": allocation["hostname"],
+        "pair_order": allocation["pair_order"],
+        "paired_protocol_sha256": _sha256(paired_protocol_path),
+        "slurm_job_id": expected_job_id,
+        "slurm_job_nodelist": slurm["job_nodelist"],
+    }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--receipt", action="append", default=[])
+    parser.add_argument("--telemetry", action="append", default=[])
+    parser.add_argument("--job-id", action="append", default=[])
+    parser.add_argument("--efficiency-protocol", type=Path, required=True)
+    parser.add_argument("--source-archive-sha256", required=True)
+    parser.add_argument("--runner-sha256", required=True)
+    parser.add_argument(
+        "--require-disabled-compiled-cudagraphs",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--require-enabled-compiled-cudagraphs",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--expected-length-bucket-boundaries",
+        default="96,128,160,194",
+    )
+    parser.add_argument("--require-deterministic-algorithms", action="store_true")
+    parser.add_argument("--allocation-receipt", type=Path)
+    parser.add_argument("--paired-protocol", type=Path)
+    parser.add_argument("--label", required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if (
+        args.require_disabled_compiled_cudagraphs
+        and args.require_enabled_compiled_cudagraphs
+    ):
+        raise RuntimeError("Compiled CUDAGraph policy is contradictory")
+    try:
+        expected_length_bucket_boundaries = [
+            int(value) for value in args.expected_length_bucket_boundaries.split(",")
+        ]
+    except ValueError as error:
+        raise RuntimeError("Expected length buckets must be integers") from error
+    if (
+        not expected_length_bucket_boundaries
+        or sorted(set(expected_length_bucket_boundaries))
+        != expected_length_bucket_boundaries
+        or expected_length_bucket_boundaries[-1] != 194
+    ):
+        raise RuntimeError("Expected length buckets must increase to 194")
+    receipt_bindings = _bindings(args.receipt, "receipt")
+    telemetry_bindings = _bindings(args.telemetry, "telemetry")
+    job_ids = _bindings(args.job_id, "job ID")
+    receipt_paths = {
+        name: Path(value) for name, value in receipt_bindings.items()
+    }
+    telemetry_paths = {
+        name: Path(value) for name, value in telemetry_bindings.items()
+    }
+    receipts = {name: _load(path) for name, path in receipt_paths.items()}
+    protocol = _load(args.efficiency_protocol)
+    if protocol.get("format_version") != "antibody_efficiency_gate_v1":
+        raise RuntimeError("Unexpected efficiency protocol")
+    protocol_sha256 = _sha256(args.efficiency_protocol)
+    for name, receipt in receipts.items():
+        _validate_receipt(
+            name,
+            receipt,
+            protocol_sha256,
+            args.require_disabled_compiled_cudagraphs,
+            args.require_enabled_compiled_cudagraphs,
+            expected_length_bucket_boundaries,
+            args.require_deterministic_algorithms,
+        )
+    if (args.allocation_receipt is None) != (args.paired_protocol is None):
+        raise RuntimeError(
+            "Paired allocation receipt and protocol must be supplied together"
+        )
+    paired_allocation = None
+    if args.allocation_receipt is not None and args.paired_protocol is not None:
+        paired_allocation = _paired_allocation(
+            args.allocation_receipt,
+            args.paired_protocol,
+            receipts,
+            job_ids,
+            protocol_sha256,
+        )
+
+    keys = (
+        "consumed_residue_tokens",
+        "residue_tokens",
+        "selected_targets",
+        "sequence_count",
+        "update",
+    )
+    reference_trace = receipts["eager"]["trace"]
+    membership_equal = (
+        len({receipt["membership_sha256"] for receipt in receipts.values()}) == 1
+        and all(
+            len(receipt["trace"]) == len(reference_trace)
+            and all(
+                all(left[key] == right[key] for key in keys)
+                for left, right in zip(reference_trace, receipt["trace"])
+            )
+            for receipt in receipts.values()
+        )
+    )
+    summaries = {name: _summary(receipt, 50) for name, receipt in receipts.items()}
+    telemetry = {
+        name: _telemetry(path) for name, path in telemetry_paths.items()
+    }
+    eager_throughput = summaries["eager"]["residue_tokens_per_second"]
+    for name, summary in summaries.items():
+        summary["throughput_relative_to_eager"] = (
+            summary["residue_tokens_per_second"] / eager_throughput
+        )
+        summary["maximum_memory_fraction"] = (
+            max(
+                float(receipts[name]["peak_allocated_memory_mib"]),
+                float(telemetry[name]["maximum_memory_mib"]),
+            )
+            / protocol["efficiency_gate"]["total_gpu_memory_mib"]
+        )
+    candidate = summaries["compiled"]
+    gates = {
+        "memory": (
+            candidate["maximum_memory_fraction"]
+            <= protocol["efficiency_gate"]["maximum_memory_fraction"]
+        ),
+        "membership": membership_equal,
+        "rank_parity": True,
+        "stability": (
+            candidate["p95_over_p50"]
+            <= protocol["efficiency_gate"]["maximum_p95_over_p50_step_time"]
+        ),
+        "throughput": (
+            candidate["throughput_relative_to_eager"]
+            >= protocol["efficiency_gate"][
+                "minimum_throughput_relative_to_safe_reference"
+            ]
+        ),
+    }
+    passed = all(gates.values())
+    payload = {
+        "authorization": {
+            "production_pretraining": False,
+            "recovery_required_before_scale": True,
+            "scale_16_gpu": False,
+            "scale_32_gpu": False,
+        },
+        "claim_boundary": "Five-hundred-update repeated-shard eight-GPU systems benchmark; no production-corpus, scientific, or state-of-the-art claim",
+        "efficiency_protocol_sha256": protocol_sha256,
+        "format_version": "antibody_efficiency_benchmark_v1",
+        "gate_passed": passed,
+        "gates": gates,
+        "gpu_telemetry": telemetry,
+        "label": args.label,
+        "membership_equal": membership_equal,
+        "paired_allocation": paired_allocation,
+        "expected_length_bucket_boundaries": expected_length_bucket_boundaries,
+        "required_disabled_compiled_cudagraphs": (
+            args.require_disabled_compiled_cudagraphs
+        ),
+        "required_enabled_compiled_cudagraphs": (
+            args.require_enabled_compiled_cudagraphs
+        ),
+        "required_deterministic_algorithms": (
+            args.require_deterministic_algorithms
+        ),
+        "runs": {
+            name: {
+                "job_id": job_ids[name],
+                "receipt_sha256": _sha256(receipt_paths[name]),
+                "slurm_state": "COMPLETED",
+            }
+            for name in CANDIDATES
+        },
+        "source": {
+            "archive_sha256": args.source_archive_sha256,
+            "auditor_sha256": _sha256(Path(__file__)),
+            "runner_sha256": args.runner_sha256,
+        },
+        "summaries": summaries,
+        "test_access": {
+            "downstream_labels_used": False,
+            "sabdab2_heldout_accessed": False,
+        },
+    }
+    encoded = (
+        json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        + "\n"
+    ).encode("ascii")
+    descriptor = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o444)
+    with os.fdopen(descriptor, "wb") as handle:
+        handle.write(encoded)
+
+
+if __name__ == "__main__":
+    main()

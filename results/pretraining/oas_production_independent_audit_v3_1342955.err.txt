@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/model_deployment/jobs/antibody_oas_postprocess_bde29d7/scripts/audit_oas_production_corpus_independent.py", line 901, in <module>
+    raise SystemExit(main())
+  File "/ssd/scxi253/model_deployment/jobs/antibody_oas_postprocess_bde29d7/scripts/audit_oas_production_corpus_independent.py", line 891, in main
+    result = audit_corpus(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_oas_postprocess_bde29d7/scripts/audit_oas_production_corpus_independent.py", line 789, in audit_corpus
+    ) = _map_inventory(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_oas_postprocess_bde29d7/scripts/audit_oas_production_corpus_independent.py", line 511, in _map_inventory
+    raise IndependentCorpusAuditError("Mapper row accounting differs")
+__main__.IndependentCorpusAuditError: Mapper row accounting differs

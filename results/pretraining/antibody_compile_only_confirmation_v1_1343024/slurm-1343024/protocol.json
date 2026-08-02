@@ -1,0 +1,107 @@
+{
+  "acceptance": {
+    "bootstrap_confidence": 0.95,
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 2026073103,
+    "compiled_relative_to_eager_each_round": 1.05,
+    "compiled_relative_to_eager_pooled": 1.05,
+    "maximum_masked_accuracy_absolute_decrease": 0.005,
+    "maximum_masked_cross_entropy_relative_increase": 0.01,
+    "maximum_memory_fraction": 0.8,
+    "maximum_p95_over_p50_step_time": 1.1,
+    "maximum_replicate_throughput_relative_range": 0.05,
+    "maximum_short_horizon_gradient_norm_relative_difference": 0.01,
+    "maximum_short_horizon_loss_absolute_difference": 0.005,
+    "minimum_approximate_6n_mfu": 0.35,
+    "short_horizon_updates": 20,
+    "warmup_updates_excluded": 100
+  },
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false,
+    "scientific_claim": false
+  },
+  "batch": {
+    "batch_quantum_sequences": 512,
+    "global_residue_token_target_per_update": 262144,
+    "micro_batch_per_gpu": 16,
+    "updates_per_run": 600
+  },
+  "claim_boundary": "Training-excluded repeated dense-pilot confirmation of the compile-only candidate after the longer full-bundle gate failed; no production-corpus training, biological generalization, downstream metric, scale authorization, or state-of-the-art claim",
+  "evidence_precedence": {
+    "factor_attribution": {
+      "audit_file_sha256": "3fac2e52536ac12385494c15903d6783280f16fb1ca709575e3ed2255b3ffa05",
+      "audit_receipt_sha256": "ec4868db97d0937b29eadcf0f606c51618a2f3a9644ffe8e5ea0882bffb4278a",
+      "job_id": 1342984,
+      "selected_mode": "full_bundle",
+      "updates_per_run": 200
+    },
+    "full_bundle_long_horizon": {
+      "audit_file_sha256": "4f2c02eb53b5a61b8194f347a36df4acc9253dadc443568c138baf9a84f7d9cb",
+      "audit_receipt_sha256": "812863e3493d204bf65205f96d5811b8e97d217d39722c5dd9f749948f1e30e0",
+      "failed_gates": [
+        "evaluation_noninferiority",
+        "step_stability"
+      ],
+      "job_id": 1342869,
+      "updates_per_run": 600
+    },
+    "rule": "A failed repeated 600-update gate is stronger evidence than a passing single 200-update diagnostic. The full bundle remains disqualified; compile-only is the highest-throughput eligible non-fused candidate requiring confirmation."
+  },
+  "format_version": "antibody_production_batch_efficiency_protocol_v3",
+  "hardware": {
+    "gpu_count": 8,
+    "gpu_model": "NVIDIA GeForce RTX 5090",
+    "node_count": 1
+  },
+  "inputs": {
+    "communication_protocol_sha256": "899f064b21a8f3b8cb6fc9c291ee19b414df1d35623c3fc18ab9fc7fbc923953",
+    "confirmation_auditor_sha256": "72868a0dca410ccbb25f81bd3e52759e732c2fb2d1bf6e24745d94e7580c293f",
+    "dense_manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
+    "efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+    "mfu_protocol_sha256": "8b194a223c19c20656478011e7c6d10c42a7c94660ce8e3bf9d862d18e34ee51",
+    "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
+    "parity_evaluation_indices_sha256": "4bb76f37f6456f6f74e7ee760c3584f9d4393b75e2512410d49c4e958bc8846c",
+    "parity_extension_protocol_sha256": "f362c1b4c7a48b395c6069ed81b2fd261afae62286d55af9222be2876d42b322",
+    "parity_protocol_sha256": "81d1a2131f0e39ae53139ff8d9d3bc9ea8a7e4201ff604085cd69869de42a6dc",
+    "parity_split_receipt_file_sha256": "ceb2baa6b5c8e99ef54a2f56530f5e7b559f7b1e949a72b6f731606b6b455ddc",
+    "parity_training_indices_sha256": "294d2b9588c52efd8d8043b8378540a55975ad8292a3352131a4a1fdd7f983a6",
+    "runner_sha256": "5f93efe9b0a4c1509908dbf89337c249aefc06f54a4d97be02af7d1da35c67b9",
+    "runner_wrapper_sha256": "b30580ff0520b58306987ac3105a67d1fcacedc9dd57da41a1796f67582659c3",
+    "training_protocol_sha256": "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b"
+  },
+  "measurement": {
+    "approximate_mfu_semantics": "protocols/antibody_foundation_scale_v2.json",
+    "crossover_run_order": [
+      "safe_eager_r1",
+      "fp32_compiled_r1",
+      "fp32_compiled_r2",
+      "safe_eager_r2"
+    ],
+    "membership_equal_within_and_across_rounds_required": true,
+    "run_seed": 17,
+    "same_allocation_required": true,
+    "training_evaluation_panel": "training_excluded_digest_panel_from_scientific_parity_v2"
+  },
+  "optimization": {
+    "candidate": {
+      "bucketed_padding": false,
+      "compile_blocks": true,
+      "compile_prewarm_buckets": true,
+      "fused_adamw": false,
+      "pinned_staging": false
+    },
+    "compute_dtype": "bfloat16",
+    "ddp_gradient_reduction_dtype": "float32",
+    "experimental_bf16_ddp_hook_allowed": false,
+    "reference": "safe_eager",
+    "regional_compile_only": true
+  },
+  "parent_protocol_file_sha256": "f7a552f1746e9e6fe9397b7a2bb7bba0c6ecce80cdc9b9fa35ddaf87446e5567",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

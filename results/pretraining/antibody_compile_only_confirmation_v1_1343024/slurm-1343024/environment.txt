@@ -1,0 +1,51 @@
+job_id=1343024
+node=wqd10nah10g2
+partition=gpu_5090
+source_root=/ssd/scxi253/model_deployment/jobs/antibody_compile_only_2e3d3a3_attempt_001
+shard_root=/ssd/scxi253/model_deployment/data/oas_pretraining/dense_pilot_v1
+world_size=8
+run_count=4
+updates_per_run=600
+global_residue_token_target_per_update=262144
+ddp_gradient_reduction_dtype=float32
+claim_boundary=training-excluded repeated dense-pilot systems experiment
+2026-07-31T05:43:44+08:00
+index, uuid, name, pci.bus_id, driver_version, memory.total [MiB]
+0, GPU-d18e4939-0452-580d-b366-f6d221c68193, NVIDIA GeForce RTX 5090, 00000000:16:00.0, 580.82.07, 32607 MiB
+1, GPU-dab8f2e0-9d35-4307-40f5-a2f379ff55d5, NVIDIA GeForce RTX 5090, 00000000:36:00.0, 580.82.07, 32607 MiB
+2, GPU-28b2105b-82e8-8d98-2fa6-71cf8f749df6, NVIDIA GeForce RTX 5090, 00000000:46:00.0, 580.82.07, 32607 MiB
+3, GPU-5efb1466-61dc-63e6-fd42-bf752abdfe72, NVIDIA GeForce RTX 5090, 00000000:56:00.0, 580.82.07, 32607 MiB
+4, GPU-35b8b32f-69a5-a8b6-0721-e736a723dee9, NVIDIA GeForce RTX 5090, 00000000:98:00.0, 580.82.07, 32607 MiB
+5, GPU-28a5de68-35aa-6731-8c05-91bc2b28411e, NVIDIA GeForce RTX 5090, 00000000:B8:00.0, 580.82.07, 32607 MiB
+6, GPU-22e6c08b-67eb-2f0c-dfa8-2e4bb23b049f, NVIDIA GeForce RTX 5090, 00000000:C8:00.0, 580.82.07, 32607 MiB
+7, GPU-3c84df5a-fbb8-329a-6ccb-4190d65f8b2a, NVIDIA GeForce RTX 5090, 00000000:D8:00.0, 580.82.07, 32607 MiB
+	[4mGPU0	GPU1	GPU2	GPU3	GPU4	GPU5	GPU6	GPU7	NIC0	NIC1	NIC2	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
+GPU0	 X 	NODE	NODE	NODE	SYS	SYS	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU1	NODE	 X 	NODE	NODE	SYS	SYS	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU2	NODE	NODE	 X 	NODE	SYS	SYS	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU3	NODE	NODE	NODE	 X 	SYS	SYS	SYS	SYS	SYS	SYS	NODE	0-7,64-71	0		N/A
+GPU4	SYS	SYS	SYS	SYS	 X 	NODE	NODE	NODE	NODE	NODE	SYS	32-39,96-103	1		N/A
+GPU5	SYS	SYS	SYS	SYS	NODE	 X 	NODE	NODE	NODE	NODE	SYS	32-39,96-103	1		N/A
+GPU6	SYS	SYS	SYS	SYS	NODE	NODE	 X 	NODE	NODE	NODE	SYS	32-39,96-103	1		N/A
+GPU7	SYS	SYS	SYS	SYS	NODE	NODE	NODE	 X 	NODE	NODE	SYS	32-39,96-103	1		N/A
+NIC0	SYS	SYS	SYS	SYS	NODE	NODE	NODE	NODE	 X 	PIX	SYS				
+NIC1	SYS	SYS	SYS	SYS	NODE	NODE	NODE	NODE	PIX	 X 	SYS				
+NIC2	NODE	NODE	NODE	NODE	SYS	SYS	SYS	SYS	SYS	SYS	 X 				
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+
+NIC Legend:
+
+  NIC0: mlx5_2
+  NIC1: mlx5_3
+  NIC2: mlx5_bond_0
+
+2026-07-31T06:52:15+08:00

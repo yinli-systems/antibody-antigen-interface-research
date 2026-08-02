@@ -1,0 +1,154 @@
+[rank5]: Traceback (most recent call last):
+[rank5]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank5]:     main()
+[rank5]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank5]:     _assert_scalar_rank_parity(
+[rank5]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank5]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank5]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank3]:     main()
+[rank3]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank3]:     _assert_scalar_rank_parity(
+[rank3]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank3]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank3]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank2]:     main()
+[rank2]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank2]:     _assert_scalar_rank_parity(
+[rank2]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank2]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank2]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank0]:     main()
+[rank0]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank0]:     _assert_scalar_rank_parity(
+[rank0]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank0]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank0]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank7]: Traceback (most recent call last):
+[rank7]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank7]:     main()
+[rank7]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank7]:     _assert_scalar_rank_parity(
+[rank7]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank7]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank7]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank1]:     main()
+[rank1]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank1]:     _assert_scalar_rank_parity(
+[rank1]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank1]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank1]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank4]: Traceback (most recent call last):
+[rank4]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank4]:     main()
+[rank4]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank4]:     _assert_scalar_rank_parity(
+[rank4]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank4]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank4]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank6]: Traceback (most recent call last):
+[rank6]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 1060, in <module>
+[rank6]:     main()
+[rank6]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 853, in main
+[rank6]:     _assert_scalar_rank_parity(
+[rank6]:   File "/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py", line 263, in _assert_scalar_rank_parity
+[rank6]:     raise RuntimeError(f"Replicated {label} differs across DDP ranks: {detail}")
+[rank6]: RuntimeError: Replicated post-reduction gradient norm at update 1 differs across DDP ranks: [331.2558288574219,309.22235107421875,307.7626647949219,301.0160217285156,309.66864013671875,279.89459228515625,299.77471923828125,283.453125]
+[rank0]:[W729 06:57:01.139300216 ProcessGroupNCCL.cpp:1624] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+W0729 06:57:01.488000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992106 closing signal SIGTERM
+W0729 06:57:01.494000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992107 closing signal SIGTERM
+W0729 06:57:01.494000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992108 closing signal SIGTERM
+W0729 06:57:01.494000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992110 closing signal SIGTERM
+W0729 06:57:01.494000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992111 closing signal SIGTERM
+W0729 06:57:01.507000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992112 closing signal SIGTERM
+W0729 06:57:01.515000 992071 torch/distributed/elastic/multiprocessing/api.py:1028] Sending process 992113 closing signal SIGTERM
+E0729 06:57:02.389000 992071 torch/distributed/elastic/multiprocessing/api.py:1002] failed (exitcode: 1) local_rank: 3 (pid: 992109) of binary: /ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python
+Traceback (most recent call last):
+  File "/ssd/scxi253/model_deployment/envs/mipe/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/ssd/scxi253/model_deployment/envs/mipe/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/distributed/run.py", line 1032, in <module>
+    main()
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 367, in wrapper
+    return f(*args, **kwargs)
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/distributed/run.py", line 1028, in main
+    run(args)
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/distributed/run.py", line 1019, in run
+    elastic_launch(
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 194, in __call__
+    return launch_agent(
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 383, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/ssd/scxi253/model_deployment/jobs/antibody_pretrain_rank_diagnostic_9d624542/scripts/run_antibody_pretraining_optimized.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 0 (local_rank: 0)
+  exitcode  : -15 (pid: 992106)  (SIGTERM)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 992106
+[2]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 1 (local_rank: 1)
+  exitcode  : -15 (pid: 992107)  (SIGTERM)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 992107
+[3]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 2 (local_rank: 2)
+  exitcode  : -15 (pid: 992108)  (SIGTERM)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 992108
+[4]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 4 (local_rank: 4)
+  exitcode  : -15 (pid: 992110)  (SIGTERM)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 992110
+[5]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 5 (local_rank: 5)
+  exitcode  : -15 (pid: 992111)  (SIGTERM)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 992111
+[6]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 6 (local_rank: 6)
+  exitcode  : 1 (pid: 992112) 
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[7]:
+  time      : 2026-07-29_06:57:02
+  host      : wqd10nah10g2
+  rank      : 7 (local_rank: 7)
+  exitcode  : 1 (pid: 992113) 
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-07-29_06:57:01
+  host      : wqd10nah10g2
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 992109) 
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

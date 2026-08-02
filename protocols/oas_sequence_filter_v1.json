@@ -1,0 +1,33 @@
+{
+  "allowed_residues": "ACDEFGHIKLMNPQRSTVWYX",
+  "anarci_status": {
+    "fatal_case_insensitive_markers": [
+      "anarci failed",
+      "error",
+      "missing conserved cysteine",
+      "no domain found",
+      "unusual residue"
+    ],
+    "permitted_audited_warnings": [
+      "deletions",
+      "insertion",
+      "shorter than imgt defined"
+    ]
+  },
+  "boolean_requirements": {
+    "productive": true,
+    "stop_codon": false,
+    "vj_in_frame": true
+  },
+  "format_version": "oas_unpaired_sequence_filter_v1",
+  "maximum_length": 192,
+  "minimum_length": 80,
+  "sequence_field_priority": [
+    "sequence_alignment_aa",
+    "sequence_aa"
+  ],
+  "test_access": {
+    "downstream_metrics_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

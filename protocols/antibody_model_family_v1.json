@@ -1,0 +1,60 @@
+{
+  "architecture": {
+    "attention": "torch_scaled_dot_product_attention",
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "embedding_output_tied": true,
+    "ffn": "swiglu",
+    "normalization": "rmsnorm",
+    "position_encoding": "rotary",
+    "qk_normalization": true,
+    "residual_dropout": 0.0,
+    "rope_theta": 10000.0
+  },
+  "format_version": "antibody_model_family_v1",
+  "maximum_sequence_tokens": 194,
+  "presets": {
+    "abf_300m": {
+      "d_model": 1024,
+      "ffn_hidden_size": 2816,
+      "n_heads": 16,
+      "n_layers": 24
+    },
+    "abf_35m": {
+      "d_model": 512,
+      "ffn_hidden_size": 1376,
+      "n_heads": 8,
+      "n_layers": 10
+    },
+    "abf_650m": {
+      "d_model": 1280,
+      "ffn_hidden_size": 3456,
+      "n_heads": 20,
+      "n_layers": 32
+    }
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "tokenizer": {
+    "amino_acids": "ACDEFGHIKLMNPQRSTVWYX",
+    "chain_types": [
+      "padding",
+      "heavy",
+      "kappa",
+      "lambda",
+      "light_unknown",
+      "paired_heavy",
+      "paired_light"
+    ],
+    "special_tokens": [
+      "[PAD]",
+      "[MASK]",
+      "[CLS]",
+      "[SEP]",
+      "[UNK]"
+    ],
+    "type": "fixed_residue_vocabulary"
+  }
+}

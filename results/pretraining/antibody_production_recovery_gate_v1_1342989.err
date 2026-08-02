@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_ac44b98/scripts/freeze_antibody_production_recovery_gate.py", line 201, in <module>
+    main()
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_ac44b98/scripts/freeze_antibody_production_recovery_gate.py", line 187, in main
+    payload = freeze_gate(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_ac44b98/scripts/freeze_antibody_production_recovery_gate.py", line 72, in freeze_gate
+    corpus = load_production_corpus(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_ac44b98/src/antibody_pretraining/production_corpus.py", line 355, in load_production_corpus
+    shards = tuple(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_ac44b98/src/antibody_pretraining/production_corpus.py", line 356, in <genexpr>
+    _load_shard(
+  File "/ssd/scxi253/model_deployment/jobs/antibody_production_recovery_ac44b98/src/antibody_pretraining/production_corpus.py", line 267, in _load_shard
+    array = np.load(path, mmap_mode="r", allow_pickle=False)
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/numpy/lib/npyio.py", line 453, in load
+    return format.open_memmap(file, mode=mmap_mode,
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/numpy/lib/format.py", line 945, in open_memmap
+    marray = numpy.memmap(filename, dtype=dtype, shape=shape, order=order,
+  File "/ssd/scxi253/model_deployment/envs/frontier_torch213/lib/python3.10/site-packages/numpy/core/memmap.py", line 268, in __new__
+    mm = mmap.mmap(fid.fileno(), bytes, access=acc, offset=start)
+OSError: [Errno 24] Too many open files

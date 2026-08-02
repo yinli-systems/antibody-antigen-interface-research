@@ -1,0 +1,50 @@
+{
+  "acceptance": {
+    "bucket_count": 256,
+    "maximum_sequence_length": 192,
+    "minimum_large_model_train_unique_residue_tokens": 30000000000,
+    "minimum_sequence_length": 80,
+    "study_count": 90,
+    "train_record_count": 224887833,
+    "validation_record_count": 1743380
+  },
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false,
+    "scientific_claim": false,
+    "systems_1_3b_pilot": false
+  },
+  "claim_boundary": "Exact read-only composition and unique-residue-token audit of independently replayed OAS shards; no training, model selection, downstream test access, scale authorization, biological result, or state-of-the-art claim",
+  "format_version": "oas_production_corpus_scale_audit_protocol_v1",
+  "inputs": {
+    "corpus_finalize_receipt_file_sha256": "c888ce65d0f99d0ffe6933bed65668996b4a3e2c422b4519b8988e7b14f91b4c",
+    "corpus_finalize_receipt_payload_sha256": "8b00899713b2775ca543abc490f96bc5a1cda742b9976686b8d003818bc1c6c4",
+    "corpus_manifest_file_sha256": "849b401368ec3613d806399a81b7d76861adf45daf71bfc64761ffe9ecad940a",
+    "corpus_manifest_payload_sha256": "4466590b378144cbe43a6645169ce4377b2756062879dfdb31619d33543652a3",
+    "efficiency_protocol_file_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+    "large_model_protocol_file_sha256": "655e3b3997b8b427ec9a77e2374db90d173c45a134d8adfb507b4c2c25f8ae8a",
+    "materialization_protocol_file_sha256": "aa61253f035cd19126a39e3cc82bbb3e053695043400ebf976a7ad1f2fb80543"
+  },
+  "measurement": {
+    "arrays": [
+      "chain_types.npy",
+      "sequence_lengths.npy",
+      "status_flags.npy",
+      "strata.npy",
+      "study_ids.npy"
+    ],
+    "all_used_array_file_hashes_recomputed": true,
+    "independent_replay_receipt_required": true,
+    "residue_token_semantics": "sum of canonical sequence_lengths over globally deduplicated records, excluding CLS, SEP, and padding",
+    "splits": [
+      "train",
+      "validation"
+    ]
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

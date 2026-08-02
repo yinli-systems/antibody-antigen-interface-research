@@ -1,0 +1,116 @@
+"""Validate the fail-closed OAS postprocessing runtime correction."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+V1 = ROOT / "protocols/oas_production_postprocess_runtime_v1.json"
+V2 = ROOT / "protocols/oas_production_postprocess_runtime_v2.json"
+PROTOCOL = ROOT / "protocols/oas_production_postprocess_runtime_v3.json"
+MATERIALIZATION = ROOT / "protocols/oas_production_materialization_v3.json"
+V2_SLURM_FILES = (
+    ROOT / "slurm/oas_production_reduce_batched_v3.sbatch",
+    ROOT / "slurm/oas_production_finalize_v3.sbatch",
+)
+AUDIT_SLURM = ROOT / "slurm/oas_production_independent_audit_v3.sbatch"
+PYTHON_BIN = "/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python"
+
+
+def test_protocol_binds_observed_failure_and_parent_semantics() -> None:
+    protocol = json.loads(PROTOCOL.read_text(encoding="ascii"))
+    assert protocol["format_version"] == (
+        "oas_production_postprocess_runtime_protocol_v3"
+    )
+    assert protocol["parent_materialization_protocol_file_sha256"] == (
+        hashlib.sha256(MATERIALIZATION.read_bytes()).hexdigest()
+    )
+    failed = protocol["correction"]["failed_attempt"]
+    assert protocol["parent_postprocess_protocol_file_sha256"] == hashlib.sha256(
+        V2.read_bytes()
+    ).hexdigest()
+    assert failed["job_id"] == 1342955
+    assert failed["terminal_state"] == "FAILED"
+    assert failed["exit_code"] == "1:0"
+    assert failed["slurm_stderr_file_sha256"] == (
+        "b7ea6839fcc972f5b28c6e240c204cd84a9af5544c8f40754717397bcc73ae77"
+    )
+    assert protocol["scope"] == {
+        "finalized_artifacts_reused_without_mutation": True,
+        "mapper_rerun": False,
+        "reducer_rerun": False,
+        "scientific_semantics_changed": False,
+        "stages_relaunched": ["independent_audit"],
+    }
+    assert protocol["compatibility_rule"]["plan_fraction_selected_required"] is True
+    assert protocol["compatibility_rule"][
+        "future_mapper_receipts_emit_explicit_zero_base_counters"
+    ] is True
+    assert protocol["authorization"]["large_scale_pretraining"] is False
+
+
+def test_v2_protocol_remains_bound_to_the_reducer_root_failure() -> None:
+    """Preserve the earlier postprocessing correction as parent evidence."""
+    protocol = json.loads(V2.read_text(encoding="ascii"))
+    assert protocol["parent_postprocess_protocol_file_sha256"] == hashlib.sha256(
+        V1.read_bytes()
+    ).hexdigest()
+    assert protocol["correction"]["failed_attempt"]["job_id"] == 1_342_946
+
+
+def test_protocol_binds_verified_runtime() -> None:
+    runtime = json.loads(PROTOCOL.read_text(encoding="ascii"))["runtime"]
+    assert runtime == {
+        "manifest_content_sha256": (
+            "e33841cc19be4e7c3bb5522194f7d34c7cd518ec967949529094567a6004cfcb"
+        ),
+        "manifest_file_sha256": (
+            "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a"
+        ),
+        "manifest_path": (
+            "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/"
+            "frontier_torch213_runtime_20260730_attempt_007.json"
+        ),
+        "manifest_runtime_state_sha256": (
+            "13502176182985a33a1a31833bc8f999f16856c6f917daa45c29bf7e83a09192"
+        ),
+        "numpy_version": "1.26.4",
+        "python_executable": PYTHON_BIN,
+        "python_version": "3.10.20",
+    }
+
+
+def test_all_postprocessing_launchers_are_runtime_and_correction_bound() -> None:
+    for path in (*V2_SLURM_FILES, AUDIT_SLURM):
+        source = path.read_text(encoding="ascii")
+        assert f"PYTHON_BIN={PYTHON_BIN}" in source
+        assert "OAS_RUNTIME_MANIFEST" in source
+        assert "OAS_RUNTIME_MANIFEST_SHA256" in source
+        assert "OAS_POSTPROCESS_PROTOCOL_SHA256" in source
+        assert "generate_runtime_manifest.py\" verify" in source
+        assert "--expected-file-sha256" in source
+        assert "exec python3" not in source
+    for path in V2_SLURM_FILES:
+        assert "oas_production_postprocess_runtime_v2.json" in path.read_text(
+            encoding="ascii"
+        )
+    assert "oas_production_postprocess_runtime_v3.json" in AUDIT_SLURM.read_text(
+        encoding="ascii"
+    )
+
+
+def test_reducer_children_use_the_same_locked_interpreter() -> None:
+    source = V2_SLURM_FILES[0].read_text(encoding="ascii")
+    assert "OAS_MATERIALIZATION_ROOT" in source
+    assert "OAS_MAP_ROOT" not in source
+    assert '--map-root "${OAS_MATERIALIZATION_ROOT}"' in source
+    assert 'test "${OAS_MATERIALIZATION_ROOT}" = "${OAS_OUTPUT_ROOT}"' in source
+    assert 'exec "${PYTHON_BIN}"' in source
+    reducer_command = (
+        '"${PYTHON_BIN}" '
+        '"${OAS_SOURCE_ROOT}/scripts/reduce_oas_production_bucket.py"'
+    )
+    assert reducer_command in source

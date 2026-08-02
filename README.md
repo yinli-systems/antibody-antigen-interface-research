@@ -22,6 +22,7 @@ residues are generally interface-prone?
 | Partner-geometry R2 / PAIRFormer | Explicit antibody-by-antigen pair state, bidirectional fusion, axial pair updates, contact/distance/orientation heads, losses, evaluator, execution plan, and one-shot freeze controls | Implementation complete; biological training, selection, and outer/test evaluation remain blocked at Gate 0 |
 | V6 score-free split authority | Raw-byte authority reconstruction, independent auditor, exact statistics, joint IR, CP-SAT formulation, separation oracle, HiGHS projection backend, and V6-B/V6-C diagnostics | The linear projection was reported infeasible by the primary and independent CP-SAT paths, but the required direct-HiGHS terminal receipt is not committed; this does not authorize a full-protocol infeasibility claim or training |
 | Distributed systems | Deterministic batching, distributed training helpers, immutable checkpoint/recovery, NCCL probes, and Slurm launchers | Engineering and diagnostic code only; no 32/64-GPU scaling or efficiency claim is authorized by the tracked evidence |
+| Antibody foundation pretraining | Authenticated OAS materialization, exact checkpoint recovery, memory-mapped loading, and compile/eager confirmation tooling | The eight-RTX-5090 compile candidate improved measured pilot throughput but failed frozen loss and tail-latency gates; it is disqualified, with no production-scale or 16/32-GPU claim |
 
 The authoritative gate manifest is
 [`protocols/pairformer_gate_manifest_v1.json`](protocols/pairformer_gate_manifest_v1.json):
@@ -77,6 +78,23 @@ not as pristine blind evidence. Released code, paper, and appendix settings also
 differ in learning rate, checkpoint selection, graph construction, and dataset
 counts; the repository preserves those discrepancies instead of silently
 reconciling them.
+
+### Antibody foundation pretraining: throughput gain rejected by correctness gates
+
+The authenticated OAS corpus contains 224,887,833 unique training records and
+25,259,993,406 unique training residue tokens. Exact checkpoint recovery on the
+real corpus passes, and a protocol-bound 1,024-array memory-mapped loader reduced
+measured continuous-run data preparation from 19.19 seconds to 3.97 seconds in
+the recovery gate.
+
+An eight-RTX-5090, 600-update, two-repetition compile-only confirmation measured
+202,795 useful residue tokens/s and 46.1% approximate 6N MFU, versus 150,991
+tokens/s and 34.3% for eager execution. The candidate remains disqualified:
+post-training masked cross-entropy was 2.03% worse than eager against a frozen
+1% noninferiority margin, and compiled p95/p50 step-time ratios were 1.137 and
+1.128 against a 1.10 ceiling. The failed gate, receipts, and telemetry are kept
+under `results/pretraining/antibody_compile_only_confirmation_v1_1343024/`.
+No production-scale pretraining or 16/32-GPU result is claimed from this pilot.
 
 ### Intra-chain geometry: a positive development signal that did not clear its gate
 
