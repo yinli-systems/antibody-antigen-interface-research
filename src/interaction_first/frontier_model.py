@@ -432,7 +432,7 @@ class ProtocolReranker(_ModuleBase):
             ),
             dim=-1,
         )
-        residual = self.rerank_head(joint).squeeze(-1)
+        residual = self.rerank_head(joint).squeeze(-1).clone()
         final_score = coarse["coarse_score"] + 0.5 * torch.tanh(residual)
         result = {
             **coarse,

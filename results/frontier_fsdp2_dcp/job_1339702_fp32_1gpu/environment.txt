@@ -1,0 +1,52 @@
+job_id=1339702
+node=wqd10nah10g2
+source_root=/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_dcp_source_afbc0abe03be
+run_root=/ssd/scxi253/model_deployment/results/frontier_fsdp2_dcp_v1_attempts/slurm-1339702
+source_sha256=c5260f1e60d7fdf360d35799dcca5a751cea113cb6ef76a5259776bcf16ee805
+runtime_manifest_sha256=5e8c0ecf201876d0559331299187e4a8b8820124d79bdb24b9973b3b57e24202
+launch_manifest_sha256=cefc3fe17f238912977b9be639f9c6e73e3bba87ff6c785e1bb48fae657183a4
+parallelism=fsdp2
+precision=float32
+world_size=1
+visible_gpu_count=1
+claim_boundary=synthetic FSDP2 and DCP correctness only; no efficiency or biological metric claim
+2026-07-30T05:14:16+08:00
+Thu Jul 30 05:14:16 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.82.07              Driver Version: 580.82.07      CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 5090        On  |   00000000:16:00.0 Off |                  N/A |
+|  0%   24C    P8             23W /  600W |       0MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+	[4mGPU0	NIC0	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
+GPU0	 X 	NODE	0-3,64-67	0		N/A
+NIC0	NODE	 X 				
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+
+NIC Legend:
+
+  NIC0: mlx5_bond_0
+
+2026-07-30T05:14:28+08:00
