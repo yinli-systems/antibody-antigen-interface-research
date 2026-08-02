@@ -1,0 +1,25 @@
+{
+  "authorization": {
+    "model_selection": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Training-excluded 200-update systems attribution only; no production-corpus training, biological generalization, downstream metric, configuration promotion, or scale authorization",
+  "execution": {
+    "gpu_count": 8,
+    "parent_updates_per_run": 500,
+    "run_seed": 17,
+    "updates_per_run": 200
+  },
+  "format_version": "antibody_ddp_scientific_parity_extension_v1",
+  "inputs": {
+    "evaluation_indices_sha256": "4bb76f37f6456f6f74e7ee760c3584f9d4393b75e2512410d49c4e958bc8846c",
+    "parity_split_receipt_file_sha256": "ceb2baa6b5c8e99ef54a2f56530f5e7b559f7b1e949a72b6f731606b6b455ddc",
+    "training_indices_sha256": "294d2b9588c52efd8d8043b8378540a55975ad8292a3352131a4a1fdd7f983a6"
+  },
+  "parent_parity_protocol_sha256": "81d1a2131f0e39ae53139ff8d9d3bc9ea8a7e4201ff604085cd69869de42a6dc",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

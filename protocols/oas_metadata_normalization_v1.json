@@ -1,0 +1,86 @@
+{
+  "affected_units": [
+    {
+      "decoded_metadata_sha256": "73b0876463d15e83c6db2d0989878a419f31864a37c22ea7023e3455e68ba7dc",
+      "normalized_metadata_sha256": "1c2687b9d5dd74419dd5a3ec2bcf716e657c318c7bd822c1b5dc568785cc873b",
+      "raw_metadata_line_sha256": "9da908ea694cd6a348f97f835dc2c93e668d1f32e0572aeafc161b0d57b9e9d8",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081539_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "e8da4983c2c0a5bf40082632b76bbacaeef1e7df0dcbb43a7cc4aef8074de914",
+      "normalized_metadata_sha256": "2a464f27d004eec934df415f120ec66a4c98eff8652a00dfd4467f59649fec87",
+      "raw_metadata_line_sha256": "9de2d3377c68772dfefc0a72f80c7030fea7a8b64d7713121724fc33975f016e",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081544_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "7c8e3b1f7f70913e53c59c0430af177f56906ec29864a7e4e45a0f66872299ac",
+      "normalized_metadata_sha256": "3f64e5f8eacc9abf13af0bfb2b7a86331f40ce2fa1f79e019c882beb59f3d5f0",
+      "raw_metadata_line_sha256": "54e15ff7f3d9d4debf3b2a7d20d9292f824891e34bf18e44853b4a2f6a37621e",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081545_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "30e3ad1ca158348e94ac14e6783172f867556c73c3ecd0baae89bfed36b5331f",
+      "normalized_metadata_sha256": "17c0f5d6e161487dd45fed3073a7a057f6f08beb8443151f894cfe9073aac215",
+      "raw_metadata_line_sha256": "e5acc7070b074cd7dac53d43ae0f081f29017eb40e3032545cef4c9e3a687dd3",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081546_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "d65f3e4eb0f39c0172ddd9de69858ffd3f35cb46f58397dd95069ac5fd07ef2e",
+      "normalized_metadata_sha256": "cb0c3ba133a864ba7bface19bdaf10cf746922a242ce1dafaaa5a336d05ab910",
+      "raw_metadata_line_sha256": "12767a0eea63013ad85729dcd1db472f09cac09c382632a6c86dcc505dc826a0",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081548_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "8c133943a416a5dfafaa34ddbc617d94e8ec5f98eeeecba5fffa2b858b97104b",
+      "normalized_metadata_sha256": "743d32e1e9dde95dd738bc1ed5bd4a2f31dd773611097cb1478f8e813a1f187c",
+      "raw_metadata_line_sha256": "07ab8707ec776090a04cd5b44a42c6fce43e4cd26879676ae73a931424c05e12",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081551_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "34e3b8787c43bee79b9927115fb2b6cf213ae4beae8c055a1e5de817773c9f35",
+      "normalized_metadata_sha256": "d4486c7fd5991244ad7d6cb70f8a35092837a0f7f0024d5ca1fc27292dbdad73",
+      "raw_metadata_line_sha256": "608d025c2f502085f8fd9244e7720ab6c38b6d3ed1ecc12155eecc5c7d1f468e",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081552_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "2c19ec0a614c9242407b56fad65aaadc5dd1f8f21e229a9622b7301dca0255b8",
+      "normalized_metadata_sha256": "d46def59455a16140f5fc92efb7ec6bd30b1644773f3439d4a5e4ff61ae36a6c",
+      "raw_metadata_line_sha256": "1d6c03cf6c5da70cc2c6c08bb2eac4d65ac5358f06e4f8ee6993699c80113e8f",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081553_Heavy_Bulk.csv.gz"
+    },
+    {
+      "decoded_metadata_sha256": "276d5d4026449e90f31590e0a3a6f87c30cee723c03946c15afe820490ab3266",
+      "normalized_metadata_sha256": "ca74a6dc759d4be734286957e73e41ce75fb6b5e61f94f326e2f28a2ab027a3a",
+      "raw_metadata_line_sha256": "039d22c6f6ecc145e9bc2b1b05537aa2e10a4bc80d4e65b104acf7bd821b1481",
+      "relative_unit": "Kuri-Cervantes_2020/csv/SRR12081554_Heavy_Bulk.csv.gz"
+    }
+  ],
+  "authority": {
+    "download_completion_audit_file_sha256": "58557ba1ff7b1f30b48a0d5ac167b2ceb734770ced4d38ec4bf77bb25d55dbd2",
+    "download_completion_audit_payload_sha256": "f767d026f17e06a8532a7d687605a3cee2d4eaad0b406f52e8a34e441458683b",
+    "plan_file_sha256": "45f7d002400dd81d9afa5f6b7daff6b6e67d7557aa2e379a031a5ac3b1f2b1b0",
+    "plan_payload_sha256": "fba741bc6666067f1601f2096d31507c1b38edb8af95118110eaf1cef7e059e0",
+    "selected_data_unit_count": 6373,
+    "source_record_count": 265834820
+  },
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Raw OAS metadata-header normalization only; no sequence row, model, downstream label, or test split is read or changed",
+  "format_version": "oas_metadata_normalization_protocol_v1",
+  "normalization": {
+    "affected_unit_count": 9,
+    "allowed_constant": "NaN",
+    "allowed_json_path": [
+      "Age"
+    ],
+    "replacement_json_value": null,
+    "strict_unit_count": 6364
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "authorization": {
+    "downstream_test_access": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false,
+    "scale_64_gpu": false,
+    "systems_1_3b_pilot": false
+  },
+  "data": {
+    "authenticated_compressed_bytes": 120714440652,
+    "authenticated_data_units": 6373,
+    "authenticated_source_rows": 265834820,
+    "complete_production_materialization_required": true,
+    "cross_split_rule": "validation_wins_and_all_matching_training_records_are_removed",
+    "global_exact_deduplication_required": true,
+    "independent_replay_required": true,
+    "one_gpu_loader_recovery_required": true
+  },
+  "format_version": "antibody_foundation_scale_protocol_v2",
+  "mfu": {
+    "denominator": "observed_gpu_count_times_dense_bf16_tensor_tflops_with_fp32_accumulate",
+    "estimate_name": "approximate_6n_mfu",
+    "flop_estimate": "6_times_exact_parameter_count_times_nonpadding_residue_tokens",
+    "hardware": "NVIDIA GeForce RTX 5090",
+    "per_gpu_dense_bf16_tflops": 209.5,
+    "profiler_exact_claim": false,
+    "sparsity_assumed": false,
+    "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+  },
+  "precision": {
+    "compute": "bfloat16",
+    "ddp_gradient_reduction": "float32",
+    "experimental_bf16_ddp_hook_allowed": false,
+    "float8_status": "separate_future_candidate_after_fresh_numerical_and_convergence_gate",
+    "optimizer_state": "float32"
+  },
+  "promotion": {
+    "candidate_selection_metric": "validation_quality_per_gpu_hour",
+    "larger_model_requires_positive_quality_or_efficiency_evidence": true,
+    "test_set_model_selection_permitted": false,
+    "threshold_relaxation_permitted": false
+  },
+  "scale_ladder": [
+    {
+      "minimum_efficiency": 1.0,
+      "stage": "eight_gpu_quality_recovery",
+      "world_size": 8
+    },
+    {
+      "minimum_efficiency": 0.85,
+      "stage": "fixed_work_strong_scaling",
+      "world_size": 16
+    },
+    {
+      "minimum_efficiency": 0.8,
+      "stage": "fixed_work_strong_scaling",
+      "world_size": 32
+    },
+    {
+      "minimum_efficiency": 0.7,
+      "stage": "locked_until_32_gpu_passes",
+      "world_size": 64
+    }
+  ],
+  "systems_candidate": {
+    "backend_650m_single_node": "ddp",
+    "compile": "regional_fullgraph_repeated_transformer_blocks",
+    "data_staging": "pinned_nonblocking",
+    "fsdp2_role": "capacity_and_multinode_candidate",
+    "gradient_accumulation": "ddp_no_sync_except_final_microstep",
+    "maximum_sequence_tokens": 194,
+    "optimizer": "fused_adamw",
+    "padding": "stable_length_buckets_without_membership_change",
+    "production_global_residue_tokens_per_update": 262144,
+    "sdpa": "runtime_selected_cuda_backend"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

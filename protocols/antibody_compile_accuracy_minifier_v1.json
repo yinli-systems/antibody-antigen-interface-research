@@ -1,0 +1,96 @@
+{
+  "authorization": {
+    "aot_minifier": false,
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false,
+    "scientific_claim": false
+  },
+  "batch": {
+    "batch_quantum_sequences": 512,
+    "global_residue_token_target_per_update": 262144,
+    "micro_batch_per_gpu": 16,
+    "updates": 500
+  },
+  "claim_boundary": "Official PyTorch Dynamo accuracy-minifier diagnostic on an exact replay of the rejected eight-GPU arm; no repaired candidate, AOT authorization, configuration promotion, production training, scale, biological result, or state-of-the-art claim.",
+  "diagnostic": {
+    "automatic_aot_fallback_permitted": false,
+    "environment": {
+      "TORCHDYNAMO_REPRO_AFTER": "dynamo",
+      "TORCHDYNAMO_REPRO_LEVEL": "4"
+    },
+    "forward_and_backward_checked": true,
+    "initial_boundary": "dynamo",
+    "minifier_success_required_for_boundary_localization": true,
+    "official_default_repro_tolerance": 0.001,
+    "repro_forward_only": false,
+    "silent_no_repro_is_not_a_pass": true
+  },
+  "expected_replay": {
+    "final_model_sha256": "6f2c7ef7faa0821e7bb084154251c9c5178a8f8107be9b695084896f48f463ae",
+    "final_optimizer_sha256": "6461830b2c479927d877e92527b0b9bd872d3568e5fa8b9b5ff278e036328fef",
+    "membership_sha256": "79201596be12e38715c634846e4635a1b262fee6c5d4bedd058b4679ec517e83",
+    "preset": "abf_650m",
+    "run_seed": 17,
+    "world_size": 8
+  },
+  "format_version": "antibody_compile_accuracy_minifier_protocol_v1",
+  "hardware": {
+    "gpu_count": 8,
+    "gpu_model": "NVIDIA GeForce RTX 5090",
+    "node_count": 1
+  },
+  "inputs": {
+    "attribution_protocol_sha256": "3fa39bc146e431d6c4a01b2dfa9d432950ec7820faef200f0c74d43d0d767b87",
+    "audit_launcher_sha256": "060299bd79e420929b5b50fdcd2ca8c8592ce1180b5534665298cde2006430aa",
+    "auditor_sha256": "0524b9e43a5ee64e8d764b70799ec9dd3d0a11e4fd7b5a5f28d500b961c267a8",
+    "base_attribution_wrapper_sha256": "dac878c9990250ecd9166637337a7035c1d7e1560ebbc38ef7719c989770f757",
+    "base_runner_sha256": "5f93efe9b0a4c1509908dbf89337c249aefc06f54a4d97be02af7d1da35c67b9",
+    "communication_protocol_sha256": "899f064b21a8f3b8cb6fc9c291ee19b414df1d35623c3fc18ab9fc7fbc923953",
+    "dense_manifest_payload_sha256": "0f73ccf7f537d223ca6d94b83f08b40a34c23e557f2a747cc32d798c974450f6",
+    "efficiency_protocol_sha256": "70f93b12c6c91243d47c9e1403c9e71365b6c2b0306bce0ec228ebcf765a24eb",
+    "launcher_sha256": "e3126fc14d165f8ae2306552cc2f96bb3d12c219b46cc82ffc8b3bba352a7056",
+    "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
+    "parity_evaluation_indices_sha256": "4bb76f37f6456f6f74e7ee760c3584f9d4393b75e2512410d49c4e958bc8846c",
+    "parity_protocol_sha256": "81d1a2131f0e39ae53139ff8d9d3bc9ea8a7e4201ff604085cd69869de42a6dc",
+    "parity_split_receipt_file_sha256": "ceb2baa6b5c8e99ef54a2f56530f5e7b559f7b1e949a72b6f731606b6b455ddc",
+    "parity_training_indices_sha256": "294d2b9588c52efd8d8043b8378540a55975ad8292a3352131a4a1fdd7f983a6",
+    "runtime_manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "training_protocol_sha256": "c8974cb06350da46ca49ffff61c149061b7e7f46b43c9e686176539bbe223e6b",
+    "wrapper_sha256": "e05284cdcdc868f72bf756037c2871af622832e1c0748df5d71018edc43bf024"
+  },
+  "runtime": {
+    "cuda": "13.0",
+    "cudnn": 92000,
+    "python": "3.10.20",
+    "runtime_manifest_content_sha256": "e33841cc19be4e7c3bb5522194f7d34c7cd518ec967949529094567a6004cfcb",
+    "runtime_state_sha256": "13502176182985a33a1a31833bc8f999f16856c6f917daa45c29bf7e83a09192",
+    "torch": "2.13.0+cu130",
+    "torch_git_version": "cf30153c4c131c8164ee7798e5022d810682e2cb"
+  },
+  "predecessor": {
+    "audit_file_sha256": "4033b0b5e1677f3c513aa6073cfec194a9d47b1cc7ff7c1484962e757e9a4d1e",
+    "audit_receipt_sha256": "3d543c6eb3a2235e315fb93ec8ba5dd0340fa7462cd9a5938c884e7cdb5d3b7d",
+    "candidate_found": false,
+    "diagnostic_valid": true,
+    "selected_candidate_for_strict_confirmation": null,
+    "training_job_id": 1345763
+  },
+  "research_basis": [
+    {
+      "consequence": "Use the Dynamo boundary first because Dynamo-eager itself failed the frozen long-horizon CE non-inferiority gate.",
+      "title": "PyTorch compiler troubleshooting",
+      "url": "https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/torch.compiler_troubleshooting.html"
+    },
+    {
+      "consequence": "Level 4 requests an accuracy minifier launcher; failure to emit a repro is recorded rather than treated as a pass.",
+      "title": "PyTorch compiler FAQ",
+      "url": "https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/torch.compiler_faq.html"
+    }
+  ],
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

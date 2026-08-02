@@ -1,0 +1,37 @@
+{
+  "authorization": {
+    "eight_gpu_systems_pilot": false,
+    "production_pretraining": false,
+    "scale_16_gpu": false,
+    "scale_32_gpu": false
+  },
+  "claim_boundary": "Frozen 1.3B candidate definition only. Execution requires the optimized 650M efficiency and exact-recovery gates. Production additionally requires complete real-corpus admission and scientific promotion.",
+  "execution_gate": {
+    "backend": "fsdp2",
+    "compiled_bucket_prewarm_required": true,
+    "exact_650m_recovery_required": true,
+    "fused_adamw_runtime_probe_required": true,
+    "minimum_650m_throughput_gain": 1.25,
+    "minimum_650m_updates": 500
+  },
+  "format_version": "antibody_large_model_pilot_v1",
+  "model": {
+    "d_model": 1600,
+    "ffn_hidden_size": 4352,
+    "head_dimension": 64,
+    "n_heads": 25,
+    "n_layers": 42,
+    "preset": "abf_1_3b",
+    "total_parameter_count": 1307632000
+  },
+  "production_gate": {
+    "minimum_admitted_unique_residue_tokens": 30000000000,
+    "oas_validation_required": true,
+    "paired_continuation_required": true,
+    "test_set_selection_permitted": false
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

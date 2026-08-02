@@ -1,0 +1,46 @@
+{
+  "batching": {
+    "batch_quantum_sequences": 512,
+    "global_residue_token_target_per_update": 262144,
+    "partial_final_windows": "reject",
+    "sampler": "counter_affine_bijection_v1"
+  },
+  "format_version": "antibody_training_v1",
+  "gradient_clip_norm": 1.0,
+  "masking": {
+    "fraction": 0.15,
+    "random_residue_probability": 0.1,
+    "replace_with_mask_probability": 0.8,
+    "unchanged_probability": 0.1
+  },
+  "optimizer": {
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "epsilon": 1e-8,
+    "name": "AdamW",
+    "weight_decay": 0.1
+  },
+  "precision": {
+    "compute": "bfloat16",
+    "optimizer_state": "float32",
+    "reduction": "float32"
+  },
+  "presets": {
+    "abf_1_3b": {
+      "learning_rate": 0.00012
+    }
+  },
+  "random_seed": 20260728,
+  "schedule": {
+    "minimum_learning_rate_ratio": 0.1,
+    "name": "linear_warmup_cosine_by_consumed_residue_tokens",
+    "total_residue_tokens": 30000000000,
+    "warmup_residue_tokens": 300000000
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
