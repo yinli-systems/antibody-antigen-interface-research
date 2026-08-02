@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Partner-aware antibody-antigen interface modeling research artifacts"
 requires-python = ">=3.10"
 dependencies = [
+  "biopython>=1.83",
   "numpy",
   "pandas",
   "pyarrow",

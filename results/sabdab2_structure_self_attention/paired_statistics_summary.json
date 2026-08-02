@@ -1,0 +1,117 @@
+{
+  "artifact_hashes": {
+    "audit_receipt_sha256": "0c4f086b57cfcfae1c8702209be229e0dbbfa34a956e55f0bd96487f653fe814",
+    "independent_verification_sha256": "8ba41d2d6fbf573cdf4c0ce4bf9ce9d02175e3b52caf71a1dda0c97d62a20762",
+    "per_complex_predictions_sha256": "5b7118738c27b7e8317b6e8b10b2338333c0dd4e2a1f0edfaf273c7d673c22b2",
+    "statistics_sha256": "dfcc6c9e2b9d1a3895f49e4cd47a3c7a407a7a4ad7acb3c7ab0013f22170e08c"
+  },
+  "claim_boundary": "Development-only marginal paratope/epitope checkpoint audit from backed-up RTX 5090 final checkpoints with local CPU inference. It is not the exact A100 checkpoint result, partner-specific evidence, a frozen-test result, or a SOTA result.",
+  "comparisons": {
+    "distance_direction_minus_topology_only": {
+      "epitope_auprc": {
+        "bootstrap_ci95": [
+          -0.015969735456225966,
+          0.017185637457918478
+        ],
+        "mean_difference": 0.003591988401761498,
+        "one_sided_component_sign_flip_p": 0.3574642535746425,
+        "positive_complex_fraction": 0.6666666666666666
+      },
+      "joint_macro_auprc": {
+        "bootstrap_ci95": [
+          0.0019394017869010626,
+          0.022947923008027022
+        ],
+        "holm_adjusted_one_sided_p": 0.0821917808219178,
+        "mean_difference": 0.014215418520868044,
+        "one_sided_component_sign_flip_p": 0.0273972602739726,
+        "positive_complex_fraction": 0.9444444444444444
+      },
+      "paratope_auprc": {
+        "bootstrap_ci95": [
+          0.018324025299163826,
+          0.031041126519749572
+        ],
+        "mean_difference": 0.024838848639974587,
+        "one_sided_component_sign_flip_p": 0.00009999000099990002,
+        "positive_complex_fraction": 0.9722222222222222
+      }
+    },
+    "distance_minus_topology_only": {
+      "joint_macro_auprc": {
+        "bootstrap_ci95": [
+          -0.003464113588808787,
+          0.011550766314132592
+        ],
+        "mean_difference": 0.0034080436727770527
+      }
+    },
+    "full_pose_minus_distance_direction": {
+      "joint_macro_auprc": {
+        "bootstrap_ci95": [
+          -0.011390094665311821,
+          0.00573092972563144
+        ],
+        "mean_difference": -0.004672302136099652
+      }
+    },
+    "full_pose_minus_topology_only": {
+      "joint_macro_auprc": {
+        "bootstrap_ci95": [
+          -0.0024867459664936935,
+          0.02280892418358692
+        ],
+        "mean_difference": 0.00954311638476839
+      }
+    }
+  },
+  "format_version": "sabdab2_geometry_paired_statistics_summary_v1",
+  "historical_metric_replay": {
+    "check_count": 20,
+    "largest_absolute_difference": 0.0024708040877955417,
+    "passed_count": 20,
+    "tolerance": 0.01
+  },
+  "independent_verification": {
+    "check_count": 441,
+    "status": "passed"
+  },
+  "modes": {
+    "distance": {
+      "epitope_auprc": 0.30810084151133765,
+      "joint_macro_auprc": 0.478368546107323,
+      "paratope_auprc": 0.6486362507033082
+    },
+    "distance_direction": {
+      "epitope_auprc": 0.30603588199986903,
+      "joint_macro_auprc": 0.4891759209554139,
+      "paratope_auprc": 0.6723159599109588
+    },
+    "full_pose": {
+      "epitope_auprc": 0.3022399125126558,
+      "joint_macro_auprc": 0.48450361881931436,
+      "paratope_auprc": 0.6667673251259728
+    },
+    "topology_only": {
+      "epitope_auprc": 0.3024438935981075,
+      "joint_macro_auprc": 0.4749605024345459,
+      "paratope_auprc": 0.6474771112709843
+    }
+  },
+  "primary_gate": {
+    "confirmatory_superiority_authorized": false,
+    "multiseed_requirement_satisfied": false,
+    "single_seed_statistical_gate_passed": false,
+    "status": "failed_single_seed_statistical_gate"
+  },
+  "resampling": {
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 20260729,
+    "confidence": 0.95,
+    "independent_endpoint_component_count": 16,
+    "permutation_iterations": 10000,
+    "permutation_seed": 20260730,
+    "unit": "exact antibody-antigen endpoint-connected component",
+    "validation_instance_count": 36
+  }
+}

@@ -61,6 +61,17 @@ class PairComplexEvaluationInput:
 
 
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+R2_REQUIRED_CONTROL_NAMES = (
+    "matched_partner_shuffle",
+    "antibody_only",
+    "antigen_only",
+    "null",
+    "composition_only",
+    "strongest_separable_marginal",
+    "degree_aware_random",
+    "topology_only",
+    "raw_frozen_embedding",
+)
 
 
 def _nonempty_identifier(value: Any, name: str) -> str:
@@ -797,10 +808,15 @@ def _directional_cognate_retrieval(
     query_name: str,
     candidate_name: str,
     cutoffs: Sequence[int],
+    rank_tie_policy: str,
 ) -> dict[str, Any]:
     """Evaluate one exhaustive direction with separate retrieval and pairwise rules."""
     np = _numpy()
-    ranks: list[int] = []
+    if rank_tie_policy not in {"conservative", "fractional"}:
+        raise ValueError(
+            "rank_tie_policy must be 'conservative' or 'fractional'"
+        )
+    ranks: list[float] = []
     normalized_ranks: list[float] = []
     hardest_negative_strict_successes: list[float] = []
     hardest_negative_ties: list[float] = []
@@ -824,7 +840,12 @@ def _directional_cognate_retrieval(
         best_positive = float(query_scores[query_positives].max())
         negative_scores = query_scores[~query_positives]
         hardest_negative = float(negative_scores.max())
-        rank = 1 + int((negative_scores >= best_positive).sum())
+        strictly_greater = int((negative_scores > best_positive).sum())
+        tied = int((negative_scores == best_positive).sum())
+        if rank_tie_policy == "fractional":
+            rank = 1.0 + strictly_greater + 0.5 * tied
+        else:
+            rank = float(1 + strictly_greater + tied)
         ranks.append(rank)
         normalized_ranks.append((rank - 1) / negative_count)
         hardest_negative_strict_successes.append(
@@ -856,7 +877,14 @@ def _directional_cognate_retrieval(
         total_pairwise_comparisons += pairwise_comparison_count
         positive_counts.append(positive_count)
 
-    rank_array = np.asarray(ranks, dtype=np.int64)
+    rank_array = np.asarray(ranks, dtype=np.float64)
+    rank_tie_description = (
+        "best_cognate_rank_is_one_plus_strictly_greater_noncognates_plus_"
+        "one_half_tied_noncognates"
+        if rank_tie_policy == "fractional"
+        else "every_noncognate_tied_with_the_best_cognate_conservatively_"
+        "precedes_it"
+    )
     result: dict[str, Any] = {
         "query_name": query_name,
         "candidate_name": candidate_name,
@@ -877,10 +905,7 @@ def _directional_cognate_retrieval(
         "hardest_negative_top1_definition": (
             "best_cognate_score_strictly_exceeds_every_noncognate_score"
         ),
-        "retrieval_rank_tie_policy": (
-            "every_noncognate_tied_with_the_best_cognate_conservatively_"
-            "precedes_it"
-        ),
+        "retrieval_rank_tie_policy": rank_tie_description,
         "pairwise_cognate_vs_noncognate_win_rate": float(
             np.mean(query_pairwise_half_tie_win_rates)
         ),
@@ -918,6 +943,7 @@ def evaluate_bidirectional_cognate_retrieval(
     exhaustive_candidate_mask: Any,
     *,
     cutoffs: Sequence[int] = (1, 5, 10),
+    rank_tie_policy: str = "conservative",
 ) -> dict[str, Any]:
     """Evaluate exhaustive antibody-to-antigen and antigen-to-antibody retrieval."""
     np = _numpy()
@@ -953,6 +979,7 @@ def evaluate_bidirectional_cognate_retrieval(
         query_name="antibody",
         candidate_name="antigen",
         cutoffs=cutoffs,
+        rank_tie_policy=rank_tie_policy,
     )
     antigen_to_antibody = _directional_cognate_retrieval(
         scores.T,
@@ -960,6 +987,7 @@ def evaluate_bidirectional_cognate_retrieval(
         query_name="antigen",
         candidate_name="antibody",
         cutoffs=cutoffs,
+        rank_tie_policy=rank_tie_policy,
     )
     macro_keys = [
         "mean_reciprocal_rank",
@@ -983,12 +1011,34 @@ def evaluate_bidirectional_cognate_retrieval(
         for key in macro_keys
     }
     return {
-        "evaluation_contract": "prospective_pairformer_exhaustive_retrieval_v2",
+        "evaluation_contract": (
+            "prospective_pairformer_exhaustive_retrieval_v3_fractional_rank"
+            if rank_tie_policy == "fractional"
+            else "prospective_pairformer_exhaustive_retrieval_v2"
+        ),
         "negative_candidate_subsampling_performed": False,
+        "rank_tie_policy": rank_tie_policy,
         "antibody_to_antigen": antibody_to_antigen,
         "antigen_to_antibody": antigen_to_antibody,
         "macro_bidirectional": macro,
     }
+
+
+def evaluate_partner_geometry_r2_retrieval(
+    score_matrix: Any,
+    cognate_mask: Any,
+    exhaustive_candidate_mask: Any,
+    *,
+    cutoffs: Sequence[int] = (1, 5, 10),
+) -> dict[str, Any]:
+    """Evaluate the R2 retrieval endpoint with its frozen fractional-rank rule."""
+    return evaluate_bidirectional_cognate_retrieval(
+        score_matrix,
+        cognate_mask,
+        exhaustive_candidate_mask,
+        cutoffs=cutoffs,
+        rank_tie_policy="fractional",
+    )
 
 
 def evaluate_named_partner_controls(
@@ -1231,6 +1281,52 @@ def evaluate_named_partner_controls(
     }
 
 
+def evaluate_partner_geometry_r2_controls(
+    matched_scores: Sequence[float],
+    controls_by_name: Mapping[str, Any],
+    matched_candidate_pair_counts: Sequence[int],
+    control_candidate_pair_counts_by_name: Mapping[str, Any],
+    *,
+    matched_axis_valid_counts: Any,
+    control_axis_valid_counts_by_name: Mapping[str, Any],
+    matched_candidate_domain_sha256: Sequence[str],
+    control_candidate_domain_sha256_by_name: Mapping[str, Any],
+    matched_candidate_mask_sha256: Sequence[str],
+    control_candidate_mask_sha256_by_name: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Evaluate exactly the frozen R2 control panel with support parity."""
+    observed_names = set(controls_by_name)
+    required_names = set(R2_REQUIRED_CONTROL_NAMES)
+    if observed_names != required_names:
+        missing = sorted(required_names - observed_names)
+        unexpected = sorted(observed_names - required_names)
+        raise ValueError(
+            "R2 partner-control inventory differs: "
+            f"missing={missing}, unexpected={unexpected}"
+        )
+    result = evaluate_named_partner_controls(
+        matched_scores,
+        controls_by_name,
+        matched_candidate_pair_counts,
+        control_candidate_pair_counts_by_name,
+        matched_axis_valid_counts=matched_axis_valid_counts,
+        control_axis_valid_counts_by_name=control_axis_valid_counts_by_name,
+        matched_candidate_domain_sha256=matched_candidate_domain_sha256,
+        control_candidate_domain_sha256_by_name=(
+            control_candidate_domain_sha256_by_name
+        ),
+        matched_candidate_mask_sha256=matched_candidate_mask_sha256,
+        control_candidate_mask_sha256_by_name=(
+            control_candidate_mask_sha256_by_name
+        ),
+    )
+    return {
+        "evaluation_contract": "sabdab2_partner_geometry_r2_control_panel_v1",
+        "required_control_names": list(R2_REQUIRED_CONTROL_NAMES),
+        **result,
+    }
+
+
 def paired_cluster_bootstrap_comparison(
     candidate_by_instance: Mapping[str, float],
     reference_by_instance: Mapping[str, float],
@@ -1313,10 +1409,13 @@ __all__ = [
     "build_pair_domain_manifest",
     "evaluate_bidirectional_cognate_retrieval",
     "evaluate_named_partner_controls",
+    "evaluate_partner_geometry_r2_controls",
+    "evaluate_partner_geometry_r2_retrieval",
     "evaluate_pair_complex",
     "evaluate_pair_dataset",
     "holm_bonferroni_correction",
     "pair_domain_manifest_sha256",
     "pair_evaluation_mask_sha256",
     "paired_cluster_bootstrap_comparison",
+    "R2_REQUIRED_CONTROL_NAMES",
 ]

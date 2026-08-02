@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import math
 
 import numpy as np
@@ -15,10 +16,13 @@ from interaction_first.pairformer_evaluator import (
     evaluate_named_partner_controls,
     evaluate_pair_complex,
     evaluate_pair_dataset,
+    evaluate_partner_geometry_r2_controls,
+    evaluate_partner_geometry_r2_retrieval,
     holm_bonferroni_correction,
     pair_domain_manifest_sha256,
     pair_evaluation_mask_sha256,
     paired_cluster_bootstrap_comparison,
+    R2_REQUIRED_CONTROL_NAMES,
 )
 
 
@@ -387,6 +391,49 @@ def test_bidirectional_retrieval_reports_conservative_ties() -> None:
     assert "macro_bidirectional" in result
 
 
+def test_bidirectional_retrieval_supports_protocol_fractional_ranks() -> None:
+    scores = np.asarray(
+        [
+            [1.0, 0.5, 0.2],
+            [0.4, 0.4, 0.1],
+            [0.3, 0.2, 0.3],
+        ]
+    )
+    cognates = np.eye(3, dtype=bool)
+    result = evaluate_partner_geometry_r2_retrieval(
+        scores,
+        cognates,
+        np.ones_like(cognates),
+    )
+    row = result["antibody_to_antigen"]
+
+    assert result["evaluation_contract"] == (
+        "prospective_pairformer_exhaustive_retrieval_v3_fractional_rank"
+    )
+    assert result["rank_tie_policy"] == "fractional"
+    assert row["recall_at_1"] == pytest.approx(1.0 / 3.0)
+    assert row["mean_reciprocal_rank"] == pytest.approx(7.0 / 9.0)
+    assert row["mean_rank"] == pytest.approx(4.0 / 3.0)
+    assert row["mean_normalized_rank"] == pytest.approx(1.0 / 6.0)
+    assert row["retrieval_rank_tie_policy"] == (
+        "best_cognate_rank_is_one_plus_strictly_greater_noncognates_plus_"
+        "one_half_tied_noncognates"
+    )
+
+
+def test_bidirectional_retrieval_rejects_unknown_rank_tie_policy() -> None:
+    scores = np.eye(3)
+    cognates = np.eye(3, dtype=bool)
+
+    with pytest.raises(ValueError, match="rank_tie_policy"):
+        evaluate_bidirectional_cognate_retrieval(
+            scores,
+            cognates,
+            np.ones_like(cognates),
+            rank_tie_policy="ordinal",
+        )
+
+
 def test_bidirectional_retrieval_uses_every_cognate_noncognate_pair() -> None:
     scores = np.asarray(
         [
@@ -506,6 +553,75 @@ def test_named_partner_controls_require_authenticated_exact_support_parity() -> 
     assert result["metrics"]["all_controls"][
         "control_candidates_per_instance"
     ] == 3
+
+
+def _r2_control_arguments() -> dict[str, object]:
+    base = _named_control_arguments()
+    template_name = "wrong_patch"
+    controls = {
+        name: copy.deepcopy(base["controls_by_name"][template_name])
+        for name in R2_REQUIRED_CONTROL_NAMES
+    }
+    control_counts = {
+        name: copy.deepcopy(
+            base["control_candidate_pair_counts_by_name"][template_name]
+        )
+        for name in R2_REQUIRED_CONTROL_NAMES
+    }
+    control_axis_counts = {
+        name: copy.deepcopy(
+            base["control_axis_valid_counts_by_name"][template_name]
+        )
+        for name in R2_REQUIRED_CONTROL_NAMES
+    }
+    control_domain_hashes = {
+        name: copy.deepcopy(
+            base["control_candidate_domain_sha256_by_name"][template_name]
+        )
+        for name in R2_REQUIRED_CONTROL_NAMES
+    }
+    control_mask_hashes = {
+        name: copy.deepcopy(
+            base["control_candidate_mask_sha256_by_name"][template_name]
+        )
+        for name in R2_REQUIRED_CONTROL_NAMES
+    }
+    return {
+        "matched_scores": base["matched_scores"],
+        "controls_by_name": controls,
+        "matched_candidate_pair_counts": base["matched_candidate_pair_counts"],
+        "control_candidate_pair_counts_by_name": control_counts,
+        "matched_axis_valid_counts": base["matched_axis_valid_counts"],
+        "control_axis_valid_counts_by_name": control_axis_counts,
+        "matched_candidate_domain_sha256": base[
+            "matched_candidate_domain_sha256"
+        ],
+        "control_candidate_domain_sha256_by_name": control_domain_hashes,
+        "matched_candidate_mask_sha256": base[
+            "matched_candidate_mask_sha256"
+        ],
+        "control_candidate_mask_sha256_by_name": control_mask_hashes,
+    }
+
+
+def test_r2_control_panel_requires_every_frozen_control() -> None:
+    arguments = _r2_control_arguments()
+    result = evaluate_partner_geometry_r2_controls(**arguments)
+
+    assert result["evaluation_contract"] == (
+        "sabdab2_partner_geometry_r2_control_panel_v1"
+    )
+    assert result["required_control_names"] == list(R2_REQUIRED_CONTROL_NAMES)
+    assert result["candidate_support_audit"][
+        "all_controls_exact_support_match"
+    ]
+    assert set(result["metrics"]["control_names"]) == set(
+        R2_REQUIRED_CONTROL_NAMES
+    )
+
+    del arguments["controls_by_name"]["composition_only"]
+    with pytest.raises(ValueError, match="inventory differs"):
+        evaluate_partner_geometry_r2_controls(**arguments)
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,62 @@
+{
+  "claim_boundary": "Synthetic reduced R2 systems correctness only. No biological training, validation, test, throughput-efficiency, production-readiness, SOTA, or world-leading claim is authorized.",
+  "failures_retained": [
+    {
+      "evidence": "job_1339683_runtime_drift/runtime_verification.json",
+      "job_id": 1339683,
+      "stage": "runtime_live_state_verification",
+      "status": "failed_before_model_execution"
+    },
+    {
+      "evidence": "job_1339691_scalar_failure/fsdp2.log",
+      "job_id": 1339691,
+      "stage": "fully_shard_model_construction",
+      "status": "failed_before_optimizer_step"
+    }
+  ],
+  "format": "frontier_fsdp2_dcp_execution_summary_v1",
+  "frozen_source": {
+    "commit": "afbc0abe03be08a3966edffb88e63c4eb83dc9ca",
+    "executed_source_sha256": "c5260f1e60d7fdf360d35799dcca5a751cea113cb6ef76a5259776bcf16ee805",
+    "github_branch": "kevin/r2-fsdp2-dcp-v1"
+  },
+  "passed_runs": [
+    {
+      "checkpoint_content_sha256": "710b8e936ece289dfeed25adabc14b6daa6e5ffaf94aea4d601d0aa900b8ae17",
+      "checkpoint_file_sha256": "03f9570a87bf1248e536805345194d850ba223733fed778591996cefe91d45af",
+      "dcp_restart_max_scaled_error": 0.0,
+      "device": "NVIDIA GeForce RTX 5090",
+      "fsdp2_reference_max_absolute": 0.0,
+      "fsdp2_reference_max_scaled_error": 0.0,
+      "job_id": 1339702,
+      "precision": "float32",
+      "result_file_sha256": "6d718ab3a89216cd1b100dbef15a82e63703cee04a0a3e55476759605b9ef959",
+      "world_size": 1
+    },
+    {
+      "checkpoint_content_sha256": "37cdc2ec2408e44fbdbbd494e6a5a5e97d5e72f75cf2743a860e5e9654e5a647",
+      "checkpoint_file_sha256": "95334cb401e1766a02167e34b9356e72e3ea3e4e2de7fdb2475978867a0829c3",
+      "dcp_restart_max_scaled_error": 0.0,
+      "device": "NVIDIA GeForce RTX 5090",
+      "fsdp2_reference_max_absolute": 3.5685807233676314e-06,
+      "fsdp2_reference_max_scaled_error": 0.1784268021583557,
+      "job_id": 1339704,
+      "precision": "float32",
+      "result_file_sha256": "4769c16470a51f53866e9d8a19b23bcc97995bd84932c4789db73cd83fc29882",
+      "world_size": 8
+    }
+  ],
+  "runtime": {
+    "cuda_build": "13.0",
+    "manifest_file_sha256": "5e8c0ecf201876d0559331299187e4a8b8820124d79bdb24b9973b3b57e24202",
+    "manifest_path_in_repository": "runtime_attempt_004/frontier_torch213_runtime_20260730_attempt_004.json",
+    "pytorch": "2.13.0+cu130",
+    "runtime_state_sha256": "15ce269e21349b539fe82eb65d8840fe6f7d4995e55915a92811c7443cbcb821"
+  },
+  "status": "fp32_one_and_eight_gpu_correctness_passed",
+  "test_access": {
+    "biological_data": false,
+    "frozen_test": false,
+    "outer_fold": false
+  }
+}

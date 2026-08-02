@@ -1,0 +1,49 @@
+{
+  "artifact_audit": {
+    "artifact_manifest_verified": true,
+    "file_count_including_manifest": 11,
+    "writable_file_count": 0
+  },
+  "authorization": {
+    "biological_training": false,
+    "outer_evaluation": false,
+    "scaling_efficiency_claim": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "continuation_max_absolute_error": 0.0,
+    "continuation_max_scaled_error": 0.0,
+    "load_world_size": 1,
+    "save_world_size": 1
+  },
+  "format_version": "frontier_fsdp2_bf16_attempt_result_evidence_v1",
+  "job": {
+    "elapsed": "00:00:42",
+    "exit_code": "0:0",
+    "job_id": "1340458",
+    "node": "wqd10nbj06g4",
+    "partition": "gpu_5090",
+    "scheduler_state": "COMPLETED",
+    "world_size": 1
+  },
+  "parity": {
+    "absolute_tolerance": 0.005,
+    "element_count": 44531,
+    "max_absolute_error": 0.0007382649928331375,
+    "max_scaled_error": 0.14744384586811066,
+    "relative_tolerance": 0.02,
+    "tensor_count": 81
+  },
+  "precision": "bfloat16",
+  "result_file": {
+    "path": "/ssd/scxi253/model_deployment/results/frontier_fsdp2_dcp_v1_phase2_bf16_attempt_003/slurm-1340458/fsdp2/result.json",
+    "sha256": "2afc69ae22fe1d79e887cfe3934c358260aa8b370ecf00af860a0ef44f49bd55"
+  },
+  "source": {
+    "commit": "b5b86c7f559758de65f5e1a899005e89c52bc3e2",
+    "root": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_source_b5b86c7f5597",
+    "sha256": "e0bc2de922bf985383ee29e318a0195c9c12cd52e7d7ebd7aa54885dc5e811a0"
+  },
+  "status": "PASSED",
+  "test_data_accessed": false
+}

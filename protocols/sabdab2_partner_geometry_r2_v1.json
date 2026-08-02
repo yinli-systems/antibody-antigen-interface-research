@@ -1,0 +1,270 @@
+{
+  "format_version": "sabdab2_partner_geometry_r2_protocol_v1",
+  "created_at": "2026-07-29T22:55:21+08:00",
+  "status": "implementation_authorized_training_blocked_at_gate_0",
+  "base_commit": "f4753dde6e752a20274f7f009043b58215a0837c",
+  "supersedes": [],
+  "inherits_without_override": [
+    "protocols/PAIRFORMER_EXECUTION_PROTOCOL_V1.md",
+    "protocols/pairformer_gate_manifest_v1.json",
+    "protocols/frontier_model_contract_v1.json"
+  ],
+  "authorization": {
+    "source_implementation": true,
+    "synthetic_and_train_only_engineering_tests": true,
+    "scientific_training": false,
+    "inner_model_selection": false,
+    "outer_fold_inference": false,
+    "external_test_mount_or_read": false,
+    "external_test_schema_access": false,
+    "external_test_inference": false,
+    "blocking_gate": "G0",
+    "reason": "The exact nested dual-axis split, independent sequence and structure leakage audits, retention and distribution gates, fold-local cache equality, source licenses, and runtime locks have not all passed."
+  },
+  "scientific_hypothesis": "An explicit antibody-by-antigen residue-pair model with bidirectional partner conditioning and alternating pair-axis updates learns cognate partner-specific contacts beyond separable residue interface propensities.",
+  "frozen_monomer_encoder": {
+    "antibody_and_antigen_parameters_shared": false,
+    "geometry_feature_mode": "distance_direction",
+    "geometry_inputs": [
+      "intra_chain_CA_distance_rbf",
+      "local_frame_CA_direction"
+    ],
+    "forbidden_geometry_inputs": [
+      "bound_complex_inter_chain_distance",
+      "bound_complex_inter_chain_direction",
+      "bound_complex_partner_pose",
+      "test_labels"
+    ],
+    "confirmation": {
+      "seeds": [
+        17,
+        42,
+        73,
+        101,
+        137
+      ],
+      "epochs": 20,
+      "checkpoint_rule": "fixed_final_epoch_20",
+      "early_stopping": false,
+      "validation_checkpoint_selection": false,
+      "optimizer": "AdamW",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size_per_gpu": 4,
+      "precision": "bf16",
+      "parameter_matched_controls": [
+        "dense_sequence",
+        "topology_only",
+        "distance"
+      ],
+      "primary_comparison": "distance_direction_minus_topology_only_macro_auprc",
+      "claim_boundary": "This confirmation selects no downstream checkpoint and does not authorize test access."
+    }
+  },
+  "candidate_ladder": [
+    {
+      "id": "D0",
+      "description": "Locked dual monomer encoder with no residue-level partner fusion.",
+      "epochs": 58,
+      "global_batch_size": 1024,
+      "checkpoint_rule": "fixed_final_epoch_58",
+      "early_stopping": false
+    },
+    {
+      "id": "R1",
+      "description": "D0 plus two layers of early bidirectional antibody-antigen residue cross-attention.",
+      "epochs": 40,
+      "global_batch_size": 32,
+      "checkpoint_rule": "fixed_final_epoch_40",
+      "early_stopping": false
+    },
+    {
+      "id": "R2",
+      "description": "R1 plus an explicit antibody-by-antigen pair tensor, two alternating row-column pair update blocks, and a native residue-pair contact head.",
+      "epochs": 40,
+      "global_batch_size": 32,
+      "checkpoint_rule": "fixed_final_epoch_40",
+      "early_stopping": false,
+      "num_pair_update_layers": 2,
+      "pair_update_order": [
+        "antigen_axis_within_each_antibody_row",
+        "antibody_axis_within_each_antigen_column",
+        "feed_forward"
+      ]
+    }
+  ],
+  "pair_representation": {
+    "orientation": "antibody_by_antigen",
+    "shape": "[batch, antibody_residue, antigen_residue, channels]",
+    "complete_frozen_candidate_domain_required_for_evaluation": true,
+    "negative_subsampling_allowed_during_evaluation": false,
+    "pair_features": [
+      "partner_conditioned_antibody_residue",
+      "partner_conditioned_antigen_residue",
+      "elementwise_interaction"
+    ],
+    "pair_output_heads": [
+      "native_contact",
+      "distance",
+      "relative_orientation",
+      "interaction",
+      "confidence",
+      "uncertainty"
+    ],
+    "marginal_predictions_derived_from_pair_contact_logits": true
+  },
+  "labels": {
+    "primary_contact_definition": "any_non_hydrogen_atom_pair_distance_le_4.5_angstrom",
+    "sensitivity_cutoffs_angstrom": [
+      5.0,
+      6.0,
+      8.0
+    ],
+    "negative_or_exact_distance_requires_both_residues_complete": true,
+    "bound_interface_labels_may_be_read_only_after_assignment_freeze": true
+  },
+  "nested_evaluation": {
+    "outer_fold_count": 3,
+    "dependent_inner_fold_count_per_outer": 3,
+    "inner_fold_count_total": 9,
+    "architecture_loss_negative_policy_calibration_threshold_epoch_and_checkpoint_selection": "inner_only",
+    "outer_fold_use": "one_inference_pass_after_inner_selection_and_freeze",
+    "outer_results_may_change_candidate_or_hyperparameters": false,
+    "outer_predictions": "out_of_fold_only",
+    "test_use": "one_shot_after_final_freeze"
+  },
+  "fixed_seeds": [
+    17,
+    42,
+    73,
+    101,
+    137
+  ],
+  "controls": [
+    "matched_partner_shuffle",
+    "antibody_only",
+    "antigen_only",
+    "null",
+    "composition_only",
+    "strongest_separable_marginal",
+    "degree_aware_random",
+    "topology_only",
+    "raw_frozen_embedding"
+  ],
+  "retrieval": {
+    "directions": [
+      "antibody_queries_antigens",
+      "antigen_queries_antibodies"
+    ],
+    "metrics": [
+      "recall_at_1",
+      "recall_at_5",
+      "recall_at_10",
+      "mrr",
+      "normalized_rank",
+      "pairwise_win_rate"
+    ],
+    "candidate_library": "complete_frozen_fold_library",
+    "tie_policy": "fractional_rank"
+  },
+  "primary_and_secondary_metrics": {
+    "primary": "per_complex_macro_native_pair_matrix_auprc",
+    "pair_secondary": [
+      "auroc",
+      "mcc",
+      "dice_f1",
+      "precision_at_k",
+      "recall_at_k",
+      "nll",
+      "brier",
+      "adaptive_ece",
+      "risk_coverage"
+    ],
+    "residue_secondary": [
+      "epitope_macro_auprc",
+      "paratope_macro_auprc",
+      "epitope_mcc",
+      "paratope_mcc"
+    ],
+    "bootstrap": {
+      "replicates": 10000,
+      "unit": "leakage_component_or_biological_cluster",
+      "paired": true,
+      "confidence_level": 0.95,
+      "minimum_independent_clusters": 10
+    }
+  },
+  "gate_1": {
+    "all_requirements_must_pass": true,
+    "requirements": [
+      "paired_cluster_bootstrap_ci95_lower_bound_for_pair_auprc_gain_over_strongest_separable_baseline_gt_0",
+      "matched_partner_shuffle_significantly_degrades_pair_auprc_or_cognate_score",
+      "both_retrieval_directions_exceed_degree_aware_permutation_and_D0",
+      "antibody_only_antigen_only_null_composition_and_similarity_controls_do_not_explain_gain",
+      "at_least_4_of_5_seeds_show_positive_direction_for_each_primary_specificity_cell",
+      "major_antigen_strata_preserve_direction"
+    ],
+    "failure_action": "Improve labels, candidate masks, partner supervision, or hard negatives; do not scale parameter count."
+  },
+  "leakage_control": {
+    "assignment": "strict_sabdab2_abag_split_dual_axis_nested",
+    "sequence_axes": [
+      "antibody_concatenated",
+      "antibody_vh",
+      "antibody_vl",
+      "antigen"
+    ],
+    "exact_boundary_audit": true,
+    "structure_audit_after_assignment_freeze": {
+      "foldseek_interface_coverage": true,
+      "ialign": true,
+      "union_of_hits_fails_closed": true
+    },
+    "fold_local_cache_allowlist_equality_required": true
+  },
+  "baseline_reproduction": {
+    "required_families": [
+      "SPPIDER_seq",
+      "EpiFormer_or_PInet_class"
+    ],
+    "identical_contract_fields": [
+      "admitted_complex_ids",
+      "split_assignment",
+      "input_regime",
+      "structure_provenance",
+      "contact_definition",
+      "candidate_domain",
+      "metric_implementation",
+      "aggregation_unit",
+      "seed_policy",
+      "checkpoint_selection",
+      "calibration",
+      "uncertainty"
+    ],
+    "failed_or_unlicensed_reproduction_must_be_reported": true
+  },
+  "freeze_and_test_order": [
+    "freeze_raw_sources_chain_mappings_label_code_split_inputs_and_runtime",
+    "pass_exact_nested_split_and_independent_sequence_structure_audits",
+    "materialize_and_verify_fold_local_caches",
+    "run_inner_only_candidate_selection",
+    "freeze_source_runtime_seeds_candidate_checkpoint_threshold_calibration_and_analysis_registry",
+    "run_outer_folds_once",
+    "freeze_final_refit_and_external_test_registry",
+    "mount_external_test_once_and_run_one_shot_inference",
+    "publish_all_success_failure_and_access_receipts"
+  ],
+  "test_firewall": {
+    "current_state": "sealed",
+    "access_before_final_freeze": false,
+    "schema_inspection_before_final_freeze": false,
+    "performance_scoring_before_final_freeze": false,
+    "attempts_are_append_only": true,
+    "result_label_if_prior_schema_access_exists": "provided_external_test_split_with_pre_scoring_schema_access_not_pristine_blind"
+  },
+  "claim_policy": {
+    "sota_or_world_leading_without_identical_benchmark_evidence": false,
+    "larger_parameter_count_is_a_scientific_result": false,
+    "failure_timeout_or_infeasibility_evidence_must_be_preserved": true
+  }
+}
