@@ -144,6 +144,27 @@ def test_wrong_view_carries_every_key_the_residue_contrastive_loss_reads() -> No
     assert float(losses["residue_partner_contrastive_loss"].detach()) >= 0.0
 
 
+def test_cognate_view_carries_joint_contact_distance_consistency_inputs() -> None:
+    trainer = _trainer_views()
+    from interaction_first.framecontact_objective import (
+        FrameContactLossWeights,
+        FrameContactObjective,
+    )
+
+    model = _model(pair_output_mode="joint_contact_distogram")
+    batch = _triangle_batch()
+    view = trainer._cognate_training_view(model(batch))
+    objective = FrameContactObjective(
+        weights=FrameContactLossWeights(
+            specificity=0.0,
+            distogram=0.5,
+            contact_distance_consistency=0.25,
+        )
+    )
+    losses = objective(view, batch)
+    assert float(losses["contact_distance_consistency_loss"].detach()) >= 0.0
+
+
 def test_checkpointed_wrong_view_matches_the_plain_wrong_view() -> None:
     """Activation checkpointing must not silently change the key set."""
 

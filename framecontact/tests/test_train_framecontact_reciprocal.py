@@ -9,6 +9,24 @@ from types import SimpleNamespace
 import pytest
 
 
+def test_contact_gate_curriculum_has_zero_warmup_linear_ramp_and_unit_tail() -> None:
+    from pathlib import Path
+    import sys
+
+    scripts = Path(__file__).resolve().parent.parent / "scripts"
+    sys.path.insert(0, str(scripts))
+    import train_framecontact
+
+    schedule = train_framecontact._contact_gate_curriculum
+    assert schedule(0, 100, warmup_fraction=0.05, ramp_fraction=0.10) == 0.0
+    assert schedule(5, 100, warmup_fraction=0.05, ramp_fraction=0.10) == 0.0
+    assert schedule(10, 100, warmup_fraction=0.05, ramp_fraction=0.10) == 0.5
+    assert schedule(15, 100, warmup_fraction=0.05, ramp_fraction=0.10) == 1.0
+    assert schedule(99, 100, warmup_fraction=0.05, ramp_fraction=0.10) == 1.0
+    with pytest.raises(ValueError, match="sum"):
+        schedule(0, 100, warmup_fraction=0.8, ramp_fraction=0.3)
+
+
 def _training_module():
     path = Path(__file__).resolve().parents[1] / "scripts" / "train_framecontact.py"
     spec = importlib.util.spec_from_file_location("train_framecontact_test_module", path)

@@ -131,6 +131,48 @@ def distogram_cross_entropy_per_complex(
     return torch_module.stack(losses).mean()
 
 
+def bernoulli_js_consistency_per_complex(
+    direct_logits: Any,
+    distogram_contact_logits: Any,
+    mask: Any,
+) -> Any:
+    """Jensen-Shannon consistency for direct and distance-derived contact.
+
+    The loss is symmetric, bounded, and averaged within each complex before
+    averaging across complexes so long antigens cannot dominate the objective.
+    It is valid only when both logits arise from the same candidate pair set.
+    """
+
+    torch_module = _require_torch()
+    if (
+        tuple(direct_logits.shape) != tuple(distogram_contact_logits.shape)
+        or tuple(direct_logits.shape) != tuple(mask.shape)
+        or mask.dtype != torch_module.bool
+    ):
+        raise ValueError("contact consistency logits and mask must align")
+    p = torch_module.sigmoid(direct_logits.float()).clamp(1e-7, 1.0 - 1e-7)
+    q = torch_module.sigmoid(distogram_contact_logits.float()).clamp(
+        1e-7, 1.0 - 1e-7
+    )
+    midpoint = 0.5 * (p + q)
+
+    def bernoulli_kl(left: Any, right: Any) -> Any:
+        return left * (left.log() - right.log()) + (1.0 - left) * (
+            (1.0 - left).log() - (1.0 - right).log()
+        )
+
+    pair_loss = 0.5 * (
+        bernoulli_kl(p, midpoint) + bernoulli_kl(q, midpoint)
+    )
+    losses = []
+    for batch_index in range(int(mask.shape[0])):
+        observed = mask[batch_index]
+        if not bool(observed.any()):
+            raise ValueError("every complex must contain an observed candidate pair")
+        losses.append(pair_loss[batch_index][observed].mean())
+    return torch_module.stack(losses).mean()
+
+
 def select_local_antigen_patch(
     scores: Any,
     backbone: Any,
@@ -535,6 +577,7 @@ class FrameContactLossWeights:
     epitope: float = 0.25
     specificity: float = 0.25
     distogram: float = 0.0
+    contact_distance_consistency: float = 0.0
     triangle: float = 0.0
     edm: float = 0.0
     residue_partner_contrastive: float = 0.0
@@ -811,6 +854,7 @@ class FrameContactObjective(_ModuleBase):
         )
         if (
             self.weights.distogram != 0
+            or self.weights.contact_distance_consistency != 0
             or self.weights.triangle != 0
             or self.weights.edm != 0
         ):
@@ -833,6 +877,24 @@ class FrameContactObjective(_ModuleBase):
             )
         else:
             distogram_loss = contact_loss.new_zeros(())
+        if self.weights.contact_distance_consistency != 0:
+            distogram_contact_logits = cognate_output.get(
+                "distogram_contact_logits"
+            )
+            direct_contact_logits = cognate_output.get("direct_contact_logits")
+            if distogram_contact_logits is None or direct_contact_logits is None:
+                raise ValueError(
+                    "contact-distance consistency requires a joint contact-distogram head"
+                )
+            contact_distance_consistency_loss = (
+                bernoulli_js_consistency_per_complex(
+                    direct_contact_logits,
+                    distogram_contact_logits,
+                    cognate_output["pair_candidate_mask"],
+                )
+            )
+        else:
+            contact_distance_consistency_loss = contact_loss.new_zeros(())
         if self.weights.triangle != 0 or self.weights.edm != 0:
             if "antibody_cdr_mask" not in cognate_batch:
                 raise ValueError(
@@ -968,6 +1030,8 @@ class FrameContactObjective(_ModuleBase):
             + self.weights.epitope * epitope_loss
             + self.weights.specificity * specificity_loss
             + self.weights.distogram * distogram_loss
+            + self.weights.contact_distance_consistency
+            * contact_distance_consistency_loss
             + self.weights.triangle * triangle_loss
             + self.weights.edm * edm_loss
             + self.weights.residue_partner_contrastive * residue_contrastive_loss
@@ -979,6 +1043,9 @@ class FrameContactObjective(_ModuleBase):
             "epitope_loss": epitope_loss,
             "specificity_loss": specificity_loss,
             "distogram_loss": distogram_loss,
+            "contact_distance_consistency_loss": (
+                contact_distance_consistency_loss
+            ),
             "triangle_loss": triangle_loss,
             "edm_loss": edm_loss,
             "residue_partner_contrastive_loss": residue_contrastive_loss,
@@ -1047,6 +1114,7 @@ __all__ = [
     "FrameContactObjective",
     "ValidationTemperatureScaler",
     "balanced_binary_loss_per_complex",
+    "bernoulli_js_consistency_per_complex",
     "distogram_bin_centers",
     "distogram_cross_entropy_per_complex",
     "expected_distance_from_distogram",

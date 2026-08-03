@@ -8,6 +8,31 @@ import numpy as np
 import pytest
 
 
+def test_bernoulli_js_consistency_is_symmetric_and_zero_for_matching_heads() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        bernoulli_js_consistency_per_complex,
+    )
+
+    direct = torch.tensor([[[0.2, -1.0], [1.5, 0.0]]], requires_grad=True)
+    distance = torch.tensor([[[-0.3, -0.2], [0.7, 0.4]]], requires_grad=True)
+    mask = torch.tensor([[[True, True], [True, False]]])
+    forward = bernoulli_js_consistency_per_complex(direct, distance, mask)
+    reverse = bernoulli_js_consistency_per_complex(distance, direct, mask)
+    torch.testing.assert_close(forward, reverse)
+    assert forward.item() > 0.0
+    torch.testing.assert_close(
+        bernoulli_js_consistency_per_complex(direct, direct, mask),
+        torch.zeros(()),
+        atol=1e-8,
+        rtol=0.0,
+    )
+    forward.backward()
+    assert direct.grad is not None and torch.isfinite(direct.grad).all()
+    assert distance.grad is not None and torch.isfinite(distance.grad).all()
+
+
 pytestmark = pytest.mark.skipif(
     any(importlib.util.find_spec(name) is None for name in ("sklearn", "torch")),
     reason="FrameContact metric dependencies are unavailable",

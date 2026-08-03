@@ -386,12 +386,26 @@ def inject_pair_contact_prior(
     ).masked_fill(~pair_mask[..., None], 0.0)
     updated["distogram_logits"] = distance_logits
     updated["interaction_distogram_logits"] = interaction_distance_logits
-    updated["logits"] = contact_logit_from_distogram(
+    distogram_contact_logits = contact_logit_from_distogram(
         distance_logits, contact_bin_count=contact_bin_count
     ).masked_fill(~pair_mask, 0.0)
-    updated["interaction_logits"] = contact_logit_from_distogram(
+    distogram_interaction_logits = contact_logit_from_distogram(
         interaction_distance_logits, contact_bin_count=contact_bin_count
     ).masked_fill(~pair_mask, 0.0)
+    updated["distogram_contact_logits"] = distogram_contact_logits
+    updated["distogram_interaction_logits"] = distogram_interaction_logits
+    if components.get("direct_contact_logits") is not None:
+        updated["direct_contact_logits"] = (
+            components["direct_contact_logits"] + prior
+        ).masked_fill(~pair_mask, 0.0)
+        updated["direct_interaction_logits"] = (
+            components["direct_interaction_logits"] + prior
+        ).masked_fill(~pair_mask, 0.0)
+        updated["logits"] = updated["direct_contact_logits"]
+        updated["interaction_logits"] = updated["direct_interaction_logits"]
+    else:
+        updated["logits"] = distogram_contact_logits
+        updated["interaction_logits"] = distogram_interaction_logits
     return updated
 
 
@@ -515,6 +529,139 @@ class PairDistogramHead(_ModuleBase):
         return self.components(antibody, antigen, pair_mask)["logits"]
 
 
+class JointPairContactDistogramHead(_ModuleBase):
+    """Shared low-rank pair factors with direct-contact and distance outputs.
+
+    The direct Bernoulli head remains the primary sparse-interface predictor.
+    A categorical distogram is decoded from the *same* normalized residue
+    factors, allowing an auxiliary distance objective and an explicit
+    probability-consistency loss without pretending the two predictions are
+    independent models.  No cross-chain coordinates are inputs to this head.
+    """
+
+    def __init__(
+        self,
+        d_model: int,
+        pair_dim: int | None = None,
+        *,
+        distance_bin_boundaries: tuple[float, ...] = (
+            2.0,
+            3.0,
+            4.0,
+            4.5,
+            5.0,
+            6.0,
+            8.0,
+            10.0,
+            12.0,
+            16.0,
+            20.0,
+        ),
+        contact_distance_cutoff: float = 4.5,
+    ) -> None:
+        _require_torch()
+        super().__init__()
+        d_model = _positive_integer(d_model, "d_model")
+        pair_dim = d_model if pair_dim is None else _positive_integer(pair_dim, "pair_dim")
+        boundaries, contact_bin_count = _validated_distance_bins(
+            tuple(float(value) for value in distance_bin_boundaries),
+            float(contact_distance_cutoff),
+        )
+        self.pair_dim = pair_dim
+        self.bin_count = len(boundaries) + 1
+        self.contact_bin_count = contact_bin_count
+        self.antibody_norm = nn.LayerNorm(d_model)
+        self.antigen_norm = nn.LayerNorm(d_model)
+        self.antibody_factor = nn.Linear(d_model, pair_dim, bias=False)
+        self.antigen_factor = nn.Linear(d_model, pair_dim, bias=False)
+        self.distance_interaction_weight = nn.Parameter(
+            torch.empty(self.bin_count, pair_dim)
+        )
+        nn.init.normal_(
+            self.distance_interaction_weight,
+            mean=0.0,
+            std=1.0 / math.sqrt(pair_dim),
+        )
+        self.antibody_contact_unary = nn.Linear(d_model, 1)
+        self.antigen_contact_unary = nn.Linear(d_model, 1)
+        self.contact_bias = nn.Parameter(torch.tensor(-4.0))
+        self.antibody_distance_unary = nn.Linear(d_model, self.bin_count)
+        self.antigen_distance_unary = nn.Linear(d_model, self.bin_count)
+        self.distance_bias = nn.Parameter(torch.zeros(self.bin_count))
+        self.register_buffer(
+            "distance_bin_boundaries",
+            torch.tensor(boundaries, dtype=torch.float32),
+            persistent=True,
+        )
+
+    def components(
+        self,
+        antibody: Any,
+        antigen: Any,
+        pair_mask: Any,
+    ) -> dict[str, Any]:
+        antibody_normalized = self.antibody_norm(antibody)
+        antigen_normalized = self.antigen_norm(antigen)
+        antibody_factor = self.antibody_factor(antibody_normalized)
+        antigen_factor = self.antigen_factor(antigen_normalized)
+        direct_interaction = torch.einsum(
+            "bid,bjd->bij", antibody_factor, antigen_factor
+        ) / math.sqrt(self.pair_dim)
+        antibody_contact_unary = self.antibody_contact_unary(antibody)
+        antigen_contact_unary = self.antigen_contact_unary(antigen).transpose(1, 2)
+        direct_contact = (
+            direct_interaction
+            + antibody_contact_unary
+            + antigen_contact_unary
+            + self.contact_bias
+        ).masked_fill(~pair_mask, 0.0)
+        distance_interaction = torch.einsum(
+            "bid,bjd,kd->bijk",
+            antibody_factor,
+            antigen_factor,
+            self.distance_interaction_weight,
+        ) / math.sqrt(self.pair_dim)
+        antibody_distance_unary = self.antibody_distance_unary(antibody)[:, :, None, :]
+        antigen_distance_unary = self.antigen_distance_unary(antigen)[:, None, :, :]
+        distance_logits = (
+            distance_interaction
+            + antibody_distance_unary
+            + antigen_distance_unary
+            + self.distance_bias
+        ).masked_fill(~pair_mask[..., None], 0.0)
+        distogram_contact = contact_logit_from_distogram(
+            distance_logits, contact_bin_count=self.contact_bin_count
+        ).masked_fill(~pair_mask, 0.0)
+        return {
+            "logits": direct_contact,
+            "interaction_logits": direct_interaction.masked_fill(~pair_mask, 0.0),
+            "direct_contact_logits": direct_contact,
+            "direct_interaction_logits": direct_interaction.masked_fill(
+                ~pair_mask, 0.0
+            ),
+            "distogram_contact_logits": distogram_contact,
+            "distogram_interaction_logits": contact_logit_from_distogram(
+                distance_interaction,
+                contact_bin_count=self.contact_bin_count,
+            ).masked_fill(~pair_mask, 0.0),
+            "distogram_logits": distance_logits,
+            "interaction_distogram_logits": distance_interaction.masked_fill(
+                ~pair_mask[..., None], 0.0
+            ),
+            "antibody_unary_logits": antibody_contact_unary,
+            "antigen_unary_logits": antigen_contact_unary,
+            "antibody_unary_distogram_logits": antibody_distance_unary,
+            "antigen_unary_distogram_logits": antigen_distance_unary,
+            "contact_bias": self.contact_bias,
+            "distance_bias": self.distance_bias,
+            "distance_bin_boundaries": self.distance_bin_boundaries,
+            "contact_bin_count": self.contact_bin_count,
+        }
+
+    def forward(self, antibody: Any, antigen: Any, pair_mask: Any) -> Any:
+        return self.components(antibody, antigen, pair_mask)["logits"]
+
+
 class ContactGatedCrossAttention(_ModuleBase):
     """One directional cross-attention update controlled by contact logits."""
 
@@ -559,6 +706,7 @@ class ContactGatedCrossAttention(_ModuleBase):
         contact_logits: Any,
         pair_mask: Any,
         *,
+        contact_gate_multiplier: Any = 1.0,
         return_attention: bool = False,
     ) -> tuple[Any, dict[str, Any] | None]:
         batch_size, receiver_count, _ = receiver.shape
@@ -582,7 +730,18 @@ class ContactGatedCrossAttention(_ModuleBase):
         query_valid = receiver_mask & query_has_candidate
         attention = None
         content_only_attention = None
+        multiplier = torch.as_tensor(
+            contact_gate_multiplier,
+            device=contact_logits.device,
+            dtype=contact_logits.dtype,
+        )
+        if multiplier.numel() != 1 or not bool(torch.isfinite(multiplier)) or bool(
+            multiplier < 0
+        ):
+            raise ValueError("contact_gate_multiplier must be finite and nonnegative")
         contact_bias = (
+            multiplier
+            *
             contact_scale[None, :, None, None]
             * contact_log_probability[:, None]
         )
@@ -632,6 +791,7 @@ class ContactGatedCrossAttention(_ModuleBase):
             "content_only_weights": content_only_attention,
             "contact_log_probability": contact_log_probability,
             "contact_scale_per_head": contact_scale,
+            "contact_gate_multiplier": multiplier,
             "residual_gate": gate,
             "pair_mask": pair_mask,
             "partner_mask": partner_mask,
@@ -673,6 +833,7 @@ class BidirectionalContactGatedCrossAttention(_ModuleBase):
         contact_logits: Any,
         pair_mask: Any,
         *,
+        contact_gate_multiplier: Any = 1.0,
         return_attention: bool = False,
     ) -> tuple[Any, Any, dict[str, Any] | None]:
         antibody_updated, antibody_details = self.antibody_from_antigen(
@@ -682,6 +843,7 @@ class BidirectionalContactGatedCrossAttention(_ModuleBase):
             antigen_mask,
             contact_logits,
             pair_mask,
+            contact_gate_multiplier=contact_gate_multiplier,
             return_attention=return_attention,
         )
         antigen_updated, antigen_details = self.antigen_from_antibody(
@@ -691,6 +853,7 @@ class BidirectionalContactGatedCrossAttention(_ModuleBase):
             antibody_mask,
             contact_logits.transpose(1, 2),
             pair_mask.transpose(1, 2),
+            contact_gate_multiplier=contact_gate_multiplier,
             return_attention=return_attention,
         )
         if not return_attention:
@@ -710,6 +873,30 @@ def masked_logmeanexp(logits: Any, mask: Any, *, dim: int) -> Any:
     count = observed_count.clamp_min(1)
     masked = logits.masked_fill(~mask, torch.finfo(logits.dtype).min)
     result = torch.logsumexp(masked, dim=dim) - count.to(logits.dtype).log()
+    return result.masked_fill(observed_count == 0, 0.0)
+
+
+def masked_mean_probability_logits(logits: Any, mask: Any, *, dim: int) -> Any:
+    """Logit of the masked arithmetic mean of pair-contact probabilities.
+
+    This is the strict deterministic residue score used by contact-first models:
+    first interpret every pair logit as a Bernoulli contact probability, then
+    average only over authenticated candidate partners.  It is intentionally
+    distinct from ``masked_logmeanexp`` (mean odds in log space) and noisy-OR
+    (probability of at least one independent contact).
+    """
+
+    torch_module = _require_torch()
+    if tuple(logits.shape) != tuple(mask.shape) or mask.dtype != torch_module.bool:
+        raise ValueError("logits and boolean mask must have identical shapes")
+    observed_count = mask.sum(dim=dim)
+    count = observed_count.clamp_min(1).to(torch.float32)
+    probability = (
+        torch_module.sigmoid(logits.float()).masked_fill(~mask, 0.0).sum(dim=dim)
+        / count
+    )
+    probability = probability.clamp(min=1e-7, max=1.0 - 1e-7)
+    result = torch_module.logit(probability).to(logits.dtype)
     return result.masked_fill(observed_count == 0, 0.0)
 
 
@@ -969,6 +1156,7 @@ class FrameContactModel(_ModuleBase):
         attention_kernel: str = "reference",
         pair_gauge_mode: str = "raw",
         pair_gauge_iterations: int = 1,
+        contact_gate_source: str = "full_contact",
     ) -> None:
         _require_torch()
         super().__init__()
@@ -978,8 +1166,15 @@ class FrameContactModel(_ModuleBase):
         num_self_layers = _positive_integer(num_self_layers, "num_self_layers")
         if fusion_mode not in {"late", "interleaved"}:
             raise ValueError("fusion_mode must be 'late' or 'interleaved'")
-        if pair_output_mode not in {"binary_contact", "distogram"}:
-            raise ValueError("pair_output_mode must be binary_contact or distogram")
+        if pair_output_mode not in {
+            "binary_contact",
+            "distogram",
+            "joint_contact_distogram",
+        }:
+            raise ValueError(
+                "pair_output_mode must be binary_contact, distogram, or "
+                "joint_contact_distogram"
+            )
         if residue_output_mode not in {
             "unary_only",
             "contact_marginal_only",
@@ -1008,12 +1203,21 @@ class FrameContactModel(_ModuleBase):
             )
         if contact_marginalization not in {
             "logmeanexp",
+            "mean_probability",
             "noisy_or",
             "length_normalized_noisy_or",
         }:
             raise ValueError(
-                "contact_marginalization must be logmeanexp, noisy_or, or "
-                "length_normalized_noisy_or"
+                "contact_marginalization must be logmeanexp, mean_probability, "
+                "noisy_or, or length_normalized_noisy_or"
+            )
+        if contact_gate_source not in {
+            "none",
+            "full_contact",
+            "interaction_only",
+        }:
+            raise ValueError(
+                "contact_gate_source must be none, full_contact, or interaction_only"
             )
         if residue_unary_source not in {"intra_chain", "post_cross"}:
             raise ValueError("residue_unary_source must be intra_chain or post_cross")
@@ -1043,6 +1247,12 @@ class FrameContactModel(_ModuleBase):
         self.contact_bottleneck_gradient_mode = contact_bottleneck_gradient_mode
         self.pair_gauge_mode = pair_gauge_mode
         self.pair_gauge_iterations = int(pair_gauge_iterations)
+        self.contact_gate_source = contact_gate_source
+        self.register_buffer(
+            "contact_gate_multiplier",
+            torch.ones((), dtype=torch.float32),
+            persistent=True,
+        )
         if (paired_sequence_embedding_dim is None) != (
             paired_sequence_attention_heads is None
         ):
@@ -1107,16 +1317,22 @@ class FrameContactModel(_ModuleBase):
                 )
                 for _ in range(num_self_layers)
             )
-        self.contact_head = (
-            PairContactHead(d_model, pair_dim)
-            if pair_output_mode == "binary_contact"
-            else PairDistogramHead(
+        if pair_output_mode == "binary_contact":
+            self.contact_head = PairContactHead(d_model, pair_dim)
+        elif pair_output_mode == "distogram":
+            self.contact_head = PairDistogramHead(
                 d_model,
                 pair_dim,
                 distance_bin_boundaries=distance_bin_boundaries,
                 contact_distance_cutoff=contact_distance_cutoff,
             )
-        )
+        else:
+            self.contact_head = JointPairContactDistogramHead(
+                d_model,
+                pair_dim,
+                distance_bin_boundaries=distance_bin_boundaries,
+                contact_distance_cutoff=contact_distance_cutoff,
+            )
         self.cross_attention = (
             BidirectionalContactGatedCrossAttention(
                 d_model,
@@ -1144,6 +1360,32 @@ class FrameContactModel(_ModuleBase):
         self.epitope_contact_gate = nn.Parameter(torch.zeros(()))
         nn.init.constant_(self.paratope_head.bias, -2.5)
         nn.init.constant_(self.epitope_head.bias, -2.5)
+
+    def _contact_gate_logits(
+        self,
+        components: Mapping[str, Any],
+        pair_mask: Any,
+    ) -> Any:
+        """Select the pre-registered routing channel without changing pair output.
+
+        ``none`` supplies one constant logit on every valid row, which cancels
+        exactly inside softmax and therefore implements ordinary cross-attention.
+        ``interaction_only`` excludes additive antibody/antigen propensities so
+        partner-independent unary shortcuts cannot route cross-chain messages.
+        """
+
+        if self.contact_gate_source == "full_contact":
+            return components["logits"]
+        if self.contact_gate_source == "interaction_only":
+            return components["interaction_logits"]
+        return torch.zeros_like(components["logits"]).masked_fill(~pair_mask, 0.0)
+
+    def set_contact_gate_multiplier(self, value: float) -> None:
+        """Set a checkpointed routing curriculum scalar in ``[0, 1]``."""
+
+        if not math.isfinite(float(value)) or not 0.0 <= float(value) <= 1.0:
+            raise ValueError("contact gate multiplier must lie in [0, 1]")
+        self.contact_gate_multiplier.fill_(float(value))
 
     @staticmethod
     def _validate_frame_partition(batch: Mapping[str, Any], partner: str) -> None:
@@ -1263,22 +1505,28 @@ class FrameContactModel(_ModuleBase):
                 pair_mask,
             )
             initial_contact_logits = initial_contact_components["logits"]
+            initial_contact_gate_logits = self._contact_gate_logits(
+                initial_contact_components, pair_mask
+            )
             antibody_fused, antigen_fused, cross_details = self.cross_attention(
                 antibody,
                 antigen,
                 antibody_mask,
                 antigen_mask,
-                initial_contact_logits,
+                initial_contact_gate_logits,
                 pair_mask,
+                contact_gate_multiplier=self.contact_gate_multiplier,
                 return_attention=return_attention,
             )
             intermediate_contact_logits = (initial_contact_logits,)
+            intermediate_contact_gate_logits = (initial_contact_gate_logits,)
         else:
             assert self.interleaved_self_encoders is not None
             assert self.interleaved_cross_attentions is not None
             self_layer_details = []
             cross_layer_details = []
             intermediate_contact_logits_list = []
+            intermediate_contact_gate_logits_list = []
             initial_contact_components = None
             for self_layer, cross_layer in zip(
                 self.interleaved_self_encoders,
@@ -1302,21 +1550,32 @@ class FrameContactModel(_ModuleBase):
                 if initial_contact_components is None:
                     initial_contact_components = stage_contact_components
                 stage_contact_logits = stage_contact_components["logits"]
+                stage_contact_gate_logits = self._contact_gate_logits(
+                    stage_contact_components, pair_mask
+                )
                 antibody, antigen, layer_cross_details = cross_layer(
                     antibody,
                     antigen,
                     antibody_mask,
                     antigen_mask,
-                    stage_contact_logits,
+                    stage_contact_gate_logits,
                     pair_mask,
+                    contact_gate_multiplier=self.contact_gate_multiplier,
                     return_attention=return_attention,
                 )
                 intermediate_contact_logits_list.append(stage_contact_logits)
+                intermediate_contact_gate_logits_list.append(
+                    stage_contact_gate_logits
+                )
                 if return_attention:
                     self_layer_details.append(layer_self_details)
                     cross_layer_details.append(layer_cross_details)
             intermediate_contact_logits = tuple(intermediate_contact_logits_list)
+            intermediate_contact_gate_logits = tuple(
+                intermediate_contact_gate_logits_list
+            )
             initial_contact_logits = intermediate_contact_logits[0]
+            initial_contact_gate_logits = intermediate_contact_gate_logits[0]
             assert initial_contact_components is not None
             antibody_fused, antigen_fused = antibody, antigen
             antibody_self, antigen_self = antibody, antigen
@@ -1391,6 +1650,7 @@ class FrameContactModel(_ModuleBase):
         )
         marginalizer = {
             "logmeanexp": masked_logmeanexp,
+            "mean_probability": masked_mean_probability_logits,
             "noisy_or": masked_noisy_or_logits,
             "length_normalized_noisy_or": masked_length_normalized_noisy_or_logits,
         }[self.contact_marginalization]
@@ -1462,10 +1722,12 @@ class FrameContactModel(_ModuleBase):
         epitope_logits = epitope_logits.masked_fill(~antigen_mask, 0.0)
         return {
             "initial_contact_logits": initial_contact_logits,
+            "initial_contact_gate_logits": initial_contact_gate_logits,
             "initial_contact_interaction_logits": initial_contact_components[
                 "interaction_logits"
             ],
             "intermediate_contact_logits": intermediate_contact_logits,
+            "intermediate_contact_gate_logits": intermediate_contact_gate_logits,
             "contact_logits": contact_logits,
             "contact_interaction_logits": contact_components["interaction_logits"],
             "antibody_contact_propensity_logits": contact_components[
@@ -1512,6 +1774,8 @@ class FrameContactModel(_ModuleBase):
             "residue_output_mode": self.residue_output_mode,
             "residue_unary_source": self.residue_unary_source,
             "contact_marginalization": self.contact_marginalization,
+            "contact_gate_source": self.contact_gate_source,
+            "contact_gate_multiplier": self.contact_gate_multiplier,
             "contact_bottleneck_compatibility": (
                 None if contact_bottleneck is None else contact_bottleneck["compatibility"]
             ),
@@ -1544,6 +1808,15 @@ class FrameContactModel(_ModuleBase):
                 None if contact_bottleneck is None else contact_bottleneck["gradient_mode"]
             ),
             "distogram_logits": contact_components.get("distogram_logits"),
+            "distogram_contact_logits": contact_components.get(
+                "distogram_contact_logits"
+            ),
+            "distogram_interaction_logits": contact_components.get(
+                "distogram_interaction_logits"
+            ),
+            "direct_contact_logits": contact_components.get(
+                "direct_contact_logits"
+            ),
             "interaction_distogram_logits": contact_components.get(
                 "interaction_distogram_logits"
             ),
@@ -1561,6 +1834,8 @@ __all__ = [
     "DualFactorizedIntraChainEncoder",
     "FactorizedIntraChainEncoder",
     "FrameContactModel",
+    "JointPairContactDistogramHead",
+    "masked_mean_probability_logits",
     "PairContactHead",
     "PairDistogramHead",
     "contact_logit_from_distogram",

@@ -126,6 +126,59 @@ EXPERIMENTS = {
         "cross": True,
         "fusion_mode": "interleaved",
     },
+    # FrameContact-ICG factorized matrix. M2-M4 retain the M1 noisy-OR
+    # aggregation so that the routing comparisons do not also change pooling.
+    # M5 changes residue aggregation; M6a/M6/M7 isolate distance supervision
+    # and direct-contact/distogram consistency.
+    "framecontact_icg_m2_ordinary": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "gated_hybrid",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "none",
+    },
+    "framecontact_icg_m3_full_gate": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "gated_hybrid",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "full_contact",
+    },
+    "framecontact_icg_m4_interaction_gate": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "gated_hybrid",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_icg_m5_contact_marginal": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_icg_m6_joint_consistent": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "joint_contact_distogram", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_icg_m6a_joint_no_consistency": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "joint_contact_distogram", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_icg_m7_distogram_only": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "distogram", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
+        "contact_gate_source": "interaction_only",
+    },
     "framecontact_unary_only": {
         "geometry_feature_mode": "full_pose",
         "geometry_bias_mode": "pair_mlp",
@@ -296,6 +349,34 @@ EXPERIMENTS = {
 
 def _sigmoid_numpy(values: np.ndarray) -> np.ndarray:
     return 1.0 / (1.0 + np.exp(-np.clip(values, -60.0, 60.0)))
+
+
+def _contact_gate_curriculum(
+    completed_steps: int,
+    total_steps: int,
+    *,
+    warmup_fraction: float,
+    ramp_fraction: float,
+) -> float:
+    """Predicted-gate strength with an optional zero-bias warm-up and ramp."""
+
+    if total_steps <= 0 or completed_steps < 0:
+        raise ValueError("contact gate curriculum steps must be nonnegative")
+    if (
+        not math.isfinite(warmup_fraction)
+        or not math.isfinite(ramp_fraction)
+        or warmup_fraction < 0
+        or ramp_fraction < 0
+        or warmup_fraction + ramp_fraction > 1
+    ):
+        raise ValueError("contact gate curriculum fractions must be nonnegative and sum to <= 1")
+    warmup_steps = int(round(total_steps * warmup_fraction))
+    ramp_steps = int(round(total_steps * ramp_fraction))
+    if completed_steps < warmup_steps:
+        return 0.0
+    if ramp_steps == 0:
+        return 1.0
+    return min(1.0, max(0.0, (completed_steps - warmup_steps) / ramp_steps))
 
 
 def _weight_distribution_diagnostics(
@@ -508,6 +589,8 @@ def _arguments() -> argparse.Namespace:
         choices=("stop_gradient", "joint"),
         default="stop_gradient",
     )
+    parser.add_argument("--contact-gate-warmup-fraction", type=float, default=0.0)
+    parser.add_argument("--contact-gate-ramp-fraction", type=float, default=0.0)
     parser.add_argument("--learning-rate", type=float, default=3e-4)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--contact-loss-weight", type=float, default=1.0)
@@ -515,6 +598,9 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--epitope-loss-weight", type=float, default=0.25)
     parser.add_argument("--specificity-loss-weight", type=float, default=0.25)
     parser.add_argument("--distogram-loss-weight", type=float, default=0.0)
+    parser.add_argument(
+        "--contact-distance-consistency-loss-weight", type=float, default=0.0
+    )
     parser.add_argument("--triangle-loss-weight", type=float, default=0.0)
     parser.add_argument("--edm-loss-weight", type=float, default=0.0)
     parser.add_argument(
@@ -635,6 +721,8 @@ _COGNATE_VIEW_REQUIRED = (
 )
 _COGNATE_VIEW_OPTIONAL = (
     "distogram_logits",
+    "distogram_contact_logits",
+    "direct_contact_logits",
     "distance_bin_boundaries",
     "antibody_contact_propensity_logits",
     "antigen_contact_propensity_logits",
@@ -775,7 +863,7 @@ def _load_authorities(
             raise ValueError("Contact cache manifest SHA-256 differs")
         distance_required = EXPERIMENTS[arguments.experiment].get(
             "pair_output_mode", "binary_contact"
-        ) == "distogram"
+        ) in {"distogram", "joint_contact_distogram"}
         geometry_values = (
             arguments.pair_geometry_cache_root,
             arguments.pair_geometry_manifest_sha256,
@@ -820,7 +908,7 @@ def _load_authorities(
             raise ValueError("AsEP backend has no authenticated pair geometry authority")
         if EXPERIMENTS[arguments.experiment].get(
             "pair_output_mode", "binary_contact"
-        ) == "distogram":
+        ) in {"distogram", "joint_contact_distogram"}:
             raise ValueError("Distogram experiments are not authorized on AsEP v1 cache")
         asep_manifest = arguments.asep_cache_root / "ASEP_DEVELOPMENT_CACHE_MANIFEST.json"
         if sha256_file(asep_manifest) != arguments.asep_cache_manifest_sha256:
@@ -910,6 +998,8 @@ def _validate_execution_configuration(
             "contact_bottleneck_projection_dim"
         ),
         "contact_bottleneck_gradient_mode": "contact_bottleneck_gradient_mode",
+        "contact_gate_warmup_fraction": "contact_gate_warmup_fraction",
+        "contact_gate_ramp_fraction": "contact_gate_ramp_fraction",
     }
     for argument_name, protocol_name in fields.items():
         observed = getattr(
@@ -944,6 +1034,10 @@ def _validate_execution_configuration(
         ("epitope_loss_weight", "epitope"),
         ("specificity_loss_weight", "specificity"),
         ("distogram_loss_weight", "distogram"),
+        (
+            "contact_distance_consistency_loss_weight",
+            "contact_distance_consistency",
+        ),
         ("triangle_loss_weight", "triangle"),
         ("edm_loss_weight", "edm"),
         (
@@ -956,7 +1050,11 @@ def _validate_execution_configuration(
             argument_name,
             0.0
             if argument_name
-            in {"edm_loss_weight", "residue_partner_contrastive_loss_weight"}
+            in {
+                "contact_distance_consistency_loss_weight",
+                "edm_loss_weight",
+                "residue_partner_contrastive_loss_weight",
+            }
             else math.nan,
         )
         if protocol_name not in loss_weights:
@@ -1986,6 +2084,9 @@ def _model_from_configuration(
         pair_gauge_iterations=int(
             EXPERIMENTS[experiment].get("pair_gauge_iterations", 1)
         ),
+        contact_gate_source=EXPERIMENTS[experiment].get(
+            "contact_gate_source", "full_contact"
+        ),
         contact_bottleneck_projection_dim=bottleneck_projection_dim,
         contact_bottleneck_gradient_mode=str(
             configuration.get(
@@ -2023,6 +2124,12 @@ def main() -> None:
         raise ValueError("batch-size must be positive")
     if arguments.calibration_max_pairs <= 0:
         raise ValueError("calibration-max-pairs must be positive")
+    _contact_gate_curriculum(
+        0,
+        max(1, arguments.epochs),
+        warmup_fraction=arguments.contact_gate_warmup_fraction,
+        ramp_fraction=arguments.contact_gate_ramp_fraction,
+    )
     _set_seed(arguments.seed)
     if arguments.dataset_backend == "sabdab2":
         train_base = Sabdab2StructureEmbeddingDataset(
@@ -2175,6 +2282,9 @@ def main() -> None:
         epitope=arguments.epitope_loss_weight,
         specificity=arguments.specificity_loss_weight,
         distogram=arguments.distogram_loss_weight,
+        contact_distance_consistency=(
+            arguments.contact_distance_consistency_loss_weight
+        ),
         triangle=arguments.triangle_loss_weight,
         edm=arguments.edm_loss_weight,
         residue_partner_contrastive=(
@@ -2232,6 +2342,8 @@ def main() -> None:
     stale_epochs = 0
     best_path = temporary_root / "best_validation.pt"
     started = time.monotonic()
+    total_planned_steps = max(1, arguments.epochs * len(train_loader))
+    completed_steps = 0
     try:
         for epoch in range(1, arguments.epochs + 1):
             model.train()
@@ -2239,6 +2351,14 @@ def main() -> None:
             component_sums: dict[str, float] = {}
             steps = 0
             for raw_batch, raw_wrong_by_direction in train_loader:
+                model.set_contact_gate_multiplier(
+                    _contact_gate_curriculum(
+                        completed_steps,
+                        total_planned_steps,
+                        warmup_fraction=arguments.contact_gate_warmup_fraction,
+                        ramp_fraction=arguments.contact_gate_ramp_fraction,
+                    )
+                )
                 batch = _move_batch(raw_batch, device)
                 wrong_batches = {
                     direction: (
@@ -2278,6 +2398,7 @@ def main() -> None:
                 losses["loss"].backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
+                completed_steps += 1
                 for key, value in losses.items():
                     if torch.is_tensor(value):
                         component_sums[key] = component_sums.get(key, 0.0) + float(
@@ -2321,6 +2442,14 @@ def main() -> None:
                         if model.pair_gauge_mode == "doubly_centered"
                         else None
                     ),
+                },
+                "cross_contact_gate": {
+                    "source": model.contact_gate_source,
+                    "curriculum_multiplier": float(
+                        model.contact_gate_multiplier.detach()
+                    ),
+                    "completed_steps": completed_steps,
+                    "total_planned_steps": total_planned_steps,
                 },
                 "elapsed_seconds": time.monotonic() - started,
             }
