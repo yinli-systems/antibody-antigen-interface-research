@@ -62,7 +62,6 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--contact-manifest-sha256", required=True)
     parser.add_argument("--embedding-root", type=Path, required=True)
     parser.add_argument("--embedding-manifest-sha256", required=True)
-    parser.add_argument("--label-root", type=Path, required=True)
     parser.add_argument("--split-manifest", type=Path, required=True)
     parser.add_argument("--split-manifest-sha256", required=True)
     parser.add_argument("--training-partner-panel", type=Path, required=True)
@@ -197,7 +196,7 @@ def main() -> None:
     base = Sabdab2StructureEmbeddingDataset(
         arguments.structure_cache_root,
         arguments.embedding_root,
-        arguments.label_root,
+        None,
         split_role="train",
         split_path=arguments.split_manifest,
         split_sha256=arguments.split_manifest_sha256,

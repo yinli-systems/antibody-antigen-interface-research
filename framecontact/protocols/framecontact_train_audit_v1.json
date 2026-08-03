@@ -75,7 +75,7 @@
   },
   "implementation": {
     "evaluator_path": "scripts/evaluate_framecontact_train_audit.py",
-    "evaluator_sha256": "ab0a4a3ac2b923a2674260b03af9cfdd4df3309403ebb68c60b2659f17935164",
+    "evaluator_sha256": "030b7e8b6d16ac8fba91990ebb99f6790168a57c07c210d766e98c2697f034ea",
     "test_path": "tests/test_evaluate_framecontact_train_audit.py",
     "test_sha256": "64e70278b8e4f3a2eeaed1c9585f0dd082b075dcb7b3738c6fb93240b3a0770c",
     "output_is_write_once": true,
