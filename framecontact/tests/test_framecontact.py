@@ -197,6 +197,87 @@ def test_interleaved_model_runs_one_contact_gated_update_after_each_self_layer()
     assert torch.isfinite(result["contact_logits"]).all()
 
 
+@pytest.mark.parametrize(
+    ("gate_source", "expected_key"),
+    (("full_contact", "logits"), ("interaction_only", "interaction_logits")),
+)
+def test_interleaved_contact_gate_source_is_explicit(
+    gate_source: str, expected_key: str
+) -> None:
+    import torch
+
+    from interaction_first.framecontact import FrameContactModel
+
+    model = FrameContactModel(
+        antibody_input_dim=12,
+        antigen_input_dim=10,
+        d_model=16,
+        num_heads=4,
+        num_self_layers=2,
+        neighbor_k=4,
+        neighbor_radius=None,
+        dropout=0.0,
+        fusion_mode="interleaved",
+        contact_gate_source=gate_source,
+    ).eval()
+    result = model(_batch(), return_attention=True)
+    expected = (
+        result["initial_contact_logits"]
+        if expected_key == "logits"
+        else result["initial_contact_interaction_logits"]
+    )
+    torch.testing.assert_close(result["initial_contact_gate_logits"], expected)
+    assert result["contact_gate_source"] == gate_source
+
+
+def test_ungated_interleaved_mode_is_exact_ordinary_cross_attention() -> None:
+    import torch
+
+    from interaction_first.framecontact import FrameContactModel
+
+    model = FrameContactModel(
+        antibody_input_dim=12,
+        antigen_input_dim=10,
+        d_model=16,
+        num_heads=4,
+        num_self_layers=1,
+        neighbor_k=4,
+        neighbor_radius=None,
+        dropout=0.0,
+        fusion_mode="interleaved",
+        contact_gate_source="none",
+    ).eval()
+    result = model(_batch(), return_attention=True)
+    assert torch.count_nonzero(result["initial_contact_gate_logits"]) == 0
+    layer = result["cross_attention_details"]["layers"][0]
+    for direction in ("antibody_from_antigen", "antigen_from_antibody"):
+        torch.testing.assert_close(
+            layer[direction]["weights"],
+            layer[direction]["content_only_weights"],
+            atol=1e-7,
+            rtol=1e-7,
+        )
+
+
+def test_contact_gate_zero_curriculum_multiplier_disables_predicted_bias() -> None:
+    import torch
+
+    model = _interleaved_model()
+    model.set_contact_gate_multiplier(0.0)
+    result = model(_batch(), return_attention=True)
+    layer = result["cross_attention_details"]["layers"][0]
+    for direction in ("antibody_from_antigen", "antigen_from_antibody"):
+        torch.testing.assert_close(
+            layer[direction]["weights"],
+            layer[direction]["content_only_weights"],
+            atol=1e-7,
+            rtol=1e-7,
+        )
+    assert float(result["contact_gate_multiplier"]) == 0.0
+    with pytest.raises(ValueError, match=r"\[0, 1\]"):
+        model.set_contact_gate_multiplier(1.1)
+
+
 def test_unknown_fusion_mode_fails_closed() -> None:
     from interaction_first.framecontact import FrameContactModel
 
@@ -208,6 +289,20 @@ def test_unknown_fusion_mode_fails_closed() -> None:
             num_heads=4,
             num_self_layers=1,
             fusion_mode="decoder_magic",
+        )
+
+
+def test_unknown_contact_gate_source_fails_closed() -> None:
+    from interaction_first.framecontact import FrameContactModel
+
+    with pytest.raises(ValueError, match="contact_gate_source"):
+        FrameContactModel(
+            antibody_input_dim=12,
+            antigen_input_dim=10,
+            d_model=16,
+            num_heads=4,
+            num_self_layers=1,
+            contact_gate_source="ground_truth_contact",
         )
 
 
@@ -857,6 +952,24 @@ def test_noisy_or_is_the_probability_of_at_least_one_contact() -> None:
     )
 
 
+def test_mean_probability_marginal_is_masked_arithmetic_mean() -> None:
+    import torch
+
+    from interaction_first.framecontact import masked_mean_probability_logits
+
+    probabilities = torch.tensor([[[0.2, 0.4, 0.9]]])
+    mask = torch.tensor([[[True, True, False]]])
+    result = masked_mean_probability_logits(torch.logit(probabilities), mask, dim=2)
+    torch.testing.assert_close(torch.sigmoid(result), torch.tensor([[0.3]]))
+
+    duplicated = probabilities[..., :1].expand(1, 1, 12)
+    duplicated_mask = torch.ones_like(duplicated, dtype=torch.bool)
+    duplicated_result = masked_mean_probability_logits(
+        torch.logit(duplicated), duplicated_mask, dim=2
+    )
+    torch.testing.assert_close(torch.sigmoid(duplicated_result), torch.tensor([[0.2]]))
+
+
 def test_length_normalized_noisy_or_is_constant_under_partner_duplication() -> None:
     import torch
 
@@ -910,3 +1023,39 @@ def test_distogram_contact_is_a_projection_of_the_same_pair_head() -> None:
     ).masked_fill(~result["pair_candidate_mask"], 0.0)
     torch.testing.assert_close(result["contact_logits"], reconstructed)
     assert result["pair_output_mode"] == "distogram"
+
+
+def test_joint_pair_head_keeps_direct_contact_primary_and_exposes_distance_projection() -> None:
+    import torch
+
+    from interaction_first.framecontact import (
+        FrameContactModel,
+        contact_logit_from_distogram,
+    )
+
+    model = FrameContactModel(
+        antibody_input_dim=12,
+        antigen_input_dim=10,
+        d_model=16,
+        num_heads=4,
+        num_self_layers=1,
+        neighbor_k=4,
+        neighbor_radius=None,
+        dropout=0.0,
+        pair_output_mode="joint_contact_distogram",
+        residue_output_mode="contact_marginal_only",
+        contact_marginalization="mean_probability",
+    ).eval()
+    result = model(_batch())
+    assert result["distogram_logits"].shape == (2, 5, 7, 12)
+    torch.testing.assert_close(
+        result["contact_logits"], result["direct_contact_logits"]
+    )
+    projected = contact_logit_from_distogram(
+        result["distogram_logits"], contact_bin_count=4
+    ).masked_fill(~result["pair_candidate_mask"], 0.0)
+    torch.testing.assert_close(result["distogram_contact_logits"], projected)
+    assert result["contact_logits"].data_ptr() != result[
+        "distogram_contact_logits"
+    ].data_ptr()
+    assert result["pair_output_mode"] == "joint_contact_distogram"
