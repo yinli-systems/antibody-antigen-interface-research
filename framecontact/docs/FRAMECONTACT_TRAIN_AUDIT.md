@@ -19,7 +19,6 @@ python scripts/evaluate_framecontact_train_audit.py \
   --contact-manifest-sha256 SHA256 \
   --embedding-root /path/to/esm-cache \
   --embedding-manifest-sha256 SHA256 \
-  --label-root /path/to/train-labels \
   --split-manifest /path/to/antigen-fold-v3.csv \
   --split-manifest-sha256 SHA256 \
   --training-partner-panel /path/to/train-reciprocal-panel.json \
