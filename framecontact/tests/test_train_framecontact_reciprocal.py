@@ -514,3 +514,37 @@ def test_execution_configuration_supports_frozen_condition_specific_losses() -> 
     values["triangle_loss_weight"] = 0.0
     with pytest.raises(ValueError, match="triangle_loss_weight differs"):
         module._validate_execution_configuration(protocol, SimpleNamespace(**values))
+
+
+def test_execution_configuration_locks_residue_contrastive_semantics() -> None:
+    module = _training_module()
+    protocol = {
+        "implementation": {},
+        "training_objective": {
+            "loss_weights": {},
+            "specificity_margin": 0.05,
+            "score_fraction": 0.01,
+            "residue_contrastive_margin": 0.5,
+            "residue_contrastive_mode": "pairwise_softplus",
+            "residue_contrastive_temperature": 1.0,
+        },
+    }
+    values = SimpleNamespace(
+        contact_loss_weight=0.0,
+        paratope_loss_weight=0.0,
+        epitope_loss_weight=0.0,
+        specificity_loss_weight=0.0,
+        distogram_loss_weight=0.0,
+        triangle_loss_weight=0.0,
+        edm_loss_weight=0.0,
+        residue_partner_contrastive_loss_weight=0.0,
+        specificity_margin=0.05,
+        score_fraction=0.01,
+        residue_contrastive_margin=0.5,
+        residue_contrastive_mode="pairwise_softplus",
+        residue_contrastive_temperature=1.0,
+    )
+    module._validate_execution_configuration(protocol, values)
+    values.residue_contrastive_temperature = 0.5
+    with pytest.raises(ValueError, match="residue_contrastive_temperature differs"):
+        module._validate_execution_configuration(protocol, values)

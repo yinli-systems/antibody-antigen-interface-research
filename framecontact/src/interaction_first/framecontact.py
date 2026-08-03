@@ -1398,8 +1398,17 @@ class FrameContactModel(_ModuleBase):
         epitope_contact = marginalizer(contact_logits, pair_mask, dim=1)
         # The raw marginals above still carry the single-chain propensity terms
         # of the contact map, which cannot distinguish partners by construction.
-        # The gauge isolates the jointly dependent channel before marginalizing,
+        # The gauge isolates the jointly dependent channel before aggregating,
         # in fp32 because the centering subtracts nearly equal quantities.
+        #
+        # A centered interaction residual is *not* a Bernoulli contact logit:
+        # zero means "no evidence beyond additive row/column propensities", not
+        # a 50% contact probability.  Applying noisy-OR to hundreds of centered
+        # zeros therefore saturates at probability one and destroys residue
+        # ranking.  The gauge path instead uses log-mean-exp, which is exactly
+        # zero for flat centered evidence, is length normalized, and increases
+        # with partner-specific concentration.  Raw contact marginals retain
+        # the user-selected probabilistic aggregation above.
         if self.pair_gauge_mode == "doubly_centered":
             gauge = gauge_fixed_pair_components(
                 contact_logits.float(),
@@ -1407,8 +1416,10 @@ class FrameContactModel(_ModuleBase):
                 iterations=self.pair_gauge_iterations,
             )
             gauge_interaction = gauge["interaction"].to(contact_logits.dtype)
-            paratope_gauge = marginalizer(gauge_interaction, pair_mask, dim=2)
-            epitope_gauge = marginalizer(gauge_interaction, pair_mask, dim=1)
+            paratope_gauge = masked_logmeanexp(
+                gauge_interaction, pair_mask, dim=2
+            )
+            epitope_gauge = masked_logmeanexp(gauge_interaction, pair_mask, dim=1)
         else:
             gauge = None
             gauge_interaction = None
@@ -1483,6 +1494,9 @@ class FrameContactModel(_ModuleBase):
                 None if gauge is None else gauge["centering_residual"]
             ),
             "pair_gauge_mode": self.pair_gauge_mode,
+            "gauge_marginalization": (
+                None if gauge is None else "centered_logmeanexp"
+            ),
             "paratope_unary_logits": paratope_unary.masked_fill(
                 ~antibody_mask, 0.0
             ),

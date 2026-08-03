@@ -209,9 +209,10 @@ EXPERIMENTS = {
     },
     # Gauge arms. The contact map splits exactly into two single-chain
     # propensity profiles plus a jointly dependent remainder, and only the
-    # remainder can distinguish partners. These arms differ from the raw
-    # marginal arms above in exactly one factor: which channel the residue
-    # head marginalizes. The contact prediction itself is untouched.
+    # remainder can distinguish partners. The centered remainder is aggregated
+    # with length-normalized log-mean-exp rather than probabilistic noisy-OR:
+    # zero residual is absence of interaction evidence, not a 50% contact.
+    # The contact prediction itself is untouched.
     "framecontact_gauge_marginal": {
         "geometry_feature_mode": "full_pose",
         "geometry_bias_mode": "pair_mlp",
@@ -375,6 +376,71 @@ def _aggregate_weight_diagnostics(
     }
 
 
+def _residue_logit_distribution_diagnostics(
+    logits: np.ndarray, *, saturation_absolute_logit: float = 29.0
+) -> dict[str, float | int]:
+    """Fail-closed diagnostics for residue-score collapse and numeric clipping.
+
+    ``masked_noisy_or_logits`` clamps its accumulated log-survival at -30, so
+    the failed v1 gauge marginal produced residue logits pinned at +30.  The
+    29-logit threshold is deliberately close to that implementation boundary;
+    it is a numerical saturation alarm, not a classification operating point.
+    Exact unique counts are computed after conversion to float32, matching the
+    values written by the evaluation path.
+    """
+
+    values = np.asarray(logits, dtype=np.float32).reshape(-1)
+    if values.size == 0:
+        raise ValueError("residue logit diagnostics require at least one value")
+    if not np.isfinite(values).all():
+        raise ValueError("residue logit diagnostics require finite values")
+    if not math.isfinite(saturation_absolute_logit) or saturation_absolute_logit <= 0:
+        raise ValueError("saturation threshold must be finite and positive")
+    return {
+        "valid_count": int(values.size),
+        "unique_valid_logit_count": int(np.unique(values).size),
+        "standard_deviation": float(values.astype(np.float64).std()),
+        "minimum": float(values.min()),
+        "maximum": float(values.max()),
+        "saturation_absolute_logit": float(saturation_absolute_logit),
+        "saturation_fraction": float(
+            np.mean(np.abs(values) >= saturation_absolute_logit)
+        ),
+    }
+
+
+def _aggregate_residue_logit_diagnostics(
+    values: Mapping[str, Mapping[str, float | int]],
+) -> dict[str, Any]:
+    if not values:
+        raise ValueError("cannot aggregate empty residue logit diagnostics")
+    entries = list(values.values())
+    return {
+        "definition": (
+            "Descriptive pre-calibration valid-residue logits. Saturation means "
+            "absolute raw logit >=29, a numerical alarm for the +/-30 noisy-OR "
+            "clamp and not a selected decision threshold."
+        ),
+        "complex_count": len(entries),
+        "collapsed_complex_count": sum(
+            int(entry["unique_valid_logit_count"]) <= 1 for entry in entries
+        ),
+        "saturated_complex_count": sum(
+            float(entry["saturation_fraction"]) > 0.0 for entry in entries
+        ),
+        "minimum_unique_valid_logit_count": min(
+            int(entry["unique_valid_logit_count"]) for entry in entries
+        ),
+        "mean_standard_deviation": float(
+            np.mean([float(entry["standard_deviation"]) for entry in entries])
+        ),
+        "maximum_saturation_fraction": max(
+            float(entry["saturation_fraction"]) for entry in entries
+        ),
+        "by_instance": dict(values),
+    }
+
+
 def _arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -500,6 +566,17 @@ def _arguments() -> argparse.Namespace:
     )
     parser.add_argument("--precision", choices=("fp32", "bf16"), default="bf16")
     parser.add_argument("--device", choices=("auto", "cuda", "cpu"), default="auto")
+    parser.add_argument(
+        "--authority-preflight-only",
+        action="store_true",
+        help=(
+            "Authenticate the frozen source/protocol/panels, construct both "
+            "development datasets, load one train and validation example, and "
+            "instantiate the configured model without creating an output root "
+            "or starting training. This preserves the requested CUDA/bf16 "
+            "execution contract while remaining runnable on a login node."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -921,6 +998,9 @@ def _validate_execution_configuration(
         "specificity_direction_temperature": (
             "specificity_direction_temperature"
         ),
+        "residue_contrastive_margin": "residue_contrastive_margin",
+        "residue_contrastive_mode": "residue_contrastive_mode",
+        "residue_contrastive_temperature": "residue_contrastive_temperature",
     }
     for argument_name, protocol_name in optional_objective_fields.items():
         if protocol_name not in objective:
@@ -1223,6 +1303,7 @@ def _evaluate(
         "paratope": {
             "labels": [],
             "logits": [],
+            "logit_distribution_by_instance": {},
             "per_complex_auprc": [],
             "per_complex_auprc_by_instance": {},
             "positive_required_metric_ineligible_instance_ids": [],
@@ -1230,6 +1311,7 @@ def _evaluate(
         "epitope": {
             "labels": [],
             "logits": [],
+            "logit_distribution_by_instance": {},
             "per_complex_auprc": [],
             "per_complex_auprc_by_instance": {},
             "positive_required_metric_ineligible_instance_ids": [],
@@ -1423,6 +1505,9 @@ def _evaluate(
                 )
                 residue[name]["labels"].append(local_labels)
                 residue[name]["logits"].append(local_logits)
+                residue[name]["logit_distribution_by_instance"][
+                    str(instance_id)
+                ] = _residue_logit_distribution_diagnostics(local_logits)
                 local_ap = positive_required_average_precision(
                     local_labels, _sigmoid_numpy(local_logits)
                 )
@@ -1781,6 +1866,9 @@ def _evaluate(
             "validation_temperature": residue_temperature,
             "calibration_source": residue_calibration_source,
             "calibration_fit_residue_count": residue_calibration_fit_count,
+            "raw_logit_distribution": _aggregate_residue_logit_diagnostics(
+                values["logit_distribution_by_instance"]
+            ),
             "mean_per_complex_auprc": float(np.mean(values["per_complex_auprc"])),
             "per_complex_auprc_by_instance": values[
                 "per_complex_auprc_by_instance"
@@ -1935,15 +2023,6 @@ def main() -> None:
         raise ValueError("batch-size must be positive")
     if arguments.calibration_max_pairs <= 0:
         raise ValueError("calibration-max-pairs must be positive")
-    device = _device(arguments.device)
-    use_bf16 = arguments.precision == "bf16" and device.type == "cuda"
-    if arguments.precision == "bf16" and device.type != "cuda":
-        raise ValueError("bf16 requires CUDA")
-    if device.type == "cuda" and os.environ.get("CUBLAS_WORKSPACE_CONFIG") not in {
-        ":4096:8",
-        ":16:8",
-    }:
-        raise ValueError("CUDA requires deterministic CUBLAS_WORKSPACE_CONFIG")
     _set_seed(arguments.seed)
     if arguments.dataset_backend == "sabdab2":
         train_base = Sabdab2StructureEmbeddingDataset(
@@ -1992,6 +2071,68 @@ def main() -> None:
             split_role="val",
             feature_mode=arguments.asep_feature_mode,
         )
+    if arguments.authority_preflight_only:
+        paired_preflight = _FrozenPanelTrainingDataset(
+            train_dataset,
+            training_panel,
+            arguments.seed,
+            negative_count=arguments.specificity_negative_count,
+        )
+        train_item = train_dataset[0]
+        validation_item = validation_dataset[0]
+        _FrozenPanelTrainingCollator(
+            pair_geometry=arguments.pair_geometry_cache_root is not None
+        )([paired_preflight[0]])
+        validation_collator = (
+            Sabdab2PairGeometryBatchCollator()
+            if arguments.pair_geometry_cache_root is not None
+            else Sabdab2ContactBatchCollator()
+        )
+        validation_collator([validation_item])
+        model = _model_from_configuration(
+            train_item,
+            vars(arguments),
+            arguments.experiment,
+        )
+        print(
+            json.dumps(
+                {
+                    "format_version": "framecontact_authority_preflight_v1",
+                    "status": "valid",
+                    "dataset_backend": arguments.dataset_backend,
+                    "experiment": arguments.experiment,
+                    "seed": arguments.seed,
+                    "train_complexes": len(train_dataset),
+                    "validation_complexes": len(validation_dataset),
+                    "training_panel_format": training_panel["format_version"],
+                    "validation_panel_format": panel["format_version"],
+                    "parameter_count": sum(
+                        parameter.numel() for parameter in model.parameters()
+                    ),
+                    "requested_device": arguments.device,
+                    "requested_precision": arguments.precision,
+                    "output_root_created": False,
+                    "test_role_loaded": False,
+                    "claim_boundary": (
+                        "Authority and construction preflight only; no optimizer "
+                        "step, prediction metric, test access or hardware claim."
+                    ),
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        return
+
+    device = _device(arguments.device)
+    use_bf16 = arguments.precision == "bf16" and device.type == "cuda"
+    if arguments.precision == "bf16" and device.type != "cuda":
+        raise ValueError("bf16 requires CUDA")
+    if device.type == "cuda" and os.environ.get("CUBLAS_WORKSPACE_CONFIG") not in {
+        ":4096:8",
+        ":16:8",
+    }:
+        raise ValueError("CUDA requires deterministic CUBLAS_WORKSPACE_CONFIG")
     paired_train_dataset = _FrozenPanelTrainingDataset(
         train_dataset,
         training_panel,
@@ -2175,6 +2316,11 @@ def main() -> None:
                     ),
                     "residue_output_mode": model.residue_output_mode,
                     "pair_gauge_mode": model.pair_gauge_mode,
+                    "gauge_marginalization": (
+                        "centered_logmeanexp"
+                        if model.pair_gauge_mode == "doubly_centered"
+                        else None
+                    ),
                 },
                 "elapsed_seconds": time.monotonic() - started,
             }
