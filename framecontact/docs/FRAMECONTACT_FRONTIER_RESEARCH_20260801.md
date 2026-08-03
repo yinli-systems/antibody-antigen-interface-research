@@ -1,5 +1,13 @@
 # FrameContact frontier research and execution blueprint
 
+> 2026-08-03 execution update: the first specificity-gauge pooling treated a
+> zero-centered interaction residual as Bernoulli contact evidence and
+> saturated noisy-OR at realistic partner lengths. The repaired path uses
+> centered log-mean-exp, emits per-complex collapse diagnostics, and is frozen
+> under protocol v3. The complete incident and source/Slurm receipts are in
+> `SPECIFICITY_GAUGE_INCIDENT_20260803.md`; neither failed run nor the repaired
+> development array authorizes a frozen-test or benchmark claim.
+
 **Frozen on:** 2026-08-01  
 **Purpose:** determine what is scientifically defensible, what is directly
 reusable, and what still needs controlled experiments before FrameContact can

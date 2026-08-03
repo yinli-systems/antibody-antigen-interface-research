@@ -107,6 +107,14 @@ def test_gauge_marginal_is_nonnegative_and_vanishes_on_flat_evidence() -> None:
     mask = output["pair_candidate_mask"]
     epitope = output["epitope_gauge_logits"]
     assert float(epitope[output["antigen_mask"]].min()) >= -1e-5
+    assert output["gauge_marginalization"] == "centered_logmeanexp"
+    assert torch.allclose(
+        epitope,
+        masked_logmeanexp(
+            output["contact_gauge_interaction_logits"], mask, dim=1
+        ),
+        atol=1e-6,
+    )
 
     flat = torch.zeros_like(output["contact_gauge_interaction_logits"])
     assert torch.allclose(
@@ -114,6 +122,58 @@ def test_gauge_marginal_is_nonnegative_and_vanishes_on_flat_evidence() -> None:
         torch.zeros_like(epitope),
         atol=1e-6,
     )
+
+
+def test_centered_gauge_never_uses_saturating_noisy_or() -> None:
+    """Long centered maps make noisy-OR constant but keep logmeanexp ranked."""
+
+    import torch
+
+    from interaction_first.framecontact import (
+        masked_logmeanexp,
+        masked_noisy_or_logits,
+    )
+
+    torch.manual_seed(20260803)
+    interaction = torch.randn(1, 220, 512) * 0.1
+    interaction = interaction - interaction.mean(dim=2, keepdim=True)
+    interaction = interaction - interaction.mean(dim=1, keepdim=True)
+    mask = torch.ones_like(interaction, dtype=torch.bool)
+
+    saturated = masked_noisy_or_logits(interaction, mask, dim=1)
+    stable = masked_logmeanexp(interaction, mask, dim=1)
+    assert torch.unique(saturated).numel() == 1
+    assert torch.unique(stable).numel() > 100
+    assert float(stable.max()) < 0.1
+
+
+def test_residue_logit_diagnostics_fail_closed_on_the_v1_collapse() -> None:
+    """The evaluation JSON must make a repeated +30 failure unmistakable."""
+
+    import numpy as np
+
+    from scripts.train_framecontact import (
+        _aggregate_residue_logit_diagnostics,
+        _residue_logit_distribution_diagnostics,
+    )
+
+    collapsed = _residue_logit_distribution_diagnostics(np.full(220, 30.0))
+    healthy = _residue_logit_distribution_diagnostics(
+        np.linspace(-0.1, 0.1, 220, dtype=np.float32)
+    )
+    assert collapsed["unique_valid_logit_count"] == 1
+    assert collapsed["standard_deviation"] == 0.0
+    assert collapsed["saturation_fraction"] == 1.0
+    assert healthy["unique_valid_logit_count"] == 220
+    assert healthy["standard_deviation"] > 0.0
+    assert healthy["saturation_fraction"] == 0.0
+
+    summary = _aggregate_residue_logit_diagnostics(
+        {"collapsed": collapsed, "healthy": healthy}
+    )
+    assert summary["collapsed_complex_count"] == 1
+    assert summary["saturated_complex_count"] == 1
+    assert summary["minimum_unique_valid_logit_count"] == 1
 
 
 def test_gauge_routed_heads_require_an_identifiable_channel() -> None:
