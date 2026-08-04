@@ -900,6 +900,76 @@ def masked_mean_probability_logits(logits: Any, mask: Any, *, dim: int) -> Any:
     return result.masked_fill(observed_count == 0, 0.0)
 
 
+def soft_coarse_pair_log_prior(
+    paratope_logits: Any,
+    epitope_logits: Any,
+    antibody_mask: Any,
+    antigen_mask: Any,
+    *,
+    probability_floor: float = 0.05,
+    temperature: float = 1.0,
+    stop_gradient: bool = True,
+) -> dict[str, Any]:
+    """Build a non-destructive coarse paratope-by-epitope routing prior.
+
+    The first-pass residue predictions are *not* turned into a hard crop.  Their
+    outer product is mixed with a strictly positive floor, so every authenticated
+    residue pair remains available to the second-pass contact predictor.  The
+    default stop-gradient route prevents the model from improving its objective
+    merely by sharpening its own crop; sharing the residue heads with the final
+    supervised prediction still lets the coarse predictor improve over training.
+
+    The returned logarithm is suitable as an additive cross-attention bias.  It
+    is deliberately not added to the final contact logits and is never used as a
+    pair-label mask.
+    """
+
+    torch_module = _require_torch()
+    if paratope_logits.ndim != 2 or epitope_logits.ndim != 2:
+        raise ValueError("coarse residue logits must be [batch, residue]")
+    if (
+        tuple(paratope_logits.shape) != tuple(antibody_mask.shape)
+        or tuple(epitope_logits.shape) != tuple(antigen_mask.shape)
+        or antibody_mask.dtype != torch_module.bool
+        or antigen_mask.dtype != torch_module.bool
+    ):
+        raise ValueError("coarse residue logits and boolean masks must align")
+    if not math.isfinite(probability_floor) or not 0.0 < probability_floor <= 1.0:
+        raise ValueError("coarse probability floor must lie in (0, 1]")
+    if not math.isfinite(temperature) or temperature <= 0:
+        raise ValueError("coarse temperature must be finite and positive")
+    paratope_probability = torch_module.sigmoid(
+        paratope_logits.float() / float(temperature)
+    ).masked_fill(~antibody_mask, 0.0)
+    epitope_probability = torch_module.sigmoid(
+        epitope_logits.float() / float(temperature)
+    ).masked_fill(~antigen_mask, 0.0)
+    pair_mask = antibody_mask[:, :, None] & antigen_mask[:, None, :]
+    coarse_probability = (
+        paratope_probability[:, :, None] * epitope_probability[:, None, :]
+    )
+    routed_probability = float(probability_floor) + (
+        1.0 - float(probability_floor)
+    ) * coarse_probability
+    routed_probability = routed_probability.masked_fill(~pair_mask, 1.0)
+    log_prior = routed_probability.clamp_min(1e-7).log()
+    if stop_gradient:
+        paratope_probability = paratope_probability.detach()
+        epitope_probability = epitope_probability.detach()
+        coarse_probability = coarse_probability.detach()
+        log_prior = log_prior.detach()
+    return {
+        "log_prior": log_prior.to(paratope_logits.dtype),
+        "pair_probability": coarse_probability.to(paratope_logits.dtype),
+        "paratope_probability": paratope_probability.to(paratope_logits.dtype),
+        "epitope_probability": epitope_probability.to(epitope_logits.dtype),
+        "pair_mask": pair_mask,
+        "probability_floor": float(probability_floor),
+        "temperature": float(temperature),
+        "stop_gradient": bool(stop_gradient),
+    }
+
+
 def masked_noisy_or_logits(logits: Any, mask: Any, *, dim: int) -> Any:
     """Return the stable logit of ``P(any contact)`` along one partner axis.
 
@@ -1157,6 +1227,11 @@ class FrameContactModel(_ModuleBase):
         pair_gauge_mode: str = "raw",
         pair_gauge_iterations: int = 1,
         contact_gate_source: str = "full_contact",
+        coarse_contact_crop_mode: str = "none",
+        coarse_contact_crop_floor: float = 0.05,
+        coarse_contact_crop_temperature: float = 1.0,
+        coarse_contact_crop_strength: float = 1.0,
+        coarse_contact_crop_stop_gradient: bool = True,
     ) -> None:
         _require_torch()
         super().__init__()
@@ -1219,6 +1294,33 @@ class FrameContactModel(_ModuleBase):
             raise ValueError(
                 "contact_gate_source must be none, full_contact, or interaction_only"
             )
+        if coarse_contact_crop_mode not in {"none", "soft_unary"}:
+            raise ValueError(
+                "coarse_contact_crop_mode must be none or soft_unary"
+            )
+        if coarse_contact_crop_mode != "none" and fusion_mode != "interleaved":
+            raise ValueError(
+                "coarse contact cropping requires interleaved cross-attention"
+            )
+        if (
+            not math.isfinite(coarse_contact_crop_floor)
+            or not 0.0 < coarse_contact_crop_floor <= 1.0
+        ):
+            raise ValueError("coarse contact crop floor must lie in (0, 1]")
+        if (
+            not math.isfinite(coarse_contact_crop_temperature)
+            or coarse_contact_crop_temperature <= 0
+        ):
+            raise ValueError(
+                "coarse contact crop temperature must be finite and positive"
+            )
+        if (
+            not math.isfinite(coarse_contact_crop_strength)
+            or coarse_contact_crop_strength < 0
+        ):
+            raise ValueError(
+                "coarse contact crop strength must be finite and nonnegative"
+            )
         if residue_unary_source not in {"intra_chain", "post_cross"}:
             raise ValueError("residue_unary_source must be intra_chain or post_cross")
         if fusion_mode == "interleaved" and residue_unary_source == "intra_chain":
@@ -1248,6 +1350,15 @@ class FrameContactModel(_ModuleBase):
         self.pair_gauge_mode = pair_gauge_mode
         self.pair_gauge_iterations = int(pair_gauge_iterations)
         self.contact_gate_source = contact_gate_source
+        self.coarse_contact_crop_mode = coarse_contact_crop_mode
+        self.coarse_contact_crop_floor = float(coarse_contact_crop_floor)
+        self.coarse_contact_crop_temperature = float(
+            coarse_contact_crop_temperature
+        )
+        self.coarse_contact_crop_strength = float(coarse_contact_crop_strength)
+        self.coarse_contact_crop_stop_gradient = bool(
+            coarse_contact_crop_stop_gradient
+        )
         self.register_buffer(
             "contact_gate_multiplier",
             torch.ones((), dtype=torch.float32),
@@ -1387,6 +1498,38 @@ class FrameContactModel(_ModuleBase):
             raise ValueError("contact gate multiplier must lie in [0, 1]")
         self.contact_gate_multiplier.fill_(float(value))
 
+    def _coarse_contact_crop(
+        self,
+        antibody: Any,
+        antigen: Any,
+        antibody_mask: Any,
+        antigen_mask: Any,
+    ) -> dict[str, Any] | None:
+        if self.coarse_contact_crop_mode == "none":
+            return None
+        coarse_paratope_logits = self.paratope_head(
+            self.antibody_norm(antibody)
+        ).squeeze(-1)
+        coarse_epitope_logits = self.epitope_head(
+            self.antigen_norm(antigen)
+        ).squeeze(-1)
+        prior = soft_coarse_pair_log_prior(
+            coarse_paratope_logits,
+            coarse_epitope_logits,
+            antibody_mask,
+            antigen_mask,
+            probability_floor=self.coarse_contact_crop_floor,
+            temperature=self.coarse_contact_crop_temperature,
+            stop_gradient=self.coarse_contact_crop_stop_gradient,
+        )
+        prior["paratope_logits"] = coarse_paratope_logits.masked_fill(
+            ~antibody_mask, 0.0
+        )
+        prior["epitope_logits"] = coarse_epitope_logits.masked_fill(
+            ~antigen_mask, 0.0
+        )
+        return prior
+
     @staticmethod
     def _validate_frame_partition(batch: Mapping[str, Any], partner: str) -> None:
         residue_mask = batch[f"{partner}_mask"]
@@ -1520,6 +1663,7 @@ class FrameContactModel(_ModuleBase):
             )
             intermediate_contact_logits = (initial_contact_logits,)
             intermediate_contact_gate_logits = (initial_contact_gate_logits,)
+            intermediate_coarse_contact_crops: tuple[dict[str, Any], ...] = ()
         else:
             assert self.interleaved_self_encoders is not None
             assert self.interleaved_cross_attentions is not None
@@ -1527,6 +1671,7 @@ class FrameContactModel(_ModuleBase):
             cross_layer_details = []
             intermediate_contact_logits_list = []
             intermediate_contact_gate_logits_list = []
+            intermediate_coarse_contact_crop_list = []
             initial_contact_components = None
             for self_layer, cross_layer in zip(
                 self.interleaved_self_encoders,
@@ -1553,6 +1698,21 @@ class FrameContactModel(_ModuleBase):
                 stage_contact_gate_logits = self._contact_gate_logits(
                     stage_contact_components, pair_mask
                 )
+                coarse_contact_crop = self._coarse_contact_crop(
+                    antibody,
+                    antigen,
+                    antibody_mask,
+                    antigen_mask,
+                )
+                if coarse_contact_crop is not None:
+                    stage_contact_gate_logits = (
+                        stage_contact_gate_logits
+                        + self.coarse_contact_crop_strength
+                        * coarse_contact_crop["log_prior"]
+                    ).masked_fill(~pair_mask, 0.0)
+                    intermediate_coarse_contact_crop_list.append(
+                        coarse_contact_crop
+                    )
                 antibody, antigen, layer_cross_details = cross_layer(
                     antibody,
                     antigen,
@@ -1573,6 +1733,9 @@ class FrameContactModel(_ModuleBase):
             intermediate_contact_logits = tuple(intermediate_contact_logits_list)
             intermediate_contact_gate_logits = tuple(
                 intermediate_contact_gate_logits_list
+            )
+            intermediate_coarse_contact_crops = tuple(
+                intermediate_coarse_contact_crop_list
             )
             initial_contact_logits = intermediate_contact_logits[0]
             initial_contact_gate_logits = intermediate_contact_gate_logits[0]
@@ -1728,6 +1891,9 @@ class FrameContactModel(_ModuleBase):
             ],
             "intermediate_contact_logits": intermediate_contact_logits,
             "intermediate_contact_gate_logits": intermediate_contact_gate_logits,
+            "intermediate_coarse_contact_crops": (
+                intermediate_coarse_contact_crops
+            ),
             "contact_logits": contact_logits,
             "contact_interaction_logits": contact_components["interaction_logits"],
             "antibody_contact_propensity_logits": contact_components[
@@ -1776,6 +1942,15 @@ class FrameContactModel(_ModuleBase):
             "contact_marginalization": self.contact_marginalization,
             "contact_gate_source": self.contact_gate_source,
             "contact_gate_multiplier": self.contact_gate_multiplier,
+            "coarse_contact_crop_mode": self.coarse_contact_crop_mode,
+            "coarse_contact_crop_floor": self.coarse_contact_crop_floor,
+            "coarse_contact_crop_temperature": (
+                self.coarse_contact_crop_temperature
+            ),
+            "coarse_contact_crop_strength": self.coarse_contact_crop_strength,
+            "coarse_contact_crop_stop_gradient": (
+                self.coarse_contact_crop_stop_gradient
+            ),
             "contact_bottleneck_compatibility": (
                 None if contact_bottleneck is None else contact_bottleneck["compatibility"]
             ),
@@ -1843,4 +2018,5 @@ __all__ = [
     "masked_length_normalized_noisy_or_logits",
     "masked_logmeanexp",
     "masked_noisy_or_logits",
+    "soft_coarse_pair_log_prior",
 ]

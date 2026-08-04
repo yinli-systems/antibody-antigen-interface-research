@@ -179,6 +179,30 @@ EXPERIMENTS = {
         "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
         "contact_gate_source": "interaction_only",
     },
+    "framecontact_plan_b_soft_crop": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "gated_hybrid",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+        "coarse_contact_crop_mode": "soft_unary",
+    },
+    "framecontact_plan_b_soft_crop_joint": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "joint_contact_distogram", "residue_output_mode": "gated_hybrid",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+        "coarse_contact_crop_mode": "soft_unary",
+    },
+    "framecontact_plan_b_soft_crop_far_patch": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "joint_contact_distogram", "residue_output_mode": "gated_hybrid",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+        "coarse_contact_crop_mode": "soft_unary",
+    },
     "framecontact_unary_only": {
         "geometry_feature_mode": "full_pose",
         "geometry_bias_mode": "pair_mlp",
@@ -591,6 +615,23 @@ def _arguments() -> argparse.Namespace:
     )
     parser.add_argument("--contact-gate-warmup-fraction", type=float, default=0.0)
     parser.add_argument("--contact-gate-ramp-fraction", type=float, default=0.0)
+    parser.add_argument(
+        "--coarse-contact-crop-floor", type=float, default=0.05
+    )
+    parser.add_argument(
+        "--coarse-contact-crop-temperature", type=float, default=1.0
+    )
+    parser.add_argument(
+        "--coarse-contact-crop-strength", type=float, default=1.0
+    )
+    parser.add_argument(
+        "--coarse-contact-crop-allow-gradient",
+        action="store_true",
+        help=(
+            "Exploratory control only: allow the coarse routing prior to receive "
+            "gradient. The registered Plan-B condition uses stop-gradient."
+        ),
+    )
     parser.add_argument("--learning-rate", type=float, default=3e-4)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--contact-loss-weight", type=float, default=1.0)
@@ -602,6 +643,7 @@ def _arguments() -> argparse.Namespace:
         "--contact-distance-consistency-loss-weight", type=float, default=0.0
     )
     parser.add_argument("--triangle-loss-weight", type=float, default=0.0)
+    parser.add_argument("--far-patch-exclusion-loss-weight", type=float, default=0.0)
     parser.add_argument("--edm-loss-weight", type=float, default=0.0)
     parser.add_argument(
         "--residue-partner-contrastive-loss-weight", type=float, default=0.0
@@ -644,6 +686,9 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--triangle-slack", type=float, default=0.5)
     parser.add_argument("--antigen-patch-top-seeds", type=int, default=1)
     parser.add_argument("--antigen-patch-radius", type=float, default=12.0)
+    parser.add_argument("--far-patch-minimum-separation", type=float, default=20.0)
+    parser.add_argument("--far-patch-residue-k", type=int, default=16)
+    parser.add_argument("--far-patch-slack", type=float, default=0.5)
     parser.add_argument("--edm-numerical-tolerance", type=float, default=1e-6)
     parser.add_argument(
         "--offload-saved-tensors",
@@ -1000,6 +1045,14 @@ def _validate_execution_configuration(
         "contact_bottleneck_gradient_mode": "contact_bottleneck_gradient_mode",
         "contact_gate_warmup_fraction": "contact_gate_warmup_fraction",
         "contact_gate_ramp_fraction": "contact_gate_ramp_fraction",
+        "coarse_contact_crop_floor": "coarse_contact_crop_floor",
+        "coarse_contact_crop_temperature": "coarse_contact_crop_temperature",
+        "coarse_contact_crop_strength": "coarse_contact_crop_strength",
+        "far_patch_minimum_separation": (
+            "far_patch_minimum_separation_angstrom"
+        ),
+        "far_patch_residue_k": "far_patch_residue_k",
+        "far_patch_slack": "far_patch_slack_angstrom",
     }
     for argument_name, protocol_name in fields.items():
         observed = getattr(
@@ -1018,6 +1071,17 @@ def _validate_execution_configuration(
             raise ValueError(
                 f"Execution parameter {argument_name} differs from the protocol"
             )
+    expected_crop_stop_gradient = implementation.get(
+        "coarse_contact_crop_stop_gradient"
+    )
+    if expected_crop_stop_gradient is not None and (
+        bool(expected_crop_stop_gradient)
+        != (not bool(arguments.coarse_contact_crop_allow_gradient))
+    ):
+        raise ValueError(
+            "Execution parameter coarse_contact_crop_allow_gradient differs "
+            "from the protocol stop-gradient contract"
+        )
     objective = protocol.get("training_objective", {})
     loss_weights_by_condition = objective.get("loss_weights_by_condition")
     if loss_weights_by_condition is None:
@@ -1039,6 +1103,7 @@ def _validate_execution_configuration(
             "contact_distance_consistency",
         ),
         ("triangle_loss_weight", "triangle"),
+        ("far_patch_exclusion_loss_weight", "far_patch_exclusion"),
         ("edm_loss_weight", "edm"),
         (
             "residue_partner_contrastive_loss_weight",
@@ -1052,6 +1117,7 @@ def _validate_execution_configuration(
             if argument_name
             in {
                 "contact_distance_consistency_loss_weight",
+                "far_patch_exclusion_loss_weight",
                 "edm_loss_weight",
                 "residue_partner_contrastive_loss_weight",
             }
@@ -2087,6 +2153,21 @@ def _model_from_configuration(
         contact_gate_source=EXPERIMENTS[experiment].get(
             "contact_gate_source", "full_contact"
         ),
+        coarse_contact_crop_mode=EXPERIMENTS[experiment].get(
+            "coarse_contact_crop_mode", "none"
+        ),
+        coarse_contact_crop_floor=float(
+            configuration.get("coarse_contact_crop_floor", 0.05)
+        ),
+        coarse_contact_crop_temperature=float(
+            configuration.get("coarse_contact_crop_temperature", 1.0)
+        ),
+        coarse_contact_crop_strength=float(
+            configuration.get("coarse_contact_crop_strength", 1.0)
+        ),
+        coarse_contact_crop_stop_gradient=not bool(
+            configuration.get("coarse_contact_crop_allow_gradient", False)
+        ),
         contact_bottleneck_projection_dim=bottleneck_projection_dim,
         contact_bottleneck_gradient_mode=str(
             configuration.get(
@@ -2286,6 +2367,7 @@ def main() -> None:
             arguments.contact_distance_consistency_loss_weight
         ),
         triangle=arguments.triangle_loss_weight,
+        far_patch_exclusion=arguments.far_patch_exclusion_loss_weight,
         edm=arguments.edm_loss_weight,
         residue_partner_contrastive=(
             arguments.residue_partner_contrastive_loss_weight
@@ -2324,6 +2406,11 @@ def main() -> None:
         triangle_slack=arguments.triangle_slack,
         antigen_patch_top_seeds=arguments.antigen_patch_top_seeds,
         antigen_patch_radius=arguments.antigen_patch_radius,
+        far_patch_minimum_separation=(
+            arguments.far_patch_minimum_separation
+        ),
+        far_patch_residue_k=arguments.far_patch_residue_k,
+        far_patch_slack=arguments.far_patch_slack,
         edm_numerical_tolerance=arguments.edm_numerical_tolerance,
     )
     optimizer = torch.optim.AdamW(

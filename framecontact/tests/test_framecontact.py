@@ -278,6 +278,82 @@ def test_contact_gate_zero_curriculum_multiplier_disables_predicted_bias() -> No
         model.set_contact_gate_multiplier(1.1)
 
 
+def test_soft_coarse_crop_is_stop_gradient_and_never_drops_a_pair() -> None:
+    import torch
+
+    from interaction_first.framecontact import (
+        FrameContactModel,
+        soft_coarse_pair_log_prior,
+    )
+
+    paratope = torch.tensor([[-8.0, 2.0]], requires_grad=True)
+    epitope = torch.tensor([[-7.0, 1.0, 3.0]], requires_grad=True)
+    antibody_mask = torch.tensor([[True, True]])
+    antigen_mask = torch.tensor([[True, True, False]])
+    prior = soft_coarse_pair_log_prior(
+        paratope,
+        epitope,
+        antibody_mask,
+        antigen_mask,
+        probability_floor=0.1,
+        stop_gradient=True,
+    )
+    assert not prior["log_prior"].requires_grad
+    assert not prior["pair_probability"].requires_grad
+    valid = antibody_mask[:, :, None] & antigen_mask[:, None, :]
+    routed = prior["log_prior"].float().exp()
+    assert bool((routed[valid] >= 0.1).all())
+    assert torch.equal(routed[~valid], torch.ones_like(routed[~valid]))
+
+    model = FrameContactModel(
+        antibody_input_dim=12,
+        antigen_input_dim=10,
+        d_model=16,
+        num_heads=4,
+        num_self_layers=2,
+        neighbor_k=4,
+        neighbor_radius=None,
+        dropout=0.0,
+        fusion_mode="interleaved",
+        contact_gate_source="interaction_only",
+        coarse_contact_crop_mode="soft_unary",
+        coarse_contact_crop_floor=0.1,
+    ).eval()
+    result = model(_batch(), return_attention=True)
+    assert torch.equal(
+        result["pair_candidate_mask"],
+        _batch()["antibody_mask"][:, :, None]
+        & _batch()["antigen_mask"][:, None, :],
+    )
+    assert len(result["intermediate_coarse_contact_crops"]) == 2
+    assert result["coarse_contact_crop_mode"] == "soft_unary"
+
+
+def test_soft_coarse_crop_floor_one_is_exact_no_crop_control() -> None:
+    import torch
+
+    from interaction_first.framecontact import FrameContactModel
+
+    model = FrameContactModel(
+        antibody_input_dim=12,
+        antigen_input_dim=10,
+        d_model=16,
+        num_heads=4,
+        num_self_layers=1,
+        neighbor_k=4,
+        neighbor_radius=None,
+        dropout=0.0,
+        fusion_mode="interleaved",
+        contact_gate_source="none",
+        coarse_contact_crop_mode="soft_unary",
+        coarse_contact_crop_floor=1.0,
+    ).eval()
+    result = model(_batch(), return_attention=True)
+    assert torch.count_nonzero(result["initial_contact_gate_logits"]) == 0
+    details = result["intermediate_coarse_contact_crops"][0]
+    assert torch.count_nonzero(details["log_prior"]) == 0
+
+
 def test_unknown_fusion_mode_fails_closed() -> None:
     from interaction_first.framecontact import FrameContactModel
 

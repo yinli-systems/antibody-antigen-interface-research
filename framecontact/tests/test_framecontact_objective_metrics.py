@@ -674,6 +674,125 @@ def test_sparse_triangle_loss_detects_reverse_triangle_violation() -> None:
     assert violated.item() > 0.0
 
 
+def test_far_patch_triangle_explicitly_pushes_a_distant_patch() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        far_patch_triangle_exclusion_loss,
+    )
+
+    # One CDR residue, one selected antigen-patch residue at x=0 and one
+    # distant antigen surface residue at x=30.  Pulling both predicted
+    # inter-chain distances to 2 A violates 2 + 2 >= 30; keeping the distant
+    # prediction at 29 A satisfies the same pose-free constraint.
+    antigen_backbone = torch.zeros(1, 2, 3, 3)
+    antigen_backbone[0, 1, :, 0] = 30.0
+    pair_mask = torch.ones(1, 1, 2, dtype=torch.bool)
+    antibody_active = torch.ones(1, 1, dtype=torch.bool)
+    antigen_patch = torch.tensor([[True, False]])
+    antigen_surface = torch.tensor([[True, True]])
+    violated_distances = torch.tensor([[[2.0, 2.0]]], requires_grad=True)
+    violated = far_patch_triangle_exclusion_loss(
+        violated_distances,
+        pair_mask,
+        antigen_backbone,
+        antibody_active,
+        antigen_patch,
+        antigen_surface,
+        minimum_patch_separation=20.0,
+        far_residue_k=1,
+        slack=0.0,
+    )
+    satisfied = far_patch_triangle_exclusion_loss(
+        torch.tensor([[[2.0, 29.0]]]),
+        pair_mask,
+        antigen_backbone,
+        antibody_active,
+        antigen_patch,
+        antigen_surface,
+        minimum_patch_separation=20.0,
+        far_residue_k=1,
+        slack=0.0,
+    )
+    assert violated.item() == pytest.approx(26.0**2)
+    assert satisfied.item() == pytest.approx(0.0)
+    violated.backward()
+    assert violated_distances.grad is not None
+    assert violated_distances.grad[0, 0, 1].item() < 0.0
+
+
+def test_far_patch_triangle_is_invariant_to_antigen_rigid_transform() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        far_patch_triangle_exclusion_loss,
+    )
+
+    antigen_backbone = torch.zeros(1, 3, 3, 3)
+    antigen_backbone[0, 1, :, 0] = 25.0
+    antigen_backbone[0, 2, :, 1] = 30.0
+    pair_mask = torch.ones(1, 1, 3, dtype=torch.bool)
+    antibody_active = torch.ones(1, 1, dtype=torch.bool)
+    antigen_patch = torch.tensor([[True, False, False]])
+    antigen_surface = torch.ones(1, 3, dtype=torch.bool)
+    predicted = torch.tensor([[[3.0, 4.0, 5.0]]])
+    before = far_patch_triangle_exclusion_loss(
+        predicted,
+        pair_mask,
+        antigen_backbone,
+        antibody_active,
+        antigen_patch,
+        antigen_surface,
+        minimum_patch_separation=20.0,
+        far_residue_k=2,
+        slack=0.5,
+    )
+    rotation = torch.tensor(
+        [[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]]
+    )
+    transformed = antigen_backbone @ rotation.T + torch.tensor([7.0, -4.0, 2.0])
+    after = far_patch_triangle_exclusion_loss(
+        predicted,
+        pair_mask,
+        transformed,
+        antibody_active,
+        antigen_patch,
+        antigen_surface,
+        minimum_patch_separation=20.0,
+        far_residue_k=2,
+        slack=0.5,
+    )
+    torch.testing.assert_close(before, after)
+
+
+def test_far_patch_triangle_returns_zero_when_no_far_patch_exists() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        far_patch_triangle_exclusion_loss,
+    )
+
+    predicted = torch.full((1, 1, 2), 4.0, requires_grad=True)
+    pair_mask = torch.ones_like(predicted, dtype=torch.bool)
+    antigen_backbone = torch.zeros(1, 2, 3, 3)
+    antigen_backbone[0, 1, :, 0] = 5.0
+    value = far_patch_triangle_exclusion_loss(
+        predicted,
+        pair_mask,
+        antigen_backbone,
+        torch.tensor([[True]]),
+        torch.tensor([[True, False]]),
+        torch.tensor([[True, True]]),
+        minimum_patch_separation=20.0,
+        far_residue_k=1,
+        slack=0.0,
+    )
+    assert value.item() == 0.0
+    value.backward()
+    assert predicted.grad is not None
+    assert torch.equal(predicted.grad, torch.zeros_like(predicted))
+
+
 def test_triangle_patch_seed_comes_from_intra_chain_epitope_unary(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
