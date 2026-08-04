@@ -47,7 +47,7 @@ validation antigen 长度分桶：50–99 为 72 个，100–199 为 313 个，2
 
 ### 2.1 论文数字只能作为背景
 
-MIPE 使用 sequence、structure、多模态对比学习和两向 interaction matrix；官方仓库提供自己的 pickle 数据与 `cvdata.pkl`/`testdata.pkl` 入口，并使用 CC BY-NC 4.0 许可。[MIPE official repository](https://github.com/WangZhiwei9/MIPE)；[IJCAI 2024 paper](https://www.ijcai.org/proceedings/2024/0669.pdf)。后续研究描述的 MIPE benchmark 为 626 个 complex，并沿用 90% cross-validation + 10% independent test，而本项目当前 split 是 3,663 个 SAbDab2 instances 的结构隔离 v3.1 split。[ParaSurf data description](https://pmc.ncbi.nlm.nih.gov/articles/PMC11855283/)
+MIPE 使用 sequence、structure、多模态对比学习和两向 interaction matrix；官方仓库提供自己的 pickle 数据与 `cvdata.pkl`/`testdata.pkl` 入口，并使用 CC BY-NC 4.0 许可。[MIPE official repository](https://github.com/WangZhiwei9/MIPE)；[IJCAI 2024 paper](https://www.ijcai.org/proceedings/2024/0669.pdf)。后续研究描述的 MIPE benchmark 为 626 个 complex，并沿用 90% cross-validation + 10% independent test，而本项目当前 development split 是 3,114 个 SAbDab2 instances（2,565 train + 549 validation）的结构隔离 v3.1 split；另外 549 个 sealed-test instances 不参与本阶段特征物化或比较。[ParaSurf data description](https://pmc.ncbi.nlm.nih.gov/articles/PMC11855283/)
 
 所以 MIPE 论文或此前复现数字与当前 FrameContact validation 至少在以下方面不相同：
 
@@ -80,7 +80,7 @@ MIPE 使用 sequence、structure、多模态对比学习和两向 interaction ma
 | `framecontact_unary_only` | 是 | 同 pair trunk，但 residue 输出不使用 contact marginal |
 | `framecontact_contact_marginal` | 是 | residue 输出严格来自 contact map；必须与 hybrid 分开 |
 | `framecontact_contact_hybrid` | 是 | unary 与 contact-derived score 用 zero-initialized gate 融合 |
-| MIPE 官方/此前复现 | **否，尚需重训** | 官方 626-complex 数据与当前 3,663-instance v3.1 不同；现有 MIPE pickle 也不覆盖全部 v3.1 IDs |
+| MIPE 官方/此前复现 | **否，尚需重训** | 官方 626-complex 数据与当前 3,114-instance development cohort 不同；现有 MIPE pickle 也不覆盖 v3.1 development IDs |
 | SPPIDER-seq 旧结果 | **否，背景** | 旧 frozen split 为 2,727/481/455，不是当前 antigen-fold |
 | ParaSurf/Paragraph/其他论文表 | **否，背景** | 数据、candidate region 或阈值不同 |
 
@@ -88,7 +88,7 @@ MIPE 使用 sequence、structure、多模态对比学习和两向 interaction ma
 
 ### 2.4 MIPE 公平复现的最小执行方案
 
-1. 从 v3.1 的 3,663 instances 重新生成 MIPE 所需 antigen ESM、antibody AbLang、GearNet node/edge 与 pair label；不复用 MIPE 自带的随机 split。
+1. 只为 v3.1 的 3,114 development instances 重新生成 MIPE 所需 antigen ESM、antibody AbLang、GearNet node/edge 与 pair label；不物化 sealed test，也不复用 MIPE 自带的随机 split。
 2. 固定官方模型结构和 objective；只添加数据 adapter、mask adapter 和标准化预测导出，不把 FrameContact 模块塞进 MIPE。
 3. 用 train 训练、validation 选择 checkpoint；本阶段不读取 test predictions。
 4. 把 antigen/paratope logits 按 `instance_id + residue_index` 导出，再调用 FrameContact evaluator。
@@ -244,7 +244,7 @@ P3 只与 P2 比，避免把 distogram 和 far-patch 两项改变混成一个结
 - FrameContact/ICG/Plan B 架构伪代码与名词检查：完成；
 - Plan B 与 far-patch 实现：定向回归通过；
 - 4 条件 × 5 seeds 协议与 Slurm 入口：已冻结，尚未形成多 seed 性能结论；
-- MIPE 同 split baseline：公平性协议已定义，但当前 MIPE 官方 pickle 不覆盖 v3.1 全队列，需重新生成 MIPE feature cache 后重训；
+- MIPE 同 split baseline：公平性协议已定义；远端 readiness audit 确认官方源码/checkpoint、TorchDrug、ESM 与 SAbDab2 cache 存在，但 AbLang runtime、官方 pickle 和 v3.1 MIPE-format feature cache 不存在，需只为 3,114 个 development instances 重新物化后重训；详见 [`MIPE_V3_1_READINESS_AUDIT.json`](MIPE_V3_1_READINESS_AUDIT.json)；
 - frozen/external test：本阶段不用于选择或比较。
 
 ## 6.1 Plan A：更广义 PPI 预训练的可执行边界
