@@ -1,0 +1,143 @@
+{
+  "schema_version": "framecontact_coarse_to_fine_exploratory_protocol_v1",
+  "protocol_status": "development_only_frozen_after_icg_validation_before_coarse_to_fine_training",
+  "frozen_on": "2026-08-04",
+  "research_question": "Can a loss-free first-pass unary prediction provide a soft, non-dropping contact-routing prior, and can an alignment-free ordinary-triangle exclusion term make a selected antigen patch compete with distant surface patches without sacrificing partner specificity?",
+  "adaptation_disclosure": {
+    "prior_icg_validation_accessed": true,
+    "observed_facts_used_to_define_this_follow_up": [
+      "full-contact routing showed an early contact and epitope signal but weaker partner specificity",
+      "interaction-only routing removed unary shortcuts but did not show the same early contact gain",
+      "the original reverse-triangle term did not explicitly push distant patches away"
+    ],
+    "claim_class": "post-hoc exploratory follow-up; it cannot retroactively become a confirmatory experiment"
+  },
+  "evidence_boundary_at_freeze": {
+    "coarse_to_fine_training_started": false,
+    "coarse_to_fine_validation_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_metrics_accessed": false,
+    "external_test_predictions_accessed": false
+  },
+  "development_matrix": [
+    "framecontact_icg_m4_interaction_gate",
+    "framecontact_plan_b_soft_crop",
+    "framecontact_plan_b_soft_crop_joint",
+    "framecontact_plan_b_soft_crop_far_patch"
+  ],
+  "factorized_comparisons": {
+    "P1_vs_P0": "soft first-pass unary contact prior versus no crop, holding the binary contact head and interaction-only interleaved routing fixed",
+    "P2_vs_P1": "joint direct-contact plus distogram supervision versus binary contact, holding soft cropping and all residue/cross-attention choices fixed",
+    "P3_vs_P2": "far-patch ordinary-triangle exclusion versus no exclusion, holding the joint pair head, soft crop and all other losses fixed"
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "split": "frozen antigen-fold v3 train and validation roles only",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5",
+      "wrong_pairs_are_contact_unlabeled": true
+    },
+    "cross_chain_input_geometry": "none; each monomer contributes invariant scalar features and intra-chain geometry only",
+    "bound_distance_policy": "authenticated complex distances are supervision only for P2/P3 and are never model inputs",
+    "test_role_forbidden": true
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "attention_kernel": "reference",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true,
+    "checkpoint_wrong_partners": true,
+    "contact_gate_warmup_fraction": 0.05,
+    "contact_gate_ramp_fraction": 0.1,
+    "coarse_contact_crop_floor": 0.05,
+    "coarse_contact_crop_temperature": 1.0,
+    "coarse_contact_crop_strength": 1.0,
+    "coarse_contact_crop_stop_gradient": true,
+    "far_patch_minimum_separation_angstrom": 20.0,
+    "far_patch_residue_k": 16,
+    "far_patch_slack_angstrom": 0.5,
+    "antigen_patch_top_seeds": 1,
+    "antigen_patch_radius_angstrom": 12.0
+  },
+  "coarse_to_fine_contract": {
+    "first_pass_loss": "none; coarse logits are routing-only and detached",
+    "crop_type": "soft additive log-prior, never a hard pair mask",
+    "probability_floor": 0.05,
+    "all_authenticated_pairs_retained": true,
+    "reason": "an inaccurate first-pass epitope prediction must not irreversibly remove the true interface"
+  },
+  "far_patch_exclusion_contract": {
+    "selected_antibody_region": "authenticated CDR mask",
+    "selected_antigen_patch": "label-free unary surface seed expanded by monomer-space radius",
+    "distant_antigen_candidates": "surface residues outside the selected patch and at least 20 A from its residues",
+    "constraint": "D_ab(i,j) + D_ab(i,k) >= d_antigen(j,k) - 0.5 A",
+    "cross_monomer_alignment_required": false,
+    "label_routing_forbidden": true
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "maximum_epochs": 120,
+    "early_stopping_patience": 20,
+    "checkpoint_rule": "maximize the minimum validation cluster-weighted reciprocal interaction-only margin; break ties within 0.0001 by mean per-complex contact AUPRC, then earlier epoch",
+    "threshold_rule": "one global threshold fitted on validation only",
+    "test_role_forbidden": true
+  },
+  "training_objective": {
+    "contact": "per-complex observed-class-balanced BCE",
+    "marginals": "per-complex observed-class-balanced epitope and paratope BCE",
+    "specificity": "reciprocal wrong-partner ranking with unlabeled wrong pairs never treated as all-zero contacts",
+    "specificity_score_source": "interaction_only",
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01,
+    "loss_weights_by_condition": {
+      "framecontact_icg_m4_interaction_gate": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_plan_b_soft_crop": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_plan_b_soft_crop_joint": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.25, "contact_distance_consistency": 0.1, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_plan_b_soft_crop_far_patch": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.25, "contact_distance_consistency": 0.1, "triangle": 0.0, "far_patch_exclusion": 0.05, "edm": 0.0, "residue_partner_contrastive": 0.0}
+    },
+    "wrong_pair_rule": "counterfactual ranking and retrieval only; no fabricated binary nonbinder labels"
+  },
+  "required_epoch_metrics": [
+    "train objective components and predicted-positive ratio",
+    "validation pair contact macro and pooled AUPRC, precision, recall, F1, MCC and predicted-positive ratio",
+    "validation epitope and paratope macro AUPRC, precision, recall, F1 and MCC",
+    "P@10, P@Lmin/10, P@Lmin/5 and paired Recall@K",
+    "reciprocal partner margin, Recall@1 and MRR",
+    "pooled Brier, ECE and calibration slope",
+    "coarse-prior entropy and retained probability mass",
+    "far-patch violation count, loss and recall retention"
+  ],
+  "post_selection_train_audit": {
+    "required": true,
+    "timing": "only after validation-only checkpoint selection is frozen",
+    "metrics": "the same train contact, epitope and paratope metrics as validation, without updating parameters",
+    "purpose": "distinguish optimization failure, overfitting and antigen-fold generalization failure"
+  },
+  "required_interventions": [
+    "partner shuffle",
+    "geometry shuffle",
+    "local-frame corruption",
+    "degree-matched neighbor rewiring",
+    "independent monomer SE(3) transforms",
+    "sequence-preserving coordinate perturbation",
+    "coarse prior set to its neutral floor",
+    "far-patch candidate permutation"
+  ],
+  "promotion_rule": "No promotion unless at least 3/5 seeds improve the validation primary metric, paired cluster-bootstrap 95% CI excludes zero, precision and recall do not collapse, and reciprocal partner specificity is not worse than P0.",
+  "claim_boundary": "Development-only post-hoc exploratory study. No frozen-test, external-generalization, benchmark-improvement or state-of-the-art claim is authorized."
+}

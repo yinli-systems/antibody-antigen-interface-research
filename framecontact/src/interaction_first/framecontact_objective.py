@@ -347,6 +347,121 @@ def sparse_triangle_inequality_loss(
     return torch_module.stack(losses).mean()
 
 
+def far_patch_triangle_exclusion_loss(
+    predicted_distances: Any,
+    pair_mask: Any,
+    antigen_backbone: Any,
+    antibody_active_mask: Any,
+    antigen_patch_mask: Any,
+    antigen_surface_mask: Any,
+    *,
+    minimum_patch_separation: float = 20.0,
+    far_residue_k: int = 16,
+    slack: float = 0.5,
+) -> Any:
+    """Make a selected antigen patch compete with distant surface patches.
+
+    For antibody residue ``i``, selected-patch residue ``j`` and a distant
+    antigen surface residue ``k``, the ordinary triangle inequality requires
+
+    ``D(i,j) + D(i,k) >= d(j,k)``.
+
+    Unlike the existing reverse-triangle term, this lower bound explicitly
+    couples attraction to the selected patch with exclusion of geometrically
+    distant patches: decreasing ``D(i,j)`` increases the required lower bound on
+    ``D(i,k)``.  It consumes only monomer intra-chain distances and predicted
+    inter-chain distances, so the two input coordinate frames never need to be
+    aligned.  Candidate selection is deterministic and label-free.
+    """
+
+    torch_module = _require_torch()
+    if predicted_distances.ndim != 3 or tuple(pair_mask.shape) != tuple(
+        predicted_distances.shape
+    ):
+        raise ValueError("predicted distances and pair mask must align")
+    batch_size, antibody_count, antigen_count = predicted_distances.shape
+    if tuple(antigen_backbone.shape) != (batch_size, antigen_count, 3, 3):
+        raise ValueError("antigen backbone must align with predicted distances")
+    if (
+        tuple(antibody_active_mask.shape) != (batch_size, antibody_count)
+        or tuple(antigen_patch_mask.shape) != (batch_size, antigen_count)
+        or tuple(antigen_surface_mask.shape) != (batch_size, antigen_count)
+        or pair_mask.dtype != torch_module.bool
+        or antibody_active_mask.dtype != torch_module.bool
+        or antigen_patch_mask.dtype != torch_module.bool
+        or antigen_surface_mask.dtype != torch_module.bool
+    ):
+        raise ValueError("far-patch masks must be boolean and axis-aligned")
+    if not math.isfinite(minimum_patch_separation) or minimum_patch_separation <= 0:
+        raise ValueError("minimum patch separation must be finite and positive")
+    if isinstance(far_residue_k, bool) or not isinstance(far_residue_k, int) or far_residue_k <= 0:
+        raise ValueError("far_residue_k must be positive")
+    if not math.isfinite(slack) or slack < 0:
+        raise ValueError("far-patch slack must be finite and nonnegative")
+
+    losses = []
+    for batch_index in range(int(batch_size)):
+        frame_valid = torch_module.isfinite(
+            antigen_backbone[batch_index]
+        ).all(dim=(-1, -2))
+        antibody_indices = torch_module.nonzero(
+            antibody_active_mask[batch_index], as_tuple=False
+        ).flatten()
+        patch_indices = torch_module.nonzero(
+            antigen_patch_mask[batch_index] & frame_valid, as_tuple=False
+        ).flatten()
+        surface_indices = torch_module.nonzero(
+            antigen_surface_mask[batch_index]
+            & frame_valid
+            & ~antigen_patch_mask[batch_index],
+            as_tuple=False,
+        ).flatten()
+        if (
+            antibody_indices.numel() == 0
+            or patch_indices.numel() == 0
+            or surface_indices.numel() == 0
+        ):
+            continue
+        ca = antigen_backbone[batch_index, :, 1, :].float()
+        intra = torch_module.cdist(ca[patch_indices], ca[surface_indices])
+        eligible = intra >= float(minimum_patch_separation)
+        masked = intra.masked_fill(~eligible, float("-inf"))
+        k = min(far_residue_k, int(surface_indices.numel()))
+        known_distance, local_far_index = torch_module.topk(
+            masked, k, dim=-1, largest=True
+        )
+        valid_far = torch_module.isfinite(known_distance)
+        if not bool(valid_far.any()):
+            continue
+        far_indices = surface_indices[local_far_index]
+        local_prediction = predicted_distances[batch_index]
+        local_pair_mask = pair_mask[batch_index]
+        near_prediction = local_prediction[antibody_indices][:, patch_indices]
+        near_valid = local_pair_mask[antibody_indices][:, patch_indices]
+        flat_far = far_indices.flatten()
+        far_prediction = local_prediction[antibody_indices][:, flat_far].reshape(
+            int(antibody_indices.numel()), int(patch_indices.numel()), k
+        )
+        far_valid = local_pair_mask[antibody_indices][:, flat_far].reshape(
+            int(antibody_indices.numel()), int(patch_indices.numel()), k
+        )
+        valid = near_valid[:, :, None] & far_valid & valid_far[None, :, :]
+        violation = (
+            known_distance[None, :, :]
+            - near_prediction[:, :, None]
+            - far_prediction
+            - float(slack)
+        )
+        if bool(valid.any()):
+            losses.append(functional.relu(violation[valid]).square().mean())
+    if not losses:
+        # Short antigens or compact surface patches can legitimately have no
+        # residue beyond the preregistered separation in a particular batch.
+        # Keep those examples trainable; the epoch audit reports coverage.
+        return predicted_distances.sum() * 0.0
+    return torch_module.stack(losses).mean()
+
+
 def local_edm_realizability_loss(
     predicted_distances: Any,
     pair_mask: Any,
@@ -579,6 +694,7 @@ class FrameContactLossWeights:
     distogram: float = 0.0
     contact_distance_consistency: float = 0.0
     triangle: float = 0.0
+    far_patch_exclusion: float = 0.0
     edm: float = 0.0
     residue_partner_contrastive: float = 0.0
 
@@ -609,6 +725,9 @@ class FrameContactObjective(_ModuleBase):
         triangle_slack: float = 0.5,
         antigen_patch_top_seeds: int = 1,
         antigen_patch_radius: float = 12.0,
+        far_patch_minimum_separation: float = 20.0,
+        far_patch_residue_k: int = 16,
+        far_patch_slack: float = 0.5,
         edm_numerical_tolerance: float = 1e-6,
         residue_contrastive_margin: float = 0.5,
         residue_contrastive_mode: str = "pairwise_softplus",
@@ -670,6 +789,21 @@ class FrameContactObjective(_ModuleBase):
             raise ValueError("antigen_patch_top_seeds must be positive")
         if not math.isfinite(antigen_patch_radius) or antigen_patch_radius <= 0:
             raise ValueError("antigen_patch_radius must be finite and positive")
+        if (
+            not math.isfinite(far_patch_minimum_separation)
+            or far_patch_minimum_separation <= 0
+        ):
+            raise ValueError(
+                "far_patch_minimum_separation must be finite and positive"
+            )
+        if (
+            isinstance(far_patch_residue_k, bool)
+            or not isinstance(far_patch_residue_k, int)
+            or far_patch_residue_k <= 0
+        ):
+            raise ValueError("far_patch_residue_k must be positive")
+        if not math.isfinite(far_patch_slack) or far_patch_slack < 0:
+            raise ValueError("far_patch_slack must be finite and nonnegative")
         if not math.isfinite(edm_numerical_tolerance) or edm_numerical_tolerance < 0:
             raise ValueError("edm_numerical_tolerance must be finite and nonnegative")
         if not math.isfinite(residue_contrastive_margin) or residue_contrastive_margin < 0:
@@ -709,6 +843,11 @@ class FrameContactObjective(_ModuleBase):
         self.triangle_slack = float(triangle_slack)
         self.antigen_patch_top_seeds = int(antigen_patch_top_seeds)
         self.antigen_patch_radius = float(antigen_patch_radius)
+        self.far_patch_minimum_separation = float(
+            far_patch_minimum_separation
+        )
+        self.far_patch_residue_k = int(far_patch_residue_k)
+        self.far_patch_slack = float(far_patch_slack)
         self.edm_numerical_tolerance = float(edm_numerical_tolerance)
 
     def _specificity_logits(self, output: Mapping[str, Any]) -> Any:
@@ -856,6 +995,7 @@ class FrameContactObjective(_ModuleBase):
             self.weights.distogram != 0
             or self.weights.contact_distance_consistency != 0
             or self.weights.triangle != 0
+            or self.weights.far_patch_exclusion != 0
             or self.weights.edm != 0
         ):
             distogram_logits = cognate_output.get("distogram_logits")
@@ -895,7 +1035,11 @@ class FrameContactObjective(_ModuleBase):
             )
         else:
             contact_distance_consistency_loss = contact_loss.new_zeros(())
-        if self.weights.triangle != 0 or self.weights.edm != 0:
+        if (
+            self.weights.triangle != 0
+            or self.weights.far_patch_exclusion != 0
+            or self.weights.edm != 0
+        ):
             if "antibody_cdr_mask" not in cognate_batch:
                 raise ValueError(
                     "local geometry loss requires a precomputed antibody CDR mask"
@@ -934,6 +1078,23 @@ class FrameContactObjective(_ModuleBase):
             )
         else:
             triangle_loss = contact_loss.new_zeros(())
+        if self.weights.far_patch_exclusion != 0:
+            assert antigen_patch is not None and predicted_distances is not None
+            far_patch_exclusion_loss = far_patch_triangle_exclusion_loss(
+                predicted_distances,
+                cognate_output["pair_candidate_mask"],
+                cognate_batch["antigen_backbone"],
+                cognate_batch["antibody_cdr_mask"],
+                antigen_patch,
+                cognate_batch["antigen_surface_mask"],
+                minimum_patch_separation=(
+                    self.far_patch_minimum_separation
+                ),
+                far_residue_k=self.far_patch_residue_k,
+                slack=self.far_patch_slack,
+            )
+        else:
+            far_patch_exclusion_loss = contact_loss.new_zeros(())
         if self.weights.edm != 0:
             assert antigen_patch is not None and predicted_distances is not None
             edm_loss = local_edm_realizability_loss(
@@ -1033,6 +1194,7 @@ class FrameContactObjective(_ModuleBase):
             + self.weights.contact_distance_consistency
             * contact_distance_consistency_loss
             + self.weights.triangle * triangle_loss
+            + self.weights.far_patch_exclusion * far_patch_exclusion_loss
             + self.weights.edm * edm_loss
             + self.weights.residue_partner_contrastive * residue_contrastive_loss
         )
@@ -1047,6 +1209,7 @@ class FrameContactObjective(_ModuleBase):
                 contact_distance_consistency_loss
             ),
             "triangle_loss": triangle_loss,
+            "far_patch_exclusion_loss": far_patch_exclusion_loss,
             "edm_loss": edm_loss,
             "residue_partner_contrastive_loss": residue_contrastive_loss,
             "residue_partner_contrastive_by_side": residue_contrastive_terms,
@@ -1118,6 +1281,7 @@ __all__ = [
     "distogram_bin_centers",
     "distogram_cross_entropy_per_complex",
     "expected_distance_from_distogram",
+    "far_patch_triangle_exclusion_loss",
     "local_edm_realizability_loss",
     "residue_partner_contrastive_loss",
     "select_local_antigen_patch",
