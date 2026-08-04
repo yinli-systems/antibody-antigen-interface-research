@@ -115,6 +115,23 @@ residue aggregation 的五 seed/四 seed 描述性结果也支持同一判断：
 
 所以当前最稳妥的工程选择仍是保留 hybrid 作为开发 baseline，但论文层面的核心问题没有解决：contact-derived score 帮助的是一般 interface propensity，尚未证明更强的 cognate partner compatibility。
 
+### 2.6 specificity-gauge v3：完整五 seed matched epoch 12
+
+开发作业 `1349969` 的 15 个 tasks 均已至少完成 epoch 12，因此可以在不选 checkpoint 的情况下比较三种 residue/specificity formulation。机器可读 live snapshot：[`FRAMECONTACT_GAUGE_V3_JOB1349969_LIVE_EPOCH12_20260804.json`](FRAMECONTACT_GAUGE_V3_JOB1349969_LIVE_EPOCH12_20260804.json)，SHA-256 `c15f20f4b9bb0e04929812deba3978a13d3cda9a1487f2a21126fb8cc518dee6`。这是 in-flight antigen-fold validation 描述，不是最终选模结果。
+
+| matched epoch 12 | contact AUPRC | epitope AUPRC | paratope AUPRC | worst-direction margin |
+|---|---:|---:|---:|---:|
+| pure gauge marginal | 0.01129 | 0.12564 | 0.62799 | +0.01275 |
+| gauge hybrid | 0.01144 | 0.12791 | 0.71055 | −0.00307 |
+| hybrid + residue contrastive | 0.01092 | 0.12534 | 0.64506 | −0.00309 |
+
+单变量差值：
+
+- hybrid − marginal：paratope AUPRC `+0.08256`（5/5 seeds），但 worst-direction partner margin `−0.01582`；
+- contrastive − hybrid：两个方向的平均 margin 分别 `+0.01276/+0.00396`，但 worst-direction margin `−0.00002`，contact AUPRC `−0.00052`，paratope AUPRC `−0.06549`（0/5 seeds 改善）。
+
+这说明 hybrid 的优势主要是恢复容易预测的 paratope propensity，而不是提高 partner specificity；现有 residue contrastive loss 又以明显 paratope 退化为代价，且没有改善最差方向。因此两者目前都不能作为核心方法晋级，必须继续以 interaction-only routing 与 retrieval gate 作为主判断。
+
 ## 3. 架构：精确到计算图
 
 ### 3.1 共同输入
@@ -263,7 +280,7 @@ P3 只与 P2 比，避免把 distogram 和 far-patch 两项改变混成一个结
 
 旧 run 每个 epoch 记录了完整 train objective（contact、epitope、paratope、specificity、distogram/triangle loss），但没有同步记录 train contact/epitope/paratope AUPRC。因此仅凭“train loss 持续下降”不能断言模型已经在 train set 上充分拟合。
 
-仓库已有 hash-bound 的 post-hoc train evaluator：它只加载 validation-selected checkpoint，复用 validation 冻结的 temperature 与 threshold，对完整 2,565 个 train instances 评分；train 指标不能重新选 checkpoint，且入口显式禁止 test/external role。待 GPU 名额释放后，对代表条件逐 seed补算：
+仓库已有 hash-bound 的 post-hoc train evaluator：它只加载 validation-selected checkpoint，复用 validation 冻结的 temperature 与 threshold，对完整 2,565 个 train instances 评分；train 指标不能重新选 checkpoint，且入口显式禁止 test/external role。完整 3 条件 × 5 seeds 作业 `1350158` 已提交，依赖 `afterok:1349969_*`；上游 15 个 gauge-v3 tasks 全部成功完成后会自动启动，不需要重复提交。它会补算：
 
 - train/validation contact pooled 与 macro AUPRC gap；
 - epitope/paratope AUPRC、precision、recall、F1、MCC gap；
@@ -278,7 +295,7 @@ P3 只与 P2 比，避免把 distogram 和 far-patch 两项改变混成一个结
 - Plan B 与 far-patch 实现：定向回归通过；
 - distogram/triangle 五 seed：15-run 权威汇总完成，两个 promotion gate 均未通过；
 - 4 条件 × 5 seeds coarse-to-fine 协议与 Slurm 入口：已冻结；P0 五 seed 已在 ParaCloud 运行，其余条件按 GPU 名额顺序提交；
-- complete-train AUPRC audit：实现和权限测试完成，待当前五卡任务释放后运行代表性 checkpoints；
+- complete-train AUPRC audit：实现和权限测试完成；15-task 作业 `1350158` 已排队，等待 gauge-v3 `1349969_*` 全部成功后自动启动；
 - MIPE 同 split baseline：公平性协议已定义；远端 readiness audit 确认官方源码/checkpoint、TorchDrug、ESM 与 SAbDab2 cache 存在，但 AbLang runtime、官方 pickle 和 v3.1 MIPE-format feature cache 不存在，需只为 3,114 个 development instances 重新物化后重训；详见 [`MIPE_V3_1_READINESS_AUDIT.json`](MIPE_V3_1_READINESS_AUDIT.json)；
 - frozen/external test：本阶段不用于选择或比较。
 
@@ -314,3 +331,5 @@ Plan A 的 promotion gate 不是预训练 loss 下降，而是同一 antigen-fol
 架构上我也把命名拆清了：仓库中没有唯一的 `FrameContact_Contact` 条件，而是 unary-only、contact-marginal 和 gated-hybrid 三种 residue head。FrameContact 先用两个参数不共享的 antibody/antigen local-frame self-attention encoder，再显式预测 residue-pair contact；late 版本只在单链编码结束后做一次双向 cross-attention，interleaved 版本则每层更新 contact routing。文档会给出伪代码，并逐项解释 contact logit、distogram、marginalization、unary propensity、interaction-only 和 pooled/macro AUPRC，避免只使用英文名词而没有定义。
 
 另外，distogram/triangle 的五 seed 开发集结果已经完成。正式 15-run 汇总显示，distogram 相对 binary-hybrid 的 contact pooled/macro AUPRC 分别为 `−0.00046/−0.00123`；triangle 相对 distogram 为 `−0.00059/−0.00008`，两个预先冻结的 promotion gate 都没有通过。triangle 确实提高了 epitope recall，但同时降低 precision、固定阈值 contact recall 和 partner margin，所以目前不能说它改善了 partner-specific contact prediction，只能说它改变了 PR operating point。现有旧日志只记录 train loss，没有 train AUPRC；我已经准备了不参与选模、完全不触碰 test 的 complete-train checkpoint audit，下一步会直接用 train/validation gap 判断是训练集未拟合，还是 antigen-fold 泛化失败。
+
+另外，specificity-gauge v3 的 15 个任务已经形成五 seed matched epoch 12 结果。hybrid 相对 pure marginal 能把 paratope AUPRC 提高约 `+0.0826`，但最差方向的 partner margin 下降 `−0.0158`；在 hybrid 上加 residue contrastive 后，contact AUPRC `−0.00052`、paratope `−0.0655`，最差 partner margin 基本不变。因此现阶段的主要矛盾不是 paratope 能否预测，而是模型是否真正学习 cognate pair compatibility。完整 train-set audit 作业 `1350158` 已经排队，会在当前 gauge-v3 五 seed全部结束后自动运行。
