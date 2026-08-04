@@ -9,6 +9,7 @@
 3. 当前最直接、已经同 split 同 evaluator 的强对照是 `sequence_dense`、`framecontact_unary_only`、late `framecontact`/`framecontact_contact_hybrid` 和 interleaved ICG 系列。
 4. 当前 v3.1 validation 有 **549** 个 complex，包含 **314 个 exact antigen sequences、334 个 exact antibody sequences**；长度统计见下表。
 5. 仓库中没有名为 `FrameContact_Contact` 的唯一条件。为避免概念漂移，本文用代码中的精确 condition name；如果口头上的 `FrameContact_Contact` 指 contact-derived residue head，则对应的是 `framecontact_contact_marginal` 或 `framecontact_contact_hybrid`，两者必须分开写。
+6. 现有五 seed 开发集矩阵已经给出一个明确负结论：`distogram` 和局部 `triangle` 都没有通过预先冻结的 pair-contact promotion gate；它们会改变 precision/recall 或 residue 指标，但尚未改善主要 contact ranking 与 partner specificity。
 
 ## 1. SAbDab2 v3.1 antigen-fold 数据组成
 
@@ -93,6 +94,26 @@ MIPE 使用 sequence、structure、多模态对比学习和两向 interaction ma
 3. 用 train 训练、validation 选择 checkpoint；本阶段不读取 test predictions。
 4. 把 antigen/paratope logits 按 `instance_id + residue_index` 导出，再调用 FrameContact evaluator。
 5. 同时报告官方 MIPE evaluator 和统一 evaluator；两者不一致时以统一 evaluator 作为公平表，官方 evaluator作为复现诊断。
+
+### 2.5 已完成五 seed 开发集消融：能回答什么
+
+机器可读汇总：[`FRAMECONTACT_HEAD_DISTOGRAM_MULTISeed_V1.json`](FRAMECONTACT_HEAD_DISTOGRAM_MULTISeed_V1.json)，SHA-256 `a6da6615fee8dac0b9a7aba83f0934458d0bca6ac161e37147e94e05b274a14a`。汇总器逐一验证了 15 个 run 的 result、checkpoint、receipt、protocol 与 data authority；所有 run 均为 validation-only selection，`test_loaded=false`、`external_test_loaded=false`。
+
+下面是每个 arm 各自 validation-selected checkpoint 的五 seed 描述性差值。由于各 arm 的最佳 epoch 不同，这张表用于回答“最终开发集模型表现如何”，不能替代 matched-epoch 机制归因。
+
+| 单变量比较 | contact pooled AUPRC | contact macro AUPRC | epitope pooled AUPRC | paratope pooled AUPRC | 结论 |
+|---|---:|---:|---:|---:|---|
+| distogram − binary-hybrid | −0.00046 | −0.00123 | −0.00455 | −0.01947 | distogram promotion gate 未通过 |
+| triangle − distogram | −0.00059 | −0.00008 | +0.00049 | +0.01338 | triangle promotion gate 未通过 |
+
+triangle 的主要变化是 operating point，而不是 pair ranking：在各 arm 自己的 validation-selected threshold 下，epitope recall 平均增加约 `+0.1505`（5/5 seeds），但 epitope precision 平均下降约 `−0.0137`；在固定 raw-logit=0 阈值下，contact precision 仅增加约 `+0.00102`，contact recall 反而平均下降约 `−0.0830`。同时 minimum-direction partner selection margin 平均下降 `−0.00683`。因此不能把 triangle 表述成“contact prediction 已提高”；更准确的结论是它改变了稀疏度与 residue-level PR trade-off，但没有通过 pair-contact 和 partner-specificity 门槛。
+
+residue aggregation 的五 seed/四 seed 描述性结果也支持同一判断：
+
+- gated-hybrid 相对 unary-only：contact AUPRC `+0.00118`、epitope AUPRC `+0.00875`，但 paratope AUPRC `−0.00983`，两个方向的 partner margin 均下降；
+- pure contact-marginal 当前只有 4 个完整 seed：epitope AUPRC `+0.01552`，但 paratope AUPRC `−0.07794`，4/4 seeds 都更差。
+
+所以当前最稳妥的工程选择仍是保留 hybrid 作为开发 baseline，但论文层面的核心问题没有解决：contact-derived score 帮助的是一般 interface propensity，尚未证明更强的 cognate partner compatibility。
 
 ## 3. 架构：精确到计算图
 
@@ -238,12 +259,26 @@ P3 只与 P2 比，避免把 distogram 和 far-patch 两项改变混成一个结
 4. “antigen-fold 有 549 个 unique antigen”不准确；549 是 complex 数，exact antigen sequence 是 314。
 5. published MIPE、旧 SPPIDER-seq 和当前 FrameContact 的数字不能直接排名。
 
+### 5.1 老师问的 train-set 拟合，目前的严格答案
+
+旧 run 每个 epoch 记录了完整 train objective（contact、epitope、paratope、specificity、distogram/triangle loss），但没有同步记录 train contact/epitope/paratope AUPRC。因此仅凭“train loss 持续下降”不能断言模型已经在 train set 上充分拟合。
+
+仓库已有 hash-bound 的 post-hoc train evaluator：它只加载 validation-selected checkpoint，复用 validation 冻结的 temperature 与 threshold，对完整 2,565 个 train instances 评分；train 指标不能重新选 checkpoint，且入口显式禁止 test/external role。待 GPU 名额释放后，对代表条件逐 seed补算：
+
+- train/validation contact pooled 与 macro AUPRC gap；
+- epitope/paratope AUPRC、precision、recall、F1、MCC gap；
+- 两个方向的 train partner margin 与 validation partner margin。
+
+判读规则提前固定：train 高、validation 低说明主要是跨 antigen-fold 泛化/正则化瓶颈；train 和 validation 都低说明主要是优化、监督或表示能力瓶颈；train partner margin 高但 validation 低说明记忆了训练 partner；两边 margin 都低说明 partner specificity 连训练集都没学到。
+
 ## 6. 当前可交付状态
 
 - cohort 统计脚本与 hash-bound JSON：完成；
 - FrameContact/ICG/Plan B 架构伪代码与名词检查：完成；
 - Plan B 与 far-patch 实现：定向回归通过；
-- 4 条件 × 5 seeds 协议与 Slurm 入口：已冻结，尚未形成多 seed 性能结论；
+- distogram/triangle 五 seed：15-run 权威汇总完成，两个 promotion gate 均未通过；
+- 4 条件 × 5 seeds coarse-to-fine 协议与 Slurm 入口：已冻结；P0 五 seed 已在 ParaCloud 运行，其余条件按 GPU 名额顺序提交；
+- complete-train AUPRC audit：实现和权限测试完成，待当前五卡任务释放后运行代表性 checkpoints；
 - MIPE 同 split baseline：公平性协议已定义；远端 readiness audit 确认官方源码/checkpoint、TorchDrug、ESM 与 SAbDab2 cache 存在，但 AbLang runtime、官方 pickle 和 v3.1 MIPE-format feature cache 不存在，需只为 3,114 个 development instances 重新物化后重训；详见 [`MIPE_V3_1_READINESS_AUDIT.json`](MIPE_V3_1_READINESS_AUDIT.json)；
 - frozen/external test：本阶段不用于选择或比较。
 
@@ -277,3 +312,5 @@ Plan A 的 promotion gate 不是预训练 loss 下降，而是同一 antigen-fol
 公平比较方面，MIPE 论文和我们此前复现结果使用的是另一套 626-complex/random-CV 协议，SPPIDER-seq 旧结果也是 2,727/481/455 的另一套 split，因此目前不能和 FrameContact 的 antigen-fold validation 直接排名。我会保留它们作为历史背景；主比较只接受在当前 2,565/549 instance IDs 上重训、用同一 residue mask/label/evaluator 得到的结果。目前 `sequence_dense`、unary-only、contact-marginal、contact-hybrid 和 interleaved 条件已经满足同协议要求，MIPE 还需要为当前 v3.1 cohort 重新生成官方所需的 AbLang/ESM/GearNet features 后重训。
 
 架构上我也把命名拆清了：仓库中没有唯一的 `FrameContact_Contact` 条件，而是 unary-only、contact-marginal 和 gated-hybrid 三种 residue head。FrameContact 先用两个参数不共享的 antibody/antigen local-frame self-attention encoder，再显式预测 residue-pair contact；late 版本只在单链编码结束后做一次双向 cross-attention，interleaved 版本则每层更新 contact routing。文档会给出伪代码，并逐项解释 contact logit、distogram、marginalization、unary propensity、interaction-only 和 pooled/macro AUPRC，避免只使用英文名词而没有定义。
+
+另外，distogram/triangle 的五 seed 开发集结果已经完成。正式 15-run 汇总显示，distogram 相对 binary-hybrid 的 contact pooled/macro AUPRC 分别为 `−0.00046/−0.00123`；triangle 相对 distogram 为 `−0.00059/−0.00008`，两个预先冻结的 promotion gate 都没有通过。triangle 确实提高了 epitope recall，但同时降低 precision、固定阈值 contact recall 和 partner margin，所以目前不能说它改善了 partner-specific contact prediction，只能说它改变了 PR operating point。现有旧日志只记录 train loss，没有 train AUPRC；我已经准备了不参与选模、完全不触碰 test 的 complete-train checkpoint audit，下一步会直接用 train/validation gap 判断是训练集未拟合，还是 antigen-fold 泛化失败。
