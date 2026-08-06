@@ -1,0 +1,8 @@
+method,target,scope,auroc,auprc,precision,recall,f1,mcc,threshold
+EpiFormer,epitope,SAbDab2 frozen test (455 complexes),0.8008087361,0.2775161535,0.2577396242,0.4785391566,0.3350320700,0.2715204002,0.3
+MIPE,epitope,official five-fold held-out (epoch-800),0.7918528261,0.2514327513,0.2110967527,0.5152100926,0.2994854811,0.2556187080,fold-specific validation-fitted
+MIPE,paratope,official five-fold held-out (epoch-800),0.8433471654,0.6214974800,0.5190224750,0.7281101614,0.6060390483,0.4621229762,fold-specific validation-fitted
+MIPE,epitope,official five-fold held-out (validation-best),0.8074187010,0.2804073689,0.2246265878,0.5523451012,0.3193717277,0.2807652513,fold-specific validation-fitted
+MIPE,paratope,official five-fold held-out (validation-best),0.8810671199,0.6892213182,0.5585861954,0.7954415954,0.6562977473,0.5346319537,fold-specific validation-fitted
+SPPIDER-seq,epitope,SAbDab2 frozen test (455 complexes),0.6717651372,0.1454445354,0.1309213552,0.5358935743,0.2104329399,0.1268853596,0.0823112279
+SPPIDER-seq,paratope,SAbDab2 frozen test (455 complexes),0.9486222256,0.6510892461,0.5692735925,0.7312572088,0.6401777149,0.6023340783,0.3253410161
