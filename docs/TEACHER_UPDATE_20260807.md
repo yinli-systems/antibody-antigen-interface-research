@@ -12,11 +12,13 @@
    `docs/FAIR_COMPARISON_TABLE_20260807.md`。EpiFormer 只有 epitope 输出，
    MIPE/SPPIDER 没有 native residue-pair contact 输出，因此 paratope/contact 的
    不适用项明确写成 N/A，不把 residue score 转成 contact score。
+   同一份表格另列了 FrameContact 自己的 native pair-contact development snapshot，
+   因此 contact 指标已经有单独的可审计结果，但没有把它误写成 frozen-test 结果。
 3. **FrameContact 架构和实验边界**：保留现有 FrameContact/FrameContact_Contact
    baseline，并记录 interleaved routing、full-contact gate、interaction-only gate、
    binary contact/distogram、triangle/EDM consistency 以及 partner-shuffle 等协议。
 4. **可复现性**：增加表格渲染脚本和回归测试；审计脚本、paired bootstrap 和表格测试
-   均可在本地重跑。针对新增部分的测试结果为 **4 passed**。
+   均可在本地重跑。针对审计和表格的定向测试结果为 **5 passed**。
 5. **证据边界**：新增
    `docs/FRAMECONTACT_COMPLETION_MATRIX_20260807.md`，逐项区分已经完成的本地审计、
    antigen-fold development evidence、尚未完成的 GPU 实验，以及尚未打开的 frozen/
@@ -28,6 +30,13 @@
 41、25、24；对应 contact AUPRC 为 0.00849、0.01095、0.01123、0.01267。另一个
 完成到 epoch 54 的开发任务 contact AUPRC 为 0.01320。上述均为 antigen-fold
 validation，仅用于开发选择，不能写入 frozen-test baseline 表。
+
+在已有的 5-seed matched development receipt 中，FrameContact unary-only（epoch 21）
+的 pooled contact AUPRC 为 `0.0107 ± 0.0008`，precision `0.0120 ± 0.0011`，
+recall `0.3200 ± 0.0712`；FrameContact distogram（epoch 18）为 pooled contact
+AUPRC `0.0109 ± 0.0012`，precision `0.0147 ± 0.0012`，recall
+`0.2291 ± 0.0437`。这说明 contact head 已经可以评估，但 distogram 的早期变化更像
+precision 上升、recall 下降，不能表述为稳定的整体提升。
 
 ## 还没有声称完成的部分
 

@@ -21,6 +21,17 @@
 | SPPIDER-seq | 0.6718 | 0.1454 | 0.1309 | 0.5359 | 0.2104 | 0.1269 |
 | FrameContact (frozen test not opened) | N/A | N/A | N/A | N/A | N/A | N/A |
 
+## FrameContact contact development snapshot
+
+> Native residue-pair contact output on the SAbDab2 antigen-fold validation split; 5 seeds at matched synchronized epochs. These values are development evidence only, not frozen-test results.
+
+| Condition | Epoch | Pooled contact AUPRC | Mean per-complex AUPRC | Precision | Recall | F1 | MCC |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| FrameContact unary-only | 21 | 0.0107 ± 0.0008 | 0.0227 ± 0.0019 | 0.0120 ± 0.0011 | 0.3200 ± 0.0712 | 0.0231 ± 0.0020 | 0.0567 ± 0.0045 |
+| FrameContact distogram | 18 | 0.0109 ± 0.0012 | 0.0214 ± 0.0030 | 0.0147 ± 0.0012 | 0.2291 ± 0.0437 | 0.0275 ± 0.0022 | 0.0539 ± 0.0063 |
+
+The fixed threshold is the raw-logit development diagnostic; no test checkpoint or threshold was selected from these rows.
+
 ### Paratope (receipt-backed baseline rows)
 
 | Model | AUROC | AUPRC | Precision | Recall | F1 | MCC |

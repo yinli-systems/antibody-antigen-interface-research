@@ -27,6 +27,7 @@ from scripts.audit_baseline_metrics import MIPE_JSON, epiformer_rows, mipe_rows,
 
 
 METRICS = ("auroc", "auprc", "precision", "recall", "f1", "mcc")
+CONTACT_RECEIPTS = REPOSITORY_ROOT / "framecontact" / "receipts" / "live-array-audit-20260801T145157Z"
 
 
 def _fmt(value: Any) -> str:
@@ -51,6 +52,63 @@ def _table(title: str, rows: list[tuple[str, dict[str, Any] | None]]) -> list[st
     ]
     lines.extend(_line(label, row) for label, row in rows)
     lines.append("")
+    return lines
+
+
+def _contact_snapshot() -> list[str]:
+    """Render native pair metrics from the matched development receipts.
+
+    These are intentionally separate from the external baseline table: they
+    are antigen-fold validation trajectories, not a selected frozen-test
+    checkpoint.
+    """
+    snapshots = []
+    for filename, condition, epoch in (
+        ("residue-head-compact.json", "FrameContact unary-only", 21),
+        ("distogram-compact.json", "FrameContact distogram", 18),
+    ):
+        payload = json.loads((CONTACT_RECEIPTS / filename).read_text(encoding="utf-8"))
+        condition_payload = payload["conditions"]
+        key = "framecontact_unary_only" if "unary" in condition.lower() else "framecontact_distogram"
+        sync = condition_payload[key]["latest_synchronized_epoch"]
+        if sync is None or int(sync["epoch"]) != epoch:
+            raise ValueError(f"contact receipt epoch mismatch for {condition}")
+        metrics = sync["metrics"]
+
+        def mean_sd(name: str) -> str:
+            item = metrics[name]
+            return f"{item['mean']:.4f} ± {item['sample_sd']:.4f}"
+
+        snapshots.append(
+            (
+                condition,
+                epoch,
+                mean_sd("contact_pooled_auprc"),
+                mean_sd("contact_mean_per_complex_auprc"),
+                mean_sd("contact_fixed_raw_precision"),
+                mean_sd("contact_fixed_raw_recall"),
+                mean_sd("contact_fixed_raw_f1"),
+                mean_sd("contact_fixed_raw_mcc"),
+            )
+        )
+
+    lines = [
+        "## FrameContact contact development snapshot",
+        "",
+        "> Native residue-pair contact output on the SAbDab2 antigen-fold validation split; 5 seeds at matched synchronized epochs. These values are development evidence only, not frozen-test results.",
+        "",
+        "| Condition | Epoch | Pooled contact AUPRC | Mean per-complex AUPRC | Precision | Recall | F1 | MCC |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in snapshots:
+        lines.append("| " + " | ".join(map(str, row)) + " |")
+    lines.extend(
+        [
+            "",
+            "The fixed threshold is the raw-logit development diagnostic; no test checkpoint or threshold was selected from these rows.",
+            "",
+        ]
+    )
     return lines
 
 
@@ -93,6 +151,7 @@ def render() -> str:
             ],
         )
     )
+    lines.extend(_contact_snapshot())
     lines.extend(
         _table(
             "Paratope (receipt-backed baseline rows)",
