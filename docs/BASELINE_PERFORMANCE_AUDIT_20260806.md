@@ -3,6 +3,10 @@
 更新时间：2026-08-06  
 范围：EpiFormer、MIPE、SPPIDER-seq 的可审计 SAbDab2 结果；以及与 AsEP 上最新 LF3DRoPE 结果的协议对照。
 
+可直接粘贴到教师文档的 scope-safe 表格由
+`scripts/render_fair_comparison_table.py` 生成，当前快照见
+[`FAIR_COMPARISON_TABLE_20260807.md`](FAIR_COMPARISON_TABLE_20260807.md)。
+
 ## 先给结论
 
 1. EpiFormer 的 SAbDab2 formal test 已经有本地冻结结果，不是 smoke：455/455 个 test complex 完成映射，mapping failure 为 0，prediction verification 通过。它是 **epitope-only projection**，没有 native residue-pair/contact 输出，也没有 paratope head。
