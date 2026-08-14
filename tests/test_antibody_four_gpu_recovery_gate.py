@@ -17,6 +17,10 @@ FREEZER = ROOT / "scripts/freeze_antibody_four_gpu_recovery_gate.py"
 AUDITOR = ROOT / "scripts/audit_antibody_four_gpu_recovery_gate.py"
 SLURM = ROOT / "slurm/antibody_four_gpu_recovery_gate.sbatch"
 PIPELINE = ROOT / "slurm/antibody_four_gpu_recovery_pipeline.sbatch"
+SUBMISSION = (
+    ROOT
+    / "results/pretraining/antibody_four_gpu_recovery_submission_f1b958e.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -138,3 +142,23 @@ def test_pipeline_freezes_runs_and_audits_on_one_four_gpu_allocation() -> None:
     ) < source.index("audit_antibody_four_gpu_recovery_gate.py")
     assert "four_gpu_recovery_pipeline=PASS" in source
     assert "official" not in source.lower()
+
+
+def test_submission_receipt_is_non_authorizing_and_commit_pinned() -> None:
+    value = json.loads(SUBMISSION.read_text(encoding="ascii"))
+    assert value["format_version"] == "antibody_four_gpu_recovery_submission_v1"
+    assert value["job"] == {
+        "job_id": 1406713,
+        "output_root": (
+            "/ssd/scxi253/model_deployment/results/pretraining/"
+            "antibody_four_gpu_recovery_f1b958e_attempt_001"
+        ),
+        "state_at_receipt": "SUBMITTED",
+    }
+    assert value["source"]["commit"] == (
+        "f1b958e1cd6178869c332f49c5d2e32ae8cf768b"
+    )
+    assert value["corpus"]["unique_train_records"] == 224_887_833
+    assert value["training_shape"]["target_residue_tokens_per_gpu"] == 32_768
+    assert value["authorization"]["production_pretraining"] is False
+    assert not any(value["test_access"].values())
