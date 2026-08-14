@@ -18,6 +18,9 @@ SINGLE_SLURM = (
     ROOT / "slurm_train_framecontact_asep_joint_coupling_dev_v2_single.sbatch"
 )
 SMOKE_SLURM = ROOT / "slurm_smoke_framecontact_asep_joint_coupling_dev_v2.sbatch"
+AGGREGATE_SLURM = (
+    ROOT / "slurm_aggregate_asep_joint_coupling_dev_v2.sbatch"
+)
 
 
 def _experiments() -> dict[str, dict[str, object]]:
@@ -115,6 +118,17 @@ def test_v2_slurm_covers_exact_matrix_and_spatial_authority() -> None:
     assert '--node-spatial-smoothness-loss-weight "${node_spatial_weight}"' in text
     assert "--node-spatial-neighbor-radius 12.0" in text
     assert "--node-spatial-neighbor-k 8" in text
+    assert "frozen_test" not in text.lower()
+    assert "test.csv" not in text.lower()
+
+
+def test_v2_aggregate_slurm_is_pinned_and_fail_closed() -> None:
+    text = AGGREGATE_SLURM.read_text(encoding="utf-8")
+    subprocess.run(["bash", "-n", str(AGGREGATE_SLURM)], check=True)
+    assert "FRAMECONTACT_AGGREGATION_ROOT:?" in text
+    assert "--bootstrap-resamples 50000" in text
+    assert "Refusing to overwrite" in text
+    assert "aggregate_asep_joint_coupling_dev_v2.py" in text
     assert "frozen_test" not in text.lower()
     assert "test.csv" not in text.lower()
 
