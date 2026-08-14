@@ -17,7 +17,24 @@ protocol="${repository_root}/protocols/framecontact_asep_joint_coupling_dev_v1.j
 protocol_receipt="${repository_root}/protocols/FRAMECONTACT_ASEP_JOINT_COUPLING_DEV_V1_RECEIPT.json"
 training_panel="${data_root}/asep/panels/train-reciprocal-31.json"
 validation_panel="${data_root}/asep/panels/validation-reciprocal-31.json"
-smoke_output="${data_root}/asep/smoke-gates/joint-coupling-a3-seed-17"
+smoke_experiment="${FC_SMOKE_EXPERIMENT:-framecontact_joint_a3_coupled_heads}"
+case "${smoke_experiment}" in
+  framecontact_joint_a3_coupled_heads)
+    smoke_token=a3
+    distogram_weight=0.0
+    contact_distance_weight=0.0
+    ;;
+  framecontact_joint_a5_coupled_spatial)
+    smoke_token=a5
+    distogram_weight=0.25
+    contact_distance_weight=0.10
+    ;;
+  *)
+    echo "FC_SMOKE_EXPERIMENT must select the preregistered A3 or A5 gate" >&2
+    exit 2
+    ;;
+esac
+smoke_output="${data_root}/asep/smoke-gates/joint-coupling-${smoke_token}-seed-17"
 
 if [[ -e "${smoke_output}" ]]; then
   echo "Smoke output path must be absent before execution: ${smoke_output}" >&2
@@ -41,7 +58,7 @@ export PYTHONPATH="${repository_root}/src"
   --validation-partner-panel-sha256 10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec \
   --output-root "${smoke_output}" \
   --seed 17 \
-  --experiment framecontact_joint_a3_coupled_heads \
+  --experiment "${smoke_experiment}" \
   --epochs 120 \
   --early-stopping-patience 20 \
   --batch-size 1 \
@@ -62,8 +79,8 @@ export PYTHONPATH="${repository_root}/src"
   --paratope-loss-weight 0.25 \
   --epitope-loss-weight 0.25 \
   --specificity-loss-weight 0.25 \
-  --distogram-loss-weight 0.0 \
-  --contact-distance-consistency-loss-weight 0.0 \
+  --distogram-loss-weight "${distogram_weight}" \
+  --contact-distance-consistency-loss-weight "${contact_distance_weight}" \
   --pair-node-consistency-loss-weight 0.25 \
   --triangle-loss-weight 0.0 \
   --far-patch-exclusion-loss-weight 0.0 \

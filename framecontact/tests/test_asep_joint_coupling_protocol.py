@@ -113,6 +113,8 @@ def test_joint_slurm_covers_exact_matrix_with_pinned_authorities() -> None:
 def test_gpu_smoke_is_one_real_coupled_batch_without_result_output() -> None:
     text = SMOKE_SLURM.read_text(encoding="utf-8")
     assert "framecontact_joint_a3_coupled_heads" in text
+    assert "framecontact_joint_a5_coupled_spatial" in text
+    assert "FC_SMOKE_EXPERIMENT must select the preregistered A3 or A5 gate" in text
     assert "--pair-node-consistency-loss-weight 0.25" in text
     assert "--single-batch-smoke-only" in text
     assert "Single-batch smoke unexpectedly created an output root" in text
