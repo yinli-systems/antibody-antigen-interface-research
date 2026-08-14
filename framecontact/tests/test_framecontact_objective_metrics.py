@@ -33,6 +33,110 @@ def test_bernoulli_js_consistency_is_symmetric_and_zero_for_matching_heads() -> 
     assert distance.grad is not None and torch.isfinite(distance.grad).all()
 
 
+def test_pair_node_consistency_is_masked_balanced_and_differentiable() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        pair_node_consistency_per_complex,
+    )
+
+    paratope_unary = torch.tensor([[1.0, -50.0]], requires_grad=True)
+    paratope_contact = torch.tensor([[-0.5, 50.0]], requires_grad=True)
+    antibody_mask = torch.tensor([[True, False]])
+    epitope_unary = torch.tensor([[0.2, -0.7, 50.0]], requires_grad=True)
+    epitope_contact = torch.tensor([[-0.3, 0.9, -50.0]], requires_grad=True)
+    antigen_mask = torch.tensor([[True, True, False]])
+
+    total, paratope, epitope = pair_node_consistency_per_complex(
+        paratope_unary_logits=paratope_unary,
+        paratope_contact_logits=paratope_contact,
+        antibody_mask=antibody_mask,
+        epitope_unary_logits=epitope_unary,
+        epitope_contact_logits=epitope_contact,
+        antigen_mask=antigen_mask,
+    )
+    torch.testing.assert_close(total, 0.5 * (paratope + epitope))
+    assert total.item() > 0.0
+
+    masked_values_changed = pair_node_consistency_per_complex(
+        paratope_unary_logits=paratope_unary.detach().clone().index_fill(
+            1, torch.tensor([1]), 500.0
+        ),
+        paratope_contact_logits=paratope_contact.detach().clone().index_fill(
+            1, torch.tensor([1]), -500.0
+        ),
+        antibody_mask=antibody_mask,
+        epitope_unary_logits=epitope_unary.detach().clone().index_fill(
+            1, torch.tensor([2]), -500.0
+        ),
+        epitope_contact_logits=epitope_contact.detach().clone().index_fill(
+            1, torch.tensor([2]), 500.0
+        ),
+        antigen_mask=antigen_mask,
+    )[0]
+    torch.testing.assert_close(total.detach(), masked_values_changed)
+
+    total.backward()
+    for logits in (
+        paratope_unary,
+        paratope_contact,
+        epitope_unary,
+        epitope_contact,
+    ):
+        assert logits.grad is not None
+        assert torch.isfinite(logits.grad).all()
+
+
+def test_pair_node_consistency_objective_is_fail_closed_and_uses_unary_heads() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        FrameContactLossWeights,
+        FrameContactObjective,
+    )
+
+    output, batch = _outputs_and_batch()
+    weights = FrameContactLossWeights(
+        contact=0.0,
+        paratope=0.0,
+        epitope=0.0,
+        specificity=0.0,
+        pair_node_consistency=1.0,
+    )
+    objective = FrameContactObjective(weights=weights)
+    with pytest.raises(ValueError, match="pair-node consistency requires"):
+        objective(output, batch)
+
+    output.update(
+        {
+            "paratope_unary_logits": torch.tensor(
+                [[0.4, -0.8]], requires_grad=True
+            ),
+            "paratope_contact_logits": torch.tensor(
+                [[0.4, -0.8]], requires_grad=True
+            ),
+            "epitope_unary_logits": torch.tensor(
+                [[-0.3, 0.9, -1.2]], requires_grad=True
+            ),
+            "epitope_contact_logits": torch.tensor(
+                [[-0.3, 0.9, -1.2]], requires_grad=True
+            ),
+        }
+    )
+    # Final residue outputs deliberately disagree; consistency must compare the
+    # independent unary heads with contact-derived marginals, not hybrid heads.
+    output["paratope_logits"] = torch.full((1, 2), 9.0, requires_grad=True)
+    output["epitope_logits"] = torch.full((1, 3), -9.0, requires_grad=True)
+    result = objective(output, batch)
+    torch.testing.assert_close(
+        result["pair_node_consistency_loss"],
+        torch.zeros(()),
+        atol=1e-8,
+        rtol=0.0,
+    )
+    torch.testing.assert_close(result["loss"], result["pair_node_consistency_loss"])
+
+
 pytestmark = pytest.mark.skipif(
     any(importlib.util.find_spec(name) is None for name in ("sklearn", "torch")),
     reason="FrameContact metric dependencies are unavailable",
