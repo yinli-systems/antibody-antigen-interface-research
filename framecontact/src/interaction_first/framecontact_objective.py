@@ -206,6 +206,106 @@ def pair_node_consistency_per_complex(
     return 0.5 * (paratope + epitope), paratope, epitope
 
 
+def _node_spatial_smoothness_one_side(
+    logits: Any,
+    backbone: Any,
+    residue_mask: Any,
+    chain_ids: Any,
+    *,
+    neighbor_radius: float,
+    neighbor_k: int,
+) -> Any:
+    """Penalize local probability discontinuities on one monomer graph."""
+
+    torch_module = _require_torch()
+    if logits.ndim != 2:
+        raise ValueError("node spatial logits must have shape [batch, residue]")
+    expected = tuple(logits.shape)
+    if (
+        tuple(backbone.shape) != (*expected, 3, 3)
+        or tuple(residue_mask.shape) != expected
+        or tuple(chain_ids.shape) != expected
+        or residue_mask.dtype != torch_module.bool
+    ):
+        raise ValueError("node spatial inputs must align with the residue axis")
+    if not math.isfinite(neighbor_radius) or neighbor_radius <= 0:
+        raise ValueError("node spatial neighbor radius must be finite and positive")
+    if isinstance(neighbor_k, bool) or not isinstance(neighbor_k, int) or neighbor_k <= 0:
+        raise ValueError("node spatial neighbor_k must be positive")
+
+    probabilities = torch_module.sigmoid(logits.float())
+    losses = []
+    for batch_index in range(int(logits.shape[0])):
+        frame_valid = torch_module.isfinite(backbone[batch_index]).all(
+            dim=(-1, -2)
+        )
+        active = residue_mask[batch_index] & frame_valid
+        source, target, _ = _sparse_neighbor_edges(
+            backbone[batch_index, :, 1, :].nan_to_num(),
+            active,
+            chain_ids[batch_index],
+            radius=neighbor_radius,
+            neighbor_k=neighbor_k,
+        )
+        if source.numel() == 0:
+            raise ValueError(
+                "node spatial supervision selected no valid intrachain edges"
+            )
+        # Radius-kNN can contain both orientations of one physical edge.  Make
+        # the graph undirected before averaging so directed duplication cannot
+        # change a complex's weight.
+        undirected = torch_module.stack(
+            (torch_module.minimum(source, target), torch_module.maximum(source, target)),
+            dim=1,
+        ).unique(dim=0)
+        difference = (
+            probabilities[batch_index, undirected[:, 0]]
+            - probabilities[batch_index, undirected[:, 1]]
+        )
+        losses.append(difference.square().mean())
+    return torch_module.stack(losses).mean()
+
+
+def node_spatial_smoothness_per_complex(
+    *,
+    paratope_unary_logits: Any,
+    antibody_backbone: Any,
+    antibody_mask: Any,
+    antibody_chain_ids: Any,
+    epitope_unary_logits: Any,
+    antigen_backbone: Any,
+    antigen_mask: Any,
+    antigen_chain_ids: Any,
+    neighbor_radius: float = 12.0,
+    neighbor_k: int = 8,
+) -> tuple[Any, Any, Any]:
+    """Regularize coarse epitope/paratope probabilities on monomer geometry.
+
+    This consumes only within-partner C-alpha neighborhoods.  It therefore
+    remains invariant to the unrelated antibody and antigen input coordinate
+    frames and does not invent cross-chain distance supervision.  The two
+    partner losses receive equal mass after per-complex averaging.
+    """
+
+    paratope = _node_spatial_smoothness_one_side(
+        paratope_unary_logits,
+        antibody_backbone,
+        antibody_mask,
+        antibody_chain_ids,
+        neighbor_radius=neighbor_radius,
+        neighbor_k=neighbor_k,
+    )
+    epitope = _node_spatial_smoothness_one_side(
+        epitope_unary_logits,
+        antigen_backbone,
+        antigen_mask,
+        antigen_chain_ids,
+        neighbor_radius=neighbor_radius,
+        neighbor_k=neighbor_k,
+    )
+    return 0.5 * (paratope + epitope), paratope, epitope
+
+
 def select_local_antigen_patch(
     scores: Any,
     backbone: Any,
@@ -727,6 +827,7 @@ class FrameContactLossWeights:
     distogram: float = 0.0
     contact_distance_consistency: float = 0.0
     pair_node_consistency: float = 0.0
+    node_spatial_smoothness: float = 0.0
     triangle: float = 0.0
     far_patch_exclusion: float = 0.0
     edm: float = 0.0
@@ -757,6 +858,8 @@ class FrameContactObjective(_ModuleBase):
         triangle_neighbor_radius: float = 12.0,
         triangle_neighbor_k: int = 8,
         triangle_slack: float = 0.5,
+        node_spatial_neighbor_radius: float = 12.0,
+        node_spatial_neighbor_k: int = 8,
         antigen_patch_top_seeds: int = 1,
         antigen_patch_radius: float = 12.0,
         far_patch_minimum_separation: float = 20.0,
@@ -815,6 +918,19 @@ class FrameContactObjective(_ModuleBase):
             raise ValueError("triangle_neighbor_k must be positive")
         if not math.isfinite(triangle_slack) or triangle_slack < 0:
             raise ValueError("triangle_slack must be finite and nonnegative")
+        if (
+            not math.isfinite(node_spatial_neighbor_radius)
+            or node_spatial_neighbor_radius <= 0
+        ):
+            raise ValueError(
+                "node_spatial_neighbor_radius must be finite and positive"
+            )
+        if (
+            isinstance(node_spatial_neighbor_k, bool)
+            or not isinstance(node_spatial_neighbor_k, int)
+            or node_spatial_neighbor_k <= 0
+        ):
+            raise ValueError("node_spatial_neighbor_k must be positive")
         if (
             isinstance(antigen_patch_top_seeds, bool)
             or not isinstance(antigen_patch_top_seeds, int)
@@ -875,6 +991,8 @@ class FrameContactObjective(_ModuleBase):
         self.triangle_neighbor_radius = float(triangle_neighbor_radius)
         self.triangle_neighbor_k = int(triangle_neighbor_k)
         self.triangle_slack = float(triangle_slack)
+        self.node_spatial_neighbor_radius = float(node_spatial_neighbor_radius)
+        self.node_spatial_neighbor_k = int(node_spatial_neighbor_k)
         self.antigen_patch_top_seeds = int(antigen_patch_top_seeds)
         self.antigen_patch_radius = float(antigen_patch_radius)
         self.far_patch_minimum_separation = float(
@@ -1103,6 +1221,52 @@ class FrameContactObjective(_ModuleBase):
             pair_node_consistency_loss = contact_loss.new_zeros(())
             pair_node_consistency_paratope_loss = contact_loss.new_zeros(())
             pair_node_consistency_epitope_loss = contact_loss.new_zeros(())
+        if self.weights.node_spatial_smoothness != 0:
+            required_spatial_outputs = (
+                "paratope_unary_logits",
+                "antibody_mask",
+                "epitope_unary_logits",
+                "antigen_mask",
+            )
+            required_spatial_batch = (
+                "antibody_backbone",
+                "antibody_chain_ids",
+                "antigen_backbone",
+                "antigen_chain_ids",
+            )
+            missing_spatial = [
+                key
+                for key in required_spatial_outputs
+                if cognate_output.get(key) is None
+            ] + [
+                key for key in required_spatial_batch if cognate_batch.get(key) is None
+            ]
+            if missing_spatial:
+                raise ValueError(
+                    "node spatial smoothness requires independent unary heads and "
+                    "authenticated monomer geometry; missing "
+                    + ", ".join(missing_spatial)
+                )
+            (
+                node_spatial_smoothness_loss,
+                node_spatial_smoothness_paratope_loss,
+                node_spatial_smoothness_epitope_loss,
+            ) = node_spatial_smoothness_per_complex(
+                paratope_unary_logits=cognate_output["paratope_unary_logits"],
+                antibody_backbone=cognate_batch["antibody_backbone"],
+                antibody_mask=cognate_output["antibody_mask"],
+                antibody_chain_ids=cognate_batch["antibody_chain_ids"],
+                epitope_unary_logits=cognate_output["epitope_unary_logits"],
+                antigen_backbone=cognate_batch["antigen_backbone"],
+                antigen_mask=cognate_output["antigen_mask"],
+                antigen_chain_ids=cognate_batch["antigen_chain_ids"],
+                neighbor_radius=self.node_spatial_neighbor_radius,
+                neighbor_k=self.node_spatial_neighbor_k,
+            )
+        else:
+            node_spatial_smoothness_loss = contact_loss.new_zeros(())
+            node_spatial_smoothness_paratope_loss = contact_loss.new_zeros(())
+            node_spatial_smoothness_epitope_loss = contact_loss.new_zeros(())
         if (
             self.weights.triangle != 0
             or self.weights.far_patch_exclusion != 0
@@ -1262,6 +1426,8 @@ class FrameContactObjective(_ModuleBase):
             + self.weights.contact_distance_consistency
             * contact_distance_consistency_loss
             + self.weights.pair_node_consistency * pair_node_consistency_loss
+            + self.weights.node_spatial_smoothness
+            * node_spatial_smoothness_loss
             + self.weights.triangle * triangle_loss
             + self.weights.far_patch_exclusion * far_patch_exclusion_loss
             + self.weights.edm * edm_loss
@@ -1283,6 +1449,13 @@ class FrameContactObjective(_ModuleBase):
             ),
             "pair_node_consistency_epitope_loss": (
                 pair_node_consistency_epitope_loss
+            ),
+            "node_spatial_smoothness_loss": node_spatial_smoothness_loss,
+            "node_spatial_smoothness_paratope_loss": (
+                node_spatial_smoothness_paratope_loss
+            ),
+            "node_spatial_smoothness_epitope_loss": (
+                node_spatial_smoothness_epitope_loss
             ),
             "triangle_loss": triangle_loss,
             "far_patch_exclusion_loss": far_patch_exclusion_loss,
@@ -1359,6 +1532,7 @@ __all__ = [
     "expected_distance_from_distogram",
     "far_patch_triangle_exclusion_loss",
     "local_edm_realizability_loss",
+    "node_spatial_smoothness_per_complex",
     "pair_node_consistency_per_complex",
     "residue_partner_contrastive_loss",
     "select_local_antigen_patch",
