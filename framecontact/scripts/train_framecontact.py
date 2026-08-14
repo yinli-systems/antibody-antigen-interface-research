@@ -758,6 +758,16 @@ def _arguments() -> argparse.Namespace:
             "execution contract while remaining runnable on a login node."
         ),
     )
+    parser.add_argument(
+        "--single-batch-smoke-only",
+        action="store_true",
+        help=(
+            "Run exactly one real development training batch, including the "
+            "forward, objective, backward, gradient clipping and optimizer "
+            "step, then exit without creating an output root or validation "
+            "artifacts. This is a resource/runtime gate before a seed array."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -809,10 +819,12 @@ _COGNATE_VIEW_REQUIRED = (
     "epitope_logits",
     "antibody_mask",
     "antigen_mask",
-    # select_local_antigen_patch routes the triangle constraint through the
-    # antigen unary prediction, so the triangle loss needs these two.
+    # Geometry routing and pair-node coupling both require the independent
+    # unary heads; the latter also requires contact-derived marginals.
     "paratope_unary_logits",
     "epitope_unary_logits",
+    "paratope_contact_logits",
+    "epitope_contact_logits",
 )
 _COGNATE_VIEW_OPTIONAL = (
     "distogram_logits",
@@ -2469,6 +2481,87 @@ def main() -> None:
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=arguments.learning_rate, weight_decay=arguments.weight_decay
     )
+    if arguments.single_batch_smoke_only:
+        paired_train_dataset.set_epoch(1)
+        raw_batch, raw_wrong_by_direction = next(iter(train_loader))
+        batch = _move_batch(raw_batch, device)
+        wrong_batches = {
+            direction: (
+                tuple(_move_batch(item, device) for item in raw_wrong)
+                if isinstance(raw_wrong, (tuple, list))
+                else _move_batch(raw_wrong, device)
+            )
+            for direction, raw_wrong in raw_wrong_by_direction.items()
+        }
+        model.train()
+        if hasattr(model, "set_contact_gate_multiplier"):
+            model.set_contact_gate_multiplier(
+                _contact_gate_curriculum(
+                    0,
+                    max(1, arguments.epochs * len(train_loader)),
+                    warmup_fraction=arguments.contact_gate_warmup_fraction,
+                    ramp_fraction=arguments.contact_gate_ramp_fraction,
+                )
+            )
+        optimizer.zero_grad(set_to_none=True)
+        with _autocast(device, use_bf16), _saved_tensor_context(
+            arguments.offload_saved_tensors
+        ):
+            output = _cognate_training_view(model(batch))
+            wrong_outputs = {
+                direction: (
+                    tuple(
+                        (
+                            _checkpointed_wrong_training_view(model, item)
+                            if arguments.checkpoint_wrong_partners
+                            else _wrong_training_view(model(item))
+                        )
+                        for item in wrong_batch
+                    )
+                    if isinstance(wrong_batch, tuple)
+                    else (
+                        _checkpointed_wrong_training_view(model, wrong_batch)
+                        if arguments.checkpoint_wrong_partners
+                        else _wrong_training_view(model(wrong_batch))
+                    )
+                )
+                for direction, wrong_batch in wrong_batches.items()
+            }
+            losses = objective(
+                output, batch, wrong_partner_outputs=wrong_outputs
+            )
+        losses["loss"].backward()
+        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        optimizer.step()
+        print(
+            json.dumps(
+                {
+                    "format_version": "framecontact_pairformer_single_batch_smoke_v1",
+                    "status": "valid",
+                    "experiment": arguments.experiment,
+                    "seed": arguments.seed,
+                    "device": str(device),
+                    "precision": arguments.precision,
+                    "train_complexes": len(train_dataset),
+                    "batch_loss": float(losses["loss"].detach().cpu()),
+                    "gradient_norm_before_clip": float(
+                        grad_norm.detach().cpu()
+                        if torch.is_tensor(grad_norm)
+                        else grad_norm
+                    ),
+                    "optimizer_steps": 1,
+                    "output_root_created": False,
+                    "test_role_loaded": False,
+                    "claim_boundary": (
+                        "One development training batch only; no validation "
+                        "metric, test access, or quality/hardware claim."
+                    ),
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        return
     temporary_root = Path(
         tempfile.mkdtemp(
             prefix=f".{arguments.output_root.name}.tmp-",

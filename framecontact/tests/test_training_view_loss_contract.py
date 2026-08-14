@@ -165,6 +165,35 @@ def test_cognate_view_carries_joint_contact_distance_consistency_inputs() -> Non
     assert float(losses["contact_distance_consistency_loss"].detach()) >= 0.0
 
 
+def test_cognate_view_carries_pair_node_consistency_inputs_and_gradients() -> None:
+    trainer = _trainer_views()
+    from interaction_first.framecontact_objective import (
+        FrameContactLossWeights,
+        FrameContactObjective,
+    )
+
+    model = _model()
+    batch = _triangle_batch()
+    view = trainer._cognate_training_view(model(batch))
+    objective = FrameContactObjective(
+        weights=FrameContactLossWeights(
+            contact=0.0,
+            paratope=0.0,
+            epitope=0.0,
+            specificity=0.0,
+            pair_node_consistency=1.0,
+        )
+    )
+    losses = objective(view, batch)
+    assert float(losses["pair_node_consistency_loss"].detach()) > 0.0
+    losses["loss"].backward()
+    assert model.paratope_head.weight.grad is not None
+    assert model.epitope_head.weight.grad is not None
+    assert any(
+        parameter.grad is not None for parameter in model.contact_head.parameters()
+    )
+
+
 def test_checkpointed_wrong_view_matches_the_plain_wrong_view() -> None:
     """Activation checkpointing must not silently change the key set."""
 
@@ -192,6 +221,8 @@ def test_view_key_sets_are_declared_not_scattered() -> None:
 
     assert "epitope_unary_logits" in trainer._COGNATE_VIEW_REQUIRED
     assert "paratope_unary_logits" in trainer._COGNATE_VIEW_REQUIRED
+    assert "epitope_contact_logits" in trainer._COGNATE_VIEW_REQUIRED
+    assert "paratope_contact_logits" in trainer._COGNATE_VIEW_REQUIRED
     assert "paratope_logits" in trainer._WRONG_VIEW_OPTIONAL
     assert "epitope_logits" in trainer._WRONG_VIEW_OPTIONAL
     # Every optional key needs a rule telling the checkpointed path whether the

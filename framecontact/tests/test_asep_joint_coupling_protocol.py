@@ -113,3 +113,6 @@ def test_trainer_exposes_pair_node_consistency_as_protocol_authority() -> None:
     assert '"--pair-node-consistency-loss-weight"' in text
     assert '("pair_node_consistency_loss_weight", "pair_node_consistency")' in text
     assert "pair_node_consistency=arguments.pair_node_consistency_loss_weight" in text
+    assert '"--single-batch-smoke-only"' in text
+    assert '"optimizer_steps": 1' in text
+    assert '"output_root_created": False' in text
