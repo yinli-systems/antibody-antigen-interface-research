@@ -179,6 +179,53 @@ EXPERIMENTS = {
         "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
         "contact_gate_source": "interaction_only",
     },
+    # Teacher-requested contact <-> epitope/paratope coupling audit.  A0/A1
+    # share the exact model and differ only in residue-label loss weights;
+    # A2/A3 share the exact independent-head model and differ only in the
+    # pair-to-node consistency weight.  A4 and A5 are follow-up mechanisms,
+    # never substitutes for the four core attribution controls.
+    "framecontact_joint_a0_pair_only": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_joint_a1_noisy_or": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_joint_a2_independent_heads": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "unary_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_joint_a3_coupled_heads": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "unary_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_joint_a4_coupled_soft_crop": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "unary_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only", "coarse_contact_crop_mode": "soft_unary",
+    },
+    "framecontact_joint_a5_coupled_spatial": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "joint_contact_distogram", "residue_output_mode": "unary_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only", "coarse_contact_crop_mode": "soft_unary",
+    },
     "framecontact_plan_b_soft_crop": {
         "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
         "geometry": True, "cross": True, "fusion_mode": "interleaved",
@@ -642,6 +689,9 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument(
         "--contact-distance-consistency-loss-weight", type=float, default=0.0
     )
+    parser.add_argument(
+        "--pair-node-consistency-loss-weight", type=float, default=0.0
+    )
     parser.add_argument("--triangle-loss-weight", type=float, default=0.0)
     parser.add_argument("--far-patch-exclusion-loss-weight", type=float, default=0.0)
     parser.add_argument("--edm-loss-weight", type=float, default=0.0)
@@ -1102,6 +1152,7 @@ def _validate_execution_configuration(
             "contact_distance_consistency_loss_weight",
             "contact_distance_consistency",
         ),
+        ("pair_node_consistency_loss_weight", "pair_node_consistency"),
         ("triangle_loss_weight", "triangle"),
         ("far_patch_exclusion_loss_weight", "far_patch_exclusion"),
         ("edm_loss_weight", "edm"),
@@ -1117,6 +1168,7 @@ def _validate_execution_configuration(
             if argument_name
             in {
                 "contact_distance_consistency_loss_weight",
+                "pair_node_consistency_loss_weight",
                 "far_patch_exclusion_loss_weight",
                 "edm_loss_weight",
                 "residue_partner_contrastive_loss_weight",
@@ -2366,6 +2418,7 @@ def main() -> None:
         contact_distance_consistency=(
             arguments.contact_distance_consistency_loss_weight
         ),
+        pair_node_consistency=arguments.pair_node_consistency_loss_weight,
         triangle=arguments.triangle_loss_weight,
         far_patch_exclusion=arguments.far_patch_exclusion_loss_weight,
         edm=arguments.edm_loss_weight,

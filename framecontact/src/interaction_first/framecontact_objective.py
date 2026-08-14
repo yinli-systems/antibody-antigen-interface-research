@@ -133,25 +133,25 @@ def distogram_cross_entropy_per_complex(
 
 def bernoulli_js_consistency_per_complex(
     direct_logits: Any,
-    distogram_contact_logits: Any,
+    comparison_logits: Any,
     mask: Any,
 ) -> Any:
-    """Jensen-Shannon consistency for direct and distance-derived contact.
+    """Jensen-Shannon consistency for two aligned Bernoulli predictions.
 
     The loss is symmetric, bounded, and averaged within each complex before
     averaging across complexes so long antigens cannot dominate the objective.
-    It is valid only when both logits arise from the same candidate pair set.
+    It is valid only when both logits describe the same aligned entities.
     """
 
     torch_module = _require_torch()
     if (
-        tuple(direct_logits.shape) != tuple(distogram_contact_logits.shape)
+        tuple(direct_logits.shape) != tuple(comparison_logits.shape)
         or tuple(direct_logits.shape) != tuple(mask.shape)
         or mask.dtype != torch_module.bool
     ):
-        raise ValueError("contact consistency logits and mask must align")
+        raise ValueError("Bernoulli consistency logits and mask must align")
     p = torch_module.sigmoid(direct_logits.float()).clamp(1e-7, 1.0 - 1e-7)
-    q = torch_module.sigmoid(distogram_contact_logits.float()).clamp(
+    q = torch_module.sigmoid(comparison_logits.float()).clamp(
         1e-7, 1.0 - 1e-7
     )
     midpoint = 0.5 * (p + q)
@@ -168,9 +168,42 @@ def bernoulli_js_consistency_per_complex(
     for batch_index in range(int(mask.shape[0])):
         observed = mask[batch_index]
         if not bool(observed.any()):
-            raise ValueError("every complex must contain an observed candidate pair")
+            raise ValueError("every complex must contain an observed entity")
         losses.append(pair_loss[batch_index][observed].mean())
     return torch_module.stack(losses).mean()
+
+
+def pair_node_consistency_per_complex(
+    *,
+    paratope_unary_logits: Any,
+    paratope_contact_logits: Any,
+    antibody_mask: Any,
+    epitope_unary_logits: Any,
+    epitope_contact_logits: Any,
+    antigen_mask: Any,
+) -> tuple[Any, Any, Any]:
+    """Couple independent residue heads to contact-derived marginals.
+
+    Each side is averaged per complex by
+    :func:`bernoulli_js_consistency_per_complex`, then the antibody and antigen
+    losses receive equal weight.  This prevents the typically longer antigen
+    axis from dominating and makes the coupling auditable as two explicit
+    terms.  The function deliberately accepts *unary* node heads rather than
+    final hybrid residue logits, avoiding a circular comparison when the final
+    logits already contain the contact marginal.
+    """
+
+    paratope = bernoulli_js_consistency_per_complex(
+        paratope_unary_logits,
+        paratope_contact_logits,
+        antibody_mask,
+    )
+    epitope = bernoulli_js_consistency_per_complex(
+        epitope_unary_logits,
+        epitope_contact_logits,
+        antigen_mask,
+    )
+    return 0.5 * (paratope + epitope), paratope, epitope
 
 
 def select_local_antigen_patch(
@@ -693,6 +726,7 @@ class FrameContactLossWeights:
     specificity: float = 0.25
     distogram: float = 0.0
     contact_distance_consistency: float = 0.0
+    pair_node_consistency: float = 0.0
     triangle: float = 0.0
     far_patch_exclusion: float = 0.0
     edm: float = 0.0
@@ -1035,6 +1069,40 @@ class FrameContactObjective(_ModuleBase):
             )
         else:
             contact_distance_consistency_loss = contact_loss.new_zeros(())
+        if self.weights.pair_node_consistency != 0:
+            pair_node_keys = (
+                "paratope_unary_logits",
+                "paratope_contact_logits",
+                "antibody_mask",
+                "epitope_unary_logits",
+                "epitope_contact_logits",
+                "antigen_mask",
+            )
+            missing_pair_node_keys = [
+                key for key in pair_node_keys if cognate_output.get(key) is None
+            ]
+            if missing_pair_node_keys:
+                raise ValueError(
+                    "pair-node consistency requires independent unary heads and "
+                    "contact-derived marginals; missing "
+                    + ", ".join(missing_pair_node_keys)
+                )
+            (
+                pair_node_consistency_loss,
+                pair_node_consistency_paratope_loss,
+                pair_node_consistency_epitope_loss,
+            ) = pair_node_consistency_per_complex(
+                paratope_unary_logits=cognate_output["paratope_unary_logits"],
+                paratope_contact_logits=cognate_output["paratope_contact_logits"],
+                antibody_mask=cognate_output["antibody_mask"],
+                epitope_unary_logits=cognate_output["epitope_unary_logits"],
+                epitope_contact_logits=cognate_output["epitope_contact_logits"],
+                antigen_mask=cognate_output["antigen_mask"],
+            )
+        else:
+            pair_node_consistency_loss = contact_loss.new_zeros(())
+            pair_node_consistency_paratope_loss = contact_loss.new_zeros(())
+            pair_node_consistency_epitope_loss = contact_loss.new_zeros(())
         if (
             self.weights.triangle != 0
             or self.weights.far_patch_exclusion != 0
@@ -1193,6 +1261,7 @@ class FrameContactObjective(_ModuleBase):
             + self.weights.distogram * distogram_loss
             + self.weights.contact_distance_consistency
             * contact_distance_consistency_loss
+            + self.weights.pair_node_consistency * pair_node_consistency_loss
             + self.weights.triangle * triangle_loss
             + self.weights.far_patch_exclusion * far_patch_exclusion_loss
             + self.weights.edm * edm_loss
@@ -1207,6 +1276,13 @@ class FrameContactObjective(_ModuleBase):
             "distogram_loss": distogram_loss,
             "contact_distance_consistency_loss": (
                 contact_distance_consistency_loss
+            ),
+            "pair_node_consistency_loss": pair_node_consistency_loss,
+            "pair_node_consistency_paratope_loss": (
+                pair_node_consistency_paratope_loss
+            ),
+            "pair_node_consistency_epitope_loss": (
+                pair_node_consistency_epitope_loss
             ),
             "triangle_loss": triangle_loss,
             "far_patch_exclusion_loss": far_patch_exclusion_loss,
@@ -1283,6 +1359,7 @@ __all__ = [
     "expected_distance_from_distogram",
     "far_patch_triangle_exclusion_loss",
     "local_edm_realizability_loss",
+    "pair_node_consistency_per_complex",
     "residue_partner_contrastive_loss",
     "select_local_antigen_patch",
     "sparse_triangle_inequality_loss",
