@@ -17,6 +17,7 @@ SLURM = ROOT / "slurm_train_framecontact_asep_joint_coupling_dev_v1.sbatch"
 SINGLE_SLURM = (
     ROOT / "slurm_train_framecontact_asep_joint_coupling_dev_v1_single.sbatch"
 )
+SMOKE_SLURM = ROOT / "slurm_smoke_framecontact_asep_joint_coupling_dev_v1.sbatch"
 
 
 def _experiments() -> dict[str, dict[str, object]]:
@@ -96,6 +97,7 @@ def test_joint_slurm_covers_exact_matrix_with_pinned_authorities() -> None:
     text = SLURM.read_text(encoding="utf-8")
     subprocess.run(["bash", "-n", str(SLURM)], check=True)
     subprocess.run(["bash", "-n", str(SINGLE_SLURM)], check=True)
+    subprocess.run(["bash", "-n", str(SMOKE_SLURM)], check=True)
     assert "#SBATCH --array=0-29%30" in text
     assert "#SBATCH --partition=gpu_5090" in text
     for experiment in protocol["development_matrix"]:
@@ -104,6 +106,16 @@ def test_joint_slurm_covers_exact_matrix_with_pinned_authorities() -> None:
     assert "--pair-node-consistency-loss-weight" in text
     assert "--coarse-contact-crop-floor 0.05" in text
     assert "sha256sum" not in text
+    assert "frozen_test" not in text.lower()
+    assert "test.csv" not in text.lower()
+
+
+def test_gpu_smoke_is_one_real_coupled_batch_without_result_output() -> None:
+    text = SMOKE_SLURM.read_text(encoding="utf-8")
+    assert "framecontact_joint_a3_coupled_heads" in text
+    assert "--pair-node-consistency-loss-weight 0.25" in text
+    assert "--single-batch-smoke-only" in text
+    assert "Single-batch smoke unexpectedly created an output root" in text
     assert "frozen_test" not in text.lower()
     assert "test.csv" not in text.lower()
 
