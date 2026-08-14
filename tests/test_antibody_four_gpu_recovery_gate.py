@@ -70,7 +70,7 @@ def test_freezer_scales_only_global_token_budget(monkeypatch) -> None:
         },
     }
     monkeypatch.setattr(freezer.parent, "freeze_gate", lambda **_: base)
-    monkeypatch.setattr(freezer.parent, "_sha256", lambda _: "a" * 64)
+    monkeypatch.setattr(freezer.parent, "_file_sha256", lambda _: "a" * 64)
     result = freezer.freeze_gate(source_root=ROOT)
     assert result["execution"]["world_size"] == 4
     assert result["execution"]["hardware"] == {
@@ -89,12 +89,12 @@ def test_freezer_scales_only_global_token_budget(monkeypatch) -> None:
 
 def test_auditor_accepts_only_four_same_host_ranks(tmp_path: Path) -> None:
     auditor = _load("four_gpu_auditor_test", AUDITOR)
-    authorization = auditor.promoted.AUTHORIZATION
-    test_access = auditor.promoted.TEST_ACCESS
+    authorization = auditor.AUTHORIZATION
+    test_access = auditor.TEST_ACCESS
     receipt = {
         "authorization": authorization,
         "corpus_open": {"node_count": 1, "rank_hosts": ["node"] * 4},
-        "format_version": auditor.promoted.RUN_FORMAT,
+        "format_version": auditor.RUN_FORMAT,
         "run_role": "continuous",
         "test_access": test_access,
         "world_size": 4,
