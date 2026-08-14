@@ -9,11 +9,22 @@ from typing import Any
 
 import audit_antibody_production_batch_efficiency as artifacts
 import audit_antibody_production_loader_recovery as recovery
-import audit_antibody_production_recovery_gate_8gpu as promoted
 
 
 FORMAT_VERSION = "antibody_production_loader_recovery_audit_4gpu_v1"
 WORLD_SIZE = 4
+RUN_FORMAT = "antibody_production_loader_recovery_run_v1"
+GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
+AUTHORIZATION = {
+    "loader_recovery_gate": True,
+    "production_pretraining": False,
+    "scale_out": False,
+    "scientific_claim": False,
+}
+TEST_ACCESS = {
+    "downstream_labels_used": False,
+    "sabdab2_heldout_accessed": False,
+}
 
 
 def _load_run(root: Path, role: str) -> dict[str, Any]:
@@ -21,10 +32,10 @@ def _load_run(root: Path, role: str) -> dict[str, Any]:
     state, state_file_sha256 = recovery._load(root / "trainer_state.json")
     rank_hosts = receipt.get("corpus_open", {}).get("rank_hosts", [])
     if (
-        receipt.get("format_version") != promoted.RUN_FORMAT
+        receipt.get("format_version") != RUN_FORMAT
         or receipt.get("run_role") != role
-        or receipt.get("test_access") != promoted.TEST_ACCESS
-        or receipt.get("authorization") != promoted.AUTHORIZATION
+        or receipt.get("test_access") != TEST_ACCESS
+        or receipt.get("authorization") != AUTHORIZATION
         or receipt.get("world_size") != WORLD_SIZE
         or state.get("world_size") != WORLD_SIZE
         or receipt.get("corpus_open", {}).get("node_count") != 1
@@ -49,16 +60,14 @@ def audit_recovery_4gpu(
     continuous_root: Path,
     stage1_root: Path,
     resumed_root: Path,
-    confirmation_protocol_path: Path,
-    confirmation_audit_path: Path,
     artifact_root: Path,
 ) -> dict[str, Any]:
-    """Audit source promotion, exact restart, and sealed four-GPU artifacts."""
-    protocol, protocol_sha256 = recovery._load(gate_protocol_path)
+    """Audit exact restart and sealed four-GPU artifacts."""
+    protocol, _ = recovery._load(gate_protocol_path)
     if (
-        protocol.get("format_version") != promoted.GATE_FORMAT
-        or protocol.get("authorization") != promoted.AUTHORIZATION
-        or protocol.get("test_access") != promoted.TEST_ACCESS
+        protocol.get("format_version") != GATE_FORMAT
+        or protocol.get("authorization") != AUTHORIZATION
+        or protocol.get("test_access") != TEST_ACCESS
         or protocol.get("execution", {}).get("world_size") != WORLD_SIZE
         or protocol.get("execution", {}).get("hardware")
         != {
@@ -69,11 +78,6 @@ def audit_recovery_4gpu(
         or protocol.get("auditor_sha256") != artifacts._sha256(Path(__file__))
     ):
         raise recovery.RecoveryAuditError("Four-GPU gate protocol differs")
-    promotion = promoted._validate_confirmation(
-        protocol=protocol,
-        confirmation_protocol_path=confirmation_protocol_path,
-        confirmation_audit_path=confirmation_audit_path,
-    )
     original_loader = recovery._load_run
     original_file = recovery.__file__
     recovery._load_run = _load_run
@@ -88,18 +92,6 @@ def audit_recovery_4gpu(
     finally:
         recovery._load_run = original_loader
         recovery.__file__ = original_file
-    result["candidate_sidecars"] = {
-        role: promoted._candidate_sidecar(
-            root,
-            protocol=protocol,
-            protocol_sha256=protocol_sha256,
-        )
-        for role, root in {
-            "continuous": continuous_root,
-            "stage1": stage1_root,
-            "resumed": resumed_root,
-        }.items()
-    }
     artifact_audit = artifacts._verify_artifacts(artifact_root)
     if not artifact_audit["manifest_verified"] or artifact_audit["writable_paths"]:
         raise recovery.RecoveryAuditError("Recovery artifacts are not immutable")
@@ -118,7 +110,6 @@ def audit_recovery_4gpu(
                 "training, biological, downstream, official-test, or SOTA claim"
             ),
             "format_version": FORMAT_VERSION,
-            "promotion_evidence": promotion,
             "world_size": WORLD_SIZE,
         }
     )
@@ -131,8 +122,6 @@ def main() -> None:
     parser.add_argument("--continuous", type=Path, required=True)
     parser.add_argument("--stage1", type=Path, required=True)
     parser.add_argument("--resumed", type=Path, required=True)
-    parser.add_argument("--confirmation-protocol", type=Path, required=True)
-    parser.add_argument("--confirmation-audit", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -141,8 +130,6 @@ def main() -> None:
         continuous_root=args.continuous,
         stage1_root=args.stage1,
         resumed_root=args.resumed,
-        confirmation_protocol_path=args.confirmation_protocol,
-        confirmation_audit_path=args.confirmation_audit,
         artifact_root=args.artifact_root,
     )
     recovery._publish(args.output, result)

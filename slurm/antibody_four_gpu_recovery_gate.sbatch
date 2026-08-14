@@ -106,7 +106,6 @@ PY
 )
 
 COMMON_ARGS=(
-  --candidate-gate-protocol "${GATE_PROTOCOL}"
   --production-corpus-root "${CORPUS_ROOT}"
   --production-corpus-manifest-file-sha256 "${CORPUS_MANIFEST_FILE_SHA256}"
   --production-corpus-manifest-payload-sha256 "${CORPUS_MANIFEST_PAYLOAD_SHA256}"
@@ -129,6 +128,10 @@ COMMON_ARGS=(
   --minimum-soft-open-file-limit 4096
   --compile-blocks
   --compile-prewarm-buckets
+  --fused-adamw
+  --pinned-staging
+  --bucketed-padding
+  --length-bucketing
 )
 if [[ "${DISABLE_COMPILED_CUDAGRAPHS}" == true ]]; then
   COMMON_ARGS+=(--disable-compiled-cudagraphs)
@@ -169,7 +172,7 @@ run_gate() {
     --format=csv -l 5 > "${RUN_ROOT}/${role}-gpu.csv" &
   MONITOR_PID=$!
   "${PYTHON_BIN}" -m torch.distributed.run --standalone --nproc-per-node=4 \
-    "${SOURCE_ROOT}/scripts/run_antibody_pretraining_production_candidate_gate.py" \
+    "${SOURCE_ROOT}/scripts/run_antibody_pretraining_production_gate.py" \
     "${COMMON_ARGS[@]}" --run-role "${role}" --steps "${steps}" \
     --output "${output}" "$@" 2>&1 | tee "${RUN_ROOT}/${role}-training.log"
   stop_monitor
