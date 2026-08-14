@@ -137,6 +137,125 @@ def test_pair_node_consistency_objective_is_fail_closed_and_uses_unary_heads() -
     torch.testing.assert_close(result["loss"], result["pair_node_consistency_loss"])
 
 
+def test_node_spatial_smoothness_is_balanced_masked_and_differentiable() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        node_spatial_smoothness_per_complex,
+    )
+
+    def backbone(ca: torch.Tensor) -> torch.Tensor:
+        return torch.stack(
+            (
+                ca + torch.tensor([0.0, 1.0, 0.0]),
+                ca,
+                ca + torch.tensor([1.0, 0.0, 0.0]),
+            ),
+            dim=-2,
+        ).unsqueeze(0)
+
+    antibody_backbone = backbone(
+        torch.tensor([[0.0, 0.0, 0.0], [4.0, 0.0, 0.0], [40.0, 0.0, 0.0]])
+    )
+    antigen_backbone = backbone(
+        torch.tensor([[0.0, 0.0, 0.0], [3.0, 0.0, 0.0], [30.0, 0.0, 0.0]])
+    )
+    paratope = torch.tensor([[2.0, -2.0, 80.0]], requires_grad=True)
+    epitope = torch.tensor([[-1.5, 1.5, -80.0]], requires_grad=True)
+    mask = torch.tensor([[True, True, False]])
+    chain_ids = torch.zeros(1, 3, dtype=torch.long)
+
+    total, paratope_loss, epitope_loss = node_spatial_smoothness_per_complex(
+        paratope_unary_logits=paratope,
+        antibody_backbone=antibody_backbone,
+        antibody_mask=mask,
+        antibody_chain_ids=chain_ids,
+        epitope_unary_logits=epitope,
+        antigen_backbone=antigen_backbone,
+        antigen_mask=mask,
+        antigen_chain_ids=chain_ids,
+        neighbor_radius=6.0,
+        neighbor_k=2,
+    )
+    torch.testing.assert_close(total, 0.5 * (paratope_loss + epitope_loss))
+    assert float(total.detach()) > 0.0
+
+    masked_changed = node_spatial_smoothness_per_complex(
+        paratope_unary_logits=paratope.detach().clone().index_fill(
+            1, torch.tensor([2]), -800.0
+        ),
+        antibody_backbone=antibody_backbone,
+        antibody_mask=mask,
+        antibody_chain_ids=chain_ids,
+        epitope_unary_logits=epitope.detach().clone().index_fill(
+            1, torch.tensor([2]), 800.0
+        ),
+        antigen_backbone=antigen_backbone,
+        antigen_mask=mask,
+        antigen_chain_ids=chain_ids,
+        neighbor_radius=6.0,
+        neighbor_k=2,
+    )[0]
+    torch.testing.assert_close(total.detach(), masked_changed)
+    total.backward()
+    assert paratope.grad is not None and torch.isfinite(paratope.grad).all()
+    assert epitope.grad is not None and torch.isfinite(epitope.grad).all()
+
+
+def test_node_spatial_smoothness_objective_fails_closed_without_geometry() -> None:
+    import torch
+
+    from interaction_first.framecontact_objective import (
+        FrameContactLossWeights,
+        FrameContactObjective,
+    )
+
+    output, batch = _outputs_and_batch()
+    output["paratope_unary_logits"] = torch.tensor(
+        [[1.0, -1.0]], requires_grad=True
+    )
+    output["epitope_unary_logits"] = torch.tensor(
+        [[1.0, -1.0, 0.5]], requires_grad=True
+    )
+    objective = FrameContactObjective(
+        weights=FrameContactLossWeights(
+            contact=0.0,
+            paratope=0.0,
+            epitope=0.0,
+            specificity=0.0,
+            node_spatial_smoothness=1.0,
+        ),
+        node_spatial_neighbor_radius=6.0,
+        node_spatial_neighbor_k=2,
+    )
+    with pytest.raises(ValueError, match="authenticated monomer geometry"):
+        objective(output, batch)
+
+    def backbone(ca: torch.Tensor) -> torch.Tensor:
+        return torch.stack((ca, ca, ca), dim=-2).unsqueeze(0)
+
+    batch.update(
+        {
+            "antibody_backbone": backbone(
+                torch.tensor([[0.0, 0.0, 0.0], [4.0, 0.0, 0.0]])
+            ),
+            "antigen_backbone": backbone(
+                torch.tensor(
+                    [[0.0, 0.0, 0.0], [3.0, 0.0, 0.0], [5.0, 0.0, 0.0]]
+                )
+            ),
+            "antibody_chain_ids": torch.zeros(1, 2, dtype=torch.long),
+            "antigen_chain_ids": torch.zeros(1, 3, dtype=torch.long),
+        }
+    )
+    result = objective(output, batch)
+    assert float(result["node_spatial_smoothness_loss"].detach()) > 0.0
+    torch.testing.assert_close(result["loss"], result["node_spatial_smoothness_loss"])
+    result["loss"].backward()
+    assert output["paratope_unary_logits"].grad is not None
+    assert output["epitope_unary_logits"].grad is not None
+
+
 pytestmark = pytest.mark.skipif(
     any(importlib.util.find_spec(name) is None for name in ("sklearn", "torch")),
     reason="FrameContact metric dependencies are unavailable",

@@ -226,6 +226,13 @@ EXPERIMENTS = {
         "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
         "contact_gate_source": "interaction_only", "coarse_contact_crop_mode": "soft_unary",
     },
+    "framecontact_joint_a5_graph_spatial": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "unary_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
+        "contact_gate_source": "interaction_only", "coarse_contact_crop_mode": "soft_unary",
+    },
     "framecontact_plan_b_soft_crop": {
         "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
         "geometry": True, "cross": True, "fusion_mode": "interleaved",
@@ -692,6 +699,9 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument(
         "--pair-node-consistency-loss-weight", type=float, default=0.0
     )
+    parser.add_argument(
+        "--node-spatial-smoothness-loss-weight", type=float, default=0.0
+    )
     parser.add_argument("--triangle-loss-weight", type=float, default=0.0)
     parser.add_argument("--far-patch-exclusion-loss-weight", type=float, default=0.0)
     parser.add_argument("--edm-loss-weight", type=float, default=0.0)
@@ -734,6 +744,8 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--triangle-neighbor-radius", type=float, default=12.0)
     parser.add_argument("--triangle-neighbor-k", type=int, default=8)
     parser.add_argument("--triangle-slack", type=float, default=0.5)
+    parser.add_argument("--node-spatial-neighbor-radius", type=float, default=12.0)
+    parser.add_argument("--node-spatial-neighbor-k", type=int, default=8)
     parser.add_argument("--antigen-patch-top-seeds", type=int, default=1)
     parser.add_argument("--antigen-patch-radius", type=float, default=12.0)
     parser.add_argument("--far-patch-minimum-separation", type=float, default=20.0)
@@ -1098,6 +1110,8 @@ def _validate_execution_configuration(
         "triangle_neighbor_radius": "triangle_neighbor_radius_angstrom",
         "triangle_neighbor_k": "triangle_neighbor_k",
         "triangle_slack": "triangle_slack_angstrom",
+        "node_spatial_neighbor_radius": "node_spatial_neighbor_radius_angstrom",
+        "node_spatial_neighbor_k": "node_spatial_neighbor_k",
         "antigen_patch_top_seeds": "antigen_patch_top_seeds",
         "antigen_patch_radius": "antigen_patch_radius_angstrom",
         "edm_numerical_tolerance": "edm_numerical_tolerance",
@@ -1165,6 +1179,7 @@ def _validate_execution_configuration(
             "contact_distance_consistency",
         ),
         ("pair_node_consistency_loss_weight", "pair_node_consistency"),
+        ("node_spatial_smoothness_loss_weight", "node_spatial_smoothness"),
         ("triangle_loss_weight", "triangle"),
         ("far_patch_exclusion_loss_weight", "far_patch_exclusion"),
         ("edm_loss_weight", "edm"),
@@ -1181,6 +1196,7 @@ def _validate_execution_configuration(
             in {
                 "contact_distance_consistency_loss_weight",
                 "pair_node_consistency_loss_weight",
+                "node_spatial_smoothness_loss_weight",
                 "far_patch_exclusion_loss_weight",
                 "edm_loss_weight",
                 "residue_partner_contrastive_loss_weight",
@@ -2431,6 +2447,9 @@ def main() -> None:
             arguments.contact_distance_consistency_loss_weight
         ),
         pair_node_consistency=arguments.pair_node_consistency_loss_weight,
+        node_spatial_smoothness=(
+            arguments.node_spatial_smoothness_loss_weight
+        ),
         triangle=arguments.triangle_loss_weight,
         far_patch_exclusion=arguments.far_patch_exclusion_loss_weight,
         edm=arguments.edm_loss_weight,
@@ -2469,6 +2488,8 @@ def main() -> None:
         triangle_neighbor_radius=arguments.triangle_neighbor_radius,
         triangle_neighbor_k=arguments.triangle_neighbor_k,
         triangle_slack=arguments.triangle_slack,
+        node_spatial_neighbor_radius=arguments.node_spatial_neighbor_radius,
+        node_spatial_neighbor_k=arguments.node_spatial_neighbor_k,
         antigen_patch_top_seeds=arguments.antigen_patch_top_seeds,
         antigen_patch_radius=arguments.antigen_patch_radius,
         far_patch_minimum_separation=(
