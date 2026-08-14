@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FREEZER = ROOT / "scripts/freeze_antibody_four_gpu_recovery_gate.py"
 AUDITOR = ROOT / "scripts/audit_antibody_four_gpu_recovery_gate.py"
 SLURM = ROOT / "slurm/antibody_four_gpu_recovery_gate.sbatch"
+PIPELINE = ROOT / "slurm/antibody_four_gpu_recovery_pipeline.sbatch"
 
 
 def _load(name: str, path: Path):
@@ -42,7 +43,8 @@ def _write(path: Path, value: object) -> None:
 def test_sources_are_ascii_syntax_valid_and_slurm_is_valid() -> None:
     for path in (FREEZER, AUDITOR):
         ast.parse(path.read_text(encoding="ascii"))
-    subprocess.run(["bash", "-n", str(SLURM)], check=True)
+    for path in (SLURM, PIPELINE):
+        subprocess.run(["bash", "-n", str(path)], check=True)
 
 
 def test_freezer_scales_only_global_token_budget(monkeypatch) -> None:
@@ -123,3 +125,16 @@ def test_slurm_freezes_four_5090s_and_never_opens_downstream_test() -> None:
     assert "--ddp-communication-dtype" not in source
     assert "official" not in source.lower()
     assert "external" in source.lower()  # SHA-256 anchors, not external test data.
+
+
+def test_pipeline_freezes_runs_and_audits_on_one_four_gpu_allocation() -> None:
+    source = PIPELINE.read_text(encoding="ascii")
+    assert "#SBATCH --gres=gpu:4" in source
+    assert "freeze_antibody_four_gpu_recovery_gate.py" in source
+    assert "antibody_four_gpu_recovery_gate.sbatch" in source
+    assert "audit_antibody_four_gpu_recovery_gate.py" in source
+    assert source.index("freeze_antibody_four_gpu_recovery_gate.py") < source.index(
+        "antibody_four_gpu_recovery_gate.sbatch"
+    ) < source.index("audit_antibody_four_gpu_recovery_gate.py")
+    assert "four_gpu_recovery_pipeline=PASS" in source
+    assert "official" not in source.lower()
