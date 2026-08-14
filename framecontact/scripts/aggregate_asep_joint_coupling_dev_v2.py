@@ -126,6 +126,71 @@ def _paired_seed_bootstrap(
     }
 
 
+def _paired_complex_bootstrap(
+    left: list[dict[str, Any]],
+    right: list[dict[str, Any]],
+    *,
+    group: str,
+    resamples: int,
+    seed: int,
+) -> dict[str, Any]:
+    """Cluster-bootstrap validation complexes after averaging seed deltas."""
+
+    if len(left) != 5 or len(right) != 5:
+        raise ValueError("Paired complex bootstrap requires five aligned seeds")
+    if isinstance(resamples, bool) or resamples < 1000:
+        raise ValueError("Paired complex bootstrap requires at least 1000 resamples")
+    if [item["seed"] for item in left] != [item["seed"] for item in right]:
+        raise ValueError("Paired complex bootstrap seed axes differ")
+    instance_axis: tuple[str, ...] | None = None
+    deltas_by_seed: list[dict[str, float]] = []
+    for left_member, right_member in zip(left, right, strict=True):
+        left_values = left_member["per_complex_auprc"][group]
+        right_values = right_member["per_complex_auprc"][group]
+        if set(left_values) != set(right_values):
+            raise ValueError("Paired complex bootstrap instance axes differ")
+        local_axis = tuple(sorted(left_values))
+        if instance_axis is None:
+            instance_axis = local_axis
+        elif local_axis != instance_axis:
+            raise ValueError("Validation complex axes differ across seeds")
+        deltas_by_seed.append(
+            {
+                instance_id: right_values[instance_id] - left_values[instance_id]
+                for instance_id in local_axis
+            }
+        )
+    if not instance_axis:
+        raise ValueError("Paired complex bootstrap has no validation complexes")
+    complex_deltas = {
+        instance_id: statistics.mean(
+            seed_deltas[instance_id] for seed_deltas in deltas_by_seed
+        )
+        for instance_id in instance_axis
+    }
+    count = len(instance_axis)
+    generator = random.Random(seed)
+    sampled = sorted(
+        statistics.mean(
+            complex_deltas[instance_axis[generator.randrange(count)]]
+            for _ in range(count)
+        )
+        for _ in range(resamples)
+    )
+    return {
+        "right_minus_left_mean": statistics.mean(complex_deltas.values()),
+        "confidence_interval_95": [
+            _percentile(sampled, 0.025),
+            _percentile(sampled, 0.975),
+        ],
+        "validation_complex_count": count,
+        "seed_count": 5,
+        "resampling_unit": "validation_complex_after_mean_paired_delta_across_seeds",
+        "resamples": resamples,
+        "random_seed": seed,
+    }
+
+
 def _load_protocol(protocol_path: Path, receipt_path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     if any(path.is_symlink() or not path.is_file() for path in (protocol_path, receipt_path)):
         raise ValueError("Protocol and receipt must be regular files")
@@ -228,6 +293,25 @@ def _member(
         }
         for group in GROUPS
     }
+    per_complex_auprc: dict[str, dict[str, float]] = {}
+    for group in GROUPS:
+        raw = selected.get(group, {}).get("per_complex_auprc_by_instance")
+        if not isinstance(raw, dict) or not raw:
+            raise ValueError(f"Run lacks per-complex {group} AUPRC: {run_root}")
+        per_complex_auprc[group] = {
+            str(instance_id): _number(value, f"{group}.{instance_id}.auprc")
+            for instance_id, value in raw.items()
+        }
+        observed_mean = statistics.mean(per_complex_auprc[group].values())
+        if not math.isclose(
+            observed_mean,
+            metrics[group]["mean_per_complex_auprc"],
+            rel_tol=0.0,
+            abs_tol=1e-12,
+        ):
+            raise ValueError(
+                f"Per-complex {group} AUPRC does not reproduce its macro mean: {run_root}"
+            )
     directions = selected.get("partner_retrieval_by_direction")
     if not isinstance(directions, dict) or set(directions) != set(RETRIEVAL_DIRECTIONS):
         raise ValueError(f"Selected retrieval directions differ: {run_root}")
@@ -249,6 +333,7 @@ def _member(
         "result_sha256": run_receipt["result_sha256"],
         "selected_checkpoint_sha256": run_receipt["selected_checkpoint_sha256"],
         "metrics": metrics,
+        "per_complex_auprc": per_complex_auprc,
         "retrieval": retrieval,
         "minimum_bidirectional_margin": min(
             retrieval[direction]["cluster_weighted_cognate_compatibility_margin"]
@@ -316,7 +401,7 @@ def _paired_comparisons(
         right = sorted(by_condition[right_name], key=lambda item: item["seed"])
         if [item["seed"] for item in left] != [item["seed"] for item in right]:
             raise ValueError("Paired comparison seed axes differ")
-        output[f"{left_name}__to__{right_name}"] = {
+        comparison = {
             endpoint: _paired_seed_bootstrap(
                 [selector(item) for item in left],
                 [selector(item) for item in right],
@@ -325,6 +410,15 @@ def _paired_comparisons(
             )
             for endpoint_index, (endpoint, selector) in enumerate(endpoints)
         }
+        for group_index, group in enumerate(GROUPS):
+            comparison[f"{group}_per_complex_auprc"] = _paired_complex_bootstrap(
+                left,
+                right,
+                group=group,
+                resamples=resamples,
+                seed=20261815 + 100 * comparison_index + group_index,
+            )
+        output[f"{left_name}__to__{right_name}"] = comparison
     return output
 
 

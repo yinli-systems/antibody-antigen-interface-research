@@ -30,10 +30,14 @@ def _module():
     return module
 
 
-def _metrics(value: float) -> dict[str, float]:
+def _metrics(value: float) -> dict[str, object]:
     return {
         "auprc": value,
         "mean_per_complex_auprc": value + 0.001,
+        "per_complex_auprc_by_instance": {
+            "case_a": value,
+            "case_b": value + 0.002,
+        },
         "auroc": 0.8 + value,
         "precision": value + 0.01,
         "recall": value + 0.02,
@@ -132,6 +136,41 @@ def test_paired_seed_bootstrap_is_deterministic_and_explicitly_seed_level() -> N
     assert "not a per-complex bootstrap" in result["caution"]
 
 
+def test_paired_complex_bootstrap_is_deterministic_and_uses_complexes() -> None:
+    module = _module()
+    left = [
+        {
+            "seed": seed,
+            "per_complex_auprc": {
+                "contact": {"case_a": 0.1, "case_b": 0.2},
+            },
+        }
+        for seed in (17, 42, 73, 101, 137)
+    ]
+    right = [
+        {
+            "seed": seed,
+            "per_complex_auprc": {
+                "contact": {"case_a": 0.11, "case_b": 0.21},
+            },
+        }
+        for seed in (17, 42, 73, 101, 137)
+    ]
+    result = module._paired_complex_bootstrap(
+        left,
+        right,
+        group="contact",
+        resamples=1000,
+        seed=7,
+    )
+    assert abs(result["right_minus_left_mean"] - 0.01) < 1e-12
+    assert result["validation_complex_count"] == 2
+    assert (
+        result["resampling_unit"]
+        == "validation_complex_after_mean_paired_delta_across_seeds"
+    )
+
+
 def test_aggregate_authenticates_all_30_development_runs(tmp_path: Path) -> None:
     runs = tmp_path / "runs"
     _write_matrix(runs)
@@ -161,6 +200,13 @@ def test_aggregate_authenticates_all_30_development_runs(tmp_path: Path) -> None
         "framecontact_joint_a4_coupled_soft_crop__to__framecontact_joint_a5_graph_spatial"
     ]
     assert abs(comparison["contact_auprc"]["right_minus_left_mean"] - 0.01) < 1e-12
+    complex_comparison = comparison["contact_per_complex_auprc"]
+    assert abs(complex_comparison["right_minus_left_mean"] - 0.01) < 1e-12
+    assert complex_comparison["validation_complex_count"] == 2
+    assert (
+        complex_comparison["resampling_unit"]
+        == "validation_complex_after_mean_paired_delta_across_seeds"
+    )
     assert payload["matched_validation_trajectory"]["matched_epochs"] == [1, 2]
     receipt = json.loads(
         output.with_name(output.name + ".receipt.json").read_text(encoding="utf-8")
@@ -204,4 +250,46 @@ def test_aggregate_fails_closed_if_any_run_reports_test_access(tmp_path: Path) -
     )
     assert completed.returncode != 0
     assert "Run receipt failed authentication" in completed.stderr
+    assert not output.exists()
+
+
+def test_aggregate_fails_closed_if_per_complex_axis_differs(tmp_path: Path) -> None:
+    runs = tmp_path / "runs"
+    _write_matrix(runs)
+    result_path = (
+        runs
+        / "framecontact_joint_a5_graph_spatial"
+        / "seed-17"
+        / "FRAMECONTACT_DEVELOPMENT_RESULT.json"
+    )
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    result["selected_checkpoint_validation"]["contact"][
+        "per_complex_auprc_by_instance"
+    ] = {"case_a": 0.05, "case_c": 0.052}
+    result_path.write_text(json.dumps(result), encoding="utf-8")
+    receipt_path = result_path.with_name("RUN_RECEIPT.json")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["result_sha256"] = _sha(result_path)
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    output = tmp_path / "aggregate.json"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--runs-root",
+            str(runs),
+            "--protocol",
+            str(PROTOCOL),
+            "--protocol-receipt",
+            str(PROTOCOL_RECEIPT),
+            "--output",
+            str(output),
+            "--bootstrap-resamples",
+            "1000",
+        ],
+        text=True,
+        capture_output=True,
+    )
+    assert completed.returncode != 0
+    assert "Paired complex bootstrap instance axes differ" in completed.stderr
     assert not output.exists()
