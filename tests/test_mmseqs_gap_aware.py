@@ -275,3 +275,28 @@ def test_gap_array_respects_paracloud_per_gpu_cpu_quota() -> None:
     assert "#SBATCH --cpus-per-task=8" in launcher
     assert "#SBATCH --cpus-per-task=16" not in launcher
     assert '#SBATCH --array=0-31%32' in launcher
+
+
+def test_published_gap_canary_is_self_hashed_and_scope_bounded() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "results/pretraining/oas_mmseqs_gap_canary_1408584.json"
+    )
+    receipt = json.loads(path.read_text(encoding="ascii"))
+    claimed = receipt.pop("receipt_sha256")
+    canonical = (
+        json.dumps(receipt, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        + "\n"
+    ).encode("ascii")
+    assert hashlib.sha256(canonical).hexdigest() == claimed
+    assert receipt["result"] == "PASS"
+    assert receipt["runtime"]["job_id"] == 1408584
+    assert receipt["controls"]["negative_control_exit"] == 3
+    assert receipt["claim_boundary"] == {
+        "development_data_accessed": False,
+        "fixed_imgt_full_oas_search_complete": False,
+        "frozen_official_external_test_accessed": False,
+        "gap_aware_full_oas_search_complete": False,
+        "large_scale_pretraining_authorized": False,
+        "scientific_claim": False,
+    }
