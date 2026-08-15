@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 from pathlib import Path
+import subprocess
 from types import SimpleNamespace
 
 import numpy as np
@@ -22,6 +23,10 @@ from antibody_pretraining.tokenizer import (
     encode_unpaired,
     pad_encoded,
 )
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SLURM = ROOT / "slurm/oas_asep_development_overlap_audit.sbatch"
 
 
 @dataclass(frozen=True)
@@ -201,3 +206,15 @@ def test_match_digest_is_reproved_from_tokens(tmp_path: Path) -> None:
             train_corpus=corpus,
             validation_corpus=corpus,
         )
+
+
+def test_slurm_hides_scheduler_reserved_gpu_and_binds_evidence() -> None:
+    subprocess.run(["bash", "-n", str(SLURM)], check=True)
+    source = SLURM.read_text(encoding="ascii")
+    assert "#SBATCH --gres=gpu:1" in source
+    assert 'export CUDA_VISIBLE_DEVICES=""' in source
+    assert "torch.cuda.device_count() == 0" in source
+    assert "--manifest-file-sha256" in source
+    assert "--independent-audit-payload-sha256" in source
+    assert "--asep-cache-manifest-file-sha256" in source
+    assert "official_test_accessed=false" in source
