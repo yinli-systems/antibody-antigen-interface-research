@@ -286,7 +286,7 @@ def test_audit_contract_retry_is_exact_commit_and_non_authorizing() -> None:
     assert retry["job"]["state_at_receipt"] == "RUNNING"
     assert retry["predecessor_failure_job_id"] == 1406724
     assert retry["source"]["commit"] == (
-        "fd3c702766aba8a81266950a613135713f38ee45"
+        "fd3c70294262b04c9a4900facddaa9c42750ea5e"
     )
     assert retry["runtime"]["verified_live_before_submission"] is True
     assert retry["authorization"]["production_pretraining"] is False
