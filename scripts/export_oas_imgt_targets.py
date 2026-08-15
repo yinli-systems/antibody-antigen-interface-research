@@ -212,10 +212,51 @@ def _aggregate_unit_receipts(
             or not isinstance(normalization, str)
         ):
             raise OASIMGTControllerError("Original unit receipt schema differs")
-        counters.update(counts)
+        counters.update(
+            _canonicalize_nonnegative_counts(
+                counts,
+                label="Original unit receipt counts",
+            )
+        )
         statuses.update(status_counts)
         normalizations[normalization] += 1
     return counters, statuses, normalizations
+
+
+def _canonicalize_nonnegative_counts(
+    counts: Mapping[str, Any],
+    *,
+    label: str,
+) -> dict[str, int]:
+    """Normalize only the semantically empty representation of zero counts."""
+    canonical: dict[str, int] = {}
+    for key, value in counts.items():
+        if (
+            not isinstance(key, str)
+            or not key
+            or isinstance(value, bool)
+            or not isinstance(value, int)
+            or value < 0
+        ):
+            raise OASIMGTControllerError(f"{label} schema differs")
+        if value != 0:
+            canonical[key] = value
+    return canonical
+
+
+def _canonicalize_unit_receipt_for_replay(
+    item: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Preserve every receipt field while treating missing and explicit zero equally."""
+    counts = item.get("counts")
+    if not isinstance(counts, Mapping):
+        raise OASIMGTControllerError("Original unit receipt counts schema differs")
+    canonical = dict(item)
+    canonical["counts"] = _canonicalize_nonnegative_counts(
+        counts,
+        label="Original unit receipt counts",
+    )
+    return canonical
 
 
 def _verify_original_mapper_receipt(
@@ -441,8 +482,22 @@ def export_imgt_task(
             )
         outputs.close()
         if (
-            replayed_units != expected_units
-            or counters != expected_counts
+            [
+                _canonicalize_unit_receipt_for_replay(item)
+                for item in replayed_units
+            ]
+            != [
+                _canonicalize_unit_receipt_for_replay(item)
+                for item in expected_units
+            ]
+            or _canonicalize_nonnegative_counts(
+                counters,
+                label="Replayed aggregate counts",
+            )
+            != _canonicalize_nonnegative_counts(
+                expected_counts,
+                label="Original aggregate counts",
+            )
             or statuses != expected_statuses
             or normalizations != expected_normalizations
         ):
