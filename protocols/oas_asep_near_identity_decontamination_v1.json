@@ -14,7 +14,8 @@
     ]
   },
   "completion_gate": {
-    "engine_agreement_required": true,
+    "engine_disagreement_must_be_reported": true,
+    "engine_hit_union_defines_contamination": true,
     "hit_list_truncation_allowed": false,
     "query_accounting_required_for_every_engine": true,
     "required_sensitivity_controls": [
@@ -56,13 +57,17 @@
   },
   "search_tracks": {
     "imgt_position_exhaustive": {
+      "identity_denominator": "union of represented IMGT positions, including internal indels",
       "purpose": "independent antibody-specific sensitivity audit on canonical IMGT positions",
       "required": true,
       "unusual_or_unrepresentable_sequences": "fail_closed_and_route_to_exact_gap_aware_fallback"
     },
     "mmseqs2_gap_aware": {
       "alignment_mode": "gap_aware",
+      "coverage_mode": 0,
       "gpu_padded_target_database": true,
+      "gpu_search_sensitivity": "backend_fixed_maximum_sensitivity",
+      "identity_denominator": "identical residues divided by local alignment length, seq-id-mode 0",
       "output_columns": [
         "query",
         "target",
@@ -71,7 +76,8 @@
         "tcov"
       ],
       "purpose": "independent full-sequence gap-aware search",
-      "required": true
+      "required": true,
+      "s_parameter_used": false
     }
   },
   "transfer_policy": {
