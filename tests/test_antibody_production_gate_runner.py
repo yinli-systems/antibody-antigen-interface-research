@@ -5,9 +5,35 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts/run_antibody_pretraining_production_gate.py"
+
+
+def _load_mode_contract() -> dict[str, object]:
+    tree = ast.parse(RUNNER.read_text(encoding="ascii"))
+    required_assignments = {
+        "RECOVERY_RUN_FORMAT",
+        "RECOVERY_GATE_FORMAT",
+        "PRETRAINING_RUN_FORMAT",
+        "PRETRAINING_GATE_FORMAT",
+        "RECOVERY_AUTHORIZATION",
+        "PRETRAINING_AUTHORIZATION",
+    }
+    body: list[ast.stmt] = []
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+            isinstance(target, ast.Name) and target.id in required_assignments
+            for target in node.targets
+        ):
+            body.append(node)
+        if isinstance(node, ast.FunctionDef) and node.name == "_mode_contract":
+            body.append(node)
+    namespace: dict[str, object] = {}
+    exec(compile(ast.Module(body=body, type_ignores=[]), str(RUNNER), "exec"), namespace)
+    return namespace
 
 
 def test_production_gate_runner_is_ascii_and_syntax_valid() -> None:
@@ -57,3 +83,41 @@ def test_production_gate_streams_only_training_fields() -> None:
     assert '"sabdab2_heldout_accessed": False' in source
     assert '"downstream_labels_used": False' in source
     assert '"grouped_update_read": True' in source
+
+
+def test_authorization_modes_are_exact_and_non_overlapping() -> None:
+    namespace = _load_mode_contract()
+    mode_contract = namespace["_mode_contract"]
+
+    recovery = mode_contract("recovery_gate")
+    production = mode_contract("production_pretraining")
+
+    assert recovery[:3] == (
+        "antibody_production_loader_recovery_gate_v1",
+        "antibody_production_loader_recovery_run_v1",
+        {
+            "loader_recovery_gate": True,
+            "production_pretraining": False,
+            "scale_out": False,
+            "scientific_claim": False,
+        },
+    )
+    assert production[:3] == (
+        "antibody_four_gpu_pretraining_segment_gate_v1",
+        "antibody_four_gpu_pretraining_segment_run_v1",
+        {
+            "configuration_promotion": True,
+            "downstream_transfer": False,
+            "production_pretraining": True,
+            "scientific_claim": False,
+        },
+    )
+    assert set(recovery[2]) != set(production[2])
+    assert "official-test" in production[3]
+    assert "SOTA claim" in production[3]
+
+
+def test_unknown_authorization_mode_fails_closed() -> None:
+    mode_contract = _load_mode_contract()["_mode_contract"]
+    with pytest.raises(ValueError, match="Unknown authorization mode"):
+        mode_contract("production")
