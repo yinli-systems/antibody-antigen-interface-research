@@ -103,7 +103,11 @@ def test_cuda_sources_preserve_lossless_and_resource_contracts() -> None:
     assert "--batch-records 32768" in launcher
     assert "source /etc/profile.d/modules.sh" in launcher
     assert "source /etc/profile >/dev/null" not in launcher
+    assert "OAS_PYTHON_SHA256" in launcher
+    assert '"${OAS_PYTHON_BIN}" "${CONTROLLER}"' in launcher
     assert "-gencode arch=compute_120,code=sm_120" in canary_launcher
     assert "--batch-records 7" in canary_launcher
     assert "source /etc/profile.d/modules.sh" in canary_launcher
     assert "source /etc/profile >/dev/null" not in canary_launcher
+    assert "OAS_PYTHON_SHA256" in canary_launcher
+    assert '"${OAS_PYTHON_BIN}" "${CANARY_SCRIPT}" prepare' in canary_launcher
