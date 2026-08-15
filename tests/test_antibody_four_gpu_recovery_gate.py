@@ -31,6 +31,9 @@ LAUNCH_FAILURE = (
 AUDIT_FAILURE = (
     ROOT / "results/pretraining/antibody_four_gpu_recovery_failure_1406724.json"
 )
+AUDIT_RETRY = (
+    ROOT / "results/pretraining/antibody_four_gpu_recovery_retry_1406729.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -275,3 +278,16 @@ def test_third_failure_preserves_completed_recovery_evidence() -> None:
     ]
     assert failure["resolution"]["scientific_recovery_comparison_relaxed"] is False
     assert not any(failure["test_access"].values())
+
+
+def test_audit_contract_retry_is_exact_commit_and_non_authorizing() -> None:
+    retry = json.loads(AUDIT_RETRY.read_text(encoding="ascii"))
+    assert retry["job"]["job_id"] == 1406729
+    assert retry["job"]["state_at_receipt"] == "RUNNING"
+    assert retry["predecessor_failure_job_id"] == 1406724
+    assert retry["source"]["commit"] == (
+        "fd3c702766aba8a81266950a613135713f38ee45"
+    )
+    assert retry["runtime"]["verified_live_before_submission"] is True
+    assert retry["authorization"]["production_pretraining"] is False
+    assert not any(retry["test_access"].values())
