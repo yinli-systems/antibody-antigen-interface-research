@@ -40,11 +40,27 @@ from antibody_pretraining.training_contract import (
 import run_antibody_pretraining_optimized as engine
 
 
-FORMAT_VERSION = "antibody_production_loader_recovery_run_v1"
-GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
+RECOVERY_RUN_FORMAT = "antibody_production_loader_recovery_run_v1"
+RECOVERY_GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
+PRETRAINING_RUN_FORMAT = "antibody_four_gpu_pretraining_segment_run_v1"
+PRETRAINING_GATE_FORMAT = "antibody_four_gpu_pretraining_segment_gate_v1"
+FORMAT_VERSION = RECOVERY_RUN_FORMAT
+GATE_FORMAT = RECOVERY_GATE_FORMAT
 TEST_ACCESS = {
     "downstream_labels_used": False,
     "sabdab2_heldout_accessed": False,
+}
+RECOVERY_AUTHORIZATION = {
+    "loader_recovery_gate": True,
+    "production_pretraining": False,
+    "scale_out": False,
+    "scientific_claim": False,
+}
+PRETRAINING_AUTHORIZATION = {
+    "configuration_promotion": True,
+    "downstream_transfer": False,
+    "production_pretraining": True,
+    "scientific_claim": False,
 }
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -101,6 +117,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--bucketed-padding", action="store_true")
     parser.add_argument("--length-bucketing", action="store_true")
     parser.add_argument("--skip-checkpoint", action="store_true")
+    parser.add_argument(
+        "--authorization-mode",
+        choices=("recovery_gate", "production_pretraining"),
+        default="recovery_gate",
+    )
     args = parser.parse_args()
     if any(
         value <= 0
@@ -143,22 +164,41 @@ def _canonical_json_bytes(payload: object) -> bytes:
     ).encode("ascii")
 
 
-def _load_gate_protocol(path: Path) -> tuple[dict[str, object], str]:
+def _mode_contract(authorization_mode: str) -> tuple[str, str, dict[str, bool], str]:
+    if authorization_mode == "recovery_gate":
+        return (
+            RECOVERY_GATE_FORMAT,
+            RECOVERY_RUN_FORMAT,
+            RECOVERY_AUTHORIZATION,
+            "Audited OAS loader and exact-recovery gate only; no "
+            "production-pretraining, scale, biological, or SOTA claim",
+        )
+    if authorization_mode == "production_pretraining":
+        return (
+            PRETRAINING_GATE_FORMAT,
+            PRETRAINING_RUN_FORMAT,
+            PRETRAINING_AUTHORIZATION,
+            "Four-GPU OAS masked-language-model pretraining segment; no "
+            "downstream, partner-specificity, official-test, biological, "
+            "model-promotion, or SOTA claim",
+        )
+    raise ValueError("Unknown authorization mode")
+
+
+def _load_gate_protocol(
+    path: Path,
+    authorization_mode: str = "recovery_gate",
+) -> tuple[dict[str, object], str]:
     raw = path.read_bytes()
     try:
         protocol = json.loads(raw.decode("ascii"))
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
         raise RuntimeError("Gate protocol must be strict ASCII JSON") from error
+    gate_format, _, authorization, _ = _mode_contract(authorization_mode)
     if (
         not isinstance(protocol, dict)
-        or protocol.get("format_version") != GATE_FORMAT
-        or protocol.get("authorization")
-        != {
-            "loader_recovery_gate": True,
-            "production_pretraining": False,
-            "scale_out": False,
-            "scientific_claim": False,
-        }
+        or protocol.get("format_version") != gate_format
+        or protocol.get("authorization") != authorization
         or protocol.get("test_access") != TEST_ACCESS
     ):
         raise RuntimeError("Gate protocol identity or authorization differs")
@@ -346,7 +386,10 @@ def main() -> None:
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.cuda.reset_peak_memory_stats(device)
 
-    gate_protocol, gate_protocol_sha256 = _load_gate_protocol(args.gate_protocol)
+    gate_protocol, gate_protocol_sha256 = _load_gate_protocol(
+        args.gate_protocol,
+        args.authorization_mode,
+    )
     family = load_model_family(args.model_family)
     training_protocol = load_training_protocol(args.training_protocol)
     _, efficiency_protocol_sha256 = engine._load_efficiency_protocol(
@@ -721,6 +764,9 @@ def main() -> None:
         "world_size": world_size,
     }
     if rank == 0:
+        _, run_format, authorization, claim_boundary = _mode_contract(
+            args.authorization_mode
+        )
         soft_open_file_limit, hard_open_file_limit = _open_file_limits()
         _publish(args.output / "trainer_state.json", trainer_state)
         _publish(
@@ -731,19 +777,11 @@ def main() -> None:
                     "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
                     "slurm_job_nodelist": os.environ.get("SLURM_JOB_NODELIST"),
                 },
-                "authorization": {
-                    "loader_recovery_gate": True,
-                    "production_pretraining": False,
-                    "scale_out": False,
-                    "scientific_claim": False,
-                },
+                "authorization": authorization,
                 "checkpoint_model_sha256": checkpoint_model_sha256,
                 "checkpoint_optimizer_sha256": checkpoint_optimizer_sha256,
                 "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
-                "claim_boundary": (
-                    "Audited OAS loader and exact-recovery gate only; no "
-                    "production-pretraining, scale, biological, or SOTA claim"
-                ),
+                "claim_boundary": claim_boundary,
                 "compile_prewarm_trace": compile_prewarm_trace,
                 "corpus_open": {
                     "array_file_hashes_verified_by_local_rank_zero": True,
@@ -764,7 +802,7 @@ def main() -> None:
                 "efficiency_protocol_sha256": efficiency_protocol_sha256,
                 "final_model_sha256": final_model_sha256,
                 "final_optimizer_sha256": final_optimizer_sha256,
-                "format_version": FORMAT_VERSION,
+                "format_version": run_format,
                 "gate_protocol_sha256": gate_protocol_sha256,
                 "initial_model_sha256": initial_model_sha256,
                 "implementation": _implementation_contract(),
