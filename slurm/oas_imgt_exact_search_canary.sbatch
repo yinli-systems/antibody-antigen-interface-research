@@ -45,7 +45,7 @@ IFS=',' read -r -a RESERVED_GPU_IDS <<< "${SLURM_JOB_GPUS}"
 [[ "${#VISIBLE_GPU_IDS[@]}" == 1 && "${#RESERVED_GPU_IDS[@]}" == 1 ]] \
   || { echo "Canary requires exactly one visible scheduler GPU" >&2; exit 2; }
 
-source /etc/profile >/dev/null 2>&1
+source /etc/profile.d/modules.sh
 module purge
 module load cuda/12.8
 NVCC_BIN=$(command -v nvcc)
