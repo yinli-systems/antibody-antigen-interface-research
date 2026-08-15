@@ -174,7 +174,7 @@ def test_missing_query_and_failed_controls_fail_closed() -> None:
     assert result["transfer_gate"]["authorized_instance_ids"] == []
 
 
-def test_engine_disagreement_fails_closed_even_after_union_decontamination() -> None:
+def test_engine_disagreement_is_reported_while_union_clean_subset_is_authorized() -> None:
     contaminated = _reference("complex-1")
     clean = _reference("complex-2")
     references = (contaminated, clean)
@@ -193,7 +193,8 @@ def test_engine_disagreement_fails_closed_even_after_union_decontamination() -> 
     assert result["counts"]["engine_disagreement_chain_references"] == 1
     assert result["transfer_gate"]["dual_track_evidence_completed"] is True
     assert result["transfer_gate"]["engine_agreement_passed"] is False
-    assert result["transfer_gate"]["downstream_transfer_authorized"] is False
+    assert result["transfer_gate"]["downstream_transfer_authorized"] is True
+    assert result["transfer_gate"]["authorized_instance_ids"] == ["complex-2"]
 
 
 def test_unrepresentable_or_truncated_search_fails_closed() -> None:

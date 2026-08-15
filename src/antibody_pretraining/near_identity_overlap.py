@@ -3,8 +3,9 @@
 The audit intentionally separates evidence ingestion from expensive sequence
 search.  It reconciles a gap-aware MMseqs2 search with an independent,
 antibody-specific exhaustive IMGT-position search.  No downstream transfer is
-authorized unless both engines prove complete query and target coverage, pass
-registered sensitivity controls, and agree on every threshold-qualified query.
+authorized unless both engines prove complete query and target coverage and
+pass registered sensitivity controls.  Their hit union defines contamination;
+metric-dependent disagreements are retained as evidence instead of discarded.
 """
 
 from __future__ import annotations
@@ -293,7 +294,7 @@ def reconcile_near_identity_evidence(
         and all(not failures for failures in completion_failures.values())
     )
     agreement_passed = not disagreement_keys
-    transfer_authorized = both_tracks_complete and agreement_passed and bool(clean_instances)
+    transfer_authorized = both_tracks_complete and bool(clean_instances)
 
     records: list[dict[str, Any]] = []
     for key, item in sorted(
@@ -342,7 +343,7 @@ def reconcile_near_identity_evidence(
             "dual_track_evidence_completed": both_tracks_complete,
             "engine_agreement_passed": agreement_passed,
             "full_development_decontamination_passed": (
-                both_tracks_complete and agreement_passed and not all_contaminated_instances
+                both_tracks_complete and not all_contaminated_instances
             ),
             "decontaminated_subset_required": bool(all_contaminated_instances),
             "downstream_transfer_authorized": transfer_authorized,
