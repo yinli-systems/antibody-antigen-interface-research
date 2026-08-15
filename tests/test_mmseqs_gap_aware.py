@@ -163,7 +163,13 @@ def test_prefilter_audit_rejects_cap_saturation(tmp_path: Path) -> None:
     )
     assert result["hit_count_total"] == 3
     assert result["hit_count_maximum"] == 2
-    with pytest.raises(MMseqsGapAwareError, match="truncation is possible"):
+    with pytest.raises(
+        MMseqsGapAwareError,
+        match=(
+            r"Prefilter query key 1 reached --max-seqs with 2 hits "
+            r"\(cap 2\); truncation is possible"
+        ),
+    ):
         audit_prefilter_database(
             prefix=prefix, expected_query_count=2, maximum_sequences=2
         )
