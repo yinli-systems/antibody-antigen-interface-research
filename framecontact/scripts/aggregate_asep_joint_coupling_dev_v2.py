@@ -144,7 +144,10 @@ def _paired_complex_bootstrap(
         raise ValueError("Paired complex bootstrap seed axes differ")
     instance_axis: tuple[str, ...] | None = None
     deltas_by_seed: list[dict[str, float]] = []
-    for left_member, right_member in zip(left, right, strict=True):
+    # Length and aligned-seed equality are checked immediately above, so a
+    # plain zip retains the fail-closed pairing contract while keeping the
+    # frozen aggregator executable on the project's Python 3.9 audit runtime.
+    for left_member, right_member in zip(left, right):
         left_values = left_member["per_complex_auprc"][group]
         right_values = right_member["per_complex_auprc"][group]
         if set(left_values) != set(right_values):
