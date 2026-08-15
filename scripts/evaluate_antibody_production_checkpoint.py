@@ -32,8 +32,24 @@ import run_antibody_pretraining_optimized as engine
 
 
 FORMAT_VERSION = "antibody_production_checkpoint_evaluation_v1"
-GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
-RUN_FORMAT = "antibody_production_loader_recovery_run_v1"
+RECOVERY_GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
+RECOVERY_RUN_FORMAT = "antibody_production_loader_recovery_run_v1"
+PRETRAINING_GATE_FORMAT = "antibody_four_gpu_pretraining_segment_gate_v1"
+PRETRAINING_RUN_FORMAT = "antibody_four_gpu_pretraining_segment_run_v1"
+RECOVERY_RUN_AUTHORIZATION = {
+    "loader_recovery_gate": True,
+    "production_pretraining": False,
+    "scale_out": False,
+    "scientific_claim": False,
+}
+PRETRAINING_RUN_AUTHORIZATION = {
+    "configuration_promotion": True,
+    "downstream_transfer": False,
+    "production_pretraining": True,
+    "scientific_claim": False,
+}
+GATE_FORMAT = RECOVERY_GATE_FORMAT
+RUN_FORMAT = RECOVERY_RUN_FORMAT
 AUTHORIZATION = {
     "checkpoint_evaluation": True,
     "configuration_promotion": False,
@@ -78,6 +94,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--mask-update", type=int, required=True)
     parser.add_argument("--micro-batch", type=int, required=True)
     parser.add_argument("--maximum-open-arrays", type=int, required=True)
+    parser.add_argument(
+        "--authorization-mode",
+        choices=("recovery_gate", "production_pretraining"),
+        default="recovery_gate",
+    )
     args = parser.parse_args()
     positive = (
         args.panel_sample_count,
@@ -121,6 +142,22 @@ def _load_json(path: Path) -> tuple[dict[str, object], str]:
     if not isinstance(value, dict):
         raise RuntimeError(f"JSON input is not an object: {path}")
     return value, hashlib.sha256(raw).hexdigest()
+
+
+def _mode_contract(authorization_mode: str) -> tuple[str, str, dict[str, bool]]:
+    if authorization_mode == "recovery_gate":
+        return (
+            RECOVERY_GATE_FORMAT,
+            RECOVERY_RUN_FORMAT,
+            RECOVERY_RUN_AUTHORIZATION,
+        )
+    if authorization_mode == "production_pretraining":
+        return (
+            PRETRAINING_GATE_FORMAT,
+            PRETRAINING_RUN_FORMAT,
+            PRETRAINING_RUN_AUTHORIZATION,
+        )
+    raise ValueError("Unknown authorization mode")
 
 
 def _publish(path: Path, value: dict[str, object]) -> None:
@@ -185,11 +222,15 @@ def main() -> None:
     run, run_file_sha256 = _load_json(args.run_root / "receipt.json")
     state, state_file_sha256 = _load_json(args.run_root / "trainer_state.json")
     optimization = gate.get("execution", {}).get("optimization")
+    gate_format, run_format, run_authorization = _mode_contract(
+        args.authorization_mode
+    )
     if (
-        gate.get("format_version") != GATE_FORMAT
+        gate.get("format_version") != gate_format
         or gate.get("execution", {}).get("world_size") != world_size
         or not isinstance(optimization, dict)
-        or run.get("format_version") != RUN_FORMAT
+        or run.get("format_version") != run_format
+        or run.get("authorization") != run_authorization
         or run.get("gate_protocol_sha256") != gate_sha256
         or run.get("world_size") != world_size
         or state.get("world_size") != world_size
@@ -400,6 +441,7 @@ def main() -> None:
                     "root": str(args.run_root),
                     "trainer_state_file_sha256": state_file_sha256,
                 },
+                "evaluated_run_authorization": run_authorization,
                 "claim_boundary": (
                     "Frozen OAS validation-panel checkpoint evaluation only; "
                     "no configuration promotion, production, downstream, "
