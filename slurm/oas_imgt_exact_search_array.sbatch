@@ -18,6 +18,9 @@ umask 077
 : "${OAS_TARGET_OUTPUT_ROOT:?OAS_TARGET_OUTPUT_ROOT is required}"
 : "${OAS_QUERY_ROOT:?OAS_QUERY_ROOT is required}"
 : "${OAS_SEARCH_OUTPUT_ROOT:?OAS_SEARCH_OUTPUT_ROOT is required}"
+: "${OAS_KERNEL_BUNDLE_ROOT:?OAS_KERNEL_BUNDLE_ROOT is required}"
+: "${OAS_KERNEL_BINARY_SHA256:?OAS_KERNEL_BINARY_SHA256 is required}"
+: "${OAS_KERNEL_BUILD_RECEIPT_FILE_SHA256:?OAS_KERNEL_BUILD_RECEIPT_FILE_SHA256 is required}"
 : "${OAS_PYTHON_BIN:?OAS_PYTHON_BIN is required}"
 : "${OAS_PYTHON_SHA256:?OAS_PYTHON_SHA256 is required}"
 : "${OAS_SEARCH_CONTROLLER_SHA256:?OAS_SEARCH_CONTROLLER_SHA256 is required}"
@@ -31,7 +34,8 @@ for root in \
   "${OAS_SOURCE_ROOT}" \
   "${OAS_TARGET_OUTPUT_ROOT}" \
   "${OAS_QUERY_ROOT}" \
-  "${OAS_SEARCH_OUTPUT_ROOT}"; do
+  "${OAS_SEARCH_OUTPUT_ROOT}" \
+  "${OAS_KERNEL_BUNDLE_ROOT}"; do
   [[ "${root}" == /* ]] || { echo "All search paths must be absolute" >&2; exit 2; }
 done
 [[ "${OAS_SOURCE_COMMIT}" =~ ^[0-9a-f]{40}$ ]] \
@@ -40,7 +44,9 @@ for digest in \
   "${OAS_PYTHON_SHA256}" \
   "${OAS_SEARCH_CONTROLLER_SHA256}" \
   "${OAS_SEARCH_KERNEL_SHA256}" \
-  "${OAS_SEARCH_SCHEMA_SHA256}"; do
+  "${OAS_SEARCH_SCHEMA_SHA256}" \
+  "${OAS_KERNEL_BINARY_SHA256}" \
+  "${OAS_KERNEL_BUILD_RECEIPT_FILE_SHA256}"; do
   [[ "${digest}" =~ ^[0-9a-f]{64}$ ]] \
     || { echo "Source digest is invalid" >&2; exit 2; }
 done
@@ -72,29 +78,36 @@ IFS=',' read -r -a RESERVED_GPU_IDS <<< "${SLURM_JOB_GPUS}"
 source /etc/profile.d/modules.sh
 module purge
 module load cuda/12.8
-NVCC_BIN=$(command -v nvcc)
-[[ -x "${NVCC_BIN}" && ! -L "${NVCC_BIN}" ]] \
-  || { echo "CUDA 12.8 nvcc is absent or symbolic" >&2; exit 2; }
-NVCC_VERSION=$(nvcc --version)
-[[ "${NVCC_VERSION}" == *"release 12.8"* ]] \
-  || { echo "CUDA compiler release differs from 12.8" >&2; exit 2; }
-
-SCRATCH_ROOT=${SLURM_TMPDIR:-/tmp}
-KERNEL_BINARY=${SCRATCH_ROOT}/oas-imgt-exact-${SLURM_ARRAY_JOB_ID}-${SLURM_ARRAY_TASK_ID}
-cleanup() {
-  rm -f -- "${KERNEL_BINARY}"
-}
-trap cleanup EXIT
-
-nvcc \
-  -std=c++17 \
-  -O3 \
-  -lineinfo \
-  -gencode arch=compute_120,code=sm_120 \
-  "${KERNEL_SOURCE}" \
-  -o "${KERNEL_BINARY}"
+KERNEL_BINARY=${OAS_KERNEL_BUNDLE_ROOT}/oas_imgt_exact_search
+KERNEL_BUILD_RECEIPT=${OAS_KERNEL_BUNDLE_ROOT}/BUILD_RECEIPT.json
 [[ -x "${KERNEL_BINARY}" && ! -L "${KERNEL_BINARY}" ]]
-KERNEL_BINARY_SHA256=$(sha256sum "${KERNEL_BINARY}" | awk '{print $1}')
+[[ -f "${KERNEL_BUILD_RECEIPT}" && ! -L "${KERNEL_BUILD_RECEIPT}" ]]
+[[ "$(sha256sum "${KERNEL_BINARY}" | awk '{print $1}')" == "${OAS_KERNEL_BINARY_SHA256}" ]]
+[[ "$(sha256sum "${KERNEL_BUILD_RECEIPT}" | awk '{print $1}')" == "${OAS_KERNEL_BUILD_RECEIPT_FILE_SHA256}" ]]
+if find "${OAS_KERNEL_BUNDLE_ROOT}" -perm /222 -print -quit | grep -q .; then
+  echo "Canonical kernel bundle remains writable" >&2
+  exit 2
+fi
+"${OAS_PYTHON_BIN}" - \
+  "${KERNEL_BUILD_RECEIPT}" \
+  "${OAS_KERNEL_BINARY_SHA256}" \
+  "${OAS_SEARCH_KERNEL_SHA256}" <<'PY'
+import hashlib,json,sys
+path, expected_binary, expected_source = sys.argv[1:]
+raw = open(path, "rb").read()
+receipt = json.loads(raw.decode("ascii"))
+claimed = receipt.pop("receipt_sha256")
+canonical = (json.dumps(receipt, allow_nan=False, ensure_ascii=True, separators=(",", ":"), sort_keys=True) + "\n").encode("ascii")
+assert hashlib.sha256(canonical).hexdigest() == claimed
+assert receipt["format_version"] == "oas_imgt_exact_kernel_bundle_v1"
+assert receipt["claim_boundary"]["canonical_kernel_built_once"] is True
+assert receipt["claim_boundary"]["canonical_kernel_canary_passed"] is True
+assert receipt["claim_boundary"]["fixed_imgt_full_oas_search_complete"] is False
+assert receipt["claim_boundary"]["large_scale_pretraining_authorized"] is False
+assert receipt["test_access"]["frozen_official_external_test_accessed"] is False
+assert receipt["kernel"]["binary_sha256"] == expected_binary
+assert receipt["kernel"]["source_sha256"] == expected_source
+PY
 
 export PYTHONNOUSERSITE=1
 export PYTHONDONTWRITEBYTECODE=1
@@ -109,6 +122,6 @@ export PYTHONPATH=${OAS_SOURCE_ROOT}/src
   --kernel-source "${KERNEL_SOURCE}" \
   --batch-records 32768 \
   --controller-source-sha256 "${OAS_SEARCH_CONTROLLER_SHA256}" \
-  --kernel-binary-sha256 "${KERNEL_BINARY_SHA256}" \
+  --kernel-binary-sha256 "${OAS_KERNEL_BINARY_SHA256}" \
   --kernel-source-sha256 "${OAS_SEARCH_KERNEL_SHA256}" \
   --match-schema-source-sha256 "${OAS_SEARCH_SCHEMA_SHA256}"
