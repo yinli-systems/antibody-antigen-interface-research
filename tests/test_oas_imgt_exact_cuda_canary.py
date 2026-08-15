@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -111,3 +112,33 @@ def test_cuda_sources_preserve_lossless_and_resource_contracts() -> None:
     assert "source /etc/profile >/dev/null" not in canary_launcher
     assert "OAS_PYTHON_SHA256" in canary_launcher
     assert '"${OAS_PYTHON_BIN}" "${CANARY_SCRIPT}" prepare' in canary_launcher
+
+
+def test_published_rtx5090_canary_receipt_is_self_hashed_and_scope_bounded() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "results/pretraining/oas_imgt_exact_cuda_canary_1408348.json"
+    )
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    claimed = receipt.pop("receipt_sha256")
+    canonical = (
+        json.dumps(receipt, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        + "\n"
+    ).encode("ascii")
+    assert hashlib.sha256(canonical).hexdigest() == claimed
+    assert receipt["result"] == "PASS"
+    assert receipt["runtime"]["job_id"] == 1408348
+    assert receipt["kernel_stats"]["matches"] == 11
+    assert (
+        receipt["artifacts"]["actual_matches"]["sha256"]
+        == receipt["artifacts"]["expected_matches_sha256"]
+    )
+    assert receipt["claim_boundary"] == {
+        "cuda_kernel_boundary_canary_passed": True,
+        "fixed_imgt_full_oas_search_complete": False,
+        "frozen_official_external_test_accessed": False,
+        "gap_aware_search_complete": False,
+        "large_scale_pretraining_authorized": False,
+        "near_identity_decontamination_complete": False,
+        "scientific_claim": False,
+    }
