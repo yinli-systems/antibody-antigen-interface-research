@@ -176,6 +176,9 @@ def test_filter_shard_removes_exact_digest_membership_and_keeps_rows_aligned(
     assert result["source_record_count"] == 4
     assert result["excluded_records"] == 2
     assert result["record_count"] == 2
+    assert result["source_residue_tokens"] == 326
+    assert result["excluded_residue_tokens"] == 164
+    assert result["residue_token_count"] == 162
     observed_digests = np.load(output / "sequence_sha256.npy", allow_pickle=False)
     assert observed_digests.tobytes() == digests[0] + digests[2]
     assert np.load(output / "sample_keys.npy", allow_pickle=False).tolist() == [10, 12]
@@ -407,11 +410,17 @@ def test_filter_task_authenticates_graph_and_covers_every_protocol_bucket(
     assert [item["bucket"] for item in receipt["buckets"]] == [0, 1]
     assert receipt["counts"] == {
         "excluded_train": 1,
+        "excluded_train_residue_tokens": 80,
         "excluded_validation": 1,
+        "excluded_validation_residue_tokens": 80,
         "retained_train": 5,
+        "retained_train_residue_tokens": 406,
         "retained_validation": 5,
+        "retained_validation_residue_tokens": 406,
         "source_train": 6,
+        "source_train_residue_tokens": 486,
         "source_validation": 6,
+        "source_validation_residue_tokens": 486,
     }
     assert receipt["claim_boundary"]["zero_excluded_digest_overlap_observed"]
     assert receipt["claim_boundary"]["independent_full_replay_complete"] is False
@@ -430,6 +439,10 @@ def test_filter_task_authenticates_graph_and_covers_every_protocol_bucket(
     assert finalized["claim_boundary"]["independent_full_replay_complete"] is False
     assert finalized["counts"]["unique_train_records"] == 5
     assert finalized["counts"]["unique_validation_records"] == 5
+    assert finalized["counts"]["unique_train_residue_tokens"] == 406
+    assert finalized["counts"]["unique_validation_residue_tokens"] == 406
+    assert finalized["counts"]["decontamination_source_residue_tokens"] == 972
+    assert finalized["counts"]["decontamination_excluded_residue_tokens"] == 160
     assert (
         output / "reduce/bucket-000/train/sequence_sha256.npy"
     ).stat().st_ino == (

@@ -387,6 +387,31 @@ def _write_filtered_array(
     }
 
 
+def _sum_sequence_lengths(
+    lengths: np.ndarray,
+    *,
+    selected: Optional[np.ndarray] = None,
+    chunk_records: int = 131_072,
+) -> int:
+    """Sum authenticated residue lengths without a corpus-sized temporary copy."""
+    if lengths.ndim != 1 or chunk_records <= 0:
+        raise DecontaminatedCorpusError("Sequence-length accounting schema differs")
+    if selected is not None and (
+        selected.dtype != np.dtype("bool")
+        or selected.ndim != 1
+        or len(selected) != len(lengths)
+    ):
+        raise DecontaminatedCorpusError("Sequence-length selector differs")
+    total = 0
+    for start in range(0, len(lengths), chunk_records):
+        end = min(start + chunk_records, len(lengths))
+        block = np.asarray(lengths[start:end])
+        if selected is not None:
+            block = block[selected[start:end]]
+        total += int(np.sum(block, dtype=np.uint64))
+    return total
+
+
 def filter_shard(
     *,
     source_root: Path,
@@ -435,6 +460,15 @@ def filter_shard(
             excluded = np.zeros(len(source_keys), dtype=np.bool_)
         keep = ~excluded
         retained = int(np.count_nonzero(keep))
+        source_residue_tokens = _sum_sequence_lengths(
+            arrays["sequence_lengths.npy"], chunk_records=chunk_records
+        )
+        excluded_residue_tokens = _sum_sequence_lengths(
+            arrays["sequence_lengths.npy"],
+            selected=excluded,
+            chunk_records=chunk_records,
+        )
+        retained_residue_tokens = source_residue_tokens - excluded_residue_tokens
         files = {}
         for name in sorted(EXPECTED_ARRAYS):
             files[name] = _write_filtered_array(
@@ -447,14 +481,17 @@ def filter_shard(
             "bucket": bucket,
             "decontamination": {
                 "excluded_records": int(np.count_nonzero(excluded)),
+                "excluded_residue_tokens": excluded_residue_tokens,
                 "exclusion_rule": "full_sequence_sha256_membership",
                 "source_record_count": len(source_keys),
+                "source_residue_tokens": source_residue_tokens,
             },
             "files": files,
             "format_version": SOURCE_SHARD_FORMAT,
             "global_order": "sequence_sha256_ascending",
             "maximum_sequence_tokens": int(arrays["tokens.npy"].shape[1]),
             "record_count": retained,
+            "residue_token_count": retained_residue_tokens,
             "source_manifest_file_sha256": str(
                 source_reference.get("manifest_file_sha256")
             ),
@@ -476,9 +513,11 @@ def filter_shard(
         )
         return {
             "excluded_records": int(np.count_nonzero(excluded)),
+            "excluded_residue_tokens": excluded_residue_tokens,
             "manifest_file_sha256": file_digest,
             "manifest_payload_sha256": payload_digest,
             "record_count": retained,
+            "residue_token_count": retained_residue_tokens,
             "relative_root": "filtered/" + output_root.parent.name + "/" + split,
             "source_manifest_file_sha256": str(
                 source_reference.get("manifest_file_sha256")
@@ -487,6 +526,7 @@ def filter_shard(
                 source_reference.get("manifest_payload_sha256")
             ),
             "source_record_count": len(source_keys),
+            "source_residue_tokens": source_residue_tokens,
             "verified_manifest": published,
         }
     except BaseException:
@@ -701,6 +741,15 @@ def filter_task(
                 totals["source_" + split] += result["source_record_count"]
                 totals["excluded_" + split] += result["excluded_records"]
                 totals["retained_" + split] += result["record_count"]
+                totals["source_" + split + "_residue_tokens"] += result[
+                    "source_residue_tokens"
+                ]
+                totals["excluded_" + split + "_residue_tokens"] += result[
+                    "excluded_residue_tokens"
+                ]
+                totals["retained_" + split + "_residue_tokens"] += result[
+                    "residue_token_count"
+                ]
             summaries.append({"bucket": bucket, "shards": split_summaries})
         receipt = {
             "authorization": {
@@ -820,10 +869,25 @@ def _filtered_shard_reference(
     retained_records = _nonnegative_integer(
         summary.get("record_count"), "Filtered retained records"
     )
+    source_residue_tokens = _nonnegative_integer(
+        summary.get("source_residue_tokens"), "Filtered source residue tokens"
+    )
+    excluded_residue_tokens = _nonnegative_integer(
+        summary.get("excluded_residue_tokens"), "Filtered excluded residue tokens"
+    )
+    retained_residue_tokens = _nonnegative_integer(
+        summary.get("residue_token_count"), "Filtered retained residue tokens"
+    )
     if (
         source_records != excluded_records + retained_records
+        or source_residue_tokens
+        != excluded_residue_tokens + retained_residue_tokens
         or decontamination.get("source_record_count") != source_records
         or decontamination.get("excluded_records") != excluded_records
+        or decontamination.get("source_residue_tokens") != source_residue_tokens
+        or decontamination.get("excluded_residue_tokens")
+        != excluded_residue_tokens
+        or manifest.get("residue_token_count") != retained_residue_tokens
         or decontamination.get("exclusion_rule")
         != "full_sequence_sha256_membership"
     ):
@@ -832,12 +896,18 @@ def _filtered_shard_reference(
     if entries != set(EXPECTED_ARRAYS) | {"manifest.json"}:
         raise DecontaminatedCorpusError("Filtered shard file inventory differs")
     arrays = _load_source_arrays(root, manifest)
+    observed_retained_residue_tokens = _sum_sequence_lengths(
+        arrays["sequence_lengths.npy"]
+    )
     _close_arrays(arrays)
+    if observed_retained_residue_tokens != retained_residue_tokens:
+        raise DecontaminatedCorpusError("Filtered residue-token total differs")
     return (
         {
             "manifest_file_sha256": file_digest,
             "manifest_payload_sha256": payload_digest,
             "record_count": retained_records,
+            "residue_token_count": retained_residue_tokens,
             "relative_root": f"reduce/bucket-{bucket:03d}/{split}",
         },
         root,
@@ -1036,6 +1106,15 @@ def finalize_corpus(
                     summary["excluded_records"]
                 )
                 observed_counts["retained_" + split] += int(summary["record_count"])
+                observed_counts[
+                    "source_" + split + "_residue_tokens"
+                ] += int(summary["source_residue_tokens"])
+                observed_counts[
+                    "excluded_" + split + "_residue_tokens"
+                ] += int(summary["excluded_residue_tokens"])
+                observed_counts[
+                    "retained_" + split + "_residue_tokens"
+                ] += int(summary["residue_token_count"])
             buckets[bucket] = {"bucket": bucket, "shards": published}
         if dict(sorted(observed_counts.items())) != receipt.get("counts"):
             raise DecontaminatedCorpusError("Filtered task totals differ")
@@ -1065,14 +1144,40 @@ def finalize_corpus(
         "decontamination_excluded_validation_records": totals[
             "excluded_validation"
         ],
+        "decontamination_excluded_residue_tokens": totals[
+            "excluded_train_residue_tokens"
+        ]
+        + totals["excluded_validation_residue_tokens"],
+        "decontamination_excluded_train_residue_tokens": totals[
+            "excluded_train_residue_tokens"
+        ],
+        "decontamination_excluded_validation_residue_tokens": totals[
+            "excluded_validation_residue_tokens"
+        ],
         "decontamination_source_records": totals["source_train"]
         + totals["source_validation"],
         "decontamination_source_train_records": totals["source_train"],
         "decontamination_source_validation_records": totals["source_validation"],
+        "decontamination_source_residue_tokens": totals[
+            "source_train_residue_tokens"
+        ]
+        + totals["source_validation_residue_tokens"],
+        "decontamination_source_train_residue_tokens": totals[
+            "source_train_residue_tokens"
+        ],
+        "decontamination_source_validation_residue_tokens": totals[
+            "source_validation_residue_tokens"
+        ],
         "unique_records": totals["retained_train"]
         + totals["retained_validation"],
         "unique_train_records": totals["retained_train"],
         "unique_validation_records": totals["retained_validation"],
+        "unique_residue_tokens": totals["retained_train_residue_tokens"]
+        + totals["retained_validation_residue_tokens"],
+        "unique_train_residue_tokens": totals["retained_train_residue_tokens"],
+        "unique_validation_residue_tokens": totals[
+            "retained_validation_residue_tokens"
+        ],
     }
     resource = _resource_receipt()
     manifest = {
