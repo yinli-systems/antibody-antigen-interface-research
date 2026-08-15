@@ -112,6 +112,16 @@ def test_campaign_freeze_preserves_30b_token_and_evidence_boundaries(
     freezer = _load("pretraining_campaign_freezer_test", FREEZER)
     recovery_gate = {
         "authorization": dict(freezer.RECOVERY_AUTHORIZATION),
+        "corpus": {
+            "decontamination_excluded_train_records": 3,
+            "decontamination_excluded_train_residue_tokens": 300,
+            "decontamination_excluded_validation_records": 2,
+            "decontamination_excluded_validation_residue_tokens": 200,
+            "train_record_count": 220_000_000,
+            "train_residue_token_count": 25_000_000_000,
+            "validation_record_count": 1_700_000,
+            "validation_residue_token_count": 190_000_000,
+        },
         "execution": {
             "length_bucket_boundaries": "96,128,160,194",
             "optimization": dict(freezer.OPTIMIZATION),
@@ -135,7 +145,7 @@ def test_campaign_freeze_preserves_30b_token_and_evidence_boundaries(
         lambda _: {name: "b" * 64 for name in freezer.CAMPAIGN_SOURCE_FILES},
     )
     monkeypatch.setattr(freezer, "_sha256", lambda _: "c" * 64)
-    result = freezer.freeze_campaign(
+    freeze_kwargs = dict(
         source_root=ROOT,
         recovery_gate_path=ROOT,
         recovery_gate_file_sha256="d" * 64,
@@ -148,12 +158,16 @@ def test_campaign_freeze_preserves_30b_token_and_evidence_boundaries(
         efficiency_audit_file_sha256="2" * 64,
         efficiency_audit_payload_sha256="3" * 64,
     )
+    result = freezer.freeze_campaign(**freeze_kwargs)
     assert result["format_version"] == freezer.FORMAT_VERSION
     assert result["authorization"] == freezer.AUTHORIZATION
     assert result["campaign"]["campaign_token_limit"] == 30_000_000_000
-    assert result["campaign"]["unique_train_residue_tokens"] == 25_259_993_406
+    assert result["campaign"]["unique_train_residue_tokens"] == 25_000_000_000
+    assert result["campaign"]["unique_train_records"] == 220_000_000
+    assert result["campaign"]["validation_records"] == 1_700_000
+    assert result["campaign"]["validation_residue_tokens"] == 190_000_000
     assert result["campaign"]["planned_repeat_exposure_residue_tokens"] == (
-        4_740_006_594
+        5_000_000_000
     )
     assert result["campaign"]["maximum_final_overrun_residue_tokens"] == 180_224
     assert result["runs"]["stage1"]["resume"] is False
@@ -166,6 +180,13 @@ def test_campaign_freeze_preserves_30b_token_and_evidence_boundaries(
     )
     assert result["prerequisites"]["shape_probe_audit_file_sha256"] == "4" * 64
     assert "official/frozen/external-test" in result["claim_boundary"]
+
+    recovery_gate["corpus"]["train_residue_token_count"] = 30_000_000_001
+    with pytest.raises(
+        freezer.CampaignFreezeError,
+        match="Campaign limit is below",
+    ):
+        freezer.freeze_campaign(**freeze_kwargs)
 
 
 def test_efficiency_failure_cannot_freeze_campaign(tmp_path: Path) -> None:

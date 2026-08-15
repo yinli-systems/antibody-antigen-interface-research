@@ -21,9 +21,6 @@ EFFICIENCY_PROTOCOL_FORMAT = "antibody_four_gpu_efficiency_gate_v2"
 RECOVERY_AUDIT_FORMAT = "antibody_production_loader_recovery_audit_4gpu_v1"
 RECOVERY_GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
 CAMPAIGN_TOKEN_LIMIT = 30_000_000_000
-UNIQUE_TRAIN_RESIDUE_TOKENS = 25_259_993_406
-UNIQUE_TRAIN_RECORDS = 224_887_833
-VALIDATION_RECORDS = 1_743_380
 SEGMENT_WALLTIME_SECONDS = 14_400
 SEGMENT_RESERVE_SECONDS = 3_600
 MINIMUM_SEGMENT_STEPS = 600
@@ -218,6 +215,7 @@ def _validate_recovery(
         expected_file_sha256=audit_file_sha256,
         expected_payload_sha256=audit_payload_sha256,
     )
+    corpus = gate.get("corpus")
     if (
         gate.get("format_version") != RECOVERY_GATE_FORMAT
         or gate.get("authorization") != RECOVERY_AUTHORIZATION
@@ -226,6 +224,11 @@ def _validate_recovery(
         or gate.get("execution", {}).get("world_size") != 4
         or gate.get("execution", {}).get("optimization") != OPTIMIZATION
         or gate.get("implementation") != _current_implementation(source_root)
+        or gate.get("freezer_sha256")
+        != _sha256(
+            source_root / "scripts/freeze_antibody_production_recovery_gate.py"
+        )
+        or not isinstance(corpus, dict)
         or audit.get("format_version") != RECOVERY_AUDIT_FORMAT
         or audit.get("authorization") != RECOVERY_AUDIT_AUTHORIZATION
         or audit.get("test_access") != TEST_ACCESS
@@ -236,6 +239,25 @@ def _validate_recovery(
         or audit.get("artifact_audit", {}).get("writable_paths") != []
     ):
         raise CampaignFreezeError("Exact-recovery prerequisite does not match source")
+    integer_fields = {
+        "decontamination_excluded_train_records": False,
+        "decontamination_excluded_train_residue_tokens": False,
+        "decontamination_excluded_validation_records": False,
+        "decontamination_excluded_validation_residue_tokens": False,
+        "train_record_count": True,
+        "train_residue_token_count": True,
+        "validation_record_count": True,
+        "validation_residue_token_count": True,
+    }
+    for name, positive in integer_fields.items():
+        value = corpus.get(name)
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, int)
+            or value < 0
+            or (positive and value == 0)
+        ):
+            raise CampaignFreezeError("Recovery corpus accounting differs")
     return gate
 
 
@@ -340,6 +362,14 @@ def freeze_campaign(
         audit_payload_sha256=efficiency_audit_payload_sha256,
     )
     segment_steps, compiled_p95_seconds = _segment_steps(efficiency_audit)
+    corpus = recovery_gate["corpus"]
+    unique_train_records = int(corpus["train_record_count"])
+    unique_train_residue_tokens = int(corpus["train_residue_token_count"])
+    validation_records = int(corpus["validation_record_count"])
+    if unique_train_residue_tokens > CAMPAIGN_TOKEN_LIMIT:
+        raise CampaignFreezeError(
+            "Campaign limit is below the audited unique training-token count"
+        )
     gate = copy.deepcopy(recovery_gate)
     gate["format_version"] = FORMAT_VERSION
     gate["authorization"] = AUTHORIZATION
@@ -362,14 +392,17 @@ def freeze_campaign(
             TARGET_RESIDUE_TOKENS + BATCH_QUANTUM_SEQUENCES * 192
         ),
         "planned_repeat_exposure_residue_tokens": (
-            CAMPAIGN_TOKEN_LIMIT - UNIQUE_TRAIN_RESIDUE_TOKENS
+            CAMPAIGN_TOKEN_LIMIT - unique_train_residue_tokens
         ),
         "segment_maximum_steps": segment_steps,
         "segment_reserve_seconds": SEGMENT_RESERVE_SECONDS,
         "segment_walltime_seconds": SEGMENT_WALLTIME_SECONDS,
-        "unique_train_records": UNIQUE_TRAIN_RECORDS,
-        "unique_train_residue_tokens": UNIQUE_TRAIN_RESIDUE_TOKENS,
-        "validation_records": VALIDATION_RECORDS,
+        "unique_train_records": unique_train_records,
+        "unique_train_residue_tokens": unique_train_residue_tokens,
+        "validation_records": validation_records,
+        "validation_residue_tokens": int(
+            corpus["validation_residue_token_count"]
+        ),
     }
     gate["prerequisites"] = {
         "efficiency_audit_file_sha256": efficiency_audit_file_sha256,
