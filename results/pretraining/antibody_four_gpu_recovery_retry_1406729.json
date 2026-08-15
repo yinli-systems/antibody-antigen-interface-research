@@ -1,0 +1,37 @@
+{
+  "authorization": {
+    "loader_recovery_gate": true,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Retry submission for the four-GPU real-OAS exact-recovery gate only; a running job is not completion, production pretraining, downstream improvement, or SOTA evidence",
+  "format_version": "antibody_four_gpu_recovery_retry_submission_v1",
+  "job": {
+    "job_id": 1406729,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_fd3c702_attempt_001",
+    "state_at_receipt": "RUNNING"
+  },
+  "predecessor_failure_job_id": 1406724,
+  "runtime": {
+    "artifact_count_at_live_verification": 58,
+    "manifest_content_sha256": "e33841cc19be4e7c3bb5522194f7d34c7cd518ec967949529094567a6004cfcb",
+    "manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_007.json",
+    "manifest_runtime_state_sha256": "13502176182985a33a1a31833bc8f999f16856c6f917daa45c29bf7e83a09192",
+    "schema_version": "frontier.runtime-manifest.v3",
+    "verified_live_before_submission": true
+  },
+  "source": {
+    "auditor_sha256": "dd546bb81462303c43274bb4675b73d563da3304e905531437082150ae8349b8",
+    "commit": "fd3c702766aba8a81266950a613135713f38ee45",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-fd3c702-attempt-001",
+    "pipeline_sha256": "2e93ce0402ce925d995e2e3dd6ea9dcb1bf6cffbb756db458ede4a011191fde8"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
