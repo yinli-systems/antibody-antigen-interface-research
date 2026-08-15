@@ -174,7 +174,7 @@ MONITOR_PID=$!
   --batch-quantum 256 \
   --run-seed 17 \
   --campaign-token-limit "${CAMPAIGN_TOKEN_LIMIT}" \
-  --length-bucket-boundaries 96,128,160,194 \
+  --length-bucket-boundaries 194 \
   --ddp-bucket-cap-mb 25 \
   --maximum-open-arrays 1024 \
   --minimum-soft-open-file-limit 4096 \
