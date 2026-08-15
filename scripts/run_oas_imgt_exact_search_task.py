@@ -78,7 +78,9 @@ def _reject_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def _strict_json(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
+def _strict_json(
+    path: Path, label: str, *, require_canonical: bool = True
+) -> tuple[dict[str, Any], bytes]:
     path = _regular_file(path, label)
     raw = path.read_bytes()
     try:
@@ -89,7 +91,9 @@ def _strict_json(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
         )
     except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
         raise OASIMGTSearchTaskError(f"{label} is not strict ASCII JSON") from error
-    if not isinstance(value, dict) or raw != _canonical_json_bytes(value):
+    if not isinstance(value, dict) or (
+        require_canonical and raw != _canonical_json_bytes(value)
+    ):
         raise OASIMGTSearchTaskError(f"{label} is not canonical JSON")
     return value, raw
 
@@ -339,7 +343,14 @@ def _validate_kernel_stats(
     match_records: int,
     batch_records: int,
 ) -> dict[str, Any]:
-    stats, _ = _strict_json(path, "CUDA kernel stats")
+    # The source-pinned C++ kernel emits finite, duplicate-free JSON, but its
+    # 17-digit double rendering is not necessarily byte-identical to Python's
+    # shortest round-trip float representation.  Parse that runtime telemetry
+    # strictly and canonicalize it when embedding it in the signed receipt;
+    # all persistent input receipts still require canonical bytes.
+    stats, _ = _strict_json(
+        path, "CUDA kernel stats", require_canonical=False
+    )
     elapsed = stats.get("elapsed_seconds")
     expected_batches = (target_records + batch_records - 1) // batch_records
     if (
@@ -366,14 +377,27 @@ def _validate_kernel_stats(
     return stats
 
 
-def _freeze_tree(root: Path) -> None:
+def _freeze_tree(root: Path, *, include_root: bool = True) -> None:
     for path in root.rglob("*"):
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):
             raise OASIMGTSearchTaskError("Output tree contains a symbolic link")
         path.chmod(metadata.st_mode & ~(stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH))
-    metadata = root.lstat()
-    root.chmod(metadata.st_mode & ~(stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH))
+    if include_root:
+        metadata = root.lstat()
+        root.chmod(metadata.st_mode & ~(stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH))
+
+
+def _remove_output_tree(root: Path) -> None:
+    if not root.exists():
+        return
+    for path in (root, *root.rglob("*")):
+        try:
+            metadata = path.lstat()
+            path.chmod(metadata.st_mode | stat.S_IWUSR)
+        except OSError:
+            pass
+    shutil.rmtree(root, ignore_errors=True)
 
 
 def _resource_receipt() -> dict[str, Any]:
@@ -448,6 +472,7 @@ def run_task(
     temporary = Path(
         tempfile.mkdtemp(prefix=f"fixed-imgt-{task_id:04d}.partial-", dir=work_root)
     )
+    published = False
     try:
         match_path = temporary / "matches.bin"
         stats_path = temporary / "kernel_stats.json"
@@ -527,18 +552,20 @@ def run_task(
             "test_access": TEST_ACCESS,
         }
         publish_export_receipt(temporary / "receipt.json", receipt)
-        _freeze_tree(temporary)
+        # BeeGFS can reject cross-directory rename of a directory whose own
+        # write bit was already cleared.  Seal every child first, atomically
+        # publish the still-private task root, then remove the root write bits.
+        # The global finalizer cannot run until every array task completes.
+        _freeze_tree(temporary, include_root=False)
         os.rename(temporary, final_root)
+        published = True
+        metadata = final_root.lstat()
+        final_root.chmod(
+            metadata.st_mode & ~(stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH)
+        )
         return json.loads((final_root / "receipt.json").read_text(encoding="ascii"))
     except BaseException:
-        if temporary.exists():
-            for path in (temporary, *temporary.rglob("*")):
-                try:
-                    metadata = path.lstat()
-                    path.chmod(metadata.st_mode | stat.S_IWUSR)
-                except OSError:
-                    pass
-            shutil.rmtree(temporary, ignore_errors=True)
+        _remove_output_tree(final_root if published else temporary)
         raise
 
 
