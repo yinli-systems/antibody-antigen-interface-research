@@ -99,7 +99,9 @@ def test_cuda_sources_preserve_lossless_and_resource_contracts() -> None:
     assert "10 * same >= 9 * either" in kernel
     assert "group_tag(group)" in kernel
     assert "chain_tag" not in kernel
-    assert "-gencode arch=compute_120,code=sm_120" in launcher
+    assert "OAS_KERNEL_BUNDLE_ROOT" in launcher
+    assert "OAS_KERNEL_BINARY_SHA256" in launcher
+    assert "nvcc \\" not in launcher
     assert "#SBATCH --array=0-31%32" in launcher
     assert "--batch-records 32768" in launcher
     assert "source /etc/profile.d/modules.sh" in launcher

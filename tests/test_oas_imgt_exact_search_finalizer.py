@@ -62,6 +62,7 @@ def _task(
     task_id: int,
     target_receipt_sha256: str,
     query_receipt_sha256: str,
+    kernel_binary_sha256: str = KERNEL_BINARY,
 ) -> None:
     root = search_root / "fixed-imgt" / f"mapper-{task_id:04d}"
     root.mkdir(parents=True)
@@ -114,7 +115,7 @@ def _task(
             "gpu_compute_permitted": True,
             "scheduler_reserved_gpu_count": 1,
         },
-        "source_sha256": {**SOURCES, "kernel_binary": KERNEL_BINARY},
+        "source_sha256": {**SOURCES, "kernel_binary": kernel_binary_sha256},
         "task_id": task_id,
         "test_access": TEST_ACCESS,
     }
@@ -218,6 +219,37 @@ def test_task_auditor_rejects_writable_evidence(tmp_path: Path) -> None:
             expected_source_hashes=SOURCES,
             target_receipt_sha256=target_receipt,
             query_receipt_sha256=query_receipt,
+        )
+
+
+def test_global_finalizer_rejects_one_task_using_a_different_binary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    search_root = tmp_path / "search"
+    (search_root / "work").mkdir(parents=True)
+    target_root, query_root, target_receipt, query_receipt = _global_inputs(tmp_path)
+    for task_id in range(32):
+        _task(
+            search_root,
+            task_id=task_id,
+            target_receipt_sha256=target_receipt,
+            query_receipt_sha256=query_receipt,
+            kernel_binary_sha256=("9" * 64 if task_id == 31 else KERNEL_BINARY),
+        )
+    monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
+    monkeypatch.delenv("SLURM_JOB_GPUS", raising=False)
+    monkeypatch.delenv("SLURM_STEP_GPUS", raising=False)
+    monkeypatch.delenv("OAS_SCHEDULER_RESERVED_GPU_COUNT", raising=False)
+
+    with pytest.raises(MODULE.OASIMGTSearchFinalizeError, match="not identical"):
+        MODULE.finalize(
+            search_output_root=search_root,
+            target_output_root=target_root,
+            query_root=query_root,
+            task_count=32,
+            worker_count=4,
+            expected_source_hashes=SOURCES,
+            finalizer_source_sha256="f" * 64,
         )
 
 
