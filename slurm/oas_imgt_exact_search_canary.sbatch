@@ -15,6 +15,8 @@ umask 077
 : "${OAS_SOURCE_ROOT:?OAS_SOURCE_ROOT is required}"
 : "${OAS_SOURCE_COMMIT:?OAS_SOURCE_COMMIT is required}"
 : "${OAS_CANARY_OUTPUT_ROOT:?OAS_CANARY_OUTPUT_ROOT is required}"
+: "${OAS_PYTHON_BIN:?OAS_PYTHON_BIN is required}"
+: "${OAS_PYTHON_SHA256:?OAS_PYTHON_SHA256 is required}"
 : "${OAS_CANARY_SCRIPT_SHA256:?OAS_CANARY_SCRIPT_SHA256 is required}"
 : "${OAS_SEARCH_KERNEL_SHA256:?OAS_SEARCH_KERNEL_SHA256 is required}"
 : "${SLURM_JOB_GPUS:?Exactly one scheduler GPU is required}"
@@ -26,6 +28,11 @@ umask 077
   || { echo "Source commit is invalid" >&2; exit 2; }
 [[ "${OAS_CANARY_SCRIPT_SHA256}" =~ ^[0-9a-f]{64}$ ]]
 [[ "${OAS_SEARCH_KERNEL_SHA256}" =~ ^[0-9a-f]{64}$ ]]
+[[ "${OAS_PYTHON_SHA256}" =~ ^[0-9a-f]{64}$ ]]
+[[ "${OAS_PYTHON_BIN}" == /* && -x "${OAS_PYTHON_BIN}" ]]
+PYTHON_REAL=$(readlink -f "${OAS_PYTHON_BIN}")
+[[ -f "${PYTHON_REAL}" && ! -L "${PYTHON_REAL}" ]]
+[[ "$(sha256sum "${PYTHON_REAL}" | awk '{print $1}')" == "${OAS_PYTHON_SHA256}" ]]
 [[ ! -e "${OAS_CANARY_OUTPUT_ROOT}" && ! -L "${OAS_CANARY_OUTPUT_ROOT}" ]] \
   || { echo "Refusing to overwrite canary output" >&2; exit 2; }
 
@@ -78,7 +85,7 @@ KERNEL_STATS=${OAS_CANARY_OUTPUT_ROOT}/kernel_stats.json
 export PYTHONNOUSERSITE=1
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONPATH=${OAS_SOURCE_ROOT}/src
-python3 "${CANARY_SCRIPT}" prepare --output-root "${FIXTURE_ROOT}" \
+"${OAS_PYTHON_BIN}" "${CANARY_SCRIPT}" prepare --output-root "${FIXTURE_ROOT}" \
   > "${OAS_CANARY_OUTPUT_ROOT}/prepare.json"
 "${KERNEL_BINARY}" \
   --queries "${FIXTURE_ROOT}/queries.bin" \
@@ -87,7 +94,7 @@ python3 "${CANARY_SCRIPT}" prepare --output-root "${FIXTURE_ROOT}" \
   --stats "${KERNEL_STATS}" \
   --batch-records 7 \
   --device 0
-python3 "${CANARY_SCRIPT}" audit \
+"${OAS_PYTHON_BIN}" "${CANARY_SCRIPT}" audit \
   --fixture-root "${FIXTURE_ROOT}" \
   --actual-matches "${ACTUAL_MATCHES}" \
   --kernel-stats "${KERNEL_STATS}" \
@@ -99,6 +106,9 @@ python3 "${CANARY_SCRIPT}" audit \
   echo "canary_script_sha256=${OAS_CANARY_SCRIPT_SHA256}"
   echo "kernel_binary_sha256=$(sha256sum "${KERNEL_BINARY}" | awk '{print $1}')"
   echo "nvcc_binary_sha256=$(sha256sum "${NVCC_BIN}" | awk '{print $1}')"
+  echo "python_binary=${PYTHON_REAL}"
+  echo "python_binary_sha256=${OAS_PYTHON_SHA256}"
+  "${OAS_PYTHON_BIN}" -c 'import numpy,sys; print("python_version=" + sys.version.replace("\n", " ")); print("numpy_version=" + numpy.__version__)'
   echo "job_id=${SLURM_JOB_ID}"
   echo "node=$(hostname)"
   printf '%s\n' "${NVCC_VERSION}"

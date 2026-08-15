@@ -18,6 +18,8 @@ umask 077
 : "${OAS_TARGET_OUTPUT_ROOT:?OAS_TARGET_OUTPUT_ROOT is required}"
 : "${OAS_QUERY_ROOT:?OAS_QUERY_ROOT is required}"
 : "${OAS_SEARCH_OUTPUT_ROOT:?OAS_SEARCH_OUTPUT_ROOT is required}"
+: "${OAS_PYTHON_BIN:?OAS_PYTHON_BIN is required}"
+: "${OAS_PYTHON_SHA256:?OAS_PYTHON_SHA256 is required}"
 : "${OAS_SEARCH_CONTROLLER_SHA256:?OAS_SEARCH_CONTROLLER_SHA256 is required}"
 : "${OAS_SEARCH_KERNEL_SHA256:?OAS_SEARCH_KERNEL_SHA256 is required}"
 : "${OAS_SEARCH_SCHEMA_SHA256:?OAS_SEARCH_SCHEMA_SHA256 is required}"
@@ -35,12 +37,17 @@ done
 [[ "${OAS_SOURCE_COMMIT}" =~ ^[0-9a-f]{40}$ ]] \
   || { echo "Source commit is invalid" >&2; exit 2; }
 for digest in \
+  "${OAS_PYTHON_SHA256}" \
   "${OAS_SEARCH_CONTROLLER_SHA256}" \
   "${OAS_SEARCH_KERNEL_SHA256}" \
   "${OAS_SEARCH_SCHEMA_SHA256}"; do
   [[ "${digest}" =~ ^[0-9a-f]{64}$ ]] \
     || { echo "Source digest is invalid" >&2; exit 2; }
 done
+[[ "${OAS_PYTHON_BIN}" == /* && -x "${OAS_PYTHON_BIN}" ]]
+PYTHON_REAL=$(readlink -f "${OAS_PYTHON_BIN}")
+[[ -f "${PYTHON_REAL}" && ! -L "${PYTHON_REAL}" ]]
+[[ "$(sha256sum "${PYTHON_REAL}" | awk '{print $1}')" == "${OAS_PYTHON_SHA256}" ]]
 [[ "${SLURM_ARRAY_TASK_ID}" =~ ^([0-9]|[12][0-9]|3[01])$ ]] \
   || { echo "Array task is outside 0..31" >&2; exit 2; }
 
@@ -93,7 +100,7 @@ export PYTHONNOUSERSITE=1
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONPATH=${OAS_SOURCE_ROOT}/src
 
-python3 "${CONTROLLER}" \
+"${OAS_PYTHON_BIN}" "${CONTROLLER}" \
   --task-id "${SLURM_ARRAY_TASK_ID}" \
   --target-output-root "${OAS_TARGET_OUTPUT_ROOT}" \
   --query-root "${OAS_QUERY_ROOT}" \
