@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Cancelled fail-closed before any run receipt, checkpoint evaluation, independent audit, throughput result, MFU result, quality result, configuration promotion, or production pretraining claim",
+  "evidence": {
+    "partial_artifact_manifest_sha256": "b23b55eb7445ba1f9e8ae21f4bb548d4921a48ec56f838d9c8032a2c45012cd3",
+    "partial_gpu_csv_line_count": 109,
+    "partial_gpu_csv_sha256": "7f5ddcb11b99a11010c9162dd7b6990b890c6a6ce4e3894adb8ba171308aef47",
+    "protocol_sha256": "e35ae3ea30496f23073c47e1138d5239dee6dd915a9caa5c4628abab71c8012f",
+    "runtime_verification_sha256": "15a4ee9ffc4808a8c3c8982d39783f98fed7d88e792d71b1892ed7fec7f9482f",
+    "stderr_sha256": "5fac79cc409317ecadac936b6962951421523c1a607d81315dfe8a0a3f3c11b3",
+    "stdout_sha256": "58b956de247af5d78d00ea199cc4c74f9b74ea94d65531a76b3f0a248995a997"
+  },
+  "format_version": "antibody_four_gpu_efficiency_cancellation_v1",
+  "job": {
+    "elapsed": "00:03:22",
+    "end": "2026-08-15T09:26:18+08:00",
+    "exit_code": "0:0",
+    "job_id": 1406763,
+    "node": "wqd10nah09g4",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_efficiency_ff00fb0_attempt_001",
+    "start": "2026-08-15T09:22:56+08:00",
+    "state": "CANCELLED by 1256"
+  },
+  "reason": {
+    "category": "auditor_fail_closed_hardening",
+    "detail": "The submitted source allowed missing test_access objects and incomplete master or evaluation authorization objects to survive selected audit predicates. The job was cancelled before any efficiency receipt completed so the predicates could be made exact and regression-tested."
+  },
+  "result_presence": {
+    "checkpoint_evaluation": false,
+    "configuration_promoted": false,
+    "independent_audit": false,
+    "run_receipt": false
+  },
+  "source": {
+    "commit": "ff00fb0d160145dee5622d4f30949efdf1041f70"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -34,6 +34,62 @@ TEST_ACCESS = {
     "official_test_accessed": False,
     "sabdab2_heldout_accessed": False,
 }
+RECOVERY_TEST_ACCESS = {
+    "downstream_labels_used": False,
+    "sabdab2_heldout_accessed": False,
+}
+AUTHORIZATION = {
+    "configuration_promotion": False,
+    "production_pretraining": False,
+    "scientific_claim": False,
+}
+ACCEPTANCE = {
+    "bootstrap_confidence": 0.95,
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 2026081502,
+    "compiled_relative_to_eager_each_round": 1.05,
+    "compiled_relative_to_eager_pooled": 1.05,
+    "maximum_masked_accuracy_absolute_decrease": 0.005,
+    "maximum_masked_cross_entropy_relative_increase": 0.01,
+    "maximum_memory_fraction": 0.80,
+    "maximum_p95_over_p50_step_time": 1.10,
+    "maximum_replicate_throughput_relative_range": 0.05,
+    "maximum_short_horizon_gradient_norm_relative_difference": 0.01,
+    "maximum_short_horizon_loss_absolute_difference": 0.005,
+    "minimum_approximate_6n_mfu": 0.35,
+    "short_horizon_updates": 20,
+    "warmup_updates_excluded": 100,
+}
+BATCH = {
+    "batch_quantum_sequences": 256,
+    "global_residue_token_target_per_update": 131072,
+    "micro_batch_per_gpu": 16,
+    "updates_per_run": 600,
+}
+HARDWARE = {
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 5090",
+    "node_count": 1,
+}
+MEASUREMENT = {
+    "approximate_6n_mfu": {
+        "denominator_dense_bf16_tflops_per_gpu": 209.5,
+        "formula": "6*N*nonpadding_residue_tokens_per_second/(4*209.5e12)",
+        "parameter_count": 634513920,
+        "profiler_measured": False,
+    },
+    "crossover_run_order": list(RUN_ORDER),
+    "same_allocation_required": True,
+    "same_membership_required": True,
+}
+VALIDATION_PANEL = {
+    "indices_sha256": PANEL_INDICES_SHA256,
+    "mask_seed": 2026081503,
+    "mask_update": 0,
+    "record_count": PANEL_COUNT,
+    "seed": PANEL_SEED,
+    "split": "validation",
+}
 SOURCE_FILES = (
     "scripts/audit_antibody_four_gpu_efficiency_gate.py",
     "scripts/evaluate_antibody_production_checkpoint.py",
@@ -103,7 +159,7 @@ def _load_recovery(
             "scientific_trace_equal": True,
             "terminal_coordinates_equal": True,
         }
-        or any(bool(item) for item in value.get("test_access", {}).values())
+        or value.get("test_access") != RECOVERY_TEST_ACCESS
     ):
         raise EfficiencyFreezeError("Recovery audit does not authorize efficiency work")
     return value
@@ -208,34 +264,9 @@ def freeze_bundle(
         for name, value in gates.items()
     }
     master = {
-        "acceptance": {
-            "bootstrap_confidence": 0.95,
-            "bootstrap_iterations": 10000,
-            "bootstrap_seed": 2026081502,
-            "compiled_relative_to_eager_each_round": 1.05,
-            "compiled_relative_to_eager_pooled": 1.05,
-            "maximum_masked_accuracy_absolute_decrease": 0.005,
-            "maximum_masked_cross_entropy_relative_increase": 0.01,
-            "maximum_memory_fraction": 0.80,
-            "maximum_p95_over_p50_step_time": 1.10,
-            "maximum_replicate_throughput_relative_range": 0.05,
-            "maximum_short_horizon_gradient_norm_relative_difference": 0.01,
-            "maximum_short_horizon_loss_absolute_difference": 0.005,
-            "minimum_approximate_6n_mfu": 0.35,
-            "short_horizon_updates": 20,
-            "warmup_updates_excluded": 100,
-        },
-        "authorization": {
-            "configuration_promotion": False,
-            "production_pretraining": False,
-            "scientific_claim": False,
-        },
-        "batch": {
-            "batch_quantum_sequences": 256,
-            "global_residue_token_target_per_update": 131072,
-            "micro_batch_per_gpu": 16,
-            "updates_per_run": 600,
-        },
+        "acceptance": ACCEPTANCE,
+        "authorization": AUTHORIZATION,
+        "batch": BATCH,
         "claim_boundary": (
             "Four-GPU real-OAS A/B/B/A efficiency and checkpoint-equivalence "
             "gate; no production pretraining, downstream, official-test, "
@@ -243,22 +274,8 @@ def freeze_bundle(
         ),
         "corpus": base["corpus"],
         "format_version": FORMAT_VERSION,
-        "hardware": {
-            "gpu_count": 4,
-            "gpu_model": "NVIDIA GeForce RTX 5090",
-            "node_count": 1,
-        },
-        "measurement": {
-            "approximate_6n_mfu": {
-                "denominator_dense_bf16_tflops_per_gpu": 209.5,
-                "formula": "6*N*nonpadding_residue_tokens_per_second/(4*209.5e12)",
-                "parameter_count": 634513920,
-                "profiler_measured": False,
-            },
-            "crossover_run_order": list(RUN_ORDER),
-            "same_allocation_required": True,
-            "same_membership_required": True,
-        },
+        "hardware": HARDWARE,
+        "measurement": MEASUREMENT,
         "mode_gate_file_sha256": gate_hashes,
         "recovery_prerequisite": {
             "audit_file_sha256": recovery_audit_file_sha256,
@@ -267,14 +284,7 @@ def freeze_bundle(
         },
         "source": _source_hashes(source_root),
         "test_access": TEST_ACCESS,
-        "validation_panel": {
-            "indices_sha256": PANEL_INDICES_SHA256,
-            "mask_seed": 2026081503,
-            "mask_update": 0,
-            "record_count": PANEL_COUNT,
-            "seed": PANEL_SEED,
-            "split": "validation",
-        },
+        "validation_panel": VALIDATION_PANEL,
     }
     return master, gates
 

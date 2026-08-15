@@ -41,6 +41,12 @@ RUN_AUTHORIZATION = {
     "scale_out": False,
     "scientific_claim": False,
 }
+EVALUATION_AUTHORIZATION = {
+    "checkpoint_evaluation": True,
+    "configuration_promotion": False,
+    "production_pretraining": False,
+    "scientific_claim": False,
+}
 
 
 class EfficiencyAuditError(RuntimeError):
@@ -204,8 +210,8 @@ def _evaluation(
             "seed": panel["seed"],
             "split": "validation",
         }
-        or value.get("authorization", {}).get("production_pretraining") is not False
-        or any(bool(item) for item in value.get("test_access", {}).values())
+        or value.get("authorization") != EVALUATION_AUTHORIZATION
+        or value.get("test_access") != freezer.TEST_ACCESS
     ):
         raise EfficiencyAuditError("Checkpoint evaluation identity differs")
     records = value.get("records")
@@ -249,6 +255,59 @@ def _evaluation(
         raise EfficiencyAuditError("Evaluation aggregate does not replay")
     order = np.argsort(indices)
     return indices[order], cross_entropy[order], accuracy[order]
+
+
+def _validate_master_protocol(protocol: Mapping[str, Any]) -> None:
+    if (
+        protocol.get("format_version") != freezer.FORMAT_VERSION
+        or protocol.get("acceptance") != freezer.ACCEPTANCE
+        or protocol.get("batch") != freezer.BATCH
+        or protocol.get("measurement") != freezer.MEASUREMENT
+        or protocol.get("hardware") != freezer.HARDWARE
+        or protocol.get("validation_panel") != freezer.VALIDATION_PANEL
+        or protocol.get("authorization") != freezer.AUTHORIZATION
+        or protocol.get("test_access") != freezer.TEST_ACCESS
+        or set(protocol.get("source", {})) != set(freezer.SOURCE_FILES)
+    ):
+        raise EfficiencyAuditError("Master efficiency protocol differs")
+
+
+def _validate_mode_gate(gate: Mapping[str, Any], *, compiled: bool) -> None:
+    expected_optimization = {
+        "bucketed_padding": compiled,
+        "compile_blocks": compiled,
+        "compile_prewarm_buckets": compiled,
+        "ddp_bucket_cap_mb": 25,
+        "deterministic_algorithms": True,
+        "disable_compiled_cudagraphs": compiled,
+        "fused_adamw": compiled,
+        "length_bucketing": compiled,
+        "pinned_staging": compiled,
+    }
+    if (
+        gate.get("format_version") != "antibody_production_loader_recovery_gate_v1"
+        or gate.get("hardware_identity")
+        != {"gpu_count": 4, "gpu_model": GPU_MODEL, "node_count": 1}
+        or gate.get("authorization") != RUN_AUTHORIZATION
+        or gate.get("test_access") != RUN_TEST_ACCESS
+        or gate.get("execution", {}).get("world_size") != 4
+        or gate.get("execution", {}).get("backend") != "ddp"
+        or gate.get("execution", {}).get("optimization") != expected_optimization
+        or gate.get("runs")
+        != {
+            "continuous": {
+                "batch_quantum_sequences": 256,
+                "checkpoint": True,
+                "micro_batch_per_gpu": 16,
+                "preset": "abf_650m",
+                "resume": False,
+                "run_seed": 17,
+                "steps": 600,
+                "target_residue_tokens": 131072,
+            }
+        }
+    ):
+        raise EfficiencyAuditError("Mode gate identity differs")
 
 
 def _throughput(receipt: Mapping[str, Any], warmup: int) -> dict[str, Any]:
@@ -326,15 +385,7 @@ def audit_gate(
 ) -> dict[str, Any]:
     """Audit source closure, paired execution, quality, and throughput."""
     protocol, protocol_sha256 = _load(protocol_path)
-    if (
-        protocol.get("format_version") != freezer.FORMAT_VERSION
-        or protocol.get("measurement", {}).get("crossover_run_order")
-        != list(freezer.RUN_ORDER)
-        or protocol.get("hardware")
-        != {"gpu_count": 4, "gpu_model": GPU_MODEL, "node_count": 1}
-        or any(bool(item) for item in protocol.get("test_access", {}).values())
-    ):
-        raise EfficiencyAuditError("Master efficiency protocol differs")
+    _validate_master_protocol(protocol)
     source_root = Path(__file__).resolve().parents[1]
     for relative, expected in protocol["source"].items():
         if _sha256(source_root / relative) != expected:
@@ -344,6 +395,7 @@ def audit_gate(
         value, digest = _load(bundle_root / f"{mode}_gate.json")
         if digest != protocol["mode_gate_file_sha256"][mode]:
             raise EfficiencyAuditError(f"Mode gate hash differs: {mode}")
+        _validate_mode_gate(value, compiled=mode == "compiled")
         gates[mode] = (value, digest)
     artifact_audit = artifacts._verify_artifacts(run_root)
     receipts: dict[str, dict[str, Any]] = {}
