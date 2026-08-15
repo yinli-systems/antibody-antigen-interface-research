@@ -132,7 +132,12 @@ def _telemetry(path: Path) -> dict[str, Any]:
         rows = list(csv.DictReader(handle))
     active: list[dict[str, str]] = []
     for row in rows:
-        normalized = {key.strip(): value for key, value in row.items()}
+        if any(key is None or value is None for key, value in row.items()):
+            raise EfficiencyAuditError(f"Malformed GPU telemetry row: {path}")
+        normalized = {
+            key.strip(): value.strip()
+            for key, value in row.items()
+        }
         if _number(normalized["memory.used [MiB]"]) > 100.0:
             active.append(normalized)
     if not active:
