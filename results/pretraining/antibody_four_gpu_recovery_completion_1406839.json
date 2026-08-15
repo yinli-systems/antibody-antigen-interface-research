@@ -1,0 +1,53 @@
+{
+  "authorization": {
+    "loader_recovery_gate": true,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Exact four-GPU real-OAS loader and checkpoint recovery passed for the latest pinned execution candidate; this does not authorize production pretraining or any downstream, biological, official-test, or SOTA claim",
+  "corpus": {
+    "unique_train_records": 224887833,
+    "unique_validation_records": 1743380
+  },
+  "format_version": "antibody_four_gpu_recovery_completion_v1",
+  "independent_audit": {
+    "artifact_file_count": 26,
+    "artifact_manifest_file_sha256": "e327bcce754d2938811e390e828c163afefdf637330d95aa7fe925814becc8ea",
+    "artifact_manifest_verified": true,
+    "exact_recovery": {
+      "final_model_equal": true,
+      "final_optimizer_equal": true,
+      "scientific_trace_equal": true,
+      "terminal_coordinates_equal": true
+    },
+    "file_sha256": "7d5c12c6be71eb949027141f6cb353db81c40235e0f2cf951a761cd8932b9afe",
+    "payload_sha256": "7fa7279f773ea6797e5314d1a746be36eed32674e035dea886fcffab17eb034d",
+    "writable_paths": []
+  },
+  "job": {
+    "elapsed": "00:11:31",
+    "exit_code": "0:0",
+    "job_id": 1406839,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_9f36119_attempt_001",
+    "state": "COMPLETED"
+  },
+  "provenance": {
+    "continuous_receipt_file_sha256": "c535d04dadfd9f263833d676113192a1524790d5c596d1c618a23449874cc81c",
+    "gate_protocol_file_sha256": "516f7f716aafdd812ff81fe2510760393424e05bd7f01d725a62b02a1776a35d",
+    "resumed_receipt_file_sha256": "40f4270c954926d915a22e282e341093b571ef014766558b49a19176073cfb30",
+    "stage1_receipt_file_sha256": "7bf4e51f86dd3c13ea99a23b8bc427635049128b715251d455856ee557320ea5"
+  },
+  "source": {
+    "auditor_sha256": "dd546bb81462303c43274bb4675b73d563da3304e905531437082150ae8349b8",
+    "commit": "9f3611998c04599bf6233a36d5152bf2f6fe8723",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-9f36119-attempt-001",
+    "pipeline_sha256": "2e93ce0402ce925d995e2e3dd6ea9dcb1bf6cffbb756db458ede4a011191fde8"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
