@@ -69,7 +69,7 @@ def audit_recovery_4gpu(
         or protocol.get("authorization") != AUTHORIZATION
         or protocol.get("test_access") != TEST_ACCESS
         or protocol.get("execution", {}).get("world_size") != WORLD_SIZE
-        or protocol.get("execution", {}).get("hardware")
+        or protocol.get("hardware_identity")
         != {
             "gpu_count": WORLD_SIZE,
             "gpu_model": "NVIDIA GeForce RTX 5090",

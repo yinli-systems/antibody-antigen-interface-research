@@ -1,0 +1,50 @@
+{
+  "authorization": {
+    "loader_recovery_gate": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Failure receipt only; all three four-GPU recovery roles completed, but the independent audit rejected a stale hardware-identity field path, so this attempt does not authorize production pretraining or any downstream, biological, official-test, or SOTA claim",
+  "failure": {
+    "elapsed": "00:08:36",
+    "error_log_file_sha256": "8648ec6cebdccf8216d937dced961015e9168fa52211992c3eb08de4a0979724",
+    "exit_code": "1:0",
+    "job_id": 1406724,
+    "reason": "The freezer bound hardware identity at top-level hardware_identity while the independent auditor still inspected the obsolete execution.hardware path",
+    "stage": "independent_recovery_audit",
+    "state": "FAILED",
+    "training_updates_completed": {
+      "continuous": 4,
+      "resumed": 2,
+      "stage1": 2
+    }
+  },
+  "format_version": "antibody_four_gpu_recovery_failure_v1",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_e9c6b95_attempt_001/slurm-1406724",
+  "recovery_evidence": {
+    "continuous_receipt_file_sha256": "03b320277bd2786a7912959b60c118bf1523c1812f5e7116927cb9e467ac9be2",
+    "continuous_terminal_model_sha256": "da4423afa8da34677ca95d8880b88d227134583e61bc163fb3d21387082f9e04",
+    "continuous_terminal_optimizer_sha256": "eb80c3797d04bee64c35e12e16e431903132f17328f7ee034e9118b2f964d10b",
+    "exact_terminal_state_observed_before_independent_audit": true,
+    "gate_protocol_file_sha256": "13a4cf2bbec1d47d87039b84012d7895ba32a113d3ae15cd453a031a4aa31157",
+    "resumed_receipt_file_sha256": "6a8898096fe7b0c5e6d9cfec8ffd27f44df5f9a2822fcb12c0235b1ae8172c96",
+    "resumed_terminal_model_sha256": "da4423afa8da34677ca95d8880b88d227134583e61bc163fb3d21387082f9e04",
+    "resumed_terminal_optimizer_sha256": "eb80c3797d04bee64c35e12e16e431903132f17328f7ee034e9118b2f964d10b",
+    "runtime_verification_file_sha256": "15a4ee9ffc4808a8c3c8982d39783f98fed7d88e792d71b1892ed7fec7f9482f",
+    "stage1_receipt_file_sha256": "f88afbcfc6e4fd3678f1dce510c631f1e610dadcf7ee34de94b7320131fe7298"
+  },
+  "resolution": {
+    "hardware_identity_check_removed": false,
+    "hardware_identity_check_updated_to_frozen_top_level_contract": true,
+    "regression_test_rejects_tampered_gpu_count": true,
+    "scientific_recovery_comparison_relaxed": false
+  },
+  "source_commit": "e9c6b95f9fe087fa1eafcfa1b660835b04b2e6e8",
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
