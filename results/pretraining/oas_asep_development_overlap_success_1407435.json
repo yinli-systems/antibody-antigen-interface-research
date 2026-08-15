@@ -1,0 +1,100 @@
+{
+  "claim_boundary": "Exact antibody-chain overlap audit on AsEP development roles only. This result rejects full-development transfer and does not establish near-identity decontamination, transfer benefit, official-test validity, or partner-specific pretraining.",
+  "counts": {
+    "development_chain_references": 3106,
+    "development_instances": 1553,
+    "exact_clean_instances": 1516,
+    "exactly_overlapping_chain_references": 37,
+    "exactly_overlapping_instances": 37,
+    "matched_unique_sequence_sha256": 28,
+    "unique_reference_sequence_sha256": 2770
+  },
+  "deployment": {
+    "bundle_preflight_passed": true,
+    "immutable_bundle_sha256": "c646d02445325da3e269cf3268f6887bc47eb679bf9d2c3ae42497797fe5d2ab",
+    "immutable_bundle_size_bytes": 3635200,
+    "source_commit": "d1d3286646d30ec1cc6091f3547232de84489545",
+    "source_directory": "/ssd/scxi253/model_deployment/jobs/oas-asep-overlap-d1d3286-attempt-004"
+  },
+  "format_version": "oas_asep_development_overlap_execution_receipt_v1",
+  "job": {
+    "elapsed": "00:03:12",
+    "end": "2026-08-15T20:02:59+08:00",
+    "exit_code": "0:0",
+    "job_id": "1407435",
+    "start": "2026-08-15T19:59:47+08:00",
+    "state": "COMPLETED",
+    "stderr_bytes": 0
+  },
+  "output": {
+    "directory_mode": "0500",
+    "result_file_mode": "0400",
+    "result_path": "/ssd/scxi253/model_deployment/results/pretraining/oas_asep_development_overlap_d1d3286_attempt_004/OAS_ASEP_DEVELOPMENT_EXACT_OVERLAP.json",
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_asep_development_overlap_d1d3286_attempt_004"
+  },
+  "overlapping_instance_ids": [
+    "3j5m_0P",
+    "3ngb_0P",
+    "4i3s_0P",
+    "4lss_0P",
+    "4m8q_1P",
+    "4odx_1P",
+    "4oly_0P",
+    "4s1r_0P",
+    "4xvs_0P",
+    "4xvt_0P",
+    "5xwd_0P",
+    "6kz0_1P",
+    "6qb3_0P",
+    "7chh_0P",
+    "7cwl_0P",
+    "7cwo_0P",
+    "7d0b_0P",
+    "7deo_1P",
+    "7jv2_0P",
+    "7k8s_0P",
+    "7k8x_0P",
+    "7k9h_0P",
+    "7k9i_0P",
+    "7lqv_1P",
+    "7ls9_0P",
+    "7n5h_0P",
+    "7q9k_1P",
+    "7rbu_0P",
+    "7rbv_0P",
+    "7rk1_1P",
+    "7swn_0P",
+    "7wly_0P",
+    "7wm0_0P",
+    "7won_0P",
+    "7wp2_0P",
+    "7x7t_1P",
+    "7x7v_1P"
+  ],
+  "runtime": {
+    "development_sequence_fields_only": true,
+    "gpu_compute_permitted": false,
+    "official_test_accessed": false,
+    "scheduler_reserved_gpu_count": 1
+  },
+  "sha256": {
+    "environment": "e7ef4665b6055549a94d624a2fb79d88d551cae6eecbd6499e4dd1a23d8550e1",
+    "result": "f73a35fb3681aba5641932dbbbe95315ef1845e482f72066230c0071a31796b7",
+    "result_sha256_file": "533ee35e4bd232a89061ab01cfdc7f0c4ae0296316847d4442e35ddd312a4411",
+    "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "0c8e4b113949dd7f3bf483ed20c93f97c4f413957e20fed7b5819a6ca5858e65"
+  },
+  "test_access": {
+    "asep_development_sequence_fields_accessed": true,
+    "asep_official_test_accessed": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "model_predictions_or_scores_accessed": false
+  },
+  "transfer_gate": {
+    "decontaminated_subset_required": true,
+    "downstream_transfer_authorized": false,
+    "full_development_exact_decontamination_passed": false,
+    "near_identity_cluster_audit_completed": false
+  }
+}
