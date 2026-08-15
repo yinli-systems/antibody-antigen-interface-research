@@ -7,7 +7,10 @@ import struct
 
 
 FIXED_IMGT_MATCH_RECORD = struct.Struct(">IQBHHHHH")
-ID_TO_TARGET_SPLIT = {0: "train", 1: "validation"}
+# Preserve the authenticated OAS production split enum byte.  The production
+# materialization contract assigns validation=0 and train=1; changing that
+# order here would silently invert every native match split.
+ID_TO_TARGET_SPLIT = {0: "validation", 1: "train"}
 TARGET_SPLIT_TO_ID = {value: key for key, value in ID_TO_TARGET_SPLIT.items()}
 
 
