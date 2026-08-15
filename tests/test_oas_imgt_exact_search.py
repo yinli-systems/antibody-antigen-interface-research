@@ -108,9 +108,10 @@ def test_gap_and_missing_end_share_the_metric_absent_state() -> None:
 
 def test_reciprocal_coverage_is_verified_after_lossless_candidate_recall() -> None:
     query = _query(2, _alignment(b"A" * CANONICAL_LENGTH))
-    target_values = bytearray(b"A" * CANONICAL_LENGTH)
-    for position in range(25):
-        target_values[position] = GAP
+    target_values = bytearray([GAP] * CANONICAL_LENGTH)
+    for group in SEED_POSITION_GROUPS[:10]:
+        for position in group:
+            target_values[position] = ord("A")
     target = _target(5, _alignment(bytes(target_values)))
     index = build_query_index([query])
 
