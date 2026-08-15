@@ -369,6 +369,34 @@ def _digest_keys(array: np.ndarray, *, bucket: int, label: str) -> np.ndarray:
     return keys
 
 
+def _sum_sequence_lengths(
+    lengths: np.ndarray,
+    *,
+    selected: Optional[np.ndarray] = None,
+    chunk_records: int,
+) -> int:
+    if lengths.ndim != 1 or chunk_records <= 0:
+        raise IndependentDecontaminationAuditError(
+            "Sequence-length accounting schema differs"
+        )
+    if selected is not None and (
+        selected.dtype != np.dtype("bool")
+        or selected.ndim != 1
+        or len(selected) != len(lengths)
+    ):
+        raise IndependentDecontaminationAuditError(
+            "Sequence-length selector differs"
+        )
+    total = 0
+    for start in range(0, len(lengths), chunk_records):
+        end = min(start + chunk_records, len(lengths))
+        block = np.asarray(lengths[start:end])
+        if selected is not None:
+            block = block[selected[start:end]]
+        total += int(np.sum(block, dtype=np.uint64))
+    return total
+
+
 def _audit_split(
     *,
     bucket: int,
@@ -427,6 +455,18 @@ def _audit_split(
             excluded = np.zeros(len(source_keys), dtype=np.bool_)
         keep = ~excluded
         retained = int(np.count_nonzero(keep))
+        source_residue_tokens = _sum_sequence_lengths(
+            source_arrays["sequence_lengths.npy"], chunk_records=chunk_records
+        )
+        excluded_residue_tokens = _sum_sequence_lengths(
+            source_arrays["sequence_lengths.npy"],
+            selected=excluded,
+            chunk_records=chunk_records,
+        )
+        retained_residue_tokens = source_residue_tokens - excluded_residue_tokens
+        candidate_residue_tokens = _sum_sequence_lengths(
+            candidate_arrays["sequence_lengths.npy"], chunk_records=chunk_records
+        )
         if retained != len(candidate_keys):
             raise IndependentDecontaminationAuditError(
                 "Candidate retained-row count differs"
@@ -459,6 +499,13 @@ def _audit_split(
         if (
             decontamination.get("source_record_count") != len(source_keys)
             or decontamination.get("excluded_records") != excluded_count
+            or decontamination.get("source_residue_tokens")
+            != source_residue_tokens
+            or decontamination.get("excluded_residue_tokens")
+            != excluded_residue_tokens
+            or candidate_manifest.get("residue_token_count")
+            != retained_residue_tokens
+            or candidate_residue_tokens != retained_residue_tokens
             or candidate_manifest.get("source_manifest_file_sha256") != source_file
             or candidate_manifest.get("source_manifest_payload_sha256")
             != source_payload
@@ -470,11 +517,14 @@ def _audit_split(
             "candidate_manifest_file_sha256": candidate_file,
             "candidate_manifest_payload_sha256": candidate_payload,
             "excluded_records": excluded_count,
+            "excluded_residue_tokens": excluded_residue_tokens,
             "replay_semantic_sha256": semantic.hexdigest(),
             "retained_records": retained,
+            "retained_residue_tokens": retained_residue_tokens,
             "source_manifest_file_sha256": source_file,
             "source_manifest_payload_sha256": source_payload,
             "source_records": len(source_keys),
+            "source_residue_tokens": source_residue_tokens,
             "split": split,
         }
     finally:
@@ -694,6 +744,30 @@ def audit_corpus(
             int(item["shards"]["validation"]["retained_records"])
             for item in results
         ),
+        "decontamination_excluded_train_residue_tokens": sum(
+            int(item["shards"]["train"]["excluded_residue_tokens"])
+            for item in results
+        ),
+        "decontamination_excluded_validation_residue_tokens": sum(
+            int(item["shards"]["validation"]["excluded_residue_tokens"])
+            for item in results
+        ),
+        "decontamination_source_train_residue_tokens": sum(
+            int(item["shards"]["train"]["source_residue_tokens"])
+            for item in results
+        ),
+        "decontamination_source_validation_residue_tokens": sum(
+            int(item["shards"]["validation"]["source_residue_tokens"])
+            for item in results
+        ),
+        "unique_train_residue_tokens": sum(
+            int(item["shards"]["train"]["retained_residue_tokens"])
+            for item in results
+        ),
+        "unique_validation_residue_tokens": sum(
+            int(item["shards"]["validation"]["retained_residue_tokens"])
+            for item in results
+        ),
     }
     totals["decontamination_excluded_records"] = (
         totals["decontamination_excluded_train_records"]
@@ -705,6 +779,18 @@ def audit_corpus(
     )
     totals["unique_records"] = (
         totals["unique_train_records"] + totals["unique_validation_records"]
+    )
+    totals["decontamination_excluded_residue_tokens"] = (
+        totals["decontamination_excluded_train_residue_tokens"]
+        + totals["decontamination_excluded_validation_residue_tokens"]
+    )
+    totals["decontamination_source_residue_tokens"] = (
+        totals["decontamination_source_train_residue_tokens"]
+        + totals["decontamination_source_validation_residue_tokens"]
+    )
+    totals["unique_residue_tokens"] = (
+        totals["unique_train_residue_tokens"]
+        + totals["unique_validation_residue_tokens"]
     )
     if candidate_manifest.get("counts") != totals or finalize.get("counts") != totals:
         raise IndependentDecontaminationAuditError("Global replay counts differ")
