@@ -121,5 +121,9 @@ printf '%s\n' "${NVCC_VERSION}" > "${TEMPORARY}/nvcc-version.txt"
 mv "${TEMPORARY}" "${OAS_KERNEL_BUNDLE_ROOT}"
 TEMPORARY=
 trap - EXIT
-find "${OAS_KERNEL_BUNDLE_ROOT}" -perm /222 -print -quit | grep -q . \
-  && { echo "Sealed bundle remains writable" >&2; exit 2; }
+WRITABLE_ENTRY=$(find "${OAS_KERNEL_BUNDLE_ROOT}" -perm /222 -print -quit)
+if [[ -n "${WRITABLE_ENTRY}" ]]; then
+  echo "Sealed bundle remains writable: ${WRITABLE_ENTRY}" >&2
+  exit 2
+fi
+exit 0
