@@ -28,6 +28,9 @@ CANCELLATION = (
 HARDENED_SUBMISSION = (
     ROOT / "results/pretraining/antibody_four_gpu_efficiency_submission_1406768.json"
 )
+HARDENED_FAILURE = (
+    ROOT / "results/pretraining/antibody_four_gpu_efficiency_failure_1406768.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -327,6 +330,27 @@ def test_bootstrap_and_mfu_use_four_gpu_denominator() -> None:
     assert result["masked_accuracy_decrease_upper"] == 0.0
 
 
+def test_telemetry_strips_nvidia_smi_csv_headers_and_values(tmp_path: Path) -> None:
+    auditor = _load("four_gpu_efficiency_telemetry_test", AUDITOR)
+    path = tmp_path / "gpu.csv"
+    path.write_text(
+        " timestamp, index, uuid, name, utilization.gpu [%], memory.used [MiB], "
+        "memory.total [MiB], power.draw [W]\n"
+        + "".join(
+            " 2026/08/15 10:00:00.000, "
+            f" {index}, GPU-{index}, NVIDIA GeForce RTX 5090, 95 %, "
+            " 20000 MiB, 32607 MiB, 500 W\n"
+            for index in range(4)
+        ),
+        encoding="ascii",
+    )
+    value = auditor._telemetry(path)
+    assert value["active_samples"] == 4
+    assert value["gpu_uuids"] == ["GPU-0", "GPU-1", "GPU-2", "GPU-3"]
+    assert value["maximum_memory_mib"] == 20_000
+    assert value["total_memory_mib"] == 32_607
+
+
 def test_pipeline_is_real_oas_abba_and_never_skips_checkpoints() -> None:
     source = PIPELINE.read_text(encoding="ascii")
     assert "#SBATCH --gres=gpu:4" in source
@@ -407,6 +431,27 @@ def test_hardened_submission_binds_new_source_and_protocol() -> None:
         "d2fc5539102577b18f2ebeeebabd604742aab3f6797d2d13a40262ce1c790314"
     )
     assert value["protocol"]["minimum_approximate_6n_mfu"] == 0.35
+    assert value["authorization"] == {
+        "configuration_promotion": False,
+        "production_pretraining": False,
+        "scientific_claim": False,
+    }
+    assert not any(value["test_access"].values())
+
+
+def test_hardened_failure_is_non_authorizing_and_preserves_diagnostic_boundary() -> None:
+    value = json.loads(HARDENED_FAILURE.read_text(encoding="ascii"))
+    assert value["job"]["job_id"] == 1406768
+    assert value["job"]["state"] == "FAILED"
+    assert value["job"]["exit_code"] == "1:0"
+    assert value["completed_work"] == {
+        "checkpoint_evaluations": 4,
+        "training_runs": 4,
+    }
+    assert value["failure"]["stage"] == "independent_audit_telemetry_parser"
+    assert value["diagnostic_replay"]["authoritative"] is False
+    assert value["diagnostic_replay"]["gate_passed"] is False
+    assert value["diagnostic_replay"]["failed_gates"] == ["step_stability"]
     assert value["authorization"] == {
         "configuration_promotion": False,
         "production_pretraining": False,
