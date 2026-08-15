@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -13,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 FREEZER = ROOT / "scripts/freeze_antibody_four_gpu_shape_stability_probe.py"
 AUDITOR = ROOT / "scripts/audit_antibody_four_gpu_shape_stability_probe.py"
 PIPELINE = ROOT / "slurm/antibody_four_gpu_shape_stability_probe.sbatch"
+SUBMISSION = (
+    ROOT / "results/pretraining/antibody_four_gpu_shape_stability_submission_1406872.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -169,3 +173,22 @@ def test_result_authorization_can_only_advance_to_full_efficiency_gate() -> None
     assert '"scientific_claim": False' in source
     assert '"full_efficiency_gate_candidate": passed' in source
     assert '"selected_candidate_for_full_efficiency_gate"' in source
+
+
+def test_submission_receipt_binds_exact_source_protocol_and_nonproduction_scope() -> None:
+    value = json.loads(SUBMISSION.read_text(encoding="ascii"))
+    assert value["job"]["job_id"] == 1406872
+    assert value["job"]["requested_gpus"] == 4
+    assert value["job"]["state_at_receipt"] == "PENDING"
+    assert value["source"]["commit"] == (
+        "095c15ac9adb59e0b055005d307d47accf175cec"
+    )
+    assert value["preflight"]["protocol_file_sha256"] == (
+        "915973752eac8f286bab171b51a33950e33b1e2c8d01ad483986c9f24b4436ca"
+    )
+    assert value["protocol"]["candidates"] == {
+        "bucketed": "96,128,160,194",
+        "static_194": "194",
+    }
+    assert value["authorization"]["production_pretraining"] is False
+    assert not any(value["test_access"].values())
