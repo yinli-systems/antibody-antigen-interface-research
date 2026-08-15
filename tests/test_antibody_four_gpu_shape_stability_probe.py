@@ -17,6 +17,9 @@ PIPELINE = ROOT / "slurm/antibody_four_gpu_shape_stability_probe.sbatch"
 SUBMISSION = (
     ROOT / "results/pretraining/antibody_four_gpu_shape_stability_submission_1406872.json"
 )
+COMPLETION = (
+    ROOT / "results/pretraining/antibody_four_gpu_shape_stability_completion_1406872.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -191,4 +194,30 @@ def test_submission_receipt_binds_exact_source_protocol_and_nonproduction_scope(
         "static_194": "194",
     }
     assert value["authorization"]["production_pretraining"] is False
+    assert not any(value["test_access"].values())
+
+
+def test_completion_receipt_only_promotes_static_shape_to_full_gate() -> None:
+    value = json.loads(COMPLETION.read_text(encoding="ascii"))
+    assert value["job"] == {
+        "elapsed": "00:41:02",
+        "exit_code": "0:0",
+        "job_id": 1406872,
+        "output_root": (
+            "/ssd/scxi253/model_deployment/results/pretraining/"
+            "antibody_four_gpu_shape_stability_095c15a_attempt_001"
+        ),
+        "state": "COMPLETED",
+    }
+    assert value["outcome"]["selected_candidate"] == "static_194"
+    assert value["outcome"]["static_194"]["eligible"] is True
+    assert value["outcome"]["bucketed"]["eligible"] is False
+    assert value["outcome"]["static_194"]["pooled_approximate_6n_mfu"] >= 0.35
+    assert max(value["outcome"]["static_194"]["run_p95_over_p50"]) <= 1.10
+    assert value["authorization"] == {
+        "configuration_promotion": False,
+        "full_efficiency_gate_candidate": True,
+        "production_pretraining": False,
+        "scientific_claim": False,
+    }
     assert not any(value["test_access"].values())

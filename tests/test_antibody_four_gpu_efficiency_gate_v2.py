@@ -19,6 +19,9 @@ FREEZER = ROOT / "scripts/freeze_antibody_four_gpu_efficiency_gate_v2.py"
 AUDITOR = ROOT / "scripts/audit_antibody_four_gpu_efficiency_gate_v2.py"
 PIPELINE = ROOT / "slurm/antibody_four_gpu_efficiency_pipeline.sbatch"
 WRAPPER = ROOT / "slurm/antibody_four_gpu_efficiency_pipeline_v2.sbatch"
+SUBMISSION = (
+    ROOT / "results/pretraining/antibody_four_gpu_efficiency_v2_submission_1406904.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -222,6 +225,24 @@ def test_pipeline_routes_static_shape_only_to_compiled_mode() -> None:
     assert "export ABF_EFFICIENCY_GATE_VERSION=v2" in wrapper
     assert "export ABF_COMPILED_LENGTH_BUCKET_BOUNDARIES=194" in wrapper
     assert "ABF_SHAPE_PROBE_AUDIT" in wrapper
+
+
+def test_submission_receipt_cannot_be_mistaken_for_efficiency_or_training_pass() -> None:
+    value = json.loads(SUBMISSION.read_text(encoding="ascii"))
+    assert value["job"]["job_id"] == 1406904
+    assert value["job"]["state_at_receipt"] == "PENDING"
+    assert value["job"]["requested_gpus"] == 4
+    assert value["protocol"]["compiled_length_bucket_boundaries"] == "194"
+    assert value["source"]["commit"] == (
+        "340e2f0d380fd7988d05766b1ac4429cd7915172"
+    )
+    assert value["prerequisites"]["shape_probe_passed"] is True
+    assert value["authorization"] == {
+        "configuration_promotion": False,
+        "production_pretraining": False,
+        "scientific_claim": False,
+    }
+    assert not any(value["test_access"].values())
 
 
 def test_v2_source_closure_binds_all_direct_and_indirect_execution() -> None:
