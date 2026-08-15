@@ -11,6 +11,7 @@ from antibody_pretraining.imgt_search_output import (
     pack_fixed_imgt_match,
     unpack_fixed_imgt_match,
 )
+from antibody_pretraining.production_materialization import SPLIT_TO_ID
 
 
 def _match(**updates: object) -> FixedIMGTOutputMatch:
@@ -39,6 +40,13 @@ def test_fixed_imgt_match_round_trips_at_inclusive_identity_boundary() -> None:
     payload = pack_fixed_imgt_match(match)
     assert len(payload) == FIXED_IMGT_MATCH_RECORD.size == 23
     assert unpack_fixed_imgt_match(payload) == match
+
+
+def test_match_split_byte_is_identical_to_production_target_enum() -> None:
+    train = pack_fixed_imgt_match(_match(target_split="train"))
+    validation = pack_fixed_imgt_match(_match(target_split="validation"))
+    assert train[12] == SPLIT_TO_ID["train"] == 1
+    assert validation[12] == SPLIT_TO_ID["validation"] == 0
 
 
 @pytest.mark.parametrize(
