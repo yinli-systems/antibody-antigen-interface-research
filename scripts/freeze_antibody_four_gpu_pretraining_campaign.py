@@ -16,8 +16,8 @@ import freeze_antibody_production_recovery_gate as recovery_freezer
 
 
 FORMAT_VERSION = "antibody_four_gpu_pretraining_segment_gate_v1"
-EFFICIENCY_FORMAT = "antibody_four_gpu_efficiency_result_v1"
-EFFICIENCY_PROTOCOL_FORMAT = "antibody_four_gpu_efficiency_gate_v1"
+EFFICIENCY_FORMAT = "antibody_four_gpu_efficiency_result_v2"
+EFFICIENCY_PROTOCOL_FORMAT = "antibody_four_gpu_efficiency_gate_v2"
 RECOVERY_AUDIT_FORMAT = "antibody_production_loader_recovery_audit_4gpu_v1"
 RECOVERY_GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
 CAMPAIGN_TOKEN_LIMIT = 30_000_000_000
@@ -32,6 +32,7 @@ TARGET_RESIDUE_TOKENS = 131_072
 BATCH_QUANTUM_SEQUENCES = 256
 MICRO_BATCH_PER_GPU = 16
 RUN_SEED = 17
+STATIC_LENGTH_BUCKET_BOUNDARIES = "194"
 AUTHORIZATION = {
     "configuration_promotion": True,
     "downstream_transfer": False,
@@ -257,6 +258,7 @@ def _validate_efficiency(
         audit.get("runs", {}).get(label, {}).get("summary", {})
         for label in ("compiled_r1", "compiled_r2")
     ]
+    selected_shape = protocol.get("selected_shape_candidate")
     if (
         protocol.get("format_version") != EFFICIENCY_PROTOCOL_FORMAT
         or protocol.get("authorization")
@@ -275,6 +277,11 @@ def _validate_efficiency(
         or audit.get("inputs", {}).get("protocol_file_sha256")
         != protocol_file_sha256
         or audit.get("test_access") != protocol.get("test_access")
+        or not isinstance(selected_shape, dict)
+        or selected_shape.get("name") != "static_194"
+        or selected_shape.get("compiled_length_bucket_boundaries")
+        != STATIC_LENGTH_BUCKET_BOUNDARIES
+        or audit.get("selected_shape_candidate") != selected_shape
         or any(not isinstance(item, dict) for item in compiled_runs)
         or any(
             float(item.get("approximate_6n_mfu", -1.0))
@@ -345,6 +352,9 @@ def freeze_campaign(
         source_root / "scripts/audit_antibody_four_gpu_pretraining_segment.py"
     )
     gate["campaign_source"] = _campaign_source(source_root)
+    gate["execution"]["length_bucket_boundaries"] = (
+        STATIC_LENGTH_BUCKET_BOUNDARIES
+    )
     gate["campaign"] = {
         "authoritative_progress_unit": "admitted_residue_tokens_consumed",
         "campaign_token_limit": CAMPAIGN_TOKEN_LIMIT,
@@ -368,6 +378,15 @@ def freeze_campaign(
         "exact_recovery_audit_file_sha256": recovery_audit_file_sha256,
         "exact_recovery_audit_payload_sha256": recovery_audit_payload_sha256,
         "exact_recovery_gate_file_sha256": recovery_gate_file_sha256,
+        "shape_probe_audit_file_sha256": efficiency_audit[
+            "selected_shape_candidate"
+        ]["probe_audit_file_sha256"],
+        "shape_probe_audit_payload_sha256": efficiency_audit[
+            "selected_shape_candidate"
+        ]["probe_audit_payload_sha256"],
+        "shape_probe_protocol_file_sha256": efficiency_audit[
+            "selected_shape_candidate"
+        ]["probe_protocol_file_sha256"],
     }
     gate["systems_evidence"] = {
         "compiled_p95_step_seconds_upper_reference": compiled_p95_seconds,
@@ -378,6 +397,9 @@ def freeze_campaign(
             "modes"
         ]["compiled"]["residue_tokens_per_second"],
         "profiler_measured_mfu": False,
+        "selected_shape_candidate": copy.deepcopy(
+            efficiency_audit["selected_shape_candidate"]
+        ),
     }
 
     def run(*, resume: bool) -> dict[str, object]:

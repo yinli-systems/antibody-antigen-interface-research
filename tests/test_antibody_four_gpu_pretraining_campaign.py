@@ -58,16 +58,28 @@ def _efficiency_audit(*, passed: bool = True) -> dict[str, object]:
         "approximate_mfu": True,
         "evaluation_noninferiority": True,
     }
+    selected_shape = {
+        "compiled_length_bucket_boundaries": "194",
+        "name": "static_194",
+        "probe_audit_file_sha256": "4" * 64,
+        "probe_audit_payload_sha256": "5" * 64,
+        "probe_protocol_file_sha256": "6" * 64,
+        "probe_static_configuration": {
+            "eligible": True,
+            "gates": {"step_stability": True},
+        },
+    }
     return {
         "authorization": {
             "configuration_promotion": passed,
             "production_pretraining": False,
             "scientific_claim": False,
         },
-        "format_version": "antibody_four_gpu_efficiency_result_v1",
+        "format_version": "antibody_four_gpu_efficiency_result_v2",
         "gate_passed": passed,
         "gates": gates,
         "inputs": {"protocol_file_sha256": "a" * 64},
+        "selected_shape_candidate": selected_shape,
         "pooled": {
             "modes": {
                 "compiled": {
@@ -101,6 +113,7 @@ def test_campaign_freeze_preserves_30b_token_and_evidence_boundaries(
     recovery_gate = {
         "authorization": dict(freezer.RECOVERY_AUTHORIZATION),
         "execution": {
+            "length_bucket_boundaries": "96,128,160,194",
             "optimization": dict(freezer.OPTIMIZATION),
             "world_size": 4,
         },
@@ -147,6 +160,11 @@ def test_campaign_freeze_preserves_30b_token_and_evidence_boundaries(
     assert result["runs"]["resumed"]["resume"] is True
     assert result["runs"]["stage1"]["campaign_token_limit"] == 30_000_000_000
     assert result["runs"]["stage1"]["steps"] == 5_400
+    assert result["execution"]["length_bucket_boundaries"] == "194"
+    assert result["systems_evidence"]["selected_shape_candidate"]["name"] == (
+        "static_194"
+    )
+    assert result["prerequisites"]["shape_probe_audit_file_sha256"] == "4" * 64
     assert "official/frozen/external-test" in result["claim_boundary"]
 
 
@@ -160,6 +178,9 @@ def test_efficiency_failure_cannot_freeze_campaign(tmp_path: Path) -> None:
             "scientific_claim": False,
         },
         "format_version": freezer.EFFICIENCY_PROTOCOL_FORMAT,
+        "selected_shape_candidate": _efficiency_audit()[
+            "selected_shape_candidate"
+        ],
         "test_access": dict(freezer.EFFICIENCY_TEST_ACCESS),
     }
     protocol_path = tmp_path / "protocol.json"
@@ -199,7 +220,10 @@ def test_first_segment_audit_replays_trace_evaluation_and_artifacts(
             name: auditor.artifacts._sha256(ROOT / name)
             for name in freezer.CAMPAIGN_SOURCE_FILES
         },
-        "execution": {"optimization": dict(freezer.OPTIMIZATION)},
+        "execution": {
+            "length_bucket_boundaries": "194",
+            "optimization": dict(freezer.OPTIMIZATION),
+        },
         "format_version": freezer.FORMAT_VERSION,
         "hardware_identity": dict(freezer.HARDWARE),
         "implementation": {},
@@ -267,6 +291,7 @@ def test_first_segment_audit_replays_trace_evaluation_and_artifacts(
             "checkpoint_rng_manifest_sha256": "3" * 64,
             "consumed_residue_tokens": 100,
             "gate_protocol_sha256": gate_sha256,
+            "length_bucket_boundaries": [194],
             "next_update": 1,
             "sample_cursor": 1,
         },
@@ -390,7 +415,69 @@ def test_slurm_is_four_gpu_compiled_and_never_uses_downstream_labels() -> None:
     assert "Campaign source closure differs" in source
     assert "--campaign-token-limit" in source
     assert "--compile-blocks" in source
+    assert "--length-bucket-boundaries 194" in source
+    assert "--length-bucket-boundaries 96,128,160,194" not in source
     assert "audit_antibody_four_gpu_pretraining_segment.py" in source
     assert "official_test" not in source
     assert "frozen_test" not in source
     assert "downstream_labels" not in source
+
+
+def test_v1_or_nonstatic_efficiency_evidence_cannot_authorize_campaign(
+    tmp_path: Path,
+) -> None:
+    freezer = _load("pretraining_campaign_static_evidence_test", FREEZER)
+    selected = _efficiency_audit()["selected_shape_candidate"]
+    protocol = {
+        "acceptance": {"minimum_approximate_6n_mfu": 0.35},
+        "authorization": {
+            "configuration_promotion": False,
+            "production_pretraining": False,
+            "scientific_claim": False,
+        },
+        "format_version": freezer.EFFICIENCY_PROTOCOL_FORMAT,
+        "selected_shape_candidate": selected,
+        "test_access": dict(freezer.EFFICIENCY_TEST_ACCESS),
+    }
+    protocol_path = tmp_path / "protocol.json"
+    protocol_sha256 = _write(protocol_path, protocol)
+    audit = _efficiency_audit()
+    audit["inputs"]["protocol_file_sha256"] = protocol_sha256
+    audit["selected_shape_candidate"] = {
+        **selected,
+        "compiled_length_bucket_boundaries": "96,128,160,194",
+    }
+    payload = dict(audit)
+    audit["receipt_sha256"] = hashlib.sha256(_canonical(payload)).hexdigest()
+    audit_path = tmp_path / "audit.json"
+    audit_sha256 = _write(audit_path, audit)
+    with pytest.raises(
+        freezer.CampaignFreezeError,
+        match="does not authorize promotion",
+    ):
+        freezer._validate_efficiency(
+            protocol_path=protocol_path,
+            protocol_file_sha256=protocol_sha256,
+            audit_path=audit_path,
+            audit_file_sha256=audit_sha256,
+            audit_payload_sha256=audit["receipt_sha256"],
+        )
+
+    protocol["format_version"] = "antibody_four_gpu_efficiency_gate_v1"
+    protocol_sha256 = _write(tmp_path / "protocol-v1.json", protocol)
+    audit = _efficiency_audit()
+    audit["inputs"]["protocol_file_sha256"] = protocol_sha256
+    payload = dict(audit)
+    audit["receipt_sha256"] = hashlib.sha256(_canonical(payload)).hexdigest()
+    audit_sha256 = _write(tmp_path / "audit-v1.json", audit)
+    with pytest.raises(
+        freezer.CampaignFreezeError,
+        match="does not authorize promotion",
+    ):
+        freezer._validate_efficiency(
+            protocol_path=tmp_path / "protocol-v1.json",
+            protocol_file_sha256=protocol_sha256,
+            audit_path=tmp_path / "audit-v1.json",
+            audit_file_sha256=audit_sha256,
+            audit_payload_sha256=audit["receipt_sha256"],
+        )

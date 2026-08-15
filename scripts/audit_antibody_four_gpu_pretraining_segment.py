@@ -272,6 +272,8 @@ def audit_segment(
         or protocol.get("test_access") != freezer.TEST_ACCESS
         or protocol.get("hardware_identity") != freezer.HARDWARE
         or protocol.get("execution", {}).get("optimization") != freezer.OPTIMIZATION
+        or protocol.get("execution", {}).get("length_bucket_boundaries")
+        != freezer.STATIC_LENGTH_BUCKET_BOUNDARIES
         or protocol.get("auditor_sha256") != artifacts._sha256(Path(__file__))
         or protocol.get("campaign_source", {}).get(
             "scripts/audit_antibody_four_gpu_pretraining_segment.py"
@@ -314,6 +316,9 @@ def audit_segment(
         or campaign.get("token_limit")
         != protocol["campaign"]["campaign_token_limit"]
         or state.get("gate_protocol_sha256") != gate_sha256
+        or state.get("length_bucket_boundaries") != [
+            int(freezer.STATIC_LENGTH_BUCKET_BOUNDARIES)
+        ]
         or state.get("checkpoint_rng_manifest_sha256")
         != receipt.get("checkpoint_rng_manifest_sha256")
     ):
