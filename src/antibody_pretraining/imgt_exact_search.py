@@ -3,10 +3,11 @@
 The final decision is always made from all 200 registered IMGT positions.  The
 seed index is only an acceleration device.  After normalizing both kinds of
 "no residue" byte to zero, a pair passing 90% position identity can disagree at
-no more than 20 of the 200 positions.  The registered 21-way disjoint position
-partition therefore guarantees at least one exact seed by the pigeonhole
-principle.  Candidate generation cannot remove a qualifying pair; every
-candidate is subsequently checked for identity and reciprocal coverage.
+no more than 20 of the 200 positions.  The registered 25-way disjoint position
+partition therefore guarantees at least five exact eight-byte seeds by the
+pigeonhole principle.  Requiring all five remains lossless and maps directly
+to exact uint64 equality on a GPU.  Every candidate is subsequently checked
+for identity and reciprocal coverage over all 200 positions.
 """
 
 from __future__ import annotations
@@ -33,7 +34,10 @@ QUERY_COVERAGE_DENOMINATOR = 10
 TARGET_COVERAGE_NUMERATOR = 9
 TARGET_COVERAGE_DENOMINATOR = 10
 MAXIMUM_QUALIFYING_DISAGREEMENTS = CANONICAL_LENGTH // IDENTITY_DENOMINATOR
-SEED_GROUP_COUNT = MAXIMUM_QUALIFYING_DISAGREEMENTS + 1
+SEED_GROUP_COUNT = 25
+MINIMUM_QUALIFYING_EXACT_SEEDS = (
+    SEED_GROUP_COUNT - MAXIMUM_QUALIFYING_DISAGREEMENTS
+)
 
 
 class IMGTExactSearchError(RuntimeError):
@@ -41,7 +45,7 @@ class IMGTExactSearchError(RuntimeError):
 
 
 def _registered_seed_groups() -> Tuple[Tuple[int, ...], ...]:
-    """Create 21 disjoint, spatially distributed groups over all 200 positions."""
+    """Create 25 disjoint, spatially distributed groups over all 200 positions."""
     permutation = tuple(
         (19 + 73 * index) % CANONICAL_LENGTH
         for index in range(CANONICAL_LENGTH)
@@ -55,7 +59,7 @@ def _registered_seed_groups() -> Tuple[Tuple[int, ...], ...]:
     flattened = tuple(position for group in groups for position in group)
     if (
         len(groups) != SEED_GROUP_COUNT
-        or any(len(group) not in {9, 10} for group in groups)
+        or any(len(group) != 8 for group in groups)
         or len(flattened) != CANONICAL_LENGTH
         or set(flattened) != set(range(CANONICAL_LENGTH))
     ):
@@ -164,10 +168,15 @@ def candidate_query_ordinals(
 ) -> Tuple[int, ...]:
     """Return the lossless seed union for one target in deterministic order."""
     target.alignment.validate()
-    candidates = set()
+    exact_seed_counts: Dict[int, int] = {}
     for group_id, signature in enumerate(seed_signatures(target.alignment)):
-        candidates.update(index.buckets.get((group_id, signature), ()))
-    return tuple(sorted(candidates))
+        for query_ordinal in index.buckets.get((group_id, signature), ()):
+            exact_seed_counts[query_ordinal] = exact_seed_counts.get(query_ordinal, 0) + 1
+    return tuple(
+        query_ordinal
+        for query_ordinal, count in sorted(exact_seed_counts.items())
+        if count >= MINIMUM_QUALIFYING_EXACT_SEEDS
+    )
 
 
 def verify_target_candidates(
@@ -214,6 +223,7 @@ __all__ = [
     "IDENTITY_NUMERATOR",
     "IMGTExactSearchError",
     "MAXIMUM_QUALIFYING_DISAGREEMENTS",
+    "MINIMUM_QUALIFYING_EXACT_SEEDS",
     "SEED_GROUP_COUNT",
     "SEED_POSITION_GROUPS",
     "assert_lossless_candidate",

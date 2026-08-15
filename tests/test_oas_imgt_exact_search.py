@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 
 from antibody_pretraining.imgt_exact_search import (
+    MINIMUM_QUALIFYING_EXACT_SEEDS,
     SEED_GROUP_COUNT,
     SEED_POSITION_GROUPS,
     assert_lossless_candidate,
@@ -51,10 +52,11 @@ def _target(ordinal: int, alignment: CanonicalAlignment) -> IMGTTargetRecord:
     )
 
 
-def test_seed_partition_is_exactly_21_disjoint_groups_over_200_positions() -> None:
+def test_seed_partition_is_25_disjoint_uint64_groups_over_200_positions() -> None:
     flattened = [position for group in SEED_POSITION_GROUPS for position in group]
-    assert SEED_GROUP_COUNT == 21
-    assert {len(group) for group in SEED_POSITION_GROUPS} == {9, 10}
+    assert SEED_GROUP_COUNT == 25
+    assert MINIMUM_QUALIFYING_EXACT_SEEDS == 5
+    assert {len(group) for group in SEED_POSITION_GROUPS} == {8}
     assert len(flattened) == CANONICAL_LENGTH
     assert sorted(flattened) == list(range(CANONICAL_LENGTH))
 
@@ -79,7 +81,7 @@ def test_twenty_disagreements_at_identity_boundary_are_always_recalled() -> None
 def test_one_disagreement_per_seed_can_miss_only_below_identity_gate() -> None:
     query_alignment = _alignment(b"A" * CANONICAL_LENGTH)
     target_values = bytearray(query_alignment.encoded)
-    for group in SEED_POSITION_GROUPS:
+    for group in SEED_POSITION_GROUPS[:21]:
         target_values[group[0]] = ord("C")
     query = _query(0, query_alignment)
     target = _target(1, _alignment(bytes(target_values)))
@@ -119,8 +121,9 @@ def test_reciprocal_coverage_is_verified_after_lossless_candidate_recall() -> No
 def test_seed_false_positive_is_removed_by_full_position_verifier() -> None:
     query = _query(17, _alignment(b"A" * CANONICAL_LENGTH))
     target_values = bytearray(b"C" * CANONICAL_LENGTH)
-    for position in SEED_POSITION_GROUPS[4]:
-        target_values[position] = ord("A")
+    for group in SEED_POSITION_GROUPS[:MINIMUM_QUALIFYING_EXACT_SEEDS]:
+        for position in group:
+            target_values[position] = ord("A")
     target = _target(19, _alignment(bytes(target_values)))
     index = build_query_index([query])
 
