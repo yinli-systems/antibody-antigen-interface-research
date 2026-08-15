@@ -446,7 +446,7 @@ def audit_prefilter_database(
     hit_counts = []
     with data_path.open("rb") as handle:
         with mmap.mmap(handle.fileno(), 0, access=mmap.ACCESS_READ) as payload:
-            for _, offset, size in entries:
+            for key, offset, size in entries:
                 if offset + size > file_size:
                     raise MMseqsGapAwareError("Prefilter record exceeds the data file")
                 record = payload[offset : offset + size]
@@ -458,7 +458,9 @@ def audit_prefilter_database(
                 count = body.count(b"\n")
                 if count >= maximum_sequences:
                     raise MMseqsGapAwareError(
-                        "Prefilter hit count reached --max-seqs; truncation is possible"
+                        "Prefilter query key "
+                        f"{key} reached --max-seqs with {count} hits "
+                        f"(cap {maximum_sequences}); truncation is possible"
                     )
                 hit_counts.append(count)
     ordered = sorted(hit_counts)
