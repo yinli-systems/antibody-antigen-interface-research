@@ -51,7 +51,7 @@ ALIGNMENTS=${OUTPUT_ROOT}/alignments.tsv
   -e 10000 --threads 8
 "${MMSEQS_BIN}" align \
   "${QUERY_DB}" "${TARGET_DB}" "${PREFILTER}" "${ALIGNMENT_DB}" \
-  --alignment-mode 3 --min-seq-id 0.9 -c 0.9 --cov-mode 0 --seq-id-mode 0 \
+  -a 1 --alignment-mode 3 --min-seq-id 0.9 -c 0.9 --cov-mode 0 --seq-id-mode 0 \
   --max-accept 2147483647 --max-rejected 2147483647 --threads 8
 "${MMSEQS_BIN}" convertalis \
   "${QUERY_DB}" "${TARGET_DB}" "${ALIGNMENT_DB}" "${ALIGNMENTS}" \

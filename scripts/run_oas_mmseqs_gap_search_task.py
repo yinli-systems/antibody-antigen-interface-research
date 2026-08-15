@@ -238,6 +238,8 @@ def run_task(arguments: argparse.Namespace) -> Mapping[str, Any]:
                 str(target_db),
                 str(prefilter_db),
                 str(alignment_db),
+                "-a",
+                "1",
                 "--alignment-mode",
                 "3",
                 "--min-seq-id",
