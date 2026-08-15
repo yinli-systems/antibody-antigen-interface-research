@@ -23,7 +23,7 @@
   },
   "source": {
     "auditor_sha256": "dd546bb81462303c43274bb4675b73d563da3304e905531437082150ae8349b8",
-    "commit": "fd3c702766aba8a81266950a613135713f38ee45",
+    "commit": "fd3c70294262b04c9a4900facddaa9c42750ea5e",
     "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-fd3c702-attempt-001",
     "pipeline_sha256": "2e93ce0402ce925d995e2e3dd6ea9dcb1bf6cffbb756db458ede4a011191fde8"
   },
