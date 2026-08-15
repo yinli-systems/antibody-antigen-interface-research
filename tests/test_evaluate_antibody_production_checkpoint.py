@@ -70,6 +70,36 @@ def test_evaluation_receipt_is_non_authorizing() -> None:
     assert not any(evaluator.TEST_ACCESS.values())
 
 
+def test_evaluator_modes_bind_exact_gate_run_and_authorization() -> None:
+    evaluator = _load()
+    assert evaluator._mode_contract("recovery_gate") == (
+        "antibody_production_loader_recovery_gate_v1",
+        "antibody_production_loader_recovery_run_v1",
+        {
+            "loader_recovery_gate": True,
+            "production_pretraining": False,
+            "scale_out": False,
+            "scientific_claim": False,
+        },
+    )
+    assert evaluator._mode_contract("production_pretraining") == (
+        "antibody_four_gpu_pretraining_segment_gate_v1",
+        "antibody_four_gpu_pretraining_segment_run_v1",
+        {
+            "configuration_promotion": True,
+            "downstream_transfer": False,
+            "production_pretraining": True,
+            "scientific_claim": False,
+        },
+    )
+
+
+def test_evaluator_unknown_mode_fails_closed() -> None:
+    evaluator = _load()
+    with pytest.raises(ValueError, match="Unknown authorization mode"):
+        evaluator._mode_contract("production")
+
+
 def test_only_local_rank_zero_hashes_array_files_before_followers_open() -> None:
     source = EVALUATOR.read_text(encoding="ascii")
     leader = "if local_rank == 0:"
