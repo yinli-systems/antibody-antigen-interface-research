@@ -19,6 +19,9 @@ FREEZER = ROOT / "scripts/freeze_antibody_four_gpu_efficiency_gate.py"
 AUDITOR = ROOT / "scripts/audit_antibody_four_gpu_efficiency_gate.py"
 EVALUATOR = ROOT / "scripts/evaluate_antibody_production_checkpoint.py"
 PIPELINE = ROOT / "slurm/antibody_four_gpu_efficiency_pipeline.sbatch"
+SUBMISSION = (
+    ROOT / "results/pretraining/antibody_four_gpu_efficiency_submission_1406763.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -207,3 +210,22 @@ def test_gate_sources_remain_non_authorizing() -> None:
         'receipt.get("checkpoint_model_sha256")\n'
         '            != receipt.get("final_model_sha256")'
     ) in source
+
+
+def test_submission_receipt_binds_exact_source_and_nonproduction_scope() -> None:
+    value = json.loads(SUBMISSION.read_text(encoding="ascii"))
+    assert value["job"]["job_id"] == 1406763
+    assert value["job"]["state_at_receipt"] == "RUNNING"
+    assert value["source"]["commit"] == (
+        "ff00fb0d160145dee5622d4f30949efdf1041f70"
+    )
+    assert value["source"]["deployment_file_count"] == 499
+    assert value["recovery_prerequisite"]["passed"] is True
+    assert value["protocol"]["crossover_run_order"] == [
+        "safe_eager_r1",
+        "compiled_r1",
+        "compiled_r2",
+        "safe_eager_r2",
+    ]
+    assert value["authorization"]["production_pretraining"] is False
+    assert not any(value["test_access"].values())
