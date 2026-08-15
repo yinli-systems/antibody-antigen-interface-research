@@ -17,8 +17,9 @@ import torch
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 for source_root in (REPOSITORY_ROOT / "src", REPOSITORY_ROOT / "framecontact/src"):
-    if str(source_root) not in sys.path:
-        sys.path.insert(0, str(source_root))
+    while str(source_root) in sys.path:
+        sys.path.remove(str(source_root))
+    sys.path.insert(0, str(source_root))
 
 from antibody_pretraining.downstream_overlap import (
     DevelopmentChainReference,

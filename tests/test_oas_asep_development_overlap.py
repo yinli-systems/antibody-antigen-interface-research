@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
+import os
 from pathlib import Path
 import subprocess
+import sys
 from types import SimpleNamespace
 
 import numpy as np
@@ -218,3 +220,20 @@ def test_slurm_hides_scheduler_reserved_gpu_and_binds_evidence() -> None:
     assert "--independent-audit-payload-sha256" in source
     assert "--asep-cache-manifest-file-sha256" in source
     assert "official_test_accessed=false" in source
+
+
+def test_cli_resolves_framecontact_package_under_conflicting_pythonpath() -> None:
+    environment = dict(os.environ)
+    environment["PYTHONPATH"] = os.pathsep.join(
+        (str(ROOT / "src"), str(ROOT / "framecontact/src"))
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts/audit_oas_asep_development_overlap.py"),
+            "--help",
+        ],
+        check=True,
+        env=environment,
+        stdout=subprocess.DEVNULL,
+    )
