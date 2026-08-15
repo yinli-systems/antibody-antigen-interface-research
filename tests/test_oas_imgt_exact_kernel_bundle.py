@@ -149,4 +149,8 @@ def test_array_consumes_one_sealed_binary_instead_of_recompiling_per_task() -> N
     assert "nvcc \\" in builder
     assert '"${KERNEL_BINARY}" \\' in builder
     assert 'mv "${TEMPORARY}" "${OAS_KERNEL_BUNDLE_ROOT}"' in builder
+    assert 'WRITABLE_ENTRY=$(find "${OAS_KERNEL_BUNDLE_ROOT}"' in builder
+    assert 'if [[ -n "${WRITABLE_ENTRY}" ]]; then' in builder
+    assert builder.rstrip().endswith("exit 0")
+    assert "| grep -q ." not in builder
     assert "canonical_kernel_built_once" in array
