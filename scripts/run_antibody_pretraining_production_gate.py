@@ -109,6 +109,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--ddp-bucket-cap-mb", type=int, default=25)
     parser.add_argument("--maximum-open-arrays", type=int, required=True)
     parser.add_argument("--minimum-soft-open-file-limit", type=int, required=True)
+    parser.add_argument("--campaign-token-limit", type=int)
     parser.add_argument("--compile-blocks", action="store_true")
     parser.add_argument("--disable-compiled-cudagraphs", action="store_true")
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
@@ -138,6 +139,8 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("Gate dimensions must be positive")
     if args.run_seed < 0:
         raise ValueError("Run seed must be non-negative")
+    if args.campaign_token_limit is not None and args.campaign_token_limit <= 0:
+        raise ValueError("Campaign token limit must be positive")
     if args.minimum_soft_open_file_limit < args.maximum_open_arrays + 512:
         raise ValueError("Open-file limit does not preserve descriptor headroom")
     if args.compile_prewarm_buckets and not args.compile_blocks:
@@ -162,6 +165,19 @@ def _canonical_json_bytes(payload: object) -> bytes:
         )
         + "\n"
     ).encode("ascii")
+
+
+def _load_canonical_json(path: Path, label: str) -> tuple[dict[str, object], str]:
+    if not path.is_file() or path.is_symlink():
+        raise RuntimeError(f"{label} path is invalid")
+    raw = path.read_bytes()
+    try:
+        value = json.loads(raw.decode("ascii"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"{label} must be strict ASCII JSON") from error
+    if not isinstance(value, dict) or raw != _canonical_json_bytes(value):
+        raise RuntimeError(f"{label} must be a canonical JSON object")
+    return value, hashlib.sha256(raw).hexdigest()
 
 
 def _mode_contract(authorization_mode: str) -> tuple[str, str, dict[str, bool], str]:
@@ -189,11 +205,7 @@ def _load_gate_protocol(
     path: Path,
     authorization_mode: str = "recovery_gate",
 ) -> tuple[dict[str, object], str]:
-    raw = path.read_bytes()
-    try:
-        protocol = json.loads(raw.decode("ascii"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise RuntimeError("Gate protocol must be strict ASCII JSON") from error
+    protocol, protocol_sha256 = _load_canonical_json(path, "Gate protocol")
     gate_format, _, authorization, _ = _mode_contract(authorization_mode)
     if (
         not isinstance(protocol, dict)
@@ -202,7 +214,7 @@ def _load_gate_protocol(
         or protocol.get("test_access") != TEST_ACCESS
     ):
         raise RuntimeError("Gate protocol identity or authorization differs")
-    return protocol, hashlib.sha256(raw).hexdigest()
+    return protocol, protocol_sha256
 
 
 def _optimization(args: argparse.Namespace) -> dict[str, object]:
@@ -290,6 +302,8 @@ def _validate_launch(
         "steps": args.steps,
         "target_residue_tokens": args.target_tokens,
     }
+    if args.campaign_token_limit is not None:
+        expected["campaign_token_limit"] = args.campaign_token_limit
     if run != expected:
         raise RuntimeError("Launch differs from the frozen run role")
     inputs = protocol.get("inputs")
@@ -491,13 +505,22 @@ def main() -> None:
     consumed = 0
     start_update = 0
     resume_rng_root = None
+    resume_receipt: dict[str, object] | None = None
     resume_payload_model_sha256 = None
     resume_payload_optimizer_sha256 = None
     resume_loaded_model_sha256 = None
     resume_loaded_optimizer_sha256 = None
     if args.resume_root is not None:
-        state = json.loads(
-            (args.resume_root / "trainer_state.json").read_text(encoding="ascii")
+        state, _ = _load_canonical_json(
+            args.resume_root / "trainer_state.json",
+            "Resume trainer state",
+        )
+        resume_receipt, _ = _load_canonical_json(
+            args.resume_root / "receipt.json",
+            "Resume receipt",
+        )
+        _, expected_resume_format, expected_resume_authorization, _ = _mode_contract(
+            args.authorization_mode
         )
         expected_state = {
             "batch_quantum": args.batch_quantum,
@@ -518,6 +541,18 @@ def main() -> None:
         }
         if any(state.get(key) != value for key, value in expected_state.items()):
             raise RuntimeError("Resume provenance differs from this gate")
+        if (
+            resume_receipt.get("format_version") != expected_resume_format
+            or resume_receipt.get("authorization") != expected_resume_authorization
+            or resume_receipt.get("gate_protocol_sha256") != gate_protocol_sha256
+            or resume_receipt.get("checkpoint_model_sha256")
+            != resume_receipt.get("final_model_sha256")
+            or resume_receipt.get("checkpoint_optimizer_sha256") is None
+            or resume_receipt.get("checkpoint_rng_manifest_sha256")
+            != state.get("checkpoint_rng_manifest_sha256")
+            or resume_receipt.get("test_access") != TEST_ACCESS
+        ):
+            raise RuntimeError("Resume receipt differs from this gate")
         cursor = int(state["sample_cursor"])
         consumed = int(state["consumed_residue_tokens"])
         start_update = int(state["next_update"])
@@ -541,6 +576,16 @@ def main() -> None:
             optimizer.state_dict(),
             "resumed optimizer",
         )[0]
+        if (
+            resume_payload_model_sha256
+            != resume_receipt.get("checkpoint_model_sha256")
+            or resume_payload_optimizer_sha256
+            != resume_receipt.get("checkpoint_optimizer_sha256")
+            or resume_loaded_model_sha256 != resume_receipt.get("final_model_sha256")
+            or resume_loaded_optimizer_sha256
+            != resume_receipt.get("final_optimizer_sha256")
+        ):
+            raise RuntimeError("Resume checkpoint differs from the authenticated receipt")
         resume_rng_root = args.resume_root / "checkpoint"
 
     compile_prewarm_trace: list[dict[str, float | int]] = []
@@ -560,11 +605,21 @@ def main() -> None:
             world_size=world_size,
             device=device,
         )
+        if resume_rng_manifest_sha256 != resume_receipt.get(
+            "checkpoint_rng_manifest_sha256"
+        ):
+            raise RuntimeError("Resume RNG state differs from the authenticated receipt")
 
     membership_digest = hashlib.sha256()
     trace: list[dict[str, float | int]] = []
     data_preparation_seconds = 0.0
+    executed_steps = 0
     for update in range(start_update, start_update + args.steps):
+        if (
+            args.campaign_token_limit is not None
+            and consumed >= args.campaign_token_limit
+        ):
+            break
         preparation_started = time.perf_counter()
         plan = build_indexed_update_plan(
             record_count=len(corpus),
@@ -694,6 +749,7 @@ def main() -> None:
             raise RuntimeError("Gate trace contains a non-finite value")
         consumed += plan.residue_token_count
         cursor = plan.next_sample_cursor
+        executed_steps += 1
         if rank == 0:
             trace.append(
                 {
@@ -710,6 +766,8 @@ def main() -> None:
                 }
             )
 
+    if executed_steps <= 0:
+        raise RuntimeError("Segment would execute zero optimizer updates")
     rng_state = engine._rng_state_payload(rank, device)
     final_model_sha256 = engine._replicated_rank_digests(
         module.state_dict(),
@@ -753,7 +811,7 @@ def main() -> None:
         "length_bucket_boundaries": list(boundaries),
         "micro_batch_per_gpu": args.micro_batch,
         "model_family_sha256": model_family_sha256,
-        "next_update": start_update + args.steps,
+        "next_update": start_update + executed_steps,
         "optimization": _optimization(args),
         "preset": args.preset,
         "run_seed": args.run_seed,
@@ -778,6 +836,15 @@ def main() -> None:
                     "slurm_job_nodelist": os.environ.get("SLURM_JOB_NODELIST"),
                 },
                 "authorization": authorization,
+                "campaign": {
+                    "complete": (
+                        args.campaign_token_limit is not None
+                        and consumed >= args.campaign_token_limit
+                    ),
+                    "configured_maximum_steps": args.steps,
+                    "executed_steps": executed_steps,
+                    "token_limit": args.campaign_token_limit,
+                },
                 "checkpoint_model_sha256": checkpoint_model_sha256,
                 "checkpoint_optimizer_sha256": checkpoint_optimizer_sha256,
                 "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
