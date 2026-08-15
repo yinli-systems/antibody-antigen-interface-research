@@ -28,7 +28,7 @@ def freeze_gate(**arguments: object) -> dict[str, object]:
     execution = protocol["execution"]
     assert isinstance(execution, dict)
     execution["world_size"] = WORLD_SIZE
-    execution["hardware"] = {
+    protocol["hardware_identity"] = {
         "gpu_count": WORLD_SIZE,
         "gpu_model": "NVIDIA GeForce RTX 5090",
         "node_count": 1,

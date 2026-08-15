@@ -21,6 +21,13 @@ SUBMISSION = (
     ROOT
     / "results/pretraining/antibody_four_gpu_recovery_submission_f1b958e.json"
 )
+FAILURE = (
+    ROOT / "results/pretraining/antibody_four_gpu_recovery_failure_1406713.json"
+)
+RETRY = ROOT / "results/pretraining/antibody_four_gpu_recovery_retry_1406723.json"
+LAUNCH_FAILURE = (
+    ROOT / "results/pretraining/antibody_four_gpu_recovery_failure_1406723.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -79,11 +86,12 @@ def test_freezer_scales_only_global_token_budget(monkeypatch) -> None:
     monkeypatch.setattr(freezer.parent, "_file_sha256", lambda _: "a" * 64)
     result = freezer.freeze_gate(source_root=ROOT)
     assert result["execution"]["world_size"] == 4
-    assert result["execution"]["hardware"] == {
+    assert result["hardware_identity"] == {
         "gpu_count": 4,
         "gpu_model": "NVIDIA GeForce RTX 5090",
         "node_count": 1,
     }
+    assert "hardware" not in result["execution"]
     for run in result["runs"].values():
         assert run["micro_batch_per_gpu"] == 16
         assert run["target_residue_tokens"] == 131_072
@@ -162,3 +170,30 @@ def test_submission_receipt_is_non_authorizing_and_commit_pinned() -> None:
     assert value["training_shape"]["target_residue_tokens_per_gpu"] == 32_768
     assert value["authorization"]["production_pretraining"] is False
     assert not any(value["test_access"].values())
+
+
+def test_failed_attempt_is_preserved_and_retry_uses_verified_v3_runtime() -> None:
+    failure = json.loads(FAILURE.read_text(encoding="ascii"))
+    retry = json.loads(RETRY.read_text(encoding="ascii"))
+    assert failure["failure"]["state"] == "FAILED"
+    assert failure["failure"]["training_updates_started"] == 0
+    assert failure["resolution"]["compatibility_bypass_added"] is False
+    assert retry["predecessor_failure_job_id"] == failure["failure"]["job_id"]
+    assert retry["job"]["job_id"] == 1406723
+    assert retry["runtime"]["schema_version"] == "frontier.runtime-manifest.v3"
+    assert retry["runtime"]["verified_live_before_submission"] is True
+    assert retry["runtime"]["artifact_count_at_live_verification"] == 58
+    assert not any(failure["test_access"].values())
+    assert not any(retry["test_access"].values())
+
+
+def test_second_failure_preserves_strict_execution_validation() -> None:
+    failure = json.loads(LAUNCH_FAILURE.read_text(encoding="ascii"))
+    assert failure["failure"]["job_id"] == 1406723
+    assert failure["failure"]["stage"] == "launch_protocol_validation"
+    assert failure["failure"]["training_updates_started"] == 0
+    assert failure["resolution"]["execution_validation_removed"] is False
+    assert failure["resolution"][
+        "hardware_identity_preserved_at_protocol_top_level"
+    ] is True
+    assert not any(failure["test_access"].values())
