@@ -262,17 +262,21 @@ def _evaluation(
     return indices[order], cross_entropy[order], accuracy[order]
 
 
-def _validate_master_protocol(protocol: Mapping[str, Any]) -> None:
+def _validate_master_protocol(
+    protocol: Mapping[str, Any],
+    *,
+    protocol_freezer: Any = freezer,
+) -> None:
     if (
-        protocol.get("format_version") != freezer.FORMAT_VERSION
-        or protocol.get("acceptance") != freezer.ACCEPTANCE
-        or protocol.get("batch") != freezer.BATCH
-        or protocol.get("measurement") != freezer.MEASUREMENT
-        or protocol.get("hardware") != freezer.HARDWARE
-        or protocol.get("validation_panel") != freezer.VALIDATION_PANEL
-        or protocol.get("authorization") != freezer.AUTHORIZATION
-        or protocol.get("test_access") != freezer.TEST_ACCESS
-        or set(protocol.get("source", {})) != set(freezer.SOURCE_FILES)
+        protocol.get("format_version") != protocol_freezer.FORMAT_VERSION
+        or protocol.get("acceptance") != protocol_freezer.ACCEPTANCE
+        or protocol.get("batch") != protocol_freezer.BATCH
+        or protocol.get("measurement") != protocol_freezer.MEASUREMENT
+        or protocol.get("hardware") != protocol_freezer.HARDWARE
+        or protocol.get("validation_panel") != protocol_freezer.VALIDATION_PANEL
+        or protocol.get("authorization") != protocol_freezer.AUTHORIZATION
+        or protocol.get("test_access") != protocol_freezer.TEST_ACCESS
+        or set(protocol.get("source", {})) != set(protocol_freezer.SOURCE_FILES)
     ):
         raise EfficiencyAuditError("Master efficiency protocol differs")
 
@@ -387,10 +391,13 @@ def audit_gate(
     run_root: Path,
     protocol_path: Path,
     bundle_root: Path,
+    protocol_freezer: Any = freezer,
+    result_format_version: str = FORMAT_VERSION,
+    auditor_path: Path | None = None,
 ) -> dict[str, Any]:
     """Audit source closure, paired execution, quality, and throughput."""
     protocol, protocol_sha256 = _load(protocol_path)
-    _validate_master_protocol(protocol)
+    _validate_master_protocol(protocol, protocol_freezer=protocol_freezer)
     source_root = Path(__file__).resolve().parents[1]
     for relative, expected in protocol["source"].items():
         if _sha256(source_root / relative) != expected:
@@ -608,11 +615,11 @@ def audit_gate(
             "scientific_claim": False,
         },
         "claim_boundary": protocol["claim_boundary"],
-        "format_version": FORMAT_VERSION,
+        "format_version": result_format_version,
         "gate_passed": passed,
         "gates": gates,
         "inputs": {
-            "auditor_sha256": _sha256(Path(__file__)),
+            "auditor_sha256": _sha256(auditor_path or Path(__file__)),
             "protocol_file_sha256": protocol_sha256,
             "run_root": str(run_root.resolve()),
         },

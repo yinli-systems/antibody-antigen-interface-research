@@ -22,6 +22,33 @@ RECOVERY_AUDIT_FILE_SHA256=${ABF_RECOVERY_AUDIT_FILE_SHA256:?required}
 RECOVERY_AUDIT_PAYLOAD_SHA256=${ABF_RECOVERY_AUDIT_PAYLOAD_SHA256:?required}
 RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?required}
+EFFICIENCY_GATE_VERSION=${ABF_EFFICIENCY_GATE_VERSION:-v1}
+COMPILED_LENGTH_BUCKET_BOUNDARIES=${ABF_COMPILED_LENGTH_BUCKET_BOUNDARIES:-96,128,160,194}
+EAGER_LENGTH_BUCKET_BOUNDARIES=96,128,160,194
+
+FREEZER_EXTRA_ARGS=()
+if [[ "${EFFICIENCY_GATE_VERSION}" == v1 ]]; then
+  EFFICIENCY_FREEZER=scripts/freeze_antibody_four_gpu_efficiency_gate.py
+  EFFICIENCY_AUDITOR=scripts/audit_antibody_four_gpu_efficiency_gate.py
+elif [[ "${EFFICIENCY_GATE_VERSION}" == v2 ]]; then
+  EFFICIENCY_FREEZER=scripts/freeze_antibody_four_gpu_efficiency_gate_v2.py
+  EFFICIENCY_AUDITOR=scripts/audit_antibody_four_gpu_efficiency_gate_v2.py
+  SHAPE_PROBE_AUDIT=${ABF_SHAPE_PROBE_AUDIT:?required for v2}
+  SHAPE_PROBE_AUDIT_FILE_SHA256=${ABF_SHAPE_PROBE_AUDIT_FILE_SHA256:?required for v2}
+  SHAPE_PROBE_AUDIT_PAYLOAD_SHA256=${ABF_SHAPE_PROBE_AUDIT_PAYLOAD_SHA256:?required for v2}
+  SHAPE_PROBE_PROTOCOL_FILE_SHA256=${ABF_SHAPE_PROBE_PROTOCOL_FILE_SHA256:?required for v2}
+  [[ "${COMPILED_LENGTH_BUCKET_BOUNDARIES}" == 194 ]] \
+    || { echo "Efficiency v2 requires the static-194 candidate" >&2; exit 2; }
+  FREEZER_EXTRA_ARGS=(
+    --shape-probe-audit "${SHAPE_PROBE_AUDIT}"
+    --shape-probe-audit-file-sha256 "${SHAPE_PROBE_AUDIT_FILE_SHA256}"
+    --shape-probe-audit-payload-sha256 "${SHAPE_PROBE_AUDIT_PAYLOAD_SHA256}"
+    --shape-probe-protocol-file-sha256 "${SHAPE_PROBE_PROTOCOL_FILE_SHA256}"
+  )
+else
+  echo "Unknown efficiency gate version" >&2
+  exit 2
+fi
 
 for path in "${PYTHON_BIN}" "${SOURCE_ROOT}" "${CORPUS_ROOT}" \
   "${OUTPUT_ROOT}" "${RECOVERY_AUDIT}" "${RUNTIME_MANIFEST}"; do
@@ -65,7 +92,7 @@ ulimit -Sn 4096
 [[ "$(ulimit -Sn)" == 4096 ]]
 
 BUNDLE_ROOT=${OUTPUT_ROOT}/protocol-bundle
-"${PYTHON_BIN}" "${SOURCE_ROOT}/scripts/freeze_antibody_four_gpu_efficiency_gate.py" \
+"${PYTHON_BIN}" "${SOURCE_ROOT}/${EFFICIENCY_FREEZER}" \
   --source-root "${SOURCE_ROOT}" \
   --corpus-root "${CORPUS_ROOT}" \
   --manifest-file-sha256 "${MANIFEST_FILE_SHA256}" \
@@ -77,6 +104,7 @@ BUNDLE_ROOT=${OUTPUT_ROOT}/protocol-bundle
   --recovery-audit "${RECOVERY_AUDIT}" \
   --recovery-audit-file-sha256 "${RECOVERY_AUDIT_FILE_SHA256}" \
   --recovery-audit-payload-sha256 "${RECOVERY_AUDIT_PAYLOAD_SHA256}" \
+  "${FREEZER_EXTRA_ARGS[@]}" \
   --output-dir "${BUNDLE_ROOT}"
 PROTOCOL=${BUNDLE_ROOT}/protocol.json
 
@@ -115,6 +143,8 @@ cp "${PROTOCOL}" "${RUN_ROOT}/protocol.json"
   echo "updates_per_run=600"
   echo "warmup_updates_excluded=100"
   echo "global_residue_tokens_per_update=131072"
+  echo "efficiency_gate_version=${EFFICIENCY_GATE_VERSION}"
+  echo "compiled_length_bucket_boundaries=${COMPILED_LENGTH_BUCKET_BOUNDARIES}"
   echo "validation_panel_records=8192"
   echo "claim_boundary=real-OAS paired efficiency and equivalence gate only"
   date --iso-8601=seconds
@@ -140,7 +170,6 @@ COMMON_ARGS=(
   --target-tokens 131072
   --batch-quantum 256
   --run-seed 17
-  --length-bucket-boundaries 96,128,160,194
   --ddp-bucket-cap-mb 25
   --maximum-open-arrays 1024
   --minimum-soft-open-file-limit 4096
@@ -162,7 +191,9 @@ run_mode() {
   export TORCH_EXTENSIONS_DIR=${cache_root}/torch_extensions
   unset TORCH_LOGS || true
   local optimization=()
+  local length_bucket_boundaries=${EAGER_LENGTH_BUCKET_BOUNDARIES}
   if [[ "${mode}" == compiled ]]; then
+    length_bucket_boundaries=${COMPILED_LENGTH_BUCKET_BOUNDARIES}
     optimization=(
       --compile-blocks
       --disable-compiled-cudagraphs
@@ -184,6 +215,7 @@ run_mode() {
   "${PYTHON_BIN}" -m torch.distributed.run --standalone --nproc-per-node=4 \
     "${SOURCE_ROOT}/scripts/run_antibody_pretraining_production_gate.py" \
     "${COMMON_ARGS[@]}" --gate-protocol "${gate}" \
+    --length-bucket-boundaries "${length_bucket_boundaries}" \
     --output "${mode_root}/run" "${optimization[@]}" \
     2>&1 | tee "${mode_root}/training.log"
   stop_monitor
@@ -226,7 +258,7 @@ find "${RUN_ROOT}" -type f ! -name artifact_sha256.txt -print0 \
 chmod -R a-w "${RUN_ROOT}"
 trap - EXIT
 
-"${PYTHON_BIN}" "${SOURCE_ROOT}/scripts/audit_antibody_four_gpu_efficiency_gate.py" \
+"${PYTHON_BIN}" "${SOURCE_ROOT}/${EFFICIENCY_AUDITOR}" \
   --run-root "${RUN_ROOT}" \
   --protocol "${PROTOCOL}" \
   --bundle-root "${BUNDLE_ROOT}" \
