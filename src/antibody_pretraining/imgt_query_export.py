@@ -50,8 +50,8 @@ ANARCII_MODEL_SHA256 = (
 ANARCII_PARAMETERS_SHA256 = (
     "4d8e5fc9d8580f5e26a190a21853dd3f3770fbf83ce45a46a53d92b083063c39"
 )
-ASEP_QUERY_EXPORT_FORMAT = "oas_asep_development_imgt_query_export_v1"
-IMGT_QUERY_MANIFEST_FORMAT = "oas_asep_development_imgt_query_manifest_v1"
+ASEP_QUERY_EXPORT_FORMAT = "oas_asep_development_imgt_query_export_v2"
+IMGT_QUERY_MANIFEST_FORMAT = "oas_asep_development_imgt_query_manifest_v2"
 ROLE_TO_ID = {"train": 0, "val": 1}
 ID_TO_ROLE = {value: key for key, value in ROLE_TO_ID.items()}
 IMGT_QUERY_RECORD = struct.Struct(">32sIBBB200s")
@@ -86,6 +86,50 @@ class NumberedDevelopmentQuery:
     query_start: int
     sequence: str
     sequence_sha256: str
+    tool_score: float
+
+
+@dataclass(frozen=True)
+class UnrepresentableDevelopmentQuery:
+    """A complete query handed to the independent gap-aware search track."""
+
+    chain: str
+    domain_sequence: str
+    domain_sequence_sha256: str
+    instance_id: str
+    numbered_chain_type: str
+    query_end: int
+    query_ordinal: int
+    query_reference_key: str
+    query_start: int
+    reason: str
+    role: str
+    sequence: str
+    sequence_sha256: str
+    tool_score: float
+
+
+@dataclass(frozen=True)
+class ClassifiedDevelopmentQuery:
+    """Exactly one exhaustive fixed-IMGT query classification."""
+
+    representable: NumberedDevelopmentQuery | None
+    unusual: UnrepresentableDevelopmentQuery | None
+
+    def validate(self) -> None:
+        if (self.representable is None) == (self.unusual is None):
+            raise IMGTQueryExportError("Query classification is not exclusive")
+
+
+@dataclass(frozen=True)
+class _ValidatedNumberedResult:
+    canonical_sequence: str
+    domain_sequence: str
+    numbered_chain_type: str
+    numbered_domain_sequence: str
+    numbering: list[tuple[tuple[int, str], str]]
+    query_end: int
+    query_start: int
     tool_score: float
 
 
@@ -240,9 +284,34 @@ def numbered_development_query(
     result: object,
 ) -> NumberedDevelopmentQuery:
     """Validate one ANARCII result and construct a canonical query record."""
+    validated = _validated_numbered_result(
+        reference=reference, sequence=sequence, result=result
+    )
+    try:
+        alignment = encode_numbered_residues(validated.numbering)
+    except IMGTPositionError as error:
+        raise IMGTQueryExportError(f"ANARCII query position differs: {error}") from error
+    if (
+        sequence_from_alignment(alignment) != validated.domain_sequence
+        or validated.numbered_domain_sequence != validated.domain_sequence
+    ):
+        raise IMGTQueryExportError("ANARCII numbering does not reproduce query domain")
+    return _representable_development_query(
+        query_ordinal=query_ordinal,
+        reference=reference,
+        validated=validated,
+        alignment=alignment,
+    )
+
+
+def _validated_numbered_result(
+    *,
+    reference: DevelopmentChainReference,
+    sequence: str,
+    result: object,
+) -> _ValidatedNumberedResult:
+    """Authenticate all ANARCII fields without assuming fixed-IMGT representability."""
     canonical = _canonical_sequence(reference, sequence)
-    if type(query_ordinal) is not int or isinstance(query_ordinal, bool) or query_ordinal < 0:
-        raise IMGTQueryExportError("Query ordinal is invalid")
     if type(result) is not dict:
         raise IMGTQueryExportError("ANARCII result is not an object")
     if result.get("error") is not None:
@@ -267,17 +336,39 @@ def numbered_development_query(
     ):
         raise IMGTQueryExportError("ANARCII query bounds are invalid")
     domain = canonical[start : end + 1]
-    try:
-        alignment = encode_numbered_residues(_numbering(result.get("numbering")))
-    except IMGTPositionError as error:
-        raise IMGTQueryExportError(f"ANARCII query position differs: {error}") from error
-    if sequence_from_alignment(alignment) != domain:
-        raise IMGTQueryExportError("ANARCII numbering does not reproduce query domain")
+    numbering = _numbering(result.get("numbering"))
+    numbered_domain = "".join(residue for _, residue in numbering if residue != "-")
     normalized_chain = {"H": "heavy", "K": "kappa", "L": "lambda"}[chain_type]
+    return _ValidatedNumberedResult(
+        canonical_sequence=canonical,
+        domain_sequence=domain,
+        numbered_chain_type=normalized_chain,
+        numbered_domain_sequence=numbered_domain,
+        numbering=numbering,
+        query_end=end,
+        query_start=start,
+        tool_score=float(score),
+    )
+
+
+def _representable_development_query(
+    *,
+    query_ordinal: int,
+    reference: DevelopmentChainReference,
+    validated: _ValidatedNumberedResult,
+    alignment: CanonicalAlignment,
+) -> NumberedDevelopmentQuery:
+    if (
+        type(query_ordinal) is not int
+        or isinstance(query_ordinal, bool)
+        or query_ordinal < 0
+    ):
+        raise IMGTQueryExportError("Query ordinal is invalid")
+    domain = validated.domain_sequence
     domain_digest = hashlib.sha256(domain.encode("ascii")).hexdigest()
     binary = IMGTQueryRecord(
         alignment=alignment,
-        chain_type=normalized_chain,
+        chain_type=validated.numbered_chain_type,
         domain_sequence_sha256=domain_digest,
         query_ordinal=query_ordinal,
         role=reference.role,
@@ -288,13 +379,75 @@ def numbered_development_query(
         chain=reference.chain,
         domain_sequence=domain,
         instance_id=reference.instance_id,
-        query_end=end,
+        query_end=validated.query_end,
         query_reference_key=reference_key(reference),
-        query_start=start,
-        sequence=canonical,
+        query_start=validated.query_start,
+        sequence=validated.canonical_sequence,
         sequence_sha256=reference.sequence_sha256,
-        tool_score=float(score),
+        tool_score=validated.tool_score,
     )
+
+
+def classify_numbered_development_query(
+    *,
+    query_ordinal: int,
+    reference: DevelopmentChainReference,
+    sequence: str,
+    result: object,
+) -> ClassifiedDevelopmentQuery:
+    """Preserve rare-insertion queries for gap-aware search without weakening fixed IMGT."""
+    if (
+        type(query_ordinal) is not int
+        or isinstance(query_ordinal, bool)
+        or query_ordinal < 0
+    ):
+        raise IMGTQueryExportError("Query ordinal is invalid")
+    validated = _validated_numbered_result(
+        reference=reference, sequence=sequence, result=result
+    )
+    try:
+        alignment = encode_numbered_residues(validated.numbering)
+    except IMGTPositionError as error:
+        if "outside the canonical 200" not in str(error):
+            raise IMGTQueryExportError(f"ANARCII query position differs: {error}") from error
+        if validated.numbered_domain_sequence != validated.domain_sequence:
+            raise IMGTQueryExportError("ANARCII numbering does not reproduce query domain")
+        unusual = UnrepresentableDevelopmentQuery(
+            chain=reference.chain,
+            domain_sequence=validated.domain_sequence,
+            domain_sequence_sha256=hashlib.sha256(
+                validated.domain_sequence.encode("ascii")
+            ).hexdigest(),
+            instance_id=reference.instance_id,
+            numbered_chain_type=validated.numbered_chain_type,
+            query_end=validated.query_end,
+            query_ordinal=query_ordinal,
+            query_reference_key=reference_key(reference),
+            query_start=validated.query_start,
+            reason="outside_canonical_positions",
+            role=reference.role,
+            sequence=validated.canonical_sequence,
+            sequence_sha256=reference.sequence_sha256,
+            tool_score=validated.tool_score,
+        )
+        classified = ClassifiedDevelopmentQuery(representable=None, unusual=unusual)
+    else:
+        if (
+            sequence_from_alignment(alignment) != validated.domain_sequence
+            or validated.numbered_domain_sequence != validated.domain_sequence
+        ):
+            raise IMGTQueryExportError("ANARCII numbering does not reproduce query domain")
+        classified = ClassifiedDevelopmentQuery(
+            representable=_representable_development_query(
+                query_ordinal=query_ordinal,
+                reference=reference,
+                validated=validated,
+                alignment=alignment,
+            ),
+            unusual=None,
+        )
+    classified.validate()
+    return classified
 
 
 def pack_imgt_query(record: IMGTQueryRecord) -> bytes:
@@ -370,8 +523,8 @@ def export_numbered_development_queries(
         raise IMGTQueryExportError("Development query count or uniqueness differs")
     if type(numbered) is not dict or set(numbered) != set(keys):
         raise IMGTQueryExportError("ANARCII result identities differ")
-    records = [
-        numbered_development_query(
+    classified = [
+        classify_numbered_development_query(
             query_ordinal=ordinal,
             reference=reference,
             sequence=sequence,
@@ -379,6 +532,10 @@ def export_numbered_development_queries(
         )
         for ordinal, (key, reference, sequence) in enumerate(keyed)
     ]
+    records = [row.representable for row in classified if row.representable is not None]
+    unusual_records = [row.unusual for row in classified if row.unusual is not None]
+    if len(records) + len(unusual_records) != len(keyed):
+        raise IMGTQueryExportError("Query classification coverage differs")
     required_runtime = {
         "package": "anarcii",
         "package_version": ANARCII_VERSION,
@@ -402,29 +559,60 @@ def export_numbered_development_queries(
     )
     _exclusive_bytes(binary_path, b"".join(pack_imgt_query(row.binary) for row in records))
     manifest_records = []
-    for row in records:
-        manifest_records.append(
-            {
-                "chain": row.chain,
-                "domain_sequence_length": len(row.domain_sequence),
-                "domain_sequence_sha256": row.binary.domain_sequence_sha256,
-                "imgt_residue_count": row.binary.alignment.residue_count,
-                "instance_id": row.instance_id,
-                "numbered_chain_type": row.binary.chain_type,
-                "query_end_zero_based_inclusive": row.query_end,
-                "query_ordinal": row.binary.query_ordinal,
-                "query_reference_key": row.query_reference_key,
-                "query_start_zero_based_inclusive": row.query_start,
-                "role": row.binary.role,
-                "sequence_length": len(row.sequence),
-                "sequence_sha256": row.sequence_sha256,
-                "tool_score": row.tool_score,
-            }
-        )
+    for classified_row in classified:
+        if classified_row.representable is not None:
+            row = classified_row.representable
+            manifest_records.append(
+                {
+                    "chain": row.chain,
+                    "domain_sequence_length": len(row.domain_sequence),
+                    "domain_sequence_sha256": row.binary.domain_sequence_sha256,
+                    "fixed_imgt_status": "representable",
+                    "imgt_residue_count": row.binary.alignment.residue_count,
+                    "instance_id": row.instance_id,
+                    "numbered_chain_type": row.binary.chain_type,
+                    "query_end_zero_based_inclusive": row.query_end,
+                    "query_ordinal": row.binary.query_ordinal,
+                    "query_reference_key": row.query_reference_key,
+                    "query_start_zero_based_inclusive": row.query_start,
+                    "role": row.binary.role,
+                    "sequence_length": len(row.sequence),
+                    "sequence_sha256": row.sequence_sha256,
+                    "tool_score": row.tool_score,
+                    "unusual_reason": None,
+                }
+            )
+        else:
+            row = classified_row.unusual
+            if row is None:
+                raise IMGTQueryExportError("Query classification coverage differs")
+            manifest_records.append(
+                {
+                    "chain": row.chain,
+                    "domain_sequence_length": len(row.domain_sequence),
+                    "domain_sequence_sha256": row.domain_sequence_sha256,
+                    "fixed_imgt_status": "unrepresentable",
+                    "imgt_residue_count": None,
+                    "instance_id": row.instance_id,
+                    "numbered_chain_type": row.numbered_chain_type,
+                    "query_end_zero_based_inclusive": row.query_end,
+                    "query_ordinal": row.query_ordinal,
+                    "query_reference_key": row.query_reference_key,
+                    "query_start_zero_based_inclusive": row.query_start,
+                    "role": row.role,
+                    "sequence_length": len(row.sequence),
+                    "sequence_sha256": row.sequence_sha256,
+                    "tool_score": row.tool_score,
+                    "unusual_reason": row.reason,
+                }
+            )
     manifest = {
         "binary_record_bytes": IMGT_QUERY_RECORD.size,
+        "fixed_imgt_query_count": len(records),
         "format_version": IMGT_QUERY_MANIFEST_FORMAT,
-        "query_count": len(records),
+        "gap_aware_query_count": len(keyed),
+        "outside_canonical_query_count": len(unusual_records),
+        "query_count": len(keyed),
         "records": manifest_records,
         "runtime": dict(runtime_provenance),
         "source": dict(source_provenance or {}),
@@ -447,8 +635,11 @@ def export_numbered_development_queries(
             "reason": "exact fixed-IMGT and gap-aware near-identity tracks incomplete",
         },
         "format_version": ASEP_QUERY_EXPORT_FORMAT,
+        "fixed_imgt_query_count": len(records),
+        "gap_aware_query_count": len(keyed),
+        "outside_canonical_query_count": len(unusual_records),
         "outputs": outputs,
-        "query_count": len(records),
+        "query_count": len(keyed),
         "runtime": dict(runtime_provenance),
         "sequence_manifest_receipt_sha256": sequence_manifest["receipt_sha256"],
         "test_access": manifest["test_access"],
@@ -468,12 +659,15 @@ __all__ = [
     "ANARCII_VERSION",
     "ANARCII_WHEEL_SHA256",
     "ASEP_QUERY_EXPORT_FORMAT",
+    "ClassifiedDevelopmentQuery",
     "IMGT_QUERY_MANIFEST_FORMAT",
     "IMGT_QUERY_RECORD",
     "IMGTQueryExportError",
     "IMGTQueryRecord",
     "NumberedDevelopmentQuery",
+    "UnrepresentableDevelopmentQuery",
     "authenticate_anarcii_runtime",
+    "classify_numbered_development_query",
     "export_numbered_development_queries",
     "numbered_development_query",
     "pack_imgt_query",
