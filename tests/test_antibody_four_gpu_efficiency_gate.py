@@ -22,6 +22,9 @@ PIPELINE = ROOT / "slurm/antibody_four_gpu_efficiency_pipeline.sbatch"
 SUBMISSION = (
     ROOT / "results/pretraining/antibody_four_gpu_efficiency_submission_1406763.json"
 )
+CANCELLATION = (
+    ROOT / "results/pretraining/antibody_four_gpu_efficiency_cancellation_1406763.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -100,6 +103,99 @@ def test_recovery_prerequisite_is_fail_closed(tmp_path: Path) -> None:
             expected_payload_sha256=receipt["receipt_sha256"],
         )
 
+    receipt = _recovery_receipt()
+    del receipt["test_access"]
+    receipt["receipt_sha256"] = hashlib.sha256(_canonical(receipt)).hexdigest()
+    path.write_bytes(_canonical(receipt))
+    with pytest.raises(
+        freezer.EfficiencyFreezeError,
+        match="does not authorize efficiency work",
+    ):
+        freezer._load_recovery(
+            path,
+            expected_file_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+            expected_payload_sha256=receipt["receipt_sha256"],
+        )
+
+
+def test_master_protocol_rejects_missing_boundary_fields() -> None:
+    freezer = _load("four_gpu_efficiency_master_freezer_test", FREEZER)
+    auditor = _load("four_gpu_efficiency_master_auditor_test", AUDITOR)
+    protocol = {
+        "acceptance": dict(freezer.ACCEPTANCE),
+        "authorization": dict(freezer.AUTHORIZATION),
+        "batch": dict(freezer.BATCH),
+        "format_version": freezer.FORMAT_VERSION,
+        "hardware": dict(freezer.HARDWARE),
+        "measurement": dict(freezer.MEASUREMENT),
+        "source": {name: "a" * 64 for name in freezer.SOURCE_FILES},
+        "test_access": dict(freezer.TEST_ACCESS),
+        "validation_panel": dict(freezer.VALIDATION_PANEL),
+    }
+    auditor._validate_master_protocol(protocol)
+
+    missing_access = dict(protocol)
+    del missing_access["test_access"]
+    with pytest.raises(auditor.EfficiencyAuditError, match="protocol differs"):
+        auditor._validate_master_protocol(missing_access)
+
+    missing_source = dict(protocol)
+    missing_source["source"] = dict(protocol["source"])
+    missing_source["source"].pop(next(iter(freezer.SOURCE_FILES)))
+    with pytest.raises(auditor.EfficiencyAuditError, match="protocol differs"):
+        auditor._validate_master_protocol(missing_source)
+
+    incomplete_authorization = dict(protocol)
+    incomplete_authorization["authorization"] = {"production_pretraining": False}
+    with pytest.raises(auditor.EfficiencyAuditError, match="protocol differs"):
+        auditor._validate_master_protocol(incomplete_authorization)
+
+    weakened_acceptance = dict(protocol)
+    weakened_acceptance["acceptance"] = dict(protocol["acceptance"])
+    weakened_acceptance["acceptance"]["minimum_approximate_6n_mfu"] = 0.0
+    with pytest.raises(auditor.EfficiencyAuditError, match="protocol differs"):
+        auditor._validate_master_protocol(weakened_acceptance)
+
+
+def test_evaluation_identity_requires_exact_authorization_and_test_access() -> None:
+    freezer = _load("four_gpu_efficiency_eval_freezer_test", FREEZER)
+    auditor = _load("four_gpu_efficiency_eval_auditor_test", AUDITOR)
+    protocol = {
+        "validation_panel": {
+            "indices_sha256": "a" * 64,
+            "mask_seed": 3,
+            "mask_update": 0,
+            "record_count": 1,
+            "seed": 7,
+        }
+    }
+    value = {
+        "authorization": dict(auditor.EVALUATION_AUTHORIZATION),
+        "checkpoint": {"receipt_file_sha256": "c" * 64},
+        "format_version": auditor.EVALUATION_FORMAT,
+        "gate_protocol_sha256": "b" * 64,
+        "panel": {
+            "indices_sha256": "a" * 64,
+            "mask_seed": 3,
+            "mask_update": 0,
+            "record_count": 1,
+            "seed": 7,
+            "split": "validation",
+        },
+        "test_access": dict(freezer.TEST_ACCESS),
+        "world_size": 4,
+    }
+    for field in ("authorization", "test_access"):
+        invalid = dict(value)
+        invalid[field] = {"production_pretraining": False}
+        with pytest.raises(auditor.EfficiencyAuditError, match="identity differs"):
+            auditor._evaluation(
+                invalid,
+                gate_sha256="b" * 64,
+                receipt_sha256="c" * 64,
+                protocol=protocol,
+            )
+
 
 def test_mode_gates_change_only_frozen_optimization_and_use_checkpoints() -> None:
     freezer = _load("four_gpu_efficiency_mode_test", FREEZER)
@@ -125,6 +221,53 @@ def test_mode_gates_change_only_frozen_optimization_and_use_checkpoints() -> Non
         assert run["steps"] == 600
         assert run["checkpoint"] is True
         assert run["target_residue_tokens"] == 131_072
+
+
+def test_mode_gate_identity_is_exact_and_fail_closed() -> None:
+    auditor = _load("four_gpu_efficiency_mode_auditor_test", AUDITOR)
+    for compiled in (False, True):
+        optimization = {
+            "bucketed_padding": compiled,
+            "compile_blocks": compiled,
+            "compile_prewarm_buckets": compiled,
+            "ddp_bucket_cap_mb": 25,
+            "deterministic_algorithms": True,
+            "disable_compiled_cudagraphs": compiled,
+            "fused_adamw": compiled,
+            "length_bucketing": compiled,
+            "pinned_staging": compiled,
+        }
+        gate = {
+            "authorization": dict(auditor.RUN_AUTHORIZATION),
+            "execution": {
+                "backend": "ddp",
+                "optimization": optimization,
+                "world_size": 4,
+            },
+            "format_version": "antibody_production_loader_recovery_gate_v1",
+            "hardware_identity": {
+                "gpu_count": 4,
+                "gpu_model": auditor.GPU_MODEL,
+                "node_count": 1,
+            },
+            "runs": {
+                "continuous": {
+                    "batch_quantum_sequences": 256,
+                    "checkpoint": True,
+                    "micro_batch_per_gpu": 16,
+                    "preset": "abf_650m",
+                    "resume": False,
+                    "run_seed": 17,
+                    "steps": 600,
+                    "target_residue_tokens": 131072,
+                }
+            },
+            "test_access": dict(auditor.RUN_TEST_ACCESS),
+        }
+        auditor._validate_mode_gate(gate, compiled=compiled)
+        del gate["test_access"]
+        with pytest.raises(auditor.EfficiencyAuditError, match="identity differs"):
+            auditor._validate_mode_gate(gate, compiled=compiled)
 
 
 def test_validation_panel_anchor_replays_evaluator_membership() -> None:
@@ -228,4 +371,22 @@ def test_submission_receipt_binds_exact_source_and_nonproduction_scope() -> None
         "safe_eager_r2",
     ]
     assert value["authorization"]["production_pretraining"] is False
+    assert not any(value["test_access"].values())
+
+
+def test_cancellation_receipt_is_non_authorizing_and_hash_bound() -> None:
+    value = json.loads(CANCELLATION.read_text(encoding="ascii"))
+    assert value["job"]["job_id"] == 1406763
+    assert value["job"]["state"] == "CANCELLED by 1256"
+    assert value["job"]["elapsed"] == "00:03:22"
+    assert value["reason"]["category"] == "auditor_fail_closed_hardening"
+    assert not any(value["result_presence"].values())
+    assert value["evidence"]["stderr_sha256"] == (
+        "5fac79cc409317ecadac936b6962951421523c1a607d81315dfe8a0a3f3c11b3"
+    )
+    assert value["authorization"] == {
+        "configuration_promotion": False,
+        "production_pretraining": False,
+        "scientific_claim": False,
+    }
     assert not any(value["test_access"].values())
