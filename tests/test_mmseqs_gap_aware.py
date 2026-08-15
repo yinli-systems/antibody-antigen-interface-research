@@ -264,3 +264,14 @@ def test_alignment_audit_rejects_rounded_metric_disagreement() -> None:
             query_lengths={"asep_" + "b" * 64: 10},
             expected_task_id=0,
         )
+
+
+def test_gap_array_respects_paracloud_per_gpu_cpu_quota() -> None:
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "slurm/oas_mmseqs_gap_search_array.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --gres=gpu:1" in launcher
+    assert "#SBATCH --cpus-per-task=8" in launcher
+    assert "#SBATCH --cpus-per-task=16" not in launcher
+    assert '#SBATCH --array=0-31%32' in launcher

@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --array=0-31%32
 #SBATCH --time=1-00:00:00
 #SBATCH --output=/ssd/scxi253/model_deployment/logs/oas-mmseqs-gap-%A_%a.out
@@ -60,4 +60,3 @@ mkdir -p "${TMPDIR}" "${XDG_CACHE_HOME}"
   --threads "${SLURM_CPUS_PER_TASK}" \
   --protocol "${PROTOCOL}" \
   --protocol-sha256 "${PROTOCOL_SHA256}"
-
