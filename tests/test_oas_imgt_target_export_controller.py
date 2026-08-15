@@ -27,6 +27,38 @@ def _load(path: Path, name: str):
     return module
 
 
+def test_replay_comparison_normalizes_only_explicit_zero_counts() -> None:
+    controller = _load(CONTROLLER, "oas_imgt_controller_zero_count_test")
+    original = {
+        "unit_index": 3,
+        "relative_unit": "study/unit.csv.gz",
+        "counts": {"source_rows": 1, "accepted_records": 1},
+        "status_flag_counts": {"shorter": 1},
+        "metadata_normalization": "strict_json",
+    }
+    replayed = {
+        **original,
+        "counts": {
+            **original["counts"],
+            "plan_fraction_rejected": 0,
+        },
+    }
+    changed = {
+        **replayed,
+        "counts": {
+            **replayed["counts"],
+            "plan_fraction_selected": 1,
+        },
+    }
+
+    assert controller._canonicalize_unit_receipt_for_replay(replayed) == (
+        controller._canonicalize_unit_receipt_for_replay(original)
+    )
+    assert controller._canonicalize_unit_receipt_for_replay(changed) != (
+        controller._canonicalize_unit_receipt_for_replay(original)
+    )
+
+
 def test_complete_authenticated_replay_publishes_two_way_domain(tmp_path: Path) -> None:
     fixture_module = _load(MAPPER_TEST, "oas_mapper_fixture")
     mapper = _load(MAPPER, "oas_mapper_for_imgt_test")
