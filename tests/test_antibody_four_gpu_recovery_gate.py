@@ -28,6 +28,9 @@ RETRY = ROOT / "results/pretraining/antibody_four_gpu_recovery_retry_1406723.jso
 LAUNCH_FAILURE = (
     ROOT / "results/pretraining/antibody_four_gpu_recovery_failure_1406723.json"
 )
+AUDIT_FAILURE = (
+    ROOT / "results/pretraining/antibody_four_gpu_recovery_failure_1406724.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -128,6 +131,60 @@ def test_auditor_accepts_only_four_same_host_ranks(tmp_path: Path) -> None:
         auditor._load_run(tmp_path, "continuous")
 
 
+def test_auditor_binds_top_level_hardware_identity(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    auditor = _load("four_gpu_auditor_protocol_test", AUDITOR)
+    protocol = {
+        "auditor_sha256": auditor.artifacts._sha256(AUDITOR),
+        "authorization": auditor.AUTHORIZATION,
+        "execution": {"world_size": 4},
+        "format_version": auditor.GATE_FORMAT,
+        "hardware_identity": {
+            "gpu_count": 4,
+            "gpu_model": "NVIDIA GeForce RTX 5090",
+            "node_count": 1,
+        },
+        "test_access": auditor.TEST_ACCESS,
+    }
+    gate = tmp_path / "gate.json"
+    _write(gate, protocol)
+    monkeypatch.setattr(
+        auditor.recovery,
+        "audit_recovery",
+        lambda **_: {"recovery_exact": True},
+    )
+    monkeypatch.setattr(
+        auditor.artifacts,
+        "_verify_artifacts",
+        lambda _: {"manifest_verified": True, "writable_paths": []},
+    )
+    result = auditor.audit_recovery_4gpu(
+        gate_protocol_path=gate,
+        continuous_root=tmp_path,
+        stage1_root=tmp_path,
+        resumed_root=tmp_path,
+        artifact_root=tmp_path,
+    )
+    assert result["recovery_exact"] is True
+    assert result["world_size"] == 4
+
+    protocol["hardware_identity"]["gpu_count"] = 8
+    _write(gate, protocol)
+    with pytest.raises(
+        auditor.recovery.RecoveryAuditError,
+        match="Four-GPU gate protocol differs",
+    ):
+        auditor.audit_recovery_4gpu(
+            gate_protocol_path=gate,
+            continuous_root=tmp_path,
+            stage1_root=tmp_path,
+            resumed_root=tmp_path,
+            artifact_root=tmp_path,
+        )
+
+
 def test_slurm_freezes_four_5090s_and_never_opens_downstream_test() -> None:
     source = SLURM.read_text(encoding="ascii")
     assert "#SBATCH --gres=gpu:4" in source
@@ -196,4 +253,25 @@ def test_second_failure_preserves_strict_execution_validation() -> None:
     assert failure["resolution"][
         "hardware_identity_preserved_at_protocol_top_level"
     ] is True
+    assert not any(failure["test_access"].values())
+
+
+def test_third_failure_preserves_completed_recovery_evidence() -> None:
+    failure = json.loads(AUDIT_FAILURE.read_text(encoding="ascii"))
+    assert failure["failure"]["job_id"] == 1406724
+    assert failure["failure"]["stage"] == "independent_recovery_audit"
+    assert failure["failure"]["training_updates_completed"] == {
+        "continuous": 4,
+        "resumed": 2,
+        "stage1": 2,
+    }
+    evidence = failure["recovery_evidence"]
+    assert evidence["exact_terminal_state_observed_before_independent_audit"] is True
+    assert evidence["continuous_terminal_model_sha256"] == evidence[
+        "resumed_terminal_model_sha256"
+    ]
+    assert evidence["continuous_terminal_optimizer_sha256"] == evidence[
+        "resumed_terminal_optimizer_sha256"
+    ]
+    assert failure["resolution"]["scientific_recovery_comparison_relaxed"] is False
     assert not any(failure["test_access"].values())
