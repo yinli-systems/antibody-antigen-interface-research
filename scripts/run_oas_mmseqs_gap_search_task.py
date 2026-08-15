@@ -184,7 +184,15 @@ def run_task(arguments: argparse.Namespace) -> Mapping[str, Any]:
     )
     commands.append(
         _run(
-            [str(mmseqs), "makepaddedseqdb", str(target_db), str(target_gpu), *common],
+            [
+                str(mmseqs),
+                "makepaddedseqdb",
+                str(target_db),
+                str(target_gpu),
+                "--mask",
+                "0",
+                *common,
+            ],
             stdout_path=stdout_path,
             stderr_path=stderr_path,
             environment=environment,
@@ -204,8 +212,6 @@ def run_task(arguments: argparse.Namespace) -> Mapping[str, Any]:
                 "1",
                 "--max-seqs",
                 str(arguments.maximum_sequences),
-                "--mask",
-                "0",
                 "--comp-bias-corr",
                 "0",
                 "-e",

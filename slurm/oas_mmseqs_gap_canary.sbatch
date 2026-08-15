@@ -43,10 +43,11 @@ ALIGNMENT_DB=${OUTPUT_ROOT}/alignment_db
 ALIGNMENTS=${OUTPUT_ROOT}/alignments.tsv
 "${MMSEQS_BIN}" createdb "${CONTROL_ROOT}/queries.fasta" "${QUERY_DB}" --shuffle 0
 "${MMSEQS_BIN}" createdb "${CONTROL_ROOT}/targets.fasta" "${TARGET_DB}" --shuffle 0
-"${MMSEQS_BIN}" makepaddedseqdb "${TARGET_DB}" "${TARGET_GPU}" --threads 8
+"${MMSEQS_BIN}" makepaddedseqdb \
+  "${TARGET_DB}" "${TARGET_GPU}" --mask 0 --threads 8
 "${MMSEQS_BIN}" ungappedprefilter \
   "${QUERY_DB}" "${TARGET_GPU}" "${PREFILTER}" \
-  --gpu 1 --prefilter-mode 1 --max-seqs 100 --mask 0 --comp-bias-corr 0 \
+  --gpu 1 --prefilter-mode 1 --max-seqs 100 --comp-bias-corr 0 \
   -e 10000 --threads 8
 "${MMSEQS_BIN}" align \
   "${QUERY_DB}" "${TARGET_DB}" "${PREFILTER}" "${ALIGNMENT_DB}" \
@@ -66,7 +67,7 @@ ALIGNMENTS=${OUTPUT_ROOT}/alignments.tsv
 
 "${MMSEQS_BIN}" ungappedprefilter \
   "${QUERY_DB}" "${TARGET_GPU}" "${PREFILTER_CAP1}" \
-  --gpu 1 --prefilter-mode 1 --max-seqs 1 --mask 0 --comp-bias-corr 0 \
+  --gpu 1 --prefilter-mode 1 --max-seqs 1 --comp-bias-corr 0 \
   -e 10000 --threads 8
 set +e
 "${PYTHON_BIN}" "${SOURCE_ROOT}/scripts/run_oas_mmseqs_gap_canary.py" \
