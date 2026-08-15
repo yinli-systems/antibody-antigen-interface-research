@@ -507,10 +507,15 @@ def audit_alignment_rows(
     targets = set()
     split_counts = Counter()  # type: Counter[str]
     rows = 0
-    # convertalis rounds its printed fractions.  Exact thresholding below uses
-    # the replayed alignment strings, while this tolerance only authenticates
-    # that the rounded text describes the same alignment.
-    tolerance = 5.1e-4
+    # convertalis rounds coverage fractions to three decimals.  Sequence
+    # identity is different: MMseqs serializes result DB identities through
+    # Util::fastSeqIdToBuffer, which truncates ``seqId * 1000`` to an integer
+    # before convertalis reads it back.  Exact thresholding below therefore
+    # uses the replayed alignment strings; these bounds only authenticate that
+    # the lossy text fields describe the same alignment.
+    coverage_tolerance = 5.1e-4
+    identity_quantum = 1.0e-3
+    numeric_slack = 1.0e-7
     for line_number, line in enumerate(lines, 1):
         if not line.strip():
             continue
@@ -582,9 +587,10 @@ def audit_alignment_rows(
             observed_q != qend - qstart + 1
             or observed_t != tend - tstart + 1
             or observed_identical != nident
-            or abs(identity - replay_identity) > tolerance
-            or abs(query_coverage - replay_qcov) > tolerance
-            or abs(target_coverage - replay_tcov) > tolerance
+            or identity > replay_identity + numeric_slack
+            or replay_identity >= identity + identity_quantum + numeric_slack
+            or abs(query_coverage - replay_qcov) > coverage_tolerance
+            or abs(target_coverage - replay_tcov) > coverage_tolerance
         ):
             raise MMseqsGapAwareError("Independent alignment metric replay differs")
         if min(replay_identity, replay_qcov, replay_tcov) + 1e-12 < threshold:
