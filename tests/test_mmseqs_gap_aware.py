@@ -204,6 +204,37 @@ def test_alignment_audit_replays_exact_metrics_and_threshold() -> None:
     assert "0.900000000000\t1.000000000000\t1.000000000000" in output.getvalue()
 
 
+def test_alignment_audit_accepts_mmseqs_identity_truncation() -> None:
+    target = target_identifier(
+        task_id=0, split="train", chain_type="heavy", authority_ordinal=8
+    )
+    row = "\t".join(
+        [
+            "asep_" + "c" * 64,
+            target,
+            "0.989",
+            "1.000",
+            "1.000",
+            "97",
+            "96",
+            "1",
+            "97",
+            "97",
+            "1",
+            "97",
+            "97",
+            "A" * 96 + "C",
+            "A" * 96 + "D",
+        ]
+    ) + "\n"
+    result = audit_alignment_rows(
+        [row],
+        query_lengths={"asep_" + "c" * 64: 97},
+        expected_task_id=0,
+    )
+    assert result["alignment_rows"] == 1
+
+
 def test_alignment_audit_rejects_rounded_metric_disagreement() -> None:
     target = target_identifier(
         task_id=0, split="train", chain_type="heavy", authority_ordinal=7
