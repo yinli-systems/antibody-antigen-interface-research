@@ -3,13 +3,30 @@
 from __future__ import annotations
 
 import ast
+import importlib.util
 from pathlib import Path
+import sys
 
 import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts/run_antibody_pretraining_production_gate.py"
+
+
+def _load_runner():
+    for item in (ROOT / "scripts", ROOT / "src"):
+        value = str(item)
+        if value not in sys.path:
+            sys.path.insert(0, value)
+    specification = importlib.util.spec_from_file_location(
+        "production_gate_runner_test", RUNNER
+    )
+    assert specification is not None and specification.loader is not None
+    module = importlib.util.module_from_spec(specification)
+    sys.modules[specification.name] = module
+    specification.loader.exec_module(module)
+    return module
 
 
 def _load_mode_contract() -> dict[str, object]:
@@ -121,3 +138,27 @@ def test_unknown_authorization_mode_fails_closed() -> None:
     mode_contract = _load_mode_contract()["_mode_contract"]
     with pytest.raises(ValueError, match="Unknown authorization mode"):
         mode_contract("production")
+
+
+def test_canonical_resume_evidence_rejects_reformatted_json(tmp_path: Path) -> None:
+    runner = _load_runner()
+    path = tmp_path / "receipt.json"
+    path.write_text('{"b": 2, "a": 1}\n', encoding="ascii")
+    with pytest.raises(RuntimeError, match="canonical JSON object"):
+        runner._load_canonical_json(path, "Resume receipt")
+
+    path.write_bytes(runner._canonical_json_bytes({"b": 2, "a": 1}))
+    value, digest = runner._load_canonical_json(path, "Resume receipt")
+    assert value == {"a": 1, "b": 2}
+    assert len(digest) == 64
+
+
+def test_campaign_stop_is_bound_to_accumulated_residue_tokens() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    assert "consumed >= args.campaign_token_limit" in source
+    assert '"executed_steps": executed_steps' in source
+    assert '"next_update": start_update + executed_steps' in source
+    assert "Segment would execute zero optimizer updates" in source
+    assert "Resume receipt differs from this gate" in source
+    assert "Resume checkpoint differs from the authenticated receipt" in source
+    assert "Resume RNG state differs from the authenticated receipt" in source
