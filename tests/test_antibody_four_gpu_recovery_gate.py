@@ -34,6 +34,9 @@ AUDIT_FAILURE = (
 AUDIT_RETRY = (
     ROOT / "results/pretraining/antibody_four_gpu_recovery_retry_1406729.json"
 )
+COMPLETION = (
+    ROOT / "results/pretraining/antibody_four_gpu_recovery_completion_1406729.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -291,3 +294,25 @@ def test_audit_contract_retry_is_exact_commit_and_non_authorizing() -> None:
     assert retry["runtime"]["verified_live_before_submission"] is True
     assert retry["authorization"]["production_pretraining"] is False
     assert not any(retry["test_access"].values())
+
+
+def test_four_gpu_recovery_completion_is_exact_and_nonproduction() -> None:
+    value = json.loads(COMPLETION.read_text(encoding="ascii"))
+    assert value["job"] == {
+        "elapsed": "00:08:13",
+        "exit_code": "0:0",
+        "job_id": 1406729,
+        "output_root": (
+            "/ssd/scxi253/model_deployment/results/pretraining/"
+            "antibody_four_gpu_recovery_fd3c702_attempt_001"
+        ),
+        "state": "COMPLETED",
+    }
+    assert all(value["independent_audit"]["exact_recovery"].values())
+    assert value["independent_audit"]["artifact_manifest_verified"] is True
+    assert value["independent_audit"]["writable_paths"] == []
+    assert value["source"]["commit"] == (
+        "fd3c70294262b04c9a4900facddaa9c42750ea5e"
+    )
+    assert value["authorization"]["production_pretraining"] is False
+    assert not any(value["test_access"].values())
