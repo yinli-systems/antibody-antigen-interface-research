@@ -25,6 +25,9 @@ SUBMISSION = (
 CANCELLATION = (
     ROOT / "results/pretraining/antibody_four_gpu_efficiency_cancellation_1406763.json"
 )
+HARDENED_SUBMISSION = (
+    ROOT / "results/pretraining/antibody_four_gpu_efficiency_submission_1406768.json"
+)
 
 
 def _load(name: str, path: Path):
@@ -384,6 +387,26 @@ def test_cancellation_receipt_is_non_authorizing_and_hash_bound() -> None:
     assert value["evidence"]["stderr_sha256"] == (
         "5fac79cc409317ecadac936b6962951421523c1a607d81315dfe8a0a3f3c11b3"
     )
+    assert value["authorization"] == {
+        "configuration_promotion": False,
+        "production_pretraining": False,
+        "scientific_claim": False,
+    }
+    assert not any(value["test_access"].values())
+
+
+def test_hardened_submission_binds_new_source_and_protocol() -> None:
+    value = json.loads(HARDENED_SUBMISSION.read_text(encoding="ascii"))
+    assert value["job"]["job_id"] == 1406768
+    assert value["job"]["requested_gpus"] == 4
+    assert value["job"]["state_at_receipt"] == "PENDING"
+    assert value["source"]["commit"] == (
+        "67ec330a73124ce7044647e1d6067e9f87b0e126"
+    )
+    assert value["preflight"]["protocol_file_sha256"] == (
+        "d2fc5539102577b18f2ebeeebabd604742aab3f6797d2d13a40262ce1c790314"
+    )
+    assert value["protocol"]["minimum_approximate_6n_mfu"] == 0.35
     assert value["authorization"] == {
         "configuration_promotion": False,
         "production_pretraining": False,
