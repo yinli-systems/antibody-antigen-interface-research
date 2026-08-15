@@ -185,4 +185,6 @@ def test_mmseqs_smoke_script_freezes_gpu_and_alignment_semantics() -> None:
     assert "--cov-mode 0" in source
     assert "--seq-id-mode 0" in source
     assert "--format-output query,target,fident,qcov,tcov" in source
+    assert "SOURCE_COMMIT_ANCHOR=${SOURCE_ROOT}/SOURCE_COMMIT" in source
+    assert "git -C" not in source
     assert "official_test_accessed=false" in source

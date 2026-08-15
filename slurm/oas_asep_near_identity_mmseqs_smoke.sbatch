@@ -28,7 +28,9 @@ done
 [[ -d "${SOURCE_ROOT}" && ! -L "${SOURCE_ROOT}" ]]
 [[ ! -e "${OUTPUT_ROOT}" && ! -L "${OUTPUT_ROOT}" ]] \
   || { echo "Smoke output already exists" >&2; exit 2; }
-[[ "$(git -C "${SOURCE_ROOT}" rev-parse HEAD)" == "${SOURCE_COMMIT}" ]]
+SOURCE_COMMIT_ANCHOR=${SOURCE_ROOT}/SOURCE_COMMIT
+[[ -f "${SOURCE_COMMIT_ANCHOR}" && ! -L "${SOURCE_COMMIT_ANCHOR}" ]]
+[[ "$(<"${SOURCE_COMMIT_ANCHOR}")" == "${SOURCE_COMMIT}" ]]
 PROTOCOL=${SOURCE_ROOT}/protocols/oas_asep_near_identity_decontamination_v1.json
 [[ "$(sha256sum "${PROTOCOL}" | awk '{print $1}')" == "${PROTOCOL_SHA256}" ]]
 
