@@ -21,6 +21,10 @@ control* matters.
 
 - [EpiFormer](https://arxiv.org/abs/2606.04154) establishes early interleaved
   cross-attention and sparsity-aware antibody-conditioned epitope prediction.
+  The paper itself derives each epitope probability by taking the arithmetic
+  mean of the bipartite interaction probabilities over the antibody axis
+  ([Eq. 9](https://arxiv.org/html/2606.04154v1#S3.SS3.SSS1)); it does **not**
+  describe noisy-OR as the reported pair-to-node reduction.
   Its official repository at immutable commit
   [`f420745`](https://github.com/mansoor181/epiformer/tree/f420745e28adf759ccdab327d06459da9a9382fe)
   implements noisy-OR as
@@ -94,6 +98,30 @@ node probabilities with a single learned scale.
 A5 uses authenticated *intrachain* Cα radius-kNN graphs only. It is a spatial
 regularizer, not cross-chain distance supervision and not evidence that the
 model reconstructs a docked pose.
+
+### Registered follow-up question after the active matrix
+
+Raw noisy-OR is the exact probability of at least one contact only when the
+pair probabilities are calibrated Bernoulli events under the required
+independence assumption. It also accumulates probability with partner length.
+EpiFormer's arithmetic mean has different semantics and removes that direct
+length accumulation, while FrameContact's existing length-normalized noisy-OR
+is a third, explicitly heuristic control.
+
+The active 30-run A0–A5 matrix must not be changed. After it reaches 30/30 and
+its pre-registered aggregation succeeds, a separate development-only protocol
+may compare exactly three pair-to-node reductions with the architecture, pair
+loss, node-loss weights, seeds, compute budget, and selection rule held fixed:
+
+1. raw noisy-OR (the active A1 reference);
+2. arithmetic mean of pair probabilities (EpiFormer Eq. 9 matched control);
+3. length-normalized noisy-OR (partner-length sensitivity control).
+
+This follow-up is warranted only as an attribution experiment. It must not use
+AsEP frozen/official or external test roles, and it must report residue metrics
+stratified by partner length in addition to the locked contact and retrieval
+metrics. A better residue score alone cannot promote an aggregation if contact
+ranking or bidirectional partner retrieval worsens.
 
 ## Selection and interpretation lock
 
