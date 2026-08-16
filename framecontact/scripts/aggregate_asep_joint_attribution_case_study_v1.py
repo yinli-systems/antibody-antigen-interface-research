@@ -76,7 +76,17 @@ def main() -> None:
     conditions = tuple(args.conditions)
     seeds = tuple(args.seeds)
     by_condition = {condition: [_member(args.runs_root / condition / f"seed-{seed}", condition=condition, seed=seed, cache_sha=args.cache_manifest_sha256, challenge_sha=args.challenge_sha256) for seed in seeds] for condition in conditions}
-    authorities = {json.dumps(member["authority"], sort_keys=True) for members in by_condition.values() for member in members}
+    authorities = {
+        json.dumps(
+            {
+                key: member["authority"].get(key)
+                for key in ("cache_manifest_sha256", "challenge_sha256", "official_test_loaded")
+            },
+            sort_keys=True,
+        )
+        for members in by_condition.values()
+        for member in members
+    }
     if len(authorities) != 1:
         raise ValueError("Case-study authorities differ across conditions")
     payload = {"format_version": FORMAT, "cache_manifest_sha256": args.cache_manifest_sha256, "challenge_sha256": args.challenge_sha256, "conditions": {condition: {"seed_count": 5, "directional_case_count_per_seed": sorted({member["directional_case_count"] for member in members}), "mean_assignment_margin": _summary([member["mean_assignment_margin"] for member in members]), "directional_success_fraction": _summary([member["directional_success_fraction"] for member in members]), "mean_absolute_prediction_shift": _summary([member["mean_absolute_prediction_shift"] for member in members]), "members": [{"seed": member["seed"], "result_sha256": member["result_sha256"]} for member in members]} for condition, members in by_condition.items()}, "authority": json.loads(next(iter(authorities))), "claim_boundary": "Same-antigen partner-retrieval diagnostic on the AsEP validation challenge panel; development-only, no checkpoint or architecture selection, and no frozen/official/external test role."}
