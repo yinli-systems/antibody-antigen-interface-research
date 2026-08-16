@@ -39,5 +39,11 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "SOURCE_COMMIT" in source
     assert "BASE_PYTHON_SHA256" in source
     assert "CONTROLLER_SHA256" in source
+    assert 'BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")' in source
+    assert "base-python-invocation-path.txt" in source
+    assert "base-python-resolved-path.txt" in source
+    assert '[[ -x "${BASE_PYTHON}" ]]' in source
+    assert '[[ -x "${BASE_PYTHON}" && ! -L "${BASE_PYTHON}" ]]' not in source
+    assert "Transformer Engine overlay gate:" in source
     assert '[[ ! -e "${OUTPUT_ROOT}"' in source
     assert 'mv "${PARTIAL}" "${OUTPUT_ROOT}"' in source
