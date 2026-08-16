@@ -23,19 +23,30 @@ NVCC_VERSION=13.0.88
 PARTIAL=${OUTPUT_ROOT}.partial-${SLURM_JOB_ID}
 CONTROLLER=${SOURCE_ROOT}/scripts/probe_transformer_engine_sm120.py
 
+die() {
+  echo "Transformer Engine overlay gate: $*" >&2
+  exit 2
+}
+
 for path in "${SOURCE_ROOT}" "${BASE_PYTHON}" "${OUTPUT_ROOT}"; do
-  [[ "${path}" == /* ]] || { echo "All paths must be absolute" >&2; exit 2; }
+  [[ "${path}" == /* ]] || die "all paths must be absolute: ${path}"
 done
-[[ "${SOURCE_COMMIT}" =~ ^[0-9a-f]{40}$ ]]
-[[ "${BASE_PYTHON_SHA256}" =~ ^[0-9a-f]{64}$ ]]
-[[ "${CONTROLLER_SHA256}" =~ ^[0-9a-f]{64}$ ]]
-[[ -d "${SOURCE_ROOT}" && ! -L "${SOURCE_ROOT}" ]]
-[[ -x "${BASE_PYTHON}" && ! -L "${BASE_PYTHON}" ]]
-[[ ! -e "${OUTPUT_ROOT}" && ! -L "${OUTPUT_ROOT}" ]]
-[[ ! -e "${PARTIAL}" && ! -L "${PARTIAL}" ]]
-[[ "$(<"${SOURCE_ROOT}/SOURCE_COMMIT")" == "${SOURCE_COMMIT}" ]]
-[[ "$(sha256sum "${BASE_PYTHON}" | awk '{print $1}')" == "${BASE_PYTHON_SHA256}" ]]
-[[ "$(sha256sum "${CONTROLLER}" | awk '{print $1}')" == "${CONTROLLER_SHA256}" ]]
+[[ "${SOURCE_COMMIT}" =~ ^[0-9a-f]{40}$ ]] || die "source commit is invalid"
+[[ "${BASE_PYTHON_SHA256}" =~ ^[0-9a-f]{64}$ ]] || die "base Python SHA-256 is invalid"
+[[ "${CONTROLLER_SHA256}" =~ ^[0-9a-f]{64}$ ]] || die "controller SHA-256 is invalid"
+[[ -d "${SOURCE_ROOT}" && ! -L "${SOURCE_ROOT}" ]] || die "source root is absent or symbolic"
+[[ -x "${BASE_PYTHON}" ]] || die "base Python is absent or not executable: ${BASE_PYTHON}"
+BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")
+[[ -n "${BASE_PYTHON_RESOLVED}" ]] || die "base Python cannot be resolved"
+[[ -f "${BASE_PYTHON_RESOLVED}" && ! -L "${BASE_PYTHON_RESOLVED}" ]] \
+  || die "resolved base Python is absent, symbolic, or not a regular file"
+[[ ! -e "${OUTPUT_ROOT}" && ! -L "${OUTPUT_ROOT}" ]] || die "output root already exists"
+[[ ! -e "${PARTIAL}" && ! -L "${PARTIAL}" ]] || die "partial output already exists"
+[[ "$(<"${SOURCE_ROOT}/SOURCE_COMMIT")" == "${SOURCE_COMMIT}" ]] || die "source commit differs"
+[[ "$(sha256sum "${BASE_PYTHON_RESOLVED}" | awk '{print $1}')" == "${BASE_PYTHON_SHA256}" ]] \
+  || die "resolved base Python SHA-256 differs"
+[[ "$(sha256sum "${CONTROLLER}" | awk '{print $1}')" == "${CONTROLLER_SHA256}" ]] \
+  || die "controller SHA-256 differs"
 IFS=',' read -r -a ALLOCATED_GPU_IDS <<< "${CUDA_VISIBLE_DEVICES:?required}"
 [[ "${#ALLOCATED_GPU_IDS[@]}" == 1 ]] \
   || { echo "Overlay probe requires one scheduler GPU" >&2; exit 2; }
@@ -68,7 +79,9 @@ export MAX_JOBS=${SLURM_CPUS_PER_TASK}
   --install-report-te "${PARTIAL}/install-report-te.json" \
   --output "${PARTIAL}/gpu-capability-receipt.json"
 
-sha256sum "${BASE_PYTHON}" > "${PARTIAL}/base-python-sha256.txt"
+printf '%s\n' "${BASE_PYTHON}" > "${PARTIAL}/base-python-invocation-path.txt"
+printf '%s\n' "${BASE_PYTHON_RESOLVED}" > "${PARTIAL}/base-python-resolved-path.txt"
+sha256sum "${BASE_PYTHON_RESOLVED}" > "${PARTIAL}/base-python-sha256.txt"
 find "${PARTIAL}/site-packages" -type f -print0 \
   | sort -z \
   | xargs -0 sha256sum \
