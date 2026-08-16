@@ -90,7 +90,47 @@ evidence, never the promotion criterion for FrameContact.
 
 ## Current boundary
 
-The exact-overlap auditor and negative-control tests are implemented, but no
-real AsEP/OAS overlap receipt has yet been produced. The 90% identity audit and
-checkpoint adapter are not yet complete. No downstream transfer, official-test,
-SOTA, or world-leading claim is authorized by this lock.
+The exact-overlap and fixed-IMGT/gap-aware searches have produced authenticated
+inputs for a deterministic OAS exclusion compiler. The compiler is still
+running and has not atomically published its formal exclusion receipt, so the
+production corpus and downstream transfer remain locked. No downstream
+transfer, official-test, SOTA, or world-leading claim is authorized by this
+lock.
+
+## 2026-08-16 Blackwell precision amendment
+
+Transformer Engine 2.18 documents MXFP8 as a Blackwell-native recipe with one
+E8M0 scale per 32 consecutive values and E4M3 compute. Its PyTorch linear path
+requires aligned matrix dimensions; the registered capability probes use batch
+64 and hidden width 1024, both divisible by 32. Transformer Engine 2.14 release
+notes separately require cuDNN at least 9.18.1 for the SM120 fused-attention
+path. The hash-locked cluster runtime reports cuDNN 9.20.0, but this is only a
+runtime prerequisite, not a correctness or speed result.
+
+The precision ladder is therefore:
+
+1. build and import the hash-locked Transformer Engine overlay;
+2. run finite BF16, current-scaling FP8, and MXFP8 linear forward/backward
+   observations on one scheduler-authenticated RTX 5090;
+3. preregister tolerances before a multi-step matched numerical-parity test;
+4. compare identical-work BF16 and MXFP8 throughput only after parity and exact
+   checkpoint recovery pass;
+5. admit four-GPU MXFP8 only after the existing BF16 campaign remains the
+   untouched control.
+
+FlashAttention-4 is a separate candidate. Its official implementation targets
+Hopper and data-center Blackwell examples such as B200; it is not assumed to
+support RTX 5090 training merely because the GPU is Blackwell. PyTorch SDPA
+remains the attention reference unless an isolated SM120 forward/backward,
+parity, recovery, and throughput gate proves otherwise.
+
+Primary sources for this amendment:
+
+- Transformer Engine 2.18 MXFP8 guide:
+  <https://docs.nvidia.com/deeplearning/transformer-engine/user-guide/features/low_precision_training/mxfp8/mxfp8.html>
+- Transformer Engine 2.18 FP8/MXFP8 primer:
+  <https://docs.nvidia.com/deeplearning/transformer-engine/user-guide/examples/fp8_primer.html>
+- Transformer Engine 2.14 release notes:
+  <https://docs.nvidia.com/deeplearning/transformer-engine-releases/release-2.14/release-notes/index.html>
+- Official FlashAttention repository:
+  <https://github.com/Dao-AILab/flash-attention>
