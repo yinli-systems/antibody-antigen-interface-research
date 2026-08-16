@@ -19,9 +19,11 @@ BASE_PYTHON_SHA256=${TE_BASE_PYTHON_SHA256:?required}
 CONTROLLER_SHA256=${TE_CONTROLLER_SHA256:?required}
 WHEELHOUSE=${TE_WHEELHOUSE:?TE_WHEELHOUSE is required}
 WHEELHOUSE_MANIFEST_SHA256=${TE_WHEELHOUSE_MANIFEST_SHA256:?required}
+WHEELHOUSE_ENTRY_COUNT=${TE_WHEELHOUSE_ENTRY_COUNT:?required}
 OUTPUT_ROOT=${TE_OUTPUT_ROOT:?TE_OUTPUT_ROOT is required}
 TE_VERSION=2.18.0
 NVCC_VERSION=13.0.88
+CUDA_RUNTIME_VERSION=13.0.96
 PARTIAL=${OUTPUT_ROOT}.partial-${SLURM_JOB_ID}
 CONTROLLER=${SOURCE_ROOT}/scripts/probe_transformer_engine_sm120.py
 
@@ -38,6 +40,8 @@ done
 [[ "${CONTROLLER_SHA256}" =~ ^[0-9a-f]{64}$ ]] || die "controller SHA-256 is invalid"
 [[ "${WHEELHOUSE_MANIFEST_SHA256}" =~ ^[0-9a-f]{64}$ ]] \
   || die "wheelhouse manifest SHA-256 is invalid"
+[[ "${WHEELHOUSE_ENTRY_COUNT}" =~ ^[1-9][0-9]*$ ]] \
+  || die "wheelhouse entry count is invalid"
 [[ -d "${SOURCE_ROOT}" && ! -L "${SOURCE_ROOT}" ]] || die "source root is absent or symbolic"
 [[ -x "${BASE_PYTHON}" ]] || die "base Python is absent or not executable: ${BASE_PYTHON}"
 BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")
@@ -73,7 +77,8 @@ BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")
   actual_entries=$(find . -maxdepth 1 -type f ! -name SHA256SUMS | wc -l)
   actual_children=$(find . -mindepth 1 -maxdepth 1 | wc -l)
   [[ "${manifest_entries}" -eq "${actual_entries}" \
-      && "${manifest_entries}" -eq 5 && "${actual_children}" -eq 6 ]] \
+      && "${manifest_entries}" -eq "${WHEELHOUSE_ENTRY_COUNT}" \
+      && "${actual_children}" -eq $((WHEELHOUSE_ENTRY_COUNT + 1)) ]] \
     || die "wheelhouse inventory differs"
 )
 IFS=',' read -r -a ALLOCATED_GPU_IDS <<< "${CUDA_VISIBLE_DEVICES:?required}"
@@ -87,12 +92,14 @@ PIP_OFFLINE_ARGS=(--no-index --find-links "${WHEELHOUSE}")
   --target "${PARTIAL}/site-packages" \
   --no-deps \
   --report "${PARTIAL}/install-report-nvcc.json" \
-  "nvidia-cuda-nvcc==${NVCC_VERSION}"
+  "nvidia-cuda-nvcc==${NVCC_VERSION}" \
+  "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}"
 
 export PYTHONPATH=${PARTIAL}/site-packages
 export NVTE_BUILD_USE_NVIDIA_WHEELS=1
 export NVTE_FRAMEWORK=pytorch
 export NVTE_PYTORCH_FORCE_BUILD=TRUE
+export NVTE_WITH_NCCL_EP=0
 export MAX_JOBS=${SLURM_CPUS_PER_TASK}
 export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13
 [[ -x "${CUDA_HOME}/bin/nvcc" && -d "${CUDA_HOME}/include" ]] \
