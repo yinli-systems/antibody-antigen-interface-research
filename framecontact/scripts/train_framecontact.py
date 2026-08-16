@@ -198,6 +198,20 @@ EXPERIMENTS = {
         "residue_unary_source": "post_cross", "contact_marginalization": "noisy_or",
         "contact_gate_source": "interaction_only",
     },
+    "framecontact_joint_attribution_mean_probability": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "mean_probability",
+        "contact_gate_source": "interaction_only",
+    },
+    "framecontact_joint_attribution_length_normalized_noisy_or": {
+        "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
+        "geometry": True, "cross": True, "fusion_mode": "interleaved",
+        "pair_output_mode": "binary_contact", "residue_output_mode": "contact_marginal_only",
+        "residue_unary_source": "post_cross", "contact_marginalization": "length_normalized_noisy_or",
+        "contact_gate_source": "interaction_only",
+    },
     "framecontact_joint_a2_independent_heads": {
         "geometry_feature_mode": "full_pose", "geometry_bias_mode": "pair_mlp",
         "geometry": True, "cross": True, "fusion_mode": "interleaved",
