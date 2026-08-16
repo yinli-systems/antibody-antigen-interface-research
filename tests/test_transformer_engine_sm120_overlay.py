@@ -30,6 +30,7 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "#SBATCH --gres=gpu:1" in source
     assert "#SBATCH --cpus-per-task=8" in source
     assert "NVTE_BUILD_USE_NVIDIA_WHEELS=1" in source
+    assert "NVTE_PYTORCH_FORCE_BUILD=TRUE" in source
     assert "transformer-engine==${TE_VERSION}" in source
     assert "transformer-engine-cu13==${TE_VERSION}" in source
     assert "transformer-engine-torch==${TE_VERSION}" in source

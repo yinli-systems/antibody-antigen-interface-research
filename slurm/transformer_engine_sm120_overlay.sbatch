@@ -92,6 +92,7 @@ PIP_OFFLINE_ARGS=(--no-index --find-links "${WHEELHOUSE}")
 export PYTHONPATH=${PARTIAL}/site-packages
 export NVTE_BUILD_USE_NVIDIA_WHEELS=1
 export NVTE_FRAMEWORK=pytorch
+export NVTE_PYTORCH_FORCE_BUILD=TRUE
 export MAX_JOBS=${SLURM_CPUS_PER_TASK}
 export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13
 [[ -x "${CUDA_HOME}/bin/nvcc" && -d "${CUDA_HOME}/include" ]] \
