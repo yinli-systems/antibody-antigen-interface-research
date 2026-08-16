@@ -40,6 +40,15 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "annotated-types==${ANNOTATED_TYPES_VERSION}" in source
     assert "typing-extensions==${TYPING_EXTENSIONS_VERSION}" in source
     assert "typing-inspection==${TYPING_INSPECTION_VERSION}" in source
+    assert "einops==${EINOPS_VERSION}" in source
+    assert "onnxscript==${ONNXSCRIPT_VERSION}" in source
+    assert "onnx==${ONNX_VERSION}" in source
+    assert "onnx-ir==${ONNX_IR_VERSION}" in source
+    assert "ml-dtypes==${ML_DTYPES_VERSION}" in source
+    assert "protobuf==${PROTOBUF_VERSION}" in source
+    assert "nvdlfw-inspect==${NVDLFW_INSPECT_VERSION}" in source
+    assert "nvidia-cudnn-frontend==${NVIDIA_CUDNN_FRONTEND_VERSION}" in source
+    assert "PyYAML==${PYYAML_VERSION}" in source
     assert "nvidia-cuda-nvcc==${NVCC_VERSION}" in source
     assert "--no-build-isolation" in source
     assert "--no-deps" in source
