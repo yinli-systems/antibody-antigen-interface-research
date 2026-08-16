@@ -54,6 +54,11 @@ source `train_framecontact.py` SHA256
    threshold/calibration, checkpoint rule, and baseline manifest be frozen for a
    possible single official test.
 
+The wrappers are intentionally separate from training and require an explicit
+immutable `FRAMECONTACT_AGGREGATION_ROOT`; they refuse to overwrite an existing
+aggregate. This prevents a partial or locally modified run from being silently
+repackaged as a finished result.
+
 ## Intentionally not run
 
 The current authenticated AsEP cache has native contact labels but no
