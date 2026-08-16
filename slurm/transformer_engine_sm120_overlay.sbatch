@@ -16,6 +16,7 @@ SOURCE_ROOT=${TE_SOURCE_ROOT:?TE_SOURCE_ROOT is required}
 SOURCE_COMMIT=${TE_SOURCE_COMMIT:?TE_SOURCE_COMMIT is required}
 BASE_PYTHON=${TE_BASE_PYTHON:?TE_BASE_PYTHON is required}
 BASE_PYTHON_SHA256=${TE_BASE_PYTHON_SHA256:?required}
+BASE_CUDA_ROOT=${TE_BASE_CUDA_ROOT:?TE_BASE_CUDA_ROOT is required}
 CONTROLLER_SHA256=${TE_CONTROLLER_SHA256:?required}
 WHEELHOUSE=${TE_WHEELHOUSE:?TE_WHEELHOUSE is required}
 WHEELHOUSE_MANIFEST_SHA256=${TE_WHEELHOUSE_MANIFEST_SHA256:?required}
@@ -33,7 +34,9 @@ die() {
   exit 2
 }
 
-for path in "${SOURCE_ROOT}" "${BASE_PYTHON}" "${WHEELHOUSE}" "${OUTPUT_ROOT}"; do
+for path in \
+  "${SOURCE_ROOT}" "${BASE_PYTHON}" "${BASE_CUDA_ROOT}" \
+  "${WHEELHOUSE}" "${OUTPUT_ROOT}"; do
   [[ "${path}" == /* ]] || die "all paths must be absolute: ${path}"
 done
 [[ "${SOURCE_COMMIT}" =~ ^[0-9a-f]{40}$ ]] || die "source commit is invalid"
@@ -45,6 +48,10 @@ done
   || die "wheelhouse entry count is invalid"
 [[ -d "${SOURCE_ROOT}" && ! -L "${SOURCE_ROOT}" ]] || die "source root is absent or symbolic"
 [[ -x "${BASE_PYTHON}" ]] || die "base Python is absent or not executable: ${BASE_PYTHON}"
+[[ -d "${BASE_CUDA_ROOT}" && ! -L "${BASE_CUDA_ROOT}" ]] \
+  || die "base CUDA root is absent or symbolic"
+[[ -d "${BASE_CUDA_ROOT}/include" && -d "${BASE_CUDA_ROOT}/lib" ]] \
+  || die "base CUDA root is incomplete"
 BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")
 [[ -n "${BASE_PYTHON_RESOLVED}" ]] || die "base Python cannot be resolved"
 [[ -f "${BASE_PYTHON_RESOLVED}" && ! -L "${BASE_PYTHON_RESOLVED}" ]] \
@@ -82,6 +89,14 @@ BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")
       && "${actual_children}" -eq $((WHEELHOUSE_ENTRY_COUNT + 1)) ]] \
     || die "wheelhouse inventory differs"
 )
+BASE_CUDA_MANIFEST=${WHEELHOUSE}/BASE_CUDA_SHA256SUMS
+[[ -f "${BASE_CUDA_MANIFEST}" && ! -L "${BASE_CUDA_MANIFEST}" ]] \
+  || die "base CUDA manifest is absent or symbolic"
+(
+  cd "${BASE_CUDA_ROOT}"
+  sha256sum --quiet -c "${BASE_CUDA_MANIFEST}" \
+    || die "base CUDA tree differs from its locked manifest"
+)
 IFS=',' read -r -a ALLOCATED_GPU_IDS <<< "${CUDA_VISIBLE_DEVICES:?required}"
 [[ "${#ALLOCATED_GPU_IDS[@]}" == 1 ]] \
   || { echo "Overlay probe requires one scheduler GPU" >&2; exit 2; }
@@ -107,6 +122,9 @@ export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13
 [[ -x "${CUDA_HOME}/bin/nvcc" && -d "${CUDA_HOME}/include" ]] \
   || die "locked NVCC wheel did not materialize a CUDA toolkit"
 export PATH=${CUDA_HOME}/bin:${PATH}
+export CPATH=${BASE_CUDA_ROOT}/include${CPATH:+:${CPATH}}
+export LIBRARY_PATH=${BASE_CUDA_ROOT}/lib${LIBRARY_PATH:+:${LIBRARY_PATH}}
+export LD_LIBRARY_PATH=${BASE_CUDA_ROOT}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 nvcc_version=$(nvcc -V | sed -n 's/.*release \([0-9][0-9.]*\).*/\1/p' | head -n 1)
 [[ "${nvcc_version}" == "13.0" ]] || die "locked NVCC reports an unexpected CUDA version"
 sha256sum "${CUDA_HOME}/bin/nvcc" > "${PARTIAL}/nvcc-sha256.txt"
