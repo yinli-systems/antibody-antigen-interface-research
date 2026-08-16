@@ -41,12 +41,15 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "BASE_PYTHON_SHA256" in source
     assert "CONTROLLER_SHA256" in source
     assert "WHEELHOUSE_MANIFEST_SHA256" in source
+    assert "WHEELHOUSE_ENTRY_COUNT" in source
     assert "wheelhouse inventory differs" in source
     assert "PIP_OFFLINE_ARGS=(--no-index --find-links" in source
     assert 'sha256sum "${WHEELHOUSE}/SHA256SUMS"' in source
     assert 'export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13' in source
     assert '[[ -x "${CUDA_HOME}/bin/nvcc"' in source
     assert '[[ "${nvcc_version}" == "13.0" ]]' in source
+    assert "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}" in source
+    assert "NVTE_WITH_NCCL_EP=0" in source
     assert 'BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")' in source
     assert "base-python-invocation-path.txt" in source
     assert "base-python-resolved-path.txt" in source
