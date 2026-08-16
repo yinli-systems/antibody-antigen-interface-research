@@ -39,6 +39,10 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "SOURCE_COMMIT" in source
     assert "BASE_PYTHON_SHA256" in source
     assert "CONTROLLER_SHA256" in source
+    assert "WHEELHOUSE_MANIFEST_SHA256" in source
+    assert "wheelhouse inventory differs" in source
+    assert "PIP_OFFLINE_ARGS=(--no-index --find-links" in source
+    assert 'sha256sum "${WHEELHOUSE}/SHA256SUMS"' in source
     assert 'BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")' in source
     assert "base-python-invocation-path.txt" in source
     assert "base-python-resolved-path.txt" in source
