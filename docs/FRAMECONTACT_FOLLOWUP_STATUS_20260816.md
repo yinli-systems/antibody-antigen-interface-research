@@ -13,6 +13,9 @@ architecture selection. The one-time official test remains sealed.
 - `8d81076` adds authenticated attribution aggregation, case-study aggregation,
   ratio aggregation wrappers, and a fail-closed receipt for distance-bin,
   distogram, and 10 Å neighborhood auxiliaries.
+- `074c72d` fixes the case-study authority check so per-seed checkpoint hashes
+  are retained as members while only shared cache/challenge authority is
+  compared across seeds.
 - Local validation: `11 passed` across the follow-up protocol, aggregator, and
   existing joint-coupling tests.
 - The attribution aggregate reports adjacent pair-to-node reductions only; it
@@ -50,4 +53,3 @@ authenticated pair-distance or 10 Å neighborhood-label authority. Therefore no
 distance-bin/distogram or 10 Å auxiliary is fit or reported. The explicit
 fail-closed receipt is
 `framecontact/protocols/FRAMECONTACT_ASEP_DISTANCE_AUXILIARY_BLOCKED_V1_RECEIPT.json`.
-
