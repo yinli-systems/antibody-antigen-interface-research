@@ -23,6 +23,7 @@ WHEELHOUSE_MANIFEST_SHA256=${TE_WHEELHOUSE_MANIFEST_SHA256:?required}
 WHEELHOUSE_ENTRY_COUNT=${TE_WHEELHOUSE_ENTRY_COUNT:?required}
 OUTPUT_ROOT=${TE_OUTPUT_ROOT:?TE_OUTPUT_ROOT is required}
 TE_VERSION=2.18.0
+CUDA_CCCL_VERSION=13.0.85
 NVCC_VERSION=13.0.88
 CUDA_CRT_VERSION=13.0.88
 CUDA_RUNTIME_VERSION=13.0.96
@@ -108,6 +109,7 @@ PIP_OFFLINE_ARGS=(--no-index --find-links "${WHEELHOUSE}")
   --target "${PARTIAL}/site-packages" \
   --no-deps \
   --report "${PARTIAL}/install-report-nvcc.json" \
+  "nvidia-cuda-cccl==${CUDA_CCCL_VERSION}" \
   "nvidia-cuda-crt==${CUDA_CRT_VERSION}" \
   "nvidia-cuda-nvcc==${NVCC_VERSION}" \
   "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}"
