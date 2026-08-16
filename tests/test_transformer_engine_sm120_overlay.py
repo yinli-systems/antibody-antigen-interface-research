@@ -34,6 +34,7 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "transformer-engine==${TE_VERSION}" in source
     assert "transformer-engine-cu13==${TE_VERSION}" in source
     assert "transformer-engine-torch==${TE_VERSION}" in source
+    assert "packaging==${PACKAGING_VERSION}" in source
     assert "nvidia-cuda-nvcc==${NVCC_VERSION}" in source
     assert "--no-build-isolation" in source
     assert "--no-deps" in source
