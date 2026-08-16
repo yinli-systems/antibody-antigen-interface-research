@@ -18,6 +18,7 @@ BASE_PYTHON=${TE_BASE_PYTHON:?TE_BASE_PYTHON is required}
 BASE_PYTHON_SHA256=${TE_BASE_PYTHON_SHA256:?required}
 BASE_CUDA_ROOT=${TE_BASE_CUDA_ROOT:?TE_BASE_CUDA_ROOT is required}
 BASE_CUDNN_ROOT=${TE_BASE_CUDNN_ROOT:?TE_BASE_CUDNN_ROOT is required}
+BASE_NCCL_ROOT=${TE_BASE_NCCL_ROOT:?TE_BASE_NCCL_ROOT is required}
 CONTROLLER_SHA256=${TE_CONTROLLER_SHA256:?required}
 WHEELHOUSE=${TE_WHEELHOUSE:?TE_WHEELHOUSE is required}
 WHEELHOUSE_MANIFEST_SHA256=${TE_WHEELHOUSE_MANIFEST_SHA256:?required}
@@ -37,7 +38,8 @@ die() {
 }
 
 for path in \
-  "${SOURCE_ROOT}" "${BASE_PYTHON}" "${BASE_CUDA_ROOT}" "${BASE_CUDNN_ROOT}" \
+  "${SOURCE_ROOT}" "${BASE_PYTHON}" "${BASE_CUDA_ROOT}" \
+  "${BASE_CUDNN_ROOT}" "${BASE_NCCL_ROOT}" \
   "${WHEELHOUSE}" "${OUTPUT_ROOT}"; do
   [[ "${path}" == /* ]] || die "all paths must be absolute: ${path}"
 done
@@ -58,6 +60,10 @@ done
   || die "base cuDNN root is absent or symbolic"
 [[ -d "${BASE_CUDNN_ROOT}/include" && -d "${BASE_CUDNN_ROOT}/lib" ]] \
   || die "base cuDNN root is incomplete"
+[[ -d "${BASE_NCCL_ROOT}" && ! -L "${BASE_NCCL_ROOT}" ]] \
+  || die "base NCCL root is absent or symbolic"
+[[ -d "${BASE_NCCL_ROOT}/include" && -d "${BASE_NCCL_ROOT}/lib" ]] \
+  || die "base NCCL root is incomplete"
 BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")
 [[ -n "${BASE_PYTHON_RESOLVED}" ]] || die "base Python cannot be resolved"
 [[ -f "${BASE_PYTHON_RESOLVED}" && ! -L "${BASE_PYTHON_RESOLVED}" ]] \
@@ -111,6 +117,14 @@ BASE_CUDNN_MANIFEST=${WHEELHOUSE}/BASE_CUDNN_SHA256SUMS
   sha256sum --quiet -c "${BASE_CUDNN_MANIFEST}" \
     || die "base cuDNN tree differs from its locked manifest"
 )
+BASE_NCCL_MANIFEST=${WHEELHOUSE}/BASE_NCCL_SHA256SUMS
+[[ -f "${BASE_NCCL_MANIFEST}" && ! -L "${BASE_NCCL_MANIFEST}" ]] \
+  || die "base NCCL manifest is absent or symbolic"
+(
+  cd "${BASE_NCCL_ROOT}"
+  sha256sum --quiet -c "${BASE_NCCL_MANIFEST}" \
+    || die "base NCCL tree differs from its locked manifest"
+)
 IFS=',' read -r -a ALLOCATED_GPU_IDS <<< "${CUDA_VISIBLE_DEVICES:?required}"
 [[ "${#ALLOCATED_GPU_IDS[@]}" == 1 ]] \
   || { echo "Overlay probe requires one scheduler GPU" >&2; exit 2; }
@@ -137,9 +151,9 @@ export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13
 [[ -x "${CUDA_HOME}/bin/nvcc" && -d "${CUDA_HOME}/include" ]] \
   || die "locked NVCC wheel did not materialize a CUDA toolkit"
 export PATH=${CUDA_HOME}/bin:${PATH}
-export CPATH=${BASE_CUDA_ROOT}/include:${BASE_CUDNN_ROOT}/include${CPATH:+:${CPATH}}
-export LIBRARY_PATH=${BASE_CUDA_ROOT}/lib:${BASE_CUDNN_ROOT}/lib${LIBRARY_PATH:+:${LIBRARY_PATH}}
-export LD_LIBRARY_PATH=${BASE_CUDA_ROOT}/lib:${BASE_CUDNN_ROOT}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export CPATH=${BASE_CUDA_ROOT}/include:${BASE_CUDNN_ROOT}/include:${BASE_NCCL_ROOT}/include${CPATH:+:${CPATH}}
+export LIBRARY_PATH=${BASE_CUDA_ROOT}/lib:${BASE_CUDNN_ROOT}/lib:${BASE_NCCL_ROOT}/lib${LIBRARY_PATH:+:${LIBRARY_PATH}}
+export LD_LIBRARY_PATH=${BASE_CUDA_ROOT}/lib:${BASE_CUDNN_ROOT}/lib:${BASE_NCCL_ROOT}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 nvcc_version=$(nvcc -V | sed -n 's/.*release \([0-9][0-9.]*\).*/\1/p' | head -n 1)
 [[ "${nvcc_version}" == "13.0" ]] || die "locked NVCC reports an unexpected CUDA version"
 sha256sum "${CUDA_HOME}/bin/nvcc" > "${PARTIAL}/nvcc-sha256.txt"

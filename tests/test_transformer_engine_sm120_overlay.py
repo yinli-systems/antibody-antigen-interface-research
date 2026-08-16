@@ -43,6 +43,8 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "BASE_CUDA_SHA256SUMS" in source
     assert "BASE_CUDNN_ROOT" in source
     assert "BASE_CUDNN_SHA256SUMS" in source
+    assert "BASE_NCCL_ROOT" in source
+    assert "BASE_NCCL_SHA256SUMS" in source
     assert "CONTROLLER_SHA256" in source
     assert "WHEELHOUSE_MANIFEST_SHA256" in source
     assert "WHEELHOUSE_ENTRY_COUNT" in source
@@ -54,9 +56,9 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert '[[ "${nvcc_version}" == "13.0" ]]' in source
     assert "nvidia-cuda-cccl==${CUDA_CCCL_VERSION}" in source
     assert "sha256sum --quiet -c" in source
-    assert "export CPATH=${BASE_CUDA_ROOT}/include:${BASE_CUDNN_ROOT}/include" in source
-    assert "export LIBRARY_PATH=${BASE_CUDA_ROOT}/lib:${BASE_CUDNN_ROOT}/lib" in source
-    assert "export LD_LIBRARY_PATH=${BASE_CUDA_ROOT}/lib:${BASE_CUDNN_ROOT}/lib" in source
+    assert "${BASE_CUDNN_ROOT}/include:${BASE_NCCL_ROOT}/include" in source
+    assert "${BASE_CUDNN_ROOT}/lib:${BASE_NCCL_ROOT}/lib" in source
+    assert "export LD_LIBRARY_PATH=${BASE_CUDA_ROOT}/lib" in source
     assert "nvidia-cuda-crt==${CUDA_CRT_VERSION}" in source
     assert "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}" in source
     assert "NVTE_WITH_NCCL_EP=0" in source
