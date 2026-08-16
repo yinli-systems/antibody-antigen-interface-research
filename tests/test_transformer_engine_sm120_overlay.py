@@ -48,6 +48,7 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert 'export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13' in source
     assert '[[ -x "${CUDA_HOME}/bin/nvcc"' in source
     assert '[[ "${nvcc_version}" == "13.0" ]]' in source
+    assert "nvidia-cuda-crt==${CUDA_CRT_VERSION}" in source
     assert "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}" in source
     assert "NVTE_WITH_NCCL_EP=0" in source
     assert 'BASE_PYTHON_RESOLVED=$(readlink -f -- "${BASE_PYTHON}")' in source
