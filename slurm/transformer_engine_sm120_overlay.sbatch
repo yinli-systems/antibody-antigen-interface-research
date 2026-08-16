@@ -23,6 +23,7 @@ WHEELHOUSE_ENTRY_COUNT=${TE_WHEELHOUSE_ENTRY_COUNT:?required}
 OUTPUT_ROOT=${TE_OUTPUT_ROOT:?TE_OUTPUT_ROOT is required}
 TE_VERSION=2.18.0
 NVCC_VERSION=13.0.88
+CUDA_CRT_VERSION=13.0.88
 CUDA_RUNTIME_VERSION=13.0.96
 PARTIAL=${OUTPUT_ROOT}.partial-${SLURM_JOB_ID}
 CONTROLLER=${SOURCE_ROOT}/scripts/probe_transformer_engine_sm120.py
@@ -92,6 +93,7 @@ PIP_OFFLINE_ARGS=(--no-index --find-links "${WHEELHOUSE}")
   --target "${PARTIAL}/site-packages" \
   --no-deps \
   --report "${PARTIAL}/install-report-nvcc.json" \
+  "nvidia-cuda-crt==${CUDA_CRT_VERSION}" \
   "nvidia-cuda-nvcc==${NVCC_VERSION}" \
   "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}"
 
