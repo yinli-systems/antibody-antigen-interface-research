@@ -39,6 +39,8 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "--no-deps" in source
     assert "SOURCE_COMMIT" in source
     assert "BASE_PYTHON_SHA256" in source
+    assert "BASE_CUDA_ROOT" in source
+    assert "BASE_CUDA_SHA256SUMS" in source
     assert "CONTROLLER_SHA256" in source
     assert "WHEELHOUSE_MANIFEST_SHA256" in source
     assert "WHEELHOUSE_ENTRY_COUNT" in source
@@ -48,6 +50,9 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert 'export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13' in source
     assert '[[ -x "${CUDA_HOME}/bin/nvcc"' in source
     assert '[[ "${nvcc_version}" == "13.0" ]]' in source
+    assert "sha256sum --quiet -c" in source
+    assert "export CPATH=${BASE_CUDA_ROOT}/include" in source
+    assert "export LIBRARY_PATH=${BASE_CUDA_ROOT}/lib" in source
     assert "nvidia-cuda-crt==${CUDA_CRT_VERSION}" in source
     assert "nvidia-cuda-runtime==${CUDA_RUNTIME_VERSION}" in source
     assert "NVTE_WITH_NCCL_EP=0" in source
