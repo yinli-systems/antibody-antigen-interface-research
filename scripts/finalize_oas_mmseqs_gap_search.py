@@ -4,22 +4,22 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
-import hashlib
 import io
 import json
 import os
-from pathlib import Path
 import stat
-from typing import Any, Mapping, Optional, Sequence, Tuple
+from collections import Counter
+from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+from typing import Any
 
 from antibody_pretraining.mmseqs_gap_aware import (
     ALIGNMENT_AUDIT_FORMAT,
     GLOBAL_TARGET_FORMAT,
-    MMseqsGapAwareError,
     PREFILTER_AUDIT_FORMAT,
     TEST_ACCESS,
+    MMseqsGapAwareError,
     audit_alignment_rows,
     authenticate_query_fasta,
     canonical_json_bytes,
@@ -29,7 +29,6 @@ from antibody_pretraining.mmseqs_gap_aware import (
     sha256_file,
     signed_json,
 )
-
 
 FORMAT_VERSION = "oas_mmseqs_gap_search_global_v1"
 TASK_FORMAT_VERSION = "oas_mmseqs_gap_search_task_v1"
@@ -51,8 +50,23 @@ def _same_json(left: object, right: object, label: str) -> None:
         raise MMseqsGapAwareError(label + " differs")
 
 
-def _read_hits(path: Path, *, task_id: int) -> Tuple[set[Tuple[str, str]], Counter[str]]:
-    pairs = set()  # type: set[Tuple[str, str]]
+def _same_signed_payload(
+    signed_payload: Mapping[str, Any], unsigned_snapshot: object, label: str
+) -> None:
+    """Compare an authenticated receipt with its intentionally unsigned snapshot."""
+    require_sha256(signed_payload.get("receipt_sha256"), label + " receipt")
+    if not isinstance(unsigned_snapshot, Mapping) or "receipt_sha256" in unsigned_snapshot:
+        raise MMseqsGapAwareError(label + " unsigned snapshot differs")
+    payload = {
+        key: value
+        for key, value in signed_payload.items()
+        if key != "receipt_sha256"
+    }
+    _same_json(payload, unsigned_snapshot, label)
+
+
+def _read_hits(path: Path, *, task_id: int) -> tuple[set[tuple[str, str]], Counter[str]]:
+    pairs = set()  # type: set[tuple[str, str]]
     splits = Counter()  # type: Counter[str]
     with path.open("r", encoding="ascii") as handle:
         for line_number, line in enumerate(handle, 1):
@@ -142,8 +156,12 @@ def _audit_task(
         or alignment_receipt.get("format_version") != ALIGNMENT_AUDIT_FORMAT
     ):
         raise MMseqsGapAwareError("Gap-aware task audit receipt differs")
-    _same_json(prefilter_receipt, outputs.get("prefilter_audit"), "Prefilter audit")
-    _same_json(alignment_receipt, outputs.get("alignment_audit"), "Alignment audit")
+    _same_signed_payload(
+        prefilter_receipt, outputs.get("prefilter_audit"), "Prefilter audit"
+    )
+    _same_signed_payload(
+        alignment_receipt, outputs.get("alignment_audit"), "Alignment audit"
+    )
 
     alignments = task_root / "alignments.tsv"
     hits = task_root / "hits.tsv"
@@ -162,7 +180,9 @@ def _audit_task(
             expected_task_id=task_id,
             hits_output=replayed_hits,
         )
-    _same_json(replayed_alignment, alignment_receipt, "Independent alignment replay")
+    _same_signed_payload(
+        alignment_receipt, replayed_alignment, "Independent alignment replay"
+    )
     if replayed_hits.getvalue().encode("ascii") != hits.read_bytes():
         raise MMseqsGapAwareError("Independent five-column hit replay differs")
     pairs, splits = _read_hits(hits, task_id=task_id)
@@ -272,7 +292,7 @@ def finalize(arguments: argparse.Namespace) -> Mapping[str, Any]:
         )
     ):
         raise MMseqsGapAwareError("Gap-aware target-domain accounting differs")
-    all_pairs = set()  # type: set[Tuple[str, str]]
+    all_pairs = set()  # type: set[tuple[str, str]]
     split_counts = Counter()  # type: Counter[str]
     matched_queries = set()
     matched_targets = set()
