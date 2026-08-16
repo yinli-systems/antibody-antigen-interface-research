@@ -33,6 +33,14 @@ failed before training because relative Slurm log paths resolved under an
 unavailable home directory. The replacement 1412482 uses absolute log paths and
 has clean `RUNNING`/exit-code-0 scheduler evidence.
 
+The immutable deployed source identities are recorded separately from the Git
+working tree: ratio source `train_framecontact.py` SHA256
+`cfa31e9e6df6d8503475fa9fc363a73f00810b486c08246cd3004aeff582545a`, attribution
+source `train_framecontact.py` SHA256
+`0b2af365d9bbe4c2229336ec229eb5d3964c87b7453bd8f5c9a513590dcd2806`, and shared
+`src/interaction_first/framecontact.py` SHA256
+`5899a12cccde810a2453c450ed5a1c11cea46bda084cc9c6506a49c1db4343ec`.
+
 ## Pending execution
 
 1. Wait for 1412482 and 1412514 to produce authenticated result/checkpoint
