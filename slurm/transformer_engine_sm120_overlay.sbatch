@@ -93,6 +93,13 @@ export PYTHONPATH=${PARTIAL}/site-packages
 export NVTE_BUILD_USE_NVIDIA_WHEELS=1
 export NVTE_FRAMEWORK=pytorch
 export MAX_JOBS=${SLURM_CPUS_PER_TASK}
+export CUDA_HOME=${PARTIAL}/site-packages/nvidia/cu13
+[[ -x "${CUDA_HOME}/bin/nvcc" && -d "${CUDA_HOME}/include" ]] \
+  || die "locked NVCC wheel did not materialize a CUDA toolkit"
+export PATH=${CUDA_HOME}/bin:${PATH}
+nvcc_version=$(nvcc -V | sed -n 's/.*release \([0-9][0-9.]*\).*/\1/p' | head -n 1)
+[[ "${nvcc_version}" == "13.0" ]] || die "locked NVCC reports an unexpected CUDA version"
+sha256sum "${CUDA_HOME}/bin/nvcc" > "${PARTIAL}/nvcc-sha256.txt"
 "${BASE_PYTHON}" -m pip install \
   "${PIP_OFFLINE_ARGS[@]}" \
   --target "${PARTIAL}/site-packages" \
