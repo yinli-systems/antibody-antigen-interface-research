@@ -26,6 +26,11 @@ WHEELHOUSE_ENTRY_COUNT=${TE_WHEELHOUSE_ENTRY_COUNT:?required}
 OUTPUT_ROOT=${TE_OUTPUT_ROOT:?TE_OUTPUT_ROOT is required}
 TE_VERSION=2.18.0
 PACKAGING_VERSION=25.0
+PYDANTIC_VERSION=2.13.4
+PYDANTIC_CORE_VERSION=2.46.4
+ANNOTATED_TYPES_VERSION=0.8.0
+TYPING_EXTENSIONS_VERSION=4.16.0
+TYPING_INSPECTION_VERSION=0.4.4
 CUDA_CCCL_VERSION=13.0.85
 NVCC_VERSION=13.0.88
 CUDA_CRT_VERSION=13.0.88
@@ -138,6 +143,11 @@ PIP_OFFLINE_ARGS=(--no-index --find-links "${WHEELHOUSE}")
   --no-deps \
   --report "${PARTIAL}/install-report-nvcc.json" \
   "packaging==${PACKAGING_VERSION}" \
+  "pydantic==${PYDANTIC_VERSION}" \
+  "pydantic-core==${PYDANTIC_CORE_VERSION}" \
+  "annotated-types==${ANNOTATED_TYPES_VERSION}" \
+  "typing-extensions==${TYPING_EXTENSIONS_VERSION}" \
+  "typing-inspection==${TYPING_INSPECTION_VERSION}" \
   "nvidia-cuda-cccl==${CUDA_CCCL_VERSION}" \
   "nvidia-cuda-crt==${CUDA_CRT_VERSION}" \
   "nvidia-cuda-nvcc==${NVCC_VERSION}" \

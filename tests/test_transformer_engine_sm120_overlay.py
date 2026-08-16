@@ -35,6 +35,11 @@ def test_overlay_job_is_bash_valid_source_bound_and_atomic() -> None:
     assert "transformer-engine-cu13==${TE_VERSION}" in source
     assert "transformer-engine-torch==${TE_VERSION}" in source
     assert "packaging==${PACKAGING_VERSION}" in source
+    assert "pydantic==${PYDANTIC_VERSION}" in source
+    assert "pydantic-core==${PYDANTIC_CORE_VERSION}" in source
+    assert "annotated-types==${ANNOTATED_TYPES_VERSION}" in source
+    assert "typing-extensions==${TYPING_EXTENSIONS_VERSION}" in source
+    assert "typing-inspection==${TYPING_INSPECTION_VERSION}" in source
     assert "nvidia-cuda-nvcc==${NVCC_VERSION}" in source
     assert "--no-build-isolation" in source
     assert "--no-deps" in source
