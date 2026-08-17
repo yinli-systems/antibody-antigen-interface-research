@@ -7,7 +7,6 @@
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:8
 #SBATCH --cpus-per-task=32
-#SBATCH --mem=160G
 #SBATCH --time=04:00:00
 #SBATCH --output=/ssd/scxi253/model_deployment/results/pretraining/abf-oas-8g-pilot-%j.out
 #SBATCH --error=/ssd/scxi253/model_deployment/results/pretraining/abf-oas-8g-pilot-%j.err
@@ -35,8 +34,14 @@ STEPS_STAGE1=${ABF_STEPS_STAGE1:-100}
 for path in "$PYTHON_BIN" "$SOURCE_ROOT" "$CORPUS_ROOT" "$OUTPUT_ROOT" "$GATE_PROTOCOL" "$CORPUS_AUDIT" "$MODEL_FAMILY" "$TRAINING_PROTOCOL" "$EFFICIENCY_PROTOCOL"; do
   [[ "$path" == /* ]] || { echo "all paths must be absolute" >&2; exit 2; }
 done
-[[ "$(${PYTHON_BIN} -c 'import torch; print(torch.cuda.device_count())')" == 8 ]] || { echo "requires exactly eight visible GPUs" >&2; exit 2; }
-[[ "$(nvidia-smi --query-gpu=name --format=csv,noheader | awk '$0 == "NVIDIA GeForce RTX 5090" {n++} END {print n+0}')" == 8 ]] || { echo "requires eight RTX 5090 GPUs" >&2; exit 2; }
+WORLD_SIZE=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["execution"]["world_size"])' "$GATE_PROTOCOL")
+[[ "$WORLD_SIZE" == 6 || "$WORLD_SIZE" == 8 ]] || { echo "unsupported scale-pilot world size" >&2; exit 2; }
+TARGET_TOKENS=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["pilot"]["target_residue_tokens_per_update"])' "$GATE_PROTOCOL")
+BATCH_QUANTUM=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["pilot"]["batch_quantum_sequences"])' "$GATE_PROTOCOL")
+[[ "$(${PYTHON_BIN} -c 'import torch; print(torch.cuda.device_count())')" == "$WORLD_SIZE" ]] || { echo "visible GPU count differs from protocol" >&2; exit 2; }
+EXPECTED_GPU_MODEL=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["hardware_identity"]["gpu_model"])' "$GATE_PROTOCOL")
+[[ "$EXPECTED_GPU_MODEL" == "NVIDIA GeForce RTX 4090" || "$EXPECTED_GPU_MODEL" == "NVIDIA GeForce RTX 5090" ]] || { echo "unsupported target GPU model" >&2; exit 2; }
+[[ "$(nvidia-smi --query-gpu=name --format=csv,noheader | awk -v expected="$EXPECTED_GPU_MODEL" '$0 == expected {n++} END {print n+0}')" == "$WORLD_SIZE" ]] || { echo "target GPU identity/count differs" >&2; exit 2; }
 
 export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
 export PYTHONPATH="$SOURCE_ROOT/src:$SOURCE_ROOT/scripts"
@@ -49,7 +54,7 @@ RUN_ROOT="$OUTPUT_ROOT/slurm-${SLURM_JOB_ID}"
 mkdir -p "$RUN_ROOT"
 cp "$GATE_PROTOCOL" "$RUN_ROOT/protocol.json"
 nvidia-smi --query-gpu=index,uuid,name,pci.bus_id,driver_version,memory.total --format=csv > "$RUN_ROOT/environment.txt"
-printf 'job_id=%s\nnode=%s\nworld_size=8\nclaim_boundary=development-only real-OAS recovery pilot\n' "$SLURM_JOB_ID" "$(hostname)" >> "$RUN_ROOT/environment.txt"
+printf 'job_id=%s\nnode=%s\nworld_size=%s\ngpu_model=%s\nclaim_boundary=development-only real-OAS recovery pilot\n' "$SLURM_JOB_ID" "$(hostname)" "$WORLD_SIZE" "$EXPECTED_GPU_MODEL" >> "$RUN_ROOT/environment.txt"
 
 MONITOR_PID=
 stop_monitor() { if [[ -n "$MONITOR_PID" ]]; then kill "$MONITOR_PID" 2>/dev/null || true; wait "$MONITOR_PID" 2>/dev/null || true; MONITOR_PID=; fi; }
@@ -66,7 +71,7 @@ COMMON=(
   --production-corpus-independent-audit-payload-sha256 "$CORPUS_AUDIT_PAYLOAD_SHA256"
   --gate-protocol "$GATE_PROTOCOL" --model-family "$MODEL_FAMILY"
   --training-protocol "$TRAINING_PROTOCOL" --efficiency-protocol "$EFFICIENCY_PROTOCOL"
-  --preset abf_650m --micro-batch 16 --target-tokens 262144 --batch-quantum 512
+  --preset abf_650m --micro-batch 16 --target-tokens "$TARGET_TOKENS" --batch-quantum "$BATCH_QUANTUM"
   --run-seed 17 --length-bucket-boundaries 96,128,160,194
   --ddp-bucket-cap-mb 25 --maximum-open-arrays 1024 --minimum-soft-open-file-limit 4096
 )
@@ -76,7 +81,7 @@ run_role() {
   if [[ "$role" == resumed ]]; then extra+=(--resume-root "$RUN_ROOT/stage1/run"); fi
   if [[ "$role" != stage1 ]]; then extra+=(--skip-checkpoint); fi
   mkdir -p "$output"
-  "$PYTHON_BIN" -m torch.distributed.run --standalone --nproc-per-node=8 \
+  "$PYTHON_BIN" -m torch.distributed.run --standalone --nproc-per-node="$WORLD_SIZE" \
     "$SOURCE_ROOT/scripts/run_antibody_pretraining_production_gate.py" \
     "${COMMON[@]}" --run-role "$role" --steps "$steps" --output "$output/run" \
     "${extra[@]}" --authorization-mode recovery_gate 2>&1 | tee "$output/training.log"

@@ -12,6 +12,12 @@ import freeze_antibody_four_gpu_efficiency_gate as parent
 
 
 FORMAT_VERSION = "antibody_four_gpu_efficiency_gate_v3"
+ACCEPTANCE = parent.ACCEPTANCE
+AUTHORIZATION = parent.AUTHORIZATION
+BATCH = parent.BATCH
+HARDWARE = parent.HARDWARE
+MEASUREMENT = parent.MEASUREMENT
+TEST_ACCESS = parent.TEST_ACCESS
 PANEL_COUNT = 8192
 PANEL_SEED = 2026081501
 PANEL_INDICES_SHA256 = (
@@ -67,6 +73,10 @@ def freeze_bundle(**kwargs: Any) -> tuple[dict[str, Any], dict[str, dict[str, An
     gates["safe_eager"]["execution"]["length_bucket_boundaries"] = (
         BUCKETED_EAGER_BOUNDARIES
     )
+    master["mode_gate_file_sha256"] = {
+        mode: hashlib.sha256(parent._canonical_json_bytes(gate)).hexdigest()
+        for mode, gate in gates.items()
+    }
     master["selected_candidate"] = {
         "compiled_length_bucket_boundaries": STATIC_COMPILED_BOUNDARIES,
         "name": "static_194",
