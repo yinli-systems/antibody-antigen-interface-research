@@ -55,6 +55,39 @@ require_file() {
     exit 2
   }
 }
+require_stable_json() {
+  local path=$1
+  local first second
+  # A dependency can release in the same scheduler tick that the producer
+  # closes its receipt.  Require a complete, valid, unchanged JSON receipt
+  # before deriving any digest; this makes the chain fail closed instead of
+  # interpreting a transient/partial read as an anchor mismatch.
+  for _ in $(seq 1 30); do
+    require_file "${path}"
+    if "${PYTHON_BIN}" - "${path}" <<'PY'
+import json
+import re
+import sys
+
+with open(sys.argv[1], encoding="ascii") as handle:
+    value = json.load(handle)
+receipt = value.get("receipt_sha256")
+if not isinstance(receipt, str) or not re.fullmatch(r"[0-9a-f]{64}", receipt):
+    raise SystemExit(1)
+PY
+    then
+      first=$(sha256_file "${path}")
+      sleep 1
+      second=$(sha256_file "${path}")
+      if [[ "${first}" == "${second}" ]]; then
+        return 0
+      fi
+    fi
+    sleep 1
+  done
+  echo "Required JSON receipt did not become stable: ${path}" >&2
+  exit 2
+}
 submit_next() {
   local next_stage=$1
   sbatch --parsable --dependency="afterok:${SLURM_JOB_ID}" \
@@ -72,7 +105,7 @@ CAMPAIGN_GATE=${CAMPAIGN_ROOT}/campaign_gate.json
 
 case "${CHAIN_STAGE}" in
   shape)
-    require_file "${RECOVERY_AUDIT}"
+    require_stable_json "${RECOVERY_AUDIT}"
     export ABF_OUTPUT_ROOT=${SHAPE_ROOT}
     export ABF_RECOVERY_AUDIT=${RECOVERY_AUDIT}
     export ABF_RECOVERY_AUDIT_FILE_SHA256=$(sha256_file "${RECOVERY_AUDIT}")
@@ -88,9 +121,9 @@ case "${CHAIN_STAGE}" in
     echo "next_efficiency_job=${next_job}"
     ;;
   efficiency)
-    require_file "${RECOVERY_AUDIT}"
+    require_stable_json "${RECOVERY_AUDIT}"
     require_file "${RECOVERY_GATE}"
-    require_file "${SHAPE_AUDIT}"
+    require_stable_json "${SHAPE_AUDIT}"
     require_file "${SHAPE_PROTOCOL}"
     export ABF_OUTPUT_ROOT=${EFFICIENCY_ROOT}
     export ABF_RECOVERY_AUDIT=${RECOVERY_AUDIT}
