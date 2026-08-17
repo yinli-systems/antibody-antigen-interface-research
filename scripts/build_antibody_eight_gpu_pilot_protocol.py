@@ -100,16 +100,16 @@ def main() -> None:
         "cross_hardware": cross_hardware,
         "source_gpu_model": source_gpu_model,
         "target_gpu_model": args.target_gpu_model,
+        "collective_determinism": {
+            "nccl_algo": "Ring",
+            "nccl_proto": "Simple",
+            "nccl_min_nchannels": 1,
+            "nccl_max_nchannels": 1,
+        },
     }
     result["execution"] = dict(execution)
     result["execution"]["world_size"] = args.target_world_size
     result["execution"]["data_loader"] = dict(execution["data_loader"])
-    result["execution"]["collective_determinism"] = {
-        "nccl_algo": "Ring",
-        "nccl_proto": "Simple",
-        "nccl_min_nchannels": 1,
-        "nccl_max_nchannels": 1,
-    }
     result["hardware_identity"] = dict(hardware)
     result["hardware_identity"]["gpu_count"] = args.target_world_size
     result["hardware_identity"]["gpu_model"] = args.target_gpu_model

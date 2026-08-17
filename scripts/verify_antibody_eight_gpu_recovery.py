@@ -57,7 +57,7 @@ def main() -> None:
     ):
         raise ValueError("protocol hardware identity differs")
     gpu_model = hardware["gpu_model"]
-    if protocol.get("execution", {}).get("collective_determinism") != {
+    if protocol.get("pilot", {}).get("collective_determinism") != {
         "nccl_algo": "Ring",
         "nccl_proto": "Simple",
         "nccl_min_nchannels": 1,
