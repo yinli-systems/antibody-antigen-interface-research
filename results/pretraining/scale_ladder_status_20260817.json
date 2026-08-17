@@ -1,0 +1,75 @@
+{
+  "format_version": "antibody_scale_ladder_status_v1",
+  "observed_at": "2026-08-17T16:15:54+08:00",
+  "source_commit": "5f1f6ac92f9796953b5cd95fbdaa9a16036cf129",
+  "corpus": {
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
+    "manifest_file_sha256": "6da8ec5bb8fb9cb8c48cff6223446121791926c3607c95793b1c7cea8322dce5",
+    "independent_audit_file_sha256": "3ce2d6ae64376b587582cf08f2ce68ffaf3e1fcef9bd13fb85157c84b75c3b48",
+    "independent_replay_complete": true
+  },
+  "one_gpu_recovery": {
+    "job_id": 1427678,
+    "state": "COMPLETED",
+    "exact_recovery": {
+      "final_model_equal": true,
+      "final_optimizer_equal": true,
+      "scientific_trace_equal": true,
+      "terminal_coordinates_equal": true
+    },
+    "claim_boundary": "One-GPU loader/checkpoint recovery only; no production, scale, biological, or SOTA claim"
+  },
+  "four_gpu_recovery": {
+    "job_id": 1427954,
+    "state": "PENDING",
+    "reason": "Priority",
+    "requested_partition": "gpu_5090",
+    "requested_gpus": 4,
+    "scheduler_start_time": "2026-08-18T09:36:28",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_decontam_5f1f6ac_attempt_001",
+    "claim_boundary": "Four-GPU recovery is not yet evidenced; shape, efficiency, and production campaign remain blocked"
+  },
+  "cluster_snapshot": {
+    "gpu_4090_available_gpus": 28,
+    "gpu_4090_runnable_four_gpu_jobs": 2,
+    "gpu_5090_available_gpus": 9,
+    "gpu_5090_runnable_four_gpu_jobs": 0,
+    "hp_4090_available_gpus": 44,
+    "hp_4090_runnable_four_gpu_jobs": 6,
+    "note": "The frozen recovery protocol requires four RTX 5090 GPUs; 4090 fallback would require a new runtime/protocol and is not substituted silently."
+  },
+  "development_matrix_snapshot": {
+    "ratio_job": 1412482,
+    "ratio_seed0_epoch": 41,
+    "ratio_seed0_contact_auprc": 0.07933386774695586,
+    "ratio_seed0_contact_mcc": 0.13333170456704146,
+    "ratio_seed0_contact_f1": 0.13456207387427888,
+    "attribution_job": 1412514,
+    "attribution_seed0_epoch": 41,
+    "attribution_seed0_contact_auprc": 0.11066147139811357,
+    "attribution_seed0_contact_mcc": 0.1947302223469078,
+    "attribution_seed0_contact_f1": 0.19574517285235288,
+    "claim_boundary": "Development validation only; not frozen, official, external, or model-selection evidence"
+  },
+  "ab03": {
+    "endpoint": "172.168.10.3",
+    "status": "SSH banner exchange timeout",
+    "a100_utilization_evidence": false
+  },
+  "github_pr_8": {
+    "head": "14b11646ad5ce5739d32d4626c2932d4af10ed94",
+    "state": "OPEN",
+    "mergeable": "MERGEABLE",
+    "checks": 0,
+    "review_decision": "",
+    "fixed_commit_87caa8e": "present in history; no deployment or CI evidence"
+  },
+  "authorization": {
+    "large_scale_pretraining": false,
+    "production_pretraining": false,
+    "scientific_claim": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "external_test_accessed": false
+  }
+}
