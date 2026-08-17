@@ -1,0 +1,28 @@
+{
+  "format_version": "antibody_four_gpu_static_fallback_v3_submission_v1",
+  "observed_at": "2026-08-17T19:20:00+08:00",
+  "job_id": 1430451,
+  "state_at_submission": "PENDING",
+  "partition": "gpu_5090",
+  "requested_gpus": 4,
+  "source_commit": "d695aaa",
+  "source_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody-pretraining-static-fallback-d695aaa",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_static_efficiency_fallback_v3_d695aaa_attempt_001",
+  "efficiency_gate_version": "v3-static-194-live-panel",
+  "compiled_length_bucket_boundaries": "194",
+  "inputs": {
+    "corpus_protocol_file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "recovery_audit_file_sha256": "e4a903dba8bb56186547fcd969af8dce5c6880dfb58520b13e05376b217958f0",
+    "recovery_audit_payload_sha256": "4d4bfb761fe8e027cea09456517d541e0b64e352613d9d00d38a3af303e1367d",
+    "runtime_manifest_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "validation_panel_indices_sha256": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "validation_record_count": 1215730,
+    "validation_sample_count": 8192
+  },
+  "supersedes_failure": {
+    "job_id": 1430373,
+    "error": "Validation panel anchor differs",
+    "failed_output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_static_efficiency_fallback_5f1f6ac_attempt_001"
+  },
+  "claim_boundary": "Submission/live engineering only; no efficiency, throughput, checkpoint-equivalence, production, scientific, frozen, official, or external claim until the fresh v3 receipt passes its registered audit."
+}
