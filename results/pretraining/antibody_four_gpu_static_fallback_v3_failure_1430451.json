@@ -1,0 +1,23 @@
+{
+  "format_version": "antibody_four_gpu_efficiency_gate_v3_failure",
+  "job_id": "1430451",
+  "state": "FAILED",
+  "exit_code": "1:0",
+  "elapsed": "00:23:33",
+  "node": "wqd10naf02g3",
+  "source_commit": "d695aaa",
+  "overlay_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody-pretraining-static-fallback-d695aaa",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_static_efficiency_fallback_v3_d695aaa_attempt_001",
+  "stage": "compiled_r1_launch_validation",
+  "error": "Launch execution settings differ from the gate protocol",
+  "evidence": {
+    "safe_eager_steps": 600,
+    "safe_eager_receipt_model_sha256": "93261768c1e7d2127a42f6459ed1ec8b3ea22a0e989918147dcffe9c78d54321",
+    "compiled_requested_boundaries": "194",
+    "compiled_gate_boundaries_before_fix": "96,128,160,194",
+    "live_validation_panel_indices_sha256": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "stderr": "No CUDA/NCCL/data error; all ranks failed closed in _validate_launch before compiled training."
+  },
+  "claim_boundary": "Engineering gate failure only; no production-pretraining, scale-out, scientific, frozen, official, or external claim.",
+  "next_action": "Regenerate v3 bundle with compiled static-194 boundary and rerun the unchanged A/B/B/A gate."
+}
