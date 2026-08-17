@@ -1,0 +1,40 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "scale_promotion": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Credible negative result for the development-only 6xRTX4090 cross-hardware exact-recovery pilot; it does not invalidate checkpoint loading and does not authorize production.",
+  "control": {
+    "nccl_algo": "Ring",
+    "nccl_max_nchannels": 1,
+    "nccl_min_nchannels": 1,
+    "nccl_proto": "Simple"
+  },
+  "diagnosis": {
+    "checkpoint_model_load_matched": true,
+    "checkpoint_optimizer_load_matched": true,
+    "checkpoint_rng_manifest_matched": true,
+    "first_semantic_divergence_update": 102,
+    "last_gradient_norm_delta": -1.3769359588623047,
+    "last_loss_delta": 0.01924061766371754,
+    "stage1_first_100_updates_semantically_matched": true
+  },
+  "failed_hypothesis": "Freezing NCCL to Ring/Simple with one channel is sufficient for bitwise-identical continuation across independent 6-GPU DDP launches.",
+  "failure": {
+    "error": "ValueError: model recovery mismatch",
+    "exact_recovery": false,
+    "job_id": "1434811",
+    "state": "FAILED"
+  },
+  "format_version": "antibody_scale_recovery_nccl_control_failure_v1",
+  "next_action": "Stop the 4090 cross-hardware exact-hash branch and retain the preregistered same-hardware 8xRTX5090 pilot as the remaining test.",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_single_node_scale_real_oas_recovery_pilot_v1_attempt_009/slurm-1434811",
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
