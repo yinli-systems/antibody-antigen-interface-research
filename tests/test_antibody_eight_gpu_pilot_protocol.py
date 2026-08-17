@@ -92,7 +92,7 @@ def test_builder_derives_eight_gpu_recovery_protocol(tmp_path: Path) -> None:
         "node_count": 1,
     }
     assert value["pilot"]["continuous_steps"] == 7
-    assert value["execution"]["collective_determinism"] == {
+    assert value["pilot"]["collective_determinism"] == {
         "nccl_algo": "Ring",
         "nccl_proto": "Simple",
         "nccl_min_nchannels": 1,

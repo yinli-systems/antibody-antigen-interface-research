@@ -42,10 +42,10 @@ BATCH_QUANTUM=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv
 EXPECTED_GPU_MODEL=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["hardware_identity"]["gpu_model"])' "$GATE_PROTOCOL")
 [[ "$EXPECTED_GPU_MODEL" == "NVIDIA GeForce RTX 4090" || "$EXPECTED_GPU_MODEL" == "NVIDIA GeForce RTX 5090" ]] || { echo "unsupported target GPU model" >&2; exit 2; }
 [[ "$(nvidia-smi --query-gpu=name --format=csv,noheader | awk -v expected="$EXPECTED_GPU_MODEL" '$0 == expected {n++} END {print n+0}')" == "$WORLD_SIZE" ]] || { echo "target GPU identity/count differs" >&2; exit 2; }
-NCCL_ALGO=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["execution"]["collective_determinism"]["nccl_algo"])' "$GATE_PROTOCOL")
-NCCL_PROTO=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["execution"]["collective_determinism"]["nccl_proto"])' "$GATE_PROTOCOL")
-NCCL_MIN_NCHANNELS=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["execution"]["collective_determinism"]["nccl_min_nchannels"])' "$GATE_PROTOCOL")
-NCCL_MAX_NCHANNELS=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["execution"]["collective_determinism"]["nccl_max_nchannels"])' "$GATE_PROTOCOL")
+NCCL_ALGO=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["pilot"]["collective_determinism"]["nccl_algo"])' "$GATE_PROTOCOL")
+NCCL_PROTO=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["pilot"]["collective_determinism"]["nccl_proto"])' "$GATE_PROTOCOL")
+NCCL_MIN_NCHANNELS=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["pilot"]["collective_determinism"]["nccl_min_nchannels"])' "$GATE_PROTOCOL")
+NCCL_MAX_NCHANNELS=$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="ascii"))["pilot"]["collective_determinism"]["nccl_max_nchannels"])' "$GATE_PROTOCOL")
 [[ "$NCCL_ALGO:$NCCL_PROTO:$NCCL_MIN_NCHANNELS:$NCCL_MAX_NCHANNELS" == "Ring:Simple:1:1" ]] || { echo "collective determinism values differ" >&2; exit 2; }
 
 export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
