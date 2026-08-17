@@ -1,0 +1,18 @@
+{
+  "format_version": "antibody_four_gpu_shape_submission_v1",
+  "observed_at": "2026-08-17T17:17:40+08:00",
+  "job_id": 1428728,
+  "state_at_submission": "RUNNING",
+  "partition": "gpu_5090",
+  "requested_gpus": 4,
+  "source_commit": "5f1f6ac92f979695756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_shape_decontam_5f1f6ac_attempt_001",
+  "inputs": {
+    "corpus_protocol_file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "recovery_audit_file_sha256": "e4a903dba8bb56186547fcd969af8dce5c6880dfb58520b13e05376b217958f0",
+    "recovery_audit_payload_sha256": "4d4bfb761fe8e027cea09456517d541e0b64e352613d9d00d38a3af303e1367d",
+    "runtime_manifest_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a"
+  },
+  "submission_note": "The scheduler rejected a new afterok dependency on the already-completed recovery job; the probe was submitted directly with the same independently audited recovery and corpus anchors. The probe itself remains gated and fail-closed.",
+  "claim_boundary": "Submission and live engineering smoke only; no shape, throughput, recovery, production, scientific, frozen, official, or external claim until the job receipt passes its registered audit."
+}
