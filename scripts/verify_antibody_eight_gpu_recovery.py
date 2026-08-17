@@ -57,6 +57,13 @@ def main() -> None:
     ):
         raise ValueError("protocol hardware identity differs")
     gpu_model = hardware["gpu_model"]
+    if protocol.get("execution", {}).get("collective_determinism") != {
+        "nccl_algo": "Ring",
+        "nccl_proto": "Simple",
+        "nccl_min_nchannels": 1,
+        "nccl_max_nchannels": 1,
+    }:
+        raise ValueError("collective determinism contract differs")
     receipts = {}
     states = {}
     for role, root in (("continuous", args.continuous), ("stage1", args.stage1), ("resumed", args.resumed)):
