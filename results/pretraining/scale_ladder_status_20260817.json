@@ -1,6 +1,6 @@
 {
   "format_version": "antibody_scale_ladder_status_v1",
-  "observed_at": "2026-08-17T16:15:54+08:00",
+  "observed_at": "2026-08-17T16:18:08+08:00",
   "source_commit": "5f1f6ac92f9796953b5cd95fbdaa9a16036cf129",
   "corpus": {
     "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
@@ -22,10 +22,10 @@
   "four_gpu_recovery": {
     "job_id": 1427954,
     "state": "PENDING",
-    "reason": "Priority",
+    "reason": "Resources",
     "requested_partition": "gpu_5090",
     "requested_gpus": 4,
-    "scheduler_start_time": "2026-08-18T09:36:28",
+    "scheduler_start_time": "2026-08-18T07:15:53",
     "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_decontam_5f1f6ac_attempt_001",
     "claim_boundary": "Four-GPU recovery is not yet evidenced; shape, efficiency, and production campaign remain blocked"
   },
