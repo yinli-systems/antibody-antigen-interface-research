@@ -17,6 +17,8 @@ PANEL_SEED = 2026081501
 PANEL_INDICES_SHA256 = (
     "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38"
 )
+STATIC_COMPILED_BOUNDARIES = "194"
+BUCKETED_EAGER_BOUNDARIES = "96,128,160,194"
 VALIDATION_PANEL = {
     "indices_sha256": PANEL_INDICES_SHA256,
     "mask_seed": 2026081503,
@@ -39,7 +41,14 @@ SOURCE_FILES = tuple(
 
 
 def freeze_bundle(**kwargs: Any) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
-    """Reuse the audited v1 bundle while registering the corrected panel anchor."""
+    """Reuse the audited v1 bundle with the static-194 boundary contract.
+
+    The shape probe selected the single-boundary ``194`` compiled candidate.
+    The v1 parent freezer leaves the compiled gate at the default four
+    boundaries, which makes the runner reject the otherwise correct v3 launch
+    before any compiled work starts.  Keep eager execution bucketed and make
+    the compiled gate agree with the selected candidate explicitly.
+    """
     old_format = parent.FORMAT_VERSION
     old_panel = parent.VALIDATION_PANEL
     old_sources = parent.SOURCE_FILES
@@ -52,6 +61,16 @@ def freeze_bundle(**kwargs: Any) -> tuple[dict[str, Any], dict[str, dict[str, An
         parent.FORMAT_VERSION = old_format
         parent.VALIDATION_PANEL = old_panel
         parent.SOURCE_FILES = old_sources
+    gates["compiled"]["execution"]["length_bucket_boundaries"] = (
+        STATIC_COMPILED_BOUNDARIES
+    )
+    gates["safe_eager"]["execution"]["length_bucket_boundaries"] = (
+        BUCKETED_EAGER_BOUNDARIES
+    )
+    master["selected_candidate"] = {
+        "compiled_length_bucket_boundaries": STATIC_COMPILED_BOUNDARIES,
+        "name": "static_194",
+    }
     master["claim_boundary"] = (
         "Four-GPU real-OAS static-194 A/B/B/A efficiency and "
         "checkpoint-equivalence gate; corrected validation panel anchor only; "
