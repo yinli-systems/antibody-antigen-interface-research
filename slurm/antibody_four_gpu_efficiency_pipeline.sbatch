@@ -24,6 +24,7 @@ RUNTIME_MANIFEST=${ABF_RUNTIME_MANIFEST:?ABF_RUNTIME_MANIFEST is required}
 RUNTIME_MANIFEST_SHA256=${ABF_RUNTIME_MANIFEST_SHA256:?required}
 EFFICIENCY_GATE_VERSION=${ABF_EFFICIENCY_GATE_VERSION:-v1}
 COMPILED_LENGTH_BUCKET_BOUNDARIES=${ABF_COMPILED_LENGTH_BUCKET_BOUNDARIES:-96,128,160,194}
+VALIDATION_PANEL_INDICES_SHA256=${ABF_VALIDATION_PANEL_INDICES_SHA256:-cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec}
 EAGER_LENGTH_BUCKET_BOUNDARIES=96,128,160,194
 
 FREEZER_EXTRA_ARGS=()
@@ -45,6 +46,11 @@ elif [[ "${EFFICIENCY_GATE_VERSION}" == v2 ]]; then
     --shape-probe-audit-payload-sha256 "${SHAPE_PROBE_AUDIT_PAYLOAD_SHA256}"
     --shape-probe-protocol-file-sha256 "${SHAPE_PROBE_PROTOCOL_FILE_SHA256}"
   )
+elif [[ "${EFFICIENCY_GATE_VERSION}" == v3 ]]; then
+  EFFICIENCY_FREEZER=scripts/freeze_antibody_four_gpu_efficiency_gate_v3.py
+  EFFICIENCY_AUDITOR=scripts/audit_antibody_four_gpu_efficiency_gate_v3.py
+  [[ "${COMPILED_LENGTH_BUCKET_BOUNDARIES}" == 194 ]] \
+    || { echo "Efficiency v3 requires the static-194 fallback candidate" >&2; exit 2; }
 else
   echo "Unknown efficiency gate version" >&2
   exit 2
@@ -146,6 +152,7 @@ cp "${PROTOCOL}" "${RUN_ROOT}/protocol.json"
   echo "efficiency_gate_version=${EFFICIENCY_GATE_VERSION}"
   echo "compiled_length_bucket_boundaries=${COMPILED_LENGTH_BUCKET_BOUNDARIES}"
   echo "validation_panel_records=8192"
+  echo "validation_panel_indices_sha256=${VALIDATION_PANEL_INDICES_SHA256}"
   echo "claim_boundary=real-OAS paired efficiency and equivalence gate only"
   date --iso-8601=seconds
   nvidia-smi --query-gpu=index,uuid,name,pci.bus_id,driver_version,memory.total --format=csv
@@ -238,7 +245,7 @@ run_mode() {
     --preset abf_650m \
     --panel-sample-count 8192 \
     --panel-seed 2026081501 \
-    --panel-indices-sha256 cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec \
+    --panel-indices-sha256 "${VALIDATION_PANEL_INDICES_SHA256}" \
     --mask-seed 2026081503 \
     --mask-update 0 \
     --micro-batch 16 \
