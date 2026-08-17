@@ -37,6 +37,12 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--continuous-steps", type=int, default=200)
     parser.add_argument("--stage1-steps", type=int, default=100)
+    parser.add_argument(
+        "--target-gpu-model",
+        choices=("NVIDIA GeForce RTX 4090", "NVIDIA GeForce RTX 5090"),
+        default="NVIDIA GeForce RTX 5090",
+    )
+    parser.add_argument("--target-world-size", type=int, choices=(6, 8), default=8)
     args = parser.parse_args()
     if args.continuous_steps <= 0 or args.stage1_steps <= 0:
         raise ValueError("step counts must be positive")
@@ -63,54 +69,74 @@ def main() -> None:
     optimization = execution.get("optimization")
     if not isinstance(optimization, dict) or optimization.get("compile_blocks"):
         raise ValueError("pilot only accepts the safe-eager source gate")
+    hardware = source.get("hardware_identity")
+    if not isinstance(hardware, dict) or hardware != {
+        "gpu_count": 4,
+        "gpu_model": "NVIDIA GeForce RTX 5090",
+        "node_count": 1,
+    }:
+        raise ValueError("source hardware identity differs")
+    source_gpu_model = str(hardware["gpu_model"])
+    cross_hardware = args.target_gpu_model != source_gpu_model
+    target_tokens = 131072 * args.target_world_size // 4
+    batch_quantum = 256 * args.target_world_size // 4
     result = dict(source)
     result["claim_boundary"] = (
-        "Eight-GPU real-OAS recovery pilot only; no production training, "
-        "scale promotion, downstream, biological, official-test, or SOTA claim"
+        "Single-node scale real-OAS recovery pilot only; cross-hardware engineering "
+        "evidence only when the target GPU differs from the four-GPU source; "
+        "no production training, scale promotion, downstream, biological, "
+        "official-test, or SOTA claim"
     )
     result["pilot"] = {
         "source_protocol_sha256": hashlib.sha256(_canonical(source)).hexdigest(),
-        "world_size": 8,
+        "world_size": args.target_world_size,
         "continuous_steps": args.continuous_steps,
         "stage1_steps": args.stage1_steps,
         "resumed_steps": args.stage1_steps,
-        "target_residue_tokens_per_update": 262144,
+        "target_residue_tokens_per_update": target_tokens,
+        "batch_quantum_sequences": batch_quantum,
         "backend": "ddp",
         "authorization_mode": "recovery_gate",
+        "cross_hardware": cross_hardware,
+        "source_gpu_model": source_gpu_model,
+        "target_gpu_model": args.target_gpu_model,
     }
     result["execution"] = dict(execution)
-    result["execution"]["world_size"] = 8
+    result["execution"]["world_size"] = args.target_world_size
     result["execution"]["data_loader"] = dict(execution["data_loader"])
+    result["hardware_identity"] = dict(hardware)
+    result["hardware_identity"]["gpu_count"] = args.target_world_size
+    result["hardware_identity"]["gpu_model"] = args.target_gpu_model
     result["runs"] = {
         "continuous": {
-            "batch_quantum_sequences": 512,
+            "batch_quantum_sequences": batch_quantum,
             "checkpoint": False,
             "micro_batch_per_gpu": 16,
             "preset": "abf_650m",
             "resume": False,
             "run_seed": 17,
             "steps": args.continuous_steps,
-            "target_residue_tokens": 262144,
+            "target_residue_tokens": target_tokens,
         },
         "stage1": {
-            "batch_quantum_sequences": 512,
+            "batch_quantum_sequences": batch_quantum,
             "checkpoint": True,
             "micro_batch_per_gpu": 16,
             "preset": "abf_650m",
             "resume": False,
             "run_seed": 17,
             "steps": args.stage1_steps,
-            "target_residue_tokens": 262144,
+            "target_residue_tokens": target_tokens,
         },
         "resumed": {
-            "batch_quantum_sequences": 512,
+            "batch_quantum_sequences": batch_quantum,
             "checkpoint": False,
             "micro_batch_per_gpu": 16,
             "preset": "abf_650m",
             "resume": True,
             "run_seed": 17,
             "steps": args.stage1_steps,
-            "target_residue_tokens": 262144,
+            "target_residue_tokens": target_tokens,
         },
     }
     descriptor = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o400)

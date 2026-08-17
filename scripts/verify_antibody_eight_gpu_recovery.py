@@ -44,8 +44,19 @@ def main() -> None:
     if args.output.exists():
         raise FileExistsError(args.output)
     protocol = _load(args.protocol)
-    if protocol.get("execution", {}).get("world_size") != 8:
-        raise ValueError("protocol is not eight-GPU")
+    world_size = protocol.get("execution", {}).get("world_size")
+    if world_size not in {6, 8}:
+        raise ValueError("protocol is not an allowed single-node scale pilot")
+    hardware = protocol.get("hardware_identity")
+    if (
+        not isinstance(hardware, dict)
+        or hardware.get("gpu_count") != world_size
+        or hardware.get("node_count") != 1
+        or hardware.get("gpu_model")
+        not in {"NVIDIA GeForce RTX 4090", "NVIDIA GeForce RTX 5090"}
+    ):
+        raise ValueError("protocol hardware identity differs")
+    gpu_model = hardware["gpu_model"]
     receipts = {}
     states = {}
     for role, root in (("continuous", args.continuous), ("stage1", args.stage1), ("resumed", args.resumed)):
@@ -55,11 +66,16 @@ def main() -> None:
             raise ValueError(f"{role} receipt format differs")
         if receipt.get("authorization") != AUTHORIZATION or receipt.get("test_access") != TEST_ACCESS:
             raise ValueError(f"{role} authorization boundary differs")
-        if receipt.get("run_role") != role or receipt.get("world_size") != 8 or state.get("world_size") != 8:
+        if (
+            receipt.get("run_role") != role
+            or receipt.get("world_size") != world_size
+            or receipt.get("device") != gpu_model
+            or state.get("world_size") != world_size
+        ):
             raise ValueError(f"{role} world-size identity differs")
         hosts = receipt.get("corpus_open", {}).get("rank_hosts", [])
-        if len(hosts) != 8 or len(set(hosts)) != 1:
-            raise ValueError(f"{role} is not a single-node eight-rank run")
+        if len(hosts) != world_size or len(set(hosts)) != 1:
+            raise ValueError(f"{role} is not a single-node scale run")
         receipts[role] = receipt
         states[role] = state
     if receipts["continuous"]["final_model_sha256"] != receipts["resumed"]["final_model_sha256"]:
@@ -69,12 +85,13 @@ def main() -> None:
     if states["continuous"] != states["resumed"]:
         raise ValueError("trainer-state recovery mismatch")
     payload = {
-        "format_version": "antibody_eight_gpu_real_oas_recovery_audit_v1",
+        "format_version": "antibody_single_node_scale_real_oas_recovery_audit_v1",
         "authorization": AUTHORIZATION,
         "test_access": TEST_ACCESS,
-        "claim_boundary": "Eight-GPU real-OAS exact recovery pilot only; no production or scientific claim",
+        "claim_boundary": "Single-node scale real-OAS exact recovery pilot only; no production or scientific claim",
         "protocol_sha256": hashlib.sha256(args.protocol.read_bytes()).hexdigest(),
-        "world_size": 8,
+        "world_size": world_size,
+        "gpu_model": gpu_model,
         "roles": {
             role: {
                 "final_model_sha256": receipts[role]["final_model_sha256"],
