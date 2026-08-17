@@ -10,6 +10,7 @@ import sys
 from typing import Any, Mapping
 
 from antibody_pretraining.decontaminated_corpus import (
+    EXCLUSION_TEST_ACCESS,
     PROTOCOL_FORMAT,
     canonical_json_bytes,
     file_sha256,
@@ -102,7 +103,7 @@ def freeze_protocol(
         or audit.get("inputs", {}).get("manifest_file_sha256") != manifest_file
         or audit.get("inputs", {}).get("manifest_payload_sha256") != manifest_payload
         or exclusion.get("format_version") != EXCLUSION_FORMAT
-        or exclusion.get("test_access") != TEST_ACCESS
+        or exclusion.get("test_access") != EXCLUSION_TEST_ACCESS
         or exclusion.get("claim_boundary", {}).get(
             "near_identity_exclusion_list_complete"
         )

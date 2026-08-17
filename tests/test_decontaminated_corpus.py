@@ -364,8 +364,10 @@ def test_filter_task_authenticates_graph_and_covers_every_protocol_bucket(
                 "excluded_sequence_sha256_records": len(excluded),
             },
             "test_access": {
-                "downstream_metrics_used": False,
-                "sabdab2_heldout_accessed": False,
+                "development_sequence_fields_accessed": True,
+                "frozen_official_external_test_accessed": False,
+                "model_predictions_or_scores_accessed": False,
+                "task_label_values_used": False,
             },
         },
         digest_field="receipt_sha256",
@@ -377,6 +379,49 @@ def test_filter_task_authenticates_graph_and_covers_every_protocol_bucket(
     )
     protocol = tmp_path / "protocol.json"
     filter_controller = ROOT / "scripts/filter_oas_decontaminated_corpus_task.py"
+    bad_exclusion_root = tmp_path / "bad-exclusions"
+    bad_exclusion_root.mkdir()
+    bad_exclusion_stream = bad_exclusion_root / "excluded_sequence_sha256.bin"
+    bad_exclusion_stream.write_bytes(exclusion_stream.read_bytes())
+    bad_exclusion_stream.chmod(0o400)
+    publish_signed_json(
+        bad_exclusion_root / "receipt.json",
+        {
+            "claim_boundary": {
+                "near_identity_exclusion_list_complete": True,
+                "original_training_corpus_filtered": False,
+            },
+            "format_version": "oas_near_identity_exclusion_compilation_v1",
+            "output": {
+                "excluded_sequence_sha256_bytes": bad_exclusion_stream.stat().st_size,
+                "excluded_sequence_sha256_file_sha256": file_sha256(
+                    bad_exclusion_stream
+                ),
+                "excluded_sequence_sha256_record_bytes": 32,
+                "excluded_sequence_sha256_records": len(excluded),
+            },
+            "test_access": {
+                "downstream_metrics_used": False,
+                "sabdab2_heldout_accessed": False,
+            },
+        },
+        digest_field="receipt_sha256",
+    )
+    with pytest.raises(
+        FREEZER_MODULE.DecontaminationProtocolError,
+        match="evidence graph",
+    ):
+        FREEZER_MODULE.freeze_protocol(
+            source_root=source_root,
+            exclusion_root=bad_exclusion_root,
+            output=tmp_path / "bad-protocol.json",
+            filter_controller=filter_controller,
+            filter_core=ROOT / "src/antibody_pretraining/decontaminated_corpus.py",
+            finalizer=finalizer_source,
+            independent_auditor=AUDITOR_PATH,
+            task_count=1,
+            bucket_count=2,
+        )
     FREEZER_MODULE.freeze_protocol(
         source_root=source_root,
         exclusion_root=exclusion_root,

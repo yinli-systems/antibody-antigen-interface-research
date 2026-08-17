@@ -45,6 +45,12 @@ TEST_ACCESS = {
     "downstream_metrics_used": False,
     "sabdab2_heldout_accessed": False,
 }
+EXCLUSION_TEST_ACCESS = {
+    "development_sequence_fields_accessed": True,
+    "frozen_official_external_test_accessed": False,
+    "model_predictions_or_scores_accessed": False,
+    "task_label_values_used": False,
+}
 AUTHORIZATION = {
     "large_scale_pretraining": False,
     "production_corpus_use": False,
@@ -654,6 +660,7 @@ def audit_corpus(
         or source_audit_file != inputs.get("source_audit_file_sha256")
         or source_audit_payload != inputs.get("source_audit_payload_sha256")
         or exclusion.get("format_version") != EXCLUSION_FORMAT
+        or exclusion.get("test_access") != EXCLUSION_TEST_ACCESS
         or exclusion.get("claim_boundary", {}).get(
             "near_identity_exclusion_list_complete"
         )
