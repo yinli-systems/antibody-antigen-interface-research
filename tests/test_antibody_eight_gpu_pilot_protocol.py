@@ -92,6 +92,12 @@ def test_builder_derives_eight_gpu_recovery_protocol(tmp_path: Path) -> None:
         "node_count": 1,
     }
     assert value["pilot"]["continuous_steps"] == 7
+    assert value["execution"]["collective_determinism"] == {
+        "nccl_algo": "Ring",
+        "nccl_proto": "Simple",
+        "nccl_min_nchannels": 1,
+        "nccl_max_nchannels": 1,
+    }
     assert value["runs"]["continuous"]["checkpoint"] is False
     assert value["runs"]["stage1"]["checkpoint"] is True
     assert value["runs"]["resumed"]["resume"] is True
@@ -250,3 +256,5 @@ def test_submitter_uses_explicit_recovery_eligibility() -> None:
     assert "gates\", {}).get(\"safe_eager\"" not in source
     assert "--mem" not in source
     assert "#SBATCH --mem" not in PILOT.read_text(encoding="ascii")
+    assert "NCCL_ALGO" in PILOT.read_text(encoding="ascii")
+    assert "NCCL_MAX_NCHANNELS" in PILOT.read_text(encoding="ascii")
