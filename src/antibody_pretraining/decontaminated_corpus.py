@@ -47,6 +47,12 @@ TEST_ACCESS = {
     "downstream_metrics_used": False,
     "sabdab2_heldout_accessed": False,
 }
+EXCLUSION_TEST_ACCESS = {
+    "development_sequence_fields_accessed": True,
+    "frozen_official_external_test_accessed": False,
+    "model_predictions_or_scores_accessed": False,
+    "task_label_values_used": False,
+}
 SPLITS = ("train", "validation")
 
 
@@ -672,7 +678,7 @@ def filter_task(
         or source_audit.get("inputs", {}).get("manifest_payload_sha256")
         != source_manifest_payload
         or exclusion.get("format_version") != EXCLUSION_FORMAT
-        or exclusion.get("test_access") != TEST_ACCESS
+        or exclusion.get("test_access") != EXCLUSION_TEST_ACCESS
         or exclusion.get("claim_boundary", {}).get(
             "near_identity_exclusion_list_complete"
         )
