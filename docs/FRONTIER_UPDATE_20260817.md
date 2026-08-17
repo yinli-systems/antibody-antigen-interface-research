@@ -9,4 +9,3 @@
 ## Decision boundary
 
 The current scale ladder remains unchanged: complete the four-RTX-5090 recovery, then shape/throughput/tail-latency/telemetry, then the 30B-residue-token campaign. Do not add AAMFM/EpiBench labels to OAS pretraining, do not use them for checkpoint selection, and do not substitute a 4090 allocation for the frozen 5090 recovery protocol. Revisit them only after the pretraining campaign has a sealed receipt and an explicitly registered downstream protocol.
-
