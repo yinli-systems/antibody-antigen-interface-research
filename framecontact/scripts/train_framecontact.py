@@ -46,6 +46,7 @@ from interaction_first.framecontact_objective import (  # noqa: E402
     ValidationTemperatureScaler,
     top_fraction_contact_score,
 )
+from interaction_first.local_interface_decoys import LocalMotifMaskDataset  # noqa: E402
 from interaction_first.partner_panel import PARTNER_PANEL_FORMAT  # noqa: E402
 from interaction_first.reciprocal_partner_panel import (  # noqa: E402
     RECIPROCAL_PARTNER_PANEL_FORMAT,
@@ -722,6 +723,15 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument(
         "--residue-partner-contrastive-loss-weight", type=float, default=0.0
     )
+    parser.add_argument(
+        "--local-motif-hard-negative-loss-weight", type=float, default=0.0
+    )
+    parser.add_argument(
+        "--local-motif-hard-negative-margin", type=float, default=0.25
+    )
+    parser.add_argument(
+        "--local-motif-hard-negative-temperature", type=float, default=1.0
+    )
     parser.add_argument("--residue-contrastive-margin", type=float, default=0.5)
     parser.add_argument(
         "--residue-contrastive-mode",
@@ -1201,6 +1211,10 @@ def _validate_execution_configuration(
             "residue_partner_contrastive_loss_weight",
             "residue_partner_contrastive",
         ),
+        (
+            "local_motif_hard_negative_loss_weight",
+            "local_motif_hard_negative",
+        ),
     ):
         observed_weight = getattr(
             arguments,
@@ -1214,6 +1228,7 @@ def _validate_execution_configuration(
                 "far_patch_exclusion_loss_weight",
                 "edm_loss_weight",
                 "residue_partner_contrastive_loss_weight",
+                "local_motif_hard_negative_loss_weight",
             }
             else math.nan,
         )
@@ -1259,6 +1274,10 @@ def _validate_execution_configuration(
         "residue_contrastive_margin": "residue_contrastive_margin",
         "residue_contrastive_mode": "residue_contrastive_mode",
         "residue_contrastive_temperature": "residue_contrastive_temperature",
+        "local_motif_hard_negative_margin": "local_motif_hard_negative_margin",
+        "local_motif_hard_negative_temperature": (
+            "local_motif_hard_negative_temperature"
+        ),
     }
     for argument_name, protocol_name in optional_objective_fields.items():
         if protocol_name not in objective:
@@ -2340,6 +2359,17 @@ def main() -> None:
                 arguments.pair_geometry_cache_root,
                 manifest_sha256=arguments.pair_geometry_manifest_sha256,
             )
+        if arguments.local_motif_hard_negative_loss_weight != 0.0:
+            if arguments.pair_geometry_cache_root is None:
+                raise ValueError(
+                    "local motif hard negatives require an authenticated "
+                    "SAbDab2 pair-geometry cache"
+                )
+            train_dataset = LocalMotifMaskDataset(
+                train_dataset,
+                patch_radius=arguments.antigen_patch_radius,
+                graph_radius=arguments.node_spatial_neighbor_radius,
+            )
     else:
         train_dataset = AsepDevelopmentDataset(
             arguments.asep_cache_root,
@@ -2470,6 +2500,9 @@ def main() -> None:
         residue_partner_contrastive=(
             arguments.residue_partner_contrastive_loss_weight
         ),
+        local_motif_hard_negative=(
+            arguments.local_motif_hard_negative_loss_weight
+        ),
     )
     specificity_score_source = str(
         protocol.get("training_objective", {}).get(
@@ -2491,6 +2524,12 @@ def main() -> None:
         residue_contrastive_margin=arguments.residue_contrastive_margin,
         residue_contrastive_mode=arguments.residue_contrastive_mode,
         residue_contrastive_temperature=arguments.residue_contrastive_temperature,
+        local_motif_hard_negative_margin=(
+            arguments.local_motif_hard_negative_margin
+        ),
+        local_motif_hard_negative_temperature=(
+            arguments.local_motif_hard_negative_temperature
+        ),
         specificity_loss_mode=arguments.specificity_loss_mode,
         specificity_temperature=arguments.specificity_temperature,
         specificity_direction_aggregation=(
