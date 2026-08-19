@@ -441,6 +441,29 @@ class Sabdab2ContactBatchCollator:
             ] = item["pair_candidate_mask"]
         batch["pair_labels"] = pair_labels
         batch["pair_candidate_mask"] = pair_candidate_mask
+        motif_keys = (
+            "local_motif_positive_mask",
+            "local_motif_native_noncontact_mask",
+            "local_motif_matched_decoy_mask",
+        )
+        present = [key in item for key in motif_keys for item in examples]
+        if any(present) and not all(present):
+            raise StructureCacheError(
+                "Local motif masks must be present for every item in a batch"
+            )
+        if all(present):
+            for key in motif_keys:
+                mask = torch_module.zeros(
+                    batch_size, max_antibody, max_antigen, dtype=torch_module.bool
+                )
+                for batch_index, item in enumerate(examples):
+                    expected_shape = tuple(item["pair_labels"].shape)
+                    if tuple(item[key].shape) != expected_shape or item[key].dtype != torch_module.bool:
+                        raise StructureCacheError(
+                            f"{key} must be a boolean pair-aligned mask"
+                        )
+                    mask[batch_index, : expected_shape[0], : expected_shape[1]] = item[key]
+                batch[key] = mask
         return batch
 
 
