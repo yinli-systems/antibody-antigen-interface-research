@@ -36,6 +36,13 @@ its amendments through the execution lock. The `PAIRFORMER_*`, `PAIRSCALE_*`, an
 `TRAIN_ONLY_*` documents record subsequent development-only gates and split work.
 Negative or blocked results are intentionally retained.
 
+## MIPE replay
+
+- [`mipe_paper_appendix_lr1e4_seed42.json`](mipe_paper_appendix_lr1e4_seed42.json)
+  freezes the Appendix section 2.3 five-fold, 800-epoch replay settings. The
+  corresponding run is still in progress; this registration carries no
+  terminal performance claim.
+
 ## Structured protocol evidence
 
 Subdirectories such as `identity80_development/`,

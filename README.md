@@ -16,7 +16,7 @@ residues are generally interface-prone?
 | Workstream | What is implemented | Current evidence boundary |
 |---|---|---|
 | SPPIDER-seq adaptation | SAbDab2 adapters, training/evaluation, cluster bootstrap, calibration, sequence-similarity audit, and matched-partner permutation | Locked reused-benchmark marginal result; not native residue-pair prediction and not a pristine blind test |
-| MIPE reconstruction | Released-code-compatible training/evaluation adapters and directional cross-attention export | Historical 800-epoch summary is protocol-bound; the only MIPE result payload committed here is a separate 100-epoch held-out export |
+| MIPE reconstruction | Released-code-compatible five-fold evaluation, directional interaction export, pair-level metrics, OOF-only calibration, and a bound-geometry oracle audit | The completed `lr=1e-3` replay is not Appendix-exact; the fresh `lr=1e-4`, five-fold, 800-epoch replay is still running |
 | Intra-chain geometry | Distance, receiver-frame direction, and full relative-pose attention biases with parameter-unshared antibody/antigen encoders | Two-A100 replay and three historical seeds are development evidence; the preregistered five-seed superiority gate did not pass and the outer test remains unread |
 | Partner retrieval and PairScale | Dual encoders, bidirectional retrieval, native pair/contact models, hard-negative and one-sided controls, calibration, and fixed-budget runners | Development-only experiments did not pass the required partner-specificity gates; no candidate is promoted |
 | Partner-geometry R2 / PAIRFormer | Explicit antibody-by-antigen pair state, bidirectional fusion, axial pair updates, contact/distance/orientation heads, losses, evaluator, execution plan, and one-shot freeze controls | Implementation complete; biological training, selection, and outer/test evaluation remain blocked at Gate 0 |
@@ -52,7 +52,31 @@ See the
 [`final research report`](results/sppider_seq/FINAL_RESEARCH_REPORT.md) and
 [`machine-readable summary`](results/sppider_seq/final_research_summary.json).
 
-### MIPE: separate the historical 800-epoch record from the committed replay
+### MIPE: completed released-code replay, with the Appendix-exact replay pending
+
+The completed five-fold released-code-compatible `lr=1e-3` ensemble scores
+epitope AUROC/AUPRC/MCC `0.892775/0.513218/0.317949` and paratope
+`0.875432/0.669642/0.492002` when validation-best checkpoints are fixed before
+provided-test scoring. OOF-only threshold calibration raises the corresponding
+MCC values to `0.484753` and `0.509856`.
+
+Pair-level evaluation remains the limiting result. Native mean-bidirectional
+attention has macro/pooled AUPRC `0.005535/0.002080`, Recall@1 `0`, and MRR
+`0.008100`; the marginal residue outer-product baseline is much stronger at
+`0.073666/0.041906`, Recall@1 `0.078125`, and MRR `0.207587`. A bound-coordinate
+oracle reaches pair macro AUPRC `0.485569`, Recall@1 `0.609375`, and MRR
+`0.785156`, but it directly uses the common bound-complex coordinate frame and
+is not a deployable unbound or sequence-only predictor.
+
+See the
+[`audited report`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.md) and
+[`machine-readable release`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.json).
+The supplied split had pre-scoring schema access and is not pristine blind
+evidence. The released `main.py` learning rate (`1e-3`) also differs from
+Appendix section 2.3 (`1e-4`); a fresh five-fold, 800-epoch Appendix-correct
+replay is running and has no terminal metrics yet.
+
+#### Earlier records retained for provenance
 
 The PAIRFormer protocol records a historical five-fold 800-epoch reconstruction
 with native mean-bidirectional pair macro AUPRC `0.00342`
@@ -62,12 +86,12 @@ preserved as historical protocol evidence in
 [`PAIRFORMER_EXECUTION_PROTOCOL_V1.md`](protocols/PAIRFORMER_EXECUTION_PROTOCOL_V1.md)
 and the gate manifest.
 
-The only standalone MIPE result payload committed in this curated repository is
+An earlier standalone MIPE result payload,
 [`MIPE_INTERACTION_100E_SUMMARY.json`](results/mipe/MIPE_INTERACTION_100E_SUMMARY.json).
-It records a distinct five-fold 100-epoch held-out export: 11,431,418 residue
+records a distinct five-fold 100-epoch held-out export: 11,431,418 residue
 pairs, 18,316 positives, and pooled mean-bidirectional AUROC/AUPRC
-`0.507190/0.001719`. The two summaries use different checkpoint budgets and
-aggregation scopes and must not be combined as if they were one replay.
+`0.507190/0.001719`. It uses a different checkpoint budget and aggregation
+scope from the new provided-test replay and must not be combined with it.
 Complete 800-epoch checkpoints, raw predictions, and bootstrap artifacts are not
 stored in Git, so the 800-epoch statement is not independently reproducible from
 this repository alone.

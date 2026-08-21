@@ -10,7 +10,7 @@ belongs under `src/interaction_first/`; Slurm launch templates live under
 |---|---|
 | `sabdab2_*` | Dataset preparation, SPPIDER-seq, EpiFormer, retrieval, and interaction-first workflows |
 | `sppider_seq_*` | SPPIDER-seq research, final figures, and shared utilities |
-| `mipe_*` | MIPE smoke, training, and interaction export |
+| `mipe_*`, `freeze_mipe_selections.py` | MIPE smoke, training, frozen checkpoint selection, provided-test evaluation, OOF calibration, interaction export, and bound-geometry diagnostic |
 | `train_pairscale_*` | Development-only PairScale training and controls |
 | `analyze_pairscale_*`, `audit_pairscale_*`, `compare_pairscale_*` | PairScale statistical analysis and gate evidence |
 | `build_*`, `derive_*`, `materialize_*` | Authority-bound data, split, cache, and source construction |
