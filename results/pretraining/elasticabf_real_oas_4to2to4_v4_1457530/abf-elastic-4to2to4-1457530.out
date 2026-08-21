@@ -1,0 +1,6 @@
+NCCL version 2.26.2+cuda12.2
+NCCL version 2.26.2+cuda12.2
+NCCL version 2.26.2+cuda12.2
+NCCL version 2.26.2+cuda12.2
+elastic_recovery_audit=PASS
+elastic_recovery_audit_path=/ssd/scxi253/model_deployment/results/pretraining/elasticabf_real_oas_4to2to4_v4/slurm-1457530/audit.json

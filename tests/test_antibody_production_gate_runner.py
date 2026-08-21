@@ -22,10 +22,11 @@ def test_production_gate_is_fail_closed_and_recovery_bound() -> None:
     assert 'world_size != local_world_size' in source
     assert 'partition_update_indices(' in source
     assert 'output.loss_sum * world_size / target_count' in source
-    assert 'verify_array_file_hashes=True' in source
+    assert 'verify_array_file_hashes=not elastic_gate' in source
     assert 'verify_array_file_hashes=False' in source
     assert 'dist.all_gather_object(rank_hosts, socket.gethostname())' in source
-    assert '"array_file_hashes_verified_by_local_rank_zero": True' in source
+    assert '"array_file_hashes_verified_by_local_rank_zero": (' in source
+    assert '"array_file_hashes_verified_during_gate_freeze": (' in source
     assert '"maximum_open_arrays": args.maximum_open_arrays' in source
     assert '"minimum_soft_open_file_limit": (' in source
     assert "Soft open-file limit is below the frozen minimum" in source
