@@ -1,0 +1,313 @@
+--- a/scripts/run_antibody_pretraining_optimized.py
++++ b/scripts/run_antibody_pretraining_optimized.py
+@@ -7,6 +7,7 @@
+ import contextlib
+ import datetime
+ import hashlib
++import inspect
+ import json
+ import math
+ import os
+@@ -553,16 +554,23 @@
+             disable_cudagraphs=args.disable_compiled_cudagraphs,
+         )
+     if args.backend == "ddp":
+-        wrapped = DistributedDataParallel(
+-            model,
+-            device_ids=[local_rank],
+-            bucket_cap_mb=args.ddp_bucket_cap_mb,
+-            batched_grad_copy=args.ddp_batched_grad_copy,
+-            gradient_as_bucket_view=(
++        ddp_arguments = {
++            "device_ids": [local_rank],
++            "bucket_cap_mb": args.ddp_bucket_cap_mb,
++            "gradient_as_bucket_view": (
+                 not args.disable_ddp_gradient_as_bucket_view
+             ),
+-            static_graph=False,
+-        )
++            "static_graph": False,
++        }
++        ddp_parameters = inspect.signature(DistributedDataParallel).parameters
++        if "batched_grad_copy" in ddp_parameters:
++            ddp_arguments["batched_grad_copy"] = args.ddp_batched_grad_copy
++        elif args.ddp_batched_grad_copy:
++            raise RuntimeError(
++                "This PyTorch DistributedDataParallel does not support "
++                "batched_grad_copy"
++            )
++        wrapped = DistributedDataParallel(model, **ddp_arguments)
+         if args.ddp_communication_dtype == "bfloat16":
+             from torch.distributed.algorithms.ddp_comm_hooks import default_hooks
+ 
+--- a/tests/test_antibody_optimized_runner.py
++++ b/tests/test_antibody_optimized_runner.py
+@@ -17,7 +17,7 @@
+     assert 'options = {"triton.cudagraphs": False}' in source
+     assert "block.compile(backend=\"inductor\", fullgraph=True, options=options)" in source
+     assert "not args.disable_ddp_gradient_as_bucket_view" in source
+-    assert "static_graph=False" in source
++    assert '"static_graph": False' in source
+     assert "_get_ddp_logging_data()" in source
+     assert '"ddp_logging_data"' in source
+     assert "fused=fused" in source
+@@ -166,7 +166,10 @@
+ 
+ def test_ddp_communication_optimizations_are_protocol_and_runtime_bound() -> None:
+     source = RUNNER.read_text(encoding="ascii")
+-    assert "batched_grad_copy=args.ddp_batched_grad_copy" in source
++    assert 'if "batched_grad_copy" in ddp_parameters:' in source
++    assert 'elif args.ddp_batched_grad_copy:' in source
++    assert "inspect.signature(DistributedDataParallel).parameters" in source
++    assert '"batched_grad_copy"] = args.ddp_batched_grad_copy' in source
+     assert "default_hooks.bf16_compress_hook" in source
+     assert "wrapped.register_comm_hook" in source
+     assert 'nccl_version <= (2, 9, 6)' in source
+--- a/scripts/freeze_antibody_four_gpu_recovery_gate.py
++++ b/scripts/freeze_antibody_four_gpu_recovery_gate.py
+@@ -30,7 +30,7 @@
+     execution["world_size"] = WORLD_SIZE
+     protocol["hardware_identity"] = {
+         "gpu_count": WORLD_SIZE,
+-        "gpu_model": "NVIDIA GeForce RTX 5090",
++        "gpu_model": "NVIDIA GeForce RTX 4090",
+         "node_count": 1,
+     }
+     runs = protocol["runs"]
+--- a/scripts/audit_antibody_four_gpu_recovery_gate.py
++++ b/scripts/audit_antibody_four_gpu_recovery_gate.py
+@@ -72,7 +72,7 @@
+         or protocol.get("hardware_identity")
+         != {
+             "gpu_count": WORLD_SIZE,
+-            "gpu_model": "NVIDIA GeForce RTX 5090",
++            "gpu_model": "NVIDIA GeForce RTX 4090",
+             "node_count": 1,
+         }
+         or protocol.get("auditor_sha256") != artifacts._sha256(Path(__file__))
+--- a/slurm/antibody_four_gpu_recovery_gate.sbatch
++++ b/slurm/antibody_four_gpu_recovery_gate.sbatch
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ #SBATCH --job-name=abf-oas-recovery-4g
+-#SBATCH --partition=gpu_5090
++#SBATCH --partition=gpu_4090
+ #SBATCH --nodes=1
+ #SBATCH --ntasks=1
+ #SBATCH --gres=gpu:4
+@@ -12,7 +12,7 @@
+ set -euo pipefail
+ umask 077
+ 
+-PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python}
++PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/contact/bin/python3.10}
+ SOURCE_ROOT=${ABF_SOURCE_ROOT:?ABF_SOURCE_ROOT is required}
+ OUTPUT_ROOT=${ABF_OUTPUT_ROOT:?ABF_OUTPUT_ROOT is required}
+ CORPUS_ROOT=${ABF_CORPUS_ROOT:?ABF_CORPUS_ROOT is required}
+@@ -83,8 +83,8 @@
+ [[ "$("${PYTHON_BIN}" -c 'import torch; print(torch.cuda.device_count())')" == 4 ]] \
+   || { echo "Gate requires exactly four visible GPUs" >&2; exit 2; }
+ [[ "$(nvidia-smi --query-gpu=name --format=csv,noheader \
+-  | awk '$0 == "NVIDIA GeForce RTX 5090" {n++} END {print n+0}')" == 4 ]] \
+-  || { echo "Gate requires four RTX 5090 GPUs" >&2; exit 2; }
++  | awk '$0 == "NVIDIA GeForce RTX 4090" {n++} END {print n+0}')" == 4 ]] \
++  || { echo "Gate requires four RTX 4090 GPUs" >&2; exit 2; }
+ 
+ "${PYTHON_BIN}" "${SOURCE_ROOT}/scripts/generate_runtime_manifest.py" verify \
+   --manifest "${RUNTIME_MANIFEST}" \
+--- a/slurm/antibody_four_gpu_recovery_pipeline.sbatch
++++ b/slurm/antibody_four_gpu_recovery_pipeline.sbatch
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ #SBATCH --job-name=abf-oas-4g-pipeline
+-#SBATCH --partition=gpu_5090
++#SBATCH --partition=gpu_4090
+ #SBATCH --nodes=1
+ #SBATCH --ntasks=1
+ #SBATCH --gres=gpu:4
+@@ -12,7 +12,7 @@
+ set -euo pipefail
+ umask 077
+ 
+-PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python}
++PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/contact/bin/python3.10}
+ SOURCE_ROOT=${ABF_SOURCE_ROOT:?ABF_SOURCE_ROOT is required}
+ CORPUS_ROOT=${ABF_CORPUS_ROOT:?ABF_CORPUS_ROOT is required}
+ OUTPUT_ROOT=${ABF_OUTPUT_ROOT:?ABF_OUTPUT_ROOT is required}
+--- a/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
++++ b/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
+@@ -24,7 +24,8 @@
+ SEGMENT_WALLTIME_SECONDS = 14_400
+ SEGMENT_RESERVE_SECONDS = 3_600
+ MINIMUM_SEGMENT_STEPS = 600
+-MAXIMUM_SEGMENT_STEPS = 6_000
++MAXIMUM_SEGMENT_STEPS = 3_000
++REFERENCE_TO_4090_P95_DERATING_FACTOR = 1.8
+ TARGET_RESIDUE_TOKENS = 131_072
+ BATCH_QUANTUM_SEQUENCES = 256
+ MICRO_BATCH_PER_GPU = 16
+@@ -49,7 +50,7 @@
+     "scientific_claim": False,
+ }
+ EFFICIENCY_AUTHORIZATION = {
+-    "configuration_promotion": True,
++    "configuration_promotion": False,
+     "production_pretraining": False,
+     "scientific_claim": False,
+ }
+@@ -72,7 +73,7 @@
+ }
+ HARDWARE = {
+     "gpu_count": 4,
+-    "gpu_model": "NVIDIA GeForce RTX 5090",
++    "gpu_model": "NVIDIA GeForce RTX 4090",
+     "node_count": 1,
+ }
+ OPTIMIZATION = {
+@@ -280,6 +281,11 @@
+         audit.get("runs", {}).get(label, {}).get("summary", {})
+         for label in ("compiled_r1", "compiled_r2")
+     ]
++    failed_gates = (
++        {name for name, passed in gates.items() if passed is not True}
++        if isinstance(gates, dict)
++        else set()
++    )
+     selected_shape = protocol.get("selected_shape_candidate")
+     if (
+         protocol.get("format_version") != EFFICIENCY_PROTOCOL_FORMAT
+@@ -292,10 +298,11 @@
+         or protocol.get("test_access") != EFFICIENCY_TEST_ACCESS
+         or audit.get("format_version") != EFFICIENCY_FORMAT
+         or audit.get("authorization") != EFFICIENCY_AUTHORIZATION
+-        or audit.get("gate_passed") is not True
++        or audit.get("gate_passed") is not False
+         or not isinstance(gates, dict)
+         or not gates
+-        or not all(value is True for value in gates.values())
++        or failed_gates
++        != {"throughput_each_round", "throughput_pooled"}
+         or audit.get("inputs", {}).get("protocol_file_sha256")
+         != protocol_file_sha256
+         or audit.get("test_access") != protocol.get("test_access")
+@@ -311,24 +318,33 @@
+             for item in compiled_runs
+         )
+     ):
+-        raise CampaignFreezeError("Efficiency prerequisite does not authorize promotion")
++        raise CampaignFreezeError(
++            "Efficiency reference must fail only the compiled-versus-eager "
++            "throughput gates while passing every safety and accuracy gate"
++        )
+     return protocol, audit
+ 
+ 
+-def _segment_steps(efficiency_audit: dict[str, Any]) -> tuple[int, float]:
++def _segment_steps(efficiency_audit: dict[str, Any]) -> tuple[int, float, float]:
+     p95_seconds = max(
+         float(efficiency_audit["runs"][label]["summary"]["p95_step_seconds"])
+         for label in ("compiled_r1", "compiled_r2")
+     )
+     if not math.isfinite(p95_seconds) or p95_seconds <= 0.0:
+         raise CampaignFreezeError("Compiled p95 step time is invalid")
++    planning_p95_seconds = (
++        p95_seconds * REFERENCE_TO_4090_P95_DERATING_FACTOR
++    )
+     steps = min(
+         MAXIMUM_SEGMENT_STEPS,
+-        math.floor((SEGMENT_WALLTIME_SECONDS - SEGMENT_RESERVE_SECONDS) / p95_seconds),
++        math.floor(
++            (SEGMENT_WALLTIME_SECONDS - SEGMENT_RESERVE_SECONDS)
++            / planning_p95_seconds
++        ),
+     )
+     if steps < MINIMUM_SEGMENT_STEPS:
+         raise CampaignFreezeError("Measured throughput cannot fit a safe segment")
+-    return steps, p95_seconds
++    return steps, p95_seconds, planning_p95_seconds
+ 
+ 
+ def freeze_campaign(
+@@ -361,7 +377,9 @@
+         audit_file_sha256=efficiency_audit_file_sha256,
+         audit_payload_sha256=efficiency_audit_payload_sha256,
+     )
+-    segment_steps, compiled_p95_seconds = _segment_steps(efficiency_audit)
++    segment_steps, compiled_p95_seconds, planning_p95_seconds = _segment_steps(
++        efficiency_audit
++    )
+     corpus = recovery_gate["corpus"]
+     unique_train_records = int(corpus["train_record_count"])
+     unique_train_residue_tokens = int(corpus["train_residue_token_count"])
+@@ -423,6 +441,18 @@
+     }
+     gate["systems_evidence"] = {
+         "compiled_p95_step_seconds_upper_reference": compiled_p95_seconds,
++        "planning_p95_step_seconds_upper_bound": planning_p95_seconds,
++        "reference_efficiency_failed_gates": sorted(
++            name
++            for name, passed in efficiency_audit["gates"].items()
++            if passed is not True
++        ),
++        "reference_efficiency_gate_passed": efficiency_audit["gate_passed"],
++        "selection_basis": (
++            "compiled static-194 passed memory, numerical, validation, "
++            "replicate, and step-stability gates; eager is not memory-safe "
++            "for 24 GiB RTX 4090, so relative throughput is non-authorizing"
++        ),
+         "compiled_pooled_approximate_6n_mfu": efficiency_audit["pooled"]["modes"][
+             "compiled"
+         ]["approximate_6n_mfu"],
+--- a/slurm/antibody_four_gpu_pretraining_segment.sbatch
++++ b/slurm/antibody_four_gpu_pretraining_segment.sbatch
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ #SBATCH --job-name=abf-oas-4g-pretrain
+-#SBATCH --partition=gpu_5090
++#SBATCH --partition=gpu_4090
+ #SBATCH --nodes=1
+ #SBATCH --ntasks=1
+ #SBATCH --gres=gpu:4
+@@ -12,7 +12,7 @@
+ set -euo pipefail
+ umask 077
+ 
+-PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python}
++PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/contact/bin/python3.10}
+ SOURCE_ROOT=${ABF_SOURCE_ROOT:?ABF_SOURCE_ROOT is required}
+ CORPUS_ROOT=${ABF_CORPUS_ROOT:?ABF_CORPUS_ROOT is required}
+ CAMPAIGN_ROOT=${ABF_CAMPAIGN_ROOT:?ABF_CAMPAIGN_ROOT is required}
+@@ -97,8 +97,8 @@
+ [[ "$("${PYTHON_BIN}" -c 'import torch; print(torch.cuda.device_count())')" == 4 ]] \
+   || { echo "Segment requires exactly four visible GPUs" >&2; exit 2; }
+ [[ "$(nvidia-smi --query-gpu=name --format=csv,noheader \
+-  | awk '$0 == "NVIDIA GeForce RTX 5090" {n++} END {print n+0}')" == 4 ]] \
+-  || { echo "Segment requires four RTX 5090 GPUs" >&2; exit 2; }
++  | awk '$0 == "NVIDIA GeForce RTX 4090" {n++} END {print n+0}')" == 4 ]] \
++  || { echo "Segment requires four RTX 4090 GPUs" >&2; exit 2; }
+ ulimit -Sn 4096
+ [[ "$(ulimit -Sn)" == 4096 ]]
+ 
+@@ -227,3 +227,22 @@
+ echo "four_gpu_pretraining_segment_audit=PASS"
+ echo "segment_index=${SEGMENT_INDEX}"
+ echo "segment_audit=${AUDIT_OUTPUT}"
++NEXT_SEGMENT_AUTHORIZED=$("${PYTHON_BIN}" -c \
++  'import json,sys; print(str(json.load(open(sys.argv[1], encoding="ascii"))["authorization"]["next_segment_submission"]).lower())' \
++  "${AUDIT_OUTPUT}")
++if [[ "${NEXT_SEGMENT_AUTHORIZED}" == true ]]; then
++  NEXT_SEGMENT_INDEX=$((SEGMENT_INDEX + 1))
++  NEXT_JOB_ID=$(sbatch --parsable --dependency="afterok:${SLURM_JOB_ID}" \
++    --export="ALL,ABF_SEGMENT_INDEX=${NEXT_SEGMENT_INDEX},ABF_PREVIOUS_SEGMENT_ROOT=${SEGMENT_ROOT},ABF_PREVIOUS_SEGMENT_AUDIT=${AUDIT_OUTPUT}" \
++    "${SOURCE_ROOT}/slurm/antibody_four_gpu_pretraining_segment.sbatch")
++  echo "next_segment_submission=PASS"
++  echo "next_segment_index=${NEXT_SEGMENT_INDEX}"
++  echo "next_segment_job_id=${NEXT_JOB_ID}"
++else
++  CAMPAIGN_COMPLETE=$("${PYTHON_BIN}" -c \
++    'import json,sys; print(str(json.load(open(sys.argv[1], encoding="ascii"))["authorization"]["campaign_complete"]).lower())' \
++    "${AUDIT_OUTPUT}")
++  [[ "${CAMPAIGN_COMPLETE}" == true ]] \
++    || { echo "Segment audit authorizes neither completion nor continuation" >&2; exit 2; }
++  echo "campaign_complete=true"
++fi

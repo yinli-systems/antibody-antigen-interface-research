@@ -7,6 +7,7 @@ import argparse
 import contextlib
 import datetime
 import hashlib
+import inspect
 import json
 import math
 import os
@@ -553,16 +554,23 @@ def _wrap_model(
             disable_cudagraphs=args.disable_compiled_cudagraphs,
         )
     if args.backend == "ddp":
-        wrapped = DistributedDataParallel(
-            model,
-            device_ids=[local_rank],
-            bucket_cap_mb=args.ddp_bucket_cap_mb,
-            batched_grad_copy=args.ddp_batched_grad_copy,
-            gradient_as_bucket_view=(
+        ddp_arguments = {
+            "device_ids": [local_rank],
+            "bucket_cap_mb": args.ddp_bucket_cap_mb,
+            "gradient_as_bucket_view": (
                 not args.disable_ddp_gradient_as_bucket_view
             ),
-            static_graph=False,
-        )
+            "static_graph": False,
+        }
+        ddp_parameters = inspect.signature(DistributedDataParallel).parameters
+        if "batched_grad_copy" in ddp_parameters:
+            ddp_arguments["batched_grad_copy"] = args.ddp_batched_grad_copy
+        elif args.ddp_batched_grad_copy:
+            raise RuntimeError(
+                "This PyTorch DistributedDataParallel does not support "
+                "batched_grad_copy"
+            )
+        wrapped = DistributedDataParallel(model, **ddp_arguments)
         if args.ddp_communication_dtype == "bfloat16":
             from torch.distributed.algorithms.ddp_comm_hooks import default_hooks
 

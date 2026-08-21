@@ -7,6 +7,9 @@ raw datasets, model weights, full embeddings, and complete prediction tensors.
 
 | Workstream | Recommended entry point | Status boundary |
 |---|---|---|
+| Cluster activity | [`cluster/CLUSTER_ACTIVITY_SNAPSHOT_20260821.md`](cluster/CLUSTER_ACTIVITY_SNAPSHOT_20260821.md) | Point-in-time scheduler snapshot only; MIPE, the negative-sample ablation, and RTX 4090 pretraining were running at the recorded timestamp |
+| Partner-negative ablation | [`negative_sample_ablation/README.md`](negative_sample_ablation/README.md) | Five-seed AsEP and SAbDab2 development study is running; no final comparison and no test access yet |
+| RTX 4090 pretraining | [`pretraining/RTX4090_PRODUCTION_CAMPAIGN_LAUNCH_20260821.md`](pretraining/RTX4090_PRODUCTION_CAMPAIGN_LAUNCH_20260821.md) | Exact recovery passed and the first 30B-token campaign segment is running; no terminal validation or downstream claim |
 | SPPIDER-seq | [`sppider_seq/FINAL_RESEARCH_REPORT.md`](sppider_seq/FINAL_RESEARCH_REPORT.md) | Locked marginal paratope/epitope evaluation; not native pair prediction and not a pristine blind test |
 | MIPE | [`mipe/MIPE_OFFICIAL_REPLAY_20260821.md`](mipe/MIPE_OFFICIAL_REPLAY_20260821.md) | Five-fold released-code replay, OOF calibration, and pair audit; external split had pre-scoring schema access and the Appendix-correct replay is still running |
 | Intra-chain geometry | [`sabdab2_structure_self_attention/FINAL_GEOMETRY_RESEARCH_REPORT.md`](sabdab2_structure_self_attention/FINAL_GEOMETRY_RESEARCH_REPORT.md) | Development-only A100/RTX 5090 evidence; five-seed superiority gate did not pass |

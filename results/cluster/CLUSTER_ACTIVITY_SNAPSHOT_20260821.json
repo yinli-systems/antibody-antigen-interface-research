@@ -1,0 +1,60 @@
+{
+  "schema_version": "cluster-activity-snapshot-v1",
+  "as_of": "2026-08-21T18:17:16+08:00",
+  "status": "point_in_time_scheduler_snapshot",
+  "claim_boundary": "This file records transient scheduler and progress state. It is not a terminal training result, performance benchmark, or guarantee that the same jobs remain active after the timestamp.",
+  "partition_scope": "gpu_4090",
+  "active_work": {
+    "mipe_paper_appendix_lr1e4": {
+      "classification": "five_fold_training",
+      "running_fold_jobs": 5,
+      "requested_gpus_per_running_job": 1,
+      "running_requested_gpus": 5,
+      "pending_continuation_jobs": 5,
+      "pending_final_evaluation_jobs": 1,
+      "terminal_metrics_available": false,
+      "protocol": "../../protocols/mipe_paper_appendix_lr1e4_seed42.json"
+    },
+    "partner_negative_ablation": {
+      "classification": "development_only_five_seed_ablation",
+      "datasets": [
+        "asep",
+        "sabdab2"
+      ],
+      "running_tasks": 10,
+      "requested_gpus_per_task": 1,
+      "running_requested_gpus": 10,
+      "seeds_per_dataset": 5,
+      "asep_completed_epoch_range": [
+        6,
+        7
+      ],
+      "sabdab2_completed_epochs": 0,
+      "test_accessed": false,
+      "terminal_metrics_available": false
+    }
+  },
+  "pretraining": {
+    "active_scheduler_jobs": 1,
+    "classification": "audited_four_gpu_oas_mlm_campaign",
+    "requested_gpus": 4,
+    "target_admitted_residue_tokens": 30000000000,
+    "segment_maximum_updates": 3000,
+    "exact_recovery_passed": true,
+    "test_accessed": false,
+    "terminal_metrics_available": false,
+    "historical_result_root_present": true,
+    "historical_workstream": "antibody_foundation_pretraining_on_oas",
+    "interpretation": "The first RTX 4090 production segment is active after exact recovery passed; this is not a terminal validation, downstream, or superiority result."
+  },
+  "partition_capacity": {
+    "available_gpus": 65,
+    "total_gpus": 248
+  },
+  "excluded_identifiers": [
+    "scheduler job IDs",
+    "account names",
+    "cluster host names",
+    "absolute storage paths"
+  ]
+}
