@@ -42,6 +42,12 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--expected-sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-world-size", type=int, required=True)
+    parser.add_argument(
+        "--shard-group-size",
+        type=int,
+        default=0,
+        help="FSDP shard width; zero uses the full world, a divisor enables HSDP.",
+    )
     parser.add_argument("--sequence-tokens", type=int, default=128)
     parser.add_argument("--warmup-steps", type=int, default=1)
     parser.add_argument("--measured-steps", type=int, default=2)
@@ -68,6 +74,17 @@ def _validate(arguments: argparse.Namespace) -> None:
         raise ValueError("invalid warmup/measured step counts")
     if arguments.seed < 0:
         raise ValueError("seed must be non-negative")
+    _mesh_shape(arguments.expected_world_size, arguments.shard_group_size)
+
+
+def _mesh_shape(world_size: int, shard_group_size: int) -> tuple[int, int] | None:
+    if shard_group_size == 0 or shard_group_size == world_size:
+        return None
+    if shard_group_size < 1 or shard_group_size > world_size:
+        raise ValueError("shard-group-size must be zero or in [1, world-size]")
+    if world_size % shard_group_size:
+        raise ValueError("shard-group-size must divide world-size")
+    return world_size // shard_group_size, shard_group_size
 
 
 def _synthetic_pair(
@@ -165,12 +182,25 @@ def main() -> None:
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.set_float32_matmul_precision("high")
 
+        mesh_shape = _mesh_shape(world_size, arguments.shard_group_size)
+        mesh = None
+        if mesh_shape is not None:
+            from torch.distributed.device_mesh import init_device_mesh
+
+            mesh = init_device_mesh(
+                "cuda",
+                mesh_shape,
+                mesh_dim_names=("replicate", "shard"),
+            )
+        _trace(rank, "data_parallel_mesh_ready", mesh_shape=mesh_shape or (1, world_size))
+
         config = PairAwareESM2Config(activation_checkpointing=True)
         with torch.device("meta"):
             model = PairAwareESM2(config)
         _trace(rank, "meta_model_ready")
         fully_shard_pair_aware_esm2(
             model,
+            mesh=mesh,
             precision="bfloat16",
             reshard_after_forward=arguments.reshard_after_forward,
         )
@@ -251,6 +281,7 @@ def main() -> None:
             "max_memory_reserved_bytes": torch.cuda.max_memory_reserved(device),
             "rank": rank,
             "steps": step_records,
+            "total_memory_bytes": properties.total_memory,
         }
         ranks = _collect(rank_record, world_size)
         _trace(rank, "rank_metrics_gathered")
@@ -273,6 +304,7 @@ def main() -> None:
                 "claim_boundary": CLAIM_BOUNDARY,
                 "format_version": "abpairfm_3b_fsdp2_systems_smoke_v1",
                 "fsdp2": {
+                    "mesh_shape_replicate_by_shard": list(mesh_shape or (1, world_size)),
                     "reshard_after_forward": arguments.reshard_after_forward,
                 },
                 "initialization": initialization,

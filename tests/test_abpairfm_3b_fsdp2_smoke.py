@@ -71,3 +71,14 @@ def test_reshard_argument_can_be_disabled(monkeypatch: pytest.MonkeyPatch) -> No
         ],
     )
     assert module._arguments().reshard_after_forward is False
+
+
+def test_hsdp_mesh_shape_is_explicit_and_divisible() -> None:
+    module = _module()
+    assert module._mesh_shape(4, 0) is None
+    assert module._mesh_shape(4, 4) is None
+    assert module._mesh_shape(8, 4) == (2, 4)
+    with pytest.raises(ValueError, match="divide"):
+        module._mesh_shape(8, 3)
+    with pytest.raises(ValueError, match=r"\[1, world-size\]"):
+        module._mesh_shape(8, 9)
