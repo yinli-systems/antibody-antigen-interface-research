@@ -1,0 +1,19 @@
+{
+  "archive_sha256": "bc0220582ed47768e6987d7ce77776163b55e3b753b644f9c5154c68bd38279b",
+  "archive_size_bytes": 321794724,
+  "failure": {
+    "affected_manifest": "trainset.STRING.txt",
+    "initial_missing_endpoint_count": 48,
+    "representative_pair_id": "452662.SJA_C1-26860-452662.SJA_C1-26850",
+    "root_cause": "attempt_001_split_STRING_pair_id_at_first_hyphen_even_when_endpoint_ids_contained_hyphens"
+  },
+  "format_version": "pplm_public_archive_audit_failure_v1",
+  "remediation": "require_exactly_one_hyphen_split_whose_left_and_right_endpoints_both_exist_in_the_authenticated_FASTA_inventory",
+  "status": "FAILED_CLOSED_NO_PASS_RECEIPT_CREATED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

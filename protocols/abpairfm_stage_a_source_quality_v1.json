@@ -1,0 +1,88 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "production_training": false,
+    "public_train_data_materialization": true,
+    "test_access": false
+  },
+  "claim_boundary": "Prospective Stage A source-admission contract. It authorizes public train-data materialization only and establishes no normalized count, training readiness, model quality, biological improvement, or SOTA result.",
+  "cross_source_deduplication": {
+    "canonical_pair_order_invariant": true,
+    "exact_sequence_pair_deduplication": true,
+    "priority": [
+      "pinder_2024_02_train",
+      "ppiref_zenodo_14845086",
+      "string_v12_physical"
+    ],
+    "same_pdb_assembly_deduplication": true,
+    "unique_biological_pair_count_separate_from_structural_views": true
+  },
+  "development_decontamination": {
+    "development_roles": [
+      "sabdab2_frozen_development",
+      "asep_frozen_development"
+    ],
+    "exclude_exact_chain_sequences": true,
+    "exclude_known_development_pdb_ids": true,
+    "interface_cluster_overlap_must_be_zero_when_available": true,
+    "report_maximum_chain_identity_and_coverage": true,
+    "warm_start_caveat": "ESM2 UniRef50 exposure cannot be reconstructed completely, so results are warm-start OOD rather than strict from-scratch OOD.",
+    "test_sequences_or_labels_permitted": false
+  },
+  "format_version": "abpairfm_stage_a_source_quality_v1",
+  "pinder_2024_02_train": {
+    "admit_split": "train",
+    "dataset_license_status": "unresolved_fail_closed_until_data_specific_evidence",
+    "minimum_interface_residue_pairs": 8,
+    "quality_annotations_required": [
+      "interface_cluster",
+      "resolution_or_method_quality",
+      "interfacial_gap",
+      "biological_interface_quality"
+    ],
+    "role": "primary_structural_interface_source",
+    "test_row_use_permitted": false,
+    "test_structure_archive_permitted": false,
+    "view_policy": "count_holo_apo_predicted_views_as_examples_but_one_underlying_system_as_one_biological_pair"
+  },
+  "pplm_2026_archive": {
+    "production_training_required": false,
+    "reasons": [
+      "current_archive_has_no_per_edge_STRING_evidence_channels",
+      "current_archive_does_not_declare_the_STRING_release_version",
+      "data_license_requires_separate_resolution",
+      "archive_exact_pair_count_must_be_reported_instead_of_repeating_the_paper_headline"
+    ],
+    "role": "architecture_reproduction_and_external_perplexity_reference_only"
+  },
+  "ppiref_zenodo_14845086": {
+    "data_license": "CC-BY-4.0",
+    "interface_radius_angstrom": 6.0,
+    "novel_after_pinder_priority_deduplication_required": true,
+    "role": "secondary_structural_interface_source",
+    "source_receipt": "data_registry/sources/ppiref_zenodo_14845086/license_receipt.json"
+  },
+  "scale": {
+    "maximum_post_dedup_examples": 25000000,
+    "minimum_post_dedup_examples": 2500000,
+    "minimum_consumed_residue_tokens": 5000000000,
+    "structural_source_sampling_fraction_minimum": 0.5
+  },
+  "string_v12_physical": {
+    "data_license": "CC-BY-4.0",
+    "evidence_policy": "freeze_after_schema_audit; require physical-subnetwork membership and high-confidence experiment_or_curated_database support",
+    "functional_association_file_permitted": false,
+    "minimum_combined_score_candidate": 700,
+    "role": "high_diversity_sequence_pair_source",
+    "source_files": [
+      "protein.physical.links.full.v12.0.txt.gz",
+      "protein.sequences.v12.0.fa.gz"
+    ]
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

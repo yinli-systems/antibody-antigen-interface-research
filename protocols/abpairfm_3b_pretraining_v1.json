@@ -1,0 +1,161 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "gpu_smoke": false,
+    "production_pretraining": false,
+    "public_train_validation_materialization": true,
+    "test_access": false
+  },
+  "claim_boundary": "Prospective 3B pair-aware continued-pretraining protocol. Public train/validation metadata and bytes may be materialized, but no GPU smoke, production training, development model selection, held-out test access, biological improvement, or SOTA claim is authorized until the corresponding create-only audits pass.",
+  "evaluation": {
+    "calibration": [
+      "fixed_raw_logit_brier",
+      "ece",
+      "reliability_curve"
+    ],
+    "contact": [
+      "per_complex_macro_pair_auprc",
+      "pair_auroc",
+      "precision_at_L",
+      "recall_at_L",
+      "recall_at_1"
+    ],
+    "datasets": [
+      "sabdab2_frozen_development",
+      "asep_frozen_development"
+    ],
+    "hard_decoy": {
+      "binary_noninteraction_label_for_unmeasured_pairs": null,
+      "candidate_set_digest_required": true,
+      "matched_partner_swap": true,
+      "score_role": "cognate_ranking_only"
+    },
+    "ood_splits": [
+      "unseen_antigen_cluster",
+      "unseen_antibody_cluster",
+      "dual_unseen_complex",
+      "chronological_complex"
+    ],
+    "retrieval": [
+      "bidirectional_recall_at_1",
+      "bidirectional_mrr",
+      "paired_bootstrap_ci95"
+    ]
+  },
+  "format_version": "abpairfm_3b_pretraining_v1",
+  "model": {
+    "architecture": {
+      "cross_chain_attention": "learned_per_layer_head_scale_times_raw_qk_without_positional_encoding_plus_fixed_one_logit_bias",
+      "embedding_dimension": 2560,
+      "initialization": "esm2_t36_3B_UR50D",
+      "intra_chain_attention": "rotary_qk_with_chain_local_position_origins",
+      "maximum_pair_tokens": 1024,
+      "number_of_attention_heads": 40,
+      "number_of_layers": 36,
+      "parameter_count_maximum": 3300000000,
+      "parameter_count_minimum": 2700000000,
+      "pair_order_augmentation": true,
+      "training_attention_implementation": "exact_chain_grouped_lifted_sdpa_without_attention_matrix_materialization",
+      "validation_attention_export_implementation": "dense_equation_audit_only"
+    },
+    "checkpoint_url": "https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t36_3B_UR50D.pt",
+    "checkpoint_sha256": "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500",
+    "checkpoint_size_bytes": 5678116398,
+    "name": "abpairfm_3b_v1",
+    "weight_initialization_policy": "load all compatible ESM2 parameters exactly; initialize only pair-aware attention scales, chain-boundary state, and task heads"
+  },
+  "optimization": {
+    "activation_checkpointing": "per_transformer_block_non_reentrant",
+    "backend": "fsdp2",
+    "batching": "length_bucketed_pair_residue_tokens",
+    "checkpoint": "torch_distributed_checkpoint",
+    "compute_precision": "bfloat16",
+    "gradient_clipping_norm": 1.0,
+    "optimizer": "adamw_fp32_state",
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "scale_ladder": [
+      {
+        "purpose": "capacity_correctness_and_same_world_recovery",
+        "world_size": 4
+      },
+      {
+        "minimum_strong_scaling_efficiency": 0.7,
+        "purpose": "fixed_work_throughput_and_recovery",
+        "world_size": 8
+      }
+    ],
+    "slurm": {
+      "cpus_per_task": 6,
+      "explicit_mem_argument_permitted": false,
+      "hp_4090_permitted": false
+    }
+  },
+  "source_anchors": {
+    "abcdr_code_commit": "df4b3a63fcfe1a000d5b9a42b1a8aac72a625f71",
+    "abcdr_dataset_record": "10.5281/zenodo.18762309",
+    "esm_code_license": "MIT",
+    "pinder_release": "2024-02",
+    "pplm_code_commit": "1267db4592703095b889cc22da6cf1796ce038b5",
+    "pplm_current_github_license_observed": "PolyForm-Noncommercial",
+    "pplm_dataset_url": "https://zhanggroup.org/PPLM/bin/databases/PPLM_Dataset.tar.gz"
+  },
+  "stage_a_pair_interface": {
+    "consumed_residue_token_target": 5000000000,
+    "example_count_maximum": 25000000,
+    "example_count_minimum": 2500000,
+    "interface_mask_probability": 0.3,
+    "non_interface_mask_probability": 0.15,
+    "required_sources": [
+      "pinder_2024_02_train_metadata",
+      "ppiref_zenodo_14845086",
+      "string_v12_high_confidence_physical"
+    ],
+    "reference_sources_not_required_for_training": [
+      "pplm_2026_pair_corpus"
+    ],
+    "sampling": "cluster_balanced_then_pair_balanced",
+    "sequence_crop": "interface_retaining_for_structural_pairs_and_length_proportional_for_sequence_only_pairs",
+    "test_sources_permitted": false,
+    "training_objective": "two_chain_balanced_masked_language_modeling",
+    "unique_biological_pair_count_report_required": true,
+    "unique_interface_cluster_count_report_required": true
+  },
+  "stage_b_cdr_specialization": {
+    "cdr_mask_probability": 0.5,
+    "consumed_residue_token_target": 2000000000,
+    "framework_mask_probability": 0.15,
+    "hybrid_batch_fraction": {
+      "cdr_focused": 0.8,
+      "whole_chain": 0.2
+    },
+    "minimum_native_vh_vl_pairs": 5500000,
+    "native_pair_evidence": "same_cell_or_source_published_barcode_linkage_required",
+    "negative_chain_policy": "shuffled_chains_are_pairing_controls_not_measured_noninteractions",
+    "split_unit": "study_then_donor_then_clone_component",
+    "stage_a_checkpoint_required": true
+  },
+  "systems_promotion_gates": {
+    "four_gpu": {
+      "finite_loss_updates": 20,
+      "maximum_peak_memory_fraction": 0.92,
+      "same_world_recovery_exact_membership_required": true
+    },
+    "production": {
+      "minimum_total_consumed_residue_tokens": 7000000000,
+      "no_silent_sample_omission": true,
+      "validation_quality_per_gpu_hour_not_worse_than_650m_proxy": true
+    },
+    "eight_gpu": {
+      "fixed_work_measured_updates": 200,
+      "maximum_p95_to_median_step_time": 1.2,
+      "minimum_strong_scaling_efficiency": 0.7
+    }
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

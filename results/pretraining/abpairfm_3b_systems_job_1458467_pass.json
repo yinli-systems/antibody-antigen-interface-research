@@ -1,0 +1,59 @@
+{
+  "architecture": {
+    "activation_checkpointing": true,
+    "attention": "pair_aware_lifted_flash_sdpa",
+    "embed_dimension": 2560,
+    "head_count": 40,
+    "layer_count": 36,
+    "parameter_count": 2839005633
+  },
+  "claim_boundary": "Synthetic 128-token full-model correctness and capacity evidence only. This is not a production throughput, biological quality, development-performance, scaling-efficiency, or SOTA result.",
+  "format_version": "abpairfm_3b_fsdp2_systems_smoke_summary_v1",
+  "initialization": {
+    "checkpoint_sha256": "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500",
+    "checkpoint_size_bytes": 5678116398,
+    "initialized_pair_aware_tensor_count": 36,
+    "loaded_state_key_count": 657,
+    "training_parameter_dtype": "torch.float32"
+  },
+  "job": {
+    "elapsed": "00:01:24",
+    "exit_code": "0:0",
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "job_id": 1458467,
+    "node": "wqd10nba06g3",
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "loss": {
+    "measured_step_1": 2.75,
+    "measured_step_2": 2.6875
+  },
+  "peak_memory_allocated_bytes_per_rank": 11870203392,
+  "precision": {
+    "compute_and_reduction": "bfloat16",
+    "optimizer_parameters": "float32"
+  },
+  "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458467-4gpu-smoke-v1.json",
+  "remote_receipt_sha256": "7fefee7bd6062191adec9941506a61a32857c1b0eb9b2f7e58a855d59f21d15f",
+  "status": "PASS",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "throughput": {
+    "global_residue_tokens_per_step": 496,
+    "measured_step_seconds_max": [
+      3.635137904435396,
+      3.287599954754114
+    ],
+    "residue_tokens_per_second_mean": 143.65796514965473
+  },
+  "torch": {
+    "cuda_version": "12.8",
+    "flash_sdpa_forced": true,
+    "version": "2.7.1+cu128"
+  },
+  "world_size": 4
+}

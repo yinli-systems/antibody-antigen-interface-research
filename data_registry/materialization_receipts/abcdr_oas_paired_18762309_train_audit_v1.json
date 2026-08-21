@@ -1,0 +1,60 @@
+{
+  "archive": {
+    "md5": "01891b92aac5b45e804a7a80683660b4",
+    "sha256": "86e89ff7854e1565f343b3377ca713dfc0ff0c79aa28fec99c4b7fecf163f977",
+    "size_bytes": 184335547
+  },
+  "authorization": {
+    "normalization": true,
+    "stage_b_training": false
+  },
+  "claim_boundary": "Authenticated, train-member-only AbCDR/OAS inventory and sequence/CDR quality evidence. Validation and test contents were not opened.",
+  "deficits": {
+    "development_decontamination_pending": true,
+    "native_pair_target_deficit": 3922501,
+    "row_level_donor_study_clone_provenance_absent": true
+  },
+  "format_version": "abcdr_oas_paired_train_materialization_receipt_v1",
+  "provider": {
+    "doi": "10.5281/zenodo.18762309",
+    "license": "cc-by-4.0",
+    "record_id": 18762309
+  },
+  "remote_audit_receipt": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/raw/abcdr_oas_paired_18762309/train_audit_v1.json",
+  "remote_audit_receipt_sha256": "a902f9ec1c16bdce7a679ffc44417dd0dcc19956828427779da4adf518a19a62",
+  "sealed_members_present_but_not_opened": [
+    "OAS_paired_set/test.csv",
+    "OAS_paired_set/validation.csv"
+  ],
+  "status": "MATERIALIZED_NOT_SUFFICIENT_FOR_STAGE_B",
+  "test_access": {
+    "abcdr_test_member_opened": false,
+    "abcdr_validation_member_opened": false,
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "training_inventory": {
+    "ambiguous_sequence_row_count": 0,
+    "duplicate_exact_pair_count": 0,
+    "heavy_length": {
+      "maximum": 164,
+      "minimum": 83,
+      "p50": 123,
+      "p95": 130,
+      "p99": 133
+    },
+    "invalid_residue_row_count": 0,
+    "light_length": {
+      "maximum": 127,
+      "minimum": 76,
+      "p50": 108,
+      "p95": 113,
+      "p99": 114
+    },
+    "malformed_cdr_row_count": 0,
+    "row_count": 1577499,
+    "unique_exact_heavy_count": 1554477,
+    "unique_exact_light_count": 703148,
+    "unique_exact_pair_count": 1577499
+  }
+}
