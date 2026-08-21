@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "stage_a_training": false
+  },
+  "claim_boundary": "STRING cluster pairs after removal of every endpoint cluster with a >=50% identity and >=80% bidirectional-coverage hit to the frozen AsEP/SAbDab2 validation panel. PINDER merge and final Stage A authorization remain pending.",
+  "counts": {
+    "development_queries_with_hits": 947,
+    "endpoint_sequences_with_hits": 3891,
+    "excluded_endpoint_clusters": 175,
+    "homology_hit_rows": 33173,
+    "input_cluster_pairs": 1991918,
+    "output_cluster_pairs": 1988592,
+    "removed_cluster_pairs": 3326
+  },
+  "format_version": "abpairfm_string_development_decontamination_summary_v1",
+  "homology_gate": {
+    "alignment_mode": 3,
+    "coverage": 0.8,
+    "coverage_mode": 0,
+    "minimum_sequence_identity": 0.5,
+    "mmseqs_version": "f71d0a6b57c19e3a8954d8557f065c0fe1f46142"
+  },
+  "job": {
+    "elapsed": "00:03:21",
+    "exit_code": "0:0",
+    "gpu_compute_used": false,
+    "job_id": 1458696,
+    "max_rss_kib": 11905320,
+    "partition": "gpu_4090",
+    "slurm_state": "COMPLETED"
+  },
+  "output": {
+    "bytes": 25728555,
+    "sha256": "c93bf85849e197944e2f083307a00ddb750c3d2a4ff04584321020a6264a849f"
+  },
+  "published_evidence": {
+    "excluded_clusters_sha256": "ef892e68887b80c7af38c0cef5b3ea7dddcbcbad8bcec5b5a5d23e757ba19a1a",
+    "hits_sha256": "e71112cfcd95e42acce3be894f320ef7c4964209eb1328d5de46e9e5676b3e7b"
+  },
+  "remote_receipt_sha256": "cfbd7b3780cffca131ec1204844a15d9dd50c931a9ed5f4cf71b21347f975201",
+  "source": {
+    "runner_sha256": "0320d0b99b1c8ef54c5522541333f09dd62d50de416927c2ad9749098a0d0328",
+    "sbatch_sha256": "a56394479524103f5bf809fe21e745cae14e60141d66214e3de049c48918bb62"
+  },
+  "stage_a_range_gate": false,
+  "status": "DECONTAMINATED_NOT_MERGED_NOT_AUTHORIZED",
+  "test_access": false
+}
