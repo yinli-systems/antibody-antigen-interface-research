@@ -1,0 +1,29 @@
+{
+  "authorization": {
+    "test_access": false,
+    "training_decontamination": true
+  },
+  "claim_boundary": "Exact AsEP and SAbDab2 validation sequences for training-corpus decontamination only; no task labels, predictions, metrics, or test sequences are included.",
+  "counts": {
+    "asep_complexes": 170,
+    "asep_sequence_observations": 510,
+    "sabdab2_complexes": 549,
+    "sabdab2_missing_light_chain_complexes": 104,
+    "sabdab2_sequence_observations": 1543,
+    "unique_exact_sequences": 1343
+  },
+  "format_version": "abpairfm_development_sequence_panel_summary_v1",
+  "initial_failure": {
+    "cause": "The first freezer incorrectly required a light chain for every SAbDab2 validation complex.",
+    "example": "pdb_00001bzq_K_+",
+    "resolution": "Retain heavy and antigen sequences for single-domain complexes, treat light as optional, and still verify the frozen antibody digest as SHA256(heavy + light)."
+  },
+  "output_fasta": {
+    "bytes": 337158,
+    "sha256": "03f844a04418a6c8171e07337a242176b6b886ec8d968a3632d7db8357497388"
+  },
+  "remote_receipt_sha256": "21a37deb64fb4ac8b90e0aa734fcf4bd33fe846e02c45bd937502a1a3ed02c3f",
+  "source_script_sha256": "8ca46455d0e636c5023663ac8318cb88baa6fdb64366940946ea2827de75438f",
+  "status": "FROZEN_VALIDATION_SEQUENCE_PANEL",
+  "test_access": false
+}
