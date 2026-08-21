@@ -1,0 +1,37 @@
+{
+  "authorization": {
+    "development_decontamination": false,
+    "stage_b_training": false
+  },
+  "counts": {
+    "duplicate_quality_rows": 498508,
+    "quality_rows_before_exact_dedup": 3084101,
+    "source_data_units": 610,
+    "source_rows": 3087576,
+    "unique_exact_amino_acid_pairs": 2585593
+  },
+  "format_version": "abpairfm_oas_stage_b_candidates_summary_v2",
+  "job": {
+    "elapsed": "00:08:00",
+    "exit_code": "0:0",
+    "job_id": 1458688,
+    "max_rss_kib": 3706772,
+    "slurm_state": "COMPLETED"
+  },
+  "minimum_native_pair_target": 5500000,
+  "native_pair_target_deficit": 2914407,
+  "output": {
+    "bytes": 308221455,
+    "sha256": "87c907d6e6edaab7b9b22957e5c789b6b80906fb45adca3da7ac59d8758d93ff"
+  },
+  "rejection_reasons": {
+    "missing_or_noncanonical_cdr": 1239,
+    "sequence_length": 2188,
+    "unexpected_locus": 48
+  },
+  "remote_receipt_sha256": "79d71a24eb35d0cc335542dab76a2de24a338ccf69ee843e0716ecefb5e9adb2",
+  "source_materialization_receipt_sha256": "4e27e1ff59e849d22e02d086d88a96abfbc78726246d900c1644a5e708aebbfd",
+  "source_script_sha256": "a1bafe64fbee686b40a89cddcb4d5b9e18acb1d3600bd51be4f99dc708e71a17",
+  "status": "NORMALIZED_NOT_SUFFICIENT_NOT_DECONTAMINATED",
+  "test_access": false
+}

@@ -1,0 +1,35 @@
+{
+  "authorization": {
+    "cluster_deduplication": false,
+    "development_decontamination": false,
+    "stage_a_training": false
+  },
+  "counts": {
+    "combined_score_ge_700_rows": 226512144,
+    "direct_evidence_kept_rows": 14405908,
+    "source_data_rows": 2365172266,
+    "transferred_only_ge_700_rows": 211817902
+  },
+  "filter": {
+    "combined_score_minimum": 700,
+    "direct_database_or_experiments_required": true,
+    "transferred_only_evidence_permitted": false
+  },
+  "format_version": "abpairfm_string_direct_filter_summary_v1",
+  "job": {
+    "elapsed": "00:22:14",
+    "exit_code": "0:0",
+    "gpu_compute_used": false,
+    "job_id": 1458652,
+    "partition": "gpu_4090",
+    "slurm_state": "COMPLETED"
+  },
+  "output": {
+    "bytes": 121526980,
+    "sha256": "c3e6d0aae9e7edbeb9eab14b2db355931304512b26925eb7f76185d7e95b1f88"
+  },
+  "remote_receipt_sha256": "c742ecc137acdb7516aa59b3cd08c38c3e7725a15f2ea050e39df4ff777ea3f2",
+  "source_archive_sha256": "1d5d16bd8aeb67c9977948a0e56cc27cca2065ad981dab4586330f38d77ff234",
+  "status": "FILTERED_NOT_CLUSTERED_NOT_DECONTAMINATED",
+  "test_access": false
+}

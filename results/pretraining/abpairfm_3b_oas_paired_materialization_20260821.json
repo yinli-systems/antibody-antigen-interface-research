@@ -1,0 +1,19 @@
+{
+  "authorization": {
+    "development_decontamination": false,
+    "stage_b_training": false
+  },
+  "counts": {
+    "data_units": 610,
+    "expected_sequence_rows": 3087576,
+    "studies": 21,
+    "total_bytes": 3541352247
+  },
+  "format_version": "abpairfm_oas_paired_materialization_summary_v1",
+  "license": "CC-BY-4.0",
+  "plan_sha256": "b07a53fc216047a05e5775fe718825db58992a8b1664f9b40d42eacdb602503d",
+  "remote_receipt_sha256": "4e27e1ff59e849d22e02d086d88a96abfbc78726246d900c1644a5e708aebbfd",
+  "source": "https://opig.stats.ox.ac.uk/webapps/oas/oas_paired",
+  "status": "MATERIALIZED_NOT_DEDUPLICATED_NOT_DECONTAMINATED",
+  "test_access": false
+}
