@@ -1,0 +1,124 @@
+{
+  "architecture": {
+    "attention": "pair_aware_lifted_flash_sdpa",
+    "parameter_count": 2839005633
+  },
+  "claim_boundary": "Synthetic dual-chain MLM systems evidence only. Jobs ran on different nodes, so the sequence-length result is node-confounded and must be repeated before production promotion. This is not biological-quality, development-performance, or SOTA evidence.",
+  "comparisons": {
+    "controlled_same_node_reshard_after_forward_ab": {
+      "gpu_count": 4,
+      "job_id": 1458529,
+      "keep_gathered_max_allocated_bytes_per_rank": 14807419392,
+      "keep_gathered_residue_tokens_per_second": 1318.8412478543676,
+      "memory_allocation_ratio_keep_over_reshard": 1.2300482105298616,
+      "node": "wqd10nae09g3",
+      "reshard_max_allocated_bytes_per_rank": 12038080512,
+      "reshard_residue_tokens_per_second": 791.900600407321,
+      "sequence_tokens_per_rank": 1024,
+      "speedup_keep_gathered_over_reshard": 1.6654126126132625,
+      "verdict": "KEEP_GATHERED_WINS_AND_FITS"
+    },
+    "fixed_2032_global_residues_strong_scaling": {
+      "four_gpu_job_id": 1458474,
+      "four_gpu_residue_tokens_per_second": 341.6265250197239,
+      "parallel_efficiency_relative_to_four_gpu": 0.44611314425481574,
+      "speedup_eight_over_four": 0.8922262885096315,
+      "verdict": "FAIL_TO_SCALE",
+      "eight_gpu_job_id": 1458498,
+      "eight_gpu_residue_tokens_per_second": 304.808166474791
+    },
+    "fixed_512_tokens_per_rank_weak_scaling": {
+      "four_gpu_job_id": 1458474,
+      "four_gpu_residue_tokens_per_second": 341.6265250197239,
+      "per_gpu_efficiency": 0.869210344203492,
+      "speedup_eight_over_four": 1.738420688406984,
+      "eight_gpu_job_id": 1458475,
+      "eight_gpu_residue_tokens_per_second": 593.8906188028741
+    },
+    "fixed_1024_tokens_per_rank_weak_scaling": {
+      "four_gpu_job_id": 1458499,
+      "four_gpu_residue_tokens_per_second": 1359.9627177814002,
+      "per_gpu_efficiency": 0.43982881968492377,
+      "speedup_eight_over_four": 0.8796576393698475,
+      "verdict": "FAIL_TO_SCALE",
+      "eight_gpu_job_id": 1458500,
+      "eight_gpu_residue_tokens_per_second": 1196.3015939545887
+    }
+  },
+  "format_version": "abpairfm_3b_fsdp2_scaling_summary_v1",
+  "jobs": [
+    {
+      "global_residue_tokens_per_step": 2032,
+      "gpu_count": 4,
+      "job_id": 1458474,
+      "max_allocated_bytes_per_rank": 11904705536,
+      "max_reserved_bytes_per_rank": 12444499968,
+      "node": "wqd10nae09g3",
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458474-4gpu-512token-smoke-v1.json",
+      "remote_receipt_sha256": "a1580d6a6d80cd3e499911bf801ca761241858c5531f17729cf10ef8f17251e6",
+      "residue_tokens_per_second_mean": 341.6265250197239,
+      "sequence_tokens_per_rank": 512
+    },
+    {
+      "global_residue_tokens_per_step": 4064,
+      "gpu_count": 8,
+      "job_id": 1458475,
+      "max_allocated_bytes_per_rank": 6308926464,
+      "max_reserved_bytes_per_rank": 6738149376,
+      "node": "wqd10nba07g1",
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458475-8gpu-512token-smoke-v1.json",
+      "remote_receipt_sha256": "c26edca1559b552ff89cf90e09c93d891df47256313e02cc89da509ae218fe41",
+      "residue_tokens_per_second_mean": 593.8906188028741,
+      "sequence_tokens_per_rank": 512
+    },
+    {
+      "global_residue_tokens_per_step": 2032,
+      "gpu_count": 8,
+      "job_id": 1458498,
+      "max_allocated_bytes_per_rank": 6279099392,
+      "max_reserved_bytes_per_rank": 6677331968,
+      "node": "wqd10nba07g1",
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458498-8gpu-258token-smoke-v1.json",
+      "remote_receipt_sha256": "492b0c554327116642c0237b3ef7418da538067bf71764d5231b82503f78d9d5",
+      "residue_tokens_per_second_mean": 304.808166474791,
+      "sequence_tokens_per_rank": 258
+    },
+    {
+      "global_residue_tokens_per_step": 4080,
+      "gpu_count": 4,
+      "job_id": 1458499,
+      "max_allocated_bytes_per_rank": 12038080512,
+      "max_reserved_bytes_per_rank": 12759072768,
+      "node": "wqd10nba06g3",
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458499-4gpu-1024token-smoke-v1.json",
+      "remote_receipt_sha256": "a577197a7b6cff32017f7c5ad0370ef7b6f9773bf8b1cca8b8da4b41943ffe6c",
+      "residue_tokens_per_second_mean": 1359.9627177814002,
+      "sequence_tokens_per_rank": 1024
+    },
+    {
+      "global_residue_tokens_per_step": 8160,
+      "gpu_count": 8,
+      "job_id": 1458500,
+      "max_allocated_bytes_per_rank": 6442301440,
+      "max_reserved_bytes_per_rank": 7052722176,
+      "node": "wqd10nba06g6",
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458500-8gpu-1024token-smoke-v1.json",
+      "remote_receipt_sha256": "cc605121605f1f3db3fa1494e967fc07fa7e4163c6bd7016a5beb5f59877eb22",
+      "residue_tokens_per_second_mean": 1196.3015939545887,
+      "sequence_tokens_per_rank": 1024
+    }
+  ],
+  "provisional_decision": {
+    "next_gate": "Verify immutable DCP save and fresh-process recovery, then run a real-data 1024-token batch gate before production promotion.",
+    "production_topology_authorized": false,
+    "reason": "The same-node A/B gate measured a 1.665x throughput gain from keeping gathered parameters through backward while remaining below RTX 4090 memory capacity. Eight-GPU comparisons did not improve throughput enough to justify the extra GPUs.",
+    "selected_candidate_gpu_count": 4,
+    "selected_candidate_reshard_after_forward": false,
+    "selected_candidate_sequence_tokens_per_rank": 1024
+  },
+  "status": "SYSTEMS_SCALING_MEASURED_PRODUCTION_PROMOTION_PENDING",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

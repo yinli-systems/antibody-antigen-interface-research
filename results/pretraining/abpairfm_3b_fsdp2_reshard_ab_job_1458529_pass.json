@@ -1,0 +1,98 @@
+{
+  "claim_boundary": "Same-allocation synthetic dual-chain MLM systems comparison using the full 2.839B-parameter model. This isolates the FSDP2 reshard setting but is not biological-quality, development-performance, or SOTA evidence.",
+  "comparison": {
+    "keep_gathered": {
+      "losses": [
+        2.984375,
+        3.0,
+        2.9375,
+        2.953125,
+        2.890625
+      ],
+      "max_allocated_bytes_per_rank": 14807419392,
+      "max_reserved_bytes_per_rank": 18066964480,
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458529-4gpu-1024token-keep-gathered-smoke-v1.json",
+      "remote_receipt_sha256": "cb6be48e7c44806aaaaea48fcc4b9f1e0df137c0f968fdff8a7766db8f9177a9",
+      "reshard_after_forward": false,
+      "residue_tokens_per_second_by_step": [
+        1318.728660648207,
+        1325.421097359768,
+        1315.7672126020993,
+        1313.3273103346705,
+        1320.9619583270933
+      ],
+      "residue_tokens_per_second_mean": 1318.8412478543676,
+      "step_seconds_max_by_step": [
+        3.093888926319778,
+        3.0782669810578227,
+        3.1008524615317583,
+        3.1066132318228483,
+        3.0886582117527723
+      ]
+    },
+    "memory_allocation_ratio_keep_over_reshard": 1.2300482105298616,
+    "reshard": {
+      "losses": [
+        3.0,
+        2.9375,
+        2.90625,
+        2.90625,
+        2.875
+      ],
+      "max_allocated_bytes_per_rank": 12038080512,
+      "max_reserved_bytes_per_rank": 12759072768,
+      "remote_receipt": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458529-4gpu-1024token-reshard-smoke-v1.json",
+      "remote_receipt_sha256": "24b91a3d906b1d7e59c9c46271dc506158bbaf87bc04e4f40ad5e56e98c8da1a",
+      "reshard_after_forward": true,
+      "residue_tokens_per_second_by_step": [
+        790.8000737618523,
+        797.5994753917321,
+        797.034629361383,
+        791.0190591113419,
+        783.0497644102962
+      ],
+      "residue_tokens_per_second_mean": 791.900600407321,
+      "step_seconds_max_by_step": [
+        5.159331840462983,
+        5.115349402651191,
+        5.118974571116269,
+        5.157903533428907,
+        5.210396816954017
+      ]
+    },
+    "speedup_keep_gathered_over_reshard": 1.6654126126132625,
+    "verdict": "KEEP_GATHERED_WINS_AND_FITS"
+  },
+  "format_version": "abpairfm_3b_fsdp2_reshard_ab_summary_v1",
+  "job": {
+    "elapsed": "00:02:05",
+    "exit_code": "0:0",
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "job_id": 1458529,
+    "node": "wqd10nae09g3",
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "measurement": {
+    "global_residue_tokens_per_step": 4080,
+    "measured_steps_per_arm": 5,
+    "sequence_tokens_per_rank": 1024,
+    "warmup_steps_per_arm": 2
+  },
+  "promotion": {
+    "dcp_recovery_gate_pending": true,
+    "production_authorized": false,
+    "real_data_batch_gate_pending": true,
+    "selected_candidate_reshard_after_forward": false
+  },
+  "status": "PASS",
+  "stderr": {
+    "error_count": 0,
+    "warning": "PyTorch object-collective default-device deprecation warning only"
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "checkpoint_sha256": "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500",
+  "checkpoint_size_bytes": 5678116398,
+  "failures": [
+    {
+      "attempt": 1,
+      "cause": "incomplete_remote_python_package_snapshot",
+      "error": "ModuleNotFoundError: No module named antibody_pretraining.oas_authority",
+      "stage": "import_before_checkpoint_load"
+    },
+    {
+      "attempt": 2,
+      "cause": "auditor_compared_float16_checkpoint_rotary_buffer_to_unquantized_float32_reference",
+      "error": "RuntimeError: Rotary frequency buffer mismatch in layer 0",
+      "stage": "state_compatibility_audit"
+    }
+  ],
+  "format_version": "abpairfm_esm2_checkpoint_audit_failure_v1",
+  "remediation": "sync_complete_package_snapshot_and_compare_the_formula_derived_rotary_buffer_after_casting_the_reference_to_the_authenticated_checkpoint_dtype",
+  "status": "FAILED_CLOSED_NO_COMPATIBILITY_RECEIPT_CREATED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

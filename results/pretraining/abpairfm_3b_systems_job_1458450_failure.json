@@ -1,0 +1,24 @@
+{
+  "claim_boundary": "Synthetic full-model systems attempt only; no biological data was loaded and no training or throughput claim passed.",
+  "failure": {
+    "error": "AssertionError: FSDP expects uniform original parameter dtype but got {torch.float16, torch.float32}",
+    "root_cause": "Meta-device full-state loading assigned authenticated FP16 checkpoint tensors while newly initialized pair-aware cross-scale tensors remained FP32.",
+    "stage": "first_forward_fsdp2_lazy_initialization"
+  },
+  "format_version": "abpairfm_3b_fsdp2_systems_failure_v1",
+  "job": {
+    "elapsed": "00:00:29",
+    "exit_code": "1:0",
+    "gpu_count": 4,
+    "job_id": 1458450,
+    "max_rss_kib": 8081564,
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "remediation": "Upcast every floating checkpoint tensor to FP32 before FSDP2 assignment so optimizer parameters remain full precision; retain BF16 only as the FSDP2 compute and reduction dtype.",
+  "status": "FAILED_CLOSED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#SBATCH -J abpairfm-3b-rsh-ab
+#SBATCH -p gpu_4090
+#SBATCH --gres=gpu:4
+#SBATCH --cpus-per-task=24
+#SBATCH --time=00:30:00
+#SBATCH -o /ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-rsh-ab-%j.out
+#SBATCH -e /ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-rsh-ab-%j.err
+
+set -euo pipefail
+
+readonly PYTHON=/ssd/scxi253/model_deployment/envs/contact/bin/python3.10
+readonly PROJECT=/ssd/scxi253/model_deployment/abpairfm_3b_v1/source
+readonly CHECKPOINT=/ssd/scxi253/model_deployment/models/abpairfm_3b_v1/esm2_t36_3B_UR50D/esm2_t36_3B_UR50D.pt
+readonly OUTPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems
+
+export PYTHONPATH="${PROJECT}/src"
+export OMP_NUM_THREADS=6
+export TORCH_NCCL_ASYNC_ERROR_HANDLING=1
+export TORCH_NCCL_BLOCKING_WAIT=1
+export TORCH_NCCL_DUMP_ON_TIMEOUT=1
+export TORCH_NCCL_TRACE_BUFFER_SIZE=1048576
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export ABPAIRFM_TRACE_LAYERS=0
+
+mkdir -p "${OUTPUT_ROOT}"
+
+run_gate() {
+  local label="$1"
+  local reshard_argument="$2"
+  "${PYTHON}" -m torch.distributed.run \
+    --standalone \
+    --nproc_per_node=4 \
+    "${PROJECT}/scripts/run_abpairfm_3b_fsdp2_smoke.py" \
+    --checkpoint "${CHECKPOINT}" \
+    --expected-size 5678116398 \
+    --expected-sha256 7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500 \
+    --expected-world-size 4 \
+    --sequence-tokens 1024 \
+    --warmup-steps 2 \
+    --measured-steps 5 \
+    "${reshard_argument}" \
+    --output "${OUTPUT_ROOT}/job-${SLURM_JOB_ID}-4gpu-1024token-${label}-smoke-v1.json"
+}
+
+run_gate reshard --reshard-after-forward
+run_gate keep-gathered --no-reshard-after-forward
