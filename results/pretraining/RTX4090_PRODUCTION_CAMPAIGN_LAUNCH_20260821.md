@@ -1,8 +1,10 @@
 # RTX 4090 OAS production-pretraining launch — 2026-08-21
 
-Status at `2026-08-21T18:17:16+08:00`: the first production segment is
-running on four `gpu_4090` devices. This is a launch and recovery-evidence
-record, not a terminal accuracy or throughput result.
+Status at `2026-08-21T21:23:07+08:00`: segment 0 completed all 3,000 training
+updates but its post-training evaluation exposed a stale frozen panel anchor.
+The measurement-only recovery audit passed, and segment 1 is running on four
+`gpu_4090` devices as job `1457835`. This remains campaign progress, not a
+terminal downstream or comparative result.
 
 ## Frozen campaign
 
@@ -28,6 +30,25 @@ The exact cluster adaptation is recorded in
 [`patches/rtx4090_pretraining_campaign.patch`](../../patches/rtx4090_pretraining_campaign.patch).
 
 ## Recovery evidence
+
+### Segment-0 validation-anchor recovery
+
+Job `1457281` completed 3,000/3,000 updates and consumed 431,226,626 residue
+tokens before the four evaluation ranks rejected the stale panel SHA-256
+`cc9219…`. The live sampler and the already-frozen efficiency-v3 source both
+produce `ba2426…` for the same 1,215,730-record validation split, 8,192-record
+panel, and seed 2026081501. The original failed tree was retained immutable.
+
+Recovery job `1457829` re-evaluated only the existing checkpoint and completed
+in 3 minutes 30 seconds. Its corrected frozen-panel result is masked accuracy
+0.859768 and cross-entropy 0.543288 over 140,175 selected targets. Receipt
+[`RTX4090_PANEL_ANCHOR_RECOVERY_1457281_1457829.json`](RTX4090_PANEL_ANCHOR_RECOVERY_1457281_1457829.json)
+records the protocol, evaluation, audit, checkpoint, source, and successor-job
+hashes. The audit authorized segment 1 and installed an `afternotok` recovery
+watchdog; any failure other than the authenticated anchor mismatch remains
+fail-closed.
+
+### Exact checkpoint recovery
 
 The accepted four-GPU recovery run compared one continuous four-update run
 against a two-update checkpoint followed by an exact two-update resume. The
