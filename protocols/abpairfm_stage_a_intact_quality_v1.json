@@ -1,0 +1,63 @@
+{
+  "authorization": {
+    "development_decontamination": true,
+    "normalization_after_archive_authentication": true,
+    "stage_a_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Frozen train-source selection protocol. No IntAct row is authorized for Stage A until archive authentication, sequence mapping, conflict removal, development decontamination, and the final inventory gate pass.",
+  "endpoint_filter": {
+    "allowed_interactor_type_mi_ids": [
+      "MI:0326"
+    ],
+    "allow_self_pairs": false,
+    "maximum_combined_residue_length": 1020,
+    "minimum_residue_length_per_endpoint": 20,
+    "require_two_uniprot_accessions": true,
+    "require_uniprot_sequence_resolution": true
+  },
+  "format_version": "abpairfm_stage_a_intact_quality_protocol_v1",
+  "gold_negative_filter": {
+    "negative_column": true,
+    "require_pubmed_identifier": true,
+    "source_file": "intact-micluster_negative.txt"
+  },
+  "hard_decoy_sampler": {
+    "exclude_any_known_intact_positive_or_negative_pair": true,
+    "exclude_development_endpoint_clusters": true,
+    "length_bin_width_residues": 50,
+    "maximum_decoys_per_positive": 1,
+    "require_distinct_endpoint_clusters": true,
+    "require_same_organism": true,
+    "seed": 1701
+  },
+  "leakage_filter": {
+    "asep_development": "exclude exact endpoints, exact pairs, and sequence clusters",
+    "sabdab2_development": "exclude exact endpoints, exact pairs, and sequence clusters",
+    "sequence_cluster_identity_maximum": 0.30,
+    "sequence_cluster_coverage_minimum": 0.80,
+    "test_partitions": "not loaded"
+  },
+  "positive_filter": {
+    "allowed_interaction_type_mi_ids": [
+      "MI:0407",
+      "MI:0915"
+    ],
+    "allowed_negative_column": false,
+    "exclude_expanded_complex_rows": true,
+    "minimum_intact_miscore": 0.6,
+    "require_pubmed_identifier": true,
+    "source_file": "intact-micluster.txt"
+  },
+  "scale_gate": {
+    "minimum_stage_a_examples_after_all_filters": 2500000,
+    "minimum_stage_a_residue_tokens_consumed": 5000000000,
+    "repetition_does_not_count_as_unique_examples": true,
+    "shortfall_action": "add a separately frozen high-confidence STRING physical tier; do not relax IntAct thresholds post hoc"
+  },
+  "task_authority": {
+    "cognate_pair_and_retrieval": true,
+    "contact_supervision": false,
+    "masked_language_modeling": true
+  }
+}

@@ -17,6 +17,7 @@ from antibody_pretraining.pair_aware_esm2 import (
     PairAwareESM2,
     PairAwareESM2Config,
     authenticated_torch_checkpoint,
+    canonicalize_tied_esm2_state,
     parameter_count,
     upgrade_esm2_state_dict,
 )
@@ -49,9 +50,17 @@ def audit_state_compatibility(
             f"Checkpoint architecture mismatch: {dict(checkpoint_dimensions)} != {expected_dimensions}"
         )
     upgraded = upgrade_esm2_state_dict(raw_state)
+    if "lm_head.weight" not in upgraded:
+        raise RuntimeError("Checkpoint is missing its tied LM-head duplicate")
+    if not torch.equal(upgraded["embed_tokens.weight"], upgraded["lm_head.weight"]):
+        raise RuntimeError("Checkpoint tied token and LM-head values differ")
+    canonical = canonicalize_tied_esm2_state(
+        upgraded,
+        require_lm_head_duplicate=True,
+    )
     expected_state = model.state_dict()
     expected_keys = set(expected_state)
-    found_keys = set(upgraded)
+    found_keys = set(canonical)
     allowed_initialized = {
         f"layers.{index}.self_attn.cross_scale"
         for index in range(model.config.layer_count)
@@ -64,16 +73,14 @@ def audit_state_compatibility(
         raise RuntimeError(f"Unexpected checkpoint keys: {sorted(unexpected)}")
     shape_mismatches = {
         name: {
-            "checkpoint": list(upgraded[name].shape),
+            "checkpoint": list(canonical[name].shape),
             "model": list(expected_state[name].shape),
         }
         for name in found_keys
-        if tuple(upgraded[name].shape) != tuple(expected_state[name].shape)
+        if tuple(canonical[name].shape) != tuple(expected_state[name].shape)
     }
     if shape_mismatches:
         raise RuntimeError(f"Checkpoint tensor shape mismatches: {shape_mismatches}")
-    if not torch.equal(upgraded["embed_tokens.weight"], upgraded["lm_head.weight"]):
-        raise RuntimeError("Checkpoint tied token and LM-head values differ")
     expected_rotary = 1.0 / (
         10_000.0
         ** (
@@ -88,7 +95,7 @@ def audit_state_compatibility(
     )
     for index in range(model.config.layer_count):
         key = f"layers.{index}.self_attn.rot_emb.inv_freq"
-        if not torch.equal(upgraded[key], expected_rotary.to(upgraded[key].dtype)):
+        if not torch.equal(canonical[key], expected_rotary.to(canonical[key].dtype)):
             raise RuntimeError(f"Rotary frequency buffer mismatch in layer {index}")
     initialized_parameter_count = sum(
         expected_state[name].numel() for name in allowed_initialized

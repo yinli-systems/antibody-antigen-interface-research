@@ -376,10 +376,10 @@ def save_dcp_generation(
         temporary_path.mkdir(mode=0o700)
     if world_size > 1:
         distributed.barrier(group=group)
-    options = StateDictOptions(full_state_dict=False, cpu_offload=False, strict=True)
-    model_state, optimizer_state = get_state_dict(model, optimizer, options=options)
-    started = time.perf_counter()
     try:
+        options = StateDictOptions(full_state_dict=False, cpu_offload=False, strict=True)
+        model_state, optimizer_state = get_state_dict(model, optimizer, options=options)
+        started = time.perf_counter()
         dcp.save(
             {"model": model_state, "optimizer": optimizer_state},
             checkpoint_id=temporary_path,
@@ -442,10 +442,11 @@ def save_dcp_generation(
             raise FSDP2ContractError(
                 f"Rank-zero checkpoint finalization failed: {finalize_error}"
             )
-        return verify_dcp_generation(
+        return _verify_dcp_generation_collectively(
             output_root,
             selected_generation,
             expected_provenance_hashes=provenance,
+            group=group,
         )
     except BaseException:
         if rank == 0 and temporary_path.exists() and temporary_path.is_dir():
@@ -546,6 +547,42 @@ def verify_dcp_generation(
     return receipt
 
 
+def _verify_dcp_generation_collectively(
+    root: Path | str,
+    generation: str,
+    *,
+    expected_provenance_hashes: Mapping[str, str],
+    group: Any = None,
+) -> dict[str, Any]:
+    """Hash one large generation on rank zero and broadcast the verified receipt."""
+    distributed, world_size, rank = _distributed_identity(group)
+    if world_size == 1:
+        return verify_dcp_generation(
+            root,
+            generation,
+            expected_provenance_hashes=expected_provenance_hashes,
+        )
+    payload: list[dict[str, Any]] = [{"error": None, "receipt": None}]
+    if rank == 0:
+        try:
+            payload[0]["receipt"] = verify_dcp_generation(
+                root,
+                generation,
+                expected_provenance_hashes=expected_provenance_hashes,
+            )
+        except BaseException as error:
+            payload[0]["error"] = f"{type(error).__name__}: {error}"
+    distributed.broadcast_object_list(payload, src=0, group=group)
+    if payload[0]["error"] is not None:
+        raise FSDP2ContractError(
+            f"Rank-zero DCP verification failed: {payload[0]['error']}"
+        )
+    receipt = payload[0]["receipt"]
+    if not isinstance(receipt, dict):
+        raise FSDP2ContractError("Rank zero did not broadcast a DCP receipt")
+    return receipt
+
+
 def load_dcp_generation(
     root: Path | str,
     generation: str,
@@ -566,10 +603,11 @@ def load_dcp_generation(
     except (ImportError, AttributeError) as error:
         raise RuntimeError("Distributed Checkpoint is unavailable") from error
     selected_generation = _validate_generation(generation)
-    receipt = verify_dcp_generation(
+    receipt = _verify_dcp_generation_collectively(
         root,
         selected_generation,
         expected_provenance_hashes=expected_provenance_hashes,
+        group=group,
     )
     distributed, world_size, _ = _distributed_identity(group)
     options = StateDictOptions(full_state_dict=False, cpu_offload=False, strict=True)
