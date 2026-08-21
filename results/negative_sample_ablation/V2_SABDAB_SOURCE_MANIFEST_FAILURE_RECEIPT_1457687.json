@@ -1,0 +1,99 @@
+{
+  "affected_tasks": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "array_job_id": 1457687,
+  "cause": "The copied immutable SAbDab2 source closure was checked against the old absolute-root source manifest.",
+  "detected_at": "2026-08-21T12:26:09.912611+00:00",
+  "external_test_loaded": false,
+  "failure": "ValueError: Source manifest root or format differs",
+  "fix": "Generated a new manifest for the copied, instrumented v2 source closure and changed only the source-manifest path/hash in the sbatch.",
+  "format_version": "framecontact_negative_sample_ablation_operational_failure_v1",
+  "replacement_source_manifest_sha256": "d73bb84ba1fd056737e1d9a985b02ebc0c5f3bb5f5d1edbd694d3db9ccf18cdd",
+  "retry_job_id": 1457709,
+  "scientific_claim": false,
+  "stderr": [
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_10.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 10
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_11.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 11
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_12.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 12
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_13.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 13
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_14.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 14
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_15.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 15
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_16.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 16
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_17.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 17
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_18.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 18
+    },
+    {
+      "bytes": 699,
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-neg-v2-1457687_19.err",
+      "sha256": "e8bfecb5e97d6fb32f2910a5996ec19b40bd3a7443bb17aa72a96f088f62590a",
+      "task": 19
+    }
+  ],
+  "test_loaded": false,
+  "unaffected_running_tasks": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ]
+}

@@ -8,7 +8,7 @@ raw datasets, model weights, full embeddings, and complete prediction tensors.
 | Workstream | Recommended entry point | Status boundary |
 |---|---|---|
 | Cluster activity | [`cluster/CLUSTER_ACTIVITY_SNAPSHOT_20260821.md`](cluster/CLUSTER_ACTIVITY_SNAPSHOT_20260821.md) | Point-in-time scheduler snapshot only; MIPE, the negative-sample ablation, and RTX 4090 pretraining were running at the recorded timestamp |
-| Partner-negative ablation | [`negative_sample_ablation/README.md`](negative_sample_ablation/README.md) | Five-seed AsEP and SAbDab2 development study is running; no final comparison and no test access yet |
+| Partner-negative ablation | [`negative_sample_ablation/README.md`](negative_sample_ablation/README.md) | Raw-Brier v1 failed closed; corrected paired five-seed AsEP/SAbDab2 v2 is running on 20 RTX 4090s, with no final comparison or test access yet |
 | RTX 4090 pretraining | [`pretraining/RTX4090_PRODUCTION_CAMPAIGN_LAUNCH_20260821.md`](pretraining/RTX4090_PRODUCTION_CAMPAIGN_LAUNCH_20260821.md) | Exact recovery passed and the first 30B-token campaign segment is running; no terminal validation or downstream claim |
 | ElasticABF recovery | [`pretraining/elasticabf_real_oas_4to2to4_v4_1457530/README.md`](pretraining/elasticabf_real_oas_4to2to4_v4_1457530/README.md) | Real-OAS ABF-35M 4-to-2-to-4 correctness gate passed; no 650M performance or scientific claim |
 | SPPIDER-seq | [`sppider_seq/FINAL_RESEARCH_REPORT.md`](sppider_seq/FINAL_RESEARCH_REPORT.md) | Locked marginal paratope/epitope evaluation; not native pair prediction and not a pristine blind test |
