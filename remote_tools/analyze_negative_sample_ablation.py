@@ -75,6 +75,8 @@ def finite(value: Any, label: str) -> float:
 def nested(value: dict[str, Any], path: tuple[str, ...]) -> Any:
     current: Any = value
     for key in path:
+        if not isinstance(current, dict) or key not in current:
+            raise KeyError(f"Missing required result field: {'.'.join(path)}")
         current = current[key]
     return current
 
@@ -104,7 +106,12 @@ def paired_bootstrap(deltas: list[float]) -> dict[str, float | int]:
     }
 
 
-def load_member(root: Path, seed: int, expected_weight: float) -> dict[str, Any]:
+def load_member(
+    root: Path,
+    seed: int,
+    expected_weight: float,
+    expected_protocol_receipt_sha256: str | None = None,
+) -> dict[str, Any]:
     run_root = root / f"seed-{seed}"
     result_path = run_root / "FRAMECONTACT_DEVELOPMENT_RESULT.json"
     receipt_path = run_root / "RUN_RECEIPT.json"
@@ -130,6 +137,12 @@ def load_member(root: Path, seed: int, expected_weight: float) -> dict[str, Any]
         or authority.get("external_test_loaded") is not False
     ):
         raise ValueError(f"Test authority opened: {run_root}")
+    if (
+        expected_protocol_receipt_sha256 is not None
+        and authority.get("protocol_receipt_sha256")
+        != expected_protocol_receipt_sha256
+    ):
+        raise ValueError(f"Protocol receipt differs: {run_root}")
     configuration = result["configuration"]
     observed_weight = finite(
         configuration["specificity_loss_weight"], "specificity_loss_weight"
@@ -319,26 +332,67 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument(
+        "--study-version",
+        choices=("negative-sample-ablation-v1", "negative-sample-ablation-v2"),
+        default="negative-sample-ablation-v1",
+    )
     args = parser.parse_args()
     if args.output_root.exists() or args.output_root.is_symlink():
         raise FileExistsError(args.output_root)
-    roots = {
-        "asep": {
-            "with_negative": args.data_root
-            / "asep/development-runs/epitope-group-v1/framecontact",
-            "no_negative": args.data_root
-            / "asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact",
-        },
-        "sabdab2": {
-            "with_negative": args.data_root
-            / "sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact",
-            "no_negative": args.data_root
-            / "sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact",
-        },
-    }
+    if args.study_version == "negative-sample-ablation-v1":
+        roots = {
+            "asep": {
+                "with_negative": args.data_root
+                / "asep/development-runs/epitope-group-v1/framecontact",
+                "no_negative": args.data_root
+                / "asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact",
+            },
+            "sabdab2": {
+                "with_negative": args.data_root
+                / "sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact",
+                "no_negative": args.data_root
+                / "sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact",
+            },
+        }
+        expected_receipts: dict[str, dict[str, str | None]] = {
+            dataset: {arm: None for arm in ARMS} for dataset in ("asep", "sabdab2")
+        }
+        format_suffix = "v1"
+    else:
+        roots = {
+            dataset: {
+                arm: args.data_root
+                / dataset
+                / "development-runs"
+                / args.study_version
+                / arm
+                / "framecontact"
+                for arm in ARMS
+            }
+            for dataset in ("asep", "sabdab2")
+        }
+        expected_receipts = {
+            dataset: {
+                arm: sha256_file(
+                    args.data_root
+                    / args.study_version
+                    / "protocols"
+                    / dataset
+                    / arm
+                    / "PROTOCOL_RECEIPT.json"
+                )
+                for arm in ARMS
+            }
+            for dataset in ("asep", "sabdab2")
+        }
+        format_suffix = "v2"
     payload: dict[str, Any] = {
-        "format_version": "framecontact_partner_negative_ablation_audit_v1",
+        "format_version": (
+            f"framecontact_partner_negative_ablation_audit_{format_suffix}"
+        ),
         "claim_boundary": "Development train/validation only; no test claim.",
+        "study_version": args.study_version,
         "seeds": list(SEEDS),
         "datasets": {},
     }
@@ -348,6 +402,7 @@ def main() -> None:
                 load_member(
                     dataset_roots[arm], seed,
                     0.25 if arm == "with_negative" else 0.0,
+                    expected_receipts[dataset][arm],
                 )
                 for seed in SEEDS
             ]
@@ -426,7 +481,9 @@ def main() -> None:
                         )
         plot_curves(payload, figure)
         receipt = {
-            "format_version": "framecontact_partner_negative_ablation_receipt_v1",
+            "format_version": (
+                f"framecontact_partner_negative_ablation_receipt_{format_suffix}"
+            ),
             "audit_sha256": sha256_file(audit),
             "report_sha256": sha256_file(report),
             "curve_csv_sha256": sha256_file(curves),

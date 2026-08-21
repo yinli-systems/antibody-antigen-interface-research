@@ -43,6 +43,14 @@ Negative or blocked results are intentionally retained.
   corresponding run is still in progress; this registration carries no
   terminal performance claim.
 
+## Partner-negative raw-Brier ablation
+
+[`negative_sample_ablation_v2/`](negative_sample_ablation_v2/) freezes the
+paired AsEP and SAbDab2 five-seed arms after v1 failed closed: the old trainer
+reported temperature-refit Brier but did not emit the pre-registered fixed
+raw-logit Brier curve. V2 adds measurement-only instrumentation, binds copied
+source closures, and keeps test and external-test roles sealed.
+
 ## Structured protocol evidence
 
 Subdirectories such as `identity80_development/`,

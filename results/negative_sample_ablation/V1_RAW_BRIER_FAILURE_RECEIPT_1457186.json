@@ -1,0 +1,223 @@
+{
+  "analyzer_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v1/tools/analyze_negative_sample_ablation.py",
+  "analyzer_sha256": "2fec43d4855b4c63b5a183ad8875737cf4eb16a964babf6f7693672c42d0fb31",
+  "array_job_id": 1457186,
+  "decision": "Do not aggregate v1 as the promised raw-logit Brier study; preserve outputs, cancel unfinished v1 tasks after v2 closure passes, and rerun both arms under v2 instrumentation.",
+  "detected_at": "2026-08-21T12:22:17.537724+00:00",
+  "external_test_loaded": false,
+  "failure_class": "pre_registered_metric_not_emitted",
+  "format_version": "framecontact_negative_sample_ablation_failure_v1",
+  "observed_runs": [
+    {
+      "arm": "with_negative",
+      "dataset": "asep",
+      "epochs": 35,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/epitope-group-v1/framecontact/seed-17/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "3737bf6099929a4faf5345deaa17ccf8ad6ec344057c3060970dab325dd7e056",
+      "seed": 17,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "asep",
+      "epochs": 25,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/epitope-group-v1/framecontact/seed-42/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "04f68ad3eebbe0e673a008453d3eb5cb3733cb0bb987384c3a69c09779e0d4e1",
+      "seed": 42,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "asep",
+      "epochs": 21,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/epitope-group-v1/framecontact/seed-73/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "68a278833cfa74a020c1a88f4ad9ddb3b40b54702846678c888c2e4690590114",
+      "seed": 73,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "asep",
+      "epochs": 39,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/epitope-group-v1/framecontact/seed-101/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "b3f871c4e7d4795f106d4a6e1075037849582f1de028c5fefa8348e75f35d95b",
+      "seed": 101,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "asep",
+      "epochs": 22,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/epitope-group-v1/framecontact/seed-137/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "be6c2afb9675d6a3d8085168d0d80e086f1aa83b80d0609bf152bb8355d327fa",
+      "seed": 137,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "asep",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-17/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 17
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "asep",
+      "epochs": 22,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-42/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "ceeb39173ff1fb5859c8d6a670b3f17868f5c5740a30b97051646bf520f7542b",
+      "seed": 42,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "asep",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-73/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 73
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "asep",
+      "epochs": 25,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-101/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "8fe6df515e7ccbc2307626f5052af57429c2695312bb839598650bed693cef10",
+      "seed": 101,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "asep",
+      "epochs": 21,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-137/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "3b80ccc10b5d0e8126e680d1926eadba9c332c1f01a68c966d90d3d26a201cd3",
+      "seed": 137,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "sabdab2",
+      "epochs": 40,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact/seed-17/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "de81575ee4642dbf1dc569880216dc67f70ed65e7d727759de2b797a820fc7d4",
+      "seed": 17,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "sabdab2",
+      "epochs": 39,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact/seed-42/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "e1746efb6c0e01d56fa94a5e04538042c0a52fbf601ca4330cd1c4b52c47a741",
+      "seed": 42,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "sabdab2",
+      "epochs": 30,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact/seed-73/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "b0d3f392ef4e148c574e24fb23f859f86e7117fb70bbb09273e4e26f6e430939",
+      "seed": 73,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "sabdab2",
+      "epochs": 27,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact/seed-101/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "bf4acd87146967257969de5b890817c1cb68033db88d1bd20789ce77904865cf",
+      "seed": 101,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "with_negative",
+      "dataset": "sabdab2",
+      "epochs": 33,
+      "exists": true,
+      "history_raw_brier_count": 0,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/antigen-fold-v3_1-v5/framecontact/seed-137/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "result_sha256": "d870162356fe434556a84db54e123d95f106e500f7832407ea002bc637ef3062",
+      "seed": 137,
+      "selected_raw_brier_present": false
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "sabdab2",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-17/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 17
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "sabdab2",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-42/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 42
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "sabdab2",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-73/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 73
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "sabdab2",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-101/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 101
+    },
+    {
+      "arm": "no_negative",
+      "dataset": "sabdab2",
+      "exists": false,
+      "result_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-runs/negative-sample-ablation-v1/no_partner_negative/framecontact/seed-137/FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "seed": 137
+    }
+  ],
+  "required_field": "validation.contact.fixed_raw_logit_threshold_zero.brier",
+  "sacct_snapshot": [
+    "1457187|fc-neg-ablate|RUNNING|02:52:35|0:0",
+    "1457188|fc-neg-ablate|COMPLETED|02:12:11|0:0",
+    "1457189|fc-neg-ablate|RUNNING|02:52:35|0:0",
+    "1457190|fc-neg-ablate|COMPLETED|02:44:20|0:0",
+    "1457191|fc-neg-ablate|COMPLETED|02:08:52|0:0",
+    "1457192|fc-neg-ablate|RUNNING|02:52:35|0:0",
+    "1457193|fc-neg-ablate|RUNNING|02:52:35|0:0",
+    "1457194|fc-neg-ablate|RUNNING|02:52:35|0:0",
+    "1457195|fc-neg-ablate|RUNNING|02:52:35|0:0",
+    "1457186|fc-neg-ablate|RUNNING|02:52:35|0:0"
+  ],
+  "scientific_claim": false,
+  "test_loaded": false,
+  "trainer_sha256": {
+    "asep": "6b2fbdddba467b041a17d06819ef54c44aa05358f432c308e5e1fd463f88fc11",
+    "sabdab2": "fd4fc46816d2e2b8641b221126fe1ba92798224c18aff71e89f1baeb7d39175b"
+  }
+}

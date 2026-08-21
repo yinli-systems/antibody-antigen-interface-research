@@ -1,0 +1,149 @@
+{
+  "architecture_matrix": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "frozen_frame_ipa",
+    "framecontact",
+    "framecontact_interleaved"
+  ],
+  "claim_boundary": "asep development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+  "data": {
+    "dataset": "AsEP v1.2.0",
+    "dataset_backend": "asep",
+    "development_cache_manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "development_cache_receipt_sha256": "3a282b179ee151d9d4b24cc87366323670a76719bdf0542a2fc1aa164c0f5269",
+    "feature_boundary": "The official AsEP ESM2-t12-35M tensors are a native-dataset baseline and are not interchangeable with the SAbDab2 ESM2-t33-650M authority.",
+    "official_role_counts": {
+      "test": 170,
+      "train": 1383,
+      "validation": 170
+    },
+    "primary_feature_mode": "official_esm2_35m",
+    "reciprocal_partner_panel": {
+      "candidate_matching": [
+        "exact full-sequence cluster exclusion",
+        "partner length decile",
+        "CDR or surface-node count decile"
+      ],
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "known_limit": "Exact-sequence clusters are not structural clusters; development partner margins are exploratory until a structure-cluster panel is frozen.",
+      "metadata_sha256": "04d9a36e7c3c5228f1e4bcad46a00cdc3dde1556d25fc9693d9d28dc4680753b",
+      "size_per_query": 31,
+      "train_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+      "validation_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec"
+    },
+    "split_method": "epitope_group"
+  },
+  "development_endpoints": {
+    "calibration": [
+      "Brier score",
+      "ECE-15",
+      "calibration slope"
+    ],
+    "contact": [
+      "pooled AUPRC",
+      "mean per-complex AUPRC",
+      "AUROC",
+      "P@10",
+      "P@20",
+      "P@50",
+      "P@Lmin"
+    ],
+    "marginals": [
+      "paratope AUPRC",
+      "epitope AUPRC",
+      "MCC",
+      "F1"
+    ],
+    "selection": "minimum of fixed-antigen/wrong-antibody and fixed-antibody/wrong-antigen cluster-weighted interaction-only margins"
+  },
+  "evidence_boundary_at_freeze": {
+    "claim_boundary": "Development schema and labels have been audited. No fitted model or official test result exists.",
+    "development_train_and_validation_labels_read_for_adapter_validation": true,
+    "model_fitting_started": false,
+    "official_test_graph_tensors_opened": false,
+    "official_test_labels_read": false,
+    "official_test_predictions_or_scores_read": false
+  },
+  "frozen_on": "2026-08-21",
+  "interpretation_rules": [
+    "A development-only result is not an external benchmark result.",
+    "A positive residue AUPRC without a positive interaction-only partner margin does not establish partner specificity.",
+    "AsEP epitope_group is an official grouped split but is not automatically equivalent to the SAbDab2 Foldseek/TM-score antigen-fold split.",
+    "Official ESM2-35M results and ESM2-650M transfer results must be reported separately."
+  ],
+  "measurement": {
+    "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+    "probability_temperature": 1.0,
+    "probability_threshold": 0.5,
+    "trainer_file_sha256": "44871df01e3481d3651a53d384687f3b9050a33976a7c81f3482512da2e87743"
+  },
+  "model_selection": {
+    "checkpoint_rule": "maximize the minimum bidirectional validation compatibility margin; break ties within 0.0001 by mean per-complex contact AUPRC and then earlier epoch",
+    "early_stopping_patience": 15,
+    "maximum_epochs": 100,
+    "seeds": [
+      17,
+      42,
+      73,
+      101,
+      137
+    ],
+    "temperature_and_thresholds": "validation only",
+    "test_role_forbidden": true
+  },
+  "negative_sample_ablation": {
+    "arm": "with_negative",
+    "base_protocol_file_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+    "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/asep/protocols/framecontact_asep_epitope_group_v1.json",
+    "comparison": "paired five-seed K=1 versus zero-weight ablation",
+    "external_test_loaded": false,
+    "specificity_loss_weight": 0.25,
+    "specificity_negative_count": 1,
+    "test_loaded": false,
+    "wrong_partner_gradient_contribution": true
+  },
+  "official_test_opening_rule": {
+    "open_count": 1,
+    "prerequisites": [
+      "all five selected checkpoints and their SHA-256 digests frozen",
+      "ensemble rule frozen",
+      "temperature and thresholds frozen from validation",
+      "test adapter and scorer source hashes frozen",
+      "test reciprocal panel frozen from label-independent metadata",
+      "SAbDab2-to-AsEP PDB, exact-sequence, and structural-similarity decontamination receipt frozen"
+    ],
+    "prohibited": "No architecture, seed, checkpoint, calibration, threshold, or exclusion may be selected from official test performance."
+  },
+  "project": {
+    "name": "FrameContact",
+    "purpose": "Native AsEP development and frozen-test benchmark for contact-first partner-aware modeling"
+  },
+  "protocol_status": "development_only_raw_brier_v2",
+  "schema_version": "framecontact_asep_partner_negative_ablation_protocol_v2",
+  "source_closure": {
+    "file_count": 112,
+    "inventory_sha256": "7a5d83342dd61856947861d30b82732a9f3be4dfa46cd586e3d3ec31018fd815",
+    "source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/asep",
+    "trainer_file_sha256": "44871df01e3481d3651a53d384687f3b9050a33976a7c81f3482512da2e87743"
+  },
+  "training_objective": {
+    "complex_weighting": "equal per-complex weight",
+    "contact": "class-balanced BCE on official bipartite contact edges",
+    "loss_weights": {
+      "contact": 1.0,
+      "epitope": 0.25,
+      "paratope": 0.25,
+      "specificity": 0.25
+    },
+    "marginals": "class-balanced paratope and epitope BCE derived from the same contact edges",
+    "score_fraction": 0.01,
+    "specificity": "bidirectional ranking loss against frozen matched non-cognate partners",
+    "specificity_margin": 0.05,
+    "specificity_score_source": "interaction_only",
+    "wrong_pair_rule": "Wrong partners are ranking examples, never fabricated all-zero contact labels."
+  }
+}
