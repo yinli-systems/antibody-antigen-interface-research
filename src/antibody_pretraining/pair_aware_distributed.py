@@ -16,6 +16,7 @@ from torch import Tensor, nn
 from .pair_aware_esm2 import (
     PairAwareESM2,
     authenticated_torch_checkpoint,
+    canonicalize_tied_esm2_state,
     upgrade_esm2_state_dict,
 )
 
@@ -68,6 +69,18 @@ def fully_shard_pair_aware_esm2(
     return model
 
 
+def reshard_pair_aware_esm2(model: PairAwareESM2) -> None:
+    """Restore every FSDP2 parameter group to its optimizer-owned DTensor shard."""
+    if not isinstance(model, PairAwareESM2):
+        raise PairAwareDistributedError("model must be PairAwareESM2")
+    modules = [*model.layers, model]
+    for module in modules:
+        reshard = getattr(module, "reshard", None)
+        if not callable(reshard):
+            raise PairAwareDistributedError("model is not fully sharded with FSDP2")
+        reshard()
+
+
 def complete_esm2_initial_state(
     model: PairAwareESM2,
     state_dict: Mapping[str, Tensor],
@@ -79,7 +92,7 @@ def complete_esm2_initial_state(
         raise PairAwareDistributedError(
             "training_dtype must preserve full-precision optimizer parameters"
         )
-    upgraded = upgrade_esm2_state_dict(state_dict)
+    upgraded = canonicalize_tied_esm2_state(upgrade_esm2_state_dict(state_dict))
     expected = set(model.state_dict())
     found = set(upgraded)
     initialized = {

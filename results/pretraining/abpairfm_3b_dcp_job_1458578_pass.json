@@ -1,0 +1,109 @@
+{
+  "claim_boundary": "Synthetic full-model FSDP2 recovery evidence only. This does not authorize biological training, development model selection, frozen-test access, or SOTA claims.",
+  "closure": {
+    "executed_protocol": "abpairfm_3b_dcp_recovery_gate_v2",
+    "executed_protocol_sha256": "d407a3908fe336d0badb14ce80b0b75bd4bc45f0b776c78e73b1d59c9fe74f2c",
+    "future_protocol": "abpairfm_3b_dcp_recovery_gate_v3",
+    "future_protocol_rationale": "The passing v2 run enforced every v3 recovery invariant and additionally happened to obtain exact continuation loss. V3 correctly treats post-resume Flash-backward numerics as recorded finite diagnostics, not bitwise recovery invariants.",
+    "status": "V2_PASS_SATISFIES_V3_REQUIRED_INVARIANTS"
+  },
+  "dcp": {
+    "checkpoint_content_sha256": "18ddd602421f1d2905a30080c4c6ef9377e50a6a4f4e45cabb64bc66a9608724",
+    "checkpoint_generation": "step-000002",
+    "checkpoint_model_canonical_local_shard_exact_by_rank": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "checkpoint_optimizer_canonical_local_shard_exact_by_rank": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "checkpoint_total_bytes": 34082702696,
+    "save_seconds_max": 28.657126002945006,
+    "source_world_size": 4
+  },
+  "format_version": "abpairfm_3b_dcp_recovery_pass_v1",
+  "job": {
+    "elapsed": "00:04:24",
+    "exit_code": "0:0",
+    "job_id": 1458578,
+    "node": "wqd10nae09g3",
+    "partition": "gpu_4090",
+    "state": "COMPLETED",
+    "world_size": 4
+  },
+  "logs": {
+    "stderr": {
+      "bytes": 3424,
+      "sha256": "bf4677e75163552d7cac6da5c2592bbade8b265c692de1a26aca5028af138002"
+    },
+    "stdout": {
+      "bytes": 2060,
+      "sha256": "1d96078e803cf9944c143584fcbd51910f66b86ade49be54d7798460857b7360"
+    }
+  },
+  "numerical_diagnostics": {
+    "continuation_global_loss_restored_by_rank": [
+      3.546875,
+      3.546875,
+      3.546875,
+      3.546875
+    ],
+    "continuation_global_loss_uninterrupted_by_rank": [
+      3.546875,
+      3.546875,
+      3.546875,
+      3.546875
+    ],
+    "gradient_norm_relative_difference_by_rank": [
+      0.0007221470078911888,
+      0.0007441095737945519,
+      0.0022803373102330458,
+      0.0006301380606871943
+    ],
+    "production_flash_backward_bitwise_gated": false
+  },
+  "provenance": {
+    "checkpoint_receipt_sha256": "59ec5a44777288185a46ad8515d710e267ac4b4a5a5c59176c4f9b5f2d972208",
+    "official_esm2_checkpoint_sha256": "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500",
+    "restore_result_sha256": "4d5c6bd438b7ed997ec3ad94be77a1df83ba380b8aad7a8b3a0680951cb8e8e9",
+    "save_result_sha256": "0e781983fb733c9ff7bff95a98fb309e234ef9792e40c98ccac9501425167e4f",
+    "source_sha256": "7e716df796d43480ec05e874f5bed8266ac5b08d3d629b7af6e17a1db090b5d2"
+  },
+  "recovery_history": [
+    {
+      "job_id": 1458549,
+      "outcome": "FAILED_CLOSED",
+      "reason": "Optimizer FQN conversion failed because the official tied LM-head weight was registered twice."
+    },
+    {
+      "job_id": 1458554,
+      "outcome": "FAILED_CLOSED",
+      "reason": "Explicit reshard did not fix the duplicate tied-weight optimizer FQN failure."
+    },
+    {
+      "job_id": 1458557,
+      "outcome": "FAILED_CLOSED",
+      "reason": "DCP save/load and continuation worked, but an invalid post-Flash-backward bitwise parity rule rejected the run."
+    },
+    {
+      "job_id": 1458571,
+      "outcome": "DIAGNOSTIC_COMPLETE",
+      "reason": "Corrected uninterrupted control proved production Flash backward is numerically stable but not bitwise deterministic."
+    },
+    {
+      "job_id": 1458578,
+      "outcome": "PASS",
+      "reason": "Fresh-process model and AdamW checkpoint-point canonical shards matched exactly on all four ranks, then continuation completed with finite evidence."
+    }
+  ],
+  "status": "PASS",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

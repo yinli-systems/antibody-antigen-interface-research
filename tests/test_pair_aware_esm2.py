@@ -13,6 +13,7 @@ from antibody_pretraining.pair_aware_esm2 import (  # noqa: E402
     ESM2_ALPHABET,
     PairAwareESM2,
     PairAwareESM2Config,
+    canonicalize_tied_esm2_state,
     load_compatible_esm2_state,
     parameter_count,
     upgrade_esm2_state_dict,
@@ -39,6 +40,7 @@ def test_official_esm2_alphabet_and_3b_meta_parameter_count() -> None:
     with torch.device("meta"):
         model = PairAwareESM2()
     assert 2_830_000_000 <= parameter_count(model) <= 2_850_000_000
+    assert "lm_head.weight" not in model.state_dict()
 
 
 def test_forward_uses_chain_balanced_loss_and_exports_last_attention() -> None:
@@ -82,4 +84,23 @@ def test_state_upgrade_rejects_colliding_prefixes() -> None:
     with pytest.raises(ValueError, match="Duplicate"):
         upgrade_esm2_state_dict(
             {"encoder.embed_tokens.weight": tensor, "embed_tokens.weight": tensor}
+        )
+
+
+def test_checkpoint_tied_duplicate_is_validated_then_removed() -> None:
+    tensor = torch.arange(12, dtype=torch.float32).reshape(3, 4)
+    canonical = canonicalize_tied_esm2_state(
+        {
+            "embed_tokens.weight": tensor,
+            "lm_head.weight": tensor.clone(),
+        },
+        require_lm_head_duplicate=True,
+    )
+    assert set(canonical) == {"embed_tokens.weight"}
+    with pytest.raises(ValueError, match="values differ"):
+        canonicalize_tied_esm2_state(
+            {
+                "embed_tokens.weight": tensor,
+                "lm_head.weight": tensor + 1,
+            }
         )

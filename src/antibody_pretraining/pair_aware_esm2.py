@@ -159,18 +159,17 @@ class PairAwareESM2Layer(nn.Module):
 
 
 class ESM2RobertaLMHead(nn.Module):
-    """Reproduce the ESM2 tied-weight masked-language-modeling head."""
+    """Reproduce the ESM2 head without registering its tied weight twice."""
 
-    def __init__(self, embed_dimension: int, vocabulary_size: int, weight: nn.Parameter) -> None:
+    def __init__(self, embed_dimension: int, vocabulary_size: int) -> None:
         super().__init__()
         self.dense = nn.Linear(embed_dimension, embed_dimension)
         self.layer_norm = nn.LayerNorm(embed_dimension)
-        self.weight = weight
         self.bias = nn.Parameter(torch.zeros(vocabulary_size))
 
-    def forward(self, hidden: Tensor) -> Tensor:
+    def forward(self, hidden: Tensor, tied_weight: Tensor) -> Tensor:
         hidden = self.layer_norm(esm_gelu(self.dense(hidden)))
-        return F.linear(hidden, self.weight) + self.bias
+        return F.linear(hidden, tied_weight) + self.bias
 
 
 class PairAwareESM2(nn.Module):
@@ -190,7 +189,6 @@ class PairAwareESM2(nn.Module):
         self.lm_head = ESM2RobertaLMHead(
             config.embed_dimension,
             config.vocabulary_size,
-            self.embed_tokens.weight,
         )
 
     def _embed(self, tokens: Tensor, valid_mask: Tensor) -> Tensor:
@@ -291,7 +289,10 @@ class PairAwareESM2(nn.Module):
                     f"layer={layer_index} phase=forward_done",
                     flush=True,
                 )
-        logits = self.lm_head(self.emb_layer_norm_after(hidden))
+        logits = self.lm_head(
+            self.emb_layer_norm_after(hidden),
+            self.embed_tokens.weight,
+        )
         loss_sum = None
         chain_count = torch.zeros((), dtype=torch.long, device=tokens.device)
         if labels is not None:
@@ -326,11 +327,29 @@ def upgrade_esm2_state_dict(state_dict: Mapping[str, Tensor]) -> dict[str, Tenso
     return upgraded
 
 
+def canonicalize_tied_esm2_state(
+    state_dict: Mapping[str, Tensor],
+    *,
+    require_lm_head_duplicate: bool = False,
+) -> dict[str, Tensor]:
+    """Validate and remove the checkpoint-only duplicate tied LM-head weight."""
+    canonical = dict(state_dict)
+    duplicate = canonical.pop("lm_head.weight", None)
+    embedding = canonical.get("embed_tokens.weight")
+    if duplicate is None:
+        if require_lm_head_duplicate:
+            raise ValueError("Checkpoint is missing its tied LM-head duplicate")
+        return canonical
+    if embedding is None or not torch.equal(duplicate, embedding):
+        raise ValueError("Checkpoint tied token and LM-head values differ")
+    return canonical
+
+
 def load_compatible_esm2_state(
     model: PairAwareESM2, state_dict: Mapping[str, Tensor]
 ) -> dict[str, Any]:
     """Load every compatible ESM2 tensor and only initialize cross scales."""
-    upgraded = upgrade_esm2_state_dict(state_dict)
+    upgraded = canonicalize_tied_esm2_state(upgrade_esm2_state_dict(state_dict))
     expected = set(model.state_dict())
     found = set(upgraded)
     allowed_missing = {

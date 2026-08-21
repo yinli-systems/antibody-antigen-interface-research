@@ -13,6 +13,7 @@ from antibody_pretraining.pair_aware_distributed import (  # noqa: E402
     PairAwareDistributedError,
     complete_esm2_initial_state,
     fully_shard_pair_aware_esm2,
+    reshard_pair_aware_esm2,
 )
 from antibody_pretraining.pair_aware_esm2 import (  # noqa: E402
     PairAwareESM2,
@@ -79,6 +80,12 @@ def test_fully_shard_requires_initialized_process_group() -> None:
     model = PairAwareESM2(_config())
     with pytest.raises(PairAwareDistributedError, match="process group"):
         fully_shard_pair_aware_esm2(model)
+
+
+def test_reshard_rejects_an_unsharded_model() -> None:
+    model = PairAwareESM2(_config())
+    with pytest.raises(PairAwareDistributedError, match="not fully sharded"):
+        reshard_pair_aware_esm2(model)
 
 
 def test_activation_checkpointing_matches_eager_gradients() -> None:

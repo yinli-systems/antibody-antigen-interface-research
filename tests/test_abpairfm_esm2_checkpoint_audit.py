@@ -39,11 +39,15 @@ def _config() -> PairAwareESM2Config:
 
 
 def _official_like_state(model: PairAwareESM2):
-    return {
+    state = {
         f"encoder.sentence_encoder.{name}": tensor.detach().clone()
         for name, tensor in model.state_dict().items()
         if not name.endswith("cross_scale")
     }
+    state["encoder.sentence_encoder.lm_head.weight"] = (
+        model.embed_tokens.weight.detach().clone()
+    )
+    return state
 
 
 def test_state_receipt_proves_only_cross_scales_are_new() -> None:
