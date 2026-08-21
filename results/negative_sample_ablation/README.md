@@ -1,24 +1,26 @@
 # Partner-negative ablation — raw-Brier v2 running
 
-Status at `2026-08-21T20:46:10+08:00`: the paired v2 study is running on
+Status at `2026-08-21T21:27:39+08:00`: the paired v2 study is running on
 twenty `gpu_4090` cards. Job `1457687` tasks 0–9 cover both AsEP arms;
 job `1457709` tasks 10–19 cover both SAbDab2 arms. Each dataset and arm uses
 seeds 17, 42, 73, 101, and 137. No final comparison is reported yet.
 
-All ten AsEP tasks have written epoch 3 with the required raw-Brier field and
+All ten AsEP tasks have written epoch 9 or 10 with the required raw-Brier field and
 zero stderr. The authenticated launch snapshot is
 [`V2_LAUNCH_RECEIPT_1457687_1457709.json`](V2_LAUNCH_RECEIPT_1457687_1457709.json)
 (SHA-256 `1992dc6ca0242b560789e969903d4220cb58c9a82f6d2e68ea3993ffcba0aeff`).
-SAbDab2 is still inside its longer first epoch and is not counted as
-instrumentation-verified until it writes the same field.
+All ten SAbDab2 tasks have now written epoch 1 with the same field and zero
+stderr. The complete 20-task instrumentation snapshot is
+[`V2_INSTRUMENTATION_SNAPSHOT_1457687_1457709.json`](V2_INSTRUMENTATION_SNAPSHOT_1457687_1457709.json)
+(SHA-256 `f41d2dd19a7a5ed8d68cd169a828cfef01509e3691a5061ea4376cadfea899bc`).
 
 `audit_negative_sample_ablation_progress.py` now checks every task directly
 from its JSONL log, rejects a supposedly raw metric unless temperature is 1,
 threshold is 0.5, calibration source is `none`, and Brier is finite in [0, 1],
-and reports stderr/final-result presence. Its live status is
-`RUNNING_AWAITING_FIRST_EPOCH`: AsEP is 10/10 instrumented, SAbDab2 is 0/10,
-and test access is false. The script deliberately does not compare arm means
-from unmatched latest epochs.
+and reports stderr/final-result presence. Its live status is now
+`RUNNING_INSTRUMENTED`: AsEP and SAbDab2 are each 10/10 instrumented, all
+stderr files are empty, and test access is false. The script deliberately does
+not compare arm means from unmatched latest epochs.
 
 ## Why v1 was stopped
 
