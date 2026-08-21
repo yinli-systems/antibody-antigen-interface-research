@@ -31,6 +31,10 @@ analyzer = load_tool(
     "analyze_negative_sample_ablation",
     "analyze_negative_sample_ablation.py",
 )
+progress_auditor = load_tool(
+    "audit_negative_sample_ablation_progress",
+    "audit_negative_sample_ablation_progress.py",
+)
 
 
 TRAINER_FIXTURE = '''\
@@ -143,3 +147,76 @@ def test_v2_array_is_paired_and_gpu_constrained() -> None:
     assert "negative-sample-ablation-v2" in script
     assert "with_negative" in script and "no_negative" in script
     assert "/test" not in script and "external-test" not in script
+
+
+def test_progress_auditor_fails_closed_until_both_datasets_emit_raw_brier(
+    tmp_path: Path,
+) -> None:
+    logs = tmp_path / "slurm-logs"
+    logs.mkdir()
+    epoch = {
+        "epoch": 1,
+        "train": {
+            "contact_loss": 0.4,
+            "epitope_loss": 0.2,
+            "paratope_loss": 0.3,
+        },
+        "validation": {
+            "contact": {
+                "auprc": 0.1,
+                "fixed_raw_logit_threshold_zero": {
+                    "brier": 0.25,
+                    "calibration_source": "none",
+                    "probability_temperature": 1.0,
+                    "probability_threshold": 0.5,
+                },
+            }
+        },
+    }
+    for task in range(10):
+        (logs / f"fc-neg-v2-asep_{task}.out").write_text(
+            json.dumps(epoch) + "\n", encoding="utf-8"
+        )
+    payload = progress_auditor.audit(
+        data_root=tmp_path,
+        asep_job_id="asep",
+        sabdab2_job_id="sab",
+    )
+    assert payload["status"] == "RUNNING_AWAITING_FIRST_EPOCH"
+    assert payload["datasets"]["asep"]["instrumented_task_count"] == 10
+    assert payload["datasets"]["sabdab2"]["instrumented_task_count"] == 0
+    assert payload["all_tasks_instrumented"] is False
+    assert payload["test_loaded"] is False
+
+
+def test_progress_auditor_rejects_calibrated_metric_as_raw(tmp_path: Path) -> None:
+    logs = tmp_path / "slurm-logs"
+    logs.mkdir()
+    epoch = {
+        "epoch": 1,
+        "train": {
+            "contact_loss": 0.4,
+            "epitope_loss": 0.2,
+            "paratope_loss": 0.3,
+        },
+        "validation": {
+            "contact": {
+                "auprc": 0.1,
+                "fixed_raw_logit_threshold_zero": {
+                    "brier": 0.25,
+                    "calibration_source": "fit_on_current_validation",
+                    "probability_temperature": 1.0,
+                    "probability_threshold": 0.5,
+                },
+            }
+        },
+    }
+    (logs / "fc-neg-v2-asep_0.out").write_text(
+        json.dumps(epoch) + "\n", encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="used calibration"):
+        progress_auditor.audit(
+            data_root=tmp_path,
+            asep_job_id="asep",
+            sabdab2_job_id="sab",
+        )
