@@ -14,6 +14,7 @@ readonly PROJECT=/ssd/scxi253/model_deployment/abpairfm_3b_v1/source
 readonly CHECKPOINT=/ssd/scxi253/model_deployment/models/abpairfm_3b_v1/esm2_t36_3B_UR50D/esm2_t36_3B_UR50D.pt
 readonly OUTPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems
 readonly WORLD_SIZE="${ABPAIRFM_WORLD_SIZE:-4}"
+readonly SHARD_GROUP_SIZE="${ABPAIRFM_SHARD_GROUP_SIZE:-0}"
 readonly SEQUENCE_TOKENS="${ABPAIRFM_SEQUENCE_TOKENS:-128}"
 readonly WARMUP_STEPS="${ABPAIRFM_WARMUP_STEPS:-1}"
 readonly MEASURED_STEPS="${ABPAIRFM_MEASURED_STEPS:-2}"
@@ -51,6 +52,7 @@ mkdir -p "${OUTPUT_ROOT}"
   --expected-size 5678116398 \
   --expected-sha256 7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500 \
   --expected-world-size "${WORLD_SIZE}" \
+  --shard-group-size "${SHARD_GROUP_SIZE}" \
   --sequence-tokens "${SEQUENCE_TOKENS}" \
   --warmup-steps "${WARMUP_STEPS}" \
   --measured-steps "${MEASURED_STEPS}" \

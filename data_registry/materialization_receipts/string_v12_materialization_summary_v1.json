@@ -1,0 +1,39 @@
+{
+  "authorization": {
+    "normalization": false,
+    "stage_a_training": false
+  },
+  "cleanup": {
+    "duplicate_part_bytes_removed_after_independent_hash_verification": 28531049373,
+    "failed_attempt_partial_bytes_removed": 21819916288
+  },
+  "files": {
+    "protein.physical.links.full.v12.0.txt.gz": {
+      "bytes": 15528028374,
+      "etag": "6467f801-39d8ae8d6",
+      "sha256": "1d5d16bd8aeb67c9977948a0e56cc27cca2065ad981dab4586330f38d77ff234"
+    },
+    "protein.sequences.v12.0.fa.gz": {
+      "bytes": 13003020999,
+      "etag": "6475ea1f-3070a5ac7",
+      "sha256": "210382afd5136897cde16464f76f41857c82123707dd1452236e3d4f9d0177c4"
+    }
+  },
+  "format_version": "abpairfm_string_materialization_repository_summary_v1",
+  "license": "CC-BY-4.0",
+  "pinned_revision": "STRING-v12.0-static-download-2023-05",
+  "plan_sha256": "ef1289768f478e8a2797f0ad47b747c1a3140cf9f14de91d763c8293b235c028",
+  "recovery": {
+    "failed_attempt_receipt": "string_v12_segmented_attempt_001_failure.json",
+    "range_probe_bytes": 1048576,
+    "range_probe_sha256": "4f5307ae884462406b0bffe54a55339ccd84be25a14cee4add5d5c75b6bf57ba",
+    "range_probe_status": "PASS"
+  },
+  "remote_source_receipt": {
+    "name": "string_v12.materialization_v1.json",
+    "sha256": "b0355379dfcdf21da05a82b66d3c54913c85162f3e8522d958f55a5f1e8f42f8"
+  },
+  "status": "MATERIALIZED_NOT_NORMALIZED",
+  "test_access": false,
+  "total_bytes": 28531049373
+}

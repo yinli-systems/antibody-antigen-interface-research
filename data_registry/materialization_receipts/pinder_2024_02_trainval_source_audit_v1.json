@@ -25,10 +25,10 @@
   "remote_audit_receipt_sha256": "74b9eedc18795db09285d4bb79cc1c27914715a43eca6ed051c5b1e154cacf38",
   "source_files": {
     "index_md5": "5185ed5fe374a695b2218af385a9be2d",
-    "index_sha256": "ced193cbdf2abbc494989208a37d6e0b80fd8af069a7b2d56a461ca6fc2cac4",
+    "index_sha256": "ced1936c4f36ea79161579df8d4b23bb4862b9c88f30af9defeeb85af99adac4",
     "index_size_bytes": 124511839,
     "metadata_md5": "8d60d195ed2a6465d72880e471718414",
-    "metadata_sha256": "3e3cfd33e109208364e3e1e6e06616f09f6129ca1b1350002a085017308cb4e6",
+    "metadata_sha256": "3e3cfdc21d6c685891d6732edda13fea9d5566d056dfea56a2ae902ab80b4e6c",
     "metadata_size_bytes": 103835983
   },
   "status": "MATERIALIZED_TRAINVAL_INDEX_AUDITED_STRUCTURES_PENDING",

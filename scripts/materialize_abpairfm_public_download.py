@@ -99,6 +99,33 @@ def _normalized_etag(value: str | None) -> str | None:
     return value.strip().removeprefix("W/").strip('"')
 
 
+def _if_range_value(value: str) -> str:
+    stripped = value.strip()
+    if stripped.startswith("W/") or stripped.startswith('"'):
+        return stripped
+    return f'"{stripped}"'
+
+
+def _response_headers(path: Path) -> tuple[int, dict[str, str]]:
+    if not path.is_file():
+        raise RuntimeError("Range response did not write HTTP headers")
+    status: int | None = None
+    headers: dict[str, str] = {}
+    for raw in path.read_text(encoding="iso-8859-1").splitlines():
+        if raw.startswith("HTTP/"):
+            fields = raw.split()
+            if len(fields) < 2 or not fields[1].isdigit():
+                raise RuntimeError("Malformed HTTP status in range response")
+            status = int(fields[1])
+            headers = {}
+        elif ":" in raw and status is not None:
+            name, value = raw.split(":", 1)
+            headers[name.strip().lower()] = value.strip()
+    if status is None:
+        raise RuntimeError("Range response did not contain an HTTP status")
+    return status, headers
+
+
 def byte_ranges(total: int, count: int) -> list[tuple[int, int]]:
     if total <= 0 or count <= 0 or count > total:
         raise ValueError("Invalid byte-range partition")
@@ -152,6 +179,8 @@ def _download_part(
             raise RuntimeError(f"Part {index} exceeded the retry budget")
         observed = partial.stat().st_size if partial.exists() else 0
         requested_start = start + observed
+        response_headers = parts_root / f".part-{index:03d}.headers"
+        response_headers.unlink(missing_ok=True)
         with partial.open("ab") as output:
             result = subprocess.run(
                 [
@@ -164,8 +193,12 @@ def _download_part(
                     "30",
                     "--max-time",
                     "900",
+                    "--max-filesize",
+                    str(expected - observed),
+                    "--dump-header",
+                    str(response_headers),
                     "--header",
-                    f"If-Range: {entry['etag']}",
+                    f"If-Range: {_if_range_value(str(entry['etag']))}",
                     "--range",
                     f"{requested_start}-{end}",
                     entry["url"],
@@ -176,6 +209,26 @@ def _download_part(
             )
             output.flush()
             os.fsync(output.fileno())
+        status, headers = _response_headers(response_headers)
+        response_headers.unlink(missing_ok=True)
+        expected_content_range = (
+            f"bytes {requested_start}-{end}/{int(entry['size_bytes'])}"
+        )
+        response_valid = (
+            result.returncode == 0
+            and status == 206
+            and headers.get("content-range") == expected_content_range
+            and _normalized_etag(headers.get("etag"))
+            == _normalized_etag(str(entry["etag"]))
+        )
+        if not response_valid:
+            with partial.open("r+b") as output:
+                output.truncate(observed)
+            raise RuntimeError(
+                f"Unsafe range response for part {index}: status={status}, "
+                f"content_range={headers.get('content-range')!r}, "
+                f"etag={headers.get('etag')!r}, curl={result.returncode}"
+            )
         size = partial.stat().st_size
         print(
             json.dumps(
@@ -295,7 +348,10 @@ def _download(
             raise RuntimeError(f"Partial file exceeds pinned size: {partial}")
         headers = {}
         if offset:
-            headers = {"Range": f"bytes={offset}-", "If-Range": expected_etag}
+            headers = {
+                "Range": f"bytes={offset}-",
+                "If-Range": _if_range_value(expected_etag),
+            }
         request = urllib.request.Request(entry["url"], headers=headers)
         with urllib.request.urlopen(request, timeout=60) as response:
             status = int(response.status)
@@ -314,7 +370,7 @@ def _download(
                 content_range = response.headers.get("Content-Range", "")
                 if not content_range.startswith(f"bytes {offset}-"):
                     raise RuntimeError(f"Invalid Content-Range for {target.name}")
-            mode = "ab" if offset else "xb"
+            mode = "ab" if partial.exists() else "xb"
             with partial.open(mode) as handle:
                 for block in iter(lambda: response.read(8 * 1024 * 1024), b""):
                     handle.write(block)

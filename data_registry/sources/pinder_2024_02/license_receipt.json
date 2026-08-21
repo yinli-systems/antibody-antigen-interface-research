@@ -1,0 +1,41 @@
+{
+  "authorization": {
+    "internal_academic_research_training": true,
+    "raw_bundle_redistribution": false,
+    "test_archive_access": false
+  },
+  "attribution_required": [
+    "PINDER dataset and paper",
+    "wwPDB/RCSB PDB for experimental structures",
+    "AlphaFold Protein Structure Database for predicted monomers"
+  ],
+  "claim_boundary": "Rights/provenance review for internal academic model training on authenticated PINDER 2024-02 train rows only. It does not authorize redistribution of the PINDER archive, remove attribution duties, authorize test access, or establish data decontamination or model quality.",
+  "evidence": {
+    "alphafold_database": {
+      "license": "CC-BY-4.0",
+      "scope": "Predicted structures are available for academic and commercial use with attribution.",
+      "url": "https://alphafold.ebi.ac.uk/"
+    },
+    "pinder": {
+      "code_license": "Apache-2.0",
+      "intended_use": "Official documentation explicitly distributes PINDER-Train and dataloaders for model training.",
+      "release": "2024-02",
+      "url": "https://github.com/pinder-org/pinder"
+    },
+    "wwpdb": {
+      "license": "CC0-1.0",
+      "scope": "Data files in the PDB archive.",
+      "url": "https://www.rcsb.org/pages/usage-policy"
+    }
+  },
+  "format_version": "abpairfm_source_license_receipt_v1",
+  "required_controls": {
+    "derived_artifact_provenance": true,
+    "internal_training_only": true,
+    "publication_attribution_review": true,
+    "train_split_only": true
+  },
+  "reviewed_at_utc": "2026-08-21T20:00:00Z",
+  "source_id": "pinder_2024_02",
+  "status": "RESOLVED_FOR_INTERNAL_ACADEMIC_TRAINING_WITH_ATTRIBUTION"
+}
