@@ -63,7 +63,7 @@ def _masked_bidirectional_cross_entropy(
 
 
 class StageA1Heads(nn.Module):
-    """Small explicit pair-level heads over a jointly encoded backbone state."""
+    """Pair heads over explicit retrieval and joint-contact backbone views."""
 
     def __init__(
         self,
@@ -138,6 +138,7 @@ class StageA1Heads(nn.Module):
         *,
         hidden: Tensor,
         chain_ids: Tensor,
+        retrieval_hidden: Tensor | None = None,
         mlm_loss: Tensor,
         retrieval_allowed: Tensor,
         pair_batch_indices: Tensor,
@@ -156,7 +157,13 @@ class StageA1Heads(nn.Module):
             raise ValueError("Stage-A1 loss weights must be finite and non-negative")
         if mlm_loss.ndim != 0 or not bool(torch.isfinite(mlm_loss)):
             raise ValueError("Stage-A1 requires one finite scalar MLM loss")
-        retrieval_left, retrieval_right = self.retrieval_embeddings(hidden, chain_ids)
+        if retrieval_hidden is None:
+            retrieval_hidden = hidden
+        if retrieval_hidden.shape != hidden.shape:
+            raise ValueError("Retrieval and contact hidden states must have equal shapes")
+        retrieval_left, retrieval_right = self.retrieval_embeddings(
+            retrieval_hidden, chain_ids
+        )
         if (retrieval_candidate_left is None) != (retrieval_candidate_right is None):
             raise ValueError("Both retrieval candidate directions are required")
         if retrieval_candidate_left is None:

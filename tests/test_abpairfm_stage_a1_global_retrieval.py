@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+from types import SimpleNamespace
+
+import pytest
 import torch
 
 from antibody_pretraining.stage_a1_batch import build_stage_a1_microbatch
@@ -67,3 +71,81 @@ def test_global_retrieval_mask_uses_remote_cluster_ids(monkeypatch) -> None:
     assert bool(allowed[0, 3])
     assert bool(allowed[0, 0])
     assert bool(allowed[1, 1])
+
+
+def test_runner_requests_independent_hidden_only_retrieval_view() -> None:
+    batch = build_stage_a1_microbatch(
+        [_record(0), _record(1)], seed=17, maximum_tokens=64
+    )
+    calls = []
+
+    class FakeBackbone:
+        def __call__(self, tokens, chain_ids, **kwargs):
+            calls.append((tokens.clone(), chain_ids.clone(), dict(kwargs)))
+            hidden = tokens.to(torch.float32).unsqueeze(-1).expand(-1, -1, 4)
+            return SimpleNamespace(
+                balanced_chain_loss_sum=(
+                    torch.tensor(2.0) if kwargs.get("labels") is not None else None
+                ),
+                contributing_chain_count=torch.tensor(2),
+                hidden_states=hidden,
+            )
+
+    _, joint_hidden, retrieval_hidden, retrieval_chain_ids = (
+        runner._stage_a1_backbone_views(
+            FakeBackbone(),
+            batch,
+            independent_retrieval_view=True,
+        )
+    )
+    assert len(calls) == 2
+    assert calls[0][2]["return_hidden_states"] is True
+    assert calls[1][2] == {
+        "allow_cross_chain_attention": False,
+        "return_hidden_states": True,
+        "compute_logits": False,
+    }
+    assert calls[1][0].shape[0] == len(batch.retrieval_batch_indices)
+    assert joint_hidden.shape == retrieval_hidden.shape
+    assert torch.equal(retrieval_chain_ids, calls[1][1])
+
+
+def test_v5_protocol_requires_counterfactual_and_representation_gates(
+    tmp_path,
+) -> None:
+    protocol = json.loads(
+        (
+            runner.REPOSITORY_ROOT
+            / "protocols"
+            / "abpairfm_stage_a1_multitask_pilot_v4.json"
+        ).read_text(encoding="utf-8")
+    )
+    protocol["format_version"] = "abpairfm_stage_a1_multitask_pilot_v5"
+    protocol["loss"]["masked_language_modeling"]["representation_view"] = (
+        "joint_cross_chain_attention"
+    )
+    protocol["loss"]["contact"]["representation_view"] = (
+        "joint_cross_chain_attention"
+    )
+    protocol["loss"]["retrieval"]["representation_view"] = (
+        "chain_independent_no_cross_attention"
+    )
+    protocol["counterfactual_gate"] = {
+        "status": "PASS_TRAIN_ONLY_MATERIALIZATION"
+    }
+    path = tmp_path / "protocol.json"
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments = SimpleNamespace(
+        protocol=path,
+        expected_protocol_sha256=runner._sha256(path),
+        expected_world_size=8,
+        input_generation=protocol["checkpoint"]["generation"],
+        expected_input_content_sha256=protocol["checkpoint"]["content_sha256"],
+    )
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v5")
+
+    protocol["counterfactual_gate"]["status"] = "NOT_RUN"
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    with pytest.raises(RuntimeError, match="representation-view gate"):
+        runner._load_protocol(arguments)
