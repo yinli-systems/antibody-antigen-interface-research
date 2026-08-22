@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "production_stage_a0_pair_mlm": true,
+    "production_stage_a_full_objective": false
+  },
+  "claim_boundary": "User-authorized production Stage-A0 pair-aware MLM warm-start over licensed, strictly development-decontaminated STRING physical pairs. This campaign is real pretraining and writes resumable checkpoints, but it is not the complete Stage-A contact/retrieval objective and establishes no development, test, biological, or SOTA result.",
+  "counts": {
+    "direct_evidence_records": 1161,
+    "manifest_records": 22400,
+    "rejected_short_candidates_before_slice": 0,
+    "source_cluster_pairs": 35769362,
+    "transferred_only_records": 21239,
+    "unique_biological_pairs": 22400,
+    "unique_endpoints": 44186
+  },
+  "format_version": "abpairfm_3b_stage_a0_segment_manifest_v1",
+  "inputs": {
+    "cluster_receipt_sha256": "8aba718807e4f166fe55587240ed13acb55e0a1b9a322cc6f8f4f11367aaeb54",
+    "pair_receipt_sha256": "514eee8cc4f2eb68c787a5c633fb8839b59ba5951afd838cd010e43aee0a3f05",
+    "protocol_sha256": "a783f3b20516fbb2c85dba27833d3125683184ae2be608dfcfdbf91e58a3747b"
+  },
+  "job": {
+    "elapsed": "00:02:15",
+    "exit_code": "0:0",
+    "job_id": 1459278,
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "output": {
+    "bytes": 15273640,
+    "name": "string_seed1701_segment-000000_22400_v1.jsonl.zst",
+    "sha256": "9a06b6d51f14961ac25f87c4b49bba1efa5594963139150d9b623f8817bc5303"
+  },
+  "pair_residue_lengths": {
+    "maximum": 18506,
+    "median": 733.0,
+    "minimum": 86
+  },
+  "segment": {
+    "candidate_count": 44800,
+    "index": 0,
+    "selection_start": 0,
+    "selection_stop_exclusive": 22400
+  },
+  "selection_contract_sha256": "d42ee9804f2d992f1d07ca29a21b2e9567a106e230f60bc7ba4ff53c3afa8318",
+  "status": "PRODUCTION_STAGE_A0_SEGMENT_READY",
+  "test_access": false
+}
