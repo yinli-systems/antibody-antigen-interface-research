@@ -1,0 +1,27 @@
+{
+  "authorization": {
+    "frozen_development_contact": false,
+    "frozen_development_pair_retrieval": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "format_version": "abpairfm_pair_retrieval_head_audit_summary_v1",
+  "mint": {
+    "checkpoint_sha256": "702849af78e245c7596d8c032391da52ff6657e9173af380e29a8ea3858fdab9",
+    "compatible": true,
+    "head_parameters": 6558721,
+    "materialization_receipt_sha256": "a326e24b00892227b3b23d9231a803c1cb60b2bd9285b0fbbd787b5d4550c137",
+    "source_revision": "75b1602c34e9df1a89089a1245f000a51ee3c746"
+  },
+  "pplm": {
+    "checkpoint_sha256": "2695b886ef3ba2c1acacb74cd4f8c8173323addfc548b6d482143fb2b7070d8f",
+    "compatible": true,
+    "ensemble_member_count": 10,
+    "ensemble_member_parameters": 5791197,
+    "materialization_receipt_sha256": "b7aff407ec946d916fe602bc115ca58eb0c7dcc2c3d76d811f54e6cefdfb6ae6",
+    "source_revision": "1267db4592703095b889cc22da6cf1796ce038b5"
+  },
+  "remote_audit_receipt_sha256": "d4d6700057038ac0c71f18125329f7f1cd299925003bf7cafc2e33c6110ec586",
+  "status": "PAIR_RETRIEVAL_HEADS_COMPATIBLE",
+  "test_access": false
+}

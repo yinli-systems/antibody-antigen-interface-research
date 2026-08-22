@@ -149,16 +149,46 @@ def byte_ranges(total: int, count: int) -> list[tuple[int, int]]:
 
 
 def _verify_remote_metadata(entry: dict[str, Any]) -> None:
-    request = urllib.request.Request(entry["url"], method="HEAD")
-    with urllib.request.urlopen(request, timeout=60) as response:
-        if int(response.status) != 200:
-            raise RuntimeError(f"Unexpected HEAD status for {entry['path']}")
-        observed_size = int(response.headers.get("Content-Length", "-1"))
+    descriptor, temporary = tempfile.mkstemp(prefix=".abpairfm-head-", suffix=".txt")
+    os.close(descriptor)
+    headers_path = Path(temporary)
+    try:
+        result = subprocess.run(
+            [
+                "curl",
+                "--silent",
+                "--show-error",
+                "--location",
+                "--fail",
+                "--head",
+                "--connect-timeout",
+                "30",
+                "--max-time",
+                "60",
+                "--dump-header",
+                str(headers_path),
+                "--output",
+                "/dev/null",
+                entry["url"],
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        status, headers = _response_headers(headers_path)
+        if result.returncode != 0 or status != 200:
+            raise RuntimeError(
+                f"Unexpected HEAD response for {entry['path']}: "
+                f"status={status}, curl={result.returncode}"
+            )
+        observed_size = int(headers.get("content-length", "-1"))
         if observed_size != int(entry["size_bytes"]):
             raise RuntimeError(f"Remote byte count differs for {entry['path']}")
-        observed_etag = _normalized_etag(response.headers.get("ETag"))
+        observed_etag = _normalized_etag(headers.get("etag"))
         if observed_etag != _normalized_etag(str(entry["etag"])):
             raise RuntimeError(f"Remote ETag differs for {entry['path']}")
+    finally:
+        headers_path.unlink(missing_ok=True)
 
 
 def _download_part(
