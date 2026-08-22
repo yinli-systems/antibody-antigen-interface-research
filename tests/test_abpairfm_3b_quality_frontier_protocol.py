@@ -20,6 +20,7 @@ def test_quality_frontier_preserves_scale_and_test_boundaries() -> None:
     assert scale["minimum_stage_a_unique_pairs"] == 2_500_000
     assert scale["maximum_stage_a_unique_pairs"] == 25_000_000
     assert scale["minimum_stage_a_consumed_residue_tokens"] == 5_000_000_000
+    assert scale["strict_scale_pool_minimum_cluster_pairs"] == 25_000_000
     assert protocol["authorization"]["production_pretraining"] is False
     assert protocol["authorization"]["test_access"] is False
     assert not protocol["test_access"]["asep_test_accessed"]
