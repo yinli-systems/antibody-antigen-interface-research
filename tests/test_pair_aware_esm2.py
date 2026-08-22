@@ -16,6 +16,9 @@ from antibody_pretraining.pair_aware_esm2 import (  # noqa: E402
     canonicalize_tied_esm2_state,
     load_compatible_esm2_state,
     parameter_count,
+    reset_selective_attention_checkpoint_policy_counts,
+    selective_attention_checkpoint_policy_counts,
+    selective_attention_checkpoint_policy,
     upgrade_esm2_state_dict,
 )
 
@@ -104,3 +107,57 @@ def test_checkpoint_tied_duplicate_is_validated_then_removed() -> None:
                 "lm_head.weight": tensor + 1,
             }
         )
+
+
+def test_selective_checkpoint_policy_only_caches_flash_attention() -> None:
+    from torch.utils.checkpoint import CheckpointPolicy
+
+    reset_selective_attention_checkpoint_policy_counts()
+    flash = torch.ops.aten._scaled_dot_product_flash_attention.default
+    assert (
+        selective_attention_checkpoint_policy(None, flash)
+        is CheckpointPolicy.MUST_SAVE
+    )
+    assert (
+        selective_attention_checkpoint_policy(None, torch.ops.aten.add.Tensor)
+        is CheckpointPolicy.PREFER_RECOMPUTE
+    )
+    assert selective_attention_checkpoint_policy_counts() == {
+        "flash_must_save": 1,
+        "prefer_recompute": 1,
+    }
+
+
+def test_selective_checkpoint_matches_full_checkpoint_on_cpu() -> None:
+    torch.manual_seed(23)
+    full = PairAwareESM2(
+        _small_config(activation_checkpointing=True, activation_checkpoint_policy="full")
+    ).train()
+    selective = PairAwareESM2(
+        _small_config(
+            activation_checkpointing=True,
+            activation_checkpoint_policy="selective_attention",
+        )
+    ).train()
+    selective.load_state_dict(full.state_dict())
+    tokens = torch.tensor([[0, 5, 32, 2, 0, 7, 8, 32, 2, 1]])
+    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, 1, -1]])
+    labels = torch.full_like(tokens, -100)
+    labels[0, 2] = 6
+    labels[0, 7] = 9
+
+    full_loss = full(tokens, chain_ids, labels=labels).balanced_chain_loss_sum
+    selective_loss = selective(tokens, chain_ids, labels=labels).balanced_chain_loss_sum
+    assert full_loss is not None and selective_loss is not None
+    full_loss.backward()
+    selective_loss.backward()
+    torch.testing.assert_close(selective_loss, full_loss)
+    for full_parameter, selective_parameter in zip(
+        full.parameters(), selective.parameters(), strict=True
+    ):
+        torch.testing.assert_close(selective_parameter.grad, full_parameter.grad)
+
+
+def test_selective_policy_requires_checkpointing() -> None:
+    with pytest.raises(ValueError, match="requires activation_checkpointing"):
+        PairAwareESM2(_small_config(activation_checkpoint_policy="selective_attention"))

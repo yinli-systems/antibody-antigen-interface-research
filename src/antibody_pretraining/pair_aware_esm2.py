@@ -15,7 +15,7 @@ import math
 import os
 from pathlib import Path
 import re
-from typing import Any, Mapping
+from typing import Any, Literal, Mapping
 
 import torch
 from torch import Tensor, nn
@@ -61,6 +61,11 @@ ESM2_ALPHABET = (
     "<mask>",
 )
 
+_SELECTIVE_ATTENTION_CHECKPOINT_COUNTS = {
+    "flash_must_save": 0,
+    "prefer_recompute": 0,
+}
+
 
 @dataclass(frozen=True)
 class PairAwareESM2Config:
@@ -78,6 +83,7 @@ class PairAwareESM2Config:
     cross_logit_bias: float = 1.0
     maximum_tokens: int = 1024
     activation_checkpointing: bool = False
+    activation_checkpoint_policy: Literal["full", "selective_attention"] = "full"
 
     def validate(self) -> None:
         for name in (
@@ -103,6 +109,48 @@ class PairAwareESM2Config:
             raise ValueError("Unknown attention implementation")
         if not isinstance(self.activation_checkpointing, bool):
             raise ValueError("activation_checkpointing must be boolean")
+        if self.activation_checkpoint_policy not in {"full", "selective_attention"}:
+            raise ValueError("Unknown activation checkpoint policy")
+        if not self.activation_checkpointing and self.activation_checkpoint_policy != "full":
+            raise ValueError(
+                "selective activation checkpointing requires activation_checkpointing"
+            )
+
+
+def selective_attention_checkpoint_policy(
+    context: object,
+    operation: object,
+    *args: object,
+    **kwargs: object,
+):
+    """Cache only the fused attention op while recomputing cheaper layer work."""
+    del context, args, kwargs
+    from torch.utils.checkpoint import CheckpointPolicy
+
+    flash_attention = torch.ops.aten._scaled_dot_product_flash_attention.default
+    if operation is flash_attention:
+        _SELECTIVE_ATTENTION_CHECKPOINT_COUNTS["flash_must_save"] += 1
+        return CheckpointPolicy.MUST_SAVE
+    _SELECTIVE_ATTENTION_CHECKPOINT_COUNTS["prefer_recompute"] += 1
+    return CheckpointPolicy.PREFER_RECOMPUTE
+
+
+def selective_attention_checkpoint_contexts():
+    """Build fresh selective-checkpoint modes for one transformer invocation."""
+    from torch.utils.checkpoint import create_selective_checkpoint_contexts
+
+    return create_selective_checkpoint_contexts(selective_attention_checkpoint_policy)
+
+
+def reset_selective_attention_checkpoint_policy_counts() -> None:
+    """Reset per-process dispatch evidence before a systems measurement."""
+    for name in _SELECTIVE_ATTENTION_CHECKPOINT_COUNTS:
+        _SELECTIVE_ATTENTION_CHECKPOINT_COUNTS[name] = 0
+
+
+def selective_attention_checkpoint_policy_counts() -> dict[str, int]:
+    """Return per-process evidence that the fused attention policy was exercised."""
+    return dict(_SELECTIVE_ATTENTION_CHECKPOINT_COUNTS)
 
 
 @dataclass(frozen=True)
@@ -264,6 +312,11 @@ class PairAwareESM2(nn.Module):
                 return_last_attention and layer_index == len(self.layers) - 1
             )
             if self.training and self.config.activation_checkpointing and not export_attention:
+                checkpoint_arguments: dict[str, Any] = {"use_reentrant": False}
+                if self.config.activation_checkpoint_policy == "selective_attention":
+                    checkpoint_arguments["context_fn"] = (
+                        selective_attention_checkpoint_contexts
+                    )
                 hidden = checkpoint(
                     lambda state, chains, valid, module=layer: module(
                         state, chains, valid, return_attention=False
@@ -271,7 +324,7 @@ class PairAwareESM2(nn.Module):
                     hidden,
                     chain_ids,
                     valid_mask,
-                    use_reentrant=False,
+                    **checkpoint_arguments,
                 )
                 attention = None
             else:

@@ -28,6 +28,8 @@ from antibody_pretraining.pair_aware_esm2 import (
     ESM2_ALPHABET,
     PairAwareESM2,
     PairAwareESM2Config,
+    reset_selective_attention_checkpoint_policy_counts,
+    selective_attention_checkpoint_policy_counts,
 )
 
 
@@ -58,6 +60,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--seed", type=int, default=1701)
     parser.add_argument("--progress-interval", type=int, default=10)
+    parser.add_argument(
+        "--activation-checkpoint-policy",
+        choices=("full", "selective_attention"),
+        default="full",
+    )
     return parser.parse_args()
 
 
@@ -337,7 +344,10 @@ def main() -> None:
             (world_size // arguments.shard_group_size, arguments.shard_group_size),
             mesh_dim_names=("replicate", "shard"),
         )
-        config = PairAwareESM2Config(activation_checkpointing=True)
+        config = PairAwareESM2Config(
+            activation_checkpointing=True,
+            activation_checkpoint_policy=arguments.activation_checkpoint_policy,
+        )
         with torch.device("meta"):
             model = PairAwareESM2(config)
         fully_shard_pair_aware_esm2(
@@ -363,6 +373,7 @@ def main() -> None:
         ):
             raise RuntimeError("FSDP2 gradient-accumulation controls are unavailable")
         model.train()
+        reset_selective_attention_checkpoint_policy_counts()
         torch.cuda.reset_peak_memory_stats(device)
         update_records: list[dict[str, float | int]] = []
         local_swapped = 0
@@ -469,6 +480,9 @@ def main() -> None:
             "max_memory_allocated_bytes": torch.cuda.max_memory_allocated(device),
             "max_memory_reserved_bytes": torch.cuda.max_memory_reserved(device),
             "rank": rank,
+            "selective_checkpoint_dispatch": (
+                selective_attention_checkpoint_policy_counts()
+            ),
             "total_memory_bytes": properties.total_memory,
             "updates": update_records,
         }
@@ -517,6 +531,7 @@ def main() -> None:
                     "nonfinite_updates": 0,
                 },
                 "optimization": {
+                    "activation_checkpoint_policy": config.activation_checkpoint_policy,
                     "accumulation_steps": arguments.accumulation_steps,
                     "adamw_betas": [0.9, 0.98],
                     "gradient_clip_norm": 1.0,

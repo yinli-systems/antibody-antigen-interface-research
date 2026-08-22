@@ -1,0 +1,68 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "real_data_gate": false,
+    "synthetic_systems_ab": true,
+    "test_access": false
+  },
+  "claim_boundary": "Prospective systems-only A/B. A pass authorizes one frozen 200-update train-only real-data confirmation; it does not authorize production, development model selection, held-out test access, or a model-quality claim.",
+  "format_version": "abpairfm_3b_selective_ac_gate_v1",
+  "frozen_comparison": {
+    "baseline_policy": "full_per_transformer_block_non_reentrant",
+    "candidate_policy": "non_reentrant_cache_flash_attention_only",
+    "checkpoint_sha256": "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500",
+    "compute_precision": "bfloat16",
+    "fsdp2": {
+      "mesh_shape_replicate_by_shard": [
+        2,
+        4
+      ],
+      "reshard_after_forward": false
+    },
+    "measured_steps": 20,
+    "microbatch_pairs_per_rank": 7,
+    "model_parameters": 2839005633,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "sequence_tokens": 1024,
+    "warmup_steps": 5,
+    "world_size": 8
+  },
+  "promotion_gates": {
+    "flash_attention_must_save_dispatch_count_per_rank_minimum": 1,
+    "maximum_gradient_norm_relative_delta": 0.001,
+    "maximum_loss_absolute_delta": 0.0005,
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "maximum_p95_to_median_step_time": 1.2,
+    "minimum_residue_tokens_per_second_speedup": 1.03
+  },
+  "promotion_sequence": [
+    "same_node_synthetic_20_step_ab",
+    "same_manifest_real_data_200_update_confirmation",
+    "quality_per_gpu_hour_gate"
+  ],
+  "research_basis": [
+    {
+      "finding": "Selective activation checkpointing trades additional saved activations for less recomputation and must be measured on the target workload.",
+      "url": "https://pytorch.org/blog/activation-checkpointing-techniques/"
+    },
+    {
+      "finding": "TorchTitan treats per-op selective checkpointing, FSDP2, DCP, throughput, and memory as composable but separately validated training features.",
+      "url": "https://github.com/pytorch/torchtitan"
+    },
+    {
+      "finding": "FSDP2 keep-gathered parameters trade memory for reduced communication, so the existing 92 percent memory ceiling remains binding.",
+      "url": "https://github.com/pytorch/torchtitan/blob/main/docs/fsdp.md"
+    }
+  ],
+  "runtime_boundaries": {
+    "external_dependency_install_permitted": false,
+    "hp_4090_permitted": false,
+    "running_production_jobs_may_be_modified": false,
+    "train_on_login_node": false
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}
