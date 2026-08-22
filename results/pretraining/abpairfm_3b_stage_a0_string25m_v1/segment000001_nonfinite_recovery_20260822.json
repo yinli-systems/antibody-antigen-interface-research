@@ -1,0 +1,51 @@
+{
+  "claim_boundary": "Operational development of the user-authorized production Stage-A0 pair-aware balanced MLM campaign only. The recovery is not closed until segment-000001 publishes PASS_CHECKPOINT_VERIFIED, and this record authorizes no contact, retrieval, biological, test, or SOTA claim.",
+  "diagnosis": {
+    "checkpoint_corruption_observed": false,
+    "exact_root_cause_established": false,
+    "node_or_runtime_transient_suggested": true,
+    "silent_sample_skip_allowed": false
+  },
+  "failed_attempt": {
+    "exit_code": "1:0",
+    "job_id": 1459339,
+    "node": "wqd10naf05g3",
+    "primary_error": "rank 4 RuntimeError: Non-finite Stage-A0 MLM loss",
+    "published_checkpoint": false,
+    "published_progress": false,
+    "published_result": false,
+    "secondary_error": "NCCL all-reduce timeout after the primary rank exited",
+    "segment_index": 1,
+    "state": "FAILED"
+  },
+  "format_version": "abpairfm_3b_stage_a0_nonfinite_recovery_attempt_v1",
+  "immutable_input": {
+    "checkpoint_content_sha256": "461ce3bf4587ac7723373d5115f022445842fd00fc12371a8d6d9cb8484362db",
+    "consumed_residue_tokens": 15799431,
+    "generation": "segment-000000",
+    "global_update": 200,
+    "result_status": "PASS_CHECKPOINT_VERIFIED",
+    "segment000001_manifest_sha256": "e52a5c4141cba21eea4966e16f00d0368ea5c680f634ace9c519e07fba295e54"
+  },
+  "observed_at_utc": "2026-08-22T07:56:43Z",
+  "recovery_attempt": {
+    "excluded_nodes": [
+      "wqd10naf05g3"
+    ],
+    "job_id": 1459376,
+    "node": "wqd10nba07g1",
+    "observed_progress": {
+      "consumed_residue_tokens_campaign": 16584765,
+      "consumed_residue_tokens_segment": 785334,
+      "global_update": 210,
+      "latest_global_mean_mlm_loss": 2.7265625,
+      "latest_gradient_norm": 0.6979587078094482,
+      "learning_rate": 1.651041e-07,
+      "segment_update": 10
+    },
+    "state": "RUNNING",
+    "successor_watchdog_job_id": 1459377
+  },
+  "status": "RECOVERY_RUNNING_NOT_CLOSED",
+  "test_access": false
+}
