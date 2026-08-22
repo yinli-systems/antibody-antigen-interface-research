@@ -1,0 +1,72 @@
+{
+  "authorization": {
+    "development_contact": false,
+    "development_pair_retrieval": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Implementation and runtime smoke only on a deterministic prefix of the frozen development panel. No retrieval-quality, contact, calibration, biological-improvement, commercial-use, test, or SOTA claim is authorized.",
+  "compute": {
+    "attention_feature_accumulation": "float32",
+    "encoder_autocast": "bfloat16",
+    "head_and_metric_accumulation": "float32",
+    "maximum_batch_attention_cells": 1048576,
+    "maximum_batch_size": 4,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10"
+  },
+  "equivalence_gate": {
+    "batch_padding_vs_singleton_max_abs_tolerance": 0.00002,
+    "required_before_full_development": true,
+    "required_smoke_summary_sha256": null,
+    "streaming_vs_official_full_attention_max_abs_tolerance": 0.000001
+  },
+  "format_version": "abpairfm_pplm_development_retrieval_smoke_v1",
+  "input": {
+    "dataset_roles": [
+      "asep development_validation"
+    ],
+    "pair_panel_jsonl_sha256": "18a7efcc4f1cb5499be32938a4819208f5bb6e2095acdda3098e71496458fce2",
+    "pair_panel_receipt_sha256": "078dc59a5c1caba9fa3ecae4361a5bcd0fa3922f586039ff3a44d11e998f1346",
+    "smoke_anchor_count": 2,
+    "test_roles_permitted": false,
+    "wrong_partner_candidates_per_direction_per_instance": 31
+  },
+  "length_policy": {
+    "aggregation": "arithmetic mean of official ten-member ensemble probabilities over the Cartesian product of endpoint windows",
+    "long_endpoint_window_starts": [
+      "0",
+      "floor((length-510)/2)",
+      "length-510"
+    ],
+    "maximum_residues_per_endpoint_window": 510,
+    "short_endpoint_windows": 1
+  },
+  "metrics": {
+    "candidate_score": "official PPLM-PPI mean probability across five mean-pooling and five max-pooling heads; each member first averages A-B and B-A feature-order predictions",
+    "duplicate_policy": {
+      "primary": "collapse exact candidate endpoint sequence duplicates before ranking",
+      "secondary": "retain all 31 frozen candidate instances and use average tie rank"
+    },
+    "rank_tie_policy": "average rank: 1 + count(score>cognate) + 0.5*count(non-cognate score==cognate)"
+  },
+  "model": {
+    "backbone_checkpoint_sha256": "c8ce3b75dfd7b5890dfa7d96de7f698b522a5cbf59d7ee2732cb80ad3e5df495",
+    "backbone_parameters": 651044309,
+    "head_checkpoint_sha256": "2695b886ef3ba2c1acacb74cd4f8c8173323addfc548b6d482143fb2b7070d8f",
+    "head_ensemble_member_count": 10,
+    "head_parameters_per_member": 5791197,
+    "label": "PPLM 650M plus official ten-member PPLM-PPI ensemble",
+    "pretraining_data": "over 3.3 million PDB and STRING protein pairs in 672372 clusters, sampled PDB:STRING at 1:2",
+    "retrieval_head_audit_sha256": "d4d6700057038ac0c71f18125329f7f1cd299925003bf7cafc2e33c6110ec586",
+    "source_archive_sha256": "a8d2df2eaf48751f1b4544eac18d2084611289c806141fa47ece4ec6b6788ef3",
+    "source_revision": "1267db4592703095b889cc22da6cf1796ce038b5"
+  },
+  "reproducibility": {
+    "common_runner_sha256": "a8396ab4fd20e02d1f9e1cc90ea4361326fa1ab11044ecf923f33b322bab3a1e",
+    "runner_sha256": "5b3bb7e0a533a68ba76b2385f7acd157ab35a1a8a676003f100eeafb9e74a077",
+    "seed": 20260822
+  },
+  "status": "FROZEN_BEFORE_GPU_EVALUATION",
+  "test_access": false
+}
