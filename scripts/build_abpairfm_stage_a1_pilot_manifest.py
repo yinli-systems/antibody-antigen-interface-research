@@ -211,6 +211,10 @@ def main() -> None:
         evidence = str(value["evidence_role"])
         if layout.get("string_direct_only") is True and evidence != "direct":
             continue
+        string_retrieval_supervision = (
+            evidence == "direct"
+            and layout.get("string_retrieval_supervision", True) is True
+        )
         string_candidates.append(
             {
                 "contact_pairs": [],
@@ -228,7 +232,7 @@ def main() -> None:
                 "example_id": str(value["pair_hash_sha256"]),
                 "full_pair_hash_sha256": pair_hash,
                 "known_positive_group": str(value["pair_hash_sha256"]),
-                "retrieval_supervision": evidence == "direct",
+                "retrieval_supervision": string_retrieval_supervision,
                 "sequence1": left,
                 "sequence2": right,
                 "source": "string_v12_physical",

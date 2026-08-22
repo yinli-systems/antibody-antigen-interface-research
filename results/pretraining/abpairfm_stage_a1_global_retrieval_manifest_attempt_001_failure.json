@@ -1,0 +1,19 @@
+{
+  "authorization": {
+    "gpu_training_submitted": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "failure": {
+    "error": "RuntimeError: Stage-A1 pilot source does not have enough unique records",
+    "requested_unique_direct_string_records": 9600,
+    "source_direct_string_records": 1166,
+    "source_records": 22400,
+    "source_transferred_only_string_records": 21234
+  },
+  "format_version": "abpairfm_stage_a1_manifest_failure_v1",
+  "observed_at_utc": "2026-08-22T21:20:37Z",
+  "resolution": "Fail closed before manifest publication or GPU submission. Revise the pilot to use five unique PPIRef retrieval records plus one STRING MLM-only record per rank microbatch; this preserves 40 same-node candidates per query before false-negative exclusions without repeating the scarce direct STRING records.",
+  "status": "FAIL_STAGE_A1_V4_DIRECT_STRING_CAPACITY_GATE",
+  "test_access": false
+}

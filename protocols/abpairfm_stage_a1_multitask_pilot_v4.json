@@ -11,7 +11,7 @@
     "minimum_consumed_residue_tokens": 250000000,
     "optimizer_resume": false
   },
-  "claim_boundary": "Train-only 200-update Stage-A1 global-retrieval objective-health pilot. It can test whether same-node cross-rank candidates prevent the local-negative retrieval collapse while preserving finite MLM/contact optimization and checkpoint restore. STRING uses source cluster IDs; PPIRef uses exact-sequence fallback IDs, so this is not the full production cluster-aware gate and cannot establish development improvement, biological noninteraction, test performance, or SOTA.",
+  "claim_boundary": "Train-only 200-update Stage-A1 global-retrieval objective-health pilot. It can test whether same-node cross-rank PPIRef candidates prevent the local-negative retrieval collapse while preserving finite cross-source MLM/contact optimization and checkpoint restore. PPIRef currently has exact-sequence fallback IDs only, so this is not the full production cluster-aware gate and cannot establish development improvement, biological noninteraction, test performance, or SOTA.",
   "format_version": "abpairfm_stage_a1_multitask_pilot_v4",
   "loss": {
     "contact": {
@@ -28,7 +28,7 @@
     "retrieval": {
       "candidate_scope": "same_node_all_ranks",
       "direction": "bidirectional",
-      "participants": "PPIRef50K structural cognates plus direct-evidence STRING records only",
+      "participants": "PPIRef50K structural cognates only; STRING remains MLM-only in this pilot",
       "pilot_false_negative_exclusion": "same_exact_endpoint_or_available_source_cluster_or_same_positive_group",
       "ppiref_cluster_boundary": "exact_sequence_fallback_only",
       "production_cluster_aware_gate": "still_required_before_production",
@@ -52,10 +52,12 @@
   "pilot_manifest": {
     "minimum_full_endpoint_residues": 8,
     "minimum_patch_endpoint_residues": 4,
-    "ppiref_records_per_microbatch": 3,
+    "expected_retrieval_supervised_records": 16000,
+    "ppiref_records_per_microbatch": 5,
     "selection_seed": 1701,
-    "string_direct_only": true,
-    "string_records_per_microbatch": 3,
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
     "total_records": 19200,
     "unique_ppiref_exact_pairs": true
   },

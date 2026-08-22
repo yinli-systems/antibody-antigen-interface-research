@@ -51,7 +51,7 @@ test ! -e "${OUTPUT_ROOT}/checkpoints/pilot-000000"
   "${PROJECT}/scripts/run_abpairfm_stage_a1_multitask_pilot.py" \
   --project-root "${PROJECT}" \
   --protocol "${PROTOCOL}" \
-  --expected-protocol-sha256 3385dea11a0bfcc743da3c2b013abfee5ae6efd22e3aea064a84c3325bfc1cad \
+  --expected-protocol-sha256 27da4df9fcca2d7faf4f75d95c8e73f6c5470680d76ee5e467af6618acc60a24 \
   --expected-source-sha256 "${SOURCE_SHA256}" \
   --manifest "${MANIFEST}" \
   --manifest-receipt "${MANIFEST_RECEIPT}" \

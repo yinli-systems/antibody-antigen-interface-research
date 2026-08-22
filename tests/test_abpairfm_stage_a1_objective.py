@@ -43,6 +43,10 @@ def test_stage_a1_global_retrieval_pilot_remains_train_only() -> None:
         "exact_sequence_fallback_only"
     )
     assert protocol["optimization"]["microbatch_pairs_per_rank"] == 6
+    assert protocol["pilot_manifest"]["ppiref_records_per_microbatch"] == 5
+    assert protocol["pilot_manifest"]["string_records_per_microbatch"] == 1
+    assert protocol["pilot_manifest"]["string_retrieval_supervision"] is False
+    assert protocol["pilot_manifest"]["expected_retrieval_supervised_records"] == 16000
     assert protocol["promotion_gates"]["maximum_peak_memory_fraction"] == 0.9
     assert protocol["test_access"] is False
 
