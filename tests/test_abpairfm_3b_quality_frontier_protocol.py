@@ -69,3 +69,15 @@ def test_objective_sequence_does_not_relabel_decoys_as_noninteractions() -> None
     retrieval = next(item for item in objectives if item["name"] == "cognate_retrieval_with_matched_partner_swaps")
     assert retrieval["negative_semantics"] == "ranking_decoy_not_measured_noninteraction"
     assert "development" not in objectives[-1]["entry_gate"]
+
+
+def test_string_scale_tier_cannot_be_relabelled_as_contact_supervision() -> None:
+    tiers = _protocol()["string_evidence_tiers"]
+    authority = tiers["task_authority"]
+    assert tiers["combined_high_confidence_threshold"] == 700
+    assert tiers["direct_evidence_must_be_exhausted_before_transferred_only_fill"] is True
+    assert tiers["physical_link_direct_binding_guaranteed"] is False
+    assert authority["contact_supervision"] == "structural_sources_only"
+    assert authority["transferred_only_string"] == [
+        "pair_balanced_masked_language_modeling"
+    ]
