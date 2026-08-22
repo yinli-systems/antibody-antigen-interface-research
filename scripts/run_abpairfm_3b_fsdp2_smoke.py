@@ -49,6 +49,12 @@ def _arguments() -> argparse.Namespace:
         help="FSDP shard width; zero uses the full world, a divisor enables HSDP.",
     )
     parser.add_argument("--sequence-tokens", type=int, default=128)
+    parser.add_argument(
+        "--microbatch-pairs",
+        type=int,
+        default=1,
+        help="Independent dual-chain pairs processed per rank and optimizer step.",
+    )
     parser.add_argument("--warmup-steps", type=int, default=1)
     parser.add_argument("--measured-steps", type=int, default=2)
     parser.add_argument("--learning-rate", type=float, default=1e-5)
@@ -70,6 +76,8 @@ def _validate(arguments: argparse.Namespace) -> None:
         raise ValueError("sequence-tokens must be even and at least 16")
     if arguments.sequence_tokens > 1024:
         raise ValueError("sequence-tokens exceeds the frozen model limit")
+    if not 1 <= arguments.microbatch_pairs <= 8:
+        raise ValueError("microbatch-pairs must be in [1, 8]")
     if arguments.warmup_steps < 0 or arguments.measured_steps < 1:
         raise ValueError("invalid warmup/measured step counts")
     if arguments.seed < 0:
@@ -88,27 +96,38 @@ def _mesh_shape(world_size: int, shard_group_size: int) -> tuple[int, int] | Non
 
 
 def _synthetic_pair(
-    *, rank: int, sequence_tokens: int, seed: int, device: torch.device
+    *,
+    rank: int,
+    sequence_tokens: int,
+    microbatch_pairs: int = 1,
+    seed: int,
+    device: torch.device,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, int]:
     generator = torch.Generator(device="cpu")
     generator.manual_seed(seed + rank * 1009)
-    tokens = torch.randint(4, 24, (1, sequence_tokens), generator=generator)
+    tokens = torch.randint(
+        4,
+        24,
+        (microbatch_pairs, sequence_tokens),
+        generator=generator,
+    )
     half = sequence_tokens // 2
-    tokens[0, 0] = 0
-    tokens[0, half - 1] = 2
-    tokens[0, half] = 0
-    tokens[0, -1] = 2
+    tokens[:, 0] = 0
+    tokens[:, half - 1] = 2
+    tokens[:, half] = 0
+    tokens[:, -1] = 2
     chain_ids = torch.cat(
         (torch.zeros(half, dtype=torch.long), torch.ones(half, dtype=torch.long))
-    ).unsqueeze(0)
+    ).unsqueeze(0).expand(microbatch_pairs, -1).clone()
     labels = torch.full_like(tokens, -100)
     eligible = torch.ones_like(tokens, dtype=torch.bool)
-    eligible[0, [0, half - 1, half, sequence_tokens - 1]] = False
+    eligible[:, [0, half - 1, half, sequence_tokens - 1]] = False
     selected = eligible & (torch.rand(tokens.shape, generator=generator) < 0.15)
-    for offset in (0, half):
-        chain_selected = selected[0, offset : offset + half]
-        if not bool(chain_selected.any()):
-            selected[0, offset + 1] = True
+    for batch_index in range(microbatch_pairs):
+        for offset in (0, half):
+            chain_selected = selected[batch_index, offset : offset + half]
+            if not bool(chain_selected.any()):
+                selected[batch_index, offset + 1] = True
     labels[selected] = tokens[selected]
     replacement = torch.rand(tokens.shape, generator=generator)
     tokens[selected & replacement.lt(0.8)] = 32
@@ -118,7 +137,7 @@ def _synthetic_pair(
         tokens[random_positions] = torch.randint(
             4, 24, (random_count,), generator=generator
         )
-    residue_count = sequence_tokens - 4
+    residue_count = microbatch_pairs * (sequence_tokens - 4)
     return (
         tokens.to(device, non_blocking=True),
         chain_ids.to(device, non_blocking=True),
@@ -221,6 +240,7 @@ def main() -> None:
         tokens, chain_ids, labels, residues_per_rank = _synthetic_pair(
             rank=rank,
             sequence_tokens=arguments.sequence_tokens,
+            microbatch_pairs=arguments.microbatch_pairs,
             seed=arguments.seed,
             device=device,
         )
@@ -308,6 +328,7 @@ def main() -> None:
                     "reshard_after_forward": arguments.reshard_after_forward,
                 },
                 "initialization": initialization,
+                "microbatch_pairs_per_rank": arguments.microbatch_pairs,
                 "precision": "bfloat16",
                 "ranks": ranks,
                 "sequence_tokens_per_rank": arguments.sequence_tokens,
