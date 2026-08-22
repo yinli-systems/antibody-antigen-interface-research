@@ -1,0 +1,53 @@
+{
+  "active_campaign_isolation": {
+    "active_source_modified": false,
+    "candidate_source": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source_candidates/c134a47"
+  },
+  "authorization": {
+    "gpu_pilot_submitted": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Implementation, unit-regression, and fixed-environment CPU graph gate only. Full-size FSDP2 memory, throughput, objective health, real train-only counterfactual materialization, development transfer, test performance, biological improvement, and SOTA remain unmeasured.",
+  "format_version": "abpairfm_stage_a1_split_view_runner_gate_v1",
+  "implementation": {
+    "commit": "c134a473259c28c4f08c0a6c75b12833fcfbb136",
+    "contact_view": "joint_cross_chain_attention",
+    "masked_language_modeling_view": "joint_cross_chain_attention",
+    "pair_aware_attention_sha256": "4d838dd6a00c42db6205bb59f766e2f2ff3c15de05502fa80c682429eb5316d2",
+    "pair_aware_esm2_sha256": "94f78cfff57c25869c97f8ed2d5244dd19f798ec1ed535ced478d4c3c095dc8f",
+    "retrieval_efficiency": "second forward is restricted to retrieval-supervised records and skips the MLM head",
+    "retrieval_view": "chain_independent_no_cross_attention",
+    "runner_sha256": "c2fbbc029e0a6842f0f79ece0c96f9900161238e181e530ca73ce0e9756fdb66",
+    "stage_a1_objective_sha256": "faed897a79f90a13b9aba915590963e708ef8cd7fbfb37a6b3955b45f5770999"
+  },
+  "local_regression": {
+    "command": "python3 -m pytest -q tests/test_pair_aware_attention.py tests/test_pair_aware_esm2.py tests/test_abpairfm*.py tests/test_build_abpairfm_stage_a1_pilot_manifest.py",
+    "passed": 108,
+    "status": "PASS"
+  },
+  "remote_fixed_environment_gate": {
+    "checkpointed_two_view_graph_built": true,
+    "independent_hidden_skipped_mlm_logits": true,
+    "independent_partner_swap_chain0_max_abs_delta": 0.0,
+    "joint_shape": [
+      2,
+      64,
+      32
+    ],
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "retrieval_shape": [
+      2,
+      64,
+      32
+    ],
+    "status": "PASS_DIRECT_ASSERTIONS"
+  },
+  "remaining_gates": {
+    "full_size_fsdp2_memory_and_throughput": "NOT_RUN",
+    "real_train_only_counterfactual_materialization": "NOT_RUN",
+    "v5_runner_behavior": "FAIL_CLOSED_UNTIL_COUNTERFACTUAL_PASS_RECEIPT"
+  },
+  "status": "PASS_SPLIT_VIEW_RUNNER_IMPLEMENTATION",
+  "timestamp_utc": "2026-08-22T23:40:38Z"
+}
