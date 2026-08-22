@@ -1,0 +1,100 @@
+{
+  "claim_boundary": "Official MINT checkpoint plus Bernett PPI head on frozen AsEP and SAbDab2 development retrieval panels. Decoys are ranking controls, not measured biological noninteractions. Contact, calibration, test, biological-improvement, and SOTA claims remain closed.",
+  "datasets": {
+    "asep": {
+      "anchor_instance_count": 170,
+      "predictions": {
+        "bytes": 4321376,
+        "row_count": 10880,
+        "sha256": "fe98191aa0d16fddb0e0049e36df54ed128c22e1ba62ebb0a9506235e15518d1"
+      },
+      "primary_bidirectional_unique_endpoint_mrr": {
+        "canonical_exact_pair_macro": 0.13700585894362746,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.11554878759515537,
+          0.15954056676946726
+        ],
+        "unique_canonical_exact_pair_count": 170
+      },
+      "primary_bidirectional_unique_endpoint_recall_at_1": {
+        "canonical_exact_pair_macro": 0.041176470588235294,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.020588235294117647,
+          0.061764705882352944
+        ],
+        "unique_canonical_exact_pair_count": 170
+      },
+      "runtime": {
+        "elapsed_seconds": 263.0795842129737,
+        "gpu_hours": 0.07307766228138159,
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "nonpadding_residues_per_second": 20711.44751235811,
+        "pair_windows_per_second": 40.888767679105676,
+        "peak_cuda_bytes": 6411350528,
+        "slurm_job_id": "1459148"
+      },
+      "sacct": {
+        "elapsed": "00:04:48",
+        "exit_code": "0:0",
+        "state": "COMPLETED",
+        "stderr_bytes": 0
+      },
+      "status": "FROZEN_DEVELOPMENT_RETRIEVAL_COMPLETE",
+      "summary_sha256": "c827c6614656fec691a8d8cda5d691b9113377d17ba3b1c6590d7b6c285b9aed",
+      "test_access": false,
+      "unique_canonical_exact_pair_count": 170
+    },
+    "sabdab2": {
+      "anchor_instance_count": 549,
+      "predictions": {
+        "bytes": 14703773,
+        "row_count": 35136,
+        "sha256": "8e86ba2f4cb15abadad970e0977abc50da053028bce303543ca602ba77776dc3"
+      },
+      "primary_bidirectional_unique_endpoint_mrr": {
+        "canonical_exact_pair_macro": 0.2136005583449275,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.19476688869075823,
+          0.2336969177780124
+        ],
+        "unique_canonical_exact_pair_count": 413
+      },
+      "primary_bidirectional_unique_endpoint_recall_at_1": {
+        "canonical_exact_pair_macro": 0.09140435835351089,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.07263922518159806,
+          0.11198547215496368
+        ],
+        "unique_canonical_exact_pair_count": 413
+      },
+      "runtime": {
+        "elapsed_seconds": 284.46885159797966,
+        "gpu_hours": 0.07901912544388325,
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "nonpadding_residues_per_second": 23823.68741579344,
+        "pair_windows_per_second": 57.99580483882114,
+        "peak_cuda_bytes": 6397128192,
+        "slurm_job_id": "1459147"
+      },
+      "sacct": {
+        "elapsed": "00:05:28",
+        "exit_code": "0:0",
+        "state": "COMPLETED",
+        "stderr_bytes": 0
+      },
+      "status": "FROZEN_DEVELOPMENT_RETRIEVAL_COMPLETE",
+      "summary_sha256": "8aad61188fb187ae0cdad14b3727cff6f671935c5c8b70061189843c55e25019",
+      "test_access": false,
+      "unique_canonical_exact_pair_count": 413
+    }
+  },
+  "format_version": "abpairfm_mint_development_retrieval_job_v1",
+  "model": {
+    "backbone_checkpoint_sha256": "84a4016365997cd9f0bccb07d746fa8f076ffd8e45aa0cbcf4e50a037161a342",
+    "head_checkpoint_sha256": "702849af78e245c7596d8c032391da52ff6657e9173af380e29a8ea3858fdab9",
+    "source_revision": "06694b7606e2d00b76ec58daf5c7aecdaf7cd283"
+  },
+  "protocol_sha256": "aed09ef940806e2599b55905708e6b0d933e0c2bbf2803ef741d9883ad51a25f",
+  "slurm_array_job_id": "1459147",
+  "test_access": false
+}
