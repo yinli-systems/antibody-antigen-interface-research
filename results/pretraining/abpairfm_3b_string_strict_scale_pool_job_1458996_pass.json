@@ -1,0 +1,64 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "strict_scale_pool_sampling": true,
+    "test_access": false
+  },
+  "claim_boundary": "One strongest STRING physical-network edge per unordered 50%-identity endpoint-cluster pair after strict development decontamination. This is a train-pool asset only; production training, development evaluation, held-out test access, contact supervision from STRING, and SOTA claims remain closed.",
+  "cluster": {
+    "coverage": 0.8,
+    "membership_count": 16536439,
+    "minimum_sequence_identity": 0.5
+  },
+  "counts": {
+    "development_excluded_clusters": 3137,
+    "development_excluded_edges": 1919648,
+    "duplicate_cluster_pair_edges": 188375224,
+    "eligible_nonself_edges": 224144586,
+    "missing_endpoint_memberships": 0,
+    "output_cluster_pairs": 35769362,
+    "self_cluster_edges_removed": 447910,
+    "source_edges": 226512144
+  },
+  "format_version": "abpairfm_3b_string_strict_scale_pool_compact_result_v1",
+  "job": {
+    "elapsed": "00:20:02",
+    "exit_code": "0:0",
+    "job_id": 1458996,
+    "max_rss_kib": 57219844,
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "output": {
+    "bytes": 636970760,
+    "name": "physical_combined700_cluster50_devclean30_scale_v2.tsv.zst",
+    "sha256": "b676143b06cfa447f4d78e24bd2264452bb6ab15ee6761eb3b10531126e96348"
+  },
+  "provenance": {
+    "cluster_receipt_sha256": "8aba718807e4f166fe55587240ed13acb55e0a1b9a322cc6f8f4f11367aaeb54",
+    "edge_receipt_sha256": "49bcfc4ddf66d31ea57864e54a33c604b24cd772020c5618ef67e6ef9bc099ed",
+    "quality_protocol_sha256": "42d1e8e534abdfc75ad9aec914fa1ef2f2df14552043545b3bd9900db054784c",
+    "receipt_sha256": "514eee8cc4f2eb68c787a5c633fb8839b59ba5951afd838cd010e43aee0a3f05",
+    "strict_hit_receipt_sha256": "8456e24c1611857adfe3daf60e31b64691e7a15737495120a4ab2b334cc967c7"
+  },
+  "scale_pool_gate": {
+    "minimum_cluster_pairs": 25000000,
+    "passed": true
+  },
+  "status": "STRICT_DECONTAMINATED_SCALE_POOL_NOT_AUTHORIZED_FOR_TRAINING",
+  "strict_development_decontamination": {
+    "exclude_any_pair_touching_a_hit_cluster": true,
+    "minimum_bidirectional_coverage": 0.8,
+    "minimum_sequence_identity": 0.3
+  },
+  "string_task_authority": {
+    "contact_supervision": "structural_sources_only",
+    "direct_evidence_string": [
+      "pair_balanced_masked_language_modeling",
+      "cognate_retrieval_ranking"
+    ],
+    "transferred_only_string": [
+      "pair_balanced_masked_language_modeling"
+    ]
+  }
+}
