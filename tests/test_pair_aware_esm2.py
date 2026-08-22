@@ -161,3 +161,50 @@ def test_selective_checkpoint_matches_full_checkpoint_on_cpu() -> None:
 def test_selective_policy_requires_checkpointing() -> None:
     with pytest.raises(ValueError, match="requires activation_checkpointing"):
         PairAwareESM2(_small_config(activation_checkpoint_policy="selective_attention"))
+
+
+def test_checkpoint_without_rng_preservation_matches_default_on_cpu() -> None:
+    torch.manual_seed(29)
+    baseline = PairAwareESM2(
+        _small_config(
+            activation_checkpointing=True,
+            activation_checkpoint_preserve_rng_state=True,
+        )
+    ).train()
+    candidate = PairAwareESM2(
+        _small_config(
+            activation_checkpointing=True,
+            activation_checkpoint_preserve_rng_state=False,
+        )
+    ).train()
+    candidate.load_state_dict(baseline.state_dict())
+    tokens = torch.tensor([[0, 5, 32, 2, 0, 7, 8, 32, 2, 1]])
+    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, 1, -1]])
+    labels = torch.full_like(tokens, -100)
+    labels[0, 2] = 6
+    labels[0, 7] = 9
+
+    baseline_loss = baseline(tokens, chain_ids, labels=labels).balanced_chain_loss_sum
+    candidate_loss = candidate(tokens, chain_ids, labels=labels).balanced_chain_loss_sum
+    assert baseline_loss is not None and candidate_loss is not None
+    baseline_loss.backward()
+    candidate_loss.backward()
+    torch.testing.assert_close(candidate_loss, baseline_loss)
+    for baseline_parameter, candidate_parameter in zip(
+        baseline.parameters(), candidate.parameters(), strict=True
+    ):
+        torch.testing.assert_close(candidate_parameter.grad, baseline_parameter.grad)
+
+
+def test_checkpoint_rng_preservation_requires_boolean() -> None:
+    with pytest.raises(ValueError, match="preserve_rng_state"):
+        PairAwareESM2(
+            _small_config(activation_checkpoint_preserve_rng_state="false")  # type: ignore[arg-type]
+        )
+
+
+def test_disabling_checkpoint_rng_preservation_requires_checkpointing() -> None:
+    with pytest.raises(ValueError, match="requires activation_checkpointing"):
+        PairAwareESM2(
+            _small_config(activation_checkpoint_preserve_rng_state=False)
+        )

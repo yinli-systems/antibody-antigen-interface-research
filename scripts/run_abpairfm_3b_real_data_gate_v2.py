@@ -65,6 +65,11 @@ def _arguments() -> argparse.Namespace:
         choices=("full", "selective_attention"),
         default="full",
     )
+    parser.add_argument(
+        "--activation-checkpoint-preserve-rng-state",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
     return parser.parse_args()
 
 
@@ -347,6 +352,9 @@ def main() -> None:
         config = PairAwareESM2Config(
             activation_checkpointing=True,
             activation_checkpoint_policy=arguments.activation_checkpoint_policy,
+            activation_checkpoint_preserve_rng_state=(
+                arguments.activation_checkpoint_preserve_rng_state
+            ),
         )
         with torch.device("meta"):
             model = PairAwareESM2(config)
@@ -532,6 +540,9 @@ def main() -> None:
                 },
                 "optimization": {
                     "activation_checkpoint_policy": config.activation_checkpoint_policy,
+                    "activation_checkpoint_preserve_rng_state": (
+                        config.activation_checkpoint_preserve_rng_state
+                    ),
                     "accumulation_steps": arguments.accumulation_steps,
                     "adamw_betas": [0.9, 0.98],
                     "gradient_clip_norm": 1.0,

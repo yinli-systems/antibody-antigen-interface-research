@@ -71,6 +71,12 @@ def _arguments() -> argparse.Namespace:
         default="full",
     )
     parser.add_argument(
+        "--activation-checkpoint-preserve-rng-state",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Preserve the default RNG stashing behavior during checkpoint recompute.",
+    )
+    parser.add_argument(
         "--reshard-after-forward",
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -226,6 +232,9 @@ def main() -> None:
         config = PairAwareESM2Config(
             activation_checkpointing=True,
             activation_checkpoint_policy=arguments.activation_checkpoint_policy,
+            activation_checkpoint_preserve_rng_state=(
+                arguments.activation_checkpoint_preserve_rng_state
+            ),
         )
         with torch.device("meta"):
             model = PairAwareESM2(config)
@@ -333,6 +342,9 @@ def main() -> None:
                 "architecture": {
                     "activation_checkpointing": True,
                     "activation_checkpoint_policy": config.activation_checkpoint_policy,
+                    "activation_checkpoint_preserve_rng_state": (
+                        config.activation_checkpoint_preserve_rng_state
+                    ),
                     "attention": "pair_aware_lifted_flash_sdpa",
                     "embed_dimension": config.embed_dimension,
                     "head_count": config.head_count,
