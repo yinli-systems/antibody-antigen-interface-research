@@ -99,6 +99,27 @@
       "purpose": "learn residue-pair geometry without using development or held-out test labels"
     }
   ],
+  "string_evidence_tiers": {
+    "admission_order": [
+      "direct_experiment_or_curated_database_physical",
+      "combined_high_confidence_physical_with_transferred_support"
+    ],
+    "combined_high_confidence_threshold": 700,
+    "direct_evidence_must_be_exhausted_before_transferred_only_fill": true,
+    "physical_link_direct_binding_guaranteed": false,
+    "score_and_transfer_documentation": "https://string-db.org/help/scores/",
+    "task_authority": {
+      "contact_supervision": "structural_sources_only",
+      "direct_evidence_string": [
+        "pair_balanced_masked_language_modeling",
+        "cognate_retrieval_ranking"
+      ],
+      "transferred_only_string": [
+        "pair_balanced_masked_language_modeling"
+      ]
+    },
+    "transferred_only_interpretation": "orthology_transferred_physical_association_not_direct_observation_in_target_species"
+  },
   "development_quality_frontier": {
     "baselines": [
       "esm2_3b_single_chain_or_independent_concat_control",
