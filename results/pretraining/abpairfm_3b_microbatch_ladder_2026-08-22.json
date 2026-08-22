@@ -58,10 +58,13 @@
   },
   "recovery_gate": {
     "accumulation_steps": 2,
+    "decision": "PROMOTE_TO_QUALITY_PER_GPU_HOUR_GATE",
     "maximum_tokens": 1024,
     "microbatch_pairs_per_rank": 7,
     "optimizer_updates": 200,
-    "state": "SUBMITTED",
+    "real_data_residue_tokens_per_second_median": 7177.082698289188,
+    "state": "PASSED",
+    "summary": "abpairfm_3b_real_data_gate_job_1458917_pass.json",
     "manifest_job_id": 1458916,
     "retry_job_id": 1458917
   },
