@@ -31,10 +31,19 @@
   "format_version": "abpairfm_3b_quality_frontier_v1",
   "public_baselines": {
     "mint_650m": {
+      "admission_status": "required_pending_checkpoint_audit",
+      "code_license": "MIT",
+      "code_url": "https://github.com/VarunUllanat/mint",
+      "checkpoint_url": "https://huggingface.co/varunullanat2012/mint/resolve/main/mint.ckpt",
       "development_cluster_exclusion": true,
       "model_parameters": 650000000,
       "raw_physical_interactions": 2400000000,
-      "role": "large-scale pair-corpus and leakage-control reference",
+      "role": "mandatory large-scale pair-aware representation and retrieval baseline; contact evaluation requires the same frozen train-only adapter contract",
+      "same_contract_roles": [
+        "pair_conditioned_masked_language_modeling",
+        "cognate_retrieval_with_identical_candidate_sets",
+        "train_only_contact_adapter_with_identical_labels"
+      ],
       "sequence_cluster_identity": 0.5,
       "training_pairs_after_cluster_exclusion": 95800000,
       "url": "https://www.nature.com/articles/s41467-025-67971-3"
@@ -125,9 +134,17 @@
     "baselines": [
       "esm2_3b_single_chain_or_independent_concat_control",
       "pplm_650m_audited_checkpoint",
+      "mint_650m_audited_checkpoint",
       "msa_pairformer_111m_audited_checkpoint",
       "abpairfm_3b_stage_a"
     ],
+    "baseline_admission_policy": {
+      "author_reported_cross_paper_scores_rankable": false,
+      "checkpoint_hash_and_state_dict_audit_required": true,
+      "code_and_checkpoint_availability_required": true,
+      "different_input_modality_requires_separate_auxiliary_table": true,
+      "same_frozen_examples_mappings_candidates_and_metrics_required": true
+    },
     "datasets": [
       "sabdab2_frozen_development",
       "asep_frozen_development"
