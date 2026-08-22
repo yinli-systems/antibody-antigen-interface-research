@@ -46,10 +46,23 @@ def test_quality_frontier_requires_same_contract_small_and_large_baselines() -> 
     public = protocol["public_baselines"]
     assert "abpairfm_3b_stage_a" in baselines
     assert "pplm_650m_audited_checkpoint" in baselines
+    assert "mint_650m_audited_checkpoint" in baselines
     assert "msa_pairformer_111m_audited_checkpoint" in baselines
     assert public["msa_pairformer_111m"]["model_parameters"] == 111_000_000
     assert public["pplm_650m"]["model_parameters"] == 650_000_000
+    assert public["mint_650m"]["training_pairs_after_cluster_exclusion"] == 95_800_000
+    assert public["mint_650m"]["admission_status"] == "required_pending_checkpoint_audit"
     assert protocol["compute_optimality"]["quality_per_gpu_hour_is_required"] is True
+
+
+def test_public_baselines_must_be_locally_audited_on_the_frozen_contract() -> None:
+    frontier = _protocol()["development_quality_frontier"]
+    admission = frontier["baseline_admission_policy"]
+    assert admission["author_reported_cross_paper_scores_rankable"] is False
+    assert admission["checkpoint_hash_and_state_dict_audit_required"] is True
+    assert admission["code_and_checkpoint_availability_required"] is True
+    assert admission["same_frozen_examples_mappings_candidates_and_metrics_required"] is True
+    assert admission["different_input_modality_requires_separate_auxiliary_table"] is True
 
 
 def test_repeated_exposures_are_diverse_but_exactly_replayable() -> None:
