@@ -20,7 +20,7 @@
       "pair_pool_sha256": "b676143b06cfa447f4d78e24bd2264452bb6ab15ee6761eb3b10531126e96348",
       "release": "STRING v12 physical",
       "strict_development_gate": {
-        "exclude_any_pair_touching_hit_cluster": true,
+        "exclude_any_pair_touching_a_hit_cluster": true,
         "minimum_bidirectional_coverage": 0.8,
         "minimum_sequence_identity": 0.3
       }
