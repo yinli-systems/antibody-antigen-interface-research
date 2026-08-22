@@ -64,8 +64,8 @@ def _arguments() -> argparse.Namespace:
 def _validate(arguments: argparse.Namespace) -> None:
     if arguments.expected_world_size != 8 or arguments.shard_group_size != 4:
         raise ValueError("real-data gate requires the promoted eight-rank HSDP 2x4 mesh")
-    if arguments.microbatch_pairs != 8 or arguments.accumulation_steps != 2:
-        raise ValueError("real-data gate requires the promoted microbatch and frozen accumulation")
+    if arguments.microbatch_pairs not in {7, 8} or arguments.accumulation_steps != 2:
+        raise ValueError("real-data gate requires microbatch 7 or 8 and frozen accumulation")
     if arguments.updates != 200 or arguments.maximum_tokens != 1024:
         raise ValueError("real-data gate requires 200 updates and 1024-token pairs")
     if arguments.learning_rate != 1e-6 or arguments.weight_decay != 0.01:
@@ -503,7 +503,7 @@ def main() -> None:
                     "receipt_sha256": _sha256(manifest_receipt_path),
                     "source_cluster_pairs": manifest_receipt["counts"]["source_cluster_pairs"],
                 },
-                "format_version": "abpairfm_3b_real_data_gate_v1",
+                "format_version": "abpairfm_3b_real_data_gate_v2",
                 "fsdp2": {
                     "mesh_shape_replicate_by_shard": [2, 4],
                     "reshard_after_forward": False,

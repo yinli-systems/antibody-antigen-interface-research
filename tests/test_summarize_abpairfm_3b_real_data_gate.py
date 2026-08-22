@@ -67,6 +67,7 @@ def test_summarize_promotes_stable_real_data_gate() -> None:
     assert value["decision"] == "PROMOTE_TO_QUALITY_PER_GPU_HOUR_GATE"
     assert value["gates"]["passed"] is True
     assert value["authorization"]["production_pretraining"] is False
+    assert value["throughput"]["five_billion_token_wall_clock_days_excluding_overhead"] > 0
 
 
 def test_summarize_fails_closed_on_loss_regression() -> None:
@@ -75,6 +76,20 @@ def test_summarize_fails_closed_on_loss_regression() -> None:
     value = MODULE.summarize(receipt, job_id=1458866)
     assert value["decision"] == "FAIL_CLOSED_REAL_DATA_GATE"
     assert value["gates"]["passed"] is False
+
+
+def test_summarize_accepts_exact_microbatch_seven_cursor() -> None:
+    receipt = _receipt()
+    receipt["format_version"] = "abpairfm_3b_real_data_gate_v2"
+    receipt["data"]["manifest_records_consumed"] = 22_400
+    receipt["data"]["manifest_records_expected"] = 22_400
+    receipt["optimization"]["microbatch_pairs_per_rank"] = 7
+    for rank in receipt["ranks"]:
+        rank["local_manifest_records"] = 2_800
+    value = MODULE.summarize(receipt, job_id=1458900)
+    assert value["gates"]["passed"] is True
+    assert value["optimization"]["manifest_records_consumed"] == 22_400
+    assert value["optimization"]["microbatch_pairs_per_rank"] == 7
 
 
 def test_summarize_rejects_test_access() -> None:

@@ -48,12 +48,22 @@
     "microbatch_pairs_per_rank": 8,
     "name": "deterministic_train_only_real_data_gate",
     "optimizer_updates": 200,
-    "state": "RUNNING"
+    "state": "FAILED_CLOSED_MEMORY_0.930873_ABOVE_0.92",
+    "summary": "abpairfm_3b_real_data_gate_job_1458866_fail_closed.json"
   },
   "promoted": {
     "five_billion_token_wall_clock_days_excluding_overhead": 4.90714033113798,
     "microbatch_pairs_per_rank": 8,
     "residue_tokens_per_second": 11793.094646826628
+  },
+  "recovery_gate": {
+    "accumulation_steps": 2,
+    "maximum_tokens": 1024,
+    "microbatch_pairs_per_rank": 7,
+    "optimizer_updates": 200,
+    "state": "SUBMITTED",
+    "manifest_job_id": 1458916,
+    "retry_job_id": 1458917
   },
   "test_access": {
     "asep_test_accessed": false,

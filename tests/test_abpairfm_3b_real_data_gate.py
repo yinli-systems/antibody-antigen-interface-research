@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import importlib.util
+from argparse import Namespace
 from pathlib import Path
 
 import torch
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts" / "run_abpairfm_3b_real_data_gate.py"
+SCRIPT = ROOT / "scripts" / "run_abpairfm_3b_real_data_gate_v2.py"
 
 
 def _module():
@@ -55,3 +56,21 @@ def test_seed_is_stable_and_changes_across_fields() -> None:
     module = _module()
     assert module._seed(1701, 1, "mask") == module._seed(1701, 1, "mask")
     assert module._seed(1701, 1, "mask") != module._seed(1701, 1, "crop")
+
+
+def test_microbatch_seven_recovery_preserves_frozen_optimizer_gate() -> None:
+    module = _module()
+    module._validate(
+        Namespace(
+            accumulation_steps=2,
+            expected_world_size=8,
+            learning_rate=1e-6,
+            maximum_tokens=1024,
+            microbatch_pairs=7,
+            progress_interval=10,
+            seed=1701,
+            shard_group_size=4,
+            updates=200,
+            weight_decay=0.01,
+        )
+    )

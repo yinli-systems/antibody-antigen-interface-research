@@ -24,8 +24,8 @@ if [[ "${GPU_COUNT}" -ne 1 || "${GPU_NAME}" != "NVIDIA GeForce RTX 4090" ]]; the
   exit 2
 fi
 case "${RECORD_COUNT}" in
-  12800|25600|51200) ;;
-  *) echo "ABPAIRFM_REAL_GATE_RECORD_COUNT must be 12800, 25600, or 51200" >&2; exit 2 ;;
+  12800|22400|25600|51200) ;;
+  *) echo "ABPAIRFM_REAL_GATE_RECORD_COUNT must be 12800, 22400, 25600, or 51200" >&2; exit 2 ;;
 esac
 mkdir -p "${OUTPUT_ROOT}"
 test ! -e "${OUTPUT}"

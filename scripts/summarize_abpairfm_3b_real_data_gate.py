@@ -22,7 +22,8 @@ def sha256_file(path: Path) -> str:
 
 def summarize(receipt: dict[str, object], *, job_id: int) -> dict[str, object]:
     if (
-        receipt.get("format_version") != "abpairfm_3b_real_data_gate_v1"
+        receipt.get("format_version")
+        not in {"abpairfm_3b_real_data_gate_v1", "abpairfm_3b_real_data_gate_v2"}
         or receipt.get("status") != "PASS"
         or receipt.get("world_size") != 8
         or receipt.get("precision") != "bfloat16_compute_fp32_optimizer"
@@ -49,7 +50,8 @@ def summarize(receipt: dict[str, object], *, job_id: int) -> dict[str, object]:
         raise ValueError("Real-data gate sections are malformed")
     if not isinstance(ranks, list) or len(ranks) != 8:
         raise ValueError("Real-data gate rank inventory differs")
-    expected_records = 25_600
+    microbatch_pairs = int(optimization.get("microbatch_pairs_per_rank", 0))
+    expected_records = 200 * 2 * 8 * microbatch_pairs
     if (
         data.get("manifest_records_consumed") != expected_records
         or data.get("manifest_records_expected") != expected_records
@@ -57,7 +59,7 @@ def summarize(receipt: dict[str, object], *, job_id: int) -> dict[str, object]:
         or data.get("manifest_skipped_records") != 0
         or data.get("development_decontaminated") is not True
         or optimization.get("updates") != 200
-        or optimization.get("microbatch_pairs_per_rank") != 8
+        or microbatch_pairs not in {7, 8}
         or optimization.get("accumulation_steps") != 2
     ):
         raise ValueError("Real-data gate data cursor or optimization differs")
@@ -67,7 +69,7 @@ def summarize(receipt: dict[str, object], *, job_id: int) -> dict[str, object]:
         if (
             rank.get("rank") != rank_number
             or rank.get("device_name") != "NVIDIA GeForce RTX 4090"
-            or rank.get("local_manifest_records") != 3_200
+            or rank.get("local_manifest_records") != 200 * 2 * microbatch_pairs
             or not isinstance(rank.get("updates"), list)
             or len(rank["updates"]) != 200
         ):
@@ -120,7 +122,7 @@ def summarize(receipt: dict[str, object], *, job_id: int) -> dict[str, object]:
         "optimization": {
             "accumulation_steps": 2,
             "manifest_records_consumed": expected_records,
-            "microbatch_pairs_per_rank": 8,
+            "microbatch_pairs_per_rank": microbatch_pairs,
             "updates": 200,
             "world_size": 8,
         },
@@ -133,6 +135,9 @@ def summarize(receipt: dict[str, object], *, job_id: int) -> dict[str, object]:
         },
         "throughput": {
             "consumed_residue_tokens": int(throughput["consumed_residue_tokens"]),
+            "five_billion_token_wall_clock_days_excluding_overhead": 5_000_000_000
+            / median_throughput
+            / 86_400,
             "residue_tokens_per_second_mean": float(
                 throughput["residue_tokens_per_second_mean"]
             ),
