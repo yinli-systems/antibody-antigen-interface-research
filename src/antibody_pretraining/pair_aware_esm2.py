@@ -84,6 +84,7 @@ class PairAwareESM2Config:
     maximum_tokens: int = 1024
     activation_checkpointing: bool = False
     activation_checkpoint_policy: Literal["full", "selective_attention"] = "full"
+    activation_checkpoint_preserve_rng_state: bool = True
 
     def validate(self) -> None:
         for name in (
@@ -111,9 +112,18 @@ class PairAwareESM2Config:
             raise ValueError("activation_checkpointing must be boolean")
         if self.activation_checkpoint_policy not in {"full", "selective_attention"}:
             raise ValueError("Unknown activation checkpoint policy")
+        if not isinstance(self.activation_checkpoint_preserve_rng_state, bool):
+            raise ValueError("activation_checkpoint_preserve_rng_state must be boolean")
         if not self.activation_checkpointing and self.activation_checkpoint_policy != "full":
             raise ValueError(
                 "selective activation checkpointing requires activation_checkpointing"
+            )
+        if (
+            not self.activation_checkpointing
+            and not self.activation_checkpoint_preserve_rng_state
+        ):
+            raise ValueError(
+                "disabling checkpoint RNG preservation requires activation_checkpointing"
             )
 
 
@@ -312,7 +322,12 @@ class PairAwareESM2(nn.Module):
                 return_last_attention and layer_index == len(self.layers) - 1
             )
             if self.training and self.config.activation_checkpointing and not export_attention:
-                checkpoint_arguments: dict[str, Any] = {"use_reentrant": False}
+                checkpoint_arguments: dict[str, Any] = {
+                    "preserve_rng_state": (
+                        self.config.activation_checkpoint_preserve_rng_state
+                    ),
+                    "use_reentrant": False,
+                }
                 if self.config.activation_checkpoint_policy == "selective_attention":
                     checkpoint_arguments["context_fn"] = (
                         selective_attention_checkpoint_contexts
