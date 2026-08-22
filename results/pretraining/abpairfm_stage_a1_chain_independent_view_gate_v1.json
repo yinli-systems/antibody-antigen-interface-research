@@ -1,0 +1,48 @@
+{
+  "active_campaign_isolation": {
+    "active_source_modified": false,
+    "active_source_pair_aware_attention_sha256": "9d830b909936aa85c0f54f5a3e1aabde4457ac0c4675865a1a2d166260412d58",
+    "active_source_pair_aware_esm2_sha256": "0dcf3a156c0d4fc3d8099afdcb856171164bfc525ff4319b9bbc24dbb743cd24",
+    "candidate_source": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source_candidates/8950af8"
+  },
+  "authorization": {
+    "gpu_training_submitted": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Implementation and deterministic partner-context isolation gate only. No real-data Stage-A1 transfer, contact, retrieval, development, test, biological-improvement, or SOTA claim is authorized.",
+  "format_version": "abpairfm_stage_a1_chain_independent_view_gate_v1",
+  "implementation": {
+    "commit": "8950af87dda0485f9ae5b98da5c98a66e93c9c30",
+    "default_joint_view_preserved": true,
+    "independent_view": "same-chain rotary SDPA with all cross-chain keys excluded at every model layer",
+    "pair_aware_attention_sha256": "4d838dd6a00c42db6205bb59f766e2f2ff3c15de05502fa80c682429eb5316d2",
+    "pair_aware_esm2_sha256": "526d0e343d7287ad200d8943272718affefdd56c0b6712421e438f936f352377",
+    "static_distributed_graph": "cross_scale remains in autograd with an exact zero gradient in the independent view"
+  },
+  "local_regression": {
+    "command": "python3 -m pytest -q tests/test_pair_aware_attention.py tests/test_pair_aware_esm2.py tests/test_abpairfm*.py",
+    "passed": 102,
+    "status": "PASS"
+  },
+  "next_frozen_gate": {
+    "data": "train-only high-direct STRING records with known-positive and source-cluster exclusions",
+    "required_controls": [
+      "actual partner-swapped forwards",
+      "endpoint source-cluster exclusion",
+      "matched endpoint length bin",
+      "fixed sampler seed and immutable provenance"
+    ],
+    "status": "NOT_RUN"
+  },
+  "remote_fixed_environment_gate": {
+    "checkpointed_static_graph_cross_scale_zero_grad_layers": 2,
+    "independent_chain0_partner_swap_max_abs_delta": 0.0,
+    "joint_chain0_partner_swap_max_abs_delta": 2.63185977935791,
+    "pytest_available": false,
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "status": "PASS_DIRECT_ASSERTIONS"
+  },
+  "status": "PASS_CHAIN_INDEPENDENT_VIEW_IMPLEMENTATION",
+  "timestamp_utc": "2026-08-22T23:10:47Z"
+}
