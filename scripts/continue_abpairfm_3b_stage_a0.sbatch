@@ -90,6 +90,13 @@ if [[ "${#CHECKPOINT_ANCHORS[@]}" -ne 3 ]]; then
   exit 2
 fi
 
+"${PYTHON}" "${PROJECT}/scripts/maybe_submit_abpairfm_checkpoint_ladder_probe.py" \
+  --project-root "${PROJECT}" \
+  --result "${RESULT}" \
+  --protocol "${PROJECT}/protocols/abpairfm_checkpoint_transfer_probe_v1.json" \
+  --expected-protocol-sha256 57d5049b67795079b4b20eb37ed18b8026fd35f05e5a06991dcab732a96b1809 \
+  --submission-root /ssd/scxi253/model_deployment/results/evaluation/abpairfm_checkpoint_transfer_probe_v1/submissions
+
 readonly NEXT_JOB=$(
   sbatch --parsable \
     --exclude="${EXCLUDED_TRAINING_NODE}" \
