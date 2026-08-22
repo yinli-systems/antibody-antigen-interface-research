@@ -32,7 +32,7 @@ def test_protocol_authorizes_only_stage_a0_and_seals_test() -> None:
     }
     assert value["corpus"]["materialized_unique_pair_target"] == 2_500_000
     assert value["corpus"]["source"]["strict_development_gate"] == {
-        "exclude_any_pair_touching_hit_cluster": True,
+        "exclude_any_pair_touching_a_hit_cluster": True,
         "minimum_bidirectional_coverage": 0.8,
         "minimum_sequence_identity": 0.3,
     }
