@@ -127,6 +127,64 @@ class StageA1Microbatch:
     residue_count: int
 
 
+def build_stage_a1_retrieval_allowed(
+    local_metadata: tuple[Tensor, Tensor, Tensor, Tensor, Tensor],
+    candidate_metadata: tuple[Tensor, Tensor, Tensor, Tensor, Tensor],
+    target_indices: Tensor,
+) -> Tensor:
+    """Build a fail-closed pair-level false-negative mask for retrieval."""
+
+    if (
+        any(value.ndim != 1 for value in (*local_metadata, *candidate_metadata))
+        or any(value.dtype != torch.long for value in (*local_metadata, *candidate_metadata))
+        or target_indices.ndim != 1
+        or target_indices.dtype != torch.long
+    ):
+        raise ValueError("Stage-A1 retrieval identity metadata is malformed")
+    local_count = len(local_metadata[0])
+    candidate_count = len(candidate_metadata[0])
+    if (
+        any(len(value) != local_count for value in local_metadata)
+        or any(len(value) != candidate_count for value in candidate_metadata)
+        or len(target_indices) != local_count
+        or bool((target_indices < 0).any())
+        or bool((target_indices >= candidate_count).any())
+    ):
+        raise ValueError("Stage-A1 retrieval identity metadata is not aligned")
+    left_exact, right_exact, left_cluster, right_cluster, positive_group = (
+        local_metadata
+    )
+    (
+        candidate_left_exact,
+        candidate_right_exact,
+        candidate_left_cluster,
+        candidate_right_cluster,
+        candidate_positive_group,
+    ) = candidate_metadata
+    exact_overlap = (
+        left_exact[:, None].eq(candidate_left_exact[None, :])
+        | left_exact[:, None].eq(candidate_right_exact[None, :])
+        | right_exact[:, None].eq(candidate_left_exact[None, :])
+        | right_exact[:, None].eq(candidate_right_exact[None, :])
+    )
+    cluster_overlap = (
+        left_cluster[:, None].eq(candidate_left_cluster[None, :])
+        | left_cluster[:, None].eq(candidate_right_cluster[None, :])
+        | right_cluster[:, None].eq(candidate_left_cluster[None, :])
+        | right_cluster[:, None].eq(candidate_right_cluster[None, :])
+    )
+    allowed = ~(
+        exact_overlap
+        | cluster_overlap
+        | positive_group[:, None].eq(candidate_positive_group[None, :])
+    )
+    rows = torch.arange(local_count, device=allowed.device)
+    allowed[rows, target_indices] = True
+    if bool(allowed.sum(dim=1).lt(2).any()):
+        raise ValueError("Stage-A1 false-negative exclusions removed every negative")
+    return allowed
+
+
 def build_stage_a1_microbatch(
     records: Sequence[dict[str, Any]],
     *,
@@ -229,9 +287,6 @@ def build_stage_a1_microbatch(
 
     if len(retrieval_indices) < 2:
         raise ValueError("Stage-A1 microbatch requires at least two retrieval pairs")
-    retrieval_allowed = torch.ones(
-        (len(retrieval_records), len(retrieval_records)), dtype=torch.bool
-    )
     retrieval_left_exact_ids = torch.tensor(
         [
             _identity_id(
@@ -289,53 +344,18 @@ def build_stage_a1_microbatch(
         ],
         dtype=torch.long,
     )
-    for left_index, left_record in enumerate(retrieval_records):
-        for right_index, right_record in enumerate(retrieval_records):
-            if left_index == right_index:
-                continue
-            same_group = bool(
-                retrieval_positive_group_ids[left_index]
-                == retrieval_positive_group_ids[right_index]
-            )
-            exact_overlap = bool(
-                (retrieval_left_exact_ids[left_index] == retrieval_left_exact_ids[right_index])
-                or (
-                    retrieval_left_exact_ids[left_index]
-                    == retrieval_right_exact_ids[right_index]
-                )
-                or (
-                    retrieval_right_exact_ids[left_index]
-                    == retrieval_left_exact_ids[right_index]
-                )
-                or (
-                    retrieval_right_exact_ids[left_index]
-                    == retrieval_right_exact_ids[right_index]
-                )
-            )
-            cluster_overlap = bool(
-                (
-                    retrieval_left_cluster_ids[left_index]
-                    == retrieval_left_cluster_ids[right_index]
-                )
-                or (
-                    retrieval_left_cluster_ids[left_index]
-                    == retrieval_right_cluster_ids[right_index]
-                )
-                or (
-                    retrieval_right_cluster_ids[left_index]
-                    == retrieval_left_cluster_ids[right_index]
-                )
-                or (
-                    retrieval_right_cluster_ids[left_index]
-                    == retrieval_right_cluster_ids[right_index]
-                )
-            )
-            if same_group or exact_overlap or cluster_overlap:
-                retrieval_allowed[left_index, right_index] = False
-    if bool(retrieval_allowed.sum(dim=1).lt(2).any()) or bool(
-        retrieval_allowed.sum(dim=0).lt(2).any()
-    ):
-        raise ValueError("Stage-A1 false-negative exclusions removed every negative")
+    retrieval_metadata = (
+        retrieval_left_exact_ids,
+        retrieval_right_exact_ids,
+        retrieval_left_cluster_ids,
+        retrieval_right_cluster_ids,
+        retrieval_positive_group_ids,
+    )
+    retrieval_allowed = build_stage_a1_retrieval_allowed(
+        retrieval_metadata,
+        retrieval_metadata,
+        torch.arange(len(retrieval_records), dtype=torch.long),
+    )
     if not contact_labels or 0 not in contact_labels or 1 not in contact_labels:
         raise ValueError("Stage-A1 microbatch requires both contact classes")
     return StageA1Microbatch(

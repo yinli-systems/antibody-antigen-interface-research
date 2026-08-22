@@ -40,6 +40,7 @@ from antibody_pretraining.pair_aware_esm2 import (  # noqa: E402
 from antibody_pretraining.stage_a1_batch import (  # noqa: E402
     StageA1Microbatch,
     build_stage_a1_microbatch,
+    build_stage_a1_retrieval_allowed,
 )
 from antibody_pretraining.stage_a1_objective import StageA1Heads  # noqa: E402
 from interaction_first.frontier_fsdp2 import verify_dcp_generation  # noqa: E402
@@ -322,41 +323,12 @@ def _global_retrieval_mask(
     global_metadata = tuple(
         _all_gather_equal_shape(value, world_size) for value in local_metadata
     )
-    left_exact, right_exact, left_cluster, right_cluster, positive_group = (
-        local_metadata
-    )
-    (
-        global_left_exact,
-        global_right_exact,
-        global_left_cluster,
-        global_right_cluster,
-        global_positive_group,
-    ) = global_metadata
-
-    exact_overlap = (
-        left_exact[:, None].eq(global_left_exact[None, :])
-        | left_exact[:, None].eq(global_right_exact[None, :])
-        | right_exact[:, None].eq(global_left_exact[None, :])
-        | right_exact[:, None].eq(global_right_exact[None, :])
-    )
-    cluster_overlap = (
-        left_cluster[:, None].eq(global_left_cluster[None, :])
-        | left_cluster[:, None].eq(global_right_cluster[None, :])
-        | right_cluster[:, None].eq(global_left_cluster[None, :])
-        | right_cluster[:, None].eq(global_right_cluster[None, :])
-    )
-    allowed = ~(
-        exact_overlap
-        | cluster_overlap
-        | positive_group[:, None].eq(global_positive_group[None, :])
-    )
     targets = rank * int(local_count[0]) + torch.arange(
-        int(local_count[0]), device=allowed.device
+        int(local_count[0]), device=batch.retrieval_batch_indices.device
     )
-    rows = torch.arange(len(targets), device=allowed.device)
-    allowed[rows, targets] = True
-    if bool(allowed.sum(dim=1).lt(2).any()):
-        raise RuntimeError("Global false-negative mask removed every negative")
+    allowed = build_stage_a1_retrieval_allowed(
+        local_metadata, global_metadata, targets
+    )
     return allowed, targets
 
 
