@@ -34,7 +34,9 @@ def test_lifted_sdpa_matches_dense_hybrid_outputs_and_gradients() -> None:
     query = torch.randn(shape, dtype=torch.float64, requires_grad=True)
     key = torch.randn(shape, dtype=torch.float64, requires_grad=True)
     value = torch.randn(shape, dtype=torch.float64, requires_grad=True)
-    chain_ids = torch.tensor([[0, 0, 1, 1, 2, -1, -1], [4, 5, 5, 6, 6, 6, -1]])
+    chain_ids = torch.tensor(
+        [[0, 0, 1, 1, 2, -1, -1], [4, 5, 5, 6, 6, 6, -1]]
+    )
     valid = chain_ids.ne(-1)
     positions = chain_local_positions(chain_ids, valid)
     rotary = ChainLocalRotaryEmbedding(shape[-1]).to(dtype=torch.float64)
@@ -75,6 +77,46 @@ def test_lifted_sdpa_matches_dense_hybrid_outputs_and_gradients() -> None:
         torch.testing.assert_close(observed, expected, rtol=1e-9, atol=1e-9)
 
 
+def test_lifted_sdpa_matches_dense_when_cross_chain_attention_is_disabled() -> None:
+    torch.manual_seed(9)
+    shape = (2, 3, 7, 4)
+    query = torch.randn(shape, dtype=torch.float64)
+    key = torch.randn(shape, dtype=torch.float64)
+    value = torch.randn(shape, dtype=torch.float64)
+    chain_ids = torch.tensor([[0, 0, 1, 1, 2, -1, -1], [4, 5, 5, 6, 6, 6, -1]])
+    valid = chain_ids.ne(-1)
+    positions = chain_local_positions(chain_ids, valid)
+    rotary = ChainLocalRotaryEmbedding(shape[-1]).to(dtype=torch.float64)
+    rotary_query = rotary(query, positions)
+    rotary_key = rotary(key, positions)
+    cross_scale = torch.tensor([-0.35, 0.8, 1.7], dtype=torch.float64)
+
+    dense, _ = dense_hybrid_attention(
+        query,
+        key,
+        value,
+        rotary_query,
+        rotary_key,
+        chain_ids,
+        valid,
+        cross_scale,
+        allow_cross_chain=False,
+    )
+    lifted = lifted_sdpa_hybrid_attention(
+        query,
+        key,
+        value,
+        rotary_query,
+        rotary_key,
+        chain_ids,
+        valid,
+        cross_scale,
+        allow_cross_chain=False,
+    )
+
+    torch.testing.assert_close(lifted, dense, rtol=1e-10, atol=1e-10)
+
+
 def test_module_training_path_matches_dense_export_path() -> None:
     torch.manual_seed(11)
     lifted = PairAwareSelfAttention(32, 4, implementation="lifted_sdpa").double()
@@ -95,3 +137,29 @@ def test_module_training_path_matches_dense_export_path() -> None:
     valid_row_sums = weights.sum(dim=-1)[valid[:, None, :].expand(-1, 4, -1)]
     torch.testing.assert_close(valid_row_sums, torch.ones_like(valid_row_sums))
     assert torch.count_nonzero(weights[:, :, :, -1]).item() == 0
+
+
+def test_independent_attention_view_blocks_partner_context() -> None:
+    torch.manual_seed(13)
+    module = (
+        PairAwareSelfAttention(32, 4, implementation="lifted_sdpa").double().eval()
+    )
+    first = torch.randn(1, 8, 32, dtype=torch.float64)
+    second = first.clone()
+    second[:, 4:7] = torch.randn(1, 3, 32, dtype=torch.float64)
+    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, -1]])
+    valid = chain_ids.ne(-1)
+
+    first_independent, _ = module(
+        first, chain_ids, valid, allow_cross_chain=False
+    )
+    second_independent, _ = module(
+        second, chain_ids, valid, allow_cross_chain=False
+    )
+    torch.testing.assert_close(
+        first_independent[:, :4], second_independent[:, :4], rtol=0.0, atol=0.0
+    )
+
+    first_joint, _ = module(first, chain_ids, valid)
+    second_joint, _ = module(second, chain_ids, valid)
+    assert not torch.allclose(first_joint[:, :4], second_joint[:, :4])

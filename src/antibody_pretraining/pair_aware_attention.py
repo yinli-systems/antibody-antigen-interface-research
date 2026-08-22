@@ -7,8 +7,10 @@ per-head scale, and the paper's fixed +1 cross-chain logit bias.
 
 The default implementation lifts both score families into one SDPA call per
 query chain.  This keeps the exact joint softmax over all chains while avoiding
-materialization of a full attention matrix during pretraining.  The dense path
-exists for numerical auditing and frozen interaction-matrix export only.
+materialization of a full attention matrix during pretraining.  Callers can
+also disable cross-chain keys to obtain a partner-independent retrieval view.
+The dense path exists for numerical auditing and frozen interaction-matrix
+export only.
 """
 
 from __future__ import annotations
@@ -109,6 +111,7 @@ def dense_hybrid_attention(
     dropout_p: float = 0.0,
     training: bool = False,
     return_weights: bool = False,
+    allow_cross_chain: bool = True,
 ) -> tuple[Tensor, Tensor | None]:
     """Evaluate the hybrid attention formula with an explicit score matrix."""
     if query.shape != key.shape or query.shape != value.shape:
@@ -124,6 +127,8 @@ def dense_hybrid_attention(
         raise ValueError("cross_scale must contain one value per attention head")
     if not 0.0 <= dropout_p < 1.0:
         raise ValueError("dropout_p must be in [0, 1)")
+    if not isinstance(allow_cross_chain, bool):
+        raise ValueError("allow_cross_chain must be boolean")
 
     inverse_sqrt_head = head_dimension**-0.5
     raw_scores = torch.matmul(query, key.transpose(-1, -2)) * inverse_sqrt_head
@@ -137,6 +142,8 @@ def dense_hybrid_attention(
     cross_scores = raw_scores * cross_scale[None, :, None, None]
     cross_scores = cross_scores + cross_logit_bias
     scores = torch.where(same_chain, rotary_scores, cross_scores)
+    if not allow_cross_chain:
+        scores = scores.masked_fill(pair_valid & ~same_chain, -torch.inf)
     scores = scores.masked_fill(~valid_mask[:, None, None, :], -torch.inf)
 
     # Avoid NaNs for padded query rows without changing any valid distribution.
@@ -168,6 +175,7 @@ def lifted_sdpa_hybrid_attention(
     cross_logit_bias: float = 1.0,
     dropout_p: float = 0.0,
     training: bool = False,
+    allow_cross_chain: bool = True,
 ) -> Tensor:
     """Run exact hybrid attention without storing a full attention matrix.
 
@@ -190,6 +198,8 @@ def lifted_sdpa_hybrid_attention(
         raise ValueError("cross_scale must contain one value per attention head")
     if not 0.0 <= dropout_p < 1.0:
         raise ValueError("dropout_p must be in [0, 1)")
+    if not isinstance(allow_cross_chain, bool):
+        raise ValueError("allow_cross_chain must be boolean")
 
     lifted_dimension = _next_multiple(2 * head_dimension + 1, 8)
     attended = torch.zeros_like(value)
@@ -203,24 +213,42 @@ def lifted_sdpa_hybrid_attention(
             continue
         valid_indices = torch.nonzero(valid, as_tuple=False).flatten()
         valid_chain_ids = chain_ids[batch_index, valid_indices]
-        raw_keys = key[batch_index : batch_index + 1, :, valid_indices]
-        rope_keys = rotary_key[batch_index : batch_index + 1, :, valid_indices]
-        values = value[batch_index : batch_index + 1, :, valid_indices]
 
         for identifier in torch.unique(valid_chain_ids).tolist():
             query_indices = torch.nonzero(
                 valid & chain_ids[batch_index].eq(identifier), as_tuple=False
             ).flatten()
+            key_indices = valid_indices if allow_cross_chain else query_indices
+            key_chain_ids = chain_ids[batch_index, key_indices]
+            raw_keys = key[batch_index : batch_index + 1, :, key_indices]
+            rope_keys = rotary_key[batch_index : batch_index + 1, :, key_indices]
+            values = value[batch_index : batch_index + 1, :, key_indices]
             raw_queries = query[batch_index : batch_index + 1, :, query_indices]
             rope_queries = rotary_query[batch_index : batch_index + 1, :, query_indices]
+            if not allow_cross_chain:
+                chain_output = F.scaled_dot_product_attention(
+                    rope_queries,
+                    rope_keys,
+                    values,
+                    dropout_p=effective_dropout,
+                    is_causal=False,
+                    scale=scale,
+                )
+                # Keep the joint-view-only scale in the distributed autograd
+                # graph so DDP/FSDP can use one static parameter set.
+                chain_output = chain_output + cross_scale.sum() * 0.0
+                attended[batch_index : batch_index + 1, :, query_indices] = (
+                    chain_output
+                )
+                continue
             query_lift = query.new_zeros(
                 (1, head_count, query_indices.numel(), lifted_dimension)
             )
             key_lift = key.new_zeros(
-                (1, head_count, valid_indices.numel(), lifted_dimension)
+                (1, head_count, key_indices.numel(), lifted_dimension)
             )
             value_lift = value.new_zeros(
-                (1, head_count, valid_indices.numel(), lifted_dimension)
+                (1, head_count, key_indices.numel(), lifted_dimension)
             )
             query_lift[..., :head_dimension] = rope_queries
             query_lift[..., head_dimension : 2 * head_dimension] = (
@@ -228,7 +256,7 @@ def lifted_sdpa_hybrid_attention(
             )
             query_lift[..., 2 * head_dimension] = bias_query
 
-            same = valid_chain_ids.eq(identifier)[None, None, :, None]
+            same = key_chain_ids.eq(identifier)[None, None, :, None]
             key_lift[..., :head_dimension] = torch.where(
                 same, rope_keys, torch.zeros_like(rope_keys)
             )
@@ -294,6 +322,7 @@ class PairAwareSelfAttention(nn.Module):
         valid_mask: Tensor,
         *,
         return_attention: bool = False,
+        allow_cross_chain: bool = True,
     ) -> tuple[Tensor, Tensor | None]:
         if hidden.ndim != 3:
             raise ValueError("hidden must have shape [batch, tokens, embedding]")
@@ -302,6 +331,8 @@ class PairAwareSelfAttention(nn.Module):
             raise ValueError("hidden embedding dimension differs from the module")
         if chain_ids.shape != (batch_size, token_count) or valid_mask.shape != chain_ids.shape:
             raise ValueError("Chain metadata shape differs from hidden")
+        if not isinstance(allow_cross_chain, bool):
+            raise ValueError("allow_cross_chain must be boolean")
 
         shape = (batch_size, token_count, self.head_count, self.head_dimension)
         query = self.q_proj(hidden).view(shape).transpose(1, 2)
@@ -325,6 +356,7 @@ class PairAwareSelfAttention(nn.Module):
                 dropout_p=self.dropout_p,
                 training=self.training,
                 return_weights=return_attention,
+                allow_cross_chain=allow_cross_chain,
             )
         else:
             attended = lifted_sdpa_hybrid_attention(
@@ -339,6 +371,7 @@ class PairAwareSelfAttention(nn.Module):
                 cross_logit_bias=self.cross_logit_bias,
                 dropout_p=self.dropout_p,
                 training=self.training,
+                allow_cross_chain=allow_cross_chain,
             )
             weights = None
         merged = attended.transpose(1, 2).contiguous().view_as(hidden)
