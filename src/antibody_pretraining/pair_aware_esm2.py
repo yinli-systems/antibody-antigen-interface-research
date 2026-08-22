@@ -167,10 +167,11 @@ def selective_attention_checkpoint_policy_counts() -> dict[str, int]:
 class PairAwareMLMOutput:
     """Return logits plus a chain-balanced distributed loss numerator."""
 
-    logits: Tensor
+    logits: Tensor | None
     balanced_chain_loss_sum: Tensor | None
     contributing_chain_count: Tensor
     last_attention: Tensor | None
+    hidden_states: Tensor | None
 
 
 def esm_gelu(value: Tensor) -> Tensor:
@@ -304,6 +305,8 @@ class PairAwareESM2(nn.Module):
         labels: Tensor | None = None,
         return_last_attention: bool = False,
         allow_cross_chain_attention: bool = True,
+        return_hidden_states: bool = False,
+        compute_logits: bool = True,
     ) -> PairAwareMLMOutput:
         if tokens.ndim != 2 or chain_ids.shape != tokens.shape:
             raise ValueError("tokens and chain_ids must be equal rank-two tensors")
@@ -311,6 +314,12 @@ class PairAwareESM2(nn.Module):
             raise ValueError("Input exceeds the frozen maximum token count")
         if not isinstance(allow_cross_chain_attention, bool):
             raise ValueError("allow_cross_chain_attention must be boolean")
+        if not isinstance(return_hidden_states, bool):
+            raise ValueError("return_hidden_states must be boolean")
+        if not isinstance(compute_logits, bool):
+            raise ValueError("compute_logits must be boolean")
+        if labels is not None and not compute_logits:
+            raise ValueError("MLM labels require compute_logits")
         valid_mask = tokens.ne(self.config.padding_index)
         if bool((chain_ids[valid_mask] < 0).any()) or bool((chain_ids[~valid_mask] != -1).any()):
             raise ValueError("chain_ids must be non-negative for tokens and -1 for padding")
@@ -371,13 +380,16 @@ class PairAwareESM2(nn.Module):
                     f"layer={layer_index} phase=forward_done",
                     flush=True,
                 )
-        logits = self.lm_head(
-            self.emb_layer_norm_after(hidden),
-            self.embed_tokens.weight,
+        hidden = self.emb_layer_norm_after(hidden)
+        logits = (
+            self.lm_head(hidden, self.embed_tokens.weight)
+            if compute_logits
+            else None
         )
         loss_sum = None
         chain_count = torch.zeros((), dtype=torch.long, device=tokens.device)
         if labels is not None:
+            assert logits is not None
             loss_sum, chain_count = self._balanced_chain_loss(
                 logits, labels, chain_ids, valid_mask
             )
@@ -386,6 +398,7 @@ class PairAwareESM2(nn.Module):
             balanced_chain_loss_sum=loss_sum,
             contributing_chain_count=chain_count,
             last_attention=last_attention,
+            hidden_states=hidden if return_hidden_states else None,
         )
 
 

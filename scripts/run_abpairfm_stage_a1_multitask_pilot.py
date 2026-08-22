@@ -57,6 +57,11 @@ from run_abpairfm_3b_real_data_gate_v2 import (  # noqa: E402
 EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v3",
     "abpairfm_stage_a1_multitask_pilot_v4",
+    "abpairfm_stage_a1_multitask_pilot_v5",
+}
+GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_multitask_pilot_v4",
+    "abpairfm_stage_a1_multitask_pilot_v5",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -150,14 +155,27 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         or optimization.get("accumulation_steps") != 2
     ):
         raise RuntimeError("Stage-A1 pilot authorization or shape differs")
-    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4" and (
+    if protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS and (
         optimization.get("microbatch_pairs_per_rank") != 6
         or protocol.get("loss", {}).get("retrieval", {}).get("candidate_scope")
         != "same_node_all_ranks"
         or protocol.get("pilot_manifest", {}).get("string_retrieval_supervision")
         is not False
     ):
-        raise RuntimeError("Stage-A1 v4 global-retrieval gate differs")
+        raise RuntimeError("Stage-A1 global-retrieval gate differs")
+    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v5" and (
+        protocol.get("loss", {}).get("retrieval", {}).get("representation_view")
+        != "chain_independent_no_cross_attention"
+        or protocol.get("loss", {}).get("contact", {}).get("representation_view")
+        != "joint_cross_chain_attention"
+        or protocol.get("loss", {})
+        .get("masked_language_modeling", {})
+        .get("representation_view")
+        != "joint_cross_chain_attention"
+        or protocol.get("counterfactual_gate", {}).get("status")
+        != "PASS_TRAIN_ONLY_MATERIALIZATION"
+    ):
+        raise RuntimeError("Stage-A1 v5 representation-view gate differs")
     if protocol["checkpoint"]["generation"] != arguments.input_generation:
         raise RuntimeError("Stage-A1 input generation differs from protocol")
     if (
@@ -185,7 +203,7 @@ def _load_manifest(
         or receipt.get("cross_source_exact_pair_overlap_after_filter") != 0
     ):
         raise RuntimeError("Stage-A1 manifest receipt differs")
-    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4" and (
+    if protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS and (
         receipt.get("counts", {}).get("retrieval_supervised_records")
         != protocol["pilot_manifest"]["expected_retrieval_supervised_records"]
         or receipt.get("counts", {}).get(
@@ -206,8 +224,7 @@ def _load_manifest(
             or min(len(value.get("sequence1", "")), len(value.get("sequence2", "")))
             < 3
             or (
-                protocol.get("format_version")
-                == "abpairfm_stage_a1_multitask_pilot_v4"
+                protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS
                 and (
                     not value.get("endpoint_cluster1")
                     or not value.get("endpoint_cluster2")
@@ -345,6 +362,40 @@ def _global_retrieval_candidates(
     return torch.cat(all_gather(left), dim=0), torch.cat(all_gather(right), dim=0)
 
 
+def _stage_a1_backbone_views(
+    backbone: PairAwareESM2,
+    batch: StageA1Microbatch,
+    *,
+    independent_retrieval_view: bool,
+) -> tuple[Any, torch.Tensor, torch.Tensor, torch.Tensor]:
+    output = backbone(
+        batch.tokens,
+        batch.chain_ids,
+        labels=batch.labels,
+        return_hidden_states=True,
+    )
+    if output.balanced_chain_loss_sum is None or output.hidden_states is None:
+        raise RuntimeError("Stage-A1 backbone did not expose MLM and hidden states")
+    retrieval_indices = batch.retrieval_batch_indices
+    joint_hidden = output.hidden_states[retrieval_indices]
+    retrieval_chain_ids = batch.chain_ids[retrieval_indices]
+    retrieval_hidden = joint_hidden
+    if independent_retrieval_view:
+        independent_output = backbone(
+            batch.tokens[retrieval_indices],
+            retrieval_chain_ids,
+            allow_cross_chain_attention=False,
+            return_hidden_states=True,
+            compute_logits=False,
+        )
+        if independent_output.hidden_states is None:
+            raise RuntimeError(
+                "Stage-A1 independent retrieval hidden states are missing"
+            )
+        retrieval_hidden = independent_output.hidden_states
+    return output, joint_hidden, retrieval_hidden, retrieval_chain_ids
+
+
 def _sync_replicated_head_gradients(heads: StageA1Heads, world_size: int) -> None:
     for parameter in heads.parameters():
         if parameter.grad is None:
@@ -457,9 +508,9 @@ def main() -> None:
         backbone.train()
         heads.train()
         torch.cuda.reset_peak_memory_stats(device)
-        captured: list[torch.Tensor] = []
-        hook = backbone.emb_layer_norm_after.register_forward_hook(
-            lambda _module, _inputs, output: captured.append(output)
+        independent_retrieval_view = (
+            protocol.get("format_version")
+            == "abpairfm_stage_a1_multitask_pilot_v5"
         )
         update_records: list[dict[str, float]] = []
         from torch.nn.attention import SDPBackend, sdpa_kernel
@@ -498,17 +549,22 @@ def main() -> None:
                 synchronize = accumulation == optimization["accumulation_steps"] - 1
                 backbone.set_requires_gradient_sync(synchronize)
                 backbone.set_is_last_backward(synchronize)
-                captured.clear()
                 with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
                     device_type="cuda", dtype=torch.bfloat16
                 ):
-                    output = backbone(batch.tokens, batch.chain_ids, labels=batch.labels)
-                    if output.balanced_chain_loss_sum is None or len(captured) != 1:
-                        raise RuntimeError("Stage-A1 backbone did not expose MLM and hidden states")
+                    (
+                        output,
+                        joint_hidden,
+                        retrieval_hidden,
+                        retrieval_chain_ids,
+                    ) = _stage_a1_backbone_views(
+                        backbone,
+                        batch,
+                        independent_retrieval_view=independent_retrieval_view,
+                    )
+                    assert output.balanced_chain_loss_sum is not None
                     mlm_loss = output.balanced_chain_loss_sum / output.contributing_chain_count
                     retrieval_indices = batch.retrieval_batch_indices
-                    retrieval_hidden = captured[0][retrieval_indices]
-                    retrieval_chain_ids = batch.chain_ids[retrieval_indices]
                     retrieval_allowed = batch.retrieval_allowed
                     retrieval_candidate_left = None
                     retrieval_candidate_right = None
@@ -533,8 +589,9 @@ def main() -> None:
                             retrieval_chain_ids,
                         )
                     multitask = heads.loss(
-                        hidden=retrieval_hidden,
+                        hidden=joint_hidden,
                         chain_ids=retrieval_chain_ids,
+                        retrieval_hidden=retrieval_hidden,
                         mlm_loss=mlm_loss,
                         retrieval_allowed=retrieval_allowed,
                         pair_batch_indices=torch.searchsorted(
@@ -618,7 +675,6 @@ def main() -> None:
                         "update": update + 1,
                     },
                 )
-        hook.remove()
         rank_record = {
             "device_name": properties.name,
             "hostname": socket.gethostname(),
@@ -672,7 +728,7 @@ def main() -> None:
             status = "FAIL_STAGE_A1_MULTITASK_PILOT_MEMORY_GATE"
         elif candidate_floor < required_candidate_floor:
             status = "FAIL_STAGE_A1_RETRIEVAL_CANDIDATE_GATE"
-        elif protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4":
+        elif protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS:
             status = "PASS_STAGE_A1_GLOBAL_RETRIEVAL_PILOT_CHECKPOINT_VERIFIED"
         else:
             status = "PASS_STAGE_A1_MULTITASK_PILOT_CHECKPOINT_VERIFIED"
@@ -733,6 +789,9 @@ def main() -> None:
                         for record in update_records
                     ),
                     "minimum_allowed_candidates_per_query": candidate_floor,
+                    "representation_view": protocol["loss"]["retrieval"].get(
+                        "representation_view", "joint_cross_chain_attention"
+                    ),
                     "required_minimum_candidates_per_query": required_candidate_floor,
                 },
                 "source_sha256": observed_source_sha256,

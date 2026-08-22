@@ -55,6 +55,7 @@ def test_forward_uses_chain_balanced_loss_and_exports_last_attention() -> None:
     labels[0, 2] = 6
     labels[0, 7] = 9
     output = model(tokens, chain_ids, labels=labels, return_last_attention=True)
+    assert output.logits is not None
     assert output.logits.shape == (1, 10, 33)
     assert output.contributing_chain_count.item() == 2
     assert output.balanced_chain_loss_sum is not None
@@ -72,19 +73,50 @@ def test_chain_independent_model_view_is_invariant_to_partner_tokens() -> None:
     second = torch.tensor([[0, 5, 6, 2, 0, 11, 12, 2, 1]])
     chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, -1]])
 
-    first_independent = model(
+    first_output = model(
         first, chain_ids, allow_cross_chain_attention=False
-    ).logits
-    second_independent = model(
+    )
+    second_output = model(
         second, chain_ids, allow_cross_chain_attention=False
-    ).logits
+    )
+    assert first_output.logits is not None and second_output.logits is not None
+    first_independent = first_output.logits
+    second_independent = second_output.logits
     torch.testing.assert_close(
         first_independent[:, :4], second_independent[:, :4], rtol=0.0, atol=0.0
     )
 
-    first_joint = model(first, chain_ids).logits
-    second_joint = model(second, chain_ids).logits
+    first_joint_output = model(first, chain_ids)
+    second_joint_output = model(second, chain_ids)
+    assert first_joint_output.logits is not None
+    assert second_joint_output.logits is not None
+    first_joint = first_joint_output.logits
+    second_joint = second_joint_output.logits
     assert not torch.allclose(first_joint[:, :4], second_joint[:, :4])
+
+
+def test_hidden_only_forward_skips_lm_head() -> None:
+    model = PairAwareESM2(_small_config()).eval()
+    tokens = torch.tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]])
+    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, -1]])
+
+    def forbidden_head(*_args, **_kwargs):
+        raise AssertionError("hidden-only encoding must not run the MLM head")
+
+    model.lm_head.forward = forbidden_head  # type: ignore[method-assign]
+    output = model(
+        tokens,
+        chain_ids,
+        allow_cross_chain_attention=False,
+        return_hidden_states=True,
+        compute_logits=False,
+    )
+    assert output.logits is None
+    assert output.hidden_states is not None
+    assert output.hidden_states.shape == (1, 9, 32)
+
+    with pytest.raises(ValueError, match="MLM labels require"):
+        model(tokens, chain_ids, labels=tokens, compute_logits=False)
 
 
 def test_compatible_loader_allows_only_new_cross_scales() -> None:

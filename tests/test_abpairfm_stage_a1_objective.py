@@ -125,3 +125,33 @@ def test_stage_a1_supports_rectangular_global_retrieval_candidates() -> None:
     assert hidden.grad is not None and torch.isfinite(hidden.grad).all()
     assert candidate_left.grad is not None and torch.isfinite(candidate_left.grad).all()
     assert candidate_right.grad is not None and torch.isfinite(candidate_right.grad).all()
+
+
+def test_stage_a1_uses_separate_retrieval_and_joint_contact_views() -> None:
+    torch.manual_seed(79)
+    heads = StageA1Heads(embedding_dimension=4, projection_dimension=2)
+    joint_hidden = torch.randn(2, 4, 4, requires_grad=True)
+    independent_hidden = torch.randn(2, 4, 4, requires_grad=True)
+    chain_ids = torch.tensor([[0, 0, 1, 1], [0, 0, 1, 1]])
+    arguments = {
+        "hidden": joint_hidden,
+        "chain_ids": chain_ids,
+        "mlm_loss": joint_hidden.square().mean(),
+        "retrieval_allowed": torch.ones((2, 2), dtype=torch.bool),
+        "pair_batch_indices": torch.tensor([0, 0, 1, 1]),
+        "pair_left_token_indices": torch.tensor([0, 1, 0, 1]),
+        "pair_right_token_indices": torch.tensor([2, 3, 2, 3]),
+        "pair_labels": torch.tensor([1, 0, 1, 0]),
+    }
+    joint_only = heads.loss(**arguments)
+    split_view = heads.loss(
+        **arguments,
+        retrieval_hidden=independent_hidden,
+    )
+
+    torch.testing.assert_close(split_view.contact, joint_only.contact)
+    assert not torch.allclose(split_view.retrieval, joint_only.retrieval)
+    split_view.total.backward()
+    assert joint_hidden.grad is not None and torch.isfinite(joint_hidden.grad).all()
+    assert independent_hidden.grad is not None
+    assert torch.isfinite(independent_hidden.grad).all()
