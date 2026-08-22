@@ -56,10 +56,22 @@ The failure was not hidden. The retry first authenticates/materializes the
 official ESM2-3B checkpoint and then restores the immutable 252.6M-token
 Stage-A0 DCP, matching the already verified transfer-probe restore path.
 
-The retry (`1460747`) is the 200-update train-only pilot with explicit balanced
-MLM, bidirectional contrastive retrieval, and sparse contact BCE. A running job
-or a checkpoint is not a validated result; promotion requires finite losses,
-the memory gate, immutable DCP save, and collective checkpoint restore.
+The retry (`1460747`) completed all 200 train-only updates and returned
+`PASS_STAGE_A1_MULTITASK_PILOT_CHECKPOINT_VERIFIED`. The immutable DCP receipt
+and collective restore both match content SHA-256
+`ea00f5113c64f8edf1e17122e7921c2e4bffec328d07a02afa8d321cf4d6ffd7`.
+Mean total loss decreased from 3.3982 over the first 20 updates to 3.1001 over
+the final 20; MLM decreased from 2.6827 to 2.5528, and sparse contact BCE from
+1.1020 to 1.0921. The pilot processed 7,506,328 residue tokens at 3,312
+residue tokens/s with finite gradients and no test access.
+
+This is an objective-health pass, not a production-promotion result. Local
+retrieval loss collapsed from 0.8224 to 0.0061, showing that the in-batch
+negatives became too easy to support a strong interaction-learning claim.
+Allocated memory peaked at 91.7337% against the frozen 92% limit, leaving only
+0.266 percentage points of gate headroom. Production Stage-A1 therefore remains
+closed pending cross-rank, cluster-aware hard negatives and a lower-memory
+configuration; batch size must not be increased on the current setup.
 
 ## Automated next gates
 
