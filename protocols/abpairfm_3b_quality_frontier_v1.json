@@ -31,12 +31,15 @@
   "format_version": "abpairfm_3b_quality_frontier_v1",
   "public_baselines": {
     "mint_650m": {
-      "admission_status": "required_pending_checkpoint_audit",
+      "admission_status": "checkpoint_audited_pair_mlm_retrieval_contact_adapter_pending",
+      "backbone_label": "ESM2_650M",
+      "checkpoint_sha256": "84a4016365997cd9f0bccb07d746fa8f076ffd8e45aa0cbcf4e50a037161a342",
       "code_license": "MIT",
       "code_url": "https://github.com/VarunUllanat/mint",
       "checkpoint_url": "https://huggingface.co/varunullanat2012/mint/resolve/main/mint.ckpt",
       "development_cluster_exclusion": true,
-      "model_parameters": 650000000,
+      "model_parameters": 813371969,
+      "official_source_revision": "06694b7606e2d00b76ec58daf5c7aecdaf7cd283",
       "raw_physical_interactions": 2400000000,
       "role": "mandatory large-scale pair-aware representation and retrieval baseline; contact evaluation requires the same frozen train-only adapter contract",
       "same_contract_roles": [

@@ -51,7 +51,11 @@ def test_quality_frontier_requires_same_contract_small_and_large_baselines() -> 
     assert public["msa_pairformer_111m"]["model_parameters"] == 111_000_000
     assert public["pplm_650m"]["model_parameters"] == 650_000_000
     assert public["mint_650m"]["training_pairs_after_cluster_exclusion"] == 95_800_000
-    assert public["mint_650m"]["admission_status"] == "required_pending_checkpoint_audit"
+    assert public["mint_650m"]["admission_status"] == (
+        "checkpoint_audited_pair_mlm_retrieval_contact_adapter_pending"
+    )
+    assert public["mint_650m"]["model_parameters"] == 813_371_969
+    assert len(public["mint_650m"]["checkpoint_sha256"]) == 64
     assert protocol["compute_optimality"]["quality_per_gpu_hour_is_required"] is True
 
 
