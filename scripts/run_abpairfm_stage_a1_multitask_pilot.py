@@ -154,7 +154,8 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         optimization.get("microbatch_pairs_per_rank") != 6
         or protocol.get("loss", {}).get("retrieval", {}).get("candidate_scope")
         != "same_node_all_ranks"
-        or protocol.get("pilot_manifest", {}).get("string_direct_only") is not True
+        or protocol.get("pilot_manifest", {}).get("string_retrieval_supervision")
+        is not False
     ):
         raise RuntimeError("Stage-A1 v4 global-retrieval gate differs")
     if protocol["checkpoint"]["generation"] != arguments.input_generation:
@@ -186,11 +187,11 @@ def _load_manifest(
         raise RuntimeError("Stage-A1 manifest receipt differs")
     if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4" and (
         receipt.get("counts", {}).get("retrieval_supervised_records")
-        != protocol["pilot_manifest"]["total_records"]
+        != protocol["pilot_manifest"]["expected_retrieval_supervised_records"]
         or receipt.get("counts", {}).get(
             "retrieval_records_with_endpoint_cluster_ids"
         )
-        != protocol["pilot_manifest"]["total_records"]
+        != protocol["pilot_manifest"]["expected_retrieval_supervised_records"]
     ):
         raise RuntimeError("Stage-A1 v4 retrieval-cluster coverage differs")
     records: list[dict[str, Any]] = []
@@ -208,11 +209,12 @@ def _load_manifest(
                 protocol.get("format_version")
                 == "abpairfm_stage_a1_multitask_pilot_v4"
                 and (
-                    value.get("retrieval_supervision") is not True
-                    or not value.get("endpoint_cluster1")
+                    not value.get("endpoint_cluster1")
                     or not value.get("endpoint_cluster2")
                     or not value.get("endpoint_exact1_sha256")
                     or not value.get("endpoint_exact2_sha256")
+                    or value.get("retrieval_supervision")
+                    != (value.get("source") == "ppiref50k")
                 )
             )
         ):
