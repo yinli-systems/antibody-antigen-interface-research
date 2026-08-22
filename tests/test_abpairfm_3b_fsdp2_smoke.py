@@ -108,6 +108,32 @@ def test_reshard_argument_can_be_disabled(monkeypatch: pytest.MonkeyPatch) -> No
     assert module._arguments().reshard_after_forward is False
 
 
+def test_selective_activation_checkpoint_policy_can_be_selected(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module()
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            str(SCRIPT),
+            "--checkpoint",
+            "checkpoint.pt",
+            "--expected-size",
+            "1",
+            "--expected-sha256",
+            "0" * 64,
+            "--output",
+            "receipt.json",
+            "--expected-world-size",
+            "8",
+            "--activation-checkpoint-policy",
+            "selective_attention",
+        ],
+    )
+    assert module._arguments().activation_checkpoint_policy == "selective_attention"
+
+
 def test_hsdp_mesh_shape_is_explicit_and_divisible() -> None:
     module = _module()
     assert module._mesh_shape(4, 0) is None

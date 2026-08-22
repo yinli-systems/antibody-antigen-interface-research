@@ -20,7 +20,12 @@ from antibody_pretraining.pair_aware_distributed import (
     load_authenticated_esm2_into_fsdp2,
     optimizer_after_fsdp2,
 )
-from antibody_pretraining.pair_aware_esm2 import PairAwareESM2, PairAwareESM2Config
+from antibody_pretraining.pair_aware_esm2 import (
+    PairAwareESM2,
+    PairAwareESM2Config,
+    reset_selective_attention_checkpoint_policy_counts,
+    selective_attention_checkpoint_policy_counts,
+)
 
 
 CLAIM_BOUNDARY = (
@@ -60,6 +65,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--learning-rate", type=float, default=1e-5)
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--seed", type=int, default=1701)
+    parser.add_argument(
+        "--activation-checkpoint-policy",
+        choices=("full", "selective_attention"),
+        default="full",
+    )
     parser.add_argument(
         "--reshard-after-forward",
         action=argparse.BooleanOptionalAction,
@@ -213,7 +223,10 @@ def main() -> None:
             )
         _trace(rank, "data_parallel_mesh_ready", mesh_shape=mesh_shape or (1, world_size))
 
-        config = PairAwareESM2Config(activation_checkpointing=True)
+        config = PairAwareESM2Config(
+            activation_checkpointing=True,
+            activation_checkpoint_policy=arguments.activation_checkpoint_policy,
+        )
         with torch.device("meta"):
             model = PairAwareESM2(config)
         _trace(rank, "meta_model_ready")
@@ -245,6 +258,7 @@ def main() -> None:
             device=device,
         )
         model.train()
+        reset_selective_attention_checkpoint_policy_counts()
         torch.cuda.reset_peak_memory_stats(device)
         step_records: list[dict[str, float | int]] = []
         from torch.nn.attention import SDPBackend, sdpa_kernel
@@ -300,6 +314,9 @@ def main() -> None:
             "max_memory_allocated_bytes": torch.cuda.max_memory_allocated(device),
             "max_memory_reserved_bytes": torch.cuda.max_memory_reserved(device),
             "rank": rank,
+            "selective_checkpoint_dispatch": (
+                selective_attention_checkpoint_policy_counts()
+            ),
             "steps": step_records,
             "total_memory_bytes": properties.total_memory,
         }
@@ -315,6 +332,7 @@ def main() -> None:
             payload: dict[str, object] = {
                 "architecture": {
                     "activation_checkpointing": True,
+                    "activation_checkpoint_policy": config.activation_checkpoint_policy,
                     "attention": "pair_aware_lifted_flash_sdpa",
                     "embed_dimension": config.embed_dimension,
                     "head_count": config.head_count,
