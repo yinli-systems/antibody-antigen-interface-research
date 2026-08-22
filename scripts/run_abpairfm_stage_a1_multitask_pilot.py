@@ -470,6 +470,9 @@ def main() -> None:
             torch.cuda.synchronize(device)
             started = time.perf_counter()
             totals = torch.zeros(8, device=device, dtype=torch.float64)
+            minimum_allowed_candidates = torch.tensor(
+                float("inf"), device=device, dtype=torch.float64
+            )
             for accumulation in range(optimization["accumulation_steps"]):
                 microstep = update * optimization["accumulation_steps"] + accumulation
                 start = (
@@ -548,6 +551,9 @@ def main() -> None:
                         contact_weight=protocol["loss"]["contact"]["weight"],
                     )
                     loss = multitask.total / optimization["accumulation_steps"]
+                minimum_allowed_candidates.minimum_(
+                    retrieval_allowed.sum(dim=1).min().to(dtype=torch.float64)
+                )
                 if not bool(torch.isfinite(loss)):
                     raise RuntimeError("Stage-A1 multitask loss is nonfinite")
                 loss.backward()
@@ -571,6 +577,9 @@ def main() -> None:
             )
             optimizer.step()
             torch.distributed.all_reduce(totals)
+            torch.distributed.all_reduce(
+                minimum_allowed_candidates, op=torch.distributed.ReduceOp.MIN
+            )
             totals[:6] /= world_size * optimization["accumulation_steps"]
             totals[7] /= world_size * optimization["accumulation_steps"]
             torch.cuda.synchronize(device)
@@ -580,8 +589,11 @@ def main() -> None:
                 "elapsed_seconds": elapsed,
                 "gradient_norm": gradient_norm,
                 "mlm_loss": float(totals[1]),
+                "minimum_allowed_candidates_per_query": float(
+                    minimum_allowed_candidates
+                ),
                 "residue_tokens": float(totals[6]),
-                "retrieval_candidates_per_query": float(totals[7]),
+                "retrieval_candidate_matrix_width": float(totals[7]),
                 "retrieval_accuracy_left_to_right": float(totals[4]),
                 "retrieval_accuracy_right_to_left": float(totals[5]),
                 "retrieval_loss": float(totals[2]),
@@ -650,7 +662,8 @@ def main() -> None:
             for rank_value in ranks
         )
         candidate_floor = min(
-            record["retrieval_candidates_per_query"] for record in update_records
+            record["minimum_allowed_candidates_per_query"]
+            for record in update_records
         )
         required_candidate_floor = protocol["promotion_gates"].get(
             "minimum_retrieval_candidates_per_query", 2
@@ -715,7 +728,11 @@ def main() -> None:
                     "final_20_accuracy_right_to_left": _mean_records(
                         update_records, "retrieval_accuracy_right_to_left", 20
                     ),
-                    "minimum_candidates_per_query": candidate_floor,
+                    "candidate_matrix_width": min(
+                        record["retrieval_candidate_matrix_width"]
+                        for record in update_records
+                    ),
+                    "minimum_allowed_candidates_per_query": candidate_floor,
                     "required_minimum_candidates_per_query": required_candidate_floor,
                 },
                 "source_sha256": observed_source_sha256,
