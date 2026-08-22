@@ -58,3 +58,15 @@ def test_production_gate_streams_only_training_fields() -> None:
     assert '"sabdab2_heldout_accessed": False' in source
     assert '"downstream_labels_used": False' in source
     assert '"grouped_update_read": True' in source
+
+
+def test_nonfinite_gate_fails_before_optimizer_step_with_rank_evidence() -> None:
+    source = RUNNER.read_text(encoding="ascii")
+    finite_guard = source.index(
+        "if not math.isfinite(loss_sum_value) or not math.isfinite(gradient_norm):"
+    )
+    optimizer_step = source.index("optimizer.step()", finite_guard)
+    assert finite_guard < optimizer_step
+    assert "NONFINITE_GATE_DIAGNOSTIC=" in source
+    assert "dist.all_gather_object(rank_diagnostics, local_diagnostic)" in source
+    assert "nonfinite_gradient_names" in source

@@ -1,0 +1,54 @@
+{
+  "claim_boundary": "Development-decontaminated Stage A source construction only. Counts from structural views, unique exact sequence pairs, and STRING endpoint-cluster pairs are reported separately and are not added as if they had the same unit.",
+  "format_version": "abpairfm_3b_stage_a_source_progress_v1",
+  "observed_at_utc": "2026-08-21T23:56:34Z",
+  "pinder": {
+    "development_decontaminated_structural_systems": 865471,
+    "development_decontaminated_system_clusters": 17452,
+    "source_mapping_sequences": 714089,
+    "source_sequence_residues": 170199793,
+    "source_unique_exact_sequences": 47874,
+    "unique_exact_unordered_sequence_pairs": 56420,
+    "unique_full_endpoints": 41752
+  },
+  "ppiref50k": {
+    "archive_casefold_same_order_interfaces": 667,
+    "archive_exact_order_interfaces": 51088,
+    "archive_missing_interfaces": 0,
+    "archive_reverse_order_only_interfaces": 0,
+    "archive_split_interfaces": 51755,
+    "coverage_audit_job_id": 1458776,
+    "coverage_status": "AUDITED_NOT_NORMALIZED_NOT_AUTHORIZED",
+    "development_decontamination_job_id": 1458778,
+    "development_excluded_interfaces": 2983,
+    "development_homology_hit_rows": 317174,
+    "development_output_contact_pairs": 4127799,
+    "development_output_interfaces": 48488,
+    "development_output_unique_exact_full_sequence_pairs": 38459,
+    "development_status": "DECONTAMINATED_CROSS_SOURCE_DEDUP_PENDING",
+    "normalization_admitted_interfaces": 51471,
+    "normalization_dropped_below_contact_gate": 250,
+    "normalization_dropped_missing_full_sequence": 34,
+    "normalization_job_id": 1458777,
+    "normalization_state": "COMPLETED",
+    "pinder_priority_deduplication_job_id": 1458781,
+    "pinder_priority_output_contact_pairs": 2731147,
+    "pinder_priority_output_interfaces": 31124,
+    "pinder_priority_output_unique_exact_sequence_pairs": 24507,
+    "pinder_priority_removed_interfaces": 17364,
+    "pinder_priority_status": "PINDER_PRIORITY_DEDUPLICATED_STRING_MERGE_PENDING"
+  },
+  "stage_a_pair_gate": {
+    "minimum_string_endpoint_cluster_pairs": 2500000,
+    "pair_count_unit": "one edge per 50-percent-identity endpoint-cluster pair",
+    "reason": "Use a self-contained STRING scale gate so cross-source overlap cannot inflate authorization. Structural sources remain separately weighted supervised views."
+  },
+  "string_v12": {
+    "development_decontaminated_tier1_endpoint_cluster_pairs": 1988592,
+    "supplemental_cluster_audit_job_id": 1458771,
+    "supplemental_universe_job_id": 1458762,
+    "supplemental_universe_state": "RUNNING",
+    "tier1_deficit_to_gate": 511408
+  },
+  "test_access": false
+}
