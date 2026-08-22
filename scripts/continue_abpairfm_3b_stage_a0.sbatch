@@ -15,6 +15,7 @@ readonly DATA_ROOT=/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a0_st
 readonly OUTPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a0_string25m_v1
 readonly PROTOCOL_SHA256=a783f3b20516fbb2c85dba27833d3125683184ae2be608dfcfdbf91e58a3747b
 readonly SOURCE_SHA256=d73682abfb2ad749ba5ad05be2d1450f0d0a9ad0f65435235611056673aae0b4
+readonly EXCLUDED_TRAINING_NODE=wqd10naf05g3
 readonly COMPLETED_INDEX=${ABPAIRFM_COMPLETED_SEGMENT_INDEX:?missing completed segment index}
 readonly NEXT_INDEX=$((COMPLETED_INDEX + 1))
 readonly MAX_UNIQUE_SEGMENTS=112
@@ -91,6 +92,7 @@ fi
 
 readonly NEXT_JOB=$(
   sbatch --parsable \
+    --exclude="${EXCLUDED_TRAINING_NODE}" \
     --export=ALL,ABPAIRFM_SEGMENT_INDEX="${NEXT_INDEX}",ABPAIRFM_INPUT_CHECKPOINT_ROOT="${CHECKPOINT_ANCHORS[0]}",ABPAIRFM_INPUT_GENERATION="${CHECKPOINT_ANCHORS[1]}",ABPAIRFM_EXPECTED_INPUT_CONTENT_SHA256="${CHECKPOINT_ANCHORS[2]}" \
     "${PROJECT}/scripts/submit_abpairfm_3b_stage_a0_segment.sbatch"
 )
@@ -107,8 +109,9 @@ if [[ $((NEXT_INDEX + 1)) -lt "${MAX_UNIQUE_SEGMENTS}" ]]; then
       --export=ALL,ABPAIRFM_COMPLETED_SEGMENT_INDEX="${NEXT_INDEX}" \
       "${PROJECT}/scripts/continue_abpairfm_3b_stage_a0.sbatch"
   )
-  printf 'next_job=%s following_manifest_job=%s watchdog_job=%s\n' \
-    "${NEXT_JOB}" "${FOLLOWING_MANIFEST_JOB}" "${WATCHDOG_JOB}"
+  printf 'next_job=%s following_manifest_job=%s watchdog_job=%s excluded_training_node=%s\n' \
+    "${NEXT_JOB}" "${FOLLOWING_MANIFEST_JOB}" "${WATCHDOG_JOB}" "${EXCLUDED_TRAINING_NODE}"
 else
-  printf 'next_job=%s unique_manifest_frontier=%s\n' "${NEXT_JOB}" "${MAX_UNIQUE_SEGMENTS}"
+  printf 'next_job=%s unique_manifest_frontier=%s excluded_training_node=%s\n' \
+    "${NEXT_JOB}" "${MAX_UNIQUE_SEGMENTS}" "${EXCLUDED_TRAINING_NODE}"
 fi
