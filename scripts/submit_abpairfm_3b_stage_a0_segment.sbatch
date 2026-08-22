@@ -44,9 +44,21 @@ for name in "${GPU_NAMES[@]}"; do
     exit 2
   fi
 done
-if [[ "${SEGMENT_INDEX}" -ne 0 ]]; then
-  echo "This reviewed launcher starts segment zero only; successors require checkpoint anchors" >&2
-  exit 2
+RESUME_ARGUMENTS=()
+if [[ "${SEGMENT_INDEX}" -eq 0 ]]; then
+  if [[ -n "${ABPAIRFM_INPUT_CHECKPOINT_ROOT:-}" || -n "${ABPAIRFM_INPUT_GENERATION:-}" || -n "${ABPAIRFM_EXPECTED_INPUT_CONTENT_SHA256:-}" ]]; then
+    echo "Segment zero cannot receive continuation anchors" >&2
+    exit 2
+  fi
+else
+  : "${ABPAIRFM_INPUT_CHECKPOINT_ROOT:?successor requires checkpoint root}"
+  : "${ABPAIRFM_INPUT_GENERATION:?successor requires checkpoint generation}"
+  : "${ABPAIRFM_EXPECTED_INPUT_CONTENT_SHA256:?successor requires checkpoint content SHA-256}"
+  RESUME_ARGUMENTS=(
+    --input-checkpoint-root "${ABPAIRFM_INPUT_CHECKPOINT_ROOT}"
+    --input-generation "${ABPAIRFM_INPUT_GENERATION}"
+    --expected-input-content-sha256 "${ABPAIRFM_EXPECTED_INPUT_CONTENT_SHA256}"
+  )
 fi
 mkdir -p "${OUTPUT_ROOT}/results" "${OUTPUT_ROOT}/progress" "${DCP_ROOT}"
 for path in "${MANIFEST}" "${MANIFEST_RECEIPT}" "${PROTOCOL}" "${CHECKPOINT}"; do
@@ -73,6 +85,7 @@ test ! -e "${DCP_ROOT}/${SEGMENT}"
   --checkpoint-root "${DCP_ROOT}" \
   --result "${RESULT}" \
   --progress "${PROGRESS}" \
+  "${RESUME_ARGUMENTS[@]}" \
   --expected-world-size 8 \
   --shard-group-size 4 \
   --microbatch-pairs 7 \
