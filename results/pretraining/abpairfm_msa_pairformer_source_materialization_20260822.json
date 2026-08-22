@@ -1,0 +1,90 @@
+{
+  "authorization": {
+    "development_contact_evaluation": false,
+    "development_pair_retrieval": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Source-only MSA Pairformer materialization and runtime-gap audit. No checkpoint was loaded, no MSA was generated, and no train, development, validation, frozen-test, or external example was scored.",
+  "fixed_runtime_audit": {
+    "fixed_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "install_into_fixed_environment": false,
+    "numpy_version": "1.26.4",
+    "present": [
+      "Bio",
+      "numpy",
+      "scipy",
+      "sklearn",
+      "torch"
+    ],
+    "torch_version": "2.7.1+cu128",
+    "unavailable": [
+      "cuequivariance",
+      "cuequivariance_torch",
+      "einx",
+      "einops",
+      "environs",
+      "huggingface_hub",
+      "jaxtyping"
+    ]
+  },
+  "format_version": "abpairfm_msa_pairformer_source_materialization_v1",
+  "input_modality_gate": {
+    "audited_search_roots": [
+      "/ssd/scxi253/model_deployment/sources",
+      "/ssd/scxi253/model_deployment/models",
+      "/ssd/scxi253/model_deployment/data/framecontact_20260730"
+    ],
+    "paired_msa_a3m_or_stockholm_found_within_depth_four": false,
+    "paired_msa_comparison_ready": false,
+    "query_only_must_be_reported_separately": true,
+    "role": "Information-richer contact upper bound and pair-trunk probe, not a same-input replacement for sequence-only retrieval baselines."
+  },
+  "materialization": {
+    "archive": {
+      "bytes": 7606011,
+      "path": "/ssd/scxi253/model_deployment/sources/acquisition-msa-pairformer-875363570df1ae484cf725aba382790444223005/source.tar.gz",
+      "sha256": "3a41b65a82371f26ae3bd03cfa74a0e2868344f97ee90b22cce21b48f0e8de7d"
+    },
+    "file_count": 69,
+    "source_root": "/ssd/scxi253/model_deployment/sources/msa-pairformer-875363570df1ae484cf725aba382790444223005",
+    "status": "SOURCE_MATERIALIZED_CREATE_ONLY"
+  },
+  "recovery_evidence": {
+    "failed_remote_codeload_attempt": {
+      "bytes": 1240609,
+      "gzip_validation": "FAILED_UNEXPECTED_EOF",
+      "preserved_path": "/ssd/scxi253/model_deployment/sources/acquisition-msa-pairformer-875363570df1ae484cf725aba382790444223005/source.tar.gz.partial",
+      "sha256": "2b57fdfe71bcc1ab8f9279da13645c031aaddae46949790981644d1cd3813a58"
+    },
+    "recovery": "Downloaded and gzip-validated the exact revision locally, transferred it to the remote acquisition directory, then revalidated byte count, SHA-256, and gzip before create-only extraction."
+  },
+  "source": {
+    "archive_url": "https://codeload.github.com/yoakiyama/MSA_Pairformer/tar.gz/875363570df1ae484cf725aba382790444223005",
+    "committed_at_utc": "2026-07-24T18:45:54Z",
+    "key_file_sha256": {
+      "LICENSE": "bed4686d4589b5fca392f03ade243b288b28fa6914af1f798a3836217627bc85",
+      "MIT_LICENSE": "31a76013ad1766e59ffc496b935159f4123393ff7aca35137fa8734e5fffe3c7",
+      "MSA_Pairformer/model.py": "32d7d02fde9fdadbc8f6871f08a5c53a44d8f759bc5ffbc441698e07a1ac8dfe",
+      "pyproject.toml": "f9ffa1325c73f6b7b3648750e0a658866621aee8ed4ae7f5a6f607d8e396da4d"
+    },
+    "package_version": "1.0.2",
+    "repository": "https://github.com/yoakiyama/MSA_Pairformer",
+    "revision": "875363570df1ae484cf725aba382790444223005",
+    "standard_pytorch_triangle_fallback_present": true
+  },
+  "status": "SOURCE_MATERIALIZED_WEIGHTS_RUNTIME_AND_MSA_BLOCKED",
+  "test_access": false,
+  "weight_gate": {
+    "expected_official_filenames_from_pinned_source": [
+      "model_cuex.bin",
+      "confind_contact.bin",
+      "contact.bin"
+    ],
+    "huggingface_metadata_endpoint_reachable_from_local_or_remote": false,
+    "model_repository": "yakiyama/MSA-Pairformer",
+    "weights_downloaded": false,
+    "weights_loaded": false,
+    "weights_sha256_bound": false
+  }
+}
