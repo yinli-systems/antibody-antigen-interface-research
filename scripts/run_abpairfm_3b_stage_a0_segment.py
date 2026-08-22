@@ -77,6 +77,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument("--campaign-protocol", type=Path, required=True)
     parser.add_argument("--expected-campaign-protocol-sha256", required=True)
+    parser.add_argument("--expected-source-sha256", required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--expected-checkpoint-size", type=int, required=True)
     parser.add_argument("--expected-checkpoint-sha256", required=True)
@@ -131,6 +132,7 @@ def _validate(arguments: argparse.Namespace) -> None:
     for value in (
         arguments.expected_campaign_protocol_sha256,
         arguments.expected_checkpoint_sha256,
+        arguments.expected_source_sha256,
     ):
         if len(value) != 64 or any(character not in "0123456789abcdef" for character in value):
             raise ValueError("Expected SHA-256 is malformed")
@@ -240,6 +242,8 @@ def main() -> None:
     project_root = arguments.project_root.resolve()
     campaign = _load_campaign(arguments)
     source_sha256 = _source_sha256(project_root)
+    if source_sha256 != arguments.expected_source_sha256:
+        raise RuntimeError("Reviewed Stage-A0 source digest differs from launch anchor")
     records, manifest_sha256, manifest_receipt_sha256 = _load_manifest(arguments)
     prior_receipt = _input_receipt(arguments)
     provenance = {

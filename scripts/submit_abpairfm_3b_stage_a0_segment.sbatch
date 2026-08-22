@@ -63,6 +63,7 @@ test ! -e "${DCP_ROOT}/${SEGMENT}"
   --project-root "${PROJECT}" \
   --campaign-protocol "${PROTOCOL}" \
   --expected-campaign-protocol-sha256 "${PROTOCOL_SHA256}" \
+  --expected-source-sha256 d73682abfb2ad749ba5ad05be2d1450f0d0a9ad0f65435235611056673aae0b4 \
   --checkpoint "${CHECKPOINT}" \
   --expected-checkpoint-size 5678116398 \
   --expected-checkpoint-sha256 7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500 \
