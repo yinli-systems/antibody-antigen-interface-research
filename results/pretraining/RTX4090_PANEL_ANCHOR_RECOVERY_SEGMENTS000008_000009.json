@@ -1,0 +1,77 @@
+{
+  "claim_boundary": "Measurement-only frozen validation-panel anchor recoveries. No training, checkpoint, optimizer, RNG, sampler, corpus, masking, test, downstream, or scientific-claim authority changed.",
+  "format_version": "rtx4090_panel_anchor_recovery_public_receipt_v2",
+  "latest_successor": {
+    "job_id": 1460237,
+    "partition": "gpu_4090",
+    "segment_index": 10,
+    "state_at_observation": "RUNNING",
+    "watchdog_job_id": 1460238
+  },
+  "observed_at": "2026-08-22T22:34:04+08:00",
+  "segments": [
+    {
+      "audit_file_sha256": "d85f17dfd2001c6eaf2e149f75f23b5c26e3aab1c22ffcf7dc69ef26c346d451",
+      "audit_receipt_sha256": "a8f5d45b293ff2da864e22e763655882bbfd015a1273f21da0ea88bfc91c77af",
+      "checkpoint_model_sha256": "eba366a338408891548cbbeaf796df384ccfb3250fb561f3fd6d6e6a1b7b8156",
+      "checkpoint_optimizer_sha256": "f210c3b44587f42f210297cbd53944ed2678deca72b9bd71f109a6065098abcd",
+      "checkpoint_rng_manifest_sha256": "f74a468df0e39a57b82314f6e26dded901eb4b389380f1de419c032fac3ddf48",
+      "consumed_residue_tokens": 3880803277,
+      "corrected_panel_anchor": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+      "evaluation_file_sha256": "991da0133579f703457b5d31a5252ac383f9989c3c35250c10488489423b77d9",
+      "failed_artifact_manifest_sha256": "afa263348c9dcccb25ad72d6f4965c902e2f48ee75f8940857411e5d2e75da2b",
+      "failed_job_id": 1459576,
+      "failure": "RuntimeError: Validation panel anchor differs",
+      "masked_accuracy": 0.8773675762439808,
+      "masked_cross_entropy": 0.48105446570458704,
+      "next_update": 27000,
+      "record_count": 8192,
+      "recovery_artifact_manifest_sha256": "ae714116368edadd6dbecdd2a59fe5caae1479b1a92b5c085d0e3504e00ed424",
+      "recovery_job_id": 1459577,
+      "segment_index": 8,
+      "selected_targets": 140175,
+      "stale_panel_anchor": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec",
+      "status": "PASS",
+      "successor_job_id": 1459831,
+      "test_access": {
+        "downstream_labels_used": false,
+        "external_test_accessed": false,
+        "frozen_test_accessed": false,
+        "official_test_accessed": false,
+        "sabdab2_heldout_accessed": false
+      }
+    },
+    {
+      "audit_file_sha256": "50a6dc5c8fcb4c70e6a476dbe78378201cbae5ef81f1adfbf379db898e5f79fd",
+      "audit_receipt_sha256": "ade831bd92931e79b8f1bd8e9da6f0dd6d7c0820a95f5bd897779a4398a090f3",
+      "checkpoint_model_sha256": "f976f9922307eb7336eb8b683015d4a12e065a77a01e2d07b505537aa19a0111",
+      "checkpoint_optimizer_sha256": "ed4d1c177a024ade604aed10e7536442e2c04dafcb87c1223dbebe8a180ec093",
+      "checkpoint_rng_manifest_sha256": "f74a468df0e39a57b82314f6e26dded901eb4b389380f1de419c032fac3ddf48",
+      "consumed_residue_tokens": 4311997974,
+      "corrected_panel_anchor": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+      "evaluation_file_sha256": "18e9703891f75b110c6f4134f110552aece1b86e6b694d78b5c634f9f7c59b61",
+      "failed_artifact_manifest_sha256": "cbe62c626be9db1decd22d66de7adf0246fb2f7a9244340c2c834a33a077867b",
+      "failed_job_id": 1459831,
+      "failure": "RuntimeError: Validation panel anchor differs",
+      "masked_accuracy": 0.8775245229177814,
+      "masked_cross_entropy": 0.47839758142192446,
+      "next_update": 30000,
+      "record_count": 8192,
+      "recovery_artifact_manifest_sha256": "c9b9bd8b3103a501f11a4a5b7783dd7ce556892c0299ee6444dc2718dde429bd",
+      "recovery_job_id": 1459832,
+      "segment_index": 9,
+      "selected_targets": 140175,
+      "stale_panel_anchor": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec",
+      "status": "PASS",
+      "successor_job_id": 1460237,
+      "test_access": {
+        "downstream_labels_used": false,
+        "external_test_accessed": false,
+        "frozen_test_accessed": false,
+        "official_test_accessed": false,
+        "sabdab2_heldout_accessed": false
+      }
+    }
+  ],
+  "test_access": false
+}
