@@ -1,0 +1,47 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "quality_per_gpu_hour_gate": true,
+    "test_access": false
+  },
+  "claim_boundary": "Full-2.839B-model, eight-RTX-4090 train-only numerical and systems gate on a deterministic development-decontaminated STRING slice. Validation quality, biological improvement, production training, and SOTA claims remain pending.",
+  "decision": "PROMOTE_TO_QUALITY_PER_GPU_HOUR_GATE",
+  "format_version": "abpairfm_3b_real_data_gate_summary_v1",
+  "gates": {
+    "all_summary_values_finite": true,
+    "final_20_loss_not_above_first_20_by_more_than_five_percent": true,
+    "maximum_allocated_memory_fraction_at_most_0_92": true,
+    "p95_to_median_update_time_at_most_1_20": true,
+    "passed": true
+  },
+  "job_id": 1458917,
+  "loss": {
+    "final_20_update_mean": 2.678515625,
+    "final_to_first_ratio": 0.9495914693255783,
+    "first_20_update_mean": 2.820703125
+  },
+  "memory": {
+    "maximum_allocated_fraction": 0.9133937939274943
+  },
+  "optimization": {
+    "accumulation_steps": 2,
+    "manifest_records_consumed": 22400,
+    "microbatch_pairs_per_rank": 7,
+    "updates": 200,
+    "world_size": 8
+  },
+  "receipt_sha256": "a08def6b3ee7d708bfbeb05aab97c169c4d132704a83ea9bb6f76a843b1b82ec",
+  "stability": {
+    "p95_to_median_update_time": 1.076752154781269
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "throughput": {
+    "consumed_residue_tokens": 15367539,
+    "five_billion_token_wall_clock_days_excluding_overhead": 8.063216323836567,
+    "residue_tokens_per_second_mean": 7150.47354846224,
+    "residue_tokens_per_second_median": 7177.082698289188
+  }
+}
