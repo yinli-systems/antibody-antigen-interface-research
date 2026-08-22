@@ -1,0 +1,59 @@
+{
+  "architecture_evidence": {
+    "pair_aware_attention_sha256": "9d830b909936aa85c0f54f5a3e1aabde4457ac0c4675865a1a2d166260412d58",
+    "pair_aware_esm2_sha256": "0dcf3a156c0d4fc3d8099afdcb856171164bfc525ff4319b9bbc24dbb743cd24",
+    "retrieval_head_input": "final jointly encoded hidden states after all pair-aware cross-chain attention layers",
+    "stage_a1_objective_sha256": "20592c13f6f184714cc06812d13dfd803224a2c4f6e9be6cccd502e6ff407ddd",
+    "stage_a1_runner_sha256": "cf96b40a099d31e41b83f10f7be6c67e03edff3de8c1381252a706b0e4c08390"
+  },
+  "authorization": {
+    "gpu_training_submitted": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Train-only architecture and source-capacity audit. Partner swaps are ranking controls, not verified biological noninteractions. No development, test, biological-improvement, or SOTA claim is authorized.",
+  "direct_string_source": {
+    "combined_score_floor": 900,
+    "manifest_records": 25600,
+    "manifest_sha256": "898692b7de920068d554ac5bb2b8c7c569a15ce4ef15e486e075885446eebc70",
+    "receipt_sha256": "b062697c7d2f66099f90b1a39046e099dd590271bc63795429979f0db3b24ed7",
+    "source_cluster_pairs": 1992041,
+    "status": "REAL_GATE_SLICE_READY_NOT_TRAINED",
+    "unique_manifest_endpoints": 48128
+  },
+  "failure_evidence": {
+    "all_rank_candidate_pilot": {
+      "candidate_matrix_width": 40,
+      "final_20_retrieval_loss": 0.011110501608345657,
+      "first_20_retrieval_loss": 2.7008863884955643,
+      "job_id": "1460883"
+    },
+    "local_candidate_pilot": {
+      "candidate_matrix_width": 7,
+      "final_20_retrieval_loss": 0.0060835826143829765,
+      "first_20_retrieval_loss": 0.8223781567066908,
+      "job_id": "1460747"
+    }
+  },
+  "format_version": "abpairfm_stage_a1_retrieval_context_leakage_audit_v1",
+  "interpretation": "The current contrastive embeddings are conditional on the cognate partner because both chains are pooled after joint cross-chain attention. Increasing random candidates from one rank to all eight ranks delayed but did not prevent a near-perfect retrieval shortcut. Candidate-pool scale alone is therefore not a valid production fix.",
+  "next_frozen_gate": {
+    "counterfactual": "Score actual partner-swapped joint forwards rather than only mixing embeddings extracted from cognate joint forwards.",
+    "false_negative_controls": [
+      "known_positive_pair exclusion",
+      "endpoint source-cluster exclusion",
+      "matched endpoint length bin",
+      "fixed sampler seed and immutable provenance"
+    ],
+    "retrieval_view": "Encode chains without cross-chain attention for the contrastive retrieval objective; retain joint cross-chain encoding for contact and MLM/contact coupling.",
+    "source": "development-clean high-direct STRING train slice with source endpoint clusters",
+    "systems": "Run a short train-only pilot only after CPU materialization and a counterfactual partner-swap diagnostic pass."
+  },
+  "scientific_status": "BLOCK_PRODUCTION_STAGE_A1_CONTEXT_LEAKAGE",
+  "status": "PASS_ROOT_CAUSE_AND_SOURCE_CAPACITY_AUDIT",
+  "test_access": false,
+  "tooling": {
+    "mmseqs2_available": true,
+    "mmseqs2_binary_sha256": "b0ca32bf507e6f76eab90d5d1f0a802b68d08192000f2aad7d38cffcd4bdd4fb"
+  }
+}
