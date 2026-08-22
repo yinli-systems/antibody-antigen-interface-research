@@ -86,6 +86,12 @@ def _validate_plan(value: object) -> dict[str, Any]:
         etag = entry.get("etag")
         if not isinstance(etag, str) or not etag:
             raise ValueError(f"Missing pinned ETag: {path}")
+        expected_sha256 = entry.get("sha256")
+        if expected_sha256 is not None and (
+            not isinstance(expected_sha256, str)
+            or _SHA256.fullmatch(expected_sha256) is None
+        ):
+            raise ValueError(f"Invalid pinned SHA-256: {path}")
     if value.get("expected_selected_file_count") != len(files):
         raise ValueError("Selected file count differs from plan summary")
     if value.get("expected_selected_bytes") != selected_bytes:
@@ -306,6 +312,11 @@ def _download_segmented(
         os.fsync(destination.fileno())
     if total != int(entry["size_bytes"]):
         raise RuntimeError(f"Assembled byte count differs for {target.name}")
+    observed_sha256 = digest.hexdigest()
+    expected_sha256 = entry.get("sha256")
+    if expected_sha256 is not None and observed_sha256 != expected_sha256:
+        staging.unlink()
+        raise RuntimeError(f"Assembled SHA-256 differs for {target.name}")
     os.replace(staging, target)
     target.chmod(0o444)
     return {
@@ -317,7 +328,7 @@ def _download_segmented(
             "worker_count": workers,
         },
         "etag": entry["etag"],
-        "sha256": digest.hexdigest(),
+        "sha256": observed_sha256,
         "url": entry["url"],
     }
 
@@ -386,10 +397,14 @@ def _download(
         target.chmod(0o444)
     if target.stat().st_size != expected_size:
         raise RuntimeError(f"Existing byte count differs for {target.name}")
+    observed_sha256 = _sha256_file(target)
+    pinned_sha256 = entry.get("sha256")
+    if pinned_sha256 is not None and observed_sha256 != pinned_sha256:
+        raise RuntimeError(f"Downloaded SHA-256 differs for {target.name}")
     return {
         "bytes": expected_size,
         "etag": expected_etag,
-        "sha256": _sha256_file(target),
+        "sha256": observed_sha256,
         "url": entry["url"],
     }
 

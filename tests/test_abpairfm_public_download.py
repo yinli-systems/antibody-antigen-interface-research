@@ -56,6 +56,16 @@ def test_plan_rejects_traversal_and_summary_mismatch() -> None:
         module._validate_plan(plan)
 
 
+def test_plan_accepts_a_pinned_sha256_and_rejects_malformed_digest() -> None:
+    module = _module()
+    plan = json.loads(PLAN.read_text(encoding="utf-8"))
+    plan["selected_files"][0]["sha256"] = "a" * 64
+    assert module._validate_plan(plan)["selected_files"][0]["sha256"] == "a" * 64
+    plan["selected_files"][0]["sha256"] = "not-a-digest"
+    with pytest.raises(ValueError, match="pinned SHA-256"):
+        module._validate_plan(plan)
+
+
 def test_receipt_publish_is_create_only(tmp_path: Path) -> None:
     module = _module()
     receipt = tmp_path / "receipt.json"
