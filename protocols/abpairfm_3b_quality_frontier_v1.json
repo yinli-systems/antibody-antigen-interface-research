@@ -13,6 +13,17 @@
     "maximum_stage_a_unique_pairs": 25000000,
     "model_size_alone_is_not_a_promotion_criterion": true,
     "quality_per_gpu_hour_is_required": true,
+    "repeated_exposure_policy": {
+      "augmentation_replay_key": [
+        "global_seed",
+        "canonical_pair_hash",
+        "exposure_index"
+      ],
+      "deterministic_replay_required": true,
+      "pair_order_resampled_per_exposure": true,
+      "sequence_crop_resampled_per_exposure": true,
+      "token_mask_resampled_per_exposure": true
+    },
     "research_basis": "Protein MLM scaling exhibits data-repeat overfitting and benefits from diverse metagenomic data; the fitted compute-optimal frontier scales model size faster than training tokens, so this project freezes its useful-token budget and measures quality instead of assuming a generic text-LLM tokens-per-parameter rule.",
     "source": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/8066ae1446b2bbccb5159587cc3b3bcc-Abstract-Conference.html"
   },

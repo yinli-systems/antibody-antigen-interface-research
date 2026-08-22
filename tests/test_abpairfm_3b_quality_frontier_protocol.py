@@ -51,6 +51,19 @@ def test_quality_frontier_requires_same_contract_small_and_large_baselines() -> 
     assert protocol["compute_optimality"]["quality_per_gpu_hour_is_required"] is True
 
 
+def test_repeated_exposures_are_diverse_but_exactly_replayable() -> None:
+    policy = _protocol()["compute_optimality"]["repeated_exposure_policy"]
+    assert policy["augmentation_replay_key"] == [
+        "global_seed",
+        "canonical_pair_hash",
+        "exposure_index",
+    ]
+    assert policy["deterministic_replay_required"] is True
+    assert policy["pair_order_resampled_per_exposure"] is True
+    assert policy["sequence_crop_resampled_per_exposure"] is True
+    assert policy["token_mask_resampled_per_exposure"] is True
+
+
 def test_objective_sequence_does_not_relabel_decoys_as_noninteractions() -> None:
     objectives = _protocol()["stage_a_objective_sequence"]
     retrieval = next(item for item in objectives if item["name"] == "cognate_retrieval_with_matched_partner_swaps")
