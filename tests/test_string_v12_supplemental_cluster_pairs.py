@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts/audit_string_v12_supplemental_cluster_pairs.py"
+SCRIPT = ROOT / "scripts/audit_string_v12_supplemental_cluster_pairs_v2.py"
 
 
 def module():
