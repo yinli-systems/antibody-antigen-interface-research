@@ -57,6 +57,7 @@ def test_successor_requires_complete_checkpoint_anchor() -> None:
         accumulation_steps=2,
         expected_campaign_protocol_sha256="a" * 64,
         expected_checkpoint_sha256="b" * 64,
+        expected_source_sha256="c" * 64,
         expected_world_size=8,
         input_checkpoint_root=None,
         input_generation=None,
