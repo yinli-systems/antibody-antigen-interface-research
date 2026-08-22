@@ -201,6 +201,7 @@ class PairAwareESM2Layer(nn.Module):
         valid_mask: Tensor,
         *,
         return_attention: bool = False,
+        allow_cross_chain_attention: bool = True,
     ) -> tuple[Tensor, Tensor | None]:
         residual = hidden
         normalized = self.self_attn_layer_norm(hidden)
@@ -209,6 +210,7 @@ class PairAwareESM2Layer(nn.Module):
             chain_ids,
             valid_mask,
             return_attention=return_attention,
+            allow_cross_chain=allow_cross_chain_attention,
         )
         hidden = residual + attended
         residual = hidden
@@ -301,11 +303,14 @@ class PairAwareESM2(nn.Module):
         *,
         labels: Tensor | None = None,
         return_last_attention: bool = False,
+        allow_cross_chain_attention: bool = True,
     ) -> PairAwareMLMOutput:
         if tokens.ndim != 2 or chain_ids.shape != tokens.shape:
             raise ValueError("tokens and chain_ids must be equal rank-two tensors")
         if tokens.shape[1] > self.config.maximum_tokens:
             raise ValueError("Input exceeds the frozen maximum token count")
+        if not isinstance(allow_cross_chain_attention, bool):
+            raise ValueError("allow_cross_chain_attention must be boolean")
         valid_mask = tokens.ne(self.config.padding_index)
         if bool((chain_ids[valid_mask] < 0).any()) or bool((chain_ids[~valid_mask] != -1).any()):
             raise ValueError("chain_ids must be non-negative for tokens and -1 for padding")
@@ -333,8 +338,16 @@ class PairAwareESM2(nn.Module):
                         selective_attention_checkpoint_contexts
                     )
                 hidden = checkpoint(
-                    lambda state, chains, valid, module=layer: module(
-                        state, chains, valid, return_attention=False
+                    lambda state,
+                    chains,
+                    valid,
+                    module=layer,
+                    allow_cross=allow_cross_chain_attention: module(
+                        state,
+                        chains,
+                        valid,
+                        return_attention=False,
+                        allow_cross_chain_attention=allow_cross,
                     )[0],
                     hidden,
                     chain_ids,
@@ -348,6 +361,7 @@ class PairAwareESM2(nn.Module):
                     chain_ids,
                     valid_mask,
                     return_attention=export_attention,
+                    allow_cross_chain_attention=allow_cross_chain_attention,
                 )
             if attention is not None:
                 last_attention = attention

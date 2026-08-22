@@ -65,6 +65,28 @@ def test_forward_uses_chain_balanced_loss_and_exports_last_attention() -> None:
     assert model.layers[0].self_attn.cross_scale.grad is not None
 
 
+def test_chain_independent_model_view_is_invariant_to_partner_tokens() -> None:
+    torch.manual_seed(21)
+    model = PairAwareESM2(_small_config()).eval()
+    first = torch.tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]])
+    second = torch.tensor([[0, 5, 6, 2, 0, 11, 12, 2, 1]])
+    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, -1]])
+
+    first_independent = model(
+        first, chain_ids, allow_cross_chain_attention=False
+    ).logits
+    second_independent = model(
+        second, chain_ids, allow_cross_chain_attention=False
+    ).logits
+    torch.testing.assert_close(
+        first_independent[:, :4], second_independent[:, :4], rtol=0.0, atol=0.0
+    )
+
+    first_joint = model(first, chain_ids).logits
+    second_joint = model(second, chain_ids).logits
+    assert not torch.allclose(first_joint[:, :4], second_joint[:, :4])
+
+
 def test_compatible_loader_allows_only_new_cross_scales() -> None:
     source = PairAwareESM2(_small_config())
     target = PairAwareESM2(_small_config())
@@ -156,6 +178,31 @@ def test_selective_checkpoint_matches_full_checkpoint_on_cpu() -> None:
         full.parameters(), selective.parameters(), strict=True
     ):
         torch.testing.assert_close(selective_parameter.grad, full_parameter.grad)
+
+
+def test_checkpointed_independent_view_keeps_cross_scale_in_graph() -> None:
+    torch.manual_seed(27)
+    model = PairAwareESM2(
+        _small_config(activation_checkpointing=True)
+    ).train()
+    tokens = torch.tensor([[0, 5, 32, 2, 0, 7, 8, 32, 2, 1]])
+    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, 1, -1]])
+    labels = torch.full_like(tokens, -100)
+    labels[0, 2] = 6
+    labels[0, 7] = 9
+
+    loss = model(
+        tokens,
+        chain_ids,
+        labels=labels,
+        allow_cross_chain_attention=False,
+    ).balanced_chain_loss_sum
+    assert loss is not None
+    loss.backward()
+    for layer in model.layers:
+        gradient = layer.self_attn.cross_scale.grad
+        assert gradient is not None
+        assert torch.count_nonzero(gradient).item() == 0
 
 
 def test_selective_policy_requires_checkpointing() -> None:
