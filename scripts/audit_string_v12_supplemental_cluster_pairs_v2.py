@@ -40,16 +40,23 @@ def zstd_lines(path: Path):
             raise RuntimeError(f"zstd failed with {return_code}: {error[-1000:]}")
 
 
+def text_lines(path: Path):
+    if path.suffix == ".zst":
+        yield from zstd_lines(path)
+        return
+    with path.open("rt", encoding="utf-8", newline="") as handle:
+        yield from handle
+
+
 def read_membership(path: Path) -> dict[str, str]:
     membership: dict[str, str] = {}
-    with path.open("rt", encoding="utf-8", newline="") as handle:
-        for line_number, row in enumerate(csv.reader(handle, delimiter="\t"), start=1):
-            if len(row) != 2:
-                raise ValueError(f"Malformed STRING cluster mapping row {line_number}")
-            representative, member = row
-            previous = membership.setdefault(member, representative)
-            if previous != representative:
-                raise ValueError(f"STRING member has multiple clusters: {member}")
+    for line_number, row in enumerate(csv.reader(text_lines(path), delimiter="\t"), start=1):
+        if len(row) != 2:
+            raise ValueError(f"Malformed STRING cluster mapping row {line_number}")
+        representative, member = row
+        previous = membership.setdefault(member, representative)
+        if previous != representative:
+            raise ValueError(f"STRING member has multiple clusters: {member}")
     if not membership:
         raise ValueError("STRING cluster mapping is empty")
     return membership
@@ -168,6 +175,7 @@ def main() -> None:
     parser.add_argument("--universe-receipt", type=Path, required=True)
     parser.add_argument("--threshold-grid-receipt", type=Path, required=True)
     parser.add_argument("--clusters", type=Path, required=True)
+    parser.add_argument("--cluster-receipt", type=Path, required=True)
     parser.add_argument("--tier1", type=Path, required=True)
     parser.add_argument("--tier1-receipt", type=Path, required=True)
     parser.add_argument("--excluded-clusters", type=Path, required=True)
@@ -190,7 +198,21 @@ def main() -> None:
     tier1_receipt = json.loads(tier1_receipt_path.read_text(encoding="utf-8"))
     if tier1_receipt.get("status") != "DECONTAMINATED_NOT_MERGED_NOT_AUTHORIZED" or tier1_receipt.get("test_access") is not False or sha256_file(tier1) != tier1_receipt["output"]["sha256"]:
         raise ValueError("STRING tier-1 evidence differs")
-    membership = read_membership(arguments.clusters.resolve())
+    cluster_receipt_path = arguments.cluster_receipt.resolve()
+    cluster_receipt = json.loads(cluster_receipt_path.read_text(encoding="utf-8"))
+    clusters = arguments.clusters.resolve()
+    published_clusters = {
+        value.get("name"): value for value in cluster_receipt.get("published_assets", [])
+    }.get("clusters.tsv.zst")
+    if (
+        cluster_receipt.get("format_version") != "abpairfm_string_cluster_pair_collapse_v1"
+        or tier1_receipt.get("input_receipts", {}).get("cluster_sha256") != sha256_file(cluster_receipt_path)
+        or not isinstance(published_clusters, dict)
+        or published_clusters.get("sha256") != sha256_file(clusters)
+        or published_clusters.get("bytes") != clusters.stat().st_size
+    ):
+        raise ValueError("STRING cluster membership evidence differs")
+    membership = read_membership(clusters)
     tier1_pairs = read_tier1_pairs(tier1)
     if len(tier1_pairs) != int(tier1_receipt["counts"]["output_cluster_pairs"]):
         raise ValueError("STRING tier-1 pair count differs")
@@ -219,8 +241,9 @@ def main() -> None:
             "current_tier1_cluster_pairs": len(tier1_pairs),
             "required_novel_cluster_pairs_for_string_only_gate": required,
         },
-        "format_version": "abpairfm_string_supplemental_cluster_pair_audit_v1",
+        "format_version": "abpairfm_string_supplemental_cluster_pair_audit_v2",
         "inputs": {
+            "cluster_receipt_sha256": sha256_file(cluster_receipt_path),
             "threshold_grid_sha256": sha256_file(grid_path),
             "tier1_receipt_sha256": sha256_file(tier1_receipt_path),
             "universe_receipt_sha256": sha256_file(universe_receipt_path),

@@ -1,7 +1,7 @@
 {
   "claim_boundary": "Development-decontaminated Stage A source construction only. Counts from structural views, unique exact sequence pairs, and STRING endpoint-cluster pairs are reported separately and are not added as if they had the same unit.",
   "format_version": "abpairfm_3b_stage_a_source_progress_v1",
-  "observed_at_utc": "2026-08-21T23:56:34Z",
+  "observed_at_utc": "2026-08-22T00:15:23Z",
   "pinder": {
     "development_decontaminated_structural_systems": 865471,
     "development_decontaminated_system_clusters": 17452,
@@ -45,9 +45,21 @@
   },
   "string_v12": {
     "development_decontaminated_tier1_endpoint_cluster_pairs": 1988592,
-    "supplemental_cluster_audit_job_id": 1458771,
+    "expanded_endpoint_cluster_audit_job_id": 1458787,
+    "expanded_endpoint_cluster_job_id": 1458786,
+    "expanded_endpoint_cluster_state": "RUNNING",
+    "initial_supplemental_audit_failure": {
+      "cause": "Configured cluster-membership path omitted cluster_assets_v1",
+      "job_id": 1458771,
+      "state": "FAILED"
+    },
+    "supplemental_broad_universe_novel_current_endpoint_cluster_pairs": 146560,
+    "supplemental_cluster_audit_job_id": 1458785,
+    "supplemental_cluster_audit_status": "AUDITED_EXPANDED_CLUSTERING_REQUIRED",
+    "supplemental_edges_with_missing_current_endpoints": 402828,
     "supplemental_universe_job_id": 1458762,
-    "supplemental_universe_state": "RUNNING",
+    "supplemental_universe_rows": 1606224,
+    "supplemental_universe_state": "COMPLETED",
     "tier1_deficit_to_gate": 511408
   },
   "test_access": false
