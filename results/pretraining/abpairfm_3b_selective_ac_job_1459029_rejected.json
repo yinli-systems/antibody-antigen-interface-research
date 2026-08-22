@@ -1,0 +1,56 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "real_data_gate": false,
+    "test_access": false
+  },
+  "claim_boundary": "Same-node synthetic full-model systems evidence only. The candidate failed the frozen numerical and throughput gates and is not authorized for real-data or production training.",
+  "comparison": {
+    "baseline_peak_allocated_memory_fraction": 0.6950813976653878,
+    "baseline_policy": "full",
+    "baseline_residue_tokens_per_second": 11018.61005381354,
+    "candidate_flash_must_save_dispatches_per_rank": 25200,
+    "candidate_p95_to_median_step_time": 1.1387196409546931,
+    "candidate_peak_allocated_memory_fraction": 0.8016689741749428,
+    "candidate_policy": "selective_attention",
+    "candidate_residue_tokens_per_second": 6788.402406635325,
+    "candidate_throughput_speedup": 0.6160851843818413,
+    "maximum_gradient_norm_relative_delta": 0.8401552407479316,
+    "maximum_loss_absolute_delta": 0.03125
+  },
+  "decision": "REJECT_SELECTIVE_ATTENTION",
+  "format_version": "abpairfm_3b_selective_ac_compact_result_v1",
+  "gates": {
+    "flash_attention_policy_exercised": true,
+    "gradient_norm_parity": false,
+    "loss_parity": false,
+    "memory_fraction": true,
+    "step_time_stability": true,
+    "throughput_speedup": false
+  },
+  "job": {
+    "elapsed": "00:06:49",
+    "exit_code": "0:0",
+    "job_id": 1459029,
+    "partition": "gpu_4090",
+    "state": "COMPLETED",
+    "world_size": 8
+  },
+  "raw_receipts": {
+    "baseline_sha256": "2c734eaa7efc6d4ed9412c6df1367420a9e481494d214377c2184b61e5d52ff2",
+    "candidate_sha256": "cd79342e2da1ea24f683a8c70d88857ca1ce9962647fef737b937e0f98657d8a",
+    "comparison_sha256": "a03e745cf6d10573c7d486b0b3d5d8c19429257dc825a8125cd5cd52eca299f8"
+  },
+  "status": "PASS_REJECTED_CANDIDATE",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "thresholds": {
+    "maximum_gradient_norm_relative_delta": 0.001,
+    "maximum_loss_absolute_delta": 0.0005,
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "maximum_p95_to_median_step_time": 1.2,
+    "minimum_residue_tokens_per_second_speedup": 1.03
+  }
+}
