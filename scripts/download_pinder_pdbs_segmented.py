@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resumably materialize the authenticated PINDER training structure archive."""
+"""Resumably materialize an authenticated non-test PINDER archive."""
 
 from __future__ import annotations
 
@@ -17,6 +17,8 @@ import time
 EXPECTED_SIZE = 168_884_420_877
 EXPECTED_MD5 = "28e6e2724c1597514c7f6b6774ff32b4"
 URL = "https://storage.googleapis.com/pinder/2024-02/pdbs.zip"
+GENERATION = "1718880407172355"
+ALLOWED_OBJECT_NAMES = {"mappings.zip", "pdbs.zip"}
 
 
 def _arguments() -> argparse.Namespace:
@@ -26,6 +28,10 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--workers", type=int, default=16)
     parser.add_argument("--adopt-prefix", type=Path)
     parser.add_argument("--receipt", type=Path, required=True)
+    parser.add_argument("--url", default=URL)
+    parser.add_argument("--expected-size", type=int, default=EXPECTED_SIZE)
+    parser.add_argument("--expected-md5", default=EXPECTED_MD5)
+    parser.add_argument("--generation", default=GENERATION)
     return parser.parse_args()
 
 
@@ -70,6 +76,7 @@ def _download_part(
     start: int,
     end: int,
     parts_root: Path,
+    url: str,
 ) -> dict[str, object]:
     expected = end - start + 1
     final = parts_root / f"part-{index:03d}.bin"
@@ -101,7 +108,7 @@ def _download_part(
                     "1800",
                     "--range",
                     f"{requested_start}-{end}",
-                    URL,
+                    url,
                 ],
                 stdout=output,
                 stderr=subprocess.PIPE,
@@ -149,12 +156,22 @@ def main() -> None:
     arguments = _arguments()
     if arguments.parts < 2 or arguments.workers < 1 or arguments.workers > arguments.parts:
         raise ValueError("Invalid parts/workers configuration")
+    if arguments.expected_size <= 0:
+        raise ValueError("Expected size must be positive")
+    if len(arguments.expected_md5) != 32 or any(
+        token not in "0123456789abcdef" for token in arguments.expected_md5
+    ):
+        raise ValueError("Expected MD5 must be 32 lowercase hexadecimal characters")
     output = arguments.output.resolve()
-    if output.name != "pdbs.zip":
-        raise ValueError("Output must be explicitly named pdbs.zip")
+    object_name = Path(arguments.url).name
+    if object_name not in ALLOWED_OBJECT_NAMES or output.name != object_name:
+        raise ValueError(
+            "Only explicitly named non-test PINDER pdbs.zip or mappings.zip "
+            "objects are allowed"
+        )
     parts_root = output.parent / f".{output.name}.parts-v1"
     parts_root.mkdir(parents=True, exist_ok=True)
-    ranges = byte_ranges(EXPECTED_SIZE, arguments.parts)
+    ranges = byte_ranges(arguments.expected_size, arguments.parts)
     adopted = 0
     if arguments.adopt_prefix is not None and arguments.adopt_prefix.exists():
         adopted = _adopt_prefix(arguments.adopt_prefix.resolve(), parts_root, ranges[0][1])
@@ -162,7 +179,14 @@ def main() -> None:
     records: list[dict[str, object]] = []
     with ThreadPoolExecutor(max_workers=arguments.workers) as pool:
         futures = {
-            pool.submit(_download_part, index, start, end, parts_root): index
+            pool.submit(
+                _download_part,
+                index,
+                start,
+                end,
+                parts_root,
+                arguments.url,
+            ): index
             for index, (start, end) in enumerate(ranges)
         }
         for future in as_completed(futures):
@@ -187,7 +211,7 @@ def main() -> None:
                     total += len(block)
         destination.flush()
         os.fsync(destination.fileno())
-    if total != EXPECTED_SIZE or md5.hexdigest() != EXPECTED_MD5:
+    if total != arguments.expected_size or md5.hexdigest() != arguments.expected_md5:
         raise RuntimeError("Assembled PINDER archive failed size or provider MD5")
     os.replace(staging, output)
     receipt = {
@@ -196,7 +220,10 @@ def main() -> None:
             "sha256": sha256.hexdigest(),
             "size_bytes": total,
         },
-        "claim_boundary": "Authenticated PINDER training structure archive materialization only; no test archive was requested.",
+        "claim_boundary": (
+            f"Authenticated PINDER training {object_name} archive materialization "
+            "only; no test archive was requested."
+        ),
         "download": {
             "adopted_prefix_bytes": adopted,
             "elapsed_seconds": time.time() - started,
@@ -204,12 +231,12 @@ def main() -> None:
             "part_records": sorted(records, key=lambda item: int(item["index"])),
             "worker_count": arguments.workers,
         },
-        "format_version": "pinder_pdbs_segmented_materialization_v1",
+        "format_version": "pinder_non_test_segmented_materialization_v2",
         "provider": {
-            "expected_md5": EXPECTED_MD5,
-            "expected_size_bytes": EXPECTED_SIZE,
-            "gcs_generation": "1718880407172355",
-            "url": URL,
+            "expected_md5": arguments.expected_md5,
+            "expected_size_bytes": arguments.expected_size,
+            "gcs_generation": arguments.generation,
+            "url": arguments.url,
         },
         "status": "MATERIALIZED",
         "test_access": {

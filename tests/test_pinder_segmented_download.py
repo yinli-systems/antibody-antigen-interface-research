@@ -28,3 +28,9 @@ def test_byte_ranges_cover_exactly_once() -> None:
     assert max(end - start + 1 for start, end in ranges) - min(
         end - start + 1 for start, end in ranges
     ) <= 1
+
+
+def test_downloader_allows_only_non_test_release_objects() -> None:
+    module = _module()
+    assert module.ALLOWED_OBJECT_NAMES == {"mappings.zip", "pdbs.zip"}
+    assert "test_set_pdbs.zip" not in module.ALLOWED_OBJECT_NAMES

@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "protocols/abpairfm_3b_execution_v1.json"
 PINDER_LICENSE = ROOT / "data_registry/sources/pinder_2024_02/license_receipt.json"
+STRING_LICENSE = ROOT / "data_registry/sources/string_v12/license_receipt.json"
 
 
 def _load(path: Path) -> dict[str, object]:
@@ -47,3 +48,11 @@ def test_pinder_license_receipt_is_narrow_and_attribution_preserving() -> None:
     assert receipt["authorization"]["test_archive_access"] is False
     assert receipt["evidence"]["wwpdb"]["license"] == "CC0-1.0"
     assert receipt["evidence"]["alphafold_database"]["license"] == "CC-BY-4.0"
+
+
+def test_string_license_receipt_preserves_cc_by_controls() -> None:
+    receipt = _load(STRING_LICENSE)
+    assert receipt["authorization"]["internal_academic_research_training"] is True
+    assert receipt["authorization"]["raw_bundle_redistribution"] is False
+    assert receipt["evidence"]["license"] == "CC-BY-4.0"
+    assert receipt["required_controls"]["attribution_and_modification_notice"] is True

@@ -1,0 +1,29 @@
+{
+  "authorization": {
+    "internal_academic_research_training": true,
+    "raw_bundle_redistribution": false,
+    "test_archive_access": false
+  },
+  "attribution_required": [
+    "STRING Consortium",
+    "STRING v12.0 database and relevant release paper",
+    "Creative Commons Attribution 4.0 International"
+  ],
+  "claim_boundary": "Rights/provenance review for internal model training on authenticated STRING v12.0 download files. It does not authorize redistribution of the raw bundle, remove attribution and modification-notice duties, establish biological truth for an association, or establish data quality, decontamination, or model performance.",
+  "evidence": {
+    "license": "CC-BY-4.0",
+    "license_statement": "The official STRING licensing page states that all data and download files are freely available under CC BY 4.0 and requires appropriate credit plus notice of changes or additions.",
+    "pinned_revision": "STRING-v12.0-static-download-2023-05",
+    "url": "https://string-db.org/cgi/access?footer_active_subpage=licensing"
+  },
+  "format_version": "abpairfm_source_license_receipt_v1",
+  "required_controls": {
+    "attribution_and_modification_notice": true,
+    "derived_artifact_provenance": true,
+    "internal_training_only": true,
+    "source_version_pinned": true
+  },
+  "reviewed_at_utc": "2026-08-21T22:50:00Z",
+  "source_id": "string_v12",
+  "status": "RESOLVED_FOR_INTERNAL_TRAINING_WITH_CC_BY_4_0_ATTRIBUTION"
+}

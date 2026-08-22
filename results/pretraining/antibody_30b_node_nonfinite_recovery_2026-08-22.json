@@ -1,0 +1,33 @@
+{
+  "campaign": "antibody_pretraining_rtx4090_30b_5f1f6ac_v1",
+  "claim_boundary": "Operational pretraining evidence only. The campaign, current retry, and validation checkpoints do not authorize a downstream or scientific-performance claim.",
+  "format_version": "antibody_30b_node_nonfinite_recovery_public_summary_v1",
+  "last_audited_segment": {
+    "consumed_residue_tokens": 1724832360,
+    "masked_accuracy": 0.8728731942215088,
+    "masked_cross_entropy": 0.4960811048864372,
+    "next_update": 12000,
+    "record_count": 8192,
+    "segment_index": 3
+  },
+  "node_specific_nonfinite_incident": {
+    "alternate_node_two_update_control_job_id": 1458727,
+    "checkpoint_corruption_supported": false,
+    "data_sample_root_cause_supported": false,
+    "failed_attempt_job_id": 1458692,
+    "failed_attempt_published_checkpoint": false,
+    "incident_receipt_sha256": "218092116dbc0a93c7223335adecc4f62865f2e9439bb747d6672f8a67df9063",
+    "node_or_physical_gpu_path_specific": true,
+    "pre_sync_micro_diagnostic_job_id": 1458714,
+    "rank_subset_diagnostic_job_id": 1458723,
+    "status": "NODE_SPECIFIC_INCIDENT_CLOSED_RETRY_AUTHORIZED"
+  },
+  "observed_at_utc": "2026-08-21T23:56:34Z",
+  "retry": {
+    "exact_update_not_yet_published": true,
+    "job_id": 1458730,
+    "slurm_state": "RUNNING",
+    "watchdog_job_id": 1458731
+  },
+  "test_access": false
+}

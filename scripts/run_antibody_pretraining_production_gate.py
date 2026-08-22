@@ -821,6 +821,7 @@ def main() -> None:
                     loss = output.loss_sum * world_size / target_count
                 loss.backward()
             loss_sum_value += float(output.loss_sum.detach())
+        local_loss_sum_value = loss_sum_value
         loss_tensor = torch.tensor(loss_sum_value, dtype=torch.float64, device=device)
         dist.all_reduce(loss_tensor, op=dist.ReduceOp.SUM)
         loss_sum_value = float(loss_tensor)
@@ -830,11 +831,50 @@ def main() -> None:
                 training_protocol["gradient_clip_norm"],
             )
         )
+        if not math.isfinite(loss_sum_value) or not math.isfinite(gradient_norm):
+            nonfinite_gradient_names: list[str] = []
+            maximum_gradient_magnitude = 0.0
+            for name, parameter in model.named_parameters():
+                gradient = parameter.grad
+                if gradient is None:
+                    continue
+                if not bool(torch.isfinite(gradient).all().item()):
+                    if len(nonfinite_gradient_names) < 32:
+                        nonfinite_gradient_names.append(name)
+                    continue
+                maximum_gradient_magnitude = max(
+                    maximum_gradient_magnitude,
+                    float(gradient.detach().abs().max()),
+                )
+            local_diagnostic = {
+                "global_gradient_norm": gradient_norm,
+                "global_loss_sum": loss_sum_value,
+                "local_loss_sum": local_loss_sum_value,
+                "maximum_finite_gradient_magnitude": maximum_gradient_magnitude,
+                "nonfinite_gradient_names": nonfinite_gradient_names,
+                "rank": rank,
+                "update": update + 1,
+            }
+            rank_diagnostics: list[object] = [None] * world_size
+            dist.all_gather_object(rank_diagnostics, local_diagnostic)
+            if rank == 0:
+                print(
+                    "NONFINITE_GATE_DIAGNOSTIC="
+                    + json.dumps(
+                        rank_diagnostics,
+                        allow_nan=True,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    ),
+                    flush=True,
+                )
+            raise RuntimeError(
+                "Gate trace contains a non-finite value before optimizer.step "
+                f"at update {update + 1}"
+            )
         optimizer.step()
         torch.cuda.synchronize()
         elapsed = time.perf_counter() - started
-        if not math.isfinite(loss_sum_value) or not math.isfinite(gradient_norm):
-            raise RuntimeError("Gate trace contains a non-finite value")
         consumed += plan.residue_token_count
         cursor = plan.next_sample_cursor
         if rank == 0:

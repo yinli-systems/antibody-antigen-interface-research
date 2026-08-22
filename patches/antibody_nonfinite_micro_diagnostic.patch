@@ -1,0 +1,66 @@
+--- scripts/run_antibody_pretraining_nonfinite_diagnostic_v3.py
++++ scripts/run_antibody_pretraining_nonfinite_diagnostic_v5.py
+@@ -745,2 +745,63 @@
+                 loss.backward()
++            micro_nonfinite_gradient_names: list[str] = []
++            micro_maximum_gradient_magnitude = 0.0
++            for name, parameter in model.named_parameters():
++                gradient = parameter.grad
++                if gradient is None:
++                    continue
++                if not bool(torch.isfinite(gradient).all().item()):
++                    if len(micro_nonfinite_gradient_names) < 32:
++                        micro_nonfinite_gradient_names.append(name)
++                    continue
++                micro_maximum_gradient_magnitude = max(
++                    micro_maximum_gradient_magnitude,
++                    float(gradient.detach().abs().max()),
++                )
++            micro_bad_tensor = torch.tensor(
++                int(bool(micro_nonfinite_gradient_names)),
++                dtype=torch.int32,
++                device=device,
++            )
++            dist.all_reduce(micro_bad_tensor, op=dist.ReduceOp.MAX)
++            if int(micro_bad_tensor):
++                micro_indices = np.asarray(
++                    local_micro_batches[micro_index],
++                    dtype=np.int64,
++                )
++                local_micro_diagnostic = {
++                    "batch_index_sha256": hashlib.sha256(
++                        micro_indices.tobytes()
++                    ).hexdigest(),
++                    "batch_sequence_count": int(micro_indices.size),
++                    "input_width": int(input_cpu.shape[1]),
++                    "local_output_loss_sum": float(output.loss_sum.detach()),
++                    "maximum_finite_gradient_magnitude": (
++                        micro_maximum_gradient_magnitude
++                    ),
++                    "micro_index": micro_index,
++                    "nonfinite_gradient_names": micro_nonfinite_gradient_names,
++                    "rank": rank,
++                    "synchronized_ddp_micro": synchronize,
++                    "update": update + 1,
++                }
++                rank_micro_diagnostics: list[object] = [None] * world_size
++                dist.all_gather_object(
++                    rank_micro_diagnostics,
++                    local_micro_diagnostic,
++                )
++                if rank == 0:
++                    print(
++                        "NONFINITE_MICRO_DIAGNOSTIC="
++                        + json.dumps(
++                            rank_micro_diagnostics,
++                            allow_nan=True,
++                            separators=(",", ":"),
++                            sort_keys=True,
++                        ),
++                        flush=True,
++                    )
++                raise RuntimeError(
++                    "Gradient became non-finite after micro-batch "
++                    f"{micro_index} at update {update + 1}"
++                )
+             loss_sum_value += float(output.loss_sum.detach())
