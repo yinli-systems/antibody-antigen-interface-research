@@ -13,7 +13,10 @@ import tempfile
 from typing import Any, Iterable
 
 
-EXPECTED_FORMAT = "abpairfm_stage_a1_multitask_pilot_v3"
+EXPECTED_FORMATS = {
+    "abpairfm_stage_a1_multitask_pilot_v3",
+    "abpairfm_stage_a1_multitask_pilot_v4",
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -119,7 +122,7 @@ def main() -> None:
         raise RuntimeError("Stage-A1 pilot protocol SHA-256 differs")
     protocol = json.loads(arguments.protocol.read_text(encoding="utf-8"))
     if (
-        protocol.get("format_version") != EXPECTED_FORMAT
+        protocol.get("format_version") not in EXPECTED_FORMATS
         or protocol.get("status") != "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING"
         or protocol.get("authorization", {}).get("pilot_training") is not True
         or protocol.get("authorization", {}).get("production_training") is not False
@@ -175,6 +178,13 @@ def main() -> None:
             "contact_pairs": contacts,
             "contact_supervision": True,
             "evidence_role": "structural_interface",
+            "endpoint_cluster1": "exact:"
+            + hashlib.sha256(left.encode("ascii")).hexdigest(),
+            "endpoint_cluster2": "exact:"
+            + hashlib.sha256(right.encode("ascii")).hexdigest(),
+            "endpoint_cluster_provenance": "ppiref_exact_sequence_fallback",
+            "endpoint_exact1_sha256": hashlib.sha256(left.encode("ascii")).hexdigest(),
+            "endpoint_exact2_sha256": hashlib.sha256(right.encode("ascii")).hexdigest(),
             "example_id": identifier,
             "full_pair_hash_sha256": pair_hash,
             "known_positive_group": str(value["pdb_id"]),
@@ -199,11 +209,22 @@ def main() -> None:
             string_cross_source_removed += 1
             continue
         evidence = str(value["evidence_role"])
+        if layout.get("string_direct_only") is True and evidence != "direct":
+            continue
         string_candidates.append(
             {
                 "contact_pairs": [],
                 "contact_supervision": False,
                 "evidence_role": evidence,
+                "endpoint_cluster1": str(value["cluster1"]),
+                "endpoint_cluster2": str(value["cluster2"]),
+                "endpoint_cluster_provenance": "string_source_cluster",
+                "endpoint_exact1_sha256": hashlib.sha256(
+                    left.encode("ascii")
+                ).hexdigest(),
+                "endpoint_exact2_sha256": hashlib.sha256(
+                    right.encode("ascii")
+                ).hexdigest(),
                 "example_id": str(value["pair_hash_sha256"]),
                 "full_pair_hash_sha256": pair_hash,
                 "known_positive_group": str(value["pair_hash_sha256"]),
@@ -281,6 +302,12 @@ def main() -> None:
             "records": len(rows),
             "retrieval_supervised_records": sum(
                 bool(row["retrieval_supervision"]) for row in rows
+            ),
+            "retrieval_records_with_endpoint_cluster_ids": sum(
+                bool(row["retrieval_supervision"])
+                and bool(row.get("endpoint_cluster1"))
+                and bool(row.get("endpoint_cluster2"))
+                for row in rows
             ),
             "string_cross_source_exact_pairs_removed": string_cross_source_removed,
             "string_selected_unique_exact_pairs": len(selected_string_pairs),

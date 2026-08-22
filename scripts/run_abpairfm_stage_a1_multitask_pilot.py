@@ -53,7 +53,10 @@ from run_abpairfm_3b_real_data_gate_v2 import (  # noqa: E402
 )
 
 
-EXPECTED_PROTOCOL_FORMAT = "abpairfm_stage_a1_multitask_pilot_v3"
+EXPECTED_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_multitask_pilot_v3",
+    "abpairfm_stage_a1_multitask_pilot_v4",
+}
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
     "scripts/run_abpairfm_3b_real_data_gate_v2.py",
@@ -133,7 +136,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     systems = protocol.get("systems", {})
     optimization = protocol.get("optimization", {})
     if (
-        protocol.get("format_version") != EXPECTED_PROTOCOL_FORMAT
+        protocol.get("format_version") not in EXPECTED_PROTOCOL_FORMATS
         or protocol.get("status") != "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING"
         or authorization.get("pilot_training") is not True
         or authorization.get("production_training") is not False
@@ -142,10 +145,17 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         or systems.get("partition") != "gpu_4090"
         or systems.get("world_size") != arguments.expected_world_size
         or optimization.get("updates") != 200
-        or optimization.get("microbatch_pairs_per_rank") != 7
+        or optimization.get("microbatch_pairs_per_rank") not in {6, 7}
         or optimization.get("accumulation_steps") != 2
     ):
         raise RuntimeError("Stage-A1 pilot authorization or shape differs")
+    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4" and (
+        optimization.get("microbatch_pairs_per_rank") != 6
+        or protocol.get("loss", {}).get("retrieval", {}).get("candidate_scope")
+        != "same_node_all_ranks"
+        or protocol.get("pilot_manifest", {}).get("string_direct_only") is not True
+    ):
+        raise RuntimeError("Stage-A1 v4 global-retrieval gate differs")
     if protocol["checkpoint"]["generation"] != arguments.input_generation:
         raise RuntimeError("Stage-A1 input generation differs from protocol")
     if (
@@ -173,6 +183,15 @@ def _load_manifest(
         or receipt.get("cross_source_exact_pair_overlap_after_filter") != 0
     ):
         raise RuntimeError("Stage-A1 manifest receipt differs")
+    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4" and (
+        receipt.get("counts", {}).get("retrieval_supervised_records")
+        != protocol["pilot_manifest"]["total_records"]
+        or receipt.get("counts", {}).get(
+            "retrieval_records_with_endpoint_cluster_ids"
+        )
+        != protocol["pilot_manifest"]["total_records"]
+    ):
+        raise RuntimeError("Stage-A1 v4 retrieval-cluster coverage differs")
     records: list[dict[str, Any]] = []
     for line_number, line in enumerate(_zstd_lines(arguments.manifest), start=1):
         value = json.loads(line)
@@ -184,6 +203,17 @@ def _load_manifest(
             or not isinstance(value.get("retrieval_supervision"), bool)
             or min(len(value.get("sequence1", "")), len(value.get("sequence2", "")))
             < 3
+            or (
+                protocol.get("format_version")
+                == "abpairfm_stage_a1_multitask_pilot_v4"
+                and (
+                    value.get("retrieval_supervision") is not True
+                    or not value.get("endpoint_cluster1")
+                    or not value.get("endpoint_cluster2")
+                    or not value.get("endpoint_exact1_sha256")
+                    or not value.get("endpoint_exact2_sha256")
+                )
+            )
         ):
             raise RuntimeError("Stage-A1 manifest record differs")
         records.append(value)
@@ -259,6 +289,86 @@ def _to_device(batch: StageA1Microbatch, device: torch.device) -> StageA1Microba
         value = getattr(batch, field)
         values[field] = value.to(device, non_blocking=True) if torch.is_tensor(value) else value
     return StageA1Microbatch(**values)
+
+
+def _all_gather_equal_shape(tensor: torch.Tensor, world_size: int) -> torch.Tensor:
+    gathered = [torch.empty_like(tensor) for _ in range(world_size)]
+    torch.distributed.all_gather(gathered, tensor)
+    return torch.cat(gathered, dim=0)
+
+
+def _global_retrieval_mask(
+    batch: StageA1Microbatch,
+    *,
+    rank: int,
+    world_size: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    local_count = torch.tensor(
+        [len(batch.retrieval_batch_indices)],
+        device=batch.retrieval_batch_indices.device,
+        dtype=torch.long,
+    )
+    counts = _all_gather_equal_shape(local_count, world_size)
+    if not bool(counts.eq(local_count[0]).all()):
+        raise RuntimeError("Global retrieval requires equal candidate counts per rank")
+
+    local_metadata = (
+        batch.retrieval_left_exact_ids,
+        batch.retrieval_right_exact_ids,
+        batch.retrieval_left_cluster_ids,
+        batch.retrieval_right_cluster_ids,
+        batch.retrieval_positive_group_ids,
+    )
+    global_metadata = tuple(
+        _all_gather_equal_shape(value, world_size) for value in local_metadata
+    )
+    left_exact, right_exact, left_cluster, right_cluster, positive_group = (
+        local_metadata
+    )
+    (
+        global_left_exact,
+        global_right_exact,
+        global_left_cluster,
+        global_right_cluster,
+        global_positive_group,
+    ) = global_metadata
+
+    exact_overlap = (
+        left_exact[:, None].eq(global_left_exact[None, :])
+        | left_exact[:, None].eq(global_right_exact[None, :])
+        | right_exact[:, None].eq(global_left_exact[None, :])
+        | right_exact[:, None].eq(global_right_exact[None, :])
+    )
+    cluster_overlap = (
+        left_cluster[:, None].eq(global_left_cluster[None, :])
+        | left_cluster[:, None].eq(global_right_cluster[None, :])
+        | right_cluster[:, None].eq(global_left_cluster[None, :])
+        | right_cluster[:, None].eq(global_right_cluster[None, :])
+    )
+    allowed = ~(
+        exact_overlap
+        | cluster_overlap
+        | positive_group[:, None].eq(global_positive_group[None, :])
+    )
+    targets = rank * int(local_count[0]) + torch.arange(
+        int(local_count[0]), device=allowed.device
+    )
+    rows = torch.arange(len(targets), device=allowed.device)
+    allowed[rows, targets] = True
+    if bool(allowed.sum(dim=1).lt(2).any()):
+        raise RuntimeError("Global false-negative mask removed every negative")
+    return allowed, targets
+
+
+def _global_retrieval_candidates(
+    heads: StageA1Heads,
+    hidden: torch.Tensor,
+    chain_ids: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    from torch.distributed.nn.functional import all_gather
+
+    left, right = heads.retrieval_embeddings(hidden, chain_ids)
+    return torch.cat(all_gather(left), dim=0), torch.cat(all_gather(right), dim=0)
 
 
 def _sync_replicated_head_gradients(heads: StageA1Heads, world_size: int) -> None:
@@ -385,7 +495,7 @@ def main() -> None:
             torch.distributed.barrier()
             torch.cuda.synchronize(device)
             started = time.perf_counter()
-            totals = torch.zeros(7, device=device, dtype=torch.float64)
+            totals = torch.zeros(8, device=device, dtype=torch.float64)
             for accumulation in range(optimization["accumulation_steps"]):
                 microstep = update * optimization["accumulation_steps"] + accumulation
                 start = (
@@ -420,17 +530,45 @@ def main() -> None:
                         raise RuntimeError("Stage-A1 backbone did not expose MLM and hidden states")
                     mlm_loss = output.balanced_chain_loss_sum / output.contributing_chain_count
                     retrieval_indices = batch.retrieval_batch_indices
+                    retrieval_hidden = captured[0][retrieval_indices]
+                    retrieval_chain_ids = batch.chain_ids[retrieval_indices]
+                    retrieval_allowed = batch.retrieval_allowed
+                    retrieval_candidate_left = None
+                    retrieval_candidate_right = None
+                    retrieval_target_indices = None
+                    if (
+                        protocol["loss"]["retrieval"].get("candidate_scope")
+                        == "same_node_all_ranks"
+                    ):
+                        retrieval_allowed, retrieval_target_indices = (
+                            _global_retrieval_mask(
+                                batch,
+                                rank=rank,
+                                world_size=world_size,
+                            )
+                        )
+                        (
+                            retrieval_candidate_left,
+                            retrieval_candidate_right,
+                        ) = _global_retrieval_candidates(
+                            heads,
+                            retrieval_hidden,
+                            retrieval_chain_ids,
+                        )
                     multitask = heads.loss(
-                        hidden=captured[0][retrieval_indices],
-                        chain_ids=batch.chain_ids[retrieval_indices],
+                        hidden=retrieval_hidden,
+                        chain_ids=retrieval_chain_ids,
                         mlm_loss=mlm_loss,
-                        retrieval_allowed=batch.retrieval_allowed,
+                        retrieval_allowed=retrieval_allowed,
                         pair_batch_indices=torch.searchsorted(
                             retrieval_indices, batch.contact_batch_indices
                         ),
                         pair_left_token_indices=batch.contact_left_token_indices,
                         pair_right_token_indices=batch.contact_right_token_indices,
                         pair_labels=batch.contact_labels,
+                        retrieval_candidate_left=retrieval_candidate_left,
+                        retrieval_candidate_right=retrieval_candidate_right,
+                        retrieval_target_indices=retrieval_target_indices,
                         mlm_weight=protocol["loss"]["masked_language_modeling"]["weight"],
                         retrieval_weight=protocol["loss"]["retrieval"]["weight"],
                         contact_weight=protocol["loss"]["contact"]["weight"],
@@ -448,6 +586,7 @@ def main() -> None:
                         float(multitask.retrieval_accuracy_left_to_right.detach()),
                         float(multitask.retrieval_accuracy_right_to_left.detach()),
                         float(batch.residue_count),
+                        float(retrieval_allowed.shape[1]),
                     ],
                     device=device,
                     dtype=torch.float64,
@@ -459,6 +598,7 @@ def main() -> None:
             optimizer.step()
             torch.distributed.all_reduce(totals)
             totals[:6] /= world_size * optimization["accumulation_steps"]
+            totals[7] /= world_size * optimization["accumulation_steps"]
             torch.cuda.synchronize(device)
             elapsed = time.perf_counter() - started
             record = {
@@ -467,6 +607,7 @@ def main() -> None:
                 "gradient_norm": gradient_norm,
                 "mlm_loss": float(totals[1]),
                 "residue_tokens": float(totals[6]),
+                "retrieval_candidates_per_query": float(totals[7]),
                 "retrieval_accuracy_left_to_right": float(totals[4]),
                 "retrieval_accuracy_right_to_left": float(totals[5]),
                 "retrieval_loss": float(totals[2]),
@@ -534,12 +675,20 @@ def main() -> None:
             rank_value["max_memory_allocated_bytes"] / rank_value["total_memory_bytes"]
             for rank_value in ranks
         )
-        status = (
-            "PASS_STAGE_A1_MULTITASK_PILOT_CHECKPOINT_VERIFIED"
-            if peak_fraction
-            <= protocol["promotion_gates"]["maximum_peak_memory_fraction"]
-            else "FAIL_STAGE_A1_MULTITASK_PILOT_MEMORY_GATE"
+        candidate_floor = min(
+            record["retrieval_candidates_per_query"] for record in update_records
         )
+        required_candidate_floor = protocol["promotion_gates"].get(
+            "minimum_retrieval_candidates_per_query", 2
+        )
+        if peak_fraction > protocol["promotion_gates"]["maximum_peak_memory_fraction"]:
+            status = "FAIL_STAGE_A1_MULTITASK_PILOT_MEMORY_GATE"
+        elif candidate_floor < required_candidate_floor:
+            status = "FAIL_STAGE_A1_RETRIEVAL_CANDIDATE_GATE"
+        elif protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v4":
+            status = "PASS_STAGE_A1_GLOBAL_RETRIEVAL_PILOT_CHECKPOINT_VERIFIED"
+        else:
+            status = "PASS_STAGE_A1_MULTITASK_PILOT_CHECKPOINT_VERIFIED"
         if rank == 0:
             elapsed_values = [record["elapsed_seconds"] for record in update_records]
             result = {
@@ -582,6 +731,19 @@ def main() -> None:
                 },
                 "optimization": optimization,
                 "ranks": ranks,
+                "retrieval": {
+                    "candidate_scope": protocol["loss"]["retrieval"].get(
+                        "candidate_scope", "local_rank"
+                    ),
+                    "final_20_accuracy_left_to_right": _mean_records(
+                        update_records, "retrieval_accuracy_left_to_right", 20
+                    ),
+                    "final_20_accuracy_right_to_left": _mean_records(
+                        update_records, "retrieval_accuracy_right_to_left", 20
+                    ),
+                    "minimum_candidates_per_query": candidate_floor,
+                    "required_minimum_candidates_per_query": required_candidate_floor,
+                },
                 "source_sha256": observed_source_sha256,
                 "stability": {
                     "maximum_gradient_norm_before_clipping": max(

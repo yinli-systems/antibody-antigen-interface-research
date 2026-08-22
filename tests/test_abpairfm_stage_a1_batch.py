@@ -33,12 +33,24 @@ def test_stage_a1_microbatch_is_deterministic_and_contact_aligned() -> None:
     assert bool((first.contact_labels == 0).any())
     assert int(first.contact_left_token_indices.min()) >= 1
     assert int(first.contact_right_token_indices.min()) >= 12
+    assert len(first.retrieval_left_cluster_ids) == 6
+    assert len(first.retrieval_positive_group_ids) == 6
     assert first.residue_count == 7 * 18
 
 
 def test_stage_a1_masks_shared_endpoint_false_negatives() -> None:
     records = [_record(index) for index in range(4)]
     records[1]["sequence1"] = records[0]["sequence1"]
+    batch = build_stage_a1_microbatch(records, seed=17, maximum_tokens=64)
+    assert not bool(batch.retrieval_allowed[0, 1])
+    assert not bool(batch.retrieval_allowed[1, 0])
+    assert bool(torch.diagonal(batch.retrieval_allowed).all())
+
+
+def test_stage_a1_masks_shared_source_cluster_false_negatives() -> None:
+    records = [_record(index) for index in range(4)]
+    records[0]["endpoint_cluster1"] = "cluster-shared"
+    records[1]["endpoint_cluster2"] = "cluster-shared"
     batch = build_stage_a1_microbatch(records, seed=17, maximum_tokens=64)
     assert not bool(batch.retrieval_allowed[0, 1])
     assert not bool(batch.retrieval_allowed[1, 0])

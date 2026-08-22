@@ -32,24 +32,33 @@ def _masked_chain_mean(hidden: Tensor, chain_ids: Tensor, chain: int) -> Tensor:
 
 
 def _masked_bidirectional_cross_entropy(
-    logits: Tensor,
+    left_logits: Tensor,
+    right_logits: Tensor,
     allowed: Tensor,
+    targets: Tensor,
 ) -> tuple[Tensor, Tensor, Tensor]:
-    if logits.ndim != 2 or logits.shape[0] != logits.shape[1]:
-        raise ValueError("Retrieval logits must be a square batch matrix")
-    if allowed.shape != logits.shape or allowed.dtype != torch.bool:
+    if (
+        left_logits.ndim != 2
+        or right_logits.shape != left_logits.shape
+        or targets.shape != (left_logits.shape[0],)
+        or targets.dtype != torch.long
+    ):
+        raise ValueError("Retrieval logits or targets have an invalid shape")
+    if allowed.shape != left_logits.shape or allowed.dtype != torch.bool:
         raise ValueError("Retrieval candidate mask differs from logits")
-    batch_size = logits.shape[0]
-    diagonal = torch.arange(batch_size, device=logits.device)
-    if not bool(allowed[diagonal, diagonal].all()):
+    if bool((targets < 0).any()) or bool((targets >= left_logits.shape[1]).any()):
+        raise ValueError("Retrieval target is outside the candidate matrix")
+    rows = torch.arange(left_logits.shape[0], device=left_logits.device)
+    if not bool(allowed[rows, targets].all()):
         raise ValueError("Every cognate retrieval pair must remain allowed")
-    if bool(allowed.sum(dim=1).lt(2).any()) or bool(allowed.sum(dim=0).lt(2).any()):
+    if bool(allowed.sum(dim=1).lt(2).any()):
         raise ValueError("Every retrieval direction requires at least one negative")
-    masked = logits.masked_fill(~allowed, -torch.inf)
-    left_loss = F.cross_entropy(masked, diagonal)
-    right_loss = F.cross_entropy(masked.transpose(0, 1), diagonal)
-    left_accuracy = masked.argmax(dim=1).eq(diagonal).float().mean()
-    right_accuracy = masked.argmax(dim=0).eq(diagonal).float().mean()
+    masked_left = left_logits.masked_fill(~allowed, -torch.inf)
+    masked_right = right_logits.masked_fill(~allowed, -torch.inf)
+    left_loss = F.cross_entropy(masked_left, targets)
+    right_loss = F.cross_entropy(masked_right, targets)
+    left_accuracy = masked_left.argmax(dim=1).eq(targets).float().mean()
+    right_accuracy = masked_right.argmax(dim=1).eq(targets).float().mean()
     return (left_loss + right_loss) / 2.0, left_accuracy, right_accuracy
 
 
@@ -74,7 +83,7 @@ class StageA1Heads(nn.Module):
         self.contact_right = nn.Linear(embedding_dimension, projection_dimension, bias=False)
         self.contact_bias = nn.Parameter(torch.zeros(()))
 
-    def retrieval_logits(self, hidden: Tensor, chain_ids: Tensor) -> Tensor:
+    def retrieval_embeddings(self, hidden: Tensor, chain_ids: Tensor) -> tuple[Tensor, Tensor]:
         if hidden.ndim != 3 or chain_ids.shape != hidden.shape[:2]:
             raise ValueError("Hidden states and chain IDs are not aligned")
         left = F.normalize(
@@ -83,6 +92,10 @@ class StageA1Heads(nn.Module):
         right = F.normalize(
             self.retrieval_right(_masked_chain_mean(hidden, chain_ids, 1)), dim=-1
         )
+        return left, right
+
+    def retrieval_logits(self, hidden: Tensor, chain_ids: Tensor) -> Tensor:
+        left, right = self.retrieval_embeddings(hidden, chain_ids)
         return left @ right.transpose(0, 1) / self.temperature
 
     def contact_logits(
@@ -131,6 +144,9 @@ class StageA1Heads(nn.Module):
         pair_left_token_indices: Tensor,
         pair_right_token_indices: Tensor,
         pair_labels: Tensor,
+        retrieval_candidate_left: Tensor | None = None,
+        retrieval_candidate_right: Tensor | None = None,
+        retrieval_target_indices: Tensor | None = None,
         mlm_weight: float = 1.0,
         retrieval_weight: float = 0.2,
         contact_weight: float = 0.5,
@@ -140,9 +156,38 @@ class StageA1Heads(nn.Module):
             raise ValueError("Stage-A1 loss weights must be finite and non-negative")
         if mlm_loss.ndim != 0 or not bool(torch.isfinite(mlm_loss)):
             raise ValueError("Stage-A1 requires one finite scalar MLM loss")
-        retrieval_logits = self.retrieval_logits(hidden, chain_ids)
+        retrieval_left, retrieval_right = self.retrieval_embeddings(hidden, chain_ids)
+        if (retrieval_candidate_left is None) != (retrieval_candidate_right is None):
+            raise ValueError("Both retrieval candidate directions are required")
+        if retrieval_candidate_left is None:
+            retrieval_candidate_left = retrieval_left
+            retrieval_candidate_right = retrieval_right
+        assert retrieval_candidate_right is not None
+        if (
+            retrieval_candidate_left.ndim != 2
+            or retrieval_candidate_right.shape != retrieval_candidate_left.shape
+            or retrieval_candidate_left.shape[1] != retrieval_left.shape[1]
+        ):
+            raise ValueError("Retrieval candidate embeddings have an invalid shape")
+        if retrieval_target_indices is None:
+            if retrieval_candidate_left.shape[0] != retrieval_left.shape[0]:
+                raise ValueError("Global retrieval candidates require explicit targets")
+            retrieval_target_indices = torch.arange(
+                retrieval_left.shape[0], device=retrieval_left.device
+            )
+        left_logits = (
+            retrieval_left @ retrieval_candidate_right.transpose(0, 1)
+        ) / self.temperature
+        right_logits = (
+            retrieval_right @ retrieval_candidate_left.transpose(0, 1)
+        ) / self.temperature
         retrieval_loss, left_accuracy, right_accuracy = (
-            _masked_bidirectional_cross_entropy(retrieval_logits, retrieval_allowed)
+            _masked_bidirectional_cross_entropy(
+                left_logits,
+                right_logits,
+                retrieval_allowed,
+                retrieval_target_indices,
+            )
         )
         contact_logits = self.contact_logits(
             hidden,

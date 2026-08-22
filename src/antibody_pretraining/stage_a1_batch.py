@@ -21,6 +21,12 @@ def _seed(*parts: object) -> int:
     return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
 
 
+def _identity_id(*parts: object) -> int:
+    """Return a deterministic signed-int64-safe identity fingerprint."""
+
+    return _seed("identity", *parts) % (2**63 - 1)
+
+
 def _tokenize(sequence: str) -> list[int]:
     if not sequence or any(character.isspace() for character in sequence):
         raise ValueError("Malformed Stage-A1 protein sequence")
@@ -109,6 +115,11 @@ class StageA1Microbatch:
     labels: Tensor
     retrieval_batch_indices: Tensor
     retrieval_allowed: Tensor
+    retrieval_left_exact_ids: Tensor
+    retrieval_right_exact_ids: Tensor
+    retrieval_left_cluster_ids: Tensor
+    retrieval_right_cluster_ids: Tensor
+    retrieval_positive_group_ids: Tensor
     contact_batch_indices: Tensor
     contact_left_token_indices: Tensor
     contact_right_token_indices: Tensor
@@ -221,20 +232,105 @@ def build_stage_a1_microbatch(
     retrieval_allowed = torch.ones(
         (len(retrieval_records), len(retrieval_records)), dtype=torch.bool
     )
+    retrieval_left_exact_ids = torch.tensor(
+        [
+            _identity_id(
+                "exact",
+                record.get("endpoint_exact1_sha256", record["sequence1"]),
+            )
+            for record in retrieval_records
+        ],
+        dtype=torch.long,
+    )
+    retrieval_right_exact_ids = torch.tensor(
+        [
+            _identity_id(
+                "exact",
+                record.get("endpoint_exact2_sha256", record["sequence2"]),
+            )
+            for record in retrieval_records
+        ],
+        dtype=torch.long,
+    )
+    retrieval_left_cluster_ids = torch.tensor(
+        [
+            _identity_id(
+                "cluster",
+                record.get(
+                    "endpoint_cluster1",
+                    record.get("endpoint_exact1_sha256", record["sequence1"]),
+                ),
+            )
+            for record in retrieval_records
+        ],
+        dtype=torch.long,
+    )
+    retrieval_right_cluster_ids = torch.tensor(
+        [
+            _identity_id(
+                "cluster",
+                record.get(
+                    "endpoint_cluster2",
+                    record.get("endpoint_exact2_sha256", record["sequence2"]),
+                ),
+            )
+            for record in retrieval_records
+        ],
+        dtype=torch.long,
+    )
+    retrieval_positive_group_ids = torch.tensor(
+        [
+            _identity_id(
+                "positive_group",
+                record.get("source", "unknown"),
+                record["known_positive_group"],
+            )
+            for record in retrieval_records
+        ],
+        dtype=torch.long,
+    )
     for left_index, left_record in enumerate(retrieval_records):
-        left_endpoints = {str(left_record["sequence1"]), str(left_record["sequence2"])}
         for right_index, right_record in enumerate(retrieval_records):
             if left_index == right_index:
                 continue
-            right_endpoints = {
-                str(right_record["sequence1"]),
-                str(right_record["sequence2"]),
-            }
-            same_group = (
-                str(left_record["known_positive_group"])
-                == str(right_record["known_positive_group"])
+            same_group = bool(
+                retrieval_positive_group_ids[left_index]
+                == retrieval_positive_group_ids[right_index]
             )
-            if same_group or left_endpoints & right_endpoints:
+            exact_overlap = bool(
+                (retrieval_left_exact_ids[left_index] == retrieval_left_exact_ids[right_index])
+                or (
+                    retrieval_left_exact_ids[left_index]
+                    == retrieval_right_exact_ids[right_index]
+                )
+                or (
+                    retrieval_right_exact_ids[left_index]
+                    == retrieval_left_exact_ids[right_index]
+                )
+                or (
+                    retrieval_right_exact_ids[left_index]
+                    == retrieval_right_exact_ids[right_index]
+                )
+            )
+            cluster_overlap = bool(
+                (
+                    retrieval_left_cluster_ids[left_index]
+                    == retrieval_left_cluster_ids[right_index]
+                )
+                or (
+                    retrieval_left_cluster_ids[left_index]
+                    == retrieval_right_cluster_ids[right_index]
+                )
+                or (
+                    retrieval_right_cluster_ids[left_index]
+                    == retrieval_left_cluster_ids[right_index]
+                )
+                or (
+                    retrieval_right_cluster_ids[left_index]
+                    == retrieval_right_cluster_ids[right_index]
+                )
+            )
+            if same_group or exact_overlap or cluster_overlap:
                 retrieval_allowed[left_index, right_index] = False
     if bool(retrieval_allowed.sum(dim=1).lt(2).any()) or bool(
         retrieval_allowed.sum(dim=0).lt(2).any()
@@ -248,6 +344,11 @@ def build_stage_a1_microbatch(
         labels=labels,
         retrieval_batch_indices=torch.tensor(retrieval_indices, dtype=torch.long),
         retrieval_allowed=retrieval_allowed,
+        retrieval_left_exact_ids=retrieval_left_exact_ids,
+        retrieval_right_exact_ids=retrieval_right_exact_ids,
+        retrieval_left_cluster_ids=retrieval_left_cluster_ids,
+        retrieval_right_cluster_ids=retrieval_right_cluster_ids,
+        retrieval_positive_group_ids=retrieval_positive_group_ids,
         contact_batch_indices=torch.tensor(contact_batch, dtype=torch.long),
         contact_left_token_indices=torch.tensor(contact_left, dtype=torch.long),
         contact_right_token_indices=torch.tensor(contact_right, dtype=torch.long),
