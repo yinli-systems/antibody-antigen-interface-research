@@ -1,0 +1,62 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "real_data_gpu_gate": false,
+    "systems_microbatch8": true,
+    "test_access": false
+  },
+  "claim_boundary": "Same-node synthetic full-2.839B-model HSDP capacity and throughput ladder only. It promotes microbatch 8 into the real-data gate but does not authorize production training or establish biological or SOTA performance.",
+  "format_version": "abpairfm_3b_microbatch_ladder_summary_v1",
+  "gates": {
+    "maximum_p95_to_median_step_time": 1.2,
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "minimum_throughput_speedup": 1.1
+  },
+  "jobs": [
+    {
+      "candidate_microbatch_pairs_per_rank": 2,
+      "candidate_p95_to_median_step_time": 1.087686272847215,
+      "candidate_peak_allocated_memory_fraction": 0.6058847382581519,
+      "candidate_residue_tokens_per_second": 6204.5404054772625,
+      "candidate_throughput_speedup": 1.6949145716888647,
+      "decision": "PROMOTE_MICROBATCH_2",
+      "job_id": 1458805
+    },
+    {
+      "candidate_microbatch_pairs_per_rank": 4,
+      "candidate_p95_to_median_step_time": 1.0619511795883356,
+      "candidate_peak_allocated_memory_fraction": 0.6415634020210463,
+      "candidate_residue_tokens_per_second": 9533.182679008005,
+      "candidate_throughput_speedup": 2.643735073578403,
+      "decision": "PROMOTE_MICROBATCH_4",
+      "job_id": 1458834
+    },
+    {
+      "candidate_microbatch_pairs_per_rank": 8,
+      "candidate_p95_to_median_step_time": 1.030496190770722,
+      "candidate_peak_allocated_memory_fraction": 0.712920729546835,
+      "candidate_residue_tokens_per_second": 11793.094646826628,
+      "candidate_throughput_speedup": 3.235565607994429,
+      "decision": "PROMOTE_MICROBATCH_8",
+      "job_id": 1458847
+    }
+  ],
+  "next_gate": {
+    "accumulation_steps": 2,
+    "job_id": 1458866,
+    "manifest_records": 25600,
+    "microbatch_pairs_per_rank": 8,
+    "name": "deterministic_train_only_real_data_gate",
+    "optimizer_updates": 200,
+    "state": "RUNNING"
+  },
+  "promoted": {
+    "five_billion_token_wall_clock_days_excluding_overhead": 4.90714033113798,
+    "microbatch_pairs_per_rank": 8,
+    "residue_tokens_per_second": 11793.094646826628
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

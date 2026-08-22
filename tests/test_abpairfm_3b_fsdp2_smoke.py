@@ -40,6 +40,41 @@ def test_synthetic_pair_has_two_chains_and_targets() -> None:
     assert residues == 60
 
 
+def test_synthetic_pair_microbatch_counts_every_residue() -> None:
+    module = _module()
+    tokens, chain_ids, labels, residues = module._synthetic_pair(
+        rank=0,
+        sequence_tokens=64,
+        microbatch_pairs=3,
+        seed=17,
+        device=torch.device("cpu"),
+    )
+    assert tokens.shape == chain_ids.shape == labels.shape == (3, 64)
+    for batch_index in range(3):
+        assert labels[batch_index, :32].ne(-100).any()
+        assert labels[batch_index, 32:].ne(-100).any()
+    assert residues == 3 * 60
+
+
+def test_microbatch_argument_is_bounded() -> None:
+    module = _module()
+    arguments = type(
+        "Arguments",
+        (),
+        {
+            "expected_world_size": 4,
+            "sequence_tokens": 64,
+            "microbatch_pairs": 0,
+            "warmup_steps": 0,
+            "measured_steps": 1,
+            "seed": 17,
+            "shard_group_size": 0,
+        },
+    )()
+    with pytest.raises(ValueError, match="microbatch-pairs"):
+        module._validate(arguments)
+
+
 def test_systems_receipt_is_finite_and_create_only(tmp_path: Path) -> None:
     module = _module()
     output = tmp_path / "receipt.json"
