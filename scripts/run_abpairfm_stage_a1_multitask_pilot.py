@@ -65,6 +65,7 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
+    "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
@@ -73,6 +74,7 @@ GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
+    "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -80,14 +82,20 @@ SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
+    "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
+    "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
+    "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+}
+LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -190,7 +198,11 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         expected_activation_checkpoint_modes = ["selective_attention", "off"]
     else:
         expected_efficiency_microbatches = [6, 7, 8]
-        expected_activation_checkpoint_modes = ["full", "off"]
+        expected_activation_checkpoint_modes = (
+            ["full"]
+            if format_version in LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS
+            else ["full", "off"]
+        )
     selected_trial = {
         "activation_checkpointing": selected_activation_checkpoint_mode,
         "microbatch_pairs_per_rank": selected_efficiency_microbatch,
@@ -215,7 +227,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
                         in expected_activation_checkpoint_modes
                         and (
                             format_version
-                            != "abpairfm_stage_a1_representative_efficiency_gate_v9"
+                            not in REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS
                             or selected_trial
                             in protocol.get("efficiency", {}).get("trial_matrix", [])
                         )
@@ -279,6 +291,13 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
             efficiency.get("maximum_combined_tokens") == 1024
             and efficiency.get("expected_source_records") == 19200
         )
+        if format_version in LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS:
+            representative_valid = representative_valid and (
+                efficiency.get("length_bucket_block_microbatches") == 16
+                and efficiency.get("ppiref_records_per_group") == 5
+                and efficiency.get("string_records_per_group") == 1
+                and efficiency.get("selection_seed") == 1701
+            )
         short_bucket_valid = (
             efficiency.get("maximum_combined_tokens") == 64
             and efficiency.get("expected_bucket_records") == 10380
@@ -421,6 +440,8 @@ def _efficiency_bucket_records(
         )
         if len(records) < required:
             raise RuntimeError("Stage-A1 representative source is too small")
+        if format_version in LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS:
+            return _length_bucket_stage_a1_records(records, protocol)
         return records
     efficiency = protocol["efficiency"]
     maximum_combined_tokens = int(efficiency["maximum_combined_tokens"])
@@ -453,6 +474,64 @@ def _efficiency_bucket_records(
     if len(selected) < required:
         raise RuntimeError("Stage-A1 efficiency bucket is too small for the frozen trial")
     return selected
+
+
+def _length_bucket_stage_a1_records(
+    records: list[dict[str, Any]], protocol: Mapping[str, Any]
+) -> list[dict[str, Any]]:
+    """Preserve the source ratio while shuffling contiguous length buckets."""
+
+    efficiency = protocol["efficiency"]
+    ppiref_per_group = int(efficiency["ppiref_records_per_group"])
+    string_per_group = int(efficiency["string_records_per_group"])
+    if string_per_group != 1:
+        raise RuntimeError("Stage-A1 length bucketing requires one STRING record")
+
+    def order_key(record: Mapping[str, Any]) -> tuple[int, str]:
+        return (
+            len(str(record["sequence1"])) + len(str(record["sequence2"])) + 4,
+            str(record["example_id"]),
+        )
+
+    ppiref = sorted(
+        (record for record in records if record["source"] == "ppiref50k"),
+        key=order_key,
+    )
+    string = sorted(
+        (
+            record
+            for record in records
+            if record["source"] == "string_v12_physical"
+        ),
+        key=order_key,
+    )
+    if len(ppiref) != len(string) * ppiref_per_group:
+        raise RuntimeError("Stage-A1 source ratio differs from the length-bucket gate")
+    groups = [
+        [
+            *ppiref[index * ppiref_per_group : (index + 1) * ppiref_per_group],
+            string[index],
+        ]
+        for index in range(len(string))
+    ]
+    groups.sort(key=lambda group: max(order_key(record) for record in group))
+    block_size = int(efficiency["length_bucket_block_microbatches"])
+    blocks = [groups[index : index + block_size] for index in range(0, len(groups), block_size)]
+    seed = int(efficiency["selection_seed"])
+    blocks.sort(
+        key=lambda block: hashlib.sha256(
+            (
+                f"{seed}\0{block[0][0]['example_id']}\0"
+                f"{block[-1][-1]['example_id']}"
+            ).encode("utf-8")
+        ).digest()
+    )
+    ordered = [record for block in blocks for group in block for record in group]
+    if len(ordered) != len(records) or {
+        record["pilot_record_index"] for record in ordered
+    } != {record["pilot_record_index"] for record in records}:
+        raise RuntimeError("Stage-A1 length bucketing changed manifest membership")
+    return ordered
 
 
 def _verify_input_dcp_collectively(
@@ -1202,10 +1281,11 @@ def main() -> None:
                     if not bool(torch.isfinite(loss)):
                         raise RuntimeError("Stage-A1 multitask loss is nonfinite")
                     loss.backward()
-                minimum_allowed_candidates = _update_minimum_allowed_candidates(
-                    minimum_allowed_candidates,
-                    retrieval_allowed,
-                )
+                if not alternating_efficiency or active_phase == "retrieval":
+                    minimum_allowed_candidates = _update_minimum_allowed_candidates(
+                        minimum_allowed_candidates,
+                        retrieval_allowed,
+                    )
                 _publish_rank_phase(
                     phase_root,
                     rank=rank,
