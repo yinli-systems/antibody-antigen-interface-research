@@ -42,7 +42,10 @@ from antibody_pretraining.stage_a1_batch import (  # noqa: E402
     build_stage_a1_microbatch,
     build_stage_a1_retrieval_allowed,
 )
-from antibody_pretraining.stage_a1_objective import StageA1Heads  # noqa: E402
+from antibody_pretraining.stage_a1_objective import (  # noqa: E402
+    StageA1Heads,
+    StageA1Loss,
+)
 from interaction_first.frontier_fsdp2 import verify_dcp_generation  # noqa: E402
 from run_abpairfm_3b_real_data_gate_v2 import (  # noqa: E402
     _collect,
@@ -402,18 +405,10 @@ def _global_retrieval_candidates(
     hidden: torch.Tensor,
     chain_ids: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor]:
+    from torch.distributed.nn.functional import all_gather
+
     left, right = heads.retrieval_embeddings(hidden, chain_ids)
-    local_views = torch.stack((left, right), dim=0)
-    world_size = torch.distributed.get_world_size()
-    rank = torch.distributed.get_rank()
-    gathered = [torch.empty_like(local_views) for _ in range(world_size)]
-    torch.distributed.all_gather(gathered, local_views.detach())
-    # Remote candidates are negatives only. Keeping the local slice attached gives
-    # every pair query and candidate gradients without introducing a second,
-    # differentiable collective into FSDP backward.
-    gathered[rank] = local_views
-    global_views = torch.cat(gathered, dim=1)
-    return global_views[0], global_views[1]
+    return torch.cat(all_gather(left), dim=0), torch.cat(all_gather(right), dim=0)
 
 
 def _stage_a1_backbone_views(
@@ -656,81 +651,233 @@ def main() -> None:
                 )
                 batch = _to_device(cpu_batch, device)
                 synchronize = accumulation == optimization["accumulation_steps"] - 1
-                backbone.set_requires_gradient_sync(synchronize)
-                backbone.set_is_last_backward(synchronize)
-                with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
-                    device_type="cuda", dtype=torch.bfloat16
+                retrieval_indices = batch.retrieval_batch_indices
+                retrieval_chain_ids = batch.chain_ids[retrieval_indices]
+                retrieval_allowed = batch.retrieval_allowed
+                retrieval_target_indices = None
+                if (
+                    protocol["loss"]["retrieval"].get("candidate_scope")
+                    == "same_node_all_ranks"
                 ):
-                    (
-                        output,
-                        joint_hidden,
-                        retrieval_hidden,
-                        retrieval_chain_ids,
-                    ) = _stage_a1_backbone_views(
-                        backbone,
-                        batch,
-                        independent_retrieval_view=independent_retrieval_view,
+                    retrieval_allowed, retrieval_target_indices = (
+                        _global_retrieval_mask(
+                            batch,
+                            rank=rank,
+                            world_size=world_size,
+                        )
                     )
-                    assert output.balanced_chain_loss_sum is not None
-                    mlm_loss = output.balanced_chain_loss_sum / output.contributing_chain_count
-                    retrieval_indices = batch.retrieval_batch_indices
-                    retrieval_allowed = batch.retrieval_allowed
-                    retrieval_candidate_left = None
-                    retrieval_candidate_right = None
-                    retrieval_target_indices = None
-                    if (
-                        protocol["loss"]["retrieval"].get("candidate_scope")
-                        == "same_node_all_ranks"
+                if independent_retrieval_view:
+                    backbone.set_requires_gradient_sync(False)
+                    backbone.set_is_last_backward(False)
+                    with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
+                        device_type="cuda", dtype=torch.bfloat16
                     ):
-                        retrieval_allowed, retrieval_target_indices = (
-                            _global_retrieval_mask(
-                                batch,
-                                rank=rank,
-                                world_size=world_size,
+                        output = backbone(
+                            batch.tokens,
+                            batch.chain_ids,
+                            labels=batch.labels,
+                            return_hidden_states=True,
+                        )
+                        if (
+                            output.balanced_chain_loss_sum is None
+                            or output.hidden_states is None
+                        ):
+                            raise RuntimeError(
+                                "Stage-A1 joint backbone view is incomplete"
+                            )
+                        mlm_loss = (
+                            output.balanced_chain_loss_sum
+                            / output.contributing_chain_count
+                        )
+                        joint_hidden = output.hidden_states[retrieval_indices]
+                        contact_loss, contact_count, contact_positive_count = (
+                            heads.contact_loss(
+                                hidden=joint_hidden,
+                                pair_batch_indices=torch.searchsorted(
+                                    retrieval_indices,
+                                    batch.contact_batch_indices,
+                                ),
+                                pair_left_token_indices=(
+                                    batch.contact_left_token_indices
+                                ),
+                                pair_right_token_indices=(
+                                    batch.contact_right_token_indices
+                                ),
+                                pair_labels=batch.contact_labels,
                             )
                         )
+                        joint_loss = (
+                            protocol["loss"]["masked_language_modeling"]["weight"]
+                            * mlm_loss
+                            + protocol["loss"]["contact"]["weight"]
+                            * contact_loss
+                        )
+                    _publish_rank_phase(
+                        phase_root,
+                        rank=rank,
+                        update=update + 1,
+                        accumulation=accumulation + 1,
+                        phase="joint_forward_and_loss_complete",
+                    )
+                    joint_scaled = joint_loss / optimization["accumulation_steps"]
+                    if not bool(torch.isfinite(joint_scaled)):
+                        raise RuntimeError("Stage-A1 joint loss is nonfinite")
+                    joint_scaled.backward()
+                    _publish_rank_phase(
+                        phase_root,
+                        rank=rank,
+                        update=update + 1,
+                        accumulation=accumulation + 1,
+                        phase="joint_backward_complete",
+                    )
+
+                    backbone.set_requires_gradient_sync(synchronize)
+                    backbone.set_is_last_backward(synchronize)
+                    with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
+                        device_type="cuda", dtype=torch.bfloat16
+                    ):
+                        retrieval_output = backbone(
+                            batch.tokens[retrieval_indices],
+                            retrieval_chain_ids,
+                            allow_cross_chain_attention=False,
+                            return_hidden_states=True,
+                            compute_logits=False,
+                        )
+                        if retrieval_output.hidden_states is None:
+                            raise RuntimeError(
+                                "Stage-A1 independent retrieval view is missing"
+                            )
+                        retrieval_hidden = retrieval_output.hidden_states
+                        retrieval_candidate_left = None
+                        retrieval_candidate_right = None
+                        if (
+                            protocol["loss"]["retrieval"].get("candidate_scope")
+                            == "same_node_all_ranks"
+                        ):
+                            (
+                                retrieval_candidate_left,
+                                retrieval_candidate_right,
+                            ) = _global_retrieval_candidates(
+                                heads,
+                                retrieval_hidden,
+                                retrieval_chain_ids,
+                            )
                         (
-                            retrieval_candidate_left,
-                            retrieval_candidate_right,
-                        ) = _global_retrieval_candidates(
-                            heads,
+                            retrieval_loss,
+                            retrieval_accuracy_left_to_right,
+                            retrieval_accuracy_right_to_left,
+                        ) = heads.retrieval_loss(
+                            hidden=retrieval_hidden,
+                            chain_ids=retrieval_chain_ids,
+                            retrieval_allowed=retrieval_allowed,
+                            retrieval_candidate_left=retrieval_candidate_left,
+                            retrieval_candidate_right=retrieval_candidate_right,
+                            retrieval_target_indices=retrieval_target_indices,
+                        )
+                        retrieval_scaled = (
+                            protocol["loss"]["retrieval"]["weight"]
+                            * retrieval_loss
+                            / optimization["accumulation_steps"]
+                        )
+                    _publish_rank_phase(
+                        phase_root,
+                        rank=rank,
+                        update=update + 1,
+                        accumulation=accumulation + 1,
+                        phase="retrieval_forward_and_loss_complete",
+                    )
+                    if not bool(torch.isfinite(retrieval_scaled)):
+                        raise RuntimeError("Stage-A1 retrieval loss is nonfinite")
+                    retrieval_scaled.backward()
+                    multitask = StageA1Loss(
+                        total=(
+                            joint_loss
+                            + protocol["loss"]["retrieval"]["weight"]
+                            * retrieval_loss
+                        ),
+                        mlm=mlm_loss,
+                        retrieval=retrieval_loss,
+                        contact=contact_loss,
+                        retrieval_accuracy_left_to_right=(
+                            retrieval_accuracy_left_to_right
+                        ),
+                        retrieval_accuracy_right_to_left=(
+                            retrieval_accuracy_right_to_left
+                        ),
+                        contact_count=contact_count,
+                        contact_positive_count=contact_positive_count,
+                    )
+                else:
+                    backbone.set_requires_gradient_sync(synchronize)
+                    backbone.set_is_last_backward(synchronize)
+                    with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
+                        device_type="cuda", dtype=torch.bfloat16
+                    ):
+                        (
+                            output,
+                            joint_hidden,
                             retrieval_hidden,
                             retrieval_chain_ids,
+                        ) = _stage_a1_backbone_views(
+                            backbone,
+                            batch,
+                            independent_retrieval_view=False,
                         )
-                    multitask = heads.loss(
-                        hidden=joint_hidden,
-                        chain_ids=retrieval_chain_ids,
-                        retrieval_hidden=retrieval_hidden,
-                        mlm_loss=mlm_loss,
-                        retrieval_allowed=retrieval_allowed,
-                        pair_batch_indices=torch.searchsorted(
-                            retrieval_indices, batch.contact_batch_indices
-                        ),
-                        pair_left_token_indices=batch.contact_left_token_indices,
-                        pair_right_token_indices=batch.contact_right_token_indices,
-                        pair_labels=batch.contact_labels,
-                        retrieval_candidate_left=retrieval_candidate_left,
-                        retrieval_candidate_right=retrieval_candidate_right,
-                        retrieval_target_indices=retrieval_target_indices,
-                        mlm_weight=protocol["loss"]["masked_language_modeling"]["weight"],
-                        retrieval_weight=protocol["loss"]["retrieval"]["weight"],
-                        contact_weight=protocol["loss"]["contact"]["weight"],
+                        assert output.balanced_chain_loss_sum is not None
+                        mlm_loss = (
+                            output.balanced_chain_loss_sum
+                            / output.contributing_chain_count
+                        )
+                        retrieval_candidate_left = None
+                        retrieval_candidate_right = None
+                        if (
+                            protocol["loss"]["retrieval"].get("candidate_scope")
+                            == "same_node_all_ranks"
+                        ):
+                            (
+                                retrieval_candidate_left,
+                                retrieval_candidate_right,
+                            ) = _global_retrieval_candidates(
+                                heads,
+                                retrieval_hidden,
+                                retrieval_chain_ids,
+                            )
+                        multitask = heads.loss(
+                            hidden=joint_hidden,
+                            chain_ids=retrieval_chain_ids,
+                            retrieval_hidden=retrieval_hidden,
+                            mlm_loss=mlm_loss,
+                            retrieval_allowed=retrieval_allowed,
+                            pair_batch_indices=torch.searchsorted(
+                                retrieval_indices, batch.contact_batch_indices
+                            ),
+                            pair_left_token_indices=batch.contact_left_token_indices,
+                            pair_right_token_indices=batch.contact_right_token_indices,
+                            pair_labels=batch.contact_labels,
+                            retrieval_candidate_left=retrieval_candidate_left,
+                            retrieval_candidate_right=retrieval_candidate_right,
+                            retrieval_target_indices=retrieval_target_indices,
+                            mlm_weight=protocol["loss"][
+                                "masked_language_modeling"
+                            ]["weight"],
+                            retrieval_weight=protocol["loss"]["retrieval"]["weight"],
+                            contact_weight=protocol["loss"]["contact"]["weight"],
+                        )
+                        loss = multitask.total / optimization["accumulation_steps"]
+                    _publish_rank_phase(
+                        phase_root,
+                        rank=rank,
+                        update=update + 1,
+                        accumulation=accumulation + 1,
+                        phase="forward_and_loss_complete",
                     )
-                    loss = multitask.total / optimization["accumulation_steps"]
-                _publish_rank_phase(
-                    phase_root,
-                    rank=rank,
-                    update=update + 1,
-                    accumulation=accumulation + 1,
-                    phase="forward_and_loss_complete",
-                )
+                    if not bool(torch.isfinite(loss)):
+                        raise RuntimeError("Stage-A1 multitask loss is nonfinite")
+                    loss.backward()
                 minimum_allowed_candidates = _update_minimum_allowed_candidates(
                     minimum_allowed_candidates,
                     retrieval_allowed,
                 )
-                if not bool(torch.isfinite(loss)):
-                    raise RuntimeError("Stage-A1 multitask loss is nonfinite")
-                loss.backward()
                 _publish_rank_phase(
                     phase_root,
                     rank=rank,
