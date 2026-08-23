@@ -63,20 +63,24 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
     "abpairfm_stage_a1_efficiency_gate_v7",
+    "abpairfm_stage_a1_efficiency_ac_gate_v8",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
     "abpairfm_stage_a1_efficiency_gate_v7",
+    "abpairfm_stage_a1_efficiency_ac_gate_v8",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
     "abpairfm_stage_a1_efficiency_gate_v7",
+    "abpairfm_stage_a1_efficiency_ac_gate_v8",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
+    "abpairfm_stage_a1_efficiency_ac_gate_v8",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -134,6 +138,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--maximum-tokens", type=int, default=1024)
     parser.add_argument("--progress-interval", type=int, default=10)
     parser.add_argument("--efficiency-microbatch-pairs-per-rank", type=int)
+    parser.add_argument(
+        "--efficiency-activation-checkpoint-mode",
+        choices=("full", "selective_attention", "off"),
+        default="full",
+    )
     return parser.parse_args()
 
 
@@ -163,13 +172,39 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     selected_efficiency_microbatch = getattr(
         arguments, "efficiency_microbatch_pairs_per_rank", None
     )
+    selected_activation_checkpoint_mode = getattr(
+        arguments, "efficiency_activation_checkpoint_mode", "full"
+    )
+    expected_efficiency_microbatches = (
+        [64, 96, 128]
+        if format_version == "abpairfm_stage_a1_efficiency_gate_v7"
+        else [64]
+    )
+    expected_activation_checkpoint_modes = (
+        ["full"]
+        if format_version == "abpairfm_stage_a1_efficiency_gate_v7"
+        else ["selective_attention", "off"]
+    )
     valid_shape = (
         optimization.get("updates") == expected_updates
         and (
             (
                 optimization.get("microbatch_pairs_per_rank_candidates")
-                == [64, 96, 128]
-                and selected_efficiency_microbatch in {64, 96, 128}
+                == expected_efficiency_microbatches
+                and selected_efficiency_microbatch
+                in expected_efficiency_microbatches
+                and (
+                    selected_activation_checkpoint_mode == "full"
+                    if format_version == "abpairfm_stage_a1_efficiency_gate_v7"
+                    else (
+                        protocol.get("efficiency", {}).get(
+                            "activation_checkpointing_candidates"
+                        )
+                        == expected_activation_checkpoint_modes
+                        and selected_activation_checkpoint_mode
+                        in expected_activation_checkpoint_modes
+                    )
+                )
                 and optimization.get("accumulation_steps") == 1
             )
             if alternating_efficiency
@@ -248,6 +283,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     if format_version in {
         "abpairfm_stage_a1_multitask_pilot_v6",
         "abpairfm_stage_a1_efficiency_gate_v7",
+        "abpairfm_stage_a1_efficiency_ac_gate_v8",
     } and (
         len(protocol.get("pilot_manifest", {}).get("source_protocol_sha256", ""))
         != 64
@@ -276,6 +312,7 @@ def _load_manifest(
     if protocol.get("format_version") in {
         "abpairfm_stage_a1_multitask_pilot_v6",
         "abpairfm_stage_a1_efficiency_gate_v7",
+        "abpairfm_stage_a1_efficiency_ac_gate_v8",
     } and (
         manifest_sha256 != protocol["pilot_manifest"]["manifest_sha256"]
         or receipt_sha256 != protocol["pilot_manifest"]["receipt_sha256"]
@@ -653,8 +690,22 @@ def main() -> None:
         mesh = init_device_mesh(
             "cuda", (2, arguments.shard_group_size), mesh_dim_names=("replicate", "shard")
         )
+        activation_checkpoint_mode = (
+            arguments.efficiency_activation_checkpoint_mode
+            if alternating_efficiency
+            else "full"
+        )
         with torch.device("meta"):
-            backbone = PairAwareESM2(PairAwareESM2Config(activation_checkpointing=True))
+            backbone = PairAwareESM2(
+                PairAwareESM2Config(
+                    activation_checkpointing=activation_checkpoint_mode != "off",
+                    activation_checkpoint_policy=(
+                        "selective_attention"
+                        if activation_checkpoint_mode == "selective_attention"
+                        else "full"
+                    ),
+                )
+            )
         fully_shard_pair_aware_esm2(
             backbone, mesh=mesh, precision="bfloat16", reshard_after_forward=False
         )
@@ -1323,6 +1374,9 @@ def main() -> None:
                 },
                 "optimization": {
                     **optimization,
+                    "selected_activation_checkpoint_mode": (
+                        activation_checkpoint_mode
+                    ),
                     "selected_microbatch_pairs_per_rank": microbatch_pairs_per_rank,
                 },
                 "ranks": ranks,
