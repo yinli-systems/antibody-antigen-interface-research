@@ -11,6 +11,7 @@ set -euo pipefail
 
 readonly PYTHON=/ssd/scxi253/model_deployment/envs/contact/bin/python3.10
 readonly PROJECT=/ssd/scxi253/model_deployment/abpairfm_3b_v1/source
+readonly PROBE_PROJECT=${ABPAIRFM_PROBE_PROJECT_ROOT:-/ssd/scxi253/model_deployment/abpairfm_3b_v1/source_candidates/2205f62}
 readonly DATA_ROOT=/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a0_string25m_v1
 readonly OUTPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a0_string25m_v1
 readonly PROTOCOL_SHA256=a783f3b20516fbb2c85dba27833d3125683184ae2be608dfcfdbf91e58a3747b
@@ -90,10 +91,10 @@ if [[ "${#CHECKPOINT_ANCHORS[@]}" -ne 3 ]]; then
   exit 2
 fi
 
-"${PYTHON}" "${PROJECT}/scripts/maybe_submit_abpairfm_checkpoint_ladder_probe.py" \
-  --project-root "${PROJECT}" \
+"${PYTHON}" "${PROBE_PROJECT}/scripts/maybe_submit_abpairfm_checkpoint_ladder_probe.py" \
+  --project-root "${PROBE_PROJECT}" \
   --result "${RESULT}" \
-  --protocol "${PROJECT}/protocols/abpairfm_checkpoint_transfer_probe_v1.json" \
+  --protocol "${PROBE_PROJECT}/protocols/abpairfm_checkpoint_transfer_probe_v1.json" \
   --expected-protocol-sha256 57d5049b67795079b4b20eb37ed18b8026fd35f05e5a06991dcab732a96b1809 \
   --submission-root /ssd/scxi253/model_deployment/results/evaluation/abpairfm_checkpoint_transfer_probe_v1/submissions
 
