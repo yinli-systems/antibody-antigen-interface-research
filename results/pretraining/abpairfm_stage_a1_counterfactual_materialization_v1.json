@@ -1,0 +1,57 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "gpu_training": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Train-only deterministic counterfactual candidate materialization. Exclusions are evidence-aware controls, not proof of biological noninteraction. PPIRef endpoint clusters remain exact-sequence fallbacks, so a production cluster-aware gate is still required.",
+  "format_version": "abpairfm_stage_a1_counterfactual_materialization_v1",
+  "inputs": {
+    "manifest_receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "records": 19200
+  },
+  "materialization": {
+    "admissible_candidates_per_anchor": {
+      "maximum": 1332,
+      "median": 470.0,
+      "minimum": 0
+    },
+    "candidate_reuse": {
+      "maximum": 7,
+      "unique_candidates": 10182
+    },
+    "counts": {
+      "mapped_anchors": 15948,
+      "retrieval_records": 16000,
+      "unmatched_anchors": 52
+    },
+    "coverage": 0.99675,
+    "length_matching": {
+      "definition": "orientation-preserving joint quarter-octave bins floor(4*log2(length))",
+      "left_absolute_delta": {
+        "maximum": 14,
+        "median": 1.0,
+        "p95": 5
+      },
+      "right_absolute_delta": {
+        "maximum": 19,
+        "median": 1.0,
+        "p95": 4
+      }
+    },
+    "mapping_sha256": "910b89b83612702e2e903e46d27fa9d4f3c4363d77df0cee9fe909427980512e",
+    "rejection_counts": {
+      "exact_endpoint_overlap": 968,
+      "known_exact_positive_swap": 18,
+      "positive_group_overlap": 4,
+      "self": 16000,
+      "unmatched_anchor": 52
+    },
+    "seed": 1701
+  },
+  "minimum_coverage": 0.995,
+  "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
+  "test_access": false
+}
