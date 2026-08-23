@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "development_decontamination_audit": true,
+    "stage_b_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Deterministic development-only canary evidence that max-seqs 64 preserves pair-level exclusion on the frozen 1/32 sample. It does not establish parity outside this sample or authorize full-scale Stage-B claims.",
+  "comparison": {
+    "cap_only_pairs": 0,
+    "capped_excluded_pairs": 80965,
+    "capped_hits": 9979276,
+    "capped_maximum_target_candidates": 64,
+    "exhaustive_excluded_pairs": 80965,
+    "exhaustive_hits": 44284479,
+    "exhaustive_maximum_target_candidates": 1000000,
+    "missed_by_cap_pairs": 0
+  },
+  "format_version": "abpairfm_oas_stage_b_max_seqs_parity_summary_v1",
+  "job": {
+    "elapsed": "00:34:41",
+    "exit_code": "0:0",
+    "job_id": "1463119",
+    "node": "wqd10nba07g8",
+    "partition": "gpu_4090",
+    "state": "COMPLETED",
+    "stderr_bytes": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "mmseqs": {
+    "coverage": 0.8,
+    "coverage_mode": 0,
+    "minimum_sequence_identity": 0.5,
+    "sequence_masking": false,
+    "version": "f71d0a6b57c19e3a8954d8557f065c0fe1f46142"
+  },
+  "remote_receipt": {
+    "path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/normalized_candidates/oas_paired_20260821/oas_stage_b_maxseqs64_parity_v1.receipt.json",
+    "sha256": "6ede755b6494dfdc8dd9eb62ed259bf71e60b9a70566a96e512f3eec2bf724c9"
+  },
+  "sample": {
+    "modulus": 32,
+    "remainder": 0,
+    "sampled_pairs": 80965,
+    "source_pairs": 2585593
+  },
+  "status": "PASS_MAX_SEQS_PAIR_EXCLUSION_PARITY",
+  "test_access": false
+}
