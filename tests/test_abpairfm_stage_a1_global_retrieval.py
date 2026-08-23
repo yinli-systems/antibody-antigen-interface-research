@@ -339,6 +339,25 @@ def test_v7_protocol_freezes_alternating_dynamic_padding_efficiency_gate(
     arguments.expected_protocol_sha256 = runner._sha256(path)
     assert runner._load_protocol(arguments)["format_version"].endswith("_v11")
 
+    protocol["format_version"] = "abpairfm_stage_a1_length_band_efficiency_gate_v13"
+    protocol["efficiency"].pop("expected_structural_records")
+    protocol["efficiency"].pop("length_bucket_block_records")
+    protocol["efficiency"]["expected_bucket_records"] = 4967
+    protocol["efficiency"]["minimum_combined_tokens"] = 65
+    protocol["efficiency"]["maximum_combined_tokens"] = 128
+    protocol["efficiency"]["trial_matrix"] = [
+        {
+            "activation_checkpointing": "full",
+            "microbatch_pairs_per_rank": microbatch,
+        }
+        for microbatch in (24, 32, 48)
+    ]
+    protocol["optimization"]["microbatch_pairs_per_rank_candidates"] = [24, 32, 48]
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    arguments.efficiency_microbatch_pairs_per_rank = 32
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v13")
+
 
 def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     records = []
@@ -377,6 +396,37 @@ def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     assert runner._efficiency_bucket_records(
         records, representative_protocol, microbatch_pairs_per_rank=2
     ) == records
+
+
+def test_length_band_efficiency_bucket_applies_both_bounds() -> None:
+    records = []
+    for index, combined_length in enumerate((64, 65, 96, 128, 129)):
+        record = _record(index)
+        record["example_id"] = f"record-{index}"
+        record["pilot_record_index"] = index
+        record["sequence1"] = "A" * 20
+        record["sequence2"] = "C" * (combined_length - 24)
+        record["source"] = "ppiref50k"
+        records.append(record)
+    protocol = {
+        "efficiency": {
+            "expected_bucket_records": 3,
+            "minimum_combined_tokens": 65,
+            "maximum_combined_tokens": 128,
+            "selection_seed": 1701,
+        },
+        "format_version": "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+        "optimization": {"updates": 1},
+        "systems": {"world_size": 1},
+    }
+    selected = runner._efficiency_bucket_records(
+        records, protocol, microbatch_pairs_per_rank=2
+    )
+    lengths = sorted(
+        len(record["sequence1"]) + len(record["sequence2"]) + 4
+        for record in selected
+    )
+    assert lengths == [65, 96, 128]
 
 
 def test_length_bucket_preserves_membership_and_five_to_one_source_ratio() -> None:
