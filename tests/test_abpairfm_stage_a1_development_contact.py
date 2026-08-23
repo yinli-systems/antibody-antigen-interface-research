@@ -66,6 +66,8 @@ def test_protocol_freezes_contact_ood_without_test() -> None:
     assert protocol["split_slices"]["double_cold_validation"] == 324
     assert protocol["split_slices"]["temporal_validation"] == 337
     assert protocol["compute"]["partition"] == "gpu_4090"
+    assert "development_sequence_panel" in protocol["source_anchors"]
+    assert "prepared_instances" not in protocol["source_anchors"]
 
 
 def test_contact_sbatch_uses_only_gpu_4090_and_fixed_python() -> None:
