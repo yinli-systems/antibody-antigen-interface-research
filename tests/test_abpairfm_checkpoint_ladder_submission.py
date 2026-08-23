@@ -10,6 +10,9 @@ import scripts.maybe_submit_abpairfm_checkpoint_ladder_probe as submission
 from scripts.maybe_submit_abpairfm_checkpoint_ladder_probe import selected_target
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
 def test_selected_target_uses_first_checkpoint_with_bounded_overshoot() -> None:
     assert selected_target(249_999_999) is None
     assert selected_target(250_000_000) == 250_000_000
@@ -86,4 +89,24 @@ def test_submission_binds_the_immutable_project_root(
     assert environment["ABPAIRFM_PROBE_PROJECT"] == str(project_root)
     assert observed["command"][-1] == str(
         project_root / "scripts/submit_abpairfm_checkpoint_transfer_probe.sbatch"
+    )
+
+
+def test_stagea0_continuation_uses_the_read_only_probe_candidate() -> None:
+    script = (ROOT / "scripts/continue_abpairfm_3b_stage_a0.sbatch").read_text()
+    assert (
+        "readonly PROBE_PROJECT=${ABPAIRFM_PROBE_PROJECT_ROOT:-"
+        "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source_candidates/2205f62}"
+        in script
+    )
+    assert (
+        '"${PYTHON}" "${PROBE_PROJECT}/scripts/'
+        'maybe_submit_abpairfm_checkpoint_ladder_probe.py"'
+        in script
+    )
+    assert '--project-root "${PROBE_PROJECT}"' in script
+    assert (
+        '--protocol "${PROBE_PROJECT}/protocols/'
+        'abpairfm_checkpoint_transfer_probe_v1.json"'
+        in script
     )
