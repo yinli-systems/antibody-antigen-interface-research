@@ -1,0 +1,63 @@
+{
+  "authorization": {
+    "development_contact": false,
+    "development_pair_retrieval": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint_selection": {
+    "expected_generation": "stage-a1-000000",
+    "expected_production_training": true,
+    "expected_stage_a1_updates": 200,
+    "required_result_status": "PASS_STAGE_A1_LENGTH_BAND_PROMOTION_CHECKPOINT_VERIFIED",
+    "selection_rule": "immutable v14 promotion result and DCP content SHA-256 supplied at launch"
+  },
+  "claim_boundary": "Frozen-development Stage-A1 dual-encoder retrieval only. No parameters, temperature, thresholds, or calibration are fitted on development. Partner swaps are ranking controls, not measured biological noninteractions. Contact, test, SOTA, and manuscript claims remain closed.",
+  "compute": {
+    "cpus_per_task": 48,
+    "expected_gpu_name": "NVIDIA GeForce RTX 4090",
+    "explicit_mem_argument_permitted": false,
+    "maximum_attention_cells_per_rank": 7340032,
+    "maximum_batch_pairs_per_rank": 7,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 8
+  },
+  "format_version": "abpairfm_stage_a1_development_retrieval_v1",
+  "frozen_panel": {
+    "datasets": [
+      "asep",
+      "sabdab2"
+    ],
+    "jsonl_sha256": "18a7efcc4f1cb5499be32938a4819208f5bb6e2095acdda3098e71496458fce2",
+    "receipt_sha256": "078dc59a5c1caba9fa3ecae4361a5bcd0fa3922f586039ff3a44d11e998f1346",
+    "wrong_partner_candidates_per_direction": 31
+  },
+  "metrics": {
+    "primary": [
+      "bidirectional_unique_endpoint_mrr",
+      "bidirectional_unique_endpoint_recall_at_1"
+    ],
+    "secondary": [
+      "directional_mrr",
+      "directional_recall_at_1",
+      "pair_order_score_absolute_delta"
+    ],
+    "uncertainty": {
+      "bootstrap_replicates": 10000,
+      "seed": 20260824,
+      "unit": "canonical_exact_pair"
+    }
+  },
+  "score": {
+    "endpoint_window_residues": 510,
+    "higher_is_better": true,
+    "name": "stage_a1_independent_view_dual_encoder_logit",
+    "pair_window_aggregation": "arithmetic_mean",
+    "probability_interpretation": false,
+    "representation_view": "chain_independent_no_cross_attention",
+    "temperature_source": "immutable Stage-A1 retrieval head"
+  },
+  "status": "FROZEN_BEFORE_GPU_EVALUATION",
+  "test_access": false
+}
