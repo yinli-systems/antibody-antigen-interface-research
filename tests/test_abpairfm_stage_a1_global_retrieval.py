@@ -73,6 +73,20 @@ def test_global_retrieval_mask_uses_remote_cluster_ids(monkeypatch) -> None:
     assert bool(allowed[1, 1])
 
 
+def test_candidate_minimum_uses_supported_non_inplace_torch_api() -> None:
+    current = torch.tensor(float("inf"), dtype=torch.float64)
+    first = torch.tensor(
+        [[True, True, False], [True, True, True]], dtype=torch.bool
+    )
+    second = torch.tensor(
+        [[True, True, True, True], [True, True, True, False]], dtype=torch.bool
+    )
+    current = runner._update_minimum_allowed_candidates(current, first)
+    current = runner._update_minimum_allowed_candidates(current, second)
+    assert current.dtype == torch.float64
+    assert current.item() == 2.0
+
+
 def test_runner_requests_independent_hidden_only_retrieval_view() -> None:
     batch = build_stage_a1_microbatch(
         [_record(0), _record(1)], seed=17, maximum_tokens=64
