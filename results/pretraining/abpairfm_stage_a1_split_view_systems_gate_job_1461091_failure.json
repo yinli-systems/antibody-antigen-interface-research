@@ -1,0 +1,26 @@
+{
+  "authorization": {
+    "gpu_pilot": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Preserved pre-training admission failure only. No model initialization, forward pass, optimizer update, progress artifact, checkpoint, development evaluation, or test access occurred.",
+  "failure": {
+    "elapsed_seconds": 23,
+    "error": "RuntimeError: Stage-A1 manifest receipt differs",
+    "exit_code": "1:0",
+    "job_id": "1461091",
+    "phase": "manifest_receipt_authentication",
+    "progress_artifact_created": false,
+    "root_cause": "The immutable v4 manifest receipt correctly anchors source protocol 27da4df9..., while the v5 runner incorrectly required it to anchor v5 protocol 0ad5469a....",
+    "slurm_state": "FAILED"
+  },
+  "format_version": "abpairfm_stage_a1_split_view_systems_gate_failure_v1",
+  "minimal_correction": {
+    "new_protocol": "abpairfm_stage_a1_multitask_pilot_v6",
+    "scope": "Authenticate the reused manifest and receipt against their frozen source protocol and explicit file hashes; all model, data, loss, checkpoint, counterfactual, systems, and test anchors remain unchanged."
+  },
+  "protocol_sha256": "0ad5469af54a27a849afacf955127aedab3d4f93ae93d325fdc65ce0e1699206",
+  "status": "FAIL_CLOSED_MANIFEST_RECEIPT_PROTOCOL_ANCHOR",
+  "test_access": false
+}

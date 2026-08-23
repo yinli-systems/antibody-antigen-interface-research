@@ -15,10 +15,10 @@ GLOBAL_PILOT_PROTOCOL = (
     ROOT / "protocols" / "abpairfm_stage_a1_multitask_pilot_v4.json"
 )
 SPLIT_VIEW_SYSTEMS_PROTOCOL = (
-    ROOT / "protocols" / "abpairfm_stage_a1_multitask_pilot_v5.json"
+    ROOT / "protocols" / "abpairfm_stage_a1_multitask_pilot_v6.json"
 )
 SPLIT_VIEW_SYSTEMS_SUBMISSION = (
-    ROOT / "scripts" / "submit_abpairfm_stage_a1_split_view_systems_gate.sbatch"
+    ROOT / "scripts" / "submit_abpairfm_stage_a1_split_view_systems_gate_v6.sbatch"
 )
 
 
@@ -77,6 +77,9 @@ def test_stage_a1_split_view_systems_gate_is_short_and_train_only() -> None:
         "PASS_TRAIN_ONLY_MATERIALIZATION"
     )
     assert protocol["counterfactual_gate"]["observed_coverage"] == 0.99675
+    assert protocol["pilot_manifest"]["source_protocol_sha256"] == (
+        "27da4df9fcca2d7faf4f75d95c8e73f6c5470680d76ee5e467af6618acc60a24"
+    )
     assert protocol["promotion_gates"]["maximum_peak_memory_fraction"] == 0.95
     assert protocol["systems"]["partition"] == "gpu_4090"
     assert protocol["test_access"] is False
@@ -90,7 +93,7 @@ def test_stage_a1_split_view_submission_uses_frozen_4090_anchors() -> None:
     assert "hp_4090" not in script
     assert "--input-generation segment-000024" in script
     assert "7dbde1798181967cc5406dae6eed99a58d8d80c097f16c684d1ce731e5d16311" in script
-    assert "0ad5469af54a27a849afacf955127aedab3d4f93ae93d325fdc65ce0e1699206" in script
+    assert "0a3d92a8fd20d27b78d5455ef6b0eaa7a1c4b27d5c71413be358311f1d86ea10" in script
     assert "--progress-interval 1" in script
 
 

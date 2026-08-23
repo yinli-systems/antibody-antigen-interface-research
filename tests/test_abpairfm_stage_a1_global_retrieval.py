@@ -160,6 +160,14 @@ def test_v5_protocol_requires_counterfactual_and_representation_gates(
     )
     assert runner._load_protocol(arguments)["format_version"].endswith("_v5")
 
+    protocol["format_version"] = "abpairfm_stage_a1_multitask_pilot_v6"
+    protocol["pilot_manifest"]["source_protocol_sha256"] = "b" * 64
+    protocol["pilot_manifest"]["manifest_sha256"] = "c" * 64
+    protocol["pilot_manifest"]["receipt_sha256"] = "d" * 64
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v6")
+
     protocol["counterfactual_gate"]["status"] = "NOT_RUN"
     path.write_text(json.dumps(protocol), encoding="utf-8")
     arguments.expected_protocol_sha256 = runner._sha256(path)
