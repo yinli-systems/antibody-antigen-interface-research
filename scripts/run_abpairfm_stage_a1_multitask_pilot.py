@@ -66,6 +66,7 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+    "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
@@ -75,6 +76,7 @@ GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+    "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -83,19 +85,25 @@ SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+    "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+    "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+    "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
 }
 LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
+}
+STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -200,7 +208,11 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         expected_efficiency_microbatches = [6, 7, 8]
         expected_activation_checkpoint_modes = (
             ["full"]
-            if format_version in LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS
+            if format_version
+            in (
+                LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS
+                | STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS
+            )
             else ["full", "off"]
         )
     selected_trial = {
@@ -296,6 +308,12 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
                 efficiency.get("length_bucket_block_microbatches") == 16
                 and efficiency.get("ppiref_records_per_group") == 5
                 and efficiency.get("string_records_per_group") == 1
+                and efficiency.get("selection_seed") == 1701
+            )
+        if format_version in STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS:
+            representative_valid = representative_valid and (
+                efficiency.get("expected_structural_records") == 16000
+                and efficiency.get("length_bucket_block_records") == 128
                 and efficiency.get("selection_seed") == 1701
             )
         short_bucket_valid = (
@@ -442,6 +460,8 @@ def _efficiency_bucket_records(
             raise RuntimeError("Stage-A1 representative source is too small")
         if format_version in LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS:
             return _length_bucket_stage_a1_records(records, protocol)
+        if format_version in STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS:
+            return _structural_bucket_stage_a1_records(records, protocol)
         return records
     efficiency = protocol["efficiency"]
     maximum_combined_tokens = int(efficiency["maximum_combined_tokens"])
@@ -531,6 +551,51 @@ def _length_bucket_stage_a1_records(
         record["pilot_record_index"] for record in ordered
     } != {record["pilot_record_index"] for record in records}:
         raise RuntimeError("Stage-A1 length bucketing changed manifest membership")
+    return ordered
+
+
+def _structural_bucket_stage_a1_records(
+    records: list[dict[str, Any]], protocol: Mapping[str, Any]
+) -> list[dict[str, Any]]:
+    """Bucket structural interface pairs without long sequence-only padding."""
+
+    efficiency = protocol["efficiency"]
+
+    def order_key(record: Mapping[str, Any]) -> tuple[int, str]:
+        return (
+            len(str(record["sequence1"])) + len(str(record["sequence2"])) + 4,
+            str(record["example_id"]),
+        )
+
+    structural = sorted(
+        (
+            record
+            for record in records
+            if record["source"] == "ppiref50k"
+            and record["contact_supervision"] is True
+            and record["retrieval_supervision"] is True
+        ),
+        key=order_key,
+    )
+    if len(structural) != efficiency["expected_structural_records"]:
+        raise RuntimeError("Stage-A1 structural bucket count differs")
+    block_size = int(efficiency["length_bucket_block_records"])
+    blocks = [
+        structural[index : index + block_size]
+        for index in range(0, len(structural), block_size)
+    ]
+    seed = int(efficiency["selection_seed"])
+    blocks.sort(
+        key=lambda block: hashlib.sha256(
+            (
+                f"{seed}\0{block[0]['example_id']}\0"
+                f"{block[-1]['example_id']}"
+            ).encode("utf-8")
+        ).digest()
+    )
+    ordered = [record for block in blocks for record in block]
+    if len(ordered) != len(structural):
+        raise RuntimeError("Stage-A1 structural bucketing changed membership")
     return ordered
 
 
