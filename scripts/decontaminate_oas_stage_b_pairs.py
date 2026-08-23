@@ -102,7 +102,12 @@ def export_fasta(input_path: Path, output_path: Path, expected_rows: int) -> int
     return count
 
 
-def excluded_pair_hashes(hits_path: Path) -> tuple[set[str], int]:
+def excluded_pair_hashes(
+    hits_path: Path, *, oas_column: str = "target"
+) -> tuple[set[str], int]:
+    if oas_column not in {"query", "target"}:
+        raise ValueError("MMseqs OAS column must be query or target")
+    oas_index = 0 if oas_column == "query" else 1
     excluded: set[str] = set()
     hit_count = 0
     with hits_path.open("rt", encoding="utf-8", newline="") as handle:
@@ -110,14 +115,18 @@ def excluded_pair_hashes(hits_path: Path) -> tuple[set[str], int]:
             fields = line.rstrip("\n").split("\t")
             if len(fields) != 8:
                 raise ValueError(f"Malformed MMseqs hit at line {line_number}")
-            target = fields[1]
+            endpoint = fields[oas_index]
             try:
-                row_hash, chain = target.rsplit("|", 1)
+                row_hash, chain = endpoint.rsplit("|", 1)
             except ValueError as error:
-                raise ValueError(f"Malformed MMseqs target at line {line_number}") from error
+                raise ValueError(
+                    f"Malformed MMseqs {oas_column} at line {line_number}"
+                ) from error
             checked_hash(row_hash, "MMseqs target row_hash")
             if chain not in {"heavy", "light"}:
-                raise ValueError(f"Malformed MMseqs target chain at line {line_number}")
+                raise ValueError(
+                    f"Malformed MMseqs {oas_column} chain at line {line_number}"
+                )
             excluded.add(row_hash)
             hit_count += 1
     return excluded, hit_count
@@ -142,12 +151,32 @@ def filter_pairs(
     development_fasta: Path,
     development_receipt_path: Path,
     mmseqs_version: str,
+    oas_column: str = "target",
+    search_orientation: str = "development_query_oas_target",
+    maximum_target_candidates: int = 1_000_000,
+    gpu_accelerated: bool = False,
+    sequence_masking: bool = True,
 ) -> dict:
+    orientations = {
+        "development_query_oas_target": (
+            "frozen AsEP and SAbDab2 development sequences",
+            "OAS native heavy and light chains",
+        ),
+        "oas_query_development_target": (
+            "OAS native heavy and light chains",
+            "frozen AsEP and SAbDab2 development sequences",
+        ),
+    }
+    if search_orientation not in orientations:
+        raise ValueError("Unknown MMseqs search orientation")
+    if maximum_target_candidates < 1:
+        raise ValueError("MMseqs maximum target candidates must be positive")
+    query_description, target_description = orientations[search_orientation]
     source_receipt = load_source_receipt(input_path, source_receipt_path)
     development_receipt = load_development_receipt(
         development_fasta, development_receipt_path
     )
-    excluded, hit_count = excluded_pair_hashes(hits_path)
+    excluded, hit_count = excluded_pair_hashes(hits_path, oas_column=oas_column)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(
         prefix=f".{output_path.name}.", dir=output_path.parent
@@ -209,8 +238,13 @@ def filter_pairs(
             "coverage_mode": 0,
             "minimum_sequence_identity": 0.5,
             "mmseqs_version": mmseqs_version.strip(),
-            "query": "frozen AsEP and SAbDab2 development sequences",
-            "target": "OAS native heavy and light chains",
+            "gpu_accelerated": gpu_accelerated,
+            "maximum_target_candidates": maximum_target_candidates,
+            "oas_identifier_column": oas_column,
+            "query": query_description,
+            "search_orientation": search_orientation,
+            "sequence_masking": sequence_masking,
+            "target": target_description,
         },
         "format_version": "abpairfm_oas_stage_b_devclean_pairs_v1",
         "inputs": {
@@ -269,6 +303,17 @@ def main() -> None:
     filtered.add_argument("--output", type=Path, required=True)
     filtered.add_argument("--receipt", type=Path, required=True)
     filtered.add_argument("--mmseqs-version", required=True)
+    filtered.add_argument("--oas-column", choices=("query", "target"), default="target")
+    filtered.add_argument(
+        "--search-orientation", default="development_query_oas_target"
+    )
+    filtered.add_argument("--maximum-target-candidates", type=int, default=1_000_000)
+    filtered.add_argument("--gpu-accelerated", action="store_true")
+    filtered.add_argument(
+        "--sequence-masking",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
     arguments = parser.parse_args()
     if arguments.command == "export-fasta":
         receipt = load_source_receipt(arguments.input, arguments.source_receipt)
@@ -289,6 +334,11 @@ def main() -> None:
         arguments.development_fasta,
         arguments.development_receipt,
         arguments.mmseqs_version,
+        arguments.oas_column,
+        arguments.search_orientation,
+        arguments.maximum_target_candidates,
+        arguments.gpu_accelerated,
+        arguments.sequence_masking,
     )
     print(json.dumps(receipt, sort_keys=True))
 

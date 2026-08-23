@@ -70,6 +70,17 @@ def test_mmseqs_target_chain_is_rejected_if_unknown(tmp_path: Path) -> None:
         module.excluded_pair_hashes(hits)
 
 
+def test_mmseqs_query_chain_mapping_supports_reversed_gpu_search(tmp_path: Path) -> None:
+    hits = tmp_path / "hits.tsv"
+    hits.write_text(
+        f"{2:064x}|light\tdev-light\t75\t20\t1\t1\t0\t90\n",
+        encoding="utf-8",
+    )
+    excluded, hit_count = module.excluded_pair_hashes(hits, oas_column="query")
+    assert excluded == {f"{2:064x}"}
+    assert hit_count == 1
+
+
 def test_sbatch_keeps_test_sealed_and_uses_only_gpu_4090() -> None:
     path = (
         module.Path(__file__).resolve().parents[1]
@@ -82,3 +93,19 @@ def test_sbatch_keeps_test_sealed_and_uses_only_gpu_4090() -> None:
     assert "#SBATCH --mem" not in text
     assert "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10" in text
     assert "--min-seq-id 0.5 -c 0.8 --cov-mode 0" in text
+
+
+def test_gpu_sbatch_reverses_search_and_uses_padded_target() -> None:
+    path = (
+        module.Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "decontaminate_oas_stage_b_pairs_gpu_v2.sbatch"
+    )
+    text = path.read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in text
+    assert "hp_4090" not in text
+    assert "#SBATCH --mem" not in text
+    assert "makepaddedseqdb" in text
+    assert 'search "${WORK}/oas_db" "${WORK}/development_db_padded"' in text
+    assert "--gpu 1" in text
+    assert "--oas-column query" in text
