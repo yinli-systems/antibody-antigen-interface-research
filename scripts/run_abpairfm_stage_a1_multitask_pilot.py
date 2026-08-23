@@ -402,10 +402,18 @@ def _global_retrieval_candidates(
     hidden: torch.Tensor,
     chain_ids: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    from torch.distributed.nn.functional import all_gather
-
     left, right = heads.retrieval_embeddings(hidden, chain_ids)
-    return torch.cat(all_gather(left), dim=0), torch.cat(all_gather(right), dim=0)
+    local_views = torch.stack((left, right), dim=0)
+    world_size = torch.distributed.get_world_size()
+    rank = torch.distributed.get_rank()
+    gathered = [torch.empty_like(local_views) for _ in range(world_size)]
+    torch.distributed.all_gather(gathered, local_views.detach())
+    # Remote candidates are negatives only. Keeping the local slice attached gives
+    # every pair query and candidate gradients without introducing a second,
+    # differentiable collective into FSDP backward.
+    gathered[rank] = local_views
+    global_views = torch.cat(gathered, dim=1)
+    return global_views[0], global_views[1]
 
 
 def _stage_a1_backbone_views(
