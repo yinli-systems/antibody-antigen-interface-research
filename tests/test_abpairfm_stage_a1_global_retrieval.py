@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -204,3 +205,86 @@ def test_v5_protocol_requires_counterfactual_and_representation_gates(
     arguments.expected_protocol_sha256 = runner._sha256(path)
     with pytest.raises(RuntimeError, match="representation-view gate"):
         runner._load_protocol(arguments)
+
+
+def test_v7_protocol_freezes_alternating_dynamic_padding_efficiency_gate(
+    tmp_path,
+) -> None:
+    protocol = json.loads(
+        (
+            runner.REPOSITORY_ROOT
+            / "protocols"
+            / "abpairfm_stage_a1_multitask_pilot_v6.json"
+        ).read_text(encoding="utf-8")
+    )
+    receipt_path = Path(protocol["counterfactual_gate"]["receipt_path"])
+    receipt = {
+        "materialization": {
+            "coverage": 0.99675,
+            "mapping_sha256": protocol["counterfactual_gate"]["mapping_sha256"],
+        },
+        "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
+        "test_access": False,
+    }
+    local_receipt = tmp_path / "counterfactual.json"
+    local_receipt.write_text(json.dumps(receipt), encoding="utf-8")
+    assert receipt_path != local_receipt
+    protocol["counterfactual_gate"]["receipt_path"] = str(local_receipt)
+    protocol["counterfactual_gate"]["receipt_sha256"] = runner._sha256(
+        local_receipt
+    )
+    protocol["format_version"] = "abpairfm_stage_a1_efficiency_gate_v7"
+    protocol["efficiency_gate_only"] = True
+    protocol["efficiency"] = {
+        "expected_bucket_records": 10380,
+        "gpu_peak_bfloat16_flops": 82580000000000,
+        "maximum_combined_tokens": 64,
+        "padding_multiple": 64,
+        "parameter_count": 2839005633,
+        "phase_schedule": "alternating_joint_and_retrieval_single_backbone_pass",
+        "selection_seed": 1701,
+    }
+    protocol["optimization"]["accumulation_steps"] = 1
+    protocol["optimization"].pop("microbatch_pairs_per_rank")
+    protocol["optimization"]["microbatch_pairs_per_rank_candidates"] = [64, 96, 128]
+    path = tmp_path / "protocol.json"
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments = SimpleNamespace(
+        protocol=path,
+        expected_protocol_sha256=runner._sha256(path),
+        expected_world_size=8,
+        efficiency_microbatch_pairs_per_rank=96,
+        input_generation=protocol["checkpoint"]["generation"],
+        expected_input_content_sha256=protocol["checkpoint"]["content_sha256"],
+    )
+    loaded = runner._load_protocol(arguments)
+    assert loaded["efficiency"]["padding_multiple"] == 64
+
+
+def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
+    records = []
+    for index in range(8):
+        value = _record(index % 4)
+        value["example_id"] = f"record-{index}"
+        value["pilot_record_index"] = index
+        value["source"] = "ppiref50k"
+        records.append(value)
+    protocol = {
+        "efficiency": {
+            "expected_bucket_records": 8,
+            "maximum_combined_tokens": 64,
+            "selection_seed": 1701,
+        },
+        "format_version": "abpairfm_stage_a1_efficiency_gate_v7",
+        "optimization": {"microbatch_pairs_per_rank": 2, "updates": 2},
+        "systems": {"world_size": 2},
+    }
+    first = runner._efficiency_bucket_records(
+        records, protocol, microbatch_pairs_per_rank=2
+    )
+    second = runner._efficiency_bucket_records(
+        list(reversed(records)), protocol, microbatch_pairs_per_rank=2
+    )
+    assert [value["pilot_record_index"] for value in first] == [
+        value["pilot_record_index"] for value in second
+    ]
