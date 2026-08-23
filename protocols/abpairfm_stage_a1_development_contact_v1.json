@@ -71,13 +71,13 @@
       "path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/development_anchor/development_transfer_manifest_v2.json",
       "sha256": "7cd873a67da103e195163d8fe9cc57a780538a8f5ad0744cdab9a22b2f1fd182"
     },
-    "prepared_instances": {
-      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/authorities/sabdab2_prepared_instances.parquet",
-      "sha256": "a32aa68bb6780d1222b310bab5e4efbf365c9219e08eb8a897379ceded565335"
+    "development_sequence_panel": {
+      "path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/development_anchor/development_contact_sequences_v1.jsonl",
+      "sha256": "f9a5c1eb5fc532dab8ee169ea3a9f0d6b30c0088b50235265bf2440ec5b54a4a"
     },
-    "sequence_authority": {
-      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/authorities/sabdab2_frozen_instances.parquet",
-      "sha256": "9e87fb4241012e44837f700634ef4110c652822e6a1c0c162ea49487f830b107"
+    "development_sequence_panel_receipt": {
+      "path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/development_anchor/development_contact_sequences_v1.receipt.json",
+      "sha256": "07dd1495c9f06730c9edeb94cb1872b388469748190ad903575300a3bf578b51"
     }
   },
   "split_slices": {

@@ -273,11 +273,10 @@ def _sequence_sha256(sequence: str) -> str:
 def _load_records(
     protocol: Mapping[str, Any],
 ) -> tuple[dict[str, ContactRecord], dict[str, list[str]]]:
-    import pandas as pd
-
     anchors = protocol["source_anchors"]
     transfer = _anchored_json(anchors["development_transfer_manifest"])
     contact_manifest = _anchored_json(anchors["contact_manifest"])
+    sequence_receipt = _anchored_json(anchors["development_sequence_panel_receipt"])
     if (
         transfer.get("format_version") != "abpairfm_development_transfer_manifest_v2"
         or transfer.get("status")
@@ -314,52 +313,67 @@ def _load_records(
     ).issubset(contact_by_id):
         raise RuntimeError("Selected development contacts are absent from authority")
 
-    for name in ("sequence_authority", "prepared_instances"):
-        path = Path(anchors[name]["path"])
-        if path.is_symlink() or not path.is_file() or sha256_file(path) != anchors[name]["sha256"]:
-            raise RuntimeError(f"Sequence authority differs: {name}")
-    sequences = pd.read_parquet(
-        anchors["sequence_authority"]["path"],
-        columns=["instance_id", "ab_seq", "ag_seq"],
-        filters=[("instance_id", "in", selected)],
-    )
-    prepared = pd.read_parquet(
-        anchors["prepared_instances"]["path"],
-        columns=[
-            "instance_id",
-            "ab_sequence_sha256",
-            "ag_sequence_sha256",
-            "ab_length",
-            "ag_length",
-        ],
-        filters=[("instance_id", "in", selected)],
-    )
+    panel_path = Path(anchors["development_sequence_panel"]["path"])
     if (
-        sequences["instance_id"].duplicated().any()
-        or prepared["instance_id"].duplicated().any()
-        or set(sequences["instance_id"]) != set(selected)
-        or set(prepared["instance_id"]) != set(selected)
+        panel_path.is_symlink()
+        or not panel_path.is_file()
+        or sha256_file(panel_path) != anchors["development_sequence_panel"]["sha256"]
+        or sequence_receipt.get("format_version")
+        != "abpairfm_development_contact_sequence_authority_v1"
+        or sequence_receipt.get("status")
+        != "FROZEN_DEVELOPMENT_CONTACT_SEQUENCE_AUTHORITY"
+        or sequence_receipt.get("test_access") is not False
+        or sequence_receipt.get("authority", {}).get(
+            "primary_sealed_role_ids_retained"
+        )
+        is not False
+        or sequence_receipt.get("authority", {}).get("task_labels_read") is not False
+        or sequence_receipt.get("authority", {}).get("contact_labels_read") is not False
+        or sequence_receipt.get("authority", {}).get("transfer_manifest_sha256")
+        != anchors["development_transfer_manifest"]["sha256"]
+        or sequence_receipt.get("panel", {}).get("sha256")
+        != anchors["development_sequence_panel"]["sha256"]
     ):
-        raise RuntimeError("Filtered development sequence authority differs")
-    sequences = sequences.set_index("instance_id")
-    prepared = prepared.set_index("instance_id")
+        raise RuntimeError("Development sequence panel authority differs")
+    sequence_rows = [
+        json.loads(line)
+        for line in panel_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    sequence_by_id = {row.get("instance_id"): row for row in sequence_rows}
+    if (
+        len(sequence_by_id) != len(sequence_rows)
+        or set(sequence_by_id) != set(selected)
+        or sequence_receipt.get("panel", {}).get("row_count") != len(sequence_rows)
+    ):
+        raise RuntimeError("Development sequence panel membership differs")
     contact_root = Path(anchors["contact_manifest"]["path"]).parent
     records: dict[str, ContactRecord] = {}
     for identifier in selected:
-        antibody = str(sequences.loc[identifier, "ab_seq"]).strip().upper()
-        antigen = str(sequences.loc[identifier, "ag_seq"]).strip().upper()
-        authority = prepared.loc[identifier]
+        authority = sequence_by_id[identifier]
+        if set(authority) != {
+            "antibody_length",
+            "antibody_sequence",
+            "antibody_sequence_sha256",
+            "antigen_length",
+            "antigen_sequence",
+            "antigen_sequence_sha256",
+            "instance_id",
+        }:
+            raise RuntimeError(f"Development sequence row fields differ: {identifier}")
+        antibody = str(authority["antibody_sequence"])
+        antigen = str(authority["antigen_sequence"])
         contact = contact_by_id[identifier]
-        antibody_length = int(authority["ab_length"])
-        antigen_length = int(authority["ag_length"])
+        antibody_length = int(authority["antibody_length"])
+        antigen_length = int(authority["antigen_length"])
         artifact = contact_root / contact["artifact_path"]
         if (
             not antibody
             or not antigen
             or len(antibody) != antibody_length
             or len(antigen) != antigen_length
-            or _sequence_sha256(antibody) != authority["ab_sequence_sha256"]
-            or _sequence_sha256(antigen) != authority["ag_sequence_sha256"]
+            or _sequence_sha256(antibody) != authority["antibody_sequence_sha256"]
+            or _sequence_sha256(antigen) != authority["antigen_sequence_sha256"]
             or contact["antibody_length"] != antibody_length
             or contact["antigen_length"] != antigen_length
             or contact["candidate_pair_count"] != antibody_length * antigen_length
