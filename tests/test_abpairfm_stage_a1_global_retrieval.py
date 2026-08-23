@@ -73,6 +73,37 @@ def test_global_retrieval_mask_uses_remote_cluster_ids(monkeypatch) -> None:
     assert bool(allowed[1, 1])
 
 
+def test_global_candidate_gather_detaches_remote_negatives(monkeypatch) -> None:
+    hidden = torch.arange(24, dtype=torch.float32).reshape(2, 3, 4)
+    chain_ids = torch.tensor([[0, 1, 1], [0, 0, 1]])
+    heads = runner.StageA1Heads(embedding_dimension=4, projection_dimension=2)
+
+    monkeypatch.setattr(torch.distributed, "get_world_size", lambda: 2)
+    monkeypatch.setattr(torch.distributed, "get_rank", lambda: 1)
+    calls = []
+
+    def fake_all_gather(outputs, local) -> None:
+        calls.append(local)
+        outputs[0].copy_(torch.full_like(local, 0.25))
+        outputs[1].copy_(local)
+
+    monkeypatch.setattr(torch.distributed, "all_gather", fake_all_gather)
+    left, right = runner._global_retrieval_candidates(heads, hidden, chain_ids)
+    assert len(calls) == 1
+    assert left.shape == (4, 2)
+    assert right.shape == (4, 2)
+    assert torch.equal(left[:2], torch.full_like(left[:2], 0.25))
+    assert torch.equal(right[:2], torch.full_like(right[:2], 0.25))
+    (left.sum() + right.sum()).backward()
+    retrieval_parameters = [
+        parameter
+        for name, parameter in heads.named_parameters()
+        if name.startswith("retrieval_")
+    ]
+    assert len(retrieval_parameters) == 2
+    assert all(parameter.grad is not None for parameter in retrieval_parameters)
+
+
 def test_candidate_minimum_uses_supported_non_inplace_torch_api() -> None:
     current = torch.tensor(float("inf"), dtype=torch.float64)
     first = torch.tensor(
