@@ -451,6 +451,28 @@ def _update_minimum_allowed_candidates(
     return torch.minimum(current, observed)
 
 
+def _publish_rank_phase(
+    root: Path,
+    *,
+    rank: int,
+    update: int,
+    accumulation: int | None,
+    phase: str,
+) -> None:
+    _publish_progress(
+        root / f"rank-{rank}.json",
+        {
+            "accumulation": accumulation,
+            "format_version": "abpairfm_stage_a1_rank_phase_v1",
+            "observed_at_unix_seconds": time.time(),
+            "phase": phase,
+            "rank": rank,
+            "test_access": False,
+            "update": update,
+        },
+    )
+
+
 def _sync_replicated_head_gradients(heads: StageA1Heads, world_size: int) -> None:
     for parameter in heads.parameters():
         if parameter.grad is None:
@@ -497,8 +519,11 @@ def main() -> None:
     local_rank = int(os.environ["LOCAL_RANK"])
     torch.cuda.set_device(local_rank)
     device = torch.device("cuda", local_rank)
+    process_group_timeout = timedelta(
+        minutes=3 if protocol.get("systems_gate_only") is True else 15
+    )
     torch.distributed.init_process_group(
-        backend="nccl", device_id=device, timeout=timedelta(minutes=15)
+        backend="nccl", device_id=device, timeout=process_group_timeout
     )
     rank = torch.distributed.get_rank()
     world_size = torch.distributed.get_world_size()
@@ -569,9 +594,24 @@ def main() -> None:
         update_records: list[dict[str, float]] = []
         from torch.nn.attention import SDPBackend, sdpa_kernel
 
+        phase_root = arguments.result.parent / "rank_phases"
         for update in range(optimization["updates"]):
             optimizer.zero_grad(set_to_none=True)
+            _publish_rank_phase(
+                phase_root,
+                rank=rank,
+                update=update + 1,
+                accumulation=None,
+                phase="update_barrier_pending",
+            )
             torch.distributed.barrier()
+            _publish_rank_phase(
+                phase_root,
+                rank=rank,
+                update=update + 1,
+                accumulation=None,
+                phase="update_barrier_complete",
+            )
             torch.cuda.synchronize(device)
             started = time.perf_counter()
             totals = torch.zeros(8, device=device, dtype=torch.float64)
@@ -598,6 +638,13 @@ def main() -> None:
                     maximum_negative_to_positive_ratio=protocol["loss"]["contact"][
                         "maximum_negative_to_positive_ratio"
                     ],
+                )
+                _publish_rank_phase(
+                    phase_root,
+                    rank=rank,
+                    update=update + 1,
+                    accumulation=accumulation + 1,
+                    phase="microbatch_build_complete",
                 )
                 batch = _to_device(cpu_batch, device)
                 synchronize = accumulation == optimization["accumulation_steps"] - 1
@@ -662,6 +709,13 @@ def main() -> None:
                         contact_weight=protocol["loss"]["contact"]["weight"],
                     )
                     loss = multitask.total / optimization["accumulation_steps"]
+                _publish_rank_phase(
+                    phase_root,
+                    rank=rank,
+                    update=update + 1,
+                    accumulation=accumulation + 1,
+                    phase="forward_and_loss_complete",
+                )
                 minimum_allowed_candidates = _update_minimum_allowed_candidates(
                     minimum_allowed_candidates,
                     retrieval_allowed,
@@ -669,6 +723,13 @@ def main() -> None:
                 if not bool(torch.isfinite(loss)):
                     raise RuntimeError("Stage-A1 multitask loss is nonfinite")
                 loss.backward()
+                _publish_rank_phase(
+                    phase_root,
+                    rank=rank,
+                    update=update + 1,
+                    accumulation=accumulation + 1,
+                    phase="backward_complete",
+                )
                 totals += torch.tensor(
                     [
                         float(multitask.total.detach()),
@@ -684,10 +745,24 @@ def main() -> None:
                     dtype=torch.float64,
                 )
             _sync_replicated_head_gradients(heads, world_size)
+            _publish_rank_phase(
+                phase_root,
+                rank=rank,
+                update=update + 1,
+                accumulation=None,
+                phase="head_gradient_sync_complete",
+            )
             gradient_norm = _clip_gradients(
                 backbone, heads, optimization["gradient_clip_norm"]
             )
             optimizer.step()
+            _publish_rank_phase(
+                phase_root,
+                rank=rank,
+                update=update + 1,
+                accumulation=None,
+                phase="optimizer_step_complete",
+            )
             torch.distributed.all_reduce(totals)
             torch.distributed.all_reduce(
                 minimum_allowed_candidates, op=torch.distributed.ReduceOp.MIN

@@ -16,7 +16,7 @@ readonly MANIFEST=/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a1_pil
 readonly MANIFEST_RECEIPT=/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a1_pilot_v4/STAGE_A1_PILOT_MANIFEST_RECEIPT.json
 readonly INITIAL_CHECKPOINT=/ssd/scxi253/model_deployment/models/abpairfm_3b_v1/esm2_t36_3B_UR50D/esm2_t36_3B_UR50D.pt
 readonly INPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a0_string25m_v1/checkpoints
-readonly OUTPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_split_view_systems_gate_v6
+readonly OUTPUT_ROOT=${ABPAIRFM_STAGE_A1_OUTPUT_ROOT:-/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_split_view_systems_gate_v6}
 readonly SOURCE_SHA256=${ABPAIRFM_STAGE_A1_SOURCE_SHA256:?missing frozen Stage-A1 source SHA-256}
 
 export PYTHONPATH="${PROJECT}/src"
