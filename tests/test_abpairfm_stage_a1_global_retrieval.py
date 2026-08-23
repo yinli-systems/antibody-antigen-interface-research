@@ -358,6 +358,26 @@ def test_v7_protocol_freezes_alternating_dynamic_padding_efficiency_gate(
     arguments.efficiency_microbatch_pairs_per_rank = 32
     assert runner._load_protocol(arguments)["format_version"].endswith("_v13")
 
+    protocol["format_version"] = "abpairfm_stage_a1_length_band_promotion_v14"
+    protocol["authorization"]["pilot_training"] = False
+    protocol["authorization"]["production_training"] = True
+    protocol["checkpoint"]["generation"] = "segment-000031"
+    protocol["checkpoint"]["content_sha256"] = "7" * 64
+    protocol["efficiency_gate_only"] = False
+    protocol["systems_gate_only"] = False
+    protocol["optimization"]["updates"] = 200
+    protocol["promotion_selection"] = {
+        "source_gate": "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+        "rule": "highest_mean_mfu_among_pass_then_highest_throughput",
+        "required_status": "PASS_STAGE_A1_EFFICIENCY_GATE_CHECKPOINT_VERIFIED",
+    }
+    protocol["status"] = "FROZEN_BEFORE_STAGE_A1_PROMOTION"
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    arguments.input_generation = "segment-000031"
+    arguments.expected_input_content_sha256 = "7" * 64
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v14")
+
 
 def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     records = []
@@ -427,6 +447,14 @@ def test_length_band_efficiency_bucket_applies_both_bounds() -> None:
         for record in selected
     )
     assert lengths == [65, 96, 128]
+
+    protocol["format_version"] = "abpairfm_stage_a1_length_band_promotion_v14"
+    protocol["optimization"]["updates"] = 2
+    repeated = runner._efficiency_bucket_records(
+        records, protocol, microbatch_pairs_per_rank=2
+    )
+    assert len(repeated) == 4
+    assert len({record["pilot_record_index"] for record in repeated}) == 3
 
 
 def test_length_bucket_preserves_membership_and_five_to_one_source_ratio() -> None:

@@ -68,6 +68,7 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+    "abpairfm_stage_a1_length_band_promotion_v14",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
@@ -79,6 +80,7 @@ GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+    "abpairfm_stage_a1_length_band_promotion_v14",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -89,6 +91,7 @@ SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+    "abpairfm_stage_a1_length_band_promotion_v14",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
@@ -97,6 +100,7 @@ ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+    "abpairfm_stage_a1_length_band_promotion_v14",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
@@ -111,6 +115,10 @@ STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
 }
 LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+    "abpairfm_stage_a1_length_band_promotion_v14",
+}
+PROMOTION_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_length_band_promotion_v14",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -203,7 +211,10 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     systems = protocol.get("systems", {})
     optimization = protocol.get("optimization", {})
     format_version = protocol.get("format_version")
-    expected_updates = 10 if format_version in SPLIT_VIEW_PROTOCOL_FORMATS else 200
+    promotion = format_version in PROMOTION_PROTOCOL_FORMATS
+    expected_updates = (
+        200 if promotion else (10 if format_version in SPLIT_VIEW_PROTOCOL_FORMATS else 200)
+    )
     alternating_efficiency = format_version in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS
     selected_efficiency_microbatch = getattr(
         arguments, "efficiency_microbatch_pairs_per_rank", None
@@ -270,11 +281,23 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
             )
         )
     )
+    authorized_training = (
+        (
+            protocol.get("status") == "FROZEN_BEFORE_STAGE_A1_PROMOTION"
+            and authorization.get("pilot_training") is False
+            and authorization.get("production_training") is True
+        )
+        if promotion
+        else (
+            protocol.get("status")
+            == "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING"
+            and authorization.get("pilot_training") is True
+            and authorization.get("production_training") is False
+        )
+    )
     if (
         format_version not in EXPECTED_PROTOCOL_FORMATS
-        or protocol.get("status") != "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING"
-        or authorization.get("pilot_training") is not True
-        or authorization.get("production_training") is not False
+        or not authorized_training
         or authorization.get("test_access") is not False
         or protocol.get("test_access") is not False
         or systems.get("partition") != "gpu_4090"
@@ -299,7 +322,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         .get("masked_language_modeling", {})
         .get("representation_view")
         != "joint_cross_chain_attention"
-        or protocol.get("systems_gate_only") is not True
+        or protocol.get("systems_gate_only") != (not promotion)
         or protocol.get("counterfactual_gate", {}).get("status")
         != "PASS_TRAIN_ONLY_MATERIALIZATION"
     ):
@@ -307,8 +330,8 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     if alternating_efficiency:
         efficiency = protocol.get("efficiency", {})
         common_efficiency_valid = (
-            protocol.get("efficiency_gate_only") is True
-            and protocol.get("systems_gate_only") is True
+            protocol.get("efficiency_gate_only") == (not promotion)
+            and protocol.get("systems_gate_only") == (not promotion)
             and efficiency.get("padding_multiple") == 64
             and efficiency.get("parameter_count") == 2839005633
             and efficiency.get("gpu_peak_bfloat16_flops") == 82580000000000
@@ -354,6 +377,12 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         )
         if not common_efficiency_valid or not selected_efficiency_shape_valid:
             raise RuntimeError("Stage-A1 efficiency gate differs")
+        if promotion and protocol.get("promotion_selection") != {
+            "source_gate": "abpairfm_stage_a1_length_band_efficiency_gate_v13",
+            "rule": "highest_mean_mfu_among_pass_then_highest_throughput",
+            "required_status": "PASS_STAGE_A1_EFFICIENCY_GATE_CHECKPOINT_VERIFIED",
+        }:
+            raise RuntimeError("Stage-A1 promotion selection rule differs")
     if format_version in SPLIT_VIEW_PROTOCOL_FORMATS:
         gate = protocol["counterfactual_gate"]
         receipt_path = Path(str(gate.get("receipt_path", "")))
@@ -521,7 +550,10 @@ def _efficiency_bucket_records(
         * microbatch_pairs_per_rank
     )
     if len(selected) < required:
-        raise RuntimeError("Stage-A1 efficiency bucket is too small for the frozen trial")
+        if format_version not in PROMOTION_PROTOCOL_FORMATS:
+            raise RuntimeError("Stage-A1 efficiency bucket is too small for the frozen trial")
+        repeats = math.ceil(required / len(selected))
+        selected = (selected * repeats)[:required]
     return selected
 
 
@@ -860,6 +892,8 @@ def _mean_records(records: list[dict[str, float]], key: str, count: int) -> floa
 def main() -> None:
     arguments = _arguments()
     protocol = _load_protocol(arguments)
+    promotion = protocol.get("format_version") in PROMOTION_PROTOCOL_FORMATS
+    output_generation = "stage-a1-000000" if promotion else "pilot-000000"
     project_root = arguments.project_root.resolve()
     observed_source_sha256 = source_sha256(project_root)
     if observed_source_sha256 != arguments.expected_source_sha256:
@@ -880,6 +914,9 @@ def main() -> None:
         records,
         protocol,
         microbatch_pairs_per_rank=microbatch_pairs_per_rank,
+    )
+    unique_selected_records = len(
+        {record["pilot_record_index"] for record in records}
     )
 
     local_rank = int(os.environ["LOCAL_RANK"])
@@ -1478,7 +1515,11 @@ def main() -> None:
                 _publish_progress(
                     arguments.progress,
                     {
-                        "format_version": "abpairfm_stage_a1_pilot_progress_v1",
+                        "format_version": (
+                            "abpairfm_stage_a1_promotion_progress_v1"
+                            if promotion
+                            else "abpairfm_stage_a1_pilot_progress_v1"
+                        ),
                         "latest": record,
                         "status": (
                             "RUNNING"
@@ -1508,7 +1549,7 @@ def main() -> None:
         }
         checkpoint_receipt = _DCP.save_dcp_generation(
             arguments.checkpoint_root,
-            "pilot-000000",
+            output_generation,
             model=system,
             optimizer=optimizer,
             provenance_hashes=provenance,
@@ -1516,13 +1557,14 @@ def main() -> None:
                 "input_consumed_residue_tokens": input_receipt["training_state"][
                     "consumed_residue_tokens"
                 ],
-                "pilot_updates": optimization["updates"],
+                "production_training": promotion,
+                "stage_a1_updates": optimization["updates"],
                 "test_access": False,
             },
         )
         restore_receipt = _DCP.load_dcp_generation(
             arguments.checkpoint_root,
-            "pilot-000000",
+            output_generation,
             model=system,
             optimizer=optimizer,
             expected_provenance_hashes=provenance,
@@ -1542,6 +1584,8 @@ def main() -> None:
             status = "FAIL_STAGE_A1_MULTITASK_PILOT_MEMORY_GATE"
         elif candidate_floor < required_candidate_floor:
             status = "FAIL_STAGE_A1_RETRIEVAL_CANDIDATE_GATE"
+        elif promotion:
+            status = "PASS_STAGE_A1_LENGTH_BAND_PROMOTION_CHECKPOINT_VERIFIED"
         elif protocol.get("format_version") in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS:
             status = "PASS_STAGE_A1_EFFICIENCY_GATE_CHECKPOINT_VERIFIED"
         elif protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS:
@@ -1554,12 +1598,16 @@ def main() -> None:
                 "authorization": protocol["authorization"],
                 "checkpoint": {
                     "content_sha256": checkpoint_receipt["content_sha256"],
-                    "generation": "pilot-000000",
+                    "generation": output_generation,
                     "restore_content_sha256": restore_receipt["content_sha256"],
                     "root": str(arguments.checkpoint_root.resolve()),
                 },
                 "claim_boundary": protocol["claim_boundary"],
-                "format_version": "abpairfm_stage_a1_multitask_pilot_result_v1",
+                "format_version": (
+                    "abpairfm_stage_a1_promotion_result_v1"
+                    if promotion
+                    else "abpairfm_stage_a1_multitask_pilot_result_v1"
+                ),
                 "input_checkpoint": {
                     "consumed_residue_tokens": input_receipt["training_state"][
                         "consumed_residue_tokens"
@@ -1587,6 +1635,7 @@ def main() -> None:
                     "receipt_sha256": manifest_receipt_sha256,
                     "sha256": manifest_sha256,
                     "total_records_available": len(records),
+                    "unique_records_available": unique_selected_records,
                 },
                 "memory": {
                     "maximum_allocated_fraction": peak_fraction,
