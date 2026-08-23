@@ -1,0 +1,47 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "The ten-update efficiency run completed numerically, but checkpoint verification failed. The observed MFU is diagnostic only and does not satisfy the Stage-A1 promotion gate.",
+  "failure": {
+    "classification": "DCP_CHECKPOINT_WRITE_DISK_QUOTA_AFTER_TRAINING",
+    "progress": {
+      "active_phase": "retrieval",
+      "approximate_useful_token_6n_mfu": 0.06745113473732778,
+      "gradient_norm": 0.1623672539765572,
+      "minimum_allowed_candidates_per_query": 384.0,
+      "packing_efficiency": 0.6294962565104166,
+      "retrieval_candidate_matrix_width": 384.0,
+      "retrieval_loss": 5.890787720680237,
+      "status": "TRAINING_COMPLETE_CHECKPOINT_PENDING",
+      "total_loss": 1.1781575679779053,
+      "updates_completed": 10
+    },
+    "result_artifact_created": false,
+    "stderr": {
+      "bytes": 132452,
+      "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-a1-band-v13-1462940_2.err",
+      "sha256": "67d2368224d16dc9240c22192d5eac9e5aa46b6e4d41bbedccf367db7ddfc2e6"
+    }
+  },
+  "format_version": "abpairfm_stage_a1_infrastructure_failure_v1",
+  "job": {
+    "elapsed": "00:04:51",
+    "exit_code": "1:0",
+    "job_id": "1462940_2",
+    "node": "wqd10nba06g6",
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "recovery": {
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_length_band_efficiency_gate_v13_b48_disk_recovery_20260824",
+    "replacement_job_id": "1463000_2",
+    "status_at_recording": "PENDING_PRIORITY",
+    "verified_empty_output_directory": true
+  },
+  "status": "INFRASTRUCTURE_FAILURE_PRESERVED",
+  "test_access": false
+}
