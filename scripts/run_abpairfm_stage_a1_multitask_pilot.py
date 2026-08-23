@@ -67,6 +67,7 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+    "abpairfm_stage_a1_length_band_efficiency_gate_v13",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
@@ -77,6 +78,7 @@ GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+    "abpairfm_stage_a1_length_band_efficiency_gate_v13",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -86,6 +88,7 @@ SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+    "abpairfm_stage_a1_length_band_efficiency_gate_v13",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
@@ -93,6 +96,7 @@ ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
     "abpairfm_stage_a1_length_bucket_efficiency_gate_v10",
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+    "abpairfm_stage_a1_length_band_efficiency_gate_v13",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
@@ -104,6 +108,9 @@ LENGTH_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
 }
 STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+}
+LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_length_band_efficiency_gate_v13",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -210,6 +217,9 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     elif format_version == "abpairfm_stage_a1_efficiency_ac_gate_v8":
         expected_efficiency_microbatches = [64]
         expected_activation_checkpoint_modes = ["selective_attention", "off"]
+    elif format_version in LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS:
+        expected_efficiency_microbatches = [24, 32, 48]
+        expected_activation_checkpoint_modes = ["full"]
     else:
         expected_efficiency_microbatches = [6, 7, 8]
         expected_activation_checkpoint_modes = (
@@ -326,10 +336,21 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
             efficiency.get("maximum_combined_tokens") == 64
             and efficiency.get("expected_bucket_records") == 10380
         )
+        length_band_valid = (
+            efficiency.get("minimum_combined_tokens") == 65
+            and efficiency.get("maximum_combined_tokens") == 128
+            and efficiency.get("expected_bucket_records") == 4967
+            and efficiency.get("expected_source_records") == 19200
+            and efficiency.get("selection_seed") == 1701
+        )
         selected_efficiency_shape_valid = (
             representative_valid
             if format_version in REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS
-            else short_bucket_valid
+            else (
+                length_band_valid
+                if format_version in LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS
+                else short_bucket_valid
+            )
         )
         if not common_efficiency_valid or not selected_efficiency_shape_valid:
             raise RuntimeError("Stage-A1 efficiency gate differs")
@@ -470,6 +491,7 @@ def _efficiency_bucket_records(
             return _structural_bucket_stage_a1_records(records, protocol)
         return records
     efficiency = protocol["efficiency"]
+    minimum_combined_tokens = int(efficiency.get("minimum_combined_tokens", 0))
     maximum_combined_tokens = int(efficiency["maximum_combined_tokens"])
     selected = [
         record
@@ -477,7 +499,8 @@ def _efficiency_bucket_records(
         if record.get("source") == "ppiref50k"
         and record.get("contact_supervision") is True
         and record.get("retrieval_supervision") is True
-        and len(str(record["sequence1"]))
+        and minimum_combined_tokens
+        <= len(str(record["sequence1"]))
         + len(str(record["sequence2"]))
         + 4
         <= maximum_combined_tokens
