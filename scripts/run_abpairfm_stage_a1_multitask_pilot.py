@@ -160,6 +160,12 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--shard-group-size", type=int, default=4)
     parser.add_argument("--maximum-tokens", type=int, default=1024)
     parser.add_argument("--progress-interval", type=int, default=10)
+    parser.add_argument(
+        "--rank-phase-telemetry",
+        choices=("full", "off"),
+        default="full",
+        help="Disable shared-filesystem phase writes only for isolated systems gates.",
+    )
     parser.add_argument("--efficiency-microbatch-pairs-per-rank", type=int)
     parser.add_argument(
         "--efficiency-activation-checkpoint-mode",
@@ -763,13 +769,15 @@ def _update_minimum_allowed_candidates(
 
 
 def _publish_rank_phase(
-    root: Path,
+    root: Path | None,
     *,
     rank: int,
     update: int,
     accumulation: int | None,
     phase: str,
 ) -> None:
+    if root is None:
+        return
     _publish_progress(
         root / f"rank-{rank}.json",
         {
@@ -943,7 +951,11 @@ def main() -> None:
         update_records: list[dict[str, float]] = []
         from torch.nn.attention import SDPBackend, sdpa_kernel
 
-        phase_root = arguments.result.parent / "rank_phases"
+        phase_root = (
+            None
+            if arguments.rank_phase_telemetry == "off"
+            else arguments.result.parent / "rank_phases"
+        )
         for update in range(optimization["updates"]):
             optimizer.zero_grad(set_to_none=True)
             _publish_rank_phase(
@@ -1561,6 +1573,8 @@ def main() -> None:
                 },
                 "optimization": {
                     **optimization,
+                    "progress_interval": arguments.progress_interval,
+                    "rank_phase_telemetry": arguments.rank_phase_telemetry,
                     "selected_activation_checkpoint_mode": (
                         activation_checkpoint_mode
                     ),

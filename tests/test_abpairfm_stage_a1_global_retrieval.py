@@ -447,3 +447,14 @@ def test_structural_bucket_excludes_sequence_only_padding() -> None:
     assert {record["pilot_record_index"] for record in ordered} == (
         set(range(12)) - {5, 11}
     )
+
+
+def test_rank_phase_telemetry_can_be_disabled(tmp_path: Path) -> None:
+    runner._publish_rank_phase(
+        None,
+        rank=0,
+        update=1,
+        accumulation=None,
+        phase="optimizer_step_complete",
+    )
+    assert list(tmp_path.iterdir()) == []

@@ -20,6 +20,8 @@ readonly INITIAL_CHECKPOINT=/ssd/scxi253/model_deployment/models/abpairfm_3b_v1/
 readonly INPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a0_string25m_v1/checkpoints
 readonly OUTPUT_BASE=${ABPAIRFM_STAGE_A1_OUTPUT_ROOT:-/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_structural_bucket_efficiency_gate_v11}
 readonly SOURCE_SHA256=${ABPAIRFM_STAGE_A1_SOURCE_SHA256:?missing frozen Stage-A1 source SHA-256}
+readonly PROGRESS_INTERVAL=${ABPAIRFM_STAGE_A1_PROGRESS_INTERVAL:-1}
+readonly RANK_PHASE_TELEMETRY=${ABPAIRFM_STAGE_A1_RANK_PHASE_TELEMETRY:-full}
 readonly MICROBATCHES=(6 7 8)
 readonly MICROBATCH=${MICROBATCHES[${SLURM_ARRAY_TASK_ID}]}
 readonly OUTPUT_ROOT=${OUTPUT_BASE}/full-microbatch-${MICROBATCH}
@@ -74,4 +76,5 @@ test ! -e "${OUTPUT_ROOT}/checkpoints/pilot-000000"
   --maximum-tokens 1024 \
   --efficiency-microbatch-pairs-per-rank "${MICROBATCH}" \
   --efficiency-activation-checkpoint-mode full \
-  --progress-interval 1
+  --progress-interval "${PROGRESS_INTERVAL}" \
+  --rank-phase-telemetry "${RANK_PHASE_TELEMETRY}"
