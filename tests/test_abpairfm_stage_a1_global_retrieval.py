@@ -121,6 +121,8 @@ def test_v5_protocol_requires_counterfactual_and_representation_gates(
         ).read_text(encoding="utf-8")
     )
     protocol["format_version"] = "abpairfm_stage_a1_multitask_pilot_v5"
+    protocol["optimization"]["updates"] = 10
+    protocol["systems_gate_only"] = True
     protocol["loss"]["masked_language_modeling"]["representation_view"] = (
         "joint_cross_chain_attention"
     )
@@ -130,8 +132,22 @@ def test_v5_protocol_requires_counterfactual_and_representation_gates(
     protocol["loss"]["retrieval"]["representation_view"] = (
         "chain_independent_no_cross_attention"
     )
+    receipt = {
+        "materialization": {
+            "coverage": 0.99675,
+            "mapping_sha256": "a" * 64,
+        },
+        "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
+        "test_access": False,
+    }
+    receipt_path = tmp_path / "counterfactual.json"
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
     protocol["counterfactual_gate"] = {
-        "status": "PASS_TRAIN_ONLY_MATERIALIZATION"
+        "mapping_sha256": "a" * 64,
+        "minimum_coverage": 0.995,
+        "receipt_path": str(receipt_path),
+        "receipt_sha256": runner._sha256(receipt_path),
+        "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
     }
     path = tmp_path / "protocol.json"
     path.write_text(json.dumps(protocol), encoding="utf-8")

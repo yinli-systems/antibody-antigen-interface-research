@@ -1,0 +1,113 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "7dbde1798181967cc5406dae6eed99a58d8d80c097f16c684d1ce731e5d16311",
+    "generation": "segment-000024",
+    "minimum_consumed_residue_tokens": 394000000,
+    "optimizer_resume": false
+  },
+  "claim_boundary": "Train-only 10-update Stage-A1 split-view systems gate. It measures full-size FSDP2 memory, throughput, finite MLM/contact/independent-retrieval optimization, candidate support, and checkpoint restore after the counterfactual materialization gate. It cannot establish objective convergence, development improvement, biological noninteraction, test performance, production readiness, or SOTA.",
+  "counterfactual_gate": {
+    "mapped_anchors": 15948,
+    "mapping_sha256": "910b89b83612702e2e903e46d27fa9d4f3c4363d77df0cee9fe909427980512e",
+    "minimum_coverage": 0.995,
+    "observed_coverage": 0.99675,
+    "receipt_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a1_pilot_v5/COUNTERFACTUAL_MATERIALIZATION_RECEIPT.json",
+    "receipt_sha256": "94e3d7314438486afcf8c5c7d623aa2ab9c034573f322fa49532427a62c3944e",
+    "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
+    "unmatched_anchors": 52
+  },
+  "format_version": "abpairfm_stage_a1_multitask_pilot_v5",
+  "loss": {
+    "contact": {
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_positive_pairs_per_complex": 102,
+      "maximum_sampled_pairs_per_complex": 512,
+      "representation_view": "joint_cross_chain_attention",
+      "sampling_seed": 1701,
+      "weight": 0.5
+    },
+    "masked_language_modeling": {
+      "balance": "equal_per_chain",
+      "representation_view": "joint_cross_chain_attention",
+      "weight": 1.0
+    },
+    "retrieval": {
+      "candidate_scope": "same_node_all_ranks",
+      "direction": "bidirectional",
+      "participants": "PPIRef50K structural cognates only; STRING remains MLM-only in this systems gate",
+      "pilot_false_negative_exclusion": "same_exact_endpoint_or_available_source_cluster_or_same_positive_group_or_known_positive_swap",
+      "ppiref_cluster_boundary": "exact_sequence_fallback_only",
+      "production_cluster_aware_gate": "still_required_before_production",
+      "representation_view": "chain_independent_no_cross_attention",
+      "temperature": 0.07,
+      "weight": 0.2
+    }
+  },
+  "optimization": {
+    "accumulation_steps": 2,
+    "backbone_learning_rate": 5e-7,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "microbatch_pairs_per_rank": 6,
+    "updates": 10,
+    "weight_decay": 0.01
+  },
+  "pilot_manifest": {
+    "counterfactual_mapped_retrieval_records": 15948,
+    "expected_retrieval_supervised_records": 16000,
+    "minimum_full_endpoint_residues": 8,
+    "minimum_patch_endpoint_residues": 4,
+    "ppiref_records_per_microbatch": 5,
+    "selection_seed": 1701,
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
+    "total_records": 19200,
+    "unique_ppiref_exact_pairs": true
+  },
+  "promotion_gates": {
+    "finite_all_losses": true,
+    "maximum_peak_memory_fraction": 0.95,
+    "minimum_contact_positive_support": 50,
+    "minimum_counterfactual_coverage": 0.995,
+    "minimum_retrieval_candidates_per_query": 32,
+    "minimum_retrieval_cognate_support": 50,
+    "required_checkpoint_restore": true
+  },
+  "sources": {
+    "ppiref50k": {
+      "manifest_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/normalized_candidates/ppiref50k_2024_01/interfaces_devclean_pindernovel_v1.jsonl.zst",
+      "manifest_sha256": "db231ea9a668e5d216db7137dc8224333f58eb040a4ff6270b806e37afc1ac89",
+      "receipt_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/normalized_candidates/ppiref50k_2024_01/pinder_priority_deduplication_receipt_v1.json",
+      "receipt_sha256": "51ca0c67b318df1c4f2192918d28d908709499271a45a554170eb7d96c6fc941",
+      "role": "contact_retrieval_and_mlm"
+    },
+    "string_segment": {
+      "manifest_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a0_string25m_v1/string_seed1701_segment-000015_22400_v1.jsonl.zst",
+      "manifest_sha256": "01dd80abe7938098f458ad0ec991bb2ec3610f03c017ebc4063aa09bea0c3146",
+      "receipt_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a0_string25m_v1/string_seed1701_segment-000015_22400_v1.receipt.json",
+      "receipt_sha256": "eb9fcf0894e990bdb9ce121623fccca7aef810a2f3ea4cd5931b4f26efc0f23a",
+      "role": "mlm_only_in_split_view_systems_gate"
+    }
+  },
+  "status": "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING",
+  "systems": {
+    "cpus_per_task": 48,
+    "explicit_mem_argument_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 8
+  },
+  "systems_gate_only": true,
+  "test_access": false
+}
