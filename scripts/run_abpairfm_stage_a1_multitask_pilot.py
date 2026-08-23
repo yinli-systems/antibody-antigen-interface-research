@@ -64,6 +64,7 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v6",
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
+    "abpairfm_stage_a1_representative_efficiency_gate_v9",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
@@ -71,16 +72,22 @@ GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v6",
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
+    "abpairfm_stage_a1_representative_efficiency_gate_v9",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
+    "abpairfm_stage_a1_representative_efficiency_gate_v9",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
     "abpairfm_stage_a1_efficiency_ac_gate_v8",
+    "abpairfm_stage_a1_representative_efficiency_gate_v9",
+}
+REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_representative_efficiency_gate_v9",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -175,16 +182,19 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     selected_activation_checkpoint_mode = getattr(
         arguments, "efficiency_activation_checkpoint_mode", "full"
     )
-    expected_efficiency_microbatches = (
-        [64, 96, 128]
-        if format_version == "abpairfm_stage_a1_efficiency_gate_v7"
-        else [64]
-    )
-    expected_activation_checkpoint_modes = (
-        ["full"]
-        if format_version == "abpairfm_stage_a1_efficiency_gate_v7"
-        else ["selective_attention", "off"]
-    )
+    if format_version == "abpairfm_stage_a1_efficiency_gate_v7":
+        expected_efficiency_microbatches = [64, 96, 128]
+        expected_activation_checkpoint_modes = ["full"]
+    elif format_version == "abpairfm_stage_a1_efficiency_ac_gate_v8":
+        expected_efficiency_microbatches = [64]
+        expected_activation_checkpoint_modes = ["selective_attention", "off"]
+    else:
+        expected_efficiency_microbatches = [6, 7, 8]
+        expected_activation_checkpoint_modes = ["full", "off"]
+    selected_trial = {
+        "activation_checkpointing": selected_activation_checkpoint_mode,
+        "microbatch_pairs_per_rank": selected_efficiency_microbatch,
+    }
     valid_shape = (
         optimization.get("updates") == expected_updates
         and (
@@ -203,6 +213,12 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
                         == expected_activation_checkpoint_modes
                         and selected_activation_checkpoint_mode
                         in expected_activation_checkpoint_modes
+                        and (
+                            format_version
+                            != "abpairfm_stage_a1_representative_efficiency_gate_v9"
+                            or selected_trial
+                            in protocol.get("efficiency", {}).get("trial_matrix", [])
+                        )
                     )
                 )
                 and optimization.get("accumulation_steps") == 1
@@ -248,19 +264,32 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         != "PASS_TRAIN_ONLY_MATERIALIZATION"
     ):
         raise RuntimeError("Stage-A1 v5 representation-view gate differs")
-    if alternating_efficiency and (
-        protocol.get("efficiency_gate_only") is not True
-        or protocol.get("systems_gate_only") is not True
-        or protocol.get("efficiency", {}).get("padding_multiple") != 64
-        or protocol.get("efficiency", {}).get("maximum_combined_tokens") != 64
-        or protocol.get("efficiency", {}).get("expected_bucket_records") != 10380
-        or protocol.get("efficiency", {}).get("parameter_count") != 2839005633
-        or protocol.get("efficiency", {}).get("gpu_peak_bfloat16_flops")
-        != 82580000000000
-        or protocol.get("efficiency", {}).get("phase_schedule")
-        != "alternating_joint_and_retrieval_single_backbone_pass"
-    ):
-        raise RuntimeError("Stage-A1 v7 efficiency gate differs")
+    if alternating_efficiency:
+        efficiency = protocol.get("efficiency", {})
+        common_efficiency_valid = (
+            protocol.get("efficiency_gate_only") is True
+            and protocol.get("systems_gate_only") is True
+            and efficiency.get("padding_multiple") == 64
+            and efficiency.get("parameter_count") == 2839005633
+            and efficiency.get("gpu_peak_bfloat16_flops") == 82580000000000
+            and efficiency.get("phase_schedule")
+            == "alternating_joint_and_retrieval_single_backbone_pass"
+        )
+        representative_valid = (
+            efficiency.get("maximum_combined_tokens") == 1024
+            and efficiency.get("expected_source_records") == 19200
+        )
+        short_bucket_valid = (
+            efficiency.get("maximum_combined_tokens") == 64
+            and efficiency.get("expected_bucket_records") == 10380
+        )
+        selected_efficiency_shape_valid = (
+            representative_valid
+            if format_version in REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS
+            else short_bucket_valid
+        )
+        if not common_efficiency_valid or not selected_efficiency_shape_valid:
+            raise RuntimeError("Stage-A1 efficiency gate differs")
     if format_version in SPLIT_VIEW_PROTOCOL_FORMATS:
         gate = protocol["counterfactual_gate"]
         receipt_path = Path(str(gate.get("receipt_path", "")))
@@ -284,6 +313,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         "abpairfm_stage_a1_multitask_pilot_v6",
         "abpairfm_stage_a1_efficiency_gate_v7",
         "abpairfm_stage_a1_efficiency_ac_gate_v8",
+        "abpairfm_stage_a1_representative_efficiency_gate_v9",
     } and (
         len(protocol.get("pilot_manifest", {}).get("source_protocol_sha256", ""))
         != 64
@@ -378,7 +408,19 @@ def _efficiency_bucket_records(
 ) -> list[dict[str, Any]]:
     """Select one immutable short-structure bucket for comparable MFU trials."""
 
-    if protocol.get("format_version") not in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS:
+    format_version = protocol.get("format_version")
+    if format_version not in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS:
+        return records
+    if format_version in REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS:
+        if len(records) != protocol["efficiency"]["expected_source_records"]:
+            raise RuntimeError("Stage-A1 representative source count differs")
+        required = (
+            protocol["optimization"]["updates"]
+            * protocol["systems"]["world_size"]
+            * microbatch_pairs_per_rank
+        )
+        if len(records) < required:
+            raise RuntimeError("Stage-A1 representative source is too small")
         return records
     efficiency = protocol["efficiency"]
     maximum_combined_tokens = int(efficiency["maximum_combined_tokens"])

@@ -272,6 +272,41 @@ def test_v7_protocol_freezes_alternating_dynamic_padding_efficiency_gate(
     arguments.efficiency_activation_checkpoint_mode = "off"
     assert runner._load_protocol(arguments)["format_version"].endswith("_v8")
 
+    protocol["format_version"] = (
+        "abpairfm_stage_a1_representative_efficiency_gate_v9"
+    )
+    protocol["efficiency"].pop("expected_bucket_records")
+    protocol["efficiency"]["expected_source_records"] = 19200
+    protocol["efficiency"]["maximum_combined_tokens"] = 1024
+    protocol["efficiency"]["activation_checkpointing_candidates"] = [
+        "full",
+        "off",
+    ]
+    protocol["efficiency"]["trial_matrix"] = [
+        {
+            "activation_checkpointing": "full",
+            "microbatch_pairs_per_rank": 6,
+        },
+        {
+            "activation_checkpointing": "full",
+            "microbatch_pairs_per_rank": 7,
+        },
+        {
+            "activation_checkpointing": "full",
+            "microbatch_pairs_per_rank": 8,
+        },
+        {
+            "activation_checkpointing": "off",
+            "microbatch_pairs_per_rank": 6,
+        },
+    ]
+    protocol["optimization"]["microbatch_pairs_per_rank_candidates"] = [6, 7, 8]
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    arguments.efficiency_microbatch_pairs_per_rank = 7
+    arguments.efficiency_activation_checkpoint_mode = "full"
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v9")
+
 
 def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     records = []
@@ -300,3 +335,13 @@ def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     assert [value["pilot_record_index"] for value in first] == [
         value["pilot_record_index"] for value in second
     ]
+
+    representative_protocol = {
+        "efficiency": {"expected_source_records": len(records)},
+        "format_version": "abpairfm_stage_a1_representative_efficiency_gate_v9",
+        "optimization": {"updates": 1},
+        "systems": {"world_size": 2},
+    }
+    assert runner._efficiency_bucket_records(
+        records, representative_protocol, microbatch_pairs_per_rank=2
+    ) == records
