@@ -260,6 +260,18 @@ def test_v7_protocol_freezes_alternating_dynamic_padding_efficiency_gate(
     loaded = runner._load_protocol(arguments)
     assert loaded["efficiency"]["padding_multiple"] == 64
 
+    protocol["format_version"] = "abpairfm_stage_a1_efficiency_ac_gate_v8"
+    protocol["efficiency"]["activation_checkpointing_candidates"] = [
+        "selective_attention",
+        "off",
+    ]
+    protocol["optimization"]["microbatch_pairs_per_rank_candidates"] = [64]
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    arguments.efficiency_microbatch_pairs_per_rank = 64
+    arguments.efficiency_activation_checkpoint_mode = "off"
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v8")
+
 
 def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     records = []
