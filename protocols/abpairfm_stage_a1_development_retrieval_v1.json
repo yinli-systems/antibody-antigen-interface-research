@@ -9,6 +9,8 @@
     "expected_generation": "stage-a1-000000",
     "expected_production_training": true,
     "expected_stage_a1_updates": 200,
+    "expected_training_protocol_sha256": "9ee2b61d1fc7ee9107c509194b30efcce1a2028578d30c15fc0bc082b15e7ef3",
+    "expected_training_source_sha256": "4b0906eca32564566282e553a642974d2da7d96f2644b27d51b8183f19cdd52b",
     "required_result_status": "PASS_STAGE_A1_LENGTH_BAND_PROMOTION_CHECKPOINT_VERIFIED",
     "selection_rule": "immutable v14 promotion result and DCP content SHA-256 supplied at launch"
   },
@@ -56,6 +58,7 @@
     "pair_window_aggregation": "arithmetic_mean",
     "probability_interpretation": false,
     "representation_view": "chain_independent_no_cross_attention",
+    "temperature": 0.07,
     "temperature_source": "immutable Stage-A1 retrieval head"
   },
   "status": "FROZEN_BEFORE_GPU_EVALUATION",

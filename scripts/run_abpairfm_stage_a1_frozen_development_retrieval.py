@@ -143,9 +143,15 @@ def _verify_checkpoint_collectively(
                 != arguments.expected_dcp_content_sha256
                 or promotion.get("checkpoint", {}).get("generation")
                 != arguments.dcp_generation
+                or promotion.get("source_sha256")
+                != selection["expected_training_source_sha256"]
                 or receipt.get("content_sha256")
                 != arguments.expected_dcp_content_sha256
                 or receipt.get("generation") != arguments.dcp_generation
+                or receipt.get("provenance_hashes", {}).get("protocol")
+                != selection["expected_training_protocol_sha256"]
+                or receipt.get("provenance_hashes", {}).get("source")
+                != selection["expected_training_source_sha256"]
                 or receipt.get("training_state", {}).get("production_training")
                 is not selection["expected_production_training"]
                 or receipt.get("training_state", {}).get("stage_a1_updates")
@@ -460,7 +466,9 @@ def main() -> None:
             expected_size=EXPECTED_INITIAL_CHECKPOINT_SIZE,
             expected_sha256=EXPECTED_INITIAL_CHECKPOINT_SHA256,
         )
-        heads = StageA1Heads().to(device=device, dtype=torch.float32)
+        heads = StageA1Heads(temperature=protocol["score"]["temperature"]).to(
+            device=device, dtype=torch.float32
+        )
         system = StageA1System(backbone, heads)
         _load_system_dcp(
             system,
