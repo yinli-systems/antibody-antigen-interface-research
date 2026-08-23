@@ -190,27 +190,24 @@ def build_stage_a1_microbatch(
     *,
     seed: int,
     maximum_tokens: int = 1024,
+    padding_multiple: int | None = None,
     maximum_positive_pairs_per_complex: int = 102,
     maximum_sampled_pairs_per_complex: int = 512,
     maximum_negative_to_positive_ratio: int = 4,
 ) -> StageA1Microbatch:
     if len(records) < 2 or maximum_tokens < 20:
         raise ValueError("Stage-A1 microbatch shape is invalid")
-    batch_size = len(records)
-    tokens = torch.full(
-        (batch_size, maximum_tokens), TOKEN_INDEX["<pad>"], dtype=torch.long
-    )
-    chain_ids = torch.full((batch_size, maximum_tokens), -1, dtype=torch.long)
-    labels = torch.full((batch_size, maximum_tokens), -100, dtype=torch.long)
-    retrieval_indices: list[int] = []
-    contact_batch: list[int] = []
-    contact_left: list[int] = []
-    contact_right: list[int] = []
-    contact_labels: list[int] = []
-    retrieval_records: list[dict[str, Any]] = []
-    residue_count = 0
+    if padding_multiple is not None and (
+        isinstance(padding_multiple, bool)
+        or not isinstance(padding_multiple, int)
+        or padding_multiple < 1
+        or padding_multiple > maximum_tokens
+    ):
+        raise ValueError("Stage-A1 padding multiple is invalid")
 
-    for batch_index, record in enumerate(records):
+    prepared_records: list[tuple[dict[str, Any], str, str]] = []
+    maximum_observed_tokens = 0
+    for record in records:
         left = str(record["sequence1"])
         right = str(record["sequence2"])
         contact_supervision = bool(record["contact_supervision"])
@@ -224,6 +221,35 @@ def build_stage_a1_microbatch(
                 maximum_residues=maximum_tokens - 4,
                 seed=_seed(seed, record["example_id"], "crop"),
             )
+        maximum_observed_tokens = max(
+            maximum_observed_tokens, len(left) + len(right) + 4
+        )
+        prepared_records.append((record, left, right))
+
+    padded_tokens = maximum_tokens
+    if padding_multiple is not None:
+        padded_tokens = min(
+            maximum_tokens,
+            math.ceil(maximum_observed_tokens / padding_multiple) * padding_multiple,
+        )
+        if padded_tokens < maximum_observed_tokens:
+            raise ValueError("Stage-A1 dynamic padding exceeds the token budget")
+    batch_size = len(records)
+    tokens = torch.full(
+        (batch_size, padded_tokens), TOKEN_INDEX["<pad>"], dtype=torch.long
+    )
+    chain_ids = torch.full((batch_size, padded_tokens), -1, dtype=torch.long)
+    labels = torch.full((batch_size, padded_tokens), -100, dtype=torch.long)
+    retrieval_indices: list[int] = []
+    contact_batch: list[int] = []
+    contact_left: list[int] = []
+    contact_right: list[int] = []
+    contact_labels: list[int] = []
+    retrieval_records: list[dict[str, Any]] = []
+    residue_count = 0
+
+    for batch_index, (record, left, right) in enumerate(prepared_records):
+        contact_supervision = bool(record["contact_supervision"])
         first = [TOKEN_INDEX["<cls>"], *_tokenize(left), TOKEN_INDEX["<eos>"]]
         second = [TOKEN_INDEX["<cls>"], *_tokenize(right), TOKEN_INDEX["<eos>"]]
         combined = first + second

@@ -62,15 +62,21 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
+    "abpairfm_stage_a1_efficiency_gate_v7",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
+    "abpairfm_stage_a1_efficiency_gate_v7",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
     "abpairfm_stage_a1_multitask_pilot_v6",
+    "abpairfm_stage_a1_efficiency_gate_v7",
+}
+ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_efficiency_gate_v7",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -127,6 +133,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--shard-group-size", type=int, default=4)
     parser.add_argument("--maximum-tokens", type=int, default=1024)
     parser.add_argument("--progress-interval", type=int, default=10)
+    parser.add_argument("--efficiency-microbatch-pairs-per-rank", type=int)
     return parser.parse_args()
 
 
@@ -151,8 +158,26 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     systems = protocol.get("systems", {})
     optimization = protocol.get("optimization", {})
     format_version = protocol.get("format_version")
-    expected_updates = (
-        10 if format_version in SPLIT_VIEW_PROTOCOL_FORMATS else 200
+    expected_updates = 10 if format_version in SPLIT_VIEW_PROTOCOL_FORMATS else 200
+    alternating_efficiency = format_version in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS
+    selected_efficiency_microbatch = getattr(
+        arguments, "efficiency_microbatch_pairs_per_rank", None
+    )
+    valid_shape = (
+        optimization.get("updates") == expected_updates
+        and (
+            (
+                optimization.get("microbatch_pairs_per_rank_candidates")
+                == [64, 96, 128]
+                and selected_efficiency_microbatch in {64, 96, 128}
+                and optimization.get("accumulation_steps") == 1
+            )
+            if alternating_efficiency
+            else (
+                optimization.get("microbatch_pairs_per_rank") in {6, 7}
+                and optimization.get("accumulation_steps") == 2
+            )
+        )
     )
     if (
         format_version not in EXPECTED_PROTOCOL_FORMATS
@@ -163,13 +188,11 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         or protocol.get("test_access") is not False
         or systems.get("partition") != "gpu_4090"
         or systems.get("world_size") != arguments.expected_world_size
-        or optimization.get("updates") != expected_updates
-        or optimization.get("microbatch_pairs_per_rank") not in {6, 7}
-        or optimization.get("accumulation_steps") != 2
+        or not valid_shape
     ):
         raise RuntimeError("Stage-A1 pilot authorization or shape differs")
     if format_version in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS and (
-        optimization.get("microbatch_pairs_per_rank") != 6
+        (not alternating_efficiency and optimization.get("microbatch_pairs_per_rank") != 6)
         or protocol.get("loss", {}).get("retrieval", {}).get("candidate_scope")
         != "same_node_all_ranks"
         or protocol.get("pilot_manifest", {}).get("string_retrieval_supervision")
@@ -190,6 +213,19 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         != "PASS_TRAIN_ONLY_MATERIALIZATION"
     ):
         raise RuntimeError("Stage-A1 v5 representation-view gate differs")
+    if alternating_efficiency and (
+        protocol.get("efficiency_gate_only") is not True
+        or protocol.get("systems_gate_only") is not True
+        or protocol.get("efficiency", {}).get("padding_multiple") != 64
+        or protocol.get("efficiency", {}).get("maximum_combined_tokens") != 64
+        or protocol.get("efficiency", {}).get("expected_bucket_records") != 10380
+        or protocol.get("efficiency", {}).get("parameter_count") != 2839005633
+        or protocol.get("efficiency", {}).get("gpu_peak_bfloat16_flops")
+        != 82580000000000
+        or protocol.get("efficiency", {}).get("phase_schedule")
+        != "alternating_joint_and_retrieval_single_backbone_pass"
+    ):
+        raise RuntimeError("Stage-A1 v7 efficiency gate differs")
     if format_version in SPLIT_VIEW_PROTOCOL_FORMATS:
         gate = protocol["counterfactual_gate"]
         receipt_path = Path(str(gate.get("receipt_path", "")))
@@ -209,7 +245,10 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
             != gate.get("mapping_sha256")
         ):
             raise RuntimeError("Stage-A1 v5 counterfactual receipt differs")
-    if format_version == "abpairfm_stage_a1_multitask_pilot_v6" and (
+    if format_version in {
+        "abpairfm_stage_a1_multitask_pilot_v6",
+        "abpairfm_stage_a1_efficiency_gate_v7",
+    } and (
         len(protocol.get("pilot_manifest", {}).get("source_protocol_sha256", ""))
         != 64
         or len(protocol.get("pilot_manifest", {}).get("manifest_sha256", ""))
@@ -234,7 +273,10 @@ def _load_manifest(
     receipt = json.loads(arguments.manifest_receipt.read_text(encoding="utf-8"))
     manifest_sha256 = _sha256(arguments.manifest)
     receipt_sha256 = _sha256(arguments.manifest_receipt)
-    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v6" and (
+    if protocol.get("format_version") in {
+        "abpairfm_stage_a1_multitask_pilot_v6",
+        "abpairfm_stage_a1_efficiency_gate_v7",
+    } and (
         manifest_sha256 != protocol["pilot_manifest"]["manifest_sha256"]
         or receipt_sha256 != protocol["pilot_manifest"]["receipt_sha256"]
     ):
@@ -289,6 +331,49 @@ def _load_manifest(
     if len(records) != protocol["pilot_manifest"]["total_records"]:
         raise RuntimeError("Stage-A1 manifest count differs")
     return records, manifest_sha256, receipt_sha256
+
+
+def _efficiency_bucket_records(
+    records: list[dict[str, Any]],
+    protocol: Mapping[str, Any],
+    *,
+    microbatch_pairs_per_rank: int,
+) -> list[dict[str, Any]]:
+    """Select one immutable short-structure bucket for comparable MFU trials."""
+
+    if protocol.get("format_version") not in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS:
+        return records
+    efficiency = protocol["efficiency"]
+    maximum_combined_tokens = int(efficiency["maximum_combined_tokens"])
+    selected = [
+        record
+        for record in records
+        if record.get("source") == "ppiref50k"
+        and record.get("contact_supervision") is True
+        and record.get("retrieval_supervision") is True
+        and len(str(record["sequence1"]))
+        + len(str(record["sequence2"]))
+        + 4
+        <= maximum_combined_tokens
+    ]
+    if len(selected) != efficiency["expected_bucket_records"]:
+        raise RuntimeError("Stage-A1 efficiency bucket count differs")
+    selected.sort(
+        key=lambda record: hashlib.sha256(
+            (
+                f"{efficiency['selection_seed']}\0"
+                f"{record['pilot_record_index']}\0{record['example_id']}"
+            ).encode("utf-8")
+        ).digest()
+    )
+    required = (
+        protocol["optimization"]["updates"]
+        * protocol["systems"]["world_size"]
+        * microbatch_pairs_per_rank
+    )
+    if len(selected) < required:
+        raise RuntimeError("Stage-A1 efficiency bucket is too small for the frozen trial")
+    return selected
 
 
 def _verify_input_dcp_collectively(
@@ -476,10 +561,20 @@ def _publish_rank_phase(
     )
 
 
-def _sync_replicated_head_gradients(heads: StageA1Heads, world_size: int) -> None:
-    for parameter in heads.parameters():
+def _sync_replicated_head_gradients(
+    heads: StageA1Heads,
+    world_size: int,
+    *,
+    required_prefixes: tuple[str, ...] | None = None,
+) -> None:
+    for name, parameter in heads.named_parameters():
+        required = required_prefixes is None or name.startswith(required_prefixes)
         if parameter.grad is None:
-            raise RuntimeError("Stage-A1 head parameter did not receive a gradient")
+            if required:
+                raise RuntimeError(
+                    f"Stage-A1 required head parameter did not receive a gradient: {name}"
+                )
+            continue
         torch.distributed.all_reduce(parameter.grad)
         parameter.grad.div_(world_size)
 
@@ -517,6 +612,20 @@ def main() -> None:
         raise RuntimeError("Reviewed Stage-A1 source SHA-256 differs")
     records, manifest_sha256, manifest_receipt_sha256 = _load_manifest(
         arguments, protocol
+    )
+    alternating_efficiency = (
+        protocol.get("format_version") in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS
+    )
+    microbatch_pairs_per_rank = (
+        arguments.efficiency_microbatch_pairs_per_rank
+        if alternating_efficiency
+        else protocol["optimization"]["microbatch_pairs_per_rank"]
+    )
+    assert microbatch_pairs_per_rank is not None
+    records = _efficiency_bucket_records(
+        records,
+        protocol,
+        microbatch_pairs_per_rank=microbatch_pairs_per_rank,
     )
 
     local_rank = int(os.environ["LOCAL_RANK"])
@@ -617,21 +726,28 @@ def main() -> None:
             )
             torch.cuda.synchronize(device)
             started = time.perf_counter()
-            totals = torch.zeros(8, device=device, dtype=torch.float64)
+            totals = torch.zeros(9, device=device, dtype=torch.float64)
             minimum_allowed_candidates = torch.tensor(
                 float("inf"), device=device, dtype=torch.float64
             )
+            active_phase = (
+                "joint" if alternating_efficiency and update % 2 == 0 else "retrieval"
+            )
+            active_head_prefixes: tuple[str, ...] | None = None
             for accumulation in range(optimization["accumulation_steps"]):
                 microstep = update * optimization["accumulation_steps"] + accumulation
                 start = (
                     microstep * world_size + rank
-                ) * optimization["microbatch_pairs_per_rank"]
+                ) * microbatch_pairs_per_rank
                 cpu_batch = build_stage_a1_microbatch(
-                    records[
-                        start : start + optimization["microbatch_pairs_per_rank"]
-                    ],
+                    records[start : start + microbatch_pairs_per_rank],
                     seed=1701 + microstep * world_size + rank,
                     maximum_tokens=arguments.maximum_tokens,
+                    padding_multiple=(
+                        protocol.get("efficiency", {}).get("padding_multiple")
+                        if alternating_efficiency
+                        else None
+                    ),
                     maximum_positive_pairs_per_complex=protocol["loss"]["contact"][
                         "maximum_positive_pairs_per_complex"
                     ],
@@ -658,6 +774,7 @@ def main() -> None:
                 if (
                     protocol["loss"]["retrieval"].get("candidate_scope")
                     == "same_node_all_ranks"
+                    and (not alternating_efficiency or active_phase == "retrieval")
                 ):
                     retrieval_allowed, retrieval_target_indices = (
                         _global_retrieval_mask(
@@ -666,7 +783,125 @@ def main() -> None:
                             world_size=world_size,
                         )
                     )
-                if independent_retrieval_view:
+                if alternating_efficiency:
+                    backbone.set_requires_gradient_sync(synchronize)
+                    backbone.set_is_last_backward(synchronize)
+                    if active_phase == "joint":
+                        with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
+                            device_type="cuda", dtype=torch.bfloat16
+                        ):
+                            output = backbone(
+                                batch.tokens,
+                                batch.chain_ids,
+                                labels=batch.labels,
+                                return_hidden_states=True,
+                            )
+                            if (
+                                output.balanced_chain_loss_sum is None
+                                or output.hidden_states is None
+                            ):
+                                raise RuntimeError(
+                                    "Stage-A1 efficiency joint view is incomplete"
+                                )
+                            mlm_loss = (
+                                output.balanced_chain_loss_sum
+                                / output.contributing_chain_count
+                            )
+                            contact_loss, contact_count, contact_positive_count = (
+                                heads.contact_loss(
+                                    hidden=output.hidden_states,
+                                    pair_batch_indices=batch.contact_batch_indices,
+                                    pair_left_token_indices=(
+                                        batch.contact_left_token_indices
+                                    ),
+                                    pair_right_token_indices=(
+                                        batch.contact_right_token_indices
+                                    ),
+                                    pair_labels=batch.contact_labels,
+                                )
+                            )
+                            joint_loss = (
+                                protocol["loss"]["masked_language_modeling"]["weight"]
+                                * mlm_loss
+                                + protocol["loss"]["contact"]["weight"]
+                                * contact_loss
+                            )
+                        if not bool(torch.isfinite(joint_loss)):
+                            raise RuntimeError("Stage-A1 efficiency joint loss is nonfinite")
+                        joint_loss.backward()
+                        zero = joint_loss.detach().new_zeros(())
+                        multitask = StageA1Loss(
+                            total=joint_loss,
+                            mlm=mlm_loss,
+                            retrieval=zero,
+                            contact=contact_loss,
+                            retrieval_accuracy_left_to_right=zero,
+                            retrieval_accuracy_right_to_left=zero,
+                            contact_count=contact_count,
+                            contact_positive_count=contact_positive_count,
+                        )
+                        active_head_prefixes = ("contact_",)
+                    else:
+                        with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
+                            device_type="cuda", dtype=torch.bfloat16
+                        ):
+                            retrieval_output = backbone(
+                                batch.tokens[retrieval_indices],
+                                retrieval_chain_ids,
+                                allow_cross_chain_attention=False,
+                                return_hidden_states=True,
+                                compute_logits=False,
+                            )
+                            if retrieval_output.hidden_states is None:
+                                raise RuntimeError(
+                                    "Stage-A1 efficiency retrieval view is incomplete"
+                                )
+                            (
+                                retrieval_candidate_left,
+                                retrieval_candidate_right,
+                            ) = _global_retrieval_candidates(
+                                heads,
+                                retrieval_output.hidden_states,
+                                retrieval_chain_ids,
+                            )
+                            (
+                                retrieval_loss,
+                                retrieval_accuracy_left_to_right,
+                                retrieval_accuracy_right_to_left,
+                            ) = heads.retrieval_loss(
+                                hidden=retrieval_output.hidden_states,
+                                chain_ids=retrieval_chain_ids,
+                                retrieval_allowed=retrieval_allowed,
+                                retrieval_candidate_left=retrieval_candidate_left,
+                                retrieval_candidate_right=retrieval_candidate_right,
+                                retrieval_target_indices=retrieval_target_indices,
+                            )
+                            retrieval_total = (
+                                protocol["loss"]["retrieval"]["weight"]
+                                * retrieval_loss
+                            )
+                        if not bool(torch.isfinite(retrieval_total)):
+                            raise RuntimeError(
+                                "Stage-A1 efficiency retrieval loss is nonfinite"
+                            )
+                        retrieval_total.backward()
+                        zero = retrieval_loss.detach().new_zeros(())
+                        multitask = StageA1Loss(
+                            total=retrieval_total,
+                            mlm=zero,
+                            retrieval=retrieval_loss,
+                            contact=zero,
+                            retrieval_accuracy_left_to_right=(
+                                retrieval_accuracy_left_to_right
+                            ),
+                            retrieval_accuracy_right_to_left=(
+                                retrieval_accuracy_right_to_left
+                            ),
+                            contact_count=0,
+                            contact_positive_count=0,
+                        )
+                        active_head_prefixes = ("retrieval_",)
+                elif independent_retrieval_view:
                     backbone.set_requires_gradient_sync(False)
                     backbone.set_is_last_backward(False)
                     with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
@@ -895,11 +1130,16 @@ def main() -> None:
                         float(multitask.retrieval_accuracy_right_to_left.detach()),
                         float(batch.residue_count),
                         float(retrieval_allowed.shape[1]),
+                        float(batch.tokens.numel()),
                     ],
                     device=device,
                     dtype=torch.float64,
                 )
-            _sync_replicated_head_gradients(heads, world_size)
+            _sync_replicated_head_gradients(
+                heads,
+                world_size,
+                required_prefixes=active_head_prefixes,
+            )
             _publish_rank_phase(
                 phase_root,
                 rank=rank,
@@ -926,11 +1166,27 @@ def main() -> None:
             totals[7] /= world_size * optimization["accumulation_steps"]
             torch.cuda.synchronize(device)
             elapsed = time.perf_counter() - started
+            approximate_useful_token_mfu = None
+            if alternating_efficiency:
+                approximate_useful_token_mfu = (
+                    6.0
+                    * protocol["efficiency"]["parameter_count"]
+                    * float(totals[6])
+                    / elapsed
+                    / (
+                        world_size
+                        * protocol["efficiency"]["gpu_peak_bfloat16_flops"]
+                    )
+                )
             record = {
+                "active_phase": active_phase if alternating_efficiency else "multitask",
+                "approximate_useful_token_6n_mfu": approximate_useful_token_mfu,
                 "contact_loss": float(totals[3]),
                 "elapsed_seconds": elapsed,
                 "gradient_norm": gradient_norm,
                 "mlm_loss": float(totals[1]),
+                "packing_efficiency": float(totals[6] / totals[8]),
+                "padded_tokens": float(totals[8]),
                 "minimum_allowed_candidates_per_query": float(
                     minimum_allowed_candidates
                 ),
@@ -1013,6 +1269,8 @@ def main() -> None:
             status = "FAIL_STAGE_A1_MULTITASK_PILOT_MEMORY_GATE"
         elif candidate_floor < required_candidate_floor:
             status = "FAIL_STAGE_A1_RETRIEVAL_CANDIDATE_GATE"
+        elif protocol.get("format_version") in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS:
+            status = "PASS_STAGE_A1_EFFICIENCY_GATE_CHECKPOINT_VERIFIED"
         elif protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS:
             status = "PASS_STAGE_A1_GLOBAL_RETRIEVAL_PILOT_CHECKPOINT_VERIFIED"
         else:
@@ -1051,7 +1309,7 @@ def main() -> None:
                         optimization["updates"]
                         * optimization["accumulation_steps"]
                         * world_size
-                        * optimization["microbatch_pairs_per_rank"]
+                        * microbatch_pairs_per_rank
                     ),
                     "receipt_sha256": manifest_receipt_sha256,
                     "sha256": manifest_sha256,
@@ -1063,7 +1321,10 @@ def main() -> None:
                         "maximum_peak_memory_fraction"
                     ],
                 },
-                "optimization": optimization,
+                "optimization": {
+                    **optimization,
+                    "selected_microbatch_pairs_per_rank": microbatch_pairs_per_rank,
+                },
                 "ranks": ranks,
                 "retrieval": {
                     "candidate_scope": protocol["loss"]["retrieval"].get(
@@ -1096,9 +1357,33 @@ def main() -> None:
                 "status": status,
                 "test_access": False,
                 "throughput": {
+                    "approximate_useful_token_6n_mfu_mean": (
+                        statistics.mean(
+                            record["approximate_useful_token_6n_mfu"]
+                            for record in update_records
+                            if record["approximate_useful_token_6n_mfu"] is not None
+                        )
+                        if alternating_efficiency
+                        else None
+                    ),
+                    "approximate_useful_token_6n_mfu_by_phase": (
+                        {
+                            phase: statistics.mean(
+                                record["approximate_useful_token_6n_mfu"]
+                                for record in update_records
+                                if record["active_phase"] == phase
+                            )
+                            for phase in ("joint", "retrieval")
+                        }
+                        if alternating_efficiency
+                        else None
+                    ),
                     "mean_residue_tokens_per_second": statistics.mean(
                         record["residue_tokens"] / record["elapsed_seconds"]
                         for record in update_records
+                    ),
+                    "mean_packing_efficiency": statistics.mean(
+                        record["packing_efficiency"] for record in update_records
                     ),
                     "pilot_residue_tokens": sum(
                         record["residue_tokens"] for record in update_records

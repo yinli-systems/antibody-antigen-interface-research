@@ -55,3 +55,36 @@ def test_stage_a1_masks_shared_source_cluster_false_negatives() -> None:
     assert not bool(batch.retrieval_allowed[0, 1])
     assert not bool(batch.retrieval_allowed[1, 0])
     assert bool(torch.diagonal(batch.retrieval_allowed).all())
+
+
+def test_stage_a1_dynamic_padding_uses_requested_multiple() -> None:
+    records = [_record(index) for index in range(4)]
+    batch = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=1024,
+        padding_multiple=64,
+    )
+    assert batch.tokens.shape == (4, 64)
+    assert batch.chain_ids.shape == batch.tokens.shape
+    assert batch.labels.shape == batch.tokens.shape
+    assert batch.residue_count == 4 * 18
+
+
+def test_stage_a1_dynamic_padding_rounds_up_and_preserves_legacy_shape() -> None:
+    records = [_record(index) for index in range(4)]
+    records[0]["sequence1"] = "A" * 60
+    records[0]["sequence2"] = "C" * 20
+    dynamic = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=1024,
+        padding_multiple=64,
+    )
+    legacy = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=1024,
+    )
+    assert dynamic.tokens.shape == (4, 128)
+    assert legacy.tokens.shape == (4, 1024)
