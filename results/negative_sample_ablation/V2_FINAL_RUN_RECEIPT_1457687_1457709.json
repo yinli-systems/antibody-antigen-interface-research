@@ -1,0 +1,9 @@
+{
+  "audit_sha256": "8a5d7570edd8b5f39fb830f8007fedf6c1b2a96ab77b11c91e47fc63663137a2",
+  "curve_csv_sha256": "6179a30e1ad8e3d6b3af1914473ab16a66ca12fd67de7bdea6bfb5d81cc17054",
+  "curve_svg_sha256": "431a146c67855819e39a86960636bc94a477591748e385a9e7b2e587584cd146",
+  "external_test_loaded": false,
+  "format_version": "framecontact_partner_negative_ablation_receipt_v2",
+  "report_sha256": "65c70e2fb4cb53cde7768d4813872c1fcdeeb3372e142316cc293ed86b89c716",
+  "test_loaded": false
+}

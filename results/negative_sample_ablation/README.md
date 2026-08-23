@@ -1,9 +1,10 @@
-# Partner-negative ablation — raw-Brier v2 running
+# Partner-negative ablation — raw-Brier v2 development analysis complete
 
-Status at `2026-08-21T21:27:39+08:00`: the paired v2 study is running on
-twenty `gpu_4090` cards. Job `1457687` tasks 0–9 cover both AsEP arms;
-job `1457709` tasks 10–19 cover both SAbDab2 arms. Each dataset and arm uses
-seeds 17, 42, 73, 101, and 137. No final comparison is reported yet.
+Status at `2026-08-23T16:20+08:00`: all twenty paired v2 development runs are
+final. Job `1457687` tasks 0–9 cover both AsEP arms; job `1457709` tasks 10–19
+cover both SAbDab2 arms. Each dataset and arm uses seeds 17, 42, 73, 101, and
+137. The frozen analyzer completed atomically with test and external-test roles
+sealed.
 
 All ten AsEP tasks have written epoch 9 or 10 with the required raw-Brier field and
 zero stderr. The authenticated launch snapshot is
@@ -14,13 +15,35 @@ stderr. The complete 20-task instrumentation snapshot is
 [`V2_INSTRUMENTATION_SNAPSHOT_1457687_1457709.json`](V2_INSTRUMENTATION_SNAPSHOT_1457687_1457709.json)
 (SHA-256 `f41d2dd19a7a5ed8d68cd169a828cfef01509e3691a5061ea4376cadfea899bc`).
 
-`audit_negative_sample_ablation_progress.py` now checks every task directly
+`audit_negative_sample_ablation_progress.py` checks every task directly
 from its JSONL log, rejects a supposedly raw metric unless temperature is 1,
 threshold is 0.5, calibration source is `none`, and Brier is finite in [0, 1],
-and reports stderr/final-result presence. Its live status is now
-`RUNNING_INSTRUMENTED`: AsEP and SAbDab2 are each 10/10 instrumented, all
-stderr files are empty, and test access is false. The script deliberately does
-not compare arm means from unmatched latest epochs.
+and reports stderr/final-result presence. Its terminal status was
+`READY_FOR_FROZEN_ANALYZER`: AsEP and SAbDab2 were each 10/10 final and
+instrumented, all stderr files were empty, and test access was false. The
+script deliberately does not compare arm means from unmatched latest epochs.
+
+## Frozen development result
+
+The final report, loss curves, and receipt are:
+
+- [`V2_FINAL_REPORT_1457687_1457709.md`](V2_FINAL_REPORT_1457687_1457709.md)
+- [`V2_FINAL_LOSS_CURVES_1457687_1457709.svg`](V2_FINAL_LOSS_CURVES_1457687_1457709.svg)
+- [`V2_FINAL_RUN_RECEIPT_1457687_1457709.json`](V2_FINAL_RUN_RECEIPT_1457687_1457709.json)
+
+No selected validation delta has a paired-seed 95% interval excluding zero.
+Under the frozen `K=1`, specificity-weight `0.25` setting, the negative arm
+therefore has no statistically supported validation gain over the no-negative
+arm.
+
+On the common five-seed curve window, both arms optimize stably. No-negative is
+slightly lower on AsEP shared train loss and raw validation Brier at epoch 21;
+on SAbDab2 it is more clearly lower at epoch 23 (shared objective `0.07265` vs
+`0.09392`; raw Brier `0.01641` vs `0.02897`). Final checkpoint-selected point
+estimates are noisier: AsEP no-negative contact AUPRC is `0.07241` vs
+`0.04310`; SAbDab2 no-negative contact AUPRC is `0.01291` vs `0.01156`, while
+with-negative has lower mean raw Brier (`0.03021` vs `0.03412`). All of these
+paired intervals cross zero, so they are trends rather than promotion claims.
 
 ## Why v1 was stopped
 
@@ -66,6 +89,6 @@ new manifest was generated for the copied immutable closure and only SAbDab2
 was resubmitted. Evidence is retained in
 [`V2_SABDAB_SOURCE_MANIFEST_FAILURE_RECEIPT_1457687.json`](V2_SABDAB_SOURCE_MANIFEST_FAILURE_RECEIPT_1457687.json).
 
-Test and external-test roles remain sealed. They may be opened only after all
-twenty development runs finish, the analyzer emits a verified receipt, and the
-development comparison is reported and accepted for progression.
+Test and external-test roles remain sealed. The twenty development runs and
+verified analyzer receipt are complete; opening test still requires the
+development comparison to be reported and explicitly accepted for progression.
