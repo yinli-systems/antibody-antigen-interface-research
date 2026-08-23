@@ -86,6 +86,7 @@ def main() -> None:
     environment = os.environ.copy()
     environment.update(
         {
+            "ABPAIRFM_PROBE_PROJECT": str(arguments.project_root),
             "ABPAIRFM_PROBE_MODEL_VARIANT": "stage_a0_3b",
             "ABPAIRFM_PROBE_OUTPUT_ROOT": str(output_root),
             "ABPAIRFM_PROBE_PROTOCOL_SHA256": arguments.expected_protocol_sha256,
