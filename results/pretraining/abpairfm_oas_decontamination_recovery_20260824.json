@@ -1,0 +1,55 @@
+{
+  "authorization": {
+    "scale_restricted_stage_b_training": true,
+    "test_access": false
+  },
+  "claim_boundary": "Infrastructure and throughput recovery evidence only. No decontaminated corpus is accepted until the replacement output and immutable receipt pass.",
+  "format_version": "abpairfm_oas_stage_b_decontamination_recovery_v1",
+  "incidents": [
+    {
+      "action": "cancelled_after_reversed-search replacement was preflighted",
+      "classification": "INEFFICIENT_SEARCH_ORIENTATION_GPU_IDLE",
+      "elapsed": "00:35:19",
+      "job_id": "1462884",
+      "observed_gpu_utilization_percent": 0,
+      "output_artifacts_created": false,
+      "stderr": {
+        "bytes": 88,
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-oas-stageb-decontam-1462884.err",
+        "sha256": "97d374d6c9a35d3cba888767dc952485208dd20d40fae530bc11a057a6bf491d"
+      },
+      "stdout": {
+        "bytes": 10612,
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-oas-stageb-decontam-1462884.out",
+        "sha256": "86357780970cc399d8115e1e434d39823e5ec03d3451140d5398af481e390211"
+      }
+    },
+    {
+      "classification": "BUNDLED_MMSEQS_COMPILED_WITHOUT_CUDA",
+      "elapsed": "00:00:56",
+      "exit_code": "1:0",
+      "job_id": "1462939",
+      "output_artifacts_created": false,
+      "state": "FAILED",
+      "stderr": {
+        "bytes": 42,
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-oas-stageb-decontam-v2-1462939.err",
+        "sha256": "856486c885066f31d4d347a09c3512af5e43d744e17e599cb2372f46542b39b6"
+      },
+      "stdout": {
+        "bytes": 8833,
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-oas-stageb-decontam-v2-1462939.out",
+        "sha256": "9d381679ad4a08998129d566acdbbfd9c62ef244ad848917b99b0f6256bae004"
+      }
+    }
+  ],
+  "replacement": {
+    "commit": "54a186f",
+    "job_id": "1462950",
+    "maximum_target_candidates": 64,
+    "search_orientation": "oas_query_development_target",
+    "status": "RUNNING"
+  },
+  "status": "RECOVERY_RUNNING",
+  "test_access": false
+}
