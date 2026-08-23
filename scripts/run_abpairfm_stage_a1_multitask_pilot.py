@@ -442,6 +442,15 @@ def _stage_a1_backbone_views(
     return output, joint_hidden, retrieval_hidden, retrieval_chain_ids
 
 
+def _update_minimum_allowed_candidates(
+    current: torch.Tensor, allowed: torch.Tensor
+) -> torch.Tensor:
+    if current.ndim != 0 or allowed.ndim != 2 or allowed.dtype is not torch.bool:
+        raise ValueError("Stage-A1 candidate minimum inputs are malformed")
+    observed = allowed.sum(dim=1).min().to(device=current.device, dtype=current.dtype)
+    return torch.minimum(current, observed)
+
+
 def _sync_replicated_head_gradients(heads: StageA1Heads, world_size: int) -> None:
     for parameter in heads.parameters():
         if parameter.grad is None:
@@ -653,8 +662,9 @@ def main() -> None:
                         contact_weight=protocol["loss"]["contact"]["weight"],
                     )
                     loss = multitask.total / optimization["accumulation_steps"]
-                minimum_allowed_candidates.minimum_(
-                    retrieval_allowed.sum(dim=1).min().to(dtype=torch.float64)
+                minimum_allowed_candidates = _update_minimum_allowed_candidates(
+                    minimum_allowed_candidates,
+                    retrieval_allowed,
                 )
                 if not bool(torch.isfinite(loss)):
                     raise RuntimeError("Stage-A1 multitask loss is nonfinite")
