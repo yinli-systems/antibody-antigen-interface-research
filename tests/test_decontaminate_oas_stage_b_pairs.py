@@ -109,3 +109,18 @@ def test_gpu_sbatch_reverses_search_and_uses_padded_target() -> None:
     assert 'search "${WORK}/oas_db" "${WORK}/development_db_padded"' in text
     assert "--gpu 1" in text
     assert "--oas-column query" in text
+
+
+def test_cpu_fallback_keeps_reversed_search_without_gpu_flag() -> None:
+    path = (
+        module.Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "decontaminate_oas_stage_b_pairs_reversed_v3.sbatch"
+    )
+    text = path.read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in text
+    assert "hp_4090" not in text
+    assert 'search "${WORK}/oas_db" "${WORK}/development_db"' in text
+    assert "--max-seqs \"${MAXIMUM_TARGET_CANDIDATES}\"" in text
+    assert "--gpu 1" not in text
+    assert "--oas-column query" in text
