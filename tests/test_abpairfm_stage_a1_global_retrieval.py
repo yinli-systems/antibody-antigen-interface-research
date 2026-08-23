@@ -324,6 +324,21 @@ def test_v7_protocol_freezes_alternating_dynamic_padding_efficiency_gate(
     arguments.expected_protocol_sha256 = runner._sha256(path)
     assert runner._load_protocol(arguments)["format_version"].endswith("_v10")
 
+    protocol["format_version"] = (
+        "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11"
+    )
+    for field in (
+        "length_bucket_block_microbatches",
+        "ppiref_records_per_group",
+        "string_records_per_group",
+    ):
+        protocol["efficiency"].pop(field)
+    protocol["efficiency"]["expected_structural_records"] = 16000
+    protocol["efficiency"]["length_bucket_block_records"] = 128
+    path.write_text(json.dumps(protocol), encoding="utf-8")
+    arguments.expected_protocol_sha256 = runner._sha256(path)
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v11")
+
 
 def test_efficiency_bucket_is_deterministic_and_checks_capacity() -> None:
     records = []
@@ -396,3 +411,39 @@ def test_length_bucket_preserves_membership_and_five_to_one_source_ratio() -> No
         sources = [record["source"] for record in ordered[start : start + 6]]
         assert sources.count("ppiref50k") == 5
         assert sources.count("string_v12_physical") == 1
+
+
+def test_structural_bucket_excludes_sequence_only_padding() -> None:
+    records = []
+    for index in range(12):
+        record = _record(index)
+        record["example_id"] = f"record-{index}"
+        record["pilot_record_index"] = index
+        record["sequence1"] = "A" * (10 + index)
+        record["sequence2"] = "C" * (12 + index)
+        if index in {5, 11}:
+            record["source"] = "string_v12_physical"
+            record["contact_supervision"] = False
+            record["retrieval_supervision"] = False
+        else:
+            record["source"] = "ppiref50k"
+        records.append(record)
+    protocol = {
+        "efficiency": {
+            "expected_source_records": 12,
+            "expected_structural_records": 10,
+            "length_bucket_block_records": 4,
+            "selection_seed": 1701,
+        },
+        "format_version": "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+        "optimization": {"updates": 1},
+        "systems": {"world_size": 1},
+    }
+    ordered = runner._efficiency_bucket_records(
+        records, protocol, microbatch_pairs_per_rank=6
+    )
+    assert len(ordered) == 10
+    assert all(record["source"] == "ppiref50k" for record in ordered)
+    assert {record["pilot_record_index"] for record in ordered} == (
+        set(range(12)) - {5, 11}
+    )
