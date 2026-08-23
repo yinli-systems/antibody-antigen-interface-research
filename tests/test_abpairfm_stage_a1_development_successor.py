@@ -13,6 +13,8 @@ def test_development_successor_is_fail_closed_and_test_free() -> None:
         / "continue_abpairfm_stage_a1_development_evaluation.sbatch"
     ).read_text(encoding="utf-8")
     assert "#SBATCH -p gpu_4090" in text
+    assert "#SBATCH --gres=gpu:1" in text
+    assert "NVIDIA GeForce RTX 4090" in text
     assert "hp_4090" not in text
     assert "#SBATCH --mem" not in text
     assert "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10" in text
