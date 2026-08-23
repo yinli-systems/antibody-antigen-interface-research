@@ -58,10 +58,16 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v3",
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
+    "abpairfm_stage_a1_multitask_pilot_v6",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
+    "abpairfm_stage_a1_multitask_pilot_v6",
+}
+SPLIT_VIEW_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_multitask_pilot_v5",
+    "abpairfm_stage_a1_multitask_pilot_v6",
 }
 SOURCE_PATHS = (
     "scripts/run_abpairfm_stage_a1_multitask_pilot.py",
@@ -143,7 +149,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     optimization = protocol.get("optimization", {})
     format_version = protocol.get("format_version")
     expected_updates = (
-        10 if format_version == "abpairfm_stage_a1_multitask_pilot_v5" else 200
+        10 if format_version in SPLIT_VIEW_PROTOCOL_FORMATS else 200
     )
     if (
         format_version not in EXPECTED_PROTOCOL_FORMATS
@@ -167,7 +173,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         is not False
     ):
         raise RuntimeError("Stage-A1 global-retrieval gate differs")
-    if format_version == "abpairfm_stage_a1_multitask_pilot_v5" and (
+    if format_version in SPLIT_VIEW_PROTOCOL_FORMATS and (
         protocol.get("loss", {}).get("retrieval", {}).get("representation_view")
         != "chain_independent_no_cross_attention"
         or protocol.get("loss", {}).get("contact", {}).get("representation_view")
@@ -181,7 +187,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         != "PASS_TRAIN_ONLY_MATERIALIZATION"
     ):
         raise RuntimeError("Stage-A1 v5 representation-view gate differs")
-    if format_version == "abpairfm_stage_a1_multitask_pilot_v5":
+    if format_version in SPLIT_VIEW_PROTOCOL_FORMATS:
         gate = protocol["counterfactual_gate"]
         receipt_path = Path(str(gate.get("receipt_path", "")))
         if (
@@ -200,6 +206,15 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
             != gate.get("mapping_sha256")
         ):
             raise RuntimeError("Stage-A1 v5 counterfactual receipt differs")
+    if format_version == "abpairfm_stage_a1_multitask_pilot_v6" and (
+        len(protocol.get("pilot_manifest", {}).get("source_protocol_sha256", ""))
+        != 64
+        or len(protocol.get("pilot_manifest", {}).get("manifest_sha256", ""))
+        != 64
+        or len(protocol.get("pilot_manifest", {}).get("receipt_sha256", ""))
+        != 64
+    ):
+        raise RuntimeError("Stage-A1 v6 manifest anchors differ")
     if protocol["checkpoint"]["generation"] != arguments.input_generation:
         raise RuntimeError("Stage-A1 input generation differs from protocol")
     if (
@@ -216,11 +231,18 @@ def _load_manifest(
     receipt = json.loads(arguments.manifest_receipt.read_text(encoding="utf-8"))
     manifest_sha256 = _sha256(arguments.manifest)
     receipt_sha256 = _sha256(arguments.manifest_receipt)
+    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v6" and (
+        manifest_sha256 != protocol["pilot_manifest"]["manifest_sha256"]
+        or receipt_sha256 != protocol["pilot_manifest"]["receipt_sha256"]
+    ):
+        raise RuntimeError("Stage-A1 v6 manifest files differ from frozen anchors")
     if (
         receipt.get("status") != "PASS_STAGE_A1_PILOT_SOURCE_ADMISSION"
         or receipt.get("test_access") is not False
         or receipt.get("inputs", {}).get("protocol_sha256")
-        != arguments.expected_protocol_sha256
+        != protocol.get("pilot_manifest", {}).get(
+            "source_protocol_sha256", arguments.expected_protocol_sha256
+        )
         or receipt.get("output", {}).get("sha256") != manifest_sha256
         or receipt.get("counts", {}).get("records")
         != protocol["pilot_manifest"]["total_records"]
@@ -533,8 +555,7 @@ def main() -> None:
         heads.train()
         torch.cuda.reset_peak_memory_stats(device)
         independent_retrieval_view = (
-            protocol.get("format_version")
-            == "abpairfm_stage_a1_multitask_pilot_v5"
+            protocol.get("format_version") in SPLIT_VIEW_PROTOCOL_FORMATS
         )
         update_records: list[dict[str, float]] = []
         from torch.nn.attention import SDPBackend, sdpa_kernel
