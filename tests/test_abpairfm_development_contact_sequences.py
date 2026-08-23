@@ -16,6 +16,7 @@ def test_materializer_reads_only_sequence_and_identity_columns() -> None:
     assert '"contact_labels_read": False' in text
     assert '"task_labels_read": False' in text
     assert '"primary_sealed_role_ids_retained": False' in text
+    assert '"implementation_source_sha256": sha256_file(Path(__file__))' in text
     assert '"test_access": False' in text
 
 

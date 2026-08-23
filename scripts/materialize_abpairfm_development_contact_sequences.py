@@ -176,6 +176,7 @@ def main() -> None:
             "transfer_manifest_sha256": arguments.expected_transfer_manifest_sha256,
         },
         "format_version": "abpairfm_development_contact_sequence_authority_v1",
+        "implementation_source_sha256": sha256_file(Path(__file__)),
         "panel": {
             "bytes": arguments.output_jsonl.stat().st_size,
             "row_count": len(rows),
