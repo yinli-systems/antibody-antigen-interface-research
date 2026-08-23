@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "run_abpairfm_checkpoint_transfer_probe.py"
 PROTOCOL = ROOT / "protocols" / "abpairfm_checkpoint_transfer_probe_v1.json"
 SCALE_PROTOCOL = ROOT / "protocols" / "abpairfm_650m_scale_control_v1.json"
+SUBMISSION = ROOT / "scripts" / "submit_abpairfm_checkpoint_transfer_probe.sbatch"
 
 
 def _module():
@@ -37,6 +38,13 @@ def test_protocol_freezes_development_only_boundary() -> None:
     assert protocol["score"]["probability_interpretation"] is False
     assert protocol["compute"]["partition"] == "gpu_4090"
     assert protocol["compute"]["explicit_mem_argument_permitted"] is False
+
+
+def test_submission_can_bind_an_immutable_project_root() -> None:
+    submission = SUBMISSION.read_text(encoding="utf-8")
+    assert "${ABPAIRFM_PROBE_PROJECT:-" in submission
+    assert "#SBATCH -p gpu_4090" in submission
+    assert "#SBATCH --mem" not in submission
 
 
 def test_deterministic_masks_are_nonempty_and_endpoint_specific() -> None:

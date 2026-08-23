@@ -22,7 +22,7 @@ from run_abpairfm_checkpoint_transfer_probe import _source_sha256  # noqa: E402
 from run_mint_frozen_development_retrieval import sha256_file  # noqa: E402
 
 
-TARGETS = (500_000_000, 1_000_000_000)
+TARGETS = (250_000_000, 500_000_000, 1_000_000_000)
 MAXIMUM_OVERSHOOT = 20_000_000
 
 
@@ -54,10 +54,7 @@ def main() -> None:
     protocol = json.loads(arguments.protocol.read_text(encoding="utf-8"))
     if (
         protocol.get("status") != "FROZEN_BEFORE_GPU_EVALUATION"
-        or tuple(protocol["checkpoint_ladder"]["targets"]) != (
-            250_000_000,
-            *TARGETS,
-        )
+        or tuple(protocol["checkpoint_ladder"]["targets"]) != TARGETS
         or protocol["checkpoint_ladder"]["maximum_target_overshoot_residue_tokens"]
         != MAXIMUM_OVERSHOOT
         or protocol.get("test_access") is not False
