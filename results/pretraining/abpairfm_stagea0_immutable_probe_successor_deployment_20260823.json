@@ -1,0 +1,33 @@
+{
+  "authorization": {
+    "development_pair_retrieval": true,
+    "production_stage_a0_pair_mlm": true,
+    "test_access": false
+  },
+  "claim_boundary": "Scheduling-path audit only. Segment-30 remained below the 500M target, so no transfer probe was submitted in this observation.",
+  "deployment": {
+    "backup_path": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source/scripts/continue_abpairfm_3b_stage_a0.sbatch.pre-58c88f5",
+    "git_commit": "58c88f5",
+    "probe_project": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source_candidates/2205f62",
+    "target_path": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source/scripts/continue_abpairfm_3b_stage_a0.sbatch",
+    "target_sha256": "57ebbccd2924a5f2a3cedaa53ed60067c29eb3d05003787d3ee04962e02e2556"
+  },
+  "format_version": "abpairfm_stagea0_immutable_probe_successor_deployment_v1",
+  "observed_at_utc": "2026-08-23T04:17:02Z",
+  "segment_30": {
+    "checkpoint_content_sha256": "b356dbba06f3650adddb8954bc45f98e93679d99b24ba5a8997bdd5e99246837",
+    "consumed_residue_tokens": 489866290,
+    "global_update": 6200,
+    "status": "PASS_CHECKPOINT_VERIFIED"
+  },
+  "status": "PASS_IMMUTABLE_PROBE_SUCCESSOR_DEPLOYMENT",
+  "successor_execution": {
+    "exit_code": "0:0",
+    "following_manifest_job_id": 1461401,
+    "helper_status": "NO_FROZEN_TOKEN_TARGET_REACHED",
+    "job_id": 1461334,
+    "next_training_job_id": 1461400,
+    "state": "COMPLETED",
+    "watchdog_job_id": 1461402
+  }
+}
