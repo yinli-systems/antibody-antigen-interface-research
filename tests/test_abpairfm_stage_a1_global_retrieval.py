@@ -87,6 +87,23 @@ def test_candidate_minimum_uses_supported_non_inplace_torch_api() -> None:
     assert current.item() == 2.0
 
 
+def test_rank_phase_receipt_is_atomic_and_test_sealed(tmp_path) -> None:
+    runner._publish_rank_phase(
+        tmp_path,
+        rank=6,
+        update=2,
+        accumulation=1,
+        phase="forward_and_loss_complete",
+    )
+    receipt = json.loads((tmp_path / "rank-6.json").read_text(encoding="utf-8"))
+    assert receipt["format_version"] == "abpairfm_stage_a1_rank_phase_v1"
+    assert receipt["rank"] == 6
+    assert receipt["update"] == 2
+    assert receipt["accumulation"] == 1
+    assert receipt["phase"] == "forward_and_loss_complete"
+    assert receipt["test_access"] is False
+
+
 def test_runner_requests_independent_hidden_only_retrieval_view() -> None:
     batch = build_stage_a1_microbatch(
         [_record(0), _record(1)], seed=17, maximum_tokens=64
