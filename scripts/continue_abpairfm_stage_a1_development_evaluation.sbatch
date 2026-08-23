@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH -J abpairfm-a1-dev-successor
 #SBATCH -p gpu_4090
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:10:00
 #SBATCH -o /ssd/scxi253/model_deployment/results/pretraining/abpairfm-a1-dev-successor-%j.out
@@ -21,6 +22,12 @@ readonly CONTACT_PROTOCOL_SHA256=ec69f3872068b4161babf047708b2edd349005c22fec894
 readonly CONTACT_SOURCE_SHA256=03028735f9420ed9180d59e4b5dc690f918e9802c03daea87840ca1522ea5d09
 readonly RETRIEVAL_OUTPUT=/ssd/scxi253/model_deployment/results/evaluation/abpairfm_stage_a1_development_retrieval_v1
 readonly CONTACT_OUTPUT=/ssd/scxi253/model_deployment/results/evaluation/abpairfm_stage_a1_development_contact_v1
+
+mapfile -t GPU_NAMES < <(nvidia-smi --query-gpu=name --format=csv,noheader)
+if [[ "${#GPU_NAMES[@]}" -ne 1 || "${GPU_NAMES[0]}" != "NVIDIA GeForce RTX 4090" ]]; then
+  echo "Forbidden development successor GPU allocation" >&2
+  exit 2
+fi
 
 for path in \
   "${PROMOTION_RESULT}" \
