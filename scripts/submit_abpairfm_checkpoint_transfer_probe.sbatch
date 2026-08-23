@@ -10,7 +10,7 @@
 set -euo pipefail
 
 readonly PYTHON=/ssd/scxi253/model_deployment/envs/contact/bin/python3.10
-readonly PROJECT=/ssd/scxi253/model_deployment/abpairfm_3b_v1/source
+readonly PROJECT=${ABPAIRFM_PROBE_PROJECT:-/ssd/scxi253/model_deployment/abpairfm_3b_v1/source}
 readonly CHECKPOINT=${ABPAIRFM_PROBE_INITIAL_CHECKPOINT:-/ssd/scxi253/model_deployment/models/abpairfm_3b_v1/esm2_t36_3B_UR50D/esm2_t36_3B_UR50D.pt}
 readonly PANEL=/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/development_anchor/development_pairs_v1.jsonl
 readonly PANEL_RECEIPT=/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/development_anchor/development_pairs_v1.receipt.json
