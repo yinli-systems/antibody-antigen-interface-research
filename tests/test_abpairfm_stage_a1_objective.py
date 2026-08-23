@@ -194,10 +194,29 @@ def test_stage_a1_uses_separate_retrieval_and_joint_contact_views() -> None:
         **arguments,
         retrieval_hidden=independent_hidden,
     )
+    contact, contact_count, positive_count = heads.contact_loss(
+        hidden=joint_hidden,
+        pair_batch_indices=arguments["pair_batch_indices"],
+        pair_left_token_indices=arguments["pair_left_token_indices"],
+        pair_right_token_indices=arguments["pair_right_token_indices"],
+        pair_labels=arguments["pair_labels"],
+    )
+    retrieval, _, _ = heads.retrieval_loss(
+        hidden=independent_hidden,
+        chain_ids=chain_ids,
+        retrieval_allowed=arguments["retrieval_allowed"],
+    )
 
     torch.testing.assert_close(split_view.contact, joint_only.contact)
     assert not torch.allclose(split_view.retrieval, joint_only.retrieval)
-    split_view.total.backward()
+    torch.testing.assert_close(
+        split_view.total,
+        arguments["mlm_loss"] + 0.2 * retrieval + 0.5 * contact,
+    )
+    assert contact_count == 4
+    assert positive_count == 2
+    (arguments["mlm_loss"] + 0.5 * contact).backward()
+    (0.2 * retrieval).backward()
     assert joint_hidden.grad is not None and torch.isfinite(joint_hidden.grad).all()
     assert independent_hidden.grad is not None
     assert torch.isfinite(independent_hidden.grad).all()

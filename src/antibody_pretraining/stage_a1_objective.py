@@ -133,37 +133,17 @@ class StageA1Heads(nn.Module):
         right = self.contact_right(hidden[pair_batch_indices, pair_right_token_indices])
         return (left * right).sum(dim=-1) / math.sqrt(left.shape[-1]) + self.contact_bias
 
-    def loss(
+    def retrieval_loss(
         self,
         *,
         hidden: Tensor,
         chain_ids: Tensor,
-        retrieval_hidden: Tensor | None = None,
-        mlm_loss: Tensor,
         retrieval_allowed: Tensor,
-        pair_batch_indices: Tensor,
-        pair_left_token_indices: Tensor,
-        pair_right_token_indices: Tensor,
-        pair_labels: Tensor,
         retrieval_candidate_left: Tensor | None = None,
         retrieval_candidate_right: Tensor | None = None,
         retrieval_target_indices: Tensor | None = None,
-        mlm_weight: float = 1.0,
-        retrieval_weight: float = 0.2,
-        contact_weight: float = 0.5,
-    ) -> StageA1Loss:
-        weights = (mlm_weight, retrieval_weight, contact_weight)
-        if any(not math.isfinite(value) or value < 0.0 for value in weights):
-            raise ValueError("Stage-A1 loss weights must be finite and non-negative")
-        if mlm_loss.ndim != 0 or not bool(torch.isfinite(mlm_loss)):
-            raise ValueError("Stage-A1 requires one finite scalar MLM loss")
-        if retrieval_hidden is None:
-            retrieval_hidden = hidden
-        if retrieval_hidden.shape != hidden.shape:
-            raise ValueError("Retrieval and contact hidden states must have equal shapes")
-        retrieval_left, retrieval_right = self.retrieval_embeddings(
-            retrieval_hidden, chain_ids
-        )
+    ) -> tuple[Tensor, Tensor, Tensor]:
+        retrieval_left, retrieval_right = self.retrieval_embeddings(hidden, chain_ids)
         if (retrieval_candidate_left is None) != (retrieval_candidate_right is None):
             raise ValueError("Both retrieval candidate directions are required")
         if retrieval_candidate_left is None:
@@ -196,6 +176,17 @@ class StageA1Heads(nn.Module):
                 retrieval_target_indices,
             )
         )
+        return retrieval_loss, left_accuracy, right_accuracy
+
+    def contact_loss(
+        self,
+        *,
+        hidden: Tensor,
+        pair_batch_indices: Tensor,
+        pair_left_token_indices: Tensor,
+        pair_right_token_indices: Tensor,
+        pair_labels: Tensor,
+    ) -> tuple[Tensor, int, int]:
         contact_logits = self.contact_logits(
             hidden,
             pair_batch_indices,
@@ -221,6 +212,51 @@ class StageA1Heads(nn.Module):
             labels,
             pos_weight=positive_weight,
         )
+        return contact_loss, len(labels), positive_count
+
+    def loss(
+        self,
+        *,
+        hidden: Tensor,
+        chain_ids: Tensor,
+        retrieval_hidden: Tensor | None = None,
+        mlm_loss: Tensor,
+        retrieval_allowed: Tensor,
+        pair_batch_indices: Tensor,
+        pair_left_token_indices: Tensor,
+        pair_right_token_indices: Tensor,
+        pair_labels: Tensor,
+        retrieval_candidate_left: Tensor | None = None,
+        retrieval_candidate_right: Tensor | None = None,
+        retrieval_target_indices: Tensor | None = None,
+        mlm_weight: float = 1.0,
+        retrieval_weight: float = 0.2,
+        contact_weight: float = 0.5,
+    ) -> StageA1Loss:
+        weights = (mlm_weight, retrieval_weight, contact_weight)
+        if any(not math.isfinite(value) or value < 0.0 for value in weights):
+            raise ValueError("Stage-A1 loss weights must be finite and non-negative")
+        if mlm_loss.ndim != 0 or not bool(torch.isfinite(mlm_loss)):
+            raise ValueError("Stage-A1 requires one finite scalar MLM loss")
+        if retrieval_hidden is None:
+            retrieval_hidden = hidden
+        if retrieval_hidden.shape != hidden.shape:
+            raise ValueError("Retrieval and contact hidden states must have equal shapes")
+        retrieval_loss, left_accuracy, right_accuracy = self.retrieval_loss(
+            hidden=retrieval_hidden,
+            chain_ids=chain_ids,
+            retrieval_allowed=retrieval_allowed,
+            retrieval_candidate_left=retrieval_candidate_left,
+            retrieval_candidate_right=retrieval_candidate_right,
+            retrieval_target_indices=retrieval_target_indices,
+        )
+        contact_loss, contact_count, positive_count = self.contact_loss(
+            hidden=hidden,
+            pair_batch_indices=pair_batch_indices,
+            pair_left_token_indices=pair_left_token_indices,
+            pair_right_token_indices=pair_right_token_indices,
+            pair_labels=pair_labels,
+        )
         total = (
             mlm_weight * mlm_loss
             + retrieval_weight * retrieval_loss
@@ -235,6 +271,6 @@ class StageA1Heads(nn.Module):
             contact=contact_loss,
             retrieval_accuracy_left_to_right=left_accuracy,
             retrieval_accuracy_right_to_left=right_accuracy,
-            contact_count=len(labels),
+            contact_count=contact_count,
             contact_positive_count=positive_count,
         )

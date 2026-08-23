@@ -1,0 +1,33 @@
+{
+  "authorization": {
+    "gpu_pilot": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Preserved systems-gate exclusion evidence only. Replacing differentiable global candidate gathering with stop-gradient remote negatives did not change the deterministic update-2 backward stall. No checkpoint, development evaluation, production training, or test access occurred.",
+  "failure": {
+    "all_rank_last_phase": "forward_and_loss_complete",
+    "all_rank_last_phase_accumulation": 2,
+    "all_rank_last_phase_update": 2,
+    "elapsed_seconds_at_cancel": 286,
+    "exit_code": "0:0",
+    "first_update_elapsed_seconds": 21.69742745999247,
+    "first_update_gradient_norm": 9.691845196788472,
+    "job_id": "1461136",
+    "last_completed_update": 1,
+    "slurm_state": "CANCELLED_BY_OPERATOR_AFTER_EXCLUSION"
+  },
+  "format_version": "abpairfm_stage_a1_split_view_systems_gate_failure_v1",
+  "root_cause_attribution": {
+    "excluded": "Differentiable global candidate all-gather backward.",
+    "supported": "Two outstanding forward graphs through the same FSDP2 backbone before one backward. The single-view v4 runner completed 200 updates, while every split-view attempt deterministically stalled on the second update even after retrieval gathering was removed from backward."
+  },
+  "minimal_correction": {
+    "gradient_semantics_preserved": true,
+    "protocol_changed": false,
+    "scope": "Restore differentiable global gathering and execute joint MLM/contact forward-backward before opening the independent retrieval forward-backward graph. FSDP synchronization occurs only on the final retrieval backward of the final accumulation step."
+  },
+  "protocol_sha256": "0a3d92a8fd20d27b78d5455ef6b0eaa7a1c4b27d5c71413be358311f1d86ea10",
+  "status": "FAIL_CLOSED_MULTIPLE_OUTSTANDING_FSDP_FORWARD_GRAPHS",
+  "test_access": false
+}
