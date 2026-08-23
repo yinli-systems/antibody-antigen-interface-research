@@ -141,8 +141,12 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     authorization = protocol.get("authorization", {})
     systems = protocol.get("systems", {})
     optimization = protocol.get("optimization", {})
+    format_version = protocol.get("format_version")
+    expected_updates = (
+        10 if format_version == "abpairfm_stage_a1_multitask_pilot_v5" else 200
+    )
     if (
-        protocol.get("format_version") not in EXPECTED_PROTOCOL_FORMATS
+        format_version not in EXPECTED_PROTOCOL_FORMATS
         or protocol.get("status") != "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING"
         or authorization.get("pilot_training") is not True
         or authorization.get("production_training") is not False
@@ -150,12 +154,12 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         or protocol.get("test_access") is not False
         or systems.get("partition") != "gpu_4090"
         or systems.get("world_size") != arguments.expected_world_size
-        or optimization.get("updates") != 200
+        or optimization.get("updates") != expected_updates
         or optimization.get("microbatch_pairs_per_rank") not in {6, 7}
         or optimization.get("accumulation_steps") != 2
     ):
         raise RuntimeError("Stage-A1 pilot authorization or shape differs")
-    if protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS and (
+    if format_version in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS and (
         optimization.get("microbatch_pairs_per_rank") != 6
         or protocol.get("loss", {}).get("retrieval", {}).get("candidate_scope")
         != "same_node_all_ranks"
@@ -163,7 +167,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         is not False
     ):
         raise RuntimeError("Stage-A1 global-retrieval gate differs")
-    if protocol.get("format_version") == "abpairfm_stage_a1_multitask_pilot_v5" and (
+    if format_version == "abpairfm_stage_a1_multitask_pilot_v5" and (
         protocol.get("loss", {}).get("retrieval", {}).get("representation_view")
         != "chain_independent_no_cross_attention"
         or protocol.get("loss", {}).get("contact", {}).get("representation_view")
@@ -172,10 +176,30 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         .get("masked_language_modeling", {})
         .get("representation_view")
         != "joint_cross_chain_attention"
+        or protocol.get("systems_gate_only") is not True
         or protocol.get("counterfactual_gate", {}).get("status")
         != "PASS_TRAIN_ONLY_MATERIALIZATION"
     ):
         raise RuntimeError("Stage-A1 v5 representation-view gate differs")
+    if format_version == "abpairfm_stage_a1_multitask_pilot_v5":
+        gate = protocol["counterfactual_gate"]
+        receipt_path = Path(str(gate.get("receipt_path", "")))
+        if (
+            receipt_path.is_symlink()
+            or not receipt_path.is_file()
+            or _sha256(receipt_path) != gate.get("receipt_sha256")
+        ):
+            raise RuntimeError("Stage-A1 v5 counterfactual receipt authentication failed")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        if (
+            receipt.get("status") != "PASS_TRAIN_ONLY_MATERIALIZATION"
+            or receipt.get("test_access") is not False
+            or receipt.get("materialization", {}).get("coverage")
+            < gate.get("minimum_coverage", 1.0)
+            or receipt.get("materialization", {}).get("mapping_sha256")
+            != gate.get("mapping_sha256")
+        ):
+            raise RuntimeError("Stage-A1 v5 counterfactual receipt differs")
     if protocol["checkpoint"]["generation"] != arguments.input_generation:
         raise RuntimeError("Stage-A1 input generation differs from protocol")
     if (
@@ -762,9 +786,15 @@ def main() -> None:
                     for name in ("total_loss", "mlm_loss", "retrieval_loss", "contact_loss")
                 },
                 "manifest": {
-                    "records_consumed": len(records),
+                    "records_consumed": (
+                        optimization["updates"]
+                        * optimization["accumulation_steps"]
+                        * world_size
+                        * optimization["microbatch_pairs_per_rank"]
+                    ),
                     "receipt_sha256": manifest_receipt_sha256,
                     "sha256": manifest_sha256,
+                    "total_records_available": len(records),
                 },
                 "memory": {
                     "maximum_allocated_fraction": peak_fraction,

@@ -14,6 +14,12 @@ PROTOCOL = ROOT / "protocols" / "abpairfm_stage_a1_multitask_v1.json"
 GLOBAL_PILOT_PROTOCOL = (
     ROOT / "protocols" / "abpairfm_stage_a1_multitask_pilot_v4.json"
 )
+SPLIT_VIEW_SYSTEMS_PROTOCOL = (
+    ROOT / "protocols" / "abpairfm_stage_a1_multitask_pilot_v5.json"
+)
+SPLIT_VIEW_SYSTEMS_SUBMISSION = (
+    ROOT / "scripts" / "submit_abpairfm_stage_a1_split_view_systems_gate.sbatch"
+)
 
 
 def test_stage_a1_protocol_is_train_only_and_fail_closed() -> None:
@@ -49,6 +55,43 @@ def test_stage_a1_global_retrieval_pilot_remains_train_only() -> None:
     assert protocol["pilot_manifest"]["expected_retrieval_supervised_records"] == 16000
     assert protocol["promotion_gates"]["maximum_peak_memory_fraction"] == 0.9
     assert protocol["test_access"] is False
+
+
+def test_stage_a1_split_view_systems_gate_is_short_and_train_only() -> None:
+    protocol = json.loads(SPLIT_VIEW_SYSTEMS_PROTOCOL.read_text(encoding="utf-8"))
+    assert protocol["authorization"] == {
+        "development_evaluation": False,
+        "pilot_training": True,
+        "production_training": False,
+        "test_access": False,
+    }
+    assert protocol["systems_gate_only"] is True
+    assert protocol["optimization"]["updates"] == 10
+    assert protocol["loss"]["retrieval"]["representation_view"] == (
+        "chain_independent_no_cross_attention"
+    )
+    assert protocol["loss"]["contact"]["representation_view"] == (
+        "joint_cross_chain_attention"
+    )
+    assert protocol["counterfactual_gate"]["status"] == (
+        "PASS_TRAIN_ONLY_MATERIALIZATION"
+    )
+    assert protocol["counterfactual_gate"]["observed_coverage"] == 0.99675
+    assert protocol["promotion_gates"]["maximum_peak_memory_fraction"] == 0.95
+    assert protocol["systems"]["partition"] == "gpu_4090"
+    assert protocol["test_access"] is False
+
+
+def test_stage_a1_split_view_submission_uses_frozen_4090_anchors() -> None:
+    script = SPLIT_VIEW_SYSTEMS_SUBMISSION.read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in script
+    assert "#SBATCH --gres=gpu:8" in script
+    assert "#SBATCH --mem" not in script
+    assert "hp_4090" not in script
+    assert "--input-generation segment-000024" in script
+    assert "7dbde1798181967cc5406dae6eed99a58d8d80c097f16c684d1ce731e5d16311" in script
+    assert "0ad5469af54a27a849afacf955127aedab3d4f93ae93d325fdc65ce0e1699206" in script
+    assert "--progress-interval 1" in script
 
 
 def test_stage_a1_multitask_loss_is_finite_and_differentiable() -> None:
