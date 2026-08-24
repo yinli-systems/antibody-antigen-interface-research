@@ -1,0 +1,36 @@
+{
+  "format_version": "sabdab2_distance_adapter_zero_update_failure_receipt_v1",
+  "failures": [
+    {
+      "array_job_id": 1465858,
+      "task_job_ids": [1465858, 1465859, 1465860],
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "elapsed_seconds_by_task": [13, 17, 13],
+      "stderr_sha256": "684390d7212d8e6c7dd9dcd2b0ef5d276502a22e6f9619ec81954fd65e2a2db1",
+      "error": "Objective parameter specificity_margin differs from the protocol",
+      "training_updates": 0,
+      "output_roots_written": 0
+    },
+    {
+      "array_job_id": 1465943,
+      "task_job_ids": [1465943, 1465944, 1465945],
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "elapsed_seconds_by_task": [5, 9, 9],
+      "stderr_sha256": "377f03573ec554954413af9e91d1786e263f22bf5c56f6d9da99314acd76d024",
+      "error": "Protocol lacks a partner-panel definition",
+      "training_updates": 0,
+      "output_roots_written": 0
+    }
+  ],
+  "recovery": {
+    "array_job_id": 1465991,
+    "source_manifest_sha256": "1f776a12869fcf6a32e145bbcc44c579cdec0fe97460ce74a168a8035a4bff68",
+    "source_tree_sha256": "bb8809ef774a88d2e2c01735c811c3a8291795f0f3e3460098f135044d2f8156",
+    "protocol_sha256": "c8e262f6a6fdadc4807687904fc8ca3e41ad962a12e1e6caab810567ba795364",
+    "protocol_receipt_sha256": "0f8e27ea56e24b0f954fc3a4305b915a6125d39fd6ace39186b8e80a37161052",
+    "full_authority_load_preflight": "PASS",
+    "test_loaded": false
+  }
+}
