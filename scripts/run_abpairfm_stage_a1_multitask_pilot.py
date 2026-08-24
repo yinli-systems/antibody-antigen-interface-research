@@ -73,8 +73,15 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
     "abpairfm_stage_a1_geometry_canary_v15",
+    "abpairfm_stage_a1_geometry_head_only_canary_v16",
 }
-GEOMETRY_PROTOCOL_FORMATS = {"abpairfm_stage_a1_geometry_canary_v15"}
+GEOMETRY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_geometry_canary_v15",
+    "abpairfm_stage_a1_geometry_head_only_canary_v16",
+}
+HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_geometry_head_only_canary_v16"
+}
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -109,6 +116,7 @@ ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
     "abpairfm_stage_a1_geometry_canary_v15",
+    "abpairfm_stage_a1_geometry_head_only_canary_v16",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
@@ -125,6 +133,7 @@ LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
     "abpairfm_stage_a1_geometry_canary_v15",
+    "abpairfm_stage_a1_geometry_head_only_canary_v16",
 }
 PROMOTION_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_promotion_v14",
@@ -233,7 +242,9 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     format_version = protocol.get("format_version")
     promotion = format_version in PROMOTION_PROTOCOL_FORMATS
     expected_updates = (
-        40
+        80
+        if format_version in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS
+        else 40
         if format_version in GEOMETRY_PROTOCOL_FORMATS
         else 200
         if promotion
@@ -254,6 +265,9 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     elif format_version == "abpairfm_stage_a1_efficiency_ac_gate_v8":
         expected_efficiency_microbatches = [64]
         expected_activation_checkpoint_modes = ["selective_attention", "off"]
+    elif format_version in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS:
+        expected_efficiency_microbatches = [48]
+        expected_activation_checkpoint_modes = ["off"]
     elif format_version in LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS:
         expected_efficiency_microbatches = [24, 32, 48]
         expected_activation_checkpoint_modes = ["full"]
@@ -355,14 +369,18 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         raise RuntimeError("Stage-A1 v5 representation-view gate differs")
     if alternating_efficiency:
         efficiency = protocol.get("efficiency", {})
+        expected_phase_schedule = (
+            "geometry_head_only_frozen_backbone"
+            if format_version in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS
+            else "alternating_joint_and_retrieval_single_backbone_pass"
+        )
         common_efficiency_valid = (
             protocol.get("efficiency_gate_only") == (not promotion)
             and protocol.get("systems_gate_only") == (not promotion)
             and efficiency.get("padding_multiple") == 64
             and efficiency.get("parameter_count") == 2839005633
             and efficiency.get("gpu_peak_bfloat16_flops") == 82580000000000
-            and efficiency.get("phase_schedule")
-            == "alternating_joint_and_retrieval_single_backbone_pass"
+            and efficiency.get("phase_schedule") == expected_phase_schedule
         )
         representative_valid = (
             efficiency.get("maximum_combined_tokens") == 1024
@@ -934,7 +952,7 @@ def _mean_records(records: list[dict[str, float]], key: str, count: int) -> floa
 
 
 def _loss_summary(
-    records: list[dict[str, float]], key: str
+    records: list[dict[str, float]], key: str, *, allow_inactive: bool = False
 ) -> dict[str, float | str | None]:
     phase = {
         "contact_loss": "joint",
@@ -956,6 +974,13 @@ def _loss_summary(
         return summary
     active = [record for record in records if record.get("active_phase") == phase]
     if not active:
+        if allow_inactive and all(record[key] == 0.0 for record in records):
+            summary["active_update_count"] = 0
+            summary["final_10_active_update_mean"] = None
+            summary["final_20_active_update_mean"] = None
+            summary["first_10_active_update_mean"] = None
+            summary["first_20_active_update_mean"] = None
+            return summary
         raise RuntimeError(f"Stage-A1 loss phase is absent: {phase}")
     summary["active_update_count"] = len(active)
     summary["final_10_active_update_mean"] = statistics.mean(
@@ -977,6 +1002,9 @@ def main() -> None:
     arguments = _arguments()
     protocol = _load_protocol(arguments)
     promotion = protocol.get("format_version") in PROMOTION_PROTOCOL_FORMATS
+    head_only_geometry = (
+        protocol.get("format_version") in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS
+    )
     output_generation = "stage-a1-000000" if promotion else "pilot-000000"
     project_root = arguments.project_root.resolve()
     observed_source_sha256 = source_sha256(project_root)
@@ -1047,7 +1075,10 @@ def main() -> None:
                 )
             )
         fully_shard_pair_aware_esm2(
-            backbone, mesh=mesh, precision="bfloat16", reshard_after_forward=False
+            backbone,
+            mesh=mesh,
+            precision="bfloat16",
+            reshard_after_forward=head_only_geometry,
         )
         initialization = load_authenticated_esm2_into_fsdp2(
             backbone,
@@ -1079,17 +1110,29 @@ def main() -> None:
             ).to(device)
         system = StageA1System(backbone, heads)
         optimization = protocol["optimization"]
+        if head_only_geometry:
+            for parameter in backbone.parameters():
+                parameter.requires_grad_(False)
         optimizer = torch.optim.AdamW(
-            [
-                {
-                    "params": list(backbone.parameters()),
-                    "lr": optimization["backbone_learning_rate"],
-                },
-                {
-                    "params": list(heads.parameters()),
-                    "lr": optimization["head_learning_rate"],
-                },
-            ],
+            (
+                [
+                    {
+                        "params": list(heads.parameters()),
+                        "lr": optimization["head_learning_rate"],
+                    }
+                ]
+                if head_only_geometry
+                else [
+                    {
+                        "params": list(backbone.parameters()),
+                        "lr": optimization["backbone_learning_rate"],
+                    },
+                    {
+                        "params": list(heads.parameters()),
+                        "lr": optimization["head_learning_rate"],
+                    },
+                ]
+            ),
             betas=tuple(optimization["betas"]),
             weight_decay=optimization["weight_decay"],
             fused=True,
@@ -1102,7 +1145,10 @@ def main() -> None:
         torch.cuda.manual_seed(1701 + rank)
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.set_float32_matmul_precision("high")
-        backbone.train()
+        if head_only_geometry:
+            backbone.eval()
+        else:
+            backbone.train()
         heads.train()
         torch.cuda.reset_peak_memory_stats(device)
         independent_retrieval_view = (
@@ -1137,10 +1183,14 @@ def main() -> None:
             started = time.perf_counter()
             totals = torch.zeros(10, device=device, dtype=torch.float64)
             minimum_allowed_candidates = torch.tensor(
-                float("inf"), device=device, dtype=torch.float64
+                0.0 if head_only_geometry else float("inf"),
+                device=device,
+                dtype=torch.float64,
             )
             active_phase = (
-                "joint" if alternating_efficiency and update % 2 == 0 else "retrieval"
+                "joint"
+                if head_only_geometry or (alternating_efficiency and update % 2 == 0)
+                else "retrieval"
             )
             active_head_prefixes: tuple[str, ...] | None = None
             for accumulation in range(optimization["accumulation_steps"]):
@@ -1207,23 +1257,38 @@ def main() -> None:
                         with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
                             device_type="cuda", dtype=torch.bfloat16
                         ):
-                            output = backbone(
-                                batch.tokens,
-                                batch.chain_ids,
-                                labels=batch.labels,
-                                return_hidden_states=True,
-                            )
-                            if (
-                                output.balanced_chain_loss_sum is None
-                                or output.hidden_states is None
-                            ):
-                                raise RuntimeError(
-                                    "Stage-A1 efficiency joint view is incomplete"
+                            if head_only_geometry:
+                                with torch.no_grad():
+                                    output = backbone(
+                                        batch.tokens,
+                                        batch.chain_ids,
+                                        return_hidden_states=True,
+                                        compute_logits=False,
+                                    )
+                                if output.hidden_states is None:
+                                    raise RuntimeError(
+                                        "Stage-A1 frozen geometry view is incomplete"
+                                    )
+                                mlm_loss = output.hidden_states.new_zeros(())
+                            else:
+                                output = backbone(
+                                    batch.tokens,
+                                    batch.chain_ids,
+                                    labels=batch.labels,
+                                    return_hidden_states=True,
                                 )
-                            mlm_loss = (
-                                output.balanced_chain_loss_sum
-                                / output.contributing_chain_count
-                            )
+                                if (
+                                    output.balanced_chain_loss_sum is None
+                                    or output.hidden_states is None
+                                ):
+                                    raise RuntimeError(
+                                        "Stage-A1 efficiency joint view is incomplete"
+                                    )
+                                mlm_loss = (
+                                    output.balanced_chain_loss_sum
+                                    / output.contributing_chain_count
+                                )
+                            assert output.hidden_states is not None
                             if protocol.get("format_version") in GEOMETRY_PROTOCOL_FORMATS:
                                 if (
                                     not isinstance(heads, StageA1GeometryHeads)
@@ -1618,7 +1683,7 @@ def main() -> None:
             approximate_useful_token_mfu = None
             if alternating_efficiency:
                 approximate_useful_token_mfu = (
-                    6.0
+                    (2.0 if head_only_geometry else 6.0)
                     * protocol["efficiency"]["parameter_count"]
                     * float(totals[6])
                     / elapsed
@@ -1629,7 +1694,12 @@ def main() -> None:
                 )
             record = {
                 "active_phase": active_phase if alternating_efficiency else "multitask",
-                "approximate_useful_token_6n_mfu": approximate_useful_token_mfu,
+                "approximate_backbone_forward_2n_mfu": (
+                    approximate_useful_token_mfu if head_only_geometry else None
+                ),
+                "approximate_useful_token_6n_mfu": (
+                    None if head_only_geometry else approximate_useful_token_mfu
+                ),
                 "contact_loss": float(totals[3]),
                 "distance_loss": float(totals[9]),
                 "elapsed_seconds": elapsed,
@@ -1748,6 +1818,7 @@ def main() -> None:
                     if promotion
                     else "abpairfm_stage_a1_multitask_pilot_result_v1"
                 ),
+                "training_protocol_format_version": protocol["format_version"],
                 "input_checkpoint": {
                     "consumed_residue_tokens": input_receipt["training_state"][
                         "consumed_residue_tokens"
@@ -1757,7 +1828,14 @@ def main() -> None:
                 },
                 "initialization": initialization,
                 "loss": {
-                    name: _loss_summary(update_records, name)
+                    name: _loss_summary(
+                        update_records,
+                        name,
+                        allow_inactive=(
+                            head_only_geometry
+                            and name in {"mlm_loss", "retrieval_loss"}
+                        ),
+                    )
                     for name in (
                         "total_loss",
                         "mlm_loss",
@@ -1825,13 +1903,21 @@ def main() -> None:
                 "status": status,
                 "test_access": False,
                 "throughput": {
+                    "approximate_backbone_forward_2n_mfu_mean": (
+                        statistics.mean(
+                            record["approximate_backbone_forward_2n_mfu"]
+                            for record in update_records
+                        )
+                        if head_only_geometry
+                        else None
+                    ),
                     "approximate_useful_token_6n_mfu_mean": (
                         statistics.mean(
                             record["approximate_useful_token_6n_mfu"]
                             for record in update_records
                             if record["approximate_useful_token_6n_mfu"] is not None
                         )
-                        if alternating_efficiency
+                        if alternating_efficiency and not head_only_geometry
                         else None
                     ),
                     "approximate_useful_token_6n_mfu_by_phase": (
@@ -1843,7 +1929,7 @@ def main() -> None:
                             )
                             for phase in ("joint", "retrieval")
                         }
-                        if alternating_efficiency
+                        if alternating_efficiency and not head_only_geometry
                         else None
                     ),
                     "mean_residue_tokens_per_second": statistics.mean(

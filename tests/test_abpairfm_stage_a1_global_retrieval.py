@@ -33,6 +33,35 @@ def test_replicate_shard_mesh_shape_supports_four_and_eight_gpu_runs() -> None:
         runner._replicate_shard_mesh_shape(6, 4)
 
 
+def test_v16_head_only_protocol_and_inactive_loss_summary() -> None:
+    path = (
+        runner.REPOSITORY_ROOT
+        / "protocols"
+        / "abpairfm_stage_a1_geometry_head_only_canary_v16.json"
+    )
+    protocol = json.loads(path.read_text(encoding="utf-8"))
+    arguments = SimpleNamespace(
+        protocol=path,
+        expected_protocol_sha256=runner._sha256(path),
+        expected_world_size=4,
+        input_generation=protocol["checkpoint"]["generation"],
+        expected_input_content_sha256=protocol["checkpoint"]["content_sha256"],
+        efficiency_microbatch_pairs_per_rank=48,
+        efficiency_activation_checkpoint_mode="off",
+    )
+    assert runner._load_protocol(arguments)["format_version"].endswith("_v16")
+    records = [
+        {
+            "active_phase": "joint",
+            "retrieval_loss": 0.0,
+        }
+        for _ in range(20)
+    ]
+    summary = runner._loss_summary(records, "retrieval_loss", allow_inactive=True)
+    assert summary["active_update_count"] == 0
+    assert summary["final_20_update_mean"] == 0.0
+
+
 def test_global_retrieval_mask_uses_remote_cluster_ids(monkeypatch) -> None:
     batch = build_stage_a1_microbatch(
         [_record(0), _record(1)], seed=17, maximum_tokens=64
