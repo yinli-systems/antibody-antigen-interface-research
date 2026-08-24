@@ -189,6 +189,18 @@ def main() -> None:
             "specificity_margin": 0.05,
             "score_fraction": 0.01,
         },
+        "screen_gate": {
+            "reference_arm": "control",
+            "candidate_arm": "matched_local",
+            "promotion_requires": (
+                "matched-local contact mean-per-complex AUPRC strictly exceeds the "
+                "paired control at seed 17"
+            ),
+            "maximum_epitope_mean_per_complex_auprc_regression": 0.01,
+            "maximum_paratope_mean_per_complex_auprc_regression": 0.01,
+            "maximum_minimum_direction_cluster_weighted_margin_regression": 0.01,
+            "passing_this_gate_authorizes_only_a_three_seed_development_screen": True,
+        },
         "claim_boundary": {
             "development_only": True,
             "test_loaded": False,
