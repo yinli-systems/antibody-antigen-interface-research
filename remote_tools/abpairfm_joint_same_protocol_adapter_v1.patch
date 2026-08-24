@@ -140,8 +140,8 @@
 +            for identifier, record in by_id.items()
 +            if record.get("split_role") == split_role
 +        }
-+        if selected_ids != expected_ids:
-+            raise ValueError("ABPairFM joint embedding IDs differ from the selected split")
++        if not expected_ids.issubset(selected_ids):
++            raise ValueError("ABPairFM joint embedding IDs are missing from the selected split")
 +        self.joint_root = joint_root
 +        self.joint_by_id = {identifier: by_id[identifier] for identifier in expected_ids}
 +        self.checkpoint_sha256 = str(manifest["checkpoint"]["content_sha256"])
