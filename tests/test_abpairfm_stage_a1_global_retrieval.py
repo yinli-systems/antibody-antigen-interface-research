@@ -26,6 +26,13 @@ def _record(index: int) -> dict:
     }
 
 
+def test_replicate_shard_mesh_shape_supports_four_and_eight_gpu_runs() -> None:
+    assert runner._replicate_shard_mesh_shape(4, 4) == (1, 4)
+    assert runner._replicate_shard_mesh_shape(8, 4) == (2, 4)
+    with pytest.raises(ValueError, match="divide"):
+        runner._replicate_shard_mesh_shape(6, 4)
+
+
 def test_global_retrieval_mask_uses_remote_cluster_ids(monkeypatch) -> None:
     batch = build_stage_a1_microbatch(
         [_record(0), _record(1)], seed=17, maximum_tokens=64
