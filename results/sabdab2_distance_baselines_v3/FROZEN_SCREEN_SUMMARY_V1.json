@@ -1,0 +1,53 @@
+{
+  "control": {
+    "contact_mean_per_complex_auprc": 0.026718675512442606,
+    "elapsed_seconds_at_selected_epoch": 311.5391714312136,
+    "epitope_mean_per_complex_auprc": 0.24504413541091696,
+    "epochs_observed": 7,
+    "name": "framecontact_control",
+    "paratope_mean_per_complex_auprc": 0.6929751922140626,
+    "selected_epoch": 2,
+    "train_loss_at_selected_epoch": 0.4496359207405476
+  },
+  "format_version": "sabdab2_frozen_development_screen_summary_v1",
+  "runs": [
+    {
+      "contact_mean_per_complex_auprc": 0.02773767154812658,
+      "elapsed_seconds_at_selected_epoch": 306.96027932316065,
+      "epitope_mean_per_complex_auprc": 0.2506700929714339,
+      "epochs_observed": 7,
+      "name": "framecontact_distance_aux",
+      "paratope_mean_per_complex_auprc": 0.6794701376615986,
+      "selected_epoch": 2,
+      "train_loss_at_selected_epoch": 0.748016364625073
+    },
+    {
+      "contact_mean_per_complex_auprc": 0.024830761686624868,
+      "elapsed_seconds_at_selected_epoch": 1277.2517822016962,
+      "epitope_mean_per_complex_auprc": 0.2532489185677912,
+      "epochs_observed": 13,
+      "name": "epiformer_style_same_protocol",
+      "paratope_mean_per_complex_auprc": 0.6756408447799143,
+      "selected_epoch": 8,
+      "train_loss_at_selected_epoch": 0.4464981788696605
+    },
+    {
+      "contact_mean_per_complex_auprc": 0.02757182451299949,
+      "elapsed_seconds_at_selected_epoch": 263.93511180207133,
+      "epitope_mean_per_complex_auprc": 0.2453249146644837,
+      "epochs_observed": 7,
+      "name": "mipe_style_same_protocol",
+      "paratope_mean_per_complex_auprc": 0.6707372096602865,
+      "selected_epoch": 2,
+      "train_loss_at_selected_epoch": 0.6597665429253539
+    }
+  ],
+  "selection_rule": "epitope macro AUPRC; contact macro AUPRC; earlier epoch",
+  "test_loaded": false,
+  "winner": "epiformer_style_same_protocol",
+  "winner_minus_control": {
+    "contact_mean_per_complex_auprc": -0.0018879138258177386,
+    "epitope_mean_per_complex_auprc": 0.008204783156874229,
+    "paratope_mean_per_complex_auprc": -0.0173343474341483
+  }
+}
