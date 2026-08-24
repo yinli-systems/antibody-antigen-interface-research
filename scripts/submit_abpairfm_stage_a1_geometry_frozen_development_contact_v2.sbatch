@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #SBATCH -J abpairfm-a1-geometry-dev-v2
 #SBATCH -p gpu_4090
-#SBATCH --gres=gpu:8
-#SBATCH --cpus-per-task=48
+#SBATCH --gres=gpu:2
+#SBATCH --cpus-per-task=12
 #SBATCH --time=01:00:00
 #SBATCH -o /ssd/scxi253/model_deployment/results/evaluation/abpairfm-a1-geometry-dev-v2-%j.out
 #SBATCH -e /ssd/scxi253/model_deployment/results/evaluation/abpairfm-a1-geometry-dev-v2-%j.err
@@ -30,8 +30,8 @@ export TORCH_NCCL_TRACE_BUFFER_SIZE=1048576
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 mapfile -t GPU_NAMES < <(nvidia-smi --query-gpu=name --format=csv,noheader)
-if [[ "${#GPU_NAMES[@]}" -ne 8 ]]; then
-  echo "Stage-A1 geometry development contact requires eight visible GPUs" >&2
+if [[ "${#GPU_NAMES[@]}" -ne 2 ]]; then
+  echo "Stage-A1 geometry development contact requires two visible GPUs" >&2
   exit 2
 fi
 for name in "${GPU_NAMES[@]}"; do
@@ -50,7 +50,7 @@ mkdir -p "${OUTPUT_ROOT}"
 
 "${PYTHON}" -m torch.distributed.run \
   --standalone \
-  --nproc_per_node=8 \
+  --nproc_per_node=2 \
   "${PROJECT}/scripts/run_abpairfm_stage_a1_frozen_development_contact.py" \
   --project-root "${PROJECT}" \
   --protocol "${PROTOCOL}" \
