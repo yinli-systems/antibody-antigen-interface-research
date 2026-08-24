@@ -8,6 +8,7 @@ import pytest
 import torch
 
 from antibody_pretraining.stage_a1_batch import build_stage_a1_microbatch
+from antibody_pretraining.stage_a1_geometry_objective import StageA1GeometryHeads
 from scripts import run_abpairfm_stage_a1_multitask_pilot as runner
 
 
@@ -60,6 +61,20 @@ def test_v16_head_only_protocol_and_inactive_loss_summary() -> None:
     summary = runner._loss_summary(records, "retrieval_loss", allow_inactive=True)
     assert summary["active_update_count"] == 0
     assert summary["final_20_update_mean"] == 0.0
+
+    heads = StageA1GeometryHeads(
+        embedding_dimension=8,
+        projection_dimension=4,
+        pair_dimension=6,
+        num_distance_bins=5,
+        contact_distance_bin_count=2,
+    )
+    selected = {id(value) for value in runner._head_only_geometry_parameters(heads)}
+    assert selected
+    assert all(
+        (id(parameter) in selected) == name.startswith("contact_")
+        for name, parameter in heads.named_parameters()
+    )
 
 
 def test_global_retrieval_mask_uses_remote_cluster_ids(monkeypatch) -> None:
