@@ -1,0 +1,129 @@
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -159,6 +159,16 @@
+         "adapter_mode": "epiformer_style_same_protocol",
+         "distance_bin_count": 5,
+     },
++    "abpairfm_epiformer_energy_balanced_residual_same_protocol": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
++        "adapter_mode": "epiformer_style_same_protocol",
++        "distance_bin_count": 5,
++    },
+     "mipe_style_same_protocol": {
+         "geometry_feature_mode": "full_pose",
+         "geometry_bias_mode": "pair_mlp",
+@@ -199,6 +209,7 @@
+     parser.add_argument("--joint-embedding-root", type=Path)
+     parser.add_argument("--joint-embedding-manifest-sha256")
+     parser.add_argument("--joint-embedding-source-split-sha256")
++    parser.add_argument("--joint-residual-scale", type=float, default=1.0)
+     parser.add_argument("--label-root", type=Path)
+     parser.add_argument("--split-manifest", type=Path)
+     parser.add_argument("--split-manifest-sha256")
+@@ -399,6 +410,7 @@
+         if arguments.experiment in {
+             "abpairfm_epiformer_style_same_protocol",
+             "abpairfm_epiformer_residual_fusion_same_protocol",
++            "abpairfm_epiformer_energy_balanced_residual_same_protocol",
+         }:
+             if any(value is None for value in joint_values):
+                 raise ValueError("ABPairFM adapter requires joint embedding authority")
+@@ -461,5 +473,10 @@
+     elif arguments.experiment == "abpairfm_epiformer_residual_fusion_same_protocol":
+         observed_feature_mode = "abpairfm_joint_residual_concatenation_v1"
++    elif (
++        arguments.experiment
++        == "abpairfm_epiformer_energy_balanced_residual_same_protocol"
++    ):
++        observed_feature_mode = "abpairfm_joint_energy_balanced_residual_v1"
+     else:
+         observed_feature_mode = "abpairfm_joint_cross_chain_v1"
+     if expected_feature_mode != observed_feature_mode:
+@@ -531,6 +547,14 @@
+             raise ValueError(
+                 f"Execution parameter {argument_name} differs from the protocol"
+             )
++    expected_joint_scale = implementation.get("joint_residual_scale", 1.0)
++    if not math.isclose(
++        float(arguments.joint_residual_scale),
++        float(expected_joint_scale),
++        rel_tol=0.0,
++        abs_tol=1e-12,
++    ):
++        raise ValueError("Joint residual scale differs from the protocol")
+     objective = protocol.get("training_objective", {})
+     loss_weights = objective.get("loss_weights", {})
+     for argument_name, protocol_name in (
+@@ -607,6 +631,7 @@
+         *,
+         split_role: str,
+         concatenate_base: bool,
++        joint_scale: float,
+     ) -> None:
+         self.base_dataset = base_dataset
+         self.cache_root = base_dataset.cache_root
+@@ -630,5 +655,8 @@
+         self.checkpoint_sha256 = str(manifest["checkpoint"]["content_sha256"])
+         self.concatenate_base = bool(concatenate_base)
++        self.joint_scale = float(joint_scale)
++        if not math.isfinite(self.joint_scale) or self.joint_scale <= 0.0:
++            raise ValueError("Joint residual scale must be finite and positive")
+
+     def __len__(self) -> int:
+         return len(self.base_dataset)
+@@ -685,9 +714,9 @@
+                 raise ValueError("Frozen base ESM feature authority differs")
+             item["antibody_features"] = torch.cat(
+-                (base_antibody.float(), antibody.float()), dim=-1
++                (base_antibody.float(), antibody.float() * self.joint_scale), dim=-1
+             )
+             item["antigen_features"] = torch.cat(
+-                (base_antigen.float(), antigen.float()), dim=-1
++                (base_antigen.float(), antigen.float() * self.joint_scale), dim=-1
+             )
+         else:
+             item["antibody_features"] = antibody.float()
+@@ -1341,8 +1372,10 @@
+         )
+         if arguments.joint_embedding_root is not None:
+             concatenate_base = (
+-                arguments.experiment
+-                == "abpairfm_epiformer_residual_fusion_same_protocol"
++                arguments.experiment in {
++                    "abpairfm_epiformer_residual_fusion_same_protocol",
++                    "abpairfm_epiformer_energy_balanced_residual_same_protocol",
++                }
+             )
+             train_base = _JointEmbeddingOverrideDataset(
+                 train_base,
+@@ -1351,6 +1384,7 @@
+                 arguments.joint_embedding_manifest_sha256,
+                 split_role="train",
+                 concatenate_base=concatenate_base,
++                joint_scale=arguments.joint_residual_scale,
+             )
+             validation_base = _JointEmbeddingOverrideDataset(
+                 validation_base,
+@@ -1358,6 +1392,7 @@
+                 arguments.joint_embedding_manifest_sha256,
+                 split_role="validation",
+                 concatenate_base=concatenate_base,
++                joint_scale=arguments.joint_residual_scale,
+             )
+         train_dataset = Sabdab2ContactDataset(
+             train_base, arguments.contact_cache_root
+@@ -1644,6 +1679,9 @@
+                             if arguments.experiment
+                             == "abpairfm_epiformer_residual_fusion_same_protocol"
+                             else "abpairfm_joint_cross_chain_v1"
++                            if arguments.experiment
++                            != "abpairfm_epiformer_energy_balanced_residual_same_protocol"
++                            else "abpairfm_joint_energy_balanced_residual_v1"
+                         )
+                     )
+                 ),
