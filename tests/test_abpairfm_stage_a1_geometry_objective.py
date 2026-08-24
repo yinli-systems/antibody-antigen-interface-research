@@ -1,0 +1,121 @@
+from __future__ import annotations
+
+import json
+import math
+from pathlib import Path
+
+import pytest
+import torch
+
+from antibody_pretraining.stage_a1_geometry_objective import (
+    StageA1GeometryHeads,
+    expected_random_contact_loss,
+)
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_geometry_head_couples_contact_to_distance_mass() -> None:
+    torch.manual_seed(17)
+    heads = StageA1GeometryHeads(
+        embedding_dimension=8,
+        projection_dimension=4,
+        pair_dimension=6,
+        num_distance_bins=5,
+        contact_distance_bin_count=2,
+    )
+    hidden = torch.randn(2, 5, 8, requires_grad=True)
+    batch = torch.tensor([0, 0, 1, 1])
+    left = torch.tensor([0, 1, 0, 1])
+    right = torch.tensor([2, 3, 2, 4])
+    distance = heads.distance_logits(hidden, batch, left, right)
+    contact = heads.contact_logits(hidden, batch, left, right)
+    expected = torch.logsumexp(distance[:, :2], dim=-1) - torch.logsumexp(
+        distance[:, 2:], dim=-1
+    ) + heads.contact_bias
+    torch.testing.assert_close(contact, expected)
+
+
+def test_geometry_loss_is_finite_and_differentiable() -> None:
+    torch.manual_seed(42)
+    heads = StageA1GeometryHeads(
+        embedding_dimension=8,
+        projection_dimension=4,
+        pair_dimension=6,
+        num_distance_bins=5,
+        contact_distance_bin_count=2,
+    )
+    hidden = torch.randn(2, 5, 8, requires_grad=True)
+    contact_loss, distance_loss, count, positive_count = (
+        heads.contact_and_distance_loss(
+            hidden=hidden,
+            pair_batch_indices=torch.tensor([0, 0, 1, 1]),
+            pair_left_token_indices=torch.tensor([0, 1, 0, 1]),
+            pair_right_token_indices=torch.tensor([2, 3, 2, 4]),
+            distance_bin_targets=torch.tensor([0, 2, 1, 4]),
+        )
+    )
+    assert count == 4
+    assert positive_count == 2
+    (contact_loss + distance_loss).backward()
+    assert hidden.grad is not None and torch.isfinite(hidden.grad).all()
+    assert all(
+        parameter.grad is not None
+        for name, parameter in heads.named_parameters()
+        if name.startswith("contact_")
+    )
+
+
+def test_geometry_loss_rejects_binary_labels_as_distance_bins() -> None:
+    heads = StageA1GeometryHeads(
+        embedding_dimension=4,
+        projection_dimension=2,
+        pair_dimension=3,
+        num_distance_bins=4,
+        contact_distance_bin_count=1,
+    )
+    with pytest.raises(ValueError, match="out of range"):
+        heads.contact_and_distance_loss(
+            hidden=torch.randn(1, 3, 4),
+            pair_batch_indices=torch.tensor([0, 0]),
+            pair_left_token_indices=torch.tensor([0, 1]),
+            pair_right_token_indices=torch.tensor([2, 2]),
+            distance_bin_targets=torch.tensor([0, 4]),
+        )
+
+
+def test_random_contact_loss_uses_sampled_prior() -> None:
+    expected = -(0.2 * math.log(0.2) + 0.8 * math.log(0.8))
+    assert expected_random_contact_loss(4) == pytest.approx(expected)
+
+
+def test_geometry_canary_is_train_only_and_uses_4p5a_mass() -> None:
+    protocol = json.loads(
+        (ROOT / "protocols" / "abpairfm_stage_a1_geometry_canary_v15.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert protocol["authorization"] == {
+        "development_evaluation": False,
+        "pilot_training": True,
+        "production_training": False,
+        "test_access": False,
+    }
+    contact = protocol["loss"]["contact"]
+    assert contact["distance_bin_edges_angstrom"][:3] == [2.0, 4.5, 6.0]
+    assert contact["geometry_head"]["contact_distance_bin_count"] == 2
+    assert protocol["optimization"]["updates"] == 40
+    assert protocol["systems"]["partition"] == "gpu_4090"
+    assert protocol["test_access"] is False
+
+
+def test_geometry_canary_submission_is_frozen_to_gpu_4090() -> None:
+    submission = (
+        ROOT / "scripts" / "submit_abpairfm_stage_a1_geometry_canary_v15.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in submission
+    assert "#SBATCH --gres=gpu:8" in submission
+    assert "hp_4090" not in submission
+    assert "segment-000031" in submission
+    assert "--progress-interval 10" in submission

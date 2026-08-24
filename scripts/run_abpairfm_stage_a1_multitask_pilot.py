@@ -46,6 +46,9 @@ from antibody_pretraining.stage_a1_objective import (  # noqa: E402
     StageA1Heads,
     StageA1Loss,
 )
+from antibody_pretraining.stage_a1_geometry_objective import (  # noqa: E402
+    StageA1GeometryHeads,
+)
 from interaction_first.frontier_fsdp2 import verify_dcp_generation  # noqa: E402
 from run_abpairfm_3b_real_data_gate_v2 import (  # noqa: E402
     _collect,
@@ -69,7 +72,9 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
+    "abpairfm_stage_a1_geometry_canary_v15",
 }
+GEOMETRY_PROTOCOL_FORMATS = {"abpairfm_stage_a1_geometry_canary_v15"}
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -81,6 +86,7 @@ GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
+    "abpairfm_stage_a1_geometry_canary_v15",
 }
 SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v5",
@@ -92,6 +98,7 @@ SPLIT_VIEW_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
+    "abpairfm_stage_a1_geometry_canary_v15",
 }
 ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_efficiency_gate_v7",
@@ -101,6 +108,7 @@ ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
+    "abpairfm_stage_a1_geometry_canary_v15",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
@@ -116,6 +124,7 @@ STRUCTURAL_BUCKET_EFFICIENCY_PROTOCOL_FORMATS = {
 LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_efficiency_gate_v13",
     "abpairfm_stage_a1_length_band_promotion_v14",
+    "abpairfm_stage_a1_geometry_canary_v15",
 }
 PROMOTION_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_promotion_v14",
@@ -128,6 +137,7 @@ SOURCE_PATHS = (
     "src/antibody_pretraining/pair_aware_esm2.py",
     "src/antibody_pretraining/stage_a1_batch.py",
     "src/antibody_pretraining/stage_a1_objective.py",
+    "src/antibody_pretraining/stage_a1_geometry_objective.py",
     "src/interaction_first/frontier_fsdp2.py",
 )
 
@@ -213,7 +223,13 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     format_version = protocol.get("format_version")
     promotion = format_version in PROMOTION_PROTOCOL_FORMATS
     expected_updates = (
-        200 if promotion else (10 if format_version in SPLIT_VIEW_PROTOCOL_FORMATS else 200)
+        40
+        if format_version in GEOMETRY_PROTOCOL_FORMATS
+        else 200
+        if promotion
+        else 10
+        if format_version in SPLIT_VIEW_PROTOCOL_FORMATS
+        else 200
     )
     alternating_efficiency = format_version in ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS
     selected_efficiency_microbatch = getattr(
@@ -441,7 +457,21 @@ def _load_manifest(
         or receipt_sha256 != protocol["pilot_manifest"]["receipt_sha256"]
     ):
         raise RuntimeError("Stage-A1 v6 manifest files differ from frozen anchors")
-    if (
+    if protocol.get("format_version") in GEOMETRY_PROTOCOL_FORMATS:
+        if (
+            receipt.get("status")
+            != "PASS_STAGE_A1_DISTANCE_BIN_TRAIN_ONLY_MATERIALIZATION"
+            or receipt.get("test_access") is not False
+            or receipt.get("output", {}).get("sha256") != manifest_sha256
+            or receipt.get("counts", {}).get("records")
+            != protocol["pilot_manifest"]["total_records"]
+            or receipt.get("counts", {}).get("distance_bin_records") != 4967
+            or receipt.get("distance_bin_edges_angstrom")
+            != protocol["loss"]["contact"]["distance_bin_edges_angstrom"]
+            or receipt.get("cross_source_exact_pair_overlap_after_filter") != 0
+        ):
+            raise RuntimeError("Stage-A1 geometry manifest receipt differs")
+    elif (
         receipt.get("status") != "PASS_STAGE_A1_PILOT_SOURCE_ADMISSION"
         or receipt.get("test_access") is not False
         or receipt.get("inputs", {}).get("protocol_sha256")
@@ -454,13 +484,17 @@ def _load_manifest(
         or receipt.get("cross_source_exact_pair_overlap_after_filter") != 0
     ):
         raise RuntimeError("Stage-A1 manifest receipt differs")
-    if protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS and (
+    if (
+        protocol.get("format_version") in GLOBAL_RETRIEVAL_PROTOCOL_FORMATS
+        and protocol.get("format_version") not in GEOMETRY_PROTOCOL_FORMATS
+        and (
         receipt.get("counts", {}).get("retrieval_supervised_records")
         != protocol["pilot_manifest"]["expected_retrieval_supervised_records"]
         or receipt.get("counts", {}).get(
             "retrieval_records_with_endpoint_cluster_ids"
         )
         != protocol["pilot_manifest"]["expected_retrieval_supervised_records"]
+        )
     ):
         raise RuntimeError("Stage-A1 v4 retrieval-cluster coverage differs")
     records: list[dict[str, Any]] = []
@@ -550,7 +584,7 @@ def _efficiency_bucket_records(
         * microbatch_pairs_per_rank
     )
     if len(selected) < required:
-        if format_version not in PROMOTION_PROTOCOL_FORMATS:
+        if format_version not in (PROMOTION_PROTOCOL_FORMATS | GEOMETRY_PROTOCOL_FORMATS):
             raise RuntimeError("Stage-A1 efficiency bucket is too small for the frozen trial")
         repeats = math.ceil(required / len(selected))
         selected = (selected * repeats)[:required]
@@ -889,6 +923,46 @@ def _mean_records(records: list[dict[str, float]], key: str, count: int) -> floa
     return statistics.mean(record[key] for record in records[-count:])
 
 
+def _loss_summary(
+    records: list[dict[str, float]], key: str
+) -> dict[str, float | str | None]:
+    phase = {
+        "contact_loss": "joint",
+        "distance_loss": "joint",
+        "mlm_loss": "joint",
+        "retrieval_loss": "retrieval",
+    }.get(key)
+    summary: dict[str, float | str | None] = {
+        "final_20_update_mean": _mean_records(records, key, 20),
+        "first_20_update_mean": statistics.mean(record[key] for record in records[:20]),
+        "active_phase": phase,
+    }
+    if phase is None:
+        summary["active_update_count"] = None
+        summary["final_10_active_update_mean"] = None
+        summary["final_20_active_update_mean"] = None
+        summary["first_10_active_update_mean"] = None
+        summary["first_20_active_update_mean"] = None
+        return summary
+    active = [record for record in records if record.get("active_phase") == phase]
+    if not active:
+        raise RuntimeError(f"Stage-A1 loss phase is absent: {phase}")
+    summary["active_update_count"] = len(active)
+    summary["final_10_active_update_mean"] = statistics.mean(
+        record[key] for record in active[-10:]
+    )
+    summary["final_20_active_update_mean"] = statistics.mean(
+        record[key] for record in active[-20:]
+    )
+    summary["first_10_active_update_mean"] = statistics.mean(
+        record[key] for record in active[:10]
+    )
+    summary["first_20_active_update_mean"] = statistics.mean(
+        record[key] for record in active[:20]
+    )
+    return summary
+
+
 def main() -> None:
     arguments = _arguments()
     protocol = _load_protocol(arguments)
@@ -974,9 +1048,23 @@ def main() -> None:
             root=arguments.input_checkpoint_root,
             generation=arguments.input_generation,
         )
-        heads = StageA1Heads(temperature=protocol["loss"]["retrieval"]["temperature"]).to(
-            device
-        )
+        if protocol.get("format_version") in GEOMETRY_PROTOCOL_FORMATS:
+            contact_geometry = protocol["loss"]["contact"]["geometry_head"]
+            heads = StageA1GeometryHeads(
+                pair_dimension=contact_geometry["pair_dimension"],
+                num_distance_bins=len(
+                    protocol["loss"]["contact"]["distance_bin_edges_angstrom"]
+                )
+                + 1,
+                contact_distance_bin_count=contact_geometry[
+                    "contact_distance_bin_count"
+                ],
+                temperature=protocol["loss"]["retrieval"]["temperature"],
+            ).to(device)
+        else:
+            heads = StageA1Heads(
+                temperature=protocol["loss"]["retrieval"]["temperature"]
+            ).to(device)
         system = StageA1System(backbone, heads)
         optimization = protocol["optimization"]
         optimizer = torch.optim.AdamW(
@@ -1035,7 +1123,7 @@ def main() -> None:
             )
             torch.cuda.synchronize(device)
             started = time.perf_counter()
-            totals = torch.zeros(9, device=device, dtype=torch.float64)
+            totals = torch.zeros(10, device=device, dtype=torch.float64)
             minimum_allowed_candidates = torch.tensor(
                 float("inf"), device=device, dtype=torch.float64
             )
@@ -1044,6 +1132,7 @@ def main() -> None:
             )
             active_head_prefixes: tuple[str, ...] | None = None
             for accumulation in range(optimization["accumulation_steps"]):
+                distance_loss_for_record = torch.zeros((), device=device)
                 microstep = update * optimization["accumulation_steps"] + accumulation
                 start = (
                     microstep * world_size + rank
@@ -1066,6 +1155,13 @@ def main() -> None:
                     maximum_negative_to_positive_ratio=protocol["loss"]["contact"][
                         "maximum_negative_to_positive_ratio"
                     ],
+                    contact_distance_bin_count=(
+                        protocol["loss"]["contact"]["geometry_head"][
+                            "contact_distance_bin_count"
+                        ]
+                        if protocol.get("format_version") in GEOMETRY_PROTOCOL_FORMATS
+                        else None
+                    ),
                 )
                 _publish_rank_phase(
                     phase_root,
@@ -1116,8 +1212,20 @@ def main() -> None:
                                 output.balanced_chain_loss_sum
                                 / output.contributing_chain_count
                             )
-                            contact_loss, contact_count, contact_positive_count = (
-                                heads.contact_loss(
+                            if protocol.get("format_version") in GEOMETRY_PROTOCOL_FORMATS:
+                                if (
+                                    not isinstance(heads, StageA1GeometryHeads)
+                                    or batch.contact_distance_bins is None
+                                ):
+                                    raise RuntimeError(
+                                        "Stage-A1 geometry head or labels are missing"
+                                    )
+                                (
+                                    contact_loss,
+                                    distance_loss_for_record,
+                                    contact_count,
+                                    contact_positive_count,
+                                ) = heads.contact_and_distance_loss(
                                     hidden=output.hidden_states,
                                     pair_batch_indices=batch.contact_batch_indices,
                                     pair_left_token_indices=(
@@ -1126,14 +1234,31 @@ def main() -> None:
                                     pair_right_token_indices=(
                                         batch.contact_right_token_indices
                                     ),
-                                    pair_labels=batch.contact_labels,
+                                    distance_bin_targets=batch.contact_distance_bins,
                                 )
-                            )
+                            else:
+                                contact_loss, contact_count, contact_positive_count = (
+                                    heads.contact_loss(
+                                        hidden=output.hidden_states,
+                                        pair_batch_indices=batch.contact_batch_indices,
+                                        pair_left_token_indices=(
+                                            batch.contact_left_token_indices
+                                        ),
+                                        pair_right_token_indices=(
+                                            batch.contact_right_token_indices
+                                        ),
+                                        pair_labels=batch.contact_labels,
+                                    )
+                                )
                             joint_loss = (
                                 protocol["loss"]["masked_language_modeling"]["weight"]
                                 * mlm_loss
                                 + protocol["loss"]["contact"]["weight"]
                                 * contact_loss
+                                + protocol["loss"]["contact"].get(
+                                    "distance_bin_weight", 0.0
+                                )
+                                * distance_loss_for_record
                             )
                         if not bool(torch.isfinite(joint_loss)):
                             raise RuntimeError("Stage-A1 efficiency joint loss is nonfinite")
@@ -1441,6 +1566,7 @@ def main() -> None:
                         float(batch.residue_count),
                         float(retrieval_allowed.shape[1]),
                         float(batch.tokens.numel()),
+                        float(distance_loss_for_record.detach()),
                     ],
                     device=device,
                     dtype=torch.float64,
@@ -1474,6 +1600,7 @@ def main() -> None:
             )
             totals[:6] /= world_size * optimization["accumulation_steps"]
             totals[7] /= world_size * optimization["accumulation_steps"]
+            totals[9] /= world_size * optimization["accumulation_steps"]
             torch.cuda.synchronize(device)
             elapsed = time.perf_counter() - started
             approximate_useful_token_mfu = None
@@ -1492,6 +1619,7 @@ def main() -> None:
                 "active_phase": active_phase if alternating_efficiency else "multitask",
                 "approximate_useful_token_6n_mfu": approximate_useful_token_mfu,
                 "contact_loss": float(totals[3]),
+                "distance_loss": float(totals[9]),
                 "elapsed_seconds": elapsed,
                 "gradient_norm": gradient_norm,
                 "mlm_loss": float(totals[1]),
@@ -1617,13 +1745,14 @@ def main() -> None:
                 },
                 "initialization": initialization,
                 "loss": {
-                    name: {
-                        "final_20_update_mean": _mean_records(update_records, name, 20),
-                        "first_20_update_mean": statistics.mean(
-                            record[name] for record in update_records[:20]
-                        ),
-                    }
-                    for name in ("total_loss", "mlm_loss", "retrieval_loss", "contact_loss")
+                    name: _loss_summary(update_records, name)
+                    for name in (
+                        "total_loss",
+                        "mlm_loss",
+                        "retrieval_loss",
+                        "contact_loss",
+                        "distance_loss",
+                    )
                 },
                 "manifest": {
                     "records_consumed": (

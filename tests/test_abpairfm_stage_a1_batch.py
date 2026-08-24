@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+
 import torch
 
 from antibody_pretraining.stage_a1_batch import build_stage_a1_microbatch
@@ -88,3 +90,29 @@ def test_stage_a1_dynamic_padding_rounds_up_and_preserves_legacy_shape() -> None
     )
     assert dynamic.tokens.shape == (4, 128)
     assert legacy.tokens.shape == (4, 1024)
+
+
+def test_stage_a1_distance_bins_define_4p5a_contact_labels() -> None:
+    records = [_record(index) for index in range(4)]
+    for record in records:
+        bins = torch.full((9, 9), 7, dtype=torch.uint8)
+        bins[0, 0] = 0
+        bins[2, 3] = 1
+        bins[4, 4] = 2
+        record["distance_bin_shape"] = [9, 9]
+        record["distance_bin_u8_base64"] = base64.b64encode(
+            bins.numpy().tobytes()
+        ).decode("ascii")
+    batch = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=64,
+        contact_distance_bin_count=2,
+    )
+    assert batch.contact_distance_bins is not None
+    assert len(batch.contact_distance_bins) == len(batch.contact_labels)
+    assert torch.equal(
+        batch.contact_labels.bool(),
+        batch.contact_distance_bins < 2,
+    )
+    assert int(batch.contact_labels.sum()) == 8

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 from dataclasses import dataclass
 import hashlib
 import math
@@ -124,6 +125,7 @@ class StageA1Microbatch:
     contact_left_token_indices: Tensor
     contact_right_token_indices: Tensor
     contact_labels: Tensor
+    contact_distance_bins: Tensor | None
     residue_count: int
 
 
@@ -194,6 +196,7 @@ def build_stage_a1_microbatch(
     maximum_positive_pairs_per_complex: int = 102,
     maximum_sampled_pairs_per_complex: int = 512,
     maximum_negative_to_positive_ratio: int = 4,
+    contact_distance_bin_count: int | None = None,
 ) -> StageA1Microbatch:
     if len(records) < 2 or maximum_tokens < 20:
         raise ValueError("Stage-A1 microbatch shape is invalid")
@@ -245,6 +248,7 @@ def build_stage_a1_microbatch(
     contact_left: list[int] = []
     contact_right: list[int] = []
     contact_labels: list[int] = []
+    contact_distance_bins: list[int] = []
     retrieval_records: list[dict[str, Any]] = []
     residue_count = 0
 
@@ -278,8 +282,36 @@ def build_stage_a1_microbatch(
             retrieval_indices.append(batch_index)
             retrieval_records.append(record)
         if contact_supervision:
+            distance_bins = None
+            if contact_distance_bin_count is not None:
+                shape = record.get("distance_bin_shape")
+                encoded = record.get("distance_bin_u8_base64")
+                if (
+                    not isinstance(shape, list)
+                    or shape != [len(left), len(right)]
+                    or not isinstance(encoded, str)
+                    or not 0 < contact_distance_bin_count < 256
+                ):
+                    raise ValueError("Stage-A1 distance-bin target is malformed")
+                decoded = bytearray(base64.b64decode(encoded, validate=True))
+                if len(decoded) != len(left) * len(right):
+                    raise ValueError("Stage-A1 distance-bin matrix size differs")
+                distance_bins = torch.frombuffer(decoded, dtype=torch.uint8).reshape(
+                    len(left), len(right)
+                )
+                source_positives = [
+                    (int(left_index), int(right_index))
+                    for left_index, right_index in zip(
+                        *torch.nonzero(
+                            distance_bins < contact_distance_bin_count,
+                            as_tuple=True,
+                        )
+                    )
+                ]
+            else:
+                source_positives = record["contact_pairs"]
             positives = _ranked_positive_pairs(
-                record["contact_pairs"],
+                source_positives,
                 seed=_seed(seed, record["example_id"], "contact"),
                 limit=maximum_positive_pairs_per_complex,
             )
@@ -310,6 +342,10 @@ def build_stage_a1_microbatch(
                 contact_left.append(1 + left_index)
                 contact_right.append(len(first) + 1 + right_index)
                 contact_labels.append(label)
+                if distance_bins is not None:
+                    contact_distance_bins.append(
+                        int(distance_bins[left_index, right_index])
+                    )
 
     if len(retrieval_indices) < 2:
         raise ValueError("Stage-A1 microbatch requires at least two retrieval pairs")
@@ -384,6 +420,10 @@ def build_stage_a1_microbatch(
     )
     if not contact_labels or 0 not in contact_labels or 1 not in contact_labels:
         raise ValueError("Stage-A1 microbatch requires both contact classes")
+    if contact_distance_bin_count is not None and len(contact_distance_bins) != len(
+        contact_labels
+    ):
+        raise RuntimeError("Stage-A1 distance-bin labels are not aligned")
     return StageA1Microbatch(
         tokens=tokens,
         chain_ids=chain_ids,
@@ -399,5 +439,10 @@ def build_stage_a1_microbatch(
         contact_left_token_indices=torch.tensor(contact_left, dtype=torch.long),
         contact_right_token_indices=torch.tensor(contact_right, dtype=torch.long),
         contact_labels=torch.tensor(contact_labels, dtype=torch.float32),
+        contact_distance_bins=(
+            torch.tensor(contact_distance_bins, dtype=torch.long)
+            if contact_distance_bin_count is not None
+            else None
+        ),
         residue_count=residue_count,
     )

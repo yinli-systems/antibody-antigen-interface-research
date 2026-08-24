@@ -36,10 +36,16 @@ from antibody_pretraining.pair_aware_esm2 import (  # noqa: E402
     PairAwareESM2Config,
 )
 from antibody_pretraining.stage_a1_objective import StageA1Heads  # noqa: E402
+from antibody_pretraining.stage_a1_geometry_objective import (  # noqa: E402
+    StageA1GeometryHeads,
+)
 from interaction_first.frontier_fsdp2 import verify_dcp_generation  # noqa: E402
 
 
-EXPECTED_PROTOCOL_FORMAT = "abpairfm_stage_a1_development_contact_v1"
+EXPECTED_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_development_contact_v1",
+    "abpairfm_stage_a1_geometry_development_contact_v2",
+}
 EXPECTED_INITIAL_CHECKPOINT_SHA256 = (
     "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500"
 )
@@ -51,6 +57,7 @@ SOURCE_PATHS = (
     "src/antibody_pretraining/pair_aware_distributed.py",
     "src/antibody_pretraining/pair_aware_esm2.py",
     "src/antibody_pretraining/stage_a1_objective.py",
+    "src/antibody_pretraining/stage_a1_geometry_objective.py",
     "src/interaction_first/frontier_fsdp2.py",
 )
 
@@ -173,7 +180,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     authorization = protocol.get("authorization", {})
     compute = protocol.get("compute", {})
     if (
-        protocol.get("format_version") != EXPECTED_PROTOCOL_FORMAT
+        protocol.get("format_version") not in EXPECTED_PROTOCOL_FORMATS
         or protocol.get("status") != "FROZEN_BEFORE_GPU_EVALUATION"
         or authorization.get("development_contact") is not True
         or authorization.get("development_pair_retrieval") is not False
@@ -609,14 +616,35 @@ def score_local_records(
                 raise RuntimeError("Stage-A1 contact hidden states are missing")
             for row, (item, offset) in enumerate(zip(batch, offsets)):
                 antibody_start, antibody_stop, antigen_start, antigen_stop = offset
-                left = heads.contact_left(
-                    output.hidden_states[row, antibody_start:antibody_stop]
-                )
-                right = heads.contact_right(
-                    output.hidden_states[row, antigen_start:antigen_stop]
-                )
-                logits = left @ right.transpose(0, 1) / math.sqrt(left.shape[-1])
-                logits = logits + heads.contact_bias
+                if isinstance(heads, StageA1GeometryHeads):
+                    left_count = antibody_stop - antibody_start
+                    right_count = antigen_stop - antigen_start
+                    pair_chunk = 4096
+                    chunks = []
+                    for pair_start in range(0, left_count * right_count, pair_chunk):
+                        flat = torch.arange(
+                            pair_start,
+                            min(pair_start + pair_chunk, left_count * right_count),
+                            device=device,
+                        )
+                        chunks.append(
+                            heads.contact_logits(
+                                output.hidden_states,
+                                torch.full_like(flat, row),
+                                antibody_start + torch.div(flat, right_count, rounding_mode="floor"),
+                                antigen_start + flat.remainder(right_count),
+                            )
+                        )
+                    logits = torch.cat(chunks).reshape(left_count, right_count)
+                else:
+                    left = heads.contact_left(
+                        output.hidden_states[row, antibody_start:antibody_stop]
+                    )
+                    right = heads.contact_right(
+                        output.hidden_states[row, antigen_start:antigen_stop]
+                    )
+                    logits = left @ right.transpose(0, 1) / math.sqrt(left.shape[-1])
+                    logits = logits + heads.contact_bias
                 if active:
                     sums, counts = accumulators[item.instance_id]
                     block = logits.float().cpu().numpy()
@@ -918,7 +946,18 @@ def main() -> None:
             expected_size=EXPECTED_INITIAL_CHECKPOINT_SIZE,
             expected_sha256=EXPECTED_INITIAL_CHECKPOINT_SHA256,
         )
-        heads = StageA1Heads(temperature=0.07).to(device=device, dtype=torch.float32)
+        if protocol["contact_score"].get("head") == "geometry_distance_mass_v1":
+            geometry = protocol["contact_score"]["geometry_head"]
+            heads = StageA1GeometryHeads(
+                pair_dimension=geometry["pair_dimension"],
+                num_distance_bins=geometry["num_distance_bins"],
+                contact_distance_bin_count=geometry["contact_distance_bin_count"],
+                temperature=0.07,
+            ).to(device=device, dtype=torch.float32)
+        else:
+            heads = StageA1Heads(temperature=0.07).to(
+                device=device, dtype=torch.float32
+            )
         system = StageA1System(backbone, heads)
         _load_system_dcp(
             system, dcp_root=arguments.dcp_root, generation=arguments.dcp_generation
