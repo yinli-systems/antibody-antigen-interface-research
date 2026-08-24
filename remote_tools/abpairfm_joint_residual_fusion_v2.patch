@@ -1,0 +1,148 @@
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -149,6 +149,16 @@
+         "distance_bin_count": 5,
+     },
+     "abpairfm_epiformer_style_same_protocol": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
++        "adapter_mode": "epiformer_style_same_protocol",
++        "distance_bin_count": 5,
++    },
++    "abpairfm_epiformer_residual_fusion_same_protocol": {
+         "geometry_feature_mode": "full_pose",
+         "geometry_bias_mode": "pair_mlp",
+         "geometry": True,
+@@ -386,7 +396,10 @@
+         )
+         if sha256_file(embedding_manifest) != arguments.embedding_manifest_sha256:
+             raise ValueError("ESM embedding manifest SHA-256 differs")
+-        if arguments.experiment == "abpairfm_epiformer_style_same_protocol":
++        if arguments.experiment in {
++            "abpairfm_epiformer_style_same_protocol",
++            "abpairfm_epiformer_residual_fusion_same_protocol",
++        }:
+             if any(value is None for value in joint_values):
+                 raise ValueError("ABPairFM adapter requires joint embedding authority")
+             joint_manifest_path = (
+@@ -444,11 +457,12 @@
+     expected_feature_mode = protocol.get("data", {}).get(
+         "input_feature_mode", "external_embedding_cache"
+     )
+-    observed_feature_mode = (
+-        "abpairfm_joint_cross_chain_v1"
+-        if arguments.joint_embedding_root is not None
+-        else "external_embedding_cache"
+-    )
++    if arguments.joint_embedding_root is None:
++        observed_feature_mode = "external_embedding_cache"
++    elif arguments.experiment == "abpairfm_epiformer_residual_fusion_same_protocol":
++        observed_feature_mode = "abpairfm_joint_residual_concatenation_v1"
++    else:
++        observed_feature_mode = "abpairfm_joint_cross_chain_v1"
+     if expected_feature_mode != observed_feature_mode:
+         raise ValueError("Input feature mode differs from the pre-registered protocol")
+     if protocol.get("tasks", {}).get("winner", {}).get("experiment") != arguments.experiment:
+@@ -583,7 +597,7 @@
+ 
+ 
+ class _JointEmbeddingOverrideDataset(torch.utils.data.Dataset):
+-    """Replace separable ESM features with authenticated per-complex ABPairFM states."""
++    """Use authenticated per-complex ABPairFM states alone or with frozen ESM states."""
+ 
+     def __init__(
+         self,
+@@ -592,6 +606,7 @@
+         manifest_sha256: str,
+         *,
+         split_role: str,
++        concatenate_base: bool,
+     ) -> None:
+         self.base_dataset = base_dataset
+         self.cache_root = base_dataset.cache_root
+@@ -614,6 +629,7 @@
+         self.joint_root = joint_root
+         self.joint_by_id = {identifier: by_id[identifier] for identifier in expected_ids}
+         self.checkpoint_sha256 = str(manifest["checkpoint"]["content_sha256"])
++        self.concatenate_base = bool(concatenate_base)
+ 
+     def __len__(self) -> int:
+         return len(self.base_dataset)
+@@ -651,8 +667,29 @@
+             or not bool(torch.isfinite(antigen).all())
+         ):
+             raise ValueError("ABPairFM joint embedding artifact metadata differs")
+-        item["antibody_features"] = antibody.float()
+-        item["antigen_features"] = antigen.float()
++        if self.concatenate_base:
++            base_antibody = item.get("antibody_features")
++            base_antigen = item.get("antigen_features")
++            if (
++                not torch.is_tensor(base_antibody)
++                or not torch.is_tensor(base_antigen)
++                or tuple(base_antibody.shape)
++                != (int(source_record["antibody_length"]), 1280)
++                or tuple(base_antigen.shape)
++                != (int(source_record["antigen_length"]), 1280)
++                or not bool(torch.isfinite(base_antibody).all())
++                or not bool(torch.isfinite(base_antigen).all())
++            ):
++                raise ValueError("Frozen base ESM feature authority differs")
++            item["antibody_features"] = torch.cat(
++                (base_antibody.float(), antibody.float()), dim=-1
++            )
++            item["antigen_features"] = torch.cat(
++                (base_antigen.float(), antigen.float()), dim=-1
++            )
++        else:
++            item["antibody_features"] = antibody.float()
++            item["antigen_features"] = antigen.float()
+         return item
+ 
+ 
+@@ -1302,17 +1339,23 @@
+             split_sha256=arguments.split_manifest_sha256,
+         )
+         if arguments.joint_embedding_root is not None:
++            concatenate_base = (
++                arguments.experiment
++                == "abpairfm_epiformer_residual_fusion_same_protocol"
++            )
+             train_base = _JointEmbeddingOverrideDataset(
+                 train_base,
+                 arguments.joint_embedding_root,
+                 arguments.joint_embedding_manifest_sha256,
+                 split_role="train",
++                concatenate_base=concatenate_base,
+             )
+             validation_base = _JointEmbeddingOverrideDataset(
+                 validation_base,
+                 arguments.joint_embedding_root,
+                 arguments.joint_embedding_manifest_sha256,
+                 split_role="validation",
++                concatenate_base=concatenate_base,
+             )
+         train_dataset = Sabdab2ContactDataset(
+             train_base, arguments.contact_cache_root
+@@ -1594,9 +1637,14 @@
+                     arguments.asep_feature_mode
+                     if arguments.dataset_backend == "asep"
+                     else (
+-                        "abpairfm_joint_cross_chain_v1"
+-                        if arguments.joint_embedding_root is not None
+-                        else "external_embedding_cache"
++                        "external_embedding_cache"
++                        if arguments.joint_embedding_root is None
++                        else (
++                            "abpairfm_joint_residual_concatenation_v1"
++                            if arguments.experiment
++                            == "abpairfm_epiformer_residual_fusion_same_protocol"
++                            else "abpairfm_joint_cross_chain_v1"
++                        )
+                     )
+                 ),
+                 "train_complexes": len(train_dataset),
