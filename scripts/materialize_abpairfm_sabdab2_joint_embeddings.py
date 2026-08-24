@@ -354,9 +354,10 @@ def _materialize_local(
         with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
             output = backbone(
                 tokens,
-                chain_ids=chain_ids,
-                return_attention=False,
+                chain_ids,
+                allow_cross_chain_attention=True,
                 return_hidden_states=True,
+                compute_logits=False,
             )
         if output.hidden_states is None or output.hidden_states.shape[-1] != 2560:
             raise RuntimeError("ABPairFM hidden-state dimension differs")
