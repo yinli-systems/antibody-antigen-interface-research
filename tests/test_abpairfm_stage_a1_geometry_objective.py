@@ -67,6 +67,44 @@ def test_geometry_loss_is_finite_and_differentiable() -> None:
     )
 
 
+def test_geometry_ranking_loss_is_complex_balanced_and_differentiable() -> None:
+    torch.manual_seed(43)
+    heads = StageA1GeometryHeads(
+        embedding_dimension=8,
+        projection_dimension=4,
+        pair_dimension=6,
+        num_distance_bins=5,
+        contact_distance_bin_count=2,
+    )
+    hidden = torch.randn(2, 6, 8, requires_grad=True)
+    losses = heads.balanced_contact_distance_and_ranking_loss(
+        hidden=hidden,
+        pair_batch_indices=torch.tensor([0, 0, 0, 1, 1, 1]),
+        pair_left_token_indices=torch.tensor([0, 0, 1, 0, 1, 1]),
+        pair_right_token_indices=torch.tensor([2, 3, 4, 2, 3, 4]),
+        distance_bin_targets=torch.tensor([0, 2, 4, 1, 3, 4]),
+    )
+    contact_loss, ranking_loss, distance_loss, count, positives, complexes = losses
+    assert count == 6
+    assert positives == 2
+    assert complexes == 2
+    assert all(torch.isfinite(value) for value in losses[:3])
+    (contact_loss + ranking_loss + distance_loss).backward()
+    assert hidden.grad is not None and torch.isfinite(hidden.grad).all()
+
+
+def test_geometry_ranking_loss_rewards_positive_ordering() -> None:
+    positive = torch.tensor([2.0, 1.0])
+    negative = torch.tensor([-1.0, -2.0])
+    ordered = torch.nn.functional.softplus(
+        negative.unsqueeze(0) - positive.unsqueeze(1)
+    ).mean()
+    reversed_order = torch.nn.functional.softplus(
+        positive.unsqueeze(0) - negative.unsqueeze(1)
+    ).mean()
+    assert ordered < reversed_order
+
+
 def test_geometry_loss_rejects_binary_labels_as_distance_bins() -> None:
     heads = StageA1GeometryHeads(
         embedding_dimension=4,
@@ -144,6 +182,42 @@ def test_geometry_head_only_canary_freezes_backbone_and_test() -> None:
         ROOT
         / "scripts"
         / "submit_abpairfm_stage_a1_geometry_head_only_canary_v16.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in submission
+    assert "#SBATCH --gres=gpu:4" in submission
+    assert "--efficiency-microbatch-pairs-per-rank 48" in submission
+    assert "--efficiency-activation-checkpoint-mode off" in submission
+    assert "hp_4090" not in submission
+
+
+def test_geometry_ranking_canary_freezes_internal_holdout_and_test() -> None:
+    protocol = json.loads(
+        (
+            ROOT
+            / "protocols"
+            / "abpairfm_stage_a1_geometry_ranking_canary_v17.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert protocol["optimization"]["updates"] == 80
+    assert protocol["optimization"]["head_learning_rate"] == 0.0001
+    assert protocol["loss"]["contact"]["ranking_weight"] == 1.0
+    assert protocol["loss"]["contact"]["distance_bin_weight"] == 1.0
+    assert protocol["internal_holdout"] == {
+        "expected_pdb_count": 511,
+        "grouping": "lowercase_pdb_prefix",
+        "pdb_inventory_sha256": (
+            "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028"
+        ),
+        "selection_seed": 1701,
+        "target_records": 512,
+        "test_access": False,
+    }
+    assert protocol["authorization"]["development_evaluation"] is False
+    assert protocol["test_access"] is False
+    submission = (
+        ROOT
+        / "scripts"
+        / "submit_abpairfm_stage_a1_geometry_ranking_canary_v17.sbatch"
     ).read_text(encoding="utf-8")
     assert "#SBATCH -p gpu_4090" in submission
     assert "#SBATCH --gres=gpu:4" in submission

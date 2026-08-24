@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from types import SimpleNamespace
+import hashlib
 
 import pytest
 import torch
@@ -32,6 +33,55 @@ def test_replicate_shard_mesh_shape_supports_four_and_eight_gpu_runs() -> None:
     assert runner._replicate_shard_mesh_shape(8, 4) == (2, 4)
     with pytest.raises(ValueError, match="divide"):
         runner._replicate_shard_mesh_shape(6, 4)
+
+
+def test_geometry_ranking_metrics_are_exact() -> None:
+    scores = torch.tensor([0.9, 0.8, 0.2, 0.1])
+    labels = torch.tensor([True, False, True, False])
+    assert runner._binary_average_precision(scores, labels) == pytest.approx(5 / 6)
+    assert runner._pairwise_ranking_accuracy(scores[labels], scores[~labels]) == 0.75
+
+
+def test_geometry_ranking_holdout_is_pdb_disjoint() -> None:
+    records = [
+        {"example_id": "1abc_A_B", "pilot_record_index": 0},
+        {"example_id": "1abc_A_C", "pilot_record_index": 1},
+        {"example_id": "2def_A_B", "pilot_record_index": 2},
+        {"example_id": "3ghi_A_B", "pilot_record_index": 3},
+    ]
+    ordered = sorted(
+        {"1abc", "2def", "3ghi"},
+        key=lambda pdb_id: hashlib.sha256(
+            f"1701\0v17_holdout\0{pdb_id}".encode("utf-8")
+        ).digest(),
+    )
+    selected = []
+    count = 0
+    multiplicity = {"1abc": 2, "2def": 1, "3ghi": 1}
+    for pdb_id in ordered:
+        if count >= 2:
+            break
+        selected.append(pdb_id)
+        count += multiplicity[pdb_id]
+    inventory = hashlib.sha256(
+        ("\n".join(selected) + "\n").encode("utf-8")
+    ).hexdigest()
+    protocol = {
+        "internal_holdout": {
+            "expected_pdb_count": len(selected),
+            "grouping": "lowercase_pdb_prefix",
+            "pdb_inventory_sha256": inventory,
+            "selection_seed": 1701,
+            "target_records": count,
+            "test_access": False,
+        }
+    }
+    train, holdout, receipt = runner._geometry_ranking_holdout(records, protocol)
+    train_pdbs = {row["example_id"].split("_")[0] for row in train}
+    holdout_pdbs = {row["example_id"].split("_")[0] for row in holdout}
+    assert train_pdbs.isdisjoint(holdout_pdbs)
+    assert receipt["holdout_record_count"] == count
+    assert receipt["pdb_inventory_sha256"] == inventory
 
 
 def test_v16_head_only_protocol_and_inactive_loss_summary() -> None:
