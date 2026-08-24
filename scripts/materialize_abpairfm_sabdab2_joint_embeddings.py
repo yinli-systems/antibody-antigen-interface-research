@@ -52,7 +52,6 @@ from run_abpairfm_stage_a1_frozen_development_contact import (  # noqa: E402
     batch_window_work,
     build_contact_batch,
     sha256_file,
-    window_spans,
 )
 
 
@@ -110,6 +109,24 @@ def _sequence_sha256(sequence: str) -> str:
 
 def _artifact_name(instance_id: str) -> str:
     return hashlib.sha256(instance_id.encode("utf-8")).hexdigest() + ".pt"
+
+
+def _window_spans(length: int, maximum: int) -> list[tuple[int, int]]:
+    """Cover an arbitrary sequence with deterministic bounded windows."""
+    if length <= 0 or maximum <= 0:
+        raise ValueError("Window lengths must be positive")
+    if length <= maximum:
+        return [(0, length)]
+    starts = list(range(0, length - maximum + 1, maximum))
+    if starts[-1] != length - maximum:
+        starts.append(length - maximum)
+    spans = [(start, start + maximum) for start in starts]
+    coverage = np.zeros(length, dtype=np.uint8)
+    for start, stop in spans:
+        coverage[start:stop] += 1
+    if bool((coverage == 0).any()):
+        raise RuntimeError("Joint embedding windows do not cover every residue")
+    return spans
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -268,8 +285,8 @@ def _allocate_records(
     for identifier, record in records.items():
         cost = sum(
             (ab_stop - ab_start + ag_stop - ag_start + 4) ** 2
-            for ab_start, ab_stop in window_spans(record.antibody_length, maximum)
-            for ag_start, ag_stop in window_spans(record.antigen_length, maximum)
+            for ab_start, ab_stop in _window_spans(record.antibody_length, maximum)
+            for ag_start, ag_stop in _window_spans(record.antigen_length, maximum)
         )
         costs.append((cost, identifier))
     assignments = [[] for _ in range(world_size)]
@@ -289,8 +306,8 @@ def _window_work(
     result: list[WindowWork] = []
     for identifier in identifiers:
         record = records[identifier]
-        for ab_start, ab_stop in window_spans(record.antibody_length, maximum):
-            for ag_start, ag_stop in window_spans(record.antigen_length, maximum):
+        for ab_start, ab_stop in _window_spans(record.antibody_length, maximum):
+            for ag_start, ag_stop in _window_spans(record.antigen_length, maximum):
                 result.append(
                     WindowWork(
                         instance_id=identifier,
