@@ -24,6 +24,13 @@ def test_window_spans_cover_long_endpoints_deterministically() -> None:
     assert counts.max() == 3
 
 
+def test_development_mesh_supports_two_and_eight_gpu_evaluation() -> None:
+    assert module._replicate_shard_mesh_shape(2) == (1, 2)
+    assert module._replicate_shard_mesh_shape(8) == (2, 4)
+    with pytest.raises(ValueError, match="mesh"):
+        module._replicate_shard_mesh_shape(5)
+
+
 def test_contact_batch_preserves_residue_offsets() -> None:
     item = module.WindowWork(
         instance_id="x",
@@ -111,6 +118,6 @@ def test_geometry_contact_protocol_requires_passed_train_only_gate() -> None:
         / "submit_abpairfm_stage_a1_geometry_frozen_development_contact_v2.sbatch"
     ).read_text(encoding="utf-8")
     assert "#SBATCH -p gpu_4090" in submission
-    assert "#SBATCH --gres=gpu:8" in submission
+    assert "#SBATCH --gres=gpu:2" in submission
     assert "hp_4090" not in submission
     assert "pilot-000000" in submission

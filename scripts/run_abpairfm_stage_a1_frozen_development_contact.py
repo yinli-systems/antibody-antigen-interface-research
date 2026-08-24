@@ -136,6 +136,13 @@ def _source_sha256(project_root: Path) -> str:
     return digest.hexdigest()
 
 
+def _replicate_shard_mesh_shape(world_size: int) -> tuple[int, int]:
+    shard_size = min(4, world_size)
+    if world_size < 1 or world_size % shard_size != 0:
+        raise ValueError("Stage-A1 development world size cannot form an FSDP mesh")
+    return world_size // shard_size, shard_size
+
+
 def publish_create_only(path: Path, payload: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
@@ -188,7 +195,7 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         or authorization.get("test_access") is not False
         or protocol.get("test_access") is not False
         or compute.get("partition") != "gpu_4090"
-        or compute.get("world_size") != 8
+        or compute.get("world_size") not in {2, 8}
         or arguments.maximum_batch_size
         != compute.get("maximum_batch_windows_per_rank")
         or arguments.maximum_attention_cells
@@ -962,8 +969,8 @@ def main() -> None:
     rank = torch.distributed.get_rank()
     try:
         world_size = torch.distributed.get_world_size()
-        if world_size != 8:
-            raise RuntimeError("Stage-A1 contact requires exactly eight ranks")
+        if world_size != protocol["compute"]["world_size"]:
+            raise RuntimeError("Stage-A1 contact world size differs from protocol")
         properties = torch.cuda.get_device_properties(device)
         if properties.name != "NVIDIA GeForce RTX 4090":
             raise RuntimeError(f"Forbidden GPU model: {properties.name}")
@@ -979,7 +986,11 @@ def main() -> None:
 
         from torch.distributed.device_mesh import init_device_mesh
 
-        mesh = init_device_mesh("cuda", (2, 4), mesh_dim_names=("replicate", "shard"))
+        mesh = init_device_mesh(
+            "cuda",
+            _replicate_shard_mesh_shape(world_size),
+            mesh_dim_names=("replicate", "shard"),
+        )
         with torch.device("meta"):
             backbone = PairAwareESM2(PairAwareESM2Config(activation_checkpointing=False))
         fully_shard_pair_aware_esm2(
