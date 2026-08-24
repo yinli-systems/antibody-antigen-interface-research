@@ -213,6 +213,16 @@ def source_sha256(project_root: Path) -> str:
     return digest.hexdigest()
 
 
+def _replicate_shard_mesh_shape(
+    world_size: int, shard_group_size: int
+) -> tuple[int, int]:
+    if shard_group_size < 1 or shard_group_size > world_size:
+        raise ValueError("shard-group-size must be in [1, world-size]")
+    if world_size % shard_group_size:
+        raise ValueError("shard-group-size must divide world-size")
+    return world_size // shard_group_size, shard_group_size
+
+
 def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     if _sha256(arguments.protocol) != arguments.expected_protocol_sha256:
         raise RuntimeError("Stage-A1 protocol SHA-256 differs")
@@ -1016,7 +1026,9 @@ def main() -> None:
         from torch.distributed.device_mesh import init_device_mesh
 
         mesh = init_device_mesh(
-            "cuda", (2, arguments.shard_group_size), mesh_dim_names=("replicate", "shard")
+            "cuda",
+            _replicate_shard_mesh_shape(world_size, arguments.shard_group_size),
+            mesh_dim_names=("replicate", "shard"),
         )
         activation_checkpoint_mode = (
             arguments.efficiency_activation_checkpoint_mode
