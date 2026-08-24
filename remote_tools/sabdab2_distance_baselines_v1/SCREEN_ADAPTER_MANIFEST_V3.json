@@ -1,0 +1,50 @@
+{
+  "format_version": "sabdab2_distance_and_adapter_screen_manifest_v3",
+  "protocol_file_sha256": "c8e262f6a6fdadc4807687904fc8ca3e41ad962a12e1e6caab810567ba795364",
+  "protocol_receipt_sha256": "0f8e27ea56e24b0f954fc3a4305b915a6125d39fd6ace39186b8e80a37161052",
+  "predecessor_failure": {
+    "job_ids": [1465858, 1465943],
+    "update_count": 0,
+    "exit_code": "1:0",
+    "reason": "frozen protocol completeness checks refused both predecessors before training",
+    "recovery_scope": "protocol-completeness-only"
+  },
+  "screen_split_sha256": "4ff0965a0f8dde3913a176ac0411b40c9d2db3d1cb2684c393d6b01886b806cd",
+  "source_sha256": {
+    "src/interaction_first/framecontact.py": "a85584f288b32e66e6ab34bcd93b0001ffcd2b173bb1b0fc9e3ab48bccd6171c",
+    "src/interaction_first/framecontact_objective.py": "380bca9791f022c5f19238db5fba897ad2350706bb1286b3c1cd80fe4a8eba48",
+    "scripts/train_framecontact.py": "07ce142ee37c245f9c0d3c8e6705e350d3b758ceaff7385a967756125bbae2fc"
+  },
+  "tests": {
+    "distance_head_coordinate_input": false,
+    "distance_head_output_shape": [2, 3, 4, 5],
+    "distance_and_contrastive_backward": "PASS",
+    "bidirectional_decoder_swap_symmetry": "PASS",
+    "three_adapter_synthetic_forward_backward": "PASS"
+  },
+  "tasks": {
+    "0": {
+      "name": "framecontact_distance_aux",
+      "experiment": "framecontact_distance_aux",
+      "distance_loss_weight": 0.1,
+      "contrastive_loss_weight": 0.0
+    },
+    "1": {
+      "name": "epiformer_style_same_protocol",
+      "experiment": "epiformer_style_same_protocol",
+      "distance_loss_weight": 0.1,
+      "contrastive_loss_weight": 0.0
+    },
+    "2": {
+      "name": "mipe_style_same_protocol",
+      "experiment": "mipe_style_same_protocol",
+      "distance_loss_weight": 0.0,
+      "contrastive_loss_weight": 0.05
+    }
+  },
+  "selection": {
+    "primary_metric": "validation epitope mean-per-complex AUPRC",
+    "tie_breaker": "validation contact mean-per-complex AUPRC then earlier epoch"
+  },
+  "test_loaded": false
+}
