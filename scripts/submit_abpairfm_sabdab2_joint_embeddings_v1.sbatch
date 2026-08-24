@@ -28,7 +28,7 @@ test "${SLURM_JOB_PARTITION}" = gpu_4090
 test ! -e "${OUTPUT_ROOT}"
 test "$(sha256sum "${CHECKPOINT_PROTOCOL}" | cut -d' ' -f1)" = 38cec6cd23a934d1a8ad9be0ecd92c9e4b742dd4b095e994d03aa18e961ca69a
 test "$(sha256sum "${EMBEDDING_PROTOCOL}" | cut -d' ' -f1)" = a74bb6890dc35e9090926a8e925c578d880ed2517deec5f47f840993e07eea7c
-test "$(sha256sum "${PROJECT}/scripts/materialize_abpairfm_sabdab2_joint_embeddings.py" | cut -d' ' -f1)" = 758bd19e430b1667bacc2fb512ad414f9eafae11ef74d159a9e04cf9561a0eb3
+test "$(sha256sum "${PROJECT}/scripts/materialize_abpairfm_sabdab2_joint_embeddings.py" | cut -d' ' -f1)" = 95c5862d9abc96e7937f2dff7eb8b982269af7a0cbcb3759316b0e87204cd63e
 
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export PYTHONPATH=${PROJECT}/src
