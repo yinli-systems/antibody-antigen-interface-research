@@ -1,0 +1,55 @@
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -1659,7 +1659,7 @@
+     history = []
+     best_metric = -math.inf
+-    best_contact_auprc = -math.inf
++    best_tie_break_metric = -math.inf
+     best_epoch = 0
+     stale_epochs = 0
+     best_path = temporary_root / "best_validation.pt"
+     started = time.monotonic()
+@@ -1752,18 +1752,26 @@
+             primary_metric = protocol["model_selection"].get(
+                 "primary_metric", "minimum_direction_cluster_weighted_margin"
+             )
+-            metric = (
+-                float(validation["epitope"]["mean_per_complex_auprc"])
+-                if primary_metric == "epitope_mean_per_complex_auprc"
+-                else float(validation["selection_metric"])
+-            )
+             contact_auprc = float(validation["contact"]["mean_per_complex_auprc"])
++            partner_margin = float(validation["selection_metric"])
++            if primary_metric == "epitope_mean_per_complex_auprc":
++                metric = float(validation["epitope"]["mean_per_complex_auprc"])
++                tie_break_metric = contact_auprc
++            elif primary_metric == "contact_mean_per_complex_auprc":
++                metric = contact_auprc
++                tie_break_metric = partner_margin
++            elif primary_metric == "minimum_direction_cluster_weighted_margin":
++                metric = partner_margin
++                tie_break_metric = contact_auprc
++            else:
++                raise ValueError("Unsupported primary checkpoint-selection metric")
+             improved = metric > best_metric + 1e-4 or (
+-                abs(metric - best_metric) <= 1e-4 and contact_auprc > best_contact_auprc
++                abs(metric - best_metric) <= 1e-4
++                and tie_break_metric > best_tie_break_metric
+             )
+             if improved:
+                 best_metric = metric
+-                best_contact_auprc = contact_auprc
++                best_tie_break_metric = tie_break_metric
+                 best_epoch = epoch
+                 stale_epochs = 0
+                 torch.save(
+@@ -1885,8 +1894,8 @@
+             "selection": {
+                 "best_epoch": best_epoch,
+-                "best_validation_compatibility_margin": best_metric,
++                "best_validation_primary_metric": best_metric,
+                 "primary_metric": protocol["model_selection"].get("primary_metric"),
+-                "tie_break_contact_mean_complex_auprc": best_contact_auprc,
++                "best_validation_tie_break_metric": best_tie_break_metric,
+                 "epochs_completed": len(history),
+             },
