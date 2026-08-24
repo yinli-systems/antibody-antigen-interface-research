@@ -146,6 +146,92 @@ class StageA1GeometryHeads(StageA1Heads):
             raise RuntimeError("Stage-A1 geometry loss is nonfinite")
         return contact_loss, distance_loss, len(labels), positive_count
 
+    def balanced_contact_distance_and_ranking_loss(
+        self,
+        *,
+        hidden: Tensor,
+        pair_batch_indices: Tensor,
+        pair_left_token_indices: Tensor,
+        pair_right_token_indices: Tensor,
+        distance_bin_targets: Tensor,
+    ) -> tuple[Tensor, Tensor, Tensor, int, int, int]:
+        """Return complex-balanced contact, within-complex ranking, and distance losses.
+
+        The ranking term compares every sampled native contact against every sampled
+        native noncontact from the same complex.  Cross-chain distance is used only
+        to form training targets and is never passed to the pair representation.
+        """
+
+        distance = self.distance_logits(
+            hidden,
+            pair_batch_indices,
+            pair_left_token_indices,
+            pair_right_token_indices,
+        )
+        if (
+            distance_bin_targets.shape != distance.shape[:1]
+            or distance_bin_targets.dtype != torch.long
+            or pair_batch_indices.shape != distance.shape[:1]
+        ):
+            raise ValueError("Stage-A1 ranking targets are misaligned")
+        if bool((distance_bin_targets < 0).any()) or bool(
+            (distance_bin_targets >= self.num_distance_bins).any()
+        ):
+            raise ValueError("Stage-A1 distance-bin target is out of range")
+
+        labels = distance_bin_targets < self.contact_distance_bin_count
+        positive_count = int(labels.sum())
+        if positive_count == 0 or positive_count == len(labels):
+            raise ValueError("Stage-A1 geometry batches require both contact classes")
+        contact_mass = torch.logsumexp(
+            distance[:, : self.contact_distance_bin_count], dim=-1
+        )
+        noncontact_mass = torch.logsumexp(
+            distance[:, self.contact_distance_bin_count :], dim=-1
+        )
+        contact_logits = contact_mass - noncontact_mass + self.contact_bias
+
+        balanced_losses: list[Tensor] = []
+        ranking_losses: list[Tensor] = []
+        for batch_index in torch.unique(pair_batch_indices, sorted=True):
+            selected = pair_batch_indices == batch_index
+            positive_logits = contact_logits[selected & labels]
+            negative_logits = contact_logits[selected & ~labels]
+            if len(positive_logits) == 0 or len(negative_logits) == 0:
+                raise ValueError(
+                    "Every Stage-A1 ranking complex requires both contact classes"
+                )
+            positive_bce = F.binary_cross_entropy_with_logits(
+                positive_logits, torch.ones_like(positive_logits)
+            )
+            negative_bce = F.binary_cross_entropy_with_logits(
+                negative_logits, torch.zeros_like(negative_logits)
+            )
+            balanced_losses.append(0.5 * (positive_bce + negative_bce))
+            ranking_losses.append(
+                F.softplus(
+                    negative_logits.unsqueeze(0) - positive_logits.unsqueeze(1)
+                ).mean()
+            )
+
+        contact_loss = torch.stack(balanced_losses).mean()
+        ranking_loss = torch.stack(ranking_losses).mean()
+        distance_loss = F.cross_entropy(distance, distance_bin_targets)
+        if not bool(
+            torch.isfinite(contact_loss)
+            and torch.isfinite(ranking_loss)
+            and torch.isfinite(distance_loss)
+        ):
+            raise RuntimeError("Stage-A1 geometry ranking loss is nonfinite")
+        return (
+            contact_loss,
+            ranking_loss,
+            distance_loss,
+            len(labels),
+            positive_count,
+            len(balanced_losses),
+        )
+
 
 def expected_random_contact_loss(negative_to_positive_ratio: int) -> float:
     """Return unweighted BCE at the sampled class-prior optimum."""

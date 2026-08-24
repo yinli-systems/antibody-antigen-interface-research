@@ -74,13 +74,19 @@ EXPECTED_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_promotion_v14",
     "abpairfm_stage_a1_geometry_canary_v15",
     "abpairfm_stage_a1_geometry_head_only_canary_v16",
+    "abpairfm_stage_a1_geometry_ranking_canary_v17",
 }
 GEOMETRY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_geometry_canary_v15",
     "abpairfm_stage_a1_geometry_head_only_canary_v16",
+    "abpairfm_stage_a1_geometry_ranking_canary_v17",
 }
 HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS = {
-    "abpairfm_stage_a1_geometry_head_only_canary_v16"
+    "abpairfm_stage_a1_geometry_head_only_canary_v16",
+    "abpairfm_stage_a1_geometry_ranking_canary_v17",
+}
+RANKING_GEOMETRY_PROTOCOL_FORMATS = {
+    "abpairfm_stage_a1_geometry_ranking_canary_v17",
 }
 GLOBAL_RETRIEVAL_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_multitask_pilot_v4",
@@ -117,6 +123,7 @@ ALTERNATING_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_promotion_v14",
     "abpairfm_stage_a1_geometry_canary_v15",
     "abpairfm_stage_a1_geometry_head_only_canary_v16",
+    "abpairfm_stage_a1_geometry_ranking_canary_v17",
 }
 REPRESENTATIVE_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_representative_efficiency_gate_v9",
@@ -134,6 +141,7 @@ LENGTH_BAND_EFFICIENCY_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_promotion_v14",
     "abpairfm_stage_a1_geometry_canary_v15",
     "abpairfm_stage_a1_geometry_head_only_canary_v16",
+    "abpairfm_stage_a1_geometry_ranking_canary_v17",
 }
 PROMOTION_PROTOCOL_FORMATS = {
     "abpairfm_stage_a1_length_band_promotion_v14",
@@ -370,9 +378,13 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
     if alternating_efficiency:
         efficiency = protocol.get("efficiency", {})
         expected_phase_schedule = (
-            "geometry_head_only_frozen_backbone"
-            if format_version in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS
-            else "alternating_joint_and_retrieval_single_backbone_pass"
+            "geometry_ranking_head_only_frozen_backbone"
+            if format_version in RANKING_GEOMETRY_PROTOCOL_FORMATS
+            else (
+                "geometry_head_only_frozen_backbone"
+                if format_version in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS
+                else "alternating_joint_and_retrieval_single_backbone_pass"
+            )
         )
         common_efficiency_valid = (
             protocol.get("efficiency_gate_only") == (not promotion)
@@ -421,6 +433,32 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         )
         if not common_efficiency_valid or not selected_efficiency_shape_valid:
             raise RuntimeError("Stage-A1 efficiency gate differs")
+        if format_version in RANKING_GEOMETRY_PROTOCOL_FORMATS:
+            holdout = protocol.get("internal_holdout", {})
+            promotion_gates = protocol.get("promotion_gates", {})
+            if (
+                protocol["loss"]["contact"].get("ranking_weight") != 1.0
+                or holdout.get("selection_seed") != 1701
+                or holdout.get("target_records") != 512
+                or holdout.get("expected_pdb_count") != 511
+                or holdout.get("pdb_inventory_sha256")
+                != "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028"
+                or holdout.get("grouping") != "lowercase_pdb_prefix"
+                or holdout.get("test_access") is not False
+                or promotion_gates.get(
+                    "minimum_internal_holdout_macro_auprc_absolute_gain"
+                )
+                != 0.02
+                or promotion_gates.get(
+                    "minimum_internal_holdout_pairwise_accuracy_absolute_gain"
+                )
+                != 0.02
+                or promotion_gates.get("minimum_train_contact_relative_reduction")
+                != 0.02
+                or promotion_gates.get("minimum_train_ranking_relative_reduction")
+                != 0.02
+            ):
+                raise RuntimeError("Stage-A1 geometry-ranking holdout differs")
         if promotion and protocol.get("promotion_selection") != {
             "source_gate": "abpairfm_stage_a1_length_band_efficiency_gate_v13",
             "rule": "highest_mean_mfu_among_pass_then_highest_throughput",
@@ -606,6 +644,8 @@ def _efficiency_bucket_records(
             ).encode("utf-8")
         ).digest()
     )
+    if format_version in RANKING_GEOMETRY_PROTOCOL_FORMATS:
+        return selected
     required = (
         protocol["optimization"]["updates"]
         * protocol["systems"]["world_size"]
@@ -617,6 +657,70 @@ def _efficiency_bucket_records(
         repeats = math.ceil(required / len(selected))
         selected = (selected * repeats)[:required]
     return selected
+
+
+def _geometry_ranking_holdout(
+    records: list[dict[str, Any]], protocol: Mapping[str, Any]
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    """Freeze a PDB-disjoint internal holdout before repeating training records."""
+
+    holdout = protocol["internal_holdout"]
+    pdb_to_records: dict[str, list[dict[str, Any]]] = {}
+    for record in records:
+        example_id = str(record["example_id"])
+        pdb_id = example_id.split("_", 1)[0].lower()
+        if len(pdb_id) != 4:
+            raise RuntimeError("Stage-A1 internal holdout PDB identity is malformed")
+        pdb_to_records.setdefault(pdb_id, []).append(record)
+    ordered_pdbs = sorted(
+        pdb_to_records,
+        key=lambda pdb_id: hashlib.sha256(
+            (
+                f"{holdout['selection_seed']}\0v17_holdout\0{pdb_id}"
+            ).encode("utf-8")
+        ).digest(),
+    )
+    selected_pdbs: list[str] = []
+    selected_count = 0
+    for pdb_id in ordered_pdbs:
+        if selected_count >= holdout["target_records"]:
+            break
+        selected_pdbs.append(pdb_id)
+        selected_count += len(pdb_to_records[pdb_id])
+    inventory_sha256 = hashlib.sha256(
+        ("\n".join(selected_pdbs) + "\n").encode("utf-8")
+    ).hexdigest()
+    if (
+        selected_count != holdout["target_records"]
+        or len(selected_pdbs) != holdout["expected_pdb_count"]
+        or inventory_sha256 != holdout["pdb_inventory_sha256"]
+    ):
+        raise RuntimeError("Stage-A1 internal holdout inventory differs")
+    selected_set = set(selected_pdbs)
+    holdout_records = [
+        record
+        for record in records
+        if str(record["example_id"]).split("_", 1)[0].lower() in selected_set
+    ]
+    training_records = [
+        record
+        for record in records
+        if str(record["example_id"]).split("_", 1)[0].lower() not in selected_set
+    ]
+    if (
+        not training_records
+        or len(training_records) + len(holdout_records) != len(records)
+    ):
+        raise RuntimeError("Stage-A1 internal holdout partition is incomplete")
+    return training_records, holdout_records, {
+        "grouping": holdout["grouping"],
+        "holdout_pdb_count": len(selected_pdbs),
+        "holdout_record_count": len(holdout_records),
+        "pdb_inventory_sha256": inventory_sha256,
+        "selection_seed": holdout["selection_seed"],
+        "test_access": False,
+        "training_record_count": len(training_records),
+    }
 
 
 def _length_bucket_stage_a1_records(
@@ -938,6 +1042,164 @@ def _head_only_geometry_parameters(heads: StageA1GeometryHeads) -> list[nn.Param
     return parameters
 
 
+def _binary_average_precision(scores: torch.Tensor, labels: torch.Tensor) -> float:
+    if (
+        scores.ndim != 1
+        or labels.shape != scores.shape
+        or labels.dtype is not torch.bool
+        or not bool(labels.any())
+    ):
+        raise ValueError("Stage-A1 average-precision inputs are malformed")
+    order = torch.argsort(scores, descending=True, stable=True)
+    ranked = labels[order].to(dtype=torch.float64)
+    precision = ranked.cumsum(0) / torch.arange(
+        1, len(ranked) + 1, device=ranked.device, dtype=torch.float64
+    )
+    return float((precision * ranked).sum() / ranked.sum())
+
+
+def _pairwise_ranking_accuracy(
+    positive_scores: torch.Tensor, negative_scores: torch.Tensor
+) -> float:
+    if positive_scores.ndim != 1 or negative_scores.ndim != 1:
+        raise ValueError("Stage-A1 ranking scores must be one-dimensional")
+    if len(positive_scores) == 0 or len(negative_scores) == 0:
+        raise ValueError("Stage-A1 ranking accuracy requires both classes")
+    differences = positive_scores.unsqueeze(1) - negative_scores.unsqueeze(0)
+    return float(
+        (differences.gt(0) + 0.5 * differences.eq(0)).to(torch.float64).mean()
+    )
+
+
+def _evaluate_geometry_ranking_holdout(
+    *,
+    backbone: PairAwareESM2,
+    heads: StageA1GeometryHeads,
+    holdout_records: list[dict[str, Any]],
+    protocol: Mapping[str, Any],
+    arguments: argparse.Namespace,
+    device: torch.device,
+    rank: int,
+    world_size: int,
+    microbatch_pairs_per_rank: int,
+) -> dict[str, float | int]:
+    """Evaluate aggregate sampled-contact metrics without publishing predictions."""
+
+    local_records = holdout_records[rank::world_size]
+    if len(local_records) < 2:
+        raise RuntimeError("Stage-A1 internal holdout shard is too small")
+    totals = torch.zeros(12, device=device, dtype=torch.float64)
+    heads_was_training = heads.training
+    heads.eval()
+    from torch.nn.attention import SDPBackend, sdpa_kernel
+
+    with torch.no_grad():
+        for start in range(0, len(local_records), microbatch_pairs_per_rank):
+            selected = local_records[start : start + microbatch_pairs_per_rank]
+            if len(selected) < 2:
+                raise RuntimeError("Stage-A1 internal holdout tail is too small")
+            cpu_batch = build_stage_a1_microbatch(
+                selected,
+                seed=1701 + rank * 100_000 + start,
+                maximum_tokens=arguments.maximum_tokens,
+                padding_multiple=protocol["efficiency"]["padding_multiple"],
+                maximum_positive_pairs_per_complex=protocol["loss"]["contact"][
+                    "maximum_positive_pairs_per_complex"
+                ],
+                maximum_sampled_pairs_per_complex=protocol["loss"]["contact"][
+                    "maximum_sampled_pairs_per_complex"
+                ],
+                maximum_negative_to_positive_ratio=protocol["loss"]["contact"][
+                    "maximum_negative_to_positive_ratio"
+                ],
+                contact_distance_bin_count=protocol["loss"]["contact"][
+                    "geometry_head"
+                ]["contact_distance_bin_count"],
+            )
+            batch = _to_device(cpu_batch, device)
+            with sdpa_kernel(SDPBackend.FLASH_ATTENTION), torch.autocast(
+                device_type="cuda", dtype=torch.bfloat16
+            ):
+                output = backbone(
+                    batch.tokens,
+                    batch.chain_ids,
+                    return_hidden_states=True,
+                    compute_logits=False,
+                )
+                if output.hidden_states is None or batch.contact_distance_bins is None:
+                    raise RuntimeError("Stage-A1 holdout geometry view is incomplete")
+                (
+                    contact_loss,
+                    ranking_loss,
+                    distance_loss,
+                    pair_count,
+                    positive_count,
+                    complex_count,
+                ) = heads.balanced_contact_distance_and_ranking_loss(
+                    hidden=output.hidden_states,
+                    pair_batch_indices=batch.contact_batch_indices,
+                    pair_left_token_indices=batch.contact_left_token_indices,
+                    pair_right_token_indices=batch.contact_right_token_indices,
+                    distance_bin_targets=batch.contact_distance_bins,
+                )
+                scores = heads.contact_logits(
+                    output.hidden_states,
+                    batch.contact_batch_indices,
+                    batch.contact_left_token_indices,
+                    batch.contact_right_token_indices,
+                ).float()
+            labels = batch.contact_distance_bins < heads.contact_distance_bin_count
+            ap_sum = 0.0
+            accuracy_sum = 0.0
+            prevalence_sum = 0.0
+            for batch_index in torch.unique(batch.contact_batch_indices, sorted=True):
+                mask = batch.contact_batch_indices == batch_index
+                local_labels = labels[mask]
+                local_scores = scores[mask]
+                positives = local_scores[local_labels]
+                negatives = local_scores[~local_labels]
+                ap_sum += _binary_average_precision(local_scores, local_labels)
+                accuracy_sum += _pairwise_ranking_accuracy(positives, negatives)
+                prevalence_sum += float(local_labels.float().mean())
+            totals += torch.tensor(
+                [
+                    float(contact_loss) * complex_count,
+                    float(ranking_loss) * complex_count,
+                    float(distance_loss) * pair_count,
+                    float(pair_count),
+                    float(complex_count),
+                    ap_sum,
+                    accuracy_sum,
+                    prevalence_sum,
+                    float(scores[labels].sum()),
+                    float(positive_count),
+                    float(scores[~labels].sum()),
+                    float(pair_count - positive_count),
+                ],
+                device=device,
+                dtype=torch.float64,
+            )
+    torch.distributed.all_reduce(totals)
+    if heads_was_training:
+        heads.train()
+    pair_count = int(totals[3])
+    complex_count = int(totals[4])
+    if pair_count < 1 or complex_count != len(holdout_records):
+        raise RuntimeError("Stage-A1 internal holdout evaluation count differs")
+    return {
+        "balanced_contact_bce": float(totals[0] / totals[4]),
+        "complex_count": complex_count,
+        "distance_cross_entropy": float(totals[2] / totals[3]),
+        "macro_sampled_contact_auprc": float(totals[5] / totals[4]),
+        "mean_negative_logit": float(totals[10] / totals[11]),
+        "mean_positive_logit": float(totals[8] / totals[9]),
+        "mean_sampled_positive_prevalence": float(totals[7] / totals[4]),
+        "pair_count": pair_count,
+        "pairwise_positive_over_negative_accuracy": float(totals[6] / totals[4]),
+        "ranking_softplus": float(totals[1] / totals[4]),
+    }
+
+
 def _clip_gradients(
     backbone: PairAwareESM2, heads: StageA1Heads, maximum_norm: float
 ) -> float:
@@ -969,6 +1231,7 @@ def _loss_summary(
         "contact_loss": "joint",
         "distance_loss": "joint",
         "mlm_loss": "joint",
+        "ranking_loss": "joint",
         "retrieval_loss": "retrieval",
     }.get(key)
     summary: dict[str, float | str | None] = {
@@ -1016,6 +1279,9 @@ def main() -> None:
     head_only_geometry = (
         protocol.get("format_version") in HEAD_ONLY_GEOMETRY_PROTOCOL_FORMATS
     )
+    contact_ranking = (
+        protocol.get("format_version") in RANKING_GEOMETRY_PROTOCOL_FORMATS
+    )
     output_generation = "stage-a1-000000" if promotion else "pilot-000000"
     project_root = arguments.project_root.resolve()
     observed_source_sha256 = source_sha256(project_root)
@@ -1038,6 +1304,19 @@ def main() -> None:
         protocol,
         microbatch_pairs_per_rank=microbatch_pairs_per_rank,
     )
+    holdout_records: list[dict[str, Any]] = []
+    internal_holdout_receipt: dict[str, Any] | None = None
+    if contact_ranking:
+        records, holdout_records, internal_holdout_receipt = (
+            _geometry_ranking_holdout(records, protocol)
+        )
+        required = (
+            protocol["optimization"]["updates"]
+            * protocol["systems"]["world_size"]
+            * microbatch_pairs_per_rank
+        )
+        repeats = math.ceil(required / len(records))
+        records = (records * repeats)[:required]
     unique_selected_records = len(
         {record["pilot_record_index"] for record in records}
     )
@@ -1173,6 +1452,21 @@ def main() -> None:
             if arguments.rank_phase_telemetry == "off"
             else arguments.result.parent / "rank_phases"
         )
+        internal_holdout_before = (
+            _evaluate_geometry_ranking_holdout(
+                backbone=backbone,
+                heads=heads,
+                holdout_records=holdout_records,
+                protocol=protocol,
+                arguments=arguments,
+                device=device,
+                rank=rank,
+                world_size=world_size,
+                microbatch_pairs_per_rank=microbatch_pairs_per_rank,
+            )
+            if contact_ranking and isinstance(heads, StageA1GeometryHeads)
+            else None
+        )
         for update in range(optimization["updates"]):
             optimizer.zero_grad(set_to_none=True)
             _publish_rank_phase(
@@ -1192,7 +1486,7 @@ def main() -> None:
             )
             torch.cuda.synchronize(device)
             started = time.perf_counter()
-            totals = torch.zeros(10, device=device, dtype=torch.float64)
+            totals = torch.zeros(11, device=device, dtype=torch.float64)
             minimum_allowed_candidates = torch.tensor(
                 0.0 if head_only_geometry else float("inf"),
                 device=device,
@@ -1206,6 +1500,7 @@ def main() -> None:
             active_head_prefixes: tuple[str, ...] | None = None
             for accumulation in range(optimization["accumulation_steps"]):
                 distance_loss_for_record = torch.zeros((), device=device)
+                ranking_loss_for_record = torch.zeros((), device=device)
                 microstep = update * optimization["accumulation_steps"] + accumulation
                 start = (
                     microstep * world_size + rank
@@ -1308,22 +1603,50 @@ def main() -> None:
                                     raise RuntimeError(
                                         "Stage-A1 geometry head or labels are missing"
                                     )
-                                (
-                                    contact_loss,
-                                    distance_loss_for_record,
-                                    contact_count,
-                                    contact_positive_count,
-                                ) = heads.contact_and_distance_loss(
-                                    hidden=output.hidden_states,
-                                    pair_batch_indices=batch.contact_batch_indices,
-                                    pair_left_token_indices=(
-                                        batch.contact_left_token_indices
-                                    ),
-                                    pair_right_token_indices=(
-                                        batch.contact_right_token_indices
-                                    ),
-                                    distance_bin_targets=batch.contact_distance_bins,
-                                )
+                                if contact_ranking:
+                                    (
+                                        contact_loss,
+                                        ranking_loss_for_record,
+                                        distance_loss_for_record,
+                                        contact_count,
+                                        contact_positive_count,
+                                        _,
+                                    ) = heads.balanced_contact_distance_and_ranking_loss(
+                                        hidden=output.hidden_states,
+                                        pair_batch_indices=(
+                                            batch.contact_batch_indices
+                                        ),
+                                        pair_left_token_indices=(
+                                            batch.contact_left_token_indices
+                                        ),
+                                        pair_right_token_indices=(
+                                            batch.contact_right_token_indices
+                                        ),
+                                        distance_bin_targets=(
+                                            batch.contact_distance_bins
+                                        ),
+                                    )
+                                else:
+                                    (
+                                        contact_loss,
+                                        distance_loss_for_record,
+                                        contact_count,
+                                        contact_positive_count,
+                                    ) = heads.contact_and_distance_loss(
+                                        hidden=output.hidden_states,
+                                        pair_batch_indices=(
+                                            batch.contact_batch_indices
+                                        ),
+                                        pair_left_token_indices=(
+                                            batch.contact_left_token_indices
+                                        ),
+                                        pair_right_token_indices=(
+                                            batch.contact_right_token_indices
+                                        ),
+                                        distance_bin_targets=(
+                                            batch.contact_distance_bins
+                                        ),
+                                    )
                             else:
                                 contact_loss, contact_count, contact_positive_count = (
                                     heads.contact_loss(
@@ -1347,6 +1670,10 @@ def main() -> None:
                                     "distance_bin_weight", 0.0
                                 )
                                 * distance_loss_for_record
+                                + protocol["loss"]["contact"].get(
+                                    "ranking_weight", 0.0
+                                )
+                                * ranking_loss_for_record
                             )
                         if not bool(torch.isfinite(joint_loss)):
                             raise RuntimeError("Stage-A1 efficiency joint loss is nonfinite")
@@ -1655,6 +1982,7 @@ def main() -> None:
                         float(retrieval_allowed.shape[1]),
                         float(batch.tokens.numel()),
                         float(distance_loss_for_record.detach()),
+                        float(ranking_loss_for_record.detach()),
                     ],
                     device=device,
                     dtype=torch.float64,
@@ -1689,6 +2017,7 @@ def main() -> None:
             totals[:6] /= world_size * optimization["accumulation_steps"]
             totals[7] /= world_size * optimization["accumulation_steps"]
             totals[9] /= world_size * optimization["accumulation_steps"]
+            totals[10] /= world_size * optimization["accumulation_steps"]
             torch.cuda.synchronize(device)
             elapsed = time.perf_counter() - started
             approximate_useful_token_mfu = None
@@ -1713,6 +2042,7 @@ def main() -> None:
                 ),
                 "contact_loss": float(totals[3]),
                 "distance_loss": float(totals[9]),
+                "ranking_loss": float(totals[10]),
                 "elapsed_seconds": elapsed,
                 "gradient_norm": gradient_norm,
                 "mlm_loss": float(totals[1]),
@@ -1756,6 +2086,7 @@ def main() -> None:
                                     "retrieval_loss",
                                     "contact_loss",
                                     "distance_loss",
+                                    *(("ranking_loss",) if contact_ranking else ()),
                                 )
                             }
                             if head_only_geometry
@@ -1770,6 +2101,21 @@ def main() -> None:
                         "update": update + 1,
                     },
                 )
+        internal_holdout_after = (
+            _evaluate_geometry_ranking_holdout(
+                backbone=backbone,
+                heads=heads,
+                holdout_records=holdout_records,
+                protocol=protocol,
+                arguments=arguments,
+                device=device,
+                rank=rank,
+                world_size=world_size,
+                microbatch_pairs_per_rank=microbatch_pairs_per_rank,
+            )
+            if contact_ranking and isinstance(heads, StageA1GeometryHeads)
+            else None
+        )
         rank_record = {
             "device_name": properties.name,
             "hostname": socket.gethostname(),
@@ -1839,6 +2185,7 @@ def main() -> None:
                 "checkpoint": {
                     "content_sha256": checkpoint_receipt["content_sha256"],
                     "generation": output_generation,
+                    "provenance_hashes": provenance,
                     "restore_content_sha256": restore_receipt["content_sha256"],
                     "root": str(arguments.checkpoint_root.resolve()),
                 },
@@ -1857,6 +2204,16 @@ def main() -> None:
                     "generation": arguments.input_generation,
                 },
                 "initialization": initialization,
+                "internal_holdout": (
+                    {
+                        "after_training": internal_holdout_after,
+                        "before_training": internal_holdout_before,
+                        "receipt": internal_holdout_receipt,
+                        "test_access": False,
+                    }
+                    if contact_ranking
+                    else None
+                ),
                 "loss": {
                     name: _loss_summary(
                         update_records,
@@ -1872,6 +2229,7 @@ def main() -> None:
                         "retrieval_loss",
                         "contact_loss",
                         "distance_loss",
+                        *(("ranking_loss",) if contact_ranking else ()),
                     )
                 },
                 "manifest": {
