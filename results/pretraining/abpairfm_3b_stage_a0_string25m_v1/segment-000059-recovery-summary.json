@@ -1,0 +1,52 @@
+{
+  "campaign": "abpairfm_3b_stage_a0_string25m_v1",
+  "failure": {
+    "classification": "UNCLASSIFIED_RANK_EXIT_WITH_TRUNCATED_TORCHELASTIC_STDERR",
+    "exit_code": "120:0",
+    "failure_receipt_sha256": "be55e4ce8f5b0870528d1ec41659e834d4cbc529e4498eae1d5769ea3d1c970e",
+    "job_id": 1463898,
+    "partial_progress": {
+      "global_update": 11890,
+      "gradient_norm": 0.3235601484775543,
+      "loss": 1.984375,
+      "segment_update": 90
+    },
+    "result_or_checkpoint_written": false,
+    "stderr_sha256": "de480c5f138ceb36d8cd08f005f5ec39061e97a53ef44ba7c9016822f87dfe15"
+  },
+  "format_version": "abpairfm_3b_stage_a0_recovery_summary_v1",
+  "recovery": {
+    "campaign_residue_tokens": 948194055,
+    "checkpoint_content_sha256": "54d41eba8655315cd7dcf1a1855a1260eaa8e3b39048040e93160a774fcfd9ed",
+    "checkpoint_receipt_sha256": "ffd6f642ad0790615cbe5147d21aea5d4b99ca0a386d56bc835c6cc4930443d0",
+    "elapsed": "00:39:16",
+    "global_update": 12000,
+    "input_checkpoint_content_sha256": "c323f146006092c79bbaea11e197f58a8ffb310b3cd01c6df98c0363fdee99ae",
+    "job_id": 1464796,
+    "loss": {
+      "final_20_update_mean": 1.9822265625,
+      "first_20_update_mean": 2.00078125,
+      "maximum": 2.0546875,
+      "minimum": 1.9375,
+      "nonfinite_updates": 0
+    },
+    "result_sha256": "148576d9947308393d71ea63185658287207d5cefe9c757d2790770282d81316",
+    "status": "PASS_CHECKPOINT_VERIFIED",
+    "throughput_residue_tokens_per_second": 7396.685933304699
+  },
+  "recovery_tool_sha256": "16e77094e86c260684c2138cc549fd12fccbf239be89964e91257a9dcd233c21",
+  "segment_index": 59,
+  "successor": {
+    "first_progress": {
+      "global_update": 12010,
+      "gradient_norm": 0.26599323749542236,
+      "loss": 1.984375,
+      "segment_update": 10
+    },
+    "manifest_job_id": 1464917,
+    "segment_index": 60,
+    "training_job_id": 1464916,
+    "watchdog_job_id": 1464918
+  },
+  "test_access": false
+}
