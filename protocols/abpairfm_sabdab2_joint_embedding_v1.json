@@ -1,0 +1,47 @@
+{
+  "authorization": {
+    "development_training_features": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "87d1a57148abde8bf47b3aaea4437219ad9c71f0df5d99a53e9de800b48bc479",
+    "generation": "pilot-000000",
+    "source": "abpairfm_stage_a1_geometry_ranking_canary_v17",
+    "training_state": {
+      "input_consumed_residue_tokens": 505708186,
+      "production_training": false,
+      "stage_a1_updates": 80,
+      "test_access": false
+    }
+  },
+  "claim_boundary": "Materialize frozen joint antibody-antigen hidden states for the authenticated SAbDab2 train and validation roles only. No task labels, old test role, external test, or future temporal holdout may be read.",
+  "compute": {
+    "maximum_attention_cells_per_rank": 7340032,
+    "maximum_batch_windows_per_rank": 7,
+    "maximum_window_residues": 510,
+    "partition": "gpu_4090",
+    "world_size": 2
+  },
+  "data": {
+    "prepared_authority_sha256": "a32aa68bb6780d1222b310bab5e4efbf365c9219e08eb8a897379ceded565335",
+    "sequence_authority_sha256": "9e87fb4241012e44837f700634ef4110c652822e6a1c0c162ea49487f830b107",
+    "sequence_view_receipt_sha256": "36a9249d5d1cec4065292e79d1efae8623987a4643675557f32252bcde7752ee",
+    "sequence_view_sha256": "27e0beb755c3d8e4b9910d4ad2ca979161668a1e1fe7b4d09bf6a60251e07468",
+    "split_roles": [
+      "train",
+      "validation"
+    ],
+    "split_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6"
+  },
+  "feature_definition": {
+    "aggregation": "arithmetic_mean_across_joint_ab_ag_windows",
+    "dimension": 2560,
+    "dtype": "bfloat16",
+    "representation": "joint_cross_chain_attention_hidden_state"
+  },
+  "format_version": "abpairfm_sabdab2_joint_embedding_v1",
+  "status": "FROZEN_BEFORE_GPU_MATERIALIZATION",
+  "task_labels_read": false,
+  "test_access": false
+}
