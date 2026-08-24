@@ -927,6 +927,17 @@ def _sync_replicated_head_gradients(
         parameter.grad.div_(world_size)
 
 
+def _head_only_geometry_parameters(heads: StageA1GeometryHeads) -> list[nn.Parameter]:
+    parameters = [
+        parameter
+        for name, parameter in heads.named_parameters()
+        if name.startswith("contact_")
+    ]
+    if not parameters:
+        raise RuntimeError("Stage-A1 geometry head has no contact parameters")
+    return parameters
+
+
 def _clip_gradients(
     backbone: PairAwareESM2, heads: StageA1Heads, maximum_norm: float
 ) -> float:
@@ -1117,7 +1128,7 @@ def main() -> None:
             (
                 [
                     {
-                        "params": list(heads.parameters()),
+                        "params": _head_only_geometry_parameters(heads),
                         "lr": optimization["head_learning_rate"],
                     }
                 ]
@@ -1731,6 +1742,25 @@ def main() -> None:
                             else "abpairfm_stage_a1_pilot_progress_v1"
                         ),
                         "latest": record,
+                        "loss": (
+                            {
+                                name: _loss_summary(
+                                    update_records,
+                                    name,
+                                    allow_inactive=name
+                                    in {"mlm_loss", "retrieval_loss"},
+                                )
+                                for name in (
+                                    "total_loss",
+                                    "mlm_loss",
+                                    "retrieval_loss",
+                                    "contact_loss",
+                                    "distance_loss",
+                                )
+                            }
+                            if head_only_geometry
+                            else None
+                        ),
                         "status": (
                             "RUNNING"
                             if update + 1 < optimization["updates"]

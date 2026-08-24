@@ -13,7 +13,7 @@ readonly PYTHON=/ssd/scxi253/model_deployment/envs/contact/bin/python3.10
 readonly PROJECT=${ABPAIRFM_STAGE_A1_PROJECT:?missing immutable Stage-A1 project root}
 readonly SOURCE_SHA256=${ABPAIRFM_STAGE_A1_SOURCE_SHA256:?missing frozen source SHA-256}
 readonly PROTOCOL=${PROJECT}/protocols/abpairfm_stage_a1_geometry_head_only_canary_v16.json
-readonly OUTPUT_ROOT=/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_geometry_head_only_canary_v16
+readonly OUTPUT_ROOT=${ABPAIRFM_STAGE_A1_OUTPUT_ROOT:-/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_geometry_head_only_canary_v16}
 
 export PYTHONPATH="${PROJECT}/src"
 export OMP_NUM_THREADS=6
