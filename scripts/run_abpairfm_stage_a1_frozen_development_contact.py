@@ -196,6 +196,24 @@ def _load_protocol(arguments: argparse.Namespace) -> dict[str, Any]:
         or protocol.get("calibration", {}).get("fitted_parameters") is not False
     ):
         raise RuntimeError("Stage-A1 contact protocol authorization differs")
+    if protocol.get("format_version") == (
+        "abpairfm_stage_a1_geometry_development_contact_v2"
+    ):
+        geometry = protocol.get("contact_score", {}).get("geometry_head", {})
+        gate = protocol.get("checkpoint_selection", {}).get("training_gate_audit", {})
+        if (
+            protocol["contact_score"].get("head") != "geometry_distance_mass_v1"
+            or geometry != {
+                "contact_distance_bin_count": 2,
+                "num_distance_bins": 8,
+                "pair_dimension": 256,
+            }
+            or gate.get("required_status")
+            != "PASS_STAGE_A1_GEOMETRY_RANKING_CANARY_GATE"
+            or gate.get("required_development_evaluation_authorization") is not True
+            or gate.get("test_access") is not False
+        ):
+            raise RuntimeError("Stage-A1 geometry development gate differs")
     return protocol
 
 
@@ -232,6 +250,33 @@ def _verify_checkpoint_collectively(
                 or receipt.get("training_state", {}).get("test_access") is not False
             ):
                 raise RuntimeError("Stage-A1 promotion result or DCP receipt differs")
+            if protocol.get("format_version") == (
+                "abpairfm_stage_a1_geometry_development_contact_v2"
+            ):
+                audit_anchor = selection["training_gate_audit"]
+                audit_path = Path(audit_anchor["path"])
+                if (
+                    audit_path.is_symlink()
+                    or not audit_path.is_file()
+                    or sha256_file(audit_path) != audit_anchor["sha256"]
+                ):
+                    raise RuntimeError(
+                        "Stage-A1 geometry learning audit anchor differs"
+                    )
+                audit = json.loads(audit_path.read_text(encoding="utf-8"))
+                if (
+                    audit.get("status") != audit_anchor["required_status"]
+                    or audit.get("authorization", {}).get(
+                        "development_evaluation"
+                    )
+                    is not audit_anchor[
+                        "required_development_evaluation_authorization"
+                    ]
+                    or audit.get("test_access") is not False
+                    or audit.get("result_sha256")
+                    != sha256_file(arguments.promotion_result)
+                ):
+                    raise RuntimeError("Stage-A1 geometry learning audit differs")
             payload[0]["receipt"] = receipt
         except BaseException as error:
             payload[0]["error"] = f"{type(error).__name__}: {error}"

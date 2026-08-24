@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -81,3 +82,35 @@ def test_contact_sbatch_uses_only_gpu_4090_and_fixed_python() -> None:
     assert "hp_4090" not in text
     assert "#SBATCH --mem" not in text
     assert "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10" in text
+
+
+def test_geometry_contact_protocol_requires_passed_train_only_gate() -> None:
+    path = (
+        ROOT
+        / "protocols"
+        / "abpairfm_stage_a1_geometry_development_contact_v2.json"
+    )
+    protocol = json.loads(path.read_text(encoding="utf-8"))
+    arguments = SimpleNamespace(
+        protocol=path,
+        expected_protocol_sha256=module.sha256_file(path),
+        maximum_batch_size=7,
+        maximum_attention_cells=7_340_032,
+    )
+    loaded = module._load_protocol(arguments)
+    assert loaded["contact_score"]["head"] == "geometry_distance_mass_v1"
+    assert loaded["checkpoint_selection"]["training_gate_audit"][
+        "required_status"
+    ] == "PASS_STAGE_A1_GEOMETRY_RANKING_CANARY_GATE"
+    assert loaded["authorization"]["test_access"] is False
+    assert loaded["test_access"] is False
+
+    submission = (
+        ROOT
+        / "scripts"
+        / "submit_abpairfm_stage_a1_geometry_frozen_development_contact_v2.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in submission
+    assert "#SBATCH --gres=gpu:8" in submission
+    assert "hp_4090" not in submission
+    assert "pilot-000000" in submission
