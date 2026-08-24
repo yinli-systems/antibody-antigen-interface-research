@@ -1,0 +1,69 @@
+{
+  "schema_version": "sabdab2_same_protocol_development_screen_v1",
+  "protocol_status": "frozen_before_training",
+  "data": {
+    "dataset_backend": "sabdab2",
+    "full_split_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+    "candidate_grid_invariant": "complete_cartesian_product_exactly_once",
+    "contact_manifest_sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33",
+    "structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0",
+    "embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545",
+    "development_screen": {
+      "train_count": 512,
+      "validation_count": 128,
+      "exclude_train_validation_antigen_cluster_overlap": true,
+      "test_features_or_labels_loaded": false
+    },
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31
+    }
+  },
+  "model_selection": {
+    "seeds": [17],
+    "maximum_epochs": 20,
+    "early_stopping_patience": 5,
+    "evaluate_partner_retrieval": false,
+    "primary_metric": "epitope_mean_per_complex_auprc",
+    "checkpoint_rule": "maximize validation mean-per-complex epitope AUPRC; break ties by contact mean-per-complex AUPRC and then earlier epoch"
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 500000,
+    "offload_saved_tensors": true,
+    "contact_focal_gamma": 1.0,
+    "epitope_dice_weight": 1.0,
+    "epitope_count_weight": 0.2
+  },
+  "training_objective": {
+    "contact": "equal-complex observed-class-balanced focal BCE",
+    "marginals": "balanced BCE plus epitope Dice and prevalence matching",
+    "specificity": "disabled in the speed screen because frozen K=1 partner-negative showed no stable development gain",
+    "specificity_score_source": "interaction_only",
+    "loss_weights": {
+      "contact": 1.0,
+      "paratope": 0.1,
+      "epitope": 0.5,
+      "specificity": 0.0
+    },
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01
+  },
+  "claim_boundary": {
+    "development_only": true,
+    "test_loaded": false,
+    "screen_is_not_a_final_baseline": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "format_version": "sabdab2_same_protocol_failed_screen_v1",
+  "job_id": "1465745",
+  "array_tasks": [0, 1, 2],
+  "state": "FAILED_PRETRAINING",
+  "training_updates": 0,
+  "failure": "StructureCacheError: Split view and cohort cache identifiers differ",
+  "failure_receipt_sha256": "0f11ad4addb397bd9186541ecf2a441dc7c52c4c03a3487aab2faa3a5bd1e4d2",
+  "recovery_job_id": "1465755",
+  "recovery_split_sha256": "4ff0965a0f8dde3913a176ac0411b40c9d2db3d1cb2684c393d6b01886b806cd",
+  "recovery_source_manifest_sha256": "93fb0306894f0ce436429331b8d26c1a6065d8147c066df35c0be5e021e0ff2e"
+}
