@@ -52,3 +52,58 @@ def test_geometry_canary_audit_passes_learning_gate(tmp_path: Path) -> None:
     assert payload["status"] == "PASS_STAGE_A1_GEOMETRY_CANARY_LEARNING_GATE"
     assert payload["authorization"]["development_evaluation"] is True
     assert payload["test_access"] is False
+
+
+def test_geometry_head_only_audit_uses_frozen_20_update_windows(
+    tmp_path: Path,
+) -> None:
+    loss = {
+        "active_update_count": 80,
+        "first_20_active_update_mean": 1.0,
+        "final_20_active_update_mean": 0.75,
+    }
+    result = tmp_path / "RESULT.json"
+    result.write_text(
+        json.dumps(
+            {
+                "checkpoint": {
+                    "content_sha256": "a" * 64,
+                    "restore_content_sha256": "a" * 64,
+                },
+                "loss": {"contact_loss": loss, "distance_loss": loss},
+                "source_sha256": "b" * 64,
+                "status": "PASS_STAGE_A1_EFFICIENCY_GATE_CHECKPOINT_VERIFIED",
+                "test_access": False,
+                "training_protocol_format_version": (
+                    "abpairfm_stage_a1_geometry_head_only_canary_v16"
+                ),
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "AUDIT.json"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--result",
+            str(result),
+            "--expected-protocol-sha256",
+            "c" * 64,
+            "--expected-source-sha256",
+            "b" * 64,
+            "--expected-active-updates",
+            "80",
+            "--window-size",
+            "20",
+            "--expected-training-protocol-format-version",
+            "abpairfm_stage_a1_geometry_head_only_canary_v16",
+            "--output",
+            str(output),
+        ],
+        check=True,
+    )
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["status"] == "PASS_STAGE_A1_GEOMETRY_CANARY_LEARNING_GATE"
+    assert payload["expected_active_updates"] == 80
+    assert payload["loss_window_size"] == 20

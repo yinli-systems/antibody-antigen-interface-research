@@ -119,3 +119,34 @@ def test_geometry_canary_submission_is_frozen_to_gpu_4090() -> None:
     assert "hp_4090" not in submission
     assert "segment-000031" in submission
     assert "--progress-interval 10" in submission
+
+
+def test_geometry_head_only_canary_freezes_backbone_and_test() -> None:
+    protocol = json.loads(
+        (
+            ROOT
+            / "protocols"
+            / "abpairfm_stage_a1_geometry_head_only_canary_v16.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert protocol["optimization"]["backbone_learning_rate"] == 0.0
+    assert protocol["optimization"]["updates"] == 80
+    assert protocol["optimization"]["microbatch_pairs_per_rank_candidates"] == [48]
+    assert protocol["efficiency"]["activation_checkpointing_candidates"] == ["off"]
+    assert protocol["loss"]["contact"]["distance_bin_weight"] == 1.0
+    assert protocol["loss"]["masked_language_modeling"]["weight"] == 0.0
+    assert protocol["loss"]["retrieval"]["weight"] == 0.0
+    assert protocol["systems"]["world_size"] == 4
+    assert protocol["authorization"]["development_evaluation"] is False
+    assert protocol["test_access"] is False
+
+    submission = (
+        ROOT
+        / "scripts"
+        / "submit_abpairfm_stage_a1_geometry_head_only_canary_v16.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH -p gpu_4090" in submission
+    assert "#SBATCH --gres=gpu:4" in submission
+    assert "--efficiency-microbatch-pairs-per-rank 48" in submission
+    assert "--efficiency-activation-checkpoint-mode off" in submission
+    assert "hp_4090" not in submission
