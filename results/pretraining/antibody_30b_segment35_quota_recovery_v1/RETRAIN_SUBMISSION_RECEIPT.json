@@ -1,0 +1,41 @@
+{
+  "format_version": "antibody_30b_segment_retrain_submission_receipt_v1",
+  "campaign": "antibody_pretraining_rtx4090_30b_5f1f6ac_v1",
+  "segment_index": 35,
+  "reason": "DCP_CHECKPOINT_WRITE_DISK_QUOTA_EXCEEDED",
+  "failed_training_job_id": 1467885,
+  "failed_automatic_recovery_job_id": 1467886,
+  "failure_receipt_sha256": "a2a80a724f2894d13b781538b86c8d9f1b29c54fc49136176505d5d20b19ed52",
+  "recovery_anchor": {
+    "segment_index": 34,
+    "segment_audit_sha256": "beb25f1762fee10081fafd85dd4679dc96d8f414fc1b9dafcf1f02bc5edc5150",
+    "next_update": 105000,
+    "consumed_residue_tokens": 15091949832,
+    "sample_cursor": 134400000,
+    "immutable_artifact_audit_passed": true,
+    "next_segment_submission_authorized": true
+  },
+  "retrain_job": {
+    "job_id": 1468492,
+    "initial_state": "PENDING",
+    "initial_reason": "Priority",
+    "partition": "gpu_4090",
+    "requested_gpus": 4,
+    "submitted_at": "2026-08-25T17:10:25+08:00",
+    "training_sbatch_sha256": "d7ac436ba89ea63d7892f60838a4e931347d2fd15693c4655740bbd24567d510"
+  },
+  "afternotok_recovery_watchdog": {
+    "job_id": 1468493,
+    "dependency": "afternotok:1468492",
+    "initial_state": "PENDING",
+    "initial_reason": "Dependency",
+    "partition": "gpu_4090",
+    "requested_gpus": 4,
+    "submitted_at": "2026-08-25T17:10:25+08:00",
+    "recovery_sbatch_sha256": "52c595ab6aadc5d71e9a290a16dc12e729b0f38beef4aae1892d7b975758aa0b"
+  },
+  "partial_segment_35_checkpoint_reused": false,
+  "protocol_frozen": true,
+  "test_access": false,
+  "submission_verified": true
+}
