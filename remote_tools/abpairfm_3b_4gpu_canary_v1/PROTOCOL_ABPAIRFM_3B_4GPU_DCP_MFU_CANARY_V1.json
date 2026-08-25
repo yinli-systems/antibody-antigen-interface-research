@@ -1,0 +1,52 @@
+{
+  "acceptance": {
+    "checkpoint_content_sha256_required": true,
+    "input_checkpoint_content_sha256": "38a0987985f119afb374f2062e407bc9c5006f3f7ad66711744086d9561810b1",
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "minimum_mfu_6n_estimate": 0.085,
+    "nonfinite_updates": 0,
+    "required_status": "PASS_DCP_RESHARD_CANARY_VERIFIED",
+    "test_access": false,
+    "world_size": 4
+  },
+  "authorization": {
+    "development_access": false,
+    "old_test_reopening": false,
+    "production_successor_submission_after_pass": true,
+    "real_stage_a0_data_canary": true,
+    "temporal_holdout_access": false
+  },
+  "batch_equivalence": {
+    "accumulation_steps": 4,
+    "global_pairs_per_update": 112,
+    "maximum_pair_tokens": 1024,
+    "microbatch_pairs_per_rank": 7,
+    "production_8gpu_global_pairs_per_update": 112
+  },
+  "checkpoint": {
+    "backend": "torch_distributed_checkpoint",
+    "input_generation": "segment-000073",
+    "input_world_size": 8,
+    "output_generation": "segment-000074",
+    "output_world_size": 4,
+    "require_model_optimizer_and_training_cursor": true
+  },
+  "claim_boundary": "Real-data systems evidence for 8-to-4 GPU DCP resharding and 4-GPU MFU only; not downstream or test evidence.",
+  "format_version": "abpairfm_3b_4gpu_dcp_mfu_canary_v1",
+  "hardware": {
+    "allowed_gpu_model": "NVIDIA GeForce RTX 4090",
+    "gpu_bf16_peak_flops": 165200000000000,
+    "partition": "gpu_4090",
+    "world_size": 4
+  },
+  "training": {
+    "activation_checkpointing": true,
+    "fsdp_mesh": [
+      1,
+      4
+    ],
+    "reshard_after_forward": false,
+    "segment_index": 74,
+    "updates": 20
+  }
+}
