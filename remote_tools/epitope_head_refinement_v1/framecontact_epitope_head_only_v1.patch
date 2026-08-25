@@ -1,0 +1,217 @@
+diff --git a/scripts/train_framecontact.py b/scripts/train_framecontact.py
+index 5e56dc2..3de48b5 100755
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -220,6 +220,13 @@ def _arguments() -> argparse.Namespace:
+     parser.add_argument("--protocol-receipt-sha256", required=True)
+     parser.add_argument("--source-manifest", type=Path)
+     parser.add_argument("--source-manifest-sha256")
++    parser.add_argument("--initial-checkpoint", type=Path)
++    parser.add_argument("--initial-checkpoint-sha256")
++    parser.add_argument(
++        "--training-policy",
++        choices=("full", "epitope_head_only"),
++        default="full",
++    )
+     parser.add_argument("--training-partner-panel", type=Path, required=True)
+     parser.add_argument("--training-partner-panel-sha256", required=True)
+     parser.add_argument("--validation-partner-panel", type=Path, required=True)
+@@ -1397,6 +1404,47 @@ def _state_sha256(model: torch.nn.Module) -> str:
+     return digest.hexdigest()
+ 
+ 
++def _state_sha256_excluding(
++    model: torch.nn.Module, excluded_prefixes: tuple[str, ...]
++) -> str:
++    digest = hashlib.sha256()
++    for name, tensor in model.state_dict().items():
++        if any(name == prefix or name.startswith(f"{prefix}.") for prefix in excluded_prefixes):
++            continue
++        value = tensor.detach().cpu().contiguous()
++        digest.update(name.encode())
++        digest.update(str(value.dtype).encode())
++        digest.update(str(tuple(value.shape)).encode())
++        digest.update(value.numpy().tobytes())
++    return digest.hexdigest()
++
++
++def _configure_training_policy(
++    model: FrameContactModel, training_policy: str
++) -> tuple[str, ...]:
++    if training_policy == "full":
++        return tuple(name for name, parameter in model.named_parameters() if parameter.requires_grad)
++    if training_policy != "epitope_head_only":
++        raise ValueError("Unsupported training policy")
++    for parameter in model.parameters():
++        parameter.requires_grad_(False)
++    for parameter in model.epitope_head.parameters():
++        parameter.requires_grad_(True)
++    names = tuple(name for name, parameter in model.named_parameters() if parameter.requires_grad)
++    expected = ("epitope_head.weight", "epitope_head.bias")
++    if names != expected:
++        raise RuntimeError(f"Unexpected head-only trainable parameters: {names}")
++    return names
++
++
++def _set_training_mode(model: FrameContactModel, training_policy: str) -> None:
++    if training_policy == "epitope_head_only":
++        model.eval()
++        model.epitope_head.train()
++    else:
++        model.train()
++
++
+ def _configure_experiment(model: FrameContactModel, experiment: str) -> None:
+     specification = EXPERIMENTS[experiment]
+     if model.fusion_mode != specification["fusion_mode"]:
+@@ -1472,5 +1520,29 @@ def main() -> None:
+         raise ValueError("split manifest path and SHA-256 must be provided together")
+     protocol, training_panel, panel = _load_authorities(arguments)
++    checkpoint_values = (
++        arguments.initial_checkpoint,
++        arguments.initial_checkpoint_sha256,
++    )
++    continuation = protocol.get("continuation", {})
++    if arguments.training_policy == "epitope_head_only":
++        if any(value is None for value in checkpoint_values):
++            raise ValueError("Head-only continuation requires an authenticated checkpoint")
++        if (
++            continuation.get("training_policy") != "epitope_head_only"
++            or continuation.get("initial_checkpoint_sha256")
++            != arguments.initial_checkpoint_sha256
++            or continuation.get("trainable_parameter_names")
++            != ["epitope_head.weight", "epitope_head.bias"]
++            or continuation.get("frozen_parameter_policy")
++            != "all_state_except_epitope_head_immutable"
++        ):
++            raise ValueError("Head-only continuation differs from the frozen protocol")
++        if sha256_file(arguments.initial_checkpoint) != arguments.initial_checkpoint_sha256:
++            raise ValueError("Initial checkpoint SHA-256 differs")
++    elif any(value is not None for value in checkpoint_values):
++        raise ValueError("Full training may not receive a continuation checkpoint")
++    elif continuation:
++        raise ValueError("Full training may not receive continuation authority")
+     if arguments.output_root.exists() or arguments.output_root.is_symlink():
+         raise FileExistsError("output-root already exists")
+     arguments.output_root.parent.mkdir(parents=True, exist_ok=True)
+@@ -1635,8 +1707,34 @@ def main() -> None:
+         vars(arguments),
+         arguments.experiment,
+     )
++    random_initial_state_sha256 = _state_sha256(model)
++    continuation_checkpoint_metadata = None
++    if arguments.initial_checkpoint is not None:
++        continuation_checkpoint_metadata = torch.load(
++            arguments.initial_checkpoint, map_location="cpu", weights_only=True
++        )
++        if (
++            continuation_checkpoint_metadata.get("format_version") != RESULT_FORMAT
++            or continuation_checkpoint_metadata.get("experiment") != arguments.experiment
++            or int(continuation_checkpoint_metadata.get("seed", -1)) != arguments.seed
++        ):
++            raise ValueError("Initial checkpoint metadata differs from the frozen run")
++        model.load_state_dict(
++            continuation_checkpoint_metadata["model_state_dict"], strict=True
++        )
+     initial_state_sha256 = _state_sha256(model)
++    trainable_parameter_names = _configure_training_policy(
++        model, arguments.training_policy
++    )
++    frozen_initial_state_sha256 = _state_sha256_excluding(
++        model, ("epitope_head",)
++    )
+     model.to(device)
++    trainable_parameters = [
++        parameter for parameter in model.parameters() if parameter.requires_grad
++    ]
++    if not trainable_parameters:
++        raise RuntimeError("Training policy selected no trainable parameters")
+     weights = FrameContactLossWeights(
+         contact=arguments.contact_loss_weight,
+         paratope=arguments.paratope_loss_weight,
+@@ -1650,7 +1743,9 @@ def main() -> None:
+         contrastive_maximum_residues=arguments.contrastive_maximum_residues,
+     )
+     optimizer = torch.optim.AdamW(
+-        model.parameters(), lr=arguments.learning_rate, weight_decay=arguments.weight_decay
++        trainable_parameters,
++        lr=arguments.learning_rate,
++        weight_decay=arguments.weight_decay,
+     )
+     temporary_root = Path(
+         tempfile.mkdtemp(
+@@ -1666,7 +1761,7 @@ def main() -> None:
+     started = time.monotonic()
+     try:
+         for epoch in range(1, arguments.epochs + 1):
+-            model.train()
++            _set_training_mode(model, arguments.training_policy)
+             if paired_train_dataset is not None:
+                 paired_train_dataset.set_epoch(epoch)
+             component_sums: dict[str, float] = {}
+@@ -1724,7 +1819,7 @@ def main() -> None:
+                     else:
+                         losses["matched_local_loss"] = losses["loss"].new_zeros(())
+                 losses["loss"].backward()
+-                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
++                torch.nn.utils.clip_grad_norm_(trainable_parameters, 1.0)
+                 optimizer.step()
+                 for key, value in losses.items():
+                     if torch.is_tensor(value):
+@@ -1784,6 +1882,12 @@ def main() -> None:
+                         "specificity_score_source": specificity_score_source,
+                         "validation_temperature": validation["validation_temperature"],
+                         "model_state_dict": model.state_dict(),
++                        "continuation": {
++                            "training_policy": arguments.training_policy,
++                            "initial_checkpoint_sha256": arguments.initial_checkpoint_sha256,
++                            "trainable_parameter_names": list(trainable_parameter_names),
++                            "frozen_initial_state_sha256": frozen_initial_state_sha256,
++                        },
+                     },
+                     best_path,
+                 )
+@@ -1797,5 +1901,11 @@ def main() -> None:
+         checkpoint = torch.load(best_path, map_location=device, weights_only=True)
+         model.load_state_dict(checkpoint["model_state_dict"])
++        frozen_selected_state_sha256 = _state_sha256_excluding(
++            model, ("epitope_head",)
++        )
++        frozen_state_unchanged = frozen_selected_state_sha256 == frozen_initial_state_sha256
++        if arguments.training_policy == "epitope_head_only" and not frozen_state_unchanged:
++            raise RuntimeError("A frozen state tensor changed during head-only training")
+         final_validation = _evaluate(
+             model,
+             validation_loader,
+@@ -1892,8 +2002,18 @@ def main() -> None:
+             },
+             "model": {
+                 "parameter_count": sum(parameter.numel() for parameter in model.parameters()),
++                "trainable_parameter_count": sum(
++                    parameter.numel() for parameter in trainable_parameters
++                ),
++                "trainable_parameter_names": list(trainable_parameter_names),
++                "training_policy": arguments.training_policy,
++                "random_initial_state_sha256": random_initial_state_sha256,
+                 "initial_state_sha256": initial_state_sha256,
+                 "selected_state_sha256": _state_sha256(model),
++                "frozen_initial_state_sha256": frozen_initial_state_sha256,
++                "frozen_selected_state_sha256": frozen_selected_state_sha256,
++                "frozen_state_unchanged": frozen_state_unchanged,
++                "initial_checkpoint_sha256": arguments.initial_checkpoint_sha256,
+             },
+             "selection": {
+                 "best_epoch": best_epoch,
+@@ -1913,6 +2033,12 @@ def main() -> None:
+             "selected_checkpoint_sha256": sha256_file(selected_checkpoint),
+             "seed": arguments.seed,
+             "selected_epoch": best_epoch,
++            "training_policy": arguments.training_policy,
++            "initial_checkpoint_sha256": arguments.initial_checkpoint_sha256,
++            "trainable_parameter_names": list(trainable_parameter_names),
++            "frozen_initial_state_sha256": frozen_initial_state_sha256,
++            "frozen_selected_state_sha256": frozen_selected_state_sha256,
++            "frozen_state_unchanged": frozen_state_unchanged,
+             "matched_local_manifest_sha256": arguments.matched_local_manifest_sha256,
+             "test_loaded": False,
+             "external_test_loaded": False,

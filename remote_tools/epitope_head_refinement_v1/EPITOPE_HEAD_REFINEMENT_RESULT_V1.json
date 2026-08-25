@@ -1,0 +1,63 @@
+{
+  "authority": {
+    "base_checkpoint_sha256": "5c2448c28a335dac0dcfa03d97a63be7331d664c3181c83a38bb563ca61b9a22",
+    "base_result_sha256": "38bbf1a4ade66b01abd81a925ac89464725c67564bc2c4c352701d6d8a0f8184",
+    "candidate_checkpoint_sha256": "314f6f2cdf8d906c1efd5d08335524a8e699ea9fe31fc02a784bc3f1385caaae",
+    "candidate_receipt_sha256": "1fc688f58f65fea8d275deddacea0022eeefb248e664029503fcd8e5612f672d",
+    "candidate_result_sha256": "b2bbe7460918e697edce3bd47b7c8349678f0c598bda1af52ebbd24df704b7b3",
+    "protocol_receipt_sha256": "d6e0a7de68c63fcc641a01e0c1ce57313252ba57da59c5f447ddd4448d8fdaef",
+    "protocol_sha256": "3e33395ad4e88494db3dcc4749d16e12bd49fdf786cbdf7b475a24b7df4d4320",
+    "temporal_holdout_loaded": false,
+    "test_loaded": false
+  },
+  "authorization": {
+    "full_development": false,
+    "old_test": false,
+    "seeds_29_43_development_only": false,
+    "temporal_holdout": false
+  },
+  "checkpoint_audit": {
+    "changed_epitope_head_tensor_names": [
+      "epitope_head.weight",
+      "epitope_head.bias"
+    ],
+    "changed_frozen_tensor_names": [],
+    "epitope_head_changed": true,
+    "frozen_tensor_count": 242,
+    "frozen_tensors_byte_identical": true,
+    "state_key_count": 244
+  },
+  "format_version": "sabdab2_epitope_head_refinement_result_v1",
+  "gate_checks": {
+    "all_epoch_contact_metric_unchanged": true,
+    "all_epoch_paratope_metric_unchanged": true,
+    "epitope_delta_at_least_0_005": false,
+    "epitope_head_changed": true,
+    "frozen_tensors_byte_identical": true,
+    "selected_contact_metric_unchanged": true,
+    "selected_paratope_metric_unchanged": true
+  },
+  "metrics": {
+    "baseline": {
+      "contact": 0.024830761686624868,
+      "epitope": 0.2532489185677912,
+      "paratope": 0.6756408447799143
+    },
+    "candidate": {
+      "contact": 0.024830761686624868,
+      "epitope": 0.25303035163198095,
+      "paratope": 0.6756408447799143
+    },
+    "delta": {
+      "contact": 0.0,
+      "epitope": -0.00021856693581023823,
+      "paratope": 0.0
+    },
+    "maximum_history_drift": {
+      "contact": 0.0,
+      "paratope": 0.0
+    }
+  },
+  "seed": 17,
+  "status": "FAIL_CLEAN"
+}
