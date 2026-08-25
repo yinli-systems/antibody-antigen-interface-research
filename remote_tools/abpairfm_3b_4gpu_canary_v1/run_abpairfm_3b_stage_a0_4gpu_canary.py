@@ -33,6 +33,7 @@ if str(SCRIPT_DIRECTORY) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIRECTORY))
 
 from run_abpairfm_3b_real_data_gate_v2 import (  # noqa: E402
+    _build_length_bucket_schedule,
     _build_real_microbatch,
     _collect,
     _nearest_rank_p95,
@@ -103,6 +104,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=1701)
     parser.add_argument("--progress-interval", type=int, default=10)
     parser.add_argument("--gpu-bf16-peak-flops", type=float, default=165.2e12)
+    parser.add_argument(
+        "--length-bucketed-microbatches",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
     return parser.parse_args()
 
 
@@ -117,6 +123,8 @@ def _validate(arguments: argparse.Namespace) -> None:
         raise ValueError("Stage-A0 optimizer differs from the frozen campaign")
     if arguments.seed != 1701 or arguments.segment_index < 0:
         raise ValueError("Stage-A0 seed or segment index differs")
+    if arguments.length_bucketed_microbatches is not True:
+        raise ValueError("The optimized canary requires frozen length bucketing")
     if not 0 < arguments.warmup_residue_tokens < arguments.target_residue_tokens:
         raise ValueError("Stage-A0 token schedule is invalid")
     resume = (
@@ -246,6 +254,21 @@ def main() -> None:
     if source_sha256 != arguments.expected_source_sha256:
         raise RuntimeError("Reviewed Stage-A0 source digest differs from launch anchor")
     records, manifest_sha256, manifest_receipt_sha256 = _load_manifest(arguments)
+    augmentation_seed = arguments.seed + arguments.segment_index * 1_000_003
+    length_bucket_schedule = _build_length_bucket_schedule(
+        records,
+        global_microbatch_size=(
+            arguments.expected_world_size * arguments.microbatch_pairs
+        ),
+        maximum_tokens=arguments.maximum_tokens,
+        seed=augmentation_seed,
+    )
+    schedule_payload = json.dumps(
+        [plan._asdict() for plan in length_bucket_schedule],
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    length_bucket_schedule_sha256 = hashlib.sha256(schedule_payload).hexdigest()
     prior_receipt = _input_receipt(arguments)
     provenance = {
         "campaign_protocol": arguments.expected_campaign_protocol_sha256,
@@ -332,22 +355,32 @@ def main() -> None:
             )
             for group in optimizer.param_groups:
                 group["lr"] = learning_rate
-            torch.distributed.barrier()
             torch.cuda.synchronize(device)
             started = time.perf_counter()
-            update_loss = 0.0
-            update_residues = 0
+            local_update_loss_sum = torch.zeros((), device=device, dtype=torch.float64)
+            local_update_residues = 0
+            expected_update_residues = 0
+            update_padded_tokens: list[int] = []
+            update_query_capacities: list[int] = []
             for accumulation in range(arguments.accumulation_steps):
                 microstep = update * arguments.accumulation_steps + accumulation
-                start = microstep * world_size * arguments.microbatch_pairs + rank * arguments.microbatch_pairs
-                indices = list(range(start, start + arguments.microbatch_pairs))
+                plan = length_bucket_schedule[microstep]
+                start = rank * arguments.microbatch_pairs
+                indices = list(
+                    plan.indices[start : start + arguments.microbatch_pairs]
+                )
+                expected_update_residues += plan.residue_count
                 cpu_tokens, cpu_chain_ids, cpu_labels, local_residues, swapped = _build_real_microbatch(
                     records,
                     indices,
                     maximum_tokens=arguments.maximum_tokens,
-                    seed=arguments.seed + arguments.segment_index * 1_000_003,
+                    padded_tokens=plan.padded_tokens,
+                    seed=augmentation_seed,
                 )
                 local_swapped += swapped
+                local_update_residues += local_residues
+                update_padded_tokens.append(plan.padded_tokens)
+                update_query_capacities.append(plan.query_capacity)
                 tokens = cpu_tokens.to(device, non_blocking=True)
                 chain_ids = cpu_chain_ids.to(device, non_blocking=True)
                 labels = cpu_labels.to(device, non_blocking=True)
@@ -355,30 +388,57 @@ def main() -> None:
                 model.set_requires_gradient_sync(synchronize)
                 model.set_is_last_backward(synchronize)
                 with sdpa_kernel(SDPBackend.FLASH_ATTENTION):
-                    output = model(tokens, chain_ids, labels=labels)
+                    output = model(
+                        tokens,
+                        chain_ids,
+                        labels=labels,
+                        attention_query_capacity=plan.query_capacity,
+                    )
                     if output.balanced_chain_loss_sum is None:
                         raise RuntimeError("Stage-A0 model did not return MLM loss")
-                    global_chain_count = output.contributing_chain_count.clone()
-                    torch.distributed.all_reduce(global_chain_count)
+                    expected_local_chain_count = arguments.microbatch_pairs * 2
+                    if (
+                        update == 0
+                        and accumulation == 0
+                        and int(output.contributing_chain_count)
+                        != expected_local_chain_count
+                    ):
+                        raise RuntimeError("Stage-A0 pair chain count differs")
                     loss = (
                         output.balanced_chain_loss_sum
-                        * world_size
-                        / global_chain_count.to(output.balanced_chain_loss_sum.dtype)
+                        / expected_local_chain_count
                         / arguments.accumulation_steps
                     )
                 if not bool(torch.isfinite(loss)):
                     raise RuntimeError("Non-finite Stage-A0 MLM loss")
                 loss.backward()
-                detached_loss = output.balanced_chain_loss_sum.detach().clone()
-                torch.distributed.all_reduce(detached_loss)
-                update_loss += float(detached_loss / global_chain_count) / arguments.accumulation_steps
-                residue_tensor = torch.tensor(local_residues, device=device, dtype=torch.long)
-                torch.distributed.all_reduce(residue_tensor)
-                update_residues += int(residue_tensor)
+                local_update_loss_sum = (
+                    local_update_loss_sum
+                    + output.balanced_chain_loss_sum.detach().to(torch.float64)
+                )
             gradient_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             if not bool(torch.isfinite(gradient_norm)):
                 raise RuntimeError("Non-finite Stage-A0 gradient norm")
             optimizer.step()
+            packed_metrics = torch.stack(
+                (
+                    local_update_loss_sum,
+                    torch.tensor(
+                        local_update_residues, device=device, dtype=torch.float64
+                    ),
+                )
+            )
+            torch.distributed.all_reduce(packed_metrics)
+            global_chain_count = (
+                world_size
+                * arguments.microbatch_pairs
+                * arguments.accumulation_steps
+                * 2
+            )
+            update_loss = float(packed_metrics[0] / global_chain_count)
+            update_residues = int(packed_metrics[1])
+            if update_residues != expected_update_residues:
+                raise RuntimeError("Length-bucket schedule residue count differs")
             torch.cuda.synchronize(device)
             elapsed = time.perf_counter() - started
             consumed_segment += update_residues
@@ -389,6 +449,10 @@ def main() -> None:
                 "global_update": global_update_before + update + 1,
                 "gradient_norm": float(gradient_norm),
                 "learning_rate": learning_rate,
+                "maximum_padded_tokens": max(update_padded_tokens),
+                "maximum_query_capacity": max(update_query_capacities),
+                "mean_padded_tokens": statistics.mean(update_padded_tokens),
+                "mean_query_capacity": statistics.mean(update_query_capacities),
                 "segment_update": update + 1,
             }
             updates.append(record)
@@ -403,6 +467,10 @@ def main() -> None:
                         "latest_global_mean_mlm_loss": update_loss,
                         "latest_gradient_norm": float(gradient_norm),
                         "learning_rate": learning_rate,
+                        "mean_padded_tokens": statistics.mean(update_padded_tokens),
+                        "mean_query_capacity": statistics.mean(
+                            update_query_capacities
+                        ),
                         "segment_index": arguments.segment_index,
                         "segment_update": update + 1,
                         "status": "RUNNING" if update + 1 < arguments.updates else "TRAINING_COMPLETE_CHECKPOINT_PENDING",
@@ -476,8 +544,21 @@ def main() -> None:
                 },
                 "optimization": {
                     "accumulation_steps": arguments.accumulation_steps,
+                    "attention_backend": "aten_native_varlen_flash",
+                    "attention_sdpa_calls_per_layer": 2,
+                    "length_bucket_schedule_sha256": (
+                        length_bucket_schedule_sha256
+                    ),
+                    "length_bucketed_microbatches": True,
                     "maximum_learning_rate": arguments.maximum_learning_rate,
+                    "mean_padded_tokens": statistics.mean(
+                        float(value["mean_padded_tokens"]) for value in updates
+                    ),
+                    "mean_query_capacity": statistics.mean(
+                        float(value["mean_query_capacity"]) for value in updates
+                    ),
                     "microbatch_pairs_per_rank": arguments.microbatch_pairs,
+                    "scalar_metric_all_reduces_per_update": 1,
                     "updates": arguments.updates,
                     "warmup_residue_tokens": arguments.warmup_residue_tokens,
                 },

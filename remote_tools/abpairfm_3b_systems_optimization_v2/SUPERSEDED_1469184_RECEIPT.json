@@ -1,0 +1,26 @@
+{
+  "cancelled_at_utc": "2026-08-25T11:05:09Z",
+  "exit_code": "0:0",
+  "format_version": "abpairfm_3b_systems_optimization_supersession_v1",
+  "job_id": 1469184,
+  "job_state": "CANCELLED",
+  "outputs_created": false,
+  "reason": "The native varlen design was tightened before allocation to pack Q/K/V before constructing lifted coordinates, eliminating padded lifted key/value temporaries without changing the exact attention formula.",
+  "submitted_implementation": {
+    "attention_backend": "aten_native_varlen_flash",
+    "attention_sdpa_calls_per_layer": 2,
+    "protocol_sha256": "2a2198f7062a012273b6ad869d1d46893962efabab591fc308b514d5dedb451d",
+    "source_aggregate_sha256": "0ab97b3f73b522a4b72eb25104d1849f3568185b6f6def65474badda13244260",
+    "source_runner_sha256": "43f0a774c15e4e2ec0f379532f7eaf0b2a812ed1b4c2209e09908b2759431a3a",
+    "submit_script_sha256": "09f836d4d56d6c0aa475cf1a2f2758558b04347528cdd87dfdd7270e29b2d202"
+  },
+  "superseding_implementation": {
+    "attention_backend": "aten_native_varlen_flash",
+    "attention_sdpa_calls_per_layer": 2,
+    "padded_lifted_qkv_materialized": false,
+    "protocol_sha256": "2a2198f7062a012273b6ad869d1d46893962efabab591fc308b514d5dedb451d",
+    "source_aggregate_sha256": "3d44ad2b00784491d5602a8058d4a608b8051f24db259fea953a3effd2510f73",
+    "source_runner_sha256": "43f0a774c15e4e2ec0f379532f7eaf0b2a812ed1b4c2209e09908b2759431a3a"
+  },
+  "test_access": false
+}

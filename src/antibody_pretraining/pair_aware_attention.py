@@ -15,6 +15,7 @@ export only.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 import math
 from typing import Literal
 
@@ -24,6 +25,16 @@ import torch.nn.functional as F
 
 
 AttentionImplementation = Literal["lifted_sdpa", "dense"]
+
+
+@dataclass(frozen=True)
+class PairAttentionLayout:
+    """Reusable tensor layout for one padded batch of two-chain pairs."""
+
+    position_ids: Tensor
+    chain_masks: Tensor
+    query_indices: Tensor
+    query_valid: Tensor
 
 
 def _next_multiple(value: int, multiple: int) -> int:
@@ -49,15 +60,79 @@ def chain_local_positions(chain_ids: Tensor, valid_mask: Tensor) -> Tensor:
     if bool((chain_ids[~valid_mask] != -1).any()):
         raise ValueError("Padding tokens require chain ID -1")
 
+    token_count = chain_ids.shape[1]
+    token_positions = torch.arange(token_count, device=chain_ids.device)
+    invalid_identifier = torch.iinfo(chain_ids.dtype).max
+    sortable_ids = chain_ids.masked_fill(~valid_mask, invalid_identifier)
+    order = torch.argsort(sortable_ids, dim=1, stable=True)
+    sorted_ids = sortable_ids.gather(1, order)
+    sorted_valid = valid_mask.gather(1, order)
+    boundary = sorted_valid.clone()
+    if token_count > 1:
+        boundary[:, 1:] &= (
+            ~sorted_valid[:, :-1] | sorted_ids[:, 1:].ne(sorted_ids[:, :-1])
+        )
+    starts = torch.where(
+        boundary,
+        token_positions[None].expand_as(chain_ids),
+        torch.zeros_like(chain_ids),
+    ).cummax(dim=1).values
+    sorted_positions = (
+        token_positions[None].to(chain_ids.dtype) - starts.to(chain_ids.dtype)
+    ).masked_fill(~sorted_valid, 0)
     positions = torch.zeros_like(chain_ids)
-    for batch_index in range(chain_ids.shape[0]):
-        identifiers = torch.unique(chain_ids[batch_index, valid_mask[batch_index]])
-        for identifier in identifiers.tolist():
-            selected = valid_mask[batch_index] & chain_ids[batch_index].eq(identifier)
-            positions[batch_index, selected] = torch.arange(
-                int(selected.sum()), device=chain_ids.device, dtype=chain_ids.dtype
-            )
-    return positions
+    return positions.scatter(1, order, sorted_positions)
+
+
+def build_pair_attention_layout(
+    chain_ids: Tensor,
+    valid_mask: Tensor,
+    *,
+    query_capacity: int | None = None,
+) -> PairAttentionLayout:
+    """Build one vectorized two-chain layout reused by every transformer layer."""
+    if chain_ids.ndim != 2 or valid_mask.shape != chain_ids.shape:
+        raise ValueError("chain_ids and valid_mask must be equal rank-two tensors")
+    batch_size, token_count = chain_ids.shape
+    if query_capacity is None:
+        query_capacity = token_count
+    if isinstance(query_capacity, bool) or not isinstance(query_capacity, int):
+        raise ValueError("query_capacity must be an integer")
+    if not 1 <= query_capacity <= token_count:
+        raise ValueError("query_capacity must be within the padded token length")
+
+    chain_slots = torch.arange(2, device=chain_ids.device, dtype=chain_ids.dtype)
+    chain_masks = (
+        chain_ids[:, None, :].eq(chain_slots[None, :, None])
+        & valid_mask[:, None, :]
+    )
+    chain_counts = chain_masks.sum(dim=-1)
+    if bool(chain_masks.sum(dim=1).ne(valid_mask).any()):
+        raise ValueError("Pair attention requires chain IDs 0 and 1 only")
+    if bool(chain_counts.eq(0).any()):
+        raise ValueError("Every pair requires two non-empty chains")
+    if bool(chain_counts.gt(query_capacity).any()):
+        raise ValueError("query_capacity is smaller than a chain in the batch")
+
+    token_positions = torch.arange(token_count, device=chain_ids.device)
+    sort_keys = torch.where(
+        chain_masks,
+        token_positions[None, None, :],
+        token_positions[None, None, :] + token_count,
+    )
+    query_indices = torch.argsort(sort_keys, dim=-1, stable=True)[
+        :, :, :query_capacity
+    ]
+    query_valid = (
+        torch.arange(query_capacity, device=chain_ids.device)[None, None, :]
+        < chain_counts[:, :, None]
+    )
+    return PairAttentionLayout(
+        position_ids=chain_local_positions(chain_ids, valid_mask),
+        chain_masks=chain_masks,
+        query_indices=query_indices,
+        query_valid=query_valid,
+    )
 
 
 class ChainLocalRotaryEmbedding(nn.Module):
@@ -176,6 +251,7 @@ def lifted_sdpa_hybrid_attention(
     dropout_p: float = 0.0,
     training: bool = False,
     allow_cross_chain: bool = True,
+    layout: PairAttentionLayout | None = None,
 ) -> Tensor:
     """Run exact hybrid attention without storing a full attention matrix.
 
@@ -201,85 +277,211 @@ def lifted_sdpa_hybrid_attention(
     if not isinstance(allow_cross_chain, bool):
         raise ValueError("allow_cross_chain must be boolean")
 
-    lifted_dimension = _next_multiple(2 * head_dimension + 1, 8)
-    attended = torch.zeros_like(value)
+    if layout is None:
+        layout = build_pair_attention_layout(chain_ids, valid_mask)
+    if layout.position_ids.shape != chain_ids.shape:
+        raise ValueError("Pair attention layout shape differs from chain metadata")
+    if layout.chain_masks.shape != (batch_size, 2, token_count):
+        raise ValueError("Pair attention layout must contain exactly two chain masks")
+
+    query_capacity = layout.query_indices.shape[-1]
     scale = head_dimension**-0.5
     effective_dropout = dropout_p if training else 0.0
     bias_query = math.sqrt(head_dimension) * cross_logit_bias
 
-    for batch_index in range(batch_size):
-        valid = valid_mask[batch_index]
-        if not bool(valid.any()):
-            continue
-        valid_indices = torch.nonzero(valid, as_tuple=False).flatten()
-        valid_chain_ids = chain_ids[batch_index, valid_indices]
+    def cuda_varlen_attention(
+        packed_query: Tensor,
+        packed_key: Tensor,
+        packed_value: Tensor,
+        query_mask: Tensor,
+        key_mask: Tensor,
+        maximum_key_length: int,
+    ) -> Tensor:
+        """Apply exact native variable-length attention and restore queries.
 
-        for identifier in torch.unique(valid_chain_ids).tolist():
-            query_indices = torch.nonzero(
-                valid & chain_ids[batch_index].eq(identifier), as_tuple=False
-            ).flatten()
-            key_indices = valid_indices if allow_cross_chain else query_indices
-            key_chain_ids = chain_ids[batch_index, key_indices]
-            raw_keys = key[batch_index : batch_index + 1, :, key_indices]
-            rope_keys = rotary_key[batch_index : batch_index + 1, :, key_indices]
-            values = value[batch_index : batch_index + 1, :, key_indices]
-            raw_queries = query[batch_index : batch_index + 1, :, query_indices]
-            rope_queries = rotary_query[batch_index : batch_index + 1, :, query_indices]
+        PyTorch 2.7 does not expose ``torch.nn.attention.varlen`` yet, but its
+        native FlashAttention operator already accepts cumulative sequence
+        lengths.  Inputs are packed before lifting so neither padding nor
+        padded lifted tensors enter the CUDA kernel.
+        """
+        flash_forward = getattr(torch.ops.aten, "_flash_attention_forward", None)
+        if flash_forward is None:
+            raise RuntimeError(
+                "The pinned CUDA runtime lacks native variable-length FlashAttention"
+            )
+        query_lengths = query_mask.sum(dim=-1, dtype=torch.int32)
+        key_lengths = key_mask.sum(dim=-1, dtype=torch.int32)
+        cumulative_query = F.pad(query_lengths.cumsum(dim=0), (1, 0))
+        cumulative_key = F.pad(key_lengths.cumsum(dim=0), (1, 0))
+        packed_output = flash_forward.default(
+            packed_query.contiguous(),
+            packed_key.contiguous(),
+            packed_value.contiguous(),
+            cumulative_query,
+            cumulative_key,
+            query_capacity,
+            maximum_key_length,
+            effective_dropout,
+            False,
+            False,
+            scale=scale,
+            window_size_left=-1,
+            window_size_right=-1,
+        )[0]
+        packed_positions = query_mask.flatten().cumsum(dim=0) - 1
+        restored = packed_output.index_select(
+            0, packed_positions.clamp_min(0)
+        ).view(batch_size, query_capacity, head_count, -1)
+        restored = restored * query_mask[:, :, None, None].to(restored.dtype)
+        return restored.permute(0, 2, 1, 3)
+
+    def attend_chain(chain_slot: int) -> Tensor:
+        query_indices = layout.query_indices[:, chain_slot]
+        gather_indices = query_indices[:, None, :, None].expand(
+            batch_size, head_count, query_capacity, head_dimension
+        )
+        raw_queries = query.gather(2, gather_indices)
+        rope_queries = rotary_query.gather(2, gather_indices)
+        query_valid = layout.query_valid[:, chain_slot]
+        same_chain_mask = layout.chain_masks[:, chain_slot]
+        key_valid = (
+            valid_mask
+            if allow_cross_chain
+            else same_chain_mask
+        )
+
+        if not query.is_cuda:
             if not allow_cross_chain:
-                chain_output = F.scaled_dot_product_attention(
+                independent = F.scaled_dot_product_attention(
                     rope_queries,
-                    rope_keys,
-                    values,
+                    rotary_key,
+                    value,
+                    attn_mask=key_valid[:, None, None, :],
                     dropout_p=effective_dropout,
                     is_causal=False,
                     scale=scale,
                 )
-                # Keep the joint-view-only scale in the distributed autograd
-                # graph so DDP/FSDP can use one static parameter set.
-                chain_output = chain_output + cross_scale.sum() * 0.0
-                attended[batch_index : batch_index + 1, :, query_indices] = (
-                    chain_output
-                )
-                continue
-            query_lift = query.new_zeros(
-                (1, head_count, query_indices.numel(), lifted_dimension)
+                return independent + cross_scale.sum() * 0.0
+            same_chain_key = same_chain_mask[:, None, :, None]
+            lifted_dimension = _next_multiple(2 * head_dimension + 1, 8)
+            query_lift = torch.cat(
+                (
+                    rope_queries,
+                    raw_queries * cross_scale[None, :, None, None],
+                    query.new_full(
+                        (batch_size, head_count, query_capacity, 1), bias_query
+                    ),
+                ),
+                dim=-1,
             )
-            key_lift = key.new_zeros(
-                (1, head_count, key_indices.numel(), lifted_dimension)
+            key_lift = torch.cat(
+                (
+                    torch.where(
+                        same_chain_key, rotary_key, torch.zeros_like(rotary_key)
+                    ),
+                    torch.where(same_chain_key, torch.zeros_like(key), key),
+                    (~same_chain_key).expand(
+                        batch_size, head_count, token_count, 1
+                    ).to(key.dtype),
+                ),
+                dim=-1,
             )
-            value_lift = value.new_zeros(
-                (1, head_count, key_indices.numel(), lifted_dimension)
+            query_lift = F.pad(
+                query_lift, (0, lifted_dimension - query_lift.shape[-1])
             )
-            query_lift[..., :head_dimension] = rope_queries
-            query_lift[..., head_dimension : 2 * head_dimension] = (
-                raw_queries * cross_scale[None, :, None, None]
+            key_lift = F.pad(
+                key_lift, (0, lifted_dimension - key_lift.shape[-1])
             )
-            query_lift[..., 2 * head_dimension] = bias_query
-
-            same = key_chain_ids.eq(identifier)[None, None, :, None]
-            key_lift[..., :head_dimension] = torch.where(
-                same, rope_keys, torch.zeros_like(rope_keys)
-            )
-            key_lift[..., head_dimension : 2 * head_dimension] = torch.where(
-                same, torch.zeros_like(raw_keys), raw_keys
-            )
-            key_lift[..., 2 * head_dimension] = (~same[..., 0]).to(key.dtype)
-            # Flash SDPA requires Q/K/V to share one head dimension.  Appended
-            # value coordinates are exactly zero, so slicing the output back to
-            # ``head_dimension`` preserves the dense hybrid-attention result.
-            value_lift[..., :head_dimension] = values
-            chain_output = F.scaled_dot_product_attention(
+            value_lift = F.pad(value, (0, lifted_dimension - head_dimension))
+            return F.scaled_dot_product_attention(
                 query_lift,
                 key_lift,
                 value_lift,
+                attn_mask=key_valid[:, None, None, :],
                 dropout_p=effective_dropout,
                 is_causal=False,
                 scale=scale,
+            )[..., :head_dimension]
+
+        packed_rope_queries = rope_queries.permute(0, 2, 1, 3)[query_valid]
+        if not allow_cross_chain:
+            packed_rope_key = rotary_key.permute(0, 2, 1, 3)[key_valid]
+            packed_value = value.permute(0, 2, 1, 3)[key_valid]
+            independent = cuda_varlen_attention(
+                packed_rope_queries,
+                packed_rope_key,
+                packed_value,
+                query_valid,
+                key_valid,
+                query_capacity,
             )
-            attended[batch_index : batch_index + 1, :, query_indices] = (
-                chain_output[..., :head_dimension]
-            )
-    return attended
+            return independent + cross_scale.sum() * 0.0
+
+        lifted_dimension = _next_multiple(2 * head_dimension + 1, 8)
+        packed_raw_queries = raw_queries.permute(0, 2, 1, 3)[query_valid]
+        query_lift = torch.cat(
+            (
+                packed_rope_queries,
+                packed_raw_queries * cross_scale[None, :, None],
+                query.new_full(
+                    (packed_raw_queries.shape[0], head_count, 1), bias_query
+                ),
+            ),
+            dim=-1,
+        )
+        packed_rotary_key = rotary_key.permute(0, 2, 1, 3)[key_valid]
+        packed_raw_key = key.permute(0, 2, 1, 3)[key_valid]
+        packed_value = value.permute(0, 2, 1, 3)[key_valid]
+        packed_same_chain = same_chain_mask[key_valid][:, None, None]
+        key_lift = torch.cat(
+            (
+                torch.where(
+                    packed_same_chain,
+                    packed_rotary_key,
+                    torch.zeros_like(packed_rotary_key),
+                ),
+                torch.where(
+                    packed_same_chain,
+                    torch.zeros_like(packed_raw_key),
+                    packed_raw_key,
+                ),
+                (~packed_same_chain).expand(-1, head_count, 1).to(key.dtype),
+            ),
+            dim=-1,
+        )
+        query_lift = F.pad(
+            query_lift, (0, lifted_dimension - query_lift.shape[-1])
+        )
+        key_lift = F.pad(key_lift, (0, lifted_dimension - key_lift.shape[-1]))
+        value_lift = F.pad(
+            packed_value, (0, lifted_dimension - head_dimension)
+        )
+        return cuda_varlen_attention(
+            query_lift,
+            key_lift,
+            value_lift,
+            query_valid,
+            key_valid,
+            token_count,
+        )[..., :head_dimension]
+
+    # Two static batch-vectorized calls bound temporary memory while reducing
+    # the old per-sample launch count from ``2 * batch_size`` to exactly two.
+    chain_output = torch.stack((attend_chain(0), attend_chain(1)), dim=1)
+
+    chain_output = chain_output * layout.query_valid[:, :, None, :, None].to(
+        chain_output.dtype
+    )
+    scatter_indices = layout.query_indices[:, None, :, :, None].expand(
+        batch_size, head_count, 2, query_capacity, head_dimension
+    )
+    scatter_values = chain_output.permute(0, 2, 1, 3, 4)
+    attended = torch.zeros_like(value)
+    return attended.scatter_add(
+        2,
+        scatter_indices.flatten(2, 3),
+        scatter_values.flatten(2, 3),
+    )
 
 
 class PairAwareSelfAttention(nn.Module):
@@ -323,6 +525,7 @@ class PairAwareSelfAttention(nn.Module):
         *,
         return_attention: bool = False,
         allow_cross_chain: bool = True,
+        attention_layout: PairAttentionLayout | None = None,
     ) -> tuple[Tensor, Tensor | None]:
         if hidden.ndim != 3:
             raise ValueError("hidden must have shape [batch, tokens, embedding]")
@@ -338,7 +541,9 @@ class PairAwareSelfAttention(nn.Module):
         query = self.q_proj(hidden).view(shape).transpose(1, 2)
         key = self.k_proj(hidden).view(shape).transpose(1, 2)
         value = self.v_proj(hidden).view(shape).transpose(1, 2)
-        positions = chain_local_positions(chain_ids, valid_mask)
+        if attention_layout is None:
+            attention_layout = build_pair_attention_layout(chain_ids, valid_mask)
+        positions = attention_layout.position_ids
         rotary_query = self.rot_emb(query, positions)
         rotary_key = self.rot_emb(key, positions)
 
@@ -372,6 +577,7 @@ class PairAwareSelfAttention(nn.Module):
                 dropout_p=self.dropout_p,
                 training=self.training,
                 allow_cross_chain=allow_cross_chain,
+                layout=attention_layout,
             )
             weights = None
         merged = attended.transpose(1, 2).contiguous().view_as(hidden)
