@@ -1,0 +1,25 @@
+{
+  "array_job_id": 1470236,
+  "array_tasks": [0, 1],
+  "campaign_authority_sha256": "b1b490ae2c009f9f5105b201e85722b82f8b73da2419a0717092abcf584529a4",
+  "development_only": true,
+  "format_version": "sabdab2_joint_loss_balance_submission_receipt_v1",
+  "partition": "gpu_4090",
+  "protocols": {
+    "paratope025": {
+      "protocol_sha256": "5d0e887b00e800e7babd5402bbceaffabe8fdb32cbc5c21cebc76f925b1c9a16",
+      "receipt_sha256": "725b06bcbd2e8f626304665f0f315b71cb7f547f1ed410a4bec061153b570e0d"
+    },
+    "paratope050": {
+      "protocol_sha256": "b03b48dc7b6fc5c78ea7a406ee3fcfe5f76dad98fa477e31a92deec9bde5adec",
+      "receipt_sha256": "1088dfc71fd379f1c05f0e046a980e21c0545bdb691f024d29bebcebbfe43a4a"
+    }
+  },
+  "scripts": {
+    "analyzer_sha256": "f7d088d58fa666082a06975779da085fc135977135f63f88191488e08ae646e7",
+    "freeze_sha256": "d410e3dfcb1841ef8ea32f9a1dae54e309ed6643a7e16dd1d5bfd4c22ba14210",
+    "slurm_sha256": "d341f6d1ed1a3d7481ecd92003e8ae69de51ad0ef79195340cb31a80fdc4ae14"
+  },
+  "temporal_holdout_loaded": false,
+  "test_loaded": false
+}

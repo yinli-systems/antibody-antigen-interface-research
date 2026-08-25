@@ -1,0 +1,57 @@
+diff --git a/src/interaction_first/framecontact.py b/src/interaction_first/framecontact.py
+--- a/src/interaction_first/framecontact.py
++++ b/src/interaction_first/framecontact.py
+@@ -543,6 +543,28 @@ def masked_logmeanexp(logits: Any, mask: Any, *, dim: int) -> Any:
+     return result.masked_fill(observed_count == 0, 0.0)
+ 
+ 
++def masked_top_k_mean_probability_logits(
++    logits: Any, mask: Any, *, dim: int, k: int = 2
++) -> Any:
++    """Pool the top-k observed contact probabilities and return stable logits."""
++    torch_module = _require_torch()
++    if tuple(logits.shape) != tuple(mask.shape) or mask.dtype != torch_module.bool:
++        raise ValueError("logits and boolean mask must have identical shapes")
++    k = _positive_integer(k, "k")
++    top_k = min(k, int(logits.shape[dim]))
++    probabilities = torch_module.sigmoid(logits.float()).masked_fill(~mask, 0.0)
++    values = torch_module.topk(
++        probabilities, k=top_k, dim=dim, largest=True, sorted=False
++    ).values
++    observed_count = mask.sum(dim=dim)
++    denominator = observed_count.clamp(min=1, max=top_k).to(values.dtype)
++    pooled = values.sum(dim=dim) / denominator
++    epsilon = torch_module.finfo(pooled.dtype).eps
++    pooled_logits = torch_module.logit(pooled.clamp(epsilon, 1.0 - epsilon))
++    pooled_logits = pooled_logits.to(logits.dtype)
++    return pooled_logits.masked_fill(observed_count == 0, 0.0)
++
++
+ class FrameContactModel(_ModuleBase):
+     """End-to-end self geometry, explicit contacts, and gated interaction model.
+ 
+@@ -883,8 +905,16 @@ class FrameContactModel(_ModuleBase):
+         antigen_fused = self.antigen_norm(antigen_fused).masked_fill(
+             ~antigen_mask[..., None], 0.0
+         )
+-        paratope_contact = masked_logmeanexp(contact_logits, pair_mask, dim=2)
+-        epitope_contact = masked_logmeanexp(contact_logits, pair_mask, dim=1)
++        if self.adapter_mode == "epiformer_style_same_protocol":
++            paratope_contact = masked_top_k_mean_probability_logits(
++                contact_logits, pair_mask, dim=2, k=2
++            )
++            epitope_contact = masked_top_k_mean_probability_logits(
++                contact_logits, pair_mask, dim=1, k=2
++            )
++        else:
++            paratope_contact = masked_logmeanexp(contact_logits, pair_mask, dim=2)
++            epitope_contact = masked_logmeanexp(contact_logits, pair_mask, dim=1)
+         paratope_logits = self.paratope_head(antibody_fused).squeeze(-1)
+         epitope_logits = self.epitope_head(antigen_fused).squeeze(-1)
+         if self.adapter_mode == "epiformer_style_same_protocol":
+@@ -956,4 +986,5 @@ __all__ = [
+     "PairContactHead",
+     "PairDistanceBinHead",
+     "masked_logmeanexp",
++    "masked_top_k_mean_probability_logits",
+ ]

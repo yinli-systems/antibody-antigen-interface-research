@@ -1,0 +1,14 @@
+{
+  "campaign_authority_sha256": "2e68ab19a83c416c04f5054c7c11366be72e464afc9eaf39c72e8fcf941dfc39",
+  "format_version": "sabdab2_epiformer_top2_submission_receipt_v1",
+  "job_id": "1470435",
+  "partition": "gpu_4090",
+  "protocol_receipt_sha256": "b4df9dae6ccfd44326e960d806eab8cbd14037efb398441e0bb07f3aa7f5853a",
+  "protocol_sha256": "5796560023097215b9d87e48fafb4e3facccf5ef1c40dbf0ffc0eb29032a03d6",
+  "sbatch_sha256": "a7be09e12cbfadd1d999c31ab505d958eaf7e8eb0220f1e55d482774e98df521",
+  "source_manifest_sha256": "757373282bec0340f3f0171b7471a881fbd4f854a088bc81b72315e9bba24157",
+  "source_tree_sha256": "c059d79117ed22433f02b24363a54c23cce531aeefad4663feeef357da07538f",
+  "submitted_at": "2026-08-26T00:48:32+08:00",
+  "temporal_holdout_loaded": false,
+  "test_loaded": false
+}
