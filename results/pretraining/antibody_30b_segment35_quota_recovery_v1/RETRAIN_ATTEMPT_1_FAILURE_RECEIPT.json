@@ -1,0 +1,38 @@
+{
+  "format_version": "antibody_30b_segment_retrain_preflight_failure_receipt_v1",
+  "campaign": "antibody_pretraining_rtx4090_30b_5f1f6ac_v1",
+  "segment_index": 35,
+  "retrain_job": {
+    "job_id": 1468492,
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "partition": "gpu_4090",
+    "requested_gpus": 4,
+    "started_at": "2026-08-25T17:15:19+08:00",
+    "ended_at": "2026-08-25T17:15:20+08:00",
+    "failure_class": "MISSING_REQUIRED_SUBMISSION_ENVIRONMENT",
+    "missing_variable": "ABF_SOURCE_ROOT",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "9123c8cf34191209e75b281682d25d48ff0ce2b20a633cabd5016b873f5c5353"
+  },
+  "afternotok_recovery_job": {
+    "job_id": 1468493,
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "partition": "gpu_4090",
+    "requested_gpus": 4,
+    "started_at": "2026-08-25T17:15:49+08:00",
+    "ended_at": "2026-08-25T17:15:50+08:00",
+    "failure_class": "MISSING_REQUIRED_SUBMISSION_ENVIRONMENT",
+    "missing_variable": "ABF_SOURCE_ROOT",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "2cb44b2e98e4fe7563ad8ea42881513cc3f30c565d52e953c5feb4f92a1aa854"
+  },
+  "training_started": false,
+  "segment_output_created": false,
+  "checkpoint_read_or_written": false,
+  "segment_000034_modified": false,
+  "test_access": false,
+  "fail_closed": true,
+  "supersedes_submission_receipt_sha256": "a61e1597ed725e27c85f791d9a3138bee278aaecc43677168a522c76cc65bc4e"
+}
