@@ -15,7 +15,7 @@ import statistics
 import subprocess
 import tempfile
 import time
-from typing import Any
+from typing import Any, NamedTuple
 
 import torch
 
@@ -39,6 +39,17 @@ CLAIM_BOUNDARY = (
     "pretraining or establish validation, test, biological, or SOTA performance."
 )
 TOKEN_INDEX = {token: index for index, token in enumerate(ESM2_ALPHABET)}
+DEFAULT_TOKEN_LENGTH_BUCKETS = (256, 384, 512, 640, 768, 896, 1024)
+DEFAULT_QUERY_LENGTH_BUCKETS = (128, 256, 384, 512, 640, 768, 896, 1024)
+
+
+class LengthBucketMicrobatch(NamedTuple):
+    """One globally shared microbatch shape and its original record indices."""
+
+    indices: tuple[int, ...]
+    padded_tokens: int
+    query_capacity: int
+    residue_count: int
 
 
 def _arguments() -> argparse.Namespace:
@@ -199,13 +210,132 @@ def _tokenize(sequence: str) -> list[int]:
     return [TOKEN_INDEX.get(character, TOKEN_INDEX["<unk>"]) for character in sequence]
 
 
+def _round_to_bucket(value: int, boundaries: tuple[int, ...]) -> int:
+    if not boundaries or tuple(sorted(set(boundaries))) != boundaries:
+        raise ValueError("Length bucket boundaries must be strictly increasing")
+    for boundary in boundaries:
+        if value <= boundary:
+            return boundary
+    raise ValueError("Length exceeds the final bucket boundary")
+
+
+def _pair_shape(
+    record: dict[str, Any],
+    record_index: int,
+    *,
+    maximum_tokens: int,
+    seed: int,
+) -> tuple[int, int, int]:
+    sequence1 = str(record["sequence1"])
+    sequence2 = str(record["sequence2"])
+    if _seed(seed, record_index, "pair_order") % 2:
+        sequence1, sequence2 = sequence2, sequence1
+    sequence1, sequence2 = _crop_pair(
+        sequence1,
+        sequence2,
+        maximum_residues=maximum_tokens - 4,
+        seed=_seed(seed, record_index, "crop"),
+    )
+    first_tokens = len(sequence1) + 2
+    second_tokens = len(sequence2) + 2
+    return (
+        first_tokens + second_tokens,
+        max(first_tokens, second_tokens),
+        len(sequence1) + len(sequence2),
+    )
+
+
+def _build_length_bucket_schedule(
+    records: list[dict[str, Any]],
+    *,
+    global_microbatch_size: int,
+    maximum_tokens: int,
+    seed: int,
+    token_boundaries: tuple[int, ...] = DEFAULT_TOKEN_LENGTH_BUCKETS,
+    query_boundaries: tuple[int, ...] = DEFAULT_QUERY_LENGTH_BUCKETS,
+) -> list[LengthBucketMicrobatch]:
+    """Group records by static shapes without changing per-record RNG identity."""
+    if global_microbatch_size < 1 or len(records) % global_microbatch_size:
+        raise ValueError("Records must divide into complete global microbatches")
+    if token_boundaries[-1] != maximum_tokens:
+        raise ValueError("The final token bucket must equal maximum_tokens")
+    if query_boundaries[-1] != maximum_tokens:
+        raise ValueError("The final query bucket must equal maximum_tokens")
+
+    metadata: dict[int, tuple[int, int, int]] = {}
+    bins: dict[tuple[int, int], list[int]] = {}
+    for record_index, record in enumerate(records):
+        shape = _pair_shape(
+            record,
+            record_index,
+            maximum_tokens=maximum_tokens,
+            seed=seed,
+        )
+        metadata[record_index] = shape
+        key = (
+            _round_to_bucket(shape[0], token_boundaries),
+            _round_to_bucket(shape[1], query_boundaries),
+        )
+        bins.setdefault(key, []).append(record_index)
+
+    chunks: list[tuple[int, ...]] = []
+    leftovers: list[int] = []
+    for key in sorted(bins):
+        indices = sorted(
+            bins[key], key=lambda index: _seed(seed, index, "length_bucket_member")
+        )
+        complete = len(indices) // global_microbatch_size * global_microbatch_size
+        chunks.extend(
+            tuple(indices[start : start + global_microbatch_size])
+            for start in range(0, complete, global_microbatch_size)
+        )
+        leftovers.extend(indices[complete:])
+    leftovers.sort(
+        key=lambda index: (
+            _round_to_bucket(metadata[index][0], token_boundaries),
+            _round_to_bucket(metadata[index][1], query_boundaries),
+            _seed(seed, index, "length_bucket_leftover"),
+        )
+    )
+    chunks.extend(
+        tuple(leftovers[start : start + global_microbatch_size])
+        for start in range(0, len(leftovers), global_microbatch_size)
+    )
+    if any(len(chunk) != global_microbatch_size for chunk in chunks):
+        raise ValueError("Length bucket leftovers did not form complete microbatches")
+    chunks.sort(key=lambda chunk: _seed(seed, chunk, "length_bucket_microbatch"))
+
+    plans: list[LengthBucketMicrobatch] = []
+    for chunk in chunks:
+        token_count = max(metadata[index][0] for index in chunk)
+        query_count = max(metadata[index][1] for index in chunk)
+        plans.append(
+            LengthBucketMicrobatch(
+                indices=chunk,
+                padded_tokens=_round_to_bucket(token_count, token_boundaries),
+                query_capacity=_round_to_bucket(query_count, query_boundaries),
+                residue_count=sum(metadata[index][2] for index in chunk),
+            )
+        )
+    if sorted(index for plan in plans for index in plan.indices) != list(
+        range(len(records))
+    ):
+        raise ValueError("Length bucket schedule must consume every record exactly once")
+    return plans
+
+
 def _build_real_microbatch(
     records: list[dict[str, Any]],
     indices: list[int],
     *,
     maximum_tokens: int,
     seed: int,
+    padded_tokens: int | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, int, int]:
+    if padded_tokens is None:
+        padded_tokens = maximum_tokens
+    if not 1 <= padded_tokens <= maximum_tokens:
+        raise ValueError("padded_tokens must be within the maximum token budget")
     batch_size = len(indices)
     tokens = torch.full((batch_size, maximum_tokens), TOKEN_INDEX["<pad>"], dtype=torch.long)
     chain_ids = torch.full((batch_size, maximum_tokens), -1, dtype=torch.long)
@@ -229,6 +359,8 @@ def _build_real_microbatch(
         first = [TOKEN_INDEX["<cls>"], *_tokenize(sequence1), TOKEN_INDEX["<eos>"]]
         second = [TOKEN_INDEX["<cls>"], *_tokenize(sequence2), TOKEN_INDEX["<eos>"]]
         combined = first + second
+        if len(combined) > padded_tokens:
+            raise ValueError("padded_tokens is smaller than a pair in the microbatch")
         tokens[batch_index, : len(combined)] = torch.tensor(combined)
         chain_ids[batch_index, : len(first)] = 0
         chain_ids[batch_index, len(first) : len(combined)] = 1
@@ -254,7 +386,13 @@ def _build_real_microbatch(
                 generator=generator,
             )
         total_residues += len(sequence1) + len(sequence2)
-    return tokens, chain_ids, labels, total_residues, swapped_pairs
+    return (
+        tokens[:, :padded_tokens],
+        chain_ids[:, :padded_tokens],
+        labels[:, :padded_tokens],
+        total_residues,
+        swapped_pairs,
+    )
 
 
 def _collect(value: object, world_size: int) -> list[object]:

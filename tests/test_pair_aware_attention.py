@@ -10,6 +10,7 @@ torch = pytest.importorskip("torch")
 from antibody_pretraining.pair_aware_attention import (  # noqa: E402
     ChainLocalRotaryEmbedding,
     PairAwareSelfAttention,
+    build_pair_attention_layout,
     chain_local_positions,
     dense_hybrid_attention,
     lifted_sdpa_hybrid_attention,
@@ -35,7 +36,7 @@ def test_lifted_sdpa_matches_dense_hybrid_outputs_and_gradients() -> None:
     key = torch.randn(shape, dtype=torch.float64, requires_grad=True)
     value = torch.randn(shape, dtype=torch.float64, requires_grad=True)
     chain_ids = torch.tensor(
-        [[0, 0, 1, 1, 2, -1, -1], [4, 5, 5, 6, 6, 6, -1]]
+        [[0, 0, 1, 1, 1, -1, -1], [0, 1, 1, 1, 1, 1, -1]]
     )
     valid = chain_ids.ne(-1)
     positions = chain_local_positions(chain_ids, valid)
@@ -67,6 +68,7 @@ def test_lifted_sdpa_matches_dense_hybrid_outputs_and_gradients() -> None:
         chain_ids,
         valid,
         cross_scale,
+        layout=build_pair_attention_layout(chain_ids, valid, query_capacity=5),
     )
     lifted_gradients = torch.autograd.grad(
         lifted.square().sum(), (query, key, value, cross_scale)
@@ -83,7 +85,7 @@ def test_lifted_sdpa_matches_dense_when_cross_chain_attention_is_disabled() -> N
     query = torch.randn(shape, dtype=torch.float64)
     key = torch.randn(shape, dtype=torch.float64)
     value = torch.randn(shape, dtype=torch.float64)
-    chain_ids = torch.tensor([[0, 0, 1, 1, 2, -1, -1], [4, 5, 5, 6, 6, 6, -1]])
+    chain_ids = torch.tensor([[0, 0, 1, 1, 1, -1, -1], [0, 1, 1, 1, 1, 1, -1]])
     valid = chain_ids.ne(-1)
     positions = chain_local_positions(chain_ids, valid)
     rotary = ChainLocalRotaryEmbedding(shape[-1]).to(dtype=torch.float64)
@@ -124,7 +126,7 @@ def test_module_training_path_matches_dense_export_path() -> None:
     dense.load_state_dict(lifted.state_dict())
     hidden = torch.randn(2, 8, 32, dtype=torch.float64)
     chain_ids = torch.tensor(
-        [[0, 0, 0, 1, 1, 2, -1, -1], [0, 1, 1, 1, 2, 2, 2, -1]]
+        [[0, 0, 0, 1, 1, 1, -1, -1], [0, 1, 1, 1, 1, 1, 1, -1]]
     )
     valid = chain_ids.ne(-1)
 

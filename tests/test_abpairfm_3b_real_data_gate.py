@@ -52,6 +52,60 @@ def test_real_microbatch_masks_both_chains_and_pads() -> None:
         assert tokens[batch_index, chain_ids[batch_index].eq(-1)].eq(1).all()
 
 
+def test_real_microbatch_can_shorten_padding_without_changing_targets() -> None:
+    module = _module()
+    records = [
+        {"sequence1": "A" * 60, "sequence2": "C" * 40},
+        {"sequence1": "G" * 30, "sequence2": "V" * 50},
+    ]
+    full = module._build_real_microbatch(
+        records, [0, 1], maximum_tokens=128, seed=1701
+    )
+    short = module._build_real_microbatch(
+        records, [0, 1], maximum_tokens=128, padded_tokens=112, seed=1701
+    )
+    assert short[0].shape == short[1].shape == short[2].shape == (2, 112)
+    for full_tensor, short_tensor in zip(full[:3], short[:3], strict=True):
+        torch.testing.assert_close(short_tensor, full_tensor[:, :112])
+    assert short[3:] == full[3:]
+
+
+def test_length_bucket_schedule_is_complete_deterministic_and_shape_safe() -> None:
+    module = _module()
+    records = [
+        {
+            "sequence1": "A" * (24 + index * 3),
+            "sequence2": "C" * (20 + index * 5),
+        }
+        for index in range(16)
+    ]
+    first = module._build_length_bucket_schedule(
+        records,
+        global_microbatch_size=4,
+        maximum_tokens=256,
+        seed=1701,
+        token_boundaries=(64, 128, 192, 256),
+        query_boundaries=(32, 64, 128, 192, 256),
+    )
+    second = module._build_length_bucket_schedule(
+        records,
+        global_microbatch_size=4,
+        maximum_tokens=256,
+        seed=1701,
+        token_boundaries=(64, 128, 192, 256),
+        query_boundaries=(32, 64, 128, 192, 256),
+    )
+    assert first == second
+    assert sorted(index for plan in first for index in plan.indices) == list(range(16))
+    for plan in first:
+        for index in plan.indices:
+            token_count, query_count, _ = module._pair_shape(
+                records[index], index, maximum_tokens=256, seed=1701
+            )
+            assert token_count <= plan.padded_tokens
+            assert query_count <= plan.query_capacity
+
+
 def test_seed_is_stable_and_changes_across_fields() -> None:
     module = _module()
     assert module._seed(1701, 1, "mask") == module._seed(1701, 1, "mask")

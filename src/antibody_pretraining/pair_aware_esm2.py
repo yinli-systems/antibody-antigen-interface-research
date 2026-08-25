@@ -22,7 +22,12 @@ from torch import Tensor, nn
 import torch.nn.functional as F
 from torch.utils.checkpoint import checkpoint
 
-from .pair_aware_attention import AttentionImplementation, PairAwareSelfAttention
+from .pair_aware_attention import (
+    AttentionImplementation,
+    PairAttentionLayout,
+    PairAwareSelfAttention,
+    build_pair_attention_layout,
+)
 
 
 ESM2_ALPHABET = (
@@ -203,6 +208,7 @@ class PairAwareESM2Layer(nn.Module):
         *,
         return_attention: bool = False,
         allow_cross_chain_attention: bool = True,
+        attention_layout: PairAttentionLayout | None = None,
     ) -> tuple[Tensor, Tensor | None]:
         residual = hidden
         normalized = self.self_attn_layer_norm(hidden)
@@ -212,6 +218,7 @@ class PairAwareESM2Layer(nn.Module):
             valid_mask,
             return_attention=return_attention,
             allow_cross_chain=allow_cross_chain_attention,
+            attention_layout=attention_layout,
         )
         hidden = residual + attended
         residual = hidden
@@ -283,19 +290,24 @@ class PairAwareESM2(nn.Module):
         token_losses = F.cross_entropy(
             logits.flatten(0, 1), labels.flatten(), ignore_index=-100, reduction="none"
         ).view_as(labels)
-        selected = labels.ne(-100)
-        loss_sum = logits.sum() * 0.0
-        chain_count = torch.zeros((), dtype=torch.long, device=logits.device)
-        for batch_index in range(chain_ids.shape[0]):
-            identifiers = torch.unique(chain_ids[batch_index, valid_mask[batch_index]])
-            for identifier in identifiers.tolist():
-                chain_selected = selected[batch_index] & chain_ids[batch_index].eq(identifier)
-                target_count = chain_selected.sum()
-                if not bool(target_count):
-                    raise ValueError("Every valid chain requires at least one MLM target")
-                loss_sum = loss_sum + token_losses[batch_index, chain_selected].sum() / target_count
-                chain_count = chain_count + 1
-        return loss_sum, chain_count
+        chain_slots = torch.arange(2, device=chain_ids.device, dtype=chain_ids.dtype)
+        chain_masks = (
+            chain_ids[:, None, :].eq(chain_slots[None, :, None])
+            & valid_mask[:, None, :]
+        )
+        if bool(chain_masks.sum(dim=1).ne(valid_mask).any()):
+            raise ValueError("Chain-balanced pair loss requires chain IDs 0 and 1")
+        selected = labels.ne(-100)[:, None, :] & chain_masks
+        target_counts = selected.sum(dim=-1)
+        if bool(target_counts.eq(0).any()):
+            raise ValueError("Every valid chain requires at least one MLM target")
+        chain_losses = (
+            token_losses[:, None, :] * selected.to(token_losses.dtype)
+        ).sum(dim=-1) / target_counts.to(token_losses.dtype)
+        chain_count = torch.tensor(
+            chain_ids.shape[0] * 2, dtype=torch.long, device=logits.device
+        )
+        return chain_losses.sum(), chain_count
 
     def forward(
         self,
@@ -307,6 +319,7 @@ class PairAwareESM2(nn.Module):
         allow_cross_chain_attention: bool = True,
         return_hidden_states: bool = False,
         compute_logits: bool = True,
+        attention_query_capacity: int | None = None,
     ) -> PairAwareMLMOutput:
         if tokens.ndim != 2 or chain_ids.shape != tokens.shape:
             raise ValueError("tokens and chain_ids must be equal rank-two tensors")
@@ -323,6 +336,11 @@ class PairAwareESM2(nn.Module):
         valid_mask = tokens.ne(self.config.padding_index)
         if bool((chain_ids[valid_mask] < 0).any()) or bool((chain_ids[~valid_mask] != -1).any()):
             raise ValueError("chain_ids must be non-negative for tokens and -1 for padding")
+        attention_layout = build_pair_attention_layout(
+            chain_ids,
+            valid_mask,
+            query_capacity=attention_query_capacity,
+        )
         hidden = self._embed(tokens, valid_mask)
         last_attention = None
         for layer_index, layer in enumerate(self.layers):
@@ -357,6 +375,7 @@ class PairAwareESM2(nn.Module):
                         valid,
                         return_attention=False,
                         allow_cross_chain_attention=allow_cross,
+                        attention_layout=attention_layout,
                     )[0],
                     hidden,
                     chain_ids,
@@ -371,6 +390,7 @@ class PairAwareESM2(nn.Module):
                     valid_mask,
                     return_attention=export_attention,
                     allow_cross_chain_attention=allow_cross_chain_attention,
+                    attention_layout=attention_layout,
                 )
             if attention is not None:
                 last_attention = attention
