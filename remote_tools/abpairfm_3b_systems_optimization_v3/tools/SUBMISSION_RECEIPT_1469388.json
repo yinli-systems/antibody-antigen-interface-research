@@ -1,0 +1,49 @@
+{
+  "authorization": {
+    "development_access": false,
+    "old_test_reopened": false,
+    "real_stage_a0_data_canary": true,
+    "temporal_holdout_access": false
+  },
+  "batch": {
+    "accumulation_steps": 4,
+    "global_pairs_per_update": 112,
+    "microbatch_pairs_per_rank": 7,
+    "updates": 20
+  },
+  "canary_job_id": 1469388,
+  "format_version": "abpairfm_3b_systems_optimization_submission_v3",
+  "hardware": {
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "partition": "gpu_4090",
+    "single_node": true
+  },
+  "input_checkpoint": {
+    "content_sha256": "38a0987985f119afb374f2062e407bc9c5006f3f7ad66711744086d9561810b1",
+    "generation": "segment-000073",
+    "input_world_size": 8
+  },
+  "preflight": {
+    "cpu_numerical_equivalence": "PASS",
+    "cumulative_lengths_dtype": "torch.int32",
+    "cumulative_lengths_values": [0, 2, 3],
+    "module_compile": "PASS"
+  },
+  "production_fallback": {
+    "job_id": 1468369,
+    "preserved_pending": true,
+    "watchdog_job_id": 1468370
+  },
+  "protocol_sha256": "61b6d0696ad41a0f0e10e369577a1530e7e403df66d12f11842e20a36806ad48",
+  "repair": {
+    "failed_job_id": 1469202,
+    "failed_stderr_sha256": "1d55df4b2e538ef23fa0f6bfaa054dc51f13da48ed6f6f756252b5285fbf1744",
+    "pair_aware_attention_sha256": "cf7d43b093461673685a495add32bd4d13debabeee016be3bb1ee4e2ce6774b3",
+    "scope": "cumulative sequence length dtype only"
+  },
+  "source_aggregate_sha256": "2d741e7aa303f891729179b432a8b3f17a0363f0c3bdb00cbf776df318c018cf",
+  "submit_script_sha256": "2d93e6d8b07c9412bceebd860c2feba94a4423e17c7b8ac79afb72a2c0224627",
+  "supersedes_job_id": 1469202,
+  "test_access": false
+}
