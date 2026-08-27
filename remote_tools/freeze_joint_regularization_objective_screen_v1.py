@@ -184,6 +184,7 @@ def main() -> None:
         "seed": 17,
         "data": {
             "dataset_backend": "sabdab2",
+            "input_feature_mode": "external_embedding_cache",
             "train_count": 512,
             "validation_count": 128,
             "screen_split_sha256": args.screen_split_sha256,
@@ -193,12 +194,62 @@ def main() -> None:
             "embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545",
             "training_partner_panel_sha256": args.train_panel_sha256,
             "validation_partner_panel_sha256": args.validation_panel_sha256,
+            "reciprocal_partner_panel": {
+                "format_version": "framecontact_reciprocal_partner_panel_v2",
+                "size_per_query": 7,
+                "train_sha256": args.train_panel_sha256,
+                "validation_sha256": args.validation_panel_sha256,
+            },
         },
         "model_selection": {
             "maximum_epochs": 12,
             "early_stopping_patience": 3,
             "primary_metric": "epitope_mean_per_complex_auprc",
             "tie_break_metric": "contact_mean_per_complex_auprc",
+            "checkpoint_rule": "maximize validation epitope mean-per-complex AUPRC; break ties by contact mean-per-complex AUPRC and earlier epoch",
+            "seeds": [17],
+        },
+        "tasks": {
+            "winner": {
+                "name": "epiformer_style_same_protocol",
+                "experiment": "epiformer_style_same_protocol",
+                "distance_loss_weight": 0.1,
+                "contrastive_loss_weight": 0.0,
+            }
+        },
+        "implementation": {
+            "d_model": 128,
+            "num_heads": 8,
+            "num_self_layers": 2,
+            "num_rbf": 16,
+            "neighbor_k": 32,
+            "neighbor_radius_angstrom": 16.0,
+            "sequence_window": 32,
+            "dropout": None,
+            "learning_rate": 0.0003,
+            "weight_decay": 0.0001,
+            "batch_size": 1,
+            "evaluation_batch_size": 1,
+            "precision": "bf16",
+            "calibration_max_pairs": 500000,
+            "offload_saved_tensors": True,
+            "contact_focal_gamma": 1.0,
+            "epitope_dice_weight": 1.0,
+            "epitope_count_weight": None,
+        },
+        "training_objective": {
+            "loss_weights": {
+                "contact": 1.0,
+                "paratope": 0.1,
+                "epitope": 0.5,
+                "specificity": 0.0,
+                "distance": 0.1,
+                "contrastive": 0.0,
+                "matched_local": 0.0,
+            },
+            "specificity_margin": 0.05,
+            "score_fraction": 0.01,
+            "matched_local_margin": 0.05,
         },
         "joint_objective": {
             "contact_loss_weight": 1.0,
@@ -239,6 +290,8 @@ def main() -> None:
         protocol["arm"] = arm
         protocol["regularization"]["dropout"] = factors["dropout"]
         protocol["joint_objective"]["epitope_count_weight"] = factors["epitope_count_weight"]
+        protocol["implementation"]["dropout"] = factors["dropout"]
+        protocol["implementation"]["epitope_count_weight"] = factors["epitope_count_weight"]
         protocol_path = authority_root / f"PROTOCOL_{arm.upper()}_V1.json"
         protocol_path.write_bytes(canonical_bytes(protocol))
         receipt = {

@@ -1,0 +1,46 @@
+--- a/src/interaction_first/framecontact.py
++++ b/src/interaction_first/framecontact.py
+@@ -557,6 +557,28 @@
+     return result.masked_fill(observed_count == 0, 0.0)
+ 
+ 
++def masked_topk_mean_probability_logit(
++    logits: Any, mask: Any, *, dim: int, k: int = 2
++) -> Any:
++    """Masked EpiFormer top-k mean edge probability represented as a logit."""
++    torch_module = _require_torch()
++    if tuple(logits.shape) != tuple(mask.shape) or mask.dtype != torch_module.bool:
++        raise ValueError("logits and boolean mask must have identical shapes")
++    if k < 1:
++        raise ValueError("k must be positive")
++    observed_count = mask.sum(dim=dim)
++    effective_k = min(k, logits.shape[dim])
++    probabilities = torch_module.sigmoid(logits.to(torch_module.float32))
++    masked = probabilities.masked_fill(~mask, -1.0)
++    top_values = torch_module.topk(masked, k=effective_k, dim=dim).values
++    selected = top_values.clamp_min(0.0).sum(dim=dim)
++    count = observed_count.clamp(min=1, max=effective_k).to(torch_module.float32)
++    mean_probability = selected / count
++    epsilon = torch_module.finfo(torch_module.float32).eps
++    result = torch_module.logit(mean_probability.clamp(epsilon, 1.0 - epsilon))
++    return result.masked_fill(observed_count == 0, 0.0)
++
++
+ class FrameContactModel(_ModuleBase):
+     """End-to-end self geometry, explicit contacts, and gated interaction model.
+ 
+@@ -899,7 +921,7 @@
+         )
+         paratope_contact = masked_logmeanexp(contact_logits, pair_mask, dim=2)
+         epitope_contact = (
+-            masked_mean_probability_logit(contact_logits, pair_mask, dim=1)
++            masked_topk_mean_probability_logit(contact_logits, pair_mask, dim=1, k=2)
+             if self.adapter_mode == "epiformer_style_same_protocol"
+             else masked_logmeanexp(contact_logits, pair_mask, dim=1)
+         )
+@@ -975,4 +997,5 @@
+     "PairContactHead",
+     "PairDistanceBinHead",
+     "masked_logmeanexp",
++    "masked_topk_mean_probability_logit",
+ ]

@@ -11,14 +11,14 @@ from pathlib import Path
 from typing import Any
 
 
-EXPECTED_CAMPAIGN = "64779b5b7cece143359d9d9a95cdb7244db718f69a4cc31cadd72f0793714405"
+EXPECTED_CAMPAIGN = "a4c1a7eb829ee5175e72d6b9f6b03793b0310c55f079189f61b745d4bb0ae43a"
 EXPECTED_SOURCE = "f649fb5a16cda6ff79eae05b2d2a3fedd6ffd02bd7b0b1cba1f1d0385a9a2f81"
 BASELINE_RESULT_SHA256 = "38bbf1a4ade66b01abd81a925ac89464725c67564bc2c4c352701d6d8a0f8184"
 BASELINE_RECEIPT_SHA256 = "f63cf0e8f7cf24f1224bbd0b1890cc259fae0de96e66e47b30d23efa61494623"
 ARMS = {
-    "dropout020_count020": (0.2, 0.2, "3fb7d3e5176f657cb96831a2cf925c13eadddea2043f1659ee93da76011cd275", "baf00d571ddc6be34fdea6b015cefccccfb63ec5d0dd656c95efb9c86d0c20e8"),
-    "dropout010_count000": (0.1, 0.0, "b51e51a7ad51f17bdbdafb2f6f5902bb3aa50d8099a8b26c01d4cd4ef4f0536c", "36116d2767bc4a2a764a286be317240528b9c33e160ab711538da2b3a1d17530"),
-    "dropout020_count000": (0.2, 0.0, "1bf5308e7b49882f68231fd897a9df7243fc23bf2c433e8bdeae57260404fc2a", "aa5eaf8134cd97538d84fef374e15a479f1e01342b8c9e54ea0f4ca8ff5c0e58"),
+    "dropout020_count020": (0.2, 0.2, "17d85b0e31d59b9fc69c3960750dfcc50d2f28cab2a189db1f993b1203648374", "e974c29c52be109108ba063f8c24f37735ebddabb4502ad2d2f2699c479a52f5"),
+    "dropout010_count000": (0.1, 0.0, "1cb930d43ec098ddffebd8e93a3ea52dd53388e1bce396b93331e435d4108c44", "3383600e0c4b236b991df51f3f7387ae2fe2453d793e558554690ddac9e6d867"),
+    "dropout020_count000": (0.2, 0.0, "934eab791bc8ce8aa34c4c669a83ca67ce38e1f2b2cf32db8baad6e38d48ffd1", "c2ee841ebdbe561ca86667ab449c6c066f5fca93548e4a43a5c50eb287fe6182"),
 }
 
 
@@ -178,7 +178,7 @@ def main() -> None:
         ),
     }
     payload = {
-        "format_version": "sabdab2_joint_regularization_objective_screen_result_v1",
+        "format_version": "sabdab2_joint_regularization_objective_screen_result_v3",
         "status": "PASS_AUDIT",
         "runs": results,
         "deltas_vs_control": deltas,

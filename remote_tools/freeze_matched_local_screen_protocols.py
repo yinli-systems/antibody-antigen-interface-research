@@ -99,7 +99,7 @@ def main() -> None:
     ):
         if (
             panel.get("role") != role
-            or panel.get("panel_size_per_direction") != 31
+            or panel.get("panel_size_per_direction") != 7
             or len(panel.get("entries", [])) != count
             or panel.get("authority", {}).get("task_label_columns_read") is not False
         ):
@@ -126,7 +126,7 @@ def main() -> None:
             },
             "reciprocal_partner_panel": {
                 "format_version": "framecontact_reciprocal_partner_panel_v2",
-                "size_per_query": 31,
+                "size_per_query": 7,
                 "train_sha256": arguments.train_panel_sha256,
                 "validation_sha256": arguments.validation_panel_sha256,
             },

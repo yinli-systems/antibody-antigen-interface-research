@@ -46,3 +46,28 @@ third_party/
 .env
 .env.*
 secrets.*
+
+# Prospective wet-lab blinding keys, arm mappings, and unreleased candidate payloads.
+/research/prospective_epitope_design_v1/private/
+
+# Local orchestration scratch space and rendered review artifacts.
+/output/
+/tmp/
+/paper/neurips_2026_framecontact/__pycache__/
+/paper/neurips_2026_framecontact/build/
+/paper/neurips_2026_framecontact/render/
+/paper/neurips_2026_framecontact/render_updated/
+/paper/neurips_2026_framecontact/output/
+/paper/neurips_2026_framecontact/tmp/
+/paper/neurips_2026_framecontact/*.aux
+/paper/neurips_2026_framecontact/*.bbl
+/paper/neurips_2026_framecontact/*.blg
+/paper/neurips_2026_framecontact/*.out
+/paper/neurips_2026_framecontact/*.txt
+
+# The compact audited result is publishable; the full per-pair prediction dump is not.
+/results/sabdab2_frozen_ensemble_test_v1/SABDAB2_FRAMECONTACT_FROZEN_ENSEMBLE_TEST_FULL.json
+
+# Paper-local compact metric and reference audits are source artifacts, not datasets.
+!/paper/neurips_2026_framecontact/data/
+!/paper/neurips_2026_framecontact/data/*.json

@@ -1,0 +1,18 @@
+{
+  "format_version": "abcdr_source_split_access_receipt_v1",
+  "recorded_at_utc": "2026-08-26T21:24:34Z",
+  "status": "DISCLOSED_NON_TASK_SOURCE_SCHEMA_ACCESS",
+  "source_archive": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/raw/abcdr_oas_paired_18762309/OAS_paired_set.zip",
+  "accessed_members": {
+    "OAS_paired_set/train.csv": "header and first data row",
+    "OAS_paired_set/validation.csv": "header and first data row",
+    "OAS_paired_set/test.csv": "header and first data row",
+    "OAS_paired_set/paired_human_clustered.csv": "header and first data row"
+  },
+  "content_scope": "sequence, CDR strings, and precomputed CDR index fields only; no downstream task labels",
+  "use_in_training_or_selection": false,
+  "future_protocol_rule": "Only OAS_paired_set/train.csv and authenticated raw OAS training data units may contribute rows or CDR indices to local adaptation; validation.csv and test.csv are permanently excluded.",
+  "sabdab2_old_test_accessed": false,
+  "sabdab2_temporal_holdout_accessed": false,
+  "task_labels_read": false
+}

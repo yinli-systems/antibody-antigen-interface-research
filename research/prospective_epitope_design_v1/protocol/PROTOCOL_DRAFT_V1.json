@@ -1,0 +1,86 @@
+{
+  "format_version": "prospective_epitope_selection_protocol_v1",
+  "status": "DRAFT_BLOCKED_ON_TARGET_ASSAY_BUDGET_AND_SAFETY_REVIEW",
+  "study_id": "prospective-epitope-selection-v1",
+  "title": "Prospective low-N epitope-targeted antibody selection",
+  "target": {
+    "target_id": null,
+    "molecule_type": null,
+    "antigen_artifact_sha256": null,
+    "epitope_definition": null,
+    "bound_state_or_structure_source_disclosure": null
+  },
+  "safety": {
+    "approved": false,
+    "reviewer": null,
+    "review_date": null,
+    "target_is_pathogen_or_toxin": null,
+    "gain_of_function_in_scope": false
+  },
+  "computational_authority": {
+    "generator_id": null,
+    "generator_revision_or_weight_sha256": null,
+    "generation_protocol_sha256": null,
+    "proposal_pool_manifest_sha256": null,
+    "eligibility_rule": null,
+    "baseline_score_definition": null,
+    "partner_specific_model_id": null,
+    "partner_specific_checkpoint_sha256": null,
+    "partner_score_definition": null,
+    "acquisition_score_implementation_sha256": null,
+    "acquisition_score_definition": null,
+    "diversity_cluster_implementation_sha256": null,
+    "diversity_cluster_definition": null,
+    "candidate_outcomes_used_to_fit_or_select_any_authority": false
+  },
+  "assay": {
+    "primary_name": null,
+    "primary_hit_rule": null,
+    "threshold_value": null,
+    "threshold_unit": null,
+    "direction": null,
+    "positive_control": null,
+    "negative_control": null,
+    "confirmatory_assay": null,
+    "lab_blinded_to_selection_arm": true
+  },
+  "design": {
+    "candidate_budget_per_arm": null,
+    "proposal_pool_frozen_before_selection": true,
+    "candidate_outcomes_available_before_freeze": false,
+    "overlap_across_policy_slates_allowed": true,
+    "overlapping_candidate_assayed_once": true,
+    "arms": {
+      "generator_baseline": {
+        "score_column": "baseline_score",
+        "selection": "descending_score_then_candidate_id"
+      },
+      "partner_specific": {
+        "score_column": "partner_score",
+        "selection": "descending_score_then_candidate_id"
+      },
+      "uncertainty_diversity": {
+        "score_column": "acquisition_score",
+        "selection": "distinct_diversity_clusters_first_then_descending_score_then_candidate_id"
+      }
+    },
+    "bootstrap": {
+      "method": "candidate_level_bayesian_bootstrap",
+      "replicates": 10000,
+      "seed": 20260827,
+      "conditional_on_frozen_candidate_slate": true
+    }
+  },
+  "role_separation": {
+    "private_mapping_custodian": null,
+    "lab_results_custodian": null,
+    "same_person_allowed": false
+  },
+  "claim_boundary": {
+    "prospective_only_after_protocol_freeze": true,
+    "single_target_result_not_universal": true,
+    "no_sota_claim_from_this_study_alone": true,
+    "no_pathogen_or_toxin_design": true,
+    "no_wet_lab_procedure_encoded_in_this_repository": true
+  }
+}

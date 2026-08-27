@@ -1,0 +1,105 @@
+{
+  "format_version": "framecontact_reference_audit_v1",
+  "verified_on": "2026-08-26",
+  "verification_rule": "Each entry was matched against an official publication record and its persistent identifier or second official index.",
+  "entries": [
+    {
+      "key": "ahmed2026epiformer",
+      "title": "EpiFormer: Learning Antigen-Antibody Interactions for Epitope Prediction via Geometric Deep Learning",
+      "identifier": "arXiv:2606.04154",
+      "official_record": "https://arxiv.org/abs/2606.04154",
+      "identifier_record": "https://doi.org/10.48550/arXiv.2606.04154"
+    },
+    {
+      "key": "athenes2025paraplume",
+      "title": "Paraplume: A Fast and Accurate Paratope Prediction Method Provides Insights into Repertoire-Scale Binding Dynamics",
+      "identifier": "arXiv:2510.05626",
+      "official_record": "https://arxiv.org/abs/2510.05626",
+      "identifier_record": "https://doi.org/10.48550/arXiv.2510.05626"
+    },
+    {
+      "key": "capel2026sabdab2",
+      "title": "SAbDab2: The Structural Antibody Database in the Age of Machine Learning",
+      "identifier": "10.64898/2026.06.16.732554",
+      "official_record": "https://www.biorxiv.org/content/10.64898/2026.06.16.732554v1",
+      "identifier_record": "https://sabdab.opig.stats.ox.ac.uk/about"
+    },
+    {
+      "key": "davila2022abadapt",
+      "title": "AbAdapt: an adaptive approach to predicting antibody-antigen complex structures from sequence",
+      "identifier": "10.1093/bioadv/vbac015",
+      "official_record": "https://academic.oup.com/bioinformaticsadvances/article/2/1/vbac015/6543605",
+      "identifier_record": "https://doi.org/10.1093/bioadv/vbac015"
+    },
+    {
+      "key": "lin2023esm",
+      "title": "Evolutionary-Scale Prediction of Atomic-Level Protein Structure with a Language Model",
+      "identifier": "10.1126/science.ade2574",
+      "official_record": "https://pubmed.ncbi.nlm.nih.gov/36927031/",
+      "identifier_record": "https://doi.org/10.1126/science.ade2574"
+    },
+    {
+      "key": "lin2017focal",
+      "title": "Focal Loss for Dense Object Detection",
+      "identifier": "ICCV 2017:2980-2988",
+      "official_record": "https://openaccess.thecvf.com/content_iccv_2017/html/Lin_Focal_Loss_for_ICCV_2017_paper.html",
+      "identifier_record": "https://openaccess.thecvf.com/content_ICCV_2017/papers/Lin_Focal_Loss_for_ICCV_2017_paper.pdf"
+    },
+    {
+      "key": "loshchilov2019adamw",
+      "title": "Decoupled Weight Decay Regularization",
+      "identifier": "OpenReview:Bkg6RiCqY7",
+      "official_record": "https://openreview.net/forum?id=Bkg6RiCqY7",
+      "identifier_record": "https://arxiv.org/abs/1711.05101"
+    },
+    {
+      "key": "milletari2016vnet",
+      "title": "V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation",
+      "identifier": "10.1109/3DV.2016.79",
+      "official_record": "https://arxiv.org/abs/1606.04797",
+      "identifier_record": "https://doi.org/10.1109/3DV.2016.79"
+    },
+    {
+      "key": "pedregosa2011scikit",
+      "title": "Scikit-learn: Machine Learning in Python",
+      "identifier": "JMLR 12(85):2825-2830",
+      "official_record": "https://www.jmlr.org/papers/v12/pedregosa11a.html",
+      "identifier_record": "https://www.jmlr.org/papers/volume12/pedregosa11a/pedregosa11a.pdf"
+    },
+    {
+      "key": "liu2024asep",
+      "title": "AsEP: Benchmarking Deep Learning Methods for Antibody-Specific Epitope Prediction",
+      "identifier": "10.52202/079017-0373",
+      "official_record": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/15add6732964d5b1f0954058bf3ccc88-Abstract-Datasets_and_Benchmarks_Track.html",
+      "identifier_record": "https://doi.org/10.52202/079017-0373"
+    },
+    {
+      "key": "porollo2026sppider",
+      "title": "SPPIDER-seq: Sequence-Based Partner-Aware Predictor of Protein-Protein Interaction Sites",
+      "identifier": "10.1093/bioinformatics/btag388",
+      "official_record": "https://pubmed.ncbi.nlm.nih.gov/42289971/",
+      "identifier_record": "https://doi.org/10.1093/bioinformatics/btag388"
+    },
+    {
+      "key": "saito2015precision",
+      "title": "The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets",
+      "identifier": "10.1371/journal.pone.0118432",
+      "official_record": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432",
+      "identifier_record": "https://doi.org/10.1371/journal.pone.0118432"
+    },
+    {
+      "key": "satorras2021egnn",
+      "title": "E(n) Equivariant Graph Neural Networks",
+      "identifier": "PMLR 139:9323-9332",
+      "official_record": "https://proceedings.mlr.press/v139/satorras21a.html",
+      "identifier_record": "https://proceedings.mlr.press/v139/satorras21a/satorras21a.pdf"
+    },
+    {
+      "key": "wang2024mipe",
+      "title": "Improving Paratope and Epitope Prediction by Multi-Modal Contrastive Learning and Interaction Informativeness Estimation",
+      "identifier": "10.24963/ijcai.2024/669",
+      "official_record": "https://www.ijcai.org/proceedings/2024/669",
+      "identifier_record": "https://doi.org/10.24963/ijcai.2024/669"
+    }
+  ]
+}

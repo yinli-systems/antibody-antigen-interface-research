@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import pytest
+import sys
 
 
 torch = pytest.importorskip("torch")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from antibody_pretraining.pair_aware_attention import (  # noqa: E402
     _cumulative_sequence_lengths,
