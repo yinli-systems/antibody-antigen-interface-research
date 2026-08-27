@@ -1,0 +1,30 @@
+{
+  "authorization": {
+    "archive_commit_changed": false,
+    "contact_labels_computed": false,
+    "recovery_may_use_locally_acquired_pinned_archive": true,
+    "selection_performed": false
+  },
+  "evidence": {
+    "stderr_sha256": "36ff6a961b555f0a6dccc65168fed8b802d8d5c45fa6b7a87bd80ae0ff4a3b2d",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failure": {
+    "class": "COMPUTE_NODE_GITHUB_CODELOAD_TIMEOUT_BEFORE_ARCHIVE_BYTES",
+    "partial_archive_reusable": false
+  },
+  "format_version": "framecontact_bound_unbound_label_free_failure_receipt_v1",
+  "job_id": 1474000,
+  "pinned_source": {
+    "commit": "6891e6e6790c7a898a08471193f494adf6f16b48",
+    "locally_acquired_archive_sha256": "214b33f6e4e7daeb342da0471a90fefd12087c058e3945a3c14bc29a3e91b301"
+  },
+  "protocol_sha256": "f99d07ae683054bac974db14546b71445f0bf6d68b70b6e1d8d6ed1ccf0b4002",
+  "slurm": {
+    "elapsed": "00:02:12",
+    "exit_code": "1:0",
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "status": "FAIL_CLOSED_NETWORK_BEFORE_DATA_ACQUISITION"
+}

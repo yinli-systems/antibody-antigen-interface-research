@@ -1,0 +1,42 @@
+{
+  "format_version": "paired_esmc_cdr_span_gate_authority_v2",
+  "supersedes": {
+    "reason": "Short CDR motifs can occur more than once individually; resolve only when the jointly ordered CDR1/CDR2/CDR3 placement is unique.",
+    "result_sha256": "5e84c4194626b791a4653f0c735ecf6034a73506444b28ff117c5feeaa4e3c74",
+    "status": "FAIL_CLOSED_PAIRED_ESMC_CDR_SPAN_AND_SPLIT_GATE"
+  },
+  "source": {
+    "expected_rows": 776634,
+    "sha256": "d1628da898286d1de6833bcaa1998ade7b5715da815cbe247b59d68c79ec1b68",
+    "uri": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/normalized_candidates/oas_paired_20260821/oas_stage_b_devclean_protocol_v3_unordered_v2.tsv.gz"
+  },
+  "parent_protocol": {
+    "sha256": "a7d32158d3ab27ca93d4e730abdb7c05d9c7d4e930091a0505bde67ca6c448ea",
+    "uri": "/ssd/scxi253/model_deployment/results/prospective/framecontact_high_value_three_stream_v1/paired-esmc-cdr-v1/authority/PROTOCOL_PAIRED_ESMC_CDR_V3.json"
+  },
+  "cdr_span_rule": {
+    "eligible_if": "for each chain, the non-empty annotated CDR1/CDR2/CDR3 strings have exactly one jointly ordered, non-overlapping placement among all exact occurrences",
+    "pair_separator": "-",
+    "maximum_model_input_residues_including_separator": 2046
+  },
+  "split_rule": {
+    "group_key": "sha256(heavy_sequence + NUL + light_sequence)",
+    "validation_if": "uint64_be(pair_sha256[0:16]) mod 100 < 2",
+    "train_if": "otherwise",
+    "checkpoint_selection": false
+  },
+  "frozen_gate": {
+    "minimum_eligible_rows": 500000,
+    "minimum_eligible_fraction": 0.99,
+    "minimum_validation_rows": 5000,
+    "require_pair_group_disjoint": true,
+    "require_row_hash_unique": true,
+    "require_finite_accounting": true
+  },
+  "claim_boundary": {
+    "development_only": true,
+    "task_labels_read": false,
+    "test_access": false,
+    "training_authorized_before_gate": false
+  }
+}

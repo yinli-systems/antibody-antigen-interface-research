@@ -1,0 +1,26 @@
+{
+  "bound_unbound": {
+    "initial_failure_job_id": 1474000,
+    "initial_failure_receipt_sha256": "d45f1d624c0c02275338e7269e77ac37dcaf6362b47cd9cb5af5eab0b77ee7dc",
+    "pinned_archive_sha256": "214b33f6e4e7daeb342da0471a90fefd12087c058e3945a3c14bc29a3e91b301",
+    "protocol_sha256": "f99d07ae683054bac974db14546b71445f0bf6d68b70b6e1d8d6ed1ccf0b4002",
+    "recovery_job_id": 1474022,
+    "sbatch_sha256": "b36172199cef0b1216baf972180bd4dd89c254e26def54fe117e77f16c4b4bb6",
+    "script_sha256": "ec7af9e605903d22c632d4eafc216c30de38e219bb7b5a6f0b2a7345e4363a30"
+  },
+  "format_version": "framecontact_three_stream_submission_receipt_v1",
+  "paired_esmc_cdr": {
+    "job_id": 1474001,
+    "protocol_sha256": "efc1d75031e171228bc897ed9a2459409ff63202de5e1c6f1e98a35de6872049",
+    "sbatch_sha256": "372bdba4b993b8c7f391ae303b4581a06809b3d41847b800a791cbb130564f4d",
+    "script_sha256": "b5832c2ed0cd88cdf02a6230c4a12fc8a588a2e3b7de661f3360db39e01ec6cb"
+  },
+  "status": "SUBMITTED_THREE_LABEL_FREE_OR_DATA_GATE_STREAMS",
+  "temporal_double_cold": {
+    "job_id": 1473999,
+    "protocol_sha256": "18df18a336e4a2107d6615329d08daec1ccc93790cf83132d1e75cb403b727bc",
+    "sbatch_sha256": "6ef1d284ad860694835d3bfc31bc92c24826756fc25c8a569249b2ac4d641612",
+    "script_sha256": "a16dea655400147a91004dffd65f07273364bcf8b6d95408d545f20b8cd900a4"
+  },
+  "test_or_temporal_labels_accessed_at_submission": false
+}

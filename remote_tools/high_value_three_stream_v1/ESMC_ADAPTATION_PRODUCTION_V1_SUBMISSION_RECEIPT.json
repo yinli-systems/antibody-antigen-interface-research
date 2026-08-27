@@ -1,0 +1,19 @@
+{
+  "format_version": "paired_esmc_adaptation_production_submission_receipt_v1",
+  "status": "SUBMITTED_FROZEN_EQUAL_COMPUTE_DIRECT_ADAPTATION",
+  "job_array_id": 1474973,
+  "protocol_sha256": "4855facb76e0e48688f74584600805d0cfb7fe9a262bd2d5c12ebed37145f284",
+  "protocol_receipt_sha256": "7adee86d4372582c8219ea7a8ef67528686315f96487d43f69e016611a4c22bf",
+  "partition": "gpu_4090",
+  "world_size_per_arm": 4,
+  "arms": [
+    "whole_chain_control",
+    "cdr_focused"
+  ],
+  "epochs": 4,
+  "fixed_checkpoint_epoch": 4,
+  "global_batch_size": 256,
+  "downstream_test_authorized": false,
+  "task_labels_read": false,
+  "sabdab2_test_access": false
+}

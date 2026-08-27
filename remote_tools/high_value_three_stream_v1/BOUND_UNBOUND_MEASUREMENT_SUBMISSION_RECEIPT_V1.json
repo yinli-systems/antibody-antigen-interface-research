@@ -1,0 +1,17 @@
+{
+  "analyzer_job_id": 1474182,
+  "analyzer_script_sha256": "e9106be6014629d7ec825126820e5bf6d28b7048dec3a0d2b06ae7a953a24e51",
+  "data_job_id": 1474180,
+  "data_script_sha256": "f7a700fd5d72991c9dda5e55924bba20520fd954acb1b66ae38c8879846b779a",
+  "dependency_chain": "1474180 afterok -> 1474181_[0-5] afterok -> 1474182",
+  "evaluator_array_job_id": 1474181,
+  "evaluator_script_sha256": "47ec00c74ab9aa1006585ebf7c0265459e733f07db6a02b0b16dd3ca8934b453",
+  "format_version": "framecontact_bound_unbound_measurement_submission_receipt_v1",
+  "label_free_manifest_sha256": "772969d7d40bf945e0d1b41f7e38d3978f14051967c4b1f8dc9dc8c8539adfc4",
+  "partition": "gpu_4090",
+  "protocol_sha256": "1ad4b4ee2bf96f8a0a8b2975aabad13f408da09dd11018ed6ea49f42bf11846e",
+  "selection_performed": false,
+  "status": "SUBMITTED_FROZEN_MEASUREMENT_CHAIN",
+  "temporal_holdout_access": false,
+  "old_exposed_test_access": false
+}
