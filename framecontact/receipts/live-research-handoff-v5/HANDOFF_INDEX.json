@@ -1,0 +1,76 @@
+{
+  "claim_boundary": "Development-only research and engineering handoff. The contact-bottleneck candidate is implemented and regression-tested but unregistered and untrained. No frozen SAbDab2 test, official AsEP test, external-generalization, A100 model-quality, biological-benchmark, or state-of-the-art result is included.",
+  "files": {
+    "README.md": "13da058ee16753deb84f015d26e37f10c2ff9da40b97f7e4b5528c30004dec90",
+    "baselines/BASELINE_LOCK_V5.json": "6692708d2fb79b0ea10e5a7cdfe28adad2164cba7d74aa9d5b568cda9c5f842f",
+    "baselines/BASELINE_LOCK_V6.json": "7e83555c59b627e0bd5f0a5b42aacdc4079e108a56b5693ba3e41047d6ff08e3",
+    "docs/CONTACT_ADAPTED_ESM_FACTORIAL_CANDIDATE.md": "c49a86e6e38d1528e7f06289bfe5df4daf790739c9d99d9bb0e21849a4f55ddf",
+    "docs/DISTOGRAM_TRIANGLE_RESEARCH_NOTE.md": "cd61ff47e42a20cf0a664c9852113a9591e52db33b2d351bb6da9348b3e414a9",
+    "docs/FRAMECONTACT_DOUBLE_COLD_SPLIT_AUDIT_20260801.md": "e5b932e6117762320b67bbc0d667dd09b113f48e280c862acaaa3131d407eb53",
+    "docs/FRAMECONTACT_FRONTIER_RESEARCH_20260801.md": "814f13264f65794f01bb5b0f2e5cd85532e76267a1666293d8499b42b9e2942d",
+    "docs/FRAMECONTACT_GEOMETRY_ABLATED_CONTROL_20260801.md": "ba2e895fdb1cf22471ddd7f6b8b0bc8c75793d3f85e0081f4e1b4ce1026d3a12",
+    "docs/FRAMECONTACT_RETRIEVAL_ALIGNED_SPECIFICITY_20260801.md": "e38676096ee21938d29f0fd68d2b24d0f04cd83a22e2607c2330d99e3db05c48",
+    "docs/FRONTIER_CONTACT_BASELINE_AUDIT_20260801.md": "8266d94fecd59d58e61fbf4f262d0c84bbb6d4ca161baeaabb41c0215b6469b9",
+    "docs/HANDSHAKE_BASELINE_AUDIT_20260801.md": "3e055146570630deb053bc9ced75bdcc5cb1e0777b64c30562631e58efc14506",
+    "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "b17fafcce87ba24929e5a3fe764aed4dde8b43f5394d77fb525d94becd44ad87",
+    "docs/TEACHER_UPDATE_20260801_CONTACT_BOTTLENECK_AND_LIVE_EPOCH17.md": "f38a048e2e95dcb9e9ceee25317e8259f8fdad7b217e29537bf953d14b42893c",
+    "docs/TEACHER_UPDATE_20260801_DOUBLE_COLD_AND_RESEARCH.md": "13ce0edd3b76adc0336ff0f8cad6b29086a817b696ed0ee750a828c6f72648e7",
+    "docs/TEACHER_UPDATE_20260801_LIVE_VALIDATION_AND_BASELINE.md": "09c830fc8f8fccb5aa490c87d6c9b0406e1998ef04ebb72e55e12cdcb553729f",
+    "receipts/double-cold-source-v13-final/ENGINEERING_RECEIPT.json": "06208b9c772b0a165e2aa77fdaa6cec4537086062e86b160c428bd55b8c2d399",
+    "receipts/double-cold-source-v14-final/ENGINEERING_RECEIPT.json": "dd0b1c74da829156da8a40ade157f8e83a2d9e0213b18ee6bd06695eab22c4e5",
+    "receipts/double-cold-source-v14-final/FULL_PYTEST_WITH_DEPS.log": "eb1ec80dae39005f41c851fd069203718bbae32fce217162eb4ae33b80c7697f",
+    "receipts/double-cold-source-v14-final/LOCAL_FULL_PYTEST.log": "28e92989cc0259eaea0bd0293260afee866c44f05e9f2bddfc092f2eaa6f8ac2",
+    "receipts/double-cold-source-v14-final/MANIFEST_BUILD.log": "de99234820666987c46d9fd2a51ab24142b501fa7998825c96bccfa322be6185",
+    "receipts/double-cold-source-v14-final/POST_TEST_MANIFEST_VERIFY.json": "4ce8a01c5e63b87db7b21717f3788f1494240b859810da08363b52b81abac130",
+    "receipts/double-cold-source-v14-final/SOURCE_MANIFEST.json": "ee60485e2507c76d43752cbb608680a53d9a1d8e529e2fe4efff53ec34ea1f35",
+    "receipts/listwise-specificity-v1-1346200/ENGINEERING_RECEIPT.json": "2a6c8be7c8bee05a90163cf468dedeee552f2fcb25cd72b4b0efaf5864f6b1b1",
+    "receipts/live-array-audit-20260801T134059Z/DISTOGRAM_COMPACT.json": "aab83fdcf232951ee6819f169cbb5fa32dba856c5379edb34d6f516da9c4de68",
+    "receipts/live-array-audit-20260801T134059Z/DISTOGRAM_PATIENCE.json": "2c4e8e3641629146205f931bd7e9e0682f7b1c30fb543b4f5bcd5e0df572a7e5",
+    "receipts/live-array-audit-20260801T134059Z/MATCHED_EPOCH_UNARY_VS_DISTOGRAM.json": "59835d471b6ca316afdbc673adf24cdb3543404937e5606b505ea027f7696b32",
+    "receipts/live-array-audit-20260801T134059Z/README.md": "edd19c20802d038770683a748b991626b2d2b02c8a3d3741de24cf3e9e44385b",
+    "receipts/live-array-audit-20260801T134059Z/RESIDUE_HEAD_COMPACT.json": "0dc464da792bd479604e39b587387456a5f7ad22b9c77c378543a702236c715a",
+    "receipts/live-array-audit-20260801T134059Z/RESIDUE_HEAD_PATIENCE.json": "e309ede0d8b421512dca5e0e2bf78bfef514790928432e09df9804c3d9641ac4",
+    "receipts/live-array-audit-20260801T134059Z/SQUEUE.txt": "0794a162860d7cb93e035cdbc5a9d005c2d4dfe4d20d62c0d084b871a5951658"
+  },
+  "format_version": "framecontact_live_research_handoff_v5",
+  "latest_candidate": {
+    "default_enabled": false,
+    "experiment_registered": false,
+    "gpu_quality_run_available": false,
+    "name": "contact_bottleneck_cosine",
+    "promotion_gate": "both reciprocal retrieval directions improve and contact/residue localization, precision-recall, and calibration do not degrade",
+    "variants": [
+      "stop_gradient",
+      "joint"
+    ]
+  },
+  "latest_research_authority": {
+    "added_authorities": [
+      "SPPIDER-seq",
+      "PEPNet",
+      "CALM",
+      "AAMFM"
+    ],
+    "baseline_lock": "baselines/BASELINE_LOCK_V6.json",
+    "baseline_lock_sha256": "7e83555c59b627e0bd5f0a5b42aacdc4079e108a56b5693ba3e41047d6ff08e3",
+    "identical_split_results_available": false
+  },
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v5",
+  "running_development_arrays": {
+    "distogram_job_id": 1345108,
+    "frozen_or_external_test_accessed": false,
+    "hardware": "RTX 4090",
+    "residue_head_job_id": 1345042,
+    "snapshot": "receipts/live-array-audit-20260801T134059Z",
+    "snapshot_state": "unary-only synchronized epoch 20 with one seed at 21; distogram synchronized epoch 17 with one seed at 18; queued contact-marginal, contact-hybrid, and distogram-triangle conditions not started",
+    "snapshot_verdict": "mixed and unstable; no distogram promotion"
+  },
+  "source_authority": {
+    "local_regression": "296 passed, 0 failed in 18.52s",
+    "manifest_sha256": "ee60485e2507c76d43752cbb608680a53d9a1d8e529e2fe4efff53ec34ea1f35",
+    "record_count": 506,
+    "remote_regression": "291 passed, 5 skipped, 0 failed in 125.67s",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v14",
+    "tree_sha256": "49700b8245862f452b2bc8a1608943c86e4e7a81e6f542f346e128c27b5b19c3"
+  }
+}

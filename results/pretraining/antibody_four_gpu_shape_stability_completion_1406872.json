@@ -1,0 +1,66 @@
+{
+  "authorization": {
+    "configuration_promotion": false,
+    "full_efficiency_gate_candidate": true,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Four-GPU real-OAS static-shape candidate passed only the shape-stability probe and can advance to the full efficiency gate. This does not authorize production pretraining or any downstream, frozen, official, external, biological, comparative, or SOTA claim.",
+  "format_version": "antibody_four_gpu_shape_stability_completion_v1",
+  "independent_audit": {
+    "artifact_file_count": 20,
+    "artifact_manifest_file_sha256": "b70eca05750052aa3d9345a2830683a0285bb6fa558a56bafff19043233cb0c7",
+    "artifact_manifest_verified": true,
+    "file_sha256": "da233e707d614d56c2c2a8c78f2fe4424205b667cb594a635842e2b52e42729b",
+    "payload_sha256": "35c5b44102fa10f6ab910f016cbab77e519c9ab7f70abc1732102df8e9dd399e",
+    "protocol_file_sha256": "915973752eac8f286bab171b51a33950e33b1e2c8d01ad483986c9f24b4436ca",
+    "writable_paths": []
+  },
+  "job": {
+    "elapsed": "00:41:02",
+    "exit_code": "0:0",
+    "job_id": 1406872,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_shape_stability_095c15a_attempt_001",
+    "state": "COMPLETED"
+  },
+  "outcome": {
+    "bucketed": {
+      "eligible": false,
+      "pooled_approximate_6n_mfu": 0.4970186255776741,
+      "pooled_residue_tokens_per_second": 109401.75229832913,
+      "replicate_throughput_relative_range": 0.00043142872795566816,
+      "step_stability": false
+    },
+    "global_gates": {
+      "artifact_integrity": true,
+      "gpu_identity": true,
+      "initial_model": true,
+      "membership": true,
+      "short_horizon_numerical": true
+    },
+    "selected_candidate": "static_194",
+    "static_194": {
+      "eligible": true,
+      "maximum_memory_fraction": 0.6305701229797283,
+      "pooled_approximate_6n_mfu": 0.35252139284415235,
+      "pooled_residue_tokens_per_second": 77595.59926949006,
+      "replicate_state_equal": true,
+      "replicate_throughput_relative_range": 0.0024024108156102037,
+      "run_p95_over_p50": [
+        1.07336718225393,
+        1.0707106333567469
+      ]
+    }
+  },
+  "source": {
+    "commit": "095c15ac9adb59e0b055005d307d47accf175cec",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-095c15a-attempt-001"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "format_version": "antibody_four_gpu_shape_failure_v1",
+  "observed_at": "2026-08-17T18:30:00+08:00",
+  "job_id": 1428728,
+  "state": "COMPLETED",
+  "elapsed": "01:03:32",
+  "node": "wqd10nah10g5",
+  "requested_gpus": 4,
+  "source_commit": "5f1f6ac92f979695756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+  "audit": {
+    "path": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_shape_decontam_5f1f6ac_attempt_001/independent-audit.json",
+    "receipt_sha256": "49ca1210905831f418805158450d9e1959fce9b388599bc5f8951b707098b7da",
+    "probe_passed": false,
+    "selected_candidate_for_full_efficiency_gate": null,
+    "global_gates": {
+      "artifact_integrity": true,
+      "gpu_identity": true,
+      "initial_model": true,
+      "membership": true,
+      "short_horizon_numerical": true
+    },
+    "candidates": {
+      "static_194": {
+        "eligible": true,
+        "step_stability": true,
+        "replicate_state_equal": true,
+        "residue_tokens_per_second": 78037.28855240426,
+        "seconds": 736.7334650715347
+      },
+      "hybrid_160_194": {
+        "eligible": false,
+        "step_stability": false,
+        "replicate_state_equal": true,
+        "throughput_relative_to_static_194": 1.130436292625632,
+        "residue_tokens_per_second": 88216.18315773654
+      },
+      "hybrid_128_194": {
+        "eligible": false,
+        "step_stability": false,
+        "replicate_state_equal": true,
+        "throughput_relative_to_static_194": 1.3414724567479785,
+        "residue_tokens_per_second": 104684.87319234465
+      }
+    }
+  },
+  "claim_boundary": "Development/engineering four-GPU shape probe only; no efficiency, production, scientific, frozen, official, or external claim.",
+  "decision": "REJECT_HYBRID_CANDIDATES",
+  "next_step": "Register a separate static_194 fallback efficiency protocol, preserving this failed hybrid-shape receipt and without changing the 1.10 step-stability threshold."
+}

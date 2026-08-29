@@ -1,0 +1,105 @@
+{
+  "schema_version": "framecontact_attention_kernel_amendment_v1",
+  "frozen_on": "2026-08-01",
+  "deployment_status": "implemented_but_not_used_by_any_current_frozen_training",
+  "scope": "systems-only optional attention execution path",
+  "parent_scientific_model": "FrameContact reference implementation; no architecture, loss, split, label, metric, model-selection, or parameter change",
+  "implementation": {
+    "default_kernel": "reference",
+    "optional_kernel": "torch_scaled_dot_product_attention",
+    "applies_to": [
+      "intra-chain geometry-biased self-attention",
+      "contact-gated bidirectional cross-attention"
+    ],
+    "score_contract": "scaled query-key content score plus the same materialized arbitrary per-head geometry or contact additive bias, followed by the same boolean candidate mask",
+    "diagnostics_force_reference_path": true,
+    "dropout_contract": "training dropout probability is forwarded to SDPA; evaluation dropout is exactly zero",
+    "padded_query_contract": "all outputs for invalid or candidate-free query rows are explicitly zeroed after SDPA",
+    "state_dict_changed": false,
+    "model_parameters_changed": false,
+    "reference_path_removed": false,
+    "source_sha256": {
+      "src/interaction_first/intra_chain_geometry.py": "d59fbc1ed6e6f48e4ee8b7c93f76ea6e92becaa59ee03f6cc415d44fcadf0a23",
+      "src/interaction_first/framecontact.py": "61ae9a1a31d6dd4e39edd5dfa592f90feef36b5ac8c0332aafbe876429b1c532",
+      "scripts/train_framecontact.py": "6c26c6067f114630491f95e157b8a685823c80c74f5242bbd3b14f420a8b213e",
+      "scripts/benchmark_framecontact_attention_kernels.py": "f0e0b4001761408e4c4dbe531defee46512aa15d8ab27fd033f8817f8d86e393",
+      "tests/test_intra_chain_geometry.py": "4c5bca7191d1cafbed8a21f9e3b58daf375f12f0f376d32e77e25a90c653b663",
+      "tests/test_framecontact.py": "67df78672ddc9667efbf4eb393b866e9b466afa0bf61aecf99c8236437442fd9",
+      "tests/test_attention_kernel_amendment.py": "15ac8409f192c6340f9288c5da6b021bd463f6556fc66c0f73f61f06b6ee161f"
+    }
+  },
+  "validation": {
+    "source_manifest": {
+      "path": "receipts/attention-kernel-benchmark-v2-1346024/FRONTIER_SOURCE_V11_MANIFEST.json",
+      "sha256": "2a4857524cfa35a4c79ae2ee678e9c370f808e2a528201a08f8fbf8818830bb7",
+      "tree_sha256": "66c3294451fd26391c9aa191e5fef7370bead1da89d96fce6d19920fa647649b"
+    },
+    "full_regression": {
+      "path": "receipts/attention-kernel-benchmark-v2-1346024/FULL_PYTEST_V11.log",
+      "sha256": "d1b8fb2a1c8a7269ce396b966d83dc32890d52643a7f917d0ae368620317b1a6",
+      "passed": 255,
+      "skipped": 5,
+      "failed": 0,
+      "elapsed_seconds": 76.85,
+      "skip_boundary": "five optional external Boltz baseline tests; no SDPA or FrameContact contract test skipped"
+    },
+    "equivalence": {
+      "fp32_output_max_abs": 6.109476089477539e-07,
+      "fp32_max_gradient_abs": 7.152557373046875e-07,
+      "bf16_output_max_abs": 0.01171875,
+      "bf16_max_gradient_abs": 0.005859375,
+      "covers": "query, key, value, additive-bias gradients plus end-to-end FrameContact feature and parameter gradients"
+    },
+    "integrated_benchmark": {
+      "slurm_job": 1346024,
+      "receipt_path": "receipts/attention-kernel-benchmark-v2-1346024/BENCHMARK.json",
+      "sha256": "1a214289d80c5fd404839877d675b97e79a5b5ba501f5cf97ff4a2971026f60c",
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "torch": "2.7.1+cu128",
+      "cuda": "12.8",
+      "a100_tested": false,
+      "bf16_results": [
+        {
+          "antibody_length": 220,
+          "antigen_length": 128,
+          "training_median_speedup": 1.0719,
+          "training_peak_memory_ratio": 0.9390,
+          "inference_median_speedup": 1.0588
+        },
+        {
+          "antibody_length": 220,
+          "antigen_length": 512,
+          "training_median_speedup": 1.0611,
+          "training_peak_memory_ratio": 0.9189,
+          "inference_median_speedup": 0.9657
+        },
+        {
+          "antibody_length": 220,
+          "antigen_length": 1000,
+          "training_median_speedup": 1.0424,
+          "training_peak_memory_ratio": 0.9149,
+          "inference_median_speedup": 1.0118
+        }
+      ],
+      "interpretation": "modest end-to-end training-step improvement and lower peak allocated memory; inference is mixed, so no blanket fast-path claim"
+    }
+  },
+  "promotion_rule": {
+    "current_frozen_arrays_must_remain_reference": true,
+    "future_development_protocol_must_name_attention_kernel": true,
+    "a100_output_gradient_and_performance_smoke_required_before_a100_claim": true,
+    "quality_metrics_must_be_compared_under_identical_scientific_configuration": true,
+    "attention_diagnostics_must_remain_reference_path": true
+  },
+  "scientific_boundary": {
+    "real_dataset_loaded_by_kernel_benchmark": false,
+    "optimizer_step_performed_by_kernel_benchmark": false,
+    "model_quality_metric_computed": false,
+    "frozen_training_changed": false,
+    "frozen_test_opened": false,
+    "external_test_opened": false,
+    "benchmark_improvement_claim_authorized": false,
+    "fused_custom_kernel_claim_authorized": false,
+    "state_of_the_art_claim_authorized": false
+  }
+}

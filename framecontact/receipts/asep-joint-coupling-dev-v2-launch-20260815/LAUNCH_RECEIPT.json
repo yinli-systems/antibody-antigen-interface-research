@@ -1,0 +1,67 @@
+{
+  "format_version": "framecontact_asep_joint_coupling_dev_v2_launch_receipt_v1",
+  "captured_at": "2026-08-15T06:18:45+08:00",
+  "source": {
+    "git_commit": "c935d93dbd4a4f3840c17fcca875e5d4abc72073",
+    "github_pull_request": 8,
+    "github_head_verified": true,
+    "paracloud_deployment_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/joint-coupling-source-c935d93",
+    "deployment_commit_verified": true
+  },
+  "protocol": {
+    "path": "framecontact/protocols/framecontact_asep_joint_coupling_dev_v2.json",
+    "sha256": "08a23cc2072198d15fc5e80d2374f1fde6b77c0ca05975b246436acdc10211d9",
+    "receipt_sha256": "d4f63d7b75b3eaa6d90be70cd55663831868dbca1a3f87b38d9b39be11ac04cb",
+    "condition_count": 6,
+    "seed_count": 5,
+    "planned_runs": 30,
+    "official_or_frozen_test_authorized": false
+  },
+  "verification": {
+    "exact_commit_test_count": 96,
+    "exact_commit_test_status": "PASS",
+    "a5_gpu_smoke": {
+      "job_id": "1406613",
+      "state": "COMPLETED",
+      "exit_code": "0:0",
+      "elapsed": "00:00:17",
+      "device": "cuda",
+      "precision": "bf16",
+      "batch_loss": 2.810647964477539,
+      "gradient_norm_before_clip": 14.781888008117676,
+      "optimizer_steps": 1,
+      "output_root_created": false,
+      "test_role_loaded": false
+    },
+    "a3_gpu_smoke": {
+      "job_id": "1406614",
+      "state": "COMPLETED",
+      "exit_code": "0:0",
+      "elapsed": "00:00:16",
+      "device": "cuda",
+      "precision": "bf16",
+      "batch_loss": 2.810542106628418,
+      "gradient_norm_before_clip": 14.781756401062012,
+      "optimizer_steps": 1,
+      "output_root_created": false,
+      "test_role_loaded": false
+    }
+  },
+  "array": {
+    "job_id": "1406631",
+    "partition": "gpu_5090",
+    "array_specification": "0-29%30",
+    "state_at_capture": {
+      "RUNNING": 30,
+      "PENDING": 0,
+      "COMPLETED": 0,
+      "FAILED": 0
+    },
+    "temporary_output_directories": 30,
+    "complete_development_results": 0,
+    "nonempty_stdout_files": 0,
+    "nonempty_stderr_files": 0,
+    "interpretation": "All tasks acquired allocations and atomically created temporary run directories. No epoch or validation result existed at capture time."
+  },
+  "claim_boundary": "Development train/validation execution evidence only. This receipt contains no selected checkpoint, no development performance conclusion, and no official, frozen, or external test score."
+}

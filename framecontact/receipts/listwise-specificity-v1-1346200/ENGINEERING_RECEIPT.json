@@ -1,0 +1,127 @@
+{
+  "format_version": "framecontact_listwise_specificity_engineering_v1",
+  "recorded_at": "2026-08-01T16:01:57+08:00",
+  "status": "implemented_and_train_role_gpu_smoked_but_not_model_selected_or_benchmarked",
+  "claim_boundary": "This receipt covers source, regression tests, and one real SAbDab2 train-role forward/backward stress example. It contains no optimizer step, validation-based model selection, frozen-test access, external-test access, generalization result, or model-quality improvement claim.",
+  "motivation": {
+    "observed_alignment_gap": "Training used one pairwise wrong partner per direction while development evaluation ranks the cognate among 31 candidates per direction and selects on the worse direction.",
+    "implemented_candidate": "Deterministic K-negative listwise contrastive specificity loss with optional normalized smooth-maximum aggregation over the two retrieval directions.",
+    "default_behavior_changed": false,
+    "default_loss_mode": "pairwise_softplus",
+    "default_negative_count": 1,
+    "post_freeze_primary_candidate": {
+      "loss_mode": "listwise_contrastive",
+      "negative_count": 4,
+      "temperature": 1.0,
+      "direction_aggregation": "smooth_max",
+      "direction_temperature": 0.1,
+      "wrong_partner_activation_checkpointing": true
+    },
+    "temperature_choice": "T=1.0 makes K=1 listwise exactly equal to the legacy pairwise softplus, including gradients; the initial T=0.1 memory stress is not the frozen training configuration.",
+    "negative_count_8_status": "engineering stress comparator only; do not train or select it unless a validation-only protocol explicitly promotes it"
+  },
+  "source": {
+    "root_on_paracloud": "/ssd/scxi253/model_deployment/data/framecontact_20260730/listwise-source-v1",
+    "manifest_path": "SOURCE_MANIFEST_FINAL.json",
+    "manifest_sha256": "91da21c253d55475e78736b8b0769bb892f21331e89e3621419bcbcbb4408e07",
+    "tree_sha256": "a6350505376804f19aabec2cbfad605ac4fa9999281e4b06085c1d933fb93626",
+    "record_count": 284,
+    "key_files": {
+      "src/interaction_first/framecontact_objective.py": "e8e1ab516571d3b22e807fb48073b7207a5fdefc36b017aab63d52a2dbc7845a",
+      "scripts/train_framecontact.py": "0282c6490ed210fbe10a95d6a99dbec948a731c283911378e4f92a2e1990e0e2",
+      "scripts/stress_sabdab2_three_way_training_step.py": "998414d124da4f2e8dbeb10611682380d51049815565f77f1c60ab5b8f1bb84e",
+      "slurm/smoke_framecontact_listwise_matrix_v1_4090.sbatch": "fa44eec69060e2b859de5ea77b0fe745e6d1cddc0dd7183df08c665a9b1abfc8",
+      "tests/test_framecontact_objective_metrics.py": "979309afeafdc104227df1d902717fbf1fdd26ad086d6f67043b6ae290f1afa0",
+      "tests/test_train_framecontact_reciprocal.py": "c7ff22ec8e1330e3f913731987edc42e32b6aa628e2f479b2685b6708dbf7988",
+      "tests/test_attention_kernel_amendment.py": "6efeb8ac16027879b0cf553837820386c008c61160bd1f82cb10012c1ea8444b"
+    }
+  },
+  "regression": {
+    "command": "PYTHONPATH=src /ssd/scxi253/model_deployment/envs/framecontact-test-v1/bin/python -m pytest -q",
+    "result": {
+      "passed": 269,
+      "skipped": 5,
+      "failed": 0,
+      "elapsed_seconds": 77.96
+    },
+    "log_path": "FULL_PYTEST_FINAL.log",
+    "log_sha256": "197ed5284536be37180799e7da7880296fccd4b786fb58e47a028e2149970e6b",
+    "skip_boundary": "Five optional Boltz Pairformer adapter tests were skipped because the pinned Boltz source was unavailable in the test environment; no FrameContact, listwise objective, checkpoint/dropout-RNG, split, frozen-test gate, or evidence-lock test was skipped."
+  },
+  "gpu_stress": {
+    "runtime": {
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "torch": "2.7.1+cu128",
+      "cuda": "12.8"
+    },
+    "data_scope": {
+      "split_role": "train",
+      "instance_id": "pdb_00009mx1_B_C",
+      "antibody_length": 231,
+      "antigen_length": 2363,
+      "validation_loaded": false,
+      "test_loaded": false
+    },
+    "initial_no_checkpoint_run": {
+      "slurm_job": 1346186,
+      "K1_state": "COMPLETED",
+      "K4_state": "OUT_OF_MEMORY",
+      "K4_batch_max_rss_kib": 32367320,
+      "K8_state": "OUT_OF_MEMORY",
+      "K8_batch_max_rss_kib": 29047496,
+      "diagnosis": "Saved-tensor CPU offload retained activations for every wrong partner."
+    },
+    "activation_checkpoint_rerun": {
+      "slurm_job": 1346200,
+      "K4_state": "COMPLETED",
+      "K4_batch_max_rss_kib": 1952780,
+      "K8_state": "COMPLETED",
+      "K8_batch_max_rss_kib": 2096364,
+      "checkpoint_scope": "wrong-partner branches only; cognate branch and default K1 path unchanged"
+    },
+    "exact_candidate_run": {
+      "slurm_job": 1346250,
+      "state": "COMPLETED",
+      "path": "LISTWISE_K4_T1_GPU_SMOKE.json",
+      "sha256": "d4b6191e74968449f4787b070eb807f8b6e11daf2702416c0be61e36102740d6",
+      "specificity_temperature": 1.0,
+      "elapsed_seconds": 13.55415777117014,
+      "peak_cuda_memory_bytes": 10458996736,
+      "forward_backward_finite": true,
+      "validation_loaded": false,
+      "test_loaded": false
+    },
+    "receipts": {
+      "K1": {
+        "path": "LISTWISE_K1_GPU_SMOKE.json",
+        "sha256": "e6b7d959bb99267ea167d73d63d3e143f764b31e707d2bb9ad9164ae33f93492",
+        "elapsed_seconds": 16.996088223997504,
+        "peak_cuda_memory_bytes": 2875287552,
+        "forward_backward_finite": true
+      },
+      "K4": {
+        "path": "LISTWISE_K4_GPU_SMOKE.json",
+        "sha256": "0f2385e560b5834d783ce5615fb41ad3331ea889e93a0fa7b272dd16568f689b",
+        "elapsed_seconds": 28.847094740718603,
+        "peak_cuda_memory_bytes": 10458996736,
+        "forward_backward_finite": true
+      },
+      "K8": {
+        "path": "LISTWISE_K8_GPU_SMOKE.json",
+        "sha256": "0628291e8671e6b388599e5fadc602a9b8aa12476cabcbd3b51c010490704935",
+        "elapsed_seconds": 29.918452560901642,
+        "peak_cuda_memory_bytes": 10693861888,
+        "forward_backward_finite": true
+      }
+    },
+    "performance_boundary": "Single-example stress timings are not a throughput benchmark and must not be generalized to full training, A100, or another sequence-length distribution."
+  },
+  "development_snapshot_boundary": {
+    "residue_head_live_summary_sha256": "85a98b10a65e05f69c37edebe7d24806e485c8561a7759b581adc6a52f1030d7",
+    "distogram_live_summary_sha256": "59136cb549c7bf90178150b19786651bc6ba9e963730f3544d3a62c913114c28",
+    "status": "in_flight_descriptive_only",
+    "selection_performed": false,
+    "frozen_test_opened": false
+  },
+  "next_gate": "Wait for the pre-existing five-condition by five-seed development matrix to finish and freeze its validation-only base-model selection. Then compare K1 pairwise/mean against the single preregistered K4 listwise/smooth-max candidate on development data only, with a non-degradation gate because EpiFormer reported a negative residue-level InfoNCE ablation."
+}

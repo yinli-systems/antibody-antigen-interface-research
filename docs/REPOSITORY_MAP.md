@@ -8,8 +8,10 @@ replace protocol-specific runbooks or result receipts.
 | Path | Role | Expected contents |
 |---|---|---|
 | `src/interaction_first/` | Importable implementation | Models, metrics, split formulations, data contracts, auditors, and solver backends |
+| `framecontact/` | Isolated FrameContact snapshot | Independently installable historical source, protocols, receipts, reports, and tests whose relative paths are hash-bound |
 | `scripts/` | Operator entry points | Build, train, evaluate, audit, freeze, verify, and submit commands |
 | `slurm/` | Scheduler templates | Cluster launchers and orchestration helpers |
+| `native/` | Native acceleration | Audited CUDA/C++ kernels used by bounded preprocessing workstreams |
 | `remote_tools/` | Immutable deployed workstreams | Source snapshots, launchers, patches, and receipts grouped by remote campaign |
 | `protocols/` | Frozen research governance | Preregistrations, amendments, execution locks, registrations, attempt receipts, and split evidence |
 | `results/` | Lightweight evidence | Final summaries, verification receipts, statistical analyses, and selected figures |

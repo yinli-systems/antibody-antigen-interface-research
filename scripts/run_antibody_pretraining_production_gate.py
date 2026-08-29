@@ -47,10 +47,26 @@ from antibody_pretraining.training_contract import (
 import run_antibody_pretraining_optimized as engine
 
 
-FORMAT_VERSION = "antibody_production_loader_recovery_run_v1"
-GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
+RECOVERY_RUN_FORMAT = "antibody_production_loader_recovery_run_v1"
+RECOVERY_GATE_FORMAT = "antibody_production_loader_recovery_gate_v1"
+PRETRAINING_RUN_FORMAT = "antibody_four_gpu_pretraining_segment_run_v1"
+PRETRAINING_GATE_FORMAT = "antibody_four_gpu_pretraining_segment_gate_v1"
+FORMAT_VERSION = RECOVERY_RUN_FORMAT
+GATE_FORMAT = RECOVERY_GATE_FORMAT
 ELASTIC_FORMAT_VERSION = "antibody_elastic_recovery_run_v1"
 ELASTIC_GATE_FORMAT = "antibody_elastic_recovery_gate_v1"
+RECOVERY_AUTHORIZATION = {
+    "loader_recovery_gate": True,
+    "production_pretraining": False,
+    "scale_out": False,
+    "scientific_claim": False,
+}
+PRETRAINING_AUTHORIZATION = {
+    "configuration_promotion": True,
+    "downstream_transfer": False,
+    "production_pretraining": True,
+    "scientific_claim": False,
+}
 ELASTIC_AUTHORIZATION = {
     "elastic_recovery_gate": True,
     "production_pretraining": False,
@@ -109,6 +125,7 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--ddp-bucket-cap-mb", type=int, default=25)
     parser.add_argument("--maximum-open-arrays", type=int, required=True)
     parser.add_argument("--minimum-soft-open-file-limit", type=int, required=True)
+    parser.add_argument("--campaign-token-limit", type=int)
     parser.add_argument("--compile-blocks", action="store_true")
     parser.add_argument("--disable-compiled-cudagraphs", action="store_true")
     parser.add_argument("--compile-prewarm-buckets", action="store_true")
@@ -117,6 +134,11 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--bucketed-padding", action="store_true")
     parser.add_argument("--length-bucketing", action="store_true")
     parser.add_argument("--skip-checkpoint", action="store_true")
+    parser.add_argument(
+        "--authorization-mode",
+        choices=("recovery_gate", "production_pretraining"),
+        default="recovery_gate",
+    )
     args = parser.parse_args()
     if any(
         value <= 0
@@ -133,6 +155,8 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("Gate dimensions must be positive")
     if args.run_seed < 0:
         raise ValueError("Run seed must be non-negative")
+    if args.campaign_token_limit is not None and args.campaign_token_limit <= 0:
+        raise ValueError("Campaign token limit must be positive")
     if args.minimum_soft_open_file_limit < args.maximum_open_arrays + 512:
         raise ValueError("Open-file limit does not preserve descriptor headroom")
     if args.compile_prewarm_buckets and not args.compile_blocks:
@@ -145,6 +169,13 @@ def _arguments() -> argparse.Namespace:
         raise ValueError("Only the resumed role accepts a checkpoint root")
     if args.elastic_run_key is not None and not args.elastic_run_key.strip():
         raise ValueError("Elastic run key cannot be empty")
+    if args.elastic_run_key is not None and args.authorization_mode != "recovery_gate":
+        raise ValueError("Elastic recovery cannot authorize production pretraining")
+    if (
+        args.campaign_token_limit is not None
+        and args.authorization_mode != "production_pretraining"
+    ):
+        raise ValueError("Campaign token limit requires production authorization")
     return args
 
 
@@ -174,9 +205,33 @@ def _load_canonical_json(path: Path, label: str) -> dict[str, object]:
     return value
 
 
+def _mode_contract(
+    authorization_mode: str,
+) -> tuple[str, str, dict[str, bool], str]:
+    if authorization_mode == "recovery_gate":
+        return (
+            RECOVERY_GATE_FORMAT,
+            RECOVERY_RUN_FORMAT,
+            RECOVERY_AUTHORIZATION,
+            "Audited OAS loader and exact-recovery gate only; no "
+            "production-pretraining, scale, biological, or SOTA claim",
+        )
+    if authorization_mode == "production_pretraining":
+        return (
+            PRETRAINING_GATE_FORMAT,
+            PRETRAINING_RUN_FORMAT,
+            PRETRAINING_AUTHORIZATION,
+            "Four-GPU OAS masked-language-model pretraining segment; no "
+            "downstream, partner-specificity, official-test, biological, "
+            "model-promotion, or SOTA claim",
+        )
+    raise ValueError("Unknown authorization mode")
+
+
 def _load_gate_protocol(
     path: Path,
     elastic_run_key: str | None = None,
+    authorization_mode: str = "recovery_gate",
 ) -> tuple[dict[str, object], str, bool]:
     raw = path.read_bytes()
     try:
@@ -195,16 +250,11 @@ def _load_gate_protocol(
         ):
             raise RuntimeError("Elastic gate protocol identity differs")
         return protocol, hashlib.sha256(raw).hexdigest(), True
+    gate_format, _, authorization, _ = _mode_contract(authorization_mode)
     if (
         not isinstance(protocol, dict)
-        or protocol.get("format_version") != GATE_FORMAT
-        or protocol.get("authorization")
-        != {
-            "loader_recovery_gate": True,
-            "production_pretraining": False,
-            "scale_out": False,
-            "scientific_claim": False,
-        }
+        or protocol.get("format_version") != gate_format
+        or protocol.get("authorization") != authorization
         or protocol.get("test_access") != TEST_ACCESS
     ):
         raise RuntimeError("Gate protocol identity or authorization differs")
@@ -309,6 +359,8 @@ def _validate_launch(
                 "world_size": world_size,
             }
         )
+    elif args.campaign_token_limit is not None:
+        expected["campaign_token_limit"] = args.campaign_token_limit
     if run != expected:
         raise RuntimeError("Launch differs from the frozen run role")
     inputs = protocol.get("inputs")
@@ -400,13 +452,10 @@ def main() -> None:
     resume_source_world_size: int | None = None
     if args.resume_root is not None:
         resume_state_path = args.resume_root / "trainer_state.json"
-        if args.elastic_run_key is not None:
-            resume_state = _load_canonical_json(
-                resume_state_path,
-                "Elastic resume trainer state",
-            )
-        else:
-            resume_state = json.loads(resume_state_path.read_text(encoding="ascii"))
+        resume_state = _load_canonical_json(
+            resume_state_path,
+            "Resume trainer state",
+        )
         resume_source_world_size = int(resume_state.get("world_size", 0))
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
     rank = int(os.environ.get("RANK", "0"))
@@ -447,7 +496,11 @@ def main() -> None:
         gate_protocol,
         gate_protocol_sha256,
         elastic_gate,
-    ) = _load_gate_protocol(args.gate_protocol, args.elastic_run_key)
+    ) = _load_gate_protocol(
+        args.gate_protocol,
+        args.elastic_run_key,
+        args.authorization_mode,
+    )
     family = load_model_family(args.model_family)
     training_protocol = load_training_protocol(args.training_protocol)
     if elastic_gate:
@@ -610,6 +663,27 @@ def main() -> None:
                 != resume_semantic_state_sha256
             ):
                 raise RuntimeError("Elastic resume receipt authentication failed")
+        else:
+            resume_receipt = _load_canonical_json(
+                args.resume_root / "receipt.json",
+                "Resume receipt",
+            )
+            _, expected_resume_format, expected_authorization, _ = _mode_contract(
+                args.authorization_mode
+            )
+            if (
+                resume_receipt.get("format_version") != expected_resume_format
+                or resume_receipt.get("authorization") != expected_authorization
+                or resume_receipt.get("gate_protocol_sha256")
+                != gate_protocol_sha256
+                or resume_receipt.get("checkpoint_model_sha256")
+                != resume_receipt.get("final_model_sha256")
+                or resume_receipt.get("checkpoint_optimizer_sha256") is None
+                or resume_receipt.get("checkpoint_rng_manifest_sha256")
+                != state.get("checkpoint_rng_manifest_sha256")
+                or resume_receipt.get("test_access") != TEST_ACCESS
+            ):
+                raise RuntimeError("Resume receipt differs from this gate")
         cursor = int(state["sample_cursor"])
         consumed = int(state["consumed_residue_tokens"])
         start_update = int(state["next_update"])
@@ -649,6 +723,19 @@ def main() -> None:
             != resume_receipt.get("final_semantic_optimizer_sha256")
         ):
             raise RuntimeError("Elastic DCP payload differs from its source receipt")
+        if not elastic_gate and (
+            resume_receipt is None
+            or resume_payload_model_sha256
+            != resume_receipt.get("checkpoint_model_sha256")
+            or resume_payload_optimizer_sha256
+            != resume_receipt.get("checkpoint_optimizer_sha256")
+            or resume_loaded_model_sha256 != resume_receipt.get("final_model_sha256")
+            or resume_loaded_optimizer_sha256
+            != resume_receipt.get("final_optimizer_sha256")
+        ):
+            raise RuntimeError(
+                "Resume checkpoint differs from the authenticated receipt"
+            )
         resume_rng_root = args.resume_root / "checkpoint"
 
     compile_prewarm_trace: list[dict[str, float | int]] = []
@@ -703,11 +790,26 @@ def main() -> None:
                 world_size=world_size,
                 device=device,
             )
+            if (
+                not elastic_gate
+                and resume_receipt is not None
+                and resume_rng_manifest_sha256
+                != resume_receipt.get("checkpoint_rng_manifest_sha256")
+            ):
+                raise RuntimeError(
+                    "Resume RNG state differs from the authenticated receipt"
+                )
 
     membership_digest = hashlib.sha256()
     trace: list[dict[str, float | int]] = []
     data_preparation_seconds = 0.0
+    executed_steps = 0
     for update in range(start_update, start_update + args.steps):
+        if (
+            args.campaign_token_limit is not None
+            and consumed >= args.campaign_token_limit
+        ):
+            break
         preparation_started = time.perf_counter()
         plan = build_indexed_update_plan(
             record_count=len(corpus),
@@ -877,6 +979,7 @@ def main() -> None:
         elapsed = time.perf_counter() - started
         consumed += plan.residue_token_count
         cursor = plan.next_sample_cursor
+        executed_steps += 1
         if rank == 0:
             trace.append(
                 {
@@ -892,6 +995,9 @@ def main() -> None:
                     "update": update + 1,
                 }
             )
+
+    if executed_steps <= 0:
+        raise RuntimeError("Segment would execute zero optimizer updates")
 
     rng_state = engine._rng_state_payload(rank, device)
     final_model_sha256 = engine._replicated_rank_digests(
@@ -940,7 +1046,7 @@ def main() -> None:
         "length_bucket_boundaries": list(boundaries),
         "micro_batch_per_gpu": args.micro_batch,
         "model_family_sha256": model_family_sha256,
-        "next_update": start_update + args.steps,
+        "next_update": start_update + executed_steps,
         "optimization": _optimization(args),
         "preset": args.preset,
         "run_seed": args.run_seed,
@@ -953,6 +1059,18 @@ def main() -> None:
     destination_semantic_state_sha256 = (
         semantic_trainer_state_sha256(trainer_state) if elastic_gate else None
     )
+    if elastic_gate:
+        run_format = ELASTIC_FORMAT_VERSION
+        authorization = ELASTIC_AUTHORIZATION
+        claim_boundary = (
+            "Real-OAS elastic recovery systems gate only; no "
+            "production-pretraining, downstream, biological, test, "
+            "model-selection, or SOTA claim"
+        )
+    else:
+        _, run_format, authorization, claim_boundary = _mode_contract(
+            args.authorization_mode
+        )
     if rank == 0:
         soft_open_file_limit, hard_open_file_limit = _open_file_limits()
         _publish(args.output / "trainer_state.json", trainer_state)
@@ -964,16 +1082,16 @@ def main() -> None:
                     "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
                     "slurm_job_nodelist": os.environ.get("SLURM_JOB_NODELIST"),
                 },
-                "authorization": (
-                    ELASTIC_AUTHORIZATION
-                    if elastic_gate
-                    else {
-                        "loader_recovery_gate": True,
-                        "production_pretraining": False,
-                        "scale_out": False,
-                        "scientific_claim": False,
-                    }
-                ),
+                "authorization": authorization,
+                "campaign": {
+                    "complete": (
+                        args.campaign_token_limit is not None
+                        and consumed >= args.campaign_token_limit
+                    ),
+                    "configured_maximum_steps": args.steps,
+                    "executed_steps": executed_steps,
+                    "token_limit": args.campaign_token_limit,
+                },
                 "checkpoint_model_sha256": checkpoint_model_sha256,
                 "checkpoint_optimizer_sha256": checkpoint_optimizer_sha256,
                 "checkpoint_rng_manifest_sha256": checkpoint_rng_manifest_sha256,
@@ -984,14 +1102,7 @@ def main() -> None:
                     ),
                     "rng": "authenticated_rank_rng_manifest_v1",
                 },
-                "claim_boundary": (
-                    "Real-OAS elastic recovery systems gate only; no "
-                    "production-pretraining, downstream, biological, test, "
-                    "model-selection, or SOTA claim"
-                    if elastic_gate
-                    else "Audited OAS loader and exact-recovery gate only; no "
-                    "production-pretraining, scale, biological, or SOTA claim"
-                ),
+                "claim_boundary": claim_boundary,
                 "compile_prewarm_trace": compile_prewarm_trace,
                 "corpus_open": {
                     "array_file_hashes_verified_by_local_rank_zero": (
@@ -1061,9 +1172,7 @@ def main() -> None:
                     "model": "unwrapped_module_state_dict_v1",
                     "optimizer": "native_optimizer_state_dict_v1",
                 },
-                "format_version": (
-                    ELASTIC_FORMAT_VERSION if elastic_gate else FORMAT_VERSION
-                ),
+                "format_version": run_format,
                 "gate_protocol_sha256": gate_protocol_sha256,
                 "initial_model_sha256": initial_model_sha256,
                 "implementation": _implementation_contract(

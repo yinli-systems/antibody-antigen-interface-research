@@ -1,0 +1,14 @@
+{
+  "format_version": "antibody_four_gpu_chain_submission_evidence_v1",
+  "observed_at": "2026-08-17T17:00:36+08:00",
+  "recovery_job_id": "1428319",
+  "chain_job_id": "1428400",
+  "dependency": "afterok:1428319",
+  "chain_stage": "shape",
+  "partition": "gpu_5090",
+  "requested_gpus": 4,
+  "chain_script": "/ssd/scxi253/model_deployment/results/pretraining/antibody_scale_ladder_chain_e168d4b.sbatch",
+  "chain_script_sha256": "779737a902ebd83670f8dde2874707ded0eed8cff4a8c8502ac5a97dee28b468",
+  "state_at_submission": "PENDING (Dependency)",
+  "claim_boundary": "Control-plane submission only; no training, throughput, recovery, scientific, frozen, official, or external claim."
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "framecontact_asep_joint_coupling_development_protocol_receipt_v1",
+  "protocol_path": "framecontact/protocols/framecontact_asep_joint_coupling_dev_v1.json",
+  "protocol_file_sha256": "a1a4fcabf286f9bd936b3f6052b39890af6c3271e877a688db314e2907b2e09c",
+  "protocol_canonical_sha256": "15156b33386553b2c4622957b68296df56e0396924b99701ec63f9ed224a19c4",
+  "frozen_on": "2026-08-15",
+  "development_matrix_size": 6,
+  "seed_count": 5,
+  "planned_development_runs": 30,
+  "joint_coupling_fitting_started_at_freeze": false,
+  "official_test_used_for_selection": false,
+  "official_test_scores_read_for_this_protocol": false,
+  "authorities": {
+    "development_cache_manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "development_cache_receipt_sha256": "3a282b179ee151d9d4b24cc87366323670a76719bdf0542a2fc1aa164c0f5269",
+    "partner_metadata_sha256": "04d9a36e7c3c5228f1e4bcad46a00cdc3dde1556d25fc9693d9d28dc4680753b",
+    "train_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+    "validation_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec"
+  }
+}

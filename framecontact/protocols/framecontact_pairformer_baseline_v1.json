@@ -1,0 +1,78 @@
+{
+  "schema_version": "framecontact_pairformer_baseline_protocol_v1",
+  "protocol_status": "external_architecture_development_only_frozen_before_identical_split_training",
+  "frozen_on": "2026-07-31",
+  "parent_protocol": {
+    "path": "protocols/framecontact_primary_v5.json",
+    "sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+    "receipt_sha256": "395b8d86648abb348b41ef2513319c86ca20e3e235eb070dd81fb4516a760537"
+  },
+  "baseline_lock": {
+    "path": "baselines/BASELINE_LOCK_V4.json",
+    "sha256": "cc871d28a05e6c66a63e6961d70191e3b5ac84b7a41c0072a343a514fa83ec57",
+    "source_revision": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "checkpoint_sha256": "fea245d912c570ec117b2277c2719f312a6fc109c07b6f6ef741690ee775c2f5",
+    "pairformer_artifact_sha256": "9307036782c09f988c0d428a9e8c5bdcde604d1742e357982ad3b2ec6d27282f",
+    "state_tensor_count": 2544
+  },
+  "evidence_boundary_at_freeze": {
+    "real_checkpoint_authenticated": true,
+    "strict_real_weight_synthetic_forward_completed": true,
+    "native_boltz_pipeline_reproduced": false,
+    "identical_split_pairformer_training_started": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "asep_official_test_predictions_accessed": false
+  },
+  "research_question": "Does a frozen official Boltz-1 Pairformer trunk adapted to real intra-chain N/CA/C local-pose features improve contact-first partner specificity under the same SAbDab2 development split and objective?",
+  "condition": "adapted_boltz1_pairformer",
+  "matched_components": {
+    "dataset_and_split": "identical parent-v5 SAbDab2 development roles",
+    "sequence_features": "same frozen ESM authority as parent v5",
+    "structure_inputs": "same N/CA/C, chain_ids, valid/missing-frame masks",
+    "pair_labels": "same authenticated complete Cartesian contact labels",
+    "contact_decoder": "same low-rank contact head, late contact-gated bidirectional cross-attention, residue marginals, and objective family",
+    "partner_panels": "same locked reciprocal 31-candidate panels",
+    "selection_endpoint": "same reciprocal-min validation interaction-only margin",
+    "calibration": "validation only"
+  },
+  "architectural_differences": {
+    "self_encoder": "two parameter-disjoint 48-block official Boltz-1 Pairformer trunks",
+    "pretrained_trunks_frozen": true,
+    "trainable_adapters": "separate single-input, pair-input, and output projections for antibody and antigen",
+    "pair_input": "intra-chain full relative pose projected to the official 128-channel pair space",
+    "native_boltz_inputs_or_heads_used": false,
+    "framecontact_head_attention_diagnostics_available": false
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional interaction-only margins; tie-break by validation mean per-complex contact AUPRC then earlier epoch",
+    "temperature_and_thresholds": "validation only",
+    "failed_or_oom_seeds_must_be_reported": true
+  },
+  "implementation": {
+    "training_entry": "scripts/train_pairformer_baseline.py",
+    "d_model": 128,
+    "num_heads": 8,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "offload_saved_tensors": true
+  },
+  "resource_gate": {
+    "single_real_batch_forward_backward_smoke_required_before_seed_array": true,
+    "peak_memory_receipt_required": true,
+    "oom_is_a_reportable_baseline_failure_not_permission_to_change_architecture": true,
+    "a100_claim_requires_authenticated_a100_gpu_name_in_receipt": true
+  },
+  "frozen_test_action": "forbidden until all development choices are frozen in a new one-time opening receipt",
+  "claim_boundary": "Adapted external architecture baseline only. Source/checkpoint authentication and development performance cannot be described as native Boltz reproduction, A100 proof, frozen-test generalization, benchmark improvement, or state of the art."
+}

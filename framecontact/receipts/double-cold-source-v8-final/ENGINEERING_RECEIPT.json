@@ -1,0 +1,42 @@
+{
+  "claim_boundary": "Source, dependency, and regression-test evidence only. This receipt contains no model-quality, frozen-test, external-generalization, A100, or benchmark claim.",
+  "format_version": "framecontact_double_cold_source_engineering_receipt_v1",
+  "local_regression": {
+    "result": "285 passed in 24.07s",
+    "scope": "Full local test suite with src, pinned Boltz checkout, fairscale, einops 0.8.0, and einx 0.3.0 on PYTHONPATH"
+  },
+  "remote_environment": {
+    "base_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "isolated_dependency": "/ssd/scxi253/model_deployment/data/framecontact_20260730/runtime-deps/pyarrow-17.0.0-py310",
+    "isolated_dependency_version": "pyarrow==17.0.0",
+    "pytest_target": "/tmp/scxi253-v6d-pytest-841",
+    "result": "280 passed, 5 skipped in 77.92s",
+    "skip_boundary": "All five skips are tests requiring unavailable pinned Boltz source"
+  },
+  "remote_failure_trail": [
+    {
+      "log": "FULL_PYTEST.log",
+      "reason": "pytest was absent from the base contact environment"
+    },
+    {
+      "log": "FULL_PYTEST_WITH_PYTEST_PATH.log",
+      "reason": "one parquet test failed because pyarrow/fastparquet was absent; 270 passed and 14 optional-dependency tests skipped"
+    },
+    {
+      "log": "FULL_PYTEST_WITH_DEPS.log",
+      "reason": "final isolated-dependency regression pass"
+    }
+  ],
+  "sha256": {
+    "FULL_PYTEST.log": "760df4ec7ec2d987d40cce07309e16f2f34ed1585046aa0e6ac7b3c6ddcacc1e",
+    "FULL_PYTEST_WITH_DEPS.log": "1b5d91d43c552012b9b061a8eb1a34615cd909de36332a72aaa083c1cc96971d",
+    "FULL_PYTEST_WITH_PYTEST_PATH.log": "8b07b4fa2bcc88325048f024e5bcb466dcdb49661a3a77fdb431ac04d8d7218e",
+    "SOURCE_MANIFEST.json": "93ad550074f6e3d8d97c4af05685b3296495e2164c84a9dabfa29e3df1fea90c",
+    "pyarrow_init_remote": "d015e7899870974ada427a67cbdf98013e3f83aa8eb545067bab419806740a26"
+  },
+  "source": {
+    "manifest_record_count": 324,
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v8",
+    "tree_sha256": "f0d400f863da083bd0f51c35d8318ab70ebe8f26f9791db455ab85a24decd2a5"
+  }
+}

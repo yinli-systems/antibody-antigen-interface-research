@@ -1,0 +1,45 @@
+{
+  "format_version": "framecontact_local_interface_decoy_protocol_v1",
+  "status": "development_only_not_yet_run",
+  "purpose": "Pre-register a geometry-matched local interface motif and hard-negative auxiliary before any training run.",
+  "data_roles": {
+    "train": ["SAbDab2 development train"],
+    "validation": ["unchanged SAbDab2 development validation; no motif masks"],
+    "excluded": ["SAbDab2 test", "AsEP official/frozen test", "external test"]
+  },
+  "mechanism": {
+    "positive": "authenticated native contact pairs whose antibody residue is in a CDR and antigen residue is on the isolated-antigen surface",
+    "native_local_noncontact": "non-contact pairs within the same antibody CDR and cognate antigen surface patches",
+    "matched_local_decoy": "a different same-antigen non-epitope surface patch matched without model scores on patch size, SASA/area, local-curvature proxy, amino-acid composition, center-distance and distance bin",
+    "boundary_exclusion_angstrom": [4.5, 6.0],
+    "patch_radius_angstrom": 12.0,
+    "graph_radius_angstrom": "the registered node_spatial_neighbor_radius argument",
+    "candidate_restrictions": [
+      "decoy center is surface and outside the authenticated epitope mask",
+      "the full decoy patch contains no authenticated epitope residue",
+      "the full decoy patch contains no native contact residue",
+      "ties are resolved by residue index"
+    ]
+  },
+  "loss": {
+    "name": "positive-vs-local-decoy softplus margin",
+    "native_local_noncontact_role": "reported as a separate diagnostic tier; never silently merged into matched decoys or used as an unbalanced all-pairs loss",
+    "default_weight": 0.0,
+    "default_margin": 0.25,
+    "default_temperature": 1.0,
+    "normalization": "mean over eligible complexes, not over all O(L_antibody*L_antigen) negatives"
+  },
+  "gates": {
+    "static": ["mask shapes/dtypes", "no decoy overlap with native contacts/epitope", "deterministic tie-breaking"],
+    "development_smoke": ["single batch forward/backward", "loss finite", "validation loader unchanged"],
+    "promotion": ["matched five-seed development on epitope-group and surface-ratio splits", "paired bootstrap on native contact macro/per-complex AUPRC", "partner-specificity non-degradation", "same-antigen case study"],
+    "stop_rule": "If native contact primary or partner-specificity fails the pre-registered gate, retain the negative result and stop this branch."
+  },
+  "authority": {
+    "model_scores_used_to_construct_decoys": false,
+    "validation_or_test_labels_used_to_construct_decoys": false,
+    "test_loaded": false,
+    "external_test_loaded": false,
+    "claim_boundary": "Protocol and implementation only; no performance claim until a development-only run emits a receipt."
+  }
+}

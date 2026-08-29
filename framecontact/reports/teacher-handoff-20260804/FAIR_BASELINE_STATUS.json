@@ -1,0 +1,50 @@
+{
+  "format_version": "framecontact_fair_baseline_status_v1",
+  "reference_authority": {
+    "dataset": "SAbDab2",
+    "split": "antigen-fold v3.1 train/validation only",
+    "split_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+    "train_instances": 2565,
+    "validation_instances": 549,
+    "test_predictions_authorized": false
+  },
+  "admission_gates": [
+    "identical split SHA-256 and instance IDs",
+    "identical residue ordering and observed masks",
+    "identical residue labels and pair-contact cutoff",
+    "validation-only checkpoint, temperature and threshold selection",
+    "identical pooled and complex-macro evaluator",
+    "all requested seeds and failures retained"
+  ],
+  "baselines": {
+    "sequence_dense": {
+      "status": "admissible_same_protocol",
+      "reason": "same loader, split, seeds and evaluator"
+    },
+    "framecontact_unary_only": {
+      "status": "admissible_same_protocol",
+      "reason": "same trunk with unary-only residue output"
+    },
+    "framecontact_contact_marginal": {
+      "status": "admissible_same_protocol",
+      "reason": "same trunk with contact-derived residue output"
+    },
+    "framecontact_contact_hybrid": {
+      "status": "admissible_same_protocol",
+      "reason": "same trunk with zero-gated unary/contact fusion"
+    },
+    "MIPE_official_or_prior_reproduction": {
+      "status": "not_yet_admissible_requires_v3_1_feature_materialization_and_retraining",
+      "reason": "official 626-complex/random-CV cohort and existing pickle do not match the v3.1 instance set"
+    },
+    "SPPIDER_seq_prior_frozen_result": {
+      "status": "historical_context_only",
+      "reason": "uses a different 2727/481/455 split"
+    },
+    "published_external_methods": {
+      "status": "historical_context_only",
+      "reason": "dataset, split, candidate mask or metric definitions differ"
+    }
+  },
+  "claim_boundary": "Status ledger only. It contains no new model prediction and authorizes no benchmark ranking."
+}

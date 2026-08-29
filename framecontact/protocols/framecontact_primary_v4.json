@@ -1,0 +1,88 @@
+{
+  "schema_version": "framecontact_primary_protocol_v4",
+  "protocol_status": "frozen_memory_safe_amendment_before_sabdab2_antigen_fold_fitting",
+  "frozen_on": "2026-07-30",
+  "parent_protocol": {
+    "path": "protocols/framecontact_primary_v3.json",
+    "sha256": "d49b681536cd46925dcd995781928431f0d99d606414e548f069871a63b95d6e",
+    "receipt_sha256": "ac9e0947c930e1f71d1731c767c74b32ce90a41ade4a51562130134c7a4be967",
+    "inherited_without_change": [
+      "hypotheses and primary endpoint",
+      "reciprocal-min antigen-fold split and all data authorities",
+      "development matrix and confirmatory model",
+      "training losses and specificity score source",
+      "five seeds, maximum epochs, early stopping, interventions, and reporting rules"
+    ]
+  },
+  "amendment": {
+    "reason": "A pre-optimization-step, label-free GPU memory smoke on the largest authenticated train antigen (2363 residues) measured 16,585,468,928 bytes peak allocation for frozen_frame_ipa at batch size one on a 24 GB RTX 4090. Batch size two and padded evaluation batches therefore lack a safe memory margin.",
+    "smoke_receipt_sha256": "d5835b74f8e17080254c5af61ad86752b498dc318adc6e4a06bf7b782003d970",
+    "changes_only": {
+      "batch_size": {"from": 2, "to": 1},
+      "evaluation_batch_size": {"from": 8, "to": 1}
+    },
+    "scientific_effect": "none; gradient accumulation is not introduced and all losses, sampling, checkpoints, endpoints, and seeds are unchanged"
+  },
+  "evidence_boundary_at_freeze": {
+    "sabdab2_antigen_fold_fitting_started": false,
+    "sabdab2_antigen_fold_validation_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_labels_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "smoke_optimizer_step_performed": false,
+    "smoke_performance_metric_computed": false
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "authorities_inherited_from_parent_v3": true,
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5",
+      "test_sha256": "ea70fef770448302fb4ed1ccd7da51a1cc56cba5ea153076e077971735874bd1"
+    }
+  },
+  "development_matrix": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "frozen_frame_ipa",
+    "framecontact",
+    "framecontact_interleaved"
+  ],
+  "confirmatory_model": "framecontact_interleaved",
+  "training_objective": {
+    "specificity_score_source": "interaction_only",
+    "loss_weights": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25},
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01,
+    "wrong_pair_rule": "wrong pairs are ranking examples and never receive fabricated all-zero contact labels"
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional interaction-only margins; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "validation only",
+    "reporting": "report every seed and a frozen five-seed ensemble without suppressing failures"
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000
+  },
+  "claim_boundary": "This is a pre-fitting hardware-safety amendment only. It contains no validation, test, external, or benchmark result. All scientific decisions remain those authenticated in parent v3."
+}

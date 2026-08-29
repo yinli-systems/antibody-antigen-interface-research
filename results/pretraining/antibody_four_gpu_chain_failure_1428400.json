@@ -1,0 +1,15 @@
+{
+  "format_version": "antibody_four_gpu_chain_failure_v1",
+  "observed_at": "2026-08-17T17:10:15+08:00",
+  "recovery_job_id": 1428319,
+  "chain_job_id": 1428400,
+  "dependency": "afterok:1428319",
+  "chain_stage": "shape",
+  "state": "FAILED",
+  "exit_code": "2:0",
+  "elapsed": "00:00:00",
+  "error": "External anchor is not a SHA-256",
+  "evidence": "The chain started at the exact second the recovery receipt was sealed. A later same-environment export-parity smoke (job 1428639) printed all registered ABF_* anchors correctly, so this was recorded as a receipt-stability race rather than a protocol change.",
+  "remediation": "The chain script now requires valid JSON with a 64-hex receipt_sha256 and two consecutive equal file hashes before deriving anchors. A direct shape probe was resubmitted against the already completed, independently audited recovery.",
+  "claim_boundary": "No training, throughput, recovery, scientific, frozen, official, or external claim from this failed control-plane job."
+}

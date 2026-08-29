@@ -1,0 +1,36 @@
+{
+  "format_version": "antibody_four_gpu_recovery_progress_evidence_v1",
+  "observed_at": "2026-08-17T17:07:43+08:00",
+  "job_id": "1428319",
+  "chain_job_id": "1428400",
+  "state": "RUNNING",
+  "node": "wqd10nah10g1",
+  "world_size": 4,
+  "gpu_model": "NVIDIA GeForce RTX 5090",
+  "corpus": {
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
+    "protocol_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "train_sequence_count": 198345366
+  },
+  "stages": {
+    "continuous": {
+      "receipt_sha256": "a4c0d03e27a8ec4ec42e28d8323ab1c01375bca90b27a24c85136f09bc2c9e13",
+      "executed_steps": 4,
+      "consumed_residue_tokens": 574909,
+      "final_model_sha256": "71197c76524cf044d048986f27cebe7085493fc8213c71bcfc51cb0b29614ccc",
+      "final_optimizer_sha256": "efb174803ce35ddd391448c15465faa9008926e80460d1320dc46ef048945e44"
+    },
+    "stage1": {
+      "receipt_sha256": "1e4f9b72dc822d27d999ab1dee0a04960cdf6dcf5b089a9edd7d96530f9b9784",
+      "executed_steps": 2,
+      "consumed_residue_tokens": 287003,
+      "final_model_sha256": "9015de13ae10645961cb01082fb40b87bebc124dc3bc47546742c164c3a83eba",
+      "final_optimizer_sha256": "7e546e798a5c76d536338ed1cac4ce274db21d0f6b9ccf1a25a5b824012a28ab"
+    },
+    "resumed": {
+      "state": "RUNNING",
+      "receipt_available": false
+    }
+  },
+  "claim_boundary": "Four-GPU real-OAS recovery progress only; no completed recovery gate, production-scale, scientific, frozen, official, or external claim."
+}

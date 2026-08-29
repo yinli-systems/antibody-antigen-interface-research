@@ -1,0 +1,40 @@
+{
+  "schema_version": "framecontact_topology_signal_exploratory_protocol_v1",
+  "protocol_status": "development_only_frozen_before_topology_signal_analysis",
+  "frozen_on": "2026-07-31",
+  "parent_protocol": {
+    "path": "protocols/framecontact_asep_epitope_group_v1.json",
+    "sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de"
+  },
+  "evidence_boundary_at_freeze": {
+    "asep_validation_labels_accessed_by_prior_training": true,
+    "topology_signal_analysis_started": false,
+    "asep_official_test_members_materialized": false,
+    "sabdab2_frozen_test_predictions_accessed": false,
+    "model_predictions_used_by_this_analysis": false
+  },
+  "research_question": "Do epitope labels exhibit stronger same-chain spatial autocorrelation than sequence-local autocorrelation, and which preregistered spatial scale is most defensible for an exploratory multi-relation encoder?",
+  "primary_hypothesis": "At 8 Angstrom, the mean positive-neighbor lift is greater than one and the validation-complex macro leave-one-out neighbor-label AUPRC is higher than for an eight-residue sequence window.",
+  "registered_relations": {
+    "spatial_radii_angstrom": [6.0, 8.0, 12.0, 16.0],
+    "sequence_windows": [2, 8, 32],
+    "same_chain_only": true,
+    "self_edges_excluded": true,
+    "missing_frame_residues_excluded_from_spatial_edges": true
+  },
+  "registered_strata": [
+    "antigen length below 200, 200 to 500, and above 500 residues",
+    "epitope prevalence at most 0.05 versus above 0.05",
+    "one versus multiple positive spatial components at 8 Angstrom"
+  ],
+  "statistics": {
+    "analysis_unit": "validation complex",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20260731,
+    "primary_comparison": "within-complex spatial_radius_8a minus sequence_window_8 leave-one-out neighbor-label AUPRC",
+    "secondary_comparison": "within-complex spatial_radius_16a minus spatial_radius_8a leave-one-out neighbor-label AUPRC"
+  },
+  "interpretation_guardrail": "Neighbor labels are deliberately used to measure topology. The resulting AUPRC is a label-autocorrelation diagnostic, not predictive model performance.",
+  "promotion_rule": "A new multi-relation architecture may be implemented only as an isolated exploratory condition. The diagnostic may choose its graph scales but cannot alter the frozen confirmatory matrix or authorize test opening.",
+  "claim_boundary": "AsEP validation-label topology analysis only. No official test, frozen test, external score, checkpoint selection, benchmark improvement, or state-of-the-art claim is authorized."
+}

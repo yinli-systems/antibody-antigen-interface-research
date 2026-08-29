@@ -1,0 +1,11 @@
+{
+  "benchmark_sha256": "8f853bee439630d2e9784359b0a8869fa9556c4366415334e69ef046c29e9687",
+  "claim_boundary": "Synthetic A100 kernel correctness, latency, and allocator evidence only; no biological-quality, frozen-test, external-generalization, custom-kernel, or SOTA claim.",
+  "container_image": "liyin/sabdab2-geometry-a100-replay:sklearn-1.6.1-872701e1",
+  "container_image_id": "sha256:700902df319a2b2ebb8e455f0402cd435c5928582ea9170ba23c89d79116551c",
+  "generated_at_utc": "2026-08-01T05:56:44.244952+00:00",
+  "package_archive_sha256": "2760235d7cde987d86d5b465641a1ddd054b2fddba9acf55de12f436b5492fc5",
+  "schema_version": 1,
+  "source_manifest_sha256": "50195990a8d1d9eb3ca5a03a433daf7ed51056b627d3a84e1a0695200ad855b9",
+  "source_tree_sha256": "9cbeaa92aaeee0a8207f35c4a59e7cc8ae57788eca97f43fa30aebbb9c5c982c"
+}

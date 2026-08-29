@@ -1,0 +1,24 @@
+{
+  "bf16_supported": true,
+  "checks": {
+    "activated_contact_change": 0.6106104850769043,
+    "active_bf16_vs_fp32_max_error": 0.11410355567932129,
+    "bf16_numerical_envelope": 0.22920711135864258,
+    "distogram_head_gradient_l1": 11.425668716430664,
+    "distogram_projection_max_error": 0.0,
+    "independent_monomer_se3_bf16_max_error": 0.0,
+    "independent_monomer_se3_fp32_max_error": 0.0,
+    "local_edm_loss": 0.006320496555417776,
+    "paired_prior_gate_gradient_abs": 0.0005289219552651048,
+    "total_training_loss": 0.17285038530826569,
+    "transformed_bf16_vs_fp32_max_error": 0.11410355567932129,
+    "zero_gate_max_difference": 0.0
+  },
+  "claim_boundary": "Synthetic GPU engineering smoke only; no trained improvement, external generalization, benchmark, novelty, or production-performance claim.",
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 4090",
+  "python": "3.10.20",
+  "schema_version": "framecontact_frontier_paired_conditioning_smoke_v2",
+  "source_manifest_sha256": "a74684585b16dea6c3ed1669046759c476d14bd518a839846b3a1092ae24e930",
+  "torch": "2.7.1+cu128"
+}
