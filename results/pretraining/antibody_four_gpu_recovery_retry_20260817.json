@@ -1,0 +1,61 @@
+{
+  "format_version": "antibody_four_gpu_recovery_retry_evidence_v1",
+  "observed_at": "2026-08-17T16:51:08+08:00",
+  "source_commit": "5f1f6ac92f9796953b5cd95fbdaa9a16036cf129",
+  "runtime_manifest": {
+    "path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_007.json",
+    "sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a"
+  },
+  "corpus": {
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
+    "protocol_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b",
+    "manifest_sha256": "6da8ec5bb8fb9cb8c48cff6223446121791926c3607c95793b1c7cea8322dce"
+  },
+  "attempts": [
+    {
+      "job_id": "1427954",
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "evidence": "runtime_verification.json valid=false: Cannot open manifest without symlink traversal; submitted runtime path omitted .json suffix",
+      "claim_boundary": "No training steps; no pretraining result"
+    },
+    {
+      "job_id": "1428155",
+      "state": "FAILED",
+      "exit_code": "2:0",
+      "stderr": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-pipeline-1428155.err",
+      "error": "Pipeline anchor is not a SHA-256",
+      "claim_boundary": "No training steps; submission/export validation failure"
+    },
+    {
+      "job_id": "1428178",
+      "state": "FAILED",
+      "exit_code": "2:0",
+      "stderr": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-pipeline-1428178.err",
+      "error": "Pipeline anchor is not a SHA-256",
+      "claim_boundary": "No training steps; submission/export validation failure"
+    },
+    {
+      "job_id": "1428319",
+      "state": "PENDING",
+      "reason": "Resources",
+      "partition": "gpu_5090",
+      "requested_gpus": 4,
+      "requested_cpus": 24,
+      "requested_memory_mb": 378000,
+      "claim_boundary": "No training steps or throughput/recovery result yet"
+    }
+  ],
+  "scheduler_snapshot": {
+    "gpu_5090_available_gpus": 7,
+    "gpu_5090_runnable_four_gpu_jobs": 0,
+    "observed_job": "1428319"
+  },
+  "scale_ladder": {
+    "chain_script": "slurm/antibody_scale_ladder_chain.sbatch",
+    "chain_script_sha256": "779737a902ebd83670f8dde2874707ded0eed8cff4a8c8502ac5a97dee28b468",
+    "next_stage": "shape_probe_after_four_gpu_recovery_success"
+  },
+  "status": "four_gpu_recovery_waiting_for_resources",
+  "claim_boundary": "Development/engineering gate only; no production-scale, frozen, official, or external claim."
+}

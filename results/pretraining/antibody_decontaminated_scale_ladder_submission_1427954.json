@@ -1,0 +1,54 @@
+{
+  "authorization": {
+    "four_gpu_recovery": true,
+    "large_scale_pretraining": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Fresh decontaminated-corpus scale-ladder submission: one-GPU exact recovery completed and four-GPU recovery queued. No four-GPU, eight-GPU, production, downstream, frozen-test, official-test, or SOTA claim is made until each later gate independently passes.",
+  "corpus": {
+    "independent_audit_file_sha256": "3ce2d6ae64376b587582cf08f2ce68ffaf3e1fcef9bd13fb85157c84b75c3b48",
+    "independent_audit_payload_sha256": "3d8b70ba1bd41180e334f787e750b2dd1366a82d8bf98ed742a6184b4236d324",
+    "manifest_file_sha256": "6da8ec5bb8fb9cb8c48cff6223446121791926c3607c95793b1c7cea8322dce5",
+    "manifest_payload_sha256": "9d8218fee82d51ae9c25d27ac64dfe48716e631e9ea76d006c4dfc8ed31f8c3b",
+    "protocol_file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001"
+  },
+  "four_gpu": {
+    "job_id": 1427954,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_decontam_5f1f6ac_attempt_001",
+    "state_at_receipt": "PENDING",
+    "submission_dependency_failure": {
+      "attempted_afterok_job_id": 1427678,
+      "scheduler_message": "Job dependency problem",
+      "no_job_created": true,
+      "prior_job_sacct_exit_code": "0:0"
+    }
+  },
+  "format_version": "antibody_decontaminated_scale_ladder_submission_v1",
+  "one_gpu": {
+    "audit_file_sha256": "cfadf411b811092bc08a8816614f9ed318e62e4df7c13e4e7cdbbb9e457eabaf",
+    "audit_payload_sha256": "652e70bf52707a8ed13dd864ce64e6d4f4853030e94eb736b8439f6f63e59dbe",
+    "exact_recovery": {
+      "final_model_equal": true,
+      "final_optimizer_equal": true,
+      "scientific_trace_equal": true,
+      "terminal_coordinates_equal": true
+    },
+    "job_id": 1427678,
+    "state": "COMPLETED",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_one_gpu_recovery_5f1f6ac_decontam_attempt_001"
+  },
+  "source": {
+    "commit": "5f1f6ac92f9796953b5cd95fbdaa9a16036cf129",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-5f1f6ac-attempt-001",
+    "runtime_manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a"
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

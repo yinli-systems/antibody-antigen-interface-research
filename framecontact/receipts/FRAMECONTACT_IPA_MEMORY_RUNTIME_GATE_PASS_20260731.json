@@ -1,0 +1,34 @@
+{
+  "format_version": "framecontact_ipa_memory_runtime_gate_pass_v1",
+  "recorded_at": "2026-07-31T06:41:12+08:00",
+  "recovery_start_receipt": "receipts/FRAMECONTACT_IPA_MEMORY_RECOVERY_START_20260731.json",
+  "amendment_sha256": "c4d0d16d73bdb12e66d4c6cf79fb3c9d11089fa34b378472805b97f3da629c80",
+  "patched_source_sha256": "d029c6993a931844a45335617c7fee9039275ff8463bcff32bad7054b835b14e",
+  "original_failure_window_seconds": {
+    "minimum": 98,
+    "maximum": 186
+  },
+  "asep_recovery": {
+    "jobs": [1343050, 1343052],
+    "array_tasks": [25, 26, 27, 28, 29],
+    "states": ["RUNNING", "RUNNING", "RUNNING", "RUNNING", "RUNNING"],
+    "minimum_elapsed_seconds": 206,
+    "seed17_elapsed_seconds": 536,
+    "stderr_bytes_per_task": [0, 0, 0, 0, 0]
+  },
+  "sabdab2_recovery": {
+    "job": 1343053,
+    "array_tasks": [25, 26, 27, 28, 29],
+    "states": ["RUNNING", "RUNNING", "RUNNING", "RUNNING", "RUNNING"],
+    "minimum_elapsed_seconds": 206,
+    "stderr_bytes_per_task": [0, 0, 0, 0, 0],
+    "source_manifest_sha256": "af2de918806513fab4a4599dd627fa0665dae61776510bed8e420977b0749676"
+  },
+  "gate_result": "all ten recovery tasks remained running with empty stderr beyond the latest original OOM time",
+  "completed_development_results": 0,
+  "test_authority": {
+    "sabdab2_frozen_test_opened": false,
+    "asep_official_test_opened": false
+  },
+  "claim_boundary": "Runtime OOM-window gate only. The recovery jobs are not complete and this is not a development metric, peak-memory benchmark, frozen-test, A100, or biological result."
+}

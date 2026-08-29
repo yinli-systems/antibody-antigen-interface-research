@@ -1,0 +1,34 @@
+{
+  "format_version": "antibody_four_gpu_static_fallback_efficiency_registration_v1",
+  "observed_at": "2026-08-17T18:36:00+08:00",
+  "source_commit": "5f1f6ac92f979695756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+  "shape_probe_job_id": 1428728,
+  "shape_probe_audit_sha256": "49ca1210905831f418805158450d9e1959fce9b388599bc5f8951b707098b7da",
+  "shape_probe_result": "hybrid_candidates_rejected",
+  "fallback_candidate": {
+    "name": "static_194",
+    "compiled_length_bucket_boundaries": "194",
+    "shape_eligible": true,
+    "step_stability_threshold": 1.1,
+    "step_stability_passed": true,
+    "replicate_state_equal": true,
+    "residue_tokens_per_second": 78037.28855240426
+  },
+  "protocol_change": {
+    "new_protocol_required": true,
+    "threshold_changed": false,
+    "hybrid_promotion": false,
+    "existing_v2_receipt_modified": false,
+    "efficiency_gate": "fresh four-GPU static_194 A/B/B/A gate using the v1 runner with compiled boundary 194"
+  },
+  "authorization": {
+    "development_only": true,
+    "production_pretraining": false,
+    "frozen_test": false,
+    "official_test": false,
+    "external_test": false
+  },
+  "claim_boundary": "Registration for a fresh development/engineering static_194 efficiency and checkpoint-equivalence gate; no production, scientific, frozen, official, or external claim.",
+  "stop_rule": "Do not launch production-scale OAS pretraining unless the fresh static_194 efficiency receipt passes memory, p95/p50, throughput, telemetry, and checkpoint-equivalence gates.",
+  "next_action": "Submit the fresh four-GPU static_194 efficiency gate with a new output root and retain the failed hybrid-shape receipt unchanged."
+}

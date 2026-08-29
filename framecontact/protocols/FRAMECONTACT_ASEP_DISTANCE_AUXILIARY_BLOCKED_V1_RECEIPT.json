@@ -1,0 +1,19 @@
+{
+  "format_version": "framecontact_asep_distance_auxiliary_blocked_receipt_v1",
+  "status": "blocked_before_model_fitting",
+  "distance_bin_auxiliary_executed": false,
+  "distogram_auxiliary_executed": false,
+  "ten_angstrom_neighborhood_auxiliary_executed": false,
+  "reason": "The authenticated AsEP development cache currently contains native contact labels but no authenticated pair-distance or neighborhood-label authority. Running either auxiliary without that authority would change the protocol and invalidate attribution.",
+  "required_next_authority": [
+    "authenticated pair-distance artifact manifest",
+    "authenticated 10A neighborhood definition",
+    "development-only protocol hash and receipt",
+    "five-seed matched matrix before any official test"
+  ],
+  "official_test_used_for_selection": false,
+  "official_test_scores_read_for_this_protocol": false,
+  "frozen_test_used_for_selection": false,
+  "external_test_used_for_selection": false,
+  "claim_boundary": "No distance-bin, distogram, or 10A result is claimed. The arm is intentionally fail-closed until data authority exists."
+}

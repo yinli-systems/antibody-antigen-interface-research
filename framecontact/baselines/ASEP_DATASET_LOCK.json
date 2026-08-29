@@ -1,0 +1,33 @@
+{
+  "format_version": "framecontact_asep_dataset_lock_v1",
+  "frozen_on": "2026-07-30",
+  "dataset": {
+    "name": "AsEP",
+    "version": "v1.2.0",
+    "record_doi": "10.5281/zenodo.11495514",
+    "record_url": "https://zenodo.org/records/11495514",
+    "download_url": "https://zenodo.org/records/11495514/files/asep-dataset.zip?download=1",
+    "archive_size_bytes": 2638740834,
+    "publisher_md5": "ad0055009ed45bdca7453f1fe58d953b",
+    "archive_sha256": "07889a0eab3dd5efbdf4ad141497d2287cbd9350bd95212fc9bb0a2028c41cff"
+  },
+  "official_source": {
+    "repository": "https://github.com/biochunan/AsEP-dataset",
+    "revision": "2b653d7bb5aea57c156b90297e3adf6afa290452",
+    "dataset_loader_sha256": "f6353bc9e9b23dd49be8634cae465ac63ae1a95e4e8c59ade551581575851556"
+  },
+  "expected_archive_members": [
+    "asepv1.2.0",
+    "asepv1.2.0/asepv1_interim_graphs.tar.gz",
+    "asepv1.2.0/asepv1-AbDb-IDs.txt",
+    "asepv1.2.0/structures.tar.gz",
+    "asepv1.2.0/split_dict.pt"
+  ],
+  "evidence_boundary_at_freeze": {
+    "archive_central_directory_read": true,
+    "task_labels_read": false,
+    "model_predictions_or_scores_read": false,
+    "external_model_selection_performed": false
+  },
+  "claim_rule": "This lock authenticates data provenance only. It authorizes no external metric, model selection, or benchmark-improvement claim."
+}

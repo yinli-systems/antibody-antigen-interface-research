@@ -1,0 +1,109 @@
+{
+  "schema_version": "framecontact_specificity_gauge_exploratory_protocol_v2",
+  "protocol_status": "development_only_repair_frozen_before_any_v2_training",
+  "frozen_on": "2026-08-03",
+  "parents": {
+    "invalid_v1_protocol": {
+      "path": "protocols/framecontact_specificity_gauge_exploratory_v1.json",
+      "sha256": "ddc5de1f4fcae5e8410c848e270763f54b8148e2d59eba25f18a6dccbda773c3"
+    },
+    "invalid_v1_receipt": {
+      "path": "protocols/FRAMECONTACT_SPECIFICITY_GAUGE_EXPLORATORY_V1_RECEIPT.json",
+      "sha256": "0a373e2dec47373113fd58a175c12999da778703215e9f1c46c85e3bbf732e95"
+    },
+    "residue_head_protocol": {
+      "path": "protocols/framecontact_residue_head_exploratory_v1.json",
+      "sha256": "4de5ad83a93e56c2e03843a0bb246b853d58a724332434cf78ce4dbe10393412"
+    },
+    "antigen_fold_protocol": {
+      "path": "protocols/framecontact_sabdab2_antigen_fold_v3.json",
+      "sha256": "ef0fa5a58123c178eba8eb51a5bccadf4774e68c5a3ef3245fce4e244fd9cf50"
+    }
+  },
+  "v1_failure": {
+    "slurm_job": "1349055",
+    "observed_tasks": [0, 1, 2, 3, 4],
+    "observed_epoch_range": [9, 11],
+    "symptom": "All five gauge-marginal seeds produced exactly the same validation epitope and paratope AUPRC despite different contact metrics.",
+    "root_cause": "Noisy-OR treated a zero centered interaction residual as a 0.5 Bernoulli contact. Across realistic partner lengths, the product saturated, producing constant residue logits and zero ranking information.",
+    "synthetic_reproduction": "For a 220 by 512 centered random interaction map, noisy-OR yielded one unique antigen marginal at the clamp ceiling while log-mean-exp retained more than 100 unique finite values.",
+    "evidence_policy": "V1 contact diagnostics may be retained as failed-run evidence, but v1 residue metrics are invalid and cannot enter model selection or a scientific comparison."
+  },
+  "evidence_boundary_at_freeze": {
+    "v1_development_validation_predictions_accessed": true,
+    "v2_training_started": false,
+    "v2_validation_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_metrics_accessed": false,
+    "asep_official_test_predictions_accessed": false
+  },
+  "research_question": "After repairing the centered-evidence aggregation, does a partner-identifiable residue path improve reciprocal partner specificity without degrading epitope, paratope, or contact ranking?",
+  "development_matrix": [
+    "framecontact_gauge_marginal",
+    "framecontact_gauge_hybrid",
+    "framecontact_gauge_hybrid_contrastive"
+  ],
+  "controlled_architecture": {
+    "intra_chain_encoder": "two parameter-unshared full-relative-pose antibody and antigen encoders",
+    "cross_chain_encoder": "one late bidirectional contact-gated cross-attention block",
+    "pair_head": "one low-rank binary contact head",
+    "unary_source": "normalized intra-chain self-attention output before cross-attention",
+    "pair_gauge": "two-way additive-effects projection on final contact logits, computed in fp32",
+    "gauge_aggregation": "masked log-mean-exp of the centered interaction residual along the partner axis",
+    "gauge_aggregation_semantics": "length-normalized concentration evidence; exactly zero for a flat centered residual; not a Bernoulli at-least-one-contact probability",
+    "raw_contact_aggregation": "masked noisy-OR remains unchanged for the raw contact marginal controls",
+    "gauge_hybrid": "unary logit plus tanh of a zero-initialized learned scalar gate times centered log-mean-exp evidence",
+    "initialization_equivalence": "gauge-hybrid reproduces unary-only exactly at initialization"
+  },
+  "comparison_discipline": {
+    "within_v2_primary": "gauge marginal versus gauge hybrid, then gauge hybrid versus gauge hybrid plus residue-level contrastive supervision",
+    "v1_repair_factor": "only the invalid centered-evidence aggregation changes from noisy-OR to log-mean-exp",
+    "raw_head_caveat": "A v2 gauge arm versus a v1 raw contact-marginal arm changes both channel attribution and aggregation semantics and is descriptive, not a one-factor causal comparison.",
+    "held_constant": [
+      "binary contact pair target",
+      "interaction-only complex specificity objective",
+      "all encoder, optimizer, split, panel, seed and metric settings",
+      "test-role prohibition"
+    ]
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "split": "frozen antigen-fold v3 train and validation roles only",
+    "reciprocal_partner_panel_size": 31,
+    "training_panel_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+    "validation_panel_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5",
+    "test_role_forbidden": true
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "checkpoint_rule": "maximize the minimum validation cluster-weighted reciprocal interaction-only margin; break ties within 0.0001 by mean per-complex contact AUPRC, then earlier epoch",
+    "test_role_forbidden": true
+  },
+  "training_objective": {
+    "contact_weight": 1.0,
+    "paratope_weight": 0.25,
+    "epitope_weight": 0.25,
+    "specificity_weight": 0.25,
+    "specificity_score_source": "interaction_only",
+    "specificity_margin": 0.05,
+    "residue_contrastive_weight_by_arm": {
+      "framecontact_gauge_marginal": 0.0,
+      "framecontact_gauge_hybrid": 0.0,
+      "framecontact_gauge_hybrid_contrastive": 0.25
+    }
+  },
+  "required_diagnostics": [
+    "number of unique valid epitope and paratope logits per complex",
+    "per-complex residue-logit standard deviation and saturation fraction",
+    "contact, epitope and paratope pooled and macro AUPRC",
+    "fixed-threshold precision, recall, F1, MCC and predicted-positive ratio",
+    "P@10, P@Lmin/10, P@Lmin/5 and paired recalls",
+    "reciprocal partner margin, Recall@1 and MRR",
+    "gauge centering residual and partner-specific variance share",
+    "learned residue gate trajectory"
+  ],
+  "promotion_rule": "Promote only if five seeds retain non-degenerate residue ranking, do not reduce epitope or paratope AUPRC, preserve contact AUPRC and calibration, and improve the minimum reciprocal partner margin beyond its measured epoch-noise band.",
+  "claim_boundary": "Exploratory development repair after validation diagnostics. No frozen-test, external-generalization, benchmark-improvement or state-of-the-art claim is authorized."
+}

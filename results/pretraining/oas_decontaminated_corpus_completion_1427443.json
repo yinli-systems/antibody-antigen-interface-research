@@ -1,0 +1,63 @@
+{
+  "authorization": {
+    "corpus_engineering_complete": true,
+    "independent_replay": true,
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "The decontaminated OAS candidate is materialized and independently replayed. It is eligible only as input to fresh loader, recovery, and scale qualification; this receipt does not itself authorize production-scale pretraining or any downstream scientific claim.",
+  "corpus": {
+    "counts": {
+      "excluded_records": 27070117,
+      "excluded_residue_tokens": 3045835742,
+      "source_records": 226631213,
+      "source_residue_tokens": 25456921148,
+      "unique_records": 199561096,
+      "unique_residue_tokens": 22411085406,
+      "unique_train_records": 198345366,
+      "unique_train_residue_tokens": 22272431632,
+      "unique_validation_records": 1215730,
+      "unique_validation_residue_tokens": 138653774
+    },
+    "finalize_receipt_file_sha256": "4babcac5240a9a68b9fa19ad9093f530b2975cf2c8f4eef504f9dbd801bf986b",
+    "finalize_receipt_payload_sha256": "1e54bb01a53d228743215577675cee1aa727024ff53ef0b87cca9baf5a8fb1aa",
+    "independent_audit_file_sha256": "3ce2d6ae64376b587582cf08f2ce68ffaf3e1fcef9bd13fb85157c84b75c3b48",
+    "independent_audit_payload_sha256": "3d8b70ba1bd41180e334f787e750b2dd1366a82d8bf98ed742a6184b4236d324",
+    "manifest_file_sha256": "6da8ec5bb8fb9cb8c48cff6223446121791926c3607c95793b1c7cea8322dce5",
+    "manifest_payload_sha256": "9d8218fee82d51ae9c25d27ac64dfe48716e631e9ea76d006c4dfc8ed31f8c3b",
+    "protocol_file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "protocol_payload_sha256": "3f11d4b5deffaeedcb6ef61a140602466c25591c888e3d1ab930bd8ff88c30d2",
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001"
+  },
+  "format_version": "oas_decontaminated_corpus_completion_v1",
+  "jobs": {
+    "array_job_id": 1427441,
+    "array_state": "COMPLETED",
+    "audit_elapsed": "00:01:05",
+    "audit_exit_code": "0:0",
+    "audit_job_id": 1427443,
+    "audit_state": "COMPLETED",
+    "finalize_elapsed": "00:03:01",
+    "finalize_exit_code": "0:0",
+    "finalize_job_id": 1427442,
+    "finalize_state": "COMPLETED"
+  },
+  "replay_claims": {
+    "all_candidate_array_rows_replayed": true,
+    "all_source_rows_accounted": true,
+    "independent_replay_complete": true,
+    "zero_excluded_digest_overlap_observed": true
+  },
+  "source": {
+    "commit": "5f1f6ac92f9796953b5cd95fbdaa9a16036cf129",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-5f1f6ac-attempt-001"
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

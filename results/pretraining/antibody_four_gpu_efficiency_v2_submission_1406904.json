@@ -1,0 +1,61 @@
+{
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Submission receipt for a four-GPU real-OAS static-shape A/B/B/A efficiency and checkpoint-equivalence gate. A submitted or running job does not authorize production pretraining, downstream transfer, or any biological, frozen, official, external, comparative, or SOTA claim.",
+  "format_version": "antibody_four_gpu_efficiency_v2_submission_v1",
+  "job": {
+    "job_id": 1406904,
+    "job_name": "abf-oas-4g-eff-v2",
+    "partition": "gpu_5090",
+    "reason_at_receipt": "Priority",
+    "requested_gpus": 4,
+    "requested_nodes": 1,
+    "state_at_receipt": "PENDING",
+    "submitted_at": "2026-08-15T12:14:47+08:00",
+    "time_limit": "04:00:00"
+  },
+  "output": {
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_efficiency_v2_340e2f0_attempt_001",
+    "stderr": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-eff-v2-1406904.err",
+    "stdout": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-eff-v2-1406904.out"
+  },
+  "prerequisites": {
+    "exact_recovery_audit_file_sha256": "7d5c12c6be71eb949027141f6cb353db81c40235e0f2cf951a761cd8932b9afe",
+    "exact_recovery_audit_payload_sha256": "7fa7279f773ea6797e5314d1a746be36eed32674e035dea886fcffab17eb034d",
+    "shape_probe_audit_file_sha256": "da233e707d614d56c2c2a8c78f2fe4424205b667cb594a635842e2b52e42729b",
+    "shape_probe_audit_payload_sha256": "35c5b44102fa10f6ab910f016cbab77e519c9ab7f70abc1732102df8e9dd399e",
+    "shape_probe_protocol_file_sha256": "915973752eac8f286bab171b51a33950e33b1e2c8d01ad483986c9f24b4436ca",
+    "shape_probe_passed": true
+  },
+  "protocol": {
+    "compiled_length_bucket_boundaries": "194",
+    "eager_length_bucket_boundaries": "96,128,160,194",
+    "maximum_memory_fraction": 0.8,
+    "maximum_p95_over_p50_step_time": 1.1,
+    "maximum_replicate_throughput_relative_range": 0.05,
+    "minimum_approximate_6n_mfu": 0.35,
+    "run_order": [
+      "safe_eager_r1",
+      "compiled_r1",
+      "compiled_r2",
+      "safe_eager_r2"
+    ],
+    "updates_per_run": 600,
+    "warmup_updates_excluded": 100
+  },
+  "source": {
+    "commit": "340e2f0d380fd7988d05766b1ac4429cd7915172",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-340e2f0-attempt-001",
+    "freezer_preflight": "PASS"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

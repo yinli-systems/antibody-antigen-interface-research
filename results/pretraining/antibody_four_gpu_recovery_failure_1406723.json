@@ -1,0 +1,35 @@
+{
+  "authorization": {
+    "loader_recovery_gate": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Failure receipt only; four ranks were launched but no training update, recovery, production-pretraining, downstream-improvement, or SOTA evidence was produced",
+  "failure": {
+    "elapsed": "00:01:46",
+    "exit_code": "1:0",
+    "gpu_telemetry_file_sha256": "7d3dc1e4f5d68a247bfb12df75bd160eee15318785acef1adff3b7a87ed61ae5",
+    "job_id": 1406723,
+    "reason": "The freezer inserted hardware identity inside the exact execution object, while the training launch validator permits only executable settings there",
+    "stage": "launch_protocol_validation",
+    "state": "FAILED",
+    "training_log_file_sha256": "5d007857d480f2247e5240ba8d71b7ca05f7f1039af6d5c51ba9328d9b85cbec",
+    "training_updates_started": 0
+  },
+  "format_version": "antibody_four_gpu_recovery_failure_v1",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_f1b958e_attempt_002",
+  "resolution": {
+    "execution_validation_removed": false,
+    "hardware_identity_preserved_at_protocol_top_level": true,
+    "runtime_manifest_live_verification_valid": true,
+    "runtime_verification_file_sha256": "15a4ee9ffc4808a8c3c8982d39783f98fed7d88e792d71b1892ed7fec7f9482f"
+  },
+  "source_commit": "f1b958e1cd6178869c332f49c5d2e32ae8cf768b",
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

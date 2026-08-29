@@ -1,0 +1,63 @@
+{
+  "claim_boundary": "Development-only research and engineering handoff. No frozen SAbDab2 test, official AsEP test, external-generalization, A100 model-quality, biological-benchmark, or state-of-the-art result is included.",
+  "files": {
+    "baselines/BASELINE_LOCK_V5.json": "6692708d2fb79b0ea10e5a7cdfe28adad2164cba7d74aa9d5b568cda9c5f842f",
+    "baselines/BASELINE_LOCK_V6.json": "7e83555c59b627e0bd5f0a5b42aacdc4079e108a56b5693ba3e41047d6ff08e3",
+    "docs/CONTACT_ADAPTED_ESM_FACTORIAL_CANDIDATE.md": "c49a86e6e38d1528e7f06289bfe5df4daf790739c9d99d9bb0e21849a4f55ddf",
+    "docs/DISTOGRAM_TRIANGLE_RESEARCH_NOTE.md": "cd61ff47e42a20cf0a664c9852113a9591e52db33b2d351bb6da9348b3e414a9",
+    "docs/FRAMECONTACT_DOUBLE_COLD_SPLIT_AUDIT_20260801.md": "e5b932e6117762320b67bbc0d667dd09b113f48e280c862acaaa3131d407eb53",
+    "docs/FRAMECONTACT_FRONTIER_RESEARCH_20260801.md": "814f13264f65794f01bb5b0f2e5cd85532e76267a1666293d8499b42b9e2942d",
+    "docs/FRAMECONTACT_GEOMETRY_ABLATED_CONTROL_20260801.md": "ba2e895fdb1cf22471ddd7f6b8b0bc8c75793d3f85e0081f4e1b4ce1026d3a12",
+    "docs/FRAMECONTACT_RETRIEVAL_ALIGNED_SPECIFICITY_20260801.md": "e38676096ee21938d29f0fd68d2b24d0f04cd83a22e2607c2330d99e3db05c48",
+    "docs/FRONTIER_CONTACT_BASELINE_AUDIT_20260801.md": "8266d94fecd59d58e61fbf4f262d0c84bbb6d4ca161baeaabb41c0215b6469b9",
+    "docs/HANDSHAKE_BASELINE_AUDIT_20260801.md": "3e055146570630deb053bc9ced75bdcc5cb1e0777b64c30562631e58efc14506",
+    "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "78f949c1e5e761fba4c036736f6f099e100f6e89e3b50cc052c56100362db9ee",
+    "docs/README.md": "dd906f9f7c604a2a09e8c595170d4167983fc623bbe9a2f602d5753a82ebf74b",
+    "docs/TEACHER_UPDATE_20260801_DOUBLE_COLD_AND_RESEARCH.md": "13ce0edd3b76adc0336ff0f8cad6b29086a817b696ed0ee750a828c6f72648e7",
+    "docs/TEACHER_UPDATE_20260801_LIVE_VALIDATION_AND_BASELINE.md": "09c830fc8f8fccb5aa490c87d6c9b0406e1998ef04ebb72e55e12cdcb553729f",
+    "receipts/double-cold-source-v12-final/ENGINEERING_RECEIPT.json": "1a84e5d36cea35aa4e3cb2a4031227b1ac4a5c3d32f82db840cc762f1fba88be",
+    "receipts/double-cold-source-v13-final/ENGINEERING_RECEIPT.json": "06208b9c772b0a165e2aa77fdaa6cec4537086062e86b160c428bd55b8c2d399",
+    "receipts/double-cold-source-v13-final/FULL_PYTEST_WITH_DEPS.log": "97f671ac344b3ae46846746c99b55de3d06375feae4c12e4685ec4d8a72e4b7e",
+    "receipts/double-cold-source-v13-final/LOCAL_FULL_PYTEST.log": "0beee3e14dc4bee65460170923da7abf5136841305c57dad7758683e08ad4628",
+    "receipts/double-cold-source-v13-final/MANIFEST_BUILD.log": "5b5ccecc3cb34f35b5ca6a6dae886dca55b115ebd692a0f30ef5ec912a3156a3",
+    "receipts/double-cold-source-v13-final/MANIFEST_VERIFY.json": "9a7ec7e41a004bb0808f81ea5795f6cea99c21a37bd084b774a0f8f5fd1b8b61",
+    "receipts/double-cold-source-v13-final/POST_TEST_MANIFEST_VERIFY.json": "9a7ec7e41a004bb0808f81ea5795f6cea99c21a37bd084b774a0f8f5fd1b8b61",
+    "receipts/double-cold-source-v13-final/SOURCE_MANIFEST.json": "4c607bb1e0d214636356eaea4cef81b675106738092e2b0f354aa9399c6e7323",
+    "receipts/live-array-audit-20260801T121841Z/DISTOGRAM_COMPACT.json": "8c3a814d64086653f8d9c4e9187df35978773b9fb74bce83a2b9b5b145013939",
+    "receipts/live-array-audit-20260801T121841Z/DISTOGRAM_PATIENCE.json": "0bfb2a0e8c5adccd1cbb6c12451384cd4070143feb2eb0ca27a9acbab7f1b29e",
+    "receipts/live-array-audit-20260801T121841Z/MATCHED_EPOCH_UNARY_VS_DISTOGRAM.json": "2fe699b1590d7ca4ab459b1caee978387bbfe72aaf40833d239dd3b4f995fa86",
+    "receipts/live-array-audit-20260801T121841Z/README.md": "dd8dc443f7225d8b1c098faa73ccbc58f09089686703433e69f887bc568c52f1",
+    "receipts/live-array-audit-20260801T121841Z/RESIDUE_HEAD_COMPACT.json": "dc0515aef319f472c5917f56128107044820852fbc53be1f8553d182c76843ae",
+    "receipts/live-array-audit-20260801T121841Z/RESIDUE_HEAD_PATIENCE.json": "e64cc1ebf7499bc8b980205e2be5d5e76c71f24b8bc0a885d88be784bbbc939c",
+    "receipts/live-array-audit-20260801T121841Z/SQUEUE.txt": "51159e5c8a2edfb36343164822e11debfac3ea32e807ba298fff6d505005f0af"
+  },
+  "format_version": "framecontact_live_research_handoff_v4",
+  "latest_research_authority": {
+    "added_authorities": [
+      "SPPIDER-seq",
+      "PEPNet",
+      "CALM",
+      "AAMFM"
+    ],
+    "baseline_lock": "baselines/BASELINE_LOCK_V6.json",
+    "baseline_lock_sha256": "7e83555c59b627e0bd5f0a5b42aacdc4079e108a56b5693ba3e41047d6ff08e3",
+    "identical_split_results_available": false
+  },
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v4",
+  "running_development_arrays": {
+    "distogram_job_id": 1345108,
+    "frozen_or_external_test_accessed": false,
+    "hardware": "RTX 4090",
+    "residue_head_job_id": 1345042,
+    "snapshot": "receipts/live-array-audit-20260801T121841Z",
+    "snapshot_state": "unary-only synchronized epoch 19; distogram synchronized epoch 15 with four seeds at 16; queued hybrid and triangle conditions not started"
+  },
+  "source_authority": {
+    "local_regression": "289 passed, 0 failed in 19.49s",
+    "manifest_sha256": "4c607bb1e0d214636356eaea4cef81b675106738092e2b0f354aa9399c6e7323",
+    "record_count": 498,
+    "remote_regression": "284 passed, 5 skipped, 0 failed in 103.34s",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v13",
+    "tree_sha256": "8ced33fbf6cdd7747fec264faeedf88bb0af27e913c23d4a924ff4d735b12de1"
+  }
+}

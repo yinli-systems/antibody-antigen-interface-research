@@ -1,0 +1,42 @@
+{
+  "format_version": "antibody_four_gpu_recovery_completion_v2",
+  "observed_at": "2026-08-17T17:10:15+08:00",
+  "job": {
+    "id": 1428319,
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "00:10:10",
+    "node": "wqd10nah10g1",
+    "partition": "gpu_5090",
+    "requested_gpus": 4
+  },
+  "source": {
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-5f1f6ac-attempt-001",
+    "commit": "5f1f6ac92f979695756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "runtime_manifest_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a"
+  },
+  "recovery_audit": {
+    "path": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_decontam_5f1f6ac_attempt_004/independent-audit.json",
+    "file_sha256": "e4a903dba8bb56186547fcd969af8dce5c6880dfb58520b13e05376b217958f0",
+    "receipt_sha256": "4d4bfb761fe8e027cea09456517d541e0b64e352613d9d00d38a3af303e1367d",
+    "exact_recovery": {
+      "final_model_equal": true,
+      "final_optimizer_equal": true,
+      "scientific_trace_equal": true,
+      "terminal_coordinates_equal": true
+    }
+  },
+  "corpus": {
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
+    "protocol_file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "manifest_file_sha256": "6da8ec5bb8fb9cb8c48cff6223446121791926c3607c95793b1c7cea8322dce5",
+    "independent_audit_file_sha256": "3ce2d6ae64376b587582cf08f2ce68ffaf3e1fcef9bd13fb85157c84b75c3b48"
+  },
+  "claim_boundary": "Development/engineering validation of exact four-GPU real-OAS loader and checkpoint recovery only; no production-scale, biological, official-test, frozen-test, external-test, or SOTA claim.",
+  "authorization": {
+    "loader_recovery_gate": true,
+    "production_pretraining": false,
+    "scientific_claim": false,
+    "frozen_or_official_test_accessed": false
+  }
+}

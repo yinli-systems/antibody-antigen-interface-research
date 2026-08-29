@@ -1,0 +1,97 @@
+{
+  "artifacts": {
+    "actual_matches": {
+      "bytes": 253,
+      "sha256": "8f76aac9fc4a1466a210b6fd11a1662bec2152035cec5eb3ba590d25a2f7cd74"
+    },
+    "audit_sha256": "d45d0a570f3e47a6fdfad33c6116c4049ef8228fe3068a6327f1045d09396e5e",
+    "environment_sha256": "c5763f176ad22071ffa4d8172c69c46066abf9cc4d67b2908c10155735eb1441",
+    "expected_matches_sha256": "8f76aac9fc4a1466a210b6fd11a1662bec2152035cec5eb3ba590d25a2f7cd74",
+    "fixture_receipt_file_sha256": "cd54e0c9a553f361d9964bf264c7ef8d44b7dce3183383d181aeeff00001c705",
+    "fixture_receipt_sha256": "a12ae1f66bb1c18fe06fb9d479839c98333e0510a7ae71cbd18b844d230bb79b",
+    "kernel_stats_sha256": "6fe72fbc7ce2654e065f827775714e46d8a7bef5534c2ce4d4240dcd169594b9",
+    "query_sha256": "2c13b2b1f300637881071a817ec1e272ab3481c0f3bab299ebb552803ddb817f",
+    "target_sha256": "5c6d7d268505ec231d60e867564def8211a4d3d5d0386e4e5b2f4375ece25215"
+  },
+  "attempt_history": [
+    {
+      "evidence": "empty stdout/stderr; compute-node /etc/profile returned before module initialization",
+      "exit_code": "1:0",
+      "job_id": 1408269,
+      "state": "FAILED"
+    },
+    {
+      "evidence": "CUDA 12.8 initialized; system python3 lacked transitive NumPy dependency",
+      "exit_code": "1:0",
+      "job_id": 1408277,
+      "state": "FAILED"
+    },
+    {
+      "evidence": "CUDA executed 11 matches; audit exposed inverted target split enum in output schema",
+      "exit_code": "1:0",
+      "job_id": 1408308,
+      "state": "FAILED"
+    },
+    {
+      "evidence": "native output and independent Python oracle are byte-identical",
+      "exit_code": "0:0",
+      "job_id": 1408348,
+      "state": "COMPLETED"
+    }
+  ],
+  "claim_boundary": {
+    "cuda_kernel_boundary_canary_passed": true,
+    "fixed_imgt_full_oas_search_complete": false,
+    "frozen_official_external_test_accessed": false,
+    "gap_aware_search_complete": false,
+    "large_scale_pretraining_authorized": false,
+    "near_identity_decontamination_complete": false,
+    "scientific_claim": false
+  },
+  "format_version": "oas_imgt_exact_cuda_canary_receipt_v1",
+  "kernel_stats": {
+    "batch_records": 7,
+    "batches": 1,
+    "bucket_member_visits": 197,
+    "cuda_device": "NVIDIA GeForce RTX 5090",
+    "elapsed_seconds": 0.001057157,
+    "matches": 11,
+    "query_records": 3,
+    "quorum_candidates": 13,
+    "records_scanned": 7,
+    "seed_lookups": 175,
+    "target_file_records": 7
+  },
+  "receipt_sha256": "6ba71c4806f505bb824b00751e204aa46191c0c1caeb4088c2a32c343204db39",
+  "result": "PASS",
+  "runtime": {
+    "allocated_tres": "billing=4,cpu=4,gres/gpu=1,mem=63000M,node=1",
+    "cuda_compiler": "12.8.61",
+    "cuda_driver": "580.82.07",
+    "elapsed": "00:00:12",
+    "gpu_memory_mib": 32607,
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "gpu_uuid": "GPU-00f007df-efec-4060-bf56-d5645c29b26a",
+    "job_id": 1408348,
+    "node": "wqd10nah09g5",
+    "numpy_version": "1.26.4",
+    "python_version": "3.10.20"
+  },
+  "source": {
+    "canary_script_sha256": "c43c50e883fef64377e971011e98a5d9ec6d5e11ca757ef227587c67ebf5ba73",
+    "commit": "4f6429f5160921e1bbf78f12b4ab1693fb93cc44",
+    "kernel_binary_sha256": "157a4fcbfafd3e6567f17d76cd9cc0e3334e1241bb4a03e6a44d2dc93984abc8",
+    "kernel_source_sha256": "c183533be64dc3d80906a2f39425f074aad762020f288c65f328900ebe7962a4",
+    "nvcc_binary_sha256": "3aadf006f53dd288a372b2c4fabd46df1caa25aacd2e60964d7a26af25e91517",
+    "python_binary_sha256": "9ccc0a9b1f9cdd3343d79a1700eb82fb7b056c45e4c6a15fc867ff5ff4cb91ac",
+    "schema_source_sha256": "cd9eb09bfc57094e1ec0a2c908b7cc96def1af32acd4c09c115053870c5cbeea"
+  },
+  "test_cases": {
+    "cross_chain_label_recall": true,
+    "five_seed_false_positive_rejected": true,
+    "gap_missing_end_equivalence": true,
+    "identity_boundary_20_disagreements": true,
+    "identity_negative_21_disagreements": true,
+    "reciprocal_coverage_negative": true
+  }
+}

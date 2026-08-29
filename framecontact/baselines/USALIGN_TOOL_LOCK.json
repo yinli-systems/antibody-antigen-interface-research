@@ -1,0 +1,29 @@
+{
+  "format_version": "framecontact_usalign_tool_lock_v1",
+  "frozen_on": "2026-07-30",
+  "official_source": "https://github.com/pylelab/USalign",
+  "source_revision": "177cc8a2bbd3e2a6e9c5faaaa4ff5dfa1e6048f7",
+  "source_archive_url": "https://github.com/pylelab/USalign/archive/177cc8a2bbd3e2a6e9c5faaaa4ff5dfa1e6048f7.tar.gz",
+  "source_archive_sha256": "c0ed4ad81b4ebf7241b6103d2df83079f489653fa5644342f1b12d1b465a109a",
+  "usalign_cpp_sha256": "9d11b301e8b4e48b7513e8a7bdc11ce40da738f6a70fc9cc310ebcc65769025c",
+  "build_command": [
+    "g++",
+    "-static",
+    "-O3",
+    "-ffast-math",
+    "-o",
+    "USalign",
+    "USalign.cpp"
+  ],
+  "remote_binary_path": "/ssd/scxi253/model_deployment/tools/usalign-177cc8a2bbd3e2a6e9c5faaaa4ff5dfa1e6048f7/source/USalign",
+  "remote_binary_sha256": "b9b9003ed9a1bdeec61ffa00e6d75ad82b9d3755b7204a9442d07822e6297b50",
+  "smoke_test": {
+    "operation": "one authenticated antigen structure aligned to itself",
+    "aligned_length": 338,
+    "rmsd_angstrom": 0.0,
+    "tm_score_normalized_by_structure_1": 1.0,
+    "tm_score_normalized_by_structure_2": 1.0,
+    "stdout_sha256": "722c497856a36ac2af417fcf30beb757840da12b8cae80e22f5f3c8c713b4860"
+  },
+  "claim_boundary": "Tool provenance and self-alignment smoke only. No Foldseek boundary pair has yet been independently checked and no split or model claim is authorized."
+}

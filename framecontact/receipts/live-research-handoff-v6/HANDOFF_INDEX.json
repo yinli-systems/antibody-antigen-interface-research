@@ -1,0 +1,36 @@
+{
+  "claim_boundary": "Development-only delta handoff over authenticated v5. It replaces the untrained interaction-logit noisy-OR sketch with the corrected default-off counterfactual contact-lift source authority. No candidate GPU quality run, frozen test, official AsEP test, external-generalization, A100 model-quality, biological-benchmark, novelty, or state-of-the-art result is included.",
+  "files": {
+    "README.md": "21581e99f2265160c741ce4158eb84089d1a1f0a33343abde4f2394d763bc1fb",
+    "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "65ae825a33e355c3d039c3da37921e3482f64052adbb411e99dc2d745ddd7fbc",
+    "docs/TEACHER_UPDATE_20260801_CONTACT_BOTTLENECK_AND_LIVE_EPOCH17.md": "66601ce70f470a487aa85675c69157daa4122a7f18aac9f082b3ffeb398425f8",
+    "receipts/double-cold-source-v16-final/ENGINEERING_RECEIPT.json": "065377bc037c5a0c388839e75d2c98e25f0f06807b4ed8853fd3c30afd3c7868",
+    "receipts/double-cold-source-v16-final/FULL_PYTEST_WITH_DEPS.log": "a64bc7e723d3602958614ac3ae640e682925f2faa42ce557af339a42e3ac3c50",
+    "receipts/double-cold-source-v16-final/LOCAL_FULL_PYTEST.log": "28b04a1a0ec262e6fe6dfd73c5b028c91ce8624ce74792283614e898ef269872",
+    "receipts/double-cold-source-v16-final/MANIFEST_BUILD.log": "e0d18ea4b7ae0dfb543bf3e8b014e64e1f4f3cef262d25b7dfcea8f394716772",
+    "receipts/double-cold-source-v16-final/POST_TEST_MANIFEST_VERIFY.json": "e8fd63f7c5efda93081f6fb1584c51dbd5811d22fd957464ea2a36624545f4d3",
+    "receipts/double-cold-source-v16-final/SOURCE_MANIFEST.json": "34a4f923700dbd6227864e63e424cf7bb91de948c99d29e2988ae4c957dfb9a0",
+    "receipts/live-research-handoff-v5/HANDOFF_INDEX.json": "afa2ec583c259a4a1ff90bf9751a98e47c39b7d5153591f94e5794a229441ae7"
+  },
+  "format_version": "framecontact_live_research_handoff_delta_v1",
+  "parent_handoff": {
+    "index_path": "receipts/live-research-handoff-v5/HANDOFF_INDEX.json",
+    "index_sha256": "afa2ec583c259a4a1ff90bf9751a98e47c39b7d5153591f94e5794a229441ae7",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v5"
+  },
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v6",
+  "supersession": {
+    "abandoned_partial_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v15",
+    "abandoned_partial_path_has_authority": false,
+    "current_candidate": "pre-cross counterfactual positive contact-lift bottleneck",
+    "current_source": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v16",
+    "current_source_manifest_sha256": "34a4f923700dbd6227864e63e424cf7bb91de948c99d29e2988ae4c957dfb9a0",
+    "current_source_tree_sha256": "b13b18098c6709cef30cc2a1256f027f973f994c9bad8cb9c31a772e7063db8b",
+    "superseded_candidate": "direct interaction-only-logit noisy-OR bottleneck in v14"
+  },
+  "validation": {
+    "candidate_gpu_quality_run_available": false,
+    "local_regression": "297 passed, 0 failed in 20.17s",
+    "remote_regression": "292 passed, 5 optional-Boltz skips, 0 failed in 82.97s"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "archive_file_count": 222,
+  "archive_sha256": "c348a5479711813a83c13024436e0130e838cf559c79af05e0ddf9d8d6bf0c86",
+  "archive_size_bytes": 401957,
+  "archive_source_manifest_sha256": "6c1b3d30d00b765dc5a3c68e2f0b3893b91f485f4d53dc49df51439fc5f4e7de",
+  "archive_with_embedded_manifest_file_count": 223,
+  "claim_boundary": "Source, protocols, tests, and documentation only. Local 187-test regression and remote manifest/import checks are code evidence, not a SAbDab2 frozen test, AsEP official test, biological benchmark, AB03, A100, throughput, or performance result.",
+  "created_utc": "2026-07-30T20:13:09Z",
+  "format_version": "framecontact_evaluation_source_deployment_v4",
+  "local_validation": {
+    "compileall_passed": true,
+    "pytest_passed": 187,
+    "pytest_total": 187
+  },
+  "primary_source_sha256": {
+    "scripts/evaluate_framecontact_sabdab2_ensemble_test.py": "28c130bc7190d99b227b2181fe0aa5cedcf10df6c3a15861802c25e90d8fd0f0",
+    "scripts/freeze_framecontact_development_selection.py": "7490f3d5767c50a612deae03a42fe0599f9886b8a0b9b02dd9ed883301d98a54",
+    "scripts/freeze_sabdab2_frozen_test_opening.py": "18f41492cd67e2ab87834fcb6c66938ae0f4ab823c0172cdc899f77f0936ece1",
+    "src/interaction_first/sabdab2_frozen_test.py": "04ce95e83b2e85cb253b6dff09331fa86c849d2fe2383e5753ee6048393fa058",
+    "tests/test_freeze_sabdab2_frozen_opening.py": "940d7df5cd1b5eac40a8a1846692ccb93dd4caba6da839b40c21a2fc95f3a53c"
+  },
+  "remote_authority_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v4-authority",
+  "remote_checks": {
+    "archive_sha256_matches_local": true,
+    "bytecode_generation_disabled": true,
+    "embedded_manifest_sha256_matches_archive_receipt": true,
+    "every_manifest_file_sha256_verified": true,
+    "generated_bytecode_cache_count": 0,
+    "import_smoke_passed": true,
+    "remote_pytest_available": false,
+    "source_file_count_including_embedded_manifest": 223,
+    "source_tree_read_only": true,
+    "symlink_count": 0
+  },
+  "remote_hardware_boundary": "Remote checks ran in the ParaCloud login environment and did not allocate or validate AB03/A100 hardware.",
+  "remote_source_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v4",
+  "supersedes_remote_source_for_future_evaluation": "asep/evaluation-source-v3",
+  "test_access": {
+    "asep_official_graph_or_label_opened": false,
+    "asep_official_score_computed": false,
+    "sabdab2_frozen_test_opened": false,
+    "sabdab2_frozen_test_score_computed": false
+  }
+}

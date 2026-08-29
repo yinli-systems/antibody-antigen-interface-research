@@ -1,0 +1,3025 @@
+{
+  "claim_boundary": "Score-independent post-access provenance audit. It diagnoses label materialization and cannot create a confirmatory model result.",
+  "complex_count": 375,
+  "complexes_with_all_feature_atom14_contacts": 4,
+  "complexes_with_hydrogen_only_contact": 35,
+  "created_at_utc": "2026-07-29T21:16:25.302693+00:00",
+  "dataset_id": "mansoorbaloch/chimera-bench",
+  "feature_atom14_contact_recovery_fraction": 0.671371329465941,
+  "feature_atom14_contacts_recovered": 11226,
+  "feature_atom14_distances_matching_stored_to_0_01A": 5597,
+  "feature_atom14_stored_distance_match_fraction": 0.33472878416362656,
+  "hydrogen_only_contacts_at_4_5A": 584,
+  "materialization_manifest_sha256": "a64333508007254c5d301e6e0eecddfd7591fd1e82b8ecf7c209cdb3a5440b12",
+  "maximum_pdb_all_atom_stored_distance_error": 0.0049997742014591395,
+  "metrics_computed": false,
+  "model_scores_read": false,
+  "official_contact_pairs": 16721,
+  "pdb_all_atom_distances_matching_stored_to_0_01A": 16721,
+  "pdb_all_atom_stored_distance_match_fraction": 1.0,
+  "per_complex": [
+    {
+      "complex_id": "1afv_K_M_B",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "1e6j_H_L_P",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "1frg_H_L_P",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "1fsk_F_E_D",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "1h0d_B_A_C",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 45,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 45
+    },
+    {
+      "complex_id": "1ikf_H_L_C",
+      "feature_atom14_contacts_recovered": 3,
+      "feature_atom14_distances_matching_stored_to_0_01A": 3,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 3,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 3
+    },
+    {
+      "complex_id": "1kcs_H_L_P",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "1nfd_H_G_D",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "1nsn_H_L_S",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "1oaz_J_N_B",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "1qkz_H_L_P",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "1xgy_H_L_P",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 26,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 26
+    },
+    {
+      "complex_id": "2ck0_H_L_P",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "2eh8_H_L_P",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "2hfg_H_L_R",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 34,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "2hh0_H_L_P",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "2hrp_H_L_P",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "2j4w_H_L_D",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "2otu_B_A_P",
+      "feature_atom14_contacts_recovered": 39,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "2uud_H_L_S",
+      "feature_atom14_contacts_recovered": 7,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 10,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 10
+    },
+    {
+      "complex_id": "2v17_H_L_A",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 22,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 22
+    },
+    {
+      "complex_id": "2w65_A_B_E",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 25,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 25
+    },
+    {
+      "complex_id": "2yc1_D_E_F",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "2zuq_F_E_D",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "3cxd_H_L_P",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "3h0t_B_A_C",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "3iet_D_C_Q",
+      "feature_atom14_contacts_recovered": 11,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 18,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 18
+    },
+    {
+      "complex_id": "3mj9_H_L_A",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 72,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 72
+    },
+    {
+      "complex_id": "3mnz_B_A_P",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "3sge_J_I_M",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "3uji_H_L_P",
+      "feature_atom14_contacts_recovered": 51,
+      "feature_atom14_distances_matching_stored_to_0_01A": 35,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 60,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 60
+    },
+    {
+      "complex_id": "4aei_J_N_C",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "4gag_H_L_P",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "4glr_J_K_B",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 32,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 32
+    },
+    {
+      "complex_id": "4jzo_G_H_L",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "4n8c_I_M_Y",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "4n9g_H_L_Y",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "4nzt_H_L_M",
+      "feature_atom14_contacts_recovered": 67,
+      "feature_atom14_distances_matching_stored_to_0_01A": 34,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 89,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 89
+    },
+    {
+      "complex_id": "4ojf_H_L_A",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 10,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "4oqt_H_L_A",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 4,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "4qww_D_C_B",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "4rdq_K_J_B",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 26,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 26
+    },
+    {
+      "complex_id": "4xmk_H_L_P",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "4ypg_H_L_D",
+      "feature_atom14_contacts_recovered": 54,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 81,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 81
+    },
+    {
+      "complex_id": "4z5r_U_T_I",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "4z5r_Z_Y_X",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "5dmg_E_F_X",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 26,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 26
+    },
+    {
+      "complex_id": "5dsc_E_F_M",
+      "feature_atom14_contacts_recovered": 13,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 16,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 16
+    },
+    {
+      "complex_id": "5eii_A_B_I",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "5eoq_H_L_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "5h35_A_B_C",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 64,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 64
+    },
+    {
+      "complex_id": "5ig7_G_H_I",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "5ijk_B_D_Y",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "5ikc_B_A_M",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "5mhr_I_H_B",
+      "feature_atom14_contacts_recovered": 15,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "5mhr_M_L_D",
+      "feature_atom14_contacts_recovered": 15,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "5mu0_K_L_V",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 27,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 27
+    },
+    {
+      "complex_id": "5ngv_H_L_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 58,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 58
+    },
+    {
+      "complex_id": "5nj3_C_D_B",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 32,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 32
+    },
+    {
+      "complex_id": "5nph_H_L_A",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "5ucb_H_L_B",
+      "feature_atom14_contacts_recovered": 47,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 25,
+      "official_contact_pairs": 95,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 95
+    },
+    {
+      "complex_id": "5uea_H_L_D",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "5v6m_H_L_P",
+      "feature_atom14_contacts_recovered": 47,
+      "feature_atom14_distances_matching_stored_to_0_01A": 33,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 59,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 59
+    },
+    {
+      "complex_id": "5vqm_H_L_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 17,
+      "official_contact_pairs": 70,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 70
+    },
+    {
+      "complex_id": "5vyf_B_A_C",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 44,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 44
+    },
+    {
+      "complex_id": "5vzy_H_L_A",
+      "feature_atom14_contacts_recovered": 41,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 53,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 53
+    },
+    {
+      "complex_id": "5xcs_A_B_C",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 35,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 35
+    },
+    {
+      "complex_id": "6bzu_E_F_K",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 35,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 35
+    },
+    {
+      "complex_id": "6bzy_H_L_B",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "6cdm_A_B_C",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 28,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "6cdo_A_B_C",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 26,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "6cez_H_L_P",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "6cyf_F_E_B",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "6dc8_H_L_P",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 35,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 35
+    },
+    {
+      "complex_id": "6dc9_H_L_P",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "6dcw_H_L_T",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "6f7t_H_L_C",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 44,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 44
+    },
+    {
+      "complex_id": "6i9i_H_L_D",
+      "feature_atom14_contacts_recovered": 44,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "6ldx_H_L_B",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "6ldy_H_L_M",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "6lz4_D_E_F",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "6m58_H_L_A",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 58,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 58
+    },
+    {
+      "complex_id": "6mqc_A_B_D",
+      "feature_atom14_contacts_recovered": 42,
+      "feature_atom14_distances_matching_stored_to_0_01A": 34,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "6mqm_J_K_L",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 29,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 29
+    },
+    {
+      "complex_id": "6mqr_H_L_A",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "6nn3_H_L_A",
+      "feature_atom14_contacts_recovered": 17,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 24,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 24
+    },
+    {
+      "complex_id": "6nyq_H_L_C",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "6o24_A_B_I",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "6o26_A_B_C",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "6obd_H_L_F",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "6oy4_D_C_A",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "6p60_J_K_L",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "6pds_H_L_G",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 27,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 27
+    },
+    {
+      "complex_id": "6pdu_H_L_C",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "6pef_A_B_C",
+      "feature_atom14_contacts_recovered": 39,
+      "feature_atom14_distances_matching_stored_to_0_01A": 26,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "6pi7_F_E_D",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "6pis_H_L_B",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "6r0x_A_B_E",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "6sf6_A_B_D",
+      "feature_atom14_contacts_recovered": 17,
+      "feature_atom14_distances_matching_stored_to_0_01A": 4,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 29,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 29
+    },
+    {
+      "complex_id": "6umx_H_L_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "6vbo_H_L_C",
+      "feature_atom14_contacts_recovered": 40,
+      "feature_atom14_distances_matching_stored_to_0_01A": 3,
+      "hydrogen_only_contacts_at_4_5A": 21,
+      "official_contact_pairs": 68,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 68
+    },
+    {
+      "complex_id": "6vbp_C_D_E",
+      "feature_atom14_contacts_recovered": 39,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 13,
+      "official_contact_pairs": 57,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 57
+    },
+    {
+      "complex_id": "6vtw_H_L_A",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 17,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "6w7s_H_L_A",
+      "feature_atom14_contacts_recovered": 9,
+      "feature_atom14_distances_matching_stored_to_0_01A": 6,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 10,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 10
+    },
+    {
+      "complex_id": "6wh9_B_C_G",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "6x78_B_A_I",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 23,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 23
+    },
+    {
+      "complex_id": "6xqw_H_L_E",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 25,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 25
+    },
+    {
+      "complex_id": "6ztr_H_L_I",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "7ce2_Z_B_A",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "7cj2_C_D_A",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 57,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 57
+    },
+    {
+      "complex_id": "7df1_F_J_C",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "7eyc_H_L_P",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "7jr7_E_F_B",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "7k66_B_C_A",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "7kqk_H_L_P",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 32,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 32
+    },
+    {
+      "complex_id": "7lj5_E_D_A",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "7lr3_H_L_D",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 44,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 44
+    },
+    {
+      "complex_id": "7lr4_H_L_D",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "7m3n_H_L_A",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "7mfr_B_A_P",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 24,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 24
+    },
+    {
+      "complex_id": "7mlh_C_A_F",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 27,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "7mrz_X_Y_C",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 32,
+      "official_contact_pairs": 71,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 71
+    },
+    {
+      "complex_id": "7mxl_H_L_C",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 61,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 61
+    },
+    {
+      "complex_id": "7mxl_J_K_C",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "7n0u_H_L_C",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "7n0x_H_L_G",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "7njz_H_L_C",
+      "feature_atom14_contacts_recovered": 13,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 19,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 19
+    },
+    {
+      "complex_id": "7nx3_B_C_F",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 15,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "7oh0_C_B_A",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "7q6c_H_L_A",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 20,
+      "official_contact_pairs": 79,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 79
+    },
+    {
+      "complex_id": "7rm3_C_D_P",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "7so5_H_L_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "7so7_H_L_A",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "7t86_H_L_I",
+      "feature_atom14_contacts_recovered": 5,
+      "feature_atom14_distances_matching_stored_to_0_01A": 2,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 11,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 11
+    },
+    {
+      "complex_id": "7u09_H_L_A",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "7u8g_D_E_A",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 8,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "7um3_I_M_B",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "7urx_H_L_C",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "7vaz_D_C_G",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "7w71_H_L_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "8ath_E_F_B",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "8ath_H_L_A",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "8df1_O_P_C",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "8dfg_I_M_B",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 12,
+      "official_contact_pairs": 57,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 57
+    },
+    {
+      "complex_id": "8dfh_H_L_A",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 14,
+      "official_contact_pairs": 59,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 59
+    },
+    {
+      "complex_id": "8dfi_H_L_A",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 20,
+      "official_contact_pairs": 61,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 61
+    },
+    {
+      "complex_id": "8dgw_E_F_K",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "8dgx_H_L_C",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "8dtr_E_F_J",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "8dyx_H_L_I",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 35,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 35
+    },
+    {
+      "complex_id": "8dz4_H_L_I",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "8f5i_X_Y_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "8f5n_H_L_A",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "8gho_A_B_C",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "8ivw_B_C_A",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "8ivx_H_L_A",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "8kdi_H_L_A",
+      "feature_atom14_contacts_recovered": 42,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "8kei_C_E_B",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 32,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 32
+    },
+    {
+      "complex_id": "8og0_H_L_P",
+      "feature_atom14_contacts_recovered": 16,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 22,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 22
+    },
+    {
+      "complex_id": "8onk_K_J_D",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "8oxw_B_C_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 19,
+      "official_contact_pairs": 66,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 66
+    },
+    {
+      "complex_id": "8qcm_F_E_A",
+      "feature_atom14_contacts_recovered": 16,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 26,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 26
+    },
+    {
+      "complex_id": "8rex_H_I_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "8rmx_B_C_A",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "8rmx_E_F_D",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "8s6t_A_B_C",
+      "feature_atom14_contacts_recovered": 1,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 1,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 1
+    },
+    {
+      "complex_id": "8s6v_A_B_M",
+      "feature_atom14_contacts_recovered": 14,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 14,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 14
+    },
+    {
+      "complex_id": "8s73_C_D_N",
+      "feature_atom14_contacts_recovered": 9,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 9,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 9
+    },
+    {
+      "complex_id": "8shw_C_A_B",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "8t03_C_D_A",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 29,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 29
+    },
+    {
+      "complex_id": "8ukh_K_O_D",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 8,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "8us8_H_L_R",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "8vgn_A_B_I",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "8vk1_F_E_D",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "8vtd_B_A_C",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "8vyn_N_O_C",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "8wej_H_L_B",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 26,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "8xs3_A_B_C",
+      "feature_atom14_contacts_recovered": 17,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "8yry_H_L_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "8yvl_J_H_B",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 59,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 59
+    },
+    {
+      "complex_id": "8yvn_E_I_D",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "8zd5_B_C_A",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "8zd5_K_L_J",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "8zeu_A_B_C",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 32,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 32
+    },
+    {
+      "complex_id": "8zeu_H_L_C",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "8zh7_B_C_A",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "8zpq_H_L_F",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 57,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 57
+    },
+    {
+      "complex_id": "9b6w_H_I_C",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 23,
+      "official_contact_pairs": 56,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 56
+    },
+    {
+      "complex_id": "9bop_E_F_U",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "9bp1_H_D_E",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 16,
+      "official_contact_pairs": 59,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 59
+    },
+    {
+      "complex_id": "9bt5_C_D_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9bx5_H_L_P",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 7,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9c1s_H_L_D",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "9c2h_B_C_D",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "9c2h_I_J_D",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "9c6y_A_B_E",
+      "feature_atom14_contacts_recovered": 52,
+      "feature_atom14_distances_matching_stored_to_0_01A": 31,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 67,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 67
+    },
+    {
+      "complex_id": "9c7d_H_L_B",
+      "feature_atom14_contacts_recovered": 15,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 17,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 17
+    },
+    {
+      "complex_id": "9c7s_H_L_C",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "9c7x_A_B_C",
+      "feature_atom14_contacts_recovered": 59,
+      "feature_atom14_distances_matching_stored_to_0_01A": 36,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 71,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 71
+    },
+    {
+      "complex_id": "9ccs_C_B_A",
+      "feature_atom14_contacts_recovered": 39,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "9cct_C_B_A",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "9ccu_C_B_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 44,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 44
+    },
+    {
+      "complex_id": "9ccw_C_B_A",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "9cds_B_A_C",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9cf6_H_L_G",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "9cf7_H_L_C",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9cfa_F_E_G",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 45,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 45
+    },
+    {
+      "complex_id": "9cfg_H_L_A",
+      "feature_atom14_contacts_recovered": 46,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 24,
+      "official_contact_pairs": 89,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 89
+    },
+    {
+      "complex_id": "9cmc_A_B_E",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9cmc_F_G_J",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "9cmc_P_Q_T",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "9cps_H_L_A",
+      "feature_atom14_contacts_recovered": 46,
+      "feature_atom14_distances_matching_stored_to_0_01A": 36,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 60,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 60
+    },
+    {
+      "complex_id": "9d7i_J_I_C",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 57,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 57
+    },
+    {
+      "complex_id": "9d7p_J_I_C",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 58,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 58
+    },
+    {
+      "complex_id": "9dd6_J_N_G",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9dn2_J_N_C",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 61,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 61
+    },
+    {
+      "complex_id": "9dst_C_D_A",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 27,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "9dvd_H_L_A",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "9e21_H_L_S",
+      "feature_atom14_contacts_recovered": 41,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 64,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 64
+    },
+    {
+      "complex_id": "9e6j_H_L_A",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 8,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "9eht_E_D_F",
+      "feature_atom14_contacts_recovered": 50,
+      "feature_atom14_distances_matching_stored_to_0_01A": 29,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 59,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 59
+    },
+    {
+      "complex_id": "9eze_E_F_D",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "9fkd_H_L_B",
+      "feature_atom14_contacts_recovered": 11,
+      "feature_atom14_distances_matching_stored_to_0_01A": 6,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 20,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 20
+    },
+    {
+      "complex_id": "9fns_E_F_B",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "9fnt_E_F_B",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9gu0_F_C_L",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "9gvn_E_F_A",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "9hco_H_L_A",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 11,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9hkq_D_E_C",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9i1q_K_G_D",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 56,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 56
+    },
+    {
+      "complex_id": "9i59_H_L_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9i59_X_Y_B",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 53,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 53
+    },
+    {
+      "complex_id": "9irb_H_L_A",
+      "feature_atom14_contacts_recovered": 40,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "9irc_H_L_A",
+      "feature_atom14_contacts_recovered": 40,
+      "feature_atom14_distances_matching_stored_to_0_01A": 26,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 61,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 61
+    },
+    {
+      "complex_id": "9iut_D_E_F",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 26,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 45,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 45
+    },
+    {
+      "complex_id": "9j4c_H_L_A",
+      "feature_atom14_contacts_recovered": 44,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 78,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 78
+    },
+    {
+      "complex_id": "9j8a_H_L_P",
+      "feature_atom14_contacts_recovered": 14,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 17,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 17
+    },
+    {
+      "complex_id": "9jbq_A_B_C",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9jin_H_L_A",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "9jmb_H_L_A",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "9jqp_H_I_A",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9jqu_H_L_A",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    },
+    {
+      "complex_id": "9jt1_H_L_B",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 29,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 29
+    },
+    {
+      "complex_id": "9jy1_R_Q_E",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "9jy2_B_A_e",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "9jzq_A_B_E",
+      "feature_atom14_contacts_recovered": 17,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 31,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 31
+    },
+    {
+      "complex_id": "9jzq_C_D_E",
+      "feature_atom14_contacts_recovered": 11,
+      "feature_atom14_distances_matching_stored_to_0_01A": 4,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 24,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 24
+    },
+    {
+      "complex_id": "9k3t_H_L_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 17,
+      "official_contact_pairs": 74,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 74
+    },
+    {
+      "complex_id": "9k3t_h_l_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 22,
+      "official_contact_pairs": 71,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 71
+    },
+    {
+      "complex_id": "9kkj_H_L_A",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "9kmc_E_F_A",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 19,
+      "official_contact_pairs": 63,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 63
+    },
+    {
+      "complex_id": "9kvd_A_B_C",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "9kvd_D_F_C",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "9kvd_E_G_C",
+      "feature_atom14_contacts_recovered": 40,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9kve_D_F_C",
+      "feature_atom14_contacts_recovered": 48,
+      "feature_atom14_distances_matching_stored_to_0_01A": 33,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 76,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 76
+    },
+    {
+      "complex_id": "9kve_E_G_C",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "9kvf_B_A_G",
+      "feature_atom14_contacts_recovered": 14,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 23,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 23
+    },
+    {
+      "complex_id": "9kvk_A_B_G",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9kvk_C_D_G",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9kvk_H_L_G",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "9kyo_H_L_A",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 6,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "9kze_H_L_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 63,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 63
+    },
+    {
+      "complex_id": "9kzz_J_N_C",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9l15_H_L_A",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 28,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "9l1o_H_L_E",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "9l2k_H_L_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "9l9y_A_B_D",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "9leo_A_B_H",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 23,
+      "official_contact_pairs": 63,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 63
+    },
+    {
+      "complex_id": "9leo_C_D_H",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 24,
+      "official_contact_pairs": 63,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 63
+    },
+    {
+      "complex_id": "9lf8_D_C_S",
+      "feature_atom14_contacts_recovered": 22,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "9lf8_F_E_R",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "9lp0_D_E_C",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "9ls3_D_E_A",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "9lu3_H_L_A",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "9lue_A_B_G",
+      "feature_atom14_contacts_recovered": 46,
+      "feature_atom14_distances_matching_stored_to_0_01A": 26,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 65,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 65
+    },
+    {
+      "complex_id": "9lue_C_D_G",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "9lue_H_L_G",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9md2_H_L_A",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 39,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 39
+    },
+    {
+      "complex_id": "9md3_G_K_D",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 45,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 45
+    },
+    {
+      "complex_id": "9md5_G_K_D",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 66,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 66
+    },
+    {
+      "complex_id": "9me5_H_L_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9me6_H_L_A",
+      "feature_atom14_contacts_recovered": 10,
+      "feature_atom14_distances_matching_stored_to_0_01A": 6,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 23,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 23
+    },
+    {
+      "complex_id": "9me7_I_M_A",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "9me7_J_N_A",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "9mib_O_Q_D",
+      "feature_atom14_contacts_recovered": 17,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 26,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 26
+    },
+    {
+      "complex_id": "9mib_P_R_E",
+      "feature_atom14_contacts_recovered": 47,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 75,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 75
+    },
+    {
+      "complex_id": "9mic_H_L_C",
+      "feature_atom14_contacts_recovered": 52,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 74,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 74
+    },
+    {
+      "complex_id": "9mid_H_L_C",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 73,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 73
+    },
+    {
+      "complex_id": "9mif_H_L_C",
+      "feature_atom14_contacts_recovered": 50,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 87,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 87
+    },
+    {
+      "complex_id": "9mih_H_L_A",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "9mj1_F_G_C",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "9ml1_S_T_B",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 23,
+      "official_contact_pairs": 78,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 78
+    },
+    {
+      "complex_id": "9ml4_P_Q_C",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "9ml5_H_L_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "9ml8_P_Q_D",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 50,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 50
+    },
+    {
+      "complex_id": "9mla_G_J_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "9mlk_J_N_A",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "9mns_H_L_E",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "9mpw_H_L_S",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "9mq8_J_N_E",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9mq9_J_N_E",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 30,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 30
+    },
+    {
+      "complex_id": "9mqd_H_L_A",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "9mr1_A_B_C",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "9mr2_A_B_C",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 56,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 56
+    },
+    {
+      "complex_id": "9msc_A_B_E",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "9msc_H_L_E",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "9msy_P_R_C",
+      "feature_atom14_contacts_recovered": 39,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 63,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 63
+    },
+    {
+      "complex_id": "9mx1_B_C_A",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "9n0d_E_D_B",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9n5h_B_C_A",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 40,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 40
+    },
+    {
+      "complex_id": "9n5h_D_E_A",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "9n5i_H_L_D",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "9nab_D_C_A",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 56,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 56
+    },
+    {
+      "complex_id": "9naq_H_L_A",
+      "feature_atom14_contacts_recovered": 44,
+      "feature_atom14_distances_matching_stored_to_0_01A": 25,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 53,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 53
+    },
+    {
+      "complex_id": "9nph_B_A_C",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "9npi_C_B_A",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 58,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 58
+    },
+    {
+      "complex_id": "9nqz_G_F_B",
+      "feature_atom14_contacts_recovered": 48,
+      "feature_atom14_distances_matching_stored_to_0_01A": 27,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 63,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 63
+    },
+    {
+      "complex_id": "9nrc_C_B_A",
+      "feature_atom14_contacts_recovered": 15,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 35,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 35
+    },
+    {
+      "complex_id": "9o3d_A_B_D",
+      "feature_atom14_contacts_recovered": 42,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 19,
+      "official_contact_pairs": 74,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 74
+    },
+    {
+      "complex_id": "9o54_D_C_A",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9oao_H_L_C",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 24,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 76,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 76
+    },
+    {
+      "complex_id": "9oap_H_L_C",
+      "feature_atom14_contacts_recovered": 42,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 66,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 66
+    },
+    {
+      "complex_id": "9oaq_H_L_C",
+      "feature_atom14_contacts_recovered": 42,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 64,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 64
+    },
+    {
+      "complex_id": "9oar_H_L_C",
+      "feature_atom14_contacts_recovered": 46,
+      "feature_atom14_distances_matching_stored_to_0_01A": 20,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 67,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 67
+    },
+    {
+      "complex_id": "9oas_J_K_M",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 73,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 73
+    },
+    {
+      "complex_id": "9og1_B_C_A",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 16,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9og2_B_C_A",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "9og2_D_E_A",
+      "feature_atom14_contacts_recovered": 34,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9p4c_H_L_M",
+      "feature_atom14_contacts_recovered": 38,
+      "feature_atom14_distances_matching_stored_to_0_01A": 2,
+      "hydrogen_only_contacts_at_4_5A": 16,
+      "official_contact_pairs": 58,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 58
+    },
+    {
+      "complex_id": "9p8x_H_L_A",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 8,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 33,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 33
+    },
+    {
+      "complex_id": "9p97_H_L_A",
+      "feature_atom14_contacts_recovered": 43,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 16,
+      "official_contact_pairs": 80,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 80
+    },
+    {
+      "complex_id": "9pd2_H_L_A",
+      "feature_atom14_contacts_recovered": 58,
+      "feature_atom14_distances_matching_stored_to_0_01A": 34,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 77,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 77
+    },
+    {
+      "complex_id": "9pdy_D_G_C",
+      "feature_atom14_contacts_recovered": 13,
+      "feature_atom14_distances_matching_stored_to_0_01A": 3,
+      "hydrogen_only_contacts_at_4_5A": 11,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9pf9_H_L_G",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 1,
+      "hydrogen_only_contacts_at_4_5A": 16,
+      "official_contact_pairs": 60,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 60
+    },
+    {
+      "complex_id": "9pru_B_A_W",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 38,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 38
+    },
+    {
+      "complex_id": "9pv3_B_C_D",
+      "feature_atom14_contacts_recovered": 11,
+      "feature_atom14_distances_matching_stored_to_0_01A": 3,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 21,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 21
+    },
+    {
+      "complex_id": "9pv5_A_B_C",
+      "feature_atom14_contacts_recovered": 32,
+      "feature_atom14_distances_matching_stored_to_0_01A": 17,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 55,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 55
+    },
+    {
+      "complex_id": "9pw4_C_D_A",
+      "feature_atom14_contacts_recovered": 50,
+      "feature_atom14_distances_matching_stored_to_0_01A": 27,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 82,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 82
+    },
+    {
+      "complex_id": "9pwn_H_L_A",
+      "feature_atom14_contacts_recovered": 45,
+      "feature_atom14_distances_matching_stored_to_0_01A": 34,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 59,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 59
+    },
+    {
+      "complex_id": "9px5_H_L_A",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 29,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 29
+    },
+    {
+      "complex_id": "9py7_H_L_A",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9pzv_H_I_A",
+      "feature_atom14_contacts_recovered": 14,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 25,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 25
+    },
+    {
+      "complex_id": "9pzv_J_K_B",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 26,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 26
+    },
+    {
+      "complex_id": "9pzx_J_K_B",
+      "feature_atom14_contacts_recovered": 30,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "9q8l_H_L_A",
+      "feature_atom14_contacts_recovered": 26,
+      "feature_atom14_distances_matching_stored_to_0_01A": 9,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 42,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 42
+    },
+    {
+      "complex_id": "9qt3_N_O_M",
+      "feature_atom14_contacts_recovered": 39,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 51,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 51
+    },
+    {
+      "complex_id": "9qub_F_E_B",
+      "feature_atom14_contacts_recovered": 29,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 8,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "9quw_D_C_A",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 6,
+      "hydrogen_only_contacts_at_4_5A": 8,
+      "official_contact_pairs": 53,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 53
+    },
+    {
+      "complex_id": "9r2e_A_B_Q",
+      "feature_atom14_contacts_recovered": 41,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "9rm2_M_N_O",
+      "feature_atom14_contacts_recovered": 25,
+      "feature_atom14_distances_matching_stored_to_0_01A": 4,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 41,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 41
+    },
+    {
+      "complex_id": "9sfx_H_L_C",
+      "feature_atom14_contacts_recovered": 23,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 43,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 43
+    },
+    {
+      "complex_id": "9sg2_H_L_A",
+      "feature_atom14_contacts_recovered": 37,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9sgh_A_B_I",
+      "feature_atom14_contacts_recovered": 46,
+      "feature_atom14_distances_matching_stored_to_0_01A": 32,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 57,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 57
+    },
+    {
+      "complex_id": "9ua5_G_K_C",
+      "feature_atom14_contacts_recovered": 14,
+      "feature_atom14_distances_matching_stored_to_0_01A": 3,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 25,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 25
+    },
+    {
+      "complex_id": "9ua5_H_D_C",
+      "feature_atom14_contacts_recovered": 20,
+      "feature_atom14_distances_matching_stored_to_0_01A": 5,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "9ubq_C_D_A",
+      "feature_atom14_contacts_recovered": 51,
+      "feature_atom14_distances_matching_stored_to_0_01A": 27,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 58,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 58
+    },
+    {
+      "complex_id": "9uk5_H_L_A",
+      "feature_atom14_contacts_recovered": 40,
+      "feature_atom14_distances_matching_stored_to_0_01A": 23,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 56,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 56
+    },
+    {
+      "complex_id": "9uv4_J_N_B",
+      "feature_atom14_contacts_recovered": 17,
+      "feature_atom14_distances_matching_stored_to_0_01A": 12,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 28,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 28
+    },
+    {
+      "complex_id": "9uvi_B_A_C",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 45,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 45
+    },
+    {
+      "complex_id": "9uxd_H_L_B",
+      "feature_atom14_contacts_recovered": 21,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 37,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 37
+    },
+    {
+      "complex_id": "9uza_H_L_A",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 19,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9uzb_H_L_A",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 11,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 49,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 49
+    },
+    {
+      "complex_id": "9v0n_H_F_D",
+      "feature_atom14_contacts_recovered": 36,
+      "feature_atom14_distances_matching_stored_to_0_01A": 22,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 52,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 52
+    },
+    {
+      "complex_id": "9v0s_G_I_C",
+      "feature_atom14_contacts_recovered": 51,
+      "feature_atom14_distances_matching_stored_to_0_01A": 30,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 62,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 62
+    },
+    {
+      "complex_id": "9vca_H_L_E",
+      "feature_atom14_contacts_recovered": 24,
+      "feature_atom14_distances_matching_stored_to_0_01A": 0,
+      "hydrogen_only_contacts_at_4_5A": 22,
+      "official_contact_pairs": 65,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 65
+    },
+    {
+      "complex_id": "9vdy_H_L_B",
+      "feature_atom14_contacts_recovered": 35,
+      "feature_atom14_distances_matching_stored_to_0_01A": 21,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 54,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 54
+    },
+    {
+      "complex_id": "9vhz_A_B_Q",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 15,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 47,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 47
+    },
+    {
+      "complex_id": "9vnp_C_A_L",
+      "feature_atom14_contacts_recovered": 18,
+      "feature_atom14_distances_matching_stored_to_0_01A": 10,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 29,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 29
+    },
+    {
+      "complex_id": "9vx3_D_E_F",
+      "feature_atom14_contacts_recovered": 28,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "9x1h_I_M_B",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 7,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 34,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 34
+    },
+    {
+      "complex_id": "9xgo_H_L_N",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 14,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 46,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 46
+    },
+    {
+      "complex_id": "9yka_F_G_B",
+      "feature_atom14_contacts_recovered": 33,
+      "feature_atom14_distances_matching_stored_to_0_01A": 18,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 48,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 48
+    },
+    {
+      "complex_id": "9z3b_H_G_L",
+      "feature_atom14_contacts_recovered": 19,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 22,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 22
+    },
+    {
+      "complex_id": "9z3q_B_A_E",
+      "feature_atom14_contacts_recovered": 31,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 56,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 56
+    },
+    {
+      "complex_id": "9z3q_D_C_E",
+      "feature_atom14_contacts_recovered": 27,
+      "feature_atom14_distances_matching_stored_to_0_01A": 13,
+      "hydrogen_only_contacts_at_4_5A": 0,
+      "official_contact_pairs": 36,
+      "pdb_all_atom_distances_matching_stored_to_0_01A": 36
+    }
+  ],
+  "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+  "schema_version": "chimera_contact_provenance_audit_v1",
+  "source_adapter_audit_sha256": "a4b515483ea69195ce9bba88446816c71dbb0e6033fffd29bf32b1653ea33f57"
+}

@@ -1,0 +1,86 @@
+{
+  "artifacts": {
+    "alignments_tsv": {
+      "bytes": 5435,
+      "sha256": "680bfc34cb64b1a9df634e8f5eefacd625cdd950594b8dcdd9a1bbdd467d54d9"
+    },
+    "canary_result": {
+      "bytes": 1271,
+      "file_sha256": "8f296db349ea75f87804b1cc6ce58add368812af9ce50dc86868c44e48baa111",
+      "receipt_sha256": "741916d504b982f0ab36f09a690bc3a7d9967e16373edd8d797fdd0ff8a260bf"
+    },
+    "environment": {
+      "bytes": 313,
+      "sha256": "b6057a7481b47672868c105647d29ee4aa8251f77f19f3c5a61cdd051d5ab1cf"
+    },
+    "hits_tsv": {
+      "bytes": 2368,
+      "sha256": "85a85a70b410f03feec91459382475082546ee39adeec2055e1b4e5e59623ae5"
+    },
+    "negative_stderr": {
+      "bytes": 63,
+      "sha256": "1a77247e0bcaf900cf9642dae8d84f01f1deea87dc5e3d3affd0cf2c8653309a"
+    }
+  },
+  "attempt_history": [
+    {
+      "evidence": "ungappedprefilter rejected unsupported --mask",
+      "job_id": 1408515,
+      "state": "FAILED"
+    },
+    {
+      "evidence": "convertalis required alignment backtraces from align -a 1",
+      "job_id": 1408516,
+      "state": "FAILED"
+    },
+    {
+      "evidence": "independent replay exposed MMseqs result-DB identity truncation",
+      "job_id": 1408549,
+      "state": "FAILED"
+    },
+    {
+      "evidence": "positive gapped controls and cap-saturation negative control passed",
+      "job_id": 1408584,
+      "state": "COMPLETED"
+    }
+  ],
+  "claim_boundary": {
+    "development_data_accessed": false,
+    "fixed_imgt_full_oas_search_complete": false,
+    "frozen_official_external_test_accessed": false,
+    "gap_aware_full_oas_search_complete": false,
+    "large_scale_pretraining_authorized": false,
+    "scientific_claim": false
+  },
+  "controls": {
+    "alignment_rows_replayed": 16,
+    "expected_gapped_pairs_found": 4,
+    "maximum_positive_prefilter_hits": 4,
+    "negative_cap": 1,
+    "negative_control_exit": 3,
+    "positive_cap": 100,
+    "positive_cap_saturated": false
+  },
+  "format_version": "oas_mmseqs_gap_canary_receipt_v1",
+  "mmseqs": {
+    "binary_sha256": "2eca75a2b9244ef2ea956c02e6bfb188b14ebd84f0883f5f34878298ff965ab1",
+    "version": "17b688d21dda57fc5f5b7286ecba7ec003d4717f"
+  },
+  "receipt_sha256": "a9cbfef8b300a4058bb4f157feac4c2bf1c360ac5265468bf74504c813d8bd58",
+  "result": "PASS",
+  "runtime": {
+    "allocated_tres": "billing=8,cpu=8,gres/gpu=1,mem=126000M,node=1",
+    "elapsed": "00:03:14",
+    "exit_code": "0:0",
+    "gpu_memory_mib": 32607,
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "job_id": 1408584,
+    "node": "wqd10nbh12g5"
+  },
+  "source": {
+    "canary_controller_sha256": "b8d04973839101d69d4796f72f283aeb77d057abbf865486fa00d019a9376e2d",
+    "commit": "fac8b1cfd471b7b3c2a8cf1a377857caf099a334",
+    "core_sha256": "ada439ce2d736aa41b805396bed72cd9a22c26298a033dc5e5f95ab743324ba5",
+    "slurm_sha256": "1b1038162af4ed91edb32e04dfc6b10d3a4b5817b8b22d5a043f5d5eae96eace"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "claim_boundary": "Zero-shot external residue-interface generalization only. This is not a CHIMERA CDR-design leaderboard submission, a docking benchmark, a clinical claim, or evidence of state of the art.",
+  "data_firewall": {
+    "development_after_external_access": "No candidate, checkpoint, hyperparameter, residue mapping rule, exclusion rule, threshold, metric, or ensemble weight may be changed after the first CHIMERA row-level annotation is read.",
+    "external_labels_or_model_scores_read_before_freeze": false,
+    "frozen_at_utc": "2026-07-29T16:27:40Z",
+    "required_pre_access_receipt": "FROZEN_PROTOCOL_RECEIPT.json"
+  },
+  "dataset": {
+    "canonical_url": "https://huggingface.co/datasets/mansoorbaloch/chimera-bench",
+    "dataset_id": "mansoorbaloch/chimera-bench",
+    "license": "CC-BY-4.0",
+    "metadata_sha256": "3c5ab79904ff6469dae4d6e82faffd64c397c00f6555c0195dfd11cee905d6e6",
+    "pinned_revision": "54d5a2a1e59a329db7a6c09184652ed225188940",
+    "registered_source_id": "chimera_bench_2026_05",
+    "state_at_freeze": {
+      "duplicate_groups_status": "not_computed",
+      "normalization_status": "not_run",
+      "raw_status": "not_materialized"
+    }
+  },
+  "eligibility_and_mapping": {
+    "antibody_axis": "Concatenate heavy then light residues; assign distinct chain IDs. A missing light chain is allowed only when the source explicitly records a heavy-only antibody.",
+    "antigen_axis": "Preserve every antigen chain and assign distinct chain IDs. Never collapse a multichain antigen into one geometric chain.",
+    "backbone": "Use real N/CA/C coordinates only. A residue frame is valid iff all three atoms are finite; otherwise preserve the residue and set its explicit missing-frame mask.",
+    "exclusions": [
+      "missing pinned split member or complex feature artifact",
+      "sequence-to-coordinate or annotation-to-residue mapping is non-unique",
+      "duplicate complex ID with conflicting payloads",
+      "empty antibody or antigen residue axis",
+      "non-finite sequence embedding",
+      "checkpoint or source digest mismatch"
+    ],
+    "label_source": "Use CHIMERA-provided epitope_residues and paratope_residues, cross-checked against contact_pairs and the documented 4.5-A contact cutoff. Any disagreement is quarantined, never resolved with model scores.",
+    "length_policy": "No score-dependent or post-hoc length exclusion. Evaluate one complex per batch with no preregistered sequence-length cap; deterministic OOM or unsupported length is reported as adapter failure and coverage loss.",
+    "mapping_failure_policy": "Fail closed per complex and publish every excluded complex ID with one score-independent reason before metrics are computed. If usable coverage is below 95% on either primary split, confirmatory interpretation is forbidden."
+  },
+  "evaluation": {
+    "bootstrap": {
+      "confidence": 0.95,
+      "group_key_priority": [
+        "official antigen cluster or fold group",
+        "sha256 of normalized antigen sequence"
+      ],
+      "replicates": 10000,
+      "resampling": "paired group bootstrap; both candidates and every seed stay paired",
+      "seed": 20260730
+    },
+    "ensemble": "Arithmetic mean of per-residue probabilities across seeds 17, 42, and 73; equal weights fixed before external access.",
+    "exploratory": {
+      "models": [
+        "sequence_local",
+        "distance",
+        "distance_direction",
+        "full_pose"
+      ],
+      "split": "epitope_group.test"
+    },
+    "multiplicity": "Holm correction across the two co-primary split-level hypotheses.",
+    "primary_comparison": "spatial_topology minus sequence_dense",
+    "primary_endpoint": "Mean per-complex epitope AUPRC difference of the fixed-final seed ensemble.",
+    "primary_splits": [
+      "temporal.test",
+      "antigen_fold.test"
+    ],
+    "secondary_endpoints": [
+      "mean per-complex paratope AUPRC difference",
+      "per-complex epitope and paratope AUROC",
+      "pooled epitope and paratope AUPRC and AUROC",
+      "precision, recall, F1, and MCC at the fixed threshold 0.5",
+      "AUPRC minus prevalence",
+      "coverage and all exclusion counts",
+      "development-best checkpoint ensembles, labeled secondary"
+    ],
+    "success_rule": "Support requires a positive paired difference with a 95% group-bootstrap lower bound above zero and Holm-adjusted two-sided p < 0.05 on a co-primary split. Otherwise report no confirmatory support for that split.",
+    "threshold_policy": "The 0.5 threshold is fixed and descriptive. No CHIMERA calibration, threshold search, early stopping, refit, or checkpoint selection is allowed."
+  },
+  "model": {
+    "artifact_manifest_sha256": "b5c05bbc1200804f246952c7ecb62fe03530203c3fadfbf98f72d150daf0430f",
+    "candidates": {
+      "sequence_dense": {
+        "17": {
+          "checkpoint_sha256": "cb085ed83ca0031120fb890afaa387b8f106c180b7641d9c4170d7aae102fb63",
+          "path": "/home/liyin/geometry-self-attention-20260729-v2/formal-matrix-20epoch-seeds17-42-73/seed_17/sequence_dense/sequence_dense_final.pt"
+        },
+        "42": {
+          "checkpoint_sha256": "c61cae2d29a2adbe30e036c679b9af73fb27428bbc776c9daa73000ebbd31eaa",
+          "path": "/home/liyin/geometry-self-attention-20260729-v2/formal-matrix-20epoch-seeds17-42-73/seed_42/sequence_dense/sequence_dense_final.pt"
+        },
+        "73": {
+          "checkpoint_sha256": "0813026a881ef99c6382c17528b64d411386a6798c320395100068750866f0d0",
+          "path": "/home/liyin/geometry-self-attention-20260729-v2/formal-matrix-20epoch-seeds17-42-73/seed_73/sequence_dense/sequence_dense_final.pt"
+        }
+      },
+      "spatial_topology": {
+        "17": {
+          "checkpoint_sha256": "83d8300026a33b76cfd12b5dbfc66f607d8a71f0fe406253567feda541740f20",
+          "path": "/home/liyin/geometry-self-attention-20260729-v2/formal-matrix-20epoch-seeds17-42-73/seed_17/spatial_topology/spatial_topology_final.pt"
+        },
+        "42": {
+          "checkpoint_sha256": "c844ac6d0254ba518051a9e72882bd4961356b6765bd519f15af16e2e3b7c797",
+          "path": "/home/liyin/geometry-self-attention-20260729-v2/formal-matrix-20epoch-seeds17-42-73/seed_42/spatial_topology/spatial_topology_final.pt"
+        },
+        "73": {
+          "checkpoint_sha256": "1af2af5c704c787b288d3910a45c1a1ed64de7482ced80376bcadb9ebb746875",
+          "path": "/home/liyin/geometry-self-attention-20260729-v2/formal-matrix-20epoch-seeds17-42-73/seed_73/spatial_topology/spatial_topology_final.pt"
+        }
+      }
+    },
+    "checkpoint_rule": "Fixed epoch 20 only for the primary comparison; no external selection.",
+    "parameter_count": 271670,
+    "postprocessor_source_archive_sha256": "c0efe0f90777ea1b7c10be33af11c3bdc1002b22cfba0504775f58df64c1db20",
+    "sequence_encoder": {
+      "embedding_dimension": 1280,
+      "embedding_format": "sppider_seq_embedding_v1",
+      "max_tokens": 1024,
+      "model": "facebook/esm2_t33_650M_UR50D",
+      "model_revision": "08e4846e537177426273712802403f7ba8261b6c",
+      "stride": 512
+    },
+    "structure_cache_manifest_sha256": "2580e41ced744ade8a16fa94ae4b9b22bda5e85b7477a71ae1344ed732bf3e6d",
+    "training_source_archive_sha256": "09dea8eaf9542bb336248d265dfe593e4176afb7ef78827cc6ba08c3e0e60c26"
+  },
+  "reporting": {
+    "must_publish": [
+      "protocol and all input/source/checkpoint SHA-256 digests",
+      "dataset materialization and normalization receipts",
+      "all eligible, evaluated, excluded, and failed counts by split",
+      "absolute candidate metrics and paired differences with intervals",
+      "uncorrected and Holm-adjusted p-values",
+      "overlap audit against SAbDab2 training/development sequences",
+      "full-set and overlap-excluded sensitivity analyses",
+      "negative or null results without changing the protocol"
+    ],
+    "prohibited": [
+      "using external scores to choose a geometry mode or checkpoint",
+      "calling this a frozen-test result if source admission remains incomplete",
+      "claiming improvement on the canonical CHIMERA generative-design task",
+      "hiding adapter exclusions, overlap, or failed complexes"
+    ]
+  },
+  "schema_version": "chimera_zero_shot_residue_interface_protocol_v1"
+}

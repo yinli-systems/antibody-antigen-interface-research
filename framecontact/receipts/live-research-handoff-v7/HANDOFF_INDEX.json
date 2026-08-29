@@ -1,0 +1,46 @@
+{
+  "claim_boundary": "Development-only delta handoff over authenticated v6. It adds descriptive dead/diffuse-bottleneck diagnostics to the corrected default-off counterfactual contact-lift candidate. No candidate GPU quality run, frozen test, official AsEP test, external-generalization, A100 model-quality, biological-benchmark, novelty, or state-of-the-art result is included.",
+  "files": {
+    "README.md": "82cca83dddfddbd8a26137c677eee1bd6492714d0f334c9426f3d98e5562ceb1",
+    "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "e0210f211165090e02d814797978e7f473383e2bf8098d142c1c40610b555204",
+    "docs/TEACHER_UPDATE_20260801_CONTACT_BOTTLENECK_AND_LIVE_EPOCH17.md": "61a9fcd765a0b4d8407dcee6e9e58a30038d99df12dfbb8f33c850aef9caceb2",
+    "receipts/double-cold-source-v17-final/ENGINEERING_RECEIPT.json": "09cf326db1fb484f199feff27b6bc668a41a823a27643e2bad16fab218fac396",
+    "receipts/double-cold-source-v17-final/FULL_PYTEST_WITH_DEPS.log": "6301c821d7a53f2cbf7ec65ef0960b0f0c7a5ef7322f283b293cc14c8641e61d",
+    "receipts/double-cold-source-v17-final/LOCAL_FULL_PYTEST.log": "aa21a738ad5f7586e9c8374d6a8587d8f494c7ca8e79b1eedbc968f1d9b16d9a",
+    "receipts/double-cold-source-v17-final/MANIFEST_BUILD.log": "83a0623c5d9ed0f852aa9e5945dc3db564309e67a96ddc7e22456621297ba6ba",
+    "receipts/double-cold-source-v17-final/POST_TEST_MANIFEST_VERIFY.json": "3b52ec1ad4de1ac045b41975d91150b577bd798131342be4381880556c58da78",
+    "receipts/double-cold-source-v17-final/SOURCE_MANIFEST.json": "a1b656b6cc45015aa89b0cd8925aa96d81c786ce80f53272ea6d3836ee287733",
+    "receipts/live-research-handoff-v6/HANDOFF_INDEX.json": "20b3628cd8b98f4bf8eeeaf89eff96c47cfd626cc21c1b57e09da6ce02902c8e"
+  },
+  "format_version": "framecontact_live_research_handoff_delta_v2",
+  "parent_handoff": {
+    "index_path": "receipts/live-research-handoff-v6/HANDOFF_INDEX.json",
+    "index_sha256": "20b3628cd8b98f4bf8eeeaf89eff96c47cfd626cc21c1b57e09da6ce02902c8e",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v6"
+  },
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v7",
+  "source_authority": {
+    "candidate_gpu_quality_run_available": false,
+    "local_regression": "298 passed, 0 failed in 17.77s",
+    "manifest_sha256": "a1b656b6cc45015aa89b0cd8925aa96d81c786ce80f53272ea6d3836ee287733",
+    "record_count": 528,
+    "remote_regression": "293 passed, 5 optional-Boltz skips, 0 failed in 78.00s",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v17",
+    "tree_sha256": "fa98415c6b4c5e3666e79bdedf6c3d85c14f2790c1fbb8d19e2d74d34fbe2c07"
+  },
+  "new_diagnostics": {
+    "selection_use": false,
+    "scopes": [
+      "antibody residue weights",
+      "antigen residue weights",
+      "pair contact lift"
+    ],
+    "values": [
+      "zero-total-weight count",
+      "positive-weight fraction",
+      "normalized entropy",
+      "effective support",
+      "top-1 mass fraction"
+    ]
+  }
+}

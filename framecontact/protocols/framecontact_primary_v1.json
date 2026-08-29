@@ -1,0 +1,162 @@
+{
+  "schema_version": "framecontact_primary_protocol_v1",
+  "protocol_status": "preregistered_before_framecontact_pair_training",
+  "frozen_on": "2026-07-30",
+  "project": {
+    "name": "FrameContact",
+    "title": "Geometry-aware Partner-specific Antibody-Antigen Modeling under Structural Novelty",
+    "confirmatory_claim": "Intra-chain local-frame geometry plus contact-gated cross-attention improves cognate-partner discrimination on unseen antigen folds, beyond sequence, topology, and marginal-surface priors."
+  },
+  "evidence_boundary_at_freeze": {
+    "framecontact_pair_training_started": false,
+    "new_antigen_fold_test_labels_accessed": false,
+    "new_external_test_predictions_accessed": false,
+    "existing_sabdab2_residue_ablation": "exploratory_prior_work",
+    "existing_chimera_residue_classification": "secondary_post_access_only",
+    "chimera_canonical_codesign": "not_yet_run",
+    "prohibited_claim": "No existing residue-only or post-access CHIMERA number is confirmatory evidence for FrameContact."
+  },
+  "hypothesis": {
+    "primary": "For structurally novel antigens, a cognate antibody-antigen pair receives a higher length-normalized predicted-contact compatibility score than a frozen panel of matched non-cognate partners.",
+    "mechanistic": "Local-frame intra-chain geometry improves the monomer representation, while explicit contact supervision provides an alignment-free bridge that gates cross-attention between independently framed monomers.",
+    "null": "Correct and matched wrong partners have equal expected compatibility margin after antigen-fold clustering."
+  },
+  "data": {
+    "development_source": "SAbDab2 authenticated structures and exact residue-pair labels",
+    "unit": "antibody-antigen complex",
+    "contact_label_source": "authoritative pairs.parquet only; residue marginals may not be inverted into pair labels",
+    "contact_candidate_set": "complete antibody-residue by antigen-residue Cartesian grid authenticated per instance",
+    "split": {
+      "name": "antigen_structure_novel_v1",
+      "roles": ["train", "validation", "test"],
+      "target_proportions": [0.70, 0.15, 0.15],
+      "grouping": "all instances sharing an antigen structural cluster remain in one role",
+      "structural_edge_rule": "max(query_normalized_tm_score,target_normalized_tm_score) >= 0.50",
+      "structural_search": "Foldseek easy-search with alignment-type 1, audited by reciprocal TM-score columns; TM-align or US-align spot-checks at the decision boundary",
+      "additional_hard_constraints": [
+        "zero exact antigen sequence overlap across roles",
+        "zero exact focal antibody sequence overlap across roles",
+        "zero PDB biological assembly identifier overlap across roles",
+        "no test role used for feature, architecture, threshold, calibration, checkpoint, or seed selection"
+      ],
+      "secondary_split": "double-cold antibody-cluster and antigen-structure-cluster split"
+    },
+    "negative_partner_panel": {
+      "size_per_query": 31,
+      "selection_time": "before model fitting from identifiers and training-free metadata only",
+      "exclusions": [
+        "cognate antigen",
+        "same antigen structural cluster",
+        "same exact antigen sequence",
+        "documented multi-specific cognate partner when known"
+      ],
+      "matching": [
+        "antigen length decile",
+        "available surface-residue-count decile",
+        "protein versus peptide antigen class"
+      ],
+      "tie_break": "ascending SHA-256 of query_instance_id, candidate_instance_id, and protocol seed"
+    }
+  },
+  "primary_endpoint": {
+    "name": "cluster_weighted_cognate_compatibility_margin",
+    "pair_score": "mean of the largest max(1,ceil(0.01 * candidate_pair_count)) validation-temperature-scaled contact probabilities",
+    "complex_estimand": "score(cognate_pair) - mean(score(each of 31 matched wrong partners))",
+    "aggregate": "mean of antigen-cluster means so large antigen families do not dominate",
+    "uncertainty": "10000-replicate antigen-cluster bootstrap with seed 20260730",
+    "success_rule": "lower bound of the two-sided 95% bootstrap confidence interval is greater than zero",
+    "supporting_retrieval_metrics": [
+      "top-1 cognate retrieval accuracy among 32 candidates",
+      "mean reciprocal rank",
+      "median cognate rank"
+    ]
+  },
+  "secondary_endpoints": {
+    "contact": [
+      "mean per-complex residue-pair AUPRC",
+      "pooled residue-pair AUPRC",
+      "residue-pair AUROC",
+      "precision and recall at validation-selected threshold",
+      "precision at true contact count"
+    ],
+    "marginals": [
+      "epitope mean per-complex and pooled AUPRC",
+      "paratope mean per-complex and pooled AUPRC",
+      "AUROC, precision, recall, F1, and MCC at validation-selected thresholds"
+    ],
+    "calibration": [
+      "Brier score",
+      "15-bin equal-width ECE",
+      "reliability diagram",
+      "validation-only temperature before and after calibration"
+    ],
+    "mechanism": [
+      "attention entropy per layer and head",
+      "CA spatial-neighbor attention mass lift over a uniform graph baseline",
+      "geometry-bias counterfactual total variation",
+      "geometry-path and cross-attention gate values"
+    ],
+    "partner_controls": [
+      "paratope AUPRC drop after antigen shuffle",
+      "epitope AUPRC drop after antibody shuffle",
+      "cognate compatibility margin by antigen length, epitope size, continuity, and fold cluster"
+    ]
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "maximize validation cluster-weighted cognate compatibility margin; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "temperature_and_thresholds": "fit once on validation predictions after checkpoint selection",
+    "early_stopping_patience": 20,
+    "maximum_epochs": 200,
+    "test_loading_time": "only after all five checkpoints, calibrators, thresholds, negative panels, and evaluation code hashes are frozen",
+    "reporting": "report every seed and the frozen five-seed ensemble; do not suppress failed or divergent seeds"
+  },
+  "architecture_matrix": [
+    "ESM dense sequence-only self-attention",
+    "sequence topology graph without coordinates",
+    "distance RBF geometry bias",
+    "distance plus local direction geometry bias",
+    "full relative pose geometry bias",
+    "dense plus zero-gated spatial full-pose path",
+    "FrameContact without cross-attention",
+    "FrameContact with contact-gated cross-attention",
+    "GVP baseline",
+    "EGNN baseline",
+    "IPA baseline",
+    "applicable Pairformer baseline with provenance-locked checkpoint or from-scratch control explicitly distinguished"
+  ],
+  "training_objective": {
+    "contact": "class-balanced BCE on authenticated cognate residue-pair labels",
+    "marginals": "separate class-balanced BCE for paratope and epitope labels",
+    "specificity": "softplus margin ranking loss on cognate versus matched wrong-partner compatibility; wrong pairs are not assigned fabricated all-zero contact labels",
+    "complex_weighting": "each complex has equal total loss weight before the four objective weights are applied",
+    "objective_weights_selected_on_validation": true
+  },
+  "interventions": [
+    "partner shuffle",
+    "geometry shuffle while preserving sequence and targets",
+    "independent local-frame corruption with fixed CA coordinates",
+    "degree-matched intra-chain neighbor graph rewiring",
+    "sequence-preserving coordinate perturbation at 0.25, 0.50, 1.00, and 2.00 angstrom standard deviation",
+    "independent global SE(3) transforms of antibody and antigen as a required invariance test"
+  ],
+  "external_evaluation": {
+    "frozen_external_test": "must be inaccessible to model selection and opened once through a receipt-gated scorer",
+    "chimera": "existing CHIMERA residue-classification outputs are secondary; final integration must run the canonical epitope-conditioned CDR sequence-structure co-design task",
+    "codesign_endpoints": [
+      "target-epitope contact precision and recall",
+      "off-target contact rate",
+      "CDR sequence recovery and diversity",
+      "CDR backbone RMSD",
+      "complex/interface confidence or DockQ when a reference complex exists",
+      "developability filters reported separately from binding specificity"
+    ]
+  },
+  "failure_and_claim_rules": [
+    "A residue AUPRC gain without positive cognate compatibility margin does not support partner specificity.",
+    "Attention weights are not reported as contact predictions unless an explicit contact head is evaluated.",
+    "One seed, three epochs, a development split, or a post-access split cannot support the confirmatory claim.",
+    "A model may be called geometry-aware after invariance tests, but not structurally generalizing until the Foldseek and reciprocal TM-score audit passes.",
+    "Canonical CHIMERA co-design performance is not inferred from residue classification."
+  ]
+}

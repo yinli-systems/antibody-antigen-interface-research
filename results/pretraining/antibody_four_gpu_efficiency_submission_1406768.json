@@ -1,0 +1,63 @@
+{
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Queued four-GPU real-OAS A/B/B/A efficiency and checkpoint-equivalence gate; submission is not a throughput result, MFU result, quality result, configuration promotion, production pretraining, downstream improvement, official-test result, or SOTA evidence",
+  "format_version": "antibody_four_gpu_efficiency_submission_v1",
+  "job": {
+    "job_id": 1406768,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_efficiency_67ec330_attempt_001",
+    "requested_gpus": 4,
+    "state_at_receipt": "PENDING",
+    "submit_time": "2026-08-15T09:42:27+08:00"
+  },
+  "preflight": {
+    "compiled_gate_file_sha256": "e1c933fdea5e7b58bdbc1f6d10b2b19420fdd462cd972f4e9faff0c316f0b61f",
+    "protocol_file_sha256": "d2fc5539102577b18f2ebeeebabd604742aab3f6797d2d13a40262ce1c790314",
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_efficiency_preflight_67ec330_attempt_001",
+    "safe_eager_gate_file_sha256": "e42f1b4e3ccde2541db14174feb55edeafc62b11a3357cb43c3233507b911fde"
+  },
+  "protocol": {
+    "crossover_run_order": [
+      "safe_eager_r1",
+      "compiled_r1",
+      "compiled_r2",
+      "safe_eager_r2"
+    ],
+    "global_residue_tokens_per_update": 131072,
+    "minimum_approximate_6n_mfu": 0.35,
+    "panel_indices_sha256": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec",
+    "panel_sample_count": 8192,
+    "updates_per_run": 600,
+    "warmup_updates_excluded": 100,
+    "world_size": 4
+  },
+  "recovery_prerequisite": {
+    "audit_file_sha256": "6678c74cbdf2ed17ea9880920fa174ca4feaf7a16097add4689632e30cb2dea0",
+    "audit_payload_sha256": "824a0ea02525e3efddc3b91000c00967d27171518eb7e8904272c5d2f79bab45",
+    "job_id": 1406729,
+    "passed": true
+  },
+  "runtime": {
+    "manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "manifest_path": "/ssd/scxi253/model_deployment/jobs/frontier_fsdp2_runtime_locks/frontier_torch213_runtime_20260730_attempt_007.json",
+    "schema_version": "frontier.runtime-manifest.v3"
+  },
+  "source": {
+    "auditor_sha256": "625770ee6af1b0f1d4d00549d29525d9a804f5f14b94dff1954527f7f2af399d",
+    "commit": "67ec330a73124ce7044647e1d6067e9f87b0e126",
+    "deployment_file_count": 499,
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-67ec330-attempt-001",
+    "freezer_sha256": "55132d451dc9362424fe9a55a5531d07ded2571f405b6c85f3042ca3950cdb9e",
+    "pipeline_sha256": "392b914c74c577d8ba9f224ef7e38072fcff3a5e2e566bf95f38ccd72105cd7f"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

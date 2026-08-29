@@ -1,0 +1,61 @@
+{
+  "format_version": "framecontact_ipa_memory_recovery_start_v1",
+  "recorded_at": "2026-07-31T06:32:11+08:00",
+  "amendment": {
+    "path": "protocols/framecontact_invariant_point_memory_amendment_v1.json",
+    "sha256": "c4d0d16d73bdb12e66d4c6cf79fb3c9d11089fa34b378472805b97f3da629c80",
+    "receipt_sha256": "030fd5eca8a71c246fa34a69dba2147e0d76df4d91f651aa5557fb77ce1c34b2"
+  },
+  "failure_evidence": {
+    "asep_original_array_job_id": 1342460,
+    "failed_array_tasks": [25, 26, 27, 28, 29],
+    "condition": "frozen_frame_ipa",
+    "seeds": [17, 42, 73, 101, 137],
+    "failure_class": "torch.OutOfMemoryError",
+    "failure_site": "InvariantPointHeadBias.forward naive six-dimensional relative-key/delta allocation",
+    "complete_run_receipts_created": 0,
+    "validation_metrics_used_to_design_fix": false
+  },
+  "sabdab2_preemption": {
+    "original_array_job_id": 1342688,
+    "pending_tasks_removed_before_start": [25, 26, 27, 28, 29],
+    "running_or_completed_non_ipa_tasks_changed": false,
+    "partial_output_directories_expected": false,
+    "reason": "prevent five already-predicted identical OOM failures before starting the hash-bound recovery source"
+  },
+  "source_recovery": {
+    "patched_source_sha256": "d029c6993a931844a45335617c7fee9039275ff8463bcff32bad7054b835b14e",
+    "original_source_sha256": "fc9443a70cdf62ef3c9d8b2ddc3a767692a23d8c07f291c22203f415f912dbc3",
+    "asep_remote_source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/source_ipa_memory_v1",
+    "asep_diff_boundary": "only the invariant-point source file differs; amendment files and standalone equivalence validator are additions",
+    "sabdab2_remote_source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab_source_ipa_memory_v1",
+    "sabdab2_source_manifest_sha256": "af2de918806513fab4a4599dd627fa0665dae61776510bed8e420977b0749676",
+    "sabdab2_source_tree_sha256": "a6cdf28e8bc206d84481057c8456b709b914630fc29906385f8b1274d32427d4",
+    "remote_sources_read_only_after_verification": true
+  },
+  "validation": {
+    "asep_recovery_tree_local_tests": "128 passed",
+    "sabdab2_recovery_tree_local_tests": "152 passed",
+    "deterministic_naive_value_equivalence": true,
+    "deterministic_naive_gradient_equivalence": true,
+    "standalone_validator_sha256": "5b1bb1fa8920b00fb1e4df4b258fff1673783630bf1543ffdd16b367c91cacc3",
+    "remote_asep_validator_passed": true,
+    "remote_test_dependency_boundary": "the runtime environment lacks pytest; full recovery-tree suites were run locally with the project test environment"
+  },
+  "recovery_execution": {
+    "asep_seed17_recovery_job_id": 1343050,
+    "asep_seed17_array_task": 25,
+    "asep_other_seed_recovery_job_id": 1343052,
+    "asep_other_seed_array_tasks": [26, 27, 28, 29],
+    "asep_other_seed_jobs_submitted": true,
+    "sabdab2_recovery_job_id": 1343053,
+    "sabdab2_recovery_array_tasks": [25, 26, 27, 28, 29],
+    "sabdab2_recovery_jobs_submitted": true,
+    "resource_gate": "remaining recovery tasks were submitted only after seed-17 ran for 4 minutes 55 seconds, beyond every original 1 minute 38 second to 3 minute 6 second OOM failure"
+  },
+  "test_authority": {
+    "sabdab2_frozen_test_opened": false,
+    "asep_official_test_opened": false
+  },
+  "claim_boundary": "Development-task recovery start only. No completed recovery result, frozen-test, A100, external-generalization, benchmark-improvement, or state-of-the-art claim is authorized."
+}
