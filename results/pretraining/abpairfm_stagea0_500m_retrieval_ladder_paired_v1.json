@@ -1,0 +1,294 @@
+{
+  "authorization": {
+    "development_only": true,
+    "test_access": false
+  },
+  "claim_boundary": "Paired comparison of frozen development retrieval predictions. Scores from different model families are used only for within-panel ranking; no probability calibration or test claim.",
+  "format_version": "abpairfm_retrieval_ladder_analysis_v1",
+  "inputs": {
+    "base_esm2_3b": {
+      "asep": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_checkpoint_transfer_probe_v1/base-esm2-3b-full/asep.predictions.jsonl",
+        "sha256": "66396549e6d0d643ffbbc44a627f5c4c8fea85d92da93333735757bd140e86b0",
+        "size_bytes": 4706495
+      },
+      "sabdab2": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_checkpoint_transfer_probe_v1/base-esm2-3b-full/sabdab2.predictions.jsonl",
+        "sha256": "8cd5bb3e3bb1319478345bb1e397d1e6e07e620cd9516c1ad776744a5a16df34",
+        "size_bytes": 15952474
+      }
+    },
+    "mint": {
+      "asep": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/baselines/mint_development_retrieval_v1/asep/predictions.jsonl",
+        "sha256": "fe98191aa0d16fddb0e0049e36df54ed128c22e1ba62ebb0a9506235e15518d1",
+        "size_bytes": 4321376
+      },
+      "sabdab2": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/baselines/mint_development_retrieval_v1/sabdab2/predictions.jsonl",
+        "sha256": "8e86ba2f4cb15abadad970e0977abc50da053028bce303543ca602ba77776dc3",
+        "size_bytes": 14703773
+      }
+    },
+    "pplm": {
+      "asep": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/baselines/pplm_development_retrieval_v1/asep/predictions.jsonl",
+        "sha256": "1d20b855425b7f9986e22e0a42764eb8cd1ab3aeedca8ea331ba00db617c5d82",
+        "size_bytes": 4516731
+      },
+      "sabdab2": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/baselines/pplm_development_retrieval_v1/sabdab2/predictions.jsonl",
+        "sha256": "2dfe7cd7ce91244eb3b35f1a4fa4abb78abd4e0561b281292c24f10b916c413d",
+        "size_bytes": 15330729
+      }
+    },
+    "stagea0_250m": {
+      "asep": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_checkpoint_transfer_probe_v1/stagea0-250m-full/asep.predictions.jsonl",
+        "sha256": "935394ef7b815b847b586820e365b08a06c124ad13d2ebc1abd85322ef6c8de8",
+        "size_bytes": 4705287
+      },
+      "sabdab2": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_checkpoint_transfer_probe_v1/stagea0-250m-full/sabdab2.predictions.jsonl",
+        "sha256": "025fdf589219078471969b2251ab60259ad831541d0ba1f28f553957e7f88a0b",
+        "size_bytes": 15947409
+      }
+    },
+    "stagea0_500m": {
+      "asep": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_checkpoint_transfer_probe_v1/stagea0-500m-full/asep.predictions.jsonl",
+        "sha256": "839438d74363ca23b90030491db70d6fbbd9b7b327a0ea894aa2a24be175cbcb",
+        "size_bytes": 4705531
+      },
+      "sabdab2": {
+        "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_checkpoint_transfer_probe_v1/stagea0-500m-full/sabdab2.predictions.jsonl",
+        "sha256": "40bf152ca35223cae37c0ed0582221d050d993fcffb9c2f90132db119f2062ba",
+        "size_bytes": 15947879
+      }
+    }
+  },
+  "models": {
+    "asep": {
+      "base_esm2_3b": {
+        "canonical_exact_pair_count": 170,
+        "mrr": 0.13222867334431104,
+        "recall_at_1": 0.026470588235294117
+      },
+      "mint": {
+        "canonical_exact_pair_count": 170,
+        "mrr": 0.13700585894362746,
+        "recall_at_1": 0.041176470588235294
+      },
+      "pplm": {
+        "canonical_exact_pair_count": 170,
+        "mrr": 0.12416839365708186,
+        "recall_at_1": 0.029411764705882353
+      },
+      "stagea0_250m": {
+        "canonical_exact_pair_count": 170,
+        "mrr": 0.12702878162660075,
+        "recall_at_1": 0.026470588235294117
+      },
+      "stagea0_500m": {
+        "canonical_exact_pair_count": 170,
+        "mrr": 0.15019263232841165,
+        "recall_at_1": 0.052941176470588235
+      }
+    },
+    "sabdab2": {
+      "base_esm2_3b": {
+        "canonical_exact_pair_count": 413,
+        "mrr": 0.1688601533718239,
+        "recall_at_1": 0.04600484261501211
+      },
+      "mint": {
+        "canonical_exact_pair_count": 413,
+        "mrr": 0.2136005583449275,
+        "recall_at_1": 0.09140435835351089
+      },
+      "pplm": {
+        "canonical_exact_pair_count": 413,
+        "mrr": 0.2128885152827403,
+        "recall_at_1": 0.09079903147699758
+      },
+      "stagea0_250m": {
+        "canonical_exact_pair_count": 413,
+        "mrr": 0.17885538370006385,
+        "recall_at_1": 0.05508474576271186
+      },
+      "stagea0_500m": {
+        "canonical_exact_pair_count": 413,
+        "mrr": 0.1815846515218344,
+        "recall_at_1": 0.06053268765133172
+      }
+    }
+  },
+  "paired_deltas": {
+    "asep": {
+      "base_esm2_3b": {
+        "mrr": {
+          "ci95": [
+            -0.012710508084480838,
+            0.049716099192670234
+          ],
+          "delta_reference_minus_comparator": 0.017963958984100584,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.8719
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.0058823529411764705,
+            0.058823529411764705
+          ],
+          "delta_reference_minus_comparator": 0.026470588235294117,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.937
+        }
+      },
+      "mint": {
+        "mrr": {
+          "ci95": [
+            -0.024507300873774413,
+            0.05149046779315133
+          ],
+          "delta_reference_minus_comparator": 0.013186773384784184,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.7447
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.023529411764705882,
+            0.047058823529411764
+          ],
+          "delta_reference_minus_comparator": 0.011764705882352941,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.7008
+        }
+      },
+      "pplm": {
+        "mrr": {
+          "ci95": [
+            -0.008993768784270837,
+            0.06215298682470809
+          ],
+          "delta_reference_minus_comparator": 0.026024238671329785,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.9246
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.011764705882352941,
+            0.058823529411764705
+          ],
+          "delta_reference_minus_comparator": 0.023529411764705882,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.8925
+        }
+      },
+      "stagea0_250m": {
+        "mrr": {
+          "ci95": [
+            -0.011802634223807416,
+            0.059775581189894296
+          ],
+          "delta_reference_minus_comparator": 0.023163850701810897,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.8998
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.008823529411764706,
+            0.061764705882352944
+          ],
+          "delta_reference_minus_comparator": 0.026470588235294117,
+          "paired_unit_count": 170,
+          "probability_delta_gt_zero": 0.9244
+        }
+      }
+    },
+    "sabdab2": {
+      "base_esm2_3b": {
+        "mrr": {
+          "ci95": [
+            -0.005957967611839697,
+            0.031946744234119466
+          ],
+          "delta_reference_minus_comparator": 0.012724498150010498,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.9033
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.0036319612590799033,
+            0.033292978208232446
+          ],
+          "delta_reference_minus_comparator": 0.014527845036319613,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.9341
+        }
+      },
+      "mint": {
+        "mrr": {
+          "ci95": [
+            -0.05832510102112566,
+            -0.005462412490268759
+          ],
+          "delta_reference_minus_comparator": -0.03201590682309312,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.0081
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.056295399515738496,
+            -0.005447941888619854
+          ],
+          "delta_reference_minus_comparator": -0.030871670702179176,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.0062
+        }
+      },
+      "pplm": {
+        "mrr": {
+          "ci95": [
+            -0.05664096913226629,
+            -0.005504005371781233
+          ],
+          "delta_reference_minus_comparator": -0.03130386376090588,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.0082
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.056295399515738496,
+            -0.00423728813559322
+          ],
+          "delta_reference_minus_comparator": -0.03026634382566586,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.0106
+        }
+      },
+      "stagea0_250m": {
+        "mrr": {
+          "ci95": [
+            -0.019663288294985204,
+            0.02520776128624369
+          ],
+          "delta_reference_minus_comparator": 0.002729267821770538,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.5959
+        },
+        "recall_at_1": {
+          "ci95": [
+            -0.015738498789346248,
+            0.026634382566585957
+          ],
+          "delta_reference_minus_comparator": 0.005447941888619854,
+          "paired_unit_count": 413,
+          "probability_delta_gt_zero": 0.6847
+        }
+      }
+    }
+  },
+  "reference": "stagea0_500m",
+  "status": "PASS_PAIRED_DEVELOPMENT_ANALYSIS"
+}

@@ -1,0 +1,587 @@
+--- a/src/interaction_first/framecontact.py
++++ b/src/interaction_first/framecontact.py
+@@ -271,8 +271,100 @@
+         pair_mask: Any,
+     ) -> Any:
+         return self.components(antibody, antigen, pair_mask)["logits"]
++
+ 
++class BidirectionalPairContactHead(_ModuleBase):
++    """Average two explicitly directional pair decoders on one candidate grid."""
++
++    def __init__(self, d_model: int, pair_dim: int | None = None) -> None:
++        _require_torch()
++        super().__init__()
++        self.directional = PairContactHead(d_model, pair_dim)
+ 
++    def components(
++        self,
++        antibody: Any,
++        antigen: Any,
++        pair_mask: Any,
++    ) -> dict[str, Any]:
++        forward = self.directional.components(antibody, antigen, pair_mask)
++        reverse_raw = self.directional.components(
++            antigen, antibody, pair_mask.transpose(1, 2)
++        )
++        reverse_logits = reverse_raw["logits"].transpose(1, 2)
++        reverse_interaction = reverse_raw["interaction_logits"].transpose(1, 2)
++        reverse_antibody_unary = reverse_raw["antigen_unary_logits"].transpose(1, 2)
++        reverse_antigen_unary = reverse_raw["antibody_unary_logits"].transpose(1, 2)
++        return {
++            "logits": 0.5 * (forward["logits"] + reverse_logits),
++            "interaction_logits": 0.5
++            * (forward["interaction_logits"] + reverse_interaction),
++            "antibody_unary_logits": 0.5
++            * (forward["antibody_unary_logits"] + reverse_antibody_unary),
++            "antigen_unary_logits": 0.5
++            * (forward["antigen_unary_logits"] + reverse_antigen_unary),
++            "contact_bias": 0.5
++            * (forward["contact_bias"] + reverse_raw["contact_bias"]),
++        }
++
++    def forward(
++        self,
++        antibody: Any,
++        antigen: Any,
++        pair_mask: Any,
++    ) -> Any:
++        return self.components(antibody, antigen, pair_mask)["logits"]
++
++
++class PairDistanceBinHead(_ModuleBase):
++    """Predict cross-chain distance classes from residue representations only."""
++
++    def __init__(
++        self,
++        d_model: int,
++        *,
++        num_bins: int = 5,
++        pair_dim: int | None = None,
++    ) -> None:
++        _require_torch()
++        super().__init__()
++        d_model = _positive_integer(d_model, "d_model")
++        self.num_bins = _positive_integer(num_bins, "num_bins")
++        pair_dim = d_model if pair_dim is None else _positive_integer(pair_dim, "pair_dim")
++        self.pair_dim = pair_dim
++        self.antibody_norm = nn.LayerNorm(d_model)
++        self.antigen_norm = nn.LayerNorm(d_model)
++        self.antibody_query = nn.Linear(d_model, self.num_bins * pair_dim, bias=False)
++        self.antigen_key = nn.Linear(d_model, self.num_bins * pair_dim, bias=False)
++        self.antibody_unary = nn.Linear(d_model, self.num_bins)
++        self.antigen_unary = nn.Linear(d_model, self.num_bins)
++        self.bin_bias = nn.Parameter(torch.zeros(self.num_bins))
++
++    def forward(
++        self,
++        antibody: Any,
++        antigen: Any,
++        pair_mask: Any,
++    ) -> Any:
++        batch_size, antibody_count, _ = antibody.shape
++        antigen_count = int(antigen.shape[1])
++        query = self.antibody_query(self.antibody_norm(antibody)).view(
++            batch_size, antibody_count, self.num_bins, self.pair_dim
++        )
++        key = self.antigen_key(self.antigen_norm(antigen)).view(
++            batch_size, antigen_count, self.num_bins, self.pair_dim
++        )
++        logits = torch.einsum("bikd,bjkd->bijk", query, key)
++        logits = logits / math.sqrt(self.pair_dim)
++        logits = (
++            logits
++            + self.antibody_unary(antibody)[:, :, None, :]
++            + self.antigen_unary(antigen)[:, None, :, :]
++            + self.bin_bias
++        )
++        return logits.masked_fill(~pair_mask[..., None], 0.0)
++
++
+ class ContactGatedCrossAttention(_ModuleBase):
+     """One directional cross-attention update controlled by contact logits."""
+ 
+@@ -482,6 +574,9 @@
+         dropout: float = 0.1,
+         fusion_mode: str = "late",
+         cross_attention_contact_gate_mode: str = "learned",
++        adapter_mode: str = "framecontact",
++        distance_bin_count: int = 0,
++        contrastive_dim: int = 64,
+     ) -> None:
+         _require_torch()
+         super().__init__()
+@@ -491,7 +586,14 @@
+         num_self_layers = _positive_integer(num_self_layers, "num_self_layers")
+         if fusion_mode not in {"late", "interleaved"}:
+             raise ValueError("fusion_mode must be 'late' or 'interleaved'")
++        if adapter_mode not in {
++            "framecontact",
++            "epiformer_style_same_protocol",
++            "mipe_style_same_protocol",
++        }:
++            raise ValueError("unknown same-protocol adapter mode")
+         self.fusion_mode = fusion_mode
++        self.adapter_mode = adapter_mode
+         self.antibody_projection = nn.Sequential(
+             nn.LayerNorm(antibody_input_dim), nn.Linear(antibody_input_dim, d_model)
+         )
+@@ -538,7 +640,31 @@
+                 )
+                 for _ in range(num_self_layers)
+             )
+-        self.contact_head = PairContactHead(d_model, pair_dim)
++        self.contact_head = (
++            BidirectionalPairContactHead(d_model, pair_dim)
++            if adapter_mode == "epiformer_style_same_protocol"
++            else PairContactHead(d_model, pair_dim)
++        )
++        self.distance_bin_head = (
++            PairDistanceBinHead(
++                d_model,
++                num_bins=_positive_integer(distance_bin_count, "distance_bin_count"),
++                pair_dim=pair_dim,
++            )
++            if distance_bin_count
++            else None
++        )
++        if adapter_mode == "mipe_style_same_protocol":
++            contrastive_dim = _positive_integer(contrastive_dim, "contrastive_dim")
++            self.antibody_sequence_contrastive = nn.Linear(d_model, contrastive_dim)
++            self.antibody_geometry_contrastive = nn.Linear(d_model, contrastive_dim)
++            self.antigen_sequence_contrastive = nn.Linear(d_model, contrastive_dim)
++            self.antigen_geometry_contrastive = nn.Linear(d_model, contrastive_dim)
++        else:
++            self.antibody_sequence_contrastive = None
++            self.antibody_geometry_contrastive = None
++            self.antigen_sequence_contrastive = None
++            self.antigen_geometry_contrastive = None
+         self.cross_attention = (
+             BidirectionalContactGatedCrossAttention(
+                 d_model,
+@@ -590,6 +716,8 @@
+         antigen_mask = batch["antigen_mask"]
+         antibody = self.antibody_projection(batch["antibody_features"])
+         antigen = self.antigen_projection(batch["antigen_features"])
++        antibody_sequence_view = antibody
++        antigen_sequence_view = antigen
+         _validate_residue_stream(
+             antibody,
+             antibody_mask,
+@@ -742,6 +870,13 @@
+             antibody_fused, antigen_fused, pair_mask
+         )
+         contact_logits = contact_components["logits"]
++        distance_bin_logits = (
++            None
++            if self.distance_bin_head is None
++            else self.distance_bin_head(antibody_fused, antigen_fused, pair_mask)
++        )
++        antibody_geometry_view = antibody_fused
++        antigen_geometry_view = antigen_fused
+         antibody_fused = self.antibody_norm(antibody_fused).masked_fill(
+             ~antibody_mask[..., None], 0.0
+         )
+@@ -752,12 +887,16 @@
+         epitope_contact = masked_logmeanexp(contact_logits, pair_mask, dim=1)
+         paratope_logits = self.paratope_head(antibody_fused).squeeze(-1)
+         epitope_logits = self.epitope_head(antigen_fused).squeeze(-1)
+-        paratope_logits = paratope_logits + torch.tanh(
+-            self.paratope_contact_gate
+-        ) * paratope_contact
+-        epitope_logits = epitope_logits + torch.tanh(
+-            self.epitope_contact_gate
+-        ) * epitope_contact
++        if self.adapter_mode == "epiformer_style_same_protocol":
++            paratope_logits = paratope_logits + paratope_contact
++            epitope_logits = epitope_logits + epitope_contact
++        else:
++            paratope_logits = paratope_logits + torch.tanh(
++                self.paratope_contact_gate
++            ) * paratope_contact
++            epitope_logits = epitope_logits + torch.tanh(
++                self.epitope_contact_gate
++            ) * epitope_contact
+         paratope_logits = paratope_logits.masked_fill(~antibody_mask, 0.0)
+         epitope_logits = epitope_logits.masked_fill(~antigen_mask, 0.0)
+         return {
+@@ -767,6 +906,7 @@
+             ],
+             "intermediate_contact_logits": intermediate_contact_logits,
+             "contact_logits": contact_logits,
++            "distance_bin_logits": distance_bin_logits,
+             "contact_interaction_logits": contact_components["interaction_logits"],
+             "antibody_contact_propensity_logits": contact_components[
+                 "antibody_unary_logits"
+@@ -784,15 +924,36 @@
+             "self_attention_details": self_details,
+             "cross_attention_details": cross_details,
+             "fusion_mode": self.fusion_mode,
++            "adapter_mode": self.adapter_mode,
++            "contrastive_views": (
++                {
++                    "antibody_sequence": self.antibody_sequence_contrastive(
++                        antibody_sequence_view
++                    ),
++                    "antibody_geometry": self.antibody_geometry_contrastive(
++                        antibody_geometry_view
++                    ),
++                    "antigen_sequence": self.antigen_sequence_contrastive(
++                        antigen_sequence_view
++                    ),
++                    "antigen_geometry": self.antigen_geometry_contrastive(
++                        antigen_geometry_view
++                    ),
++                }
++                if self.adapter_mode == "mipe_style_same_protocol"
++                else None
++            ),
+         }
+ 
+ 
+ __all__ = [
+     "BidirectionalContactGatedCrossAttention",
++    "BidirectionalPairContactHead",
+     "ContactGatedCrossAttention",
+     "DualFactorizedIntraChainEncoder",
+     "FactorizedIntraChainEncoder",
+     "FrameContactModel",
+     "PairContactHead",
++    "PairDistanceBinHead",
+     "masked_logmeanexp",
+ ]
+--- a/src/interaction_first/framecontact_objective.py
++++ b/src/interaction_first/framecontact_objective.py
+@@ -79,6 +79,77 @@
+     return torch_module.stack(losses).mean()
+ 
+ 
++def balanced_multiclass_loss_per_complex(
++    logits: Any,
++    labels: Any,
++    mask: Any,
++) -> Any:
++    """Give every complex and every observed distance class equal mass."""
++    torch_module = _require_torch()
++    if logits.ndim != labels.ndim + 1 or tuple(logits.shape[:-1]) != tuple(labels.shape):
++        raise ValueError("multiclass logits must add one class axis to labels")
++    if tuple(labels.shape) != tuple(mask.shape) or mask.dtype != torch_module.bool:
++        raise ValueError("multiclass labels and boolean mask must align")
++    if not bool((((labels >= 0) & (labels < logits.shape[-1])) | ~mask).all()):
++        raise ValueError("observed multiclass labels are out of range")
++    losses = []
++    for batch_index in range(int(logits.shape[0])):
++        local_mask = mask[batch_index]
++        observed_logits = logits[batch_index][local_mask]
++        observed_labels = labels[batch_index][local_mask].long()
++        if observed_labels.numel() == 0:
++            raise ValueError("each complex must contain an observed distance label")
++        per_item = functional.cross_entropy(
++            observed_logits, observed_labels, reduction="none"
++        )
++        class_losses = [
++            per_item[observed_labels == class_index].mean()
++            for class_index in range(int(logits.shape[-1]))
++            if bool((observed_labels == class_index).any())
++        ]
++        losses.append(torch_module.stack(class_losses).mean())
++    return torch_module.stack(losses).mean()
++
++
++def residue_contrastive_alignment_loss(
++    sequence_view: Any,
++    geometry_view: Any,
++    mask: Any,
++    *,
++    temperature: float = 0.1,
++    maximum_residues: int = 256,
++) -> Any:
++    """Symmetric InfoNCE between matched sequence and geometry residue views."""
++    torch_module = _require_torch()
++    if (
++        tuple(sequence_view.shape) != tuple(geometry_view.shape)
++        or tuple(sequence_view.shape[:2]) != tuple(mask.shape)
++        or mask.dtype != torch_module.bool
++    ):
++        raise ValueError("contrastive residue views and mask must align")
++    sequence = sequence_view[mask]
++    geometry = geometry_view[mask]
++    if sequence.shape[0] > maximum_residues:
++        indices = torch_module.linspace(
++            0,
++            sequence.shape[0] - 1,
++            steps=maximum_residues,
++            device=sequence.device,
++        ).round().long()
++        sequence = sequence[indices]
++        geometry = geometry[indices]
++    if sequence.shape[0] < 2:
++        raise ValueError("contrastive alignment requires at least two residues")
++    sequence = functional.normalize(sequence.float(), dim=-1)
++    geometry = functional.normalize(geometry.float(), dim=-1)
++    similarity = sequence @ geometry.transpose(0, 1) / float(temperature)
++    targets = torch_module.arange(similarity.shape[0], device=similarity.device)
++    return 0.5 * (
++        functional.cross_entropy(similarity, targets)
++        + functional.cross_entropy(similarity.transpose(0, 1), targets)
++    )
++
++
+ def soft_dice_loss_per_complex(logits: Any, labels: Any, mask: Any) -> Any:
+     """Soft Dice on each complex, then equal-complex averaging."""
+     torch_module = _require_torch()
+@@ -156,6 +227,8 @@
+     paratope: float = 0.25
+     epitope: float = 0.25
+     specificity: float = 0.25
++    distance: float = 0.0
++    contrastive: float = 0.0
+ 
+     def validate(self) -> None:
+         for name, value in self.__dict__.items():
+@@ -178,6 +251,9 @@
+         contact_focal_gamma: float = 0.0,
+         epitope_dice_weight: float = 0.0,
+         epitope_count_weight: float = 0.0,
++        distance_boundaries: tuple[float, ...] = (4.0, 8.0, 16.0, 32.0),
++        contrastive_temperature: float = 0.1,
++        contrastive_maximum_residues: int = 256,
+     ) -> None:
+         _require_torch()
+         super().__init__()
+@@ -204,6 +280,24 @@
+         self.contact_focal_gamma = float(contact_focal_gamma)
+         self.epitope_dice_weight = float(epitope_dice_weight)
+         self.epitope_count_weight = float(epitope_count_weight)
++        if (
++            not distance_boundaries
++            or any(not math.isfinite(float(value)) for value in distance_boundaries)
++            or any(
++                left >= right
++                for left, right in zip(
++                    distance_boundaries, distance_boundaries[1:], strict=False
++                )
++            )
++        ):
++            raise ValueError("distance boundaries must be finite and strictly increasing")
++        if not math.isfinite(contrastive_temperature) or contrastive_temperature <= 0:
++            raise ValueError("contrastive temperature must be positive")
++        if contrastive_maximum_residues < 2:
++            raise ValueError("contrastive maximum residues must be at least two")
++        self.distance_boundaries = tuple(float(value) for value in distance_boundaries)
++        self.contrastive_temperature = float(contrastive_temperature)
++        self.contrastive_maximum_residues = int(contrastive_maximum_residues)
+ 
+     def _specificity_logits(self, output: Mapping[str, Any]) -> Any:
+         if self.specificity_score_source == "total_contact":
+@@ -256,6 +350,61 @@
+             + self.epitope_dice_weight * epitope_dice_loss
+             + self.epitope_count_weight * epitope_count_loss
+         )
++        if self.weights.distance:
++            distance_logits = cognate_output.get("distance_bin_logits")
++            if distance_logits is None:
++                raise ValueError("distance-weighted training requires distance_bin_logits")
++            required_distance_inputs = (
++                "antibody_backbone",
++                "antigen_backbone",
++                "antibody_frame_valid_mask",
++                "antigen_frame_valid_mask",
++            )
++            if any(key not in cognate_batch for key in required_distance_inputs):
++                raise ValueError("distance labels require authenticated backbone geometry")
++            with torch.no_grad(), torch.autocast(
++                device_type=cognate_batch["antibody_backbone"].device.type,
++                enabled=False,
++            ):
++                antibody_ca = cognate_batch["antibody_backbone"][..., 1, :].float()
++                antigen_ca = cognate_batch["antigen_backbone"][..., 1, :].float()
++                distances = torch.cdist(antibody_ca, antigen_ca)
++                distance_labels = torch.bucketize(
++                    distances,
++                    distances.new_tensor(self.distance_boundaries),
++                )
++            distance_mask = (
++                cognate_output["pair_candidate_mask"]
++                & cognate_batch["antibody_frame_valid_mask"][:, :, None]
++                & cognate_batch["antigen_frame_valid_mask"][:, None, :]
++            )
++            distance_loss = balanced_multiclass_loss_per_complex(
++                distance_logits, distance_labels, distance_mask
++            )
++        else:
++            distance_loss = contact_loss.new_zeros(())
++        if self.weights.contrastive:
++            views = cognate_output.get("contrastive_views")
++            if views is None:
++                raise ValueError("contrastive training requires sequence/geometry views")
++            contrastive_loss = 0.5 * (
++                residue_contrastive_alignment_loss(
++                    views["antibody_sequence"],
++                    views["antibody_geometry"],
++                    cognate_output["antibody_mask"],
++                    temperature=self.contrastive_temperature,
++                    maximum_residues=self.contrastive_maximum_residues,
++                )
++                + residue_contrastive_alignment_loss(
++                    views["antigen_sequence"],
++                    views["antigen_geometry"],
++                    cognate_output["antigen_mask"],
++                    temperature=self.contrastive_temperature,
++                    maximum_residues=self.contrastive_maximum_residues,
++                )
++            )
++        else:
++            contrastive_loss = contact_loss.new_zeros(())
+         if wrong_partner_output is not None and wrong_partner_outputs is not None:
+             raise ValueError(
+                 "provide wrong_partner_output or wrong_partner_outputs, not both"
+@@ -305,6 +454,8 @@
+             + self.weights.paratope * paratope_loss
+             + self.weights.epitope * epitope_loss
+             + self.weights.specificity * specificity_loss
++            + self.weights.distance * distance_loss
++            + self.weights.contrastive * contrastive_loss
+         )
+         return {
+             "loss": total,
+@@ -315,6 +466,8 @@
+             "epitope_dice_loss": epitope_dice_loss,
+             "epitope_count_loss": epitope_count_loss,
+             "specificity_loss": specificity_loss,
++            "distance_loss": distance_loss,
++            "contrastive_loss": contrastive_loss,
+             "mean_cognate_compatibility": cognate_score.mean(),
+             "mean_wrong_compatibility": (
+                 None if wrong_score is None else wrong_score.mean()
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -61,7 +61,7 @@
+ from interaction_first.source_manifest import verify_source_manifest  # noqa: E402
+ 
+ 
+-RESULT_FORMAT = "framecontact_development_training_v1"
++RESULT_FORMAT = "framecontact_same_protocol_adapter_development_v2"
+ EXPERIMENTS = {
+     "sequence_dense": {
+         "geometry_feature_mode": "none",
+@@ -126,11 +126,43 @@
+         "geometry": True,
+         "cross": True,
+         "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
++    },
++    "framecontact_distance_aux": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
++        "adapter_mode": "framecontact",
++        "distance_bin_count": 5,
++    },
++    "epiformer_style_same_protocol": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
++        "adapter_mode": "epiformer_style_same_protocol",
++        "distance_bin_count": 5,
++    },
++    "mipe_style_same_protocol": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "late",
+         "cross_attention_contact_gate_mode": "content_only",
++        "adapter_mode": "mipe_style_same_protocol",
++        "distance_bin_count": 0,
+     },
+ }
+ for _experiment in EXPERIMENTS.values():
+     _experiment.setdefault("cross_attention_contact_gate_mode", "learned")
++    _experiment.setdefault("adapter_mode", "framecontact")
++    _experiment.setdefault("distance_bin_count", 0)
+ 
+ 
+ def _sigmoid_numpy(values: np.ndarray) -> np.ndarray:
+@@ -194,6 +226,11 @@
+     parser.add_argument("--contact-focal-gamma", type=float, default=0.0)
+     parser.add_argument("--epitope-dice-weight", type=float, default=0.0)
+     parser.add_argument("--epitope-count-weight", type=float, default=0.0)
++    parser.add_argument("--distance-loss-weight", type=float, default=0.0)
++    parser.add_argument("--contrastive-loss-weight", type=float, default=0.0)
++    parser.add_argument("--contrastive-temperature", type=float, default=0.1)
++    parser.add_argument("--contrastive-maximum-residues", type=int, default=256)
++    parser.add_argument("--contrastive-dim", type=int, default=64)
+     parser.add_argument("--calibration-max-pairs", type=int, default=2_000_000)
+     parser.add_argument(
+         "--offload-saved-tensors",
+@@ -250,6 +287,8 @@
+             "epitope_logits",
+             "antibody_mask",
+             "antigen_mask",
++            "distance_bin_logits",
++            "contrastive_views",
+         )
+     }
+ 
+@@ -890,11 +929,15 @@
+             for value in retrieval_by_direction.values()
+         )
+         if retrieval_by_direction
+-        else float("nan")
++        else float(np.mean(residue["epitope"]["per_complex_auprc"]))
+     )
+     result: dict[str, Any] = {
+         "selection_metric": selection_metric,
+-        "selection_metric_rule": "minimum_direction_cluster_weighted_margin",
++        "selection_metric_rule": (
++            "minimum_direction_cluster_weighted_margin"
++            if retrieval_by_direction
++            else "epitope_mean_per_complex_auprc"
++        ),
+         "specificity_score_source": specificity_score_source,
+         "specificity_temperature": specificity_temperature,
+         "validation_temperature": temperature,
+@@ -1006,6 +1049,8 @@
+     specification = EXPERIMENTS[experiment]
+     if model.fusion_mode != specification["fusion_mode"]:
+         raise ValueError("model fusion mode differs from the experiment specification")
++    if model.adapter_mode != specification["adapter_mode"]:
++        raise ValueError("model adapter mode differs from the experiment specification")
+     if model.fusion_mode == "late":
+         assert model.self_encoder is not None and model.cross_attention is not None
+         self_encoders = (model.self_encoder,)
+@@ -1059,6 +1104,9 @@
+         cross_attention_contact_gate_mode=EXPERIMENTS[experiment][
+             "cross_attention_contact_gate_mode"
+         ],
++        adapter_mode=EXPERIMENTS[experiment]["adapter_mode"],
++        distance_bin_count=int(EXPERIMENTS[experiment]["distance_bin_count"]),
++        contrastive_dim=int(configuration["contrastive_dim"]),
+     )
+     _configure_experiment(model, experiment)
+     return model
+@@ -1183,6 +1231,8 @@
+         paratope=arguments.paratope_loss_weight,
+         epitope=arguments.epitope_loss_weight,
+         specificity=arguments.specificity_loss_weight,
++        distance=arguments.distance_loss_weight,
++        contrastive=arguments.contrastive_loss_weight,
+     )
+     specificity_score_source = str(
+         protocol.get("training_objective", {}).get(
+@@ -1197,6 +1247,8 @@
+         contact_focal_gamma=arguments.contact_focal_gamma,
+         epitope_dice_weight=arguments.epitope_dice_weight,
+         epitope_count_weight=arguments.epitope_count_weight,
++        contrastive_temperature=arguments.contrastive_temperature,
++        contrastive_maximum_residues=arguments.contrastive_maximum_residues,
+     )
+     optimizer = torch.optim.AdamW(
+         model.parameters(), lr=arguments.learning_rate, weight_decay=arguments.weight_decay

@@ -1,0 +1,53 @@
+{
+  "schema_version": "framecontact_validation_intervention_protocol_v1",
+  "protocol_status": "frozen_before_any_intervention_metric_was_read",
+  "research_question": "Does the validation-selected FrameContact checkpoint depend causally on intra-chain geometry while remaining invariant to independent rigid transforms of the two unaligned monomers?",
+  "claim_boundary": "Post-selection diagnostic on authenticated antigen-fold validation only. It cannot select a checkpoint, fit calibration, change an intervention after seeing its result, or open frozen/external test data.",
+  "checkpoint_rule": "Use exactly the checkpoint selected by the parent development run and its frozen validation temperatures and thresholds.",
+  "interventions": [
+    {
+      "name": "independent_monomer_rigid_transform",
+      "role": "negative_control",
+      "definition": "Apply independent random proper rotations and translations to antibody and antigen N/CA/C coordinates.",
+      "expected_direction": "Predictions and ranking metrics remain numerically unchanged."
+    },
+    {
+      "name": "geometry_shuffle",
+      "role": "causal_control",
+      "definition": "Permute residue frames within each monomer while preserving sequence, residue identity, masks, and targets.",
+      "expected_direction": "Geometry-dependent metrics worsen."
+    },
+    {
+      "name": "local_frame_corruption",
+      "role": "causal_control",
+      "definition": "Independently rotate N and C offsets around each fixed CA, preserving sequence and CA positions.",
+      "expected_direction": "Direction/pose-dependent metrics worsen more than distance-only information."
+    },
+    {
+      "name": "degree_matched_graph_rewiring",
+      "role": "causal_control",
+      "definition": "Replace each intra-chain spatial-neighbor graph with a same-chain degree-matched null graph.",
+      "expected_direction": "Spatial-topology-dependent metrics worsen."
+    },
+    {
+      "name": "coordinate_noise",
+      "role": "dose_response",
+      "angstrom_standard_deviations": [0.1, 0.25, 0.5],
+      "definition": "Add Gaussian noise to observed N/CA/C coordinates while preserving sequence and targets.",
+      "expected_direction": "Metric degradation is nondecreasing in aggregate with noise scale; individual seeds may be nonmonotonic."
+    }
+  ],
+  "reporting": {
+    "clean_and_intervened_metrics": [
+      "contact pooled and mean-per-complex AUPRC",
+      "contact precision and recall at the validation-frozen threshold",
+      "epitope and paratope pooled AUPRC",
+      "both directional cluster-weighted partner margins, top-1, and MRR"
+    ],
+    "unit": "every validation-selected seed checkpoint",
+    "failures": "Report every failure, non-finite output, and missing seed.",
+    "selection_performed_by_audit": false,
+    "test_loaded": false,
+    "external_test_loaded": false
+  }
+}

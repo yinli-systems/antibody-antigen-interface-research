@@ -1,0 +1,23 @@
+{
+  "cancelled_at_utc": "2026-08-25T10:49:19Z",
+  "exit_code": "0:0",
+  "format_version": "abpairfm_3b_systems_optimization_supersession_v1",
+  "job_id": 1469078,
+  "job_state": "CANCELLED",
+  "outputs_created": false,
+  "reason": "The baseline canary reached 0.9136 peak allocated memory fraction, so simultaneous Bx2 query-branch materialization was superseded before allocation by the exact fixed-two-batched-SDPA implementation.",
+  "submitted_implementation": {
+    "attention_sdpa_calls_per_layer": 1,
+    "protocol_sha256": "a0dcaf13dc9a955128ccd65ef6b5fed449fa2775d8409256c35b35bda8f2c5ea",
+    "source_aggregate_sha256": "fd9ed57d9665d78d8640f9dd58759cf4a628cfcedf4f5cb850af5b8bf708878a",
+    "source_runner_sha256": "01c0f88425e140fc47d2c04fe86ec2cd80004187388732820f5835fea9652a41",
+    "submit_script_sha256": "f56f5224019401aee21aff17e9911f12ea5fa6e1111ba2c2b0f397d993aefc25"
+  },
+  "superseding_implementation": {
+    "attention_sdpa_calls_per_layer": 2,
+    "protocol_sha256": "903df81754fe089c40cba15058c04f5e6b74f44f974419fe45a82c0eefa7da0f",
+    "source_aggregate_sha256": "d01f81eed53dbee9a28c8f8da76301b8b6e1139396a28e46ec850295b3ef9368",
+    "source_runner_sha256": "9a8aa60c0fa08f6d5f9532353be940c31312b974e97c05a0860e1fd12ae1508f"
+  },
+  "test_access": false
+}

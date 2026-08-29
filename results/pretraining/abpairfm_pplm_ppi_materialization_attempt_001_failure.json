@@ -1,0 +1,15 @@
+{
+  "attempt": 1,
+  "authorization": {
+    "production_training": false,
+    "test_access": false
+  },
+  "cause": "The pinned Zhang Lab endpoint returned HTTP 403 to Python urllib HEAD even though curl HEAD and one-byte range probes returned the pinned size, ETag, and HTTP 206 Content-Range.",
+  "failure_stage": "remote_metadata_preflight_before_download",
+  "format_version": "abpairfm_public_materialization_failure_v1",
+  "minimum_recovery": "Use the same curl transport for metadata verification and segmented range downloads while retaining exact size, ETag, Content-Range, and final SHA-256 checks.",
+  "partial_or_final_bytes_published": false,
+  "source_id": "pplm_ppi_models_1267db4",
+  "status": "FAILED_CLOSED_TRANSPORT_COMPATIBILITY",
+  "test_access": false
+}

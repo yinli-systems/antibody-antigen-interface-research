@@ -1,0 +1,94 @@
+{
+  "claim_boundary": "Label-free split, partner-panel, source-regression, and provenance evidence only. No model prediction, frozen-test metric, external-generalization result, state-of-the-art claim, or GPU-performance claim is authorized.",
+  "created_on": "2026-08-01",
+  "current_development_split_audit": {
+    "antibody_metadata_clusters_crossing_roles": 11,
+    "antibody_rows_in_crossing_clusters": 64,
+    "antigen_cluster_tokens_crossing_roles": 8,
+    "antigen_rows_in_crossing_clusters": 240,
+    "double_cold_valid": false,
+    "exact_isolation_valid": true,
+    "foldseek_hard_edges_crossing_roles": 0,
+    "split_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+    "tokenized_audit_sha256": "6792473c4388e61214d7cc1784828f558f2fe22854f5ff07c94fc48a9d063214"
+  },
+  "failure_and_recovery_evidence": [
+    {
+      "outcome": "The first cluster implementation treated slash-separated antigen chain clusters as one string. A direct audit of the official README identified the mismatch. A token-level post-hoc audit found no realized cross-role leak in this cohort, and the final implementation now enforces token-level union and auditing.",
+      "preserved_audit_sha256": "a75334aee7a9fc5ab2ca663a18e5e33450ae5604ad34689c76c812736f3b6f5f"
+    },
+    {
+      "failure_log_sha256": "105143cac28b855587c91ee7d673cfac7c048d199e1d70d4317f2bea19ca4d8e",
+      "outcome": "A full regression using the shared pytest /tmp namespace encountered numbered-directory contention and secondary import errors. Re-running the same source with an isolated basetemp passed.",
+      "recovery_log_sha256": "9832147fa36e1c5a69d09b44a0a22d0bc256472f9108b7fab3fe9235113357ba"
+    },
+    {
+      "failure_log_sha256": "dd03bba7dc540f02773bce228b8ab7c15a17e96f6eb200fa76ebee6799cf6312",
+      "outcome": "A deliberately minimal source-only package omitted repository read-only fixtures required by 12 historical protocol tests. Core double-cold tests passed; the final complete cache-free workspace restored the fixtures and passed the full suite."
+    }
+  ],
+  "final_double_cold_split": {
+    "antibody_cluster_cross_role_value_count": 0,
+    "antigen_cluster_token_cross_role_value_count": 0,
+    "component_count": 184,
+    "component_definition": "reciprocal-min Foldseek TM-score >= 0.50 plus exact PDB/antigen-sequence/antibody-sequence equivalence plus every SAbDab2 antigen-chain cluster token plus SAbDab2 antibody-only final cluster",
+    "double_cold_valid": true,
+    "foldseek_hard_edge_count": 725687,
+    "foldseek_hard_edge_cross_role_count": 0,
+    "largest_policy_component_size": 2584,
+    "largest_structural_component_size": 1039,
+    "manifest_sha256": "07b20645982971e9ff0004ac297d9a03ac0278269b4e8d84628fb0cbbb87804d",
+    "predictions_read": false,
+    "role_counts": {
+      "test": 539,
+      "train": 2584,
+      "validation": 540
+    },
+    "role_migration_count_from_development_v3": 1482,
+    "shortcut_audit_sha256": "144c8d45cac1b7589f40bcdb4358979587361a6fa0363d47f4dac6a85be4e061",
+    "split_receipt_sha256": "728c9a256fc88d7a72f63e5c95366c3555df28672163ff5a3d3a35d0586f017a",
+    "task_labels_read": false
+  },
+  "final_source_evidence": {
+    "full_pytest": {
+      "failed": 0,
+      "log_sha256": "2f2f0177597e56849f60f87048a19752c39e3d50bb1ac7d35f804cb9b57e10d2",
+      "passed": 274,
+      "skipped": 5,
+      "skip_boundary": "Only pinned Boltz source unavailable tests were skipped."
+    },
+    "source_manifest_sha256": "bd9a38f195ea2b5369261586ba65508b55f0d2ae7337c351219bdf5b9b7e355c",
+    "source_manifest_verify_log_sha256": "12478af73bc438842eab3b61c8c15ca6b2e7229a0df3d61f6d57bafb46bf152d",
+    "source_record_count": 298,
+    "source_tree_sha256": "1c3898942a997c4d79338f646957549819d31b3aff11ec6e527de8f5a3ae3b62"
+  },
+  "format_version": "framecontact_double_cold_split_engineering_receipt_v1",
+  "official_sabdab2_authority": {
+    "archive_sha256": "54e3b9cdae5f5ff57a4210866f87e86686203556eea6a033200ff55c0f81e2b7",
+    "dataset_doi": "10.5281/zenodo.20083995",
+    "dataset_version": "0.1.0",
+    "metadata_sha256": "01414df16af9d3343994f527e13e81a25bf8da08198858018493a96f173a8cfb",
+    "readme_sha256": "2d0a50eeb0ada3c4c452eb8a8e1a7a81ab63a9cf34f20df135db607ea1632690"
+  },
+  "partner_panel_evidence": {
+    "base_projection_receipt_sha256": "d3b84869ab47ec3f78b89e46a9ea2fa78ee3fbc68a1b03e181506e71dbf2ee8b",
+    "bound_metadata_receipt_sha256": "3030f3462481248307c2ee1aea8f4398e690de11542db941c79dd8d98fafa4d5",
+    "bundle_receipt_sha256": "65d64b024717c28ff9e288cb7504dfa4e354222332363381c41450fe551438c2",
+    "panel_size_per_direction": 31,
+    "predictions_read": false,
+    "task_labels_read": false,
+    "test_panel_materialized": false,
+    "train_entry_count": 2584,
+    "train_panel_sha256": "18fa306da6fe59905d58268b50a95b6fbd3479478bfb21acf88d0faed1f60c74",
+    "validation_entry_count": 540,
+    "validation_panel_sha256": "5b80013e62af2591a2e1247b26cdf9dee452262aca24cba18fe1204347a9ff75"
+  },
+  "slurm_build": {
+    "alloc_tres": "cpu=6,gres/gpu=1,mem=60000M,node=1",
+    "elapsed": "00:01:04",
+    "exit_code": "0:0",
+    "job_id": "1346364",
+    "max_rss": "1550816K",
+    "state": "COMPLETED"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "authorization": {
+    "development_contact_labels": false,
+    "development_pair_mlm": true,
+    "development_retrieval": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "counts": {
+    "asep_complexes": 170,
+    "duplicate_exact_pair_rows": 136,
+    "records": 719,
+    "sabdab2_complexes": 549,
+    "sabdab2_missing_light_chain_complexes": 104,
+    "unique_exact_pairs": 583,
+    "wrong_partner_candidates_per_direction_per_record": 31
+  },
+  "format_version": "abpairfm_development_pair_panel_summary_v1",
+  "length_audit_including_two_cls_eos": {
+    "maximum": 1626,
+    "over_mint_1024_token_limit": 10,
+    "p50": 383,
+    "p95": 696
+  },
+  "output_jsonl": {
+    "bytes": 1926018,
+    "sha256": "18a7efcc4f1cb5499be32938a4819208f5bb6e2095acdda3098e71496458fce2"
+  },
+  "remote_receipt_sha256": "078dc59a5c1caba9fa3ecae4361a5bcd0fa3922f586039ff3a44d11e998f1346",
+  "status": "FROZEN_DEVELOPMENT_PAIR_PANEL",
+  "test_access": false
+}

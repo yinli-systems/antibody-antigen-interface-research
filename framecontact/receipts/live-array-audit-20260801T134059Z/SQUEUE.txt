@@ -1,0 +1,13 @@
+             JOBID     STATE       TIME  NODES NODELIST(REASON)
+   1345108_[5-9%5]   PENDING       0:00      1 (JobArrayTaskLimit)
+  1345042_[5-14%5]   PENDING       0:00      1 (JobArrayTaskLimit)
+         1345108_3   RUNNING   17:08:37      1 wqd10nba06g2
+         1345108_4   RUNNING   17:08:37      1 wqd10nba06g2
+         1345108_0   RUNNING   17:08:38      1 wqd10naf04g1
+         1345108_1   RUNNING   17:08:38      1 wqd10nba06g2
+         1345108_2   RUNNING   17:08:38      1 wqd10nba06g2
+         1345042_0   RUNNING   18:27:20      1 wqd10naf04g1
+         1345042_1   RUNNING   18:27:20      1 wqd10nah05g4
+         1345042_2   RUNNING   18:27:20      1 wqd10nah05g4
+         1345042_3   RUNNING   18:27:20      1 wqd10nah05g4
+         1345042_4   RUNNING   18:27:20      1 wqd10nah05g4

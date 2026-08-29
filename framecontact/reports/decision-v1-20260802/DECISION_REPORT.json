@@ -1,0 +1,530 @@
+{
+  "arms": {
+    "framecontact_distogram": {
+      "completed_seeds": [],
+      "factors": {
+        "fusion": "late",
+        "geometry": "full_pose",
+        "pair_gauge": "raw",
+        "pair_target": "distogram",
+        "residue_aggregation": "gated_hybrid",
+        "residue_contrastive": "off",
+        "triangle": "off"
+      },
+      "last_epoch_by_seed": {
+        "101": 22,
+        "137": 22,
+        "17": 23,
+        "42": 21,
+        "73": 21
+      },
+      "seeds": [
+        17,
+        42,
+        73,
+        101,
+        137
+      ]
+    },
+    "framecontact_unary_only": {
+      "completed_seeds": [],
+      "factors": {
+        "fusion": "late",
+        "geometry": "full_pose",
+        "pair_gauge": "raw",
+        "pair_target": "binary_contact",
+        "residue_aggregation": "unary",
+        "residue_contrastive": "off",
+        "triangle": "off"
+      },
+      "last_epoch_by_seed": {
+        "101": 25,
+        "137": 25,
+        "17": 25,
+        "42": 25,
+        "73": 26
+      },
+      "seeds": [
+        17,
+        42,
+        73,
+        101,
+        137
+      ]
+    }
+  },
+  "claim_boundary": "Development validation only. No SAbDab2 frozen test or AsEP official test was read. Comparisons are pinned to a common epoch and are refused unless exactly one registered factor differs.",
+  "decision_chain": [
+    {
+      "phase": "phase_1_residue_aggregation",
+      "question": "How should epitope and paratope be produced: from the single-chain head alone, from the contact map alone, or from a gated combination -- and does routing through the identifiable partner-specific channel change the answer?",
+      "reason": "no candidate arm has runs yet; expected any of framecontact_contact_marginal, framecontact_contact_hybrid, framecontact_gauge_marginal, framecontact_gauge_hybrid",
+      "status": "unavailable"
+    },
+    {
+      "phase": "phase_1b_residue_partner_supervision",
+      "question": "Does supervising partner specificity at labelled interface residues, rather than through one score per complex, produce partner-dependent residue predictions?",
+      "reason": "baseline arm framecontact_gauge_hybrid has no runs",
+      "status": "unavailable"
+    },
+    {
+      "phase": "phase_2_pair_target",
+      "question": "Holding the residue head fixed, is a single distogram a better pair target than a binary contact head?",
+      "reason": "baseline arm framecontact_contact_hybrid has no runs",
+      "status": "unavailable"
+    },
+    {
+      "phase": "phase_3_triangle",
+      "question": "Holding the pair target fixed, does the localized triangle constraint raise precision at a fixed budget while retaining recall?",
+      "reason": "no candidate arm has runs yet; expected any of framecontact_distogram_triangle",
+      "status": "unavailable"
+    },
+    {
+      "phase": "phase_4_fusion_depth",
+      "question": "Only after the head, pair target, and geometry constraint are settled: late or every-layer interleaved cross-attention?",
+      "reason": "baseline arm framecontact_contact_hybrid has no runs",
+      "status": "unavailable"
+    }
+  ],
+  "figures": [
+    "contact_precision_recall.png",
+    "sparsity_versus_ranking.png",
+    "partner_margin.png"
+  ],
+  "format_version": "framecontact_decision_report_v1",
+  "main_table": {
+    "epoch": 21,
+    "format_version": "framecontact_decision_main_table_v1",
+    "metrics": [
+      "contact_pooled_auprc",
+      "contact_p_at_lmin_over_10",
+      "contact_precision",
+      "contact_recall",
+      "contact_predicted_positive_ratio",
+      "epitope_pooled_auprc",
+      "epitope_precision",
+      "epitope_recall",
+      "paratope_pooled_auprc",
+      "paratope_precision",
+      "paratope_recall",
+      "partner_margin_worst_direction",
+      "partner_specific_variance_share",
+      "epitope_gate_applied",
+      "contact_brier",
+      "contact_ece_15"
+    ],
+    "rows": [
+      {
+        "epoch": 21,
+        "experiment": "framecontact_distogram",
+        "factors": {
+          "fusion": "late",
+          "geometry": "full_pose",
+          "pair_gauge": "raw",
+          "pair_target": "distogram",
+          "residue_aggregation": "gated_hybrid",
+          "residue_contrastive": "off",
+          "triangle": "off"
+        },
+        "metrics": {
+          "contact_brier": {
+            "mean": 0.014553053149026263,
+            "per_seed": {
+              "17": 0.008193852657815234,
+              "42": 0.011290443759702352,
+              "73": 0.019011593941911167,
+              "101": 0.014839445087669849,
+              "137": 0.019429930298032718
+            }
+          },
+          "contact_ece_15": {
+            "mean": 0.02716232804060336,
+            "per_seed": {
+              "17": 0.014690787914711269,
+              "42": 0.020887099973772,
+              "73": 0.03589197464858656,
+              "101": 0.02772922972824979,
+              "137": 0.03661254793769718
+            }
+          },
+          "contact_p_at_lmin_over_10": {
+            "mean": 0.029384113905284077,
+            "per_seed": {
+              "17": 0.02600912172663182,
+              "42": 0.026057266404861158,
+              "73": 0.03706802872421364,
+              "101": 0.029788269195072544,
+              "137": 0.027997883475641222
+            }
+          },
+          "contact_pooled_auprc": {
+            "mean": 0.010654051314551653,
+            "per_seed": {
+              "17": 0.00933489777508724,
+              "42": 0.010038980800706915,
+              "73": 0.012436422921100542,
+              "101": 0.01130090381701417,
+              "137": 0.010159051258849403
+            }
+          },
+          "contact_precision": {
+            "mean": 0.013979226949176762,
+            "per_seed": {
+              "17": 0.014038103423578283,
+              "42": 0.01477197331029907,
+              "73": 0.014311018981988603,
+              "101": 0.01449645163862531,
+              "137": 0.012278587391392546
+            }
+          },
+          "contact_predicted_positive_ratio": {
+            "mean": 0.019539210864327642,
+            "per_seed": {
+              "17": 0.010172465900869003,
+              "42": 0.014549970430943217,
+              "73": 0.02627304158560999,
+              "101": 0.019987516653228118,
+              "137": 0.026713059750987877
+            }
+          },
+          "contact_recall": {
+            "mean": 0.24571759738378107,
+            "per_seed": {
+              "17": 0.12981744421906694,
+              "42": 0.1953885002276773,
+              "73": 0.3418056877923583,
+              "101": 0.2634019124891336,
+              "137": 0.29817444219066935
+            }
+          },
+          "epitope_pooled_auprc": {
+            "mean": 0.1254940679029658,
+            "per_seed": {
+              "17": 0.11359693482250299,
+              "42": 0.125183921722063,
+              "73": 0.13532953192564498,
+              "101": 0.13283975402774711,
+              "137": 0.12052019701687093
+            }
+          },
+          "epitope_precision": {
+            "mean": 0.144781798694253,
+            "per_seed": {
+              "17": 0.13479623824451412,
+              "42": 0.15042527339003645,
+              "73": 0.15147342329936656,
+              "101": 0.15531208112360861,
+              "137": 0.13190197741373924
+            }
+          },
+          "epitope_recall": {
+            "mean": 0.24518760195758565,
+            "per_seed": {
+              "17": 0.1271411092985318,
+              "42": 0.1893352365415987,
+              "73": 0.33646003262642743,
+              "101": 0.27171696574225124,
+              "137": 0.3012846655791191
+            }
+          },
+          "paratope_pooled_auprc": {
+            "mean": 0.6556004942604486,
+            "per_seed": {
+              "17": 0.6554396511026825,
+              "42": 0.6527810957570783,
+              "73": 0.659676716964213,
+              "101": 0.6658495032560104,
+              "137": 0.6442555042222592
+            }
+          },
+          "paratope_precision": {
+            "mean": 0.5501593549060013,
+            "per_seed": {
+              "17": 0.6205967097313877,
+              "42": 0.5672670982268505,
+              "73": 0.5182844772102276,
+              "101": 0.5313857321354197,
+              "137": 0.5132627572261211
+            }
+          },
+          "paratope_recall": {
+            "mean": 0.761691496252429,
+            "per_seed": {
+              "17": 0.6178402887017673,
+              "42": 0.7459979642824095,
+              "73": 0.8196539280096234,
+              "101": 0.8264088091052096,
+              "137": 0.798556491163135
+            }
+          },
+          "partner_margin_worst_direction": {
+            "mean": 0.003682415821145699,
+            "per_seed": {
+              "17": 0.004328004851580721,
+              "42": 0.022757509359549014,
+              "73": 0.02625843341314425,
+              "101": -0.02089975352378157,
+              "137": -0.01403211499476392
+            }
+          }
+        },
+        "seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ]
+      },
+      {
+        "epoch": 21,
+        "experiment": "framecontact_unary_only",
+        "factors": {
+          "fusion": "late",
+          "geometry": "full_pose",
+          "pair_gauge": "raw",
+          "pair_target": "binary_contact",
+          "residue_aggregation": "unary",
+          "residue_contrastive": "off",
+          "triangle": "off"
+        },
+        "metrics": {
+          "contact_brier": {
+            "mean": 0.021768864297606695,
+            "per_seed": {
+              "17": 0.020023109020182447,
+              "42": 0.01897371463945908,
+              "73": 0.01937647282478797,
+              "101": 0.03339638351805431,
+              "137": 0.01707464148554967
+            }
+          },
+          "contact_ece_15": {
+            "mean": 0.041173998440235435,
+            "per_seed": {
+              "17": 0.03753181741703918,
+              "42": 0.03548893946996976,
+              "73": 0.03685211429810204,
+              "101": 0.0637876976411748,
+              "137": 0.03220942337489139
+            }
+          },
+          "contact_p_at_lmin_over_10": {
+            "mean": 0.031643184302589514,
+            "per_seed": {
+              "17": 0.03572765386020117,
+              "42": 0.028701898902153477,
+              "73": 0.03463541288233438,
+              "101": 0.03421357457073161,
+              "137": 0.024937381297526925
+            }
+          },
+          "contact_pooled_auprc": {
+            "mean": 0.010715946893700172,
+            "per_seed": {
+              "17": 0.010667843438158658,
+              "42": 0.01042663508736489,
+              "73": 0.012085487482629921,
+              "101": 0.010125013340936516,
+              "137": 0.010274755119410877
+            }
+          },
+          "contact_precision": {
+            "mean": 0.011995959405013747,
+            "per_seed": {
+              "17": 0.011822226311189385,
+              "42": 0.012120653941862566,
+              "73": 0.013452414567232443,
+              "101": 0.010335781690873234,
+              "137": 0.012248720513911104
+            }
+          },
+          "contact_predicted_positive_ratio": {
+            "mean": 0.02994030588707694,
+            "per_seed": {
+              "17": 0.02771727382540354,
+              "42": 0.026204554850566178,
+              "73": 0.026125412599564753,
+              "101": 0.04685025452794539,
+              "137": 0.022804033631904835
+            }
+          },
+          "contact_recall": {
+            "mean": 0.32004801920768305,
+            "per_seed": {
+              "17": 0.29788467110982325,
+              "42": 0.28873618412882396,
+              "73": 0.3194933145672062,
+              "101": 0.4402036676739661,
+              "137": 0.25392225855859585
+            }
+          },
+          "epitope_pooled_auprc": {
+            "mean": 0.12240905138347649,
+            "per_seed": {
+              "17": 0.12553561081395762,
+              "42": 0.12411433141283851,
+              "73": 0.12417745312710596,
+              "101": 0.11798800994280191,
+              "137": 0.12022985162067842
+            }
+          },
+          "epitope_precision": {
+            "mean": 0.13520601792405276,
+            "per_seed": {
+              "17": 0.1401855504419607,
+              "42": 0.1362404151498722,
+              "73": 0.1400781377177275,
+              "101": 0.12726924060342623,
+              "137": 0.1322567457072772
+            }
+          },
+          "epitope_recall": {
+            "mean": 0.17707993474714517,
+            "per_seed": {
+              "17": 0.19565660685154976,
+              "42": 0.17934339314845024,
+              "73": 0.1754690048939641,
+              "101": 0.20299755301794453,
+              "137": 0.13193311582381728
+            }
+          },
+          "paratope_pooled_auprc": {
+            "mean": 0.6847738746756578,
+            "per_seed": {
+              "17": 0.6844193150437722,
+              "42": 0.6829458843954712,
+              "73": 0.6897898302452669,
+              "101": 0.6901382758710661,
+              "137": 0.6765760678227123
+            }
+          },
+          "paratope_precision": {
+            "mean": 0.5266042113028514,
+            "per_seed": {
+              "17": 0.524930426716141,
+              "42": 0.5020078112107377,
+              "73": 0.5630360482362804,
+              "101": 0.5278952551995829,
+              "137": 0.5151515151515151
+            }
+          },
+          "paratope_recall": {
+            "mean": 0.8343481077079671,
+            "per_seed": {
+              "17": 0.8377903210881836,
+              "42": 0.844452669566022,
+              "73": 0.8079022855556584,
+              "101": 0.8431572129175534,
+              "137": 0.8384380494124178
+            }
+          },
+          "partner_margin_worst_direction": {
+            "mean": -0.0038839178003649186,
+            "per_seed": {
+              "17": -0.0017842428783913465,
+              "42": -0.001458864632191081,
+              "73": -0.006263419947057513,
+              "101": -0.023082352303253128,
+              "137": 0.013169290759068475
+            }
+          }
+        },
+        "seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ]
+      }
+    ]
+  },
+  "matched_epoch": 21,
+  "metric_stability_audit": {
+    "by_arm": {
+      "framecontact_distogram": {
+        "contact_p_at_lmin_over_10": {
+          "epoch_noise": 0.0031480390615237913,
+          "mean_at_epoch": 0.029384113905284077,
+          "noise_exceeds_value": false
+        },
+        "contact_pooled_auprc": {
+          "epoch_noise": 0.0008824754217800478,
+          "mean_at_epoch": 0.010654051314551653,
+          "noise_exceeds_value": false
+        },
+        "epitope_pooled_auprc": {
+          "epoch_noise": 0.003425441568910584,
+          "mean_at_epoch": 0.1254940679029658,
+          "noise_exceeds_value": false
+        },
+        "paratope_pooled_auprc": {
+          "epoch_noise": 0.013998874940480646,
+          "mean_at_epoch": 0.6556004942604486,
+          "noise_exceeds_value": false
+        },
+        "partner_margin_worst_direction": {
+          "epoch_noise": 0.012115148055085003,
+          "mean_at_epoch": 0.003682415821145699,
+          "noise_exceeds_value": true
+        }
+      },
+      "framecontact_unary_only": {
+        "contact_p_at_lmin_over_10": {
+          "epoch_noise": 0.004079298186573734,
+          "mean_at_epoch": 0.031643184302589514,
+          "noise_exceeds_value": false
+        },
+        "contact_pooled_auprc": {
+          "epoch_noise": 0.0007235621988909353,
+          "mean_at_epoch": 0.010715946893700172,
+          "noise_exceeds_value": false
+        },
+        "epitope_pooled_auprc": {
+          "epoch_noise": 0.0032433399932159123,
+          "mean_at_epoch": 0.12240905138347649,
+          "noise_exceeds_value": false
+        },
+        "paratope_pooled_auprc": {
+          "epoch_noise": 0.007007993034437818,
+          "mean_at_epoch": 0.6847738746756578,
+          "noise_exceeds_value": false
+        },
+        "partner_margin_worst_direction": {
+          "epoch_noise": 0.012181711353065063,
+          "mean_at_epoch": -0.0038839178003649186,
+          "noise_exceeds_value": true
+        }
+      }
+    },
+    "definition": "epoch_noise is the mean within-run standard deviation of the metric over the trailing 5 epochs. When it exceeds the metric's own value, single-epoch readings of that metric are not interpretable.",
+    "epoch": 21,
+    "window": 5
+  },
+  "seeds": [
+    17,
+    42,
+    73,
+    101,
+    137
+  ],
+  "trajectory_data": "TRAJECTORIES.csv",
+  "warnings": [
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_5.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_6.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_7.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_8.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_9.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_10.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_11.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_12.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_13.out",
+    "missing log tmp/live-logs-20260802/fc-res-head-1345042_14.out",
+    "missing log tmp/live-logs-20260802/fc-distogram-1345108_5.out",
+    "missing log tmp/live-logs-20260802/fc-distogram-1345108_6.out",
+    "missing log tmp/live-logs-20260802/fc-distogram-1345108_7.out",
+    "missing log tmp/live-logs-20260802/fc-distogram-1345108_8.out",
+    "missing log tmp/live-logs-20260802/fc-distogram-1345108_9.out"
+  ]
+}

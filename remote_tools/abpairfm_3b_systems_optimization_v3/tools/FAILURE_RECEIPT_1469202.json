@@ -1,0 +1,12 @@
+{
+  "failed_job_id": 1469202,
+  "failure_class": "NATIVE_FLASH_CUMULATIVE_LENGTH_DTYPE",
+  "failure_message": "RuntimeError: cu_seqlens_q must have dtype int32",
+  "format_version": "abpairfm_3b_systems_optimization_failure_receipt_v3",
+  "output_checkpoint_written": false,
+  "output_result_written": false,
+  "parent_source_aggregate_sha256": "3d44ad2b00784491d5602a8058d4a608b8051f24db259fea953a3effd2510f73",
+  "slurm_state": "FAILED",
+  "stderr_sha256": "1d55df4b2e538ef23fa0f6bfaa054dc51f13da48ed6f6f756252b5285fbf1744",
+  "test_access": false
+}

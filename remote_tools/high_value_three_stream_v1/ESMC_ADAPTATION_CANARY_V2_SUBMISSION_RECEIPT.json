@@ -1,0 +1,18 @@
+{
+  "format_version": "paired_esmc_adaptation_canary_submission_receipt_v2",
+  "status": "SUBMITTED_FROZEN_MEASUREMENT_ONLY_RECOVERY",
+  "job_array_id": 1474953,
+  "protocol_sha256": "2bf8d8c1b73e9a9eff265404510606445d6f649dac3503bd43ed3a4797ff5276",
+  "protocol_receipt_sha256": "97761338f17102a6f0a1f960f95007741246efed72b5c65c559fbe3ddcd7a4ed",
+  "v1_failure_receipt_sha256": "fcf5c88ad827dce1b7c83e87b5375556419d8b6ec42317f19b21060e0e9c9868",
+  "partition": "gpu_4090",
+  "world_size_per_arm": 4,
+  "arms": [
+    "whole_chain_control",
+    "cdr_focused"
+  ],
+  "production_training_authorized": false,
+  "checkpoint_written": false,
+  "task_labels_read": false,
+  "sabdab2_test_access": false
+}

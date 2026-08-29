@@ -1,0 +1,43 @@
+{
+  "authorization": {
+    "checkpoint_initialization": true,
+    "development_evaluation": false,
+    "gpu_smoke": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "http_etag": "34533353c10c4fe3aceb2c1ad2867827-677",
+    "http_last_modified": "Thu, 18 Aug 2022 13:27:28 GMT",
+    "http_version_id": "qgHt_My5BTcMMWHSuORVt6kPsq_lYEyo",
+    "sha256": "7de8b4082ba15891959ab368b77ce3886697af1efb16d3c9e9e7b0c5d3f07500",
+    "size_bytes": 5678116398,
+    "url": "https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t36_3B_UR50D.pt"
+  },
+  "claim_boundary": "Authenticated official checkpoint and exact state-shape compatibility only. No GPU capacity, forward parity, recovery, throughput, training, biological quality, development result, or SOTA claim is established.",
+  "compatibility": {
+    "architecture": {
+      "encoder_attention_heads": 40,
+      "encoder_embed_dim": 2560,
+      "encoder_layers": 36,
+      "token_dropout": true
+    },
+    "checkpoint_dtype": "torch.float16",
+    "checkpoint_state_key_count": 621,
+    "checkpoint_tensor_element_count_with_tied_state_duplicate": 2839089825,
+    "compatible_model_parameter_count": 2839005633,
+    "initialized_pair_aware_parameter_count": 1440,
+    "initialized_pair_aware_tensor_count": 36,
+    "shape_mismatch_count": 0,
+    "unexpected_key_count": 0
+  },
+  "format_version": "abpairfm_esm2_checkpoint_compatibility_receipt_v1",
+  "remote_audit_receipt": "/ssd/scxi253/model_deployment/models/abpairfm_3b_v1/esm2_t36_3B_UR50D/checkpoint_compatibility_audit_v1.json",
+  "status": "CHECKPOINT_COMPATIBLE",
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

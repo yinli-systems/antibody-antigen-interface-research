@@ -1,0 +1,35 @@
+{
+  "format_version": "antibody_production_loader_recovery_submission_v1",
+  "job": {
+    "job_id": 1426301,
+    "partition": "gpu_5090",
+    "requested_gpus": 1,
+    "state": "COMPLETED",
+    "elapsed": "00:09:02",
+    "node": "wqd10nah09g3"
+  },
+  "source_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-340e2f0-attempt-001",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_production_recovery_v2_340e2f0_attempt_001/slurm-1426301",
+  "gate_protocol_file_sha256": "0a376662b1be201c7c65748ac38558da3ff3f92ea71bfc2cd021826542fb9172",
+  "audit": {
+    "format_version": "antibody_production_loader_recovery_audit_v1",
+    "path": "/ssd/scxi253/model_deployment/results/pretraining/antibody_production_recovery_v2_340e2f0_attempt_001/slurm-1426301/independent-audit.json",
+    "file_sha256": "01480bb2e913143f162f30ebfdae6027a49d403a88fb137e6106d9109bc11248",
+    "receipt_sha256": "142705dbb559b09f9f06970caf241d89d965564b4a14e5a957d63c608335df05",
+    "exact_recovery": {
+      "final_model_equal": true,
+      "final_optimizer_equal": true,
+      "scientific_trace_equal": true,
+      "terminal_coordinates_equal": true
+    }
+  },
+  "authorization": {
+    "production_pretraining": false,
+    "scale_out": false,
+    "scientific_claim": false
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

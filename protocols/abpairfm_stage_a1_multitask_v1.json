@@ -1,0 +1,92 @@
+{
+  "authorization": {
+    "development_model_selection": false,
+    "pilot_training_after_source_admission": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "initialization": "first_audited_stage_a0_checkpoint_at_or_above_250M_residue_tokens",
+    "optimizer_resume": false,
+    "reason": "Measure objective transfer separately from continuing the Stage-A0 optimizer trajectory."
+  },
+  "claim_boundary": "Train-only Stage-A1 multitask pilot authorization. The pilot may start only after every selected source has an immutable admission receipt and development decontamination receipt. It establishes objective health, not development improvement, test performance, biological noninteraction, or SOTA.",
+  "format_version": "abpairfm_stage_a1_multitask_v1",
+  "loss": {
+    "contact": {
+      "candidate_scope": "authenticated_structural_interface_residue_pairs",
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_sampled_pairs_per_complex": 512,
+      "sampling_seed": 1701,
+      "weight": 0.5
+    },
+    "masked_language_modeling": {
+      "balance": "equal_per_chain",
+      "weight": 1.0
+    },
+    "retrieval": {
+      "direction": "bidirectional",
+      "false_negative_exclusion": "same_endpoint_cluster_or_known_positive_pair",
+      "hard_decoy_matching": [
+        "same_species_when_available",
+        "endpoint_length_bin",
+        "endpoint_cluster_unique"
+      ],
+      "temperature": 0.07,
+      "weight": 0.2
+    }
+  },
+  "model": {
+    "backbone": "abpairfm_3b_stage_a0",
+    "contact_head": "shared_2560_to_256_left_right_projection_dot_product",
+    "projection_dimension": 256,
+    "retrieval_head": "separate_2560_to_256_left_right_projection_cosine",
+    "trainable": "backbone_and_heads"
+  },
+  "pilot": {
+    "checkpoint_required": true,
+    "gradient_clip_norm": 1.0,
+    "maximum_updates": 200,
+    "promotion_gates": {
+      "finite_all_losses": true,
+      "maximum_peak_memory_fraction": 0.92,
+      "minimum_contact_positive_support": 1000,
+      "minimum_retrieval_cognate_support": 1000,
+      "required_checkpoint_restore": true
+    }
+  },
+  "sources": {
+    "pinder": {
+      "admitted": false,
+      "reason": "data-specific license gate remains unresolved"
+    },
+    "ppiref50k": {
+      "required_receipts": [
+        "normalization",
+        "development_decontamination",
+        "cross_source_deduplication",
+        "training_admission"
+      ],
+      "role": "contact_supervision"
+    },
+    "string_v12_physical": {
+      "required_receipts": [
+        "license",
+        "development_decontamination",
+        "endpoint_cluster_deduplication",
+        "training_admission"
+      ],
+      "role": "retrieval_and_mlm"
+    }
+  },
+  "status": "FROZEN_IMPLEMENTATION_AND_SOURCE_GATE",
+  "systems": {
+    "cpus_per_task": 48,
+    "explicit_mem_argument_permitted": false,
+    "hp_4090_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 8
+  },
+  "test_access": false
+}

@@ -1,0 +1,74 @@
+{
+  "claim_rule": "This ledger authenticates frontier baseline authorities and comparability blockers only. No listed frontier baseline has been retrained on the FrameContact double-cold split or scored on a FrameContact frozen test, and no published number is a FrameContact head-to-head result.",
+  "comparison_contract": {
+    "contact_definition_must_be_harmonized": true,
+    "endpoint_and_antigen_structure_disjoint_roles_required": true,
+    "five_paired_seeds": [17, 42, 73, 101, 137],
+    "frozen_test_one_time_gate_required": true,
+    "identical_candidate_pair_scope_required": true,
+    "identical_partner_retrieval_panels_required": true,
+    "published_numbers_are_literature_context_only": true,
+    "validation_only_checkpoint_threshold_and_calibration_required": true
+  },
+  "format_version": "framecontact_baseline_lock_v5",
+  "frozen_on": "2026-08-01",
+  "frontier_additions": {
+    "deepssinter": {
+      "architecture_boundary": "ESM2 plus SaProt features, intra-chain distance and graph representations, ResNet-Inception and triangle-aware interaction modules over two monomer structures",
+      "checkpoint": {
+        "bytes": 36819775,
+        "path_in_source": "project/model/model_checkpoint.ckpt",
+        "sha256": "7ea97d065210c0fa4f6ceaed2c6f64caaba027bf661684affb3261b96103765d",
+        "serialization": "PyTorch Lightning pickle checkpoint; do not deserialize outside an isolated audited environment"
+      },
+      "comparability_boundary": "The paper uses minimum-heavy-atom distance below 6 A, whereas the current FrameContact development authority uses its frozen 4.5 A contact definition. Upstream training data, redundancy control, monomer source, cropping and residue scope must be audited and harmonized before comparison.",
+      "identical_split_runs": 0,
+      "license_boundary": "The pinned repository has no LICENSE or COPYING file. Its README simultaneously says academic/non-commercial use and GNU GPL v3, so copying, redistribution and commercial-use permissions are not treated as resolved.",
+      "official_paper": "https://doi.org/10.1002/pro.70667",
+      "official_source": "https://github.com/huang-laboratory/DeepSSInter",
+      "result_status": "not_run",
+      "source_commit_time": "2026-06-02T11:51:21+08:00",
+      "source_revision": "d24e9e02b35c857a553e5a9d7d7def51c633d166"
+    },
+    "handshake": {
+      "architecture_boundary": "ProstT5 with LoRA, bidirectional cross-chain attention, residue heads and contact supervision",
+      "comparability_boundary": "Default random pair splitting is not endpoint-disjoint; concatenated endpoint clustering does not prove endpoint disjointness; contact export switches to train mode; the generic inference-only path can tune a threshold on its labeled inference set.",
+      "identical_split_runs": 0,
+      "license_boundary": "No LICENSE or COPYING file at the pinned revision; do not copy or redistribute source. Use a clean-room paper-level control.",
+      "official_checkpoint_present": false,
+      "official_paper": "https://www.biorxiv.org/content/10.64898/2026.06.04.730144v1",
+      "official_source": "https://github.com/nurith/Handshake",
+      "result_status": "not_run",
+      "source_commit_time": "2026-06-08T16:22:31-04:00",
+      "source_revision": "cfb10ffcf0d5745473fe1deb3a6e849b9f5986f4"
+    },
+    "prostt5_cross_contact_control": {
+      "clean_room_status": "specified_not_materialized",
+      "config_sha256": "69c1915585d20b1d3c1d44a566968a27c7d9cf784f223569ffc5dc2a9e0f892c",
+      "comparability_boundary": "Pretraining uses 17 million AlphaFoldDB structures; training cutoff and overlap with SAbDab2 must be audited. It is an externally pretrained representation control, not data-equivalent to frozen ESM2.",
+      "declared_hidden_dimension": 1024,
+      "identical_split_runs": 0,
+      "license_boundary": "The official model card declares MIT, but no standalone LICENSE file was found at the pinned model revision. Preserve the model-card license declaration and do not infer permissions beyond it.",
+      "model_revision": "d7d097d5bf9a993ab8f68488b4681d6ca70db9e5",
+      "official_model": "https://huggingface.co/Rostlab/ProstT5",
+      "result_status": "not_run",
+      "weight_custody": "The current official tree exposes an approximately 11.3 GB pytorch_model.bin with pickle imports. No local weight hash or safe converted artifact exists yet."
+    },
+    "protact": {
+      "architecture_boundary": "SE(3)-invariant monomer encoders, surface features and a trigonometry interaction module initialized from the outer product of node embeddings",
+      "comparability_boundary": "The published contact definition is minimum-heavy-atom distance below 6 A, maximum monomer length is 256, and training may use label-informed contact-rich crops. Published SAbDab results therefore cannot be compared directly with the FrameContact double-cold full-axis task.",
+      "identical_split_runs": 0,
+      "license_boundary": "No LICENSE or COPYING file at the pinned revision; source may be inspected but is not copied into FrameContact.",
+      "official_paper": "https://www.nature.com/articles/s42003-026-09809-2",
+      "official_source": "https://github.com/biomed-AI/ProTact",
+      "result_status": "not_run",
+      "source_commit_time": "2025-01-10T17:42:12+08:00",
+      "source_revision": "ed0d75e2adf159915e5a1d2fb4ead73f8d278702"
+    }
+  },
+  "parent": {
+    "path": "baselines/BASELINE_LOCK_V4.json",
+    "reason": "Add 2026 partner-aware and contact-map frontier authorities without rewriting the previously frozen GVP, EGNN, IPA and Pairformer ledger.",
+    "sha256": "cc871d28a05e6c66a63e6961d70191e3b5ac84b7a41c0072a343a514fa83ec57"
+  }
+}

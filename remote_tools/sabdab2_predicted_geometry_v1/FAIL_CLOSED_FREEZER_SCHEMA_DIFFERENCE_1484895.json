@@ -1,0 +1,16 @@
+{
+  "distance_label_manifest_sha256": "a8c13f0be4a5b6483897142e6dc03ddcb2741ef9d8300c28aeda0c87bdf9ccb3",
+  "distance_label_receipt_sha256": "a767257fc4862e1b230cd06a2cd6f9a3a95e9ad6c74c58c120519ab16b733a89",
+  "failed_job_id": "1484895",
+  "failed_job_state": "FAILED",
+  "failed_job_stderr_sha256": "b1936f527a379473653f959b5fbf2cfa17bacf3b12d17a2caecc1e4b79d4a412",
+  "format_version": "sabdab2_predicted_geometry_distance_label_freezer_failure_v1",
+  "partial_authority_preserved_at": "/ssd/scxi253/model_deployment/results/development/sabdab2_sequence_predicted_geometry_development_v1/authority/failed_distance_label_recovery_v2_job1484895",
+  "reason": "The TopK2 protocol template did not already contain training_objective.distance_supervision; the freezer used direct indexing instead of schema-compatible insertion.",
+  "recovery_scope": "Freezer-only schema compatibility correction. The complete authenticated distance-label cache is reused byte-for-byte; no model, loss, split, seed, data, or metric definition changes.",
+  "scientific_result_authorized": false,
+  "status": "FAIL_CLOSED_FREEZER_SCHEMA_DIFFERENCE",
+  "test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "training_started": false
+}

@@ -1,0 +1,93 @@
+{
+  "schema_version": "framecontact_train_audit_protocol_v1",
+  "protocol_status": "development_diagnostic_frozen_before_specificity_gauge_v3_completion",
+  "research_question": "At the checkpoint selected only by antigen-fold validation, how much of the remaining error is failure to fit the training role versus failure to generalize across antigen folds?",
+  "claim_boundary": "Post-hoc development diagnostic only. Train metrics cannot select a checkpoint, tune calibration, alter an ablation, or support external-generalization or benchmark claims. Test and external roles remain forbidden.",
+  "eligible_checkpoint": {
+    "selection_source": "validation only",
+    "required_artifacts": [
+      "FRAMECONTACT_DEVELOPMENT_RESULT.json",
+      "FRAMECONTACT_SELECTED.pt",
+      "RUN_RECEIPT.json"
+    ],
+    "required_receipt_flags": {
+      "test_loaded": false,
+      "external_test_loaded": false
+    },
+    "train_metrics_available_before_selection": false
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "role": "train",
+    "coverage": "complete authenticated train role; no convenience subsampling",
+    "split": "the identical antigen-fold split manifest authenticated by the development run",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "role": "train",
+      "label_free_routing_required": true
+    },
+    "test_role_forbidden": true,
+    "external_role_forbidden": true
+  },
+  "calibration": {
+    "temperature_source": "selected-checkpoint validation result",
+    "operating_threshold_source": "selected-checkpoint validation result",
+    "fit_on_train": false,
+    "train_specific_threshold_selection": false,
+    "also_report_raw_logit_zero_metrics": true
+  },
+  "metrics": {
+    "pair_contact": [
+      "pooled and mean-per-complex AUPRC",
+      "AUROC",
+      "P@K and Recall@K",
+      "precision",
+      "recall",
+      "F1",
+      "MCC",
+      "predicted-positive ratio",
+      "Brier",
+      "ECE-15"
+    ],
+    "residue": [
+      "epitope pooled and mean-per-complex AUPRC",
+      "paratope pooled and mean-per-complex AUPRC",
+      "precision",
+      "recall",
+      "F1",
+      "MCC",
+      "predicted-positive ratio",
+      "Brier",
+      "ECE-15"
+    ],
+    "partner_specificity": [
+      "fixed-antigen wrong-antibody cluster-weighted margin",
+      "fixed-antibody wrong-antigen cluster-weighted margin",
+      "cluster bootstrap confidence intervals"
+    ],
+    "comparison": "For every seed and condition, subtract the selected-checkpoint validation metric from the matching train-audit metric. Report all seeds and paired bootstrap intervals; do not average away a failed direction."
+  },
+  "interpretation": {
+    "train_high_validation_low": "capacity or regularization/generalization bottleneck",
+    "train_low_validation_low": "optimization, supervision, representation, or class-imbalance bottleneck",
+    "train_and_validation_partner_margin_low": "the model has not learned partner specificity even on observed antigen folds",
+    "train_partner_margin_high_validation_low": "partner interaction is memorized but does not transfer across antigen folds"
+  },
+  "implementation": {
+    "evaluator_path": "scripts/evaluate_framecontact_train_audit.py",
+    "evaluator_sha256": "030b7e8b6d16ac8fba91990ebb99f6790168a57c07c210d766e98c2697f034ea",
+    "test_path": "tests/test_evaluate_framecontact_train_audit.py",
+    "test_sha256": "64e70278b8e4f3a2eeaed1c9585f0dd082b075dcb7b3738c6fb93240b3a0770c",
+    "output_is_write_once": true,
+    "selected_checkpoint_load_is_strict": true,
+    "deterministic_evaluation": true
+  },
+  "evidence_boundary_at_freeze": {
+    "specificity_gauge_v3_complete_train_audit_accessed": false,
+    "specificity_gauge_v3_complete_validation_result_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_metrics_accessed": false,
+    "asep_official_test_predictions_accessed": false,
+    "external_test_predictions_accessed": false
+  }
+}

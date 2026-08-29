@@ -1,0 +1,15 @@
+{
+  "failed_job_id": 1469388,
+  "failed_stderr_sha256": "d3dc2d7bbb8404a0c4b15b14bcb3f56a146f12a0462da7d548bd37203bec45f7",
+  "failure_class": "CUDA_OUT_OF_MEMORY",
+  "failure_message": "torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 140.00 MiB.",
+  "format_version": "abpairfm_3b_systems_optimization_failure_receipt_v4",
+  "parent_repair_verified": {
+    "cu_seqlens_dtype_failure_recurred": false,
+    "first_backward_reached": true
+  },
+  "partial_checkpoint_reusable": false,
+  "result_written": false,
+  "scope": "four-rank microbatch-7 backward memory failure before update completion",
+  "test_access": false
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "framecontact_sabdab2_antigen_fold_protocol_receipt_v3",
+  "protocol_file": "framecontact_sabdab2_antigen_fold_v3.json",
+  "protocol_file_sha256": "ef0fa5a58123c178eba8eb51a5bccadf4774e68c5a3ef3245fce4e244fd9cf50",
+  "frozen_before_split_construction": true,
+  "task_labels_read_for_selection": false,
+  "model_predictions_read_for_selection": false
+}

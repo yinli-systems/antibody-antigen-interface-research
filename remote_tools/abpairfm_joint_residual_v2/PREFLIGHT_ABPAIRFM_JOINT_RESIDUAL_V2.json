@@ -1,0 +1,1 @@
+{"antibody_finite":true,"antibody_shape":[229,3840],"antigen_finite":true,"antigen_shape":[54,3840],"dataset_count":512,"format_version":"abpairfm_joint_residual_preflight_v1","input_feature_dim":3840,"instance_id":"pdb_00001dee_F_E","record_sha256":"922b268bffe3a5b7deefa7a68cded14d777a601ee82b4633d833329b88ab88a9","test_loaded":false}

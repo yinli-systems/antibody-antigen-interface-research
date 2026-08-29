@@ -1,0 +1,39 @@
+{
+  "archive": {
+    "sha256": "bc0220582ed47768e6987d7ce77776163b55e3b753b644f9c5154c68bd38279b",
+    "size_bytes": 321794724
+  },
+  "authorization": {
+    "normalization": true,
+    "scientific_claim": false,
+    "training": false
+  },
+  "claim_boundary": "Authenticated public PPLM archive inventory and schema evidence only. This source is reference-only and remains excluded from production training.",
+  "format_version": "pplm_public_archive_materialization_receipt_v2",
+  "inventory": {
+    "admissible_training_pair_count_after_missing_endpoint_exclusion": 3183454,
+    "admissible_training_unique_exact_pair_count_after_missing_endpoint_exclusion_and_order_invariant_deduplication": 3183390,
+    "missing_endpoint_count": 48,
+    "pair_with_missing_endpoint_count": 24,
+    "primary_validation_pair_count": 4678,
+    "sequence_file_count": 1036697,
+    "total_residue_count": 375898588,
+    "training_duplicate_exact_or_order_invariant_pair_count": 76,
+    "training_exact_pair_count": 3183478,
+    "training_unique_exact_pair_count": 3183402,
+    "unique_exact_sequence_count": 756036,
+    "validation_training_exact_pair_overlap_count": 1,
+    "validation_training_exact_pair_overlap_example": "1797542.A3J59_00505-1797542.A3J59_02075"
+  },
+  "paper_claim_more_than_3_3m_not_reproduced_by_this_archive": true,
+  "remote_audit_receipt": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/raw/pplm_2026/archive_audit_v2.json",
+  "remote_audit_receipt_sha256": "d1f6a7f95ce598a3d3cbe47ee1212f83fa26f431a5a862e6ff6583c27faad400",
+  "source_license_status": "unresolved_fail_closed_for_training",
+  "status": "MATERIALIZED_WITH_SCHEMA_DEFECTS_NOT_ADMITTED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

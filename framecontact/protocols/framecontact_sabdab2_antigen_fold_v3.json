@@ -1,0 +1,58 @@
+{
+  "schema_version": "framecontact_sabdab2_antigen_fold_protocol_v3",
+  "frozen_on": "2026-07-30",
+  "selection_stage": "after label-free Foldseek connectivity audit and before any model fitting on this split",
+  "authority": {
+    "prepared_cohort_sha256": "a32aa68bb6780d1222b310bab5e4efbf365c9219e08eb8a897379ceded565335",
+    "metadata_sha256": "01414df16af9d3343994f527e13e81a25bf8da08198858018493a96f173a8cfb",
+    "foldseek_normalized_sha256": "5c49b92e9e0d5d7d07369669a9c463547eb81b3cd1a5babf5df55bb13d108807",
+    "foldseek_receipt_sha256": "99334611536eab76e150c19df4eb32476695989fc6c740ee7e9c6732758d50ad",
+    "component_grid_sha256": "39fa93c1365e8e0ad72d582be263b0c95082dc1b39bb65c8fda63349eb6ffa38",
+    "task_labels_read_for_split_selection": false,
+    "model_predictions_read_for_split_selection": false
+  },
+  "hard_components": {
+    "exact_equalities": [
+      "PDB assembly ID",
+      "antigen sequence SHA-256",
+      "antibody sequence SHA-256"
+    ],
+    "foldseek_score_rule": "min(qtmscore, ttmscore)",
+    "foldseek_threshold": 0.5,
+    "edge_interpretation": "both structures must achieve global TM-score at least 0.5; one-sided substructure containment is insufficient",
+    "transitivity": "connected components over every exact-equality and Foldseek hard edge"
+  },
+  "assignment": {
+    "target_fractions": {
+      "train": 0.7,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "seed": 20260730,
+    "rule": "deterministic largest-component-first greedy allocation"
+  },
+  "label_free_selection_rule": {
+    "largest_component_fraction_max": 0.5,
+    "validation_fraction_min": 0.1,
+    "test_fraction_min": 0.1,
+    "priority": "lowest-threshold reciprocal_min, then geometric_mean, then reciprocal_max",
+    "selected_grid_result": {
+      "component_count": 233,
+      "largest_component_size": 1218,
+      "largest_component_fraction": 0.3325143325143325,
+      "suggested_role_counts": {
+        "train": 2565,
+        "validation": 549,
+        "test": 549
+      }
+    }
+  },
+  "post_construction_gates": [
+    "zero hard-edge cross-role count",
+    "zero PDB and exact endpoint sequence overlap",
+    "US-align spot-checks around the Foldseek decision boundary",
+    "train-to-validation and train-to-test maximum similarity audit"
+  ],
+  "test_policy": "The test role remains sealed from architecture, checkpoint, calibration, threshold, and seed selection.",
+  "claim_boundary": "This protocol chooses a label-free structural split rule. It is not a model result and does not authorize a generalization claim."
+}

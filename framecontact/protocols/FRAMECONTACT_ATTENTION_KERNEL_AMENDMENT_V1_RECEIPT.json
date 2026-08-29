@@ -1,0 +1,18 @@
+{
+  "schema_version": "framecontact_attention_kernel_amendment_receipt_v1",
+  "protocol_path": "protocols/framecontact_attention_kernel_amendment_v1.json",
+  "protocol_file_sha256": "a1058de17a957181de05063903753afb7891e68f84605fc37c07a874be70c041",
+  "protocol_canonical_sha256": "0a891b73eb355d5cd440fab5ce1d8509505cad8dcf16c77825ed09e76a5d39c2",
+  "source_manifest_sha256": "2a4857524cfa35a4c79ae2ee678e9c370f808e2a528201a08f8fbf8818830bb7",
+  "source_tree_sha256": "66c3294451fd26391c9aa191e5fef7370bead1da89d96fce6d19920fa647649b",
+  "integrated_benchmark_sha256": "1a214289d80c5fd404839877d675b97e79a5b5ba501f5cf97ff4a2971026f60c",
+  "full_regression_log_sha256": "d1b8fb2a1c8a7269ce396b966d83dc32890d52643a7f917d0ae368620317b1a6",
+  "full_regression_passed": 255,
+  "full_regression_skipped": 5,
+  "model_parameter_set_changed": false,
+  "current_frozen_training_changed": false,
+  "frozen_test_authorized": false,
+  "a100_performance_claim_authorized": false,
+  "benchmark_improvement_claim_authorized": false,
+  "state_of_the_art_claim_authorized": false
+}

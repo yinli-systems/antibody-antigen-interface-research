@@ -1,0 +1,16 @@
+{
+  "arm": "no_negative",
+  "base_protocol_file_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+  "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/asep/protocols/framecontact_asep_epitope_group_v1.json",
+  "claim_boundary": "asep development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+  "dataset": "asep",
+  "external_test_loaded": false,
+  "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+  "format_version": "framecontact_partner_negative_ablation_receipt_v2",
+  "protocol_file_sha256": "8fbf71dd547d4b4c316055130c7a98904e958a2c3aaa9ba8fd167972c9e9ef88",
+  "source_file_count": 112,
+  "source_inventory_sha256": "7a5d83342dd61856947861d30b82732a9f3be4dfa46cd586e3d3ec31018fd815",
+  "specificity_loss_weight": 0.0,
+  "test_loaded": false,
+  "trainer_file_sha256": "44871df01e3481d3651a53d384687f3b9050a33976a7c81f3482512da2e87743"
+}

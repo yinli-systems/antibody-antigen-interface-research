@@ -1,0 +1,33 @@
+{
+  "authorization": {
+    "corpus_materialization": false,
+    "development_only": true,
+    "training": false
+  },
+  "claim_boundary": "Pair-level overlap audit only; no paired corpus is authorized for training until the audit result and a separate frozen selection protocol pass.",
+  "format_version": "oas_pairwise_decontamination_audit_protocol_v2",
+  "identity_grid": [
+    0.5,
+    0.7,
+    0.8,
+    0.9,
+    0.95,
+    1.0
+  ],
+  "inputs": {
+    "hits_sha256": "edf4c952061ffef3e48b24ddb61a30d303a9cca26a3fa47c5ddcb6ce8f8f8338",
+    "source_pair_count": 2585593,
+    "source_pairs_sha256": "87c907d6e6edaab7b9b22957e5c789b6b80906fb45adca3da7ac59d8758d93ff"
+  },
+  "method": {
+    "aggregation": "bounded-memory SQLite UPSERT over non-contiguous query blocks; maximum identity retained for each row_hash/development_instance/chain",
+    "legacy_rule": "exclude if either OAS chain hits any development chain",
+    "minimum_reciprocal_coverage": 0.8,
+    "pairwise_rule": "exclude only if OAS heavy and light chains both hit chain-matched members of the same development complex",
+    "search_hits_reused": "frozen whole-chain MMseqs hits",
+    "threshold_selection": "not authorized by this audit"
+  },
+  "supersedes_failed_job": 1469540,
+  "test_access": false,
+  "task_labels_read": false
+}

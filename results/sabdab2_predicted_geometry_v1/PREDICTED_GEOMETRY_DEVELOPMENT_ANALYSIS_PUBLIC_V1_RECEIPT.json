@@ -1,0 +1,14 @@
+{
+  "all_six_runs_verified": true,
+  "format_version": "sabdab2_predicted_geometry_development_public_receipt_v1",
+  "invalid_run_reused": false,
+  "published_result_file": "PREDICTED_GEOMETRY_DEVELOPMENT_ANALYSIS_PUBLIC_V1.json",
+  "published_result_sha256": "6f8435080d308d7623f8842253cd08a08a4a294e10c4ac0b4b1051743b4979d7",
+  "source_analysis_sha256": "a4168a919e97b1344d718946fdd51305803773ae3355a3014ee2f05583a077b7",
+  "source_campaign_sha256": "1117a6ac45bd0ab57063af52e55ad14948447513d461a959f5d984bc41f99099",
+  "source_distance_label_manifest_sha256": "a8c13f0be4a5b6483897142e6dc03ddcb2741ef9d8300c28aeda0c87bdf9ccb3",
+  "source_receipt_sha256": "da635662993af44fd72fd5dd209567c209a926d4e04089b2c232cb0bb12d9ae9",
+  "status": "PASS_PREDICTED_GEOMETRY_DEVELOPMENT_SENSITIVITY_CORRECTED_DISTANCE_LABELS",
+  "temporal_holdout_loaded": false,
+  "test_loaded": false
+}

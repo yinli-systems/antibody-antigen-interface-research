@@ -1,0 +1,28 @@
+{
+  "claim_boundary": "Synthetic full-model systems attempt only; no biological data was loaded and no training or throughput claim passed.",
+  "failure": {
+    "error": "RuntimeError: No available kernel. Flash attention requires q,k,v to have the same last dimension; observed 136, 136, and 64.",
+    "root_cause": "The exact lifted hybrid-attention construction expanded query and key head dimensions but left values at the original ESM2 head dimension, which is unsupported by the forced PyTorch Flash SDPA kernel.",
+    "stage": "first_forward_flash_sdpa_dispatch"
+  },
+  "format_version": "abpairfm_3b_fsdp2_systems_failure_v1",
+  "job": {
+    "elapsed": "00:00:29",
+    "exit_code": "1:0",
+    "gpu_count": 4,
+    "job_id": 1458455,
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "passed_before_failure": {
+    "authenticated_checkpoint_load": true,
+    "fp32_fsdp2_parameter_uniformity": true,
+    "full_2839005633_parameter_model_constructed": true
+  },
+  "remediation": "Right-pad values with exact zeros to the 136-dimensional lifted head, execute Flash SDPA, and slice outputs back to the original 64 value coordinates; verify forward and gradient equivalence against dense attention.",
+  "status": "FAILED_CLOSED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

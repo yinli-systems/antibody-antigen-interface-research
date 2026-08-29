@@ -1,0 +1,6 @@
+diff --git a/tests/test_antibody_optimized_runner.py b/tests/test_antibody_optimized_runner.py
+--- a/tests/test_antibody_optimized_runner.py
++++ b/tests/test_antibody_optimized_runner.py
+@@ -20 +20 @@
+-    assert "static_graph=False" in source
++    assert '"static_graph": False' in source

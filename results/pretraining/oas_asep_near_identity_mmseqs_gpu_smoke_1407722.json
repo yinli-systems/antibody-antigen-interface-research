@@ -1,0 +1,53 @@
+{
+  "claim_boundary": "Authenticated GPU-MMseqs sensitivity smoke on synthetic controls only. This receipt authorizes the full development near-identity audit, but does not authorize OAS transfer, model selection, official/frozen/external test access, or a benchmark claim.",
+  "deployment": {
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/oas_near_identity_mmseqs_smoke_3f96858_attempt_002",
+    "source_commit": "3f968588188028a7af2629e78fa1dff895eb7de2",
+    "source_root": "/ssd/scxi253/model_deployment/jobs/oas-mmseqs-smoke-3f96858-attempt-002"
+  },
+  "format_version": "oas_asep_near_identity_mmseqs_gpu_smoke_receipt_v1",
+  "gpu": {
+    "driver_version": "580.82.07",
+    "name": "NVIDIA GeForce RTX 5090",
+    "scheduler_reserved_gpu_count": 1,
+    "uuid": "GPU-0219e061-7822-7c85-d558-e0de67a13afe"
+  },
+  "job": {
+    "elapsed": "00:02:16",
+    "exit_code": "0:0",
+    "job_id": 1407722,
+    "node": "wqd10nah09g1",
+    "state": "COMPLETED"
+  },
+  "mmseqs": {
+    "archive_sha256": "77134296f2141752924b26908f541f2ccfee937174f5dfa43b22e4114d7d025d",
+    "binary_path": "/ssd/scxi253/model_deployment/tools/mmseqs2-gpu-17b688d2-mmseqscom-77134296/bin/mmseqs",
+    "binary_sha256": "2eca75a2b9244ef2ea956c02e6bfb188b14ebd84f0883f5f34878298ff965ab1",
+    "source_commit": "17b688d21dda57fc5f5b7286ecba7ec003d4717f",
+    "source_url": "https://mmseqs.com/latest/mmseqs-linux-gpu.tar.gz"
+  },
+  "protocol": {
+    "path": "protocols/oas_asep_near_identity_decontamination_v1.json",
+    "sha256": "d96fcd766960ad727c3e3ba810dd339f1c10330dae1ec17d22d62489b421b4fb"
+  },
+  "result": {
+    "controls": {
+      "exact_match": true,
+      "internal_indel_above_threshold": true,
+      "single_substitution_above_threshold": true,
+      "terminal_indel_above_threshold": true
+    },
+    "gate_passed": true,
+    "parsed_hit_rows": 16,
+    "receipt_sha256": "48dca521ffef8f2a141d9a4df2d272518492fe91f971f547bcd677d9ade057ac",
+    "result_file_sha256": "7217b7f2b75fce7c68b1676993e478dd0c3a87cae9e819f7c8ac328bbe119b6a"
+  },
+  "supersedes": {
+    "failed_job_id": 1407560,
+    "failure": "The prior MMseqs binary was compiled without CUDA support."
+  },
+  "test_access": {
+    "development_data_accessed": false,
+    "official_frozen_external_test_accessed": false
+  }
+}

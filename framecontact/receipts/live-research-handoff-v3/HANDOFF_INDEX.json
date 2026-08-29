@@ -1,0 +1,48 @@
+{
+  "claim_boundary": "Development-only research and engineering handoff. No frozen SAbDab2 test, official AsEP test, external-generalization, A100 model-quality, biological-benchmark, or state-of-the-art result is included.",
+  "files": {
+    "baselines/BASELINE_LOCK_V5.json": "6692708d2fb79b0ea10e5a7cdfe28adad2164cba7d74aa9d5b568cda9c5f842f",
+    "docs/CONTACT_ADAPTED_ESM_FACTORIAL_CANDIDATE.md": "c49a86e6e38d1528e7f06289bfe5df4daf790739c9d99d9bb0e21849a4f55ddf",
+    "docs/DISTOGRAM_TRIANGLE_RESEARCH_NOTE.md": "cd61ff47e42a20cf0a664c9852113a9591e52db33b2d351bb6da9348b3e414a9",
+    "docs/FRAMECONTACT_DOUBLE_COLD_SPLIT_AUDIT_20260801.md": "e5b932e6117762320b67bbc0d667dd09b113f48e280c862acaaa3131d407eb53",
+    "docs/FRAMECONTACT_FRONTIER_RESEARCH_20260801.md": "814f13264f65794f01bb5b0f2e5cd85532e76267a1666293d8499b42b9e2942d",
+    "docs/FRAMECONTACT_GEOMETRY_ABLATED_CONTROL_20260801.md": "ba2e895fdb1cf22471ddd7f6b8b0bc8c75793d3f85e0081f4e1b4ce1026d3a12",
+    "docs/FRAMECONTACT_RETRIEVAL_ALIGNED_SPECIFICITY_20260801.md": "e38676096ee21938d29f0fd68d2b24d0f04cd83a22e2607c2330d99e3db05c48",
+    "docs/FRONTIER_CONTACT_BASELINE_AUDIT_20260801.md": "8266d94fecd59d58e61fbf4f262d0c84bbb6d4ca161baeaabb41c0215b6469b9",
+    "docs/HANDSHAKE_BASELINE_AUDIT_20260801.md": "3e055146570630deb053bc9ced75bdcc5cb1e0777b64c30562631e58efc14506",
+    "docs/README.md": "8147a8f4f0da486250c9ec63597e7b5a19f4e6da5c347376e340ec9287f36bb9",
+    "docs/TEACHER_UPDATE_20260801_DOUBLE_COLD_AND_RESEARCH.md": "3343d4576ff19020f82baee03b08c2867147b206928b79da67447caefec51fd8",
+    "docs/TEACHER_UPDATE_20260801_LIVE_VALIDATION_AND_BASELINE.md": "31de4d1a460946f45d70cf60d5e891b2686698878bcfeeccda0a8405ff999ceb",
+    "receipts/double-cold-source-v12-final/ENGINEERING_RECEIPT.json": "1a84e5d36cea35aa4e3cb2a4031227b1ac4a5c3d32f82db840cc762f1fba88be",
+    "receipts/double-cold-source-v12-final/FULL_PYTEST_WITH_DEPS.log": "c77f3d0a53519c1c4c48bfcfc9d047db6745e5f55ecd374d156787a24cf11faf",
+    "receipts/double-cold-source-v12-final/LOCAL_FULL_PYTEST.log": "946c75b31bbde28c0edaeffa989538faf85bba05387a36cb0bef7536f41c4fca",
+    "receipts/double-cold-source-v12-final/MANIFEST_BUILD.log": "4c4527fdca6da75ee88b8b4a182d81eef34837b15ba51366291719dcd4d7859c",
+    "receipts/double-cold-source-v12-final/MANIFEST_VERIFY.json": "34c6c169e461bcde42d9184d519f76fd700407b5241b00b500a1ed44dca6b200",
+    "receipts/double-cold-source-v12-final/POST_TEST_MANIFEST_VERIFY.json": "34c6c169e461bcde42d9184d519f76fd700407b5241b00b500a1ed44dca6b200",
+    "receipts/double-cold-source-v12-final/SOURCE_MANIFEST.json": "b81333004e5566a1be4a93e11ba9d8e42b59f1863ae6f21622546e1c1bd9d57c",
+    "receipts/live-array-audit-20260801T113500Z/DISTOGRAM_COMPACT.json": "1a3f60c5f4ebecd6b06008f61ddc38a759d4fbe0a31ddaf4f098ee5fcf66c23d",
+    "receipts/live-array-audit-20260801T113500Z/DISTOGRAM_PATIENCE.json": "e29984cdbd10fe457880d6030ee3d2a8641048a3dc7083243285bad39872254b",
+    "receipts/live-array-audit-20260801T113500Z/MATCHED_EPOCH_UNARY_VS_DISTOGRAM.json": "2fe699b1590d7ca4ab459b1caee978387bbfe72aaf40833d239dd3b4f995fa86",
+    "receipts/live-array-audit-20260801T113500Z/README.md": "736444e5dc2f6b6cd5f6446b7d82127c27ff6f76c3ccdc73499699446541bc1e",
+    "receipts/live-array-audit-20260801T113500Z/RESIDUE_HEAD_COMPACT.json": "396f85b87c6bcddf55cf024d54273cd03c8014534075927459fb01bf6675efa4",
+    "receipts/live-array-audit-20260801T113500Z/RESIDUE_HEAD_PATIENCE.json": "a697f76a52f452dca5021a24c7166d85f15704c698d5d80eab768d9060148e25",
+    "receipts/live-array-audit-20260801T113500Z/SQUEUE.txt": "f83bde4c88fb97d96c50d775541d6fd3b44ccde36312c150eef99b1afa5b975e"
+  },
+  "format_version": "framecontact_live_research_handoff_v3",
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v3",
+  "running_development_arrays": {
+    "distogram_job_id": 1345108,
+    "frozen_or_external_test_accessed": false,
+    "hardware": "RTX 4090",
+    "residue_head_job_id": 1345042,
+    "snapshot": "receipts/live-array-audit-20260801T113500Z"
+  },
+  "source_authority": {
+    "local_regression": "287 passed, 0 failed in 15.92s",
+    "manifest_sha256": "b81333004e5566a1be4a93e11ba9d8e42b59f1863ae6f21622546e1c1bd9d57c",
+    "record_count": 443,
+    "remote_regression": "282 passed, 5 skipped, 0 failed in 96.57s",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v12",
+    "tree_sha256": "e17e8b5187694dacd92e7066e75a783d66932f2471916297d453867c8e0695b7"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "authorization": {
+    "campaign_complete": false,
+    "downstream_transfer": false,
+    "next_segment_submission": true,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Measurement-only recovery of the frozen OAS validation-panel index anchor. Training state, checkpoint, optimizer, RNG, sampler cursor, masking, corpus, and test authority are unchanged.",
+  "corrected_validation": {
+    "evaluation_file_sha256": "b40fdef16651a60418e02671a85601a24bea0ee65536ae24daf92eab8972a1ea",
+    "masked_accuracy": 0.8597681469591582,
+    "masked_cross_entropy": 0.5432882324226808,
+    "panel_indices_sha256": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "record_count": 8192,
+    "selected_targets": 140175
+  },
+  "failed_segment": {
+    "consumed_residue_tokens": 431226626,
+    "executed_steps": 3000,
+    "failure": "RuntimeError: Validation panel anchor differs",
+    "failure_evaluation_log_sha256": "9e90b9edcabbc983374369839a035d0f8a48e87783c14f17d166b7ad7aa3b93e",
+    "job_id": "1457281",
+    "job_state": "FAILED",
+    "next_update": 3000,
+    "sample_cursor": 3840000,
+    "stale_panel_indices_sha256": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec"
+  },
+  "format_version": "rtx4090_panel_anchor_recovery_public_receipt_v1",
+  "observed_at": "2026-08-21T21:23:07+08:00",
+  "recovery": {
+    "audit_file_sha256": "e692f52a6a9ea03da33e25624bd8f16b82d086446135c319da13cb32644f5eaf",
+    "elapsed": "00:03:30",
+    "exit_code": "0:0",
+    "job_id": "1457829",
+    "job_state": "COMPLETED",
+    "protocol_file_sha256": "5f5b48329405b5ffc60e341bce81952e667788b295c1ac8dfcc349023b4a79d3",
+    "protocol_receipt_file_sha256": "0e8f0cd0407416276abf19e62f1e7efb9971eb299f64b63508366343c70eacf5"
+  },
+  "source_sha256": {
+    "antibody_panel_anchor_recovery.sbatch": "52c595ab6aadc5d71e9a290a16dc12e729b0f38beef4aae1892d7b975758aa0b",
+    "audit_antibody_panel_anchor_recovery.py": "df9782eb23098d9db7b043a1e2affdc1d34d95696f4342e7ceb99cdaf2425663",
+    "freeze_antibody_panel_anchor_recovery.py": "df857c53c5cf859a4aec3c390126ae0a549e8cdf54530d56b749ce910dd25f80"
+  },
+  "successor": {
+    "job_id": "1457835",
+    "partition": "gpu_4090",
+    "state_at_observation": "RUNNING",
+    "watchdog_dependency": "afternotok:1457835",
+    "watchdog_job_id": "1457836"
+  },
+  "terminal_checkpoint": {
+    "model_sha256": "3f7367eb47ca4c19655f7747c642647fd90c61aa2360f0feded24240824f0257",
+    "optimizer_sha256": "fbfd707a7c14e2bd038ae9d74aa9543e26e8dba1b84bc3288e98ea909516f7aa",
+    "rng_manifest_sha256": "f74a468df0e39a57b82314f6e26dded901eb4b389380f1de419c032fac3ddf48"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

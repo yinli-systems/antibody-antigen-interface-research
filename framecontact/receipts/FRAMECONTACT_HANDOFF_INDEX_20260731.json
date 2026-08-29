@@ -1,0 +1,70 @@
+{
+  "created_utc": "2026-07-30T20:23:00Z",
+  "format_version": "framecontact_handoff_index_v1",
+  "canonical_runbook": {
+    "path": "docs/AB03_FRAMECONTACT_RUNBOOK.md",
+    "sha256": "bd7599ee4a0e449eba812653c9d5c39c5de2be2461bba1e73dd923cc5468ca47"
+  },
+  "data_authorities": {
+    "contact_manifest_sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33",
+    "embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545",
+    "same_antigen_authority_receipt_sha256": "845df2e4ba4c76dcaea24b0bff4e2d0727deb1fb382fe4c907c85b96f913692e",
+    "same_antigen_test_panel_sha256": "a8ea170fef18c5637f4ac6f9abae79958c21b5ad4c2f4a4cc60db1c57996ac60",
+    "split_manifest_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+    "structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0",
+    "test_reciprocal_partner_panel_sha256": "ea70fef770448302fb4ed1ccd7da51a1cc56cba5ea153076e077971735874bd1"
+  },
+  "development_execution_snapshot": {
+    "asep": {
+      "completed_run_receipts": 13,
+      "development_array_job_id": "1342460",
+      "ensemble_array_job_id": "1342511",
+      "same_antigen_validation_job_id": "1342514",
+      "selection_submission": "not submitted: Slurm AssocMaxSubmitJobLimit",
+      "total_runs": 40
+    },
+    "sabdab2": {
+      "aggregate_job_id": "1342804",
+      "completed_run_receipts": 0,
+      "development_array_job_id": "1342688",
+      "selection_gated_ensemble_array_job_id": "1342986",
+      "selection_job_id": "1342987",
+      "total_runs": 40
+    },
+    "snapshot_is_live_state": false
+  },
+  "evidence_boundaries": {
+    "ab03_a100_reproduction_complete": false,
+    "asep_official_test_opened": false,
+    "asep_official_test_result_exists": false,
+    "canonical_chimera_codesign_complete": false,
+    "current_remote_training_hardware": "ParaCloud NVIDIA GeForce RTX 4090 workers",
+    "sabdab2_frozen_test_opened": false,
+    "sabdab2_frozen_test_result_exists": false
+  },
+  "evaluation_source": {
+    "archive_sha256": "8c599e8bee57fc5e2710dce9fa5230dee1797de59e60dd53b4620960ffaa6341",
+    "deployment_receipt_path": "receipts/FRAMECONTACT_EVALUATION_SOURCE_V5_RECEIPT_20260731.json",
+    "deployment_receipt_sha256": "49f8e9a049b41d1d36c5a13add0787e8541e0ee73e5561786c393fbc6a718d2f",
+    "local_test_result": "189 passed",
+    "remote_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v5",
+    "source_manifest_sha256": "53586e601fe7439d583f4db43b6d4bc2c9357a625ab1a268c92762577f70dc9d"
+  },
+  "protocol_authority": {
+    "protocol_sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+    "receipt_sha256": "395b8d86648abb348b41ef2513319c86ca20e3e235eb070dd81fb4516a760537",
+    "selection_primary": "maximize minimum_direction_cluster_weighted_margin",
+    "selection_tie_break": "maximize mean_per_complex_contact_auprc",
+    "test_role_forbidden_during_selection": true
+  },
+  "remaining_gates_in_order": [
+    "Complete all development runs without failed or partial receipts.",
+    "Freeze all eight five-seed ensembles.",
+    "Freeze one validation-only architecture selection per benchmark.",
+    "Review failure disclosures and same-antigen validation diagnostics.",
+    "Create one hash-bound frozen-test opening receipt.",
+    "Consume each official scoring session exactly once.",
+    "Reproduce the selected stack on actual AB03 A100 hardware.",
+    "Run canonical CHIMERA co-design as a distinct post-confirmatory phase."
+  ]
+}

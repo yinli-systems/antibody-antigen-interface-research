@@ -1,0 +1,21 @@
+{
+  "cancelled_at": "2026-08-28T18:45:41+08:00",
+  "covered_instance_roles": {
+    "test": 104,
+    "train": 786,
+    "validation": 104
+  },
+  "decision": "FAIL_CLOSED_DO_NOT_REUSE",
+  "failure_class": "old_test_sequence_scope_in_input_plan",
+  "format_version": "sabdab2_predicted_geometry_failure_receipt_v1",
+  "job_id": "1482427",
+  "labels_loaded": false,
+  "model_outputs_at_cancellation": 54,
+  "reason": "The SD-H AF3 input plan was generated from all 3663 cohort rows instead of train and validation roles only.",
+  "result_evaluation_run": false,
+  "source_plan_sha256": "95ab7ea92e29abacc02025ea2ba85755473f449a84f31bfc506124dd4f916633",
+  "temporal_holdout_access": false,
+  "test_role_instance_count": 104,
+  "test_role_unique_sequence_count": 59,
+  "training_or_model_selection_use": false
+}

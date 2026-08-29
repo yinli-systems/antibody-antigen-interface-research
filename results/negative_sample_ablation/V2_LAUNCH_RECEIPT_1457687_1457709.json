@@ -1,0 +1,226 @@
+{
+  "asep_first_epoch_all_raw_brier_present": true,
+  "asep_first_epoch_instrumentation": [
+    {
+      "arm": "with_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.18183433146162048,
+      "seed": 17,
+      "task": 0,
+      "temperature": 1.0
+    },
+    {
+      "arm": "with_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.22419665866362232,
+      "seed": 42,
+      "task": 1,
+      "temperature": 1.0
+    },
+    {
+      "arm": "with_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.19199374707289155,
+      "seed": 73,
+      "task": 2,
+      "temperature": 1.0
+    },
+    {
+      "arm": "with_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.1892198312191053,
+      "seed": 101,
+      "task": 3,
+      "temperature": 1.0
+    },
+    {
+      "arm": "with_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.21269638972895338,
+      "seed": 137,
+      "task": 4,
+      "temperature": 1.0
+    },
+    {
+      "arm": "no_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.15616778339936346,
+      "seed": 17,
+      "task": 5,
+      "temperature": 1.0
+    },
+    {
+      "arm": "no_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.17693469602349002,
+      "seed": 42,
+      "task": 6,
+      "temperature": 1.0
+    },
+    {
+      "arm": "no_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.19378200970452805,
+      "seed": 73,
+      "task": 7,
+      "temperature": 1.0
+    },
+    {
+      "arm": "no_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.1765703871806365,
+      "seed": 101,
+      "task": 8,
+      "temperature": 1.0
+    },
+    {
+      "arm": "no_negative",
+      "probability_threshold": 0.5,
+      "raw_brier": 0.16912391166385643,
+      "seed": 137,
+      "task": 9,
+      "temperature": 1.0
+    }
+  ],
+  "external_test_loaded": false,
+  "format_version": "framecontact_negative_sample_ablation_launch_receipt_v2",
+  "jobs": {
+    "asep": {
+      "array_job_id": 1457687,
+      "submitted_sbatch_sha256": "5dcdc90ce2702cd6101f128004cdc2a895019e1d0932e90d8a935d2a5212b464",
+      "tasks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "sabdab2": {
+      "array_job_id": 1457709,
+      "submitted_sbatch_sha256": "94bd95feaacc30f488dc128febadfeec7530e163528af9165a06ebefdc4b5dd3",
+      "tasks": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    }
+  },
+  "mapping": {
+    "arm": "first five per dataset with_negative, second five no_negative",
+    "dataset": "tasks 0-9 AsEP, 10-19 SAbDab2",
+    "seeds": [
+      17,
+      42,
+      73,
+      101,
+      137
+    ]
+  },
+  "observed_at": "2026-08-21T12:32:07.448921+00:00",
+  "protocols": {
+    "asep": {
+      "no_negative": {
+        "receipt": {
+          "arm": "no_negative",
+          "base_protocol_file_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+          "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/asep/protocols/framecontact_asep_epitope_group_v1.json",
+          "claim_boundary": "asep development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+          "dataset": "asep",
+          "external_test_loaded": false,
+          "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+          "format_version": "framecontact_partner_negative_ablation_receipt_v2",
+          "protocol_file_sha256": "8fbf71dd547d4b4c316055130c7a98904e958a2c3aaa9ba8fd167972c9e9ef88",
+          "source_file_count": 112,
+          "source_inventory_sha256": "7a5d83342dd61856947861d30b82732a9f3be4dfa46cd586e3d3ec31018fd815",
+          "specificity_loss_weight": 0.0,
+          "test_loaded": false,
+          "trainer_file_sha256": "44871df01e3481d3651a53d384687f3b9050a33976a7c81f3482512da2e87743"
+        },
+        "receipt_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/protocols/asep/no_negative/PROTOCOL_RECEIPT.json",
+        "receipt_sha256": "290051f0a43851db34408f0a9d3f2e7f5f8d3ffa8d312d30ea0a007ce75e5d97"
+      },
+      "with_negative": {
+        "receipt": {
+          "arm": "with_negative",
+          "base_protocol_file_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+          "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/asep/protocols/framecontact_asep_epitope_group_v1.json",
+          "claim_boundary": "asep development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+          "dataset": "asep",
+          "external_test_loaded": false,
+          "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+          "format_version": "framecontact_partner_negative_ablation_receipt_v2",
+          "protocol_file_sha256": "60b13fabd162978556adcf884a8193ebcbf21eb25d8b2b2b317f86f9a6e2cf47",
+          "source_file_count": 112,
+          "source_inventory_sha256": "7a5d83342dd61856947861d30b82732a9f3be4dfa46cd586e3d3ec31018fd815",
+          "specificity_loss_weight": 0.25,
+          "test_loaded": false,
+          "trainer_file_sha256": "44871df01e3481d3651a53d384687f3b9050a33976a7c81f3482512da2e87743"
+        },
+        "receipt_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/protocols/asep/with_negative/PROTOCOL_RECEIPT.json",
+        "receipt_sha256": "f681a105fb87494b51de013744a1b72ac0680a489017bfa24d42706d90ca4165"
+      }
+    },
+    "sabdab2": {
+      "no_negative": {
+        "receipt": {
+          "arm": "no_negative",
+          "base_protocol_file_sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+          "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/sabdab2/protocols/framecontact_primary_v5.json",
+          "claim_boundary": "sabdab2 development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+          "dataset": "sabdab2",
+          "external_test_loaded": false,
+          "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+          "format_version": "framecontact_partner_negative_ablation_receipt_v2",
+          "protocol_file_sha256": "42feba723c1a134cec5e420cef4d1eda0e7a267f5dd157f36cc4f7049cc8cd5a",
+          "source_file_count": 136,
+          "source_inventory_sha256": "1df974bb5c3cbb2d2234d9024489ec22b014f5233c0d1e8278c8da95ff3bf3b2",
+          "specificity_loss_weight": 0.0,
+          "test_loaded": false,
+          "trainer_file_sha256": "29e86826e97c72363dcb82b109a4b498402467220f2f4ef3ae2a05b3506d4994"
+        },
+        "receipt_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/protocols/sabdab2/no_negative/PROTOCOL_RECEIPT.json",
+        "receipt_sha256": "767b176f2c142b6d62c554c45e1e9389702e4dc64da440598b90cbce0d092726"
+      },
+      "with_negative": {
+        "receipt": {
+          "arm": "with_negative",
+          "base_protocol_file_sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+          "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/sabdab2/protocols/framecontact_primary_v5.json",
+          "claim_boundary": "sabdab2 development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+          "dataset": "sabdab2",
+          "external_test_loaded": false,
+          "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+          "format_version": "framecontact_partner_negative_ablation_receipt_v2",
+          "protocol_file_sha256": "d20994b6924bafff47ad9741d5a6ff0f8988c3c3b5ec9fde91af3e2e24839d59",
+          "source_file_count": 136,
+          "source_inventory_sha256": "1df974bb5c3cbb2d2234d9024489ec22b014f5233c0d1e8278c8da95ff3bf3b2",
+          "specificity_loss_weight": 0.25,
+          "test_loaded": false,
+          "trainer_file_sha256": "29e86826e97c72363dcb82b109a4b498402467220f2f4ef3ae2a05b3506d4994"
+        },
+        "receipt_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/protocols/sabdab2/with_negative/PROTOCOL_RECEIPT.json",
+        "receipt_sha256": "b1def32752b944a2598f33eedd7d0b1616a03979215aba2be2a2fdbdaf1e475f"
+      }
+    }
+  },
+  "sabdab2_first_epoch_pending": true,
+  "sabdab2_source_manifest_file_sha256": "d73bb84ba1fd056737e1d9a985b02ebc0c5f3bb5f5d1edbd694d3db9ccf18cdd",
+  "scientific_claim": false,
+  "status": "running_instrumentation_verified_on_all_ten_asep_tasks",
+  "test_loaded": false,
+  "v1_failure_receipt_sha256": "9499b2b43cc6c7b95dac96fc864b54eaeae28d3189d571edae59a9b6d4fbd126",
+  "v2_operational_failure_receipt_sha256": "4227901f65816c95e5d610f18bdb2f77096d997fb1a3303bcf0eef9b87262347"
+}

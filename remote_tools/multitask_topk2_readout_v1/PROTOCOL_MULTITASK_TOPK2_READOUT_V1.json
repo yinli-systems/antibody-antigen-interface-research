@@ -1,0 +1,38 @@
+{
+  "format_version": "multitask_topk2_readout_protocol_v1",
+  "status": "frozen_before_measurement",
+  "frozen_at_utc": "2026-08-28T04:10:00Z",
+  "question": "Does the frozen epitope TopK2 sparse-edge idea transfer to paratope and pair-contact readouts?",
+  "authorities": {
+    "source_manifest_sha256": "10536e3a71d982d2cc6d8b82eefb6c7d51059fab0bf7f486fdbd266ada420348",
+    "run_result_sha256": "bbefaf74c4c785009470cd4f51c255dfc04286ada86139a7125e0a8f182caa42",
+    "checkpoint_file_sha256": "6f029a705e05147f4f8275aa879fe34f23df3abb33ce2586d73d80172e8f524d",
+    "structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0",
+    "contact_manifest_sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33",
+    "embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545",
+    "split_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6"
+  },
+  "source_checkpoint": {
+    "arm": "topk2",
+    "seed": 17,
+    "selected_epoch": 2,
+    "selected_state_sha256": "81396f11cb6480b84102910bdf513cf9f0b99b1130a05ab86abe6094b0a8185a"
+  },
+  "readouts": {
+    "paratope_topk2_edge_only": "TopK2 mean pair probability over valid antigen partners for each antibody residue, transformed to a clipped logit",
+    "paratope_node_plus_topk2": "Frozen paratope node logit plus the paratope TopK2 edge-only logit",
+    "contact_topk2_context_equal_logit": "For each valid pair, equal-logit mean of the original pair logit, its antibody-row TopK2 logit, and its antigen-column TopK2 logit; pair indices and candidate mask are preserved"
+  },
+  "metrics": {
+    "primary": "mean_per_complex_ap",
+    "secondary": ["pooled_average_precision", "pooled_auroc", "precision", "recall", "f1", "mcc"],
+    "paired_interval": "10000-draw percentile bootstrap over 549 validation complexes, seed 20260828"
+  },
+  "claim_boundary": {
+    "role": "development_validation",
+    "selection": false,
+    "test_loaded": false,
+    "temporal_holdout_loaded": false
+  },
+  "decision_rule": "This fixed-checkpoint control can establish transfer, neutrality, or a negative result. It cannot select a final model or establish generalization. Strict retraining is justified only if a non-epitope readout has positive mean-per-complex AP delta and a paired 95% interval excluding zero."
+}

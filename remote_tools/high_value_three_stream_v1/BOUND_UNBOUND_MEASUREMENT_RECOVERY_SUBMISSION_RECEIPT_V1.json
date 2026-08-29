@@ -1,0 +1,41 @@
+{
+  "dependency_binding": {
+    "huggingface_hub": {
+      "init_sha256": "e586b64612482128fd24119364bc4dc6dca938407134e454a5e876341b364e35",
+      "version": "0.36.2"
+    },
+    "safetensors": {
+      "init_sha256": "92c988289b8c225a92f25e487ad5d7a1eb7e326eec0fedfc6b75e6f04d85e32f",
+      "version": "0.8.0"
+    },
+    "tokenizers": {
+      "init_sha256": "148ecb122f3fee03be9abb1fe213dd85fbc691bf2ad2b437ff531533781a6a3a",
+      "version": "0.22.2"
+    },
+    "transformers": {
+      "esm_modeling_sha256": "47ba50c7afabb6d8fdbb1fbda6851772faeb5ed874ac99cd7283451b3d8922fa",
+      "esm_tokenizer_sha256": "1dc6d543d27e7bb363ba1552a9c1cc8fed8f2064eda24fb9cd1453f9885f7dd1",
+      "init_sha256": "aa8cb54da488cf43ba37b9955bb6c0d84d2000db0306f6a5f1c20b6842482d04",
+      "read_only_site_packages": "/ssd/scxi253/model_deployment/envs/epiformer/lib/python3.10/site-packages",
+      "version": "4.57.6"
+    }
+  },
+  "format_version": "framecontact_bound_unbound_measurement_recovery_submission_receipt_v1",
+  "new_dependency_chain": "1474302 afterok -> 1474303_[0-5] afterok -> 1474304",
+  "new_jobs": {
+    "analyzer": 1474304,
+    "evaluator_array": 1474303,
+    "materializer": 1474302
+  },
+  "old_jobs": {
+    "analyzer_cancelled": 1474182,
+    "evaluator_array_cancelled": 1474181,
+    "materializer_failed": 1474180
+  },
+  "old_partial_output_reused": false,
+  "protocol_sha256": "1ad4b4ee2bf96f8a0a8b2975aabad13f408da09dd11018ed6ea49f42bf11846e",
+  "recovery_changes_model_data_or_measurement": false,
+  "recovery_scope": "runtime dependency path only; fixed contact Python, frozen ESM-2 weights, model checkpoints, data, labels, calibration, metrics and protocol unchanged",
+  "slurm_materializer_sha256": "2104a026157ccd8fc5798fea9488da7d093e828c05b0ee5bc95c6cd031668d3d",
+  "status": "RECOVERY_SUBMITTED_AFTER_FAIL_CLOSED_RUNTIME_DEPENDENCY_ERROR"
+}

@@ -1,0 +1,65 @@
+{
+  "authorization": {
+    "corpus_engineering": true,
+    "large_scale_pretraining": false,
+    "production_corpus_use": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Submission receipt for decontaminated OAS corpus materialization and independent replay only; queued or completed filtering is not production-pretraining, downstream-improvement, frozen-test, official-test, external-test, or SOTA evidence",
+  "format_version": "oas_decontaminated_corpus_submission_v1",
+  "inputs": {
+    "exclusion_digest_stream_sha256": "f900730e67815f4e496b596debe8c22dec6438d60a0a5e55f1a3a7ef7af786cc",
+    "exclusion_receipt_file_sha256": "90adce8f4b19a40cd5ce68799fe848635c58fc44f99c9130f7a399edbc8ec167",
+    "exclusion_receipt_payload_sha256": "0c8dfdf0e4b4ee4d738d7c14f47059183fc79a449427cb1df3719fe649ddcaaa",
+    "source_corpus_root": "/ssd/scxi253/model_deployment/results/pretraining/oas_production_materialization_v3_aa61253_attempt_002",
+    "source_independent_audit_file_sha256": "489622e0d19d68cef0a589b04b36187ef469b4a3e4a3d49a1abf2eca5817760e",
+    "source_independent_audit_payload_sha256": "758d206807b018d7b40323f1bf1754d9bb0599804e71fe74ba40fa5f3ebdc480",
+    "source_manifest_file_sha256": "849b401368ec3613d806399a81b7d76861adf45daf71bfc64761ffe9ecad940a",
+    "source_manifest_payload_sha256": "4466590b378144cbe43a6645169ce4377b2756062879dfdb31619d33543652a3"
+  },
+  "jobs": {
+    "array_job_id": 1427441,
+    "array_state_at_receipt": "PENDING",
+    "audit_job_id": 1427443,
+    "audit_state_at_receipt": "PENDING_DEPENDENCY",
+    "finalize_job_id": 1427442,
+    "finalize_state_at_receipt": "PENDING_DEPENDENCY",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001"
+  },
+  "protocol": {
+    "bucket_count": 256,
+    "file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "payload_sha256": "3f11d4b5deffaeedcb6ef61a140602466c25591c888e3d1ab930bd8ff88c30d2",
+    "task_count": 32
+  },
+  "smoke": {
+    "claim_boundary": {
+      "assigned_bucket_slice_complete": true,
+      "independent_full_replay_complete": false,
+      "large_scale_pretraining_authorized": false,
+      "zero_excluded_digest_overlap_observed": true
+    },
+    "elapsed_seconds": 21,
+    "exit_code": "0:0",
+    "job_id": 1427422,
+    "receipt_payload_sha256": "866f0dc768715020281f5aee90960d438ecb9db67f74d8d34d336e8fb3648cc9",
+    "state": "COMPLETED",
+    "task_id": 0
+  },
+  "source": {
+    "commit": "5f1f6ac92f9796953b5cd95fbdaa9a16036cf129",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-5f1f6ac-attempt-001",
+    "filter_controller_sha256": "3bad36f3c6b36feb1082e87adcecc752ee16bae8c3cd71cb416cb344226424a6",
+    "filter_core_sha256": "acb20c25fea9ffc9dd02383c7a1f6cc208ebab8c90ae2f2237b677996399ba66",
+    "finalizer_sha256": "31e96e4d7545d2d44ebd6ef97fa1e01f177c291e4d7de1a3bed2a798f5e132a4",
+    "independent_auditor_sha256": "dd23152b6cd6046d27243c609a0efef6b7fc37eb420e8650627f6095f9c285cb",
+    "python_sha256": "9ccc0a9b1f9cdd3343d79a1700eb82fb7b056c45e4c6a15fc867ff5ff4cb91ac"
+  },
+  "test_access": {
+    "downstream_metrics_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

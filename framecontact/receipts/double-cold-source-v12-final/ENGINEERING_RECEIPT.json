@@ -1,0 +1,86 @@
+{
+  "claim_boundary": "Source-packaging, dependency, and regression-test evidence only. This receipt contains no model-quality, frozen-test, external-generalization, A100, biological-benchmark, or state-of-the-art claim.",
+  "format_version": "framecontact_double_cold_source_engineering_receipt_v2",
+  "local_regression": {
+    "python": "3.12.13",
+    "result": "287 passed in 15.92s",
+    "scope": "Full local suite with src, pinned Boltz checkout, fairscale, einops 0.8.0, and einx on PYTHONPATH; bytecode and pytest cache disabled."
+  },
+  "packaging_lineage": [
+    {
+      "source": "double-cold-source-v9",
+      "result": "274 passed, 8 failed, 5 skipped",
+      "disposition": "preserved failed package",
+      "reason": "The source package omitted evaluation, fixtures, receipts, and reports authority directories required by eight regression tests.",
+      "log_sha256": "a1a5671e16f68579c09fde407e282ce78d9d85c1338fa6b6851866c6f83008a9"
+    },
+    {
+      "source": "double-cold-source-v10",
+      "result": "282 passed, 5 skipped in 103.20s",
+      "disposition": "preserved superseded pass",
+      "reason": "All required authority directories were authenticated, but inherited untracked bytecode caused skip provenance lines to display the v9 source path.",
+      "log_sha256": "04cdfcdf80c3ee3ac4d5a9553450b2f63049b7237c80d371f32973272f27b3b0"
+    },
+    {
+      "source": "double-cold-source-v11",
+      "result": "282 passed, 5 skipped in 101.13s; outer audit command exited nonzero",
+      "disposition": "preserved superseded pass",
+      "reason": "The pytest provenance path was clean, but manifest build/verification had generated four untracked bytecode files and the post-run cache audit correctly rejected them.",
+      "log_sha256": "671d0a728e722f406288ea186c6f9c28a3d1e79ce0a77d1ab80e06b866ddda2d"
+    },
+    {
+      "source": "double-cold-source-v12",
+      "result": "282 passed, 5 skipped in 96.57s; exit code 0",
+      "disposition": "final accepted remote source package",
+      "reason": "Cache-free copy, bytecode-disabled manifest build and verification, cache-disabled pytest, clean v12 provenance paths, and successful post-test manifest verification.",
+      "log_sha256": "c77f3d0a53519c1c4c48bfcfc9d047db6745e5f55ecd374d156787a24cf11faf"
+    }
+  ],
+  "remote_environment": {
+    "base_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "cuda_available_on_login_node": false,
+    "pandas": "2.3.3",
+    "pyarrow": "17.0.0",
+    "pyarrow_target": "/ssd/scxi253/model_deployment/data/framecontact_20260730/runtime-deps/pyarrow-17.0.0-py310",
+    "pytest_target": "/tmp/scxi253-v6d-pytest-841",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128"
+  },
+  "remote_regression": {
+    "command_controls": [
+      "PYTHONDONTWRITEBYTECODE=1",
+      "pytest -p no:cacheprovider",
+      "basetemp under /dev/shm",
+      "manifest verification before and after pytest"
+    ],
+    "result": "282 passed, 5 skipped in 96.57s",
+    "skip_boundary": "All five skips require unavailable pinned Boltz source; no test failed.",
+    "source_cache_artifacts_after_run": 0
+  },
+  "sha256": {
+    "FULL_PYTEST_WITH_DEPS.log": "c77f3d0a53519c1c4c48bfcfc9d047db6745e5f55ecd374d156787a24cf11faf",
+    "LOCAL_FULL_PYTEST.log": "946c75b31bbde28c0edaeffa989538faf85bba05387a36cb0bef7536f41c4fca",
+    "MANIFEST_BUILD.log": "4c4527fdca6da75ee88b8b4a182d81eef34837b15ba51366291719dcd4d7859c",
+    "MANIFEST_VERIFY.json": "34c6c169e461bcde42d9184d519f76fd700407b5241b00b500a1ed44dca6b200",
+    "POST_TEST_MANIFEST_VERIFY.json": "34c6c169e461bcde42d9184d519f76fd700407b5241b00b500a1ed44dca6b200",
+    "SOURCE_MANIFEST.json": "b81333004e5566a1be4a93e11ba9d8e42b59f1863ae6f21622546e1c1bd9d57c"
+  },
+  "source": {
+    "included_directories": [
+      "scripts",
+      "src",
+      "protocols",
+      "tests",
+      "slurm",
+      "docs",
+      "baselines",
+      "evaluation",
+      "fixtures",
+      "receipts",
+      "reports"
+    ],
+    "manifest_record_count": 443,
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v12",
+    "tree_sha256": "e17e8b5187694dacd92e7066e75a783d66932f2471916297d453867c8e0695b7"
+  }
+}

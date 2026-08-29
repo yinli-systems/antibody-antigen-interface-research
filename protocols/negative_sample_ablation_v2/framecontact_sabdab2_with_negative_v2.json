@@ -1,0 +1,143 @@
+{
+  "amendment": {
+    "changes_only": {
+      "autograd_saved_tensor_policy": "offload every autograd-saved tensor to CPU until backward; forward values, loss, gradients, optimizer, and update order are unchanged",
+      "binary_loss_for_one_class_complex": "average BCE over classes actually observed in each complex; retain equal positive/negative weighting when both occur and use negative-only BCE when no positive contact exists",
+      "cuda_allocator": "expandable_segments enabled to reduce fragmentation",
+      "training_output_retention": "retain only tensors consumed by the registered objective; discard diagnostic/intermediate return values before backward"
+    },
+    "scientific_rationale": "A genuine complex with zero stored contacts has no positive class to balance and must not receive a fabricated positive label. Saved-tensor offload and output pruning are numerical execution policies, not model or endpoint changes."
+  },
+  "claim_boundary": "sabdab2 development train/validation comparison of K=1 standard wrong-partner specificity supervision against an otherwise matched zero-specificity-loss arm. Test and external-test roles remain sealed.",
+  "confirmatory_model": "framecontact_interleaved",
+  "data": {
+    "authorities_inherited_from_parent_v3": true,
+    "dataset_backend": "sabdab2",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "test_sha256": "ea70fef770448302fb4ed1ccd7da51a1cc56cba5ea153076e077971735874bd1",
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5"
+    }
+  },
+  "development_matrix": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "frozen_frame_ipa",
+    "framecontact",
+    "framecontact_interleaved"
+  ],
+  "evidence_boundary_at_freeze": {
+    "claim_downgrade": "The SAbDab2 test remains prediction-frozen and selection-free but is not described as label-inaccessible because aggregate label-derived contact counts were inspected during runtime diagnosis.",
+    "discarded_run_checkpoint_or_result_persisted": false,
+    "discarded_train_only_optimizer_steps_may_have_occurred": true,
+    "known_zero_contact_counts": {
+      "test": 1,
+      "train": 1,
+      "validation": 0
+    },
+    "sabdab2_antigen_fold_test_metrics_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "sabdab2_antigen_fold_validation_metrics_accessed": false,
+    "sabdab2_antigen_fold_validation_predictions_accessed": false,
+    "test_manifest_label_derived_positive_count_accessed_for_schema_qc": true
+  },
+  "frozen_on": "2026-08-21",
+  "implementation": {
+    "batch_size": 1,
+    "calibration_max_pairs": 2000000,
+    "d_model": 128,
+    "dropout": 0.1,
+    "evaluation_batch_size": 1,
+    "learning_rate": 0.0003,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "num_heads": 8,
+    "num_rbf": 16,
+    "num_self_layers": 2,
+    "offload_saved_tensors": true,
+    "precision": "bf16",
+    "sequence_window": 32,
+    "weight_decay": 0.0001
+  },
+  "incident_evidence": {
+    "discarded_array_job_id": "1342632",
+    "discarded_task_failure": "balanced BCE rejected a train complex containing only the negative class",
+    "discarded_task_stderr_sha256": "ec0799afdae51f0aa6ce991cf72d0bfaac22ad313481a088711ea00014cd010f",
+    "discarded_task_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "memory_safe_peak_cuda_bytes": 9504408064,
+    "memory_safe_stress_optimizer_step": false,
+    "memory_safe_stress_receipt_sha256": "cdaf4623b812cc13c6d869d0e327284896b134e456a7cad18f2e0bfc73225ac6",
+    "three_way_ipa_oom_stderr_sha256": "392c73d368bf980d207ecb2f83dff71169a3bd38dc260b57ffde5d363c67ac4d"
+  },
+  "measurement": {
+    "fixed_raw_logit_contact_metric_path": "validation.contact.fixed_raw_logit_threshold_zero",
+    "probability_temperature": 1.0,
+    "probability_threshold": 0.5,
+    "trainer_file_sha256": "29e86826e97c72363dcb82b109a4b498402467220f2f4ef3ae2a05b3506d4994"
+  },
+  "model_selection": {
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional interaction-only margins; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "early_stopping_patience": 20,
+    "maximum_epochs": 200,
+    "reporting": "report every seed and a frozen five-seed ensemble without suppressing failures",
+    "seeds": [
+      17,
+      42,
+      73,
+      101,
+      137
+    ],
+    "temperature_and_thresholds": "validation only"
+  },
+  "negative_sample_ablation": {
+    "arm": "with_negative",
+    "base_protocol_file_sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+    "base_protocol_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/sabdab2/protocols/framecontact_primary_v5.json",
+    "comparison": "paired five-seed K=1 versus zero-weight ablation",
+    "external_test_loaded": false,
+    "specificity_loss_weight": 0.25,
+    "specificity_negative_count": 1,
+    "test_loaded": false,
+    "wrong_partner_gradient_contribution": true
+  },
+  "parent_protocol": {
+    "inherited_without_change": [
+      "primary and reciprocal hypotheses and endpoints",
+      "reciprocal-min antigen-fold split and partner panels",
+      "eight-condition development matrix and confirmatory model",
+      "five seeds, 200-epoch maximum, patience 20, score fraction, loss weights, and reporting rules",
+      "test predictions remain one-time and selection-free"
+    ],
+    "path": "protocols/framecontact_primary_v4.json",
+    "receipt_sha256": "5ae266a45338fc3d75c06d42a163be314683af0254222ef4f3f16ca9d7e52d03",
+    "sha256": "095eb26ede8e680e92500e0d25219f9b65542cf98556c10995b5f684d28c3ce3"
+  },
+  "protocol_status": "development_only_raw_brier_v2",
+  "schema_version": "framecontact_sabdab2_partner_negative_ablation_protocol_v2",
+  "source_closure": {
+    "file_count": 136,
+    "inventory_sha256": "1df974bb5c3cbb2d2234d9024489ec22b014f5233c0d1e8278c8da95ff3bf3b2",
+    "source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/sources/sabdab2",
+    "trainer_file_sha256": "29e86826e97c72363dcb82b109a4b498402467220f2f4ef3ae2a05b3506d4994"
+  },
+  "training_objective": {
+    "contact": "observed-class-balanced BCE on authenticated cognate residue-pair labels",
+    "loss_weights": {
+      "contact": 1.0,
+      "epitope": 0.25,
+      "paratope": 0.25,
+      "specificity": 0.25
+    },
+    "marginals": "observed-class-balanced epitope and paratope BCE",
+    "score_fraction": 0.01,
+    "specificity": "mean softplus ranking loss over both reciprocal counterfactual directions",
+    "specificity_margin": 0.05,
+    "specificity_score_source": "interaction_only",
+    "wrong_pair_rule": "wrong pairs are ranking examples and never receive fabricated all-zero contact labels"
+  }
+}

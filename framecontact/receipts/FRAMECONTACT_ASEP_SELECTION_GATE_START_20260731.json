@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-07-30T20:46:36Z",
+  "format_version": "framecontact_asep_selection_gate_start_v1",
+  "selection_job": {
+    "batch_script_sha256": "ae61747789be15591fca32c2c82c90a5d02247474fd539fd25343bcff10b74cc",
+    "dependency": "afterok:1342511_*",
+    "job_id": "1343004",
+    "output_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-selection/epitope-group-v1",
+    "state_at_receipt": "PENDING dependency"
+  },
+  "selection_inputs": {
+    "ensemble_array_job_id": "1342511",
+    "ensemble_count_required": 8,
+    "primary": "maximize minimum_direction_cluster_weighted_margin",
+    "protocol_receipt_sha256": "370f36155e54be15c9b5ef4460a768a5c82a36bf561a206424b9d09e0d0b05fb",
+    "protocol_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+    "tie_break": "maximize mean_per_complex_contact_auprc"
+  },
+  "source_authority": {
+    "archive_sha256": "8c599e8bee57fc5e2710dce9fa5230dee1797de59e60dd53b4620960ffaa6341",
+    "remote_source_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v5",
+    "source_manifest_sha256": "53586e601fe7439d583f4db43b6d4bc2c9357a625ab1a268c92762577f70dc9d"
+  },
+  "test_access": {
+    "official_test_job_submitted": false,
+    "official_test_labels_read": false,
+    "official_test_predictions_or_scores_read": false
+  }
+}

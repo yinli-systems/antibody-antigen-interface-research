@@ -1,0 +1,32 @@
+{
+  "analyzer_result_sha256": "c24352ea9766cd564dab09cbc444084c4b9c091576d7ed5f5600442760884a3d",
+  "arms": {
+    "paratope025": {
+      "contact_mean_per_complex_auprc": 0.02704020288043219,
+      "epitope_mean_per_complex_auprc": 0.2504427100995211,
+      "paratope_mean_per_complex_auprc": 0.6684647575005687,
+      "passes": false,
+      "receipt_sha256": "2ce361ac16638d11891051982d4a402d595c5ef98c6fa3a38b48081fd299c0ab",
+      "result_sha256": "93e7b62a72a1207fa12672f3bf504df777368414afcec3cd705caa52d4e9b3a5",
+      "selected_epoch": 2
+    },
+    "paratope050": {
+      "contact_mean_per_complex_auprc": 0.026919586059600348,
+      "epitope_mean_per_complex_auprc": 0.25790239591711095,
+      "paratope_mean_per_complex_auprc": 0.7134782001141466,
+      "passes": false,
+      "receipt_sha256": "eeec2ef09ee280dc4f66b754e7b67656456acbe506f3b7c969fd922d5dda32e2",
+      "result_sha256": "7c7de0e2f680141c0a32bfab3e1c3ea72c366f40612fc0ef12fb8f4bfb7abbdb",
+      "selected_epoch": 3
+    }
+  },
+  "format_version": "sabdab2_joint_loss_balance_audit_receipt_v1",
+  "full_development_authorized": false,
+  "job_array_id": "1470236",
+  "status": "PASS_AUDIT_NO_PROMOTION",
+  "temporal_holdout_authorized": false,
+  "temporal_holdout_loaded": false,
+  "test_authorized": false,
+  "test_loaded": false,
+  "winner_seeds_29_and_43_authorized": false
+}

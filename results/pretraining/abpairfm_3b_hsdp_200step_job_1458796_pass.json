@@ -1,0 +1,53 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "real_data_gpu_gate": false,
+    "systems_hsdp_2x4": true,
+    "test_access": false
+  },
+  "claim_boundary": "Same-node synthetic full-2.839B-model FSDP2 systems evidence only. It promotes the 8-GPU HSDP 2x4 topology but does not authorize real-data or production training and establishes no biological or SOTA result.",
+  "comparison": {
+    "eight_gpu_scaling_efficiency": 0.8878018817816071,
+    "eight_gpu_throughput_residue_tokens_per_second": 3524.521827652009,
+    "eight_over_four_gpu_speedup": 1.7756037635632143,
+    "four_gpu_throughput_residue_tokens_per_second": 1984.9709152334372,
+    "hostname": "wqd10nba06g6"
+  },
+  "decision": "PROMOTE_HSDP_2X4",
+  "execution": {
+    "elapsed": "00:16:29",
+    "exit_code": "0:0",
+    "job_id": 1458796,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "state": "COMPLETED"
+  },
+  "format_version": "abpairfm_3b_hsdp_200step_summary_v1",
+  "gates": {
+    "candidate_p95_to_median_step_time": 1.0865985566572693,
+    "candidate_peak_allocated_memory_fraction": 0.5880454063767048,
+    "maximum_p95_to_median_step_time": 1.2,
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "minimum_eight_over_four_gpu_speedup": 1.4,
+    "passed": true
+  },
+  "model": {
+    "attention": "pair_aware_lifted_flash_sdpa",
+    "parameter_count": 2839005633,
+    "sequence_tokens_per_rank": 1024
+  },
+  "next_gate": "Same-allocation 8-GPU microbatch throughput ladder, followed by the deterministic 200-update real-pair gate with frozen corpus cursor.",
+  "receipts": {
+    "comparison": "job-1458796-same-node-4v8gpu-scaling-200step-v1.json",
+    "eight_gpu": "job-1458796-same-node-8gpu-hsdp2x4-1024token-keep-gathered-200step-v1.json",
+    "four_gpu": "job-1458796-same-node-4gpu-fsdp4-1024token-keep-gathered-200step-v1.json"
+  },
+  "steps": {
+    "measured_per_arm": 200,
+    "warmup_per_arm": 10
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

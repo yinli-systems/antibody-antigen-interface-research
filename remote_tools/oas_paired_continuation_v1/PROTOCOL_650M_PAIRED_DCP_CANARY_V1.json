@@ -1,0 +1,19 @@
+{
+  "checkpoint_model_sha256": "279ed615ff7200629a3dbdc97ee70bba3a068395b30dcf7f275b805f31f6d7b2",
+  "checkpoint_receipt_sha256": "c42b48004c86743df48e86bc4f601c47d84838d542a77b8b897dbdddca138a2d",
+  "format_version": "oas_paired_650m_dcp_canary_v1",
+  "input_checkpoint": {
+    "campaign_residue_tokens": 15523137602,
+    "next_update": 108000,
+    "segment": 35
+  },
+  "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
+  "paired_module_sha256": "fcfb69f016681a8d801db213e49f6ff61252f6882d28eb56753cac3dbbdac58a",
+  "purpose": "Model-only DCP authentication, RoPE boundary extension from 194 to 320 tokens, and one finite paired VH/VL forward pass.",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false,
+    "temporal_holdout_accessed": false
+  },
+  "training_authorized": false
+}

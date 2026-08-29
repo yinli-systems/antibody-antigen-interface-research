@@ -1,0 +1,89 @@
+{
+  "claim_boundary": {
+    "allowed": [
+      "authorize_oas_representation_transfer_only_for_explicitly_listed_asep_development_instances",
+      "report_train_and_validation_target_hits_separately",
+      "report_engine_disagreements_and_unrepresentable_queries"
+    ],
+    "forbidden": [
+      "access_or_select_on_frozen_official_or_external_test",
+      "claim_downstream_benefit_before_matched_development_ablation",
+      "claim_partner_specificity_from_sequence_identity_or_pretraining_loss",
+      "treat_mmseqs2_as_exhaustive_ground_truth",
+      "silently_drop_unrepresentable_imgt_numberings"
+    ]
+  },
+  "completion_gate": {
+    "engine_disagreement_must_be_reported": true,
+    "engine_hit_union_defines_contamination": true,
+    "hit_list_truncation_allowed": false,
+    "query_accounting_required_for_every_engine": true,
+    "required_sensitivity_controls": [
+      "exact_match",
+      "single_substitution_above_threshold",
+      "internal_indel_above_threshold",
+      "terminal_indel_above_threshold"
+    ],
+    "required_target_splits": [
+      "train",
+      "validation"
+    ],
+    "unrepresentable_queries_allowed": false
+  },
+  "contamination_policy": {
+    "chain_hit_propagates_to_entire_complex": true,
+    "clean_set_definition": "development instances with no exact or qualifying near-identity hit in either engine",
+    "engine_hit_combination": "union",
+    "exact_overlap_audit_required": "oas_asep_development_exact_overlap_audit_v1"
+  },
+  "data_scope": {
+    "asep_roles": [
+      "train",
+      "val"
+    ],
+    "development_only": true,
+    "frozen_official_external_test_accessed": false,
+    "oas_target_splits": [
+      "train",
+      "validation"
+    ]
+  },
+  "format_version": "oas_asep_near_identity_decontamination_protocol_v1",
+  "identity_gate": {
+    "identity_minimum_inclusive": 0.9,
+    "query_coverage_minimum_inclusive": 0.9,
+    "target_coverage_minimum_inclusive": 0.9,
+    "whole_variable_domain_chain": true
+  },
+  "search_tracks": {
+    "imgt_position_exhaustive": {
+      "identity_denominator": "union of represented IMGT positions, including internal indels",
+      "purpose": "independent antibody-specific sensitivity audit on canonical IMGT positions",
+      "required": true,
+      "unusual_or_unrepresentable_sequences": "fail_closed_and_route_to_exact_gap_aware_fallback"
+    },
+    "mmseqs2_gap_aware": {
+      "alignment_mode": "gap_aware",
+      "coverage_mode": 0,
+      "gpu_padded_target_database": true,
+      "gpu_search_sensitivity": "backend_fixed_maximum_sensitivity",
+      "identity_denominator": "identical residues divided by local alignment length, seq-id-mode 0",
+      "output_columns": [
+        "query",
+        "target",
+        "fident",
+        "qcov",
+        "tcov"
+      ],
+      "purpose": "independent full-sequence gap-aware search",
+      "required": true,
+      "s_parameter_used": false
+    }
+  },
+  "transfer_policy": {
+    "development_metrics_may_select_transfer_candidate": true,
+    "official_test_opening_before_full_freeze": false,
+    "only_authorized_instance_ids_may_receive_oas_weights": true,
+    "reuse_of_contaminated_instance_for_model_selection": false
+  }
+}

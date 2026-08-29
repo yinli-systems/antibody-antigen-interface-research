@@ -1,0 +1,21 @@
+{
+  "format_version": "abpairfm_3b_stage_a0_recovery_submission_receipt_v1",
+  "failed_segment_index": 74,
+  "failed_job_id": "1467545",
+  "failure_receipt_sha256": "8db76a16b53195966fca2001d87f331ef01321c7b9ca3dee6983ecaf0c6b9c29",
+  "checkpoint_gc_plan_sha256": "400556b70eaa489b2d829fd776f8852e8109f41e004c23749300f91a49106fb9",
+  "checkpoint_gc_completion_sha256": "4574c774905aa78e5d7c99dd78d67c8aafad2d5a41a40d01a385491238c2bb0a",
+  "reclaimed_checkpoint_bytes": 2351706903916,
+  "recovery_input_segment": 73,
+  "recovery_input_consumed_residue_tokens": 1169467448,
+  "recovery_input_dcp_content_sha256": "38a0987985f119afb374f2062e407bc9c5006f3f7ad66711744086d9561810b1",
+  "recovery_manifest_receipt_sha256": "f09522aad0b6023bb1dc23bbce2c4e7d3df83ffeec457f254d435d1b0f4c7564",
+  "recovery_training_job_id": "1468369",
+  "recovery_watchdog_job_id": "1468370",
+  "recovery_training_partition": "gpu_4090",
+  "recovery_training_gpu_count": 8,
+  "submit_script_sha256": "2c51f31b1e11dc09d4a54ed7907fccebfb308635f572db9499c19a9d2a24b1fb",
+  "watchdog_script_sha256": "57ebbccd2924a5f2a3cedaa53ed60067c29eb3d05003787d3ee04962e02e2556",
+  "failed_partial_state_reused": false,
+  "test_access": false
+}

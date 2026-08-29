@@ -1,0 +1,125 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "73fd08e73bf41118ece0e657059c5211ce5930c1c651e3cfd219554692edf08b",
+    "generation": "segment-000031",
+    "minimum_consumed_residue_tokens": 500000000,
+    "optimizer_resume": false
+  },
+  "claim_boundary": "Train-only four-GPU frozen-backbone geometry-head diagnostic over 80 updates and 15,360 deterministically ordered record visits from the same 4,967 development-decontaminated PPIRef50K medium patches used by v15. The 3B backbone is fixed; only the geometry/contact and inherited auxiliary head parameters are checkpointed by the optimizer. Minimum interchain heavy-atom distance is a training target only and is never a model input. Development, old test, and temporal holdout remain closed unless the predeclared learning audit passes.",
+  "efficiency": {
+    "activation_checkpointing_candidates": [
+      "off"
+    ],
+    "expected_bucket_records": 4967,
+    "expected_source_records": 19200,
+    "gpu_peak_bfloat16_flops": 82580000000000,
+    "maximum_combined_tokens": 128,
+    "mfu_semantics": "approximate frozen-backbone forward-token 2N MFU; head FLOPs, padding and communication are excluded",
+    "minimum_combined_tokens": 65,
+    "padding_multiple": 64,
+    "parameter_count": 2839005633,
+    "phase_schedule": "geometry_head_only_frozen_backbone",
+    "selection_seed": 1701,
+    "trial_matrix": [
+      {
+        "activation_checkpointing": "off",
+        "microbatch_pairs_per_rank": 48
+      }
+    ]
+  },
+  "efficiency_gate_only": true,
+  "format_version": "abpairfm_stage_a1_geometry_head_only_canary_v16",
+  "loss": {
+    "contact": {
+      "distance_bin_edges_angstrom": [
+        2.0,
+        4.5,
+        6.0,
+        8.0,
+        12.0,
+        16.0,
+        24.0
+      ],
+      "distance_bin_weight": 1.0,
+      "geometry_head": {
+        "contact_distance_bin_count": 2,
+        "pair_dimension": 256
+      },
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_positive_pairs_per_complex": 102,
+      "maximum_sampled_pairs_per_complex": 512,
+      "representation_view": "joint_cross_chain_attention_frozen_backbone",
+      "sampling_seed": 1701,
+      "weight": 1.0
+    },
+    "masked_language_modeling": {
+      "balance": "disabled_for_head_only_diagnostic",
+      "representation_view": "joint_cross_chain_attention_frozen_backbone",
+      "weight": 0.0
+    },
+    "retrieval": {
+      "candidate_scope": "disabled_for_head_only_diagnostic",
+      "direction": "disabled_for_head_only_diagnostic",
+      "participants": "none",
+      "representation_view": "disabled_for_head_only_diagnostic",
+      "temperature": 0.07,
+      "weight": 0.0
+    }
+  },
+  "optimization": {
+    "accumulation_steps": 1,
+    "backbone_learning_rate": 0.0,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "microbatch_pairs_per_rank_candidates": [
+      48
+    ],
+    "updates": 80,
+    "weight_decay": 0.01
+  },
+  "pilot_manifest": {
+    "counterfactual_mapped_retrieval_records": 15948,
+    "expected_retrieval_supervised_records": 16000,
+    "manifest_sha256": "a9be174b07d6f3d963adc4ecad55e9d655e2f3b42ac9d2b26f261335d83f285f",
+    "minimum_full_endpoint_residues": 8,
+    "minimum_patch_endpoint_residues": 4,
+    "ppiref_records_per_microbatch": 5,
+    "receipt_sha256": "1d96bc272c0f050523b77d5aba20c30da48a9a7c3dfb317963f08d608435c72c",
+    "selection_seed": 1701,
+    "source_protocol_sha256": "588d274316742cfcc30d5ccf5b9bdd3ebb2c8581748f36dcb8dcd32bacf9e4b7",
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
+    "total_records": 19200,
+    "unique_ppiref_exact_pairs": true
+  },
+  "promotion_gates": {
+    "finite_all_losses": true,
+    "maximum_peak_memory_fraction": 0.95,
+    "minimum_contact_positive_support": 50,
+    "minimum_counterfactual_coverage": 0.995,
+    "minimum_retrieval_candidates_per_query": 0,
+    "minimum_retrieval_cognate_support": 0,
+    "required_checkpoint_restore": true
+  },
+  "status": "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING",
+  "systems": {
+    "cpus_per_task": 24,
+    "explicit_mem_argument_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 4
+  },
+  "systems_gate_only": true,
+  "test_access": false
+}

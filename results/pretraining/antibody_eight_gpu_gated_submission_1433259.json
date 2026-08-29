@@ -1,0 +1,21 @@
+{
+  "format_version": "antibody_eight_gpu_gated_submission_v1",
+  "recorded_at": "2026-08-17T21:25:00+08:00",
+  "four_gpu_job_id": "1431133",
+  "four_gpu_state_at_submission": "RUNNING",
+  "submitter_job_id": "1433259",
+  "submitter_state_at_recording": "PENDING",
+  "dependency": "afterany:1431133",
+  "pilot_job_id": null,
+  "pilot_state": "not_submitted_until_safe_eager_gate_passes",
+  "pilot_output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_eight_gpu_real_oas_recovery_pilot_v1",
+  "gating": {
+    "requires_four_gpu_independent_audit": true,
+    "requires_safe_eager_gate": true,
+    "bypass_on_failure": false,
+    "production_pretraining_authorized": false,
+    "scientific_claim_authorized": false
+  },
+  "claim_boundary": "Development-only gated submission; no 8-GPU run or production-scale pretraining is claimed until the dependency completes and the submitter receipt records a pilot job.",
+  "deployed_submitter_sha256": "187a2aaa40473056df153ad36129edbafcc486f083f6abcf62fa7468def16f08"
+}

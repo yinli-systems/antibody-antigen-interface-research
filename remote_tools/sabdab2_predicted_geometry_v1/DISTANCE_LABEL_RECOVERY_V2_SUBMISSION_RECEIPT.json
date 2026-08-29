@@ -1,0 +1,20 @@
+{
+  "analyzer_job_id": "1484897",
+  "analyzer_sbatch_sha256": "b484366267a4654a588224035b0a9b40373ee7dfb0d1fbb9596480b5a5f34c12",
+  "analyzer_sha256": "f8ad4b245958c884bebec6daeb487af8a4cce16d5729509418bdd217e408240e",
+  "baseline_source_manifest_sha256": "a320a5f60794ea386d355e8ab5ec895130d3b714596bc817e303eee589dbc7e8",
+  "dependency_chain": "afterok:1484895 -> 1484896_[0-5]%6; afterok:1484896 -> 1484897",
+  "format_version": "sabdab2_predicted_geometry_distance_label_recovery_submission_receipt_v2",
+  "freezer_sha256": "faf103073624b65df0de1c6441c2cf5e3dbff1e71f6edd339cb28063ef6d6f11",
+  "invalid_array_reused": false,
+  "materializer_sha256": "5dad3e20ba601e5e00a3469ba47ce7a2dfc1a5729fcd92c987cc2495eb0fcee1",
+  "partition": "gpu_4090",
+  "prepare_job_id": "1484895",
+  "prepare_sbatch_sha256": "a9d8a247b1010fd19336a55a9b2b08b2d4355235f89ab2cfc6b437bdd966a5ba",
+  "status": "SUBMITTED_DISTANCE_LABEL_RECOVERY_V2",
+  "test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "topk2_source_manifest_sha256": "885449525b7f41b3b00511245ca6c0b0859336db959becc7680ad9cb6e872332",
+  "training_array_job_id": "1484896",
+  "training_sbatch_sha256": "3e8341bfebbb02a9b1a3f7627f8cb52f83b7bf9e719dc4a936f2759a344a0ba0"
+}

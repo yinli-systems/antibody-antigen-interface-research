@@ -1,0 +1,319 @@
+diff --git a/scripts/train_framecontact.py b/scripts/train_framecontact.py
+index 426204f..9f4a37b 100755
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -201,6 +201,8 @@ def _arguments() -> argparse.Namespace:
+     parser.add_argument("--joint-embedding-root", type=Path)
+     parser.add_argument("--joint-embedding-manifest-sha256")
+     parser.add_argument("--joint-embedding-source-split-sha256")
++    parser.add_argument("--matched-local-root", type=Path)
++    parser.add_argument("--matched-local-manifest-sha256")
+     parser.add_argument("--label-root", type=Path)
+     parser.add_argument("--split-manifest", type=Path)
+     parser.add_argument("--split-manifest-sha256")
+@@ -251,6 +253,8 @@ def _arguments() -> argparse.Namespace:
+     parser.add_argument("--epitope-count-weight", type=float, default=0.0)
+     parser.add_argument("--distance-loss-weight", type=float, default=0.0)
+     parser.add_argument("--contrastive-loss-weight", type=float, default=0.0)
++    parser.add_argument("--matched-local-loss-weight", type=float, default=0.0)
++    parser.add_argument("--matched-local-margin", type=float, default=0.05)
+     parser.add_argument("--contrastive-temperature", type=float, default=0.1)
+     parser.add_argument("--contrastive-maximum-residues", type=int, default=256)
+     parser.add_argument("--contrastive-dim", type=int, default=64)
+@@ -465,6 +469,38 @@ def _load_authorities(
+         observed_feature_mode = "abpairfm_joint_cross_chain_v1"
+     if expected_feature_mode != observed_feature_mode:
+         raise ValueError("Input feature mode differs from the pre-registered protocol")
++    matched_weight = float(
++        protocol.get("training_objective", {})
++        .get("loss_weights", {})
++        .get("matched_local", 0.0)
++    )
++    matched_values = (
++        arguments.matched_local_root,
++        arguments.matched_local_manifest_sha256,
++    )
++    if matched_weight > 0:
++        if arguments.dataset_backend != "sabdab2" or any(
++            value is None for value in matched_values
++        ):
++            raise ValueError("Matched-local training requires its SAbDab2 authority")
++        matched_path = (
++            arguments.matched_local_root / "MATCHED_LOCAL_DECOY_MANIFEST.json"
++        )
++        if sha256_file(matched_path) != arguments.matched_local_manifest_sha256:
++            raise ValueError("Matched-local manifest SHA-256 differs")
++        matched = json.loads(matched_path.read_text(encoding="utf-8"))
++        matched_authority = matched.get("authority", {})
++        if (
++            matched_authority.get("split_sha256") != arguments.split_manifest_sha256
++            or matched_authority.get("task_labels_read_for_roles") != ["train"]
++            or matched_authority.get("validation_labels_read") is not False
++            or matched_authority.get("test_labels_read") is not False
++            or matched_authority.get("model_predictions_read") is not False
++            or int(matched.get("counts", {}).get("train_instances", -1)) != 512
++        ):
++            raise ValueError("Matched-local authority differs from the train-only contract")
++    elif any(value is not None for value in matched_values):
++        raise ValueError("Control training may not receive matched-local artifacts")
+     if protocol.get("tasks", {}).get("winner", {}).get("experiment") != arguments.experiment:
+         raise ValueError("Experiment differs from the pre-registered protocol")
+     if arguments.seed not in protocol.get("model_selection", {}).get("seeds", []):
+@@ -550,6 +583,7 @@ def _validate_execution_configuration(
+         ("paratope_loss_weight", "paratope"),
+         ("epitope_loss_weight", "epitope"),
+         ("specificity_loss_weight", "specificity"),
++        ("matched_local_loss_weight", "matched_local"),
+     ):
+         if not math.isclose(
+             float(getattr(arguments, argument_name)),
+@@ -561,6 +595,7 @@ def _validate_execution_configuration(
+     for argument_name, protocol_name in (
+         ("specificity_margin", "specificity_margin"),
+         ("score_fraction", "score_fraction"),
++        ("matched_local_margin", "matched_local_margin"),
+     ):
+         if not math.isclose(
+             float(getattr(arguments, argument_name)),
+@@ -693,6 +728,146 @@ class _JointEmbeddingOverrideDataset(torch.utils.data.Dataset):
+         return item
+ 
+ 
++class _MatchedLocalTrainingDataset(torch.utils.data.Dataset):
++    """Attach authenticated train-only local motif pairs to each cognate complex."""
++
++    def __init__(
++        self,
++        dataset: Sabdab2ContactDataset,
++        artifact_root: Path,
++        manifest_sha256: str,
++    ) -> None:
++        self.dataset = dataset
++        self.records = dataset.records
++        self.artifact_root = artifact_root
++        manifest_path = artifact_root / "MATCHED_LOCAL_DECOY_MANIFEST.json"
++        if sha256_file(manifest_path) != manifest_sha256:
++            raise ValueError("Matched-local manifest SHA-256 differs")
++        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
++        by_id = {
++            str(record["instance_id"]): record
++            for record in manifest.get("records", [])
++        }
++        expected_ids = {str(record["instance_id"]) for record in self.records}
++        if set(by_id) != expected_ids:
++            raise ValueError("Matched-local records differ from the training dataset")
++        self.decoy_by_id = by_id
++
++    def __len__(self) -> int:
++        return len(self.dataset)
++
++    def __getitem__(self, index: int) -> tuple[dict[str, Any], dict[str, Any]]:
++        item = self.dataset[index]
++        identifier = str(item["instance_id"])
++        record = self.decoy_by_id[identifier]
++        path = self.artifact_root / str(record["artifact_path"])
++        if (
++            path.is_symlink()
++            or not path.is_file()
++            or path.stat().st_size != int(record["artifact_size_bytes"])
++            or sha256_file(path) != record["artifact_sha256"]
++        ):
++            raise ValueError("Matched-local artifact differs")
++        with np.load(path, allow_pickle=False) as payload:
++            decoy_count = int(payload["decoy_count"].item())
++            antigen_length = int(payload["antigen_length"].item())
++            if (
++                str(payload["instance_id"].item()) != identifier
++                or decoy_count != int(record["decoy_count"])
++                or decoy_count > 32
++                or antigen_length != int(item["antigen_features"].shape[0])
++            ):
++                raise ValueError("Matched-local artifact metadata differs")
++            decoys = {
++                "instance_id": identifier,
++                "antigen_length": antigen_length,
++                "decoy_count": decoy_count,
++                "positive_offsets": torch.from_numpy(
++                    payload["positive_motif_offsets"].astype(np.int64, copy=True)
++                ),
++                "positive_flat": torch.from_numpy(
++                    payload["positive_motif_flat_indices"].astype(np.int64, copy=True)
++                ),
++                "negative_offsets": torch.from_numpy(
++                    payload["negative_motif_offsets"].astype(np.int64, copy=True)
++                ),
++                "negative_flat": torch.from_numpy(
++                    payload["negative_motif_flat_indices"].astype(np.int64, copy=True)
++                ),
++            }
++        if (
++            tuple(decoys["positive_offsets"].shape) != (decoy_count + 1,)
++            or tuple(decoys["negative_offsets"].shape) != (decoy_count + 1,)
++            or int(decoys["positive_offsets"][-1]) != decoys["positive_flat"].numel()
++            or int(decoys["negative_offsets"][-1]) != decoys["negative_flat"].numel()
++        ):
++            raise ValueError("Matched-local motif offsets differ")
++        return item, decoys
++
++
++class _MatchedLocalTrainingCollator:
++    def __init__(self) -> None:
++        self.base_collator = Sabdab2ContactBatchCollator()
++
++    def __call__(
++        self, examples: list[tuple[dict[str, Any], dict[str, Any]]]
++    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
++        items, decoys = zip(*examples, strict=True)
++        return self.base_collator(items), list(decoys)
++
++
++def _matched_local_ranking_loss(
++    interaction_logits: torch.Tensor,
++    pair_candidate_mask: torch.Tensor,
++    decoys: list[dict[str, Any]],
++    *,
++    margin: float,
++) -> torch.Tensor:
++    """Equal-decoy/equal-complex ranking on interaction-only motif scores."""
++    if (
++        interaction_logits.ndim != 3
++        or tuple(interaction_logits.shape) != tuple(pair_candidate_mask.shape)
++        or pair_candidate_mask.dtype != torch.bool
++        or len(decoys) != int(interaction_logits.shape[0])
++    ):
++        raise ValueError("Matched-local logits, mask, and batch must align")
++    complex_losses = []
++    for batch_index, decoy in enumerate(decoys):
++        antigen_length = int(decoy["antigen_length"])
++        relation_losses = []
++        for relation_index in range(int(decoy["decoy_count"])):
++            local_scores = []
++            for kind in ("positive", "negative"):
++                offsets = decoy[f"{kind}_offsets"]
++                flat = decoy[f"{kind}_flat"][
++                    int(offsets[relation_index]) : int(offsets[relation_index + 1])
++                ].to(interaction_logits.device, non_blocking=True)
++                antibody_index = torch.div(flat, antigen_length, rounding_mode="floor")
++                antigen_index = flat.remainder(antigen_length)
++                if flat.numel() == 0 or not bool(
++                    pair_candidate_mask[
++                        batch_index, antibody_index, antigen_index
++                    ].all()
++                ):
++                    raise ValueError("Matched-local motif is empty or outside the candidate grid")
++                local_scores.append(
++                    torch.sigmoid(
++                        interaction_logits[
++                            batch_index, antibody_index, antigen_index
++                        ].float()
++                    ).mean()
++                )
++            positive_score, negative_score = local_scores
++            relation_losses.append(
++                torch.nn.functional.softplus(margin + negative_score - positive_score)
++            )
++        if relation_losses:
++            complex_losses.append(torch.stack(relation_losses).mean())
++        else:
++            complex_losses.append(interaction_logits[batch_index].float().sum() * 0.0)
++    return torch.stack(complex_losses).mean()
++
++
+ class _FrozenPanelTrainingDataset(torch.utils.data.Dataset):
+     """Choose one legal frozen wrong partner per focal complex and epoch."""
+ 
+@@ -1362,6 +1545,14 @@ def main() -> None:
+         validation_dataset = Sabdab2ContactDataset(
+             validation_base, arguments.contact_cache_root
+         )
++        if arguments.matched_local_loss_weight > 0:
++            train_dataset = _MatchedLocalTrainingDataset(
++                train_dataset,
++                arguments.matched_local_root,
++                arguments.matched_local_manifest_sha256,
++            )
++    elif arguments.matched_local_loss_weight > 0:
++        raise ValueError("Matched-local training is available only for SAbDab2")
+     else:
+         train_dataset = AsepDevelopmentDataset(
+             arguments.asep_cache_root,
+@@ -1377,9 +1568,25 @@ def main() -> None:
+             split_role="val",
+             feature_mode=arguments.asep_feature_mode,
+         )
++    if arguments.matched_local_loss_weight > 0 and arguments.specificity_loss_weight > 0:
++        raise ValueError("Matched-local and partner-swap screens must remain separate")
+     train_generator = torch.Generator().manual_seed(arguments.seed)
+     paired_train_dataset = None
+-    if arguments.specificity_loss_weight == 0:
++    matched_local_train_dataset = None
++    if arguments.matched_local_loss_weight > 0:
++        matched_local_train_dataset = train_dataset
++        train_loader = DataLoader(
++            train_dataset,
++            batch_size=arguments.batch_size,
++            shuffle=True,
++            drop_last=True,
++            num_workers=arguments.workers,
++            collate_fn=_MatchedLocalTrainingCollator(),
++            generator=train_generator,
++            pin_memory=device.type == "cuda",
++            persistent_workers=arguments.workers > 0,
++        )
++    elif arguments.specificity_loss_weight == 0:
+         train_loader = _loader(
+             train_dataset,
+             batch_size=arguments.batch_size,
+@@ -1410,7 +1616,11 @@ def main() -> None:
+         seed=arguments.seed,
+         pin_memory=device.type == "cuda",
+     )
+-    first = train_dataset[0]
++    first = (
++        train_dataset.dataset[0]
++        if matched_local_train_dataset is not None
++        else train_dataset[0]
++    )
+     model = _model_from_configuration(
+         first,
+         vars(arguments),
+@@ -1466,11 +1676,16 @@ def main() -> None:
+             component_sums: dict[str, float] = {}
+             steps = 0
+             for raw_item in train_loader:
+-                if paired_train_dataset is None:
++                if matched_local_train_dataset is not None:
++                    raw_batch, raw_matched_local = raw_item
++                    raw_wrong_by_direction = {}
++                elif paired_train_dataset is None:
+                     raw_batch = raw_item
++                    raw_matched_local = []
+                     raw_wrong_by_direction = {}
+                 else:
+                     raw_batch, raw_wrong_by_direction = raw_item
++                    raw_matched_local = []
+                 batch = _move_batch(raw_batch, device)
+                 wrong_batches = {
+                     direction: _move_batch(raw_wrong, device)
+@@ -1489,7 +1703,21 @@ def main() -> None:
+                         output,
+                         batch,
+                         wrong_partner_outputs=(wrong_outputs if wrong_outputs else None),
+                     )
++                    if matched_local_train_dataset is not None:
++                        matched_local_loss = _matched_local_ranking_loss(
++                            output["contact_interaction_logits"],
++                            output["pair_candidate_mask"],
++                            raw_matched_local,
++                            margin=arguments.matched_local_margin,
++                        )
++                        losses["matched_local_loss"] = matched_local_loss
++                        losses["loss"] = (
++                            losses["loss"]
++                            + arguments.matched_local_loss_weight * matched_local_loss
++                        )
++                    else:
++                        losses["matched_local_loss"] = losses["loss"].new_zeros(())
+                 losses["loss"].backward()
+                 torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                 optimizer.step()

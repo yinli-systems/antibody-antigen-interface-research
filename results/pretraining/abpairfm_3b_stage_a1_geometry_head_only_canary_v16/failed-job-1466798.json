@@ -1,0 +1,37 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "3bf3a460026c9f81f7b6298ffacd1299f6ca31fd0f694260d7164dc755821876",
+    "generation": "pilot-000000",
+    "receipt_sha256": "237f993bf4dad6cb82653cecb7d5fc7a2e9c81c710fd1cce6d2aab1cbb4bb4be",
+    "save_status": "complete",
+    "restore_status": "failed"
+  },
+  "failure": {
+    "classification": "head_only_optimizer_restore_state_mismatch",
+    "message": "KeyError: heads.retrieval_left.weight",
+    "stage": "post_training_dcp_restore",
+    "stderr_sha256": "97b27f316415e6af0f99d5a91dc94c7e638bbfdac4ac6f85c86bcea7ee6cf6d8"
+  },
+  "format_version": "abpairfm_stage_a1_geometry_head_only_failure_v1",
+  "job": {
+    "elapsed": "00:08:11",
+    "exit_code": "1:0",
+    "job_id": "1466798",
+    "node": "wqd10nba06g1",
+    "state": "FAILED"
+  },
+  "outputs": {
+    "progress_sha256": "f91868358cd8d743e9958e548282d833c9a8c7ec8fb0b72aecaabe79f4a88075",
+    "progress_status": "TRAINING_COMPLETE_CHECKPOINT_PENDING",
+    "progress_update": 80,
+    "result_exists": false
+  },
+  "protocol_sha256": "e4b90b873d1a1f3fcc4c4ab2bd75fce4e45d4539e1b1127c21fddc88476ae50d",
+  "source_sha256": "73a7b91e46b0eb394a1c822504366fecddabc88984de57b18315b5b3118b802d",
+  "status": "FAIL_CLOSED",
+  "test_access": false
+}

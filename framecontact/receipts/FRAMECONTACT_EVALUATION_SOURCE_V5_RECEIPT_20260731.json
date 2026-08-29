@@ -1,0 +1,51 @@
+{
+  "archive_file_count": 226,
+  "archive_sha256": "8c599e8bee57fc5e2710dce9fa5230dee1797de59e60dd53b4620960ffaa6341",
+  "archive_size_bytes": 403908,
+  "archive_source_manifest_sha256": "53586e601fe7439d583f4db43b6d4bc2c9357a625ab1a268c92762577f70dc9d",
+  "archive_with_embedded_manifest_file_count": 227,
+  "claim_boundary": "Source, protocols, tests, and documentation only. Local 189-test regression and remote manifest/import/shell-syntax checks are code evidence, not a SAbDab2 frozen test, AsEP official test, biological benchmark, AB03, A100, throughput, or performance result.",
+  "created_utc": "2026-07-30T20:21:03Z",
+  "format_version": "framecontact_evaluation_source_deployment_v5",
+  "local_validation": {
+    "compileall_passed": true,
+    "pytest_passed": 189,
+    "pytest_total": 189,
+    "slurm_shell_syntax_passed": true
+  },
+  "postprocess_correction": {
+    "cancelled_obsolete_job": "1342805",
+    "cancelled_state": "CANCELLED before execution",
+    "reason": "The old job hard-coded framecontact_interleaved before all eight validation ensembles and the unique development selection were frozen."
+  },
+  "primary_source_sha256": {
+    "scripts/freeze_framecontact_development_selection.py": "7490f3d5767c50a612deae03a42fe0599f9886b8a0b9b02dd9ed883301d98a54",
+    "scripts/slurm_freeze_sabdab2_ensemble_array.sbatch": "23dd86ca22bcb4b435a92fb969b86b57c9dbf9f18c4bc1752d72b78995ea5197",
+    "scripts/slurm_select_sabdab2_development.sbatch": "dd7f326b8f69c0eb374e02c8c8adf6c14ab0cda484c5603bf726e75b33fca51d",
+    "src/interaction_first/sabdab2_frozen_test.py": "04ce95e83b2e85cb253b6dff09331fa86c849d2fe2383e5753ee6048393fa058",
+    "tests/test_sabdab2_postprocess_slurm.py": "e9495e6e346877cfd15b86800f0cd973e9e2947900cb73ec0a6a57087734eca3"
+  },
+  "remote_authority_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v5-authority",
+  "remote_checks": {
+    "archive_sha256_matches_local": true,
+    "bytecode_generation_disabled": true,
+    "embedded_manifest_sha256_matches_archive_receipt": true,
+    "every_manifest_file_sha256_verified": true,
+    "generated_bytecode_cache_count": 0,
+    "import_smoke_passed": true,
+    "postprocess_shell_syntax_passed": true,
+    "remote_pytest_available": false,
+    "source_file_count_including_embedded_manifest": 227,
+    "source_tree_read_only": true,
+    "symlink_count": 0
+  },
+  "remote_hardware_boundary": "Remote checks ran in the ParaCloud login environment and did not allocate or validate AB03/A100 hardware.",
+  "remote_source_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v5",
+  "supersedes_remote_source_for_future_postprocessing": "evaluation-source-v4",
+  "test_access": {
+    "asep_official_graph_or_label_opened": false,
+    "asep_official_score_computed": false,
+    "sabdab2_frozen_test_opened": false,
+    "sabdab2_frozen_test_score_computed": false
+  }
+}

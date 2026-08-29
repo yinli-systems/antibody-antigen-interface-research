@@ -1,0 +1,21 @@
+{
+  "analyzer_job_id": "1484921",
+  "analyzer_sbatch_sha256": "b484366267a4654a588224035b0a9b40373ee7dfb0d1fbb9596480b5a5f34c12",
+  "dependency_chain": "afterok:1484919 -> 1484920_[0-5]%6; afterok:1484920 -> 1484921",
+  "distance_label_manifest_sha256": "a8c13f0be4a5b6483897142e6dc03ddcb2741ef9d8300c28aeda0c87bdf9ccb3",
+  "distance_label_receipt_sha256": "a767257fc4862e1b230cd06a2cd6f9a3a95e9ad6c74c58c120519ab16b733a89",
+  "failed_freezer_evidence_sha256": "1a50babe958def5a14adbe469df6a3330a2ab01536537a5e4ebc5a1af732ab46",
+  "failed_freezer_job_id": "1484895",
+  "format_version": "sabdab2_predicted_geometry_distance_label_freezer_recovery_submission_receipt_v1",
+  "freeze_job_id": "1484919",
+  "freeze_sbatch_sha256": "48bad671b659ae99208950555f14f437ba213423829505558dc22f933da1a4c1",
+  "freezer_sha256": "37bcd26136c730fda42317d17886ddedba0cfddceef1dfbc87208c1b602495bf",
+  "materialized_cache_reused_byte_for_byte": true,
+  "partition": "gpu_4090",
+  "scientific_protocol_changed": false,
+  "status": "SUBMITTED_FREEZER_SCHEMA_RECOVERY_V1",
+  "test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "training_array_job_id": "1484920",
+  "training_sbatch_sha256": "3e8341bfebbb02a9b1a3f7627f8cb52f83b7bf9e719dc4a936f2759a344a0ba0"
+}

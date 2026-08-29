@@ -1,0 +1,150 @@
+{
+  "schema_version": "framecontact_asep_joint_coupling_development_protocol_v1",
+  "protocol_status": "preregistered_development_only_before_joint_coupling_fitting",
+  "frozen_on": "2026-08-15",
+  "project": {
+    "name": "FrameContact",
+    "purpose": "Matched audit of contact-derived, independent-node, and explicitly coupled epitope/paratope/contact prediction"
+  },
+  "scientific_question": {
+    "primary": "Does explicit coupling between a native residue-pair contact matrix and independent epitope/paratope heads improve development contact ranking, node ranking, and partner retrieval beyond repeated supervision of labels derived from the same contact geometry?",
+    "label_dependency": "AsEP epitope and paratope labels are marginals derived from native residue-pair contacts; they are not treated as three independent biological tasks.",
+    "causal_language_rule": "Only matched condition and seed differences may be attributed to the changed coupling mechanism. Development associations are not causal biological claims."
+  },
+  "evidence_boundary_at_freeze": {
+    "development_train_and_validation_labels_read_for_adapter_and_prior_experiments": true,
+    "joint_coupling_matrix_model_fitting_started": false,
+    "official_test_used_for_architecture_or_checkpoint_selection": false,
+    "official_test_predictions_or_scores_read_for_this_protocol": false,
+    "claim_boundary": "This protocol authorizes development fitting and validation only. Frozen, official, and external test roles are forbidden for model selection."
+  },
+  "data": {
+    "dataset_backend": "asep",
+    "dataset": "AsEP v1.2.0",
+    "split_method": "epitope_group",
+    "official_role_counts": {
+      "train": 1383,
+      "validation": 170,
+      "test": 170
+    },
+    "development_cache_manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "development_cache_receipt_sha256": "3a282b179ee151d9d4b24cc87366323670a76719bdf0542a2fc1aa164c0f5269",
+    "primary_feature_mode": "official_esm2_35m",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "metadata_sha256": "04d9a36e7c3c5228f1e4bcad46a00cdc3dde1556d25fc9693d9d28dc4680753b",
+      "train_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+      "validation_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec"
+    },
+    "test_role_forbidden": true
+  },
+  "development_matrix": [
+    "framecontact_joint_a0_pair_only",
+    "framecontact_joint_a1_noisy_or",
+    "framecontact_joint_a2_independent_heads",
+    "framecontact_joint_a3_coupled_heads",
+    "framecontact_joint_a4_coupled_soft_crop",
+    "framecontact_joint_a5_coupled_spatial"
+  ],
+  "attribution_contract": {
+    "core_conditions": [
+      "framecontact_joint_a0_pair_only",
+      "framecontact_joint_a1_noisy_or",
+      "framecontact_joint_a2_independent_heads",
+      "framecontact_joint_a3_coupled_heads"
+    ],
+    "mechanism_followups": [
+      "framecontact_joint_a4_coupled_soft_crop",
+      "framecontact_joint_a5_coupled_spatial"
+    ],
+    "pair_only_definition": "A0 has no epitope BCE, paratope BCE, or pair-node consistency gradient. The same partner-specificity ranking term is held fixed in every condition and must be disclosed when describing A0.",
+    "a0_vs_a1": "Effect of adding node-label loss through noisy-OR contact marginals.",
+    "a1_vs_a2": "Contact-derived residue outputs versus independent residue heads under matched label-loss weights.",
+    "a2_vs_a3": "Effect of pair-to-node Jensen-Shannon consistency with identical model topology.",
+    "a3_vs_a4": "Effect of stop-gradient soft coarse node-to-pair routing.",
+    "a4_vs_a5": "Effect of joint distance supervision and direct-contact/distogram consistency."
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "attention_kernel": "reference",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true,
+    "checkpoint_wrong_partners": true,
+    "contact_gate_warmup_fraction": 0.05,
+    "contact_gate_ramp_fraction": 0.10,
+    "coarse_contact_crop_floor": 0.05,
+    "coarse_contact_crop_temperature": 1.0,
+    "coarse_contact_crop_strength": 1.0,
+    "coarse_contact_crop_stop_gradient": true
+  },
+  "training_objective": {
+    "contact": "Per-complex class-balanced BCE on authenticated native bipartite contact labels.",
+    "node_labels": "Per-complex class-balanced BCE on epitope/paratope marginals derived from the same native contacts.",
+    "pair_node_consistency": "Equal-weight mean of antibody-side and antigen-side per-complex Bernoulli Jensen-Shannon divergence between independent unary logits and noisy-OR contact marginals.",
+    "specificity": "Bidirectional ranking against frozen matched non-cognate partners; wrong partners never receive fabricated all-zero contact labels.",
+    "specificity_score_source": "interaction_only",
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01,
+    "loss_weights_by_condition": {
+      "framecontact_joint_a0_pair_only": {"contact": 1.0, "paratope": 0.0, "epitope": 0.0, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a1_noisy_or": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a2_independent_heads": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a3_coupled_heads": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.25, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a4_coupled_soft_crop": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.25, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a5_coupled_spatial": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.25, "contact_distance_consistency": 0.10, "pair_node_consistency": 0.25, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0}
+    }
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "For every condition, maximize the minimum bidirectional development-validation compatibility margin; tie-break by mean per-complex contact AUPRC and then earlier epoch. Node metrics never select checkpoints.",
+    "maximum_epochs": 120,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "development validation only",
+    "test_role_forbidden": true
+  },
+  "development_endpoints": {
+    "primary": [
+      "pooled and mean per-complex native contact AUPRC",
+      "minimum bidirectional matched partner margin",
+      "epitope AUPRC",
+      "paratope AUPRC"
+    ],
+    "secondary": [
+      "contact precision, recall, F1, MCC, AUROC",
+      "epitope and paratope precision, recall, F1, MCC, AUROC",
+      "fixed-budget P@K and Lmin-normalized precision",
+      "matched partner retrieval top-1, MRR, and margin"
+    ],
+    "statistics": [
+      "five-seed mean and standard deviation",
+      "matched paired bootstrap confidence intervals",
+      "per-complex median and interquartile range",
+      "seed-wise deltas without pooling residue pairs across complexes"
+    ]
+  },
+  "confirmatory_order": {
+    "stage_1": "Run all six conditions on epitope_group development train/validation with matched seeds and compute budget.",
+    "stage_2": "Only after the stage-1 aggregation script and comparison rules are frozen, run the core four plus the selected mechanism on epitope_ratio development train/validation.",
+    "official_test": "Not authorized by this protocol."
+  },
+  "interpretation_rules": [
+    "Do not call the three labels independent tasks.",
+    "Do not use frozen, official, or external test performance for architecture, hyperparameter, threshold, checkpoint, or baseline selection.",
+    "A high AUROC under extreme contact imbalance is not sufficient; AUPRC and precision-oriented metrics remain primary.",
+    "A positive contact metric without a positive matched partner margin does not establish partner specificity.",
+    "No condition is called superior unless matched five-seed uncertainty supports the stated endpoint."
+  ]
+}

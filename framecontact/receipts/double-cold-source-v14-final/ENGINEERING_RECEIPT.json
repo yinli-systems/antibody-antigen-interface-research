@@ -1,0 +1,85 @@
+{
+  "claim_boundary": "Source, optional contact-bottleneck implementation, dependency, and regression-test evidence only. The candidate is default-off and has not been registered, trained, model-selected, frozen-tested, externally evaluated, or shown to improve a biological metric. This receipt contains no A100, benchmark-superiority, or state-of-the-art claim.",
+  "format_version": "framecontact_double_cold_source_engineering_receipt_v4",
+  "local_regression": {
+    "python": "3.12.13",
+    "result": "296 passed in 18.52s",
+    "scope": "Full local suite with src, pinned Boltz checkout, fairscale, einops 0.8.0, and einx on PYTHONPATH; bytecode and pytest cache disabled."
+  },
+  "parent": {
+    "path": "receipts/double-cold-source-v13-final/ENGINEERING_RECEIPT.json",
+    "reason": "Add the default-off late-fusion contact-bottleneck cosine candidate, explicit stop-gradient versus joint-gradient modes, validation scoring support, fail-closed protocol wiring, contract tests, and an exact not-yet-trained evidence boundary.",
+    "sha256": "06208b9c772b0a165e2aa77fdaa6cec4537086062e86b160c428bd55b8c2d399"
+  },
+  "remote_environment": {
+    "base_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "pandas": "2.3.3",
+    "pyarrow": "17.0.0",
+    "pyarrow_target": "/ssd/scxi253/model_deployment/data/framecontact_20260730/runtime-deps/pyarrow-17.0.0-py310",
+    "pytest_target": "/tmp/scxi253-v6d-pytest-841",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128"
+  },
+  "remote_regression": {
+    "command_controls": [
+      "source tree created at a previously absent immutable version path",
+      "explicit authenticated directory allowlist",
+      "symlink and cache rejection before and after execution",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "pytest -p no:cacheprovider",
+      "basetemp under /dev/shm",
+      "manifest verification after pytest"
+    ],
+    "result": "291 passed, 5 skipped in 125.67s",
+    "skip_boundary": "All five skips require the pinned Boltz source unavailable on the remote login environment; no FrameContact, objective, training-harness, split, gate, or evidence test was skipped or failed.",
+    "source_cache_or_symlink_artifacts_after_run": 0
+  },
+  "contact_bottleneck_delta": {
+    "default_enabled": false,
+    "experiment_registered": false,
+    "gpu_job_launched": false,
+    "quality_metric_available": false,
+    "semantic_constraints": [
+      "late fusion only",
+      "monomer self features are pooled",
+      "weights derive only from interaction-only contact logits",
+      "candidate-pair and residue masks are mandatory",
+      "direct complex cosine is not treated as a pair logit",
+      "stop-gradient and joint-gradient paths are explicit"
+    ],
+    "sha256": {
+      "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "b17fafcce87ba24929e5a3fe764aed4dde8b43f5394d77fb525d94becd44ad87",
+      "scripts/train_framecontact.py": "34fa1a7bd8618cc2c28831b08101f4dfda8835121f1d67b62a924368c17f8546",
+      "src/interaction_first/framecontact.py": "9fcbc4c41eb733cede2c623cb33f808b1326c413ff10a6d3e7953987810f24d8",
+      "src/interaction_first/framecontact_objective.py": "f7778dacd001f1911fc048bfef2a0edf6c60efdb68c5ef032ab3726e0066b028",
+      "tests/test_framecontact.py": "5901fe913faa85a08d96d082f9af837286c60622dbe39a34e1e49837c7aea903",
+      "tests/test_framecontact_objective_metrics.py": "d67d468e4db0fe1865ab55e0dca5a21ad155b564f7012775b7716e2934871b24",
+      "tests/test_train_framecontact_reciprocal.py": "e07566c24bc9cc778bce9a0262fff85b96ba90525b6bdfdbe1f851eca0d9b1a4"
+    }
+  },
+  "sha256": {
+    "FULL_PYTEST_WITH_DEPS.log": "eb1ec80dae39005f41c851fd069203718bbae32fce217162eb4ae33b80c7697f",
+    "LOCAL_FULL_PYTEST.log": "28e92989cc0259eaea0bd0293260afee866c44f05e9f2bddfc092f2eaa6f8ac2",
+    "MANIFEST_BUILD.log": "de99234820666987c46d9fd2a51ab24142b501fa7998825c96bccfa322be6185",
+    "POST_TEST_MANIFEST_VERIFY.json": "4ce8a01c5e63b87db7b21717f3788f1494240b859810da08363b52b81abac130",
+    "SOURCE_MANIFEST.json": "ee60485e2507c76d43752cbb608680a53d9a1d8e529e2fe4efff53ec34ea1f35"
+  },
+  "source": {
+    "included_directories": [
+      "scripts",
+      "src",
+      "protocols",
+      "tests",
+      "slurm",
+      "docs",
+      "baselines",
+      "evaluation",
+      "fixtures",
+      "receipts",
+      "reports"
+    ],
+    "manifest_record_count": 506,
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v14",
+    "tree_sha256": "49700b8245862f452b2bc8a1608943c86e4e7a81e6f542f346e128c27b5b19c3"
+  }
+}

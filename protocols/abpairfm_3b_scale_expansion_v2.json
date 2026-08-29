@@ -1,0 +1,120 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "production_pretraining": false,
+    "scale_pool_materialization": true,
+    "test_access": false
+  },
+  "claim_boundary": "Prospective scale-pool and systems-promotion contract. It preserves the frozen v1 Stage A training cap and authorizes only public train-data materialization plus synthetic systems measurements; it establishes no real-data training readiness, biological improvement, or SOTA result.",
+  "compute_economics": {
+    "five_billion_token_wall_clock_estimates": {
+      "excludes_checkpoint_and_evaluation_time": true,
+      "promoted_microbatch8": {
+        "days": 4.90714033113798,
+        "residue_tokens_per_second": 11793.094646826628,
+        "source": "same-node 20-measured-step HSDP 2x4 microbatch receipt job 1458847; synthetic capacity evidence pending the real-data gate"
+      },
+      "stable_microbatch1": {
+        "days": 16.419353659932607,
+        "residue_tokens_per_second": 3524.521827652009,
+        "source": "same-node 200-measured-step HSDP 2x4 systems receipt job 1458796; synthetic systems evidence only"
+      }
+    },
+    "promotion_order": [
+      "same_node_four_vs_eight_gpu_200_measured_update_gate",
+      "eight_gpu_microbatch_capacity_and_throughput_ladder",
+      "deterministic_200_update_real_pair_gate",
+      "quality_per_gpu_hour_comparison_against_650m_proxy"
+    ],
+    "systems_invariants": {
+      "backend": "fsdp2_hsdp_2x4",
+      "compute_precision": "bfloat16",
+      "maximum_p95_to_median_step_time": 1.2,
+      "maximum_peak_allocated_memory_fraction": 0.92,
+      "minimum_eight_over_four_gpu_speedup": 1.4,
+      "partition": "gpu_4090",
+      "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10"
+    }
+  },
+  "format_version": "abpairfm_3b_scale_expansion_v2",
+  "public_scale_anchors": {
+    "mint": {
+      "clustered_pair_count_before_validation_exclusion": 382000000,
+      "model_parameters": 650000000,
+      "pretraining_validation_pairs": 250000,
+      "raw_physical_interactions": 2400000000,
+      "raw_unique_sequences": 59300000,
+      "sequence_identity_clustering": 0.5,
+      "training_pair_count_after_validation_cluster_exclusion": 95800000,
+      "training_unique_sequences": 16400000,
+      "url": "https://www.nature.com/articles/s41467-025-67971-3"
+    },
+    "pplm": {
+      "model_parameters": 650000000,
+      "pair_count": 3300000,
+      "pair_clusters": 672372,
+      "pdb_to_string_sampling_ratio": "1:2",
+      "url": "https://www.nature.com/articles/s41467-026-70457-5",
+      "validation_single_pair_clusters": 4678
+    },
+    "progen3": {
+      "role": "single-protein token-scale reference only; not a pair-aware biological baseline",
+      "three_billion_parameter_training_tokens": 500000000000,
+      "url": "https://www.biorxiv.org/content/10.1101/2025.04.15.649055v1"
+    }
+  },
+  "stage_a_qualification": {
+    "consumed_residue_tokens": 5000000000,
+    "maximum_post_dedup_sequence_pairs": 25000000,
+    "minimum_post_dedup_sequence_pairs": 2500000,
+    "protocol": "abpairfm_3b_execution_v1",
+    "unchanged_from_v1": true
+  },
+  "stage_a_scale_pool": {
+    "admitted_training_selection": {
+      "maximum_pairs": 25000000,
+      "selection_rule": "deterministic evidence-stratified sample from the eligible pool; preserve all structural pairs and fill the remaining capacity from STRING endpoint-cluster pairs",
+      "structural_sources": [
+        "PINDER_2024_02_development_clean",
+        "PPIRef50K_development_clean_PINDER_novel"
+      ]
+    },
+    "eligible_pool_targets": {
+      "minimum_endpoint_cluster_pairs": 25000000,
+      "mint_equivalent_stretch_endpoint_cluster_pairs": 95800000,
+      "report_observed_unique_sequences": true
+    },
+    "leakage_controls": {
+      "development_endpoint_cluster_identity_maximum": 0.5,
+      "development_endpoint_cluster_minimum_bidirectional_coverage": 0.8,
+      "exclude_every_pair_touching_a_frozen_development_cluster": true,
+      "frozen_development_panels": [
+        "sabdab2_frozen_development",
+        "asep_frozen_development"
+      ],
+      "test_bytes_permitted": false
+    },
+    "string_construction": {
+      "cluster_identity": 0.5,
+      "combined_score_minimum": 700,
+      "combined_score_rationale": "STRING documents 0.7 as a conservative downstream threshold and recommends the combined score over requiring individual channels.",
+      "evidence_channel_requirement": "none_beyond_physical_network_membership",
+      "one_edge_per_unordered_endpoint_cluster_pair": true,
+      "physical_links_only": true,
+      "preserve_evidence_channels_and_combined_score": true,
+      "raw_scale_reference_interactions": 2400000000,
+      "score_documentation_url": "https://string-db.org/help/scores/",
+      "validation_pairs": 250000
+    }
+  },
+  "supersession": {
+    "may_change_v1_training_cap_without_new_audit": false,
+    "v1_protocol_remains_frozen": true
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "pinder_test_rows_used": false,
+    "pinder_test_structure_bytes_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

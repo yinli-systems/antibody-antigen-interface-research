@@ -1,0 +1,78 @@
+{
+  "authorization": {
+    "development_pair_retrieval": true,
+    "development_contact": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Frozen development-only evaluation of the official MINT checkpoint and Bernett PPI head on authenticated AsEP and SAbDab2 cognate/matched-decoy panels. Decoys are ranking controls, not measured biological noninteractions. This protocol does not authorize contact claims, calibration claims, test access, or SOTA claims.",
+  "compute": {
+    "encoder_autocast": "bfloat16",
+    "head_and_metric_accumulation": "float32",
+    "maximum_batch_size": 8,
+    "maximum_batch_attention_cells": 4194304,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10"
+  },
+  "format_version": "abpairfm_mint_development_retrieval_v1",
+  "input": {
+    "dataset_roles": [
+      "asep development_validation",
+      "sabdab2 development_validation"
+    ],
+    "pair_panel_jsonl_sha256": "18a7efcc4f1cb5499be32938a4819208f5bb6e2095acdda3098e71496458fce2",
+    "pair_panel_receipt_sha256": "078dc59a5c1caba9fa3ecae4361a5bcd0fa3922f586039ff3a44d11e998f1346",
+    "test_roles_permitted": false,
+    "wrong_partner_candidates_per_direction_per_instance": 31
+  },
+  "length_policy": {
+    "aggregation": "arithmetic mean of raw PPI logits over the Cartesian product of endpoint windows; sigmoid is applied only after aggregation",
+    "long_endpoint_window_starts": [
+      "0",
+      "floor((length-510)/2)",
+      "length-510"
+    ],
+    "maximum_residues_per_endpoint_window": 510,
+    "rationale": "The official MINT examples use a 512-token per-chain crop including CLS/EOS. Start, center, and end windows remove random-crop variance while preserving coverage for the ten development complexes above the 1024-token two-chain budget.",
+    "short_endpoint_windows": 1
+  },
+  "metrics": {
+    "bootstrap_unit": "canonical_pair_sha256",
+    "candidate_scores": "official Bernett PPI raw logit with fixed antibody-then-antigen chain order",
+    "directions": [
+      "fixed_antigen_wrong_antibody",
+      "fixed_antibody_wrong_antigen"
+    ],
+    "duplicate_policy": {
+      "primary": "collapse exact candidate endpoint sequence duplicates before ranking",
+      "secondary": "retain all 31 frozen candidate instances and use average tie rank"
+    },
+    "rank_tie_policy": "average rank: 1 + count(score>cognate) + 0.5*count(non-cognate score==cognate)",
+    "reported": [
+      "bidirectional_recall_at_1",
+      "bidirectional_mrr",
+      "directional_recall_at_1",
+      "directional_mrr",
+      "pair_order_raw_logit_absolute_delta",
+      "nonpadding_residues_per_second",
+      "pairs_per_second",
+      "peak_allocated_memory_fraction",
+      "gpu_hours"
+    ],
+    "weighting": "primary macro average over unique canonical exact cognate pairs after averaging duplicate structure instances"
+  },
+  "model": {
+    "backbone_checkpoint_sha256": "84a4016365997cd9f0bccb07d746fa8f076ffd8e45aa0cbcf4e50a037161a342",
+    "backbone_compatibility_receipt_sha256": "7f60a764d3001b1fd567d316a8cb0f6ce21a115db553d2ece8840f42b93a0f8b",
+    "backbone_unique_parameters": 813371969,
+    "head_checkpoint_sha256": "702849af78e245c7596d8c032391da52ff6657e9173af380e29a8ea3858fdab9",
+    "head_parameters": 6558721,
+    "head_training_domain": "Bernett general PPI benchmark; no antibody-specific calibration is assumed",
+    "joint_attention": true,
+    "label": "MINT ESM2-650M backbone plus multimer branch; 813.37M unique parameters",
+    "retrieval_head_audit_sha256": "d4d6700057038ac0c71f18125329f7f1cd299925003bf7cafc2e33c6110ec586",
+    "source_revision": "06694b7606e2d00b76ec58daf5c7aecdaf7cd283"
+  },
+  "status": "FROZEN_BEFORE_GPU_EVALUATION",
+  "test_access": false
+}

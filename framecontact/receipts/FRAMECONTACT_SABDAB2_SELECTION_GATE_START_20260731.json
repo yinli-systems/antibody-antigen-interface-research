@@ -1,0 +1,40 @@
+{
+  "created_utc": "2026-07-30T20:23:00Z",
+  "format_version": "framecontact_sabdab2_selection_gate_start_v1",
+  "obsolete_job": {
+    "job_id": "1342805",
+    "state": "CANCELLED before execution",
+    "reason": "Hard-coded framecontact_interleaved without freezing all eight validation ensembles or running the registered architecture selection."
+  },
+  "preserved_development_jobs": {
+    "aggregate_job_id": "1342804",
+    "training_array_job_id": "1342688"
+  },
+  "replacement_chain": {
+    "ensemble_array": {
+      "dependency": "afterok:1342688_*",
+      "job_id": "1342986",
+      "output_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-ensembles/antigen-fold-v3_1-v5-selection-gated-v1",
+      "script_sha256": "23dd86ca22bcb4b435a92fb969b86b57c9dbf9f18c4bc1752d72b78995ea5197",
+      "tasks": "0-7%4"
+    },
+    "selection": {
+      "dependency": "afterok:1342986_*",
+      "job_id": "1342987",
+      "output_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/development-selections/antigen-fold-v3_1-v5-selection-gated-v1",
+      "script_sha256": "dd7f326b8f69c0eb374e02c8c8adf6c14ab0cda484c5603bf726e75b33fca51d"
+    }
+  },
+  "source_authority": {
+    "archive_sha256": "8c599e8bee57fc5e2710dce9fa5230dee1797de59e60dd53b4620960ffaa6341",
+    "deployment_receipt_sha256": "49f8e9a049b41d1d36c5a13add0787e8541e0ee73e5561786c393fbc6a718d2f",
+    "remote_source_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/evaluation-source-v5",
+    "source_manifest_sha256": "53586e601fe7439d583f4db43b6d4bc2c9357a625ab1a268c92762577f70dc9d"
+  },
+  "test_access": {
+    "asep_official_test_job_submitted": false,
+    "sabdab2_frozen_test_job_submitted": false,
+    "test_labels_read": false,
+    "test_predictions_or_scores_read": false
+  }
+}

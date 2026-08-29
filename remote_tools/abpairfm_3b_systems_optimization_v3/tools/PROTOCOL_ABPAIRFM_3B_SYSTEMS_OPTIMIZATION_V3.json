@@ -1,0 +1,67 @@
+{
+  "acceptance": {
+    "input_checkpoint_content_sha256": "38a0987985f119afb374f2062e407bc9c5006f3f7ad66711744086d9561810b1",
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "minimum_mfu_6n_estimate": 0.105,
+    "nonfinite_updates": 0,
+    "required_status": "PASS_DCP_RESHARD_CANARY_VERIFIED",
+    "test_access": false,
+    "world_size": 4
+  },
+  "authorization": {
+    "development_access": false,
+    "old_test_reopening": false,
+    "production_successor_submission_after_pass": true,
+    "real_stage_a0_data_canary": true,
+    "temporal_holdout_access": false
+  },
+  "batch_equivalence": {
+    "accumulation_steps": 4,
+    "global_pairs_per_update": 112,
+    "maximum_pair_tokens": 1024,
+    "microbatch_pairs_per_rank": 7,
+    "production_8gpu_global_pairs_per_update": 112
+  },
+  "checkpoint": {
+    "backend": "torch_distributed_checkpoint",
+    "input_generation": "segment-000073",
+    "input_world_size": 8,
+    "output_generation": "segment-000074",
+    "output_world_size": 4,
+    "require_model_optimizer_and_training_cursor": true
+  },
+  "claim_boundary": "Real-data systems evidence for the int32 cumulative-length repair to exact vectorized two-chain native variable-length FlashAttention; not downstream or test evidence.",
+  "format_version": "abpairfm_3b_systems_optimization_protocol_v3",
+  "hardware": {
+    "allowed_gpu_model": "NVIDIA GeForce RTX 4090",
+    "gpu_bf16_peak_flops": 165200000000000,
+    "partition": "gpu_4090",
+    "world_size": 4
+  },
+  "optimization": {
+    "attention_backend": "aten_native_varlen_flash",
+    "attention_sdpa_calls_per_layer": 2,
+    "cuda_graph_authorized_after_eager_pass": true,
+    "length_bucketed_microbatches": true,
+    "query_length_buckets": [128, 256, 384, 512, 640, 768, 896, 1024],
+    "scalar_metric_all_reduces_per_update": 1,
+    "token_length_buckets": [256, 384, 512, 640, 768, 896, 1024],
+    "torch_compile_authorized_after_eager_pass": true,
+    "update_barrier": false
+  },
+  "repair": {
+    "change": "cumsum(dtype=torch.int32) for cu_seqlens_q and cu_seqlens_k",
+    "failed_job_id": 1469202,
+    "failed_stderr_sha256": "1d55df4b2e538ef23fa0f6bfaa054dc51f13da48ed6f6f756252b5285fbf1744",
+    "failure": "RuntimeError: cu_seqlens_q must have dtype int32",
+    "parent_source_aggregate_sha256": "3d44ad2b00784491d5602a8058d4a608b8051f24db259fea953a3effd2510f73",
+    "repaired_source_aggregate_sha256": "2d741e7aa303f891729179b432a8b3f17a0363f0c3bdb00cbf776df318c018cf"
+  },
+  "training": {
+    "activation_checkpointing": true,
+    "fsdp_mesh": [1, 4],
+    "reshard_after_forward": false,
+    "segment_index": 74,
+    "updates": 20
+  }
+}

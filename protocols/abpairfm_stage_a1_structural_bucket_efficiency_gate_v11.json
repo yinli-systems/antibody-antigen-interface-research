@@ -1,0 +1,134 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "7dbde1798181967cc5406dae6eed99a58d8d80c097f16c684d1ce731e5d16311",
+    "generation": "segment-000024",
+    "minimum_consumed_residue_tokens": 394000000,
+    "optimizer_resume": false
+  },
+  "claim_boundary": "Train-only Stage-A1 3B structural length-bucket efficiency gate over the 16,000 authenticated PPIRef50K records in the immutable pilot manifest. Stage-A0 already supplies the large-scale STRING pair-aware MLM warm start; this gate isolates explicit structural contact and cognate retrieval learning, orders exact manifest members by combined patch length, and deterministically shuffles contiguous 128-record blocks. It compares full activation checkpointing at per-rank microbatch 6, 7, and 8 while holding ten updates, optimizer, alternating single-pass objectives, FSDP topology, precision, and checkpoint fixed. It measures finite optimization, useful-token throughput, approximate 6N MFU, memory, and checkpoint restore only; it cannot establish convergence, development improvement, biological noninteraction, production readiness, test performance, or SOTA.",
+  "counterfactual_gate": {
+    "mapped_anchors": 15948,
+    "mapping_sha256": "910b89b83612702e2e903e46d27fa9d4f3c4363d77df0cee9fe909427980512e",
+    "minimum_coverage": 0.995,
+    "observed_coverage": 0.99675,
+    "receipt_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a1_pilot_v5/COUNTERFACTUAL_MATERIALIZATION_RECEIPT.json",
+    "receipt_sha256": "94e3d7314438486afcf8c5c7d623aa2ab9c034573f322fa49532427a62c3944e",
+    "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
+    "unmatched_anchors": 52
+  },
+  "efficiency": {
+    "activation_checkpointing_candidates": [
+      "full"
+    ],
+    "expected_source_records": 19200,
+    "expected_structural_records": 16000,
+    "gpu_peak_bfloat16_flops": 82580000000000,
+    "length_bucket_block_records": 128,
+    "maximum_combined_tokens": 1024,
+    "mfu_semantics": "approximate useful-token 6N MFU; attention, contact and retrieval head FLOPs, padding compute, checkpointing recompute, and communication are not modeled",
+    "padding_multiple": 64,
+    "parameter_count": 2839005633,
+    "phase_schedule": "alternating_joint_and_retrieval_single_backbone_pass",
+    "selection_seed": 1701,
+    "trial_matrix": [
+      {
+        "activation_checkpointing": "full",
+        "microbatch_pairs_per_rank": 6
+      },
+      {
+        "activation_checkpointing": "full",
+        "microbatch_pairs_per_rank": 7
+      },
+      {
+        "activation_checkpointing": "full",
+        "microbatch_pairs_per_rank": 8
+      }
+    ]
+  },
+  "efficiency_gate_only": true,
+  "format_version": "abpairfm_stage_a1_structural_bucket_efficiency_gate_v11",
+  "loss": {
+    "contact": {
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_positive_pairs_per_complex": 102,
+      "maximum_sampled_pairs_per_complex": 512,
+      "representation_view": "joint_cross_chain_attention",
+      "sampling_seed": 1701,
+      "weight": 0.5
+    },
+    "masked_language_modeling": {
+      "balance": "equal_per_chain",
+      "representation_view": "joint_cross_chain_attention",
+      "weight": 1.0
+    },
+    "retrieval": {
+      "candidate_scope": "same_node_all_ranks",
+      "direction": "bidirectional",
+      "participants": "PPIRef50K structural cognates only",
+      "pilot_false_negative_exclusion": "same_exact_endpoint_or_available_source_cluster_or_same_positive_group_or_known_positive_swap",
+      "ppiref_cluster_boundary": "exact_sequence_fallback_only",
+      "production_cluster_aware_gate": "still_required_before_production",
+      "representation_view": "chain_independent_no_cross_attention",
+      "temperature": 0.07,
+      "weight": 0.2
+    }
+  },
+  "optimization": {
+    "accumulation_steps": 1,
+    "backbone_learning_rate": 5e-7,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "microbatch_pairs_per_rank_candidates": [
+      6,
+      7,
+      8
+    ],
+    "updates": 10,
+    "weight_decay": 0.01
+  },
+  "pilot_manifest": {
+    "counterfactual_mapped_retrieval_records": 15948,
+    "expected_retrieval_supervised_records": 16000,
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "minimum_full_endpoint_residues": 8,
+    "minimum_patch_endpoint_residues": 4,
+    "ppiref_records_per_microbatch": 5,
+    "receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "selection_seed": 1701,
+    "source_protocol_sha256": "27da4df9fcca2d7faf4f75d95c8e73f6c5470680d76ee5e467af6618acc60a24",
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
+    "total_records": 19200,
+    "unique_ppiref_exact_pairs": true
+  },
+  "promotion_gates": {
+    "finite_all_losses": true,
+    "maximum_peak_memory_fraction": 0.95,
+    "minimum_contact_positive_support": 50,
+    "minimum_counterfactual_coverage": 0.995,
+    "minimum_retrieval_candidates_per_query": 32,
+    "minimum_retrieval_cognate_support": 50,
+    "required_checkpoint_restore": true
+  },
+  "status": "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING",
+  "systems": {
+    "cpus_per_task": 48,
+    "explicit_mem_argument_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 8
+  },
+  "systems_gate_only": true,
+  "test_access": false
+}

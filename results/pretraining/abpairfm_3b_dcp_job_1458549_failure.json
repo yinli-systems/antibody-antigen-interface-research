@@ -1,0 +1,36 @@
+{
+  "claim_boundary": "Synthetic full-model DCP recovery attempt only. No checkpoint generation or PASS receipt was produced, and no biological or test data was accessed.",
+  "failure": {
+    "all_training_steps_before_checkpoint_completed": true,
+    "dcp_generation_completed": false,
+    "error": "KeyError: 615",
+    "phase": "torch.distributed.checkpoint.state_dict.get_state_dict optimizer FQN mapping",
+    "hypothesis_resolution": "REJECTED_BY_RETRY_JOB_1458554",
+    "root_cause_hypothesis": "With reshard_after_forward=false, an unsharded registered parameter remained visible after the training iteration while the optimizer retained its sharded DTensor parameter. PyTorch 2.7.1 then could not map optimizer parameter ID 615 to a model FQN.",
+    "selected_fix": "Explicitly call FSDP2 reshard() bottom-up before distributed state-dict generation and before local state hashing; optimizer state remains mandatory."
+  },
+  "format_version": "abpairfm_3b_dcp_failure_summary_v1",
+  "job": {
+    "elapsed": "00:00:44",
+    "exit_code": "1:0",
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "job_id": 1458549,
+    "node": "wqd10nae09g3",
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "remote_evidence": {
+    "error_log": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-dcp-1458549.err",
+    "error_log_sha256": "59ba91db59c46d055f7f0cb53b9e5b2716b2e1f7b178ad7cc0494731fafb0a7d",
+    "output_log": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-dcp-1458549.out",
+    "output_log_sha256": "a94ef3e17426e47f61f10de1eb377c295710daba86a328b76c582ab696e2f9b2",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/dcp/job-1458549"
+  },
+  "source_tree_sha256": "b653fdf8a070f6db633bbd3fca177f7bd2cf16767faf9abca7261ccdcc8af5a3",
+  "status": "FAILED_CLOSED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

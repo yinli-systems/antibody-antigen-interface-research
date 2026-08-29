@@ -1,0 +1,55 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "real_data_gate": false,
+    "test_access": false
+  },
+  "claim_boundary": "Same-node synthetic full-model systems evidence only. Disabling checkpoint RNG stashing improved throughput, but the candidate failed the frozen numerical gates and is not authorized for real-data or production training.",
+  "comparison": {
+    "baseline_peak_allocated_memory_fraction": 0.6950813976653878,
+    "baseline_preserve_rng_state": true,
+    "baseline_residue_tokens_per_second": 11348.223786479584,
+    "candidate_p95_to_median_step_time": 1.0239121473010433,
+    "candidate_peak_allocated_memory_fraction": 0.6950813976653878,
+    "candidate_preserve_rng_state": false,
+    "candidate_residue_tokens_per_second": 11855.232046765257,
+    "candidate_throughput_speedup": 1.0446773230617579,
+    "maximum_gradient_norm_relative_delta": 1.4264620632705287,
+    "maximum_loss_absolute_delta": 0.03125
+  },
+  "decision": "REJECT_NO_RNG_STASH",
+  "diagnostic_boundary": "The observed throughput signal may justify a separately preregistered baseline-repeat determinism diagnostic, but this rejected gate cannot be reinterpreted or promoted post hoc.",
+  "format_version": "abpairfm_3b_checkpoint_rng_compact_result_v1",
+  "gates": {
+    "gradient_norm_parity": false,
+    "loss_parity": false,
+    "memory_fraction": true,
+    "step_time_stability": true,
+    "throughput_speedup": true
+  },
+  "job": {
+    "elapsed": "00:05:15",
+    "exit_code": "0:0",
+    "job_id": 1459049,
+    "partition": "gpu_4090",
+    "state": "COMPLETED",
+    "world_size": 8
+  },
+  "raw_receipts": {
+    "baseline_sha256": "49fd9e5e338fa15867ae3672ea3f8336a6564ff18520da3ff2c54e72363fb939",
+    "candidate_sha256": "18eccd633955df86251146a68cbcb6c0df5090d84ec442480f0cec535760b7fe",
+    "comparison_sha256": "78921111fd1bbe0bf829429f714d6444a5ad735fb36915958e55b85365c34911"
+  },
+  "status": "PASS_REJECTED_CANDIDATE",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "thresholds": {
+    "maximum_gradient_norm_relative_delta": 0.001,
+    "maximum_loss_absolute_delta": 0.0005,
+    "maximum_peak_allocated_memory_fraction": 0.92,
+    "maximum_p95_to_median_step_time": 1.2,
+    "minimum_residue_tokens_per_second_speedup": 1.02
+  }
+}

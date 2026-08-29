@@ -1,0 +1,37 @@
+{
+  "claim_boundary": "Synthetic full-model DCP recovery attempt only. No checkpoint generation or PASS receipt was produced, and no biological or test data was accessed.",
+  "failure": {
+    "all_training_steps_before_checkpoint_completed": true,
+    "dcp_generation_completed": false,
+    "error": "KeyError: 615",
+    "explicit_bottom_up_reshard_completed_on_all_ranks": true,
+    "phase": "torch.distributed.checkpoint.state_dict.get_state_dict optimizer FQN mapping",
+    "prior_unresharded_iteration_hypothesis_rejected": true,
+    "root_cause_hypothesis": "PyTorch 2.7.1 FSDP2 cannot preserve the duplicated module registration used for ESM2's tied embed_tokens.weight and lm_head.weight while also constructing a complete optimizer FQN map.",
+    "selected_fix": "Keep exact mathematical tying but register the embedding parameter only once; LM logits consume embed_tokens.weight directly, and the duplicate official checkpoint tensor must match exactly before canonicalization."
+  },
+  "format_version": "abpairfm_3b_dcp_failure_summary_v1",
+  "job": {
+    "elapsed": "00:00:41",
+    "exit_code": "1:0",
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "job_id": 1458554,
+    "node": "wqd10nae09g3",
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "remote_evidence": {
+    "error_log": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-dcp-1458554.err",
+    "error_log_sha256": "4168ca962004e10be27e1e462ef03cef677bfcf034670aa7fbdf1494dd09ea17",
+    "output_log": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-dcp-1458554.out",
+    "output_log_sha256": "ce95015a67c3ea1f7303b329a031d3411bd8b09236eb0ab5118ddeb93957ad49",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/dcp/job-1458554"
+  },
+  "source_tree_sha256": "09fa7e8c51b1c0d576674c5c29757eb611c5c77c9bec8122288fb3675bf59fa5",
+  "status": "FAILED_CLOSED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

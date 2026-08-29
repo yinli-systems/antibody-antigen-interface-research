@@ -1,0 +1,89 @@
+--- scripts/run_antibody_pretraining_nonfinite_diagnostic_v5.py
++++ scripts/run_antibody_pretraining_nonfinite_diagnostic_v6.py
+@@ -740,2 +740,86 @@
+             type_ids = chain[:, None].expand_as(input_ids).masked_fill(~attention, 0)
++            if (
++                os.environ.get("ABF_NONFINITE_DIAGNOSTIC_SUBSET_SCAN") == "1"
++                and micro_index == 0
++            ):
++                local_bad_subsets: list[dict[str, object]] = []
++                tested_subsets = 0
++                batch_indices = np.asarray(
++                    local_micro_batches[micro_index],
++                    dtype=np.int64,
++                )
++                for subset_size in (1, 2, 4, 8, 16):
++                    for subset_start in range(0, int(input_ids.shape[0]), subset_size):
++                        subset_stop = min(
++                            subset_start + subset_size,
++                            int(input_ids.shape[0]),
++                        )
++                        optimizer.zero_grad(set_to_none=True)
++                        subset_labels = torch.full_like(labels, -100)
++                        subset_labels[subset_start:subset_stop] = labels[
++                            subset_start:subset_stop
++                        ]
++                        with model.no_sync():
++                            with torch.autocast("cuda", dtype=torch.bfloat16):
++                                subset_output = model(
++                                    input_ids,
++                                    type_ids,
++                                    attention,
++                                    subset_labels,
++                                )
++                                subset_loss = (
++                                    subset_output.loss_sum * world_size / target_count
++                                )
++                            subset_loss.backward()
++                        subset_bad_names: list[str] = []
++                        for name, parameter in model.named_parameters():
++                            gradient = parameter.grad
++                            if gradient is not None and not bool(
++                                torch.isfinite(gradient).all().item()
++                            ):
++                                if len(subset_bad_names) < 8:
++                                    subset_bad_names.append(name)
++                        tested_subsets += 1
++                        if subset_bad_names:
++                            selected_indices = batch_indices[
++                                subset_start:subset_stop
++                            ]
++                            local_bad_subsets.append(
++                                {
++                                    "index_sha256": hashlib.sha256(
++                                        selected_indices.tobytes()
++                                    ).hexdigest(),
++                                    "indices": selected_indices.tolist(),
++                                    "loss_sum": float(
++                                        subset_output.loss_sum.detach()
++                                    ),
++                                    "nonfinite_gradient_names": subset_bad_names,
++                                    "subset_size": subset_size,
++                                    "subset_start": subset_start,
++                                    "subset_stop": subset_stop,
++                                }
++                            )
++                local_subset_summary = {
++                    "bad_subsets": local_bad_subsets,
++                    "rank": rank,
++                    "tested_subsets": tested_subsets,
++                    "update": update + 1,
++                }
++                rank_subset_summaries: list[object] = [None] * world_size
++                dist.all_gather_object(
++                    rank_subset_summaries,
++                    local_subset_summary,
++                )
++                if rank == 0:
++                    print(
++                        "NONFINITE_SUBSET_DIAGNOSTIC="
++                        + json.dumps(
++                            rank_subset_summaries,
++                            allow_nan=True,
++                            separators=(",", ":"),
++                            sort_keys=True,
++                        ),
++                        flush=True,
++                    )
++                raise RuntimeError("Subset diagnostic completed before optimizer.step")
+             with sync_context:

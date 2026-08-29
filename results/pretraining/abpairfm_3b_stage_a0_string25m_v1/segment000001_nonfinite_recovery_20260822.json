@@ -1,0 +1,68 @@
+{
+  "claim_boundary": "Operational closure of the user-authorized production Stage-A0 pair-aware balanced MLM segment-000001 recovery only. This record authorizes no contact, retrieval, biological, test, or SOTA claim.",
+  "closed_at_utc": "2026-08-22T08:32:00Z",
+  "diagnosis": {
+    "checkpoint_corruption_observed": false,
+    "exact_root_cause_established": false,
+    "node_or_runtime_transient_suggested": true,
+    "silent_sample_skip_allowed": false
+  },
+  "failed_attempt": {
+    "exit_code": "1:0",
+    "job_id": 1459339,
+    "node": "wqd10naf05g3",
+    "primary_error": "rank 4 RuntimeError: Non-finite Stage-A0 MLM loss",
+    "published_checkpoint": false,
+    "published_progress": false,
+    "published_result": false,
+    "secondary_error": "NCCL all-reduce timeout after the primary rank exited",
+    "segment_index": 1,
+    "state": "FAILED"
+  },
+  "format_version": "abpairfm_3b_stage_a0_nonfinite_recovery_attempt_v1",
+  "immutable_input": {
+    "checkpoint_content_sha256": "461ce3bf4587ac7723373d5115f022445842fd00fc12371a8d6d9cb8484362db",
+    "consumed_residue_tokens": 15799431,
+    "generation": "segment-000000",
+    "global_update": 200,
+    "result_status": "PASS_CHECKPOINT_VERIFIED",
+    "segment000001_manifest_sha256": "e52a5c4141cba21eea4966e16f00d0368ea5c680f634ace9c519e07fba295e54"
+  },
+  "observed_at_utc": "2026-08-22T07:56:43Z",
+  "recovery_attempt": {
+    "excluded_nodes": [
+      "wqd10naf05g3"
+    ],
+    "job_id": 1459376,
+    "node": "wqd10nba07g1",
+    "observed_progress": {
+      "consumed_residue_tokens_campaign": 31521895,
+      "consumed_residue_tokens_segment": 15722464,
+      "final_20_update_mean_loss": 2.70625,
+      "first_20_update_mean_loss": 2.720703125,
+      "global_update": 400,
+      "nonfinite_updates": 0,
+      "residue_tokens_per_second_mean": 7175.324106365266,
+      "segment_update": 200
+    },
+    "output_checkpoint_content_sha256": "e6370d3b6c1769476a253667dd84f862ce8060f845a1ebc343bbcb6084d6bb6d",
+    "result_status": "PASS_CHECKPOINT_VERIFIED",
+    "state": "COMPLETED",
+    "successor_watchdog_job_id": 1459377
+  },
+  "status": "RECOVERY_CLOSED_SUCCESSOR_RUNNING",
+  "successor": {
+    "cancelled_unsafe_attempt": {
+      "job_id": 1459445,
+      "node": "wqd10naf05g3",
+      "published_checkpoint": false,
+      "published_progress": false,
+      "published_result": false
+    },
+    "excluded_training_node": "wqd10naf05g3",
+    "segment_index": 2,
+    "training_job_id": 1459453,
+    "watchdog_job_id": 1459454
+  },
+  "test_access": false
+}

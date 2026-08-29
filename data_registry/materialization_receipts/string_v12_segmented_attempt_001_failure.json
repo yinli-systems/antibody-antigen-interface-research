@@ -1,0 +1,50 @@
+{
+  "authorization": {
+    "normalization": false,
+    "stage_a_training": false
+  },
+  "cleanup": {
+    "completed_at_utc": "2026-08-21T20:11:02Z",
+    "removed_bytes": 21819916288,
+    "remaining_files_in_parts_root": 0,
+    "status": "INVALID_PARTIALS_REMOVED"
+  },
+  "failure": {
+    "cause": "The origin ignored the unquoted If-Range validator and returned full-object prefixes instead of the requested byte ranges.",
+    "evidence": {
+      "all_parts_exceeded_frozen_range_bytes": true,
+      "common_first_1mib_sha256": "78ec64d17a0fe8eaa87973562683eecae4f2bc2988e6336d360f4c4770905672",
+      "observed_partial_bytes_by_index": [
+        1278763008,
+        1312448512,
+        1314889728,
+        1396563968,
+        1230741504,
+        1492180992,
+        1272340480,
+        1310613504,
+        1422893056,
+        1215111168,
+        1681170432,
+        1281056768,
+        1181409280,
+        1325539328,
+        1771888640,
+        1332305920
+      ],
+      "part_count": 16,
+      "total_partial_bytes": 21819916288
+    },
+    "status": "FAILED_CLOSED"
+  },
+  "format_version": "abpairfm_public_materialization_failure_v1",
+  "plan_sha256": "ef1289768f478e8a2797f0ad47b747c1a3140cf9f14de91d763c8293b235c028",
+  "recovery": {
+    "change": "Quote the strong ETag and require HTTP 206, exact Content-Range, matching ETag, and bounded response size before retaining bytes.",
+    "script_sha256": "012d55f2517d7f37e043cd9f56754d8579295ecf9a9808d14dc6c5cf4768ecb1",
+    "status": "PATCHED_NOT_YET_RESTARTED"
+  },
+  "source_id": "STRING-v12.0",
+  "target_file": "protein.physical.links.full.v12.0.txt.gz",
+  "test_access": false
+}

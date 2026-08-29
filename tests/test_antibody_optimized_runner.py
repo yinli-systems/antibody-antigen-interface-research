@@ -17,7 +17,7 @@ def test_optimized_runner_is_ascii_and_syntax_valid() -> None:
     assert 'options = {"triton.cudagraphs": False}' in source
     assert "block.compile(backend=\"inductor\", fullgraph=True, options=options)" in source
     assert "not args.disable_ddp_gradient_as_bucket_view" in source
-    assert "static_graph=False" in source
+    assert '"static_graph": False' in source
     assert "_get_ddp_logging_data()" in source
     assert '"ddp_logging_data"' in source
     assert "fused=fused" in source
@@ -166,7 +166,10 @@ def test_resume_restores_rng_after_compile_prewarm() -> None:
 
 def test_ddp_communication_optimizations_are_protocol_and_runtime_bound() -> None:
     source = RUNNER.read_text(encoding="ascii")
-    assert "batched_grad_copy=args.ddp_batched_grad_copy" in source
+    assert 'if "batched_grad_copy" in ddp_parameters:' in source
+    assert 'elif args.ddp_batched_grad_copy:' in source
+    assert "inspect.signature(DistributedDataParallel).parameters" in source
+    assert '"batched_grad_copy"] = args.ddp_batched_grad_copy' in source
     assert "default_hooks.bf16_compress_hook" in source
     assert "wrapped.register_comm_hook" in source
     assert 'nccl_version <= (2, 9, 6)' in source

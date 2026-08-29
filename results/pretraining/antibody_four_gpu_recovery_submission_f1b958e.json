@@ -1,0 +1,44 @@
+{
+  "authorization": {
+    "loader_recovery_gate": true,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Submitted four-GPU real-OAS exact-recovery gate only; submission is not completion, production pretraining, downstream improvement, or SOTA evidence",
+  "corpus": {
+    "manifest_file_sha256": "849b401368ec3613d806399a81b7d76861adf45daf71bfc64761ffe9ecad940a",
+    "manifest_payload_sha256": "4466590b378144cbe43a6645169ce4377b2756062879dfdb31619d33543652a3",
+    "protocol_file_sha256": "aa61253f035cd19126a39e3cc82bbb3e053695043400ebf976a7ad1f2fb80543",
+    "unique_train_records": 224887833,
+    "unique_validation_records": 1743380
+  },
+  "format_version": "antibody_four_gpu_recovery_submission_v1",
+  "hardware": {
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 5090",
+    "node_count": 1
+  },
+  "job": {
+    "job_id": 1406713,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_recovery_f1b958e_attempt_001",
+    "state_at_receipt": "SUBMITTED"
+  },
+  "source": {
+    "commit": "f1b958e1cd6178869c332f49c5d2e32ae8cf768b",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-f1b958e-attempt-001",
+    "pipeline_sha256": "2e93ce0402ce925d995e2e3dd6ea9dcb1bf6cffbb756db458ede4a011191fde8"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "training_shape": {
+    "batch_quantum_sequences": 256,
+    "micro_batch_per_gpu": 16,
+    "target_residue_tokens_per_gpu": 32768,
+    "target_residue_tokens_per_update": 131072
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "scale_promotion": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Failed development-only cross-hardware recovery pilot; all training segments completed, but exact recovery did not pass.",
+  "diagnosis": {
+    "checkpoint_model_load_matched": true,
+    "checkpoint_optimizer_load_matched": true,
+    "checkpoint_rng_manifest_matched": true,
+    "first_semantic_divergence_update": 102,
+    "last_gradient_norm_delta": 1.957143783569336,
+    "last_loss_delta": -0.0008895511167736903,
+    "stage1_first_100_updates_semantically_matched": true
+  },
+  "failure": {
+    "error": "ValueError: model recovery mismatch",
+    "exact_recovery": false,
+    "job_id": "1434362",
+    "state": "FAILED"
+  },
+  "format_version": "antibody_scale_recovery_failure_v1",
+  "next_hypothesis": {
+    "mechanism": "Independent DDP launches selected a non-frozen NCCL collective execution path, allowing sub-micro numerical divergence after the first resumed update.",
+    "single_variable": "Bind NCCL to Ring/Simple with exactly one channel.",
+    "success_rule": "Continuous and resumed model, optimizer, and trainer-state hashes must all match exactly.",
+    "tolerance_relaxation_allowed": false
+  },
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_single_node_scale_real_oas_recovery_pilot_v1_attempt_006/slurm-1434362",
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

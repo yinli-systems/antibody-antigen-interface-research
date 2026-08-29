@@ -1,0 +1,28 @@
+{
+  "authorization": {
+    "download": true,
+    "normalization": false,
+    "stage_a_training": false
+  },
+  "expected_selected_bytes": 231717039,
+  "expected_selected_file_count": 1,
+  "format_version": "abpairfm_public_download_plan_v1",
+  "license": "PolyForm-Noncommercial-1.0.0 in pinned repository; paper states MIT; academic-only pending resolution",
+  "pinned_revision": "1267db4592703095b889cc22da6cf1796ce038b5",
+  "provider": "Zhang Lab static release endpoint referenced by the pinned official repository",
+  "selected_files": [
+    {
+      "etag": "dcfb8af-64cf25bf284b6",
+      "last_modified": "2026-03-14T02:01:08Z",
+      "path": "ppi_models.pkl",
+      "size_bytes": 231717039,
+      "url": "https://zhanggroup.org/PPLM/bin/weights/ppi_models.pkl"
+    }
+  ],
+  "source_id": "pplm_ppi_models_1267db4",
+  "source_url": "https://github.com/junliu621/PPLM/tree/1267db4592703095b889cc22da6cf1796ce038b5",
+  "test_access": {
+    "asep_test_permitted": false,
+    "sabdab2_heldout_permitted": false
+  }
+}

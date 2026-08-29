@@ -1,0 +1,207 @@
+{
+  "authorization": {
+    "development_evaluation_after_stage_a_audit": true,
+    "isolated_public_baseline_materialization": true,
+    "production_pretraining": false,
+    "test_access": false
+  },
+  "claim_boundary": "Prospective development-only quality-frontier contract. It does not authorize production pretraining, held-out test access, a biological-improvement claim, or a cross-paper SOTA claim. Every comparison must be rerun on the same frozen examples, mappings, candidate sets, metrics, and bootstrap units.",
+  "compute_optimality": {
+    "duplicate_exposures_must_be_reported_separately": true,
+    "minimum_stage_a_consumed_residue_tokens": 5000000000,
+    "minimum_stage_a_unique_pairs": 2500000,
+    "maximum_stage_a_unique_pairs": 25000000,
+    "strict_scale_pool_minimum_cluster_pairs": 25000000,
+    "model_size_alone_is_not_a_promotion_criterion": true,
+    "quality_per_gpu_hour_is_required": true,
+    "repeated_exposure_policy": {
+      "augmentation_replay_key": [
+        "global_seed",
+        "canonical_pair_hash",
+        "exposure_index"
+      ],
+      "deterministic_replay_required": true,
+      "pair_order_resampled_per_exposure": true,
+      "sequence_crop_resampled_per_exposure": true,
+      "token_mask_resampled_per_exposure": true
+    },
+    "research_basis": "Protein MLM scaling exhibits data-repeat overfitting and benefits from diverse metagenomic data; the fitted compute-optimal frontier scales model size faster than training tokens, so this project freezes its useful-token budget and measures quality instead of assuming a generic text-LLM tokens-per-parameter rule.",
+    "source": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/8066ae1446b2bbccb5159587cc3b3bcc-Abstract-Conference.html"
+  },
+  "format_version": "abpairfm_3b_quality_frontier_v1",
+  "public_baselines": {
+    "mint_650m": {
+      "admission_status": "checkpoint_audited_pair_mlm_retrieval_contact_adapter_pending",
+      "backbone_label": "ESM2_650M",
+      "checkpoint_sha256": "84a4016365997cd9f0bccb07d746fa8f076ffd8e45aa0cbcf4e50a037161a342",
+      "code_license": "MIT",
+      "code_url": "https://github.com/VarunUllanat/mint",
+      "checkpoint_url": "https://huggingface.co/varunullanat2012/mint/resolve/main/mint.ckpt",
+      "development_cluster_exclusion": true,
+      "model_parameters": 813371969,
+      "official_source_revision": "06694b7606e2d00b76ec58daf5c7aecdaf7cd283",
+      "raw_physical_interactions": 2400000000,
+      "role": "mandatory large-scale pair-aware representation and retrieval baseline; contact evaluation requires the same frozen train-only adapter contract",
+      "same_contract_roles": [
+        "pair_conditioned_masked_language_modeling",
+        "cognate_retrieval_with_identical_candidate_sets",
+        "train_only_contact_adapter_with_identical_labels"
+      ],
+      "sequence_cluster_identity": 0.5,
+      "training_pairs_after_cluster_exclusion": 95800000,
+      "url": "https://www.nature.com/articles/s41467-025-67971-3"
+    },
+    "msa_pairformer_111m": {
+      "code_and_weights_license": "permissive_modified_MIT",
+      "model_parameters": 111000000,
+      "pairwise_representation": true,
+      "reported_training_scope": "individual_chains",
+      "role": "contact-quality and quality-per-GPU-hour baseline; not a scale proxy",
+      "source_code_url": "https://github.com/yoakiyama/MSA_Pairformer",
+      "source_paper_url": "https://doi.org/10.1016/j.cell.2026.06.029"
+    },
+    "plm_interact_650m": {
+      "joint_pair_encoding": true,
+      "model_parameters": 650000000,
+      "objective": "masked_language_modeling_plus_interaction_classification",
+      "random_unreported_pairs_may_be_false_negatives": true,
+      "role": "objective ablation reference only; its random-negative semantics are not inherited",
+      "url": "https://www.nature.com/articles/s41467-025-64512-w"
+    },
+    "pplm_650m": {
+      "model_parameters": 650000000,
+      "pair_count": 3300000,
+      "role": "checkpoint-compatible pair-MLM reference; contact use requires a separately audited head and identical-split rerun",
+      "url": "https://www.nature.com/articles/s41467-026-70457-5"
+    }
+  },
+  "strict_leakage_controls": {
+    "historical_backbone_exposure": {
+      "esm2_uniref50_lineage_fully_reconstructable": false,
+      "mandatory_claim_label": "warm_start_decontaminated_new_corpus_not_strict_from_scratch_ood",
+      "small_from_scratch_pair_model_control_required_before_sota_claim": true
+    },
+    "new_corpus_to_development": {
+      "exclude_any_pair_touching_a_development_endpoint_cluster": true,
+      "maximum_sequence_identity": 0.3,
+      "minimum_bidirectional_coverage": 0.8,
+      "pair_order_invariant_exact_deduplication": true,
+      "zero_exact_endpoint_overlap": true,
+      "zero_exact_pair_overlap": true
+    },
+    "research_warning": {
+      "finding": "Pretrained protein language models can leak information into downstream PPI inference and inflate evaluation scores; current PPI methods also remain weak on OOD and mutation-sensitivity tests.",
+      "source": "https://www.nature.com/articles/s42256-025-01176-7"
+    },
+    "test_sequences_labels_or_structure_bytes_permitted": false
+  },
+  "stage_a_objective_sequence": [
+    {
+      "name": "pair_balanced_masked_language_modeling",
+      "purpose": "learn pair-conditioned sequence representations at scale without asserting that an unobserved pair is a biological noninteraction"
+    },
+    {
+      "entry_gate": "stage_a_mlm_checkpoint_and_new_corpus_decontamination_audits_pass",
+      "name": "cognate_retrieval_with_matched_partner_swaps",
+      "negative_semantics": "ranking_decoy_not_measured_noninteraction",
+      "purpose": "prove partner dependence while limiting shortcut and false-negative claims"
+    },
+    {
+      "entry_gate": "structural_train_only_labels_and_mapping_are_frozen",
+      "name": "pair_contact_specialization",
+      "purpose": "learn residue-pair geometry without using development or held-out test labels"
+    }
+  ],
+  "string_evidence_tiers": {
+    "admission_order": [
+      "direct_experiment_or_curated_database_physical",
+      "combined_high_confidence_physical_with_transferred_support"
+    ],
+    "combined_high_confidence_threshold": 700,
+    "direct_evidence_must_be_exhausted_before_transferred_only_fill": true,
+    "physical_link_direct_binding_guaranteed": false,
+    "score_and_transfer_documentation": "https://string-db.org/help/scores/",
+    "task_authority": {
+      "contact_supervision": "structural_sources_only",
+      "direct_evidence_string": [
+        "pair_balanced_masked_language_modeling",
+        "cognate_retrieval_ranking"
+      ],
+      "transferred_only_string": [
+        "pair_balanced_masked_language_modeling"
+      ]
+    },
+    "transferred_only_interpretation": "orthology_transferred_physical_association_not_direct_observation_in_target_species"
+  },
+  "development_quality_frontier": {
+    "baselines": [
+      "esm2_3b_single_chain_or_independent_concat_control",
+      "pplm_650m_audited_checkpoint",
+      "mint_650m_audited_checkpoint",
+      "msa_pairformer_111m_audited_checkpoint",
+      "abpairfm_3b_stage_a"
+    ],
+    "baseline_admission_policy": {
+      "author_reported_cross_paper_scores_rankable": false,
+      "checkpoint_hash_and_state_dict_audit_required": true,
+      "code_and_checkpoint_availability_required": true,
+      "different_input_modality_requires_separate_auxiliary_table": true,
+      "same_frozen_examples_mappings_candidates_and_metrics_required": true
+    },
+    "datasets": [
+      "sabdab2_frozen_development",
+      "asep_frozen_development"
+    ],
+    "efficiency_accounting": [
+      "training_gpu_hours",
+      "evaluation_gpu_hours",
+      "nonpadding_residue_tokens_per_second",
+      "peak_allocated_memory_fraction"
+    ],
+    "metrics": {
+      "calibration": [
+        "fixed_raw_logit_brier",
+        "ece",
+        "reliability_curve"
+      ],
+      "contact": [
+        "per_complex_macro_pair_auprc",
+        "pair_auroc",
+        "precision_at_L",
+        "recall_at_L",
+        "recall_at_1"
+      ],
+      "retrieval": [
+        "bidirectional_recall_at_1",
+        "bidirectional_mrr",
+        "paired_bootstrap_ci95"
+      ]
+    },
+    "ood_slices": [
+      "unseen_antigen_cluster",
+      "unseen_antibody_cluster",
+      "dual_unseen_complex",
+      "chronological_complex"
+    ],
+    "partner_dependence_controls": [
+      "pair_order_invariance",
+      "matched_partner_swap_score_delta",
+      "single_endpoint_only_ablation",
+      "length_and_taxonomy_matched_decoys"
+    ],
+    "promotion_rule": "ABPairFM 3B must improve the frozen same-contract development frontier over the ESM2-3B control and must report its delta and GPU-hour cost versus both 650M and 111M pair-aware baselines. A larger parameter count, lower training loss, or author-reported cross-paper number is insufficient."
+  },
+  "runtime_boundary": {
+    "baseline_dependencies_must_use_an_isolated_environment": true,
+    "fixed_training_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "install_into_fixed_training_environment": false,
+    "partition": "gpu_4090",
+    "permitted_partition_alternatives": [],
+    "train_on_login_node": false
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false,
+    "teacher_approval_required": true
+  }
+}

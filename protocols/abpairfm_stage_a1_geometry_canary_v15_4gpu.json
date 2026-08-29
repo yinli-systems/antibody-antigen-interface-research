@@ -1,0 +1,148 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "73fd08e73bf41118ece0e657059c5211ce5930c1c651e3cfd219554692edf08b",
+    "generation": "segment-000031",
+    "minimum_consumed_residue_tokens": 500000000,
+    "optimizer_resume": false
+  },
+  "claim_boundary": "Train-only four-GPU Stage-A1 geometry-head canary over the first 3,840 examples in the frozen ordering of the same 4,967 development-decontaminated PPIRef50K medium patches used by v14. Minimum interchain heavy-atom distance is a training target only and is never a model input. Contact mass is the predicted distance-bin prefix at 4.5 Angstrom. Forty alternating updates test whether the repaired head learns before any frozen-development evaluation; test and temporal holdout remain closed.",
+  "counterfactual_gate": {
+    "mapped_anchors": 15948,
+    "mapping_sha256": "910b89b83612702e2e903e46d27fa9d4f3c4363d77df0cee9fe909427980512e",
+    "minimum_coverage": 0.995,
+    "observed_coverage": 0.99675,
+    "receipt_path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/stage_a1_pilot_v5/COUNTERFACTUAL_MATERIALIZATION_RECEIPT.json",
+    "receipt_sha256": "94e3d7314438486afcf8c5c7d623aa2ab9c034573f322fa49532427a62c3944e",
+    "status": "PASS_TRAIN_ONLY_MATERIALIZATION",
+    "unmatched_anchors": 52
+  },
+  "efficiency": {
+    "activation_checkpointing_candidates": [
+      "full"
+    ],
+    "expected_bucket_records": 4967,
+    "expected_source_records": 19200,
+    "gpu_peak_bfloat16_flops": 82580000000000,
+    "maximum_combined_tokens": 128,
+    "mfu_semantics": "approximate useful-token 6N MFU; auxiliary head FLOPs, padding, recompute and communication are excluded",
+    "minimum_combined_tokens": 65,
+    "padding_multiple": 64,
+    "parameter_count": 2839005633,
+    "phase_schedule": "alternating_joint_and_retrieval_single_backbone_pass",
+    "selection_seed": 1701,
+    "trial_matrix": [
+      {
+        "activation_checkpointing": "full",
+        "microbatch_pairs_per_rank": 24
+      },
+      {
+        "activation_checkpointing": "full",
+        "microbatch_pairs_per_rank": 32
+      },
+      {
+        "activation_checkpointing": "full",
+        "microbatch_pairs_per_rank": 48
+      }
+    ]
+  },
+  "efficiency_gate_only": true,
+  "format_version": "abpairfm_stage_a1_geometry_canary_v15",
+  "loss": {
+    "contact": {
+      "distance_bin_edges_angstrom": [
+        2.0,
+        4.5,
+        6.0,
+        8.0,
+        12.0,
+        16.0,
+        24.0
+      ],
+      "distance_bin_weight": 0.5,
+      "geometry_head": {
+        "contact_distance_bin_count": 2,
+        "pair_dimension": 256
+      },
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_positive_pairs_per_complex": 102,
+      "maximum_sampled_pairs_per_complex": 512,
+      "representation_view": "joint_cross_chain_attention",
+      "sampling_seed": 1701,
+      "weight": 0.5
+    },
+    "masked_language_modeling": {
+      "balance": "equal_per_chain",
+      "representation_view": "joint_cross_chain_attention",
+      "weight": 1
+    },
+    "retrieval": {
+      "candidate_scope": "same_node_all_ranks",
+      "direction": "bidirectional",
+      "participants": "PPIRef50K structural cognates only",
+      "pilot_false_negative_exclusion": "same_exact_endpoint_or_available_source_cluster_or_same_positive_group_or_known_positive_swap",
+      "ppiref_cluster_boundary": "exact_sequence_fallback_only",
+      "production_cluster_aware_gate": "still_required_before_production",
+      "representation_view": "chain_independent_no_cross_attention",
+      "temperature": 0.07,
+      "weight": 0.2
+    }
+  },
+  "optimization": {
+    "accumulation_steps": 1,
+    "backbone_learning_rate": 5e-07,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1,
+    "head_learning_rate": 0.0001,
+    "microbatch_pairs_per_rank_candidates": [
+      24,
+      32,
+      48
+    ],
+    "updates": 40,
+    "weight_decay": 0.01
+  },
+  "pilot_manifest": {
+    "counterfactual_mapped_retrieval_records": 15948,
+    "expected_retrieval_supervised_records": 16000,
+    "manifest_sha256": "a9be174b07d6f3d963adc4ecad55e9d655e2f3b42ac9d2b26f261335d83f285f",
+    "minimum_full_endpoint_residues": 8,
+    "minimum_patch_endpoint_residues": 4,
+    "ppiref_records_per_microbatch": 5,
+    "receipt_sha256": "1d96bc272c0f050523b77d5aba20c30da48a9a7c3dfb317963f08d608435c72c",
+    "selection_seed": 1701,
+    "source_protocol_sha256": "588d274316742cfcc30d5ccf5b9bdd3ebb2c8581748f36dcb8dcd32bacf9e4b7",
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
+    "total_records": 19200,
+    "unique_ppiref_exact_pairs": true
+  },
+  "promotion_gates": {
+    "finite_all_losses": true,
+    "maximum_peak_memory_fraction": 0.95,
+    "minimum_contact_positive_support": 50,
+    "minimum_counterfactual_coverage": 0.995,
+    "minimum_retrieval_candidates_per_query": 32,
+    "minimum_retrieval_cognate_support": 50,
+    "required_checkpoint_restore": true
+  },
+  "status": "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING",
+  "systems": {
+    "cpus_per_task": 24,
+    "explicit_mem_argument_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 4
+  },
+  "systems_gate_only": true,
+  "test_access": false
+}

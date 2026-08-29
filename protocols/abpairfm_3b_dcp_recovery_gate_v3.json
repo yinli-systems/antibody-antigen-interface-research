@@ -1,0 +1,59 @@
+{
+  "authorization": {
+    "biological_training": false,
+    "development_evaluation": false,
+    "frozen_test_access": false,
+    "synthetic_systems_gate": true
+  },
+  "checkpoint": {
+    "backend": "torch_distributed_checkpoint",
+    "canonical_fqn_state_dict": true,
+    "generation_is_create_only": true,
+    "model_state_required": true,
+    "optimizer_state_required": true,
+    "rank_zero_full_inventory_hash_required": true,
+    "training_cursor_required": true
+  },
+  "claim_boundary": "Full-model synthetic FSDP2 and DCP recovery evidence only. Passing does not authorize biological pretraining, development model selection, test access, or SOTA claims.",
+  "diagnostic_basis": {
+    "job_1458557": "DCP save and fresh-process load succeeded; the old post-continuation bitwise digest gate failed.",
+    "job_1458567": "Diagnostic-only control identified a missing checkpoint-boundary reshard in the first control path.",
+    "job_1458571": "Corrected uninterrupted and restored controls had finite continuation with 0.21%-1.96% rank-local gradient-norm differences under production Flash backward.",
+    "job_1458578_observation": "A new uninterrupted save run changed step-1 BF16 global loss from 3.500000 to 3.515625 under the identical fixture, showing that continuation loss is not a bitwise recovery invariant.",
+    "pytorch_dcp_reference": "https://docs.pytorch.org/docs/main/distributed.checkpoint.html",
+    "pytorch_reproducibility_reference": "https://docs.pytorch.org/docs/stable/notes/randomness.html"
+  },
+  "format_version": "abpairfm_3b_dcp_recovery_gate_v3",
+  "model": {
+    "activation_checkpointing": true,
+    "attention": "pair_aware_lifted_flash_sdpa",
+    "official_initialization": "esm2_t36_3B_UR50D",
+    "parameter_count": 2839005633,
+    "precision": "bfloat16_compute_float32_optimizer"
+  },
+  "parity": {
+    "checkpoint_model_canonical_local_shard_digest_by_rank": "exact",
+    "checkpoint_optimizer_canonical_local_shard_digest_by_rank": "exact",
+    "continuation_global_loss": "finite_recorded_not_exact",
+    "continuation_gradient_norm": "finite_recorded_not_exact",
+    "continuation_step": "operational",
+    "new_process_required": true,
+    "post_continuation_parameter_digest": "not_gated_due_to_production_flash_backward_nondeterminism"
+  },
+  "promotion": {
+    "production_authorized_by_protocol": false,
+    "required_next_gate": "real-data deterministic batch with frozen corpus cursor"
+  },
+  "synthetic_fixture": {
+    "continuation_steps": 1,
+    "sequence_tokens_per_rank": 1024,
+    "steps_before_checkpoint": 2,
+    "two_physical_chains": true
+  },
+  "topology": {
+    "allowed_gpu_model": "NVIDIA GeForce RTX 4090",
+    "partition": "gpu_4090",
+    "reshard_after_forward": false,
+    "world_size": 4
+  }
+}

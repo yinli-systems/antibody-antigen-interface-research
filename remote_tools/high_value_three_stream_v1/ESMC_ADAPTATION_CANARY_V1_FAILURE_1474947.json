@@ -1,0 +1,32 @@
+{
+  "format_version": "esmc_adaptation_canary_failure_v1",
+  "status": "FAIL_CLOSED_PYTORCH_DDP_STATIC_GRAPH_FIRST_NO_SYNC_ASSERT",
+  "observed_utc": "2026-08-26T22:14:49Z",
+  "job_array": "1474947_[0-1]",
+  "tasks": {
+    "0": {
+      "arm": "whole_chain_control",
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "stdout_sha256": "68588c34861c56d38b05142d6841ca89178ad3de6db2c13da7e1435befa26fb0",
+      "stderr_sha256": "5e8ab91f8be295240fef5803ef30c1f14ae922572bcad120ba04678d66684d4b"
+    },
+    "1": {
+      "arm": "cdr_focused",
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "stdout_sha256": "68588c34861c56d38b05142d6841ca89178ad3de6db2c13da7e1435befa26fb0",
+      "stderr_sha256": "aa792d4ab482372d7509c2cd557d2c95916a52a03de64d3d7f53264df185520d"
+    }
+  },
+  "common_error": "RuntimeError: expect_autograd_hooks_ INTERNAL ASSERT FAILED in torch/csrc/distributed/c10d/reducer.cpp:1633",
+  "failure_boundary": "first backward before any optimizer update or result/checkpoint write",
+  "pytorch_version": "2.7.1+cu128",
+  "frozen_protocol_sha256": "1f93208277675924e8a874d08c7ba3ad2c0632683b298bc35b81eb4f3607a05c",
+  "diagnosis": "Known PyTorch DDP static_graph interaction when the first forward/backward occurs inside no_sync; both arms failed identically.",
+  "recovery_scope": "Synchronize every microbatch of only the first optimizer update, then retain the frozen no_sync accumulation pattern; data, model, masks, optimizer, seed, batch size, and update count remain unchanged.",
+  "outputs_written": false,
+  "checkpoint_written": false,
+  "task_labels_read": false,
+  "sabdab2_test_access": false
+}

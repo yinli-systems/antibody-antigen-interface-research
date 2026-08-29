@@ -1,0 +1,57 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "batch_audit": {
+    "contact_negative_samples": 4743270,
+    "contact_positive_samples": 1204960,
+    "global_false_negative_candidate_exclusions": 10,
+    "microbatches": 3200,
+    "minimum_global_candidates_per_query": 39,
+    "receipt_sha256": "ba475fb27ead9c3bd3bff6d75f55caec2bf476579d6d947d346cd5c721cc7e0a",
+    "retrieval_supervised_records": 16000,
+    "status": "PASS_ALL_STAGE_A1_PILOT_BATCHES_MATERIALIZED"
+  },
+  "claim_boundary": "Train-only global-retrieval objective-health pilot submission. This receipt establishes source admission, complete CPU batch materialization, frozen hashes, gpu_4090 submission, and sealed test access only; it is not a completed training result or development-performance claim.",
+  "format_version": "abpairfm_stage_a1_global_retrieval_launch_v1",
+  "first_measured_progress": {
+    "contact_loss": 1.1015843227505684,
+    "elapsed_seconds_per_update": 10.284337810240686,
+    "gradient_norm_before_clipping": 2.699662600773256,
+    "mlm_loss": 2.6949284225702286,
+    "observed_at_utc": "2026-08-22T21:33:03Z",
+    "residue_tokens_per_update": 15532,
+    "retrieval_accuracy_left_to_right": 0.700000012293458,
+    "retrieval_accuracy_right_to_left": 0.7750000134110451,
+    "retrieval_candidates_per_query": 40,
+    "retrieval_loss": 1.476483166217804,
+    "status": "RUNNING",
+    "test_access": false,
+    "total_loss": 3.5410171896219254,
+    "update": 20
+  },
+  "job": {
+    "cpus_per_task": 48,
+    "gpu_count": 8,
+    "job_id": "1460883",
+    "partition": "gpu_4090",
+    "start_time_utc": "2026-08-22T21:26:10Z",
+    "state_at_observation": "RUNNING"
+  },
+  "manifest": {
+    "cross_source_exact_pair_overlap": 0,
+    "records": 19200,
+    "receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "unique_ppiref_retrieval_pairs": 16000,
+    "unique_string_mlm_pairs": 3200
+  },
+  "protocol_sha256": "27da4df9fcca2d7faf4f75d95c8e73f6c5470680d76ee5e467af6618acc60a24",
+  "source_sha256": "e3d2126840d28d8b6e8e8ae05f2288cc4fde019107e0c668edeb5a8785bf50f1",
+  "status": "RUNNING_AFTER_FROZEN_CPU_GATES",
+  "submission_script_sha256": "14b6ada2c51664e115d339662cf0199ced091616b90c8d37de65f70a67cce727",
+  "test_access": false
+}

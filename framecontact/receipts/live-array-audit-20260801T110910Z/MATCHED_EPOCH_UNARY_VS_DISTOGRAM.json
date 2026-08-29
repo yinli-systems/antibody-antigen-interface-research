@@ -1,0 +1,701 @@
+{
+  "claim_boundary": "Matched-epoch paired-seed development train/validation logs only. This comparison does not choose a checkpoint, load test predictions, or authorize generalization or benchmark claims. Exact sign-flip p-values quantify only paired seed consistency and have coarse resolution at five seeds; they are not a substitute for the frozen confirmatory analysis.",
+  "delta_definition": "framecontact_distogram minus framecontact_unary_only",
+  "format_version": "framecontact_live_matched_condition_comparison_v2",
+  "left": {
+    "condition_index": 0,
+    "job_id": "1345042",
+    "label": "framecontact_unary_only",
+    "log_paths_by_seed": {
+      "101": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_3.out",
+      "137": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_4.out",
+      "17": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_0.out",
+      "42": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_1.out",
+      "73": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_2.out"
+    },
+    "log_prefix": "fc-res-head"
+  },
+  "matched_epoch": 14,
+  "metrics": {
+    "contact_fixed_raw_precision": {
+      "left": {
+        "maximum": 0.01199781763386478,
+        "mean": 0.011395190746561819,
+        "minimum": 0.0105423517984053,
+        "n": 5,
+        "sample_sd": 0.0005802927458118944
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.125,
+        "leave_one_seed_out_mean_delta_range": [
+          0.0017104089542166905,
+          0.0028451008140371317
+        ],
+        "median_delta": 0.002991041171087701,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.2,
+        "positive_seed_fraction": 0.8,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.0044328614194927545,
+        "137": -0.00010590601978901007,
+        "17": 0.0031124684508908526,
+        "42": 0.0008440322146772185,
+        "73": 0.002991041171087701
+      },
+      "right": {
+        "maximum": 0.014975213217898055,
+        "mean": 0.013650090193833722,
+        "minimum": 0.011124100501538536,
+        "n": 5,
+        "sample_sd": 0.0016502607136601407
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.0044328614194927545,
+        "mean": 0.0022548994472719034,
+        "minimum": -0.00010590601978901007,
+        "n": 5,
+        "sample_sd": 0.0018428779386644625
+      }
+    },
+    "contact_fixed_raw_recall": {
+      "left": {
+        "maximum": 0.397772902264354,
+        "mean": 0.338171130521174,
+        "minimum": 0.2867491824315933,
+        "n": 5,
+        "sample_sd": 0.0440697898410166
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.5,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.05497371362338036,
+          -0.0016454857805190681
+        ],
+        "median_delta": -0.023761228629382736,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.8,
+        "positive_seed_fraction": 0.2,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.023761228629382736,
+        "137": 0.05836817485614937,
+        "17": -0.1549447365152958,
+        "42": -0.013329469718922016,
+        "73": -0.02785941962992089
+      },
+      "right": {
+        "maximum": 0.4561410771205034,
+        "mean": 0.30586579459369956,
+        "minimum": 0.2113673055429068,
+        "n": 5,
+        "sample_sd": 0.09069564836979392
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.05836817485614937,
+        "mean": -0.032305335927474414,
+        "minimum": -0.1549447365152958,
+        "n": 5,
+        "sample_sd": 0.07699831097819468
+      }
+    },
+    "contact_mean_per_complex_auprc": {
+      "left": {
+        "maximum": 0.022394626959174106,
+        "mean": 0.02120575777206596,
+        "minimum": 0.019673230286970933,
+        "n": 5,
+        "sample_sd": 0.001356380731882334
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.375,
+        "leave_one_seed_out_mean_delta_range": [
+          0.0004656317149300303,
+          0.0017183784154283545
+        ],
+        "median_delta": 0.0010084571640383913,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.4,
+        "positive_seed_fraction": 0.6,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.0030545929578771405,
+        "137": 0.0010084571640383913,
+        "17": -0.0012972837366699193,
+        "42": -0.0009032395255254913,
+        "73": 0.0037137030653233774
+      },
+      "right": {
+        "maximum": 0.025567972022455688,
+        "mean": 0.02232100375707466,
+        "minimum": 0.01876999076144544,
+        "n": 5,
+        "sample_sd": 0.002545618141556041
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.0037137030653233774,
+        "mean": 0.0011152459850086998,
+        "minimum": -0.0012972837366699193,
+        "n": 5,
+        "sample_sd": 0.002259371214846892
+      }
+    },
+    "contact_pooled_auprc": {
+      "left": {
+        "maximum": 0.011515979769218008,
+        "mean": 0.010351592439002463,
+        "minimum": 0.009247744444614948,
+        "n": 5,
+        "sample_sd": 0.000868574363117863
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.375,
+        "leave_one_seed_out_mean_delta_range": [
+          0.00046500085365509683,
+          0.001402951813866423
+        ],
+        "median_delta": 0.00031932299331705223,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.4,
+        "positive_seed_fraction": 0.6,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.0030738066171957772,
+        "137": -0.0006779972236495273,
+        "17": -7.315414799463626e-05,
+        "42": 0.00031932299331705223,
+        "73": 0.0022918317929474987
+      },
+      "right": {
+        "maximum": 0.012813567545916862,
+        "mean": 0.011338354445365694,
+        "minimum": 0.010115204116484464,
+        "n": 5,
+        "sample_sd": 0.001165059833684697
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.0030738066171957772,
+        "mean": 0.0009867620063632328,
+        "minimum": -0.0006779972236495273,
+        "n": 5,
+        "sample_sd": 0.001612395945462666
+      }
+    },
+    "epitope_pooled_auprc": {
+      "left": {
+        "maximum": 0.12997984294356485,
+        "mean": 0.12518631320564966,
+        "minimum": 0.12016178899455966,
+        "n": 5,
+        "sample_sd": 0.00438679367710564
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.625,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.00019444441172428856,
+          0.0060567121805846745
+        ],
+        "median_delta": -0.0006474074416925879,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.6,
+        "positive_seed_fraction": 0.4,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.012409316098869513,
+        "137": -0.008742000348575862,
+        "17": -0.0037976859554982173,
+        "42": -0.0006474074416925879,
+        "73": 0.01626262602065999
+      },
+      "right": {
+        "maximum": 0.1376527244283266,
+        "mean": 0.1282832828804022,
+        "minimum": 0.12123784259498899,
+        "n": 5,
+        "sample_sd": 0.007070775130848911
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.01626262602065999,
+        "mean": 0.003096969674752567,
+        "minimum": -0.008742000348575862,
+        "n": 5,
+        "sample_sd": 0.010744442172635956
+      }
+    },
+    "epitope_precision": {
+      "left": {
+        "maximum": 0.13217150318437393,
+        "mean": 0.12555924119593245,
+        "minimum": 0.11958251899014728,
+        "n": 5,
+        "sample_sd": 0.004476248220560132
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.25,
+        "leave_one_seed_out_mean_delta_range": [
+          0.004272105624408579,
+          0.013523999484896115
+        ],
+        "median_delta": 0.006136211020009802,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.2,
+        "positive_seed_fraction": 0.8,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.015839192324307375,
+        "137": 0.0024719450653669373,
+        "17": -0.007358925912049799,
+        "42": 0.006136211020009802,
+        "73": 0.029648649529900345
+      },
+      "right": {
+        "maximum": 0.15507694813125966,
+        "mean": 0.13490665560143938,
+        "minimum": 0.11741909303033378,
+        "n": 5,
+        "sample_sd": 0.013856702107522106
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.029648649529900345,
+        "mean": 0.009347414405506932,
+        "minimum": -0.007358925912049799,
+        "n": 5,
+        "sample_sd": 0.014062085911762742
+      }
+    },
+    "epitope_recall": {
+      "left": {
+        "maximum": 0.6051182707993474,
+        "mean": 0.534584013050571,
+        "minimum": 0.4553425774877651,
+        "n": 5,
+        "sample_sd": 0.062484837583433
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.3125,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.06395289559543228,
+          -0.018046492659053823
+        ],
+        "median_delta": -0.06341761827079928,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.8,
+        "positive_seed_fraction": 0.2,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.06341761827079928,
+        "137": -0.016007340946166404,
+        "17": 0.07422512234910272,
+        "42": -0.10940048939641112,
+        "73": -0.06698613376835233
+      },
+      "right": {
+        "maximum": 0.5900285481239804,
+        "mean": 0.49826672104404574,
+        "minimum": 0.38835644371941275,
+        "n": 5,
+        "sample_sd": 0.09831196422496145
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.07422512234910272,
+        "mean": -0.03631729200652528,
+        "minimum": -0.10940048939641112,
+        "n": 5,
+        "sample_sd": 0.07008615905265574
+      }
+    },
+    "paratope_pooled_auprc": {
+      "left": {
+        "maximum": 0.7039920445308749,
+        "mean": 0.6912388028926603,
+        "minimum": 0.6739306261856939,
+        "n": 5,
+        "sample_sd": 0.011036255685670184
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.0625,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.03683277394265094,
+          -0.02473359317474072
+        ],
+        "median_delta": -0.026459282524083805,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 1.0,
+        "positive_seed_fraction": 0.0,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.019077584097720535,
+        "137": -0.004924004235587032,
+        "17": -0.05332072730722792,
+        "42": -0.026459282524083805,
+        "73": -0.04847350184157151
+      },
+      "right": {
+        "maximum": 0.6892415372542627,
+        "mean": 0.6607877828914221,
+        "minimum": 0.6414786528712337,
+        "n": 5,
+        "sample_sd": 0.019213827096293833
+      },
+      "right_minus_left_paired": {
+        "maximum": -0.004924004235587032,
+        "mean": -0.03045102000123816,
+        "minimum": -0.05332072730722792,
+        "n": 5,
+        "sample_sd": 0.020277764362624708
+      }
+    },
+    "paratope_precision": {
+      "left": {
+        "maximum": 0.6381937760667308,
+        "mean": 0.6157663029707897,
+        "minimum": 0.5888479062703407,
+        "n": 5,
+        "sample_sd": 0.01965480592338768
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.0625,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.05382451386210782,
+          -0.03935634361900614
+        ],
+        "median_delta": -0.04550095663212561,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 1.0,
+        "positive_seed_fraction": 0.0,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.05478707445425124,
+        "137": -0.023643970554697802,
+        "17": -0.04550095663212561,
+        "42": -0.03349337283494991,
+        "73": -0.08151665152710452
+      },
+      "right": {
+        "maximum": 0.6078042832101211,
+        "mean": 0.5679778977701638,
+        "minimum": 0.5553545334353908,
+        "n": 5,
+        "sample_sd": 0.02242892022211606
+      },
+      "right_minus_left_paired": {
+        "maximum": -0.023643970554697802,
+        "mean": -0.047788405200625814,
+        "minimum": -0.08151665152710452,
+        "n": 5,
+        "sample_sd": 0.02224359496148279
+      }
+    },
+    "paratope_recall": {
+      "left": {
+        "maximum": 0.75340057370223,
+        "mean": 0.7442213380216526,
+        "minimum": 0.7294346257055612,
+        "n": 5,
+        "sample_sd": 0.01082125347943077
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.625,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.0018506523549550735,
+          0.012399370778199359
+        ],
+        "median_delta": 0.008513000832793605,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.4,
+        "positive_seed_fraction": 0.6,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.03701304709910247,
+        "137": 0.008513000832793605,
+        "17": -0.01998704543351526,
+        "42": -0.014897751457388697,
+        "73": 0.01896918663829006
+      },
+      "right": {
+        "maximum": 0.7856944572961969,
+        "mean": 0.750143425557509,
+        "minimum": 0.733320995650967,
+        "n": 5,
+        "sample_sd": 0.021547626265952708
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.03701304709910247,
+        "mean": 0.005922087535856435,
+        "minimum": -0.01998704543351526,
+        "n": 5,
+        "sample_sd": 0.023708312150982007
+      }
+    },
+    "retrieval_fixed_antibody_wrong_antigen_margin": {
+      "left": {
+        "maximum": 0.042730814518821304,
+        "mean": 0.00497438035912319,
+        "minimum": -0.023990842467296665,
+        "n": 5,
+        "sample_sd": 0.02540125106202692
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.625,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.0011086752661057732,
+          0.023574430875644283
+        ],
+        "median_delta": -0.002629073944294409,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.6,
+        "positive_seed_fraction": 0.4,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.002629073944294409,
+        "137": -0.007414000340843755,
+        "17": 0.04822769636229873,
+        "42": 0.05611310142541656,
+        "73": -0.04261932314158366
+      },
+      "right": {
+        "maximum": 0.04527922700377007,
+        "mean": 0.015310060431321885,
+        "minimum": -0.0035050134101723886,
+        "n": 5,
+        "sample_sd": 0.019916570438983122
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.05611310142541656,
+        "mean": 0.010335680072198695,
+        "minimum": -0.04261932314158366,
+        "n": 5,
+        "sample_sd": 0.041287848003753694
+      }
+    },
+    "retrieval_fixed_antibody_wrong_antigen_top1": {
+      "left": {
+        "maximum": 0.09107468123861566,
+        "mean": 0.07577413479052823,
+        "minimum": 0.058287795992714025,
+        "n": 5,
+        "sample_sd": 0.01538056964122736
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.5,
+        "leave_one_seed_out_mean_delta_range": [
+          0.002276867030965392,
+          0.020036429872495445
+        ],
+        "median_delta": 0.020036429872495445,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.4,
+        "positive_seed_fraction": 0.6,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.009107468123861567,
+        "137": -0.021857923497267756,
+        "17": 0.04918032786885246,
+        "42": 0.020036429872495445,
+        "73": 0.020036429872495445
+      },
+      "right": {
+        "maximum": 0.1092896174863388,
+        "mean": 0.08743169398907104,
+        "minimum": 0.06375227686703097,
+        "n": 5,
+        "sample_sd": 0.018841676562456465
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.04918032786885246,
+        "mean": 0.011657559198542805,
+        "minimum": -0.021857923497267756,
+        "n": 5,
+        "sample_sd": 0.027851584588047214
+      }
+    },
+    "retrieval_fixed_antigen_wrong_antibody_margin": {
+      "left": {
+        "maximum": 0.025407273683462968,
+        "mean": 0.0005410747398001748,
+        "minimum": -0.031419011261054536,
+        "n": 5,
+        "sample_sd": 0.025595347466694736
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.625,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.003492072980216403,
+          0.01345922922371542
+        ],
+        "median_delta": 0.007086409017428817,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.4,
+        "positive_seed_fraction": 0.6,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.04245946003980207,
+        "137": 0.011189610042031601,
+        "17": -0.006898562204400806,
+        "42": 0.007086409017428817,
+        "73": -0.025345748775925225
+      },
+      "right": {
+        "maximum": 0.03146944119663362,
+        "mean": 0.006239308363587466,
+        "minimum": -0.008305778016109785,
+        "n": 5,
+        "sample_sd": 0.01577958706977955
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.04245946003980207,
+        "mean": 0.005698233623787291,
+        "minimum": -0.025345748775925225,
+        "n": 5,
+        "sample_sd": 0.02502937335347502
+      }
+    },
+    "retrieval_fixed_antigen_wrong_antibody_top1": {
+      "left": {
+        "maximum": 0.08014571948998178,
+        "mean": 0.051730418943533696,
+        "minimum": 0.03460837887067395,
+        "n": 5,
+        "sample_sd": 0.019173329496452847
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.875,
+        "leave_one_seed_out_mean_delta_range": [
+          -0.009562841530054643,
+          0.0068306010928961755
+        ],
+        "median_delta": 0.005464480874316939,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.4,
+        "positive_seed_fraction": 0.6,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": -0.03825136612021857,
+        "137": 0.027322404371584702,
+        "17": 0.005464480874316939,
+        "42": 0.005464480874316939,
+        "73": -0.010928961748633878
+      },
+      "right": {
+        "maximum": 0.061930783242258654,
+        "mean": 0.04954462659380692,
+        "minimum": 0.04007285974499089,
+        "n": 5,
+        "sample_sd": 0.00905265838964603
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.027322404371584702,
+        "mean": -0.0021857923497267742,
+        "minimum": -0.03825136612021857,
+        "n": 5,
+        "sample_sd": 0.024315404875723482
+      }
+    },
+    "selection_margin": {
+      "left": {
+        "maximum": 0.025407273683462968,
+        "mean": -0.012066368504935221,
+        "minimum": -0.031419011261054536,
+        "n": 5,
+        "sample_sd": 0.022235675686699805
+      },
+      "optimization_direction": "higher_is_better",
+      "paired_small_sample_diagnostics": {
+        "exact_sign_flip_permutation_count": 32,
+        "exact_two_sided_sign_flip_p": 0.25,
+        "leave_one_seed_out_mean_delta_range": [
+          0.012153090809089455,
+          0.02906535690764079
+        ],
+        "median_delta": 0.020921747418424886,
+        "minimum_attainable_two_sided_p_at_n": 0.0625,
+        "negative_seed_fraction": 0.2,
+        "positive_seed_fraction": 0.8,
+        "zero_seed_fraction": 0.0
+      },
+      "per_seed_right_minus_left": {
+        "101": 0.04184675455182656,
+        "137": 0.011189610042031601,
+        "17": 0.020921747418424886,
+        "42": 0.04230331561828011,
+        "73": -0.025345748775925225
+      },
+      "right": {
+        "maximum": 0.03146944119663362,
+        "mean": 0.006116767265992364,
+        "minimum": -0.008305778016109785,
+        "n": 5,
+        "sample_sd": 0.015735298127309134
+      },
+      "right_minus_left_paired": {
+        "maximum": 0.04230331561828011,
+        "mean": 0.018183135770927585,
+        "minimum": -0.025345748775925225,
+        "n": 5,
+        "sample_sd": 0.02780702750855494
+      }
+    }
+  },
+  "right": {
+    "condition_index": 0,
+    "job_id": "1345108",
+    "label": "framecontact_distogram",
+    "log_paths_by_seed": {
+      "101": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-distogram-1345108_3.out",
+      "137": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-distogram-1345108_4.out",
+      "17": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-distogram-1345108_0.out",
+      "42": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-distogram-1345108_1.out",
+      "73": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-distogram-1345108_2.out"
+    },
+    "log_prefix": "fc-distogram"
+  },
+  "seeds": [
+    17,
+    42,
+    73,
+    101,
+    137
+  ]
+}

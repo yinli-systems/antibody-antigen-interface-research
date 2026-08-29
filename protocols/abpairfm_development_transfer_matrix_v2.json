@@ -1,0 +1,67 @@
+{
+  "authorization": {
+    "development_contact": true,
+    "development_pair_retrieval": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Frozen development-only transfer matrix with the standard SAbDab2 split as the primary sealed-test authority. Double-cold and temporal validation rows that are sealed under the standard split are excluded before task labels, sequences, or predictions are read. Test remains sealed.",
+  "format_version": "abpairfm_development_transfer_matrix_v2",
+  "primary_sealed_role_authority": "standard",
+  "source_anchors": {
+    "contact_cache_manifest": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/contact_cohort_v2/CONTACT_CACHE_MANIFEST.json",
+      "sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33"
+    },
+    "double_cold": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v1/antigen_fold.csv",
+      "sha256": "07b20645982971e9ff0004ac297d9a03ac0278269b4e8d84628fb0cbbb87804d"
+    },
+    "split_receipt": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v1/SPLIT_MATRIX_RECEIPT.json",
+      "sha256": "d4115c17445a5cdbb9f9e2095dd80e54e514c49e89fa44f58a9f6936c8797798"
+    },
+    "standard": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_v3_1/antigen_fold.csv",
+      "sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6"
+    },
+    "temporal": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v1/temporal.csv",
+      "sha256": "84261847e2c70bf466c91e1491c746058e56a70c646be8e1fe62156d266d173f"
+    }
+  },
+  "split_slices": {
+    "double_cold_validation": {
+      "expected_count": 324,
+      "source": "double_cold",
+      "where": "role=validation and instance_id absent from standard sealed roles"
+    },
+    "standard_double_unseen": {
+      "expected_count": 454,
+      "source": "standard",
+      "where": "validation antigen_cluster absent from train and antibody_cluster absent from train"
+    },
+    "standard_unseen_antibody_only": {
+      "expected_count": 70,
+      "source": "standard",
+      "where": "validation antigen_cluster present in train and antibody_cluster absent from train"
+    },
+    "standard_unseen_antigen_only": {
+      "expected_count": 25,
+      "source": "standard",
+      "where": "validation antigen_cluster absent from train and antibody_cluster present in train"
+    },
+    "standard_validation": {
+      "expected_count": 549,
+      "source": "standard",
+      "where": "role=validation"
+    },
+    "temporal_validation": {
+      "expected_count": 337,
+      "source": "temporal",
+      "where": "role=validation and instance_id absent from standard sealed roles"
+    }
+  },
+  "status": "FROZEN_BEFORE_TRANSFER_EVALUATION",
+  "test_access": false
+}

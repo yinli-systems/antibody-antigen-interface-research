@@ -1,0 +1,71 @@
+{
+  "schema_version": "framecontact_invariant_point_memory_amendment_v1",
+  "amendment_status": "runtime_only_frozen_after_oom_before_any_invariant_point_development_result",
+  "frozen_on": "2026-07-31",
+  "parent_protocols": {
+    "sabdab2": {
+      "path": "protocols/framecontact_primary_v5.json",
+      "sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+      "receipt_sha256": "395b8d86648abb348b41ef2513319c86ca20e3e235eb070dd81fb4516a760537"
+    },
+    "asep": {
+      "path": "protocols/framecontact_asep_epitope_group_v1.json",
+      "sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+      "receipt_sha256": "370f36155e54be15c9b5ef4460a768a5c82a36bf561a206424b9d09e0d0b05fb"
+    }
+  },
+  "trigger": {
+    "asep_slurm_array_job": 1342460,
+    "failed_task_indices": [25, 26, 27, 28, 29],
+    "condition": "frozen_frame_ipa",
+    "seeds": [17, 42, 73, 101, 137],
+    "failure": "CUDA out of memory while materializing the invariant-point [B,L,L,H,P,3] relative-key/delta tensors",
+    "all_failed_before_complete_run_receipt": true,
+    "sabdab2_matching_tasks_status_at_freeze": "pending_not_started",
+    "sabdab2_frozen_test_opened": false,
+    "asep_official_test_opened": false
+  },
+  "implementation_change": {
+    "old_definition": "mean_p ||q_hp - (R_ij k_hp + d_ij)||^2 evaluated by materializing R_ij k_hp + d_ij and the six-dimensional delta",
+    "new_definition": "the same squared norm expanded into query norm, key norm, displacement norm, displacement-dot-rotated-key, query-dot-rotated-key, and query-dot-displacement contractions",
+    "largest_condition_specific_intermediate_before": "[B,L,L,H,P,3]",
+    "largest_condition_specific_intermediate_after": "[B,L,L,H]",
+    "model_parameters_changed": false,
+    "attention_bias_definition_changed": false,
+    "mask_changed": false,
+    "optimizer_or_loss_changed": false,
+    "dataset_split_or_labels_changed": false,
+    "selection_rule_changed": false,
+    "recovery_source_path": "../recovery/source-ipa-memory-v1/src/interaction_first/intra_chain_geometry.py",
+    "recovery_source_sha256": "d029c6993a931844a45335617c7fee9039275ff8463bcff32bad7054b835b14e",
+    "main_development_source_path": "src/interaction_first/intra_chain_geometry.py",
+    "main_development_source_sha256": "cbac1dabf9abc8df3e2c1edb31ee52e5d366673ec693af7cf7c9dd2cff6714d5",
+    "recovery_diff_boundary": "the recovery source is the immutable remote training tree plus only this invariant-point forward rewrite and its standalone validator"
+  },
+  "validation": {
+    "focused_command": "run original recovery-tree invariant-point tests, then scripts/validate_invariant_point_memory_rewrite.py",
+    "focused_result": "2 original tests passed; deterministic naive value and gradient equivalence passed",
+    "naive_value_equivalence_tolerance": {
+      "absolute": 0.000003,
+      "relative": 0.000003
+    },
+    "naive_gradient_equivalence_tolerance": {
+      "absolute": 0.00002,
+      "relative": 0.00002
+    },
+    "se3_invariance_retested": true,
+    "frame_sensitivity_retested": true,
+    "validator_path": "../recovery/source-ipa-memory-v1/scripts/validate_invariant_point_memory_rewrite.py",
+    "validator_sha256": "5b1bb1fa8920b00fb1e4df4b258fff1673783630bf1543ffdd16b367c91cacc3",
+    "original_recovery_test_source_sha256": "b6360e21469d727c67c8334121b9893064426b8a9c1fdce678960736efa74dbe",
+    "main_regression_test_source_sha256": "e8f7bcbf62f14c24233fc9b93e01efe20ea70ebb64d08c7f2fa02133471df1c4"
+  },
+  "resubmission_rule": {
+    "only_failed_or_preemptively_cancelled_frozen_frame_ipa_tasks": true,
+    "same_seed_model_hyperparameters_objective_and_data_authorities_required": true,
+    "new_source_manifest_and_amendment_receipt_required": true,
+    "prior_failed_logs_must_be_preserved": true,
+    "all_other_running_or_completed_conditions_must_remain_untouched": true
+  },
+  "claim_boundary": "Algebraic memory rewrite and failed-development-task recovery only. This amendment authorizes no architecture selection, exclusion of failed seeds, frozen-test access, A100 claim, benchmark improvement, or state-of-the-art claim."
+}

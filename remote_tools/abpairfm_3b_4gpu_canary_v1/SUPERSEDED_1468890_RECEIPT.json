@@ -1,0 +1,9 @@
+{
+  "cancelled_before_allocation": true,
+  "cancelled_job_id": 1468890,
+  "final_state": "CANCELLED by 1256",
+  "format_version": "abpairfm_3b_4gpu_canary_supersession_v1",
+  "reason": "The submitted MFU estimator used the RTX 4090 non-Tensor 82.58 TFLOP/s denominator instead of the NVIDIA dense BF16 Tensor Core 165.2 TFLOP/s denominator.",
+  "replacement_job_id": 1468929,
+  "test_access": false
+}

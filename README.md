@@ -11,17 +11,27 @@ does a model identify the residues that interact for a **specific antibody-
 antigen pair**, under dual-axis leakage control, rather than learning which
 residues are generally interface-prone?
 
+> **Current-results pointer.** This repository intentionally retains historical
+> protocol snapshots and their original status language. For the latest compact
+> audited evidence, start with
+> [`results/LATEST_RESULTS_20260827.md`](results/LATEST_RESULTS_20260827.md) and
+> the subsequent
+> [`predicted-geometry sensitivity`](results/sabdab2_predicted_geometry_v1/README.md).
+> A historical section saying that a run was pending is not evidence that it is
+> still pending today.
+
 ## Status at a glance
 
 | Workstream | What is implemented | Current evidence boundary |
 |---|---|---|
 | SPPIDER-seq adaptation | SAbDab2 adapters, training/evaluation, cluster bootstrap, calibration, sequence-similarity audit, and matched-partner permutation | Locked reused-benchmark marginal result; not native residue-pair prediction and not a pristine blind test |
-| MIPE reconstruction | Released-code-compatible training/evaluation adapters and directional cross-attention export | Historical 800-epoch summary is protocol-bound; the only MIPE result payload committed here is a separate 100-epoch held-out export |
+| MIPE reconstruction | Released-code-compatible five-fold evaluation, directional interaction export, pair-level metrics, OOF-only calibration, and a bound-geometry oracle audit | The completed `lr=1e-3` replay is not Appendix-exact; the fresh `lr=1e-4`, five-fold, 800-epoch replay is still running |
 | Intra-chain geometry | Distance, receiver-frame direction, and full relative-pose attention biases with parameter-unshared antibody/antigen encoders | Two-A100 replay and three historical seeds are development evidence; the preregistered five-seed superiority gate did not pass and the outer test remains unread |
+| FrameContact | Parameter-unshared geometry self-attention, explicit binary-contact/distogram pair heads, unary/contact/gated residue heads, localized triangle consistency, gauge-fixed interaction attribution, and reciprocal partner controls | Antigen-fold development arrays are still running; matched-epoch signals are mixed, frozen/external tests remain unopened, and no benchmark-improvement claim is authorized |
 | Partner retrieval and PairScale | Dual encoders, bidirectional retrieval, native pair/contact models, hard-negative and one-sided controls, calibration, and fixed-budget runners | Development-only experiments did not pass the required partner-specificity gates; no candidate is promoted |
 | Partner-geometry R2 / PAIRFormer | Explicit antibody-by-antigen pair state, bidirectional fusion, axial pair updates, contact/distance/orientation heads, losses, evaluator, execution plan, and one-shot freeze controls | Implementation complete; biological training, selection, and outer/test evaluation remain blocked at Gate 0 |
 | V6 score-free split authority | Raw-byte authority reconstruction, independent auditor, exact statistics, joint IR, CP-SAT formulation, separation oracle, HiGHS projection backend, and V6-B/V6-C diagnostics | The linear projection was reported infeasible by the primary and independent CP-SAT paths, but the required direct-HiGHS terminal receipt is not committed; this does not authorize a full-protocol infeasibility claim or training |
-| Distributed systems | Deterministic batching, distributed training helpers, immutable checkpoint/recovery, NCCL probes, and Slurm launchers | Engineering and diagnostic code only; no 32/64-GPU scaling or efficiency claim is authorized by the tracked evidence |
+| Distributed systems | Deterministic batching, distributed training helpers, immutable checkpoint/recovery, NCCL probes, and Slurm launchers | A real-OAS ABF-35M 4-to-2-to-4 DDP/DCP gate passed with exact terminal model state and bounded FP32 optimizer-moment drift; no 650M performance or 32/64-GPU scaling claim |
 | Antibody foundation pretraining | Authenticated OAS materialization, exact checkpoint recovery, memory-mapped loading, and compile/eager confirmation tooling | The eight-RTX-5090 compile candidate improved measured pilot throughput but failed frozen loss and tail-latency gates; it is disqualified, with no production-scale or 16/32-GPU claim |
 
 The authoritative gate manifest is
@@ -52,7 +62,31 @@ See the
 [`final research report`](results/sppider_seq/FINAL_RESEARCH_REPORT.md) and
 [`machine-readable summary`](results/sppider_seq/final_research_summary.json).
 
-### MIPE: separate the historical 800-epoch record from the committed replay
+### MIPE: completed released-code replay, with the Appendix-exact replay pending
+
+The completed five-fold released-code-compatible `lr=1e-3` ensemble scores
+epitope AUROC/AUPRC/MCC `0.892775/0.513218/0.317949` and paratope
+`0.875432/0.669642/0.492002` when validation-best checkpoints are fixed before
+provided-test scoring. OOF-only threshold calibration raises the corresponding
+MCC values to `0.484753` and `0.509856`.
+
+Pair-level evaluation remains the limiting result. Native mean-bidirectional
+attention has macro/pooled AUPRC `0.005535/0.002080`, Recall@1 `0`, and MRR
+`0.008100`; the marginal residue outer-product baseline is much stronger at
+`0.073666/0.041906`, Recall@1 `0.078125`, and MRR `0.207587`. A bound-coordinate
+oracle reaches pair macro AUPRC `0.485569`, Recall@1 `0.609375`, and MRR
+`0.785156`, but it directly uses the common bound-complex coordinate frame and
+is not a deployable unbound or sequence-only predictor.
+
+See the
+[`audited report`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.md) and
+[`machine-readable release`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.json).
+The supplied split had pre-scoring schema access and is not pristine blind
+evidence. The released `main.py` learning rate (`1e-3`) also differs from
+Appendix section 2.3 (`1e-4`); a fresh five-fold, 800-epoch Appendix-correct
+replay is running and has no terminal metrics yet.
+
+#### Earlier records retained for provenance
 
 The PAIRFormer protocol records a historical five-fold 800-epoch reconstruction
 with native mean-bidirectional pair macro AUPRC `0.00342`
@@ -62,12 +96,12 @@ preserved as historical protocol evidence in
 [`PAIRFORMER_EXECUTION_PROTOCOL_V1.md`](protocols/PAIRFORMER_EXECUTION_PROTOCOL_V1.md)
 and the gate manifest.
 
-The only standalone MIPE result payload committed in this curated repository is
+An earlier standalone MIPE result payload,
 [`MIPE_INTERACTION_100E_SUMMARY.json`](results/mipe/MIPE_INTERACTION_100E_SUMMARY.json).
-It records a distinct five-fold 100-epoch held-out export: 11,431,418 residue
+records a distinct five-fold 100-epoch held-out export: 11,431,418 residue
 pairs, 18,316 positives, and pooled mean-bidirectional AUROC/AUPRC
-`0.507190/0.001719`. The two summaries use different checkpoint budgets and
-aggregation scopes and must not be combined as if they were one replay.
+`0.507190/0.001719`. It uses a different checkpoint budget and aggregation
+scope from the new provided-test replay and must not be combined with it.
 Complete 800-epoch checkpoints, raw predictions, and bootstrap artifacts are not
 stored in Git, so the 800-epoch statement is not independently reproducible from
 this repository alone.
@@ -134,6 +168,13 @@ threshold was relaxed and no test data were used to resolve the split.
 
 ## Code architecture
 
+The current FrameContact research snapshot is preserved as an isolated,
+independently installable subproject under [`framecontact/`](framecontact/README.md).
+Its package name overlaps with historical `interaction_first` modules in this
+repository, so it is intentionally not flattened into the root `src/` tree.
+FrameContact protocols, source-tree manifests, and Slurm entry points must be
+run from that subproject root to preserve their authenticated relative paths.
+
 Reusable code lives in [`src/interaction_first/`](src/interaction_first/). The
 small export surface in `interaction_first.__init__` covers the stable contact,
 split, partner-sampling, frozen-embedding, structure-cache, and intra-chain
@@ -195,22 +236,18 @@ find scripts slurm -type f \( -name '*.sh' -o -name '*.sbatch' \) \
 .venv/bin/python -m pytest -q
 ```
 
-The full local audit for this README read all 816 tracked files at base commit
-`2e317823`, including 814 decodable text files (567,031 lines) and two binary
-artifacts. It parsed 324 Python files with no syntax/AST errors, 309 JSON files
-with no parse errors, 52 JSONL files with no parse errors, and 43 Markdown files
-with no broken local links. All 75 tracked shell/Slurm scripts passed `bash -n`.
-
-On macOS with Python 3.12, the current complete `pytest` run produced 1,330
-passes, 39 failures, one expected skip for unavailable official SPPIDER weights,
-and 37 passing subtests. Thirty-seven failures are path-bound historical
-retrieval/closure integration tests whose original `outputs/` or colocated
-script layout is absent from the curated tree; one is the intentional Biopython
-`1.83` parity lock running against local `1.87`; one Direct-HiGHS test failed in
-the full run but passed immediately when rerun alone, so it is recorded as an
-order/environment-sensitive failure rather than a clean pass. These failures
-must be resolved or replayed in their authenticated environment before the
-portable suite can be called green.
+The 2026-08-29 consolidation audit parsed every newly merged Python, JSON, and
+shell/Slurm file successfully and found no embedded credentials. The combined
+production-gate conflict suite passed all 11 tests. On the available macOS
+Python 3.14 environment, the root suite excluding five collection-blocked
+optional-dependency modules produced 2,216 passes, 92 failures, 24 skips, and 37
+passing subtests; the isolated FrameContact suite produced 421 passes, five
+failures, and ten skips. The same root branch before historical-workstream
+integration already had 88 failures. Remaining failures are dominated by
+immutable protocols that intentionally bind earlier source hashes, absent
+OR-Tools/HiGHS/Biopython packages, and external or recovery artifacts excluded
+from Git. These are preserved audit boundaries, not reported as a green
+portable suite.
 
 ## Claim and access boundary
 

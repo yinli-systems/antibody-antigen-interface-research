@@ -1,0 +1,56 @@
+{
+  "format_version": "framecontact_baseline_lock_v1",
+  "frozen_on": "2026-07-30",
+  "comparison_contract": {
+    "same_split": true,
+    "same_authenticated_pair_labels": true,
+    "same_five_seeds": [17, 42, 73, 101, 137],
+    "same_validation_partner_panels": true,
+    "same_primary_and_secondary_scorer": true,
+    "parameter_count_reported_not_forced_equal_across_external_architectures": true
+  },
+  "runnable_internal_baselines": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "framecontact"
+  ],
+  "external_baselines": [
+    {
+      "name": "GVP-GNN",
+      "official_source": "https://github.com/drorlab/gvp-pytorch",
+      "source_revision": "316eea7cd6446dd928e5975634152ec3b28e65f5",
+      "local_source_present": false,
+      "adapter_status": "not_implemented",
+      "result_status": "not_run"
+    },
+    {
+      "name": "EGNN",
+      "official_source": "https://github.com/vgsatorras/egnn",
+      "source_revision": "e9ca6c0c3e1d30a7598efbd66034121b4af8dccc",
+      "local_source_present": false,
+      "adapter_status": "not_implemented",
+      "result_status": "not_run"
+    },
+    {
+      "name": "Flash Invariant Point Attention",
+      "official_source": "https://github.com/flagshippioneering/flash_ipa",
+      "source_revision": "fdeca12cedda766c5dc8ac484cc9eb4b78738500",
+      "local_source_present": true,
+      "adapter_status": "source_pinned_interface_not_yet_wired",
+      "result_status": "not_run"
+    },
+    {
+      "name": "Boltz Pairformer",
+      "official_source": "https://github.com/jwohlwend/boltz",
+      "source_revision": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+      "local_source_present": true,
+      "adapter_status": "source_pinned_real_checkpoint_not_authenticated",
+      "checkpoint_status": "missing_provenance_locked_checkpoint",
+      "result_status": "not_run"
+    }
+  ],
+  "claim_rule": "No GVP, EGNN, IPA, or Pairformer result exists until an adapter, source/checkpoint receipt, identical split evidence, five run receipts, and scorer receipt are present."
+}

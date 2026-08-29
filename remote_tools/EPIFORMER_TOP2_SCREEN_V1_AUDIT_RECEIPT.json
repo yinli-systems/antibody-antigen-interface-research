@@ -1,0 +1,28 @@
+{
+  "analyzer_result_sha256": "996194872209d2e5e98ebc42f7b74d7b14302b8c17811536f996772815e5e425",
+  "candidate": {
+    "contact_mean_per_complex_auprc": 0.02944865805659106,
+    "epitope_mean_per_complex_auprc": 0.25383472836797005,
+    "epochs_completed": 5,
+    "paratope_mean_per_complex_auprc": 0.6532670733239321,
+    "receipt_sha256": "3593228dcda4c3c9749f48664e534bddfa0cf046e8f2a6067beb088dedbf5655",
+    "result_sha256": "f3dfb62c089c2fe45f8cc758a85b11562d9a1a57f236bc82ea264c70863931f9",
+    "selected_epoch": 2
+  },
+  "deltas": {
+    "contact_vs_control": 0.004617896369966193,
+    "epitope_vs_control": 0.0005858098001788603,
+    "epitope_vs_prior_candidate": -0.012126745281397733,
+    "paratope_vs_control": -0.022373771455982183
+  },
+  "format_version": "sabdab2_epiformer_top2_audit_receipt_v1",
+  "full_development_authorized": false,
+  "job_id": "1470435",
+  "passes": false,
+  "status": "PASS_AUDIT_NO_PROMOTION",
+  "temporal_holdout_authorized": false,
+  "temporal_holdout_loaded": false,
+  "test_authorized": false,
+  "test_loaded": false,
+  "winner_seeds_29_and_43_authorized": false
+}

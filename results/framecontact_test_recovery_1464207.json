@@ -1,0 +1,33 @@
+{
+  "claim_boundary": "Measurement-only continuation of the single authorized SAbDab2 test campaign. No model, checkpoint, split, panel, threshold, calibration, intervention, seed, or metric definition changed.",
+  "failed_job": {
+    "elapsed": "00:06:51",
+    "exit_code": "1:0",
+    "job_id": 1464124,
+    "state": "FAILED",
+    "stderr_sha256": "5e098aa1728f4b7a4f2377606be56f9198e50a4b823f4fcd7d3cea8998776887",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failure": {
+    "exception": "KeyError: antigen_cluster_id",
+    "output_root_absent_after_failure": true,
+    "result_or_metric_written": false,
+    "root_cause": "The evaluator requested cluster identifiers from structure-cache dataset records even though the authenticated reciprocal partner panel is the frozen authority that stores those identifiers."
+  },
+  "format_version": "framecontact_sabdab2_test_measurement_recovery_v1",
+  "original_authority": {
+    "evaluator_sha256": "122650985338b5cedd0b452958aceaf20e9ce43d45546f72ac9ddd7a4d1e6b3a",
+    "launch_receipt_sha256": "195ce9ea67006affc49fc2832809ce43a96bb41c4ebd8881a0fbf68b3f9e77b4",
+    "sbatch_sha256": "88123a4c9c4fa7e1b027df77f91e7916f5236767941ec616759a236f5c55fc28"
+  },
+  "recovery": {
+    "job_id": 1464207,
+    "partition": "gpu_4090",
+    "recovery_sbatch_sha256": "85e89201d52ebf6c3d9e6144ffbef347a1c4e7d1a02936314b164c79caf06917",
+    "recovery_wrapper_sha256": "bc69259a570d25d59b3ed9ab52554cf4083c814bf2b0c335da2ece8523b97022",
+    "submitted_at": "2026-08-24T11:33:42+08:00",
+    "unit_check": "PASS cluster IDs sourced from authenticated panel; estimates unchanged"
+  },
+  "scientific_change": false,
+  "test_opening_count": 1
+}

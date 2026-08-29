@@ -1,0 +1,41 @@
+{
+  "authorization": {
+    "download": true,
+    "normalization": false,
+    "stage_a_training": false
+  },
+  "expected_selected_bytes": 897632080,
+  "expected_selected_file_count": 3,
+  "format_version": "abpairfm_public_download_plan_v1",
+  "license": "Apache-2.0",
+  "pinned_revision": "intact-2026-01-09-release-252",
+  "provider": "EMBL-EBI IntAct",
+  "selected_files": [
+    {
+      "etag": "353d5510-64857b9c808e2",
+      "last_modified": "2026-01-14T11:51:16Z",
+      "path": "intact-micluster.zip",
+      "size_bytes": 893211920,
+      "url": "https://ftp.ebi.ac.uk/pub/databases/intact/2026-01-09/psimitab/intact-micluster.zip"
+    },
+    {
+      "etag": "436969-64857b8496e5d",
+      "last_modified": "2026-01-14T11:50:51Z",
+      "path": "intact-micluster_negative.txt",
+      "size_bytes": 4417897,
+      "url": "https://ftp.ebi.ac.uk/pub/databases/intact/2026-01-09/psimitab/intact-micluster_negative.txt"
+    },
+    {
+      "etag": "8d7-64857c9b23391",
+      "last_modified": "2026-01-14T11:55:43Z",
+      "path": "README",
+      "size_bytes": 2263,
+      "url": "https://ftp.ebi.ac.uk/pub/databases/intact/2026-01-09/psimitab/README"
+    }
+  ],
+  "source_id": "intact_2026_01_09_micluster",
+  "test_access": {
+    "asep_test_permitted": false,
+    "sabdab2_heldout_permitted": false
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "failure_evidence_sha256": "1a50babe958def5a14adbe469df6a3330a2ab01536537a5e4ebc5a1af732ab46",
+  "format_version": "sabdab2_predicted_geometry_distance_label_freezer_failure_receipt_v1",
+  "status": "FAIL_CLOSED_FREEZER_SCHEMA_DIFFERENCE",
+  "test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "training_started": false
+}

@@ -1,0 +1,165 @@
+{
+  "schema_version": "framecontact_specificity_gauge_exploratory_protocol_v1",
+  "protocol_status": "development_only_frozen_before_any_gauge_arm_training",
+  "frozen_on": "2026-08-02",
+  "parents": {
+    "residue_head_protocol": {
+      "path": "protocols/framecontact_residue_head_exploratory_v1.json",
+      "note": "This ablation extends the residue-head matrix with two additional residue aggregations and one additional supervision term. Every other setting is inherited unchanged so the comparison stays single-variable.",
+      "sha256": "4de5ad83a93e56c2e03843a0bb246b853d58a724332434cf78ce4dbe10393412"
+    },
+    "antigen_fold_protocol": {
+      "path": "protocols/framecontact_sabdab2_antigen_fold_v3.json",
+      "sha256": "ef0fa5a58123c178eba8eb51a5bccadf4774e68c5a3ef3245fce4e244fd9cf50"
+    }
+  },
+  "evidence_boundary_at_freeze": {
+    "sabdab2_antigen_fold_validation_predictions_accessed_by_prior_experiments": true,
+    "residue_head_and_distogram_arrays_partially_observed": true,
+    "this_gauge_ablation_training_started": false,
+    "this_gauge_ablation_validation_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_metrics_accessed": false,
+    "asep_official_test_predictions_accessed": false
+  },
+  "motivation": "A bipartite contact logit map decomposes as a grand mean plus an antibody profile plus an antigen profile plus a jointly dependent remainder. Only the remainder can distinguish partners. The residue heads currently in flight marginalize the full contact map, so their contact-derived evidence still contains both single-chain propensity profiles, which are identical for every candidate partner. This ablation asks whether removing that partner-agnostic component from the residue path, and supervising partner specificity at labelled interface residues rather than through one score per complex, produces residue predictions that actually depend on the partner.",
+  "research_question": "Does routing the residue head through the gauge-fixed partner-specific channel of the contact map, and adding residue-level partner-contrastive supervision, improve the reciprocal partner-retrieval margin without degrading epitope or paratope AUPRC?",
+  "primary_hypothesis": "Gauge-routed residue aggregation will raise the minimum reciprocal directional margin relative to the raw contact marginal at equal epitope and paratope AUPRC, because the raw marginal carries a partner-agnostic additive term that dilutes any partner-specific signal. Residue-level contrastive supervision will raise the margin further because it supervises O(residues) comparisons per complex instead of one.",
+  "identifiability_statement": "The additive decomposition of a contact logit map is not unique until a gauge is fixed. This protocol fixes it with the two-way additive-effects projection: the partner-specific channel is constrained to have zero masked row means and zero masked column means. Under that constraint the decomposition is unique, the reconstruction is exact, the three channels are orthogonal for rectangular masks, and the partner-specific variance share is exactly zero for any additively separable map. The projection is applied to the final contact logits and therefore never changes the contact prediction.",
+  "data": {
+    "dataset_backend": "sabdab2",
+    "split": "frozen antigen-fold v3 train/validation roles only",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5"
+    },
+    "test_role_forbidden": true
+  },
+  "development_matrix": [
+    "framecontact_gauge_marginal",
+    "framecontact_gauge_hybrid",
+    "framecontact_gauge_hybrid_contrastive"
+  ],
+  "single_variable_discipline": {
+    "rule": "Each arm differs from framecontact_unary_only, framecontact_contact_marginal, or framecontact_contact_hybrid in exactly one registered factor.",
+    "factor_changed_by_gauge_marginal": "residue_aggregation, against framecontact_contact_marginal",
+    "factor_changed_by_gauge_hybrid": "residue_aggregation, against framecontact_contact_hybrid",
+    "factor_changed_by_gauge_hybrid_contrastive": "residue_contrastive, against framecontact_gauge_hybrid",
+    "held_constant": [
+      "specificity_score_source stays interaction_only so the gauge changes only the residue path",
+      "the binary contact pair head",
+      "the intra-chain encoders, cross-attention placement, and all optimizer settings",
+      "the reciprocal partner panels and the split"
+    ],
+    "forbidden_comparison": "framecontact_unary_only against any distogram arm, because residue_aggregation and pair_target both change and neither can be credited with the difference."
+  },
+  "controlled_architecture": {
+    "intra_chain_encoder": "two parameter-unshared full-relative-pose antibody and antigen encoders",
+    "cross_chain_encoder": "one late bidirectional contact-gated cross-attention block",
+    "pair_head": "the same low-rank binary contact head in every condition",
+    "unary_source": "normalized intra-chain self-attention output before cross-attention",
+    "pair_gauge": "doubly_centered, one alternating-projection pass, computed in fp32",
+    "gauge_marginal": "masked noisy-OR over the partner axis of the gauge-fixed partner-specific channel only",
+    "gauge_hybrid": "unary logit plus tanh of a zero-initialized learned scalar gate times the gauge marginal",
+    "initialization_equivalence": "at initialization the gate is zero, so framecontact_gauge_hybrid reproduces framecontact_unary_only exactly"
+  },
+  "training_objective": {
+    "contact": "observed-class-balanced BCE on authenticated cognate residue-pair labels",
+    "marginals": "observed-class-balanced epitope and paratope BCE",
+    "specificity": "mean softplus ranking loss over both reciprocal counterfactual directions",
+    "specificity_score_source": "interaction_only",
+    "residue_partner_contrastive": "at labelled interface residues only, the cognate-partner residue logit must exceed each decoy-partner residue logit by a margin; the paratope side uses fixed_antibody_wrong_antigen decoys and the epitope side uses fixed_antigen_wrong_antibody decoys so the residue axis stays aligned with the labels",
+    "residue_contrastive_margin": 0.5,
+    "residue_contrastive_mode": "pairwise_softplus",
+    "residue_contrastive_temperature": 1.0,
+    "loss_weights_by_condition": {
+      "framecontact_gauge_marginal": {
+        "contact": 1.0,
+        "paratope": 0.25,
+        "epitope": 0.25,
+        "specificity": 0.25,
+        "distogram": 0.0,
+        "triangle": 0.0,
+        "residue_partner_contrastive": 0.0
+      },
+      "framecontact_gauge_hybrid": {
+        "contact": 1.0,
+        "paratope": 0.25,
+        "epitope": 0.25,
+        "specificity": 0.25,
+        "distogram": 0.0,
+        "triangle": 0.0,
+        "residue_partner_contrastive": 0.0
+      },
+      "framecontact_gauge_hybrid_contrastive": {
+        "contact": 1.0,
+        "paratope": 0.25,
+        "epitope": 0.25,
+        "specificity": 0.25,
+        "distogram": 0.0,
+        "triangle": 0.0,
+        "residue_partner_contrastive": 0.25
+      }
+    },
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01,
+    "wrong_pair_rule": "wrong pairs are ranking examples and never receive fabricated all-zero contact labels"
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional interaction-only margins; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection_unit": "seed and condition; no cross-condition cherry-picking by test performance",
+    "test_role_forbidden": true,
+    "known_limitation": "The selection metric has been measured to move further between neighbouring epochs of one run than between arms at a pinned epoch. Any single-epoch reading of it is uninterpretable, and reported deltas must be accompanied by the epoch-noise band from the decision report."
+  },
+  "epoch_metrics": {
+    "threshold_free": [
+      "contact pooled and macro AUPRC",
+      "epitope and paratope pooled and macro AUPRC",
+      "contact P@10, P@Lmin/10, P@Lmin/5, P@Lmin and corresponding recall"
+    ],
+    "fixed_operating_point": "raw logit threshold zero (probability 0.5) is held constant across epochs",
+    "fixed_operating_point_metrics": [
+      "precision",
+      "recall",
+      "F1",
+      "MCC",
+      "predicted-positive ratio"
+    ],
+    "gauge_diagnostics": [
+      "mean partner-specific variance share of the validation contact map",
+      "mean antibody and antigen propensity variance shares",
+      "maximum absolute centering residual, which must stay at numerical zero for padded rectangular masks",
+      "applied epitope and paratope contact gates, which are tanh of the learned scalars"
+    ],
+    "descriptive_only": "per-epoch validation-refit temperature and best-F1 threshold metrics cannot establish a monotonic learning curve"
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true
+  },
+  "reporting_rule": {
+    "single_variable_guard": "Any reported comparison must change exactly one registered factor. The decision report refuses others.",
+    "precision_rule": "A fixed-threshold precision gain is not evidence of a better model unless a threshold-free metric (AUPRC) or a budget-matched metric (precision at fixed K) also improves. Otherwise it is recorded as sparsity drift.",
+    "stability_rule": "A difference smaller than the within-run epoch-to-epoch standard deviation of the same metric is not a decision."
+  },
+  "promotion_rule": "A gauge arm is promoted only if, across five seeds, it does not reduce epitope or paratope AUPRC and it improves the minimum reciprocal partner margin by more than that metric's measured epoch-noise band. Frozen test remains unavailable to this choice.",
+  "claim_boundary": "Exploratory SAbDab2 antigen-fold development comparison after prior validation access. It can select the residue-output formulation and the partner-specificity supervision for later confirmatory work, but it cannot support a frozen-test, external-generalization, benchmark-improvement, or state-of-the-art claim."
+}

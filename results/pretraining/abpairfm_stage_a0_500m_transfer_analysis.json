@@ -1,0 +1,40 @@
+{
+  "authorization": {
+    "development_only": true,
+    "test_access": false
+  },
+  "claim_boundary": "Frozen development retrieval comparison. Stage-A0 at 500M tokens improves over base ESM2-3B on both panels, but remains significantly below MINT-650M on SAbDab2. This does not establish contact, OOD, test, or SOTA performance.",
+  "format_version": "abpairfm_stage_a0_transfer_analysis_summary_v1",
+  "models": {
+    "asep": {
+      "base_esm2_3b": {"mrr": 0.13222867334431104, "recall_at_1": 0.026470588235294117},
+      "base_esm2_650m": {"mrr": 0.13423444778065763, "recall_at_1": 0.041176470588235294},
+      "mint_650m": {"mrr": 0.13700585894362746, "recall_at_1": 0.041176470588235294},
+      "pplm_650m": {"mrr": 0.12416839365708186, "recall_at_1": 0.029411764705882353},
+      "stage_a0_500m": {"mrr": 0.15019263232841165, "recall_at_1": 0.052941176470588235}
+    },
+    "sabdab2": {
+      "base_esm2_3b": {"mrr": 0.1688601533718239, "recall_at_1": 0.04600484261501211},
+      "base_esm2_650m": {"mrr": 0.17111105870005744, "recall_at_1": 0.04539951573849879},
+      "mint_650m": {"mrr": 0.2136005583449275, "recall_at_1": 0.09140435835351089},
+      "pplm_650m": {"mrr": 0.2128885152827403, "recall_at_1": 0.09079903147699758},
+      "stage_a0_500m": {"mrr": 0.1815846515218344, "recall_at_1": 0.06053268765133172}
+    }
+  },
+  "paired_stage_a0_500m_minus_mint_650m": {
+    "asep": {
+      "mrr": {"ci95": [-0.024507300873774413, 0.05149046779315133], "delta": 0.013186773384784184},
+      "recall_at_1": {"ci95": [-0.023529411764705882, 0.047058823529411764], "delta": 0.011764705882352941}
+    },
+    "sabdab2": {
+      "mrr": {"ci95": [-0.05832510102112566, -0.005462412490268759], "delta": -0.03201590682309312},
+      "recall_at_1": {"ci95": [-0.056295399515738496, -0.005447941888619854], "delta": -0.030871670702179176}
+    }
+  },
+  "remote_analysis": {
+    "path": "/ssd/scxi253/model_deployment/results/evaluation/abpairfm_checkpoint_transfer_probe_v1/RETRIEVAL_LADDER_ANALYSIS_500M_WITH_650M_SCALE.json",
+    "sha256": "eccd8f45c8dc97d25d7638d808005f2b0c5a93462096f89cb9dfb50fc9d32f72"
+  },
+  "status": "PASS_PAIRED_DEVELOPMENT_ANALYSIS",
+  "test_access": false
+}

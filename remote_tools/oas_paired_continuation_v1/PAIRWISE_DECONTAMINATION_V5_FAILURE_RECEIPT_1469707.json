@@ -1,0 +1,32 @@
+{
+  "format_version": "oas_paired_pairwise_decontamination_failure_receipt_v1",
+  "job_id": 1469707,
+  "status": "FAIL_CLOSED_TIMEOUT",
+  "slurm": {
+    "state": "TIMEOUT",
+    "exit_code": "0:0",
+    "elapsed": "04:00:06",
+    "partition": "gpu_4090"
+  },
+  "evidence": {
+    "stderr_sha256": "f402335e76fa093333783e707f74295af6b45ba60e56da99a35b9767f6e8850e",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "partial_sqlite_size_bytes": 4571922432,
+    "source_sbatch_sha256": "bf3c6a0e363fce42196cafdafb8a2e7eb3e4dcfe3cf6baa254ec8758763ab6fb"
+  },
+  "input": {
+    "authenticated_hits_sha256": "edf4c952",
+    "authenticated_hits_sha256_is_prefix": true
+  },
+  "authorization": {
+    "partial_sqlite_reusable": false,
+    "materialization": false,
+    "training_canary": false,
+    "test_access": false
+  },
+  "dependent_jobs": {
+    "materialization_job_id": 1469708,
+    "training_canary_job_id": 1469709,
+    "cancel_required": true
+  }
+}

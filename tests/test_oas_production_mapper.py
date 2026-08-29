@@ -23,6 +23,13 @@ FILTER = ROOT / "protocols/oas_sequence_filter_v1.json"
 SEQUENCE = "ACDEFGHIKLMNPQRSTVWY" * 4
 
 
+def _numbering(sequence: str) -> str:
+    return "{" + ", ".join(
+        f"'{index} ': '{residue}'"
+        for index, residue in enumerate(sequence, start=1)
+    ) + "}"
+
+
 def _load_module():
     spec = importlib.util.spec_from_file_location("oas_production_mapper", SCRIPT)
     assert spec is not None and spec.loader is not None
@@ -63,6 +70,7 @@ def _oas_bytes(
     metadata = metadata_buffer.getvalue().encode("utf-8")
     header_fields = (
         "sequence_alignment_aa",
+        "ANARCI_numbering",
         "locus",
         "stop_codon",
         "vj_in_frame",
@@ -72,8 +80,18 @@ def _oas_bytes(
     body_buffer = io.StringIO(newline="")
     writer = csv.writer(body_buffer, lineterminator="\n")
     writer.writerow(header_fields)
-    writer.writerow((SEQUENCE, "H", "F", "T", "T", ""))
-    writer.writerow((SEQUENCE[::-1], "H", "F", "T", "T", "deletions"))
+    writer.writerow((SEQUENCE, _numbering(SEQUENCE), "H", "F", "T", "T", ""))
+    writer.writerow(
+        (
+            SEQUENCE[::-1],
+            _numbering(SEQUENCE[::-1]),
+            "H",
+            "F",
+            "T",
+            "T",
+            "deletions",
+        )
+    )
     body = body_buffer.getvalue().encode("utf-8")
     header, rows = body.split(b"\n", 1)
     header += b"\n"
@@ -245,6 +263,52 @@ def test_complete_map_task_streams_and_publishes_exact_records(tmp_path: Path) -
         assert all(record.study_id == 0 for record in records)
     finally:
         _make_writable(published)
+
+
+def test_unit_observer_receives_only_accepted_rows(tmp_path: Path) -> None:
+    module = _load_module()
+    fixture = _fixture(tmp_path)
+    protocol, plan, _audit, policy = module._validate_protocol_inputs(
+        protocol_path=fixture["protocol"],
+        protocol_file_sha256=fixture["protocol_sha256"],
+        plan_path=fixture["plan"],
+        download_audit_path=fixture["audit"],
+        filter_policy_path=fixture["filter"],
+    )
+    units, _studies = module._validate_plan_units(plan)
+    writer = module._BucketWriter(tmp_path / "observer-buckets")
+    writer.root.mkdir()
+    observed = []
+    try:
+        receipt = module._map_one_unit(
+            unit_index=0,
+            unit=units[0],
+            study_id=0,
+            download_root=fixture["download_root"],
+            plan_payload_sha256=plan["plan_sha256"],
+            evaluator=module.CompiledUnpairedRowEvaluator.from_policy(
+                policy,
+                authority_chain="Heavy",
+            ),
+            sequence_field_priority=policy["sequence_field_priority"],
+            bucket_writer=writer,
+            counters=module.Counter(),
+            status_counts=module.Counter(),
+            metadata_exceptions={},
+            metadata_normalization_counts=module.Counter(),
+            accepted_row_observer=lambda row, record: observed.append(
+                (row["sequence_alignment_aa"], record)
+            ),
+        )
+    finally:
+        writer.close()
+    assert protocol["execution"] == {"map_task_count": 1}
+    assert receipt["counts"]["accepted_records"] == 2
+    assert [sequence for sequence, _record in observed] == [SEQUENCE, SEQUENCE[::-1]]
+    assert [record.sequence for _sequence, record in observed] == [
+        SEQUENCE,
+        SEQUENCE[::-1],
+    ]
 
 
 def test_strict_json_and_existing_publication_fail_closed(tmp_path: Path) -> None:
