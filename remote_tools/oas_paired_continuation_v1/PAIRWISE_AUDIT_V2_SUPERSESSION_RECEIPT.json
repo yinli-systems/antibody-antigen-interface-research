@@ -1,0 +1,8 @@
+{
+  "allocation_started": false,
+  "format_version": "oas_pairwise_decontamination_audit_supersession_v1",
+  "job_id": 1469583,
+  "reason": "The replacement freezes a literature-aligned composite rule before observing counts and emits a reusable exclusion index, avoiding a second scan of the frozen 9.4 GB hit artifact.",
+  "replacement_source_version": "v6",
+  "training_performed": false
+}

@@ -1,0 +1,22 @@
+{
+  "dependency": {
+    "job_id": 1469610,
+    "mode": "afterok",
+    "purpose": "development-clean paired shard materialization"
+  },
+  "job_id": 1469625,
+  "partition": "gpu_4090",
+  "protocol_sha256": "e37d8c31736f980e464bcaa6156292380ca0c0520b36760f1db3485aa1f74689",
+  "sbatch_sha256": "98ed5b04c932ac7e4dfc69b4c061a4280535c1d93b3f57b4a1e54c962fa417b0",
+  "source": {
+    "paired_pretraining_sha256": "fcfb69f016681a8d801db213e49f6ff61252f6882d28eb56753cac3dbbdac58a",
+    "remote_root": "/ssd/scxi253/model_deployment/oas_paired_continuation_v1_20260825_v8/source",
+    "trainer_sha256": "ba214d618d83e6cbd1aa88a9128c7807ac0b7184f63e01705eee0ef7e5c9b837"
+  },
+  "submitted_at_utc": "2026-08-25T14:04:02Z",
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false,
+    "temporal_holdout_accessed": false
+  }
+}

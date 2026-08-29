@@ -1,0 +1,26 @@
+{
+  "accumulation": 4,
+  "checkpoint_model_sha256": "279ed615ff7200629a3dbdc97ee70bba3a068395b30dcf7f275b805f31f6d7b2",
+  "checkpoint_receipt_sha256": "c42b48004c86743df48e86bc4f601c47d84838d542a77b8b897dbdddca138a2d",
+  "checkpoint_saved": false,
+  "format_version": "oas_paired_650m_training_canary_v1",
+  "input_checkpoint": {
+    "campaign_residue_tokens": 15523137602,
+    "next_update": 108000,
+    "segment": 35
+  },
+  "learning_rate": 0.00002,
+  "materialization_protocol_sha256": "35c19666fd3f63fc3bb8e30940a7b2e96cf2d2fc5a16925b684fec4330f5ca06",
+  "micro_batch": 2,
+  "model_family_sha256": "1943ab2c538e7d10f9273e21a6a47cb5e1cd972e00df0a91fa81a86e39dc4015",
+  "objective": "cdr3_ce",
+  "purpose": "Authenticate one-GPU paired VH/VL backward training, CDR3-preferential masking, region-stratified frozen validation, and memory safety before any equal-token development experiment.",
+  "seed": 20260825,
+  "steps": 10,
+  "test_access": {
+    "downstream_labels_used": false,
+    "sabdab2_heldout_accessed": false,
+    "temporal_holdout_accessed": false
+  },
+  "validation_pairs": 64
+}

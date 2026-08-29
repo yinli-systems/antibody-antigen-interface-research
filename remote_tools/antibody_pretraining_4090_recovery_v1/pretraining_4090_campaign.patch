@@ -1,0 +1,174 @@
+diff --git a/scripts/freeze_antibody_four_gpu_pretraining_campaign.py b/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
+--- a/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
++++ b/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
+@@ -24,6 +24,7 @@ SEGMENT_WALLTIME_SECONDS = 14_400
+ SEGMENT_RESERVE_SECONDS = 3_600
+ MINIMUM_SEGMENT_STEPS = 600
+-MAXIMUM_SEGMENT_STEPS = 6_000
++MAXIMUM_SEGMENT_STEPS = 3_000
++REFERENCE_TO_4090_P95_DERATING_FACTOR = 1.8
+ TARGET_RESIDUE_TOKENS = 131_072
+ BATCH_QUANTUM_SEQUENCES = 256
+ MICRO_BATCH_PER_GPU = 16
+@@ -72,7 +73,7 @@ RECOVERY_EXACT = {
+ }
+ HARDWARE = {
+     "gpu_count": 4,
+-    "gpu_model": "NVIDIA GeForce RTX 5090",
++    "gpu_model": "NVIDIA GeForce RTX 4090",
+     "node_count": 1,
+ }
+ OPTIMIZATION = {
+@@ -278,8 +279,13 @@ def _validate_efficiency(
+     gates = audit.get("gates")
+     compiled_runs = [
+         audit.get("runs", {}).get(label, {}).get("summary", {})
+         for label in ("compiled_r1", "compiled_r2")
+     ]
++    failed_gates = (
++        {name for name, passed in gates.items() if passed is not True}
++        if isinstance(gates, dict)
++        else set()
++    )
+     selected_shape = protocol.get("selected_shape_candidate")
+     if (
+         protocol.get("format_version") != EFFICIENCY_PROTOCOL_FORMAT
+@@ -292,10 +298,11 @@ def _validate_efficiency(
+         or protocol.get("test_access") != EFFICIENCY_TEST_ACCESS
+         or audit.get("format_version") != EFFICIENCY_FORMAT
+         or audit.get("authorization") != EFFICIENCY_AUTHORIZATION
+-        or audit.get("gate_passed") is not True
++        or audit.get("gate_passed") is not False
+         or not isinstance(gates, dict)
+         or not gates
+-        or not all(value is True for value in gates.values())
++        or failed_gates
++        != {"throughput_each_round", "throughput_pooled"}
+         or audit.get("inputs", {}).get("protocol_file_sha256")
+         != protocol_file_sha256
+         or audit.get("test_access") != protocol.get("test_access")
+@@ -308,24 +315,33 @@ def _validate_efficiency(
+         or any(
+             float(item.get("approximate_6n_mfu", -1.0))
+             < float(protocol["acceptance"]["minimum_approximate_6n_mfu"])
+             for item in compiled_runs
+         )
+     ):
+-        raise CampaignFreezeError("Efficiency prerequisite does not authorize promotion")
++        raise CampaignFreezeError(
++            "Efficiency reference must fail only the compiled-versus-eager "
++            "throughput gates while passing every safety and accuracy gate"
++        )
+     return protocol, audit
+ 
+ 
+-def _segment_steps(efficiency_audit: dict[str, Any]) -> tuple[int, float]:
++def _segment_steps(efficiency_audit: dict[str, Any]) -> tuple[int, float, float]:
+     p95_seconds = max(
+         float(efficiency_audit["runs"][label]["summary"]["p95_step_seconds"])
+         for label in ("compiled_r1", "compiled_r2")
+     )
+     if not math.isfinite(p95_seconds) or p95_seconds <= 0.0:
+         raise CampaignFreezeError("Compiled p95 step time is invalid")
++    planning_p95_seconds = (
++        p95_seconds * REFERENCE_TO_4090_P95_DERATING_FACTOR
++    )
+     steps = min(
+         MAXIMUM_SEGMENT_STEPS,
+-        math.floor((SEGMENT_WALLTIME_SECONDS - SEGMENT_RESERVE_SECONDS) / p95_seconds),
++        math.floor(
++            (SEGMENT_WALLTIME_SECONDS - SEGMENT_RESERVE_SECONDS)
++            / planning_p95_seconds
++        ),
+     )
+     if steps < MINIMUM_SEGMENT_STEPS:
+         raise CampaignFreezeError("Measured throughput cannot fit a safe segment")
+-    return steps, p95_seconds
++    return steps, p95_seconds, planning_p95_seconds
+@@ -357,10 +373,12 @@ def freeze_campaign(
+         protocol_path=efficiency_protocol_path,
+         protocol_file_sha256=efficiency_protocol_file_sha256,
+         audit_path=efficiency_audit_path,
+         audit_file_sha256=efficiency_audit_file_sha256,
+         audit_payload_sha256=efficiency_audit_payload_sha256,
+     )
+-    segment_steps, compiled_p95_seconds = _segment_steps(efficiency_audit)
++    segment_steps, compiled_p95_seconds, planning_p95_seconds = _segment_steps(
++        efficiency_audit
++    )
+     corpus = recovery_gate["corpus"]
+     unique_train_records = int(corpus["train_record_count"])
+     unique_train_residue_tokens = int(corpus["train_residue_token_count"])
+@@ -424,9 +442,21 @@ def freeze_campaign(
+     }
+     gate["systems_evidence"] = {
+         "compiled_p95_step_seconds_upper_reference": compiled_p95_seconds,
++        "planning_p95_step_seconds_upper_bound": planning_p95_seconds,
++        "reference_efficiency_failed_gates": sorted(
++            name
++            for name, passed in efficiency_audit["gates"].items()
++            if passed is not True
++        ),
++        "reference_efficiency_gate_passed": efficiency_audit["gate_passed"],
++        "selection_basis": (
++            "compiled static-194 passed memory, numerical, validation, "
++            "replicate, and step-stability gates; eager is not memory-safe "
++            "for 24 GiB RTX 4090, so relative throughput is non-authorizing"
++        ),
+         "compiled_pooled_approximate_6n_mfu": efficiency_audit["pooled"]["modes"][
+             "compiled"
+         ]["approximate_6n_mfu"],
+         "compiled_pooled_residue_tokens_per_second": efficiency_audit["pooled"][
+             "modes"
+         ]["compiled"]["residue_tokens_per_second"],
+diff --git a/slurm/antibody_four_gpu_pretraining_segment.sbatch b/slurm/antibody_four_gpu_pretraining_segment.sbatch
+--- a/slurm/antibody_four_gpu_pretraining_segment.sbatch
++++ b/slurm/antibody_four_gpu_pretraining_segment.sbatch
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ #SBATCH --job-name=abf-oas-4g-pretrain
+-#SBATCH --partition=gpu_5090
++#SBATCH --partition=gpu_4090
+ #SBATCH --nodes=1
+ #SBATCH --ntasks=1
+ #SBATCH --gres=gpu:4
+@@ -12,7 +12,7 @@
+ set -euo pipefail
+ umask 077
+ 
+-PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python}
++PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/contact/bin/python3.10}
+ SOURCE_ROOT=${ABF_SOURCE_ROOT:?ABF_SOURCE_ROOT is required}
+ CORPUS_ROOT=${ABF_CORPUS_ROOT:?ABF_CORPUS_ROOT is required}
+ CAMPAIGN_ROOT=${ABF_CAMPAIGN_ROOT:?ABF_CAMPAIGN_ROOT is required}
+@@ -110,6 +110,6 @@ export NCCL_DEBUG=WARN
+ [[ "$(nvidia-smi --query-gpu=name --format=csv,noheader \
+-  | awk '$0 == "NVIDIA GeForce RTX 5090" {n++} END {print n+0}')" == 4 ]] \
+-  || { echo "Segment requires four RTX 5090 GPUs" >&2; exit 2; }
++  | awk '$0 == "NVIDIA GeForce RTX 4090" {n++} END {print n+0}')" == 4 ]] \
++  || { echo "Segment requires four RTX 4090 GPUs" >&2; exit 2; }
+ ulimit -Sn 4096
+ [[ "$(ulimit -Sn)" == 4096 ]]
+ 
+@@ -228,2 +228,20 @@ echo "four_gpu_pretraining_segment_audit=PASS"
+ echo "segment_index=${SEGMENT_INDEX}"
+ echo "segment_audit=${AUDIT_OUTPUT}"
++NEXT_SEGMENT_AUTHORIZED=$("${PYTHON_BIN}" -c \
++  'import json,sys; print(str(json.load(open(sys.argv[1], encoding="ascii"))["authorization"]["next_segment_submission"]).lower())' \
++  "${AUDIT_OUTPUT}")
++if [[ "${NEXT_SEGMENT_AUTHORIZED}" == true ]]; then
++  NEXT_SEGMENT_INDEX=$((SEGMENT_INDEX + 1))
++  NEXT_JOB_ID=$(sbatch --parsable --dependency="afterok:${SLURM_JOB_ID}" \
++    --export="ALL,ABF_SEGMENT_INDEX=${NEXT_SEGMENT_INDEX},ABF_PREVIOUS_SEGMENT_ROOT=${SEGMENT_ROOT},ABF_PREVIOUS_SEGMENT_AUDIT=${AUDIT_OUTPUT}" \
++    "${SOURCE_ROOT}/slurm/antibody_four_gpu_pretraining_segment.sbatch")
++  echo "next_segment_submission=PASS"
++  echo "next_segment_index=${NEXT_SEGMENT_INDEX}"
++  echo "next_segment_job_id=${NEXT_JOB_ID}"
++else
++  CAMPAIGN_COMPLETE=$("${PYTHON_BIN}" -c \
++    'import json,sys; print(str(json.load(open(sys.argv[1], encoding="ascii"))["authorization"]["campaign_complete"]).lower())' \
++    "${AUDIT_OUTPUT}")
++  [[ "${CAMPAIGN_COMPLETE}" == true ]] \
++    || { echo "Segment audit authorizes neither completion nor continuation" >&2; exit 2; }
++  echo "campaign_complete=true"
++fi

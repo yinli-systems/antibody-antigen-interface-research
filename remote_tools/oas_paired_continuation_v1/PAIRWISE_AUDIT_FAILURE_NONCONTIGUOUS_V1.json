@@ -1,0 +1,11 @@
+{
+  "allocation_started": true,
+  "elapsed_seconds": 14,
+  "error": "ValueError: OAS row hash reappears non-contiguously",
+  "exit_code": "1:0",
+  "format_version": "oas_pairwise_decontamination_audit_failure_v1",
+  "job_id": 1469540,
+  "output_result_written": false,
+  "state": "FAILED",
+  "training_performed": false
+}

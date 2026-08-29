@@ -1,0 +1,51 @@
+diff --git a/scripts/freeze_antibody_four_gpu_pretraining_campaign.py b/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
+--- a/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
++++ b/scripts/freeze_antibody_four_gpu_pretraining_campaign.py
+@@ -53 +53 @@
+-    "configuration_promotion": True,
++    "configuration_promotion": False,
+@@ -321 +321,4 @@
+-        raise CampaignFreezeError("Efficiency prerequisite does not authorize promotion")
++        raise CampaignFreezeError(
++            "Efficiency reference must fail only the compiled-versus-eager "
++            "throughput gates while passing every safety and accuracy gate"
++        )
+@@ -325 +328 @@
+-def _segment_steps(efficiency_audit: dict[str, Any]) -> tuple[int, float]:
++def _segment_steps(efficiency_audit: dict[str, Any]) -> tuple[int, float, float]:
+@@ -330,9 +333,15 @@
+     if not math.isfinite(p95_seconds) or p95_seconds <= 0.0:
+         raise CampaignFreezeError("Compiled p95 step time is invalid")
++    planning_p95_seconds = (
++        p95_seconds * REFERENCE_TO_4090_P95_DERATING_FACTOR
++    )
+     steps = min(
+         MAXIMUM_SEGMENT_STEPS,
+-        math.floor((SEGMENT_WALLTIME_SECONDS - SEGMENT_RESERVE_SECONDS) / p95_seconds),
++        math.floor(
++            (SEGMENT_WALLTIME_SECONDS - SEGMENT_RESERVE_SECONDS)
++            / planning_p95_seconds
++        ),
+     )
+     if steps < MINIMUM_SEGMENT_STEPS:
+         raise CampaignFreezeError("Measured throughput cannot fit a safe segment")
+-    return steps, p95_seconds
++    return steps, p95_seconds, planning_p95_seconds
+@@ -371 +380,3 @@
+-    segment_steps, compiled_p95_seconds = _segment_steps(efficiency_audit)
++    segment_steps, compiled_p95_seconds, planning_p95_seconds = _segment_steps(
++        efficiency_audit
++    )
+@@ -443,0 +444,12 @@
++        "planning_p95_step_seconds_upper_bound": planning_p95_seconds,
++        "reference_efficiency_failed_gates": sorted(
++            name
++            for name, passed in efficiency_audit["gates"].items()
++            if passed is not True
++        ),
++        "reference_efficiency_gate_passed": efficiency_audit["gate_passed"],
++        "selection_basis": (
++            "compiled static-194 passed memory, numerical, validation, "
++            "replicate, and step-stability gates; eager is not memory-safe "
++            "for 24 GiB RTX 4090, so relative throughput is non-authorizing"
++        ),

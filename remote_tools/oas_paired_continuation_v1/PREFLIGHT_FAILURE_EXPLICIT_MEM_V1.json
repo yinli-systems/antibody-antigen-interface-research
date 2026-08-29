@@ -1,0 +1,11 @@
+{
+  "allocation_created": false,
+  "command": "sbatch --parsable submit_pairwise_decontamination_audit_v1.sbatch",
+  "error": "gpu_4090 forbids --mem, --mem-per-cpu, and --mem-per-gpu because host memory is assigned per GPU",
+  "format_version": "oas_pairwise_decontamination_preflight_failure_v1",
+  "output_created": false,
+  "status": "FAILED_BEFORE_SUBMISSION",
+  "superseded_by_source_root": "/ssd/scxi253/model_deployment/oas_paired_continuation_v1_20260825_v2/source",
+  "test_access": false,
+  "training_started": false
+}

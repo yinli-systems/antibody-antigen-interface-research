@@ -1,0 +1,12 @@
+{
+  "failed_job_id": 1469598,
+  "failed_stderr_sha256": "1c1f5e7e87d5938365eb611855e29d2a4ffed76024f04cb869268112ce92b3af",
+  "failure_class": "SQLITE_EXTERNAL_READ_LOCK",
+  "failure_message": "sqlite3.OperationalError: database is locked",
+  "format_version": "oas_pairwise_decontamination_failure_receipt_v3",
+  "partial_database_bytes": 646029312,
+  "partial_database_reusable": false,
+  "result_written": false,
+  "retry_scope": "New run root with identical frozen audit script, protocol, hits, and source receipt; no concurrent SQLite inspection.",
+  "test_access": false
+}
