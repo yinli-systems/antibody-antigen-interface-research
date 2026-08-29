@@ -1,0 +1,52 @@
+{
+  "format_version": "sabdab2_predicted_geometry_case_exact_recovery_submission_v2",
+  "created_at_utc": "2026-08-28T13:26:38Z",
+  "status": "SUBMITTED_AFTER_CASE_EXACT_INSTANCE_IDENTITY_RECOVERY",
+  "campaign_root": "/ssd/scxi253/model_deployment/results/development/sabdab2_sequence_predicted_geometry_development_v1",
+  "failed_preparation": {
+    "job_id": "1483067",
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "stderr_sha256": "79300a15dacfd24901ab8da9e6521d072c9a1c7674f0bcf45c1d97a0be944982",
+    "failure_receipt_sha256": "fa1dfd7882b40bcf12f25236b981cda79a262a6863f34194ea1340bea686558b"
+  },
+  "recovery_authority": {
+    "selection_policy": "case-exact AF3 input JSON name for lower-cased output-path collisions; no labels, metrics, or downstream results used",
+    "development_instance_count": 3114,
+    "paired_instance_count": 2224,
+    "sdh_instance_count": 890,
+    "case_collision_group_count": 7,
+    "canonical_paired_source_count": 2217,
+    "timestamped_case_collision_recovery_count": 7,
+    "paired_manifest_sha256": "1fbae16037aa27f5e089e0edd2353de74ab9499a779ff537c7dbc116191aa9fd",
+    "paired_receipt_sha256": "4ae683274a5477854ee2ab186fce65a3b9fc5a9da2a5227e22f9a33c61792b4c",
+    "combined_manifest_sha256": "41dd4cec92a52bddafedb99745283a35c28b218bb752e0c566bc5b363b2c0681",
+    "combined_receipt_sha256": "a4f8164913b1a78f36948af2234263cd5bb60485d4d810a9734bcf34a078b305",
+    "all_14_collision_instances_materializer_preflight": true,
+    "source_predictions_modified": false
+  },
+  "recovery_sources": {
+    "view_builder_sha256": "a163cbf66d175add6f52fef00f62c7514fcf1b58812deb0ae9b8e563ab46926a",
+    "case_exact_materializer_wrapper_sha256": "f7f9f048fe5a5fc70a6c6f7dd2bda3e0eb616b0920d594860f7a7b86d95721ed",
+    "frozen_materializer_sha256": "4326a5af92f1ff17102db0f10570d80f9d258bfc9fd1d88425554bd183b0b3fe",
+    "protocol_freezer_sha256": "2ce582226e08626873a5434411c21def321120822bb1dceb0f1e76165d16c3c0",
+    "prepare_sbatch_sha256": "a2d5c8aecb50f02aed175de38f0ab4650ed14624ef5ab7582c992279c1486832",
+    "training_sbatch_sha256": "4540780a34d0cd8e32481aa6954b440bdcd05f6fe37e03b82be471b9e5eb6885",
+    "analyzer_sbatch_sha256": "05778c3ba3f9957266debd0b754083d7c736dd9a947b3998533b3403ff541216"
+  },
+  "jobs": {
+    "prepare": "1483575",
+    "training_array": "1483576_[0-5]",
+    "analyzer": "1483577"
+  },
+  "dependencies": {
+    "training": "afterok:1483575",
+    "analyzer": "afterok:1483576_*"
+  },
+  "user_authorized_recovery": true,
+  "model_split_labels_loss_seeds_or_selection_changed": false,
+  "selection_or_tuning": false,
+  "test_access": false,
+  "temporal_holdout_access": false,
+  "gpu_partition": "gpu_4090"
+}

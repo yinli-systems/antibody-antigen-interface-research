@@ -1,0 +1,67 @@
+{
+  "format_version": "sabdab2_framecontact_frozen_ensemble_test_local_export_v1",
+  "scope": "Exact local export of the complete single-opening SAbDab2 frozen-ensemble test result and its receipt. No fields, instances, clusters, seeds, interventions, or bootstrap summaries were removed.",
+  "source": {
+    "remote_result_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/test-runs/negative-sample-ablation-v2/no_negative/framecontact/frozen-ensemble-v1",
+    "recovery_job_id": 1464207,
+    "job_name": "fc-noneg-test-rec",
+    "partition": "gpu_4090",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "06:11:28",
+    "started_at": "2026-08-24T11:33:42+08:00",
+    "completed_at": "2026-08-24T17:45:10+08:00"
+  },
+  "files": {
+    "full_result": {
+      "path": "SABDAB2_FRAMECONTACT_FROZEN_ENSEMBLE_TEST_FULL.json",
+      "bytes": 8621447,
+      "sha256": "4946c3c1de03c867b5eb368f0d044a278d429a66cd8ff3da931c9d40aed48de4"
+    },
+    "receipt": {
+      "path": "FROZEN_ENSEMBLE_TEST_RECEIPT.json",
+      "bytes": 365,
+      "sha256": "8325a6a23ce16c17a82d96393e1ae072bf04598175a5866f44751ef154ee34ae"
+    },
+    "conclusion": {
+      "path": "CONCLUSION.json",
+      "bytes": 16727,
+      "sha256": "024ed8b14a5047a15e0479cdf7528b828ec2fbcb58794bc1d4189ae2b954fa0f"
+    }
+  },
+  "receipt_assertions": {
+    "result_sha256_matches": true,
+    "test_loaded": true,
+    "test_opening_count": 1,
+    "selection_performed_on_test": false,
+    "required_interventions_complete": true
+  },
+  "full_result_inventory": {
+    "test_complexes": 549,
+    "seed_count": 5,
+    "sections": [
+      "authority",
+      "claim_boundary",
+      "ensemble_metrics",
+      "experiment",
+      "format_version",
+      "independent_monomer_se3_prediction_invariance",
+      "intervention_definition",
+      "intervention_metrics",
+      "per_seed_metrics",
+      "runtime",
+      "same_antigen_different_antibody",
+      "seeds",
+      "test_complexes"
+    ],
+    "interventions": [
+      "coordinate_noise_0.1_angstrom",
+      "coordinate_noise_0.25_angstrom",
+      "coordinate_noise_0.5_angstrom",
+      "degree_matched_graph_rewiring",
+      "geometry_shuffle",
+      "local_frame_corruption"
+    ]
+  },
+  "claim_boundary": "This export contains the frozen test measurements only. Online literature comparisons and post-test interpretations are intentionally not mixed into the authoritative test result."
+}

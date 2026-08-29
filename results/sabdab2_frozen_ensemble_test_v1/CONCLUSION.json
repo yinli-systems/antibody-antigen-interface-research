@@ -1,0 +1,277 @@
+{
+  "format_version": "sabdab2_framecontact_frozen_ensemble_test_metrics_v2",
+  "source": {
+    "result_sha256": "4946c3c1de03c867b5eb368f0d044a278d429a66cd8ff3da931c9d40aed48de4",
+    "job_id": 1464207,
+    "test_complexes": 549,
+    "seeds": [17, 42, 73, 101, 137],
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "torch": "2.7.1+cu128",
+    "elapsed": "06:11:28"
+  },
+  "integrity": {
+    "test_opening_count": 1,
+    "test_loaded": true,
+    "selection_performed_on_test": false,
+    "required_interventions_complete": true,
+    "validation_calibration_frozen": true
+  },
+  "ensemble": {
+    "contact": {
+      "candidate_count": 28432801,
+      "positive_count": 24208,
+      "positive_prevalence": 0.0008514110164524417,
+      "auprc": 0.016407746641598612,
+      "auprc_over_prevalence": 19.271240710467268,
+      "auroc": 0.9516335719133446,
+      "mean_per_complex_auprc": 0.03307559226034405,
+      "cluster_weighted_mean_per_complex_auprc": 0.0326955003369775,
+      "cluster_bootstrap_ci95": [0.024890724942888066, 0.04174058041314284],
+      "cluster_count": 65,
+      "bootstrap_replicates": 10000,
+      "precision": 0.02575823724286705,
+      "recall": 0.16573033707865167,
+      "f1": 0.04458669511680114,
+      "mcc": 0.06337808310447673,
+      "brier": 0.01784473444480961,
+      "ece_15": 0.03494527702115875,
+      "threshold": 0.856408953666687,
+      "calibration_regression": {
+        "converged": false,
+        "iterations": 50,
+        "intercept": -9.900783207310732e+21,
+        "slope": 3.0222823362707126e+21
+      },
+      "ranked_pair_macro": {
+        "10": {"mean_effective_k": 10.0, "precision": 0.05656934306569343, "recall": 0.012437350047981188},
+        "20": {"mean_effective_k": 20.0, "precision": 0.05027372262773724, "recall": 0.022206703822924334},
+        "50": {"mean_effective_k": 50.0, "precision": 0.04288321167883212, "recall": 0.04815219816910065},
+        "lmin": {"mean_effective_k": 171.6897810218978, "precision": 0.03471713198024844, "recall": 0.1142786770499885},
+        "lmin_over_10": {"mean_effective_k": 17.58941605839416, "precision": 0.051527658116241104, "recall": 0.018303537257325486},
+        "lmin_over_5": {"mean_effective_k": 34.71715328467153, "precision": 0.046360379321205736, "recall": 0.03260642139633485}
+      }
+    },
+    "epitope": {
+      "candidate_count": 139215,
+      "positive_count": 9816,
+      "positive_prevalence": 0.07050964335739683,
+      "auprc": 0.13809021461003154,
+      "auprc_over_prevalence": 1.9584585602012572,
+      "auroc": 0.6911238890422214,
+      "mean_per_complex_auprc": 0.22423260623953647,
+      "cluster_weighted_mean_per_complex_auprc": 0.23057519620269037,
+      "cluster_bootstrap_ci95": [0.18994035380202384, 0.27360248690008326],
+      "cluster_count": 65,
+      "bootstrap_replicates": 10000,
+      "precision": 0.12093607664520183,
+      "recall": 0.6275468622656887,
+      "f1": 0.2027916776402423,
+      "mcc": 0.14962193394307255,
+      "brier": 0.09030368101036565,
+      "ece_15": 0.10049516348244658,
+      "threshold": 0.16767333447933197,
+      "temperature": 0.5749906897544861,
+      "calibration_regression": {
+        "converged": false,
+        "iterations": 50,
+        "intercept": -2.1811055783296778e+22,
+        "slope": 1.4057615920583745e+23
+      }
+    },
+    "paratope": {
+      "candidate_count": 114309,
+      "positive_count": 10342,
+      "positive_prevalence": 0.09047406590907103,
+      "auprc": 0.7476095650490316,
+      "auprc_over_prevalence": 8.263247125429293,
+      "auroc": 0.966813609134343,
+      "mean_per_complex_auprc": 0.7794918933568471,
+      "cluster_weighted_mean_per_complex_auprc": 0.739915418971828,
+      "cluster_bootstrap_ci95": [0.7179508810463177, 0.7605602623356261],
+      "cluster_count": 183,
+      "bootstrap_replicates": 10000,
+      "precision": 0.6215206283840463,
+      "recall": 0.7880487333204409,
+      "f1": 0.6949477723299936,
+      "mcc": 0.6663959697778044,
+      "brier": 0.05530623076083391,
+      "ece_15": 0.06868782866472811,
+      "threshold": 0.6611286401748657,
+      "temperature": 0.7359015941619873,
+      "calibration_regression": {
+        "converged": true,
+        "iterations": 6,
+        "intercept": -1.4986687305993147,
+        "slope": 1.1542752093909343
+      }
+    },
+    "partner_retrieval": {
+      "candidate_count_per_query": 32,
+      "chance_top1": 0.03125,
+      "fixed_antibody_wrong_antigen": {
+        "complex_count": 549,
+        "cluster_count": 184,
+        "top1": 0.12568306010928962,
+        "top1_over_chance": 4.021857923497268,
+        "mrr": 0.22086406326447613,
+        "median_cognate_rank": 16.0,
+        "complex_weighted_margin": 0.000309869183854647,
+        "cluster_weighted_margin": 0.0010737043104490278,
+        "cluster_bootstrap_ci95": [0.00005644339944128277, 0.0020419556951642914],
+        "bootstrap_replicates": 10000
+      },
+      "fixed_antigen_wrong_antibody": {
+        "complex_count": 549,
+        "cluster_count": 66,
+        "top1": 0.04007285974499089,
+        "top1_over_chance": 1.2823315118397085,
+        "mrr": 0.13391079173737186,
+        "median_cognate_rank": 18.0,
+        "complex_weighted_margin": -0.000089336467045609,
+        "cluster_weighted_margin": -0.00003774103112711907,
+        "cluster_bootstrap_ci95": [-0.0009397585602551077, 0.0008352099213229014],
+        "bootstrap_replicates": 10000
+      }
+    },
+    "same_antigen_antibody_swap": {
+      "focal_instance_count": 164,
+      "scored_ordered_pair_count": 1710,
+      "primary_exact_antigen_group_count": 20,
+      "primary_ordered_pair_count": 1293,
+      "high_overlap_secondary_ordered_pair_count": 417,
+      "ordered_pair_success_rate": 0.6040216550657386,
+      "ordered_pair_directed_assignment_success_rate": 0.018561484918793503,
+      "group_weighted": {
+        "alternate_target_auprc_gain": 0.0038361593858399186,
+        "alternate_target_topk_recall_gain": 0.01193412880072844,
+        "cognate_assignment_margin": 0.0055597609014013515,
+        "directed_assignment_margin": 0.0027672276498863753,
+        "epitope_map_mean_absolute_change": 0.03115756850045489,
+        "focal_target_auprc_change": -0.0016982959139328318,
+        "swapped_assignment_margin": -0.000025305601628599142,
+        "target_preference_shift": 0.005534455299772751
+      },
+      "group_bootstrap_ci95": {
+        "alternate_target_auprc_gain": [-0.005456707258952724, 0.013586043476859056],
+        "alternate_target_topk_recall_gain": [-0.004000391213209116, 0.02935940477033501],
+        "cognate_assignment_margin": [-0.004163677819041572, 0.016165186926097284],
+        "directed_assignment_margin": [-0.00626072723285633, 0.012482694236987887],
+        "epitope_map_mean_absolute_change": [0.02592918074088073, 0.03709694816787487],
+        "focal_target_auprc_change": [-0.011386977125311814, 0.007270814978781086],
+        "swapped_assignment_margin": [-0.010569387784282985, 0.01075265580527124],
+        "target_preference_shift": [-0.01252145446571266, 0.024965388473975773]
+      },
+      "bootstrap_replicates": 10000
+    },
+    "independent_monomer_se3_prediction_invariance": {
+      "passed": false,
+      "tolerance": 0.001,
+      "overall_max_absolute_probability_difference": 0.24979597330093384,
+      "contact_probability": {"prediction_count": 28432801, "mean_absolute_probability_difference": 0.0004030532438365098, "max_absolute_probability_difference": 0.24979597330093384},
+      "interaction_only_probability": {"prediction_count": 28432801, "mean_absolute_probability_difference": 0.0012896526948149123, "max_absolute_probability_difference": 0.22658498585224152},
+      "epitope_probability": {"prediction_count": 139215, "mean_absolute_probability_difference": 0.0010660237529233874, "max_absolute_probability_difference": 0.13852784037590027},
+      "paratope_probability": {"prediction_count": 114309, "mean_absolute_probability_difference": 0.0006408061091133509, "max_absolute_probability_difference": 0.14856940507888794}
+    }
+  },
+  "per_seed": {
+    "17": {
+      "contact": {"auprc": 0.014075638782719396, "auroc": 0.9469194858202777, "mean_per_complex_auprc": 0.028685952529437914, "precision": 0.024517237214670085, "recall": 0.07547091870456048, "f1": 0.03701115196450819, "mcc": 0.041593986747991175, "brier": 0.05604892546009348, "ece_15": 0.11115544567078181},
+      "epitope": {"auprc": 0.12777135288531616, "auroc": 0.6621147072265434, "mean_per_complex_auprc": 0.20307420286428887, "precision": 0.11799289464583268, "recall": 0.38233496332518335, "f1": 0.18033298897244313, "mcc": 0.10093383735206277, "brier": 0.18687105245273547, "ece_15": 0.3202076338138174},
+      "paratope": {"auprc": 0.6962395931905658, "auroc": 0.9611472046257215, "mean_per_complex_auprc": 0.7467913184329112, "precision": 0.6112454183888326, "recall": 0.7578804873332045, "f1": 0.6767105547161666, "mcc": 0.6453112578568474, "brier": 0.08560917689618525, "ece_15": 0.13307010380251444}
+    },
+    "42": {
+      "contact": {"auprc": 0.014595809833246286, "auroc": 0.9478759772072612, "mean_per_complex_auprc": 0.027152410862161618, "precision": 0.025794318664110406, "recall": 0.14561302048909452, "f1": 0.04382529558763194, "mcc": 0.05943144857874969, "brier": 0.032842294429954684, "ece_15": 0.06295923449086613},
+      "epitope": {"auprc": 0.12362224441234113, "auroc": 0.6753761648587757, "mean_per_complex_auprc": 0.21018872537077202, "precision": 0.11276556438204323, "recall": 0.6218418907905461, "f1": 0.19091108122478342, "mcc": 0.13165379455129841, "brier": 0.11502164100354705, "ece_15": 0.15276125521634873},
+      "paratope": {"auprc": 0.7077583464418067, "auroc": 0.962363431383272, "mean_per_complex_auprc": 0.7522001400675404, "precision": 0.5857930360756403, "recall": 0.8117385418681106, "f1": 0.6805009524581527, "mcc": 0.6537344767643968, "brier": 0.07151511786004977, "ece_15": 0.10297777952508207}
+    },
+    "73": {
+      "contact": {"auprc": 0.009087442330169726, "auroc": 0.8806965192979689, "mean_per_complex_auprc": 0.021361337634192692, "precision": 0.018109058269130077, "recall": 0.10000826173165896, "f1": 0.03066536624909752, "mcc": 0.04066867102829863, "brier": 0.006721659230783114, "ece_15": 0.01251756850631087},
+      "epitope": {"auprc": 0.10982435144633285, "auroc": 0.6211450473565103, "mean_per_complex_auprc": 0.17724025894709206, "precision": 0.09739816300747772, "recall": 0.5811939690301549, "f1": 0.1668372569089048, "mcc": 0.0895147655802839, "brier": 0.08362278015144389, "ece_15": 0.07295945923326816},
+      "paratope": {"auprc": 0.6841647718065698, "auroc": 0.9548877112441236, "mean_per_complex_auprc": 0.7419766266230092, "precision": 0.5894414690130069, "recall": 0.7449236124540708, "f1": 0.6581240389543823, "mcc": 0.6249804718844434, "brier": 0.04404630158186455, "ece_15": 0.006148520754316108}
+    },
+    "101": {
+      "contact": {"auprc": 0.014085505884093422, "auroc": 0.9426454764064629, "mean_per_complex_auprc": 0.025816102801880677, "precision": 0.025075072786305504, "recall": 0.06795274289491077, "f1": 0.036632483771475655, "mcc": 0.039940063549072306, "brier": 0.03696835199288744, "ece_15": 0.0712994175516095},
+      "epitope": {"auprc": 0.13234975517700456, "auroc": 0.6817017878459399, "mean_per_complex_auprc": 0.20781836391565195, "precision": 0.10812644145977479, "recall": 0.7307457212713936, "f1": 0.1883789639550916, "mcc": 0.14019331969518628, "brier": 0.13225406605835788, "ece_15": 0.19192525853854772},
+      "paratope": {"auprc": 0.6920459340376559, "auroc": 0.9614254938424084, "mean_per_complex_auprc": 0.7397217436453246, "precision": 0.608270794246404, "recall": 0.752368980854767, "f1": 0.6726895478516469, "mcc": 0.6407513684388572, "brier": 0.07020469933206265, "ece_15": 0.09781780733821771}
+    },
+    "137": {
+      "contact": {"auprc": 0.009460046074030455, "auroc": 0.908036529894848, "mean_per_complex_auprc": 0.020398179483677323, "precision": 0.017412516823687753, "recall": 0.06840713813615333, "f1": 0.02775915247418533, "mcc": 0.03289438529735097, "brier": 0.015853402632483984, "ece_15": 0.0294614923196973},
+      "epitope": {"auprc": 0.11160219431561103, "auroc": 0.6357855254383262, "mean_per_complex_auprc": 0.176647844160569, "precision": 0.09519784303723676, "recall": 0.6654441727791361, "f1": 0.16656679119225817, "mcc": 0.09507140266763109, "brier": 0.11371037386212056, "ece_15": 0.1390518398751559},
+      "paratope": {"auprc": 0.6832626220902569, "auroc": 0.9540740023875559, "mean_per_complex_auprc": 0.7155553882203692, "precision": 0.562208067940552, "recall": 0.7681299555211758, "f1": 0.6492317750898987, "mcc": 0.6176043100897501, "brier": 0.05722539648042259, "ece_15": 0.060318190124473904}
+    }
+  },
+  "intervention_delta_vs_clean": {
+    "coordinate_noise_0.1_angstrom": {
+      "contact_mean_per_complex_auprc": -0.00010647564644409441,
+      "contact_pooled_auprc": -0.0000781427986577439,
+      "epitope_pooled_auprc": 0.000007878278301287622,
+      "paratope_pooled_auprc": -0.00109607982651172,
+      "fixed_antibody_wrong_antigen_margin": -2.218086511528855e-7,
+      "fixed_antibody_wrong_antigen_mrr": -0.002032237617575261,
+      "fixed_antibody_wrong_antigen_top1": -0.0036429872495446214,
+      "fixed_antigen_wrong_antibody_margin": 0.00000851949578951002,
+      "fixed_antigen_wrong_antibody_mrr": -0.000005731698631550319,
+      "fixed_antigen_wrong_antibody_top1": 0.0018214936247723176
+    },
+    "coordinate_noise_0.25_angstrom": {
+      "contact_mean_per_complex_auprc": -0.00042024977849518946,
+      "contact_pooled_auprc": -0.00021687851190661106,
+      "epitope_pooled_auprc": 0.0000678514768236993,
+      "paratope_pooled_auprc": -0.0057316251647506755,
+      "fixed_antibody_wrong_antigen_margin": -0.00005311677799570841,
+      "fixed_antibody_wrong_antigen_mrr": -0.0019476432966261947,
+      "fixed_antibody_wrong_antigen_top1": -0.0036429872495446214,
+      "fixed_antigen_wrong_antibody_margin": -0.000005197531763864175,
+      "fixed_antigen_wrong_antibody_mrr": -0.012212816963672712,
+      "fixed_antigen_wrong_antibody_top1": -0.012750455373406192
+    },
+    "coordinate_noise_0.5_angstrom": {
+      "contact_mean_per_complex_auprc": -0.0013579486676623953,
+      "contact_pooled_auprc": -0.0008366321497262335,
+      "epitope_pooled_auprc": -0.0004921447380148436,
+      "paratope_pooled_auprc": -0.024262644056937677,
+      "fixed_antibody_wrong_antigen_margin": -0.00008237034154185818,
+      "fixed_antibody_wrong_antigen_mrr": -0.007748730580910773,
+      "fixed_antibody_wrong_antigen_top1": -0.012750455373406189,
+      "fixed_antigen_wrong_antibody_margin": 0.000010302425963309517,
+      "fixed_antigen_wrong_antibody_mrr": -0.013662596816774578,
+      "fixed_antigen_wrong_antibody_top1": -0.014571948998178503
+    },
+    "geometry_shuffle": {
+      "contact_mean_per_complex_auprc": -0.013085568844570426,
+      "contact_pooled_auprc": -0.005811589586300391,
+      "epitope_pooled_auprc": -0.01849236485464506,
+      "paratope_pooled_auprc": -0.13359260955177454,
+      "fixed_antibody_wrong_antigen_margin": -0.00001804507059871888,
+      "fixed_antibody_wrong_antigen_mrr": -0.021564495467483347,
+      "fixed_antibody_wrong_antigen_top1": -0.016393442622950824,
+      "fixed_antigen_wrong_antibody_margin": 0.0005126142726042981,
+      "fixed_antigen_wrong_antibody_mrr": -0.011287703957895384,
+      "fixed_antigen_wrong_antibody_top1": -0.010928961748633878
+    },
+    "degree_matched_graph_rewiring": {
+      "contact_mean_per_complex_auprc": -0.010907952382304908,
+      "contact_pooled_auprc": -0.004500184798690304,
+      "epitope_pooled_auprc": -0.01802638401105118,
+      "paratope_pooled_auprc": -0.081287519276524,
+      "fixed_antibody_wrong_antigen_margin": 0.00034165879965118197,
+      "fixed_antibody_wrong_antigen_mrr": -0.009014628030473065,
+      "fixed_antibody_wrong_antigen_top1": -0.010928961748633878,
+      "fixed_antigen_wrong_antibody_margin": 0.0007341873402294165,
+      "fixed_antigen_wrong_antibody_mrr": 0.0024245392964169776,
+      "fixed_antigen_wrong_antibody_top1": 0.0036429872495446283
+    },
+    "local_frame_corruption": {
+      "contact_mean_per_complex_auprc": -0.0029328841392266825,
+      "contact_pooled_auprc": -0.0018554703253356418,
+      "epitope_pooled_auprc": -0.0030473797979300443,
+      "paratope_pooled_auprc": -0.05299973850910844,
+      "fixed_antibody_wrong_antigen_margin": -0.00011225034573546287,
+      "fixed_antibody_wrong_antigen_mrr": -0.004805544407911616,
+      "fixed_antibody_wrong_antigen_top1": -0.009107468123861567,
+      "fixed_antigen_wrong_antibody_margin": -0.0000012548619786184725,
+      "fixed_antigen_wrong_antibody_mrr": -0.008439739793535628,
+      "fixed_antigen_wrong_antibody_top1": -0.00728597449908925
+    }
+  }
+}

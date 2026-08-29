@@ -1,0 +1,17 @@
+{
+  "array_job_id": 1472578,
+  "component_arms": {
+    "0": "baseline_current",
+    "1": "edge_topk2_supervised"
+  },
+  "cumulative_test_access_ordinal": 2,
+  "format_version": "sabdab2_task_routed_exposed_historical_submission_receipt_v1",
+  "fresh_blind_test": false,
+  "gpu_partition": "gpu_4090",
+  "historical_benchmark_only": true,
+  "old_test_previously_exposed": true,
+  "protocol_sha256": "c6d7a4f3ba3c9c0f273741608de53b1bb922ef00de62ecf5702397bbaa97d7ed",
+  "seed": 17,
+  "selection_performed_on_this_measurement": false,
+  "status": "SUBMITTED_PRECOMMITTED_EXPOSED_HISTORICAL_BATCH"
+}

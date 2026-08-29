@@ -1,0 +1,23 @@
+{
+  "adapter_builder_sha256": "9e2f961a785e2e01ff55dd987c290594df0dd87123b8fd047c3d9d5b6844c7da",
+  "analyzer_job_id": "1483895",
+  "analyzer_launcher_sha256": "b8b6a453460f23917010285c3b4308c25e9861662ad8a2c980113b81f162d456",
+  "analyzer_sha256": "9e03ef150200b9944a5e4fd26b938933b152d39beba0d5c0588b75938d092b94",
+  "base_campaign_failure_receipt_sha256": "87c2baf1deccb2c1eb6050027906c8f6f4f5c5e949f2c9b995820dbf88cca54e",
+  "contact_adapter_manifest_sha256": "d772a8dce8181d161318135a1bf4947506210363bb8ed3527bfa41dc7131ad88",
+  "contact_adapter_receipt_sha256": "426975feebdb5294b0fdbc45d31422fb3adbadc4d97b032958a38d19b050f1d9",
+  "dependency": "afterok:1483894",
+  "expert_protocol_sha256": "bf132f5a3aa1b783920e044022a68a79a7dc0c134af54d62ff911cdb6db43cb1",
+  "format_version": "sabdab2_predicted_geometry_contact_rebind_submission_receipt_v1",
+  "freezer_sha256": "4789342a71d56b0b5fbcb224ae9ad69d4031c6990fc2d1764771ccc7b5e05bc1",
+  "partition": "gpu_4090",
+  "recovery_campaign_sha256": "f68fa6c0a57ef9a14dc33a4078230baec1adfe55cc71562fd592b2d6d75398ed",
+  "scientific_protocol_changed": false,
+  "selection_or_tuning": false,
+  "structure_manifest_sha256": "bf6ea4a21ff303f5e0bbf0f8edca5d824cc5024ec6c41fea9213172c64a8f614",
+  "submitted_at": "2026-08-28T22:12:00+08:00",
+  "temporal_holdout_access": false,
+  "test_access": false,
+  "training_array": "1483894_[0-5]%6",
+  "training_launcher_sha256": "c1c94f86139e189323eef796d4deb391799faddad684f0a57071e51779324229"
+}
