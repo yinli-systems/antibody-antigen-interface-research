@@ -1,0 +1,26 @@
+{
+  "cumulative_test_access_ordinal": 2,
+  "failed_array_job_id": 1472578,
+  "failed_attempt_wrote_result": false,
+  "failed_recovery_array_job_id": 1472589,
+  "failed_recovery_stderr_sha256": {
+    "baseline_current": "c9a276b3c86a497a62bb54ca0e1fd1fb682e3c6befd2663d083a92aa81827019",
+    "edge_topk2_supervised": "c9a276b3c86a497a62bb54ca0e1fd1fb682e3c6befd2663d083a92aa81827019"
+  },
+  "failed_stderr_sha256": {
+    "baseline_current": "8a9c8c52e671c334eed887ecc04ae92604560cdb5079ef4ac959cf489647a78e",
+    "edge_topk2_supervised": "17d6f62871ab0fb09f2accb09e42b24dd51678883aad9fefb48d725fc46b2ac3"
+  },
+  "format_version": "sabdab2_task_routed_exposed_measurement_recovery_v2",
+  "measurement_attempt": 3,
+  "model_checkpoint_or_routing_changed": false,
+  "original_evaluator_sha256": "5380816388ee7ab8354590cabef549260c18a3b01b6dcf6c41519b03589c1467",
+  "original_protocol_sha256": "c6d7a4f3ba3c9c0f273741608de53b1bb922ef00de62ecf5702397bbaa97d7ed",
+  "recovery_scope": "Use the previously frozen zero-positive policy and remove only the redundant evaluate_partner_retrieval=True keyword because the robust evaluator always computes partner retrieval.",
+  "recovery_sbatch_sha256": "6e1b73e24006a90602f448197646dc4a98d7718b7c87bea97f00a6aaec23db2d",
+  "recovery_wrapper_sha256": "ab9dc90b8c939343c128ec1284a54fa5d47a94dafe15f799f348b747642293a9",
+  "robust_evaluation_source_sha256": "0f58e90596c540079196980cd2e604a470d759642d74e0d25732b8f4caa92722",
+  "selection_performed_on_this_measurement": false,
+  "split_candidates_thresholds_or_calibration_changed": false,
+  "status": "FROZEN_MEASUREMENT_ONLY_SIGNATURE_ADAPTER_RECOVERY"
+}

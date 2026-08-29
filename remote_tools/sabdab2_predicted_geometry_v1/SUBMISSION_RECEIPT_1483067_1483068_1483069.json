@@ -1,0 +1,35 @@
+{
+  "format_version": "sabdab2_predicted_geometry_recovery_submission_receipt_v1",
+  "status": "SUBMITTED_AFTER_AUDITED_CANONICAL_VIEW_RECOVERY",
+  "failed_prepare_job_id": "1482687",
+  "failed_prepare_stderr_sha256": "0c55a9d793ce2eca488b295bbe1519accba6afd0aa56eec14b66400dec6af0a6",
+  "failure_class": "stale_partial_exact_name_shadowed_complete_timestamp_suffixed_af3_recovery",
+  "source_predictions_modified": false,
+  "canonical_recovery_view": {
+    "record_count": 332,
+    "exact_canonical_name_count": 331,
+    "timestamp_suffixed_recovery_count": 1,
+    "manifest_sha256": "65268479b15c586d1da9e2eabcea283758af94972bc3763fef8304439232ab4e",
+    "receipt_sha256": "bbad4a07c4e934a620cda5bc57b34ac76d52ffd6afc3d8a209ca35764644c2c7"
+  },
+  "recovery_sources": {
+    "canonical_view_builder_sha256": "e8c839fcff99c0638d31b6b4be2c4c398d9f1ec30ee0610d2f6c8754200d0a70",
+    "recovery_protocol_freezer_sha256": "2ce582226e08626873a5434411c21def321120822bb1dceb0f1e76165d16c3c0",
+    "recovery_prepare_sbatch_sha256": "561d303fe9be43dcc1b9b4a0a6d7315359ecd74edd78f4205bdd841e09de1095"
+  },
+  "jobs": {
+    "prepare": "1483067",
+    "training_array": "1483068_[0-5]",
+    "analyzer": "1483069"
+  },
+  "dependencies": {
+    "training": "afterok:1483067",
+    "analyzer": "afterok:1483068"
+  },
+  "scientific_inputs_changed": false,
+  "model_or_checkpoint_changed": false,
+  "af3_inputs_or_seeds_changed": false,
+  "selection_or_tuning": false,
+  "test_access": false,
+  "temporal_holdout_access": false
+}

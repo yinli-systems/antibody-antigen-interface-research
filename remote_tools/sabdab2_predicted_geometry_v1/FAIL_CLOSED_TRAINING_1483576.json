@@ -1,0 +1,71 @@
+{
+  "analyzer_job_id": "1483577",
+  "analyzer_started": false,
+  "automatic_retry_performed": false,
+  "contact_cache_manifest_sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33",
+  "contact_cache_structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0",
+  "failed_array_job_id": "1483576",
+  "failed_tasks": [
+    {
+      "arm": "baseline",
+      "exit_code": "1:0",
+      "seed": 17,
+      "stderr_sha256": "249f145899c89d465bece3eeec59275f7bd2d08e5d1f3a85a35cc6c80550e084",
+      "task_id": 0
+    },
+    {
+      "arm": "baseline",
+      "exit_code": "1:0",
+      "seed": 29,
+      "stderr_sha256": "249f145899c89d465bece3eeec59275f7bd2d08e5d1f3a85a35cc6c80550e084",
+      "task_id": 1
+    },
+    {
+      "arm": "baseline",
+      "exit_code": "1:0",
+      "seed": 43,
+      "stderr_sha256": "249f145899c89d465bece3eeec59275f7bd2d08e5d1f3a85a35cc6c80550e084",
+      "task_id": 2
+    },
+    {
+      "arm": "edge_topk2_supervised",
+      "exit_code": "1:0",
+      "seed": 17,
+      "stderr_sha256": "9847aec3c17cae6f770cabf77b796b9716064768d8d02424336e620e9cd4dc8c",
+      "task_id": 3
+    },
+    {
+      "arm": "edge_topk2_supervised",
+      "exit_code": "1:0",
+      "seed": 29,
+      "stderr_sha256": "9847aec3c17cae6f770cabf77b796b9716064768d8d02424336e620e9cd4dc8c",
+      "task_id": 4
+    },
+    {
+      "arm": "edge_topk2_supervised",
+      "exit_code": "1:0",
+      "seed": 43,
+      "stderr_sha256": "9847aec3c17cae6f770cabf77b796b9716064768d8d02424336e620e9cd4dc8c",
+      "task_id": 5
+    }
+  ],
+  "failure_class": "CONTACT_STRUCTURE_AUTHORITY_MISMATCH",
+  "failure_message": "Contact and structure cache authorities differ",
+  "failure_phase": "dataset_initialization_before_training",
+  "observed_at": "2026-08-28T22:01:00+08:00",
+  "preparation": {
+    "exit_code": "0:0",
+    "job_id": "1483575",
+    "records": 3114,
+    "status": "PASS_DEVELOPMENT_ONLY_PREDICTED_STRUCTURE_CACHE",
+    "structure_cache_receipt_sha256": "e2a0e9e501d6a3982deacee722d79f50f7436343a6a3196c54919be7bc2cbe28",
+    "structure_manifest_sha256": "bf6ea4a21ff303f5e0bbf0f8edca5d824cc5024ec6c41fea9213172c64a8f614"
+  },
+  "reason": "The frozen contact-label cache authenticates the original experimental-structure manifest, while this sensitivity campaign intentionally supplies a new sequence-predicted structure manifest. The immutable loader correctly rejected this unbound authority pair before reading training samples.",
+  "recovery_requirement": "Freeze and audit an explicit provenance-preserving contact-label adapter that keeps every pair-label artifact unchanged while binding the development-only subset to the predicted-structure manifest; update the campaign authority and launcher before any resubmission.",
+  "selection_or_tuning": false,
+  "status": "FAIL_CLOSED_NEW_FAILURE_TYPE",
+  "temporal_holdout_access": false,
+  "test_access": false,
+  "training_updates_completed": 0
+}

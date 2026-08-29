@@ -1,0 +1,6 @@
+{
+  "format_version": "multitask_topk2_readout_protocol_receipt_v1",
+  "protocol_sha256": "9375c09dfd7c6bcdd8f0cb9d4cc9f49f70cd34dcecb9cb57652de14eee4542fd",
+  "evaluator_sha256": "e4199ed074292a5a1377bcefbbe5ea91d2f92a8f67412dd84978d98c30f24abf",
+  "launcher_sha256": "1a9a1d16c0323a460e426faf96a8dd63d879f41377f1a69788d20a97655d82bf"
+}
