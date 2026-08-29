@@ -1,0 +1,31 @@
+# SAbDab2 sequence-predicted-geometry development sensitivity
+
+This compact snapshot reports the frozen six-run, three-seed development
+sensitivity analysis in which sequence-predicted backbone geometry replaces
+experimental bound-complex coordinates at model input and inference.
+
+The routed median contact, epitope, and paratope mean-per-complex average
+precision values are `0.026726`, `0.243782`, and `0.688472`. Relative to the
+frozen bound-geometry development reference, the paired median changes are
+`-0.001548`, `+0.006660`, and `-0.023270`, respectively. The epitope changes by
+seed are `+0.007911`, `+0.006660`, and `-0.013012`, so this is a mixed
+development sensitivity result rather than an independent performance claim.
+
+## Evidence boundary
+
+- The 2,565/549 development split is unchanged, and the 549-complex validation
+  set is checkpoint-selection data rather than independent confirmation.
+- Experimental bound geometry is not used as model input and is not required
+  at inference.
+- Experimental bound geometry is still used for auxiliary distance
+  supervision during training. The experiment therefore does not establish a
+  fully structure-free training pipeline.
+- No old exposed SAbDab2 test or temporal holdout was loaded, and the
+  comparative result was not used for downstream protocol tuning or promotion.
+- Checkpoints, prediction structures, logs, pair-level outputs, and internal
+  filesystem paths are intentionally excluded from this public snapshot.
+
+The JSON files preserve the exact metrics, seeds, artifact hashes, selected
+epochs, and audit booleans. The `source_analysis_sha256` and
+`source_receipt_sha256` fields bind this sanitized public snapshot to the
+immutable internal analyzer outputs.
