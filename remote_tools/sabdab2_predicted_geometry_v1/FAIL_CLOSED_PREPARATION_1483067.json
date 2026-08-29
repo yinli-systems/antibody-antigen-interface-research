@@ -1,0 +1,39 @@
+{
+  "format_version": "sabdab2_predicted_geometry_preparation_failure_v1",
+  "created_at_utc": "2026-08-28T12:54:52Z",
+  "campaign_root": "/ssd/scxi253/model_deployment/results/development/sabdab2_sequence_predicted_geometry_development_v1",
+  "job": {
+    "job_id": "1483067",
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "elapsed": "00:22:26"
+  },
+  "failure": {
+    "stage": "development_predicted_structure_cache_materialization",
+    "exception_type": "CacheError",
+    "exception_message": "ranking_scores.csv is missing: /data/run01/scxi253/af3test/workdir/sabdab2_antibody_scxi5090_v2_5seed_20260716/output/pdb_00008jkf_h_l_fv_20260716_161034",
+    "stderr_path": "logs/prepare-recovery-1483067.err",
+    "stderr_sha256": "79300a15dacfd24901ab8da9e6521d072c9a1c7674f0bcf45c1d97a0be944982",
+    "failure_class": "paired_prediction_candidate_directory_schema_ambiguity"
+  },
+  "paired_prediction_root_audit": {
+    "root": "/data/run01/scxi253/af3test/workdir/sabdab2_antibody_scxi5090_v2_5seed_20260716/output",
+    "top_level_directory_count": 2669,
+    "directories_missing_exact_ranking_scores_csv": 7,
+    "offending_directory_has_prefixed_ranking_scores_csv": true,
+    "canonical_directory_exists": true,
+    "canonical_and_timestamped_top_model_sha256_equal": false
+  },
+  "effects": {
+    "structure_cache_committed": false,
+    "training_array_started": false,
+    "analyzer_started": false,
+    "test_access": false,
+    "temporal_holdout_access": false,
+    "automatic_retry_authorized": false
+  },
+  "dependent_jobs": {
+    "training_array": "1483068_[0-5]",
+    "analyzer": "1483069"
+  }
+}

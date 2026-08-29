@@ -1,0 +1,28 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "test_access": false
+  },
+  "format_version": "abpairfm_stage_a1_geometry_canary_audit_v1",
+  "gates": {
+    "contact_first_to_final_relative_reduction_at_least_0p02": false,
+    "distance_final_below_uniform_8_bin_cross_entropy": true,
+    "distance_first_to_final_relative_reduction_at_least_0p02": true
+  },
+  "loss": {
+    "contact": {
+      "final_10_active_update_mean": 0.49803441390395164,
+      "first_10_active_update_mean": 0.5008297599852085,
+      "relative_reduction": 0.005581429668515354
+    },
+    "distance": {
+      "final_10_active_update_mean": 1.8118523985147477,
+      "first_10_active_update_mean": 1.8650003373622894,
+      "relative_reduction": 0.028497549186886503,
+      "uniform_8_bin_cross_entropy": 2.0794415416798357
+    }
+  },
+  "result_sha256": "c22298330438b9de2cf720b1f35676be11776738375860b75d8706e0d1cfb547",
+  "status": "FAIL_STAGE_A1_GEOMETRY_CANARY_LEARNING_GATE",
+  "test_access": false
+}

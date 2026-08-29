@@ -1,0 +1,41 @@
+{
+  "claim_boundary": "Official-protocol five-fold training and development-selection freezing only. Held-out test scoring remains sealed and was not submitted by this repair.",
+  "fold_0": {
+    "best_epoch": 799,
+    "best_validation_joint_auprc": 0.39640797674655914,
+    "complete_epoch": 800,
+    "endpoint_validation_joint_auprc": 0.3958156332373619,
+    "held_out_evaluation_performed": false,
+    "main_job_id": 1457014,
+    "main_job_state": "COMPLETED"
+  },
+  "format_version": "mipe_800e_dependency_repair_v1",
+  "observed_at": "2026-08-22T17:52:44+08:00",
+  "remaining_folds_at_observation": {
+    "fold_1_epoch": 767,
+    "fold_2_epoch": 767,
+    "fold_3_epoch": 770,
+    "fold_4_epoch": 738
+  },
+  "repair": {
+    "cancelled_continuation_job_ids": [
+      1457029,
+      1457030,
+      1457031,
+      1457032
+    ],
+    "cancelled_test_job_id": 1457034,
+    "freeze_only_dependency": "afterok:1457019:1457020:1457021:1457022",
+    "freeze_only_job_id": 1459631,
+    "freeze_only_script_sha256": "375bfebdde7e773054c530cd39fc2998bd67ac30946d62157d2b876ce8d24f2d",
+    "test_scoring_submitted": false
+  },
+  "unnecessary_continuation_failure": {
+    "failure": "TypeError: RNG state must be a torch.ByteTensor",
+    "job_id": 1457028,
+    "job_state": "FAILED",
+    "published_training_state": false,
+    "reason": "The continuation restored checkpoint RNG before checking the existing epoch-800 COMPLETE marker; fold-0 training itself had already completed successfully."
+  },
+  "test_access": false
+}

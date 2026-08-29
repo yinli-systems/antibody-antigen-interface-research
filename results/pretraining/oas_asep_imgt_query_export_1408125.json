@@ -1,0 +1,115 @@
+{
+  "authorization": {
+    "fixed_imgt_search_authorized": false,
+    "large_scale_pretraining_authorized": false,
+    "reason": "The authenticated OAS target export/finalizer and both exact fixed-IMGT and independent gap-aware searches remain incomplete."
+  },
+  "claim_boundary": "Authenticated ANARCII numbering and exhaustive query classification for all 3,106 AsEP development heavy/light chains only. This receipt does not contain task labels, model predictions, an OAS overlap result, official/frozen/external test evidence, or authorization for OAS transfer or pretraining.",
+  "deployment": {
+    "archive_path": "/ssd/scxi253/model_deployment/artifacts/framecontact-imgt-a69ffd6.tar.gz",
+    "archive_sha256": "a306516d332da0fe806703aa7b17ebb6319744dd0a38f463a6f3e463b24d220f",
+    "module_sha256": "3462aaac6abec2ebbcb8d55120d7ddabc2050b98cf250663fc0fa7761ef9c32b",
+    "script_sha256": "67d37f827c3361a3006abae2f49dd9eed1f7e9880320a7fd665b45a285f7ea97",
+    "source_commit": "a69ffd647bbb44f5ebc189346eb0671f65def904",
+    "source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/imgt-query-source-a69ffd6"
+  },
+  "format_version": "oas_asep_development_imgt_query_execution_receipt_v1",
+  "job": {
+    "elapsed": "00:00:50",
+    "end": "2026-08-16T02:22:53+08:00",
+    "exit_code": "0:0",
+    "job_id": 1408125,
+    "node": "wqd10nbj01g3",
+    "start": "2026-08-16T02:22:03+08:00",
+    "state": "COMPLETED",
+    "stderr_bytes": 0
+  },
+  "output": {
+    "directory_mode": "0500",
+    "files": {
+      "EXPORT_RECEIPT.json": {
+        "bytes": 2140,
+        "mode": "0400",
+        "receipt_sha256": "477b96a511dbca2fbfcc99b336f5a56a1fb2ed64f630e7a1a96f2afd360d1e1f"
+      },
+      "imgt_query_manifest.json": {
+        "bytes": 1921891,
+        "mode": "0400",
+        "payload_receipt_sha256": "ffb5b030a128cd1cf2b5e1c177318e48dfdeb276b2751ef20754daf2cd2738d6",
+        "sha256": "72ca89c2b7a2969ca55f223919f9325f61457d687ac87e5857355d5012cbfe2d"
+      },
+      "queries.fasta": {
+        "bytes": 585458,
+        "mode": "0400",
+        "sha256": "bc2a2f90d6f4813d97b3e6b1cc2887b3b066a2b10fdc90e19094748cecb3e3da"
+      },
+      "queries.imgt.bin": {
+        "bytes": 741617,
+        "mode": "0400",
+        "sha256": "60fbf55b20940cd94a45f3681b86e951894d28ab6bab8cb95875b2e3019abe34"
+      },
+      "sequence_manifest.json": {
+        "bytes": 801182,
+        "mode": "0400",
+        "sha256": "4aed890340783eb52cccfc59bff91e03829868c7c79e74d7ccf2571d0457098d"
+      }
+    },
+    "root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/development-imgt-queries-a69ffd6"
+  },
+  "query_classification": {
+    "binary_record_bytes": 239,
+    "fixed_imgt_query_count": 3103,
+    "gap_aware_query_count": 3106,
+    "ordinal_partition_verified": true,
+    "outside_canonical_query_count": 3,
+    "outside_canonical_queries": [
+      {
+        "chain": "heavy",
+        "instance_id": "7ean_0P",
+        "query_ordinal": 565,
+        "reason": "outside_canonical_positions"
+      },
+      {
+        "chain": "heavy",
+        "instance_id": "3csy_2P",
+        "query_ordinal": 1539,
+        "reason": "outside_canonical_positions"
+      },
+      {
+        "chain": "heavy",
+        "instance_id": "4ydl_1P",
+        "query_ordinal": 1887,
+        "reason": "outside_canonical_positions"
+      }
+    ],
+    "output_hashes_verified": true,
+    "query_count": 3106
+  },
+  "runtime": {
+    "anarcii_version": "2.0.8",
+    "device": "cpu",
+    "python_version": "3.12.14",
+    "runtime_freeze_sha256": "b0dc97c1c6edb18de686edb8a8f424a246c3878cfe66929e4105d57914f05f7b",
+    "scheduler_reserved_gpu_count": 1,
+    "wheel_sha256": "6ac81caef04a9cad1af1ea320b35bdced620fe2bfdd0b8b17b98131495b584ca"
+  },
+  "supersedes": {
+    "failed_job_id": 1408085,
+    "failure": "A development heavy chain contained ANARCII IMGT position 122A, which is outside the frozen KA-Search 200-position vocabulary. The repaired exporter keeps the fixed vocabulary unchanged and routes every such complete query to the independent gap-aware sequence track."
+  },
+  "test_access": {
+    "development_sequence_fields_accessed": true,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "model_predictions_or_scores_accessed": false,
+    "official_test_accessed": false,
+    "task_label_values_used": false
+  },
+  "validation": {
+    "focused_oas_imgt_tests": {
+      "passed": 35,
+      "status": "PASSED"
+    },
+    "negative_control": "Rare insertion remains unrepresentable on the frozen 200-position vocabulary and is not silently projected or dropped."
+  }
+}

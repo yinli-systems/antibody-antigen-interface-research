@@ -1,0 +1,58 @@
+{
+  "architecture": {
+    "backbone_label": "ESM2_650M",
+    "embed_dimension": 1280,
+    "ffn_dimension": 5120,
+    "head_count": 20,
+    "layer_count": 33,
+    "unique_parameter_elements": 813371969,
+    "vocabulary_size": 33
+  },
+  "authorization": {
+    "frozen_development_contact_baseline": false,
+    "frozen_development_pair_mlm_baseline": true,
+    "frozen_development_retrieval_baseline": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "bytes": 3253773059,
+    "name": "mint.ckpt",
+    "sha256": "84a4016365997cd9f0bccb07d746fa8f076ffd8e45aa0cbcf4e50a037161a342"
+  },
+  "claim_boundary": "Read-only safe-unpickling, schema, shape, tied-weight, and multimer-branch audit of the pinned public MINT checkpoint. Compatibility authorizes only prospective frozen-development pair-MLM and retrieval baselines; contact evaluation requires the same frozen train-only adapter, and production training, test access, biological improvement, and SOTA claims remain closed.",
+  "compatibility": {
+    "architecture_compatible": true,
+    "expected_state_keys": 768,
+    "hyperparameters_match": true,
+    "missing_keys": [],
+    "multimer_attention": {
+      "projection_key_count": 198,
+      "self_vs_multimer_qkv_weight_pairs_different": 99,
+      "self_vs_multimer_qkv_weight_pairs_expected": 99
+    },
+    "normalized_state_keys": 768,
+    "pytorch_lightning_version": "1.9.5",
+    "shape_mismatches": {},
+    "state_parameter_elements_including_tied_duplicate": 813414209,
+    "tied_lm_head_duplicate_verified": true,
+    "unexpected_keys": [],
+    "unique_parameter_elements": 813371969
+  },
+  "format_version": "abpairfm_mint_650m_checkpoint_compatibility_summary_v1",
+  "materialization": {
+    "download_part_count": 8,
+    "download_worker_count": 8,
+    "etag": "ccb61dad424a05f48c50f66b4bbb6cd13ce449487cb93dab3aba20f8d0899655",
+    "pinned_revision": "75b1602c34e9df1a89089a1245f000a51ee3c746",
+    "status": "MATERIALIZED_NOT_NORMALIZED"
+  },
+  "provenance": {
+    "checkpoint_audit_receipt_sha256": "7f60a764d3001b1fd567d316a8cb0f6ce21a115db553d2ece8840f42b93a0f8b",
+    "materialization_receipt_sha256": "313b4b60e2f89d3eb1f4190212932b95ff1060cc7faf75a15af3b11a677eecae",
+    "official_source_revision": "06694b7606e2d00b76ec58daf5c7aecdaf7cd283",
+    "official_source_url": "https://github.com/VarunUllanat/mint"
+  },
+  "status": "PAIR_MLM_RETRIEVAL_COMPATIBLE_CONTACT_ADAPTER_PENDING",
+  "test_access": false
+}

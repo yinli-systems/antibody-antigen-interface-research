@@ -1,0 +1,18 @@
+{
+  "format_version": "antibody_four_gpu_scheduler_capacity_evidence_v1",
+  "observed_at": "2026-08-17T16:58:39+08:00",
+  "partition": "gpu_5090",
+  "job_id": "1428319",
+  "job_state": "PENDING",
+  "pending_reason": "Resources",
+  "scheduler_start_estimate": "2026-08-17T20:44:27+08:00",
+  "capacity": {
+    "total_nodes": 48,
+    "total_gpus": 384,
+    "available_gpus": 10,
+    "down_or_drain_nodes": 22,
+    "max_free_gpus_on_one_node": 2,
+    "nodes_with_four_free_gpus": 0
+  },
+  "claim_boundary": "Scheduler-capacity evidence only; no training, throughput, recovery, scientific, frozen, official, or external claim."
+}

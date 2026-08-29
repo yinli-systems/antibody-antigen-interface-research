@@ -1,0 +1,55 @@
+{
+  "authorization": {
+    "campaign_complete": false,
+    "downstream_transfer": false,
+    "next_segment_submission": true,
+    "scientific_claim": false,
+    "test_access": false
+  },
+  "campaign": "antibody_pretraining_rtx4090_30b_5f1f6ac_v1",
+  "claim_boundary": "Segment 19 completed its frozen training updates and passed only after measurement-only correction of the known stale validation-panel anchor. This is pretraining health evidence, not downstream ability evidence.",
+  "format_version": "antibody_30b_segment_recovery_summary_v1",
+  "jobs": {
+    "failed_training_job": {
+      "elapsed": "02:28:52",
+      "job_id": "1462573",
+      "state": "FAILED"
+    },
+    "measurement_only_recovery_job": {
+      "elapsed": "00:02:48",
+      "job_id": "1462574",
+      "state": "COMPLETED"
+    },
+    "successor_training_job": {
+      "job_id": "1462929",
+      "segment_index": 20,
+      "state_at_recording": "RUNNING"
+    },
+    "successor_watchdog_job": {
+      "job_id": "1462930",
+      "state_at_recording": "PENDING_DEPENDENCY"
+    }
+  },
+  "recovery": {
+    "corrected_panel_anchor": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "failure_scope": "STALE_VALIDATION_PANEL_ANCHOR_ONLY",
+    "stale_panel_anchor": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec"
+  },
+  "remote_audit": {
+    "path": "/ssd/scxi253/model_deployment/results/pretraining/antibody_pretraining_rtx4090_30b_5f1f6ac_v1/audits/segment-000019.json",
+    "sha256": "ebada0b2e6b19ecb4c5509bd5615239e2e97d526137dd85fd6ea07ea354990fb"
+  },
+  "segment": {
+    "artifact_file_count": 21,
+    "consumed_residue_tokens": 8623967319,
+    "immutable_artifact_manifest_verified": true,
+    "index": 19,
+    "next_update": 60000,
+    "validation_masked_accuracy": 0.8798002496878902,
+    "validation_masked_cross_entropy": 0.47142124624159143,
+    "validation_records": 8192,
+    "writable_artifact_paths": []
+  },
+  "status": "PASS_MEASUREMENT_ONLY_RECOVERY_AUDIT",
+  "test_access": false
+}

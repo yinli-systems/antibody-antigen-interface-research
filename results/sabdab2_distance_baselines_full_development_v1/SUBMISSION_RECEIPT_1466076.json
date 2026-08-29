@@ -1,0 +1,18 @@
+{
+  "format_version": "sabdab2_full_development_submission_receipt_v1",
+  "job_id": 1466076,
+  "partition": "gpu_4090",
+  "winner": "epiformer_style_same_protocol",
+  "seed": 17,
+  "train_count": 2565,
+  "validation_count": 549,
+  "test_loaded": false,
+  "protocol_sha256": "ce244ab5e677c2819ce4f4e9702568a54e3a094ebd89f1ac144fd73040748780",
+  "protocol_receipt_sha256": "e4dd5de3a89fb05e877db760edf0b45095872fe4881a07d643a6372bc9afc937",
+  "promotion_manifest_sha256": "e5474fc5d0f2b4a264e10e77c8af1876d7e84700950a1a5c0ac40ce687499d9d",
+  "launcher_sha256": "c8650242b145c4c8edb9f5b18b2931b3013c73317cee328294e2993a7aa64817",
+  "source_manifest_sha256": "1f776a12869fcf6a32e145bbcc44c579cdec0fe97460ce74a168a8035a4bff68",
+  "full_split_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+  "submission_state": "RUNNING",
+  "authority_preflight": "PASS"
+}

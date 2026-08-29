@@ -1,0 +1,19 @@
+{
+  "format_version": "framecontact_asep_joint_coupling_ratio_receipt_v1",
+  "protocol_file": "framecontact_asep_joint_coupling_ratio_v1.json",
+  "protocol_file_sha256": "9fa37da7a62ba16bef479f4081252ec7e11fa1afc6aea15365c1194b19f4f24f",
+  "official_test_used_for_selection": false,
+  "official_test_scores_read_for_this_protocol": false,
+  "frozen_test_used_for_selection": false,
+  "external_test_used_for_selection": false,
+  "claim_boundary": "AsEP epitope-to-antigen surface-ratio development-validation only; no frozen, official, or external test role is opened.",
+  "matrix": [
+    "framecontact_joint_a0_pair_only",
+    "framecontact_joint_a1_noisy_or",
+    "framecontact_joint_a2_independent_heads",
+    "framecontact_joint_a3_coupled_heads",
+    "framecontact_joint_a4_coupled_soft_crop",
+    "framecontact_joint_a5_graph_spatial"
+  ],
+  "seeds": [17, 42, 73, 101, 137]
+}

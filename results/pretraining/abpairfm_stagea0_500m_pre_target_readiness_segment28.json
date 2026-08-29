@@ -1,0 +1,31 @@
+{
+  "authorization": {
+    "development_pair_retrieval": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "candidate": {
+    "git_commit": "2205f62",
+    "path": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/source_candidates/2205f62",
+    "read_only": true,
+    "source_sha256": "e62b0ba84dc5d94c7fbce7dd3e68b99909677aba6a7f7597f5719712bbe8f540"
+  },
+  "checkpoint": {
+    "consumed_residue_tokens": 458217660,
+    "content_sha256": "d0ca7975071eedaf38b7e3d18ad3626241d276dc357d5b7e624af18e64da52d3",
+    "dcp_receipt_verified": true,
+    "generation": "segment-000028",
+    "status": "PASS_CHECKPOINT_VERIFIED"
+  },
+  "claim_boundary": "Pre-target readiness check only. No transfer probe was submitted and no development prediction or test role was opened.",
+  "duplicate_submission_absent": true,
+  "format_version": "abpairfm_checkpoint_ladder_pre_target_readiness_v1",
+  "helper_result": "NO_FROZEN_TOKEN_TARGET_REACHED",
+  "observed_at_utc": "2026-08-23T03:13:22Z",
+  "protocol_sha256": "57d5049b67795079b4b20eb37ed18b8026fd35f05e5a06991dcab732a96b1809",
+  "status": "PASS_PRE_TARGET_READINESS",
+  "target": {
+    "distance_residue_tokens": 41782340,
+    "residue_tokens": 500000000
+  }
+}

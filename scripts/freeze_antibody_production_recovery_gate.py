@@ -81,8 +81,67 @@ def freeze_gate(
             independent_audit_payload_sha256
         ),
     )
-    if len(corpus) <= 0:
-        raise GateFreezeError("Audited production training split is empty")
+    try:
+        corpus_length = len(corpus)
+        if corpus_length <= 0:
+            raise GateFreezeError("Audited production training split is empty")
+        counts = corpus.manifest.get("counts")
+        if not isinstance(counts, dict):
+            raise GateFreezeError("Audited corpus accounting is absent")
+    finally:
+        corpus.close()
+
+    def positive_integer(name: str) -> int:
+        value = counts.get(name)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise GateFreezeError("Audited corpus count is invalid: " + name)
+        return value
+
+    def nonnegative_integer(name: str) -> int:
+        value = counts.get(name)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise GateFreezeError("Audited corpus count is invalid: " + name)
+        return value
+
+    train_records = positive_integer("unique_train_records")
+    validation_records = positive_integer("unique_validation_records")
+    train_residue_tokens = positive_integer("unique_train_residue_tokens")
+    validation_residue_tokens = positive_integer(
+        "unique_validation_residue_tokens"
+    )
+    excluded_train_records = nonnegative_integer(
+        "decontamination_excluded_train_records"
+    )
+    excluded_validation_records = nonnegative_integer(
+        "decontamination_excluded_validation_records"
+    )
+    source_train_records = positive_integer("decontamination_source_train_records")
+    source_validation_records = positive_integer(
+        "decontamination_source_validation_records"
+    )
+    excluded_train_residue_tokens = nonnegative_integer(
+        "decontamination_excluded_train_residue_tokens"
+    )
+    excluded_validation_residue_tokens = nonnegative_integer(
+        "decontamination_excluded_validation_residue_tokens"
+    )
+    source_train_residue_tokens = positive_integer(
+        "decontamination_source_train_residue_tokens"
+    )
+    source_validation_residue_tokens = positive_integer(
+        "decontamination_source_validation_residue_tokens"
+    )
+    if (
+        train_records != corpus_length
+        or source_train_records != train_records + excluded_train_records
+        or source_validation_records
+        != validation_records + excluded_validation_records
+        or source_train_residue_tokens
+        != train_residue_tokens + excluded_train_residue_tokens
+        or source_validation_residue_tokens
+        != validation_residue_tokens + excluded_validation_residue_tokens
+    ):
+        raise GateFreezeError("Audited corpus decontamination accounting differs")
     implementation = {}
     for relative in IMPLEMENTATION_FILES:
         path = source_root / relative
@@ -93,6 +152,7 @@ def freeze_gate(
     training_protocol = source_root / "protocols/antibody_training_v1.json"
     efficiency_protocol = source_root / "protocols/antibody_efficiency_gate_v1.json"
     auditor = source_root / "scripts/audit_antibody_production_loader_recovery.py"
+    freezer = source_root / "scripts/freeze_antibody_production_recovery_gate.py"
     inputs = {
         "efficiency_protocol_file_sha256": _file_sha256(efficiency_protocol),
         "independent_audit_file_sha256": independent_audit_file_sha256,
@@ -130,6 +190,7 @@ def freeze_gate(
 
     return {
         "auditor_sha256": _file_sha256(auditor),
+        "freezer_sha256": _file_sha256(freezer),
         "authorization": {
             "loader_recovery_gate": True,
             "production_pretraining": False,
@@ -141,10 +202,20 @@ def freeze_gate(
             "gate; no production pretraining, scale, biological, or SOTA claim"
         ),
         "corpus": {
-            "train_record_count": len(corpus),
-            "validation_record_count": corpus.manifest["counts"][
-                "unique_validation_records"
-            ],
+            "decontamination_excluded_train_records": excluded_train_records,
+            "decontamination_excluded_train_residue_tokens": (
+                excluded_train_residue_tokens
+            ),
+            "decontamination_excluded_validation_records": (
+                excluded_validation_records
+            ),
+            "decontamination_excluded_validation_residue_tokens": (
+                excluded_validation_residue_tokens
+            ),
+            "train_record_count": train_records,
+            "train_residue_token_count": train_residue_tokens,
+            "validation_record_count": validation_records,
+            "validation_residue_token_count": validation_residue_tokens,
         },
         "execution": {
             "backend": "ddp",

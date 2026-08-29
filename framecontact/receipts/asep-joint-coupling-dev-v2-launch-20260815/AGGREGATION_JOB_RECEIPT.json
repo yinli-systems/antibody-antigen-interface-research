@@ -1,0 +1,20 @@
+{
+  "format_version": "framecontact_asep_joint_coupling_dev_v2_aggregation_job_receipt_v1",
+  "recorded_at_utc": "2026-08-14T23:04:21Z",
+  "training_array_job_id": "1406631",
+  "aggregation_job_id": "1406674",
+  "dependency": "afterok:1406631_*",
+  "observed_state_at_receipt": "PENDING_DEPENDENCY",
+  "deployed_git_commit": "5aa7322bd30df747a0af66e4a1fff53d9913ec8a",
+  "deployment_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/joint-coupling-analysis-5aa7322",
+  "aggregation_script_sha256": "6927efe935faa7de06ba5b3b1a099df60d1b1cad6f50e507ec6cb1724c4d36d6",
+  "slurm_script_sha256": "e11c790cc3454369cbc6529506a14100395e7a63e1ce86799d188bf2137be436",
+  "protocol_sha256": "08a23cc2072198d15fc5e80d2374f1fde6b77c0ca05975b246436acdc10211d9",
+  "protocol_receipt_sha256": "d4f63d7b75b3eaa6d90be70cd55663831868dbca1a3f87b38d9b39be11ac04cb",
+  "bootstrap_resamples": 50000,
+  "selection_role": "development_validation_only",
+  "official_test_loaded": false,
+  "frozen_test_loaded": false,
+  "external_test_loaded": false,
+  "claim_boundary": "The job runs only if every member of the preregistered 30-run development array succeeds. It authenticates existing selected development checkpoints and does not reselect models or read official, frozen, or external test artifacts."
+}

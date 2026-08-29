@@ -1,0 +1,11 @@
+--- a/scripts/run_abpairfm_3b_stage_a0_segment.py
++++ b/scripts/run_abpairfm_3b_stage_a0_segment.py
+@@ -115,7 +115,7 @@
+ def _validate(arguments: argparse.Namespace) -> None:
+     if arguments.expected_world_size != 4 or arguments.shard_group_size != 4:
+         raise ValueError("The frozen canary requires a 4-GPU FSDP mesh")
+-    if arguments.microbatch_pairs != 7 or arguments.accumulation_steps != 4:
++    if arguments.microbatch_pairs != 4 or arguments.accumulation_steps != 7:
+         raise ValueError("The frozen canary must preserve the 112-pair global update")
+     if arguments.updates != 20 or arguments.maximum_tokens != 1024:
+         raise ValueError("The frozen canary requires 20 real updates at 1K tokens")

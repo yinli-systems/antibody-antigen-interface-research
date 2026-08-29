@@ -1,0 +1,672 @@
+--- a/src/interaction_first/framecontact.py
++++ b/src/interaction_first/framecontact.py
+@@ -282,6 +282,7 @@
+         num_heads: int,
+         *,
+         dropout: float = 0.0,
++        contact_gate_mode: str = "learned",
+     ) -> None:
+         _require_torch()
+         super().__init__()
+@@ -291,6 +292,9 @@
+             raise ValueError("d_model must be divisible by num_heads")
+         self.d_model = d_model
+         self.num_heads = num_heads
++        if contact_gate_mode not in {"learned", "content_only"}:
++            raise ValueError("contact_gate_mode must be learned or content_only")
++        self.contact_gate_mode = contact_gate_mode
+         self.head_dim = d_model // num_heads
+         self.query_norm = nn.LayerNorm(d_model)
+         self.partner_norm = nn.LayerNorm(d_model)
+@@ -331,7 +335,15 @@
+         content_logits = content_logits / math.sqrt(self.head_dim)
+         contact_log_probability = functional.logsigmoid(contact_logits)
+         contact_scale = functional.softplus(self.contact_scale_unconstrained)
+-        logits = content_logits + contact_scale[None, :, None, None] * contact_log_probability[:, None]
++        logits = content_logits
++        if self.contact_gate_mode == "learned":
++            logits = (
++                logits
++                + contact_scale[None, :, None, None]
++                * contact_log_probability[:, None]
++            )
++        else:
++            contact_scale = torch.zeros_like(contact_scale)
+         attention_mask = pair_mask[:, None]
+         logits = logits.masked_fill(~attention_mask, torch.finfo(logits.dtype).min)
+         attention = torch.softmax(logits, dim=-1)
+@@ -367,14 +379,27 @@
+ class BidirectionalContactGatedCrossAttention(_ModuleBase):
+     """Distinct antibody<-antigen and antigen<-antibody cross-attention."""
+ 
+-    def __init__(self, d_model: int, num_heads: int, *, dropout: float = 0.0) -> None:
++    def __init__(
++        self,
++        d_model: int,
++        num_heads: int,
++        *,
++        dropout: float = 0.0,
++        contact_gate_mode: str = "learned",
++    ) -> None:
+         _require_torch()
+         super().__init__()
+         self.antibody_from_antigen = ContactGatedCrossAttention(
+-            d_model, num_heads, dropout=dropout
++            d_model,
++            num_heads,
++            dropout=dropout,
++            contact_gate_mode=contact_gate_mode,
+         )
+         self.antigen_from_antibody = ContactGatedCrossAttention(
+-            d_model, num_heads, dropout=dropout
++            d_model,
++            num_heads,
++            dropout=dropout,
++            contact_gate_mode=contact_gate_mode,
+         )
+ 
+     def forward(
+@@ -456,6 +481,7 @@
+         pair_dim: int | None = None,
+         dropout: float = 0.1,
+         fusion_mode: str = "late",
++        cross_attention_contact_gate_mode: str = "learned",
+     ) -> None:
+         _require_torch()
+         super().__init__()
+@@ -505,14 +531,20 @@
+             )
+             self.interleaved_cross_attentions = nn.ModuleList(
+                 BidirectionalContactGatedCrossAttention(
+-                    d_model, num_heads, dropout=dropout
++                    d_model,
++                    num_heads,
++                    dropout=dropout,
++                    contact_gate_mode=cross_attention_contact_gate_mode,
+                 )
+                 for _ in range(num_self_layers)
+             )
+         self.contact_head = PairContactHead(d_model, pair_dim)
+         self.cross_attention = (
+             BidirectionalContactGatedCrossAttention(
+-                d_model, num_heads, dropout=dropout
++                d_model,
++                num_heads,
++                dropout=dropout,
++                contact_gate_mode=cross_attention_contact_gate_mode,
+             )
+             if fusion_mode == "late"
+             else None
+--- a/src/interaction_first/framecontact_objective.py
++++ b/src/interaction_first/framecontact_objective.py
+@@ -25,7 +25,13 @@
+     return torch
+ 
+ 
+-def balanced_binary_loss_per_complex(logits: Any, labels: Any, mask: Any) -> Any:
++def balanced_binary_loss_per_complex(
++    logits: Any,
++    labels: Any,
++    mask: Any,
++    *,
++    focal_gamma: float = 0.0,
++) -> Any:
+     """Give every complex and each class equal mass before averaging."""
+     torch_module = _require_torch()
+     if (
+@@ -48,9 +54,21 @@
+         negative = observed_labels == 0
+         class_losses = []
+         if bool(positive.any()):
+-            class_losses.append(functional.softplus(-observed_logits[positive]).mean())
++            positive_logits = observed_logits[positive]
++            positive_loss = functional.softplus(-positive_logits)
++            if focal_gamma > 0:
++                positive_loss = positive_loss * torch_module.sigmoid(
++                    -positive_logits
++                ).pow(focal_gamma)
++            class_losses.append(positive_loss.mean())
+         if bool(negative.any()):
+-            class_losses.append(functional.softplus(observed_logits[negative]).mean())
++            negative_logits = observed_logits[negative]
++            negative_loss = functional.softplus(negative_logits)
++            if focal_gamma > 0:
++                negative_loss = negative_loss * torch_module.sigmoid(
++                    negative_logits
++                ).pow(focal_gamma)
++            class_losses.append(negative_loss.mean())
+         if not class_losses:
+             raise ValueError("each complex must contain at least one observed label")
+         # Average over classes that are actually observed in this complex. Most
+@@ -58,6 +76,46 @@
+         # rare zero-contact complex receives a well-defined negative-only BCE
+         # instead of crashing or fabricating a positive residue pair.
+         losses.append(torch_module.stack(class_losses).mean())
++    return torch_module.stack(losses).mean()
++
++
++def soft_dice_loss_per_complex(logits: Any, labels: Any, mask: Any) -> Any:
++    """Soft Dice on each complex, then equal-complex averaging."""
++    torch_module = _require_torch()
++    if (
++        tuple(logits.shape) != tuple(labels.shape)
++        or tuple(logits.shape) != tuple(mask.shape)
++    ):
++        raise ValueError("logits, labels, and mask must have identical shapes")
++    losses = []
++    for batch_index in range(int(logits.shape[0])):
++        local_mask = mask[batch_index]
++        probabilities = torch_module.sigmoid(logits[batch_index][local_mask])
++        targets = labels[batch_index][local_mask].to(probabilities.dtype)
++        if probabilities.numel() == 0:
++            raise ValueError("each complex must contain at least one observed label")
++        numerator = 2.0 * (probabilities * targets).sum() + 1e-6
++        denominator = probabilities.sum() + targets.sum() + 1e-6
++        losses.append(1.0 - numerator / denominator)
++    return torch_module.stack(losses).mean()
++
++
++def prevalence_loss_per_complex(logits: Any, labels: Any, mask: Any) -> Any:
++    """Match predicted and observed positive fractions without length bias."""
++    torch_module = _require_torch()
++    if (
++        tuple(logits.shape) != tuple(labels.shape)
++        or tuple(logits.shape) != tuple(mask.shape)
++    ):
++        raise ValueError("logits, labels, and mask must have identical shapes")
++    losses = []
++    for batch_index in range(int(logits.shape[0])):
++        local_mask = mask[batch_index]
++        probabilities = torch_module.sigmoid(logits[batch_index][local_mask])
++        targets = labels[batch_index][local_mask].to(probabilities.dtype)
++        if probabilities.numel() == 0:
++            raise ValueError("each complex must contain at least one observed label")
++        losses.append((probabilities.mean() - targets.mean()).abs())
+     return torch_module.stack(losses).mean()
+ 
+ 
+@@ -117,6 +175,9 @@
+         specificity_margin: float = 0.05,
+         score_fraction: float = 0.01,
+         specificity_score_source: str = "interaction_only",
++        contact_focal_gamma: float = 0.0,
++        epitope_dice_weight: float = 0.0,
++        epitope_count_weight: float = 0.0,
+     ) -> None:
+         _require_torch()
+         super().__init__()
+@@ -133,6 +194,16 @@
+         self.specificity_margin = float(specificity_margin)
+         self.score_fraction = float(score_fraction)
+         self.specificity_score_source = specificity_score_source
++        for name, value in (
++            ("contact_focal_gamma", contact_focal_gamma),
++            ("epitope_dice_weight", epitope_dice_weight),
++            ("epitope_count_weight", epitope_count_weight),
++        ):
++            if not math.isfinite(float(value)) or float(value) < 0:
++                raise ValueError(f"{name} must be finite and nonnegative")
++        self.contact_focal_gamma = float(contact_focal_gamma)
++        self.epitope_dice_weight = float(epitope_dice_weight)
++        self.epitope_count_weight = float(epitope_count_weight)
+ 
+     def _specificity_logits(self, output: Mapping[str, Any]) -> Any:
+         if self.specificity_score_source == "total_contact":
+@@ -158,17 +229,33 @@
+             cognate_output["contact_logits"],
+             cognate_batch["pair_labels"],
+             cognate_output["pair_candidate_mask"],
++            focal_gamma=self.contact_focal_gamma,
+         )
+         paratope_loss = balanced_binary_loss_per_complex(
+             cognate_output["paratope_logits"],
+             cognate_batch["antibody_labels"],
+             cognate_output["antibody_mask"],
+         )
+-        epitope_loss = balanced_binary_loss_per_complex(
++        epitope_bce_loss = balanced_binary_loss_per_complex(
+             cognate_output["epitope_logits"],
+             cognate_batch["antigen_labels"],
+             cognate_output["antigen_mask"],
+         )
++        epitope_dice_loss = soft_dice_loss_per_complex(
++            cognate_output["epitope_logits"],
++            cognate_batch["antigen_labels"],
++            cognate_output["antigen_mask"],
++        )
++        epitope_count_loss = prevalence_loss_per_complex(
++            cognate_output["epitope_logits"],
++            cognate_batch["antigen_labels"],
++            cognate_output["antigen_mask"],
++        )
++        epitope_loss = (
++            epitope_bce_loss
++            + self.epitope_dice_weight * epitope_dice_loss
++            + self.epitope_count_weight * epitope_count_loss
++        )
+         if wrong_partner_output is not None and wrong_partner_outputs is not None:
+             raise ValueError(
+                 "provide wrong_partner_output or wrong_partner_outputs, not both"
+@@ -224,6 +311,9 @@
+             "contact_loss": contact_loss,
+             "paratope_loss": paratope_loss,
+             "epitope_loss": epitope_loss,
++            "epitope_bce_loss": epitope_bce_loss,
++            "epitope_dice_loss": epitope_dice_loss,
++            "epitope_count_loss": epitope_count_loss,
+             "specificity_loss": specificity_loss,
+             "mean_cognate_compatibility": cognate_score.mean(),
+             "mean_wrong_compatibility": (
+@@ -281,6 +371,8 @@
+     "FrameContactLossWeights",
+     "FrameContactObjective",
+     "ValidationTemperatureScaler",
++    "prevalence_loss_per_complex",
++    "soft_dice_loss_per_complex",
+     "balanced_binary_loss_per_complex",
+     "top_fraction_contact_score",
+ ]
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -118,8 +118,19 @@
+         "geometry": True,
+         "cross": True,
+         "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "learned",
++    },
++    "framecontact_unconditioned_interleaved": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
+     },
+ }
++for _experiment in EXPERIMENTS.values():
++    _experiment.setdefault("cross_attention_contact_gate_mode", "learned")
+ 
+ 
+ def _sigmoid_numpy(values: np.ndarray) -> np.ndarray:
+@@ -180,6 +191,9 @@
+     parser.add_argument("--specificity-loss-weight", type=float, default=0.25)
+     parser.add_argument("--specificity-margin", type=float, default=0.05)
+     parser.add_argument("--score-fraction", type=float, default=0.01)
++    parser.add_argument("--contact-focal-gamma", type=float, default=0.0)
++    parser.add_argument("--epitope-dice-weight", type=float, default=0.0)
++    parser.add_argument("--epitope-count-weight", type=float, default=0.0)
+     parser.add_argument("--calibration-max-pairs", type=int, default=2_000_000)
+     parser.add_argument(
+         "--offload-saved-tensors",
+@@ -399,6 +413,9 @@
+         "precision": "precision",
+         "calibration_max_pairs": "calibration_max_pairs",
+         "offload_saved_tensors": "offload_saved_tensors",
++        "contact_focal_gamma": "contact_focal_gamma",
++        "epitope_dice_weight": "epitope_dice_weight",
++        "epitope_count_weight": "epitope_count_weight",
+     }
+     for argument_name, protocol_name in fields.items():
+         observed = getattr(arguments, argument_name)
+@@ -615,6 +632,96 @@
+     with torch.enable_grad():
+         temperature = scaler.fit(logits_tensor, labels_tensor, mask)
+     return temperature, len(logits_for_fit)
++
++
++@torch.no_grad()
++def _evaluate_partner_panel(
++    model: FrameContactModel,
++    dataset: Any,
++    panel: dict[str, Any],
++    device: torch.device,
++    *,
++    correct_scores: Mapping[str, float],
++    use_bf16: bool,
++    evaluation_batch_size: int,
++    score_fraction: float,
++    specificity_score_source: str,
++    specificity_temperature: float,
++    batch_intervention: Callable[[dict[str, Any]], dict[str, Any]] | None,
++) -> dict[str, Any]:
++    index_by_id = {
++        record["instance_id"]: index for index, record in enumerate(dataset.records)
++    }
++    panel_entries = panel["entries"]
++    if set(index_by_id) != {entry["instance_id"] for entry in panel_entries}:
++        raise ValueError("Validation panel and validation dataset identifiers differ")
++    structure_collator = Sabdab2StructureBatchCollator()
++    ordered_entries = sorted(panel_entries, key=lambda value: value["instance_id"])
++    item_by_id = {
++        identifier: dataset[index]
++        for identifier, index in sorted(index_by_id.items())
++    }
++    if panel.get("format_version") == RECIPROCAL_PARTNER_PANEL_FORMAT:
++        direction_specs = {
++            "fixed_antibody_wrong_antigen": (
++                "wrong_antigen_instance_ids",
++                _wrong_antigen_pair_item,
++                "antibody_cluster_id",
++            ),
++            "fixed_antigen_wrong_antibody": (
++                "wrong_antibody_instance_ids",
++                _wrong_antibody_pair_item,
++                "antigen_cluster_id",
++            ),
++        }
++    else:
++        direction_specs = {
++            "fixed_antibody_wrong_antigen": (
++                "wrong_partner_instance_ids",
++                _wrong_antigen_pair_item,
++                "antigen_cluster_id",
++            )
++        }
++    retrieval_by_direction = {}
++    for direction, (entry_key, item_builder, cluster_key) in direction_specs.items():
++        wrong_scores: list[list[float]] = []
++        cognate_scores: list[float] = []
++        cluster_ids: list[str] = []
++        for entry in ordered_entries:
++            focal = item_by_id[entry["instance_id"]]
++            wrong_items = [
++                item_builder(focal, item_by_id[identifier])
++                for identifier in entry[entry_key]
++            ]
++            local_scores: list[float] = []
++            for start in range(0, len(wrong_items), evaluation_batch_size):
++                raw_wrong = structure_collator(
++                    wrong_items[start : start + evaluation_batch_size]
++                )
++                wrong_batch = _move_batch(raw_wrong, device)
++                if batch_intervention is not None:
++                    wrong_batch = batch_intervention(wrong_batch)
++                with _autocast(device, use_bf16):
++                    wrong_output = model(wrong_batch)
++                score_logits = (
++                    wrong_output["contact_interaction_logits"]
++                    if specificity_score_source == "interaction_only"
++                    else wrong_output["contact_logits"]
++                )
++                scores = top_fraction_contact_score(
++                    score_logits.float(),
++                    wrong_output["pair_candidate_mask"],
++                    fraction=score_fraction,
++                    temperature=specificity_temperature,
++                )
++                local_scores.extend(scores.cpu().tolist())
++            cognate_scores.append(float(correct_scores[entry["instance_id"]]))
++            wrong_scores.append(local_scores)
++            cluster_ids.append(entry[cluster_key])
++        retrieval_by_direction[direction] = partner_retrieval_metrics(
++            cognate_scores, wrong_scores, cluster_ids
++        )
++    return retrieval_by_direction
+ 
+ 
+ @torch.no_grad()
+@@ -631,6 +738,7 @@
+     seed: int,
+     calibration_max_pairs: int,
+     specificity_score_source: str,
++    evaluate_partner_retrieval: bool = True,
+     collect_attention: bool = False,
+     frozen_calibration: Mapping[str, float] | None = None,
+     batch_intervention: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+@@ -759,87 +867,31 @@
+         for identifier, values in top_specificity_logits_by_instance.items()
+     }
+ 
+-    index_by_id = {
+-        record["instance_id"]: index for index, record in enumerate(dataset.records)
+-    }
+-    panel_entries = panel["entries"]
+-    if set(index_by_id) != {entry["instance_id"] for entry in panel_entries}:
+-        raise ValueError("Validation panel and validation dataset identifiers differ")
+-    structure_collator = Sabdab2StructureBatchCollator()
+-    ordered_entries = sorted(panel_entries, key=lambda value: value["instance_id"])
+-    # Every validation complex appears repeatedly across the reciprocal panel.
+-    # Cache each authenticated item once per evaluation so a 31x2 panel does
+-    # not re-hash and deserialize the same structure/embedding files tens of
+-    # thousands of times. The cache is local to this call and contains no test
+-    # role or predictions.
+-    item_by_id = {
+-        identifier: dataset[index]
+-        for identifier, index in sorted(index_by_id.items())
+-    }
+-    if panel.get("format_version") == RECIPROCAL_PARTNER_PANEL_FORMAT:
+-        direction_specs = {
+-            "fixed_antibody_wrong_antigen": (
+-                "wrong_antigen_instance_ids",
+-                _wrong_antigen_pair_item,
+-                "antibody_cluster_id",
+-            ),
+-            "fixed_antigen_wrong_antibody": (
+-                "wrong_antibody_instance_ids",
+-                _wrong_antibody_pair_item,
+-                "antigen_cluster_id",
+-            ),
+-        }
+-    else:
+-        direction_specs = {
+-            "fixed_antibody_wrong_antigen": (
+-                "wrong_partner_instance_ids",
+-                _wrong_antigen_pair_item,
+-                "antigen_cluster_id",
+-            )
+-        }
+-    retrieval_by_direction = {}
+-    for direction, (entry_key, item_builder, cluster_key) in direction_specs.items():
+-        wrong_scores: list[list[float]] = []
+-        cognate_scores: list[float] = []
+-        cluster_ids: list[str] = []
+-        for entry in ordered_entries:
+-            focal = item_by_id[entry["instance_id"]]
+-            wrong_items = [
+-                item_builder(focal, item_by_id[identifier])
+-                for identifier in entry[entry_key]
+-            ]
+-            local_scores: list[float] = []
+-            for start in range(0, len(wrong_items), evaluation_batch_size):
+-                raw_wrong = structure_collator(
+-                    wrong_items[start : start + evaluation_batch_size]
+-                )
+-                wrong_batch = _move_batch(raw_wrong, device)
+-                if batch_intervention is not None:
+-                    wrong_batch = batch_intervention(wrong_batch)
+-                with _autocast(device, use_bf16):
+-                    wrong_output = model(wrong_batch)
+-                score_logits = (
+-                    wrong_output["contact_interaction_logits"]
+-                    if specificity_score_source == "interaction_only"
+-                    else wrong_output["contact_logits"]
+-                )
+-                scores = top_fraction_contact_score(
+-                    score_logits.float(),
+-                    wrong_output["pair_candidate_mask"],
+-                    fraction=score_fraction,
+-                    temperature=specificity_temperature,
+-                )
+-                local_scores.extend(scores.cpu().tolist())
+-            cognate_scores.append(correct_scores[entry["instance_id"]])
+-            wrong_scores.append(local_scores)
+-            cluster_ids.append(entry[cluster_key])
+-        retrieval_by_direction[direction] = partner_retrieval_metrics(
+-            cognate_scores, wrong_scores, cluster_ids
++    retrieval_by_direction = (
++        _evaluate_partner_panel(
++            model,
++            dataset,
++            panel,
++            device,
++            correct_scores=correct_scores,
++            use_bf16=use_bf16,
++            evaluation_batch_size=evaluation_batch_size,
++            score_fraction=score_fraction,
++            specificity_score_source=specificity_score_source,
++            specificity_temperature=specificity_temperature,
++            batch_intervention=batch_intervention,
+         )
+-    selection_metric = min(
+-        value["cluster_weighted_cognate_compatibility_margin"]
+-        for value in retrieval_by_direction.values()
++        if evaluate_partner_retrieval
++        else {}
+     )
++    selection_metric = (
++        min(
++            value["cluster_weighted_cognate_compatibility_margin"]
++            for value in retrieval_by_direction.values()
++        )
++        if retrieval_by_direction
++        else float("nan")
++    )
+     result: dict[str, Any] = {
+         "selection_metric": selection_metric,
+         "selection_metric_rule": "minimum_direction_cluster_weighted_margin",
+@@ -1004,6 +1056,9 @@
+         sequence_window=int(configuration["sequence_window"]),
+         dropout=float(configuration["dropout"]),
+         fusion_mode=EXPERIMENTS[experiment]["fusion_mode"],
++        cross_attention_contact_gate_mode=EXPERIMENTS[experiment][
++            "cross_attention_contact_gate_mode"
++        ],
+     )
+     _configure_experiment(model, experiment)
+     return model
+@@ -1081,21 +1136,32 @@
+             split_role="val",
+             feature_mode=arguments.asep_feature_mode,
+         )
+-    paired_train_dataset = _FrozenPanelTrainingDataset(
+-        train_dataset, training_panel, arguments.seed
+-    )
+     train_generator = torch.Generator().manual_seed(arguments.seed)
+-    train_loader = DataLoader(
+-        paired_train_dataset,
+-        batch_size=arguments.batch_size,
+-        shuffle=True,
+-        drop_last=False,
+-        num_workers=arguments.workers,
+-        collate_fn=_FrozenPanelTrainingCollator(),
+-        generator=train_generator,
+-        pin_memory=device.type == "cuda",
+-        persistent_workers=False,
+-    )
++    paired_train_dataset = None
++    if arguments.specificity_loss_weight == 0:
++        train_loader = _loader(
++            train_dataset,
++            batch_size=arguments.batch_size,
++            workers=arguments.workers,
++            shuffle=True,
++            seed=arguments.seed,
++            pin_memory=device.type == "cuda",
++        )
++    else:
++        paired_train_dataset = _FrozenPanelTrainingDataset(
++            train_dataset, training_panel, arguments.seed
++        )
++        train_loader = DataLoader(
++            paired_train_dataset,
++            batch_size=arguments.batch_size,
++            shuffle=True,
++            drop_last=False,
++            num_workers=arguments.workers,
++            collate_fn=_FrozenPanelTrainingCollator(),
++            generator=train_generator,
++            pin_memory=device.type == "cuda",
++            persistent_workers=False,
++        )
+     validation_loader = _loader(
+         validation_dataset,
+         batch_size=arguments.evaluation_batch_size,
+@@ -1128,6 +1194,9 @@
+         specificity_margin=arguments.specificity_margin,
+         score_fraction=arguments.score_fraction,
+         specificity_score_source=specificity_score_source,
++        contact_focal_gamma=arguments.contact_focal_gamma,
++        epitope_dice_weight=arguments.epitope_dice_weight,
++        epitope_count_weight=arguments.epitope_count_weight,
+     )
+     optimizer = torch.optim.AdamW(
+         model.parameters(), lr=arguments.learning_rate, weight_decay=arguments.weight_decay
+@@ -1148,10 +1217,16 @@
+     try:
+         for epoch in range(1, arguments.epochs + 1):
+             model.train()
+-            paired_train_dataset.set_epoch(epoch)
++            if paired_train_dataset is not None:
++                paired_train_dataset.set_epoch(epoch)
+             component_sums: dict[str, float] = {}
+             steps = 0
+-            for raw_batch, raw_wrong_by_direction in train_loader:
++            for raw_item in train_loader:
++                if paired_train_dataset is None:
++                    raw_batch = raw_item
++                    raw_wrong_by_direction = {}
++                else:
++                    raw_batch, raw_wrong_by_direction = raw_item
+                 batch = _move_batch(raw_batch, device)
+                 wrong_batches = {
+                     direction: _move_batch(raw_wrong, device)
+@@ -1167,7 +1242,9 @@
+                         for direction, wrong_batch in wrong_batches.items()
+                     }
+                     losses = objective(
+-                        output, batch, wrong_partner_outputs=wrong_outputs
++                        output,
++                        batch,
++                        wrong_partner_outputs=(wrong_outputs if wrong_outputs else None),
+                     )
+                 losses["loss"].backward()
+                 torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+@@ -1190,6 +1267,11 @@
+                 seed=arguments.seed,
+                 calibration_max_pairs=arguments.calibration_max_pairs,
+                 specificity_score_source=specificity_score_source,
++                evaluate_partner_retrieval=bool(
++                    protocol["model_selection"].get(
++                        "evaluate_partner_retrieval", True
++                    )
++                ),
+             )
+             record = {
+                 "epoch": epoch,
+@@ -1198,7 +1280,14 @@
+                 "elapsed_seconds": time.monotonic() - started,
+             }
+             history.append(record)
+-            metric = float(validation["selection_metric"])
++            primary_metric = protocol["model_selection"].get(
++                "primary_metric", "minimum_direction_cluster_weighted_margin"
++            )
++            metric = (
++                float(validation["epitope"]["mean_per_complex_auprc"])
++                if primary_metric == "epitope_mean_per_complex_auprc"
++                else float(validation["selection_metric"])
++            )
+             contact_auprc = float(validation["contact"]["mean_per_complex_auprc"])
+             improved = metric > best_metric + 1e-4 or (
+                 abs(metric - best_metric) <= 1e-4 and contact_auprc > best_contact_auprc
+@@ -1242,6 +1331,11 @@
+             calibration_max_pairs=arguments.calibration_max_pairs,
+             specificity_score_source=specificity_score_source,
+             collect_attention=True,
++            evaluate_partner_retrieval=bool(
++                protocol["model_selection"].get(
++                    "evaluate_partner_retrieval", True
++                )
++            ),
+         )
+         configuration = {
+             key: value
+@@ -1308,6 +1402,7 @@
+             "selection": {
+                 "best_epoch": best_epoch,
+                 "best_validation_compatibility_margin": best_metric,
++                "primary_metric": protocol["model_selection"].get("primary_metric"),
+                 "tie_break_contact_mean_complex_auprc": best_contact_auprc,
+                 "epochs_completed": len(history),
+             },
+

@@ -1,0 +1,38 @@
+{
+  "excluded_files": [
+    "test_set_pdbs.zip"
+  ],
+  "expected_selected_bytes": 169112768699,
+  "expected_selected_file_count": 3,
+  "format_version": "abpairfm_public_download_plan_v1",
+  "license_status": "unresolved_fail_closed_for_training",
+  "pinned_revision": "pinder-2024-02",
+  "provider": "google_cloud_storage_public_bucket",
+  "selected_files": [
+    {
+      "etag": "5185ed5fe374a695b2218af385a9be2d",
+      "path": "index.parquet",
+      "size_bytes": 124511839,
+      "url": "https://storage.googleapis.com/pinder/2024-02/index.parquet",
+      "x_goog_generation": "1719666060911591"
+    },
+    {
+      "etag": "8d60d195ed2a6465d72880e471718414",
+      "path": "metadata.parquet",
+      "size_bytes": 103835983,
+      "url": "https://storage.googleapis.com/pinder/2024-02/metadata.parquet",
+      "x_goog_generation": "1719671510370914"
+    },
+    {
+      "etag": "28e6e2724c1597514c7f6b6774ff32b4",
+      "path": "pdbs.zip",
+      "size_bytes": 168884420877,
+      "url": "https://storage.googleapis.com/pinder/2024-02/pdbs.zip",
+      "x_goog_generation": "1718880407172355"
+    }
+  ],
+  "source_id": "pinder_2024_02_trainval",
+  "test_access": {
+    "pinder_test_bytes_permitted": false
+  }
+}

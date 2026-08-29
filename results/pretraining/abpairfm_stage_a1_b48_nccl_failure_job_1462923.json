@@ -1,0 +1,36 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Infrastructure-only recovery evidence. No Stage-A1 update ran and no model-quality conclusion is authorized.",
+  "failure": {
+    "classification": "NCCL_STARTUP_COLLECTIVE_TIMEOUT_BEFORE_TRAINING",
+    "first_collective": "broadcast_object_list during immutable input-DCP verification",
+    "progress_artifact_created": false,
+    "result_artifact_created": false,
+    "stderr": {
+      "bytes": 17335,
+      "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-3b-a1-band-v13-1462923_2.err",
+      "sha256": "0e26486613b18684f805fa67dd42f6fb865843b2a2fc25d8ae848c636c321e0a"
+    },
+    "training_updates_completed": 0
+  },
+  "format_version": "abpairfm_stage_a1_infrastructure_failure_v1",
+  "job": {
+    "elapsed": "00:03:48",
+    "exit_code": "1:0",
+    "job_id": "1462923_2",
+    "partition": "gpu_4090",
+    "state": "FAILED"
+  },
+  "recovery": {
+    "excluded_node": "wqd10nba07g8",
+    "replacement_job_id": "1462940_2",
+    "status": "PENDING"
+  },
+  "status": "INFRASTRUCTURE_FAILURE_PRESERVED",
+  "test_access": false
+}

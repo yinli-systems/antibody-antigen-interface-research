@@ -1,0 +1,93 @@
+{
+  "schema_version": "framecontact_local_pose_exploratory_protocol_v1",
+  "protocol_status": "post_confirmatory_design_development_only_frozen_before_local_pose_training",
+  "frozen_on": "2026-07-31",
+  "parent_protocol": {
+    "path": "protocols/framecontact_primary_v5.json",
+    "sha256": "6cdad6f14e2578033d45e6a683b7f9ff82c2806dc5c5de70b9b02b8a4ef81d52",
+    "receipt_sha256": "395b8d86648abb348b41ef2513319c86ca20e3e235eb070dd81fb4516a760537"
+  },
+  "evidence_boundary_at_freeze": {
+    "historical_development_and_case_study_results_accessed": true,
+    "current_confirmatory_matrix_in_progress": true,
+    "local_pose_multibasis_training_started": false,
+    "local_pose_rotary_training_started": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "asep_official_test_predictions_accessed": false,
+    "external_or_chimera_scores_authorized_for_selection": false
+  },
+  "research_question": "Can an interpretable local-pose basis mixture or a pair-conditioned local-pose rotary score improve development-only geometry use without changing the frozen eight-condition matrix?",
+  "development_matrix": [
+    "local_pose_multibasis",
+    "local_pose_rotary"
+  ],
+  "comparators_from_parent_matrix": [
+    "sequence_dense",
+    "distance_direction",
+    "full_pose",
+    "frozen_frame_ipa"
+  ],
+  "hypotheses": {
+    "primary": "Across the five locked seeds, local_pose_multibasis improves the validation reciprocal-min interaction-only margin relative to full_pose without reducing mean per-complex contact AUPRC by more than 0.005.",
+    "secondary": "local_pose_rotary is retained only if it improves the same primary endpoint and passes all invariance, missing-frame, and calibration gates; novelty alone is not a promotion criterion.",
+    "mechanistic": "For a retained method, geometry shuffle, local-frame corruption, and neighbor rewiring reduce the validation endpoint while independent rigid transforms preserve predictions within the registered numerical tolerance."
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "split": "reciprocal-min Foldseek antigen-fold development roles inherited from parent v5",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5"
+    }
+  },
+  "training_objective": {
+    "contact": "observed-class-balanced BCE on authenticated cognate residue-pair labels",
+    "marginals": "observed-class-balanced epitope and paratope BCE",
+    "specificity": "mean softplus ranking loss over both reciprocal counterfactual directions",
+    "specificity_score_source": "interaction_only",
+    "loss_weights": {
+      "contact": 1.0,
+      "paratope": 0.25,
+      "epitope": 0.25,
+      "specificity": 0.25
+    },
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01,
+    "wrong_pair_rule": "wrong pairs are ranking examples and never receive fabricated all-zero contact labels"
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional interaction-only margins; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "validation only",
+    "reporting": "report every seed, failures, parameter counts, calibration, and intervention diagnostics"
+  },
+  "promotion_gate": {
+    "paired_seed_comparison_required": true,
+    "primary_margin_must_improve": true,
+    "contact_auprc_noninferiority_tolerance": 0.005,
+    "all_numerical_and_intervention_gates_must_pass": true,
+    "frozen_test_action": "forbidden under this exploratory protocol; a new selection-free opening receipt is required after development selection is frozen"
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true
+  },
+  "claim_boundary": "Post-hoc, development-only exploratory comparison. It cannot alter the frozen eight-condition confirmatory result and does not authorize frozen-test, external, benchmark, or state-of-the-art claims."
+}

@@ -1,0 +1,43 @@
+{
+  "authorization": {
+    "development_access": false,
+    "old_test_reopened": false,
+    "production_switch_after_pass": false,
+    "real_stage_a0_data_canary": true,
+    "temporal_holdout_access": false
+  },
+  "batch": {
+    "accumulation_steps": 7,
+    "global_pairs_per_update": 112,
+    "microbatch_pairs_per_rank": 4,
+    "updates": 20
+  },
+  "canary_job_id": 1469677,
+  "format_version": "abpairfm_3b_systems_optimization_submission_v4",
+  "hardware": {
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "partition": "gpu_4090",
+    "single_node": true
+  },
+  "input_checkpoint": {
+    "content_sha256": "38a0987985f119afb374f2062e407bc9c5006f3f7ad66711744086d9561810b1",
+    "generation": "segment-000073",
+    "input_world_size": 8
+  },
+  "protocol_sha256": "83839d74d475682a9f26c398ff379ea924d6c5a8523ea90cb878a3e5848eb6fd",
+  "repair": {
+    "failed_job_id": 1469388,
+    "failed_stderr_sha256": "d3dc2d7bbb8404a0c4b15b14bcb3f56a146f12a0462da7d548bd37203bec45f7",
+    "failure_receipt_sha256": "3c1b3b93b226608d0ca74841e5a70e39df243622222a24a7970b268a165746f3",
+    "scope": "batch geometry only"
+  },
+  "source": {
+    "aggregate_sha256": "2d741e7aa303f891729179b432a8b3f17a0363f0c3bdb00cbf776df318c018cf",
+    "pair_aware_attention_sha256": "cf7d43b093461673685a495add32bd4d13debabeee016be3bb1ee4e2ce6774b3",
+    "remote_root": "/ssd/scxi253/model_deployment/abpairfm_3b_systems_optimization_v4/source"
+  },
+  "submit_script_sha256": "70459296e457d646fc26c1350263e701bf3b8bb97f178972c40f584d23dae4c6",
+  "submitted_at_utc": "2026-08-25T14:21:18Z",
+  "test_access": false
+}

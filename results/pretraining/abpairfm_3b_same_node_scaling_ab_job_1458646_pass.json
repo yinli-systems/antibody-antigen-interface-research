@@ -1,0 +1,53 @@
+{
+  "claim_boundary": "Same-node synthetic full-model systems evidence only; it does not authorize biological training or establish data quality, development performance, or SOTA.",
+  "comparison": {
+    "baseline_residue_tokens_per_second": 2019.2241144872446,
+    "candidate_p95_to_median_step_time": 1.014768652253013,
+    "candidate_peak_allocated_memory_fraction": 0.5880454063767048,
+    "candidate_residue_tokens_per_second": 3734.3326263606987,
+    "eight_gpu_scaling_efficiency": 0.924694935933098,
+    "eight_over_four_gpu_speedup": 1.849389871866196,
+    "hostname": "wqd10nba06g6"
+  },
+  "decision": "PROMOTE_HSDP_2X4",
+  "format_version": "abpairfm_3b_same_node_scaling_ab_repository_receipt_v1",
+  "gates": {
+    "memory_fraction": true,
+    "step_time_stability": true,
+    "throughput_speedup": true
+  },
+  "job": {
+    "elapsed": "00:01:37",
+    "exit_code": "0:0",
+    "job_id": 1458646,
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "source_receipts": {
+    "baseline": {
+      "bytes": 4598,
+      "name": "job-1458646-same-node-4gpu-fsdp4-1024token-keep-gathered-ab-v1.json",
+      "sha256": "bf88e41fa0da2c406c4b066c110c8b66abb15ebefe7b3aebcc0d2220dc147f1e"
+    },
+    "candidate": {
+      "bytes": 7601,
+      "name": "job-1458646-same-node-8gpu-hsdp2x4-1024token-keep-gathered-ab-v1.json",
+      "sha256": "438e7dd703176f1dcf1616152be4ae88cb0a6ca8eee7735cbec418a27b2f1707"
+    },
+    "comparison": {
+      "bytes": 914,
+      "name": "job-1458646-same-node-4v8gpu-scaling-ab-v1.json",
+      "sha256": "f1fbb0e6c681b34de734c58d1c24aa6a334bde64c5c83a6f756ba177d969b4ae"
+    }
+  },
+  "status": "PASS",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "thresholds": {
+    "maximum_memory_fraction": 0.92,
+    "maximum_p95_to_median_step_time": 1.2,
+    "minimum_speedup": 1.4
+  }
+}

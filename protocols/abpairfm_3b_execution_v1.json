@@ -1,0 +1,143 @@
+{
+  "authorization": {
+    "production_stage_a": false,
+    "production_stage_b": false,
+    "real_data_gpu_gate": false,
+    "test_access": false
+  },
+  "claim_boundary": "Frozen execution and promotion contract for 3B pair-aware continued pretraining. It defines the evidence required for production but does not itself authorize training, establish corpus counts, model quality, efficiency, or SOTA performance.",
+  "data": {
+    "stage_a": {
+      "consumed_residue_tokens": 5000000000,
+      "maximum_post_dedup_sequence_pairs": 25000000,
+      "minimum_post_dedup_sequence_pairs": 2500000,
+      "pinder": {
+        "interface_mask_probability": 0.3,
+        "non_interface_mask_probability": 0.15,
+        "sampling": "uniform_interface_cluster_then_uniform_system",
+        "strict_quality_cluster_count_observed": 18099,
+        "strict_quality_system_count_observed": 982075,
+        "structure_views_are_not_distinct_sequence_pairs": true
+      },
+      "sampling_fraction_by_consumed_residue_tokens": {
+        "sequence_only_string": 0.5,
+        "structure_supervised_pinder_ppiref": 0.5
+      },
+      "string": {
+        "combined_score_minimum": 700,
+        "direct_experiment_or_database_evidence_required": true,
+        "maximum_admitted_cluster_pairs": 12000000,
+        "one_edge_per_unordered_sequence_cluster_pair": true,
+        "sequence_cluster_coverage_minimum": 0.8,
+        "sequence_cluster_identity_maximum": 0.5,
+        "transferred_only_evidence_permitted": false
+      }
+    },
+    "stage_b": {
+      "consumed_residue_tokens": 2000000000,
+      "minimum_unique_native_vh_vl_pairs": 5500000,
+      "observed_authenticated_unique_native_vh_vl_pairs": 1577499,
+      "pair_deficit": 3922501,
+      "synthetic_or_shuffled_pairs_count_toward_minimum": false,
+      "training_remains_blocked_below_minimum": true
+    }
+  },
+  "format_version": "abpairfm_3b_execution_v1",
+  "objectives": {
+    "stage_a": {
+      "contact_auxiliary": "heavy_atom_8A_pair_contact_loss_on_structure_batches",
+      "masked_language_modeling": "balanced_per_chain_mlm",
+      "retrieval_auxiliary": "symmetric_in_batch_partner_contrastive_loss",
+      "sequence_only_mask_probability": 0.15
+    },
+    "stage_b": {
+      "cdr_mask_probability": 0.5,
+      "framework_mask_probability": 0.15,
+      "pairing_control_role": "retrieval_only_not_measured_noninteraction"
+    }
+  },
+  "optimization": {
+    "adamw_betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_accumulation_target_residue_tokens": 131072,
+    "gradient_clip_norm": 1.0,
+    "learning_rate_candidates": [
+      3e-7,
+      6e-7,
+      1e-6
+    ],
+    "learning_rate_schedule": "linear_warmup_then_linear_decay",
+    "model": "2.839005633B pair-aware ESM2",
+    "precision": "bfloat16_compute_fp32_optimizer",
+    "warmup_fraction": 0.02,
+    "weight_decay": 0.01
+  },
+  "public_research_anchors": {
+    "mint": {
+      "model_parameters": 650000000,
+      "sequence_identity_clustering": 0.5,
+      "training_pair_count": 95800000,
+      "training_unique_sequence_count": 16400000,
+      "url": "https://www.nature.com/articles/s41467-025-67971-3"
+    },
+    "pplm": {
+      "model_parameters": 650000000,
+      "pair_count": 3300000,
+      "pdb_to_string_sampling_ratio": "1:2",
+      "training_steps": 50000,
+      "url": "https://www.nature.com/articles/s41467-026-70457-5",
+      "validation_average_perplexity": {
+        "pdb_heteromer": 5.08,
+        "pdb_homomer": 7.3,
+        "string": 4.5
+      }
+    }
+  },
+  "systems": {
+    "checkpoint_interval_consumed_residue_tokens": 15000000,
+    "dcp_recovery_protocol": "abpairfm_3b_dcp_recovery_gate_v3",
+    "four_gpu_candidate": {
+      "measured_residue_tokens_per_second": 1318.8412478543676,
+      "reshard_after_forward": false,
+      "shard_group_size": 4
+    },
+    "hsdp_2x4_promotion": {
+      "maximum_peak_allocated_memory_fraction": 0.92,
+      "maximum_p95_to_median_step_time": 1.2,
+      "minimum_speedup_over_four_gpu": 1.4,
+      "shard_group_size": 4,
+      "world_size": 8
+    },
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "real_data_gate": {
+      "finite_update_count": 200,
+      "no_missing_or_silently_skipped_samples": true,
+      "required_before_production": true
+    }
+  },
+  "validation": {
+    "development_model_selection_interval_residue_tokens": 100000000,
+    "metrics": [
+      "masked_perplexity_random",
+      "masked_perplexity_interface_dual",
+      "masked_perplexity_interface_single",
+      "pair_contact_auprc",
+      "precision_at_L",
+      "recall_at_1",
+      "bidirectional_mrr",
+      "fixed_raw_logit_brier"
+    ],
+    "required_splits": [
+      "sabdab2_frozen_development",
+      "asep_frozen_development",
+      "unseen_antigen_cluster",
+      "unseen_antibody_cluster",
+      "dual_unseen_complex",
+      "matched_partner_swap"
+    ],
+    "test_access_before_teacher_approval": false
+  }
+}

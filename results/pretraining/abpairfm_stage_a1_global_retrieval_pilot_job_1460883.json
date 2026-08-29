@@ -1,0 +1,70 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint_audit": {
+    "collective_restore_sha_match": true,
+    "content_sha256": "20c16bfac9519f32fe47f72222720ac0ade43f2136c5f4ccd6484666cb7302a6",
+    "protocol_sha_match": true,
+    "receipt_sha_match": true,
+    "source_sha_match": true,
+    "test_sealed": true
+  },
+  "claim_boundary": "Train-only systems and objective-health evidence. This result does not establish development improvement, production readiness, biological noninteraction, test performance, or SOTA.",
+  "comparison_to_local_candidate_pilot": {
+    "global_candidate_first_20_retrieval_loss": 2.7008863884955643,
+    "global_candidate_final_20_retrieval_loss": 0.011110501608345657,
+    "local_candidate_first_20_retrieval_loss": 0.8223781567066908,
+    "local_candidate_final_20_retrieval_loss": 0.0060835826143829765,
+    "interpretation": "Expanding the candidate matrix from one rank to all eight ranks delayed retrieval collapse but did not prevent it by update 200. Production Stage-A1 remains closed pending genuinely matched or embedding-mined hard negatives and a nontrivial retrieval-development gate."
+  },
+  "format_version": "abpairfm_stage_a1_global_retrieval_pilot_audit_v1",
+  "job": {
+    "elapsed": "00:38:08",
+    "exit_code": "0:0",
+    "job_id": "1460883",
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "loss": {
+    "contact_final_20_mean": 1.0909245766699314,
+    "contact_first_20_mean": 1.1024771995842457,
+    "mlm_final_20_mean": 2.508274615556002,
+    "mlm_first_20_mean": 2.7481769248843193,
+    "retrieval_final_20_mean": 0.011110501608345657,
+    "retrieval_first_20_mean": 2.7008863884955643,
+    "total_final_20_mean": 3.055959002673626,
+    "total_first_20_mean": 3.839592821896076
+  },
+  "measurement_correction": {
+    "cpu_audited_minimum_allowed_candidates_per_query": 39,
+    "frozen_required_minimum_allowed_candidates_per_query": 32,
+    "immutable_result_reported_value": 40,
+    "immutable_result_reported_value_semantics": "candidate_matrix_width_not_minimum_allowed_candidates",
+    "scientific_conclusion_changed": false,
+    "systems_gate_changed": false
+  },
+  "memory": {
+    "maximum_allocated_fraction": 0.8974548494136945,
+    "required_maximum_fraction": 0.9
+  },
+  "remote_status": "PASS_STAGE_A1_GLOBAL_RETRIEVAL_PILOT_CHECKPOINT_VERIFIED",
+  "retrieval": {
+    "candidate_matrix_width": 40,
+    "final_20_accuracy_left_to_right": 0.9993750000372529,
+    "final_20_accuracy_right_to_left": 1.0
+  },
+  "scientific_status": "FAIL_RETRIEVAL_HARDNESS_PRODUCTION_GATE",
+  "stability": {
+    "maximum_gradient_norm_before_clipping": 6.879042144420373,
+    "p95_to_median_update_time": 1.1292755977778732
+  },
+  "systems_status": "PASS_CHECKPOINT_RESTORE_MEMORY_AND_FINITE_LOSS_GATES",
+  "test_access": false,
+  "throughput": {
+    "mean_residue_tokens_per_second": 1621.6325866181446,
+    "pilot_residue_tokens": 3221842
+  }
+}

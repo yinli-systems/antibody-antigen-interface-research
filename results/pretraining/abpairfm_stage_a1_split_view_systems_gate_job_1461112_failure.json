@@ -1,0 +1,40 @@
+{
+  "authorization": {
+    "gpu_pilot": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Preserved systems-gate distributed-desynchronization evidence only. One full update completed, then update 2 made no progress for more than ten minutes while seven GPUs remained in collective work and rank 6 remained idle. The job was cancelled to avoid wasting eight RTX 4090 GPUs. No checkpoint, development evaluation, production training, or test access occurred.",
+  "failure": {
+    "elapsed_seconds_at_cancel": 699,
+    "exit_code": "1:0",
+    "first_update_elapsed_seconds": 18.030876982957125,
+    "gpu_observation": "GPU indices 0-5 and 7 remained at 100 percent utilization near 77-90 W while GPU index 6 remained at 0 percent utilization near 24 W across three five-second samples.",
+    "job_id": "1461112",
+    "last_completed_update": 1,
+    "phase": "second_update_distributed_desynchronization",
+    "progress_stall_multiple_over_first_update": 30,
+    "slurm_state": "FAILED_AFTER_OPERATOR_CANCEL"
+  },
+  "format_version": "abpairfm_stage_a1_split_view_systems_gate_failure_v1",
+  "first_update": {
+    "contact_loss": 1.1046475246548653,
+    "gradient_norm": 1.3614312512385014,
+    "minimum_allowed_candidates_per_query": 40,
+    "mlm_loss": 2.7486278861761093,
+    "residue_tokens": 15170,
+    "retrieval_accuracy_left_to_right": 0.02500000037252903,
+    "retrieval_accuracy_right_to_left": 0.02500000037252903,
+    "retrieval_candidate_matrix_width": 40,
+    "retrieval_loss": 3.6970703154802322,
+    "total_loss": 4.040365695953369
+  },
+  "minimal_correction": {
+    "protocol_changed": false,
+    "scope": "Add per-rank phase receipts and reduce the systems-gate process-group timeout from fifteen to three minutes so the next immutable retry identifies and fails closed on the first divergent phase without another long eight-GPU stall."
+  },
+  "observed_at_utc": "2026-08-23T01:02:12Z",
+  "protocol_sha256": "0a3d92a8fd20d27b78d5455ef6b0eaa7a1c4b27d5c71413be358311f1d86ea10",
+  "status": "FAIL_CLOSED_DISTRIBUTED_DESYNCHRONIZATION",
+  "test_access": false
+}

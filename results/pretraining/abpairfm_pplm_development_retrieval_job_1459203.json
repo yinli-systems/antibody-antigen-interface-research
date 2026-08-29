@@ -1,0 +1,167 @@
+{
+  "claim_boundary": "Official PPLM 650M checkpoint plus ten-member PPLM-PPI ensemble on the frozen AsEP and SAbDab2 development retrieval panels. Decoys are ranking controls rather than biological noninteractions. Contact, calibration, test, biological-improvement, commercial-use, and SOTA claims remain closed.",
+  "comparison_to_mint": {
+    "decision": "MINT_RETAINS_SEQUENCE_ONLY_DEVELOPMENT_RETRIEVAL_FRONTIER",
+    "reason": "PPLM did not improve paired development retrieval and consumed more GPU-hours on both panels. The paired confidence intervals include zero, so the result is an efficiency-backed non-promotion rather than evidence that MINT is universally superior.",
+    "asep": {
+      "mrr_delta_pplm_minus_mint": -0.012837465286545599,
+      "mrr_paired_bootstrap_ci95": [
+        -0.04323181945820601,
+        0.017118131619731327
+      ],
+      "mrr_pair_wins_pplm_ties_mint": [
+        76,
+        0,
+        94
+      ],
+      "recall_at_1_delta_pplm_minus_mint": -0.011764705882352941,
+      "recall_at_1_paired_bootstrap_ci95": [
+        -0.041176470588235294,
+        0.014705882352941176
+      ],
+      "recall_at_1_pair_wins_pplm_ties_mint": [
+        10,
+        146,
+        14
+      ],
+      "pplm_to_mint_gpu_hour_ratio": 2.3411897043538015,
+      "unique_canonical_exact_pair_count": 170
+    },
+    "sabdab2": {
+      "mrr_delta_pplm_minus_mint": -0.0007120430621872364,
+      "mrr_paired_bootstrap_ci95": [
+        -0.02952351951922381,
+        0.02742902645445562
+      ],
+      "mrr_pair_wins_pplm_ties_mint": [
+        205,
+        3,
+        205
+      ],
+      "recall_at_1_delta_pplm_minus_mint": -0.0006053268765133172,
+      "recall_at_1_paired_bootstrap_ci95": [
+        -0.03026634382566586,
+        0.029661016949152543
+      ],
+      "recall_at_1_pair_wins_pplm_ties_mint": [
+        61,
+        287,
+        65
+      ],
+      "pplm_to_mint_gpu_hour_ratio": 2.6263082449475,
+      "unique_canonical_exact_pair_count": 413
+    }
+  },
+  "datasets": {
+    "asep": {
+      "anchor_instance_count": 170,
+      "predictions": {
+        "bytes": 4516731,
+        "row_count": 10880,
+        "sha256": "1d20b855425b7f9986e22e0a42764eb8cd1ab3aeedca8ea331ba00db617c5d82"
+      },
+      "primary_bidirectional_unique_endpoint_mrr": {
+        "canonical_exact_pair_macro": 0.12416839365708186,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.10564398866131879,
+          0.14407974934790826
+        ],
+        "unique_canonical_exact_pair_count": 170
+      },
+      "primary_bidirectional_unique_endpoint_recall_at_1": {
+        "canonical_exact_pair_macro": 0.029411764705882353,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.011764705882352941,
+          0.047058823529411764
+        ],
+        "unique_canonical_exact_pair_count": 170
+      },
+      "runtime": {
+        "elapsed_seconds": 615.9192139850929,
+        "gpu_hours": 0.17108867055141472,
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "nonpadding_residues_per_second": 8686.080704294254,
+        "pair_windows_per_second": 17.149976425732444,
+        "peak_allocated_memory_fraction": 0.18805434535056348,
+        "peak_cuda_bytes": 4748490240,
+        "slurm_job_id": "1459204"
+      },
+      "sacct": {
+        "elapsed": "00:11:10",
+        "exit_code": "0:0",
+        "state": "COMPLETED",
+        "stderr_bytes": 0
+      },
+      "status": "FROZEN_DEVELOPMENT_RETRIEVAL_COMPLETE",
+      "summary_sha256": "4c471961e6969a2b481942b7ab05ef2d55240bd0e606fba8d9e4677fb37b2781",
+      "test_access": false,
+      "unique_canonical_exact_pair_count": 170
+    },
+    "sabdab2": {
+      "anchor_instance_count": 549,
+      "predictions": {
+        "bytes": 15330729,
+        "row_count": 35136,
+        "sha256": "2dfe7cd7ce91244eb3b35f1a4fa4abb78abd4e0561b281292c24f10b916c413d"
+      },
+      "primary_bidirectional_unique_endpoint_mrr": {
+        "canonical_exact_pair_macro": 0.2128885152827403,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.19330538350507662,
+          0.23344518878345574
+        ],
+        "unique_canonical_exact_pair_count": 413
+      },
+      "primary_bidirectional_unique_endpoint_recall_at_1": {
+        "canonical_exact_pair_macro": 0.09079903147699758,
+        "canonical_exact_pair_paired_bootstrap_ci95": [
+          0.07021791767554479,
+          0.11259079903147699
+        ],
+        "unique_canonical_exact_pair_count": 413
+      },
+      "runtime": {
+        "elapsed_seconds": 747.1028903825209,
+        "gpu_hours": 0.20752858066181135,
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "nonpadding_residues_per_second": 8832.230586902813,
+        "pair_windows_per_second": 21.497708289920652,
+        "peak_allocated_memory_fraction": 0.1930245353223772,
+        "peak_cuda_bytes": 4873990656,
+        "slurm_job_id": "1459203"
+      },
+      "sacct": {
+        "elapsed": "00:13:34",
+        "exit_code": "0:0",
+        "state": "COMPLETED",
+        "stderr_bytes": 0
+      },
+      "status": "FROZEN_DEVELOPMENT_RETRIEVAL_COMPLETE",
+      "summary_sha256": "73d792aeaf4db2be705fc5fcf25a8e7f29caa675b3564a1c6e5948d5a53bf4f3",
+      "test_access": false,
+      "unique_canonical_exact_pair_count": 413
+    }
+  },
+  "equivalence_gate": {
+    "clean_room_vs_official_probability_max_abs_delta": 2.9802322387695312e-08,
+    "required_smoke_job_id": "1459194",
+    "required_smoke_summary_sha256": "1f642e37d529834644774ec627d6d4f651916f51ceb631022a258690551ad47d",
+    "status": "ACCEPTED_BY_VERIFIED_SMOKE_GATE"
+  },
+  "format_version": "abpairfm_pplm_development_retrieval_job_v1",
+  "license_boundary": {
+    "commercial_use_authorized": false,
+    "source_repository_license": "PolyForm Noncommercial"
+  },
+  "model": {
+    "backbone_checkpoint_sha256": "c8ce3b75dfd7b5890dfa7d96de7f698b522a5cbf59d7ee2732cb80ad3e5df495",
+    "backbone_parameters": 651044309,
+    "head_checkpoint_sha256": "2695b886ef3ba2c1acacb74cd4f8c8173323addfc548b6d482143fb2b7070d8f",
+    "head_ensemble_member_count": 10,
+    "source_archive_sha256": "a8d2df2eaf48751f1b4544eac18d2084611289c806141fa47ece4ec6b6788ef3",
+    "source_revision": "1267db4592703095b889cc22da6cf1796ce038b5"
+  },
+  "protocol_sha256": "8b0d9332aa1ca84ec578aa1b685dfc4b187856dde94f0d6ecec8d64978875071",
+  "slurm_array_job_id": "1459203",
+  "test_access": false
+}

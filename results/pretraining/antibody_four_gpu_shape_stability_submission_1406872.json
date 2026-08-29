@@ -1,0 +1,69 @@
+{
+  "authorization": {
+    "configuration_promotion": false,
+    "full_efficiency_gate_candidate": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Submission receipt for a non-authorizing four-GPU real-OAS shape-stability systems probe. No downstream, frozen, official, external, biological, SOTA, production-pretraining, or configuration-promotion claim is authorized.",
+  "format_version": "antibody_four_gpu_shape_stability_submission_v1",
+  "job": {
+    "job_id": 1406872,
+    "job_name": "abf-oas-4g-shape",
+    "partition": "gpu_5090",
+    "reason_at_receipt": "Priority",
+    "requested_gpus": 4,
+    "requested_nodes": 1,
+    "state_at_receipt": "PENDING",
+    "submitted_at": "2026-08-15T11:28:03+08:00"
+  },
+  "output": {
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_shape_stability_095c15a_attempt_001",
+    "stderr": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-shape-1406872.err",
+    "stdout": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-shape-1406872.out"
+  },
+  "preflight": {
+    "bucketed_gate_file_sha256": "13cf3ba2ee118f4414a7c3ef6a6efb6fc4b8ed8414a0087fd1b34f5441fb7dc6",
+    "gate_identity_validation": "PASS",
+    "preflight_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_shape_stability_preflight_095c15a_attempt_001",
+    "protocol_file_sha256": "915973752eac8f286bab171b51a33950e33b1e2c8d01ad483986c9f24b4436ca",
+    "source_file_count": 8,
+    "static_194_gate_file_sha256": "a7db5aa8d8bc44d423c2dc35404caaff099786100c3a3854e311f3a845786daf"
+  },
+  "prerequisites": {
+    "latest_recovery_audit_file_sha256": "7d5c12c6be71eb949027141f6cb353db81c40235e0f2cf951a761cd8932b9afe",
+    "latest_recovery_audit_payload_sha256": "7fa7279f773ea6797e5314d1a746be36eed32674e035dea886fcffab17eb034d",
+    "latest_recovery_passed": true,
+    "oas_manifest_file_sha256": "849b401368ec3613d806399a81b7d76861adf45daf71bfc64761ffe9ecad940a",
+    "runtime_manifest_file_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a"
+  },
+  "protocol": {
+    "candidates": {
+      "bucketed": "96,128,160,194",
+      "static_194": "194"
+    },
+    "maximum_memory_fraction": 0.8,
+    "maximum_p95_over_p50_step_time": 1.1,
+    "maximum_replicate_throughput_relative_range": 0.05,
+    "minimum_approximate_6n_mfu": 0.35,
+    "run_order": [
+      "bucketed_r1",
+      "static_194_r1",
+      "static_194_r2",
+      "bucketed_r2"
+    ],
+    "updates_per_run": 300
+  },
+  "source": {
+    "commit": "095c15ac9adb59e0b055005d307d47accf175cec",
+    "deployment_root": "/ssd/scxi253/model_deployment/jobs/antibody-pretraining-095c15a-attempt-001",
+    "local_remote_head_equal_at_submission": true
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

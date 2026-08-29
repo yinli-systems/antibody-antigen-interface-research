@@ -1,0 +1,31 @@
+{
+  "claim_boundary": "Development-only research and engineering handoff. No frozen SAbDab2 test, official AsEP test, external-generalization, A100 model-quality, or state-of-the-art result is included.",
+  "format_version": "framecontact_live_research_handoff_v2",
+  "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/live-research-handoff-v2",
+  "source_authority": {
+    "manifest_sha256": "93ad550074f6e3d8d97c4af05685b3296495e2164c84a9dabfa29e3df1fea90c",
+    "record_count": 324,
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v8",
+    "tree_sha256": "f0d400f863da083bd0f51c35d8318ab70ebe8f26f9791db455ab85a24decd2a5"
+  },
+  "files": {
+    "docs/FRAMECONTACT_FRONTIER_RESEARCH_20260801.md": "fd78cc8c121525492a4ba5a52a063c7403b98645cd1959682c280be43f69a37c",
+    "docs/FRAMECONTACT_GEOMETRY_ABLATED_CONTROL_20260801.md": "ba2e895fdb1cf22471ddd7f6b8b0bc8c75793d3f85e0081f4e1b4ce1026d3a12",
+    "docs/HANDSHAKE_BASELINE_AUDIT_20260801.md": "3e055146570630deb053bc9ced75bdcc5cb1e0777b64c30562631e58efc14506",
+    "docs/README.md": "f341cd14ba5770697885342b9d061c7648c4c61b782176b077b7dadb0569a080",
+    "docs/TEACHER_UPDATE_20260801_DOUBLE_COLD_AND_RESEARCH.md": "f6fe0cd6173396a687ec4db97aa5f8e240432331a7f771b799b9e35cb61f1a81",
+    "docs/TEACHER_UPDATE_20260801_LIVE_VALIDATION_AND_BASELINE.md": "5637a44c00405ecdb0fe1c8ce37e8f3569e4a689acb87fd1805fa0a77dc2c59d",
+    "receipts/double-cold-source-v8-final/ENGINEERING_RECEIPT.json": "543dd31d9fee86925a90541bd9ea9cfdde1ff1f24de841c85493497483d07cd0",
+    "receipts/double-cold-source-v8-final/FULL_PYTEST.log": "760df4ec7ec2d987d40cce07309e16f2f34ed1585046aa0e6ac7b3c6ddcacc1e",
+    "receipts/double-cold-source-v8-final/FULL_PYTEST_WITH_DEPS.log": "1b5d91d43c552012b9b061a8eb1a34615cd909de36332a72aaa083c1cc96971d",
+    "receipts/double-cold-source-v8-final/FULL_PYTEST_WITH_PYTEST_PATH.log": "8b07b4fa2bcc88325048f024e5bcb466dcdb49661a3a77fdb431ac04d8d7218e",
+    "receipts/double-cold-source-v8-final/SOURCE_MANIFEST.json": "93ad550074f6e3d8d97c4af05685b3296495e2164c84a9dabfa29e3df1fea90c",
+    "receipts/live-array-audit-20260801T113500Z/DISTOGRAM_COMPACT.json": "1a3f60c5f4ebecd6b06008f61ddc38a759d4fbe0a31ddaf4f098ee5fcf66c23d",
+    "receipts/live-array-audit-20260801T113500Z/DISTOGRAM_PATIENCE.json": "e29984cdbd10fe457880d6030ee3d2a8641048a3dc7083243285bad39872254b",
+    "receipts/live-array-audit-20260801T113500Z/MATCHED_EPOCH_UNARY_VS_DISTOGRAM.json": "2fe699b1590d7ca4ab459b1caee978387bbfe72aaf40833d239dd3b4f995fa86",
+    "receipts/live-array-audit-20260801T113500Z/README.md": "736444e5dc2f6b6cd5f6446b7d82127c27ff6f76c3ccdc73499699446541bc1e",
+    "receipts/live-array-audit-20260801T113500Z/RESIDUE_HEAD_COMPACT.json": "396f85b87c6bcddf55cf024d54273cd03c8014534075927459fb01bf6675efa4",
+    "receipts/live-array-audit-20260801T113500Z/RESIDUE_HEAD_PATIENCE.json": "a697f76a52f452dca5021a24c7166d85f15704c698d5d80eab768d9060148e25",
+    "receipts/live-array-audit-20260801T113500Z/SQUEUE.txt": "f83bde4c88fb97d96c50d775541d6fd3b44ccde36312c150eef99b1afa5b975e"
+  }
+}

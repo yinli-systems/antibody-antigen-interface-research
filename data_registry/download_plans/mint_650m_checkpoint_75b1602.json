@@ -1,0 +1,28 @@
+{
+  "authorization": {
+    "download": true,
+    "normalization": false,
+    "stage_a_training": false
+  },
+  "expected_selected_bytes": 3253773059,
+  "expected_selected_file_count": 1,
+  "format_version": "abpairfm_public_download_plan_v1",
+  "license": "MIT",
+  "pinned_revision": "75b1602c34e9df1a89089a1245f000a51ee3c746",
+  "provider": "Hugging Face Hub; hf-mirror transport with LFS object identity pinned",
+  "selected_files": [
+    {
+      "etag": "ccb61dad424a05f48c50f66b4bbb6cd13ce449487cb93dab3aba20f8d0899655",
+      "path": "mint.ckpt",
+      "sha256": "84a4016365997cd9f0bccb07d746fa8f076ffd8e45aa0cbcf4e50a037161a342",
+      "size_bytes": 3253773059,
+      "url": "https://hf-mirror.com/varunullanat2012/mint/resolve/75b1602c34e9df1a89089a1245f000a51ee3c746/mint.ckpt"
+    }
+  ],
+  "source_id": "mint_650m_checkpoint_75b1602",
+  "source_url": "https://huggingface.co/varunullanat2012/mint",
+  "test_access": {
+    "asep_test_permitted": false,
+    "sabdab2_heldout_permitted": false
+  }
+}

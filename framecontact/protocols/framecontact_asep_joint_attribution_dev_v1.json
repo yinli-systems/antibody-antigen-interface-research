@@ -1,0 +1,81 @@
+{
+  "schema_version": "framecontact_asep_joint_attribution_development_protocol_v1",
+  "protocol_status": "development_only_pair_to_node_attribution",
+  "frozen_on": "2026-08-16",
+  "project": {"name": "FrameContact", "purpose": "Matched pair-to-node aggregation attribution on AsEP epitope-group development data"},
+  "scientific_question": {
+    "primary": "Does the pair-to-node reduction itself explain residue and partner-retrieval differences when architecture, labels, losses, seeds, and checkpoint selection are held fixed?",
+    "label_dependency": "Epitope and paratope labels are marginals of the same native contact geometry.",
+    "causal_language_rule": "Only the registered aggregation-mode contrast may be attributed to this experiment."
+  },
+  "evidence_boundary_at_freeze": {
+    "development_train_and_validation_labels_read": true,
+    "model_fitting_started": false,
+    "official_test_used_for_architecture_or_checkpoint_selection": false,
+    "official_test_predictions_or_scores_read_for_this_protocol": false,
+    "claim_boundary": "AsEP epitope-group development-validation only; frozen, official, and external test roles are forbidden.",
+    "test_role_forbidden": true
+  },
+  "data": {
+    "dataset_backend": "asep",
+    "dataset": "AsEP v1.2.0",
+    "split_method": "epitope_group",
+    "official_role_counts": {"train": 1383, "validation": 170, "test": 170},
+    "development_cache_manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "development_cache_receipt_sha256": "3a282b179ee151d9d4b24cc87366323670a76719bdf0542a2fc1aa164c0f5269",
+    "primary_feature_mode": "official_esm2_35m",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "metadata_sha256": "04d9a36e7c3c5228f1e4bcad46a00cdc3dde1556d25fc9693d9d28dc4680753b",
+      "train_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+      "validation_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec"
+    },
+    "test_role_forbidden": true
+  },
+  "development_matrix": [
+    "framecontact_joint_a1_noisy_or",
+    "framecontact_joint_attribution_mean_probability",
+    "framecontact_joint_attribution_length_normalized_noisy_or"
+  ],
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "attention_kernel": "reference",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true,
+    "checkpoint_wrong_partners": true,
+    "contact_gate_warmup_fraction": 0.05,
+    "contact_gate_ramp_fraction": 0.1
+  },
+  "training_objective": {
+    "loss_weights_by_condition": {
+      "framecontact_joint_a1_noisy_or": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_attribution_mean_probability": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_attribution_length_normalized_noisy_or": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0}
+    },
+    "specificity_score_source": "interaction_only",
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "Maximize the minimum bidirectional development-validation compatibility margin; tie-break by mean per-complex contact AUPRC and then earlier epoch.",
+    "maximum_epochs": 120,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "development validation only",
+    "test_role_forbidden": true
+  },
+  "development_endpoints": {"primary": ["contact AUPRC", "mean per-complex contact AUPRC", "epitope AUPRC", "paratope AUPRC", "bidirectional partner margin"], "statistics": ["five-seed mean and standard deviation", "paired seed bootstrap", "per-complex summaries"]}
+}

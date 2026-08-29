@@ -1,0 +1,99 @@
+{
+  "schema_version": "framecontact_asep_joint_coupling_development_protocol_v2",
+  "protocol_status": "development_only_ratio_split_joint_coupling_followup",
+  "frozen_on": "2026-08-16",
+  "project": {
+    "name": "FrameContact",
+    "purpose": "Matched joint epitope/paratope/contact coupling audit on the AsEP epitope-to-antigen surface-ratio development split"
+  },
+  "scientific_question": {
+    "primary": "Do contact-derived marginals, independent residue heads, soft routing, and intrachain spatial regularization improve contact ranking, residue ranking, and partner retrieval on a second development split?",
+    "label_dependency": "Epitope and paratope labels are marginals of the same native residue-pair contact geometry and are not treated as independent biological tasks.",
+    "causal_language_rule": "Only matched condition and seed differences may be attributed to the changed coupling mechanism."
+  },
+  "evidence_boundary_at_freeze": {
+    "development_train_and_validation_labels_read_for_adapter_and_prior_experiments": true,
+    "joint_coupling_matrix_model_fitting_started": false,
+    "official_test_used_for_architecture_or_checkpoint_selection": false,
+    "official_test_predictions_or_scores_read_for_this_protocol": false,
+    "claim_boundary": "Development fitting and validation only; frozen, official, and external test roles are forbidden for model selection.",
+    "test_role_forbidden": true
+  },
+  "data": {
+    "dataset_backend": "asep",
+    "dataset": "AsEP v1.2.0 corrected split",
+    "split_method": "epitope_ratio",
+    "official_role_counts": {"train": 1381, "validation": 170, "test": 170},
+    "development_cache_manifest_sha256": "57ca5bcaf3b15ddca3b80a684d9f5cff9944c75e8749563287de2971bdef0c8e",
+    "development_cache_receipt_sha256": "a63a2d7f29c4688648bb4a78b710bc255493ac5c4ce1966490a6746a1bbad1d2",
+    "primary_feature_mode": "official_esm2_35m",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "metadata_sha256": "63c3f787542ef38cf88b4e8f30ed4a3e39d0beafcb660adf743d11bf749bdffc",
+      "train_panel_sha256": "4242fced77cf114fc11330f773cee2753317ef80d4f61aa6533c217c2f982ecb",
+      "validation_panel_sha256": "52c65f17d3c3b501de6a760bbf779505ddf730f55c874316b71eddc55a33d93a"
+    },
+    "test_role_forbidden": true
+  },
+  "development_matrix": [
+    "framecontact_joint_a0_pair_only",
+    "framecontact_joint_a1_noisy_or",
+    "framecontact_joint_a2_independent_heads",
+    "framecontact_joint_a3_coupled_heads",
+    "framecontact_joint_a4_coupled_soft_crop",
+    "framecontact_joint_a5_graph_spatial"
+  ],
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "attention_kernel": "reference",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true,
+    "checkpoint_wrong_partners": true,
+    "contact_gate_warmup_fraction": 0.05,
+    "contact_gate_ramp_fraction": 0.1,
+    "coarse_contact_crop_floor": 0.05,
+    "coarse_contact_crop_temperature": 1.0,
+    "coarse_contact_crop_strength": 1.0,
+    "node_spatial_neighbor_radius_angstrom": 12.0,
+    "node_spatial_neighbor_k": 8
+  },
+  "training_objective": {
+    "loss_weights_by_condition": {
+      "framecontact_joint_a0_pair_only": {"contact": 1.0, "paratope": 0.0, "epitope": 0.0, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a1_noisy_or": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a2_independent_heads": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.0, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a3_coupled_heads": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.25, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a4_coupled_soft_crop": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.25, "node_spatial_smoothness": 0.0, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_joint_a5_graph_spatial": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "pair_node_consistency": 0.25, "node_spatial_smoothness": 0.1, "triangle": 0.0, "far_patch_exclusion": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0}
+    },
+    "specificity_score_source": "interaction_only",
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "Maximize the minimum bidirectional development-validation compatibility margin; tie-break by mean per-complex contact AUPRC and then earlier epoch. Node metrics never select checkpoints.",
+    "maximum_epochs": 120,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "development validation only",
+    "test_role_forbidden": true
+  },
+  "development_endpoints": {
+    "primary": ["pooled and mean per-complex native contact AUPRC", "minimum bidirectional matched partner margin", "epitope AUPRC", "paratope AUPRC"],
+    "secondary": ["contact precision, recall, F1, MCC, AUROC", "epitope and paratope metrics", "matched partner top-1, MRR, and margin"],
+    "statistics": ["five-seed mean and standard deviation", "matched paired bootstrap confidence intervals", "per-complex summaries"]
+  }
+}

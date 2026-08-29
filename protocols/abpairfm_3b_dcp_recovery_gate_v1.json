@@ -1,0 +1,47 @@
+{
+  "authorization": {
+    "biological_training": false,
+    "development_evaluation": false,
+    "frozen_test_access": false,
+    "synthetic_systems_gate": true
+  },
+  "checkpoint": {
+    "backend": "torch_distributed_checkpoint",
+    "generation_is_create_only": true,
+    "model_state_required": true,
+    "optimizer_state_required": true,
+    "rank_zero_full_inventory_hash_required": true,
+    "training_cursor_required": true
+  },
+  "claim_boundary": "Full-model synthetic FSDP2 and DCP recovery evidence only. Passing does not authorize biological pretraining, development model selection, test access, or SOTA claims.",
+  "format_version": "abpairfm_3b_dcp_recovery_gate_v1",
+  "model": {
+    "activation_checkpointing": true,
+    "attention": "pair_aware_lifted_flash_sdpa",
+    "official_initialization": "esm2_t36_3B_UR50D",
+    "parameter_count": 2839005633,
+    "precision": "bfloat16_compute_float32_optimizer"
+  },
+  "parity": {
+    "continuation_global_loss": "exact",
+    "local_model_shard_digest_by_rank": "exact",
+    "local_optimizer_shard_digest_by_rank": "exact",
+    "new_process_required": true
+  },
+  "promotion": {
+    "production_authorized_by_protocol": false,
+    "required_next_gate": "real-data deterministic batch with frozen corpus cursor"
+  },
+  "synthetic_fixture": {
+    "sequence_tokens_per_rank": 1024,
+    "steps_before_checkpoint": 2,
+    "continuation_steps": 1,
+    "two_physical_chains": true
+  },
+  "topology": {
+    "allowed_gpu_model": "NVIDIA GeForce RTX 4090",
+    "partition": "gpu_4090",
+    "reshard_after_forward": false,
+    "world_size": 4
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "claim_boundary": "Read-only replay of in-flight development train/validation logs. The conditional timing assumes no future validation improvement; it is not a completion guarantee. No checkpoint, test prediction, or external-test artifact is loaded.",
+  "condition_index": 0,
+  "condition_label": "framecontact_unary_only",
+  "format_version": "framecontact_live_patience_audit_v1",
+  "job_id": "1345042",
+  "log_prefix": "fc-res-head",
+  "seeds": [
+    17,
+    42,
+    73,
+    101,
+    137
+  ],
+  "selection_rule": {
+    "minimum_improvement": 0.0001,
+    "primary": "maximize minimum_direction_cluster_weighted_margin",
+    "tie_break": "maximize contact_mean_per_complex_auprc"
+  },
+  "states_by_seed": {
+    "101": {
+      "best_contact_macro_auprc_tie_break": 0.02369524490064,
+      "best_epoch": 19,
+      "best_validation_worst_directional_margin": 0.011182183177354975,
+      "conditional_hours_to_early_stop_if_no_new_best": 17.916341683852178,
+      "epoch_record_count": 19,
+      "improvement_epochs": [
+        1,
+        2,
+        19
+      ],
+      "latest_elapsed_hours": 16.942710394676414,
+      "latest_epoch": 19,
+      "log_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_3.out",
+      "log_sha256_at_audit": "373959a4da3374dea9ca2b76dc80a23fbdfd40befdbe5717d2d5780707de8b47",
+      "patience": 20,
+      "patience_remaining_if_no_new_best": 20,
+      "recent_mean_seconds_per_epoch": 3224.9415030933915,
+      "stale_epochs": 0,
+      "status": "running_or_between_epochs",
+      "task_index": 3
+    },
+    "137": {
+      "best_contact_macro_auprc_tie_break": 0.022672105655237088,
+      "best_epoch": 7,
+      "best_validation_worst_directional_margin": 0.020066178781573577,
+      "conditional_hours_to_early_stop_if_no_new_best": 7.100416648089058,
+      "epoch_record_count": 19,
+      "improvement_epochs": [
+        1,
+        3,
+        4,
+        7
+      ],
+      "latest_elapsed_hours": 16.726241411335714,
+      "latest_epoch": 19,
+      "log_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_4.out",
+      "log_sha256_at_audit": "6bc6dc6c2436ad09fc1d6e62e38c2a9a7685520d18bce8aff50bb383c5e5c4dd",
+      "patience": 20,
+      "patience_remaining_if_no_new_best": 8,
+      "recent_mean_seconds_per_epoch": 3195.187491640076,
+      "stale_epochs": 12,
+      "status": "running_or_between_epochs",
+      "task_index": 4
+    },
+    "17": {
+      "best_contact_macro_auprc_tie_break": 0.024717957584235364,
+      "best_epoch": 19,
+      "best_validation_worst_directional_margin": 0.009798137559369303,
+      "conditional_hours_to_early_stop_if_no_new_best": 17.759634481604316,
+      "epoch_record_count": 19,
+      "improvement_epochs": [
+        1,
+        3,
+        12,
+        16,
+        17,
+        19
+      ],
+      "latest_elapsed_hours": 16.923180500239962,
+      "latest_epoch": 19,
+      "log_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_0.out",
+      "log_sha256_at_audit": "3fed381e5cb3403ef4856dcc168bf3370eeb84d52c2b51f1412a1fb23f0ba2fe",
+      "patience": 20,
+      "patience_remaining_if_no_new_best": 20,
+      "recent_mean_seconds_per_epoch": 3196.734206688777,
+      "stale_epochs": 0,
+      "status": "running_or_between_epochs",
+      "task_index": 0
+    },
+    "42": {
+      "best_contact_macro_auprc_tie_break": 0.02389791027014813,
+      "best_epoch": 5,
+      "best_validation_worst_directional_margin": 0.010841586990106735,
+      "conditional_hours_to_early_stop_if_no_new_best": 5.400439267959757,
+      "epoch_record_count": 19,
+      "improvement_epochs": [
+        1,
+        2,
+        5
+      ],
+      "latest_elapsed_hours": 17.01208500234488,
+      "latest_epoch": 19,
+      "log_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_1.out",
+      "log_sha256_at_audit": "d7436283b21ecdb2f10d9e6509b7d3470b0dd68d8640e7f28a1ee61bdf7eb181",
+      "patience": 20,
+      "patience_remaining_if_no_new_best": 6,
+      "recent_mean_seconds_per_epoch": 3240.263560775854,
+      "stale_epochs": 14,
+      "status": "running_or_between_epochs",
+      "task_index": 1
+    },
+    "73": {
+      "best_contact_macro_auprc_tie_break": 0.02160204466832683,
+      "best_epoch": 17,
+      "best_validation_worst_directional_margin": 0.04429507407656509,
+      "conditional_hours_to_early_stop_if_no_new_best": 15.837747075230814,
+      "epoch_record_count": 19,
+      "improvement_epochs": [
+        1,
+        4,
+        5,
+        11,
+        17
+      ],
+      "latest_elapsed_hours": 16.636288574690827,
+      "latest_epoch": 19,
+      "log_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/slurm-logs/fc-res-head-1345042_2.out",
+      "log_sha256_at_audit": "3b47a01930f3a350bac70ea1e3f2f357937e47e185ce0bf63f9237a99c2f3175",
+      "patience": 20,
+      "patience_remaining_if_no_new_best": 18,
+      "recent_mean_seconds_per_epoch": 3167.5494150461627,
+      "stale_epochs": 2,
+      "status": "running_or_between_epochs",
+      "task_index": 2
+    }
+  }
+}

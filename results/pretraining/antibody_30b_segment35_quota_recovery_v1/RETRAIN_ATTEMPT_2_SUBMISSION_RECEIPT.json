@@ -1,0 +1,46 @@
+{
+  "format_version": "antibody_30b_segment_retrain_submission_receipt_v2",
+  "campaign": "antibody_pretraining_rtx4090_30b_5f1f6ac_v1",
+  "segment_index": 35,
+  "recovery_anchor": {
+    "segment_index": 34,
+    "segment_audit_sha256": "beb25f1762fee10081fafd85dd4679dc96d8f414fc1b9dafcf1f02bc5edc5150",
+    "next_update": 105000,
+    "consumed_residue_tokens": 15091949832,
+    "sample_cursor": 134400000
+  },
+  "frozen_environment": {
+    "python_bin": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "source_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody-pretraining-rtx4090-5f1f6ac-v1",
+    "corpus_root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
+    "campaign_gate_sha256": "3ab66eff7c8c99f48159ef0d0c32ff81ada9f2db513c28f3fe009560f1b3700e",
+    "corpus_protocol_file_sha256": "cd8f71c4d0ffdb391e1aaee238f18683c0495d59836d057f465b147c1bd219b4",
+    "runtime_manifest_sha256": "588d9dda4665488be0d4b4bcce902312549fddff1bcafc61508e88e03e3e241c",
+    "recovery_protocol_sha256": "5f5b48329405b5ffc60e341bce81952e667788b295c1ac8dfcc349023b4a79d3",
+    "recovery_protocol_receipt_sha256": "0e8f0cd0407416276abf19e62f1e7efb9971eb299f64b63508366343c70eacf5",
+    "required_environment_complete": true
+  },
+  "retrain_job": {
+    "job_id": 1468583,
+    "initial_state": "PENDING",
+    "initial_reason": "Priority",
+    "partition": "gpu_4090",
+    "requested_gpus": 4,
+    "submitted_at": "2026-08-25T17:23:05+08:00"
+  },
+  "afternotok_recovery_watchdog": {
+    "job_id": 1468584,
+    "dependency": "afternotok:1468583",
+    "initial_state": "PENDING",
+    "initial_reason": "Dependency",
+    "partition": "gpu_4090",
+    "requested_gpus": 4,
+    "submitted_at": "2026-08-25T17:23:05+08:00",
+    "required_environment_complete": true
+  },
+  "prior_attempt_failure_receipt_sha256": "faea0f322495962110aa34bc43af25ba7c4df69ac413e855e7561ab66d380d39",
+  "partial_segment_35_checkpoint_reused": false,
+  "protocol_frozen": true,
+  "test_access": false,
+  "submission_verified": true
+}

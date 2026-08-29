@@ -1,0 +1,28 @@
+{
+  "authorization": {
+    "gpu_pilot": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Preserved per-rank systems-gate phase evidence only. One full update completed. On update 2, all eight ranks completed accumulation 2 forward and loss, but none completed backward. The diagnostic job was cancelled after the divergent phase was localized. No checkpoint, development evaluation, production training, or test access occurred.",
+  "failure": {
+    "all_rank_last_phase": "forward_and_loss_complete",
+    "all_rank_last_phase_accumulation": 2,
+    "all_rank_last_phase_update": 2,
+    "elapsed_seconds_at_cancel": 310,
+    "exit_code": "0:0",
+    "first_update_elapsed_seconds": 18.100981257855892,
+    "job_id": "1461132",
+    "last_completed_update": 1,
+    "slurm_state": "CANCELLED_BY_OPERATOR_AFTER_DIAGNOSIS"
+  },
+  "format_version": "abpairfm_stage_a1_split_view_systems_gate_failure_v1",
+  "minimal_correction": {
+    "communication_change": "Gather left and right global candidates together in one non-differentiable forward collective, keep the local candidate slice attached, and treat remote candidates as stop-gradient negatives.",
+    "protocol_changed": false,
+    "rationale": "The explicit differentiable global all-gather was the only Stage-A1-specific collective in backward; all ranks entered backward after identical phase receipts while the otherwise equivalent Stage-A0 FSDP2 path remained healthy. Removing that backward collective is the smallest testable correction and lowers communication overhead."
+  },
+  "protocol_sha256": "0a3d92a8fd20d27b78d5455ef6b0eaa7a1c4b27d5c71413be358311f1d86ea10",
+  "status": "FAIL_CLOSED_BACKWARD_COLLECTIVE_DESYNCHRONIZATION",
+  "test_access": false
+}

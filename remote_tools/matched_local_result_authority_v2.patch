@@ -1,0 +1,26 @@
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -1811,6 +1811,7 @@
+                 "contact_cache_root",
+                 "embedding_root",
+                 "joint_embedding_root",
++                "matched_local_root",
+                 "label_root",
+                 "asep_cache_root",
+                 "output_root",
+@@ -1839,6 +1840,7 @@
+                 "embedding_manifest_sha256": arguments.embedding_manifest_sha256,
+                 "joint_embedding_manifest_sha256": arguments.joint_embedding_manifest_sha256,
+                 "joint_embedding_source_split_sha256": arguments.joint_embedding_source_split_sha256,
++                "matched_local_manifest_sha256": arguments.matched_local_manifest_sha256,
+                 "asep_cache_manifest_sha256": arguments.asep_cache_manifest_sha256,
+                 "protocol_file_sha256": sha256_file(arguments.protocol),
+                 "protocol_receipt_sha256": arguments.protocol_receipt_sha256,
+@@ -1888,6 +1890,7 @@
+             "selected_checkpoint_sha256": sha256_file(selected_checkpoint),
+             "seed": arguments.seed,
+             "selected_epoch": best_epoch,
++            "matched_local_manifest_sha256": arguments.matched_local_manifest_sha256,
+             "test_loaded": False,
+             "external_test_loaded": False,
+         }

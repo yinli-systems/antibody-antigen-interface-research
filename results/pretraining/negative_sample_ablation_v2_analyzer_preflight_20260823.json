@@ -1,0 +1,49 @@
+{
+  "analyzer": {
+    "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/tools/analyze_negative_sample_ablation.py",
+    "sha256": "e59d691ffab6e115f6f3fad436cb58501e00f341993981d8bf673c547bef74d5"
+  },
+  "authorization": {
+    "development_only": true,
+    "external_test_loaded": false,
+    "test_loaded": false
+  },
+  "claim_boundary": "Analyzer readiness and atomic fail-closed behavior on an intentionally incomplete development/validation study only; no arm comparison or performance claim.",
+  "format_version": "negative_sample_ablation_v2_analyzer_preflight_v1",
+  "observed_at_utc": "2026-08-23T02:43:31Z",
+  "preflight": {
+    "analyzer_exit_code": 1,
+    "expected_missing_artifact": "FRAMECONTACT_DEVELOPMENT_RESULT.json",
+    "output_root_absent_after_failure": true,
+    "stderr_sha256": "ea331210e36b8bd659c31ad7761b9efd7883b85af51a5c14423433b92c90d151",
+    "status": "EXPECTED_FAIL_CLOSED"
+  },
+  "progress": {
+    "asep_completed_tasks": 10,
+    "sabdab2_completed_tasks": 8,
+    "sabdab2_remaining": [
+      {
+        "latest_epoch": 43,
+        "seed": 73,
+        "stderr_bytes": 0,
+        "task": 17
+      },
+      {
+        "latest_epoch": 41,
+        "seed": 137,
+        "stderr_bytes": 0,
+        "task": 19
+      }
+    ],
+    "status": "RUNNING_INSTRUMENTED"
+  },
+  "progress_auditor": {
+    "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/negative-sample-ablation-v2/tools/audit_negative_sample_ablation_progress.py",
+    "sha256": "b6d0eaa96d1817dae34b57d177f39a6260b72dbe639bec0365afff64901206f3"
+  },
+  "status": "PASS_ANALYZER_FAIL_CLOSED_PREFLIGHT",
+  "tests": {
+    "command": "python3 -m pytest -q tests/test_negative_sample_ablation_v2.py",
+    "passed": 6
+  }
+}

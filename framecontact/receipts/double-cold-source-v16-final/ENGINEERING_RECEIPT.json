@@ -1,0 +1,93 @@
+{
+  "abandoned_transfer": {
+    "authority": false,
+    "file_count_at_audit": 218,
+    "manifest_created": false,
+    "reason": "SSH timed out during the first transfer attempt. The incomplete path was preserved rather than overwritten or represented as a source release.",
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v15",
+    "tests_run": false
+  },
+  "claim_boundary": "Corrected counterfactual contact-lift source, dependency, and regression-test evidence only. The candidate is default-off and has not been registered, trained, model-selected, frozen-tested, externally evaluated, or shown to improve a biological metric. This receipt contains no A100, benchmark-superiority, novelty, or state-of-the-art claim.",
+  "format_version": "framecontact_double_cold_source_engineering_receipt_v5",
+  "local_regression": {
+    "python": "3.12.13",
+    "result": "297 passed in 20.17s",
+    "scope": "Full local suite with src, pinned Boltz checkout, fairscale, einops 0.8.0, and einx on PYTHONPATH; bytecode and pytest cache disabled."
+  },
+  "parent": {
+    "path": "receipts/double-cold-source-v14-final/ENGINEERING_RECEIPT.json",
+    "reason": "Supersede the untrained interaction-logit noisy-OR sketch with a probability-consistent pre-cross counterfactual contact-lift bottleneck and add an explicit unary-shortcut rejection contract.",
+    "sha256": "dd0b1c74da829156da8a40ade157f8e83a2d9e0213b18ee6bd06695eab22c4e5"
+  },
+  "remote_environment": {
+    "base_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "pandas": "2.3.3",
+    "pyarrow": "17.0.0",
+    "pyarrow_target": "/ssd/scxi253/model_deployment/data/framecontact_20260730/runtime-deps/pyarrow-17.0.0-py310",
+    "pytest_target": "/tmp/scxi253-v6d-pytest-841",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128"
+  },
+  "remote_regression": {
+    "command_controls": [
+      "source tree created at a previously absent version path",
+      "per-directory resumable transfer with explicit authenticated allowlist",
+      "symlink and cache rejection before and after execution",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "pytest -p no:cacheprovider",
+      "basetemp under /dev/shm",
+      "manifest verification after pytest"
+    ],
+    "result": "292 passed, 5 skipped in 82.97s",
+    "skip_boundary": "All five skips require the pinned Boltz source unavailable on the remote login environment; no FrameContact, objective, training-harness, split, gate, or evidence test was skipped or failed.",
+    "source_cache_or_symlink_artifacts_after_run": 0
+  },
+  "counterfactual_contact_lift_delta": {
+    "definition": "max(0, sigmoid(pre_cross_total_contact_logit) - sigmoid(pre_cross_total_contact_logit - pre_cross_interaction_logit))",
+    "default_enabled": false,
+    "experiment_registered": false,
+    "gpu_job_launched": false,
+    "quality_metric_available": false,
+    "reason_for_superseding_v14": "The interaction-only logit omits contact bias and monomer unary terms and is not a calibrated Bernoulli contact logit. Applying noisy-OR directly to near-zero interaction logits can saturate with partner length.",
+    "semantic_constraints": [
+      "late fusion only",
+      "pre-cross monomer self features and contact decomposition only",
+      "pure unary contact propensity produces exactly zero lift",
+      "only positive pair-interaction probability attribution enters noisy-OR",
+      "candidate-pair and residue masks are mandatory",
+      "direct complex cosine is not treated as a pair logit",
+      "stop-gradient and joint-gradient paths are explicit"
+    ],
+    "sha256": {
+      "docs/PARTNER_SPECIFIC_FRONTIER_UPDATE_20260801.md": "65ae825a33e355c3d039c3da37921e3482f64052adbb411e99dc2d745ddd7fbc",
+      "docs/TEACHER_UPDATE_20260801_CONTACT_BOTTLENECK_AND_LIVE_EPOCH17.md": "4297ef5fc56e4e670c0822458cef8290863e283ff3e0e802dc7df8148874b73f",
+      "src/interaction_first/framecontact.py": "ba9e453742dfc3161d986613826928b3c4b61fbe959d4586ec251fe6ed278403",
+      "tests/test_framecontact.py": "295a7606de955545add91941386e8cd87f5913980992f6783523dc60948a1e26"
+    }
+  },
+  "sha256": {
+    "FULL_PYTEST_WITH_DEPS.log": "a64bc7e723d3602958614ac3ae640e682925f2faa42ce557af339a42e3ac3c50",
+    "LOCAL_FULL_PYTEST.log": "28b04a1a0ec262e6fe6dfd73c5b028c91ce8624ce74792283614e898ef269872",
+    "MANIFEST_BUILD.log": "e0d18ea4b7ae0dfb543bf3e8b014e64e1f4f3cef262d25b7dfcea8f394716772",
+    "POST_TEST_MANIFEST_VERIFY.json": "e8fd63f7c5efda93081f6fb1584c51dbd5811d22fd957464ea2a36624545f4d3",
+    "SOURCE_MANIFEST.json": "34a4f923700dbd6227864e63e424cf7bb91de948c99d29e2988ae4c957dfb9a0"
+  },
+  "source": {
+    "included_directories": [
+      "scripts",
+      "src",
+      "protocols",
+      "tests",
+      "slurm",
+      "docs",
+      "baselines",
+      "evaluation",
+      "fixtures",
+      "receipts",
+      "reports"
+    ],
+    "manifest_record_count": 521,
+    "remote_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/double-cold-source-v16",
+    "tree_sha256": "b13b18098c6709cef30cc2a1256f027f973f994c9bad8cb9c31a772e7063db8b"
+  }
+}

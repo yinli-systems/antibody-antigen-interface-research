@@ -1,0 +1,26 @@
+{
+  "claim_boundary": "Failure evidence for the first Stage-A0 manifest attempt only; no training was started and no model-quality claim is made.",
+  "failure": {
+    "exception": "ValueError: Strict STRING scale-pool evidence differs",
+    "field_mismatch": {
+      "corrected_protocol_key": "exclude_any_pair_touching_a_hit_cluster",
+      "stale_protocol_key": "exclude_any_pair_touching_hit_cluster"
+    },
+    "root_cause": "The frozen protocol key did not exactly match the authenticated strict scale-pool receipt schema. Counts, hashes, and data bytes were not bypassed.",
+    "training_started": false
+  },
+  "format_version": "abpairfm_3b_stage_a0_manifest_failure_v1",
+  "job": {
+    "elapsed": "00:00:02",
+    "exit_code": "1:0",
+    "job_id": 1459275,
+    "state": "FAILED"
+  },
+  "recovery": {
+    "dependent_training_job_cancelled": 1459276,
+    "policy": "minimal field-name correction followed by full manifest re-audit",
+    "silent_skip_permitted": false
+  },
+  "status": "PRESERVED_FAIL_CLOSED",
+  "test_access": false
+}

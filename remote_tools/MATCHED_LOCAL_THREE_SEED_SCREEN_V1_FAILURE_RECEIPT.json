@@ -1,0 +1,1 @@
+{"failure_class":"protocol_preflight_mismatch","job_id":"1467640","result_files_written":false,"slurm_exit_code":"1:0","slurm_state":"FAILED","stderr_sha256":"87dd6b1877a416639dd2faef338d12773b66f509937a772acbe75f618c8ff2c6","task_count":6,"task_failure":"ValueError: Experiment differs from the pre-registered protocol","test_loaded":false,"training_started":false}

@@ -1,0 +1,39 @@
+{
+  "format_version": "sabdab2_same_protocol_screen_variant_manifest_v1",
+  "test_loaded": false,
+  "screen_split_sha256": "9435cba7e802a706eeba01e9128aef170dd25adf5562418143d2982c8f4bc2e3",
+  "source_sha256": {
+    "scripts/train_framecontact.py": "7bc229b420717f6d4633c8b324cc4c10fee8bf160170681565662c1d32ec3315",
+    "src/interaction_first/framecontact.py": "196f895a8ecd3aae66805009b8404a98c4dbcc2e7bcaaf502ce575e55d16d328",
+    "src/interaction_first/framecontact_objective.py": "54f9c0005f7433379eeca6c7509d61cf7719d835b2b28f2021031368bf103d5b"
+  },
+  "tasks": {
+    "0": {
+      "variant": "fusion_only",
+      "experiment": "framecontact_unconditioned_interleaved",
+      "protocol_file_sha256": "9068e03dd345be295849f5e52fdf0dc9b75c3409f4cda747e97b9e9a2a11fbbb",
+      "protocol_receipt_sha256": "3947fa5c37be40c6a718eed41a81814d0d44d757dae2369782f25548f2deef2a",
+      "contact_focal_gamma": 0.0,
+      "epitope_dice_weight": 0.0,
+      "epitope_count_weight": 0.0
+    },
+    "1": {
+      "variant": "sparse_only",
+      "experiment": "framecontact_interleaved",
+      "protocol_file_sha256": "3b827da5e51a8e076f11dd9c34a43f4090e152da9d2de7fe86f93fce10a0e5d0",
+      "protocol_receipt_sha256": "81b9836bf49a9a6b13578df5ec6fd7d4c9c1ac517d45a6a564a4e12af41d2467",
+      "contact_focal_gamma": 1.0,
+      "epitope_dice_weight": 1.0,
+      "epitope_count_weight": 0.2
+    },
+    "2": {
+      "variant": "sparse_fusion",
+      "experiment": "framecontact_unconditioned_interleaved",
+      "protocol_file_sha256": "3b827da5e51a8e076f11dd9c34a43f4090e152da9d2de7fe86f93fce10a0e5d0",
+      "protocol_receipt_sha256": "81b9836bf49a9a6b13578df5ec6fd7d4c9c1ac517d45a6a564a4e12af41d2467",
+      "contact_focal_gamma": 1.0,
+      "epitope_dice_weight": 1.0,
+      "epitope_count_weight": 0.2
+    }
+  }
+}

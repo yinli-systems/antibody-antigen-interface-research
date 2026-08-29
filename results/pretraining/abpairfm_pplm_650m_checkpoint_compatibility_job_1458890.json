@@ -1,0 +1,77 @@
+{
+  "architecture": {
+    "embed_dimension": 1280,
+    "ffn_dimension": 5120,
+    "head_count": 20,
+    "layer_count": 33,
+    "parameter_elements_in_normalized_encoder_mlm_state": 651044309
+  },
+  "authorization": {
+    "frozen_development_contact_baseline": false,
+    "frozen_development_mlm_baseline": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "bytes": 2604388437,
+    "name": "pplm_t33_650M.pt",
+    "sha256": "c8ce3b75dfd7b5890dfa7d96de7f698b522a5cbf59d7ee2732cb80ad3e5df495",
+    "source_revision": "1267db4592703095b889cc22da6cf1796ce038b5"
+  },
+  "claim_boundary": "Read-only compatibility evidence for using the public PPLM 650M encoder and MLM head on frozen development data. The auxiliary contact head is inventoried but is not implemented in the clean-room model, so end-to-end contact comparison, production training, test access, biological improvement, and SOTA claims remain unauthorized.",
+  "compatibility": {
+    "auxiliary_contact_head": {
+      "exact_expected_key_set_present": true,
+      "shapes": {
+        "contact_head.regression.bias": [
+          1
+        ],
+        "contact_head.regression.weight": [
+          1,
+          660
+        ]
+      }
+    },
+    "encoder_mlm_compatible": true,
+    "end_to_end_contact_compatible": false,
+    "expected_state_keys": 602,
+    "missing_keys": [],
+    "normalized_state_keys": 602,
+    "pair_attention": {
+      "maximum_scale": 3.032489776611328,
+      "minimum_scale": -3.4860730171203613,
+      "renamed_layer_count": 33,
+      "tensor_elements": 660
+    },
+    "shape_mismatches": {},
+    "tied_lm_head_duplicate_verified": true,
+    "unexpected_keys": []
+  },
+  "execution": {
+    "job_id": 1458890,
+    "partition": "gpu_4090",
+    "state": "COMPLETED"
+  },
+  "failure_evidence": [
+    {
+      "cause": "Missing frozen remote PYTHONPATH; checkpoint was not loaded.",
+      "job_id": 1458886,
+      "state": "FAILED"
+    },
+    {
+      "cause": "Strict whole-checkpoint schema correctly rejected the two separately scoped auxiliary contact-head parameters.",
+      "job_id": 1458887,
+      "state": "COMPLETED_INCOMPATIBLE_FAIL_CLOSED"
+    }
+  ],
+  "format_version": "abpairfm_pplm_650m_checkpoint_compatibility_summary_v1",
+  "license_boundary": {
+    "commercial_use_authorized": false,
+    "role": "read-only research baseline",
+    "source_repository_license": "PolyForm Noncommercial",
+    "source_url": "https://github.com/junliu621/PPLM"
+  },
+  "next_gate": "Frozen-development encoder-plus-MLM quality-per-GPU-hour comparison; contact-head comparison remains separately blocked pending an exact audited implementation.",
+  "status": "ENCODER_MLM_COMPATIBLE_CONTACT_HEAD_PENDING",
+  "test_access": false
+}

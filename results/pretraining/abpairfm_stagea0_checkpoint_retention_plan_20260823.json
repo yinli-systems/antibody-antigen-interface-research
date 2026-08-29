@@ -1,0 +1,94 @@
+{
+  "authorization": {
+    "delete": false,
+    "test_access": false
+  },
+  "campaign_root": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a0_string25m_v1",
+  "claim_boundary": "Read-only retention planning over checkpoints whose result and DCP receipt closures were verified. No checkpoint was deleted, moved, or rewritten.",
+  "deployment_note": {
+    "failed_partial_archive_quarantined_at": "/ssd/scxi253/model_deployment/abpairfm_3b_v1/failed_deployments/d08c0ad-partial-20260823T0343Z",
+    "planner_execution": "streamed_read_only"
+  },
+  "eligible_for_removal": {
+    "bytes": 817985010012,
+    "count": 24,
+    "generations": [
+      "segment-000001",
+      "segment-000002",
+      "segment-000003",
+      "segment-000004",
+      "segment-000005",
+      "segment-000006",
+      "segment-000007",
+      "segment-000008",
+      "segment-000009",
+      "segment-000011",
+      "segment-000012",
+      "segment-000013",
+      "segment-000014",
+      "segment-000016",
+      "segment-000017",
+      "segment-000018",
+      "segment-000019",
+      "segment-000021",
+      "segment-000022",
+      "segment-000023",
+      "segment-000024",
+      "segment-000025",
+      "segment-000026",
+      "segment-000027"
+    ]
+  },
+  "filesystem_observation": {
+    "available_human": "1.8T",
+    "mount": "/ssd",
+    "percent_used": 83,
+    "size_human": "10T",
+    "used_human": "8.3T"
+  },
+  "format_version": "abpairfm_stagea0_checkpoint_retention_audit_v1",
+  "full_plan_sha256": "c057b7d4edceff708d649e1a1a2bc9cc25621da41030b767566673e5c350bfa9",
+  "observed_at_utc": "2026-08-23T03:43:33Z",
+  "policy": {
+    "keep_latest": 2,
+    "maximum_target_overshoot": 20000000,
+    "periodic_interval": 10,
+    "targets": [
+      250000000,
+      500000000,
+      1000000000
+    ]
+  },
+  "reached_targets": {
+    "250000000": "segment-000015"
+  },
+  "retained": {
+    "bytes": 204496252508,
+    "count": 6,
+    "generations": {
+      "segment-000000": [
+        "periodic_anchor"
+      ],
+      "segment-000010": [
+        "periodic_anchor"
+      ],
+      "segment-000015": [
+        "target_250000000"
+      ],
+      "segment-000020": [
+        "periodic_anchor"
+      ],
+      "segment-000028": [
+        "latest_resume"
+      ],
+      "segment-000029": [
+        "latest_resume"
+      ]
+    }
+  },
+  "status": "PASS_READ_ONLY_RETENTION_PLAN",
+  "summary": {
+    "checkpoint_count": 30,
+    "total_bytes": 1022481262520
+  }
+}

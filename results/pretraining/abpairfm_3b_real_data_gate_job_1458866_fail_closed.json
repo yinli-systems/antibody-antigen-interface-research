@@ -1,0 +1,62 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "quality_per_gpu_hour_gate": false,
+    "test_access": false
+  },
+  "claim_boundary": "Full-2.839B-model, eight-RTX-4090 train-only numerical and systems gate on a deterministic development-decontaminated STRING slice. Validation quality, biological improvement, production training, and SOTA claims remain pending.",
+  "decision": "FAIL_CLOSED_REAL_DATA_GATE",
+  "format_version": "abpairfm_3b_real_data_gate_summary_v1",
+  "gates": {
+    "all_summary_values_finite": true,
+    "final_20_loss_not_above_first_20_by_more_than_five_percent": true,
+    "maximum_allocated_memory_fraction_at_most_0_92": false,
+    "p95_to_median_update_time_at_most_1_20": true,
+    "passed": false
+  },
+  "job_id": 1458866,
+  "loss": {
+    "final_20_update_mean": 2.675390625,
+    "final_to_first_ratio": 0.9463866242918335,
+    "first_20_update_mean": 2.826953125
+  },
+  "memory": {
+    "maximum_allocated_fraction": 0.9308727410537683
+  },
+  "optimization": {
+    "accumulation_steps": 2,
+    "manifest_records_consumed": 25600,
+    "microbatch_pairs_per_rank": 8,
+    "updates": 200,
+    "world_size": 8
+  },
+  "receipt_sha256": "aeccbc64bf76df2e53a5656183b68f8d3e25ece733234277012232f832038165",
+  "recovery": {
+    "frozen_invariants": [
+      "eight_gpu_hsdp_2x4",
+      "1024_maximum_tokens",
+      "two_accumulation_steps",
+      "adamw_betas_0.9_0.98",
+      "learning_rate_1e-6",
+      "weight_decay_0.01",
+      "seed_1701"
+    ],
+    "manifest_job_id": 1458916,
+    "next_microbatch_pairs_per_rank": 7,
+    "reason": "Reduce activation headroom without shortening pair context or moving the frozen 0.92 memory threshold.",
+    "retry_job_id": 1458917
+  },
+  "stability": {
+    "p95_to_median_update_time": 1.0844152708962418
+  },
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  },
+  "throughput": {
+    "consumed_residue_tokens": 17566943,
+    "five_billion_token_wall_clock_days_excluding_overhead": 7.599113502940326,
+    "residue_tokens_per_second_mean": 7593.512922689496,
+    "residue_tokens_per_second_median": 7615.410711786129
+  }
+}

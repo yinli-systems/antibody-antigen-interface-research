@@ -1,0 +1,21 @@
+{
+  "decision": {
+    "amino_acid_diversity_gate": "Report exact unique amino-acid VH/VL pairs separately and never inflate it with synonymous nucleotide observations.",
+    "native_observation_gate": "At least 5.5 million authenticated native cell- or nucleotide-pair observations after quality filtering and source-level deduplication.",
+    "sampling_gate": "Cap and balance replay by study and donor before CDR specialization so clonal expansion does not dominate optimization."
+  },
+  "format_version": "abpairfm_stage_b_public_scale_gate_v2",
+  "observed_public_scale": {
+    "oas_20260821_exact_unique_amino_acid_pairs": 2585593,
+    "pairedabngs_cell_pair_observations": 7200634,
+    "pairedabngs_unique_amino_acid_pairs": 3666056,
+    "pairedabngs_unique_nucleotide_pairs": 6888961
+  },
+  "sources": [
+    "https://opig.stats.ox.ac.uk/webapps/oas/oas_paired",
+    "https://www.naturalantibody.com/paired-ab-ngs/",
+    "https://www.nature.com/articles/s42003-025-08388-y"
+  ],
+  "status": "FROZEN_BEFORE_STAGE_B_TRAINING",
+  "test_access": false
+}

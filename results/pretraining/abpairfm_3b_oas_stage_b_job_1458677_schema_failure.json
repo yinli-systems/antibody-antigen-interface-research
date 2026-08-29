@@ -1,0 +1,23 @@
+{
+  "authorization": {
+    "development_decontamination": false,
+    "stage_b_training": false
+  },
+  "failure": {
+    "cause": "The v1 normalizer accepted IGH/IGK/IGL locus labels, while the two authenticated OAS schemas encode the same loci as H/K/L.",
+    "quality_rows_before_exact_dedup": 0,
+    "source_rows_parsed": 3087576,
+    "unique_exact_pairs": 0
+  },
+  "format_version": "abpairfm_oas_stage_b_schema_failure_v1",
+  "job": {
+    "elapsed": "00:05:52",
+    "exit_code": "0:0",
+    "job_id": 1458677,
+    "slurm_state": "COMPLETED"
+  },
+  "remote_receipt_sha256": "5a0cf8b9a1bcfed73324deb9450b2577b1d718af8e9e229dc7fc43425c693a80",
+  "source_script_sha256": "9ae7dfa3e86f9384fe055a3951437164bd9cc566da37f1039301ec47bed689ca",
+  "status": "FAILED_CLOSED_SCHEMA_MISMATCH",
+  "test_access": false
+}

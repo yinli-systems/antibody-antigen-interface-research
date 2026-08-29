@@ -1,0 +1,183 @@
+{
+  "schema_version": "mipe-official-replay-release-v1",
+  "status": "complete_for_released_code_lr1e3_track",
+  "released_at": "2026-08-21T16:44:06+08:00",
+  "claim_boundary": "Provided external test-split evaluation with pre-scoring schema access; not a pristine blind test and not evidence of external generalization.",
+  "dataset": {
+    "cv_records": 560,
+    "cv_sha256": "bec27189755dee82291a0471b72c114feb0f7fa0021b270ffef924354c5dafca",
+    "provided_test_records": 64,
+    "provided_test_sha256": "adc4b5fcf1ee9bc113cc1b844b33303a7741cb46ac7b3dc6b1520eefdae509ca",
+    "exact_complex_code_overlap": []
+  },
+  "checkpoint_track": {
+    "track_id": "released_code_compatible_lr1e3_seed42_legacy_resume_v1",
+    "folds": 5,
+    "target_epochs": 800,
+    "learning_rate": 0.001,
+    "ensemble": "unweighted arithmetic mean of five fold probabilities",
+    "primary_selection": "epoch_800_endpoint",
+    "secondary_selection": "validation_best",
+    "test_label_driven_model_selection": false,
+    "test_label_driven_threshold_selection": false,
+    "warning": "This track follows the released main.py learning rate, not Appendix section 2.3. The paper-appendix 1e-4 replay is tracked separately and has no terminal metrics yet."
+  },
+  "published_joint_mipe_reference": {
+    "source": "https://www.ijcai.org/proceedings/2024/0669.pdf",
+    "epitope": {
+      "auroc": 0.815,
+      "auprc": 0.422,
+      "mcc_at_0_5": 0.235
+    },
+    "paratope": {
+      "auroc": 0.894,
+      "auprc": 0.738,
+      "mcc_at_0_5": 0.531
+    }
+  },
+  "provided_test_five_fold_ensemble": {
+    "primary_epoch_800": {
+      "epitope": {
+        "auroc": 0.8753610101077112,
+        "auprc": 0.47946905363792386,
+        "mcc_at_0_5": 0.21939160836616137
+      },
+      "paratope": {
+        "auroc": 0.8441298207760948,
+        "auprc": 0.6165599858631043,
+        "mcc_at_0_5": 0.39643791722103117
+      },
+      "native_mean_bidirectional_attention": {
+        "candidate_pairs": 1070174,
+        "complexes": 64,
+        "positive_pairs": 2056,
+        "prevalence": 0.0019211829104426009,
+        "macro_auprc": 0.005399659889669072,
+        "pooled_auprc": 0.0020400684580855664,
+        "recall_at_1": 0.0,
+        "mrr": 0.007801162863997111
+      },
+      "predicted_residue_outer_product": {
+        "macro_auprc": 0.06606454741846338,
+        "pooled_auprc": 0.03580821121366311,
+        "recall_at_1": 0.078125,
+        "mrr": 0.20600839948380173
+      }
+    },
+    "secondary_validation_best": {
+      "selected_epochs_by_fold": [572, 605, 704, 522, 771],
+      "epitope": {
+        "auroc": 0.8927749224221447,
+        "auprc": 0.5132184086871519,
+        "mcc_at_0_5": 0.31794926575421206
+      },
+      "paratope": {
+        "auroc": 0.8754316607214494,
+        "auprc": 0.6696420486625465,
+        "mcc_at_0_5": 0.49200198261969896
+      },
+      "native_mean_bidirectional_attention": {
+        "candidate_pairs": 1070174,
+        "complexes": 64,
+        "positive_pairs": 2056,
+        "prevalence": 0.0019211829104426009,
+        "macro_auprc": 0.005534781844661956,
+        "pooled_auprc": 0.0020801632443453746,
+        "recall_at_1": 0.0,
+        "mrr": 0.00810015799708039
+      },
+      "predicted_residue_outer_product": {
+        "macro_auprc": 0.07366585726262656,
+        "pooled_auprc": 0.041906203017198,
+        "recall_at_1": 0.078125,
+        "mrr": 0.2075867807012311
+      }
+    }
+  },
+  "oof_threshold_calibration": {
+    "selection_policy": "Thresholds maximize MCC on 560 CV out-of-fold complexes only; provided-test labels are never used for fitting.",
+    "primary_epoch_800": {
+      "epitope": {
+        "threshold": 0.20608077943325043,
+        "oof_mcc": 0.2658195681935157,
+        "provided_test_mcc": 0.4540198783580102
+      },
+      "paratope": {
+        "threshold": 0.2625821977853775,
+        "oof_mcc": 0.4691995753757502,
+        "provided_test_mcc": 0.45810041108973726
+      }
+    },
+    "secondary_validation_best": {
+      "epitope": {
+        "threshold": 0.2285335436463356,
+        "oof_mcc": 0.29046566562847154,
+        "provided_test_mcc": 0.4847530352994305
+      },
+      "paratope": {
+        "threshold": 0.33734533190727234,
+        "oof_mcc": 0.5390849372382002,
+        "provided_test_mcc": 0.5098559995448426
+      }
+    }
+  },
+  "bound_geometry_oracle_diagnostic": {
+    "claim_boundary": "Bound-complex coordinate oracle diagnostic only. It directly uses the common antibody-antigen coordinate frame and is not a deployable unbound or sequence-only predictor.",
+    "score_definition": "negative minimum inter-chain C-alpha Euclidean distance",
+    "cv_fitted_distance_threshold_angstrom": {
+      "epitope": 9.015225887298584,
+      "paratope": 8.943046569824219
+    },
+    "provided_test": {
+      "epitope": {
+        "auroc": 0.9889079823123633,
+        "auprc": 0.8924026663691196,
+        "mcc_at_cv_fitted_threshold": 0.7822255410186594
+      },
+      "paratope": {
+        "auroc": 0.9464851387639007,
+        "auprc": 0.8628288109907708,
+        "mcc_at_cv_fitted_threshold": 0.6801129386883674
+      },
+      "pair_contact": {
+        "candidate_pairs": 1070174,
+        "positive_pairs": 2056,
+        "macro_auprc": 0.4855689317436934,
+        "pooled_auprc": 0.4450955833499195,
+        "recall_at_1": 0.609375,
+        "mrr": 0.78515625
+      }
+    }
+  },
+  "paper_appendix_lr1e4_replay": {
+    "status": "running_as_of_2026-08-21T16:44:06+08:00",
+    "terminal_metrics": null,
+    "protocol": "../../protocols/mipe_paper_appendix_lr1e4_seed42.json",
+    "fold_epoch_snapshot": [15, 13, 13, 12, 11],
+    "settings": {
+      "folds": 5,
+      "target_epochs": 800,
+      "learning_rate": 0.0001,
+      "optimizer": "Adam",
+      "batch_size": 16,
+      "seed": 42
+    }
+  },
+  "artifact_receipts": {
+    "full_official_evaluation_json_sha256": "4e6d6921a534626c3c9c191988eff1b45d713ef06d4ec8a42e8621c94059edec",
+    "full_oof_calibration_json_sha256": "cfc10dbda49890bdaadc320e59be9e22525735da769193b0a7971898ca98ea09",
+    "full_bound_geometry_json_sha256": "1be4aa8d7453f43c67e004d5dc176ce7e471b887f6e95243403ed7a0bd1122f8",
+    "mipe_independent_test_script_sha256": "a872160801ba792543212f089d616ac8b6bbed16267cd4978da7105039d45635",
+    "mipe_oof_threshold_calibration_script_sha256": "81a79beed84125bd25470a85684d7cef51c3815623c5631f679118116925afa8",
+    "mipe_bound_geometry_diagnostic_script_sha256": "0b09e9550970f45af14cf5a98c3e7cfb92609bc2e64427f120aefdc965ce518b",
+    "freeze_mipe_selections_script_sha256": "61ee6cacca64fd31d26d031187d400d2b4831b0e3ea1f54ae931868159fe8c2b",
+    "paper_appendix_protocol_sha256": "85020c42eac4e79439c73a5048c5938a6617be1fe5fc25cf5e6ffc0128d77d9a"
+  },
+  "omitted_from_git": [
+    "model checkpoints",
+    "raw datasets",
+    "complete prediction tensors",
+    "per-file prediction paths",
+    "cluster absolute paths and job identifiers"
+  ]
+}

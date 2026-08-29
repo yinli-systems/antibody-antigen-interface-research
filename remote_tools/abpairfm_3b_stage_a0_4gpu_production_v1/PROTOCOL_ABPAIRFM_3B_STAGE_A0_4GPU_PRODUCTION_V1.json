@@ -1,0 +1,59 @@
+{
+  "acceptance": {
+    "finite_loss_and_gradient": true,
+    "minimum_first_verified_updates": 10,
+    "required_gpu_model": "NVIDIA GeForce RTX 4090",
+    "required_world_size": 4,
+    "test_access": false
+  },
+  "authorization": {
+    "development_access": false,
+    "production_stage_a0_pair_mlm": true,
+    "production_stage_a_full_objective": false,
+    "production_switch_authorized_by_user": true,
+    "temporal_holdout_access": false,
+    "test_access": false
+  },
+  "batch_equivalence": {
+    "accumulation_steps": 7,
+    "global_pairs_per_update": 112,
+    "microbatch_pairs_per_rank": 4,
+    "previous_8gpu_global_pairs_per_update": 112
+  },
+  "canary_evidence": {
+    "audit_status": "PASS",
+    "checkpoint_content_sha256": "c2d2a4e07f16a436087e7e6e392f036fda5d325b9e6374893677f835c55d57dd",
+    "mfu_6n_estimate": 0.12061089715825657,
+    "nonfinite_updates": 0,
+    "peak_allocated_memory_fraction": 0.867498421463169,
+    "protocol_sha256": "6ddd18a1bd237c480c9cf592607f20adf32fd77ea752888ec4b5124775073b6c",
+    "residue_tokens_per_second_mean": 4678.849518986726
+  },
+  "checkpoint": {
+    "backend": "torch_distributed_checkpoint",
+    "input_content_sha256": "efae7531a21d685f7b45306f54276f89d5347407a1a9ccc9c27f792fe44eee1c",
+    "input_generation": "segment-000105",
+    "input_world_size": 8,
+    "output_generation": "segment-000106",
+    "output_world_size": 4,
+    "require_model_optimizer_and_training_cursor": true
+  },
+  "claim_boundary": "Production continuation of Stage-A0 pair-aware balanced MLM only; no development, test, temporal, biological, or SOTA claim is authorized.",
+  "format_version": "abpairfm_3b_stage_a0_4gpu_production_protocol_v1",
+  "hardware": {
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "partition": "gpu_4090",
+    "single_node": true
+  },
+  "optimization": {
+    "attention_backend": "aten_native_varlen_flash",
+    "attention_sdpa_calls_per_layer": 2,
+    "length_bucketed_microbatches": true,
+    "scalar_metric_all_reduces_per_update": 1
+  },
+  "segment": {
+    "index": 106,
+    "updates": 200
+  }
+}

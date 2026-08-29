@@ -1,0 +1,45 @@
+{
+  "claim_boundary": "Failed CPU-only exact-overlap audit launch; no OAS corpus scan, AsEP sequence comparison, downstream transfer authorization, official-test access, or scientific result",
+  "failure": {
+    "exception": "ModuleNotFoundError: No module named 'interaction_first.asep_external'",
+    "root_cause": "The batch PYTHONPATH placed repository-root src before framecontact/src, so the root interaction_first package shadowed the FrameContact interaction_first package that owns asep_external.",
+    "stage": "Python import before audit argument parsing and before any corpus-array scan"
+  },
+  "format_version": "oas_asep_development_overlap_failure_receipt_v1",
+  "job": {
+    "elapsed": "00:00:19",
+    "exit_code": "1:0",
+    "job_id": "1406936",
+    "state": "FAILED"
+  },
+  "paths": {
+    "environment": "/ssd/scxi253/model_deployment/results/pretraining/oas_asep_development_overlap_f87a208_attempt_001/environment.txt",
+    "stderr": "/ssd/scxi253/model_deployment/results/pretraining/oas-asep-dev-overlap-1406936.err",
+    "stdout": "/ssd/scxi253/model_deployment/results/pretraining/oas-asep-dev-overlap-1406936.out"
+  },
+  "replacement": {
+    "required": true,
+    "requirements": [
+      "Use an immutable new source directory and output root.",
+      "Prove framecontact/src package precedence under the exact conflicting PYTHONPATH.",
+      "Preserve job 1406936 and its artifacts unchanged."
+    ]
+  },
+  "runtime": {
+    "development_sequence_fields_only": true,
+    "gpu_compute_permitted": false,
+    "official_test_accessed": false,
+    "scheduler_reserved_gpu": "NVIDIA GeForce RTX 4090",
+    "scheduler_reserved_gpu_count": 1
+  },
+  "sha256": {
+    "environment": "0755a0e804cec8fcb49fbdf8bcc3c5f8677b05ec27110caf1c45928f5bd54a15",
+    "stderr": "a996c8a59de6d87f1e19df5ca7a4f47cfb12d224083873261d8fce185e71a897",
+    "stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "source": {
+    "commit": "f87a208639ce7465527d0de215db06f7d2351797",
+    "immutable_directory": "/ssd/scxi253/model_deployment/jobs/oas-asep-overlap-f87a208-attempt-001"
+  },
+  "timestamp": "2026-08-15T12:50:53+08:00"
+}

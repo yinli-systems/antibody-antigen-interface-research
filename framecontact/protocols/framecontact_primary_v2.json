@@ -1,0 +1,147 @@
+{
+  "schema_version": "framecontact_primary_protocol_v2",
+  "protocol_status": "preregistered_before_framecontact_pair_training",
+  "frozen_on": "2026-07-30",
+  "parent_protocol": {
+    "path": "protocols/framecontact_primary_v1.json",
+    "sha256": "14b88139f08a994c2288f43aa98d15d5329812643e6c3d4fa6d69f49f3ff973a",
+    "receipt_sha256": "813ea1cbb1fa49d5d337d568502394f268eba7f66cfaf09ae435d9c196e52786",
+    "reason_for_new_version": "The teacher's fixed-antigen different-antibody question exposed that v1 tested only the reciprocal fixed-antibody direction and that total contact scores could contain unary propensity shortcuts."
+  },
+  "project": {
+    "name": "FrameContact",
+    "title": "Geometry-aware Partner-specific Antibody-Antigen Modeling under Structural Novelty",
+    "confirmatory_claim": "On structurally novel antigens, the model changes its epitope hypothesis with antibody identity and ranks the cognate antibody above matched non-cognate antibodies using jointly conditioned residue-pair evidence rather than monomer propensity."
+  },
+  "evidence_boundary_at_freeze": {
+    "framecontact_pair_training_started": false,
+    "new_antigen_fold_test_labels_accessed": false,
+    "new_external_test_predictions_accessed": false,
+    "existing_chimera_residue_classification": "secondary_post_access_only",
+    "existing_spatial_self_attention_result": "monomer_geometry_evidence_only",
+    "prohibited_claim": "No existing residue-only result establishes antibody-specific epitope prediction or cognate-partner discrimination."
+  },
+  "hypothesis": {
+    "primary": "For the same antigen, the cognate antibody receives a higher interaction-only compatibility score than 31 metadata-matched non-cognate antibodies.",
+    "reciprocal": "For the same antibody, the cognate antigen receives a higher interaction-only compatibility score than 31 metadata-matched non-cognate antigens.",
+    "mechanistic": "Independent local-frame self-attention improves monomer features; explicit contact prediction creates an alignment-free pair representation that gates cross-chain information flow.",
+    "null": "Cognate and matched non-cognate partners have equal expected interaction-only compatibility after structural-cluster weighting."
+  },
+  "data": {
+    "development_source": "Authenticated SAbDab2 structures and exact residue-pair labels",
+    "contact_label_source": "Authoritative pairs.parquet only",
+    "split": {
+      "name": "antigen_structure_novel_v1",
+      "structural_edge_rule": "max(query_normalized_tm_score,target_normalized_tm_score) >= 0.50",
+      "hard_constraints": [
+        "zero exact antigen sequence overlap across roles",
+        "zero exact focal antibody sequence overlap across roles",
+        "zero PDB biological assembly overlap across roles",
+        "no test role used for architecture, checkpoint, calibration, threshold, or seed selection"
+      ],
+      "secondary": "double-cold antibody-cluster and antigen-structure-cluster split"
+    },
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "selection_time": "before fitting from identifiers and task-label-free metadata",
+      "fixed_antigen_wrong_antibody_matching": [
+        "antibody format",
+        "antibody length decile",
+        "CDR residue-count decile"
+      ],
+      "fixed_antibody_wrong_antigen_matching": [
+        "antigen class",
+        "antigen length decile",
+        "surface residue-count decile"
+      ],
+      "shared_exclusions": [
+        "same exact partner sequence",
+        "same partner cluster",
+        "same documented cognate group"
+      ]
+    }
+  },
+  "primary_endpoint": {
+    "name": "fixed_antigen_cognate_antibody_interaction_margin",
+    "pair_score": "mean sigmoid of the largest max(1,ceil(0.01*candidate_pair_count)) pair-interaction logits, explicitly excluding antibody unary, antigen unary, and global contact bias",
+    "estimand": "score(cognate antibody, fixed antigen) minus mean score of 31 frozen wrong antibodies",
+    "aggregate": "mean of antigen-structure-cluster means",
+    "uncertainty": "10000-replicate antigen-structure-cluster bootstrap with seed 20260730",
+    "success_rule": "the two-sided 95% bootstrap lower bound is greater than zero",
+    "retrieval_metrics": [
+      "top-1 accuracy among 32 antibodies",
+      "mean reciprocal rank",
+      "median cognate rank"
+    ]
+  },
+  "required_reciprocal_endpoint": {
+    "name": "fixed_antibody_cognate_antigen_interaction_margin",
+    "aggregate": "mean of antibody-cluster means",
+    "success_rule": "reported with a 10000-replicate antibody-cluster bootstrap; it cannot replace a failed primary fixed-antigen endpoint"
+  },
+  "shortcut_controls": {
+    "required": [
+      "marginal-only score using antibody and antigen unary terms",
+      "sequence-only dense model",
+      "antigen-only spatial model",
+      "partner shuffle in both directions",
+      "geometry shuffle",
+      "local-frame corruption",
+      "degree-matched graph rewiring",
+      "sequence-preserving coordinate perturbation",
+      "independent global SE(3) transform invariance"
+    ],
+    "interpretation": "A positive total-contact margin with a non-positive interaction-only margin is a shortcut failure."
+  },
+  "architecture_matrix": [
+    "ESM dense sequence-only self-attention",
+    "distance RBF",
+    "distance plus local direction",
+    "full relative pose",
+    "late contact-gated cross-attention",
+    "interleaved contact-gated cross-attention",
+    "WALLE official implementation on its native AsEP task",
+    "EpiFormer official implementation on its native AsEP task",
+    "SPPIDER-seq official partner-aware sequence baseline",
+    "GVP or EGNN matched-capacity structure baseline"
+  ],
+  "training_objective": {
+    "contact": "class-balanced BCE on authenticated cognate residue-pair labels",
+    "marginals": "class-balanced epitope and paratope BCE",
+    "specificity": "mean softplus ranking loss over both reciprocal counterfactual directions",
+    "specificity_score_source": "interaction_only",
+    "wrong_pair_rule": "wrong pairs are ranking examples and are never assigned fabricated all-zero contact matrices",
+    "complex_weighting": "equal per-complex weight"
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional margins; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "validation only",
+    "reporting": "all seeds plus the frozen five-seed ensemble"
+  },
+  "secondary_endpoints": {
+    "contact": ["mean per-complex AUPRC", "pooled AUPRC", "AUROC", "precision", "recall"],
+    "marginals": ["epitope AUPRC", "paratope AUPRC", "MCC", "F1"],
+    "calibration": ["Brier score", "ECE-15", "reliability plot"],
+    "mechanism": [
+      "attention entropy by layer and head",
+      "spatial-neighbor enrichment",
+      "cross-attention gate by direction and layer",
+      "performance versus local-patch novelty"
+    ]
+  },
+  "external_evaluation": {
+    "frozen_test": "opened once only after checkpoints, panels, scorer, thresholds, and receipts are frozen",
+    "asep": "external antibody-specific epitope benchmark; never tune on its test role",
+    "chimera": "canonical epitope-conditioned CDR sequence-structure co-design is a separate downstream task"
+  },
+  "failure_rules": [
+    "Antigen-only epitope AUPRC cannot establish antibody specificity.",
+    "Attention weights are not contacts unless the contact head is scored against exact pair labels.",
+    "A one-seed or development-only gain cannot support the confirmatory claim.",
+    "Recent preprints are inspiration and external baselines, not evidence for FrameContact until reproduced under the frozen split."
+  ]
+}

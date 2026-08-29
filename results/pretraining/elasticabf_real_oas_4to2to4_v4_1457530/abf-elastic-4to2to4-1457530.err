@@ -1,0 +1,2 @@
+/ssd/scxi253/model_deployment/envs/contact/lib/python3.10/site-packages/torch/distributed/checkpoint/state_dict_loader.py:153: UserWarning: torch.distributed is disabled, unavailable or uninitialized, assuming the intent is to load in a single process.
+  warnings.warn(

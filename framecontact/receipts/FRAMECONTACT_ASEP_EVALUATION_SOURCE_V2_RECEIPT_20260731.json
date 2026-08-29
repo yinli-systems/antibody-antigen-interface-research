@@ -1,0 +1,37 @@
+{
+  "archive_file_count": 214,
+  "archive_sha256": "d016d72134243db6b437cf7793f7b904ff2d47fedcc694ecdd8fa36c48f8fae2",
+  "archive_size_bytes": 385057,
+  "archive_source_manifest_sha256": "c5ec69b1d23a62900d06b9f693e0c2198d77cf3cbb33216d5396cd8ea2a4deae",
+  "archive_with_embedded_manifest_file_count": 215,
+  "claim_boundary": "Source, protocols, tests, and documentation only. Local 178-test regression and remote compile/import checks are code evidence, not AsEP test, biological benchmark, AB03, A100, throughput, or performance evidence.",
+  "created_utc": "2026-07-30T19:32:33Z",
+  "format_version": "framecontact_asep_evaluation_source_deployment_v2",
+  "local_validation": {
+    "compileall_passed": true,
+    "pytest_passed": 178,
+    "pytest_total": 178
+  },
+  "primary_source_sha256": {
+    "scripts/evaluate_asep_frozen_test.py": "3cdd058b6834fecded412bc91c54ba40f294354cfe12efd9949d1503b4785a4d",
+    "scripts/freeze_asep_official_test_opening.py": "11229842e6332cd82c6f1b4870f6851800a792065b88d95a556ed7054f8f00ab",
+    "src/interaction_first/asep_frozen_test.py": "807d58e8c2cd7dbb914073e56543bc37798543877370c7e137d6a4221a6eb37e"
+  },
+  "remote_authority_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/evaluation-source-v2-authority",
+  "remote_checks": {
+    "archive_sha256_matches_local": true,
+    "compileall_passed_before_bytecode_cleanup": true,
+    "embedded_manifest_sha256_matches_archive_receipt": true,
+    "generated_bytecode_caches_removed": true,
+    "import_smoke_passed": true,
+    "source_file_count_including_embedded_manifest": 215,
+    "source_tree_read_only": true
+  },
+  "remote_hardware_boundary": "Remote checks ran on the ParaCloud environment only and did not allocate or validate AB03/A100 hardware.",
+  "remote_source_path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/asep/evaluation-source-v2",
+  "test_access": {
+    "asep_official_graph_or_label_opened": false,
+    "asep_official_score_computed": false,
+    "sabdab2_frozen_test_opened": false
+  }
+}

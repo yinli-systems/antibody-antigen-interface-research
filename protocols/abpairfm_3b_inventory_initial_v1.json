@@ -1,0 +1,94 @@
+{
+  "development": {
+    "asep_frozen_development_split": true,
+    "evaluation_harness_audited": false,
+    "independent_leakage_audit_passed": false,
+    "sabdab2_frozen_development_split": true,
+    "test_bytes_accessed": false,
+    "test_sealed": true
+  },
+  "format_version": "abpairfm_3b_inventory_v1",
+  "model": {
+    "checkpoint_present": false,
+    "checkpoint_sha256": null,
+    "compatible_parameter_count": null,
+    "fsdp2_runner_present": false,
+    "pair_aware_model_code_present": false
+  },
+  "native_vh_vl": {
+    "admitted_native_pair_count": 0,
+    "cdr_numbering_complete": false,
+    "deduplication_complete": false,
+    "donor_study_clone_split_complete": false,
+    "native_pair_evidence_complete": false,
+    "observed_assets": {
+      "abcdr_oas_paired_record_18762309": "materialization_started_not_admitted",
+      "oas_unpaired_250m": "ineligible_as_native_pair_evidence"
+    }
+  },
+  "observed_at_utc": "2026-08-21T15:56:47Z",
+  "ppi": {
+    "normalized_training_examples": 0,
+    "post_dedup_training_examples": 0,
+    "sources": {
+      "pinder_2024_02": {
+        "decontamination_complete": false,
+        "index_materialized": false,
+        "metadata_materialized": false,
+        "normalized": false,
+        "public_index_contains_split_metadata": true,
+        "test_rows_used": false,
+        "test_structure_bytes_accessed": false,
+        "train_structure_archive_materialized": false,
+        "train_val_rows_only": true,
+        "training_use_authorized": false
+      },
+      "pplm_2026": {
+        "declared_pair_count": 3300000,
+        "decontamination_complete": false,
+        "normalized": false,
+        "raw_materialized": false,
+        "training_use_authorized": false
+      },
+      "ppiref_zenodo_14845086": {
+        "archive_entry_count": 831382,
+        "decontamination_complete": false,
+        "normalized": false,
+        "pdb_file_count": 745501,
+        "raw_materialized": true,
+        "raw_stats_row_count": 765139,
+        "training_use_authorized": false
+      },
+      "string_v12_physical": {
+        "decontamination_complete": false,
+        "evidence_channel_filter_complete": false,
+        "normalized": false,
+        "raw_materialized": false,
+        "training_use_authorized": false
+      }
+    },
+    "unique_biological_pair_count_reported": false,
+    "unique_interface_cluster_count_reported": false
+  },
+  "runtime": {
+    "fixed_python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "modules": {
+      "esm": false,
+      "flash_attn": false,
+      "pinder": false,
+      "safetensors": false,
+      "torch": true,
+      "torch_geometric": false,
+      "transformers": false
+    },
+    "sdpa_present": true,
+    "torch_cuda": "12.8",
+    "torch_fsdp2_fully_shard_present": true,
+    "torch_version": "2.7.1+cu128"
+  },
+  "systems": {
+    "eight_gpu_fixed_work_passed": false,
+    "four_gpu_recovery_passed": false,
+    "four_gpu_smoke_passed": false
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": "framecontact_primary_protocol_v3",
+  "protocol_status": "frozen_before_sabdab2_antigen_fold_fitting",
+  "frozen_on": "2026-07-30",
+  "parent_protocol": {
+    "path": "protocols/framecontact_primary_v2.json",
+    "sha256": "e41810dfd91b1844cda7acdcaf079f6f86ce05076c5417efb98733b6a5b29611",
+    "receipt_sha256": "90d6f42be6e3e1d0d1b15c80c817642d47556200c91bdc476b043bb913500063",
+    "reason_for_new_version": "Replace the one-sided reciprocal-max Foldseek rule with reciprocal-min global fold isolation, bind the completed split/cache/US-align authorities, and freeze the executable SAbDab2 training matrix."
+  },
+  "project": {
+    "name": "FrameContact",
+    "title": "Geometry-aware Partner-specific Antibody-Antigen Modeling under Structural Novelty",
+    "confirmatory_claim": "On reciprocal-min-TM-isolated antigen folds, an explicitly partner-conditioned contact model ranks the cognate antibody above matched non-cognate antibodies using interaction-only residue-pair evidence."
+  },
+  "evidence_boundary_at_freeze": {
+    "asep_development_training_started": true,
+    "asep_role": "external development benchmark and engineering validation only",
+    "sabdab2_antigen_fold_fitting_started": false,
+    "sabdab2_antigen_fold_test_labels_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "external_test_predictions_accessed": false,
+    "prohibited_claim": "Neither AsEP development results nor monomer-only epitope/paratope results are confirmatory evidence for SAbDab2 structural generalization or partner specificity."
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "development_source": "Authenticated SAbDab2 structure, ESM2-650M, and exact residue-pair contact cohorts",
+    "unit": "antibody-antigen complex",
+    "authorities": {
+      "structure_manifest_sha256": "edf74fd704b8b3b4ec9f7c9779e6a548b51e6d18d182642b5323ebc9ea2033f0",
+      "contact_manifest_sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33",
+      "esm_embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545",
+      "cache_verification_receipt_sha256": "87c3d049bfc87901c1fb6ab451c32637619180ca31429d800f4fb0f5636af883",
+      "split_receipt_sha256": "f8eb5c4cde07b444382da709bb8cfe7785bcbc92df629664ab67eee4dae2933f",
+      "split_manifest_sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6",
+      "structural_audit_sha256": "971711716553c34b7098b462f31149adb4aece96b3a937021f4f4e13bbb4cb4a",
+      "usalign_receipt_sha256": "529236e0170ea812dbe2f9e8b00a905f8ed9e0dbb2e6fdff5b2333d5b2459619",
+      "usalign_table_sha256": "dfb33059d663ce74f3d6efc51ec63d5f6d0ed1302a1c5ab0028f1188f3a9e6f3",
+      "partner_metadata_receipt_sha256": "a962fcc34bf5fb1ee2551a57b689084d152b68451c330cebcd7dc3d4249d8afe"
+    },
+    "split": {
+      "name": "sabdab2_antigen_fold_reciprocal_min_v3_1",
+      "roles": {"train": 2565, "validation": 549, "test": 549},
+      "structural_edge_rule": "min(Foldseek query-normalized TM-score, Foldseek target-normalized TM-score) >= 0.50",
+      "pure_structural_components": 245,
+      "policy_components": 233,
+      "policy_component_rule": "transitive closure of structural hard edges plus exact PDB assembly, antigen sequence, and antibody sequence equality",
+      "largest_policy_component": 1218,
+      "hard_edge_count": 725687,
+      "cross_role_hard_edge_count": 0,
+      "cross_role_exact_overlap_count": 0,
+      "usalign_boundary_cross_role_pairs": 103,
+      "usalign_cross_role_hard_edge_count": 0,
+      "test_policy": "The test role cannot be loaded for architecture, objective, checkpoint, calibration, threshold, intervention choice, seed selection, or failure analysis."
+    },
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "selection_time": "before fitting from identifiers and task-label-free partner metadata",
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5",
+      "test_sha256": "ea70fef770448302fb4ed1ccd7da51a1cc56cba5ea153076e077971735874bd1",
+      "wrong_pairs_are_contact_unlabeled": true
+    }
+  },
+  "hypothesis": {
+    "primary": "For the same antigen, the cognate antibody has a positive interaction-only compatibility margin over 31 frozen matched non-cognate antibodies on the sealed antigen-fold test role.",
+    "required_reciprocal": "For the same antibody, the cognate antigen has a positive interaction-only compatibility margin over the reciprocal frozen panel.",
+    "mechanistic": "Local-frame intra-chain geometry improves monomer features and an explicit pair-contact representation gates bidirectional cross-chain information flow without directly subtracting coordinates from unaligned monomers.",
+    "null": "Cognate and matched non-cognate partners have equal expected interaction-only compatibility after cluster weighting."
+  },
+  "primary_endpoint": {
+    "name": "fixed_antigen_cognate_antibody_interaction_margin",
+    "pair_score": "mean sigmoid of the largest max(1,ceil(0.01*candidate_pair_count)) interaction-only pair logits",
+    "aggregate": "mean of antigen-structure-cluster means",
+    "uncertainty": "10000-replicate antigen-structure-cluster bootstrap with seed 20260730",
+    "success_rule": "the two-sided 95% bootstrap lower bound is greater than zero",
+    "retrieval_metrics": ["top-1 accuracy among 32 antibodies", "mean reciprocal rank", "median cognate rank"]
+  },
+  "required_reciprocal_endpoint": {
+    "name": "fixed_antibody_cognate_antigen_interaction_margin",
+    "aggregate": "mean of antibody-cluster means",
+    "success_rule": "reported with a 10000-replicate cluster bootstrap and cannot replace a failed primary endpoint"
+  },
+  "development_matrix": [
+    "sequence_dense",
+    "spatial_topology",
+    "distance",
+    "distance_direction",
+    "full_pose",
+    "frozen_frame_ipa",
+    "framecontact",
+    "framecontact_interleaved"
+  ],
+  "confirmatory_model": "framecontact_interleaved",
+  "training_objective": {
+    "contact": "class-balanced BCE on authenticated cognate residue-pair labels",
+    "marginals": "class-balanced epitope and paratope BCE",
+    "specificity": "mean softplus ranking loss over both reciprocal counterfactual directions",
+    "specificity_score_source": "interaction_only",
+    "wrong_pair_rule": "wrong pairs are ranking examples and never receive fabricated all-zero contact labels",
+    "complex_weighting": "equal per-complex weight",
+    "loss_weights": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25},
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "checkpoint_rule": "maximize the minimum of the two validation cluster-weighted directional interaction-only margins; break ties within 0.0001 by validation mean per-complex contact AUPRC, then earlier epoch",
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "temperature_and_thresholds": "validation only",
+    "reporting": "report every seed and a frozen five-seed ensemble without suppressing failures"
+  },
+  "implementation": {
+    "frozen_esm": "ESM2 t33 650M UR50D residue embeddings",
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 2,
+    "evaluation_batch_size": 8,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000
+  },
+  "required_test_outputs": {
+    "contact": ["mean per-complex AUPRC", "pooled AUPRC", "AUROC", "P@10", "P@20", "P@50", "P@Lmin fractions"],
+    "marginals": ["epitope and paratope pooled and mean per-complex AUPRC", "AUROC", "precision", "recall", "F1", "MCC"],
+    "calibration": ["Brier", "ECE-15", "calibration slope", "shared validation temperature"],
+    "specificity": ["both directional margins", "top-1", "MRR", "cognate rank", "same-antigen different-antibody counterfactual"],
+    "mechanism": ["attention entropy", "spatial-neighbor enrichment", "geometry-path gate", "cross-attention gate"]
+  },
+  "required_interventions": [
+    "partner shuffle in both directions",
+    "geometry shuffle",
+    "local-frame corruption",
+    "degree-matched neighbor-graph rewiring",
+    "sequence-preserving coordinate Gaussian noise at 0.10, 0.25, and 0.50 angstrom",
+    "independent antibody and antigen global SE(3) transforms"
+  ],
+  "secondary_evaluation": {
+    "temporal_split": "run only after antigen-fold development decisions are frozen",
+    "asep": "official development/test policy followed independently; no SAbDab2 test tuning",
+    "chimera": "canonical epitope-conditioned CDR sequence-structure co-design is downstream and cannot be inferred from classification"
+  },
+  "failure_rules": [
+    "A residue AUPRC gain without a positive interaction-only partner margin does not support partner specificity.",
+    "A total-contact margin with a non-positive interaction-only margin is a unary-propensity shortcut failure.",
+    "Attention weights are diagnostic, not contact predictions, unless scored through the explicit contact head.",
+    "One seed, development-only performance, or an opened test used for decisions cannot support the confirmatory claim.",
+    "The reciprocal-min Foldseek split is described as a declared operational fold criterion, not proof of zero remote homology."
+  ]
+}

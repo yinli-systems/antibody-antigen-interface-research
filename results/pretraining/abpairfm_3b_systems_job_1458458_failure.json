@@ -1,0 +1,30 @@
+{
+  "claim_boundary": "Synthetic full-model systems attempt only; no biological data was loaded and no training or throughput claim passed.",
+  "evidence": {
+    "process_snapshot_sha256": "dfe6e0405dcc297a8781b88351281d9b4e1ff2da17d96fad70275d34068454bc",
+    "remote_process_snapshot": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458458-process-before-cancel.txt",
+    "remote_sacct_snapshot": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_v1/systems/job-1458458-sacct-before-cancel.txt",
+    "sacct_snapshot_sha256": "bfe1363b1805c260ba0814b089343f098d0369dc0325ac715e1120a939103f82"
+  },
+  "failure": {
+    "error": "No bounded first-step completion or receipt after five minutes; GPU ranks 0, 1, and 3 remained at 99 percent SM while rank 2 had no active SM work.",
+    "root_cause": "Unresolved rank-asymmetric first-step stall after authenticated checkpoint loading and successful Flash SDPA dispatch.",
+    "stage": "first_synthetic_training_step"
+  },
+  "format_version": "abpairfm_3b_fsdp2_systems_failure_v1",
+  "job": {
+    "elapsed": "00:05:02",
+    "exit_code": "cancelled_after_evidence_capture",
+    "gpu_count": 4,
+    "job_id": 1458458,
+    "max_rss_kib": 5277148,
+    "partition": "gpu_4090",
+    "state": "CANCELLED_FAIL_CLOSED"
+  },
+  "remediation": "Add rank- and layer-level phase tracing plus a five-minute distributed timeout, retry on a different gpu_4090 node, and do not promote until every rank completes measured steps.",
+  "status": "FAILED_CLOSED",
+  "test_access": {
+    "asep_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

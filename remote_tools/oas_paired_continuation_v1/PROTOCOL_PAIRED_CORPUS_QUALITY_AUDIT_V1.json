@@ -1,0 +1,20 @@
+{
+  "authorization": {
+    "corpus_materialization": false,
+    "development_only": true,
+    "training": false
+  },
+  "format_version": "oas_paired_corpus_quality_audit_protocol_v1",
+  "inputs": {
+    "expected_pairs": 2585593,
+    "pairs_sha256": "87c907d6e6edaab7b9b22957e5c789b6b80906fb45adca3da7ac59d8758d93ff"
+  },
+  "required_checks": [
+    "all row hashes unique",
+    "all six supplied CDR strings map as ordered exact substrings",
+    "all paired encodings fit within 320 tokens without truncation",
+    "all CDR3-balanced background mask probabilities are finite and inside (0,1)"
+  ],
+  "test_access": false,
+  "training_performed": false
+}

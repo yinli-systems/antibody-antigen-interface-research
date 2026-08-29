@@ -1,0 +1,59 @@
+{
+  "authorization": {
+    "campaign_complete": false,
+    "downstream_transfer": false,
+    "next_segment_submission": true,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Measurement-only recovery of the frozen OAS validation-panel index anchor for segment-000007. Training state, checkpoint, optimizer, RNG, sampler cursor, masking, corpus, and test authority are unchanged.",
+  "corrected_validation": {
+    "evaluation_file_sha256": "f9092bb38d7cee136d31e04635bc6fa48e3be3c91c35426615eea27aae31366a",
+    "masked_accuracy": 0.8762832174068129,
+    "masked_cross_entropy": 0.4804710264709388,
+    "panel_indices_sha256": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "record_count": 8192,
+    "selected_targets": 140175
+  },
+  "failed_segment": {
+    "artifact_manifest_sha256": "d1dcfde84b2d6dd520d85f538cce7174d2a51f6e79866920f69151eeaa694ae0",
+    "consumed_residue_tokens": 3449597891,
+    "failure": "RuntimeError: Validation panel anchor differs",
+    "failure_evaluation_log_sha256": "f11c47ae5c4f4bccea3572aa7d81d126419ca70d286155a24556565d6ca56f61",
+    "job_id": "1459300",
+    "job_state": "FAILED",
+    "next_update": 24000,
+    "sample_cursor": 30720000,
+    "stale_panel_indices_sha256": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec"
+  },
+  "format_version": "rtx4090_panel_anchor_recovery_public_receipt_v1",
+  "observed_at": "2026-08-22T17:28:45+08:00",
+  "recovery": {
+    "artifact_manifest_sha256": "1ae10c1fe82bc772b22a37a0f346158181820446ad04174d2e31de04060ff20d",
+    "audit_file_sha256": "edbeb17bc4c57af985281113fdd329d488a0db2df6cff1cdd1f72967b6808e28",
+    "elapsed": "00:02:26",
+    "exit_code": "0:0",
+    "job_id": "1459301",
+    "job_state": "COMPLETED",
+    "protocol_file_sha256": "5f5b48329405b5ffc60e341bce81952e667788b295c1ac8dfcc349023b4a79d3",
+    "status": "PASS"
+  },
+  "successor": {
+    "job_id": "1459576",
+    "partition": "gpu_4090",
+    "state_at_observation": "RUNNING",
+    "watchdog_dependency": "afternotok:1459576",
+    "watchdog_job_id": "1459577"
+  },
+  "terminal_checkpoint": {
+    "model_sha256": "d26b642b67dabe893e46125105b3dca7d37dc3ea9a1486f41bc1a4f15d206889",
+    "optimizer_sha256": "b1622194ce919c4689b7a0c864f2a68a4d98fd3457618c92d7c799aae3c0c249",
+    "rng_manifest_sha256": "f74a468df0e39a57b82314f6e26dded901eb4b389380f1de419c032fac3ddf48"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

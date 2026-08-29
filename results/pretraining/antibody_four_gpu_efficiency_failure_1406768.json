@@ -1,0 +1,69 @@
+{
+  "authorization": {
+    "configuration_promotion": false,
+    "production_pretraining": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Failure receipt only. All four A/B/B/A training runs and fixed-panel checkpoint evaluations completed, but the independent audit failed. A local in-memory parser-normalization replay is diagnostic only and cannot authorize configuration promotion or production pretraining. Source changes require a fresh full A/B/B/A run.",
+  "completed_work": {
+    "checkpoint_evaluations": 4,
+    "training_runs": 4
+  },
+  "diagnostic_replay": {
+    "authoritative": false,
+    "compiled_approximate_6n_mfu": 0.4956819582,
+    "compiled_relative_to_eager_pooled": 1.3821093317,
+    "failed_gates": [
+      "step_stability"
+    ],
+    "gate_passed": false,
+    "maximum_compiled_p95_over_p50_step_time": 1.14747,
+    "note": "Computed in memory after stripping CSV values; no audit artifact was published and the source closure differs from the failed job."
+  },
+  "evidence": {
+    "compiled_r1_evaluation_sha256": "2cad3e7db3a64dc6907ec7480abaeefb160decd28aa62c75a5fba4a4fe8bac04",
+    "compiled_r1_gpu_csv_sha256": "e8ffa38ca9469cb8532598f70e9c49d5a8649ea2eafb20168afb281fbc090b2d",
+    "compiled_r1_receipt_sha256": "9eede20b15ece09ccd1230fa50f96cbad7944bc6fc8c8057c272f0e61fa52ef3",
+    "compiled_r2_evaluation_sha256": "ab4d16edfc7639d77757516cbada86f54a85fc2ab6a39415ab8416b393c53f87",
+    "compiled_r2_gpu_csv_sha256": "c739319daaa0f069fae583827906b6549e2605f1b6f57d09bd620ab6d73f17ae",
+    "compiled_r2_receipt_sha256": "bf5b03843a8a4c40aa8db377ae73ab2b2941f7d70024bc4373e5db5541dc3b2c",
+    "safe_eager_r1_evaluation_sha256": "e2cb056341109552dbe69883e7df9ac5b5dbfe42a7effaa2d03dd3848fa4fdcd",
+    "safe_eager_r1_gpu_csv_sha256": "c55cd7e2d9ab067c7c5b70a8e680b4ffd3f3e65509830c13b036c0232f7b6059",
+    "safe_eager_r1_receipt_sha256": "be8b474b4f09edb41d3b4083071993e7b61018294cef77021a6df8751b39df7b",
+    "safe_eager_r2_evaluation_sha256": "0addf12d29ab83cb7eecfbee82c4956417e5130fd114ff166a4c4516232b4be3",
+    "safe_eager_r2_gpu_csv_sha256": "e72e08cb2e912e6ee855935869f0fe133265618ab364a99cab99671482bf1a45",
+    "safe_eager_r2_receipt_sha256": "12536c50c989cc1c48e0a174d1e8ef102c5ff9950d112e146c99130a7294a3f3",
+    "stderr_sha256": "d6438a1a77e14fb567e61367807e56ea6b46949ddc01d36825e9aa43c45c916a",
+    "stdout_sha256": "466044f64dded78ec4097396a43ae2e14a4272819536de09e036e8fff9f22ac2"
+  },
+  "failure": {
+    "detail": "csv.DictReader header keys were stripped, but nvidia-smi CSV values retained leading spaces; the GPU model and UUID identity check therefore rejected valid four-GPU telemetry.",
+    "stage": "independent_audit_telemetry_parser"
+  },
+  "format_version": "antibody_four_gpu_efficiency_failure_v1",
+  "job": {
+    "elapsed": "01:20:42",
+    "end": "2026-08-15T11:03:38",
+    "exit_code": "1:0",
+    "job_id": 1406768,
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_efficiency_67ec330_attempt_001",
+    "start": "2026-08-15T09:42:56",
+    "state": "FAILED"
+  },
+  "resolution": {
+    "acceptance_thresholds_changed": false,
+    "fresh_full_abba_required": true,
+    "parser_values_stripped": true,
+    "step_stability_requires_new_systems_candidate": true
+  },
+  "source": {
+    "commit": "67ec330a73124ce7044647e1d6067e9f87b0e126"
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

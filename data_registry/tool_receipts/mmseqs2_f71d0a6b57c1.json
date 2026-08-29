@@ -1,0 +1,26 @@
+{
+  "archive": {
+    "bytes": 19047799,
+    "etag": "6a8841cd-122a577",
+    "last_modified": "Fri, 21 Aug 2026 12:17:17 GMT",
+    "sha256": "db16aead6cd563ff387bf187c363f1664f860fe94814b7429b10a9905622469d",
+    "url": "https://mmseqs.com/latest/mmseqs-linux-avx2.tar.gz"
+  },
+  "authorization": {
+    "corpus_preprocessing": true,
+    "model_training": false
+  },
+  "binary": {
+    "avx2_host_verified": true,
+    "relative_path": "mmseqs2-f71d0a6b57c1/bin/mmseqs",
+    "sha256": "b0ca32bf507e6f76eab90d5d1f0a802b68d08192000f2aad7d38cffcd4bdd4fb",
+    "version": "f71d0a6b57c19e3a8954d8557f065c0fe1f46142"
+  },
+  "claim_boundary": "Pinned preprocessing-tool materialization only. The moving latest URL is not used as identity; the archive, binary, and reported version are frozen by digest.",
+  "format_version": "abpairfm_preprocessing_tool_receipt_v1",
+  "license": "MIT",
+  "source_repository": "https://github.com/soedinglab/MMseqs2",
+  "status": "MATERIALIZED_PINNED",
+  "test_access": false,
+  "tool": "MMseqs2"
+}

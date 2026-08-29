@@ -1,0 +1,101 @@
+{
+  "authorization": {
+    "development_contact": true,
+    "development_pair_retrieval": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "calibration": {
+    "brier_primary": "fixed_raw_sigmoid_of_contact_logit",
+    "ece_bins": 15,
+    "ece_scheme": "equal_mass_deterministic_tie_break_by_instance_and_pair_index",
+    "fitted_calibration_secondary": "train_only_temperature_scaling_grouped_by_complex",
+    "validation_fitting": false
+  },
+  "claim_boundary": "Frozen development-only transfer matrix. Split construction reads metadata and role membership but no task labels or predictions. Partner swaps are retrieval ranking controls and are excluded from contact Brier/ECE. Test remains sealed.",
+  "contact_metrics": {
+    "aggregation": [
+      "global_pair_level",
+      "mean_per_complex"
+    ],
+    "primary": "pair_contact_auprc",
+    "secondary": [
+      "pair_contact_brier_fixed_raw",
+      "pair_contact_ece_fixed_raw",
+      "epitope_auprc",
+      "paratope_auprc"
+    ]
+  },
+  "format_version": "abpairfm_development_transfer_matrix_v1",
+  "hard_decoy": {
+    "candidates_per_direction": 31,
+    "metrics": [
+      "bidirectional_unique_endpoint_mrr",
+      "bidirectional_unique_endpoint_recall_at_1"
+    ],
+    "probability_or_contact_calibration_interpretation": false,
+    "validation_panel_sha256": "5b80013e62af2591a2e1247b26cdf9dee452262aca24cba18fe1204347a9ff75"
+  },
+  "source_anchors": {
+    "contact_cache_manifest": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/contact_cohort_v2/CONTACT_CACHE_MANIFEST.json",
+      "sha256": "d91ed42dcc05ee17cc880f7fa6124a7699f11a3beea75aab13f0b9502c274a33"
+    },
+    "double_cold": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v1/antigen_fold.csv",
+      "sha256": "07b20645982971e9ff0004ac297d9a03ac0278269b4e8d84628fb0cbbb87804d"
+    },
+    "split_receipt": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v1/SPLIT_MATRIX_RECEIPT.json",
+      "sha256": "d4115c17445a5cdbb9f9e2095dd80e54e514c49e89fa44f58a9f6936c8797798"
+    },
+    "standard": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_v3_1/antigen_fold.csv",
+      "sha256": "fd1f516839ec9aabc85531ccfa96754887a13d2f54a3867f68bdc8f55d046ce6"
+    },
+    "temporal": {
+      "path": "/ssd/scxi253/model_deployment/data/framecontact_20260730/split_matrix_double_cold_v1/temporal.csv",
+      "sha256": "84261847e2c70bf466c91e1491c746058e56a70c646be8e1fe62156d266d173f"
+    }
+  },
+  "split_slices": {
+    "double_cold_validation": {
+      "expected_count": 540,
+      "source": "double_cold",
+      "where": "role=validation"
+    },
+    "standard_double_unseen": {
+      "expected_count": 454,
+      "source": "standard",
+      "where": "validation antigen_cluster absent from train and antibody_cluster absent from train"
+    },
+    "standard_unseen_antibody_only": {
+      "expected_count": 70,
+      "source": "standard",
+      "where": "validation antigen_cluster present in train and antibody_cluster absent from train"
+    },
+    "standard_unseen_antigen_only": {
+      "expected_count": 25,
+      "source": "standard",
+      "where": "validation antigen_cluster absent from train and antibody_cluster present in train"
+    },
+    "standard_validation": {
+      "expected_count": 549,
+      "source": "standard",
+      "where": "role=validation"
+    },
+    "temporal_validation": {
+      "expected_count": 397,
+      "source": "temporal",
+      "where": "role=validation; train cutoff 2022-12-31; validation cutoff 2024-06-30"
+    }
+  },
+  "status": "FROZEN_BEFORE_TRANSFER_EVALUATION",
+  "test_access": false,
+  "uncertainty": {
+    "bootstrap_replicates": 10000,
+    "seed": 20260823,
+    "unit": "complex",
+    "paired_across_models": true
+  }
+}

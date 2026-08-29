@@ -1,0 +1,55 @@
+{
+  "authorization": {
+    "production_pretraining": false,
+    "scale_promotion": false,
+    "scientific_claim": false
+  },
+  "claim_boundary": "Development-only, cross-hardware, single-node real-OAS safe-eager recovery pilot; this running receipt is allocation and telemetry evidence, not a completed recovery audit or production authorization.",
+  "corpus": {
+    "root": "/ssd/scxi253/model_deployment/results/pretraining/oas_decontaminated_corpus_5f1f6ac_attempt_001",
+    "train_record_count": 198345366,
+    "train_residue_token_count": 22272431632
+  },
+  "evidence": {
+    "gpu_memory_used_mib_range": [21688, 22336],
+    "gpu_utilization_percent_range": [84, 100],
+    "job_id": "1434362",
+    "node": "wqd10nba06g8",
+    "observed_state": "RUNNING",
+    "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_single_node_scale_real_oas_recovery_pilot_v1_attempt_006",
+    "telemetry_file": "/ssd/scxi253/model_deployment/results/pretraining/antibody_single_node_scale_real_oas_recovery_pilot_v1_attempt_006/slurm-1434362/gpu.csv",
+    "visible_gpu_count": 6,
+    "visible_gpu_model": "NVIDIA GeForce RTX 4090"
+  },
+  "four_gpu_source_gate": {
+    "failed_efficiency_gates": [
+      "approximate_mfu",
+      "throughput_each_round",
+      "throughput_pooled"
+    ],
+    "independent_audit": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_static_efficiency_fallback_v3_d695aaa_attempt_004/independent-audit.json",
+    "recovery_eligible": true
+  },
+  "format_version": "antibody_scale_recovery_pilot_running_v1",
+  "queued_eight_gpu_job": {
+    "job_id": "1434218",
+    "partition": "gpu_5090",
+    "state": "PENDING"
+  },
+  "run": {
+    "batch_quantum_sequences": 384,
+    "continuous_steps": 200,
+    "micro_batch_per_gpu": 16,
+    "preset": "abf_650m",
+    "recovery_steps": 100,
+    "target_residue_tokens_per_update": 196608,
+    "world_size": 6
+  },
+  "test_access": {
+    "downstream_labels_used": false,
+    "external_test_accessed": false,
+    "frozen_test_accessed": false,
+    "official_test_accessed": false,
+    "sabdab2_heldout_accessed": false
+  }
+}

@@ -15,7 +15,7 @@ import socket
 import sys
 import uuid
 from collections import Counter
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, BinaryIO, NamedTuple
@@ -633,6 +633,10 @@ def _map_one_unit(
     status_counts: Counter[str],
     metadata_exceptions: Mapping[str, Mapping[str, str]],
     metadata_normalization_counts: Counter[str],
+    accepted_row_observer: Callable[
+        [Mapping[str, Any], ProductionMapRecord], None
+    ]
+    | None = None,
 ) -> dict[str, Any]:
     """Authenticate, stream, filter, and map one complete OAS gzip unit."""
     relative = unit["relative_unit"]
@@ -749,6 +753,8 @@ def _map_one_unit(
                 stratum=unit["stratum"],
                 study_id=study_id,
             )
+            if accepted_row_observer is not None:
+                accepted_row_observer(row, record)
             payload = pack_map_record(record)
             bucket_writer.write(bytes.fromhex(accepted.sequence_sha256)[0], payload)
             unit_counts["accepted_records"] += 1

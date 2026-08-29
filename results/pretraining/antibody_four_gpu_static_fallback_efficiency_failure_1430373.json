@@ -1,0 +1,26 @@
+{
+  "format_version": "antibody_four_gpu_static_fallback_efficiency_failure_v1",
+  "observed_at": "2026-08-17T19:10:00+08:00",
+  "job_id": 1430373,
+  "state": "FAILED",
+  "elapsed": "00:30:42",
+  "node": "wqd10nah11g1",
+  "stage": "safe_eager_r1_checkpoint_evaluation",
+  "training": {
+    "executed_updates": 600,
+    "final_model_sha256": "93261768c1e7d2127a42f6459ed1ec8b3ea22a0e989918147dcffe9c78d54321",
+    "final_optimizer_sha256": "de3bbf94d52326c9fea5bf3135581ff42ed49e71161c4a661d3853bd3f5c682e",
+    "claim_boundary": "Audited OAS loader and four-GPU recovery run only"
+  },
+  "failure": {
+    "error": "Validation panel anchor differs",
+    "evaluation_log": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_static_efficiency_fallback_5f1f6ac_attempt_001/slurm-1430373/safe_eager_r1/evaluation.log",
+    "protocol_anchor": "cc9219f83bfdaef51e97ee9845f31ba9dd2cbde9863715d6fdfa7a50478197ec",
+    "recomputed_anchor_for_live_validation_count": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "live_validation_record_count": 1215730,
+    "sample_count": 8192,
+    "panel_seed": 2026081501
+  },
+  "claim_boundary": "Engineering failure only; no efficiency, checkpoint-equivalence, production, scientific, frozen, official, or external claim.",
+  "next_step": "Register a new static-194 fallback protocol with the live validation-count-derived panel anchor; do not mutate the failed receipt or reuse its output root."
+}

@@ -1,0 +1,33 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "test_access": false
+  },
+  "failure": {
+    "classification": "four_gpu_mesh_shape_incompatibility",
+    "message": "RuntimeError: Mesh should not be bigger than default world size 4, but found 8 ranks!",
+    "ranks_observed": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "stderr_sha256": "81402b34e79bdc025a9112c53febf51ca9df32f89664a49b563a1f079d8bdb37"
+  },
+  "format_version": "abpairfm_stage_a1_geometry_canary_failure_v1",
+  "job": {
+    "elapsed": "00:02:29",
+    "exit_code": "1:0",
+    "job_id": "1466757",
+    "node": "wqd10nba07g8",
+    "state": "FAILED"
+  },
+  "outputs": {
+    "progress_exists": false,
+    "result_exists": false
+  },
+  "protocol_sha256": "f41a3dced81c6224d376e6f3236f4cc27bddf521ca574c044e6f3d74bd76f7aa",
+  "source_sha256": "0b56fad678cdd88dcc28aa54d880ea25c4170b800297ce824e163181245d5079",
+  "status": "FAIL_CLOSED",
+  "test_access": false
+}

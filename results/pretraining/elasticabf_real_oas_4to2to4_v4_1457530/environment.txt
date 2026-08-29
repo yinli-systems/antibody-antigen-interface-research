@@ -1,0 +1,35 @@
+job_id=1457530
+node=wqd10nba06g5
+source_root=/ssd/scxi253/model_deployment/results/pretraining/elasticabf-real-oas-rtx4090-26e5964-v4
+run_root=/ssd/scxi253/model_deployment/results/pretraining/elasticabf_real_oas_4to2to4_v4/slurm-1457530
+runtime_manifest_sha256=588d9dda4665488be0d4b4bcce902312549fddff1bcafc61508e88e03e3e241c
+gate_protocol_sha256=2cbaf45ec3d00bbf5c8831471fc56edbbc455c78ea376ac7dd5cfffd196f07ff
+claim_boundary=real-OAS elastic recovery systems gate only
+2026-08-21T19:51:22+08:00
+index, uuid, name, pci.bus_id, driver_version, memory.total [MiB]
+0, GPU-8dfa4663-99f4-736c-6884-33beb022b431, NVIDIA GeForce RTX 4090, 00000000:41:00.0, 580.82.07, 24564 MiB
+1, GPU-be1e7896-76e6-286a-f65f-3d2fea0f04a3, NVIDIA GeForce RTX 4090, 00000000:61:00.0, 580.82.07, 24564 MiB
+2, GPU-c9002d24-0799-4d42-f624-4d219b773f73, NVIDIA GeForce RTX 4090, 00000000:81:00.0, 580.82.07, 24564 MiB
+3, GPU-456f3685-1421-dd1a-328f-6d620fb63435, NVIDIA GeForce RTX 4090, 00000000:A1:00.0, 580.82.07, 24564 MiB
+	GPU0	GPU1	GPU2	GPU3	NIC0	CPU Affinity	NUMA Affinity	GPU NUMA ID
+GPU0	 X 	SYS	SYS	SYS	SYS		1		N/A
+GPU1	SYS	 X 	SYS	SYS	SYS		0		N/A
+GPU2	SYS	SYS	 X 	SYS	SYS		7		N/A
+GPU3	SYS	SYS	SYS	 X 	SYS		6		N/A
+NIC0	SYS	SYS	SYS	SYS	 X
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+
+NIC Legend:
+
+  NIC0: mlx5_bond_0
+
+2026-08-21T19:54:16+08:00

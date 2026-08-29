@@ -1,0 +1,88 @@
+{
+  "format_version": "antibody_30b_segment_quota_failure_receipt_v1",
+  "campaign": "antibody_pretraining_rtx4090_30b_5f1f6ac_v1",
+  "segment_index": 35,
+  "failure_class": "DCP_CHECKPOINT_WRITE_DISK_QUOTA_EXCEEDED",
+  "only_failure_class_detected": true,
+  "training_job": {
+    "job_id": 1467885,
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "partition": "gpu_4090",
+    "allocated_gpus": 4,
+    "training_stdout_sha256": "b7dac32f7e560ee5dd74b236fe93d2f37c8e44c1cfc01a5bb0fbf0876f373071",
+    "training_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "automatic_recovery_job": {
+    "job_id": 1467886,
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "partition": "gpu_4090",
+    "failure_class": "HARDLINK_DISK_QUOTA_EXCEEDED",
+    "stderr_sha256": "2eb80f5494f2f4fdf849e33f331ecc17a6b97079fb428c1450fb520fc0a38ac7",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "recovery_anchor": {
+    "segment_index": 34,
+    "audit_sha256": "beb25f1762fee10081fafd85dd4679dc96d8f414fc1b9dafcf1f02bc5edc5150",
+    "artifact_manifest_sha256": "e599af03ae3aa0ad2d5c651da3e892872a4785bbe5cdc3c7cd02d49dd0ca5fdd",
+    "model_sha256": "c064d39c1dec92535eb5c00644b00af3b6a1b4341cd5f0080bcd812afa445e8e",
+    "optimizer_sha256": "ac9022e8181beccc7902acde23a61373a8463d085c4707e9d3ec78690f32bace",
+    "rng_manifest_sha256": "f74a468df0e39a57b82314f6e26dded901eb4b389380f1de419c032fac3ddf48",
+    "next_update": 105000,
+    "consumed_residue_tokens": 15091949832,
+    "sample_cursor": 134400000,
+    "validation_cross_entropy": 0.4617311053567893,
+    "validation_masked_accuracy": 0.8826110219368646,
+    "corrected_panel_anchor_sha256": "ba24268e3897320aafb49c8b557d559a73386242e47b666d5fc862fdf453cd38",
+    "immutable_artifact_audit_passed": true,
+    "next_segment_submission_authorized": true
+  },
+  "partial_checkpoint": {
+    "metadata_present": false,
+    "reused": false,
+    "artifact_manifest_sha256": "f086f3473037a2b40010dd2d1d6029008c2e673e6d68fae28d9b4e706345dfe4",
+    "files": [
+      {
+        "name": "__0_0.distcp",
+        "size_bytes": 1879048192,
+        "sha256": "9fc5886c48354ee268da6358d026c2a9ccfbef6fbf36dece6e10876ba35057d8"
+      },
+      {
+        "name": "__1_0.distcp",
+        "size_bytes": 1912343434,
+        "sha256": "8dee7194bd43b7f443a0e531abd3618ec0ae9cdba5eeebb51cc82169ffc42287"
+      },
+      {
+        "name": "__2_0.distcp",
+        "size_bytes": 1896792301,
+        "sha256": "e8197c769cd4775b9c4977407f2168cddb92174868ff4714e6659c0908532962"
+      },
+      {
+        "name": "__3_0.distcp",
+        "size_bytes": 1896772536,
+        "sha256": "3e1c08d780bfe77b2cf9ffbe770dc9c5edda51c03ff3b80112cc2b1561ae3bdc"
+      }
+    ]
+  },
+  "source_code": {
+    "training_sbatch_sha256": "d7ac436ba89ea63d7892f60838a4e931347d2fd15693c4655740bbd24567d510",
+    "panel_recovery_sbatch_sha256": "52c595ab6aadc5d71e9a290a16dc12e729b0f38beef4aae1892d7b975758aa0b"
+  },
+  "evidence_archive": {
+    "remote_path": "/ssd/scxi253/model_deployment/results/pretraining/antibody_pretraining_rtx4090_30b_5f1f6ac_v1/failed/segment-000035-job-1467885-quota-fail-closed-v1",
+    "original_segment_path_absent": true,
+    "original_recovery_path_absent": true,
+    "segment_000035_audit_absent": true,
+    "size_human": "7.1G"
+  },
+  "retrain": {
+    "authorized": true,
+    "restart_from_segment": 34,
+    "reuse_partial_segment_35": false,
+    "protocol_frozen": true
+  },
+  "test_access": false,
+  "fail_closed": true,
+  "generated_at_utc": "2026-08-25T09:08:28Z"
+}

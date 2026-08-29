@@ -1,0 +1,19 @@
+{
+  "format_version": "antibody_four_gpu_efficiency_gate_v3_submission_failure",
+  "job_id": "1431121",
+  "state": "FAILED",
+  "exit_code": "2:0",
+  "elapsed": "00:00:02",
+  "node": "wqd10nah11g1",
+  "source_commit": "2f36d39",
+  "output_root": "/ssd/scxi253/model_deployment/results/pretraining/antibody_four_gpu_static_fallback_v3_d695aaa_attempt_003",
+  "stage": "preflight_anchor_validation",
+  "error": "External anchor is not a SHA-256",
+  "evidence": {
+    "runtime_manifest_sha256_submitted": "8e025279fc1bb795756e6d1acad59d31de981c9ea76d006c4dfc8ed31f8c3b",
+    "verified_runtime_manifest_sha256": "8e025279fc1bb795756e6d1acad59d31de981c9ea86bd1a57610dd1dbd90593a",
+    "stderr_path": "/ssd/scxi253/model_deployment/results/pretraining/abf-oas-4g-eff-1431121.err"
+  },
+  "claim_boundary": "Submission/preflight failure only; no training, efficiency, production-pretraining, scale-out, scientific, frozen, official, or external claim.",
+  "next_action": "Resubmit with the verified 64-character runtime manifest file hash."
+}

@@ -1,0 +1,32 @@
+{
+  "format_version": "framecontact_sabdab2_evaluation_source_receipt_v1",
+  "frozen_on": "2026-07-30",
+  "source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab_eval_source_v1",
+  "source_manifest": "/ssd/scxi253/model_deployment/data/framecontact_20260730/sabdab2/evaluation-authority-v1/SABDAB2_EVALUATION_SOURCE_MANIFEST.json",
+  "source_manifest_sha256": "d216d73080e9c9cf646967ec724a3791a53d543cfd43d30b6205e6de74f6af50",
+  "source_tree_sha256": "f08c3e0d1b04684f9394de768fc2759a8a11dddab8273569902e778fbdb6aef6",
+  "source_record_count": 138,
+  "source_files_writable_after_freeze": 0,
+  "evaluation_lock": {
+    "path": "receipts/FRAMECONTACT_SABDAB2_EVALUATION_LOCK_20260730.json",
+    "sha256": "efd13f996c3fd308d8bc0ef1fc4b1ed3d8d7866df3773e46150546b750726655"
+  },
+  "critical_source_hashes": {
+    "scripts/evaluate_framecontact_sabdab2_ensemble_test.py": "122650985338b5cedd0b452958aceaf20e9ce43d45546f72ac9ddd7a4d1e6b3a",
+    "scripts/train_framecontact.py": "0f58e90596c540079196980cd2e604a470d759642d74e0d25732b8f4caa92722",
+    "scripts/run_framecontact_a100.sh": "3675aa07adc0d9e3200e73f02f7478bbe9dc291b007dcee58175e73a3f0c5d13",
+    "src/interaction_first/framecontact.py": "cfe6d8c6f0004b7f70e149a5c308b0131e26826616d11f73324a53b58e078cff",
+    "src/interaction_first/intra_chain_geometry.py": "fc9443a70cdf62ef3c9d8b2ddc3a767692a23d8c07f291c22203f415f912dbc3",
+    "src/interaction_first/framecontact_metrics.py": "6b49c70aff29c8b088f482e7ed7f84eacf25f237a29679a8a941a31a4ff873fb",
+    "src/interaction_first/same_antigen_challenge.py": "3dcb1443238eb5c0f202674c3979f877d86128e356e658b946649f4e25584c62"
+  },
+  "validation": {
+    "local_pytest": "162 passed",
+    "python_compileall": "passed",
+    "shell_syntax": "passed",
+    "validation_gpu_smoke_sha256": "7c74025cc6e36c64eb7d4d8bce4c0c3c3798286a22495eaee27c7231b1b0d9b9",
+    "validation_gpu": "NVIDIA GeForce RTX 4090",
+    "test_role_loaded": false
+  },
+  "claim_boundary": "Read-only SAbDab2 evaluation source and decision-lock binding only. Local tests and validation-only GPU smoke establish executable behavior, not biological performance, external generalization, A100 reproduction, or state of the art."
+}

@@ -36,6 +36,21 @@ its amendments through the execution lock. The `PAIRFORMER_*`, `PAIRSCALE_*`, an
 `TRAIN_ONLY_*` documents record subsequent development-only gates and split work.
 Negative or blocked results are intentionally retained.
 
+## MIPE replay
+
+- [`mipe_paper_appendix_lr1e4_seed42.json`](mipe_paper_appendix_lr1e4_seed42.json)
+  freezes the Appendix section 2.3 five-fold, 800-epoch replay settings. The
+  corresponding run is still in progress; this registration carries no
+  terminal performance claim.
+
+## Partner-negative raw-Brier ablation
+
+[`negative_sample_ablation_v2/`](negative_sample_ablation_v2/) freezes the
+paired AsEP and SAbDab2 five-seed arms after v1 failed closed: the old trainer
+reported temperature-refit Brier but did not emit the pre-registered fixed
+raw-logit Brier curve. V2 adds measurement-only instrumentation, binds copied
+source closures, and keeps test and external-test roles sealed.
+
 ## Structured protocol evidence
 
 Subdirectories such as `identity80_development/`,

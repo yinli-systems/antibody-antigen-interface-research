@@ -1,0 +1,37 @@
+{
+  "format_version": "framecontact_asep_training_source_manifest_v1",
+  "recorded_on": "2026-07-30",
+  "slurm_array_job_id": "1342460",
+  "remote_source_root": "/ssd/scxi253/model_deployment/data/framecontact_20260730/source",
+  "source_sha256": {
+    "scripts/slurm_train_asep_array.sbatch": "70bb6d3081bc5d46fbdb1f6e3c60f04301f0516526268a649347fa3dfb259349",
+    "scripts/train_framecontact.py": "6b2fbdddba467b041a17d06819ef54c44aa05358f432c308e5e1fd463f88fc11",
+    "src/interaction_first/asep_external.py": "41854111a480ce08bc8e5b1ec2ff188eac39da30f895306430ed8f8296c2fb2b",
+    "src/interaction_first/attention_diagnostics.py": "c13ecc32fc366a4f290c841a52cd91bcf3bb00e7e4ab83b3e2c247987f25468c",
+    "src/interaction_first/framecontact.py": "cfe6d8c6f0004b7f70e149a5c308b0131e26826616d11f73324a53b58e078cff",
+    "src/interaction_first/framecontact_metrics.py": "49f4186391ba458b41b3d36b86df235048b2fc1ccc48bf7615e726c5088670cf",
+    "src/interaction_first/framecontact_objective.py": "699a2262b0e48cc4ac8a209b850a3cc426475c5ab6929ec426651c0cffd81e9c",
+    "src/interaction_first/intra_chain_geometry.py": "fc9443a70cdf62ef3c9d8b2ddc3a767692a23d8c07f291c22203f415f912dbc3",
+    "src/interaction_first/partner_panel.py": "efd9e93d95e6a2f2a8a4eaea27565c8515011fe635732c5f8fa1755f68a01d67",
+    "src/interaction_first/reciprocal_partner_panel.py": "0d6b3cfc066f109978ff84a90cef3f9eeafe83043f3b5f393462d4f6e4b6f58b",
+    "src/interaction_first/sabdab2_contacts.py": "553db81ada72237f6bea48f273173aa7b2daa6c03bc2c3f8c49bafe30d5425dc",
+    "src/interaction_first/sabdab2_structure.py": "cd882eeebd7a8deeb39eedc25783963efa46fd4acb6bae4118d06b9bf839d196"
+  },
+  "scientific_authority_sha256": {
+    "protocols/framecontact_asep_epitope_group_v1.json": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+    "protocols/FRAMECONTACT_ASEP_EPITOPE_GROUP_V1_RECEIPT.json": "370f36155e54be15c9b5ef4460a768a5c82a36bf561a206424b9d09e0d0b05fb",
+    "development_cache_manifest": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "training_partner_panel": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+    "validation_partner_panel": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec"
+  },
+  "runtime": {
+    "partition": "gpu_4090",
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "precision": "bf16"
+  },
+  "collection_boundary": "Hashes were read from the remote source root after the array began and while its first tasks were running. No listed training file had been resynchronized after task start. This records the visible source closure but is not a container-image or read-only-mount attestation.",
+  "claim_boundary": "Source and runtime provenance only. It contains no development metric and no official-test access."
+}

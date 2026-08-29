@@ -1,0 +1,47 @@
+{
+  "accumulation_steps": 16,
+  "cold_epoch_guard_seconds": 3600,
+  "data": {
+    "cvdata.pkl": "bec27189755dee82291a0471b72c114feb0f7fa0021b270ffef924354c5dafca"
+  },
+  "folds": 5,
+  "graph_cache_default": "off",
+  "hardened_source_files": [
+    "bootstrap_mipe_paper_lr1e4.py",
+    "common.py",
+    "continue_train.py",
+    "mipe_paper_lr1e4.sbatch",
+    "mipe_paper_lr1e4_seed42.json"
+  ],
+  "initialization_policy": "same_seed_per_fold_fresh_model",
+  "learning_rate": 0.0001,
+  "maximum_wall_seconds": 103500,
+  "official_source_snapshot": "a77ece1b39e2b91166387080bfcb92b8ab5d6621",
+  "paper_protocol": {
+    "appendix_sha256": "387c08ed6ce0f01523316ace12ec2d8567b9381c549a266bca0f3c6fe0a059af",
+    "batch_size": 16,
+    "learning_rate": 0.0001,
+    "optimizer": "Adam",
+    "source": "Appendix section 2.3 Implementation"
+  },
+  "rng_policy": "same_seed_per_fold_then_full_state_restore",
+  "safety_seconds": 1800,
+  "schema_version": "mipe-paper-appendix-track-v1",
+  "seed": 42,
+  "selection": {
+    "direction": "maximize",
+    "metric": "validation_joint_auprc",
+    "scope": "validation_only"
+  },
+  "source_files": {
+    "code/CrossAttention.py": "5dd65845323e0174977679910468328cdc7865540714334b329b5722776e7716",
+    "code/NTXentLoss.py": "358ecd1eb8040011d032f374b30ac3f1ebf8c399def74375d71d35aeb541667f",
+    "code/main.py": "db74235e0155238afea22961738e8ae83f8087d92559e4a6244ae2c3945d0b3c",
+    "code/model.py": "55a6a7806a33b8afb3537b1e98dcdfd25266db652aea74cb6e995153ef0cf490",
+    "code/utils.py": "29a72cc06cff2af55e816f71391f262334a5eae2127d889047c5e7e3052b8c18"
+  },
+  "target_epochs": 800,
+  "track_id": "mipe_paper_appendix_lr1e4_seed42_fivefold_v3",
+  "training_scope": "train_and_validation_only",
+  "validation_interval": 1
+}

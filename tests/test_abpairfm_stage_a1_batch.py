@@ -1,0 +1,118 @@
+from __future__ import annotations
+
+import base64
+
+import torch
+
+from antibody_pretraining.stage_a1_batch import build_stage_a1_microbatch
+
+
+def _record(index: int, *, structural: bool = True, direct: bool = True) -> dict:
+    residues = "ACDEFGHIKLMNPQRSTVWY"
+    rotated = residues[index:] + residues[:index]
+    return {
+        "contact_pairs": [[0, 0], [2, 3]] if structural else [],
+        "contact_supervision": structural,
+        "example_id": f"example-{index}",
+        "known_positive_group": f"group-{index}",
+        "retrieval_supervision": structural or direct,
+        "sequence1": rotated[:9],
+        "sequence2": rotated[9:18],
+    }
+
+
+def test_stage_a1_microbatch_is_deterministic_and_contact_aligned() -> None:
+    records = [_record(index) for index in range(4)] + [
+        _record(index, structural=False, direct=index < 6) for index in range(4, 7)
+    ]
+    first = build_stage_a1_microbatch(records, seed=1701, maximum_tokens=64)
+    second = build_stage_a1_microbatch(records, seed=1701, maximum_tokens=64)
+    assert torch.equal(first.tokens, second.tokens)
+    assert torch.equal(first.contact_labels, second.contact_labels)
+    assert first.tokens.shape == (7, 64)
+    assert len(first.retrieval_batch_indices) == 6
+    assert int(first.contact_labels.sum()) == 8
+    assert bool((first.contact_labels == 0).any())
+    assert int(first.contact_left_token_indices.min()) >= 1
+    assert int(first.contact_right_token_indices.min()) >= 12
+    assert len(first.retrieval_left_cluster_ids) == 6
+    assert len(first.retrieval_positive_group_ids) == 6
+    assert first.residue_count == 7 * 18
+
+
+def test_stage_a1_masks_shared_endpoint_false_negatives() -> None:
+    records = [_record(index) for index in range(4)]
+    records[1]["sequence1"] = records[0]["sequence1"]
+    batch = build_stage_a1_microbatch(records, seed=17, maximum_tokens=64)
+    assert not bool(batch.retrieval_allowed[0, 1])
+    assert not bool(batch.retrieval_allowed[1, 0])
+    assert bool(torch.diagonal(batch.retrieval_allowed).all())
+
+
+def test_stage_a1_masks_shared_source_cluster_false_negatives() -> None:
+    records = [_record(index) for index in range(4)]
+    records[0]["endpoint_cluster1"] = "cluster-shared"
+    records[1]["endpoint_cluster2"] = "cluster-shared"
+    batch = build_stage_a1_microbatch(records, seed=17, maximum_tokens=64)
+    assert not bool(batch.retrieval_allowed[0, 1])
+    assert not bool(batch.retrieval_allowed[1, 0])
+    assert bool(torch.diagonal(batch.retrieval_allowed).all())
+
+
+def test_stage_a1_dynamic_padding_uses_requested_multiple() -> None:
+    records = [_record(index) for index in range(4)]
+    batch = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=1024,
+        padding_multiple=64,
+    )
+    assert batch.tokens.shape == (4, 64)
+    assert batch.chain_ids.shape == batch.tokens.shape
+    assert batch.labels.shape == batch.tokens.shape
+    assert batch.residue_count == 4 * 18
+
+
+def test_stage_a1_dynamic_padding_rounds_up_and_preserves_legacy_shape() -> None:
+    records = [_record(index) for index in range(4)]
+    records[0]["sequence1"] = "A" * 60
+    records[0]["sequence2"] = "C" * 20
+    dynamic = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=1024,
+        padding_multiple=64,
+    )
+    legacy = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=1024,
+    )
+    assert dynamic.tokens.shape == (4, 128)
+    assert legacy.tokens.shape == (4, 1024)
+
+
+def test_stage_a1_distance_bins_define_4p5a_contact_labels() -> None:
+    records = [_record(index) for index in range(4)]
+    for record in records:
+        bins = torch.full((9, 9), 7, dtype=torch.uint8)
+        bins[0, 0] = 0
+        bins[2, 3] = 1
+        bins[4, 4] = 2
+        record["distance_bin_shape"] = [9, 9]
+        record["distance_bin_u8_base64"] = base64.b64encode(
+            bins.numpy().tobytes()
+        ).decode("ascii")
+    batch = build_stage_a1_microbatch(
+        records,
+        seed=1701,
+        maximum_tokens=64,
+        contact_distance_bin_count=2,
+    )
+    assert batch.contact_distance_bins is not None
+    assert len(batch.contact_distance_bins) == len(batch.contact_labels)
+    assert torch.equal(
+        batch.contact_labels.bool(),
+        batch.contact_distance_bins < 2,
+    )
+    assert int(batch.contact_labels.sum()) == 8

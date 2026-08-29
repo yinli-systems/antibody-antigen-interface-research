@@ -1,0 +1,14 @@
+{
+  "array_job_id": 1472595,
+  "cumulative_test_access_ordinal": 2,
+  "failed_array_job_id": 1472578,
+  "failed_recovery_array_job_id": 1472589,
+  "format_version": "sabdab2_task_routed_exposed_recovery_submission_receipt_v2",
+  "measurement_attempt": 3,
+  "model_checkpoint_or_routing_changed": false,
+  "original_protocol_sha256": "c6d7a4f3ba3c9c0f273741608de53b1bb922ef00de62ecf5702397bbaa97d7ed",
+  "recovery_authority_sha256": "b6f3c334909a0640472ce8f059dacfb390c47d3e13ff81f7701f224b579acb0e",
+  "selection_performed_on_this_measurement": false,
+  "split_candidates_thresholds_or_calibration_changed": false,
+  "status": "SUBMITTED_SIGNATURE_ADAPTER_RECOVERY"
+}

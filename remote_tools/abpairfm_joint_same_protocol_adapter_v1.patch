@@ -1,0 +1,242 @@
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -139,6 +139,16 @@
+         "distance_bin_count": 5,
+     },
+     "epiformer_style_same_protocol": {
++        "geometry_feature_mode": "full_pose",
++        "geometry_bias_mode": "pair_mlp",
++        "geometry": True,
++        "cross": True,
++        "fusion_mode": "interleaved",
++        "cross_attention_contact_gate_mode": "content_only",
++        "adapter_mode": "epiformer_style_same_protocol",
++        "distance_bin_count": 5,
++    },
++    "abpairfm_epiformer_style_same_protocol": {
+         "geometry_feature_mode": "full_pose",
+         "geometry_bias_mode": "pair_mlp",
+         "geometry": True,
+@@ -178,6 +188,9 @@
+     parser.add_argument("--contact-cache-root", type=Path)
+     parser.add_argument("--embedding-root", type=Path)
+     parser.add_argument("--embedding-manifest-sha256")
++    parser.add_argument("--joint-embedding-root", type=Path)
++    parser.add_argument("--joint-embedding-manifest-sha256")
++    parser.add_argument("--joint-embedding-source-split-sha256")
+     parser.add_argument("--label-root", type=Path)
+     parser.add_argument("--split-manifest", type=Path)
+     parser.add_argument("--split-manifest-sha256")
+@@ -342,6 +355,11 @@
+         arguments.structure_manifest_sha256,
+         arguments.contact_manifest_sha256,
+     )
++    joint_values = (
++        arguments.joint_embedding_root,
++        arguments.joint_embedding_manifest_sha256,
++        arguments.joint_embedding_source_split_sha256,
++    )
+     asep_values = (
+         arguments.asep_cache_root,
+         arguments.asep_cache_manifest_sha256,
+@@ -351,6 +369,10 @@
+             raise ValueError("SAbDab2 backend requires structure/contact/embedding authorities")
+         if any(value is not None for value in asep_values):
+             raise ValueError("SAbDab2 backend may not receive AsEP cache arguments")
++        if any(value is None for value in joint_values) != all(
++            value is None for value in joint_values
++        ):
++            raise ValueError("Joint embedding root and SHA-256 must be provided together")
+         structure_manifest = (
+             arguments.structure_cache_root / "STRUCTURE_CACHE_MANIFEST.json"
+         )
+@@ -364,8 +386,36 @@
+         )
+         if sha256_file(embedding_manifest) != arguments.embedding_manifest_sha256:
+             raise ValueError("ESM embedding manifest SHA-256 differs")
++        if arguments.experiment == "abpairfm_epiformer_style_same_protocol":
++            if any(value is None for value in joint_values):
++                raise ValueError("ABPairFM adapter requires joint embedding authority")
++            joint_manifest_path = (
++                arguments.joint_embedding_root
++                / "SABDAB2_ABPAIRFM_JOINT_EMBEDDING_MANIFEST.json"
++            )
++            if (
++                sha256_file(joint_manifest_path)
++                != arguments.joint_embedding_manifest_sha256
++            ):
++                raise ValueError("ABPairFM joint embedding manifest SHA-256 differs")
++            joint_manifest = json.loads(joint_manifest_path.read_text(encoding="utf-8"))
++            if (
++                joint_manifest.get("format_version")
++                != "sabdab2_abpairfm_joint_embedding_manifest_v1"
++                or joint_manifest.get("status") != "COMPLETE_TRAIN_VALIDATION_ONLY"
++                or joint_manifest.get("test_access") is not False
++                or joint_manifest.get("authority", {}).get("task_labels_read") is not False
++                or joint_manifest.get("authority", {}).get("test_loaded") is not False
++                or joint_manifest.get("authority", {}).get("split_sha256")
++                != arguments.joint_embedding_source_split_sha256
++                or joint_manifest.get("role_counts")
++                != {"train": 2565, "validation": 549}
++            ):
++                raise ValueError("ABPairFM joint embedding authority differs")
++        elif any(value is not None for value in joint_values):
++            raise ValueError("Only the ABPairFM adapter may receive joint embeddings")
+     else:
+-        if any(value is not None for value in sabdab_values):
++        if any(value is not None for value in sabdab_values + joint_values):
+             raise ValueError("AsEP backend may not receive SAbDab2 cache arguments")
+         if any(
+             value is not None
+@@ -391,6 +441,18 @@
+     protocol_backend = protocol.get("data", {}).get("dataset_backend", "sabdab2")
+     if protocol_backend != arguments.dataset_backend:
+         raise ValueError("Dataset backend differs from the pre-registered protocol")
++    expected_feature_mode = protocol.get("data", {}).get(
++        "input_feature_mode", "external_embedding_cache"
++    )
++    observed_feature_mode = (
++        "abpairfm_joint_cross_chain_v1"
++        if arguments.joint_embedding_root is not None
++        else "external_embedding_cache"
++    )
++    if expected_feature_mode != observed_feature_mode:
++        raise ValueError("Input feature mode differs from the pre-registered protocol")
++    if protocol.get("tasks", {}).get("winner", {}).get("experiment") != arguments.experiment:
++        raise ValueError("Experiment differs from the pre-registered protocol")
+     if arguments.seed not in protocol.get("model_selection", {}).get("seeds", []):
+         raise ValueError("Seed was not pre-registered")
+     if int(protocol["model_selection"]["maximum_epochs"]) != arguments.epochs:
+@@ -518,8 +580,82 @@
+         pin_memory=pin_memory,
+         persistent_workers=workers > 0,
+     )
++
++
++class _JointEmbeddingOverrideDataset(torch.utils.data.Dataset):
++    """Replace separable ESM features with authenticated per-complex ABPairFM states."""
++
++    def __init__(
++        self,
++        base_dataset: Sabdab2StructureEmbeddingDataset,
++        joint_root: Path,
++        manifest_sha256: str,
++        *,
++        split_role: str,
++    ) -> None:
++        self.base_dataset = base_dataset
++        self.cache_root = base_dataset.cache_root
++        self.records = base_dataset.records
++        manifest_path = joint_root / "SABDAB2_ABPAIRFM_JOINT_EMBEDDING_MANIFEST.json"
++        if sha256_file(manifest_path) != manifest_sha256:
++            raise ValueError("ABPairFM joint embedding manifest SHA-256 differs")
++        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
++        by_id = {
++            str(record["instance_id"]): record for record in manifest.get("records", [])
++        }
++        expected_ids = {str(record["instance_id"]) for record in self.records}
++        selected_ids = {
++            identifier
++            for identifier, record in by_id.items()
++            if record.get("split_role") == split_role
++        }
++        if not expected_ids.issubset(selected_ids):
++            raise ValueError("ABPairFM joint embedding IDs are missing from the selected split")
++        self.joint_root = joint_root
++        self.joint_by_id = {identifier: by_id[identifier] for identifier in expected_ids}
++        self.checkpoint_sha256 = str(manifest["checkpoint"]["content_sha256"])
+ 
++    def __len__(self) -> int:
++        return len(self.base_dataset)
+ 
++    def __getitem__(self, index: int) -> dict[str, Any]:
++        item = dict(self.base_dataset[index])
++        identifier = str(item["instance_id"])
++        record = self.joint_by_id[identifier]
++        path = self.joint_root / str(record["artifact_path"])
++        if (
++            path.is_symlink()
++            or not path.is_file()
++            or sha256_file(path) != record["artifact_sha256"]
++        ):
++            raise ValueError("ABPairFM joint embedding artifact differs")
++        artifact = torch.load(path, map_location="cpu", weights_only=True)
++        antibody = artifact.get("antibody_features")
++        antigen = artifact.get("antigen_features")
++        source_record = self.records[index]
++        if (
++            artifact.get("format_version") != "sabdab2_abpairfm_joint_embedding_v1"
++            or artifact.get("instance_id") != identifier
++            or artifact.get("checkpoint_content_sha256") != self.checkpoint_sha256
++            or artifact.get("antibody_sequence_sha256")
++            != source_record["antibody_sequence_sha256"]
++            or artifact.get("antigen_sequence_sha256")
++            != source_record["antigen_sequence_sha256"]
++            or not torch.is_tensor(antibody)
++            or not torch.is_tensor(antigen)
++            or tuple(antibody.shape)
++            != (int(source_record["antibody_length"]), 2560)
++            or tuple(antigen.shape)
++            != (int(source_record["antigen_length"]), 2560)
++            or not bool(torch.isfinite(antibody).all())
++            or not bool(torch.isfinite(antigen).all())
++        ):
++            raise ValueError("ABPairFM joint embedding artifact metadata differs")
++        item["antibody_features"] = antibody.float()
++        item["antigen_features"] = antigen.float()
++        return item
++
++
+ class _FrozenPanelTrainingDataset(torch.utils.data.Dataset):
+     """Choose one legal frozen wrong partner per focal complex and epoch."""
+ 
+@@ -1165,6 +1301,19 @@
+             split_path=arguments.split_manifest,
+             split_sha256=arguments.split_manifest_sha256,
+         )
++        if arguments.joint_embedding_root is not None:
++            train_base = _JointEmbeddingOverrideDataset(
++                train_base,
++                arguments.joint_embedding_root,
++                arguments.joint_embedding_manifest_sha256,
++                split_role="train",
++            )
++            validation_base = _JointEmbeddingOverrideDataset(
++                validation_base,
++                arguments.joint_embedding_root,
++                arguments.joint_embedding_manifest_sha256,
++                split_role="validation",
++            )
+         train_dataset = Sabdab2ContactDataset(
+             train_base, arguments.contact_cache_root
+         )
+@@ -1397,6 +1546,7 @@
+                 "structure_cache_root",
+                 "contact_cache_root",
+                 "embedding_root",
++                "joint_embedding_root",
+                 "label_root",
+                 "asep_cache_root",
+                 "output_root",
+@@ -1418,6 +1568,8 @@
+                 "structure_manifest_sha256": arguments.structure_manifest_sha256,
+                 "contact_manifest_sha256": arguments.contact_manifest_sha256,
+                 "embedding_manifest_sha256": arguments.embedding_manifest_sha256,
++                "joint_embedding_manifest_sha256": arguments.joint_embedding_manifest_sha256,
++                "joint_embedding_source_split_sha256": arguments.joint_embedding_source_split_sha256,
+                 "asep_cache_manifest_sha256": arguments.asep_cache_manifest_sha256,
+                 "protocol_file_sha256": sha256_file(arguments.protocol),
+                 "protocol_receipt_sha256": arguments.protocol_receipt_sha256,
+@@ -1441,7 +1593,11 @@
+                 "feature_mode": (
+                     arguments.asep_feature_mode
+                     if arguments.dataset_backend == "asep"
+-                    else "external_embedding_cache"
++                    else (
++                        "abpairfm_joint_cross_chain_v1"
++                        if arguments.joint_embedding_root is not None
++                        else "external_embedding_cache"
++                    )
+                 ),
+                 "train_complexes": len(train_dataset),
+                 "validation_complexes": len(validation_dataset),

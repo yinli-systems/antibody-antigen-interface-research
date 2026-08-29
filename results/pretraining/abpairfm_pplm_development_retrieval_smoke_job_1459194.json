@@ -1,0 +1,71 @@
+{
+  "authorization": {
+    "development_contact": false,
+    "development_pair_retrieval": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Non-claim PPLM implementation and throughput smoke. No quality, contact, calibration, biological-improvement, commercial-use, test, or SOTA claim is authorized.",
+  "equivalence": {
+    "batch_padding_vs_singleton_max_abs_delta": 1.5497207641601562e-06,
+    "batch_padding_vs_singleton_tolerance": 0.00002,
+    "clean_room_vs_official_feature_max_abs_delta": 2.4437904357910156e-06,
+    "clean_room_vs_official_probability_max_abs_delta": 2.9802322387695312e-08,
+    "clean_room_vs_official_probability_tolerance": 0.000001,
+    "status": "EXACT_FEATURE_SEMANTICS_ACCEPTED",
+    "streaming_vs_official_full_attention_tolerance": 0.000005
+  },
+  "failure_evidence": [
+    {
+      "cause": "Official revision 1267db4 assumes batch size one when broadcasting the 20 inter-attention scales.",
+      "job_id": "1459174",
+      "state": "FAILED"
+    },
+    {
+      "cause": "Batch-safe scorer exceeded the original 1e-6 feature threshold; the failure did not expose branch deltas.",
+      "job_id": "1459176",
+      "state": "FAILED"
+    },
+    {
+      "cause": "Diagnostic run measured a 2.4437904357910156e-6 maximum float32 feature delta, above the superseded 1e-6 bound; no scoring occurred.",
+      "job_id": "1459184",
+      "state": "FAILED"
+    }
+  ],
+  "format_version": "abpairfm_pplm_development_retrieval_smoke_summary_v1",
+  "job": {
+    "elapsed": "00:00:27",
+    "exit_code": "0:0",
+    "job_id": "1459194",
+    "partition": "gpu_4090",
+    "state": "COMPLETED",
+    "stderr_bytes": 0
+  },
+  "model": {
+    "backbone_checkpoint_sha256": "c8ce3b75dfd7b5890dfa7d96de7f698b522a5cbf59d7ee2732cb80ad3e5df495",
+    "backbone_parameters": 651044309,
+    "head_checkpoint_sha256": "2695b886ef3ba2c1acacb74cd4f8c8173323addfc548b6d482143fb2b7070d8f",
+    "head_ensemble_member_count": 10,
+    "source_archive_sha256": "a8d2df2eaf48751f1b4544eac18d2084611289c806141fa47ece4ec6b6788ef3",
+    "source_revision": "1267db4592703095b889cc22da6cf1796ce038b5"
+  },
+  "predictions": {
+    "bytes": 53116,
+    "row_count": 128,
+    "sha256": "656bbfff1b5fb9a7a0b70184989cc9e8924feb3d896f5a6b669da0fcb1302964"
+  },
+  "protocol_sha256": "ad32eb302afb7721513733953cb0f5e37f4117c776f6c9ab89dca9b4ca13137f",
+  "runtime": {
+    "elapsed_seconds": 5.541960882022977,
+    "gpu_hours": 0.0015394335783397157,
+    "gpu_name": "NVIDIA GeForce RTX 4090",
+    "nonpadding_residues_per_second": 8700.53055704699,
+    "pair_windows": 125,
+    "pair_windows_per_second": 22.555193488549374,
+    "peak_allocated_memory_fraction": 0.1951921078519668,
+    "peak_cuda_bytes": 4616224768
+  },
+  "status": "SMOKE_NONCLAIM_COMPLETE",
+  "summary_sha256": "1f642e37d529834644774ec627d6d4f651916f51ceb631022a258690551ad47d",
+  "test_access": false
+}

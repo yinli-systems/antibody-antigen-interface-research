@@ -1,0 +1,57 @@
+{
+  "format_version": "framecontact_asep_execution_start_v1",
+  "recorded_on": "2026-07-30",
+  "frozen_scientific_authorities": {
+    "baseline_lock_v3_sha256": "a792935235380671fe3a2e45604eba24cc8d5e6c8db6ddb44b62ac67fc05e2d0",
+    "protocol_sha256": "c81cba7a6d05994e0ea4b0f90acff818729edc850e6e222594066ae08163d1de",
+    "protocol_receipt_sha256": "370f36155e54be15c9b5ef4460a768a5c82a36bf561a206424b9d09e0d0b05fb",
+    "development_cache_manifest_sha256": "69cc62f0d77858b38508821bf9d56504dd397787a37dad62fbd1a5072a348cc7",
+    "training_partner_panel_sha256": "a0c5f3e8ea1a0edf7cd9a2043b326ee3be7b054c81dff9fbfcb510db6f2969d1",
+    "validation_partner_panel_sha256": "10f50aa122568d4ed1a8261637f2e807f2702997a1aa5d9925983d37cc0d83ec"
+  },
+  "source_sha256": {
+    "framecontact_model": "cfe6d8c6f0004b7f70e149a5c308b0131e26826616d11f73324a53b58e078cff",
+    "intra_chain_geometry": "fc9443a70cdf62ef3c9d8b2ddc3a767692a23d8c07f291c22203f415f912dbc3",
+    "trainer": "6b2fbdddba467b041a17d06819ef54c44aa05358f432c308e5e1fd463f88fc11",
+    "gpu_smoke": "a3d799d905bf40c3998d9195a663cdf349fbba3b89e86db748165cd62bb7dc56",
+    "cache_verifier": "2a5780659e38136f54ab1785419be27ba704469f75718f62187424282666d0e4",
+    "slurm_smoke": "f515d2c5be1b8018392188542bf7c5ef78e6a3aaa0da77d1b9dbd46cf2fbce52",
+    "slurm_training_array": "70bb6d3081bc5d46fbdb1f6e3c60f04301f0516526268a649347fa3dfb259349"
+  },
+  "remote_cache_verification": {
+    "receipt_sha256": "48f7ed6ae28b8b875dc443c8d8d22f473a6ebe4ba737d9795fb09adac49533b0",
+    "record_count": 1553,
+    "train_count": 1383,
+    "validation_count": 170,
+    "every_artifact_sha256_verified": true,
+    "contact_marginals_reproduced": true,
+    "official_test_materialized": false
+  },
+  "gpu_smoke": {
+    "slurm_job_id": "1342457",
+    "receipt_sha256": "88843bbb5402852fd67b5b6e2589dbde698878315207e5f6db41ec336b942da5",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "precision": "bf16",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "all_eight_conditions_forward_backward_finite": true,
+    "optimizer_step_performed": false,
+    "performance_metric_computed": false
+  },
+  "development_training": {
+    "slurm_array_job_id": "1342460",
+    "matrix": "8 conditions x 5 preregistered seeds",
+    "maximum_concurrent_tasks": 8,
+    "partition": "gpu_4090",
+    "submitted_after_successful_smoke": true,
+    "status_at_recording": "first eight tasks running",
+    "result_status": "pending",
+    "official_test_loaded": false,
+    "external_benchmark_claim_authorized": false
+  },
+  "environment_boundary": "This execution is on ParaCloud RTX 4090, not AB03 A100. AB03 reproduction remains a separate required hardware receipt.",
+  "immutability_rule": "After job 1342460 began fitting, protocol, panels, architecture matrix, seeds, objectives, and checkpoint rule are immutable for this v1 execution. Runtime-only failures must be recorded and may not be repaired using validation metric knowledge.",
+  "claim_boundary": "Execution-start provenance only. No development performance, frozen-test, external generalization, or benchmark-improvement claim is present."
+}

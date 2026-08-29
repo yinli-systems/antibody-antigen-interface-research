@@ -1,0 +1,38 @@
+{
+  "authorization": {
+    "development_access": false,
+    "old_test_reopened": false,
+    "real_stage_a0_data_canary": true,
+    "temporal_holdout_access": false
+  },
+  "batch": {
+    "accumulation_steps": 4,
+    "global_pairs_per_update": 112,
+    "microbatch_pairs_per_rank": 7,
+    "updates": 20
+  },
+  "canary_job_id": 1468890,
+  "format_version": "abpairfm_3b_4gpu_dcp_mfu_canary_submission_v1",
+  "hardware": {
+    "excluded_node": "wqd10naf05g3",
+    "gpu_count": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "partition": "gpu_4090",
+    "single_node": true
+  },
+  "input_checkpoint": {
+    "content_sha256": "38a0987985f119afb374f2062e407bc9c5006f3f7ad66711744086d9561810b1",
+    "generation": "segment-000073",
+    "input_world_size": 8
+  },
+  "production_fallback": {
+    "job_id": 1468369,
+    "preserved_pending": true,
+    "watchdog_job_id": 1468370
+  },
+  "protocol_sha256": "97b7f804fd08b6ae26660694f4f16dcdad7069038136d5bff4eb9bc43856ba30",
+  "source_aggregate_sha256": "90ce536ce29f398dcf9aeeb413fdaae25498c2d4c5cdebb3023663889d89e137",
+  "source_runner_sha256": "95eb53c4874bc2ff66f65dbbbee62b0156f59015aa9581619d0c860a4ea626c1",
+  "submit_script_sha256": "5217dc9d38f3b8a32dc8049138ee613e4129764e37da216dd4807ccd8a97b53f",
+  "test_access": false
+}

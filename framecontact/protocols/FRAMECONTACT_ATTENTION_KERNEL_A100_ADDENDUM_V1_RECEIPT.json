@@ -1,0 +1,18 @@
+{
+  "schema_version": "framecontact_attention_kernel_a100_addendum_receipt_v1",
+  "addendum_path": "protocols/framecontact_attention_kernel_a100_addendum_v1.json",
+  "addendum_file_sha256": "63b07c7928970f28e46ce622b4e364e524da7583e78e047cd52b78ca492a5ac4",
+  "addendum_canonical_sha256": "25e42a7b263e3269661927dd55cc2fdeea78deb06909028022b4fd1bd43226b5",
+  "package_archive_sha256": "2760235d7cde987d86d5b465641a1ddd054b2fddba9acf55de12f436b5492fc5",
+  "source_manifest_sha256": "50195990a8d1d9eb3ca5a03a433daf7ed51056b627d3a84e1a0695200ad855b9",
+  "source_tree_sha256": "9cbeaa92aaeee0a8207f35c4a59e7cc8ae57788eca97f43fa30aebbb9c5c982c",
+  "benchmark_sha256": "8f853bee439630d2e9784359b0a8869fa9556c4366415334e69ef046c29e9687",
+  "run_receipt_sha256": "71a0bde2894afac74d9eacd4b4de6dfa06dacbe701e8eafb1d720167194f9243",
+  "a100_kernel_correctness_claim_authorized": true,
+  "a100_shape_specific_performance_claim_authorized": true,
+  "model_quality_claim_authorized": false,
+  "frozen_test_claim_authorized": false,
+  "external_generalization_claim_authorized": false,
+  "custom_fused_kernel_claim_authorized": false,
+  "state_of_the_art_claim_authorized": false
+}

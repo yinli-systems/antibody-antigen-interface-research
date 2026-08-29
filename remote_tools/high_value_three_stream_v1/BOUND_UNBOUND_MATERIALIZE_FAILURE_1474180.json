@@ -1,0 +1,22 @@
+{
+  "authorization": {
+    "partial_output_reusable": false,
+    "protocol_or_data_change_allowed": false,
+    "recovery_scope": "add an existing read-only transformers dependency path to the fixed contact Python interpreter"
+  },
+  "exit_code": "1:0",
+  "failure": {
+    "exception": "ModuleNotFoundError: No module named 'transformers'",
+    "phase": "before ESM-2 embedding and before final data manifest",
+    "type": "missing_runtime_dependency"
+  },
+  "format_version": "framecontact_bound_unbound_materialize_failure_receipt_v1",
+  "job_id": 1474180,
+  "partial_output_bytes": 10014346,
+  "partial_output_file_count": 425,
+  "protocol_sha256": "1ad4b4ee2bf96f8a0a8b2975aabad13f408da09dd11018ed6ea49f42bf11846e",
+  "runtime_seconds": 56,
+  "status": "FAIL_CLOSED_NO_RESULT",
+  "stderr_sha256": "79cf638db2db6ea77c0a0d4d6a3158094f910b63754d4c02dfe4a00b7994a999",
+  "stdout_sha256": "10d1b09d907ac175283b6dcfebac2fdec7003198ad2d129833a249cc7b04d446"
+}

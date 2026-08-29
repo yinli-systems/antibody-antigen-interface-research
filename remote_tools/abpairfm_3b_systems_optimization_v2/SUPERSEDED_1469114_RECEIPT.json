@@ -1,0 +1,25 @@
+{
+  "cancelled_at_utc": "2026-08-25T10:57:37Z",
+  "exit_code": "0:0",
+  "format_version": "abpairfm_3b_systems_optimization_supersession_v1",
+  "job_id": 1469114,
+  "job_state": "CANCELLED",
+  "outputs_created": false,
+  "reason": "PyTorch 2.7 public Flash SDPA rejects a non-null padding mask. The pending job was superseded before allocation by the exact native variable-length FlashAttention path, which packs valid queries and keys and requires no mask.",
+  "submitted_implementation": {
+    "attention_backend": "public_sdpa_with_padding_mask",
+    "attention_sdpa_calls_per_layer": 2,
+    "protocol_sha256": "903df81754fe089c40cba15058c04f5e6b74f44f974419fe45a82c0eefa7da0f",
+    "source_aggregate_sha256": "d01f81eed53dbee9a28c8f8da76301b8b6e1139396a28e46ec850295b3ef9368",
+    "source_runner_sha256": "9a8aa60c0fa08f6d5f9532353be940c31312b974e97c05a0860e1fd12ae1508f",
+    "submit_script_sha256": "f0b41651833f17c57acd0d9c97bf2af9651bd1bf99748fa1852c87b6907bf948"
+  },
+  "superseding_implementation": {
+    "attention_backend": "aten_native_varlen_flash",
+    "attention_sdpa_calls_per_layer": 2,
+    "protocol_sha256": "2a2198f7062a012273b6ad869d1d46893962efabab591fc308b514d5dedb451d",
+    "source_aggregate_sha256": "0ab97b3f73b522a4b72eb25104d1849f3568185b6f6def65474badda13244260",
+    "source_runner_sha256": "43f0a774c15e4e2ec0f379532f7eaf0b2a812ed1b4c2209e09908b2759431a3a"
+  },
+  "test_access": false
+}

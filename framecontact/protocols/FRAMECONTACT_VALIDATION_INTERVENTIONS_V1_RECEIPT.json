@@ -1,0 +1,15 @@
+{
+  "format_version": "framecontact_validation_intervention_protocol_receipt_v1",
+  "frozen_at_utc": "2026-08-03T09:05:00Z",
+  "protocol_file": "protocols/framecontact_validation_interventions_v1.json",
+  "protocol_file_sha256": "fdfbdd03b6cc28d88f29e997c79cdda622192f4df9d30f8551e33196236b59b0",
+  "evaluator_file": "scripts/evaluate_framecontact_validation_interventions.py",
+  "evaluator_file_sha256": "c5f27468a0fd7b07586f5fefe827caf83fd8b58478b01a9c8cc1017ac8d0ba74",
+  "test_files": {
+    "tests/test_validation_intervention_audit.py": "fb82a4871fb55c3a5c98bf5b7c777cb4b3a7aee5cb014e861932fa69722064a9"
+  },
+  "intervention_metrics_accessed_before_freeze": false,
+  "selection_performed_by_audit": false,
+  "test_loaded": false,
+  "external_test_loaded": false
+}
