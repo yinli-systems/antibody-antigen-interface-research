@@ -10,12 +10,15 @@ replace protocol-specific runbooks or result receipts.
 | `src/interaction_first/` | Importable implementation | Models, metrics, split formulations, data contracts, auditors, and solver backends |
 | `scripts/` | Operator entry points | Build, train, evaluate, audit, freeze, verify, and submit commands |
 | `slurm/` | Scheduler templates | Cluster launchers and orchestration helpers |
+| `remote_tools/` | Immutable deployed workstreams | Source snapshots, launchers, patches, and receipts grouped by remote campaign |
 | `protocols/` | Frozen research governance | Preregistrations, amendments, execution locks, registrations, attempt receipts, and split evidence |
 | `results/` | Lightweight evidence | Final summaries, verification receipts, statistical analyses, and selected figures |
 | `data_registry/` | Data provenance | Source manifests, license receipts, normalization contracts, and materialization receipts |
 | `schemas/` | Machine-readable contracts | Portable content and result schemas |
 | `docs/` | Human-readable guidance | Reproduction, pipeline, geometry, and repository navigation documentation |
 | `figures/` | Lightweight presentation artifacts | Final figures retained in Git |
+| `paper/` | Manuscript workspaces | Venue-neutral paper source, paper-local figures, and compact metric/reference audits |
+| `research/` | Active research notes | Bounded exploratory analyses that are not frozen result claims |
 | `patches/` | Upstream compatibility records | Explicit patches required by pinned third-party code |
 
 Raw datasets, model weights, full embeddings, prediction tensors, third-party
@@ -43,6 +46,9 @@ the corresponding local-only paths and extensions.
   evidence.
 - Do not deduplicate mirrored protocol/result files without a manifest-aware
   migration: validators may depend on exact paths and hashes.
+- Do not relocate an already-published `remote_tools/` bundle merely to improve
+  aesthetics: deployed launchers and receipts may bind its path. New campaign
+  files should be grouped under one descriptive workstream directory.
 - Do not treat ignored local artifacts as published evidence.
 - Do not infer test authorization from the presence of evaluation code. The
   governing protocol and its receipts control access.
