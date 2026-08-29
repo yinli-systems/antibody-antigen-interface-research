@@ -148,11 +148,28 @@ below rather than compare it as if it were sequence-only.
 \subsection{Geometry-aware pair-contact backbone}
 
 For each chain, external ESM-2 embeddings \citep{lin2023esm} are projected to
-$d=128$. Separate antibody and antigen encoders combine a dense sequence path
-with a local spatial path constructed from N/CA/C residue frames, radial basis
-distance features, sequence offsets, and chain identity. Geometry enters through
-a zero-initialized residual gate, so the initial network remains close to the
-sequence pathway. Antibody and antigen use separate encoder parameters.
+$d=128$. We construct a right-handed frame $(R_i,o_i)$ at each residue from its
+N--C$\alpha$--C atoms, with $o_i$ at C$\alpha$. For an ordered same-chain pair
+$(i,j)$, the invariant geometric descriptor is
+\begin{equation}
+ g_{ij}=\left[\operatorname{RBF}_{16}(\lVert o_j-o_i\rVert),\;
+ R_i^\top\operatorname{unit}(o_j-o_i),\;
+ \operatorname{vec}(R_i^\top R_j),\;
+ \delta_{ij}^{\mathrm{sgn}},\delta_{ij}^{\mathrm{abs}}\right],
+ \label{eq:intra-geometry}
+\end{equation}
+where $\operatorname{unit}(0)=0$ and the two sequence-offset features are
+clipped after normalization by 32.
+Each antibody or antigen block factorizes intra-chain encoding into (i) dense
+content self-attention with sequence rotary positions and (ii) self-attention
+whose per-head logits receive an MLP bias from $g_{ij}$. The geometric branch
+uses self edges plus at most 32 nearest same-chain neighbors within
+\SI{16}{\angstrom}; residues with missing or degenerate frames remain in the
+content path but contribute no learned geometric bias. The branches are fused as
+$H_{\mathrm{intra}}=H_{\mathrm{dense}}+
+\tanh(\gamma_{\mathrm{geo}})(H_{\mathrm{geom}}-H)$, where $H$ is the block
+input and $\gamma_{\mathrm{geo}}=0$ at
+initialization. Antibody and antigen use separate parameters.
 
 Backbone coordinates are extracted from deposited antibody--antigen complex
 structures. The model retains only each chain's intra-chain N/CA/C geometry: no
@@ -161,8 +178,13 @@ distance is supplied as input. Nevertheless, the intra-chain conformations are
 bound-complex-derived. The reported setting is therefore bound-conformation
 structural prediction, not sequence-only or unbound-monomer prediction.
 
-Let $h_i^{\mathrm{Ab}}$ and $h_j^{\mathrm{Ag}}$ denote the resulting embeddings.
-The same directional low-rank decoder is applied in both chain orders:
+We alternate this intra-chain update with partner exchange rather than applying
+one late fusion step. At layer $\ell\in\{1,2\}$, separate geometry-aware encoders
+first produce $(A_\ell,G_\ell)$; the shared pair decoder forms a stage contact
+map; and bidirectional cross-attention updates both streams before layer
+$\ell+1$. Let $h_i^{\mathrm{Ab}}$ and $h_j^{\mathrm{Ag}}$ denote the embeddings
+at a given stage. The same directional low-rank decoder is applied in both chain
+orders:
 \begin{equation}
  \begin{aligned}
  \phi(x,y)&=\frac{q(x)^\top k(y)}{\sqrt{d_p}}+u(x)+v(y)+b,\\
@@ -174,8 +196,8 @@ The same directional low-rank decoder is applied in both chain orders:
  \label{eq:contact}
 \end{equation}
 where $d_p=128$. The head is evaluated over the complete antibody--antigen
-Cartesian candidate grid. At each interleaved fusion layer, antibody-to-antigen
-attention uses content logits only:
+Cartesian candidate grid. Antibody-to-antigen attention at layer $\ell$ uses
+content logits only:
 \begin{equation}
  a^{h,\mathrm{Ab}\leftarrow\mathrm{Ag}}_{ij}
  =\operatorname*{softmax}_{j:M_{ij}=1}\!\left(
@@ -183,9 +205,15 @@ attention uses content logits only:
  {\sqrt{d_h}}\right),
  \label{eq:attention}
 \end{equation}
-with the analogous update in the reverse direction. Partner context is injected
-through a zero-initialized residual gate. In the frozen experiments, no function
-of $z_{ij}$ enters the attention logits.
+with the analogous update in the reverse direction. Its output is
+$A'_{\ell}=A_{\ell}+\tanh(\gamma_{\ell}^{\mathrm{Ab}})
+\operatorname{CrossAttn}(A_{\ell},G_{\ell})$, and analogously for $G'_{\ell}$;
+both cross-stream gates start at zero. The next intra-chain block consumes these
+partner-conditioned features. Thus, local SE(3)-invariant bound-chain geometry
+and partner-specific content exchange are interleaved without supplying the
+native cross-chain pose. Although stage contact logits are exposed for
+diagnostics, the frozen configuration is
+\texttt{content\_only}: no function of $z_{ij}$ enters the attention logits.
 
 Pair supervision is read from the frozen binary contact cohort. Residue labels
 are derived strictly from the pair matrix,
