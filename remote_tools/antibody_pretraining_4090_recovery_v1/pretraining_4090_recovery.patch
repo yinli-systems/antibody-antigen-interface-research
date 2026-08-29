@@ -1,0 +1,35 @@
+diff --git a/scripts/freeze_antibody_four_gpu_recovery_gate.py b/scripts/freeze_antibody_four_gpu_recovery_gate.py
+--- a/scripts/freeze_antibody_four_gpu_recovery_gate.py
++++ b/scripts/freeze_antibody_four_gpu_recovery_gate.py
+@@ -32 +32 @@
+-        "gpu_model": "NVIDIA GeForce RTX 5090",
++        "gpu_model": "NVIDIA GeForce RTX 4090",
+diff --git a/scripts/audit_antibody_four_gpu_recovery_gate.py b/scripts/audit_antibody_four_gpu_recovery_gate.py
+--- a/scripts/audit_antibody_four_gpu_recovery_gate.py
++++ b/scripts/audit_antibody_four_gpu_recovery_gate.py
+@@ -75 +75 @@
+-            "gpu_model": "NVIDIA GeForce RTX 5090",
++            "gpu_model": "NVIDIA GeForce RTX 4090",
+diff --git a/slurm/antibody_four_gpu_recovery_gate.sbatch b/slurm/antibody_four_gpu_recovery_gate.sbatch
+--- a/slurm/antibody_four_gpu_recovery_gate.sbatch
++++ b/slurm/antibody_four_gpu_recovery_gate.sbatch
+@@ -3 +3 @@
+-#SBATCH --partition=gpu_5090
++#SBATCH --partition=gpu_4090
+@@ -15 +15 @@
+-PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python}
++PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/contact/bin/python3.10}
+@@ -86,2 +86,2 @@
+-  | awk '$0 == "NVIDIA GeForce RTX 5090" {n++} END {print n+0}')" == 4 ]] \
+-  || { echo "Gate requires four RTX 5090 GPUs" >&2; exit 2; }
++  | awk '$0 == "NVIDIA GeForce RTX 4090" {n++} END {print n+0}')" == 4 ]] \
++  || { echo "Gate requires four RTX 4090 GPUs" >&2; exit 2; }
+diff --git a/slurm/antibody_four_gpu_recovery_pipeline.sbatch b/slurm/antibody_four_gpu_recovery_pipeline.sbatch
+--- a/slurm/antibody_four_gpu_recovery_pipeline.sbatch
++++ b/slurm/antibody_four_gpu_recovery_pipeline.sbatch
+@@ -3 +3 @@
+-#SBATCH --partition=gpu_5090
++#SBATCH --partition=gpu_4090
+@@ -15 +15 @@
+-PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/frontier_torch213/bin/python}
++PYTHON_BIN=${ABF_PYTHON_BIN:-/ssd/scxi253/model_deployment/envs/contact/bin/python3.10}

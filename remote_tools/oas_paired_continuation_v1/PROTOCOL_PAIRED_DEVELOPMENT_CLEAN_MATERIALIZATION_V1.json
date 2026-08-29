@@ -1,0 +1,17 @@
+{
+  "decontamination_protocol_sha256": "9f8b355ae8a7b55e6dbdad5fa4ddd9cf47a9cc78b549394ce85667e50bc0fc68",
+  "decontamination_script_sha256": "e105a5b59951dd23a005fc5f9560d212cb248717000df88696902aa4e6978f61",
+  "format_version": "oas_paired_development_clean_materialization_v1",
+  "output": {
+    "encoding": "variable-length uint8 token/type/region streams with uint64 offsets",
+    "maximum_tokens": 320
+  },
+  "quality_result_sha256": "9135c6c6f363486581d31f67b69b9d1e6f913f2ee99a9e314d519b1e7558fc59",
+  "source_pairs_sha256": "87c907d6e6edaab7b9b22957e5c789b6b80906fb45adca3da7ac59d8758d93ff",
+  "split": {
+    "development_validation": "first 64 bits of donor_hash modulo 32 equals 0",
+    "unit": "donor_hash"
+  },
+  "test_access": false,
+  "training_authorized": false
+}

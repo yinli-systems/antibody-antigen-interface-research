@@ -1,0 +1,52 @@
+{
+  "active_chain": {
+    "decontamination_job_id": 1469707,
+    "materialization_afterok_job_id": 1469708,
+    "training_canary_afterok_job_id": 1469709
+  },
+  "decontamination": {
+    "frozen_audit_protocol_sha256": "9f8b355ae8a7b55e6dbdad5fa4ddd9cf47a9cc78b549394ce85667e50bc0fc68",
+    "frozen_audit_script_sha256": "e105a5b59951dd23a005fc5f9560d212cb248717000df88696902aa4e6978f61",
+    "hits_sha256": "edf4c952061ffef3e48b24ddb61a30d303a9cca26a3fa47c5ddcb6ce8f8f8338",
+    "submit_script_sha256": "bf3c6a0e363fce42196cafdafb8a2e7eb3e4dcfe3cf6baa254ec8758763ab6fb"
+  },
+  "format_version": "oas_paired_650m_chain_supersession_receipt_v1",
+  "materialization": {
+    "protocol_sha256": "35c19666fd3f63fc3bb8e30940a7b2e96cf2d2fc5a16925b684fec4330f5ca06",
+    "submit_script_sha256": "9c8623ca1f3e266cdf47469495c8fd61c1f7a96f5d7cf80476d7d352634b5d7c"
+  },
+  "submitted_at_utc": "2026-08-25T14:36:02Z",
+  "superseded": [
+    {
+      "job_id": 1469598,
+      "state": "FAILED",
+      "failure_receipt_sha256": "83efb362885705b7e5293087203c38bed123aad0f4d6a3ba79c6c739ef331542"
+    },
+    {
+      "job_id": 1469690,
+      "state": "FAILED",
+      "failure_receipt_sha256": "7352c374a425c280a9332791451434996dd872f03b27aaaf1ea179b0851195aa"
+    },
+    {
+      "job_id": 1469610,
+      "state": "CANCELLED_BEFORE_ALLOCATION"
+    },
+    {
+      "job_id": 1469625,
+      "state": "CANCELLED_BEFORE_ALLOCATION"
+    },
+    {
+      "job_id": 1469691,
+      "state": "CANCELLED_BEFORE_ALLOCATION"
+    },
+    {
+      "job_id": 1469692,
+      "state": "CANCELLED_BEFORE_ALLOCATION"
+    }
+  ],
+  "test_access": false,
+  "training_canary": {
+    "protocol_sha256": "e37d8c31736f980e464bcaa6156292380ca0c0520b36760f1db3485aa1f74689",
+    "submit_script_sha256": "98ed5b04c932ac7e4dfc69b4c061a4280535c1d93b3f57b4a1e54c962fa417b0"
+  }
+}

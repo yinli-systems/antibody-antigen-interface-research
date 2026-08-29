@@ -1,0 +1,15 @@
+{
+  "failed_job_id": 1469690,
+  "failed_stderr_sha256": "cbc929651c9931022baad6bfee7d1cc0282a8fab802d0dbf00b6bb2417155347",
+  "failure_class": "MISSING_SUPERSEDED_TEMPORARY_HITS_PATH",
+  "failure_message": "FileNotFoundError: development-vs-oas-paired.tsv.gz",
+  "format_version": "oas_pairwise_decontamination_failure_receipt_v4",
+  "input_read_started": false,
+  "result_written": false,
+  "retry_input": {
+    "path": "/ssd/scxi253/model_deployment/data/abpairfm_3b_v1/normalized_candidates/oas_paired_20260821/oas_stage_b_development_homology_hits_reversed_v3.tsv.gz",
+    "sha256": "edf4c952061ffef3e48b24ddb61a30d303a9cca26a3fa47c5ddcb6ce8f8f8338",
+    "size_bytes": 9393601578
+  },
+  "test_access": false
+}
