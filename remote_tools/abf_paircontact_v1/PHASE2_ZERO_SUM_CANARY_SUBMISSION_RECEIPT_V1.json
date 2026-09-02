@@ -1,0 +1,24 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "format_version": "abf_paircontact_phase2_zero_sum_canary_submission_receipt_v1",
+  "job": {
+    "gpu_count": 4,
+    "job_id": 1504931,
+    "partition": "gpu_4090",
+    "state_after_submission": "RUNNING"
+  },
+  "provenance": {
+    "audit_sha256": "3a3fa4cd4e5887ea4dec15ba418e55298950cee6b13ab6e9db9ee5fba9da8588",
+    "preflight_receipt_sha256": "3093fd8495fd63ec788235ef8c1a9179062beb570d2f97866bac162138f63422",
+    "protocol_sha256": "cf4f6ee373fff3fa76f2c3fb92f7e7f431611615563f5457b19ebc8116f02c3c",
+    "source_sha256": "b60643815919d08b546393da4c3c09974c95ccdcc0c0997e886a7fa08492f814",
+    "submission_script_sha256": "566b565be43a41db18136b945c2088abf6bff22741a571b6ccf70dffdf93ebc0"
+  },
+  "submitted_at": "2026-08-31T07:55:24+08:00",
+  "test_access": false
+}

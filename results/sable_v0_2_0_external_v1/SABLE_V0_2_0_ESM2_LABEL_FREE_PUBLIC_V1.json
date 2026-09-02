@@ -1,0 +1,20 @@
+{
+  "format_version": "sable_v0_2_0_esm2_label_free_public_v1",
+  "status": "PASS_LABEL_FREE_ESM2_EMBEDDINGS",
+  "manifest_sha256": "67670200608ac98573c9d0329fd06fb7f5973d0a47bd96aeea5861b94955abc9",
+  "entry_count": 97,
+  "unique_pdb_id_count": 88,
+  "unique_sequence_count": 176,
+  "embedding_dimension": 1280,
+  "model_name": "facebook/esm2_t33_650M_UR50D",
+  "model_revision": "08e4846e537177426273712802403f7ba8261b6c",
+  "model_weight_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+  "all_artifact_sha256_verified": true,
+  "pooler_used": false,
+  "residue_representation": "last_hidden_state",
+  "task_labels_read": false,
+  "bound_structures_read": false,
+  "old_sabdab2_test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "selection_or_tuning": false
+}

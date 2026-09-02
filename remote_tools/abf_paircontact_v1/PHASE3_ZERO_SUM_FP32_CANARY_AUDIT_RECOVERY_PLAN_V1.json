@@ -1,0 +1,30 @@
+{
+  "authorization": {
+    "audit_recovery": true,
+    "lora_comparison": false,
+    "model_update": false,
+    "production_scaling": false,
+    "retraining": false,
+    "test_access": false
+  },
+  "created_utc": "2026-08-31T00:57:19Z",
+  "failure": {
+    "job_id": "1505482",
+    "reason": "The immutable audit attempted mkdir() on the already-existing result parent before writing AUDIT.json.",
+    "slurm_state": "FAILED",
+    "training_complete": true
+  },
+  "format_version": "abf_paircontact_phase3_zero_sum_fp32_canary_audit_recovery_plan_v1",
+  "method": "Run the exact same immutable audit script once, unchanged, with its create-only output placed under a new absent audit_recovery_v1 directory. No training, checkpoint load, label access, or metric recomputation beyond RESULT.json is permitted.",
+  "output": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_3b_stage_a1_paircontact_zero_sum_fp32_canary_v20/audit_recovery_v1/AUDIT.json",
+  "provenance": {
+    "audit_sha256": "da302d88899def1b617c45ff1cee0ec2ebc9f3ccf598eb3a4508214286c03f7b",
+    "checkpoint_content_sha256": "44d063a33c5618f7c502c900a93f3780fa5ea0f3180f9a21195d9cd10a6f2147",
+    "checkpoint_receipt_sha256": "8c4311aef3d99770d1f76dce8d060a6792508ca1455fef587dc804fd378d2886",
+    "progress_sha256": "2e5b4086add05bcb717d294a5a32ca9e4acce99dbd6b65b50a0c4d2151d1a355",
+    "protocol_sha256": "9dc2e5450245fc1a7594c5f3f0d29d70dbc82378a22ccecd6c2ab02e8fd640d2",
+    "result_sha256": "c614263c1fd1db49d533ee1163eb81bab44f990ae8bf032243e226fb4d1f4623",
+    "source_sha256": "00d78df4f811f683787882e5869272ffa8cd18ae679dd1961a3bbe6f82608dee"
+  },
+  "test_access": false
+}

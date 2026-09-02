@@ -1,0 +1,6 @@
+{
+  "format_version": "sable_v0_2_0_bound_label_mapping_recovery_v2_receipt",
+  "recovery_plan_sha256": "3d53060d11a74666246af72e7eb721c42931a6bd6c24ed31ca97f2fa04b13f44",
+  "status": "PASS_FROZEN_RECOVERY_BINDING",
+  "test_or_temporal_access": false
+}

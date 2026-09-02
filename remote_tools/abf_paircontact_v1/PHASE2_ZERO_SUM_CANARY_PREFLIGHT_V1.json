@@ -1,0 +1,43 @@
+{
+  "checkpoint": {
+    "consumed_residue_tokens": 2022862461,
+    "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "exact_verification": "PASS_DCP_EXACT_VERIFICATION",
+    "generation": "segment-000127",
+    "global_update": 25600,
+    "test_access": false
+  },
+  "format_version": "abf_paircontact_phase2_zero_sum_canary_preflight_v1",
+  "holdout": {
+    "bucket_pdb_count": 4941,
+    "bucket_record_count": 4967,
+    "confirmatory_pdb_count": 511,
+    "confirmatory_pdb_inventory_sha256": "305e868ed39fcc9794ebe06b48b28228e1831a2b29e568b9a8b80835652b119c",
+    "confirmatory_record_count": 512,
+    "excluded_prior_pdb_count": 511,
+    "excluded_prior_pdb_inventory_sha256": "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028",
+    "pdb_overlap_with_prior_holdout": 0,
+    "remaining_training_record_count": 3943,
+    "selection_seed": 2909,
+    "selection_used_labels_or_scores": false
+  },
+  "implementation": {
+    "average_precision_tie_aware": true,
+    "endpoint_zero_sum_direct_assertion": "PASS_ENDPOINT_ZERO_SUM_DIRECT_ASSERTION",
+    "local_tests": "21 passed",
+    "negative_sampling": "deterministic row- and column-matched native noncontacts before random fill",
+    "remote_direct_assertions": "PASS_PHASE0_DIRECT_ASSERTIONS",
+    "remote_protocol_and_source_preflight": "PASS_V19_PROTOCOL_AND_SOURCE_PREFLIGHT"
+  },
+  "provenance": {
+    "audit_sha256": "3a3fa4cd4e5887ea4dec15ba418e55298950cee6b13ab6e9db9ee5fba9da8588",
+    "manifest_receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "prior_failed_canary_receipt_sha256": "d1d093a32de6b30a56e5e716fa212f811433675df598f498e1f803e6dcefc085",
+    "protocol_sha256": "cf4f6ee373fff3fa76f2c3fb92f7e7f431611615563f5457b19ebc8116f02c3c",
+    "source_sha256": "b60643815919d08b546393da4c3c09974c95ccdcc0c0997e886a7fa08492f814",
+    "submission_script_sha256": "566b565be43a41db18136b945c2088abf6bff22741a571b6ccf70dffdf93ebc0"
+  },
+  "status": "PASS_FIXED_ENVIRONMENT_AND_CONFIRMATORY_HOLDOUT_PREFLIGHT",
+  "test_access": false
+}

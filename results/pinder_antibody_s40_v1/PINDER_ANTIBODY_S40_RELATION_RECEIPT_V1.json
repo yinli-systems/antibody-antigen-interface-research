@@ -1,0 +1,7 @@
+{
+  "format_version": "pinder_antibody_s40_relation_receipt_v1",
+  "model_selection_authorized": false,
+  "result_sha256": "aceaf0b53b60f4c124c3c3b26e57082477678ccebf3b0c8cb939b5692b1f6b5d",
+  "scientific_payload_sha256": "e3e93cbafdcac6cb4c175de7c27950b99bc9bbf3125253ffaa12b4bddc78a76f",
+  "training_authorized": false
+}

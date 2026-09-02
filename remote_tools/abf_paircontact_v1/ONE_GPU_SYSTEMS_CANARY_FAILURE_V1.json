@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "checkpoint_exists": false,
+    "result_exists": false,
+    "stderr_sha256": "ed42323cada9aeea89c919ce72f255d555898a53bc403aa59976e36e20568638",
+    "stdout_sha256": "442040ed1b6b860aea153031892abb2cc0c6adabe10be51d9304fabab1a2e4ad"
+  },
+  "classification": "SYSTEMS_CONFIGURATION_FAILURE_BEFORE_FIRST_OPTIMIZER_UPDATE",
+  "failure": {
+    "exit_code": "1:0",
+    "job_id": 1503569,
+    "message": "CUDA deterministic algorithms require CUBLAS_WORKSPACE_CONFIG to be set before Python imports torch.",
+    "state": "FAILED"
+  },
+  "format_version": "abf_paircontact_one_gpu_systems_canary_failure_v1",
+  "scientific_state": {
+    "biological_data_read": false,
+    "checkpoint_written": false,
+    "development_metrics_produced": false,
+    "test_access": false
+  },
+  "status": "FAIL_CLOSED_NO_SCIENTIFIC_RESULT"
+}

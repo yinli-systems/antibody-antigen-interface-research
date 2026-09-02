@@ -1,0 +1,62 @@
+{
+  "checkpoint_complete": false,
+  "continuation_plan_sha256": "1c246cabf4a64b9db3effbe65a3dbb2681754cf416d5a893f2976316e86aa877",
+  "format_version": "abpairfm_3b_unique25m_continuation_runtime_audit_v1",
+  "gpu_observation": {
+    "device_name": "NVIDIA GeForce RTX 4090",
+    "memory_used_mib": [24077, 21257, 21157, 23997],
+    "utilization_percent": [98, 95, 94, 98],
+    "world_size": 4
+  },
+  "jobs": {
+    "manifest_112": {
+      "exit_code": "0:0",
+      "job_id": 1492110,
+      "state": "COMPLETED"
+    },
+    "manifest_113": {
+      "exit_code": "0:0",
+      "job_id": 1492111,
+      "state": "COMPLETED"
+    },
+    "successor_watchdog": {
+      "job_id": 1492113,
+      "state": "PENDING_DEPENDENCY"
+    },
+    "training_112": {
+      "job_id": 1492112,
+      "state": "RUNNING"
+    }
+  },
+  "manifest_audit": {
+    "consecutive_segments": [111, 112, 113],
+    "manifest_records": [22400, 22400, 22400],
+    "manifest_sha256": [
+      "f3ae53daf52380bf663be379814fedff6e3615acab664f85790d6f924ce3c0b7",
+      "3151fc7fb5060ade797948c4518a1512232893704ed778b45e4b1069e6b9dd46",
+      "3fcf9ee64e19e77ebaa216cf4cac0d11a0354eed3dfc6ef496e23cb471fde1ab"
+    ],
+    "pair_hash_count": 67200,
+    "pair_hash_unique_count": 67200,
+    "pairwise_overlap_count": 0,
+    "receipt_sha256": [
+      "3e404fec15b06ae77e5a52f511833d7fe09070d40ab42137bfea96e0b5a16db6",
+      "fc8619f53e0caf5668003713fa31c17acefbfed9916a5c906e48d07d416cc118",
+      "16c69c2992e9653ef399ee035a74aa7f36972014080ca5a776751f63d6b01367"
+    ],
+    "test_access": false
+  },
+  "progress": {
+    "consumed_residue_tokens_campaign": 1771127938,
+    "consumed_residue_tokens_segment": 816697,
+    "global_update": 22410,
+    "latest_global_mean_mlm_loss": 1.9534040178571428,
+    "latest_gradient_norm": 1.3641729354858398,
+    "learning_rate": 6.589676502040816e-07,
+    "segment_index": 112,
+    "segment_update": 10,
+    "test_access": false
+  },
+  "source_manifest_sha256": "d4863f7832fd352ad415c7f73412692b65eeaf623980b6772d6e3cdea44ede62",
+  "status": "PASS_RUNNING_HEALTH_GATE"
+}

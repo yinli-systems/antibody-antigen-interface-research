@@ -1,0 +1,22 @@
+{
+  "canonical_record_url": "https://zenodo.org/records/22019991",
+  "confirmatory_evaluation_eligible": false,
+  "declared_scale": {
+    "count": 10395,
+    "source_claim_only": true,
+    "unit": "antibody-antigen structures"
+  },
+  "display_name": "SAbDab2 Machine Learning Dataset v0.2.0",
+  "duplicate_groups_status": "not_computed",
+  "format_version": "pairscale_source_manifest_v1",
+  "pinned_revision": "zenodo-record-22019991",
+  "planned_roles": [
+    "antibody_structural_adaptation_train_rows_only",
+    "official_abag_split_comparability_track"
+  ],
+  "registered_at_utc": "2026-09-01T00:00:00Z",
+  "sealed_evaluation_source": false,
+  "source_class": "antibody_antigen_structure_corpus",
+  "source_id": "sabdab2_ml_zenodo_22019991",
+  "training_policy": "eligible_after_materialization"
+}

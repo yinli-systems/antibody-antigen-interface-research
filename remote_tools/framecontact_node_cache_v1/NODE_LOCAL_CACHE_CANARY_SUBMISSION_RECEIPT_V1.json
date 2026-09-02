@@ -1,0 +1,12 @@
+{
+  "failure_record_sha256": "27bd83ff3aaf53a925a195a9909cd8148cc2ba63619002aea97b213939764cdb",
+  "format_version": "framecontact_node_local_cache_canary_submission_receipt_v1",
+  "job_id": "1495434",
+  "partition": "gpu_4090",
+  "scientific_protocol_changed": false,
+  "staging_script_sha256": "a464e5d9d785da104a5f179925298a899e3c80d698831893335a5981a5fa790c",
+  "status_at_submission": "RUNNING",
+  "submission_utc": "2026-08-29T22:41:24Z",
+  "submit_launcher_sha256": "f8294484b28f01184fed386b0dd8aa2e30ad812f977d3a37a064e1794255a040",
+  "test_or_temporal_access": false
+}

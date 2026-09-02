@@ -1,0 +1,11 @@
+{
+  "analysis_sha256": "b0b72cc12e2cca9b3152da70ea884aeef3200527ad28421c4101eecee4155770",
+  "checkpoint_binding_sha256": "c8be8d83fbedd6cce0809b6df5258f3a9be9d02a653d3285a6eed74ded9621f7",
+  "format_version": "abf30b_sable_v0_2_0_model_specific_public_v1_receipt",
+  "fresh_blind_test": false,
+  "measurement_only": true,
+  "model_unseen_before_this_measurement": true,
+  "public_result_sha256": "cad2e3332ddb6bb28ae837dd983566a7fbe770f3ff7a55b0aa7aa5fb009eae6a",
+  "selection_performed": false,
+  "status": "PASS_ABF30B_ANALYST_EXPOSED_SABLE_MODEL_SPECIFIC_MEASUREMENT"
+}

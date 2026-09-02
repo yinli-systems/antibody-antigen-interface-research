@@ -1,0 +1,59 @@
+{
+  "authorization": {
+    "external_test_access": false,
+    "mm_32k_training": false,
+    "mm_canary_training": false,
+    "mm_scale_training": false,
+    "sequence_only_alignment_audit": true
+  },
+  "claim_boundary": "Train-only amendment correcting the distinction between a full-UniProt PINDER AlphaFold monomer and the experimental holo construct sequence. Alignment uses amino-acid strings only; PINDER bound-coordinate availability and resolved-residue flags are not model inputs.",
+  "format_version": "abpairfm_pinder_multimodal_alignment_amendment_v2",
+  "parent_protocol": {
+    "format_version": "abpairfm_pinder_multimodal_pretraining_protocol_v1",
+    "sha256": "33671f0afb4225ea571b66ce3537b5dc5cc2f69bfede6ba4a127ec822c2663e7"
+  },
+  "rationale": {
+    "discovery_stage": "predicted-structure cache preprocessing before any multimodal optimization update",
+    "observed_contract_error": "One full-UniProt predicted monomer can legitimately correspond to multiple holo fragments or engineered constructs.",
+    "scientific_change": false,
+    "selection_metrics_read": false
+  },
+  "structure_alignment": {
+    "algorithm": "Biopython PairwiseAligner global alignment with free terminal gaps",
+    "alignment_inputs": [
+      "holo amino-acid sequence already present in the frozen train-only inventory",
+      "full predicted-monomer amino-acid sequence parsed from the authenticated PINDER AlphaFold PDB"
+    ],
+    "alignment_scores": {
+      "extend_gap": -0.5,
+      "match": 2.0,
+      "mismatch": -3.0,
+      "open_gap": -5.0,
+      "query_end_gap": 0.0,
+      "target_end_gap": 0.0,
+      "wildcard_X": 0.0
+    },
+    "ambiguous_optimum_policy": "mask the entire structure modality for that member-sequence association and retain an explicit audit record",
+    "per_residue_policy": "inject predicted geometry only when the aligned holo and predicted residues are identical and neither residue is X; tag, insertion, deletion, mutation, ambiguous, and low-confidence positions are masked",
+    "prohibited_alignment_inputs": [
+      "experimental bound coordinates",
+      "resolved-residue flags",
+      "contact labels",
+      "PINDER validation or test rows"
+    ]
+  },
+  "preregistered_gate": {
+    "minimum_exact_mapped_residues_per_endpoint": 8,
+    "minimum_exact_non_x_coverage_per_endpoint": 0.5,
+    "minimum_both_endpoint_usable_systems_for_scale": 250000,
+    "minimum_median_exact_non_x_coverage": 0.9,
+    "policy_for_below_gate_associations": "retain sequence and labels but set the complete structure mask to missing; do not silently drop the physical system"
+  },
+  "status": "FROZEN_ALIGNMENT_RECOVERY_BLOCKED_PENDING_AUDIT",
+  "test_access": {
+    "bound_coordinates_used_for_alignment": false,
+    "pinder_test_rows_read": false,
+    "pinder_test_structures_read": false,
+    "pinder_validation_rows_read": false
+  }
+}

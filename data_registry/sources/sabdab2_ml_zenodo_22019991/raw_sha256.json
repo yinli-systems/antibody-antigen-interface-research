@@ -1,0 +1,19 @@
+{
+  "files": [
+    {
+      "path": ".authority/provider_metadata.json",
+      "sha256": "6510ca4518201f462783e6663a1fab8b752fa7b0dd7db89726caf50a18ba52e3",
+      "size_bytes": 9046
+    },
+    {
+      "path": "splits.tar.gz",
+      "sha256": "6f3aad7c62c2afb8f94075a38eca76a61b5558b5feef34cb4d976511012b06ce",
+      "size_bytes": 889347536
+    }
+  ],
+  "format_version": "pairscale_raw_sha256_inventory_v1",
+  "materialized_at_utc": "2026-08-31T23:46:43Z",
+  "pinned_revision": "zenodo-record-22019991",
+  "source_id": "sabdab2_ml_zenodo_22019991",
+  "status": "materialized"
+}

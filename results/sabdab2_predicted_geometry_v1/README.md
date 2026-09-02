@@ -29,3 +29,10 @@ The JSON files preserve the exact metrics, seeds, artifact hashes, selected
 epochs, and audit booleans. The `source_analysis_sha256` and
 `source_receipt_sha256` fields bind this sanitized public snapshot to the
 immutable internal analyzer outputs.
+
+`PREDICTED_GEOMETRY_TASK_ASSOCIATION_PUBLIC_V1.json` adds a paired,
+per-complex analysis of predicted- versus bound-geometry checkpoints. It
+reports PDB-cluster bootstrap intervals and all predeclared geometry-quality
+correlates. None of the simple RMSD, graph-overlap, or AF3-score associations
+supports a causal mechanism claim; the file is development-only sensitivity
+evidence.

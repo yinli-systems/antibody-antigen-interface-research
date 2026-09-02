@@ -1,0 +1,135 @@
+{
+  "authorization": {
+    "B32K_training": true,
+    "B500K_training": false,
+    "antibody_adaptation": false,
+    "external_test_access": false,
+    "general_ppi_biological_training": true,
+    "stage_a0_continuation": true,
+    "systems_canary": true
+  },
+  "backbone": {
+    "architecture": "PairAwareESM2_3B",
+    "stage_a0_checkpoint_content_sha256": "71c6b345d251a350b2299884f7576b989413b40ec7f40fea31eb2f30d1c00e2c",
+    "stage_a0_generation": "segment-000129",
+    "stage_a0_residue_tokens": 2054510881,
+    "stage_a0_target_residue_tokens": 5000000000
+  },
+  "claim_boundary": "Stage-A0 continuation and the frozen 32,768-system PINDER-Train pair-contact stage are authorized after the 512-system systems/objective canary passed. B500K and larger promotion requires a passing B32K receipt; antibody adaptation additionally requires a passing independent exact four-view 80/80 split audit. No PINDER validation/test, temporal, SABLE, or historical exposed-test labels may be used for selection.",
+  "curriculum": [
+    {"name": "B-canary", "systems": 512, "updates": 20},
+    {"name": "B32K", "systems": 32768, "updates": 2048},
+    {"name": "B500K", "systems": 500000, "updates": "token_budget_derived"},
+    {"name": "B-full", "systems": 865471, "updates": "token_budget_derived"},
+    {"name": "C-Ab", "systems": "all_authorized_complete_antibody_systems", "updates": "token_budget_derived"}
+  ],
+  "data": {
+    "antibody_split": {
+      "identity_threshold": 0.8,
+      "required_views": ["vh", "vl", "concatenated_antibody", "antigen"],
+      "status": "PENDING_INDEPENDENT_ZERO_CROSSING_AUDIT"
+    },
+    "general_ppi_authority": {
+      "decontaminated_systems": 865471,
+      "decontamination_receipt_sha256": "61a26c7c27dddbf333de651602215830199b5e9649242e15017ccc3fd5acb9c3",
+      "development_partition": "PINDER-Val",
+      "license_receipt_sha256": "b962284c314bb0633228620bd541e59b49ec0fff60066493f5a5e9930f44b063",
+      "manifest_status": "PASS_TRAIN_ONLY_NESTED_CLUSTER_BALANCED_CURRICULUM",
+      "curriculum_receipt_sha256": "dc44cb732535aeaefb660794c2f4294226ef569e73c96223261decf4465dae0a",
+      "stage_manifest_sha256": {
+        "B-canary": "603ce8101560fa2159785720be8adb9fc6f4a8b913137ff4241873bfbc91c6c4",
+        "B32K": "b79d0f086addb13b8596840268c34c5f7d51678981c51ed77c876219b7536386",
+        "B500K": "69f1a4eb8ce681e3ac6eae153bc6d87fc223f75f67b14e3aed5f87d13ecb53bf",
+        "B-full": "3ace51fc6807517b0ab42b8223e813f619aec40297d183943f40a28475a8d0ec"
+      },
+      "stage_label_artifacts": {
+        "B-canary": {
+          "manifest_sha256": "d1565738427bba396591e7dd2c9f690194f696c8a68cf66bfc0db31780869589",
+          "receipt_sha256": "7a34c6b1ea0a9797cf058b7ff42ccc838d013e7598b258407fa3a2347fea89a4"
+        },
+        "B32K": {
+          "manifest_sha256": "9f76bb32b2022599225cca686017d92f119eec3d4183e11782a720445cca6637",
+          "receipt_sha256": "b8b18478f21ba46542b727af68fe1cbe5cf711e86b68a3c106cd4a8a8ec1034a"
+        }
+      },
+      "test_rows_read": false,
+      "test_structures_read": false,
+      "train_manifest_sha256": "6f7d20792ea0180157b99f9b51b4a46952a8eb31e7ba3cd902011d60e7a3d76c"
+    },
+    "inference_inputs": ["paired_sequences"],
+    "label_source": "PINDER_Train_bound_interfaces",
+    "model_input_excludes": ["experimental_coordinates", "distances", "contact_labels"],
+    "multiplicity_controls": ["exact_pair", "pdb", "interface_cluster"],
+    "pinder_train_only": true
+  },
+  "format_version": "abpairfm_distributed_contact_pretraining_v1",
+  "loss": {
+    "epitope_marginal_weight": 0.2,
+    "hard_negative_temperature": 0.5,
+    "masked_language_modeling_weight": 0.25,
+    "marginal_temperature": 0.25,
+    "pair_contact_weight": 1.0,
+    "paratope_marginal_weight": 0.2,
+    "partner_swap_weight": 0.2,
+    "system_reduction": "equal_after_frozen_multiplicity_weight",
+    "within_system_negative_weight": "detached_confidence_times_inverse_row_column_degree"
+  },
+  "promotion": {
+    "biological_32k": {
+      "contact_average_precision_above_prevalence": true,
+      "matched_minus_partner_swapped_positive": true,
+      "pair_metrics_primary": true,
+      "test_access": false
+    },
+    "systems": {
+      "checkpoint_restart_equivalent": true,
+      "compile_loss_relative_difference_maximum": 0.02,
+      "finite_all_terms": true,
+      "maximum_peak_memory_fraction": 0.9,
+      "minimum_packing_efficiency": 0.85,
+      "no_oom": true
+    }
+  },
+  "stage_evidence": {
+    "B-canary": {
+      "checkpoint_content_sha256": "bb6cc3d7146e880e7589c682c59d7c7236c406bcd6970eff95fa6665a830c273",
+      "checkpoint_receipt_sha256": "dfa79eb180dc63313c382606e7964b0319732081d7d9fa22bcbc14ba27da965d",
+      "job": 1527640,
+      "result_sha256": "6438b868f63f74de8ac52f3cf8bd83eb1f2e46645a41a7c6003e3b7c57bc023f",
+      "status": "PASS_B_CANARY_SYSTEMS_AND_OBJECTIVE"
+    },
+    "B32K": {
+      "job": 1528772,
+      "protocol_sha256": "7ab61d5b94682e59719a66a5ca534e3ffc23e9852b2affae84a4e02df100c48d",
+      "status": "RUNNING_RECOVERY_V5_20H_SAME_FROZEN_PROTOCOL"
+    }
+  },
+  "source_sha256": {
+    "curriculum_builder": "81fa771c7cf83f9a424e831a62803648e074c10761bc8ff6ac56181ce6bafce3",
+    "contact_label_materializer": "52c7182619cfe7fc5d3e47dfac9aabb49e2ae6e4507d5391ef3d4c879a8248c4",
+    "contact_label_shard_materializer": "84c655f5cabaf6fa89e3f2fc874383d01670cf3d2da151d87273189b1814eda8",
+    "contact_label_shard_merger": "4c3a9c1900455f4b13c8a664903810db2ef481049c3a8ab56b5cba68a27c115b",
+    "b_canary_runner": "81ae31698229439c346c243aee8b16de3042991ac404f51bc9f4aff4eb04dcf1",
+    "frontier_fsdp2": "769b3cc81756ddde1c72d53968e1316405500109f33bef8b6eb2172be6c787dc",
+    "objective": "0741a65a1e38a099a060c8805487d07f3b2b9786089fe8fc45116f87b490a2cd",
+    "pair_aware_attention": "08cea126c5bf0480463bfbf5a8d02b18a8c1932092e87cfeeefbd4857b81e44b",
+    "pair_aware_distributed": "76fa23fdde779a6cc8b8ae92746225ac2b45a769936b5187b6deb5e9f3e5ef6e",
+    "pair_aware_esm2": "6d87b1a2e2a98b40e0ef633512fbe44b78fd81e3651599164ba0495d70b28009"
+  },
+  "status": "FROZEN_B32K_AUTHORIZED",
+  "systems": {
+    "activation_checkpoint_candidates": ["full", "selective"],
+    "attention": "native_variable_length_flash_sdpa",
+    "checkpoint": "PyTorch_DCP_exact_cursor_and_rng",
+    "checkpoint_async_candidate": true,
+    "compile": "candidate_only_reduce_overhead",
+    "b32k": {"gpu": "RTX_4090", "single_node_world_size": 8},
+    "fallback": {"gpu": "RTX_4090", "single_node_world_size": 4},
+    "optimizer": "fused_AdamW_FP32_state",
+    "partner_swap_group_token_budget": 1024,
+    "precision": "BF16",
+    "production": {"gpu": "RTX_5090", "single_node_world_size": 8},
+    "sharding": "FSDP2_per_transformer_block_then_root"
+  },
+  "test_access": false
+}

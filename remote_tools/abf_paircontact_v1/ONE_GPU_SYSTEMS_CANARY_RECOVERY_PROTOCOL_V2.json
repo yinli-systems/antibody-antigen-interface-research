@@ -1,0 +1,46 @@
+{
+  "authorization": {
+    "one_gpu_systems_canary": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "claim_boundary": "Synthetic one-GPU graph, optimizer, finite-gradient, loss-decrease, and exact checkpoint-restore systems evidence only. No biological data, development evaluation, test performance, model promotion, or SOTA claim.",
+  "data": {
+    "external_files": false,
+    "synthetic_only": true,
+    "test_access": false
+  },
+  "format_version": "abf_paircontact_one_gpu_systems_canary_v1",
+  "loss": {
+    "centering_weight": 0.1,
+    "ranking_margin": 0.5,
+    "ranking_weight": 0.5
+  },
+  "model": {
+    "embedding_dimension": 2560,
+    "projection_dimension": 256
+  },
+  "optimization": {
+    "gradient_clip_norm": 1.0,
+    "learning_rate": 0.001,
+    "updates": 20,
+    "weight_decay": 0.01
+  },
+  "recovery": {
+    "authorized_once": true,
+    "failed_job_id": 1503569,
+    "failure_receipt": "ONE_GPU_SYSTEMS_CANARY_FAILURE_V1.json",
+    "only_change": "Set CUBLAS_WORKSPACE_CONFIG=:4096:8 before Python starts.",
+    "scientific_protocol_changed": false
+  },
+  "status": "FROZEN_BEFORE_ONE_GPU_SYSTEMS_CANARY",
+  "systems": {
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8"
+    },
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 1
+  },
+  "test_access": false
+}

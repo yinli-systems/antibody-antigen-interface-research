@@ -1,0 +1,26 @@
+{
+  "completed_input_checkpoint": {
+    "content_sha256": "be22eb1889dd4f15b3d2c2ad449cb5084bde91435dd8d4d392f9295d6f10f839",
+    "generation": "segment-000130"
+  },
+  "failed_predecessor": {
+    "failure_record_sha256": "fbd17254d13ba0b0069d5afbd0ce670294ad18517221dc3eca8f579c76d4c7c0",
+    "job_id": 1528842,
+    "updates_completed": 0
+  },
+  "format_version": "abpairfm_3b_memory_tier_recovery_submission_v1",
+  "recovery": {
+    "excluded_nodes": [
+      "wqd10naf05g3",
+      "wqd10naf05g5"
+    ],
+    "global_batch_changed": false,
+    "scientific_protocol_changed": false,
+    "segment_index": 131,
+    "training_job_id": 1529027,
+    "watchdog_job_id": 1529028,
+    "watchdog_source_sha256": "bc52c04e499701a0e57a2a9a8626b262e06f315d7028191a92862be76219bb31"
+  },
+  "status": "SUBMITTED_FROM_VERIFIED_SEGMENT_000130",
+  "test_access": false
+}

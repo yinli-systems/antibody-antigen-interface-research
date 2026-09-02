@@ -1,0 +1,33 @@
+{
+  "batch_api_contract": {
+    "actual_manifest_records": 19200,
+    "actual_microbatch_positive_pairs": 204,
+    "actual_microbatch_sampled_pairs": 1020,
+    "bucket_records": 4967,
+    "holdout_pdb_count": 511,
+    "holdout_records": 512,
+    "runner_call_sites_checked": 3,
+    "training_records": 4455
+  },
+  "checkpoint": {
+    "consumed_residue_tokens": 2022862461,
+    "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "exact_verification": "PASS_DCP_EXACT_VERIFICATION",
+    "generation": "segment-000127",
+    "test_access": false
+  },
+  "format_version": "abf_paircontact_phase1_mechanism_canary_recovery_preflight_v3",
+  "source": {
+    "protocol_sha256": "7f64e2b2bbb7337e40d174570cf4047070e84f4d87b34e2ead9e76ec37aeef50",
+    "reviewed_source_sha256": "44d5c213149ce30717360c42a2857d8b8d9f383878536cc0660f79c0f4ce7f9f",
+    "submission_script_sha256": "b7d17d9d16ee5d15cdae630649875894b011f47e52465b8c2c10f534df1c1c49"
+  },
+  "status": "PASS_FIXED_ENVIRONMENT_PREFLIGHT",
+  "tests": {
+    "fixed_environment_direct_assertions": "PASS_PHASE0_DIRECT_ASSERTIONS",
+    "local_pytest": "18 passed",
+    "remote_compileall": true,
+    "remote_pytest_unavailable": true
+  },
+  "test_access": false
+}

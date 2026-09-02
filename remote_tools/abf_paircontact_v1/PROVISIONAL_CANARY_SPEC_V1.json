@@ -1,0 +1,39 @@
+{
+  "authority": {
+    "execution_authorized": false,
+    "old_sabdab2_test_access": false,
+    "sable_label_access": false,
+    "temporal_label_access": false
+  },
+  "candidate_initialization": {
+    "model": "ABF30B_650M",
+    "checkpoint_model_sha256": "c36e0b1d812f97317109f1f8ab085a349beb2a782a6f4092b3074bfc1eaab3ea",
+    "consumed_residue_tokens": 30000002446
+  },
+  "format_version": "abf_paircontact_provisional_canary_spec_v1",
+  "interventions": [
+    "pair_mlm_control",
+    "pair_mlm_plus_chain_independent_partner_retrieval",
+    "pair_mlm_plus_chain_independent_partner_retrieval_plus_centered_pair_contact_ranking"
+  ],
+  "mechanism_reference": {
+    "full_contact_mean_per_complex_ap": 0.02768367284030703,
+    "gauge_fixed_residual_mean_per_complex_ap": 0.00584594784612513,
+    "median_partner_specific_variance_share_by_seed": {
+      "17": 0.014029977534447537,
+      "29": 0.023870855528516904,
+      "43": 0.009718937959706925
+    },
+    "raw_interaction_mean_per_complex_ap": 0.0020299931171172676,
+    "unary_only_mean_per_complex_ap": 0.024772459063697582
+  },
+  "provisional_scale_gates": {
+    "contact_mean_per_complex_ap_median_delta_minimum": 0.003,
+    "contact_per_seed_delta_minimum": -0.002,
+    "epitope_median_delta_minimum": -0.005,
+    "gauge_fixed_residual_ap_median_minimum": 0.01,
+    "paratope_median_delta_minimum": -0.005,
+    "partner_specific_variance_share_median_minimum": 0.05
+  },
+  "status": "RESEARCH_PLAN_NOT_EXECUTION_AUTHORITY"
+}

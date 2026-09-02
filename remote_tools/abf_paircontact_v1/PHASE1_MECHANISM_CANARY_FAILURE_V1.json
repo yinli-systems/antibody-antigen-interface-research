@@ -1,0 +1,31 @@
+{
+  "artifacts": {
+    "audit_exists": false,
+    "checkpoint_exists": false,
+    "progress_exists": false,
+    "result_exists": false,
+    "stderr_sha256": "94d3c5273f7ce0cbd10739f8094232010d1174cf3d613864ba5f25fceafee990",
+    "stdout_sha256": "1d5e341855bae8ef225ea897cbd974c01bb420119b8359ef8bf3131ee3f2dfe2"
+  },
+  "classification": "CHECKPOINT_RETENTION_FAILURE_BEFORE_FIRST_OPTIMIZER_UPDATE",
+  "failure": {
+    "exit_code": "1:0",
+    "job_id": 1504011,
+    "message": "FSDP2ContractError: DCP file inventory differs from on-disk contents",
+    "state": "FAILED"
+  },
+  "format_version": "abf_paircontact_phase1_mechanism_canary_failure_v1",
+  "input_checkpoint": {
+    "content_sha256": "73fd08e73bf41118ece0e657059c5211ce5930c1c651e3cfd219554692edf08b",
+    "generation": "segment-000031",
+    "retention_state_at_failure": "receipt retained but DCP metadata and tensor shards pruned"
+  },
+  "scientific_state": {
+    "checkpoint_written": false,
+    "holdout_metrics_produced": false,
+    "optimizer_updates": 0,
+    "result_written": false,
+    "test_access": false
+  },
+  "status": "FAIL_CLOSED_NO_SCIENTIFIC_RESULT"
+}

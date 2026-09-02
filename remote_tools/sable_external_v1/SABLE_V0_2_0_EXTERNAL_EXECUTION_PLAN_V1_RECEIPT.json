@@ -1,0 +1,12 @@
+{
+  "bound_label_opening_authorized": false,
+  "eligible_entries": 97,
+  "eligible_unique_pdb_ids": 88,
+  "format_version": "sable_v0_2_0_framecontact_external_execution_plan_receipt_v1",
+  "frozen_at": "2026-08-29T19:55:38+08:00",
+  "plan_sha256": "d97f0b94863fe9227d80c5675e944091809245b8fab22a89cda81148a8de172a",
+  "selection_or_tuning": false,
+  "status": "FROZEN_POST_GATE_BEFORE_BOUND_LABEL_OPENING",
+  "task_labels_read": false,
+  "test_bound_structures_downloaded": false
+}

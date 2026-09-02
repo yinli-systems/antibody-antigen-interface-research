@@ -1,0 +1,33 @@
+{
+  "artifacts": {
+    "checkpoint_sha256": "875092520b5b7c3e8fe3bbdefd2f96eef5f66cadec68b1ea118d73748f35c2be",
+    "result_sha256": "9c0167acc88c6a4160307e3cc05541e75af58909b34c392beac4a0c7c83b0d5b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "ba7dd685ca611a50a228a2a3376eed0f92f4cce5995247e3201110c058a58bc7"
+  },
+  "audit": {
+    "checkpoint_restore_matches_save": true,
+    "device": "NVIDIA GeForce RTX 4090",
+    "exit_code": "0:0",
+    "finite_gradients": true,
+    "job_id": 1503623,
+    "scheduler_state": "COMPLETED",
+    "stderr_empty": true,
+    "test_access": false
+  },
+  "claim_boundary": "Synthetic graph, optimizer, gradient, loss-decrease, and exact checkpoint-restore systems evidence only; not biological or downstream performance evidence.",
+  "format_version": "abf_paircontact_one_gpu_systems_canary_result_receipt_v2",
+  "loss": {
+    "final": 0.43523696064949036,
+    "first": 1.1945632696151733,
+    "relative_reduction": 0.6356518137463734,
+    "updates": 20
+  },
+  "provenance": {
+    "failed_attempt_receipt_sha256": "8792020b3117c2cd98507a745f54217380f41e539b3ab6e9240250cc82145230",
+    "objective_sha256": "739c93b9af5a189f028831784040d7c1391a58b8af58458a7f0c4e18471cf539",
+    "protocol_sha256": "c260abd2f993056f3b45b6b62ffcf21ebdb3dd21b05ec03e46702a4163939cea",
+    "runner_sha256": "5e003de23855b0c6b61352b855466c7b6310fe7e6a1fc9a1a10d0504aac359c6"
+  },
+  "status": "PASS_ONE_GPU_GRAPH_OPTIMIZER_AND_CHECKPOINT_GATE"
+}

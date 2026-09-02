@@ -1,0 +1,141 @@
+{
+  "analysis_receipt_sha256": "c4ce8f245d3aac19792b01b702caa0fc58bf73076dd540875acc2011b346d6f0",
+  "analysis_sha256": "b0b72cc12e2cca9b3152da70ea884aeef3200527ad28421c4101eecee4155770",
+  "audit": {
+    "all_six_component_result_and_receipt_hashes_verified": true,
+    "analyst_has_seen_prior_model_results_on_dataset": true,
+    "bound_label_opening_count": 1,
+    "calibration_refit": false,
+    "checkpoint_binding_sha256": "c8be8d83fbedd6cce0809b6df5258f3a9be9d02a653d3285a6eed74ded9621f7",
+    "cross_partner_geometry_used_as_model_input": false,
+    "distance_labels_loaded": false,
+    "entry_count": 97,
+    "experimental_bound_coordinates_used_as_model_input": false,
+    "experimental_bound_coordinates_used_for_labels_only": true,
+    "feedback_to_model_or_protocol": false,
+    "formal_blind_test_claim_authorized": false,
+    "fresh_blind_test": false,
+    "measurement_only": true,
+    "model_parameters_updated": false,
+    "model_unseen_before_this_measurement": true,
+    "old_sabdab2_test_loaded": false,
+    "selection_performed": false,
+    "temporal_holdout_loaded": false,
+    "unique_pdb_id_count": 88
+  },
+  "dataset": {
+    "doi": "10.5281/zenodo.21759053",
+    "name": "SABLE",
+    "official_test_split": true,
+    "version": "0.2.0"
+  },
+  "format_version": "abf30b_sable_v0_2_0_model_specific_public_v1",
+  "input_boundary": {
+    "antibody_embedding": "ABF-650M OAS-30B final residue hidden states",
+    "antigen_embedding": "pinned ESM-2 t33 650M residue embeddings",
+    "geometry": "independent sequence-predicted chain-internal N/CA/C backbone",
+    "model_checkpoint_sha256": "c36e0b1d812f97317109f1f8ab085a349beb2a782a6f4092b3074bfc1eaab3ea",
+    "predicted_structure_manifest_sha256": "795223b2ebd02d6ce37cebf7dadafe5b1f50b9b212976ba15e36af3e62f23259"
+  },
+  "measurement_plan_sha256": "141890f624a16ad91ea8220bddd63b4312e2ed25cb819cd6c3796c6bfad3f8e0",
+  "prior_frozen_sable_reference_delta": {
+    "contact": {
+      "auroc": 0.010176044103644144,
+      "average_precision": 0.004604654083962604,
+      "f1": 0.005424347387646352,
+      "mcc": -0.0010133963815991964,
+      "mean_per_eligible_entry_average_precision": 0.012225617897837347
+    },
+    "epitope": {
+      "auroc": 0.011624152396716547,
+      "average_precision": 0.0010227249832880508,
+      "f1": -0.0019375159721611857,
+      "mcc": -0.008960679372398375,
+      "mean_per_eligible_entry_average_precision": 0.0000877540242935071
+    },
+    "paratope": {
+      "auroc": -0.0008740697780622586,
+      "average_precision": 0.008888889230818764,
+      "f1": 0.0002983714386300962,
+      "mcc": -0.00008117842273724918,
+      "mean_per_eligible_entry_average_precision": 0.010577710157090081
+    },
+    "reference_analysis_sha256": "d14016529b15f281eea049ab5ac6153f672dbf13b4acd6b515e658d7e46611fc"
+  },
+  "routed_metrics": {
+    "contact": {
+      "median_across_seeds": {
+        "auroc": 0.9114322360836298,
+        "average_precision": 0.012492060388934245,
+        "f1": 0.02574102964118565,
+        "mcc": 0.025775577616125797,
+        "mean_per_eligible_entry_average_precision": 0.05204525090088508,
+        "precision": 0.017067833698030634,
+        "recall": 0.039510166358595195
+      },
+      "pdb_equal_weighted_seed_averaged_per_entry_ap": {
+        "bootstrap_replicates": 10000,
+        "bootstrap_seed": 20260830,
+        "ci95": [
+          0.03974598288343933,
+          0.0700377582138048
+        ],
+        "point_estimate": 0.05426832847859668
+      },
+      "source_arm": "baseline"
+    },
+    "epitope": {
+      "median_across_seeds": {
+        "auroc": 0.6413563349382237,
+        "average_precision": 0.10653724997466736,
+        "f1": 0.17306015693112467,
+        "mcc": 0.09117944763012141,
+        "mean_per_eligible_entry_average_precision": 0.30901460384994395,
+        "precision": 0.10922029702970297,
+        "recall": 0.4219964136282128
+      },
+      "pdb_equal_weighted_seed_averaged_per_entry_ap": {
+        "bootstrap_replicates": 10000,
+        "bootstrap_seed": 20260830,
+        "ci95": [
+          0.26283108214233886,
+          0.3917635200196532
+        ],
+        "point_estimate": 0.32469083052018727
+      },
+      "source_arm": "edge_topk2_supervised"
+    },
+    "paratope": {
+      "median_across_seeds": {
+        "auroc": 0.9330386826137468,
+        "average_precision": 0.6240931985956757,
+        "f1": 0.627302786962683,
+        "mcc": 0.5807381163238753,
+        "mean_per_eligible_entry_average_precision": 0.6877807265100714,
+        "precision": 0.5709372312983663,
+        "recall": 0.6960167714884696
+      },
+      "pdb_equal_weighted_seed_averaged_per_entry_ap": {
+        "bootstrap_replicates": 10000,
+        "bootstrap_seed": 20260830,
+        "ci95": [
+          0.6528433705477739,
+          0.7081386418462458
+        ],
+        "point_estimate": 0.6815538270029823
+      },
+      "source_arm": "baseline"
+    }
+  },
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "status": "PASS_ABF30B_ANALYST_EXPOSED_SABLE_MODEL_SPECIFIC_MEASUREMENT",
+  "task_routing": {
+    "contact": "baseline",
+    "epitope": "edge_topk2_supervised",
+    "paratope": "baseline"
+  }
+}

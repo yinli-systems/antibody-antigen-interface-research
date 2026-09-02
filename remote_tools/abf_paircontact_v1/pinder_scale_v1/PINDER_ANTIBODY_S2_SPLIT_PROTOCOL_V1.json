@@ -1,0 +1,58 @@
+{
+  "authorization": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_sequences_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "balance": {
+    "axis_unique_pair_degree_tolerance": 0.4,
+    "fold_count": 3,
+    "rationale": "The largest frozen S2-80 concatenated-antibody cluster has unique-pair degree 1213 versus an equal-fold target of 906, requiring tolerance >=0.338853. The threshold is not relaxed."
+  },
+  "claim_boundary": "Provisional train-only S2-80 fold design. No fold is authorized for training or model selection until a separate exact four-view Needleman-Wunsch audit reports zero qualifying cross-fold pairs.",
+  "determinism": {
+    "largest_antibody_cluster_fixed_to_fold_zero": true,
+    "sorted_inputs": true,
+    "solver": "scipy.optimize.milp_HiGHS",
+    "time_limit_seconds": 900
+  },
+  "expected_input_counts": {
+    "canonical_systems": 4070,
+    "unique_concatenated_antibodies": 2279,
+    "unique_exact_pairs": 2718,
+    "unique_pdbs": 2289,
+    "unique_antigens": 2102
+  },
+  "format_version": "pinder_antibody_s2_split_protocol_v1",
+  "grouping": {
+    "component_definition": "Connected components of the bipartite graph between exact antibody-antigen sequence-pair IDs and PDB IDs.",
+    "indivisible": [
+      "every physical system from one PDB",
+      "every physical system sharing one exact antibody-antigen sequence pair"
+    ],
+    "unassignable": "Discard the complete connected component; never split it across retained folds."
+  },
+  "objective": "maximize retained unique exact antibody-antigen sequence pairs",
+  "similarity": {
+    "aligned_region_identity_minimum": 0.8,
+    "minimum_reciprocal_coverage": 0.8,
+    "name": "S2-80",
+    "optimized_axes": [
+      "concatenated_antibody",
+      "antigen"
+    ]
+  },
+  "source_sha256": {
+    "antibody_relation": "a7188b2d443bf8f6993442a341641831433d282d2f12ca78b353726d1c9681fd",
+    "antibody_relation_receipt": "fee5af68dedfd1bcc0014def73b560f57d0f9314a8dbb411a9052e4cf38c4c4e",
+    "antigen_relation": "16cd955abb4bd2aee2415c69e5b3a33dc4bf462954ca9f278a19a315635883fc",
+    "antigen_relation_receipt": "2c8ec5424bbbcc77fe2cf54f28180ae85f65b857ac0f3ecf9b83b740748fbb0c",
+    "canonical_manifest": "624612079838536934c81fa3918486e322c16caed19fbba70b6f8b33adc5fb6c",
+    "s2_asset_result": "1930706b1fdf4c370879454bc7ffc1b2c077403f0610330c08a4c54808ea58f8"
+  }
+}

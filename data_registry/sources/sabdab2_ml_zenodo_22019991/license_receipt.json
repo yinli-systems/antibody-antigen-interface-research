@@ -1,0 +1,29 @@
+{
+  "assets": [
+    {
+      "asset_name": "SAbDab2 Machine Learning Dataset v0.2.0",
+      "asset_scope": "data",
+      "attribution_required": true,
+      "commercial_use_permitted": true,
+      "declared_license_spdx": "CC-BY-4.0",
+      "evidence_digest_method": "zenodo_license_projection_v1",
+      "evidence_note": "SHA-256 covers the canonical Zenodo record identity, title, resource type, and license projection; dynamic access statistics are excluded and downstream release still requires legal review.",
+      "evidence_projection": {
+        "doi": "10.5281/zenodo.22019991",
+        "license_id": "cc-by-4.0",
+        "record_id": 22019991,
+        "resource_type": "dataset",
+        "title": "SAbDab2 Machine Learning Dataset"
+      },
+      "evidence_revision": "10.5281/zenodo.22019991",
+      "evidence_sha256": "94e7b460f66e15e7fdf6318208895cc58034864a20b931b9a3ca08bf2cbb2181",
+      "evidence_url": "https://zenodo.org/api/records/22019991",
+      "license_route": "commercial_ok"
+    }
+  ],
+  "format_version": "pairscale_license_receipt_v2",
+  "legal_review_required_for_release": true,
+  "receipt_status": "reviewed",
+  "reviewed_at_utc": "2026-09-01T00:00:00Z",
+  "source_id": "sabdab2_ml_zenodo_22019991"
+}

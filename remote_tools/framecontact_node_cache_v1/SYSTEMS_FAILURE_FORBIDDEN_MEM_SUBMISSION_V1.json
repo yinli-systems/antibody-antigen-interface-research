@@ -1,0 +1,11 @@
+{
+  "code_executed": false,
+  "error_class": "slurm_partition_forbids_explicit_memory_request",
+  "error_message": "gpu_4090 forbids --mem, --mem-per-cpu, and --mem-per-gpu; memory is assigned from GPU count",
+  "format_version": "framecontact_node_cache_systems_failure_v1",
+  "job_id_assigned": false,
+  "recovery": "remove only the forbidden --mem directive and resubmit the byte-identical staging implementation",
+  "scientific_protocol_changed": false,
+  "status": "FAIL_CLOSED_BEFORE_JOB_SUBMISSION",
+  "test_or_temporal_access": false
+}

@@ -1,0 +1,56 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "consumed_residue_tokens": 2022862461,
+    "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "exact_verification": "PASS_DCP_EXACT_VERIFICATION",
+    "generation": "segment-000127",
+    "global_update": 25600,
+    "test_access": false
+  },
+  "claim_boundary": "Four-GPU train-only frozen-backbone standalone mechanism canary on the exact-verified 2.023B-residue-token Stage-A0 checkpoint. It is not an exact single-factor comparison with v17 and cannot establish downstream, external-test, biological, production, or SOTA performance.",
+  "execution": {
+    "job_id": 1504387,
+    "partition": "gpu_4090",
+    "updates": 80,
+    "world_size": 4
+  },
+  "format_version": "abf_paircontact_phase1_mechanism_canary_recovery_submission_receipt_v3",
+  "holdout": {
+    "pdb_count": 511,
+    "pdb_inventory_sha256": "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028",
+    "records": 512,
+    "test_access": false
+  },
+  "recovery": {
+    "failed_job_ids": [
+      1504011,
+      1504219
+    ],
+    "failure_receipt_sha256s": [
+      "f5fe4e07a04b402550f00e2bcbe88d617c9fade5d861221d28856a026418e3d6",
+      "658b75bdbf4b1f502b7868d4bf980e9e84ff0b0edb6705dd4c13bb72bf77e055"
+    ],
+    "preflight_receipt_sha256": "6e0a393fa945122d9a4cb9fed799d5a8ebd2460b2db88bd234d7da96a0f5c445",
+    "silent_retry": false
+  },
+  "source": {
+    "audit_sha256": "29a6e995230b3229ca8eda70a8b9e6bd3eb365b2d0ead9c3799529ce65027f2f",
+    "manifest_receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "protocol_sha256": "7f64e2b2bbb7337e40d174570cf4047070e84f4d87b34e2ead9e76ec37aeef50",
+    "reviewed_source_sha256": "44d5c213149ce30717360c42a2857d8b8d9f383878536cc0660f79c0f4ce7f9f",
+    "submission_script_sha256": "b7d17d9d16ee5d15cdae630649875894b011f47e52465b8c2c10f534df1c1c49"
+  },
+  "supervision": {
+    "distance_bin_weight": 0.0,
+    "distance_label_manifest_permitted": false,
+    "negative_sampling": "deterministic row- and column-matched native noncontacts before random fill"
+  },
+  "test_access": false
+}

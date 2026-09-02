@@ -1,0 +1,9 @@
+{
+  "format_version": "sable_v0_2_0_label_free_gate_public_receipt_v1",
+  "full_result_receipt_sha256": "5aee4ff1c98a9936674d68aae74d28e90f6d9ba357464f7776f72c7d5cbd73d6",
+  "full_result_sha256": "2c6f6ec9f9b8ff6fd11112a9131fdd9fa024591bc99df36e42caecd8819eca00",
+  "public_result_sha256": "bf5c6f626f1a2240df20d99edd0ea6c2675a90b5896078f9775865994bcf6eda",
+  "sable_bound_structures_downloaded": false,
+  "status": "PASS_LABEL_FREE_GATE",
+  "task_labels_read": false
+}

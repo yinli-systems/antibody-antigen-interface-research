@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "lora_comparison": false,
+    "pilot_training": true,
+    "production_scaling": false,
+    "test_access": false
+  },
+  "checks": {
+    "bfloat16_inputs_centered_in_float32": true,
+    "distance_loss_weight_zero": true,
+    "exact_input_checkpoint_bound": true,
+    "local_contract_tests": "24 passed",
+    "prior_v17_and_v19_holdouts_excluded_sequentially": true,
+    "remote_direct_assertions": "PASS_REMOTE_DIRECT_ASSERTIONS_V20",
+    "test_access_false": true,
+    "third_holdout_disjoint_from_prior_union": true
+  },
+  "claim_boundary": "Train-only four-GPU frozen-backbone precision-confirmation canary. The v19 gate remains failed. This preflight authorizes only the frozen v20 canary; no LoRA, production scaling, downstream, blind-test, biological, or SOTA claim is authorized.",
+  "created_utc": "2026-08-31T00:33:17Z",
+  "format_version": "abf_paircontact_phase3_zero_sum_fp32_canary_preflight_receipt_v1",
+  "holdout": {
+    "bucket_records": 4967,
+    "excluded_prior_pdb_count": 1022,
+    "holdout_pdb_count": 508,
+    "holdout_record_count": 512,
+    "ordering_salt": "v20_fp32_confirmatory_holdout",
+    "pdb_inventory_sha256": "9bd3afebb2ab4b21db19ae4c564179ead91b9fa93f673bd09fcaa56fa223e17d",
+    "selection_seed": 3109,
+    "training_record_count": 4455
+  },
+  "prior_result": {
+    "receipt_sha256": "60cf86ed57c897bed687319d11c6335152a73ea024fdce38d5c8902a8d7b80b2",
+    "status": "FAIL_PAIRCONTACT_ZERO_SUM_MECHANISM_GATE"
+  },
+  "provenance": {
+    "audit_sha256": "da302d88899def1b617c45ff1cee0ec2ebc9f3ccf598eb3a4508214286c03f7b",
+    "input_checkpoint_content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "manifest_receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "protocol_sha256": "9dc2e5450245fc1a7594c5f3f0d29d70dbc82378a22ccecd6c2ab02e8fd640d2",
+    "source_sha256": "00d78df4f811f683787882e5869272ffa8cd18ae679dd1961a3bbe6f82608dee"
+  },
+  "superseded_unsubmitted_candidate": {
+    "reason": "Preflight exposed an incorrect second prior-holdout reconstruction order; no GPU job was submitted from this source.",
+    "source_sha256": "95ec9df29134fee115cf5668eb57febc773f4a62b0f0a38f10d0c81ba55173df"
+  },
+  "test_access": false
+}

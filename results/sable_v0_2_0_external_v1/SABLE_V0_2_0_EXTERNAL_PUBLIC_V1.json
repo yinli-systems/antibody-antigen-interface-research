@@ -1,0 +1,111 @@
+{
+  "analysis_receipt_sha256": "af468d19d050b05945b542caac35ae79cdcc9fdf0de42aabce709d59286aadf7",
+  "analysis_sha256": "d14016529b15f281eea049ab5ac6153f672dbf13b4acd6b515e658d7e46611fc",
+  "audit": {
+    "bound_label_manifest_sha256": "6e575b4468f25f17dbcffd7b34278cb765dce89a9008299e7df52198a028078e",
+    "bound_label_receipt_sha256": "5834b892039c4a18a4e80cd083447866c84d3450931dca8a6b321f0d600a86c0",
+    "calibration_refit": false,
+    "cross_partner_geometry_used_as_model_input": false,
+    "distance_labels_loaded": false,
+    "entry_count": 97,
+    "experimental_bound_coordinates_used_as_model_input": false,
+    "experimental_bound_coordinates_used_for_labels_only": true,
+    "feedback_to_model_or_protocol": false,
+    "model_parameters_updated": false,
+    "old_sabdab2_test_loaded": false,
+    "opening_count": 1,
+    "selection_performed": false,
+    "temporal_holdout_loaded": false,
+    "unique_pdb_id_count": 88
+  },
+  "dataset": {
+    "doi": "10.5281/zenodo.21759053",
+    "name": "SABLE",
+    "version": "0.2.0"
+  },
+  "format_version": "sable_v0_2_0_framecontact_external_public_v1",
+  "mapping_recovery": {
+    "excluded_entries": 0,
+    "failure_receipt_sha256": "bb647d6a8c39e90f136cbd3c8ef73ecae95299f05381317b4799942ac55abc24",
+    "mapping_preflight_sha256": "412241e79d694a439b25cb136104473f35a50126f3ba2f24ff50fd79612dac81",
+    "recovery_materializer_sha256": "d00406f71889367e0d77bd7a856b6e33b80eea879cfdfe2746c77d5322e9bf8c",
+    "recovery_plan_sha256": "3d53060d11a74666246af72e7eb721c42931a6bd6c24ed31ca97f2fa04b13f44",
+    "unknown_residue_wildcard": false
+  },
+  "routed_metrics": {
+    "contact": {
+      "median_across_seeds": {
+        "auroc": 0.9012561919799856,
+        "average_precision": 0.007887406304971641,
+        "f1": 0.020316682253539296,
+        "mcc": 0.026788973997724994,
+        "mean_per_eligible_entry_average_precision": 0.039819633003047736,
+        "precision": 0.011806154192121734,
+        "recall": 0.0727818853974122
+      },
+      "pdb_equal_weighted_seed_averaged_per_entry_ap": {
+        "bootstrap_replicates": 10000,
+        "bootstrap_seed": 20260830,
+        "ci95": [
+          0.03250982481615252,
+          0.055432472745702545
+        ],
+        "point_estimate": 0.043398321607246666
+      },
+      "source_arm": "baseline"
+    },
+    "epitope": {
+      "median_across_seeds": {
+        "auroc": 0.6297321825415072,
+        "average_precision": 0.10551452499137931,
+        "f1": 0.17499767290328586,
+        "mcc": 0.10014012700251979,
+        "mean_per_eligible_entry_average_precision": 0.30892684982565044,
+        "precision": 0.10363836824696802,
+        "recall": 0.5618649133293485
+      },
+      "pdb_equal_weighted_seed_averaged_per_entry_ap": {
+        "bootstrap_replicates": 10000,
+        "bootstrap_seed": 20260830,
+        "ci95": [
+          0.2577089270181614,
+          0.3885617009993326
+        ],
+        "point_estimate": 0.32068705024335986
+      },
+      "source_arm": "edge_topk2_supervised"
+    },
+    "paratope": {
+      "median_across_seeds": {
+        "auroc": 0.933912752391809,
+        "average_precision": 0.6152043093648569,
+        "f1": 0.627004415524053,
+        "mcc": 0.5808192947466125,
+        "mean_per_eligible_entry_average_precision": 0.6772030163529813,
+        "precision": 0.5632567849686848,
+        "recall": 0.7033542976939203
+      },
+      "pdb_equal_weighted_seed_averaged_per_entry_ap": {
+        "bootstrap_replicates": 10000,
+        "bootstrap_seed": 20260830,
+        "ci95": [
+          0.6442885857614415,
+          0.698651852696794
+        ],
+        "point_estimate": 0.672163893160413
+      },
+      "source_arm": "baseline"
+    }
+  },
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "status": "PASS_SABLE_V0_2_0_SINGLE_OPENING_EXTERNAL_EVALUATION",
+  "task_routing": {
+    "contact": "baseline",
+    "epitope": "edge_topk2_supervised",
+    "paratope": "baseline"
+  }
+}

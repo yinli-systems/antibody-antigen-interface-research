@@ -1,0 +1,7 @@
+{
+  "analysis_sha256": "d14016529b15f281eea049ab5ac6153f672dbf13b4acd6b515e658d7e46611fc",
+  "format_version": "sable_v0_2_0_framecontact_external_public_v1_receipt",
+  "public_result_sha256": "fea416cb14a94491f6171bd699f429a5671a6bff02ec1ac207d7e1325b2fc093",
+  "status": "PASS_SABLE_V0_2_0_SINGLE_OPENING_EXTERNAL_EVALUATION",
+  "test_or_temporal_access": false
+}

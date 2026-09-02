@@ -1,0 +1,10 @@
+{
+  "full_analysis_receipt_sha256": "219fbea8634e25b56ca1f2d523abcc2fc1e16be390cdbfef282f4283e0e286f4",
+  "full_analysis_sha256": "4ab8e5bab04d3f9e5230b179c8c0c38a195703b56080213c5f69bb745698361b",
+  "format_version": "sabdab2_predicted_geometry_task_association_public_receipt_v1",
+  "public_result_sha256": "5aea5c0a9c29df64cef4edc8da0b9459375d7bd3f102897564c5645dd7c4203e",
+  "status": "PASS_DEVELOPMENT_ONLY_PAIRED_GEOMETRY_TASK_ASSOCIATION",
+  "temporal_holdout_loaded": false,
+  "test_loaded": false,
+  "validation_complexes": 549
+}

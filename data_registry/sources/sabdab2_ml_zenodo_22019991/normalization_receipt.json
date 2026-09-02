@@ -1,0 +1,30 @@
+{
+  "format_version": "pairscale_normalization_receipt_v1",
+  "input_raw_inventory_sha256": "f0aa572e60057b3a91ac2e5f1c9a1f1b5f757e95ad1965c7a114f84569dd76bd",
+  "normalized_at_utc": "2026-08-31T23:52:33Z",
+  "normalizer_source_sha256": "b02dc430366b97ad04851691c84e827e97e7b8d2ce669898ec6c8ce46a090a5b",
+  "outputs": [
+    {
+      "path": "official_splits/ab_split.csv",
+      "sha256": "58601679ffbeed8c7822d253bc25f8b63592d8c5995a1c0ab1131fe487bc4eda",
+      "size_bytes": 143494126
+    },
+    {
+      "path": "official_splits/ab_split_sd.csv",
+      "sha256": "564ebd531f83401013f60df889e664bc6130597382eb720f251ff675abc2d53f",
+      "size_bytes": 26177050
+    },
+    {
+      "path": "official_splits/abag_split.csv",
+      "sha256": "c08ddbdee136e8ca07270542d7441575691e83bf8ad250a78da98e477f9755a9",
+      "size_bytes": 143853067
+    },
+    {
+      "path": "official_splits/abag_split_sd.csv",
+      "sha256": "1c5fd82134c90ebed8c63bc8cfdd03d4929256d4a24bc57db65c8aaba8fe0289",
+      "size_bytes": 26231321
+    }
+  ],
+  "source_id": "sabdab2_ml_zenodo_22019991",
+  "status": "complete"
+}

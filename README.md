@@ -17,6 +17,8 @@ residues are generally interface-prone?
 > [`results/LATEST_RESULTS_20260827.md`](results/LATEST_RESULTS_20260827.md) and
 > the subsequent
 > [`predicted-geometry sensitivity`](results/sabdab2_predicted_geometry_v1/README.md).
+> For the active pair-contact scale-up, use the
+> [`distributed pretraining design`](remote_tools/abpairfm_distributed_contact_pretraining_v1/DISTRIBUTED_PRETRAINING_DESIGN_V1.md).
 > A historical section saying that a run was pending is not evidence that it is
 > still pending today.
 
@@ -25,7 +27,7 @@ residues are generally interface-prone?
 | Workstream | What is implemented | Current evidence boundary |
 |---|---|---|
 | SPPIDER-seq adaptation | SAbDab2 adapters, training/evaluation, cluster bootstrap, calibration, sequence-similarity audit, and matched-partner permutation | Locked reused-benchmark marginal result; not native residue-pair prediction and not a pristine blind test |
-| MIPE reconstruction | Released-code-compatible five-fold evaluation, directional interaction export, pair-level metrics, OOF-only calibration, and a bound-geometry oracle audit | The completed `lr=1e-3` replay is not Appendix-exact; the fresh `lr=1e-4`, five-fold, 800-epoch replay is still running |
+| MIPE reconstruction | Released-code-compatible five-fold evaluation, directional interaction export, pair-level metrics, OOF-only calibration, and a bound-geometry oracle audit | Both the `lr=1e-3` replay and the fresh `lr=1e-4`, five-fold, 800-epoch archival replay are complete; the public supplied split is analyst-exposed, not blind evidence |
 | Intra-chain geometry | Distance, receiver-frame direction, and full relative-pose attention biases with parameter-unshared antibody/antigen encoders | Two-A100 replay and three historical seeds are development evidence; the preregistered five-seed superiority gate did not pass and the outer test remains unread |
 | FrameContact | Parameter-unshared geometry self-attention, explicit binary-contact/distogram pair heads, unary/contact/gated residue heads, localized triangle consistency, gauge-fixed interaction attribution, and reciprocal partner controls | Antigen-fold development arrays are still running; matched-epoch signals are mixed, frozen/external tests remain unopened, and no benchmark-improvement claim is authorized |
 | Partner retrieval and PairScale | Dual encoders, bidirectional retrieval, native pair/contact models, hard-negative and one-sided controls, calibration, and fixed-budget runners | Development-only experiments did not pass the required partner-specificity gates; no candidate is promoted |
@@ -62,7 +64,7 @@ See the
 [`final research report`](results/sppider_seq/FINAL_RESEARCH_REPORT.md) and
 [`machine-readable summary`](results/sppider_seq/final_research_summary.json).
 
-### MIPE: completed released-code replay, with the Appendix-exact replay pending
+### MIPE: released-code and Appendix-setting archival replays complete
 
 The completed five-fold released-code-compatible `lr=1e-3` ensemble scores
 epitope AUROC/AUPRC/MCC `0.892775/0.513218/0.317949` and paratope
@@ -78,13 +80,19 @@ oracle reaches pair macro AUPRC `0.485569`, Recall@1 `0.609375`, and MRR
 `0.785156`, but it directly uses the common bound-complex coordinate frame and
 is not a deployable unbound or sequence-only predictor.
 
-See the
+See the original released-code
 [`audited report`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.md) and
 [`machine-readable release`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.json).
 The supplied split had pre-scoring schema access and is not pristine blind
 evidence. The released `main.py` learning rate (`1e-3`) also differs from
-Appendix section 2.3 (`1e-4`); a fresh five-fold, 800-epoch Appendix-correct
-replay is running and has no terminal metrics yet.
+Appendix section 2.3 (`1e-4`). The independently completed five-fold,
+800-epoch replay obtains fixed-epoch epitope/paratope AP
+`0.373718/0.526279` and native pair macro AP `0.006231`; validation-best routing
+obtains `0.392746/0.529539` and `0.006580`. Its
+[`compact report`](results/mipe/MIPE_800E_FIVEFOLD_OFFICIAL_REPLAY_20260901.md)
+and
+[`machine-readable receipt`](results/mipe/MIPE_800E_FIVEFOLD_OFFICIAL_REPLAY_20260901.json)
+are retained as analyst-exposed archival evidence, not a promotion gate.
 
 #### Earlier records retained for provenance
 

@@ -1,0 +1,178 @@
+{
+  "artifacts": {
+    "cluster_assignments": {
+      "filename": "PINDER_ANTIBODY_SEQUENCE_CLUSTER_ASSIGNMENTS_V1.tsv.gz",
+      "row_count": 35366,
+      "sha256": "6d729bacb8f48df1093e49e0ecbdc73c49378fb4838157fd156af97cce347343"
+    }
+  },
+  "authorized_for_model_selection": false,
+  "authorized_for_training": false,
+  "component_summary": {
+    "antibody": {
+      "30": {
+        "accepted_directional_nonself_edge_count": 16604747,
+        "component_count": 12,
+        "largest_component_size": 7187,
+        "median_component_size": 1.0,
+        "singleton_component_count": 9
+      },
+      "50": {
+        "accepted_directional_nonself_edge_count": 10540915,
+        "component_count": 15,
+        "largest_component_size": 7185,
+        "median_component_size": 1.0,
+        "singleton_component_count": 11
+      },
+      "70": {
+        "accepted_directional_nonself_edge_count": 3874913,
+        "component_count": 176,
+        "largest_component_size": 3988,
+        "median_component_size": 1.0,
+        "singleton_component_count": 114
+      },
+      "90": {
+        "accepted_directional_nonself_edge_count": 214115,
+        "component_count": 2987,
+        "largest_component_size": 955,
+        "median_component_size": 1.0,
+        "singleton_component_count": 2238
+      }
+    },
+    "antigen": {
+      "30": {
+        "accepted_directional_nonself_edge_count": 568128,
+        "component_count": 1288,
+        "largest_component_size": 486,
+        "median_component_size": 1.0,
+        "singleton_component_count": 826
+      },
+      "50": {
+        "accepted_directional_nonself_edge_count": 480858,
+        "component_count": 1427,
+        "largest_component_size": 466,
+        "median_component_size": 1.0,
+        "singleton_component_count": 901
+      },
+      "70": {
+        "accepted_directional_nonself_edge_count": 451902,
+        "component_count": 1533,
+        "largest_component_size": 466,
+        "median_component_size": 1.0,
+        "singleton_component_count": 968
+      },
+      "90": {
+        "accepted_directional_nonself_edge_count": 310519,
+        "component_count": 1789,
+        "largest_component_size": 457,
+        "median_component_size": 1.0,
+        "singleton_component_count": 1153
+      }
+    }
+  },
+  "edge_inventory": {
+    "antibody": {
+      "directional_nonself_row_count": 16604747,
+      "directional_row_count": 16611952,
+      "self_row_count": 7205
+    },
+    "antigen": {
+      "directional_nonself_row_count": 568128,
+      "directional_row_count": 573161,
+      "self_row_count": 5033
+    }
+  },
+  "firewall": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_metadata_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "format_version": "pinder_antibody_sequence_cluster_quality_audit_v1",
+  "input_sha256": {
+    "antibody_edges_tsv": "2e0e56d33dd17274cc991cda5d11f24683a0f06f4d4e197e72c663d01fecea99",
+    "antibody_fasta": "874f8f6907802205d80cc5809a299f735ada0365329a882ee434c545f1341450",
+    "antigen_edges_tsv": "2962d5185455481926d1532a626df815e6be06aab0bf8990e9e6b755486d6ac9",
+    "antigen_fasta": "e4d5335f224161558b47e2003b75d071e301f4d990e4ad3c6a59424363b80f0d",
+    "audit_source": "8421f731e78c6927be18e3802fa7cacf76a738383fc7fcdafb8f180e790cb4a8",
+    "inventory_manifest": "3537f92f9c465bfd3019387080267e6a679fcb781776931d3c775145704cfb6c",
+    "metadata_parquet": "3e3cfdc21d6c685891d6732edda13fea9d5566d056dfea56a2ae902ab80b4e6c",
+    "protocol_json": "21316c695ebd1325fd961c46830af88aae8c1be460d85b35c36b7e378b8b198e",
+    "sequence_manifest": "c5e0f5f6d66e88e4d4cbfd2c57b3f81684b069429bd94a00e79b45116944cb27"
+  },
+  "mmseqs_release": "18-8cc5c (commit 8cc5ce367b5638c4306c2d7cfc652dd099a4643f)",
+  "pinder_release": "2024-02",
+  "quality_subset_summary": {
+    "all_train_role_exclusive": {
+      "exact_pair_multiplicity_max": 600,
+      "exact_pair_multiplicity_median": 1.0,
+      "exact_pair_multiplicity_p95": 5.0,
+      "row_count": 35366,
+      "unique_antibody_sequence_count": 7206,
+      "unique_antigen_sequence_count": 5362,
+      "unique_exact_sequence_pair_count": 11001,
+      "unique_interface_cluster_count": 1763,
+      "unique_pdb_count": 5734,
+      "unique_pdb_sequence_pair_count": 12678
+    },
+    "official_like_xray": {
+      "exact_pair_multiplicity_max": 92,
+      "exact_pair_multiplicity_median": 1.0,
+      "exact_pair_multiplicity_p95": 3.0,
+      "row_count": 6282,
+      "unique_antibody_sequence_count": 3580,
+      "unique_antigen_sequence_count": 2276,
+      "unique_exact_sequence_pair_count": 4527,
+      "unique_interface_cluster_count": 758,
+      "unique_pdb_count": 2436,
+      "unique_pdb_sequence_pair_count": 4898
+    },
+    "official_like_xray_bio": {
+      "exact_pair_multiplicity_max": 14,
+      "exact_pair_multiplicity_median": 1.0,
+      "exact_pair_multiplicity_p95": 2.0,
+      "row_count": 1142,
+      "unique_antibody_sequence_count": 871,
+      "unique_antigen_sequence_count": 718,
+      "unique_exact_sequence_pair_count": 964,
+      "unique_interface_cluster_count": 260,
+      "unique_pdb_count": 793,
+      "unique_pdb_sequence_pair_count": 1007
+    }
+  },
+  "required_next_gate": "freeze one quality and deduplication policy, build a two-axis similarity-disconnected train/development split, and independently audit all cross-fold antibody and antigen similarities before training",
+  "scientific_payload_sha256": "43ca11306db762861d46e83aa01a3a4c8f840c6f823b917d8e547218d45e9f18",
+  "sequence_inventory": {
+    "antibody_unique_sequence_count": 7206,
+    "antigen_unique_sequence_count": 5362,
+    "role_overlap_count": 0
+  },
+  "status": "PASS_PINDER_ANTIBODY_SEQUENCE_CLUSTER_AND_QUALITY_AUDIT",
+  "threshold_partitions_are_nested": true,
+  "unique_component_pair_summary": {
+    "30": {
+      "all_train_unique_component_pairs": 1298,
+      "official_like_xray_bio_unique_component_pairs": 245,
+      "official_like_xray_unique_component_pairs": 586
+    },
+    "50": {
+      "all_train_unique_component_pairs": 1441,
+      "official_like_xray_bio_unique_component_pairs": 274,
+      "official_like_xray_unique_component_pairs": 668
+    },
+    "70": {
+      "all_train_unique_component_pairs": 2784,
+      "official_like_xray_bio_unique_component_pairs": 358,
+      "official_like_xray_unique_component_pairs": 1266
+    },
+    "90": {
+      "all_train_unique_component_pairs": 5611,
+      "official_like_xray_bio_unique_component_pairs": 572,
+      "official_like_xray_unique_component_pairs": 2402
+    }
+  }
+}

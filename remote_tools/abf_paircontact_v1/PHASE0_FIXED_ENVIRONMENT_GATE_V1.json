@@ -1,0 +1,34 @@
+{
+  "authorization": {
+    "gpu_execution": false,
+    "production_training": false,
+    "test_access": false
+  },
+  "candidate_root": "/ssd/scxi253/model_deployment/tools/abf_paircontact_v1/phase0_candidate_v1",
+  "claim_boundary": "Direct CPU graph, gradient, deterministic-sampling, matched-comparison, and fail-closed assertions in the fixed remote environment only.",
+  "local": {
+    "column_comparisons": 2,
+    "contact_bce": 0.9181190133094788,
+    "contact_centering": 0.008663089945912361,
+    "contact_ranking": 0.9616988301277161,
+    "matched_negative_count": 8,
+    "row_comparisons": 2,
+    "status": "PASS_PHASE0_DIRECT_ASSERTIONS",
+    "torch": "2.9.1"
+  },
+  "remote": {
+    "column_comparisons": 2,
+    "contact_bce": 0.9181190133094788,
+    "contact_centering": 0.008663092739880085,
+    "contact_ranking": 0.9616988301277161,
+    "matched_negative_count": 8,
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "row_comparisons": 2,
+    "status": "PASS_PHASE0_DIRECT_ASSERTIONS",
+    "torch": "2.7.1+cu128"
+  },
+  "script_sha256": "7f342217490d3f2352cc094d97fc17756548601052367cfd9bf3379e881c1716",
+  "status": "PASS_PHASE0_FIXED_ENVIRONMENT_GATE",
+  "test_access": false,
+  "timestamp_utc": "2026-08-30T22:05:00Z"
+}

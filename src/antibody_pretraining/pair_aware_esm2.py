@@ -314,6 +314,7 @@ class PairAwareESM2(nn.Module):
         tokens: Tensor,
         chain_ids: Tensor,
         *,
+        input_embedding_delta: Tensor | None = None,
         labels: Tensor | None = None,
         return_last_attention: bool = False,
         allow_cross_chain_attention: bool = True,
@@ -342,6 +343,22 @@ class PairAwareESM2(nn.Module):
             query_capacity=attention_query_capacity,
         )
         hidden = self._embed(tokens, valid_mask)
+        if input_embedding_delta is not None:
+            if not isinstance(input_embedding_delta, Tensor):
+                raise TypeError("input_embedding_delta must be a tensor")
+            if input_embedding_delta.shape != hidden.shape:
+                raise ValueError(
+                    "input_embedding_delta must match the embedded token shape"
+                )
+            if not input_embedding_delta.is_floating_point():
+                raise ValueError("input_embedding_delta must be floating point")
+            if input_embedding_delta.device != hidden.device:
+                raise ValueError("input_embedding_delta must share the token device")
+            if not bool(torch.isfinite(input_embedding_delta).all()):
+                raise ValueError("input_embedding_delta must be finite")
+            if bool(input_embedding_delta[~valid_mask].ne(0).any()):
+                raise ValueError("Padding positions cannot receive embedding deltas")
+            hidden = hidden + input_embedding_delta.to(dtype=hidden.dtype)
         last_attention = None
         for layer_index, layer in enumerate(self.layers):
             if os.environ.get("ABPAIRFM_TRACE_LAYERS") == "1":

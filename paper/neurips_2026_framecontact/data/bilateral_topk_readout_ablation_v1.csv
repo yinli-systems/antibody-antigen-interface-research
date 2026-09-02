@@ -1,0 +1,10 @@
+task,readout,k,mean_per_complex_ap,pooled_ap,auroc,f1,mcc,development_role
+epitope,topk_mean,1,0.232266396,0.144446149,0.657244407,0.224777609,0.128373449,fixed-checkpoint readout sensitivity
+epitope,topk_mean,2,0.232682424,0.144046437,0.657211895,0.225006141,0.130552331,fixed-checkpoint readout sensitivity
+epitope,topk_mean,4,0.232712437,0.144597097,0.657269685,0.225091977,0.131486678,fixed-checkpoint readout sensitivity
+epitope,topk_mean,8,0.232974892,0.144896540,0.657491478,0.225313630,0.130290960,fixed-checkpoint readout sensitivity
+paratope,native_node_plus_logmeanexp,,0.696180813,0.663613361,0.953958170,0.657241801,0.622238623,fixed-checkpoint reference
+paratope,node_plus_topk_mean,1,0.684283408,0.630043720,0.948811946,0.633178221,0.596266711,fixed-checkpoint readout sensitivity
+paratope,node_plus_topk_mean,2,0.686401372,0.632144021,0.949443177,0.635711439,0.599023253,fixed-checkpoint readout sensitivity
+paratope,node_plus_topk_mean,4,0.688532787,0.636177818,0.950097536,0.637430662,0.600518294,fixed-checkpoint readout sensitivity
+paratope,node_plus_topk_mean,8,0.690258641,0.638389529,0.950753292,0.638690795,0.600834497,fixed-checkpoint readout sensitivity

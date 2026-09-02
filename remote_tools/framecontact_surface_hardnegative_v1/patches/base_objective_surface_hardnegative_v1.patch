@@ -1,0 +1,146 @@
+--- a/src/interaction_first/framecontact_objective.py
++++ b/src/interaction_first/framecontact_objective.py
+@@ -79,6 +79,58 @@
+     return torch_module.stack(losses).mean()
+ 
+ 
++def hard_negative_pair_ranking_loss_per_complex(
++    logits: Any,
++    labels: Any,
++    mask: Any,
++    *,
++    negative_fraction: float = 0.01,
++    maximum_pairs: int = 64,
++    margin: float = 0.5,
++) -> Any:
++    """Rank each complex's hardest negative pairs below its weakest positives."""
++    torch_module = _require_torch()
++    if (
++        tuple(logits.shape) != tuple(labels.shape)
++        or tuple(logits.shape) != tuple(mask.shape)
++        or mask.dtype != torch_module.bool
++    ):
++        raise ValueError("hard-negative logits, labels, and mask must align")
++    if not math.isfinite(float(negative_fraction)) or not 0 < negative_fraction <= 1:
++        raise ValueError("hard-negative fraction must lie in (0, 1]")
++    if maximum_pairs < 1:
++        raise ValueError("hard-negative maximum pairs must be positive")
++    if not math.isfinite(float(margin)) or margin < 0:
++        raise ValueError("hard-negative margin must be finite and nonnegative")
++    losses = []
++    for batch_index in range(int(logits.shape[0])):
++        local_logits = logits[batch_index][mask[batch_index]].float()
++        local_labels = labels[batch_index][mask[batch_index]]
++        positive = local_logits[local_labels == 1]
++        negative = local_logits[local_labels == 0]
++        if positive.numel() == 0 or negative.numel() == 0:
++            losses.append(local_logits.sum() * 0.0)
++            continue
++        negative_count = min(
++            int(maximum_pairs),
++            max(1, math.ceil(float(negative_fraction) * int(negative.numel()))),
++        )
++        positive_count = min(int(maximum_pairs), int(positive.numel()))
++        hard_negative = torch_module.topk(
++            negative, k=negative_count, largest=True
++        ).values
++        weak_positive = torch_module.topk(
++            positive, k=positive_count, largest=False
++        ).values
++        pairwise_margin = (
++            float(margin)
++            + hard_negative[:, None]
++            - weak_positive[None, :]
++        )
++        losses.append(functional.softplus(pairwise_margin).mean())
++    return torch_module.stack(losses).mean()
++
++
+ def balanced_multiclass_loss_per_complex(
+     logits: Any,
+     labels: Any,
+@@ -224,6 +276,7 @@
+ @dataclass(frozen=True)
+ class FrameContactLossWeights:
+     contact: float = 1.0
++    contact_hard_negative: float = 0.0
+     paratope: float = 0.25
+     epitope: float = 0.25
+     specificity: float = 0.25
+@@ -251,6 +304,9 @@
+         contact_focal_gamma: float = 0.0,
+         epitope_dice_weight: float = 0.0,
+         epitope_count_weight: float = 0.0,
++        contact_hard_negative_fraction: float = 0.01,
++        contact_hard_negative_maximum_pairs: int = 64,
++        contact_hard_negative_margin: float = 0.5,
+         distance_boundaries: tuple[float, ...] = (4.0, 8.0, 16.0, 32.0),
+         contrastive_temperature: float = 0.1,
+         contrastive_maximum_residues: int = 256,
+@@ -280,6 +336,25 @@
+         self.contact_focal_gamma = float(contact_focal_gamma)
+         self.epitope_dice_weight = float(epitope_dice_weight)
+         self.epitope_count_weight = float(epitope_count_weight)
++        if (
++            not math.isfinite(float(contact_hard_negative_fraction))
++            or not 0 < float(contact_hard_negative_fraction) <= 1
++        ):
++            raise ValueError("contact hard-negative fraction must lie in (0, 1]")
++        if int(contact_hard_negative_maximum_pairs) < 1:
++            raise ValueError("contact hard-negative maximum pairs must be positive")
++        if (
++            not math.isfinite(float(contact_hard_negative_margin))
++            or float(contact_hard_negative_margin) < 0
++        ):
++            raise ValueError("contact hard-negative margin must be nonnegative")
++        self.contact_hard_negative_fraction = float(
++            contact_hard_negative_fraction
++        )
++        self.contact_hard_negative_maximum_pairs = int(
++            contact_hard_negative_maximum_pairs
++        )
++        self.contact_hard_negative_margin = float(contact_hard_negative_margin)
+         if (
+             not distance_boundaries
+             or any(not math.isfinite(float(value)) for value in distance_boundaries)
+@@ -325,6 +400,17 @@
+             cognate_output["pair_candidate_mask"],
+             focal_gamma=self.contact_focal_gamma,
+         )
++        if self.weights.contact_hard_negative:
++            contact_hard_negative_loss = hard_negative_pair_ranking_loss_per_complex(
++                cognate_output["contact_logits"],
++                cognate_batch["pair_labels"],
++                cognate_output["pair_candidate_mask"],
++                negative_fraction=self.contact_hard_negative_fraction,
++                maximum_pairs=self.contact_hard_negative_maximum_pairs,
++                margin=self.contact_hard_negative_margin,
++            )
++        else:
++            contact_hard_negative_loss = contact_loss.new_zeros(())
+         paratope_loss = balanced_binary_loss_per_complex(
+             cognate_output["paratope_logits"],
+             cognate_batch["antibody_labels"],
+@@ -444,6 +530,7 @@
+             specificity_loss = torch.stack(ranking_losses).mean()
+         total = (
+             self.weights.contact * contact_loss
++            + self.weights.contact_hard_negative * contact_hard_negative_loss
+             + self.weights.paratope * paratope_loss
+             + self.weights.epitope * epitope_loss
+             + self.weights.specificity * specificity_loss
+@@ -453,6 +540,7 @@
+         return {
+             "loss": total,
+             "contact_loss": contact_loss,
++            "contact_hard_negative_loss": contact_hard_negative_loss,
+             "paratope_loss": paratope_loss,
+             "epitope_loss": epitope_loss,
+             "epitope_bce_loss": epitope_bce_loss,
+@@ -520,5 +608,6 @@
+     "prevalence_loss_per_complex",
+     "soft_dice_loss_per_complex",
+     "balanced_binary_loss_per_complex",
++    "hard_negative_pair_ranking_loss_per_complex",
+     "top_fraction_contact_score",
+ ]

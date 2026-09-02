@@ -1,0 +1,34 @@
+{
+  "authorization": {
+    "lora_comparison": false,
+    "pilot_training": true,
+    "production_scaling": false,
+    "test_access": false
+  },
+  "claim_boundary": "Submission receipt for the train-only v20 precision-confirmation canary. A running or completed job is not a scientific pass; only the frozen post-run audit can authorize the next comparison.",
+  "format_version": "abf_paircontact_phase3_zero_sum_fp32_canary_submission_receipt_v1",
+  "job": {
+    "cpus": 24,
+    "gpu_count": 4,
+    "gpu_type": "NVIDIA GeForce RTX 4090",
+    "job_id": "1505482",
+    "partition": "gpu_4090",
+    "state_at_receipt": "RUNNING"
+  },
+  "provenance": {
+    "audit_sha256": "da302d88899def1b617c45ff1cee0ec2ebc9f3ccf598eb3a4508214286c03f7b",
+    "preflight_receipt_sha256": "fb6ce45f82084ca6b39f862e5f437fc7dfc8639cca4f9505d35c6882d9ad7046",
+    "prior_result_receipt_sha256": "60cf86ed57c897bed687319d11c6335152a73ea024fdce38d5c8902a8d7b80b2",
+    "protocol_sha256": "9dc2e5450245fc1a7594c5f3f0d29d70dbc82378a22ccecd6c2ab02e8fd640d2",
+    "source_sha256": "00d78df4f811f683787882e5869272ffa8cd18ae679dd1961a3bbe6f82608dee",
+    "submission_script_sha256": "bb74076c8e20768e91159ebd216ec4ccc3e54590704c43019dd74acf43617fd8"
+  },
+  "scheduler_checks": {
+    "exactly_four_gpus_requested": true,
+    "hash_preflight_passed": true,
+    "partition_gpu_4090": true,
+    "stderr_empty_at_receipt": true
+  },
+  "status": "SUBMITTED_FROZEN_V20_PRECISION_CONFIRMATION",
+  "test_access": false
+}

@@ -1,0 +1,20 @@
+{
+  "analysis_sha256": "4ab8e5bab04d3f9e5230b179c8c0c38a195703b56080213c5f69bb745698361b",
+  "failed_analyzer_end": "2026-08-29T19:32:34+08:00",
+  "failed_analyzer_exit_code": "1:0",
+  "failed_analyzer_job_id": "1491918",
+  "failed_analyzer_stderr_sha256": "228dc127bb1c3dba72e9138878c21d03617f627e1558c89bd9d2685ede174f86",
+  "failure_class": "launcher referenced the wrong immutable mechanism-receipt filename",
+  "format_version": "sabdab2_predicted_geometry_task_association_analyzer_recovery_receipt_v1",
+  "recovery_analyzer_end": "2026-08-29T19:41:02+08:00",
+  "recovery_analyzer_exit_code": "0:0",
+  "recovery_analyzer_job_id": "1491920",
+  "recovery_analyzer_launcher_sha256": "c409d991cf4346e842f2e3252cfa09f328cb545815b8242f6f01d8d14d608cef",
+  "recovery_analyzer_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "recovery_analyzer_stdout_sha256": "d47276163093448c13eac63b4c43bdf12d47066b43944f1e0480e6262d1fa675",
+  "result_receipt_sha256": "219fbea8634e25b56ca1f2d523abcc2fc1e16be390cdbfef282f4283e0e286f4",
+  "scientific_protocol_changed": false,
+  "selection_or_tuning": false,
+  "status": "PASS_SYSTEMS_ONLY_ANALYZER_PATH_RECOVERY",
+  "test_or_temporal_access": false
+}
