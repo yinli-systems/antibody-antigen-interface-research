@@ -1,0 +1,48 @@
+{
+  "analysis_sha256": "fb309de99d22f5d01b9854b0623bb727c26878b9df21a9f18e7ac6b0775cea73",
+  "claim_boundary": {
+    "development_validation_only": true,
+    "fixed_checkpoint_readout_sensitivity": true,
+    "no_architecture_selection_authorized": true,
+    "no_optimal_k_claim": true,
+    "not_a_from_scratch_training_ablation": true,
+    "temporal_holdout_loaded": false,
+    "test_loaded": false
+  },
+  "epitope": {
+    "reference": "topk2",
+    "rows": {
+      "topk1": {"auprc": 0.144446149, "auroc": 0.657244407, "f1": 0.224777609, "mcc": 0.128373449, "mean_per_complex_ap": 0.232266396},
+      "topk2": {"auprc": 0.144046437, "auroc": 0.657211895, "f1": 0.225006141, "mcc": 0.130552331, "mean_per_complex_ap": 0.232682424},
+      "topk4": {"auprc": 0.144597097, "auroc": 0.657269685, "f1": 0.225091977, "mcc": 0.131486678, "mean_per_complex_ap": 0.232712437},
+      "topk8": {"auprc": 0.144896540, "auroc": 0.657491478, "f1": 0.225313630, "mcc": 0.130290960, "mean_per_complex_ap": 0.232974892}
+    },
+    "topk8_minus_topk2_mean_per_complex_ap_delta_by_seed": {
+      "17": 0.00021966530403413692,
+      "29": 0.0005036346480421033,
+      "43": 0.0002924679830304867
+    }
+  },
+  "format_version": "bilateral_topk_readout_development_public_v1",
+  "paratope": {
+    "reference": "native_baseline",
+    "rows": {
+      "native_baseline": {"auprc": 0.663613361, "auroc": 0.953958170, "f1": 0.657241801, "mcc": 0.622238623, "mean_per_complex_ap": 0.696180813},
+      "node_plus_topk1": {"auprc": 0.630043720, "auroc": 0.948811946, "f1": 0.633178221, "mcc": 0.596266711, "mean_per_complex_ap": 0.684283408},
+      "node_plus_topk2": {"auprc": 0.632144021, "auroc": 0.949443177, "f1": 0.635711439, "mcc": 0.599023253, "mean_per_complex_ap": 0.686401372},
+      "node_plus_topk4": {"auprc": 0.636177818, "auroc": 0.950097536, "f1": 0.637430662, "mcc": 0.600518294, "mean_per_complex_ap": 0.688532787},
+      "node_plus_topk8": {"auprc": 0.638389529, "auroc": 0.950753292, "f1": 0.638690795, "mcc": 0.600834497, "mean_per_complex_ap": 0.690258641}
+    },
+    "node_plus_topk_mean_per_complex_ap_delta_vs_native_by_seed": {
+      "topk1": {"17": -0.006773118767436595, "29": -0.01615088978622848, "43": -0.00807018366191028},
+      "topk2": {"17": -0.0049053324200570275, "29": -0.01329518668192392, "43": -0.005952219141301486},
+      "topk4": {"17": -0.004362723069471884, "29": -0.011438891868301613, "43": -0.0038208046429762193},
+      "topk8": {"17": -0.002791383356078831, "29": -0.00845959563178364, "43": -0.0020949505201357144}
+    }
+  },
+  "protocol_sha256": "8cbf964c5289b69398043dfd356fb57d2648647cb15de85dcdb773f2bbbe2f3d",
+  "recovery_protocol_sha256": "e7196618cd78d38391c74af0db921de8dfae192a4869b2136980fb25e4df4755",
+  "seeds": [17, 29, 43],
+  "status": "PASS_BILATERAL_TOPK_FIXED_CHECKPOINT_READOUT_AUDIT",
+  "validation_complexes": 549
+}
