@@ -37,10 +37,11 @@ only `+0.000292`. This is too small to support an optimal-K or replacement claim
 | Node + TopK8 | 0.690259 | 0.638390 | 0.950753 | 0.638691 | 0.600834 |
 
 These are fixed-checkpoint readout sensitivities, not from-scratch K training
-ablations. A pre-frozen eight-arm seed-17 retraining screen was submitted as
-Slurm array `1538425`; its analyzer is `1538426`. Until that screen completes,
-the paper should present the tables above as post-hoc readout sensitivity and
-retain the native paratope route.
+ablations. The separately pre-frozen eight-arm seed-17 retraining screen has
+now completed and is reported in
+`BILATERAL_TOPK_TRAINING_ABLATION_DEVELOPMENT_PUBLIC_V1.*`. The two analyses
+remain distinct: this fixed-checkpoint evidence is not overwritten by the
+from-scratch result.
 
 Raw analysis SHA-256:
 `fb309de99d22f5d01b9854b0623bb727c26878b9df21a9f18e7ac6b0775cea73`.

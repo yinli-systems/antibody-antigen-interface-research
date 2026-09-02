@@ -1,0 +1,48 @@
+{
+  "claim_boundary": {
+    "development_validation_only": true,
+    "from_scratch_training_ablation": true,
+    "no_optimal_k_claim": true,
+    "single_seed_screen": true,
+    "temporal_holdout_loaded": false,
+    "test_loaded": false,
+    "validation_is_checkpoint_selection_data": true
+  },
+  "epitope": {
+    "reference": "topk2",
+    "rows": {
+      "topk1": {"auprc": 0.138299270, "auroc": 0.645819283, "f1": 0.217486266, "mcc": 0.113597113, "mean_per_complex_ap": 0.228217274, "selected_epoch": 2},
+      "topk2": {"auprc": 0.144046388, "auroc": 0.649510981, "f1": 0.221773072, "mcc": 0.125679507, "mean_per_complex_ap": 0.237529361, "selected_epoch": 1},
+      "topk4": {"auprc": 0.139896761, "auroc": 0.645965545, "f1": 0.220547286, "mcc": 0.119503127, "mean_per_complex_ap": 0.234279347, "selected_epoch": 2},
+      "topk8": {"auprc": 0.134206793, "auroc": 0.622492527, "f1": 0.204677426, "mcc": 0.104091690, "mean_per_complex_ap": 0.237326167, "selected_epoch": 2}
+    },
+    "topk_mean_per_complex_ap_delta_vs_topk2": {
+      "topk1": -0.009312086415438736,
+      "topk4": -0.003250013552319131,
+      "topk8": -0.00020319371549151755
+    }
+  },
+  "format_version": "bilateral_topk_training_ablation_development_public_v1",
+  "paratope": {
+    "reference": "native_node_plus_logmeanexp_from_epitope_topk2_arm",
+    "reference_metrics": {"auprc": 0.629400448, "auroc": 0.951132724, "f1": 0.643753054, "mcc": 0.607036832, "mean_per_complex_ap": 0.679731322, "selected_epoch": 1},
+    "rows": {
+      "topk1": {"auprc": 0.629018334, "auroc": 0.953033006, "f1": 0.656400602, "mcc": 0.626935362, "mean_per_complex_ap": 0.702509451, "selected_epoch": 2},
+      "topk2": {"auprc": 0.657072967, "auroc": 0.954371808, "f1": 0.654526022, "mcc": 0.618771483, "mean_per_complex_ap": 0.701388288, "selected_epoch": 13},
+      "topk4": {"auprc": 0.585476589, "auroc": 0.945263337, "f1": 0.622225770, "mcc": 0.583647083, "mean_per_complex_ap": 0.673524147, "selected_epoch": 1},
+      "topk8": {"auprc": 0.618129358, "auroc": 0.950771408, "f1": 0.648468379, "mcc": 0.611886486, "mean_per_complex_ap": 0.680195957, "selected_epoch": 2}
+    },
+    "topk_mean_per_complex_ap_delta_vs_native_reference": {
+      "topk1": 0.022778129699335237,
+      "topk2": 0.02165696578479981,
+      "topk4": -0.006207174781964753,
+      "topk8": 0.00046463479367830907
+    }
+  },
+  "seed": 17,
+  "source_analysis_sha256": "6a1abbca777db679585451ad971039c82af7fac4a93b01146aa584a9e5eba3eb",
+  "source_campaign_sha256": "ade4401c6ff062a262623eb2c7f79de9111e2d9552decec34cf257005455898c",
+  "source_receipt_sha256": "063a197692db8e7499aec9dcbdfdcf9430e3ef37cb1f6ada10d0958f2b241b21",
+  "status": "PASS_BILATERAL_TOPK_SEED17_FROM_SCRATCH_ABLATION",
+  "validation_complexes": 549
+}

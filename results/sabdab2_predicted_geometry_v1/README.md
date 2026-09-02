@@ -36,3 +36,15 @@ reports PDB-cluster bootstrap intervals and all predeclared geometry-quality
 correlates. None of the simple RMSD, graph-overlap, or AF3-score associations
 supports a causal mechanism claim; the file is development-only sensitivity
 evidence.
+
+## Bilateral Top-K evidence
+
+`BILATERAL_TOPK_READOUT_DEVELOPMENT_PUBLIC_V1.*` records the earlier
+fixed-checkpoint readout sensitivity. The separately frozen
+`BILATERAL_TOPK_TRAINING_ABLATION_DEVELOPMENT_PUBLIC_V1.*` records eight
+from-scratch seed-17 runs for epitope and paratope `K in {1,2,4,8}`. The
+from-scratch analyzer passed all integrity checks. Epitope K2 is the most
+balanced arm, while paratope K1 and K2 are promising relative to the native
+reference. Because this is a single-seed experiment on checkpoint-selection
+validation data, it supports an Appendix ablation rather than a universal
+optimal-K or independent test claim.
