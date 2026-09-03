@@ -33,6 +33,8 @@
     "analysis_sha256": "f4368275e38d5134e667e23470702e987bb1a301b1c89aee5e82718d39911824"
   },
   "predicted_geometry_development": {
+    "evidence_role": "historical_predicted_geometry_sensitivity_with_bound_distance_auxiliary",
+    "superseded_for_no_privileged_distance_reporting": true,
     "split": {
       "train_complexes": 2565,
       "validation_complexes": 549,
@@ -71,6 +73,42 @@
     },
     "campaign_sha256": "1117a6ac45bd0ab57063af52e55ad14948447513d461a959f5d984bc41f99099",
     "analysis_sha256": "a4168a919e97b1344d718946fdd51305803773ae3355a3014ee2f05583a077b7",
+    "model_input_structure_manifest_sha256": "bf6ea4a21ff303f5e0bbf0f8edca5d824cc5024ec6c41fea9213172c64a8f614"
+  },
+  "predicted_geometry_no_privileged_distance_development": {
+    "split": {
+      "train_complexes": 2565,
+      "validation_complexes": 549,
+      "validation_role": "checkpoint_selection_and_development_summary_not_independent_holdout"
+    },
+    "seeds": [17, 29, 43],
+    "metric": "mean_per_complex_average_precision",
+    "routing": {
+      "contact": "seed_matched_baseline_checkpoint",
+      "epitope": "seed_matched_edge_topk2_supervised_checkpoint",
+      "paratope": "seed_matched_baseline_checkpoint"
+    },
+    "routed_by_seed": {
+      "17": {"contact": 0.02543837522728196, "epitope": 0.2375293607608345, "paratope": 0.697307305097553},
+      "29": {"contact": 0.026068725782231347, "epitope": 0.2318321483138933, "paratope": 0.6961808126218146},
+      "43": {"contact": 0.026729414020969042, "epitope": 0.23268237153653065, "paratope": 0.6923535916401083}
+    },
+    "routed_median": {"contact": 0.026068725782231347, "epitope": 0.23268237153653065, "paratope": 0.6961808126218146},
+    "audit": {
+      "development_only": true,
+      "experimental_bound_geometry_used_as_model_input": false,
+      "experimental_bound_geometry_used_for_auxiliary_training_supervision": false,
+      "distance_loss_weight": 0.0,
+      "distance_label_cache_supplied": false,
+      "experimental_structure_required_at_inference": false,
+      "independent_confirmation": false,
+      "old_sabdab2_test_loaded": false,
+      "temporal_holdout_loaded": false,
+      "status": "PASS_PREDICTED_GEOMETRY_NO_BOUND_DISTANCE_AUXILIARY_DEVELOPMENT"
+    },
+    "campaign_sha256": "9eddf93aca94c1018287620e3720f873ece3730d9e3fe85d340b372a9ef0b4d0",
+    "analysis_sha256": "1382c6fc18624b53f50657c0c0d61408fa03f0acc5aa3a812ffa3f84bd23b78c",
+    "analysis_receipt_sha256": "078dc523dda148b76ae7eeebe9fc557a73df9cf7f9f4cea90ffb3b09ef79cb5a",
     "model_input_structure_manifest_sha256": "bf6ea4a21ff303f5e0bbf0f8edca5d824cc5024ec6c41fea9213172c64a8f614"
   },
   "fresh156": {

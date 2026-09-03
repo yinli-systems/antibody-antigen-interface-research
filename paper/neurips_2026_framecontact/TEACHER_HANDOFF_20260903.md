@@ -4,10 +4,36 @@
 
 老师好，最新版结果和双侧 Top-K 消融已经整理完成。
 
-在只使用序列及序列独立预测的链内几何作为模型输入的完整 development
-实验中，三个固定 seed 路由后的 contact、epitope 和 paratope
-mean-per-complex AP 中位数分别为 `0.02673`、`0.24378` 和 `0.68847`。
-这组结果不使用实验复合物坐标作为模型输入；实验结构只用于构造训练和评测标签。
+在只使用序列及序列独立预测的链内几何作为模型输入、且不使用 bound-distance
+auxiliary supervision 的完整 development 实验中，三个固定 seed 路由后的 contact、
+epitope 和 paratope mean-per-complex AP 中位数分别为 `0.02607`、`0.23268`
+和 `0.69618`。Contact 和 paratope 来自 seed-matched baseline checkpoint，epitope
+来自 seed-matched TopK2 expert checkpoint。这组结果不使用实验复合物坐标作为模型
+输入，也不使用实验跨链距离作为辅助训练目标；实验结构仅用于构造监督标签。
+
+三种子各项指标如下（均为各自 selected checkpoint 在 development validation 上的
+结果；MPC-AP 为 mean-per-complex AP）：
+
+| Task | Seed | AUROC | MPC-AP | MCC | Recall | Precision |
+|---|---:|---:|---:|---:|---:|---:|
+| Contact | 17 | 0.9319 | 0.0254 | 0.0488 | 0.1337 | 0.0198 |
+| Contact | 29 | 0.9350 | 0.0261 | 0.0420 | 0.0961 | 0.0204 |
+| Contact | 43 | 0.9228 | 0.0267 | 0.0412 | 0.0999 | 0.0190 |
+| **Contact median** | -- | **0.9319** | **0.0261** | **0.0420** | **0.0999** | **0.0198** |
+| Epitope | 17 | 0.6495 | 0.2375 | 0.1257 | 0.6097 | 0.1355 |
+| Epitope | 29 | 0.6580 | 0.2318 | 0.1349 | 0.6477 | 0.1366 |
+| Epitope | 43 | 0.6572 | 0.2327 | 0.1306 | 0.6071 | 0.1381 |
+| **Epitope median** | -- | **0.6572** | **0.2327** | **0.1306** | **0.6097** | **0.1366** |
+| Paratope | 17 | 0.9540 | 0.6973 | 0.6222 | 0.7464 | 0.5871 |
+| Paratope | 29 | 0.9541 | 0.6962 | 0.6266 | 0.7737 | 0.5745 |
+| Paratope | 43 | 0.9525 | 0.6924 | 0.6068 | 0.6953 | 0.6013 |
+| **Paratope median** | -- | **0.9540** | **0.6962** | **0.6222** | **0.7464** | **0.5871** |
+
+昨天新跑的 pLDDT>=70 confidence-masked candidate 的三任务中位 MPC-AP 虽为
+`0.02716 / 0.24259 / 0.71033`，但没有通过预先冻结的晋级规则：seed 29 的
+paratope MPC-AP 相对 control 下降 `0.03571`，超过每个 seed 最多下降 `0.005`
+的限制。因此该组应保留为 development ablation，不能替换正文采用的三种子
+checkpoint。昨天的 bilateral Top-K 训练消融也只有 seed 17，同样不应替代三种子主结果。
 
 另外，我按照预先固定的协议完成了 epitope/paratope 两侧
 `K in {1,2,4,8}` 的 from-scratch 消融。Epitope 侧，K=2 的综合表现最好：

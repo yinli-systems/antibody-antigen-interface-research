@@ -1,7 +1,7 @@
 cohort,role,task,source_checkpoint,mean_per_complex_ap,pooled_ap,auroc,f1,mcc,precision,recall
-SAbDab2 predicted-geometry development,checkpoint selection,contact,baseline,0.026068726,0.012628594,0.931890501,0.033647434,0.042011137,0.019801555,0.099929627
-SAbDab2 predicted-geometry development,checkpoint selection,epitope,edge_topk2_supervised,0.232682372,0.144046388,0.657212119,0.225006141,0.130552331,0.136632471,0.609706362
-SAbDab2 predicted-geometry development,checkpoint selection,paratope,baseline,0.696180813,0.663613247,0.953958175,0.657241801,0.622238623,0.587130587,0.746368095
+SAbDab2 predicted-geometry development (no privileged distance),checkpoint selection,contact,baseline,0.026068726,0.012628594,0.931890501,0.033647434,0.042011137,0.019801555,0.099929627
+SAbDab2 predicted-geometry development (no privileged distance),checkpoint selection,epitope,edge_topk2_supervised,0.232682372,0.144046388,0.657212119,0.225006141,0.130552331,0.136632471,0.609706362
+SAbDab2 predicted-geometry development (no privileged distance),checkpoint selection,paratope,baseline,0.696180813,0.663613247,0.953958175,0.657241801,0.622238623,0.587130587,0.746368095
 SABLE v0.2.0,model-unseen external measurement but analyst-exposed,contact,baseline,0.039819633,0.007887406,0.901256192,0.020316682,0.026788974,0.011806154,0.072781885
 SABLE v0.2.0,model-unseen external measurement but analyst-exposed,epitope,edge_topk2_supervised,0.308926850,0.105514525,0.629732183,0.174997673,0.100140127,0.103638368,0.561864913
 SABLE v0.2.0,model-unseen external measurement but analyst-exposed,paratope,baseline,0.677203016,0.615204309,0.933912752,0.627004416,0.580819295,0.563256785,0.703354298
