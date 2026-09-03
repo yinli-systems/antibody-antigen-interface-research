@@ -34,6 +34,7 @@ class InteractionLossWeights:
     epitope_consistency: float = 0.0
     paratope_consistency: float = 0.0
     partner_rank: float = 0.25
+    focal_gamma: float = 0.0
 
     def validate(self) -> None:
         """Reject negative or entirely disabled loss configurations."""
@@ -43,6 +44,39 @@ class InteractionLossWeights:
         if sum(values) <= 0.0:
             raise ValueError("At least one loss weight must be positive")
 
+
+def masked_focal_loss_with_logits(
+    logits: Any,
+    targets: Any,
+    mask: Any,
+    positive_weight: float = 1.0,
+    gamma: float = 2.0,
+) -> Any:
+    """Compute stable class-reweighted Focal Loss over valid entries only."""
+    require_torch()
+    if logits.shape != targets.shape or logits.shape != mask.shape:
+        raise ValueError("Logits, targets, and mask must have identical shapes")
+    if mask.dtype != torch.bool or not torch.any(mask):
+        raise ValueError("Focal mask must contain at least one valid boolean entry")
+    if positive_weight <= 0.0:
+        raise ValueError("positive_weight must be positive")
+    
+    selected_logits = logits[mask]
+    selected_targets = targets[mask].to(dtype=logits.dtype)
+    pos_weight = logits.new_tensor(float(positive_weight))
+    
+    bce_loss = F.binary_cross_entropy_with_logits(
+        selected_logits,
+        selected_targets,
+        pos_weight=pos_weight,
+        reduction='none'
+    )
+    
+    probs = torch.sigmoid(selected_logits)
+    p_t = probs * selected_targets + (1 - probs) * (1 - selected_targets)
+    focal_weight = (1 - p_t) ** gamma
+    
+    return (focal_weight * bce_loss).mean()
 
 def masked_bce_with_logits(
     logits: Any,
@@ -229,21 +263,40 @@ def interaction_first_loss(
         "paratope_supervision_mask",
         antibody_mask,
     )
-    edge_loss = masked_bce_with_logits(
-        outputs["pair_logits"], pair_targets, pair_mask, edge_positive_weight
-    )
-    epitope_bce = masked_bce_with_logits(
-        outputs["epitope_logits"],
-        epitope_targets,
-        epitope_mask,
-        epitope_positive_weight,
-    )
-    paratope_bce = masked_bce_with_logits(
-        outputs["paratope_logits"],
-        paratope_targets,
-        paratope_mask,
-        paratope_positive_weight,
-    )
+    if weights.focal_gamma > 0.0:
+        edge_loss = masked_focal_loss_with_logits(
+            outputs["pair_logits"], pair_targets, pair_mask, edge_positive_weight, weights.focal_gamma
+        )
+        epitope_bce = masked_focal_loss_with_logits(
+            outputs["epitope_logits"],
+            epitope_targets,
+            epitope_mask,
+            epitope_positive_weight,
+            weights.focal_gamma
+        )
+        paratope_bce = masked_focal_loss_with_logits(
+            outputs["paratope_logits"],
+            paratope_targets,
+            paratope_mask,
+            paratope_positive_weight,
+            weights.focal_gamma
+        )
+    else:
+        edge_loss = masked_bce_with_logits(
+            outputs["pair_logits"], pair_targets, pair_mask, edge_positive_weight
+        )
+        epitope_bce = masked_bce_with_logits(
+            outputs["epitope_logits"],
+            epitope_targets,
+            epitope_mask,
+            epitope_positive_weight,
+        )
+        paratope_bce = masked_bce_with_logits(
+            outputs["paratope_logits"],
+            paratope_targets,
+            paratope_mask,
+            paratope_positive_weight,
+        )
     epitope_dice = soft_dice_loss(
         outputs["epitope_probability"], epitope_targets, epitope_mask
     )

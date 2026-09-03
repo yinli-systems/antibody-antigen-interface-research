@@ -762,6 +762,7 @@ def _run_epoch(
         epitope_consistency=args.epitope_consistency_weight,
         paratope_consistency=args.paratope_consistency_weight,
         partner_rank=args.partner_rank_weight,
+        focal_gamma=args.focal_gamma,
     )
     with context:
         for instance_id in identifiers:
@@ -1587,7 +1588,8 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--d-model", type=int, default=128)
     train.add_argument("--pair-dim", type=int, default=64)
     train.add_argument("--num-heads", type=int, default=8)
-    train.add_argument("--num-layers", type=int, default=1)
+    train.add_argument("--focal-gamma", type=float, default=0.0)
+    train.add_argument("--num-layers", type=int, default=3)
     train.add_argument("--dropout", type=float, default=0.20)
     train.add_argument(
         "--marginal-pooling",
