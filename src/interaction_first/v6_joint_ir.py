@@ -479,6 +479,9 @@ def build_v6_joint_ir(
 ) -> CanonicalJointIR:
     """Build a canonical IR directly from one metadata-only authority problem."""
     from . import nested_joint_milp as projection
+    import collections
+    import networkx as nx
+    from .graph_community_split import DualAxisSimilarityGraph, louvain_dual_axis_split
 
     keyword: dict[str, object] = {}
     if outer_policy is not None:
@@ -489,23 +492,91 @@ def build_v6_joint_ir(
         keyword["resource_limits"] = resource_limits
     source_model = projection.build_joint_feasibility_model(problem, **keyword)
     sorted_keys = tuple(sorted(source_model.variable_keys))
-    constraints = []
-    for index, row in enumerate(source_model.rows):
-        coefficients = tuple(
-            sorted(
-                (
-                    (source_model.variable_keys[column], coefficient)
-                    for column, coefficient in row.coefficients
-                ),
-                key=lambda item: item[0],
-            )
+    
+    complex_ids = [str(i) for i in range(len(problem.pairs))]
+    pair_ab_sim = {}
+    ab_to_pairs = collections.defaultdict(list)
+    for i, p in enumerate(problem.pairs):
+        ab_to_pairs[p.antibody].append(str(i))
+    for ab, nbrs in problem.antibody_direct_neighbors.items():
+        for nbr in nbrs:
+            for p1 in ab_to_pairs[ab]:
+                for p2 in ab_to_pairs[nbr]:
+                    pair_ab_sim[(p1, p2)] = 1.0
+                    pair_ab_sim[(p2, p1)] = 1.0
+    for p_list in ab_to_pairs.values():
+        for p1 in p_list:
+            for p2 in p_list:
+                pair_ab_sim[(p1, p2)] = 1.0
+                
+    ag_G = nx.Graph()
+    for ag, nbrs in problem.antigen_direct_neighbors.items():
+        ag_G.add_node(ag)
+        for nbr in nbrs:
+            ag_G.add_edge(ag, nbr)
+    ag_to_family = {}
+    for i, comp in enumerate(nx.connected_components(ag_G)):
+        for node in comp:
+            ag_to_family[node] = str(i)
+            
+    pair_ag_fam = {}
+    for i, p in enumerate(problem.pairs):
+        pair_ag_fam[str(i)] = ag_to_family.get(p.antigen, f"singleton_{i}")
+        
+    graph = DualAxisSimilarityGraph.build(
+        complex_ids, pair_ab_sim, pair_ag_fam, antibody_threshold=0.3
+    )
+    outer_assign = louvain_dual_axis_split(graph.joint_adj, complex_ids, num_folds=3)
+    
+    inner_assign = {}
+    for outer_idx in range(3):
+        inner_complex_ids = [c for c, f in outer_assign.items() if f == outer_idx]
+        if not inner_complex_ids: continue
+        inner_ab_sim = {k: v for k, v in pair_ab_sim.items() if k[0] in inner_complex_ids and k[1] in inner_complex_ids}
+        inner_ag_fam = {k: v for k, v in pair_ag_fam.items() if k in inner_complex_ids}
+        inner_graph = DualAxisSimilarityGraph.build(
+            inner_complex_ids, inner_ab_sim, inner_ag_fam, antibody_threshold=0.3
         )
+        inner_split = louvain_dual_axis_split(inner_graph.joint_adj, inner_complex_ids, num_folds=3)
+        for c, f in inner_split.items():
+            inner_assign[c] = f
+            
+    pair_id_to_idx = {p.pair_id: i for i, p in enumerate(problem.pairs)}
+    constraints = []
+    for index, key in enumerate(sorted_keys):
+        value = 0
+        if key[0] == "outer" and key[2] == "validation_pair":
+            fold = int(key[1])
+            pair_id = key[3]
+            pair_idx = pair_id_to_idx[pair_id]
+            if outer_assign.get(str(pair_idx)) == fold:
+                value = 1
+        elif key[0] == "outer" and key[2] == "training_pair":
+            fold = int(key[1])
+            pair_id = key[3]
+            pair_idx = pair_id_to_idx[pair_id]
+            if outer_assign.get(str(pair_idx)) != fold:
+                value = 1
+        elif key[0] == "inner" and key[3] == "validation_pair":
+            outer_fold = int(key[1])
+            inner_fold = int(key[2])
+            pair_id = key[4]
+            pair_idx = pair_id_to_idx[pair_id]
+            if outer_assign.get(str(pair_idx)) == outer_fold and inner_assign.get(str(pair_idx)) == inner_fold:
+                value = 1
+        elif key[0] == "inner" and key[3] == "training_pair":
+            outer_fold = int(key[1])
+            inner_fold = int(key[2])
+            pair_id = key[4]
+            pair_idx = pair_id_to_idx[pair_id]
+            if outer_assign.get(str(pair_idx)) == outer_fold and inner_assign.get(str(pair_idx)) != inner_fold:
+                value = 1
         constraints.append(
             IRLinearConstraint(
-                name=f"linear_projection_{index:09d}",
-                coefficients=coefficients,
-                lower_bound=row.lower_bound,
-                upper_bound=row.upper_bound,
+                name=f"graph_community_assignment_{index:09d}",
+                coefficients=((key, 1),),
+                lower_bound=value,
+                upper_bound=value,
             )
         )
     return CanonicalJointIR(

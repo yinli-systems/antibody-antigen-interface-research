@@ -7,6 +7,7 @@ from typing import Any, Sequence
 
 from .intra_chain_geometry import DualIntraChainGeometryEncoder
 from .scoring import normalized_partner_score, pool_pair_marginals
+from .mipe_contact_head import MIPEContactHead
 
 try:
     import torch
@@ -313,7 +314,7 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         )
         self.final_antigen_norm = nn.LayerNorm(d_model)
         self.final_antibody_norm = nn.LayerNorm(d_model)
-        self.decoder = BidirectionalBilinearDecoder(d_model, pair_dim)
+        self.decoder = MIPEContactHead(d_model, pair_dim)
         self.epitope_head = nn.Linear(d_model, 1)
         self.paratope_head = nn.Linear(d_model, 1)
         nn.init.constant_(self.epitope_head.bias, -2.5)
@@ -417,9 +418,9 @@ class PartnerSpecificInteractionModel(_ModuleBase):
             antigen, antibody = block(antigen, antibody, antigen_mask, antibody_mask)
         antigen = self.final_antigen_norm(antigen)
         antibody = self.final_antibody_norm(antibody)
-        decoder = self.decoder.components(antigen, antibody)
-        pair_logits = decoder["pair_logits"]
-        interaction_logits = decoder["interaction_logits"]
+        decoder = self.decoder.components(antibody, antigen)
+        pair_logits = decoder["pair_logits"].transpose(1, 2)
+        interaction_logits = decoder["interaction_logits"].transpose(1, 2)
         axis_mask = antigen_mask.unsqueeze(2) & antibody_mask.unsqueeze(1)
         if candidate_pair_mask is None:
             pair_mask = axis_mask

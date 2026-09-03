@@ -1,40 +1,29 @@
-"""Interaction-first components for antibody-antigen interface prediction."""
+"""Antibody-antigen interface prediction improvements.
 
-from .contacts import FORMAT_VERSION as CONTACT_FORMAT_VERSION
-from .intra_chain_geometry import (
-    DualIntraChainGeometryEncoder,
-    GeometryBiasedSelfAttentionBlock,
-    IntraChainGeometryEncoder,
-    build_backbone_frames,
-    build_intra_chain_relative_geometry,
-)
-from .partners import PartnerRecord, PartnerSampler
-from .runtime import EmbeddingStore
-from .sabdab2_structure import (
-    IntraChainResidueClassifier,
-    Sabdab2StructureBatchCollator,
-    Sabdab2StructureEmbeddingDataset,
-    StructureCacheError,
-    materialize_structure_cache,
-)
-from .splits import SimilarityEdge, build_components, deterministic_component_split
+Three high-priority modules:
+1. inter_chain_geometry — Cross-chain geometric features (distance RBF, relative frames)
+2. graph_community_split — Graph community detection dual-axis splitting
+3. mipe_contact_head — Direct supervision contact prediction head for MIPE
+"""
 
-__all__ = [
-    "CONTACT_FORMAT_VERSION",
-    "DualIntraChainGeometryEncoder",
-    "GeometryBiasedSelfAttentionBlock",
-    "IntraChainGeometryEncoder",
-    "IntraChainResidueClassifier",
-    "PartnerRecord",
-    "PartnerSampler",
-    "Sabdab2StructureBatchCollator",
-    "Sabdab2StructureEmbeddingDataset",
-    "EmbeddingStore",
-    "SimilarityEdge",
-    "StructureCacheError",
-    "build_backbone_frames",
-    "build_components",
-    "build_intra_chain_relative_geometry",
-    "deterministic_component_split",
-    "materialize_structure_cache",
-]
+from .inter_chain_geometry import (
+    InterChainGeometryBias,
+    InterChainPairFeatureProjection,
+    InterChainRelativeGeometry,
+    build_inter_chain_geometry,
+)
+from .graph_community_split import (
+    DualAxisSimilarityGraph,
+    build_antibody_similarity_graph,
+    build_antigen_family_graph,
+    build_joint_constraint_graph,
+    louvain_dual_axis_split,
+    validate_dual_axis_split,
+    spectral_fallback_split,
+)
+from .mipe_contact_head import (
+    MIPEContactHead,
+    MIPEContactEvaluator,
+    focal_loss,
+    mipe_contact_loss,
+)
