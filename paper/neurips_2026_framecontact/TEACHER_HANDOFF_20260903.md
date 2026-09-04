@@ -85,3 +85,33 @@ benchmark、同一 split 和同一 metric 的最终 main performance table。
 - Fixed-checkpoint readout sensitivity and from-scratch training ablation are
   retained as separate evidence.
 - The result supports an Appendix ablation, not a universal optimal-K claim.
+
+## Best contact checkpoint and 20-case analysis
+
+The checkpoint for the teacher-requested SAbDab2 contact case study is:
+
+```text
+/ssd/scxi253/model_deployment/results/development/sabdab2_sequence_predicted_geometry_development_v1/runs_no_privileged_distance_v1/baseline/seed-43/FRAMECONTACT_SELECTED.pt
+```
+
+Its SHA-256 is
+`0ed02b23d0639c92fbaad64460ab38cfb10523fc2a9ab147cbf1dcdff6561fc3`.
+It is epoch 6 of the seed-43 baseline run and was selected because it has the
+highest development-validation contact MPC-AP (`0.0267294`) among seeds
+17, 29, and 43. The test set was not loaded during checkpoint selection.
+
+The reproducible freezer, evaluator, and Slurm entry point are under
+`remote_tools/sabdab2_top10_case_study_v1/`. On ParaCloud they are mirrored at:
+
+```text
+/ssd/scxi253/model_deployment/tools/sabdab2_top10_case_study_v1
+```
+
+The analysis protocol was frozen before residue-pair labels were read. It uses
+sample seed `20260904`, samples 20 instances from the sorted 549-instance
+historical SAbDab2 test manifest, and ranks the complete residue-pair grid for
+each instance. The frozen protocol SHA-256 is
+`5a181625bddf3858d75eda3ef472e88fbe280e286548d64df3159b1a4dcfa89a`.
+Slurm job `1552028` is the current 30-minute backfill request. This is a
+descriptive case study on a previously exposed historical test partition, not a
+fresh blind performance estimate.
