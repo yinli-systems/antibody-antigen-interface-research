@@ -1,27 +1,27 @@
 #!/bin/bash
 #SBATCH --job-name=interaction-data
-#SBATCH --partition=vip_gpu_5090_USER
+#SBATCH --partition=gpu_4090
 #SBATCH --gpus=1
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=64G
+#SBATCH --cpus-per-task=6
 #SBATCH --time=06:00:00
-#SBATCH --output=/cluster/project/model_deployment/logs/%x-%j.out
-#SBATCH --error=/cluster/project/model_deployment/logs/%x-%j.err
+#SBATCH --output=/vast/scxi253/antibody_workspace/logs/%x-%j.out
+#SBATCH --error=/vast/scxi253/antibody_workspace/logs/%x-%j.err
 
 set -euo pipefail
 
-DEPLOY_ROOT=/cluster/project/model_deployment
+DEPLOY_ROOT=/ssd/scxi253/model_deployment
 PYTHON_BIN=$DEPLOY_ROOT/envs/epiformer/bin/python
 BENCHMARK_ROOT=$DEPLOY_ROOT/data/sabdab2-baseline-outsourcing
 CANONICAL_MANIFEST=$BENCHMARK_ROOT/data/nfs/yangwuyu/sabdab2_bipartite_contacts/canonical/manifest.csv
 MMSEQS=$DEPLOY_ROOT/tools/mmseqs2-latest/bin/mmseqs
 OUTPUT_ROOT=$DEPLOY_ROOT/data/interaction_first
-SCRIPT=$DEPLOY_ROOT/jobs/interaction_first/sabdab2_interaction_first.py
+SCRIPT=/vast/scxi253/antibody_workspace/antibody-antigen-interface-research/scripts/sabdab2_interaction_first.py
 MAPPING_DIR=$BENCHMARK_ROOT/data/nfs/yangwuyu/sabdab2_bipartite_contacts/canonical/mapping
 
 mkdir -p "$OUTPUT_ROOT" "$DEPLOY_ROOT/logs" "$DEPLOY_ROOT/cache/tmp"
 export PYTHONNOUSERSITE=1
 export TMPDIR=$DEPLOY_ROOT/cache/tmp
+export PYTHONPATH=/vast/scxi253/antibody_workspace/antibody-antigen-interface-research/src
 
 "$PYTHON_BIN" "$SCRIPT" prepare-contacts \
   --benchmark-root "$BENCHMARK_ROOT" \

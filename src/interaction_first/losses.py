@@ -35,6 +35,8 @@ class InteractionLossWeights:
     paratope_consistency: float = 0.0
     partner_rank: float = 0.25
     focal_gamma: float = 0.0
+    margin_separation: float = 0.0
+    margin_value: float = 2.0
 
     def validate(self) -> None:
         """Reject negative or entirely disabled loss configurations."""
@@ -171,6 +173,36 @@ def masked_consistency_loss(left: Any, right: Any, mask: Any) -> Any:
     if mask.dtype != torch.bool or not torch.any(mask):
         raise ValueError("Consistency mask must contain valid entries")
     return F.smooth_l1_loss(left[mask], right[mask])
+
+
+
+def masked_margin_separation_loss(
+    logits: Any,
+    targets: Any,
+    mask: Any,
+    margin: float = 2.0,
+) -> Any:
+    """Hinge-based margin loss that pushes positive logits above +margin
+    and negative logits below -margin.
+
+    For positives:  loss = max(0, margin - logit)
+    For negatives:  loss = max(0, margin + logit)
+
+    This directly widens the score gap between contacts and non-contacts,
+    producing a bimodal distribution that is robust to threshold choice.
+    """
+    require_torch()
+    if logits.shape != targets.shape or logits.shape != mask.shape:
+        raise ValueError("Margin loss inputs must have identical shapes")
+    if mask.dtype != torch.bool or not torch.any(mask):
+        raise ValueError("Margin mask must contain at least one valid entry")
+    selected_logits = logits[mask]
+    selected_targets = targets[mask].to(dtype=logits.dtype)
+    # For positives (target=1): want logit > +margin → loss = max(0, margin - logit)
+    # For negatives (target=0): want logit < -margin → loss = max(0, margin + logit)
+    pos_loss = torch.clamp(margin - selected_logits, min=0.0) * selected_targets
+    neg_loss = torch.clamp(margin + selected_logits, min=0.0) * (1.0 - selected_targets)
+    return (pos_loss + neg_loss).mean()
 
 
 def _validated_supervision_mask(
@@ -352,8 +384,17 @@ def interaction_first_loss(
             outputs["complex_score"], negative_scores, partner_temperature
         )
 
+    # Margin separation loss on pair logits
+    if weights.margin_separation > 0.0:
+        margin_sep = masked_margin_separation_loss(
+            outputs["pair_logits"], pair_targets, pair_mask, weights.margin_value
+        )
+    else:
+        margin_sep = outputs["complex_score"].new_zeros(())
+
     components = {
         "edge": edge_loss,
+        "margin_separation": margin_sep,
         "epitope_bce": epitope_bce,
         "paratope_bce": paratope_bce,
         "epitope_dice": epitope_dice,

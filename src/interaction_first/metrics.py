@@ -130,6 +130,109 @@ def binary_metrics(labels: Any, scores: Any, threshold: float = 0.5) -> dict[str
     }
 
 
+
+def precision_recall_at_k(
+    labels: Any,
+    scores: Any,
+    k_values: Sequence[int] = (10, 50, 100),
+) -> dict[str, float | None]:
+    """Precision@K and Recall@K for multiple K values, tie-aware."""
+    np = _numpy()
+    labels, scores = _validated_binary_inputs(labels, scores)
+    positive_total = int(labels.sum())
+    if positive_total == 0:
+        result: dict[str, float | None] = {}
+        for k in k_values:
+            result[f"precision_at_{k}"] = None
+            result[f"recall_at_{k}"] = None
+        return result
+    ranking = ranking_at_k(labels, scores, cutoffs=list(k_values))
+    result = {}
+    for k in k_values:
+        p_at_k = ranking.get(f"precision_at_{k}")
+        result[f"precision_at_{k}"] = p_at_k
+        # recall@k = (P@k * k) / total_positives
+        if p_at_k is not None:
+            effective_k = min(k, len(labels))
+            tp_at_k = p_at_k * effective_k
+            result[f"recall_at_{k}"] = float(tp_at_k / positive_total) if positive_total else None
+        else:
+            result[f"recall_at_{k}"] = None
+    return result
+
+
+def enrichment_factor(
+    labels: Any,
+    scores: Any,
+    fractions: Sequence[float] = (0.01, 0.05, 0.10),
+) -> dict[str, float | None]:
+    """Enrichment Factor at top-X% of the ranked list.
+
+    EF@x% = (hits in top x%) / (expected hits if random).
+    A perfect ranker concentrating all positives at the top gives EF = 1/fraction.
+    """
+    np = _numpy()
+    labels, scores = _validated_binary_inputs(labels, scores)
+    n = len(labels)
+    positive_total = int(labels.sum())
+    if positive_total == 0 or n == 0:
+        return {f"ef_at_{int(f*100)}pct": None for f in fractions}
+    prevalence = positive_total / n
+    order = np.argsort(-scores, kind="stable")
+    sorted_labels = labels[order]
+    result: dict[str, float | None] = {}
+    for frac in fractions:
+        k = max(1, int(round(n * frac)))
+        hits = int(sorted_labels[:k].sum())
+        hit_rate = hits / k
+        ef = hit_rate / prevalence if prevalence > 0 else None
+        result[f"ef_at_{int(frac*100)}pct"] = float(ef) if ef is not None else None
+    return result
+
+
+def score_separation_stats(
+    labels: Any,
+    scores: Any,
+) -> dict[str, float | None]:
+    """Statistics measuring separation between positive and negative score distributions.
+
+    Returns:
+        pos_mean, neg_mean: mean scores for each class
+        pos_std, neg_std: standard deviations
+        cohens_d: (pos_mean - neg_mean) / pooled_std — effect size of separation
+        score_gap: pos_mean - neg_mean
+    """
+    np = _numpy()
+    labels, scores = _validated_binary_inputs(labels, scores)
+    pos_mask = labels.astype(bool)
+    neg_mask = ~pos_mask
+    pos_scores = scores[pos_mask]
+    neg_scores = scores[neg_mask]
+    if len(pos_scores) == 0 or len(neg_scores) == 0:
+        return {
+            "pos_score_mean": None, "neg_score_mean": None,
+            "pos_score_std": None, "neg_score_std": None,
+            "cohens_d": None, "score_gap": None,
+        }
+    pos_mean = float(np.mean(pos_scores))
+    neg_mean = float(np.mean(neg_scores))
+    pos_std = float(np.std(pos_scores, ddof=1)) if len(pos_scores) > 1 else 0.0
+    neg_std = float(np.std(neg_scores, ddof=1)) if len(neg_scores) > 1 else 0.0
+    # pooled std
+    n1, n2 = len(pos_scores), len(neg_scores)
+    pooled_var = ((n1 - 1) * pos_std**2 + (n2 - 1) * neg_std**2) / (n1 + n2 - 2)
+    pooled_std = float(np.sqrt(pooled_var)) if pooled_var > 0 else 1e-12
+    cohens_d = (pos_mean - neg_mean) / pooled_std
+    return {
+        "pos_score_mean": pos_mean,
+        "neg_score_mean": neg_mean,
+        "pos_score_std": pos_std,
+        "neg_score_std": neg_std,
+        "cohens_d": float(cohens_d),
+        "score_gap": float(pos_mean - neg_mean),
+    }
+
+
 def contact_map_metrics(
     labels: Any,
     scores: Any,
@@ -151,6 +254,12 @@ def contact_map_metrics(
         )
     else:
         precision_at_true_count = None
+    # --- P@K / R@K ---
+    pk_rk = precision_recall_at_k(labels, scores, k_values=(10, 50, 100))
+    # --- Enrichment Factor ---
+    ef = enrichment_factor(labels, scores, fractions=(0.01, 0.05, 0.10))
+    # --- Score separation ---
+    separation = score_separation_stats(labels, scores)
     metrics.update(
         {
             "contact_iou": intersection / union if union else 0.0,
@@ -160,6 +269,9 @@ def contact_map_metrics(
             ),
         }
     )
+    metrics.update(pk_rk)
+    metrics.update(ef)
+    metrics.update(separation)
     return metrics
 
 
@@ -415,7 +527,7 @@ def macro_metric_summary(records: Sequence[Mapping[str, float | None]]) -> dict[
     """Average all numeric metric keys across complexes."""
     if not records:
         raise ValueError("Macro metrics require at least one record")
-    excluded = {"count", "positive_count", "threshold"}
+    excluded = {"count", "positive_count", "threshold", "tie_policy", "precision_at_true_contact_count_tie_policy"}
     keys = sorted(set.intersection(*(set(record) for record in records)) - excluded)
     return {key: optional_mean(record[key] for record in records) for key in keys}
 

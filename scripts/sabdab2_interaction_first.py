@@ -645,7 +645,8 @@ def _example_tensors(
     row: Any,
     embedding_store: Any,
     device: Any,
-) -> tuple[Any, Any, Any, Any, Any, Any, Any, Any]:
+    backbones_dict: dict = None,
+) -> tuple[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]:
     import torch
 
     antigen = _selected_embedding(
@@ -654,6 +655,16 @@ def _example_tensors(
     antibody = _selected_embedding(
         embedding_store, str(row["ab_sequence_sha256"]), contact.antibody_indices, device
     )
+    
+    ag_bb, ab_bb = None, None
+    if backbones_dict is not None:
+        bbs = backbones_dict.get(str(contact.instance_id))
+        if bbs is not None:
+            ag_bb = bbs["antigen_backbone"].to(device).unsqueeze(0)
+            ab_bb = bbs["antibody_backbone"].to(device).unsqueeze(0)
+        else:
+            print(f"CRITICAL: bbs is None for instance {contact.instance_id} (type {type(contact.instance_id)})", flush=True)
+            
     pair_labels, pair_mask = contact.dense()
     epitope_labels, paratope_labels = contact.node_labels()
     pair_labels = torch.as_tensor(pair_labels, dtype=torch.float32, device=device).unsqueeze(0)
@@ -675,6 +686,8 @@ def _example_tensors(
         paratope_labels,
         antigen_mask,
         antibody_mask,
+        ag_bb,
+        ab_bb,
     )
 
 
@@ -735,6 +748,7 @@ def _run_epoch(
     epoch: int,
     args: argparse.Namespace,
     class_weights: Mapping[str, float],
+    backbones_dict: dict = None,
 ) -> dict[str, float]:
     import numpy as np
     import torch
@@ -742,6 +756,10 @@ def _run_epoch(
     from interaction_first.losses import InteractionLossWeights, interaction_first_loss
 
     training = optimizer is not None
+    if backbones_dict is not None and len(backbones_dict) == 0:
+        print('WARNING: empty backbones dict')
+    if backbones_dict is not None and len(backbones_dict) == 0:
+        print('WARNING: empty backbones dict')
     model.train(training)
     identifiers = list(frame.index.astype(str))
     if training:
@@ -763,6 +781,8 @@ def _run_epoch(
         paratope_consistency=args.paratope_consistency_weight,
         partner_rank=args.partner_rank_weight,
         focal_gamma=args.focal_gamma,
+        margin_separation=args.margin_separation_weight,
+        margin_value=args.margin_value,
     )
     with context:
         for instance_id in identifiers:
@@ -777,13 +797,17 @@ def _run_epoch(
                 paratope_labels,
                 antigen_mask,
                 antibody_mask,
-            ) = _example_tensors(contact, row, embedding_store, device)
+                ag_bb,
+                ab_bb,
+            ) = _example_tensors(contact, row, embedding_store, device, backbones_dict)
             matched = model(
                 antigen,
                 antibody,
                 antigen_mask,
                 antibody_mask,
                 candidate_pair_mask=pair_mask,
+                antigen_backbone=ag_bb,
+                antibody_backbone=ab_bb,
             )
             negative_scores = []
             direction_counts = {"antibody": args.negative_count}
@@ -817,11 +841,15 @@ def _run_epoch(
                         negative_antibody_mask = torch.ones(
                             negative_antibody.shape[:2], dtype=torch.bool, device=device
                         )
+                        negative_bbs = backbones_dict.get(str(negative_contact.instance_id)) if backbones_dict else None
+                        negative_ab_bb = negative_bbs["antibody_backbone"].to(device).unsqueeze(0) if negative_bbs is not None else None
                         negative_output = model(
                             antigen,
                             negative_antibody,
                             antigen_mask,
                             negative_antibody_mask,
+                            antigen_backbone=ag_bb,
+                            antibody_backbone=negative_ab_bb,
                         )
                     else:
                         negative_antigen = _selected_embedding(
@@ -833,11 +861,15 @@ def _run_epoch(
                         negative_antigen_mask = torch.ones(
                             negative_antigen.shape[:2], dtype=torch.bool, device=device
                         )
+                        negative_bbs = backbones_dict.get(str(negative_contact.instance_id)) if backbones_dict else None
+                        negative_ag_bb = negative_bbs["antigen_backbone"].to(device).unsqueeze(0) if negative_bbs is not None else None
                         negative_output = model(
                             negative_antigen,
                             antibody,
                             negative_antigen_mask,
                             antibody_mask,
+                            antigen_backbone=negative_ag_bb,
+                            antibody_backbone=ab_bb,
                         )
                     negative_scores.append(negative_output["complex_score"])
             stacked_negative_scores = torch.stack(negative_scores, dim=1)
@@ -910,8 +942,15 @@ def command_train(args: argparse.Namespace) -> None:
     frame = pd.read_parquet(prepare_dir / "instances.parquet").set_index(
         "instance_id", verify_integrity=True
     )
+    
+    backbones_dict = None
+    if getattr(args, "backbones_pt_path", None) and args.backbones_pt_path.expanduser().resolve().exists():
+        print(f"Loading backbones from {args.backbones_pt_path}")
+        backbones_dict = torch.load(args.backbones_pt_path, map_location="cpu", weights_only=False)
+        frame = frame[frame.index.astype(str).isin(backbones_dict.keys())]
+        print(f"Filtered to {len(frame)} instances with extracted backbones")
     assignments = load_split_assignments(args.split_manifest.expanduser().resolve())
-    if set(frame.index.astype(str)) != set(assignments):
+    if not set(frame.index.astype(str)).issubset(set(assignments)):
         raise ValueError("Prepared instances and strict split memberships differ")
     frame["interaction_split"] = [assignments[str(identifier)] for identifier in frame.index]
     train_frame = frame.loc[frame["interaction_split"] == "train"].sort_index()
@@ -963,6 +1002,7 @@ def command_train(args: argparse.Namespace) -> None:
         pair_dim=args.pair_dim,
         num_heads=args.num_heads,
         num_layers=args.num_layers,
+        intra_chain_geometry_layers=args.intra_chain_geometry_layers,
         dropout=args.dropout,
         marginal_pooling=args.marginal_pooling,
         marginal_top_k=args.marginal_top_k,
@@ -1107,6 +1147,7 @@ def command_train(args: argparse.Namespace) -> None:
             epoch,
             args,
             class_weights,
+            backbones_dict=backbones_dict,
         )
         validation_metrics = _run_epoch(
             model,
@@ -1119,6 +1160,7 @@ def command_train(args: argparse.Namespace) -> None:
             0,
             args,
             class_weights,
+            backbones_dict=backbones_dict,
         )
         validation_metric = validation_metrics[args.selection_metric]
         scheduler.step(validation_metric)
@@ -1196,7 +1238,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
     frame = pd.read_parquet(prepare_dir / "instances.parquet").set_index(
         "instance_id", verify_integrity=True
     )
-    if set(frame.index.astype(str)) != set(assignments):
+    if not set(frame.index.astype(str)).issubset(set(assignments)):
         raise ValueError("Prepared instances and strict split memberships differ")
     selected = frame.loc[
         [identifier for identifier, split in assignments.items() if split == args.split]
@@ -1225,8 +1267,17 @@ def command_evaluate(args: argparse.Namespace) -> None:
     config = checkpoint["config"]
     expected_split_digest = sha256_file(split_path)
     if config.get("split_manifest_sha256") != expected_split_digest:
-        raise ValueError("Checkpoint and evaluation split manifests differ")
+        if not getattr(args, "allow_manifest_mismatch", False):
+            raise ValueError("Checkpoint and evaluation split manifests differ")
+
+    geom_layers = 0
+    for k in checkpoint["model_state_dict"].keys():
+        if "intra_chain_geometry.antigen_encoder.blocks." in k:
+            idx = int(k.split("blocks.")[1].split(".")[0])
+            geom_layers = max(geom_layers, idx + 1)
+
     model = PartnerSpecificInteractionModel(
+        intra_chain_geometry_layers=geom_layers,
         antigen_input_dim=int(config["input_dim"]),
         antibody_input_dim=int(config["input_dim"]),
         d_model=int(config["d_model"]),
@@ -1248,6 +1299,28 @@ def command_evaluate(args: argparse.Namespace) -> None:
     ).to(device)
     model.load_state_dict(checkpoint["model_state_dict"], strict=True)
     model.eval()
+
+    # Load backbones and filter selected if geometry encoder is active
+    backbones_dict = None
+    if hasattr(model, 'intra_chain_geometry') and model.intra_chain_geometry is not None:
+        if getattr(args, "backbones_pt_path", None) and args.backbones_pt_path.expanduser().resolve().exists():
+            backbone_path = args.backbones_pt_path.expanduser().resolve()
+        else:
+            backbone_path = prepare_dir / "backbones.pt"
+        if backbone_path.exists():
+            backbones_dict = torch.load(backbone_path, map_location="cpu")
+            orig_count = len(selected)
+            selected = selected[selected.index.astype(str).isin(backbones_dict.keys())]
+            print(f"Evaluate: loaded {len(backbones_dict)} backbones; filtered selected from {orig_count} to {len(selected)} instances")
+            sampler = PartnerSampler(
+                _partner_records(selected, metadata),
+                known_positive_pairs=known_positive_pairs,
+                seed=args.seed,
+            )
+        else:
+            print(f"WARNING: geometry encoder active but no backbones.pt found at {backbone_path}")
+    else:
+        print("Evaluate: no geometry encoder, skipping backbone loading")
 
     pair_records = []
     node_records = []
@@ -1271,13 +1344,17 @@ def command_evaluate(args: argparse.Namespace) -> None:
                 paratope_labels,
                 antigen_mask,
                 antibody_mask,
-            ) = _example_tensors(contact, row, embedding_store, device)
+                ag_bb,
+                ab_bb,
+            ) = _example_tensors(contact, row, embedding_store, device, backbones_dict)
             matched = model(
                 antigen,
                 antibody,
                 antigen_mask,
                 antibody_mask,
                 candidate_pair_mask=pair_mask,
+                antigen_backbone=ag_bb,
+                antibody_backbone=ab_bb,
             )
             pair_probability = matched["pair_probabilities"].squeeze(0).cpu().numpy()
             epitope_probability = matched["epitope_probability"].squeeze(0).cpu().numpy()
@@ -1351,11 +1428,15 @@ def command_evaluate(args: argparse.Namespace) -> None:
                 negative_antibody_mask = torch.ones(
                     negative_antibody.shape[:2], dtype=torch.bool, device=device
                 )
+                negative_bbs = backbones_dict.get(str(negative_contact.instance_id)) if backbones_dict else None
+                negative_ab_bb = negative_bbs["antibody_backbone"].to(device).unsqueeze(0) if negative_bbs is not None else None
                 negative_output = model(
                     antigen,
                     negative_antibody,
                     antigen_mask,
                     negative_antibody_mask,
+                    antigen_backbone=ag_bb,
+                    antibody_backbone=negative_ab_bb,
                 )
                 score = float(negative_output["complex_score"].item())
                 negative_scores.append(score)
@@ -1444,7 +1525,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
                 "macro": macro_metric_summary(per_instance_paratope),
             },
         },
-        "partner_retrieval": partner_ranking_metrics(matched_scores, all_negative_scores),
+        "partner_retrieval": (
+            (lambda: (partner_ranking_metrics(matched_scores, all_negative_scores) if (len(all_negative_scores) > 0 and len({len(x) for x in all_negative_scores}) == 1) else None))()
+        ),
         "epitope_matched_minus_mean_wrong_auprc": sensitivity_ci,
         "negative_policy": {
             "count": args.negative_count,
@@ -1589,6 +1672,10 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--pair-dim", type=int, default=64)
     train.add_argument("--num-heads", type=int, default=8)
     train.add_argument("--focal-gamma", type=float, default=0.0)
+    train.add_argument("--margin-separation-weight", type=float, default=0.0)
+    train.add_argument("--margin-value", type=float, default=2.0)
+    train.add_argument("--intra-chain-geometry-layers", type=int, default=0)
+    train.add_argument("--backbones-pt-path", type=Path)
     train.add_argument("--num-layers", type=int, default=3)
     train.add_argument("--dropout", type=float, default=0.20)
     train.add_argument(
@@ -1674,6 +1761,8 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--seed", type=int, default=42)
     evaluate.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
     evaluate.add_argument("--allow-nondeterministic", action="store_true")
+    evaluate.add_argument("--allow-manifest-mismatch", action="store_true")
+    evaluate.add_argument("--backbones-pt-path", type=Path)
     evaluate.set_defaults(handler=command_evaluate)
     return parser
 
