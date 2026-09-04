@@ -20,3 +20,8 @@ protocols/**/*.jsonl linguist-generated=true
 protocols/**/*.tsv linguist-generated=true
 results/**/*.jsonl linguist-generated=true
 results/**/*.tsv linguist-generated=true
+
+# Preserve original CSV bytes bound by the MIPE recovery SHA-256 receipts.
+results/mipe_contact_threshold_diagnostic_v1/MIPE_CONTACT_THRESHOLD_PER_COMPLEX.csv -text
+results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_METRICS.csv -text
+results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_PER_COMPLEX.csv -text

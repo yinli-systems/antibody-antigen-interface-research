@@ -1,0 +1,74 @@
+{
+  "aggregation": "micro pooled confusion counts",
+  "checkpoint_provenance": "Paths and epochs from retained export summary; original checkpoint byte hashes were not recorded there.",
+  "complexes": 560,
+  "historical_pooled_rank_metrics": {
+    "ab_to_ag_transposed": {
+      "auprc": 0.0024491329677402973,
+      "auroc": 0.5333037972450256,
+      "pairs": 11431418,
+      "positive_fraction": 0.0016022509662434459,
+      "positive_pairs": 18316
+    },
+    "ag_to_ab": {
+      "auprc": 0.001568127074278891,
+      "auroc": 0.49180400371551514,
+      "pairs": 11431418,
+      "positive_fraction": 0.0016022509662434459,
+      "positive_pairs": 18316
+    },
+    "mean_bidirectional": {
+      "auprc": 0.001718544983305037,
+      "auroc": 0.5071899890899658,
+      "pairs": 11431418,
+      "positive_fraction": 0.0016022509662434459,
+      "positive_pairs": 18316
+    }
+  },
+  "maximum_bidirectional_mean_error": 0.0,
+  "maximum_directional_row_sum_error": 2.384185791015625e-07,
+  "pairs": 11431418,
+  "positive_pairs": 18316,
+  "reporting": "May be reported as MIPE attention-readout contact adaptation at fixed 0.5, with source cohort and checkpoint track stated. No threshold refit was performed.",
+  "residue_table_threshold_correction": "Historical Recall 0.5523/0.7954 uses fold-specific validation-fitted thresholds, not fixed 0.5.",
+  "result_sha256": "6ee0cc013dbdd8ad5077c20b70f96f93a187fa7c01eb8af756dd7081d6d41264",
+  "scope": "560 held-out complexes in formal_seed42 retained export; not the SAbDab2 455 test set",
+  "score_source_notes": [
+    "Both directional matrices are 16-head-averaged cross-attention weights.",
+    "Both directions were explicitly supervised against edge_AGAB with BCE during MIPE training.",
+    "Ranking metrics use every residue pair in each held-out fold."
+  ],
+  "source_artifact_tree_sha256": "729144fea872b7747f48ae6958551c4b472aff74f7f7ff8a8fca910aa41e4825",
+  "source_folds": [
+    {
+      "checkpoint": "/data/home/scxi253/ssd/model_deployment/results/mipe/formal_seed42/fold_0_best.pt",
+      "checkpoint_epoch": 7,
+      "fold": 0
+    },
+    {
+      "checkpoint": "/data/home/scxi253/ssd/model_deployment/results/mipe/formal_seed42/fold_1_best.pt",
+      "checkpoint_epoch": 80,
+      "fold": 1
+    },
+    {
+      "checkpoint": "/data/home/scxi253/ssd/model_deployment/results/mipe/formal_seed42/fold_2_best.pt",
+      "checkpoint_epoch": 71,
+      "fold": 2
+    },
+    {
+      "checkpoint": "/data/home/scxi253/ssd/model_deployment/results/mipe/formal_seed42/fold_3_best.pt",
+      "checkpoint_epoch": 78,
+      "fold": 3
+    },
+    {
+      "checkpoint": "/data/home/scxi253/ssd/model_deployment/results/mipe/formal_seed42/fold_4_best.pt",
+      "checkpoint_epoch": 97,
+      "fold": 4
+    }
+  ],
+  "source_summary_sha256": "2eb43756333f3be2045113031a8ff017488d2e9b35cd0e998ddb89018a6cb756",
+  "status": "PASS_MIPE_THRESHOLD_RECOVERY_SOURCE_AUDIT",
+  "threshold": 0.5,
+  "threshold_comparison": ">=",
+  "verifier_sha256": "c7346a561e41e4a5b1a211d2f51cd52f73e6661961cd5ae63f3a752948fc1041"
+}

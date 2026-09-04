@@ -1,0 +1,42 @@
+{
+  "checks": {
+    "all_roles_test": true,
+    "experimental_coordinates_included": false,
+    "mapping_equals_split": true,
+    "prepared_index_equals_split": true,
+    "split_equals_requested_ids": true,
+    "task_labels_included": false
+  },
+  "counts": {
+    "instances": 455,
+    "mapping_rows": 455,
+    "unique_sequences": 514
+  },
+  "format_version": "sabdab2_test455_loader_bundle_receipt_v1",
+  "outputs": {
+    "index": {
+      "path": "SABDAB2_TEST455_INSTANCE_INDEX.parquet",
+      "sha256": "904628ef7feed13acd8131e652f6dace5263f83d27a6fb521c669fce77da74b2"
+    },
+    "loader": {
+      "path": "LOADER_PATHS.json",
+      "sha256": "923ef7fc698c47f9ee549dd9d14ab13778a574bc05a1f01d1fc6e2039322571a"
+    },
+    "readme": {
+      "path": "README.md",
+      "sha256": "971d9f9d59cffd7d33b9176a6efc7a142831da4312a6342fb85cf3c91e744a18"
+    },
+    "split": {
+      "path": "SABDAB2_455_SPLIT.json",
+      "sha256": "c01bb66efafe6636acb18ddcc9c666a238b03c333b4da58525b029e712d4c067"
+    }
+  },
+  "source": {
+    "embedding_manifest_sha256": "67c2ee885771cba395e42809bad9c7b0e3d6d02a323b00059d295b365498758f",
+    "export_receipt_sha256": "737c324e33b5d226be0f6aef7cc96f6df311aac5825843b46ca8756dc755a31e",
+    "prepared_instances_sha256": "a32aa68bb6780d1222b310bab5e4efbf365c9219e08eb8a897379ceded565335",
+    "split_json_sha256": "232f6d055d66ca15ffc04cb43b0895d322a3d7ce1f38d7fde517296633c220a2"
+  },
+  "status": "PASS_MODEL_READY_TEST455_LOADER_BUNDLE",
+  "test_id_set_sha256": "9a42ea95391659b068dd1e1070290368a5f4c440e73a66e0a5ee2577c71efcd8"
+}

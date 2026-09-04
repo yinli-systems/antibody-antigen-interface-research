@@ -1,0 +1,30 @@
+{
+  "cache_bundle_receipt_sha256": "1841e066a21cc6b2e58a065308e5fb72dde0b1ab59145b8d42acf25774aba870",
+  "checks": {
+    "all_artifact_hashes": true,
+    "all_role_loads_via_production_loader": true,
+    "map_index_lengths_and_sequence_keys": true
+  },
+  "embedding_manifest_sha256": "67c2ee885771cba395e42809bad9c7b0e3d6d02a323b00059d295b365498758f",
+  "full_model_inference_executed": false,
+  "instances": 455,
+  "loader": "interaction_first.runtime.EmbeddingStore",
+  "requester_full_cache_schema_verified": false,
+  "role_loads": 910,
+  "runtime_sha256": "479aca402d4d3ce78ae3c5b270843f3aaa714acdafb8ba619414d225b985d2e3",
+  "scope": "ESM-2 embeddings and test index only",
+  "status": "PASS_TEST455_EMBEDDING_LOADER_SMOKE",
+  "store": {
+    "cache_bytes": 535372800,
+    "cached_sequence_count": 514,
+    "hits": 396,
+    "max_cache_bytes": 805306368,
+    "misses": 514
+  },
+  "structure_cache_included": false,
+  "task_labels_included": false,
+  "test_id_set_sha256": "9a42ea95391659b068dd1e1070290368a5f4c440e73a66e0a5ee2577c71efcd8",
+  "torch_version": "2.7.1+cu128",
+  "unique_embeddings": 514,
+  "verifier_sha256": "77dffba802291b3d1c8da3bc17b7e598d73dcc2eb68fc6263ebe469a6a7428a3"
+}
