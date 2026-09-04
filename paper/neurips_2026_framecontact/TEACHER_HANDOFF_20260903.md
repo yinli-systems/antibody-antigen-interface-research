@@ -112,6 +112,43 @@ sample seed `20260904`, samples 20 instances from the sorted 549-instance
 historical SAbDab2 test manifest, and ranks the complete residue-pair grid for
 each instance. The frozen protocol SHA-256 is
 `5a181625bddf3858d75eda3ef472e88fbe280e286548d64df3159b1a4dcfa89a`.
-Slurm job `1552028` is the current 30-minute backfill request. This is a
+Slurm job `1552028` completed successfully in 27 seconds with empty stderr. In
+the 20 fixed instances, the 200 selected Top-10 pairs contain 9 true contacts
+and 191 false contacts. The aggregate confusion matrix is
+`[[1,060,299, 191], [850, 9]]`, giving Top-10 precision `0.0450` and recall
+`0.01048`. Four of the 20 instances contain at least one true contact in the
+Top-10; these represent two unique PDB entries.
+
+The strongest case-study candidate is `pdb_00008ol9_B_A`, with 3 true contacts
+in the Top-10, a true contact at rank 1, and full-grid AP `0.14151`. PDB `6vmk`
+is the second useful case family: its sampled `H:G`, `V:U`, and `i:h` instances
+each contain 2 true contacts in the Top-10 and place the first true contact at
+rank 1. These three rows should be treated as one structural example rather
+than three independent case studies.
+
+The mean per-complex contact prevalence in the fixed sample is `0.000979`, so
+the observed Top-10 precision is approximately 46-fold above the equal-complex
+random expectation. Absolute recall nevertheless remains low. This is a
 descriptive case study on a previously exposed historical test partition, not a
-fresh blind performance estimate.
+fresh blind performance estimate. Per-instance confusion matrices, all 200
+ranked pairs, and a visually checked summary figure are under
+`results/sabdab2_top10_case_study_v1/`.
+
+### Message ready to send for the case study
+
+老师好，随机 20 个 SAbDab2 historical test 样本的 Top-10 contact case study
+已经跑完。checkpoint 只根据 development contact MPC-AP 选择，20 个样本也在读取
+pair labels 前用固定随机种子冻结；推理过程中没有重新训练、调参或校准。
+
+每个样本取概率最高的 10 个 residue pairs，共 200 个预测，其中 9 个为真实 contact、
+191 个为非 contact。合并 confusion matrix 为
+`[[TN, FP], [FN, TP]] = [[1,060,299, 191], [850, 9]]`，对应 Top-10 precision
+`0.0450`、recall `0.01048`。虽然绝对 recall 较低，但相对于这 20 个样本约
+`0.000979` 的平均 contact prevalence，Top-10 precision 约为随机选择期望的 46 倍。
+
+20 个样本中有 4 个实例在 Top-10 内命中真实 contact，对应 2 个唯一 PDB。最适合做
+case study 的是 `8ol9 B:A`：Top-10 中有 3 个真实 contact，第一名即为真实 contact，
+full-grid AP 为 `0.14151`。另一个可用案例是 PDB `6vmk`，其三个 sampled chain-pair
+实例均在 Top-10 中命中 2 个真实 contact，第一名也均为真实 contact；作图时建议把它们
+作为同一个结构案例展示。完整 20 例 confusion matrix、Top-10 residue positions 和
+汇总图已经整理好。
