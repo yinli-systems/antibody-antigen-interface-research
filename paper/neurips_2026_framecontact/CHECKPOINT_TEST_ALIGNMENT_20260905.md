@@ -22,13 +22,21 @@ intra-chain geometry and is explicitly restricted to case-study use. The
 colleague's actual Chai-1/configuration/threshold usage still needs their run
 manifest; it cannot be inferred from their summary table alone.
 
-## Correction being implemented
+## Verified handoff correction
 
-New remote bundle (verified ready only when `READY/RESULT.json` has PASS):
+New remote bundle: preparation `1557224` completed `0:0`, with
+`PASS_MODEL_READY_ALIGNED_TEST549_BUNDLE`. All 549 production-loader items and
+all six model forward checks passed. The six complete evaluations are separate.
 
 ```text
 /ssd/scxi253/model_deployment/handoffs/framecontact_case_study_20260904/sabdab2_antigen_fold_test549_predicted_geometry_v2/
 ```
+
+Externally pinned `BUNDLE.json` SHA-256:
+`3e370ff3ebae1f6261865ace9b71666385ff5722d07f08388c5a490365400958`.
+The sealed package has 1,956 inventoried files and occupied approximately 657 MiB
+before retained full-evaluation predictions. `run_bundle.py` is the entrypoint;
+`README.md` contains portable commands and task routing.
 
 The bundle reuses the existing 549-instance AF3-predicted geometry and original
 ESM-2 bytes. No structure prediction, labels, checkpoints, split, routing,
@@ -57,8 +65,41 @@ Some AF3 predictions used homolog MSAs; do not call these query-only predictions
 它的 held-out test。因此现在的数值不能直接作为这份 checkpoint 的独立测试
 结果，也不能把差异解释为“少了近 100 个样本”。我正在把 checkpoint 对应的
 549 条历史测试集、预测几何、ESM-2 embedding、六个 checkpoint 及固定路由
-统一打包并做复现核对。等整包和三种子结果通过校验后，再给大家对应路径和
-同口径指标；暂时不要用这张 455 条结果表替换 manuscript 主结果。
+统一打包并做复现核对。整包 loader、六个模型前向及六路完整评测均已通过校验。
+正确匹配的 549 条历史测试集上，固定三种子路由的 MPC-AP 中位数为 Contact
+0.02667、Epitope 0.22031、Paratope 0.69859。请先不要用原 455 条结果表替换
+manuscript 主结果；549 条结果也需要与相同测试划分、输入设定和指标口径下的
+baselines 比较，不能直接套用原 455 条 benchmark 的对照行。
+
+## Completed historical test replay
+
+`FULL_SUMMARY/RESULT.json` status: `PASS_ROUTED_HISTORICAL_TEST549`.
+Six components each evaluated all 549 instances with frozen checkpoints,
+validation temperatures and thresholds. No retraining or selection was performed.
+
+| Task | AUROC | Pooled AP | MPC-AP | Precision | Recall | MCC |
+|---|---:|---:|---:|---:|---:|---:|
+| Contact | 0.92580 | 0.01001 | 0.02667 | 0.01502 | 0.09249 | 0.03461 |
+| Epitope | 0.67184 | 0.12599 | 0.22031 | 0.10767 | 0.64497 | 0.12475 |
+| Paratope | 0.95399 | 0.63403 | 0.69859 | 0.56869 | 0.74347 | 0.61144 |
+
+Each cell is the median of that metric across seeds 17/29/43, not a new
+single-checkpoint estimate and not a probability ensemble. Precision/Recall/MCC
+above use the existing validation-selected threshold for each component;
+fixed raw-sigmoid 0.5 and calibrated-probability 0.5 remain separate diagnostics in
+the component outputs. MPC-AP excludes zero-positive complexes with explicit counts;
+pooled metrics retain every evaluated candidate across all 549 instances.
+
+Complete per-seed values and TP/FP/TN/FN are in
+`results/aligned_test549_replay_v1/RESULT.json` and the remote
+`FULL_SUMMARY/ROUTED_METRICS.csv`. Do not select seed17 for contact or seed29 for
+paratope after seeing these test results. The preselected seed43 case-study
+checkpoint and the three seed-matched routes are unchanged.
+
+Final result SHA-256:
+`26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2`.
+Final receipt SHA-256:
+`e906ec9f91f1ede54611d65851eb5c641f0c870be2685ee1b31aa3bc2dd40f04`.
 
 ## Execution notes
 
