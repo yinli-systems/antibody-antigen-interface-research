@@ -1,5 +1,11 @@
 # Teacher handoff: latest three-task and bilateral Top-K results
 
+> 2026-09-05 checkpoint/test-cache correction: the original455 list overlaps the
+> latest checkpoint's training/validation roles (272/73 instances). Do not use
+> that replay as this checkpoint's independent test result. See
+> [the alignment correction](CHECKPOINT_TEST_ALIGNMENT_20260905.md). The
+> development-validation results below retain their original scope.
+
 ## Message ready to send
 
 老师好，最新版结果和双侧 Top-K 消融已经整理完成。

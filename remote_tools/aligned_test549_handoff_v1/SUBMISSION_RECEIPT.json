@@ -1,0 +1,16 @@
+{
+  "jobs": {},
+  "model_update": false,
+  "scope": "Existing 549-instance exposed historical test; correct checkpoint/data handoff",
+  "status": "PARTIAL_SUBMISSION_INSPECT_DO_NOT_RETRY",
+  "test_selection": false,
+  "threshold_refit": false,
+  "tool_sha256": {
+    "build_bundle.py": "6ec547e484e3154f4c440665b1ae725a4212a7aaa52b65b0c374da7558f7ff33",
+    "common.py": "704385a35884c832f50475997ca6cae7b0dc2e33d0821c3feddad74ce98d9139",
+    "finalize_bundle.py": "919efddf170b03ef25bd8658644ff7c7df63a6822c51a578b5d10445cb2fe921",
+    "run_bundle.py": "49803d04b3c8d1b538975969019b33c0141aa1071edd162587e153dcaac5266a",
+    "submit.py": "b6c3dcce8629c24fc6c810e7483582bfe6c0d58c45c720142d65baadb15782e6",
+    "test_handoff.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
