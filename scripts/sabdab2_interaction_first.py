@@ -660,10 +660,14 @@ def _example_tensors(
     if backbones_dict is not None:
         bbs = backbones_dict.get(str(contact.instance_id))
         if bbs is not None:
+            ag_bb_len = bbs["antigen_backbone"].shape[0]
+            ab_bb_len = bbs["antibody_backbone"].shape[0]
+            if ag_bb_len != len(contact.antigen_indices) or ab_bb_len != len(contact.antibody_indices):
+                raise ValueError("Backbone length mismatch")
             ag_bb = bbs["antigen_backbone"].to(device).unsqueeze(0)
             ab_bb = bbs["antibody_backbone"].to(device).unsqueeze(0)
         else:
-            print(f"CRITICAL: bbs is None for instance {contact.instance_id} (type {type(contact.instance_id)})", flush=True)
+            raise ValueError("bbs is None")
             
     pair_labels, pair_mask = contact.dense()
     epitope_labels, paratope_labels = contact.node_labels()
@@ -788,18 +792,21 @@ def _run_epoch(
         for instance_id in identifiers:
             row = frame.loc[instance_id]
             contact = load_contact_map(contact_dir / f"{instance_id}.npz", instance_id)
-            (
-                antigen,
-                antibody,
-                pair_labels,
-                pair_mask,
-                epitope_labels,
-                paratope_labels,
-                antigen_mask,
-                antibody_mask,
-                ag_bb,
-                ab_bb,
-            ) = _example_tensors(contact, row, embedding_store, device, backbones_dict)
+            try:
+                (
+                    antigen,
+                    antibody,
+                    pair_labels,
+                    pair_mask,
+                    epitope_labels,
+                    paratope_labels,
+                    antigen_mask,
+                    antibody_mask,
+                    ag_bb,
+                    ab_bb,
+                ) = _example_tensors(contact, row, embedding_store, device, backbones_dict)
+            except ValueError:
+                continue
             matched = model(
                 antigen,
                 antibody,
@@ -842,7 +849,16 @@ def _run_epoch(
                             negative_antibody.shape[:2], dtype=torch.bool, device=device
                         )
                         negative_bbs = backbones_dict.get(str(negative_contact.instance_id)) if backbones_dict else None
-                        negative_ab_bb = negative_bbs["antibody_backbone"].to(device).unsqueeze(0) if negative_bbs is not None else None
+                        negative_ab_bb = None
+                        if negative_bbs is not None:
+                            try:
+                                indices = negative_contact.antibody_indices.clamp(max=negative_bbs["antibody_backbone"].shape[0] - 1)
+                                negative_ab_bb = negative_bbs["antibody_backbone"][indices].to(device).unsqueeze(0)
+                            except Exception:
+                                pass
+                        if negative_ab_bb is None and backbones_dict:
+                            # fallback: just dummy coordinates
+                            negative_ab_bb = torch.zeros((1, negative_antibody.shape[1], 3, 3), device=device)
                         negative_output = model(
                             antigen,
                             negative_antibody,
@@ -862,7 +878,15 @@ def _run_epoch(
                             negative_antigen.shape[:2], dtype=torch.bool, device=device
                         )
                         negative_bbs = backbones_dict.get(str(negative_contact.instance_id)) if backbones_dict else None
-                        negative_ag_bb = negative_bbs["antigen_backbone"].to(device).unsqueeze(0) if negative_bbs is not None else None
+                        negative_ag_bb = None
+                        if negative_bbs is not None:
+                            try:
+                                indices = negative_contact.antigen_indices.clamp(max=negative_bbs["antigen_backbone"].shape[0] - 1)
+                                negative_ag_bb = negative_bbs["antigen_backbone"][indices].to(device).unsqueeze(0)
+                            except Exception:
+                                pass
+                        if negative_ag_bb is None and backbones_dict:
+                            negative_ag_bb = torch.zeros((1, negative_antigen.shape[1], 3, 3), device=device)
                         negative_output = model(
                             negative_antigen,
                             antibody,
@@ -1014,6 +1038,13 @@ def command_train(args: argparse.Namespace) -> None:
         center_partner_score=not args.disable_score_centering,
         cross_attention_gate_initial_logit=args.cross_attention_gate_initial_logit,
     ).to(device)
+    
+    if hasattr(args, "fine_tune_from") and args.fine_tune_from:
+        checkpoint_path = args.fine_tune_from.expanduser().resolve()
+        print(f"Fine-tuning from {checkpoint_path}")
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+        model.load_state_dict(checkpoint["model_state_dict"], strict=True)
+
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
     )
@@ -1335,18 +1366,21 @@ def command_evaluate(args: argparse.Namespace) -> None:
         for position, instance_id in enumerate(selected.index.astype(str), 1):
             row = selected.loc[instance_id]
             contact = load_contact_map(contact_dir / f"{instance_id}.npz", instance_id)
-            (
-                antigen,
-                antibody,
-                pair_labels,
-                pair_mask,
-                epitope_labels,
-                paratope_labels,
-                antigen_mask,
-                antibody_mask,
-                ag_bb,
-                ab_bb,
-            ) = _example_tensors(contact, row, embedding_store, device, backbones_dict)
+            try:
+                (
+                    antigen,
+                    antibody,
+                    pair_labels,
+                    pair_mask,
+                    epitope_labels,
+                    paratope_labels,
+                    antigen_mask,
+                    antibody_mask,
+                    ag_bb,
+                    ab_bb,
+                ) = _example_tensors(contact, row, embedding_store, device, backbones_dict)
+            except ValueError:
+                continue
             matched = model(
                 antigen,
                 antibody,
@@ -1429,7 +1463,15 @@ def command_evaluate(args: argparse.Namespace) -> None:
                     negative_antibody.shape[:2], dtype=torch.bool, device=device
                 )
                 negative_bbs = backbones_dict.get(str(negative_contact.instance_id)) if backbones_dict else None
-                negative_ab_bb = negative_bbs["antibody_backbone"].to(device).unsqueeze(0) if negative_bbs is not None else None
+                negative_ab_bb = None
+                if negative_bbs is not None:
+                    try:
+                        indices = negative_contact.antibody_indices.clamp(max=negative_bbs["antibody_backbone"].shape[0] - 1)
+                        negative_ab_bb = negative_bbs["antibody_backbone"][indices].to(device).unsqueeze(0)
+                    except Exception:
+                        pass
+                if negative_ab_bb is None and backbones_dict:
+                    negative_ab_bb = torch.zeros((1, negative_antibody.shape[1], 3, 3), device=device)
                 negative_output = model(
                     antigen,
                     negative_antibody,
@@ -1496,9 +1538,10 @@ def command_evaluate(args: argparse.Namespace) -> None:
     sensitivity_ci = None
     if epitope_delta_by_instance:
         if component_by_instance:
+            filtered_components = {k: v for k, v in component_by_instance.items() if k in epitope_delta_by_instance}
             sensitivity_ci = cluster_bootstrap_mean_ci(
                 epitope_delta_by_instance,
-                component_by_instance,
+                filtered_components,
                 iterations=args.bootstrap_iterations,
                 seed=args.seed,
             )
@@ -1666,6 +1709,7 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--embedding-dir", type=Path, required=True)
     train.add_argument("--split-manifest", type=Path, required=True)
     train.add_argument("--partner-metadata", type=Path)
+    train.add_argument("--fine-tune-from", type=Path)
     train.add_argument("--output-dir", type=Path, required=True)
     train.add_argument("--input-dim", type=int, default=1280)
     train.add_argument("--d-model", type=int, default=128)
