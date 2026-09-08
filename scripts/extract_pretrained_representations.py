@@ -22,7 +22,9 @@ import csv
 import hashlib
 import sys
 from collections import Counter
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 if str(REPOSITORY_ROOT / "src") not in sys.path:
@@ -36,21 +38,41 @@ from interaction_first.pretrained_representations import (  # noqa: E402
 )
 from interaction_first.representation_backends import BACKENDS, build_backend  # noqa: E402
 
-CHAIN_COLUMNS = {"vh": "vh_seq", "vl": "vl_seq", "ag": "ag_seq"}
+# ``ab`` is the concatenated VH+VL chain, which is the axis the stored backbone
+# file uses and the axis the models already concatenate on.
+CHAIN_COLUMNS = {
+    "vh": ("vh_seq",),
+    "vl": ("vl_seq",),
+    "ag": ("ag_seq",),
+    "ab": ("vh_seq", "vl_seq"),
+}
+# The backbone store is keyed by instance and holds one entry per side, so only
+# these two chains can carry a structure.
+BACKBONE_FIELD = {"ab": "antibody_backbone", "ag": "antigen_backbone"}
 
 
 def load_units(
     manifest: Path,
     chains: list[str],
     splits: set[str],
-    backbones: dict[str, object] | None,
-) -> tuple[list[RepresentationUnit], dict[str, int]]:
+    backbones: Mapping[str, Any] | None,
+) -> tuple[list[RepresentationUnit], dict[str, int], dict[str, int]]:
     """Read the manifest and build one unit per requested chain of each row."""
+    if backbones is not None:
+        unsupported = [name for name in chains if name not in BACKBONE_FIELD]
+        if unsupported:
+            raise RepresentationError(
+                f"no backbone is stored for chain(s) {unsupported}; "
+                f"structure encoders accept {sorted(BACKBONE_FIELD)}"
+            )
+
     units: list[RepresentationUnit] = []
-    parsed = Counter()
+    parsed: Counter[str] = Counter()
+    dropped: Counter[str] = Counter()
     with manifest.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
-        for column in ("INSTANCE", "split", *(CHAIN_COLUMNS[name] for name in chains)):
+        columns = {column for name in chains for column in CHAIN_COLUMNS[name]}
+        for column in ("INSTANCE", "split", *sorted(columns)):
             if column not in (reader.fieldnames or []):
                 raise RepresentationError(f"manifest has no {column!r} column")
         for row in reader:
@@ -59,17 +81,28 @@ def load_units(
                 continue
             parsed[split] += 1
             for name in chains:
-                sequence = (row[CHAIN_COLUMNS[name]] or "").strip()
+                sequence = "".join(
+                    (row[column] or "").strip() for column in CHAIN_COLUMNS[name]
+                )
                 if not sequence:
+                    dropped["empty_sequence"] += 1
                     continue
                 backbone = None
                 if backbones is not None:
-                    identifier = f"{row['INSTANCE']}:{name}"
-                    backbone = backbones.get(identifier)
+                    entry = backbones.get(row["INSTANCE"])
+                    backbone = (
+                        entry.get(BACKBONE_FIELD[name]) if isinstance(entry, Mapping) else None
+                    )
                     if backbone is None:
+                        dropped["missing_backbone"] += 1
+                        continue
+                    if len(backbone) != len(sequence):
+                        # The backend would reject this; drop it here so the
+                        # receipt separates a data gap from an encoder failure.
+                        dropped["backbone_length_mismatch"] += 1
                         continue
                 units.append(RepresentationUnit(sequence=sequence, backbone=backbone))
-    return units, dict(parsed)
+    return units, dict(parsed), dict(dropped)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -111,7 +144,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{arguments.backend} requires --backbones", file=sys.stderr)
         return 2
 
-    units, parsed = load_units(
+    units, parsed, dropped = load_units(
         arguments.manifest, arguments.chains, set(arguments.splits), backbones
     )
     if arguments.limit is not None:
@@ -128,6 +161,7 @@ def main(argv: list[str] | None = None) -> int:
             "chains": list(arguments.chains),
             "device": arguments.device,
             "splits_parsed": parsed,
+            "dropped_units": dropped,
             "sealed_splits_parsed": sorted(set(arguments.splits) - {"train"}),
             "claim_boundary": (
                 "Frozen unsupervised per-residue features. No label, contact, prediction, "

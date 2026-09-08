@@ -35,8 +35,11 @@ SPLITS=${REPRESENTATION_SPLITS:-train}
 # silently encoding a different manifest.
 MANIFEST_SHA256=${REPRESENTATION_MANIFEST_SHA256:-548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63}
 
+# AntiBERTy was trained on individual heavy and light chains, so it takes them
+# separately. ESM-IF1 needs a backbone, and the store holds one per side, so it
+# takes the concatenated antibody and the antigen.
 BACKENDS=(antiberty esm2 esm_if1)
-CHAINS_FOR=("vh vl" "vh vl ag" "vh vl ag")
+CHAINS_FOR=("vh vl" "vh vl ag" "ab ag")
 BACKEND=${BACKENDS[${SLURM_ARRAY_TASK_ID:?this script must run as a Slurm array}]}
 CHAINS=${CHAINS_FOR[${SLURM_ARRAY_TASK_ID}]}
 
