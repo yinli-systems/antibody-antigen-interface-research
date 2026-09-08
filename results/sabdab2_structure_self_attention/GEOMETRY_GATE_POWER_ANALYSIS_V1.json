@@ -1,0 +1,239 @@
+{
+  "checkpoint_audits": [
+    {
+      "endpoints": {
+        "epitope_auprc": {
+          "bootstrap_ci95": [
+            -0.00680919954165986,
+            0.02039353334365103
+          ],
+          "mean_difference": 0.008236787738859145,
+          "one_sided_p": 0.19518048195180482,
+          "positive_complex_fraction": 0.6388888888888888,
+          "win_fraction_lower_bound": {
+            "as_reported_over_instances": 0.48831657065678236,
+            "independent_components": 16,
+            "instances": 36,
+            "over_independent_components": 0.39101158302074135
+          }
+        },
+        "joint_macro_auprc": {
+          "bootstrap_ci95": [
+            0.0018361400435432569,
+            0.016695394050107493
+          ],
+          "mean_difference": 0.009875616101635724,
+          "one_sided_p": 0.027497250274972504,
+          "positive_complex_fraction": 0.7222222222222222,
+          "win_fraction_lower_bound": {
+            "as_reported_over_instances": 0.5745396704142609,
+            "independent_components": 16,
+            "instances": 36,
+            "over_independent_components": 0.5156035789063309
+          }
+        },
+        "paratope_auprc": {
+          "bootstrap_ci95": [
+            0.0019555353999356835,
+            0.023374644364839627
+          ],
+          "mean_difference": 0.011514444464412292,
+          "one_sided_p": 0.024797520247975203,
+          "positive_complex_fraction": 0.6111111111111112,
+          "win_fraction_lower_bound": {
+            "as_reported_over_instances": 0.46048895909064275,
+            "independent_components": 16,
+            "instances": 36,
+            "over_independent_components": 0.39101158302074135
+          }
+        }
+      },
+      "label": "AB03 A100 final checkpoints"
+    },
+    {
+      "endpoints": {
+        "epitope_auprc": {
+          "bootstrap_ci95": [
+            -0.015969735456225966,
+            0.017185637457918478
+          ],
+          "mean_difference": 0.003591988401761498,
+          "one_sided_p": 0.3574642535746425,
+          "positive_complex_fraction": 0.6666666666666666,
+          "win_fraction_lower_bound": {
+            "as_reported_over_instances": 0.5165849506810202,
+            "independent_components": 16,
+            "instances": 36,
+            "over_independent_components": 0.4516529191512526
+          }
+        },
+        "joint_macro_auprc": {
+          "bootstrap_ci95": [
+            0.0019394017869010626,
+            0.022947923008027022
+          ],
+          "mean_difference": 0.014215418520868044,
+          "one_sided_p": 0.0273972602739726,
+          "positive_complex_fraction": 0.9444444444444444,
+          "win_fraction_lower_bound": {
+            "as_reported_over_instances": 0.8352652669759455,
+            "independent_components": 16,
+            "instances": 36,
+            "over_independent_components": 0.7360426027114314
+          }
+        },
+        "paratope_auprc": {
+          "bootstrap_ci95": [
+            0.018324025299163826,
+            0.031041126519749572
+          ],
+          "mean_difference": 0.024838848639974587,
+          "one_sided_p": 9.999000099990002e-05,
+          "positive_complex_fraction": 0.9722222222222222,
+          "win_fraction_lower_bound": {
+            "as_reported_over_instances": 0.8748837951609477,
+            "independent_components": 16,
+            "instances": 36,
+            "over_independent_components": 0.8292502770175191
+          }
+        }
+      },
+      "label": "RTX 5090 final checkpoints"
+    }
+  ],
+  "claim_boundary": "Design analysis of already-audited development evidence. It reports the power and decision-rule properties of the intra-chain geometry superiority gate. It revises no performance number, does not re-run the gate, does not reverse its recorded outcome, and authorizes no model selection or test access. The preregistered gate remains failed.",
+  "comparison": {
+    "candidate": "distance_direction",
+    "reference": "topology_only"
+  },
+  "design_properties": {
+    "alpha": 0.05,
+    "minimum_detectable_effect_size": {
+      "10": 0.8528375122385506,
+      "20": 0.57691700133837,
+      "3": 2.2972747673051703,
+      "5": 1.3594179588549469,
+      "8": 0.9781560855355946
+    },
+    "minimum_unanimous_replicates_for_sign_criterion": 5,
+    "target_power": 0.8
+  },
+  "format_version": "sabdab2_geometry_gate_power_analysis_v1",
+  "inputs": {
+    "results/sabdab2_structure_self_attention/a100_checkpoint_paired_statistics_summary.json": "e1d236cd39ce40dee0a3088aee4e0160a9f88d30339c444aa774f65919705d1d",
+    "results/sabdab2_structure_self_attention/ab03_a100_replay_verification.json": "c5051db512fdecf245588bd8b73bdb4e007b03f1ab3041573ded4844631e0fb7",
+    "results/sabdab2_structure_self_attention/paired_statistics_summary.json": "fae19c1c40b75a080db0e935bbb8ebd342f6892c11ac1b6e161a7c20b676cddf"
+  },
+  "multiplicity_family": {
+    "composite_is_determined_by_components": true,
+    "composite_linear_dependence_residual": 5.551115123125783e-17,
+    "holm_over_all_three_endpoints": {
+      "epitope_auprc": 0.19518048195180482,
+      "macro_auprc": 0.07439256074392561,
+      "paratope_auprc": 0.07439256074392561
+    },
+    "holm_over_components_only": {
+      "epitope_auprc": 0.19518048195180482,
+      "paratope_auprc": 0.049595040495950406
+    },
+    "note": "macro_auprc is the arithmetic mean of paratope_auprc and epitope_auprc. A family containing all three charges for a hypothesis that cannot vary independently of the other two.",
+    "recorded_adjustment_audit": [
+      {
+        "bonferroni": 0.08249175082491751,
+        "field": "comparisons.distance_direction_minus_topology_only.joint_macro_auprc.holm_adjusted_one_sided_p",
+        "holm_step_down": 0.07439256074392561,
+        "label": "AB03 A100 final checkpoints",
+        "matches_bonferroni": true,
+        "matches_holm": false,
+        "receipt": "results/sabdab2_structure_self_attention/a100_checkpoint_paired_statistics_summary.json",
+        "recorded_value": 0.08249175082491751
+      },
+      {
+        "bonferroni": 0.0821917808219178,
+        "field": "comparisons.distance_direction_minus_topology_only.joint_macro_auprc.holm_adjusted_one_sided_p",
+        "holm_step_down": 0.0547945205479452,
+        "label": "RTX 5090 final checkpoints",
+        "matches_bonferroni": true,
+        "matches_holm": false,
+        "receipt": "results/sabdab2_structure_self_attention/paired_statistics_summary.json",
+        "recorded_value": 0.0821917808219178
+      }
+    ],
+    "unadjusted_one_sided_p": {
+      "epitope_auprc": 0.19518048195180482,
+      "macro_auprc": 0.027497250274972504,
+      "paratope_auprc": 0.024797520247975203
+    }
+  },
+  "replicate_analysis": {
+    "epitope_auprc": {
+      "differences": [
+        0.010554741434482429,
+        0.0003560670989087855,
+        -0.0027626933474924065
+      ],
+      "mean_difference": 0.0027160383952996026,
+      "observed_effect_size": 0.3899376153957091,
+      "positive_count": 2,
+      "power": {
+        "at_five_replicates": 0.1805445811779615,
+        "at_observed_replicates": 0.1225649989640104,
+        "replicates_for_target_power": 43
+      },
+      "replicate_count": 3,
+      "sample_sd": 0.006965315189054957,
+      "sign_criterion": {
+        "exact_lower_bound": 0.13535036217158378,
+        "point_estimate": 0.6666666666666666,
+        "significant": false,
+        "threshold": 0.5
+      }
+    },
+    "macro_auprc": {
+      "differences": [
+        0.017723517585640947,
+        0.008885717045538422,
+        0.0008864770490900065
+      ],
+      "mean_difference": 0.009165237226756459,
+      "observed_effect_size": 1.088249506754137,
+      "positive_count": 3,
+      "power": {
+        "at_five_replicates": 0.6403979454737713,
+        "at_observed_replicates": 0.35693225085113844,
+        "replicates_for_target_power": 7
+      },
+      "replicate_count": 3,
+      "sample_sd": 0.008421999890533483,
+      "sign_criterion": {
+        "exact_lower_bound": 0.3684031498640387,
+        "point_estimate": 1.0,
+        "significant": false,
+        "threshold": 0.5
+      }
+    },
+    "paratope_auprc": {
+      "differences": [
+        0.024892293736799465,
+        0.017415366992168058,
+        0.004535647445672475
+      ],
+      "mean_difference": 0.015614436058213332,
+      "observed_effect_size": 1.5163879797969038,
+      "positive_count": 3,
+      "power": {
+        "at_five_replicates": 0.8681850622033396,
+        "at_observed_replicates": 0.5325729457211208,
+        "replicates_for_target_power": 5
+      },
+      "replicate_count": 3,
+      "sample_sd": 0.010297124658232017,
+      "sign_criterion": {
+        "exact_lower_bound": 0.3684031498640387,
+        "point_estimate": 1.0,
+        "significant": false,
+        "threshold": 0.5
+      }
+    }
+  }
+}
