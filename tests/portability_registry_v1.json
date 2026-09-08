@@ -1,0 +1,696 @@
+{
+  "format_version": "test_portability_registry_v1",
+  "claim_boundary": "Observation only. Each entry records why one test cannot run from a fresh clone. A recorded precondition never disables a test: the test runs, and must pass, on any machine that meets it. Entries marked expected_failure are live alarms for a recorded defect and report XPASS once the defect is fixed.",
+  "reasons": {
+    "requires_external_artifacts": "Binds evidence the preservation policy keeps outside Git, beside the repository or excluded by .gitignore.",
+    "absent_from_repository": "References a source file that has never been committed on any branch. Commit the file or retire the test; this is a gap, not a policy boundary.",
+    "requires_pinned_environment": "Needs an exact pinned dependency or an external executable.",
+    "requires_process_isolation": "Proves solver independence and refuses a process another test has polluted.",
+    "known_source_drift": "Binds a source digest no protocol registers; see protocols/source_binding_drift_baseline_v1.json.",
+    "known_repository_defect": "Fails against tracked data because that data is inconsistent. Needs a fix, not a skip."
+  },
+  "entries": [
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_accuracy_minifier.py::test_protocol_binds_every_implementation_and_rejected_predecessor",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_accuracy_minifier.py::test_wrapper_accepts_only_the_frozen_dynamo_boundary",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_backend_attribution.py::test_protocol_binds_every_implementation_and_input",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_backend_attribution.py::test_wrapper_accepts_only_registered_backend_controls",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_candidate_confirmation.py::test_freezer_selects_only_the_audited_candidate",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_candidate_confirmation_v2.py::test_freezer_preserves_backend_and_cudagraph_controls",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_candidate_confirmation_v2.py::test_wrapper_rejects_cudagraph_control_drift",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_compile_numerics_diagnostic.py::test_protocol_binds_every_execution_input",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_ddp_scientific_parity_execution.py::test_execution_binds_all_inputs_and_the_counterbalanced_run_order",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_ddp_scientific_parity_registration.py::test_registration_binds_the_complete_executed_source_closure",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_block_bisection.py::test_protocol_binds_predecessor_and_every_implementation",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_block_bisection.py::test_wrapper_compiles_only_the_registered_single_block",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_eighth_bisection.py::test_protocol_binds_predecessor_and_every_implementation",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_eighth_bisection.py::test_wrapper_compiles_only_the_registered_eighth",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_quarter_bisection.py::test_protocol_binds_predecessor_and_every_implementation",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_quarter_bisection.py::test_wrapper_compiles_only_the_registered_quarter",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_region_bisection.py::test_protocol_binds_every_implementation_and_failed_minifier",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_region_bisection.py::test_wrapper_validates_flags_and_compiles_exact_registered_membership",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_sixteenth_bisection.py::test_protocol_binds_predecessor_and_every_implementation",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_dynamo_sixteenth_bisection.py::test_wrapper_compiles_only_the_registered_sixteenth",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_efficiency_factor_attribution.py::test_protocol_binds_all_execution_inputs",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_attention_only-attention]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_ffn_only-ffn]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_attention_only-evaluation_noninferiority]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_ffn_only-throughput]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_full_block-None]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_independent_auditor_replays_localization_selection",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_attention_only-attention]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_ffn_only-ffn]",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_localization.py::test_freezer_accepts_only_an_inductor_quality_failure",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_localization.py::test_independent_auditor_replays_parent_trigger",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_inductor_component_localization.py::test_wrapper_accepts_only_registered_scopes",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_antibody_production_batch_efficiency_protocol.py::test_protocol_binds_every_source_and_evaluation_input",
+      "reason": "known_source_drift",
+      "detail": "binds a source digest no protocol registers",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::EndToEndTests::test_train_resume_evaluate_and_no_test_surface",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::ModelTests::test_final_refit_recovers_only_summary_and_authenticates_noop",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "scripts/interaction_first/asymmetric_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_cli_rejects_semantic_tamper_before_any_dataset_access",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_evaluation_registry_and_boundary_are_checkpoint_bound",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/data_snapshot/double_remote_split.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_final_refit_template_uses_fragmentation_safe_cuda_allocator",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/asymmetric_partner_retrieval_clean_holdout_train.sbatch"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_independent_verification_rejects_an_unreviewed_boundary",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_manifest_semantic_and_physical_tampering_fails_closed",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_physical_submission_contract_is_checkpoint_ready",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_asymmetric_partner_retrieval.py::SubmissionProvenanceTests::test_warmup_and_one_shot_metric_protocol_are_locked",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_audit_baseline_metrics.py::test_epiformer_row_is_frozen_sabdab2_epitope_only",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../../work/antibody-antigen-interface-research/results/epiformer/score.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_audit_train_only_s2_exact_four_view_nw.py::ExactFourViewAuditorTest::test_pinned_biopython_synthetic_traceback_parity",
+      "reason": "requires_pinned_environment",
+      "detail": "the exact-alignment audit pins Biopython 1.83",
+      "requires": [
+        {
+          "module_version": [
+            "biopython",
+            "1.83"
+          ]
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_build_final_refit_submission_manifest.py::LockedIntegrationTests::test_real_locked_evidence_passes_core_preflight_without_row_loading",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_asymmetric_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_build_train_only_s2_iterative_closure.py::IterativeClosureTest::test_config_rejects_bound_relaxation",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/train_only_s2_iterative_closure/closure_config_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_data_registry.py::test_asset_level_license_routing_separates_data_from_code",
+      "reason": "known_repository_defect",
+      "detail": "same incomplete source registrations as the sibling data-registry test",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_data_registry.py::test_registered_sources_validate_and_only_audited_avida_is_admitted",
+      "reason": "known_repository_defect",
+      "detail": "data_registry/sources/pinder_2024_02 and string_v12 hold only license_receipt.json; normalization_receipt.json, raw_sha256.json and source_manifest.json were never committed",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_frontier_fsdp2_evidence.py::test_failure_evidence_is_retained_and_pretraining_never_started",
+      "reason": "requires_external_artifacts",
+      "detail": "binds cluster telemetry that .gitignore keeps local",
+      "requires": [
+        {
+          "path": "results/frontier_fsdp2_dcp/job_1339691_scalar_failure/fsdp2.log"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_frontier_fsdp2_evidence.py::test_final_downloads_match_remote_artifact_inventories",
+      "reason": "requires_external_artifacts",
+      "detail": "binds cluster telemetry that .gitignore keeps local",
+      "requires": [
+        {
+          "path": "results/frontier_fsdp2_dcp/job_1339702_fp32_1gpu/fsdp2.log"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_partner_retrieval.py::EndToEndPipelineTests::test_train_resume_validation_and_test_lock",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/sabdab2_partner_retrieval.py"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_render_fair_comparison_table.py::test_render_contains_receipt_values",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../../mipe-sppider-handoff/mipe-sppider-handoff-20260729-v2/MIPE/results/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_render_fair_comparison_table.py::test_render_includes_native_contact_development_snapshot",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../../mipe-sppider-handoff/mipe-sppider-handoff-20260729-v2/MIPE/results/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_render_fair_comparison_table.py::test_render_keeps_scopes_and_unavailable_outputs_explicit",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../../mipe-sppider-handoff/mipe-sppider-handoff-20260729-v2/MIPE/results/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_both_control_boundaries_and_all_five_controls_authenticate",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_control_completion_identity_tampering_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_control_completion_receipt_cannot_substitute_the_controls_protocol",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_control_completion_rehashes_the_other_boundary_score",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_missing_control_completion_receipt_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_other_boundary_evaluation_cannot_substitute_the_controls_protocol",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_other_boundary_ledger_cannot_substitute_the_controls_protocol",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ControlSuiteCompletionTests::test_other_boundary_score_context_cannot_substitute_the_controls_protocol",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_checkpoint_suite_claim_must_bind_both_boundaries",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_checkpoint_suite_claim_status_tampering_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_missing_checkpoint_suite_claim_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_missing_primary_suite_completion_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_missing_score_context_binding_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_primary_evaluation_and_score_contract_bind_the_submission_chain",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction...TRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        },
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_primary_suite_completion_rehashes_the_other_boundary_score",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_primary_suite_completion_status_tampering_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_substituted_protocol_reference_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::LockedSubmissionEvidenceTests::test_substituted_v1_6_protocol_reference_is_rejected",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::ProtocolAndInputTests::test_physical_protocols_match_the_locked_digests",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::StatisticalGateTests::test_all_five_positive_paired_lower_bounds_pass_the_gate",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_retrieval_control_comparator.py::StatisticalGateTests::test_one_nonpositive_lower_bound_fails_the_global_gate",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_sabdab2_retrieval_controls.py::NumericalControlTests::test_two_boundary_finalizer_physically_authenticates_all_ten_outputs",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/authority_validation_nw_boundaries/independent_verification_v2.json"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_sabdab2_retrieval_controls.py::StaticFirewallTests::test_execution_templates_pin_v1_6_and_offer_no_receipt_override",
+      "reason": "absent_from_repository",
+      "detail": "references a source file that has never been committed on any branch; commit it or retire the test",
+      "requires": [
+        {
+          "path": "tests/asymmetric_partner_retrieval_controls_fit.sbatch"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_sabdab2_retrieval_controls.py::StaticFirewallTests::test_final_physical_controls_protocol_is_accepted",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_sabdab2_retrieval_controls.py::StaticFirewallTests::test_final_physical_execution_protocol_is_accepted",
+      "reason": "requires_external_artifacts",
+      "detail": "binds evidence stored beside the repository, outside Git",
+      "requires": [
+        {
+          "path": "../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_6_EXECUTION_HARDENING.md"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_source_materializer.py::test_checked_download_plans_match_registered_revisions",
+      "reason": "known_repository_defect",
+      "detail": "6 of 10 download plans declare format_version abpairfm_public_download_plan_v1 while using three mutually incompatible field sets; the version string versions nothing",
+      "expected_failure": true
+    },
+    {
+      "nodeid_prefix": "tests/test_string_v12_expanded_endpoint_union.py::test_endpoint_inventory_is_unique_and_order_agnostic",
+      "reason": "requires_pinned_environment",
+      "detail": "decompresses the registered endpoint inventory with zstd",
+      "requires": [
+        {
+          "executable": "zstd"
+        }
+      ]
+    },
+    {
+      "nodeid_prefix": "tests/test_v6_b_direct_highs_audit.py::test_registered_direct_highs_audit_agrees_only_on_linear_infeasibility",
+      "reason": "requires_process_isolation",
+      "detail": "the audit proves solver independence and refuses a process where OR-Tools was imported by an earlier test",
+      "requires": [
+        {
+          "absent_module": "ortools"
+        }
+      ]
+    }
+  ]
+}

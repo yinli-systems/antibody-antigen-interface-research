@@ -1,0 +1,381 @@
+{
+  "accepted_drift": [
+    {
+      "actual_sha256": "d25197d634713e48ef6537677cb613d033bbe0721132a71da5a5ee5388e622dd",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/build_sabdab2_split_matrix.py",
+      "registered_sha256": [
+        "f00ff1da0ecda51ae2310aabb3ddef4272fde9d1cc71c20b8016216a07bdf8f1"
+      ]
+    },
+    {
+      "actual_sha256": "28c130bc7190d99b227b2181fe0aa5cedcf10df6c3a15861802c25e90d8fd0f0",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/evaluate_framecontact_sabdab2_ensemble_test.py",
+      "registered_sha256": [
+        "af2345df78e13f94202dfd22456f01152208faecf264509aa18778263128a575"
+      ]
+    },
+    {
+      "actual_sha256": "0e7438c6b150e6f6ee517782cc3d1d58de09133f5b943bf736dc19ed1873d1f0",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/evaluate_framecontact_sabdab2_test.py",
+      "registered_sha256": [
+        "8b3770d3c23c0c4e4f8173a410024651887dc3f899d0053e49c87f0cf8da04bb"
+      ]
+    },
+    {
+      "actual_sha256": "19b297b867375d1490756ddbf09120daf4f3be3346d5ce1bfe7a3dbb5be0260a",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/freeze_training_source_tree.py",
+      "registered_sha256": [
+        "390413baf8510a36bdbf1ada8a69200afdf0b3c5e9500dcbbea428e98f42512b"
+      ]
+    },
+    {
+      "actual_sha256": "4a601d170bcd741190d4eaaf92d7a87009022ac8f5020e8a9d609ed5c4b323a2",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/materialize_sabdab2_partner_metadata.py",
+      "registered_sha256": [
+        "a4d0e5860a2b6e817d3f89521339b8f8f78e744acd53d07ee39004670bf920db"
+      ]
+    },
+    {
+      "actual_sha256": "3675aa07adc0d9e3200e73f02f7478bbe9dc291b007dcee58175e73a3f0c5d13",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/run_framecontact_a100.sh",
+      "registered_sha256": [
+        "0bd4248b0f3f98c0939e6fd2991b54cfc1daa3137fee1a54eb67e2cf2af934bc"
+      ]
+    },
+    {
+      "actual_sha256": "846a7064c8f5e7b81764adbb7f2af5056476418db5fbb739f604c6cbc3255b56",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/score_framecontact_external.py",
+      "registered_sha256": [
+        "78588e1503e78e259a00d380d383b7bbcf1f685dca5c1c8b5aaaeac5a5abbaab"
+      ]
+    },
+    {
+      "actual_sha256": "998414d124da4f2e8dbeb10611682380d51049815565f77f1c60ab5b8f1bb84e",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/stress_sabdab2_three_way_training_step.py",
+      "registered_sha256": [
+        "30723fde600c6c56aad77304ab62211ff1a620998b3ec815a8fee4bb9ece3828"
+      ]
+    },
+    {
+      "actual_sha256": "9c59c817c60cbfec38faa547e6de86c974b5982e0dde932d2a64e850f1f71baf",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/scripts/train_framecontact.py",
+      "registered_sha256": [
+        "29e86826e97c72363dcb82b109a4b498402467220f2f4ef3ae2a05b3506d4994"
+      ]
+    },
+    {
+      "actual_sha256": "722c9fd99bb5727c2ea53f9f39343d941f7232816a5d65db94b7e6077a4bd66d",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/asep_external.py",
+      "registered_sha256": [
+        "41854111a480ce08bc8e5b1ec2ff188eac39da30f895306430ed8f8296c2fb2b"
+      ]
+    },
+    {
+      "actual_sha256": "5899a12cccde810a2453c450ed5a1c11cea46bda084cc9c6506a49c1db4343ec",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/framecontact.py",
+      "registered_sha256": [
+        "cfe6d8c6f0004b7f70e149a5c308b0131e26826616d11f73324a53b58e078cff"
+      ]
+    },
+    {
+      "actual_sha256": "5323c18132d8514f08974530198f96062f53b98189b503169429764467a4e3e0",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/framecontact_metrics.py",
+      "registered_sha256": [
+        "49f4186391ba458b41b3d36b86df235048b2fc1ccc48bf7615e726c5088670cf"
+      ]
+    },
+    {
+      "actual_sha256": "7f2cd33d3c7e86e2a2c7bd41b1643cd7563ec11280519b1b66ad695591b78f9b",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/framecontact_objective.py",
+      "registered_sha256": [
+        "249b95e91cda5445129f043efcb99b3a55b596f8de9b7277519bdbda9914c432"
+      ]
+    },
+    {
+      "actual_sha256": "47f2e4c342cb286a32e1c198e0fbc18e6d68b28374c2391fcf20d5cf82a8695b",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "c47e329 2026-08-19 Add geometry-matched local interface hard negatives",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/sabdab2_contacts.py",
+      "registered_sha256": [
+        "553db81ada72237f6bea48f273173aa7b2daa6c03bc2c3f8c49bafe30d5425dc"
+      ]
+    },
+    {
+      "actual_sha256": "458cccbed226788a63baa136dbd7b5aea1632a8aae4023e8fd7110585a8f6bf6",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/sabdab2_partner_metadata.py",
+      "registered_sha256": [
+        "b1bfcbbd7261be1aa776069641990d9e87ad74ca55b8e1ae3ee9045213cdb5f8"
+      ]
+    },
+    {
+      "actual_sha256": "2a66d85be57752edb77f76bb8b357ca63cc5817a2e7109a6af0d346c8ec4fd23",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/sabdab2_split_matrix.py",
+      "registered_sha256": [
+        "d9c10cd1b479674881af06fdde78015663773f3c6101c71a3a6d789d768d413c"
+      ]
+    },
+    {
+      "actual_sha256": "3dcb1443238eb5c0f202674c3979f877d86128e356e658b946649f4e25584c62",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/same_antigen_challenge.py",
+      "registered_sha256": [
+        "751545c6a30e9fe322c5c1769bac4b82df3de9ed8d6824147576c25685441d0e"
+      ]
+    },
+    {
+      "actual_sha256": "527be0b71a6d900aac07f9f01af7c415e5331a60dc8ee9e11150aa9983be58b0",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "framecontact/src/interaction_first/usalign_boundary.py",
+      "registered_sha256": [
+        "126ded2b224c7f4b8390ac2406d016dbde393809ae8548534c65e94b985e53e5"
+      ]
+    },
+    {
+      "actual_sha256": "6f60ea0df8dbadcdd0e36a460432f159e7128f591c155bdf6ed292f1230f6b4f",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "fa02b0a 2026-07-28 Add SAbDab2 structure-aware self-attention",
+      "protocols": [
+        "protocols/frontier_model_contract_v1.json"
+      ],
+      "registered_path": "pyproject.toml",
+      "registered_sha256": [
+        "1c572407d273020438342694ffc81d48111fcdca7314a702901fb93a94544342"
+      ]
+    },
+    {
+      "actual_sha256": "d941caa263871b96d2accd82434048476152c7e12167c09626334df725949e24",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "0f77755 2026-07-30 feat: add audited FSDP2 DCP engineering path",
+      "protocols": [
+        "protocols/pairformer_gate_manifest_v1.json"
+      ],
+      "registered_path": "scripts/distributed_launch_contract.py",
+      "registered_sha256": [
+        "4c9831f35a11ea49cb8ed5beecd1d33f9cbafa8830b15eff2139e35ec90df136"
+      ]
+    },
+    {
+      "actual_sha256": "8872d751e7bc7e524b85a86dd8c2dc631ef49603450c155170d34552be2fc486",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "c292c71 2026-08-21 Launch audited 4090 pretraining and negative ablation",
+      "protocols": [
+        "protocols/antibody_ddp_scientific_parity_registration_v1.json",
+        "protocols/antibody_ddp_scientific_parity_registration_v2.json",
+        "protocols/antibody_ddp_scientific_parity_registration_v3.json",
+        "protocols/antibody_ddp_scientific_parity_registration_v4.json"
+      ],
+      "registered_path": "scripts/run_antibody_pretraining_optimized.py",
+      "registered_sha256": [
+        "5f93efe9b0a4c1509908dbf89337c249aefc06f54a4d97be02af7d1da35c67b9"
+      ]
+    },
+    {
+      "actual_sha256": "91f09e94bea1da28f4f7950c71ad0d0143f018ba946a9a7f3c46eedf524f9a6a",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "scripts/train_sabdab2_structure_ablation.py",
+      "registered_sha256": [
+        "1a5c6e45e93bd4c8ed75d124b2f9bdbdfda8010329810b2b35e0ff4a5832c9b6"
+      ]
+    },
+    {
+      "actual_sha256": "0f84a848e7824a423ea67f8a6e00fbf36e9437064f6d900755a659cc55318f61",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "288be12 2026-08-23 Add chain-independent retrieval view",
+      "protocols": [
+        "protocols/abpairfm_pplm_development_retrieval_smoke_v2.json",
+        "protocols/abpairfm_pplm_development_retrieval_smoke_v3.json",
+        "protocols/abpairfm_pplm_development_retrieval_smoke_v4.json",
+        "protocols/abpairfm_pplm_development_retrieval_v1.json"
+      ],
+      "registered_path": "src/antibody_pretraining/pair_aware_attention.py",
+      "registered_sha256": [
+        "9d830b909936aa85c0f54f5a3e1aabde4457ac0c4675865a1a2d166260412d58"
+      ]
+    },
+    {
+      "actual_sha256": "6d87b1a2e2a98b40e0ef633512fbe44b78fd81e3651599164ba0495d70b28009",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "288be12 2026-08-23 Add chain-independent retrieval view",
+      "protocols": [
+        "protocols/abpairfm_pplm_development_retrieval_smoke_v2.json",
+        "protocols/abpairfm_pplm_development_retrieval_smoke_v3.json",
+        "protocols/abpairfm_pplm_development_retrieval_smoke_v4.json",
+        "protocols/abpairfm_pplm_development_retrieval_v1.json"
+      ],
+      "registered_path": "src/antibody_pretraining/pair_aware_esm2.py",
+      "registered_sha256": [
+        "0dcf3a156c0d4fc3d8099afdcb856171164bfc525ff4319b9bbc24dbb743cd24"
+      ]
+    },
+    {
+      "actual_sha256": "6890cf2769c3293df7613315aa52a927dc14d724ea35b5cfcc75eec7aa9b712a",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "src/interaction_first/__init__.py",
+      "registered_sha256": [
+        "8bedfb2794982b015e1462a1b5c8e58f0c981f14e8bc2a89814ec0612f16c455"
+      ]
+    },
+    {
+      "actual_sha256": "e31474fc5aa5c19260b5e38b9ebe8a1040ce5b142b2f1270aff8d7683084063a",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "d7e7c73 2026-07-30 fix: return FSDP-safe reranker tensors",
+      "protocols": [
+        "protocols/frontier_model_contract_v1.json",
+        "protocols/pairformer_gate_manifest_v1.json"
+      ],
+      "registered_path": "src/interaction_first/frontier_model.py",
+      "registered_sha256": [
+        "f170c4858cb20e27222c0602f9ec4f4656a095944434a8d9f11d53e7c4f4e357"
+      ]
+    },
+    {
+      "actual_sha256": "4940a5c63131f60346bb75671dc53996718a66b3aabe9539a36edbdde9f028e5",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "dfd419f 2026-07-29 eval: honor R2 fractional retrieval ranks",
+      "protocols": [
+        "protocols/frontier_model_contract_v1.json",
+        "protocols/pairformer_gate_manifest_v1.json"
+      ],
+      "registered_path": "src/interaction_first/pairformer_evaluator.py",
+      "registered_sha256": [
+        "72f199b2fb236f5dffca63bcd0ec1b1c85e646c0adddc7b90ca80bb39c5624ed"
+      ]
+    },
+    {
+      "actual_sha256": "ee7d64a884e62af7f37f3383c4dea4073b78d5e0f4ad28ba973ec6a783f2ee1a",
+      "classification": "historical_source_tree_snapshot",
+      "first_unregistered_in": "unknown (no commit in history carries a registered digest)",
+      "protocols": [
+        "protocols/negative_sample_ablation_v2/SABDAB2_TRAINING_SOURCE_MANIFEST.json"
+      ],
+      "registered_path": "src/interaction_first/sabdab2_structure.py",
+      "registered_sha256": [
+        "cd882eeebd7a8deeb39eedc25783963efa46fd4acb6bae4118d06b9bf839d196"
+      ]
+    },
+    {
+      "actual_sha256": "0e464a7fee7ba2354bcba13d5b4c311192ce76263dd977ba143bb5fabec2ba3a",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "d989b3e 2026-07-30 audit: retain CP constraint-family provenance",
+      "protocols": [
+        "protocols/frontier_model_contract_v1.json",
+        "protocols/v6_b_production_feasibility_registration_v1.json",
+        "protocols/v6_b_production_feasibility_registration_v2.json",
+        "protocols/v6_b_production_feasibility_registration_v3.json",
+        "protocols/v6_b_production_feasibility_registration_v4.json"
+      ],
+      "registered_path": "src/interaction_first/v6_cp_sat_formulation.py",
+      "registered_sha256": [
+        "d07e2a402c63fe1fe642bb0f80162c8850bfef1d17a18e8d3fb4afde40b3a9dd"
+      ]
+    },
+    {
+      "actual_sha256": "a7ee3ce7d3af3f85e95ce239af7f9276c0d681a0fe7755ffc4d136315971ab31",
+      "classification": "unreconciled_governance_drift",
+      "first_unregistered_in": "d989b3e 2026-07-30 audit: retain CP constraint-family provenance",
+      "protocols": [
+        "protocols/frontier_model_contract_v1.json"
+      ],
+      "registered_path": "tests/test_v6_cp_sat_formulation.py",
+      "registered_sha256": [
+        "75683f124963e304d370c96f3a526212c09c562135630922f12efde731f68885"
+      ]
+    }
+  ],
+  "claim_boundary": "Observation only. Each entry records a protocol-governed file whose current bytes no protocol registers. Recording drift does not reconcile it and does not authorize citing the affected protocol as current evidence; that requires a numbered supersession.",
+  "format_version": "source_binding_drift_baseline_v1"
+}

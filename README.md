@@ -208,6 +208,7 @@ substitute for the licensed source data.
 | Locate result summaries and interpretation boundaries | [`results/README.md`](results/README.md) |
 | Select an operator or Slurm entry point | [`scripts/README.md`](scripts/README.md) |
 | Verify artifact and test-set provenance | [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
+| Check source bindings and read the suite's skips and expected failures | [`docs/CONTINUOUS_VERIFICATION.md`](docs/CONTINUOUS_VERIFICATION.md) |
 | Review third-party sources and licenses | [`THIRD_PARTY.md`](THIRD_PARTY.md) |
 
 Some files are intentionally mirrored across `protocols/` and `results/`.
@@ -232,22 +233,35 @@ python3 -m venv .venv
 find scripts slurm -type f \( -name '*.sh' -o -name '*.sbatch' \) \
   -exec bash -n {} +
 
+# Every protocol-governed source file is still registered by some protocol.
+python3 scripts/verify_protocol_source_bindings.py
+
 # Full repository test suite.
 .venv/bin/python -m pytest -q
 ```
 
 The 2026-08-29 consolidation audit parsed every newly merged Python, JSON, and
-shell/Slurm file successfully and found no embedded credentials. The combined
-production-gate conflict suite passed all 11 tests. On the available macOS
-Python 3.14 environment, the root suite excluding five collection-blocked
-optional-dependency modules produced 2,216 passes, 92 failures, 24 skips, and 37
-passing subtests; the isolated FrameContact suite produced 421 passes, five
-failures, and ten skips. The same root branch before historical-workstream
-integration already had 88 failures. Remaining failures are dominated by
-immutable protocols that intentionally bind earlier source hashes, absent
-OR-Tools/HiGHS/Biopython packages, and external or recovery artifacts excluded
-from Git. These are preserved audit boundaries, not reported as a green
-portable suite.
+shell/Slurm file successfully and found no embedded credentials.
+
+On Python 3.12 with the pinned solver backends installed, the root suite reports
+2,314 passes, 47 skips, 36 expected failures, and 37 passing subtests, with no
+unexpected failure. The skips and expected failures are individually recorded in
+[`tests/portability_registry_v1.json`](tests/portability_registry_v1.json) with
+the precondition or defect behind each one; a skipped test runs, and must pass,
+on any machine that meets its precondition. This is a classified suite, not a
+green portable one: 36 expected failures are live alarms, of which 33 are
+protocol source drift and three are inconsistent tracked data.
+
+Source drift is tracked separately. 249 files are protocol-governed by 383
+registrations; 30 of them have bytes that no protocol registers, recorded with
+their originating commit in
+[`protocols/source_binding_drift_baseline_v1.json`](protocols/source_binding_drift_baseline_v1.json).
+Nine are classified `unreconciled_governance_drift`, including files governed by
+[`frontier_model_contract_v1.json`](protocols/frontier_model_contract_v1.json)
+and [`pairformer_gate_manifest_v1.json`](protocols/pairformer_gate_manifest_v1.json).
+Those protocols may not be cited as describing current code until a numbered
+supersession registers the present bytes. See
+[`docs/CONTINUOUS_VERIFICATION.md`](docs/CONTINUOUS_VERIFICATION.md).
 
 ## Claim and access boundary
 
