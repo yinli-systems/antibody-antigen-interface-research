@@ -1,0 +1,187 @@
+{
+  "claim_boundary": "Development-only paired ablation on the validation split. It compares two input representations and authorizes no test access and no model selection.",
+  "control": "esm2",
+  "final_epoch_comparison": {
+    "esm2": {
+      "final_better_in": 1,
+      "final_epoch_mean": 0.018353834040788074,
+      "mean_difference": -0.004106150533969791,
+      "seeds": 10,
+      "selected_mean": 0.022459984574757865
+    },
+    "esm2_antiberty_esmif1": {
+      "final_better_in": 0,
+      "final_epoch_mean": 0.024718978895628702,
+      "mean_difference": -0.003734364118671938,
+      "seeds": 10,
+      "selected_mean": 0.02845334301430064
+    }
+  },
+  "format_version": "representation_ablation_v1",
+  "metrics": {
+    "auprc": {
+      "bootstrap_ci95": [
+        0.004462555478548433,
+        0.007395766570530171
+      ],
+      "control_mean": 0.022459984574757865,
+      "favourable_seed_count": 10,
+      "paired_mean_difference": 0.005993358439542774,
+      "sign_lower_bound": 0.7411344491069477,
+      "treatment_mean": 0.02845334301430064
+    },
+    "auroc": {
+      "bootstrap_ci95": [
+        0.009928991768409584,
+        0.012227329135161846
+      ],
+      "control_mean": 0.9217898927638136,
+      "favourable_seed_count": 10,
+      "paired_mean_difference": 0.011086181387587313,
+      "sign_lower_bound": 0.7411344491069477,
+      "treatment_mean": 0.932876074151401
+    },
+    "contact_iou": {
+      "bootstrap_ci95": [
+        0.001364114343548298,
+        0.002194430828518799
+      ],
+      "control_mean": 0.011428830160366957,
+      "favourable_seed_count": 10,
+      "paired_mean_difference": 0.0017612769769072302,
+      "sign_lower_bound": 0.7411344491069477,
+      "treatment_mean": 0.013190107137274188
+    },
+    "f1": {
+      "bootstrap_ci95": [
+        0.0026474024057360607,
+        0.004254682770446386
+      ],
+      "control_mean": 0.02251288323031819,
+      "favourable_seed_count": 10,
+      "paired_mean_difference": 0.003417650580166188,
+      "sign_lower_bound": 0.7411344491069477,
+      "treatment_mean": 0.02593053381048438
+    },
+    "mcc": {
+      "bootstrap_ci95": [
+        0.00748896210904855,
+        0.009977506690473469
+      ],
+      "control_mean": 0.0736436031392934,
+      "favourable_seed_count": 10,
+      "paired_mean_difference": 0.008690237954036924,
+      "sign_lower_bound": 0.7411344491069477,
+      "treatment_mean": 0.08233384109333032
+    },
+    "precision": {
+      "bootstrap_ci95": [
+        0.0013294655042291577,
+        0.002274061726202906
+      ],
+      "control_mean": 0.011583782512567345,
+      "favourable_seed_count": 10,
+      "paired_mean_difference": 0.001770490104192317,
+      "sign_lower_bound": 0.7411344491069477,
+      "treatment_mean": 0.013354272616759663
+    },
+    "precision_at_true_contact_count": {
+      "bootstrap_ci95": [
+        0.004646681970940785,
+        0.014399582534780594
+      ],
+      "control_mean": 0.029109286134847822,
+      "favourable_seed_count": 9,
+      "paired_mean_difference": 0.009590823655146954,
+      "sign_lower_bound": 0.6058366975634952,
+      "treatment_mean": 0.038700109789994774
+    },
+    "prevalence": {
+      "bootstrap_ci95": [
+        0.0,
+        0.0
+      ],
+      "control_mean": 0.001344649665496134,
+      "favourable_seed_count": 0,
+      "paired_mean_difference": 0.0,
+      "sign_lower_bound": 0.0,
+      "treatment_mean": 0.001344649665496134
+    },
+    "recall": {
+      "bootstrap_ci95": [
+        -0.002661011953652917,
+        0.04914999308644824
+      ],
+      "control_mean": 0.6056502839659501,
+      "favourable_seed_count": 7,
+      "paired_mean_difference": 0.02275472283362196,
+      "sign_lower_bound": 0.39337578389458766,
+      "treatment_mean": 0.628405006799572
+    }
+  },
+  "per_seed_auprc": [
+    {
+      "control": 0.02160616377198684,
+      "difference": 0.006566441768643322,
+      "seed": 1,
+      "treatment": 0.028172605540630162
+    },
+    {
+      "control": 0.022107076154888824,
+      "difference": 0.00641783025003375,
+      "seed": 2,
+      "treatment": 0.028524906404922574
+    },
+    {
+      "control": 0.02588053064023683,
+      "difference": 0.0007974036587330355,
+      "seed": 3,
+      "treatment": 0.026677934298969867
+    },
+    {
+      "control": 0.02048978975090212,
+      "difference": 0.007961205552066256,
+      "seed": 4,
+      "treatment": 0.028450995302968376
+    },
+    {
+      "control": 0.022238961314528592,
+      "difference": 0.004555192937612463,
+      "seed": 5,
+      "treatment": 0.026794154252141055
+    },
+    {
+      "control": 0.02165880547506052,
+      "difference": 0.0091704212060154,
+      "seed": 6,
+      "treatment": 0.03082922668107592
+    },
+    {
+      "control": 0.020892723987348163,
+      "difference": 0.00882139923488054,
+      "seed": 7,
+      "treatment": 0.029714123222228703
+    },
+    {
+      "control": 0.02229294864677051,
+      "difference": 0.006330179345657556,
+      "seed": 8,
+      "treatment": 0.028623127992428065
+    },
+    {
+      "control": 0.02257184864354969,
+      "difference": 0.005894950525502384,
+      "seed": 9,
+      "treatment": 0.028466799169052075
+    },
+    {
+      "control": 0.02486099736230656,
+      "difference": 0.003418559916283037,
+      "seed": 10,
+      "treatment": 0.028279557278589596
+    }
+  ],
+  "scope": "macro",
+  "seed_count": 10,
+  "treatment": "esm2_antiberty_esmif1"
+}
