@@ -19,8 +19,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
+# gpu_4090 forbids --mem/--mem-per-cpu/--mem-per-gpu: the site's job_submit_lua
+# plugin allocates 60GB per card automatically and rejects any explicit request.
 #SBATCH --cpus-per-task=6
-#SBATCH --mem=32G
 #SBATCH --time=01:00:00
 #SBATCH --output=%x-%A_%a.out
 #SBATCH --error=%x-%A_%a.err
