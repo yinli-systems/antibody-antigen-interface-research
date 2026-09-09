@@ -1,0 +1,6 @@
+{
+  "note": "Placeholder until human labels exist. LLM-as-judge is known to have position and verbosity bias (Zheng et al. 2023; Who Validates the Validators 2024). Do not ship RAGAS-only scores.",
+  "n_human_double_labeled": 0,
+  "judge_vs_human_exact_match": null,
+  "planned_protocol": "Two annotators on 40 gold items; Cohen kappa; judge prompt frozen in prompts/"
+}

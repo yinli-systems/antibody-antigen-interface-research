@@ -1,0 +1,10 @@
+{
+  "pdb_id": "6W41",
+  "rcsb_id": "6W41",
+  "title": "Crystal structure of SARS-CoV-2 receptor binding domain in complex with CR3022",
+  "method": "X-RAY DIFFRACTION",
+  "released": "2020-03-25",
+  "resolution": 3.08,
+  "rcsb": "https://www.rcsb.org/structure/6W41",
+  "source": "bundled_cache"
+}

@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abcite"
+version = "0.1.0"
+description = "Multimodal antibody evidence copilot: cite-or-abstain RAG over papers, figures, and PDB views."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Yin Li" }]
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic>=2.8.0",
+  "pydantic-settings>=2.4.0",
+  "httpx>=0.27.0",
+  "numpy>=1.26.0",
+  "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.0", "ruff>=0.6.0"]
+langgraph = ["langgraph>=0.2.0", "langchain-core>=0.3.0"]
+embeddings = ["sentence-transformers>=3.0.0"]
+mcp = ["mcp>=1.2.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["abcite_core*", "agents*", "ingest*", "providers*", "mcp*", "evals*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
