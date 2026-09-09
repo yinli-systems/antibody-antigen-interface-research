@@ -56,7 +56,13 @@ def load_run(directory: Path) -> list[ComplexPrediction]:
     if not pair_path.exists():
         raise PairEvaluationError(f"{pair_path} does not exist")
     pairs = pandas.read_parquet(pair_path)
-    nodes = pandas.read_parquet(node_path) if node_path.exists() else None
+    # Group once: filtering the whole node frame per complex is quadratic and
+    # dominates the run on a full contact map.
+    node_groups = (
+        dict(tuple(pandas.read_parquet(node_path).groupby("instance_id", sort=False)))
+        if node_path.exists()
+        else None
+    )
 
     predictions: list[ComplexPrediction] = []
     for instance_id, frame in pairs.groupby("instance_id", sort=True):
@@ -78,8 +84,8 @@ def load_run(directory: Path) -> list[ComplexPrediction]:
         mask[rows, columns] = True
 
         epitope = paratope = None
-        if nodes is not None:
-            local = nodes[nodes["instance_id"] == instance_id]
+        if node_groups is not None and instance_id in node_groups:
+            local = node_groups[instance_id]
             epitope = _marginal(local, "epitope", antigen)
             paratope = _marginal(local, "paratope", antibody)
 

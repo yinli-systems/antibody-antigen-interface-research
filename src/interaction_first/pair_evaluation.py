@@ -381,38 +381,70 @@ def balanced_accuracy_metrics(
     }
 
 
-def best_threshold_metrics(
-    labels: Any, scores: Any, steps: int = 200
-) -> dict[str, float | None]:
-    """Best achievable F1 and MCC over a threshold sweep, and where they occur.
+def best_threshold_metrics(labels: Any, scores: Any) -> dict[str, float | None]:
+    """Best attainable F1 and MCC over all thresholds, and where they occur.
 
     Reporting F1 and MCC only at a fixed 0.5 conflates ranking quality with
-    calibration: at contact-map prevalence almost nothing exceeds 0.5, so the
-    numbers collapse for a model that ranks perfectly well. The sweep separates
-    the two, and the gap between the fixed and best value is itself a
-    calibration signal.
+    calibration: at contact-map prevalence almost nothing exceeds 0.5, so a
+    model that ranks perfectly can still score zero. The gap between the fixed
+    and the best value is itself a calibration signal.
+
+    Computed in one sorted pass rather than by re-scoring at sampled
+    thresholds. Every distinct score is considered, so the optimum is exact
+    rather than grid-limited, and no metric is recomputed per candidate -- the
+    sampled version re-derived AUROC and AUPRC at every step, which made it
+    unusable on a full contact map.
     """
     numpy = _numpy()
-    labels = numpy.asarray(labels).reshape(-1)
-    scores = numpy.asarray(scores).reshape(-1)
-    if labels.size == 0 or int(labels.sum()) == 0:
-        return {"best_f1": None, "best_f1_threshold": None, "best_mcc": None,
-                "best_mcc_threshold": None}
-    low, high = float(scores.min()), float(scores.max())
-    if high <= low:
-        candidates = [low]
-    else:
-        candidates = list(numpy.linspace(low, high, steps))
-    best = {"best_f1": -1.0, "best_f1_threshold": None,
-            "best_mcc": -2.0, "best_mcc_threshold": None}
-    for threshold in candidates:
-        record = binary_metrics(labels, scores, threshold=float(threshold))
-        f1, mcc = record.get("f1"), record.get("mcc")
-        if isinstance(f1, float) and f1 > best["best_f1"]:
-            best["best_f1"], best["best_f1_threshold"] = f1, float(threshold)
-        if isinstance(mcc, float) and mcc > best["best_mcc"]:
-            best["best_mcc"], best["best_mcc_threshold"] = mcc, float(threshold)
-    return best
+    labels = numpy.asarray(labels).reshape(-1).astype(numpy.float64)
+    scores = numpy.asarray(scores).reshape(-1).astype(numpy.float64)
+    total = labels.size
+    positives = float(labels.sum())
+    if total == 0 or positives == 0 or positives == total:
+        return {"best_f1": None, "best_f1_threshold": None,
+                "best_mcc": None, "best_mcc_threshold": None}
+    negatives = total - positives
+
+    order = numpy.argsort(-scores, kind="stable")
+    ordered_scores = scores[order]
+    true_positive = numpy.cumsum(labels[order])
+    predicted = numpy.arange(1, total + 1, dtype=numpy.float64)
+    false_positive = predicted - true_positive
+    false_negative = positives - true_positive
+    true_negative = negatives - false_positive
+
+    # Only the last index of each tie group is a realisable cut point.
+    keep = numpy.ones(total, dtype=bool)
+    keep[:-1] = ordered_scores[:-1] != ordered_scores[1:]
+
+    with numpy.errstate(divide="ignore", invalid="ignore"):
+        f1 = numpy.where(
+            (2.0 * true_positive + false_positive + false_negative) > 0,
+            2.0 * true_positive / (2.0 * true_positive + false_positive + false_negative),
+            0.0,
+        )
+        denominator = numpy.sqrt(
+            (true_positive + false_positive)
+            * (true_positive + false_negative)
+            * (true_negative + false_positive)
+            * (true_negative + false_negative)
+        )
+        mcc = numpy.where(
+            denominator > 0,
+            (true_positive * true_negative - false_positive * false_negative) / denominator,
+            0.0,
+        )
+
+    f1 = numpy.where(keep, f1, -numpy.inf)
+    mcc = numpy.where(keep, mcc, -numpy.inf)
+    f1_at = int(numpy.argmax(f1))
+    mcc_at = int(numpy.argmax(mcc))
+    return {
+        "best_f1": float(f1[f1_at]),
+        "best_f1_threshold": float(ordered_scores[f1_at]),
+        "best_mcc": float(mcc[mcc_at]),
+        "best_mcc_threshold": float(ordered_scores[mcc_at]),
+    }
 
 
 def bedroc_score(labels: Any, scores: Any, alpha: float = 20.0) -> float | None:
