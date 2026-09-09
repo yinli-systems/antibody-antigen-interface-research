@@ -86,26 +86,27 @@ Hard auto-taxonomy (all 40): **ok 37**, **miss_multi_hop 2**, **miss_figure 1** 
 
 CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**): **image-only** mean rank1−rank2 cosine gap **0.006** on that toy gallery; caption BM25 gap **12.34**; fused RRF gap is small by construction. Self-hit 100% on 14 figures; **not SOTA**. Do **not** call caption-only cite-id “CLIP multimodal”.
 
-**Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10, RTX 5090). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). VQA is cite-or-abstain on the retrieved figure (heuristic/extractive pixel cues, not a VLM). Product: `POST /query` with `task=visual_qa`, or `POST /search-image?task=visual_qa&query=...`. Default evidence RAG still keeps CLIP fusion/rerank **off**.
+**Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). VQA is cite-or-abstain on the retrieved figure (heuristic/extractive pixel cues, not a VLM). Product: `POST /query` with `task=visual_qa`, or `POST /search-image?task=visual_qa&query=...`. Default evidence RAG still keeps CLIP fusion/rerank **off**.
 
-Gold: `evals/gold/visual_qa.jsonl` (**n=61**: 51 unique-gold answerable + 10 abstain). Gallery: **N=15,949** PMC OA jpg on the 5090. Encoder: BiomedCLIP T→I first. `colpali-engine` 0.3.18 imports; Hub **HTTP 429** and no cached `vidore/colpali` / ColQwen2 snapshot — ColPali column is empty, not a fake zero.
+Gold: `evals/gold/visual_qa.jsonl` (**n=61**: 51 unique-gold answerable + 10 abstain). Gallery: **N=1,200** PMC OA jpg local cache this run (**N=15,949** on the 5090 pod when SSH works). Encoder: BiomedCLIP T→I first; ColPali optional (`ABCITE_COLPALI=1`).
 
 ### Headline: vision beats caption BM25 (fair visual gold)
 
-All 51 answerable queries are the BM25-should-fail subset. Caption BM25 is **0** at R@1/5/10. That is the protocol working, not a broken index.
+All loaded answerable queries are the BM25-should-fail subset (`python evals/run_visual_qa.py`, local CPU/MPS, **n=49** answerable / **n=59** total incl. abstain; 2 gold figures missing from the 1.2k cache).
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
-| **BiomedCLIP T→I** | **0.059** | 0.098 | 0.118 | 0.080 |
-| OpenCLIP ViT-B-32 T→I | 0.039 | **0.137** | **0.176** | **0.096** |
+| caption BM25 | **0.000** | 0.020 | 0.041 | 0.013 |
+| **BiomedCLIP T→I** | **0.122** | 0.245 | 0.388 | 0.187 |
+| OpenCLIP ViT-B-32 T→I | **0.163** | **0.286** | 0.306 | **0.228** |
+| rerank-on-BM25-top50 (BiomedCLIP) | 0.020 | 0.082 | 0.102 | 0.049 |
 | ColPali / ColQwen2 T→I | — | — | — | — |
 
-Vision beats caption BM25 at R@1? **yes** (BiomedCLIP **0.059** > 0; OpenCLIP **0.039** > 0). Same at nDCG@5. Fusion/rerank stay **off**: BiomedCLIP rerank-on-BM25-top50 R@1 **0.000** (gold is outside the lexical top-50, as designed).
+Vision T→I **beats caption BM25** at R@1 and nDCG@5 on this fair visual gold. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (**hurts** T→I **0.122→0.020** at R@1); fusion/RRF ablation. ColPali not run (5090 SSH unreachable; install with `pip install -e ".[colpali]"`).
 
-VQA cite-or-abstain (heuristic, not a VLM): e2e **16.4%**, oracle-figure **57.4%**, cite@1 **5.9%**, abstain **80%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`.
+VQA cite-or-abstain (heuristic, not a VLM): e2e **18.6%**, oracle-figure **64.4%**, cite@1 **12.2%**, abstain **70%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`.
 
-**Not SOTA.** ViDoRe ColPali nDCG@5 **81.3** is page retrieval with late interaction. Ours is figure-jpg CLIP on n=51 / N=15,949: nDCG@5 **0.096**. SciMMIR-FT Hits@10 **13.5%** and BiomedCLIP paper R@1 **~56%** are caption-as-query on different galleries — see appendix, do not mix.
+**Not SOTA.** ViDoRe ColPali nDCG@5 **81.3** is page retrieval with late interaction. Ours is figure-jpg CLIP on n=49 / N=1,200: nDCG@5 **0.228** (OpenCLIP) / **0.187** (BiomedCLIP). SciMMIR-FT Hits@10 **13.5%** and BiomedCLIP paper R@1 **~56%** are caption-as-query on different galleries — see appendix, do not mix.
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 

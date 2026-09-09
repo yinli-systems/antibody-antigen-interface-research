@@ -51,12 +51,12 @@ abstain failures                 none
 ## CLIP contrast (not SOTA)
 
 ```
-CLIP encoder                   local-image
+CLIP encoder                   clip-vit-b-32
 figure queries                 14
-mean fused RRF gap             0.001326
-mean image-only cosine gap     0.006296
-mean caption BM25 gap          12.341795
-min gap fused                  0.000529
+mean fused RRF gap             0.001289
+mean image-only cosine gap     0.009883
+mean caption BM25 gap          12.189275
+min gap fused                  0.000768
 self-hit rate                  100.0%
 hub figs (rank1 for >1 query)  {}
 BiomedCLIP                     not requested
@@ -72,16 +72,16 @@ Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heur
 
 ## Visual figure QA — primary multimodal demo
 
-Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** / n=**61** (10 abstain). Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB. All 51 answerable items are `caption_bm25_should_fail`. VQA is cite-or-abstain (heuristic/extractive, not a VLM). Fusion off.
+Gallery **N=1200** (). n_answerable=**49**. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query. VQA is cite-or-abstain on the retrieved figure (heuristic/extractive, not a VLM).
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
-| BiomedCLIP T→I | 0.059 | 0.098 | 0.118 | 0.080 |
-| OpenCLIP ViT-B-32 T→I | 0.039 | 0.137 | 0.176 | 0.096 |
+| caption BM25 | 0.000 | 0.020 | 0.041 | 0.013 |
+| BiomedCLIP T→I | 0.122 | 0.245 | 0.388 | 0.187 |
+| OpenCLIP ViT-B-32 T→I | 0.163 | 0.286 | 0.306 | 0.228 |
 | ColPali / ColQwen2 T→I | — | — | — | — |
 
-Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=0.000 vision=0.059. VQA e2e=0.1639 oracle=0.5738 cite@1=0.0588 abstain=0.8. ColPali: `colpali-engine` 0.3.18 imports; Hub HTTP 429 and no cached `vidore/colpali` / ColQwen2 weights. Next GPU job: cache weights, then `ABCITE_COLPALI=1 ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali`. See `evals/visual_qa_latest.json`.
+Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=0.000 vision=0.122. VQA e2e=0.1864 oracle=0.6441 cite@1=0.1224. ColPali: ColPali not requested this run. Next GPU job: ABCITE_COLPALI=1 ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali See `evals/visual_qa_latest.json`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)
 
