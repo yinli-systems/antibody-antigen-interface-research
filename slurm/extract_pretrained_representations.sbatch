@@ -39,6 +39,11 @@ MANIFEST_SHA256=${REPRESENTATION_MANIFEST_SHA256:-548bcfab75923ec6621c1a3fef1aa6
 # AntiBERTy was trained on individual heavy and light chains, so it takes them
 # separately. ESM-IF1 needs a backbone, and the store holds one per side, so it
 # takes the concatenated antibody and the antigen.
+#
+# esm2 is kept for completeness but is normally skipped: this cohort already has
+# stored ESM-2 embeddings from the same weights, and huggingface.co is
+# unreachable from the cluster. Submit `--array=0,2` for the two encoders that
+# add something the project does not already hold.
 BACKENDS=(antiberty esm2 esm_if1)
 CHAINS_FOR=("vh vl" "vh vl ag" "ab ag")
 BACKEND=${BACKENDS[${SLURM_ARRAY_TASK_ID:?this script must run as a Slurm array}]}
@@ -46,6 +51,16 @@ CHAINS=${CHAINS_FOR[${SLURM_ARRAY_TASK_ID}]}
 
 export PYTHONPATH="${SOURCE_ROOT}/src:${PYTHONPATH:-}"
 export PYTHONHASHSEED=0
+
+# Compute nodes have no outbound network while the login node does. Every
+# encoder must therefore find its weights already on disk: AntiBERTy ships them
+# inside its pip package, ESM-IF1 needs TORCH_HOME pre-populated from the login
+# node. Without this a job burns its whole allocation retrying HTTP timeouts,
+# which is how the first ESM-2 attempt spent 37 minutes writing nothing.
+export TORCH_HOME=${REPRESENTATION_TORCH_HOME:?REPRESENTATION_TORCH_HOME is required}
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+
 cd "${SOURCE_ROOT}"
 
 BACKBONE_ARGS=()
