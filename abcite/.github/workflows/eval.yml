@@ -43,7 +43,7 @@ jobs:
             python evals/run_multimodal.py
           else
             echo "No 1000-figure cache in CI; pytest uses committed fixture."
-            pytest tests/test_multimodal_visual.py
+            pytest tests/test_multimodal_visual.py tests/test_visual_qa.py
           fi
 
   clip:

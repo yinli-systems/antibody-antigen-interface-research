@@ -35,15 +35,74 @@ def _rk(col: dict | None, key: str) -> str:
     return f"{float(col[key]):.3f}"
 
 
-def _multimodal_snapshot_md() -> str:
-    """Keep Protocol A/B tables when `evals/run.py` rewrites latest.md."""
-    path = ROOT / "evals" / "multimodal_protocols_latest.json"
+def _load_json(path: Path) -> dict:
     if not path.exists():
-        return ""
+        return {}
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _visual_qa_snapshot_md() -> str:
+    data = _load_json(ROOT / "evals" / "visual_qa_protocols_latest.json")
+    four = data.get("four_column") or {}
+    vqa = (data.get("biomedclip") or data.get("openclip") or {}).get("vqa") or four.get("vqa") or {}
+    n_gal = data.get("n_gallery") or ""
+    n_q = data.get("n_answerable") or data.get("n_queries") or ""
+    gpu = data.get("gpu") or ""
+    col = four.get("colpali_t2i")
+    col_skip = data.get("colpali_skip") or ""
+    beats = four.get("vision_beats_bm25_r@1")
+    fail_bm25 = four.get("caption_bm25_should_fail_subset") or {}
+    fail_vis = four.get("vision_should_fail_subset") or {}
+    if not four and not data:
         return ""
+    col_row = (
+        f"| ColPali / ColQwen2 T→I | {_rk(col, 'recall@1')} | {_rk(col, 'recall@5')} | "
+        f"{_rk(col, 'recall@10')} | {_rk(col, 'ndcg@5')} |\n"
+        if col
+        else "| ColPali / ColQwen2 T→I | — | — | — | — |\n"
+    )
+    return (
+        "\n## Visual figure QA — primary multimodal demo\n\n"
+        f"Gallery **N={n_gal}** ({gpu}). n_answerable=**{n_q}**. "
+        "Query is a visual question (panel layout, stain, gel bands, colors, arrows, "
+        "microscopy type), **not** the figure caption. Unique gold; no PDB in the query. "
+        "VQA is cite-or-abstain on the retrieved figure (heuristic/extractive, not a VLM).\n\n"
+        "| Column | R@1 | R@5 | R@10 | nDCG@5 |\n"
+        "|---|---|---|---|---|\n"
+        f"| caption BM25 | {_rk(four.get('caption_bm25'), 'recall@1')} | "
+        f"{_rk(four.get('caption_bm25'), 'recall@5')} | "
+        f"{_rk(four.get('caption_bm25'), 'recall@10')} | "
+        f"{_rk(four.get('caption_bm25'), 'ndcg@5')} |\n"
+        f"| BiomedCLIP T→I | {_rk(four.get('biomedclip_t2i'), 'recall@1')} | "
+        f"{_rk(four.get('biomedclip_t2i'), 'recall@5')} | "
+        f"{_rk(four.get('biomedclip_t2i'), 'recall@10')} | "
+        f"{_rk(four.get('biomedclip_t2i'), 'ndcg@5')} |\n"
+        f"| OpenCLIP ViT-B-32 T→I | {_rk(four.get('openclip_t2i'), 'recall@1')} | "
+        f"{_rk(four.get('openclip_t2i'), 'recall@5')} | "
+        f"{_rk(four.get('openclip_t2i'), 'recall@10')} | "
+        f"{_rk(four.get('openclip_t2i'), 'ndcg@5')} |\n"
+        f"{col_row}\n"
+        f"Vision beats caption BM25 at R@1? **{'yes' if beats else 'no'}**. "
+        f"BM25-should-fail subset R@1 BM25={_rk(fail_bm25, 'recall@1')} "
+        f"vision={_rk(fail_vis, 'recall@1')}. "
+        f"VQA e2e={vqa.get('end_to_end_accuracy', '—')} "
+        f"oracle={vqa.get('oracle_figure_accuracy', '—')} "
+        f"cite@1={vqa.get('cite_top1', '—')}. "
+        f"{('ColPali: ' + col_skip) if col_skip and not col else ''} "
+        "See `evals/visual_qa_latest.json`.\n"
+    )
+
+
+def _multimodal_snapshot_md() -> str:
+    """Primary visual-QA table plus Protocol A/B appendix."""
+    primary = _visual_qa_snapshot_md()
+    path = ROOT / "evals" / "multimodal_protocols_latest.json"
+    data = _load_json(path)
+    if not data:
+        return primary
     four = data.get("four_column") or {}
     hold = data.get("holdout") or {}
     vis = data.get("biomedclip_unique_gold_visual") or {}
@@ -57,8 +116,9 @@ def _multimodal_snapshot_md() -> str:
     vis_rerank = vis.get("rerank_helps_bm25") or {}
     vis_delta = (vis_rerank.get("delta") or {}).get("recall@1")
     vis_delta_s = f"{float(vis_delta):+.3f}" if vis_delta is not None else "—"
-    return (
-        "\n## Protocol A — held-out caption-as-query (PMC OA)\n\n"
+    appendix = (
+        "\n## Appendix — Protocol A held-out caption-as-query (PMC OA)\n\n"
+        "Wrong product task: BM25 already wins; CLIP rerank hurts. Kept as a diagnostic.\n\n"
         f"Gallery **N={n_gal}** readable jpg ({gpu}). Split by PMCID 80/20 "
         f"(seed={hold.get('seed', 7)}): **{hold.get('n_papers')} papers** → "
         f"{hold.get('n_index_papers')} index / **{hold.get('n_query_papers')} query**; "
@@ -81,7 +141,7 @@ def _multimodal_snapshot_md() -> str:
         f"{_rk(four.get('vision_rerank'), 'recall@10')} |\n\n"
         f"Rerank helps BM25? **{'yes' if helps else 'no'}** "
         f"(ΔR@1 {delta_s}). See `evals/multimodal_caption_latest.json`.\n\n"
-        "## Protocol B — unique visual questions (small-n)\n\n"
+        "## Appendix — Protocol B unique visual questions (small-n)\n\n"
         f"n_queries=**{vis.get('n_queries')}** (small-n, labeled). "
         "Caption-free visual gold remapped to `pmc-*`. "
         "Not mixed with Protocol A.\n\n"
@@ -102,6 +162,7 @@ def _multimodal_snapshot_md() -> str:
         f"Rerank helps BM25? **{'yes' if vis_rerank.get('helps_any') else 'no'}** "
         f"(ΔR@1 {vis_delta_s}). See `evals/multimodal_visual_latest.json`.\n"
     )
+    return primary + appendix
 
 
 def _read_jsonl(path: Path) -> list[dict]:

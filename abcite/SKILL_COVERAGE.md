@@ -10,7 +10,7 @@ One page: UK Applied AI Engineer skills → files in this project.
 | Agents / LangGraph + HITL interrupt | `agents/graph.py` (`needs_hitl`, optional `build_langgraph`), `apps/web/src/App.tsx` HITL modal |
 | MCP tools | `mcp/server.py` (literature, **cached RCSB**, overlap lookup) |
 | Live RCSB with offline cache | `abcite_core/rcsb.py`, `corpus/rcsb_cache/`, `tests/test_rcsb.py` |
-| FastAPI serving | `apps/api/main.py` (`/query` `/search-image` `/feedback` `/health` `/docs`) |
+| FastAPI serving | `apps/api/main.py` (`/query` `/search-image?task=visual_qa` `/feedback` `/health` `/docs`) |
 | Provider-used phrasing (keys → OpenAI/Azure; else extractive) | `providers/__init__.py` `get_llm`, `agents/graph.py` `compose_with_provider`, `tests/test_provider.py` |
 | Desktop UI + citation thumbnails + residue chips | `apps/web/src/App.tsx`, `apps/web/src/styles.css` |
 | Evals that are numbers, not placeholders | `abcite_core/metrics.py`, `evals/run.py`, `evals/gold/fixture.jsonl` (150) + `evals/gold/hard.jsonl` (~40), `evals/latest.md` |

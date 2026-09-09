@@ -70,7 +70,22 @@ Hard taxonomy counts (all 40 items): `{"ok": 37, "miss_multi_hop": 2, "miss_figu
 Demo receipt: `evals/traces/demo_1n8z.json` (Cho 2003 / RCSB 1N8Z).
 Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heuristics, not RAGAS.
 
-## Protocol A — held-out caption-as-query (PMC OA)
+## Visual figure QA — primary multimodal demo
+
+Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** / n=**61** (10 abstain). Query is a visual question, **not** the figure caption. Unique gold; no PDB. All 51 answerable items are `caption_bm25_should_fail`. VQA is cite-or-abstain (heuristic/extractive, not a VLM). Fusion off.
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
+| BiomedCLIP T→I | 0.059 | 0.098 | 0.118 | 0.080 |
+| OpenCLIP ViT-B-32 T→I | 0.039 | 0.137 | 0.176 | 0.096 |
+| ColPali / ColQwen2 T→I | — | — | — | — |
+
+Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=0.000 vision=0.059. VQA e2e=0.1639 oracle=0.5738 cite@1=0.0588 abstain=0.8. ColPali: `colpali-engine` 0.3.18 imports; Hub HTTP 429, no cached weights. See `evals/visual_qa_latest.json`.
+
+## Appendix — Protocol A held-out caption-as-query (PMC OA)
+
+Wrong product task: BM25 already wins; CLIP rerank hurts. Kept as a diagnostic.
 
 Gallery **N=15949** readable jpg (NVIDIA GeForce RTX 5090). Split by PMCID 80/20 (seed=7): **2491 papers** → 1993 index / **498 query**; query figures 3022; **n_queries=2805**. PDB / UniProt stripped. CLIP fusion off by default. Rerank = BiomedCLIP cosine on BM25 top-50.
 
@@ -83,7 +98,7 @@ Gallery **N=15949** readable jpg (NVIDIA GeForce RTX 5090). Split by PMCID 80/20
 
 Rerank helps BM25? **no** (ΔR@1 -0.174). See `evals/multimodal_caption_latest.json`.
 
-## Protocol B — unique visual questions (small-n)
+## Appendix — Protocol B unique visual questions (small-n)
 
 n_queries=**33** (small-n, labeled). Caption-free visual gold remapped to `pmc-*`. Not mixed with Protocol A.
 

@@ -155,6 +155,12 @@ Rerank **伤害** BM25（ΔR@1 **−0.174**）。Fusion ablation 同样输给 BM
 2. **不要**把 rerank 默认打开：这次已经量过，它伤 BM25。
 3. **不要**把 1N8Z / PDB id 写进 query（holdout 已禁；14-SVG cite-id 不要混进这条协议）。
 
+## Visual figure QA is the primary multimodal demo (2026-09-10)
+
+Caption-as-query is the **wrong product task**: BM25 R@1 **0.835** vs BiomedCLIP **0.601**, rerank **hurts**. The demo that needs pixels is **visual figure QA**: unique-gold questions about panel layout / stain / gel bands / colors / arrows / microscopy type, with a `caption_bm25_should_fail` subset (≤1 content-token overlap with the caption). VQA is cite-or-abstain. ColPali/ColQwen2 is the preferred late-interaction encoder when `colpali-engine` installs on the 5090; otherwise BiomedCLIP T→I is the honest first stage.
+
+Gold: `evals/gold/visual_qa.jsonl` **n=61** (51 answerable + 10 abstain; all answerable are `caption_bm25_should_fail`). Eval on RTX 5090 / **N=15,949**: caption BM25 R@1/5/10 **0/0/0**, BiomedCLIP T→I **0.059 / 0.098 / 0.118** nDCG@5 **0.080**, OpenCLIP **0.039 / 0.137 / 0.176** nDCG@5 **0.096**. Vision beats BM25. ColPali: `colpali-engine` 0.3.18 imports; Hub **429**, no cached weights. Gap vs ViDoRe nDCG@5 81.3 remains late-interaction page retrieval, not this CLIP figure-jpg run. Eval: `python evals/run_visual_qa.py`. UI: `task=visual_qa`. Protocols A/B stay in the README appendix.
+
 ## What NOT to do
 
 - Inflate gold size with more in-corpus / `synthetic_exam` until Hit@5 = 100%.

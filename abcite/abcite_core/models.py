@@ -57,6 +57,7 @@ class QueryRequest(BaseModel):
     question: str
     high_stakes: bool = False
     top_k: int = 6
+    task: str = "evidence"
 
 
 class QueryResponse(BaseModel):

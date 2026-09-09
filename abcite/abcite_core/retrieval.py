@@ -251,6 +251,24 @@ class HybridIndex:
             )
         return hits
 
+    def search_visual(self, query: str, top_k: int = 6) -> list[Hit]:
+        """Text → figure pixels. No caption BM25 fusion (visual QA task)."""
+        image = self.image_scores(query)
+        caption = self.caption_bm25_scores(query)
+        order = np.argsort(-image)[:top_k]
+        hits: list[Hit] = []
+        for i in order:
+            hits.append(
+                Hit(
+                    chunk=self.chunks[int(i)],
+                    score=float(image[i]),
+                    bm25=float(caption[i]),
+                    dense=0.0,
+                    image=float(image[i]),
+                )
+            )
+        return hits
+
     def search_by_image(self, path: Path, top_k: int = 5, fuse_captions: bool = True) -> list[Hit]:
         qv = np.asarray(self.vision.encode_image(path), dtype=np.float32)
         if qv.shape[0] != self.image_vecs.shape[1]:

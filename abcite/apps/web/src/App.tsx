@@ -23,19 +23,28 @@ type QueryResponse = {
   latency_ms: number;
 };
 
-const EXAMPLES = [
+const EVIDENCE_EXAMPLES = [
   "Does trastuzumab on HER2 (PDB 1N8Z) share the pertuzumab domain II epitope?",
   "Using the trastuzumab epitope diagram, is the Fab contacting HER2 domain IV rather than domain II?",
   "Does unpublished antibody ZX-99 overlap PDB 9ZZZ on antigen Q?",
   "Clinical therapeutic decision: should a patient switch from trastuzumab to pertuzumab because epitopes overlap 100%?",
 ];
 
+const VISUAL_EXAMPLES = [
+  "four grayscale micrograph tiles of a wrinkled polymer surface at increasing roughness",
+  "seven vertical sample lanes of dark bands beside a rainbow-stained marker column on the left",
+  "emerald nuclear speckles against a dark field",
+  "flowchart split by dotted silver rules with emerald checkmarks and crimson x-marks",
+];
+
 export default function App() {
-  const [question, setQuestion] = useState(EXAMPLES[0]);
+  const [task, setTask] = useState<"evidence" | "visual_qa">("visual_qa");
+  const [question, setQuestion] = useState(VISUAL_EXAMPLES[0]);
   const [highStakes, setHighStakes] = useState(false);
   const [resp, setResp] = useState<QueryResponse | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const examples = task === "visual_qa" ? VISUAL_EXAMPLES : EVIDENCE_EXAMPLES;
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -45,7 +54,7 @@ export default function App() {
       const r = await fetch("/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, high_stakes: highStakes, top_k: 6 }),
+        body: JSON.stringify({ question, high_stakes: highStakes, top_k: 6, task }),
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       setResp((await r.json()) as QueryResponse);
@@ -80,12 +89,24 @@ export default function App() {
     <div className="shell">
       <header className="top">
         <h1>AbCite</h1>
-        <span>Cite-or-abstain copilot · papers · figures · PDB residue maps · Yin Li 2026-09-09</span>
+        <span>Cite-or-abstain copilot · visual figure QA · papers · PDB maps · Yin Li 2026-09-10</span>
       </header>
 
       <form className="panel" onSubmit={onSubmit}>
         <label htmlFor="q">Question</label>
         <textarea id="q" value={question} onChange={(e) => setQuestion(e.target.value)} />
+        <label className="flag">
+          <input
+            type="checkbox"
+            checked={task === "visual_qa"}
+            onChange={(e) => {
+              const next = e.target.checked ? "visual_qa" : "evidence";
+              setTask(next);
+              setQuestion(next === "visual_qa" ? VISUAL_EXAMPLES[0] : EVIDENCE_EXAMPLES[0]);
+            }}
+          />
+          Visual figure QA (`task=visual_qa`)
+        </label>
         <label className="flag">
           <input type="checkbox" checked={highStakes} onChange={(e) => setHighStakes(e.target.checked)} />
           Mark high-stakes (forces HITL)
@@ -95,7 +116,7 @@ export default function App() {
         </button>
         {error && <p className="quote">{error}</p>}
         <div className="examples">
-          {EXAMPLES.map((ex) => (
+          {examples.map((ex) => (
             <button key={ex} type="button" onClick={() => setQuestion(ex)}>
               {ex}
             </button>

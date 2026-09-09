@@ -227,6 +227,7 @@ def test_eval_snapshot_keeps_protocol_tables():
     if not md:
         pytest.skip("no multimodal_protocols_latest.json")
     assert "Protocol A" in md and "Protocol B" in md
+    assert "Appendix" in md
     assert "N=15949" in md
     assert "0.835" in md
     assert "Rerank helps BM25? **no**" in md

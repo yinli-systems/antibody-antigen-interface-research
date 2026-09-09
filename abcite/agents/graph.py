@@ -166,10 +166,30 @@ class EvidenceGraph:
         self.llm = llm or LocalLLM()
         self.provider_name = provider_name or self.llm.name
 
-    def invoke(self, question: str, high_stakes: bool = False, top_k: int = 6) -> QueryResponse:
+    def invoke(
+        self, question: str, high_stakes: bool = False, top_k: int = 6, task: str = "evidence"
+    ) -> QueryResponse:
         t0 = time.perf_counter()
         trace_id = str(uuid.uuid4())
-        log.info("trace=%s retrieve q=%r", trace_id, question[:180])
+        log.info("trace=%s retrieve task=%s q=%r", trace_id, task, question[:180])
+        if (task or "evidence").lower() in {"visual_qa", "visual", "vqa"}:
+            from abcite_core.visual_qa import visual_qa_response
+
+            hits = self.index.search_visual(question, top_k=top_k)
+            resp = visual_qa_response(
+                question,
+                hits,
+                provider=self.provider_name,
+                trace_id=trace_id,
+                latency_ms=(time.perf_counter() - t0) * 1000,
+            )
+            emit_run(
+                "abcite.visual_qa",
+                trace_id,
+                {"question": question, "task": "visual_qa"},
+                {"status": resp.status.value},
+            )
+            return resp
         hits = self.index.search(question, top_k=top_k)
         tools = run_tools(question)
         chunks = [h.chunk for h in hits]

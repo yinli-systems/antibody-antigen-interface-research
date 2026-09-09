@@ -78,8 +78,27 @@ def health() -> dict:
 
 
 @app.post("/search-image")
-def search_image(path: str, top_k: int = 5) -> list[dict]:
+def search_image(
+    path: str | None = None,
+    query: str | None = None,
+    task: str = "evidence",
+    top_k: int = 5,
+) -> list[dict]:
     graph: EvidenceGraph = app.state.graph
+    visual = (task or "").lower() in {"visual_qa", "visual", "vqa"} or bool(query)
+    if visual and query:
+        hits = graph.index.search_visual(query, top_k=top_k)
+        return [
+            {
+                "chunk_id": h.chunk.chunk_id,
+                "score": h.image,
+                "title": h.chunk.title,
+                "task": "visual_qa",
+            }
+            for h in hits
+        ]
+    if not path:
+        return []
     hits = graph.index.search_by_image(Path(path), top_k=top_k)
     return [{"chunk_id": h.chunk.chunk_id, "score": h.image, "title": h.chunk.title} for h in hits]
 
@@ -87,7 +106,12 @@ def search_image(path: str, top_k: int = 5) -> list[dict]:
 @app.post("/query", response_model=QueryResponse)
 def query(req: QueryRequest) -> QueryResponse:
     graph: EvidenceGraph = app.state.graph
-    return graph.invoke(req.question, high_stakes=req.high_stakes, top_k=req.top_k)
+    return graph.invoke(
+        req.question,
+        high_stakes=req.high_stakes,
+        top_k=req.top_k,
+        task=req.task,
+    )
 
 
 @app.post("/feedback", response_model=FeedbackRecord)

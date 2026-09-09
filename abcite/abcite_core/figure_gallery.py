@@ -120,6 +120,7 @@ class FigureGallery:
         self.n = len(recs)
         self.avgdl = sum(len(d) for d in self.cap_docs) / max(1, self.n)
         self.dl = [len(d) or 1 for d in self.cap_docs]
+        self.image_toks: list[np.ndarray] | None = None
         self.image_vecs = self._load_or_encode()
 
     def _cache_key(self) -> Path:
@@ -179,6 +180,8 @@ class FigureGallery:
         return np.stack(vecs, axis=0)
 
     def _load_or_encode(self) -> np.ndarray:
+        if bool(getattr(self.vision, "late_interaction", False)):
+            return self._load_or_encode_late()
         exact = self._try_load_cache(self._cache_key())
         if exact is None:
             exact = self._try_load_cache(self._committed_key())
@@ -245,6 +248,86 @@ class FigureGallery:
                 scores[i] += idf * (freq * (k1 + 1) / denom) * qtf
         return scores
 
+    def _late_shard_dir(self) -> Path:
+        name = getattr(self.vision, "name", "colpali")
+        return FIG_ROOT / "cache" / f"late-{name}"
+
+    def _means_from_toks(self, toks: list[np.ndarray]) -> np.ndarray:
+        dim = int(getattr(self.vision, "dim", 128) or 128)
+        means: list[np.ndarray] = []
+        for t in toks:
+            if t is None or np.asarray(t).size == 0:
+                means.append(np.zeros(dim, dtype=np.float32))
+                continue
+            v = np.asarray(t, dtype=np.float32).mean(axis=0)
+            nrm = float(np.linalg.norm(v))
+            means.append(v / nrm if nrm else v)
+            dim = int(v.shape[0])
+        return np.stack(means, axis=0).astype(np.float32)
+
+    def _load_late_shards(self) -> dict[str, np.ndarray]:
+        root = self._late_shard_dir()
+        found: dict[str, np.ndarray] = {}
+        if not root.is_dir():
+            return found
+        for npy in root.glob("*.npy"):
+            found[npy.stem] = np.load(npy)
+        return found
+
+    def _save_late_shard(self, figure_id: str, toks: np.ndarray) -> None:
+        root = self._late_shard_dir()
+        root.mkdir(parents=True, exist_ok=True)
+        np.save(root / f"{figure_id}.npy", np.asarray(toks, dtype=np.float16))
+
+    def _load_or_encode_late(self) -> np.ndarray:
+        """ColPali/ColQwen2 multi-vector cache (per-id shards) plus mean-pooled vecs."""
+        cache = self._cache_key().with_suffix(".npz")
+        ids_path = cache.with_name(cache.stem + ".ids.json")
+        encode_multi = getattr(self.vision, "encode_images_multi", None)
+        if cache.exists() and ids_path.exists() and callable(encode_multi):
+            try:
+                ids = json.loads(ids_path.read_text(encoding="utf-8"))
+                blob = np.load(cache, allow_pickle=True)
+                toks = [np.asarray(blob[f"t{i}"], dtype=np.float32) for i in range(len(ids))]
+                if ids == self.ids and len(toks) == self.n:
+                    self.image_toks = toks
+                    return self._means_from_toks(toks)
+            except Exception:
+                pass
+        by_id = self._load_late_shards()
+        if not callable(encode_multi):
+            return self._encode_paths([r.path for r in self.recs])
+        missing = [i for i, fid in enumerate(self.ids) if fid not in by_id]
+        if missing:
+            name = getattr(self.vision, "name", "colpali")
+            print(
+                f"encoding {len(missing)}/{self.n} images encoder={name} late-interaction",
+                flush=True,
+            )
+            chunk = 16
+            checkpoint = bool(self.recs) and "fixture" not in str(self.recs[0].path)
+            for start in range(0, len(missing), chunk):
+                sl = missing[start : start + chunk]
+                paths = [self.recs[i].path for i in sl]
+                encoded = encode_multi(paths, batch_size=1)
+                for row, i in enumerate(sl):
+                    vec = np.asarray(encoded[row], dtype=np.float32)
+                    by_id[self.ids[i]] = vec
+                    if checkpoint:
+                        self._save_late_shard(self.ids[i], vec)
+                print(f"  late {min(start + chunk, len(missing))}/{len(missing)}", flush=True)
+        empty = np.zeros((0, int(getattr(self.vision, "dim", 128) or 128)), dtype=np.float32)
+        toks = [np.asarray(by_id.get(fid, empty), dtype=np.float32) for fid in self.ids]
+        self.image_toks = toks
+        if self.recs and "fixture" not in str(self.recs[0].path) and len(by_id) == self.n:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            np.savez_compressed(
+                cache,
+                **{f"t{i}": t.astype(np.float16) for i, t in enumerate(toks)},
+            )
+            ids_path.write_text(json.dumps(self.ids), encoding="utf-8")
+        return self._means_from_toks(toks)
+
     def encode_queries(self, questions: list[str], *, holdout_captions: bool = False) -> np.ndarray:
         texts: list[str] = []
         for i, question in enumerate(questions):
@@ -265,6 +348,12 @@ class FigureGallery:
         return np.stack(vecs, axis=0)
 
     def clip_score_matrix(self, questions: list[str]) -> np.ndarray:
+        late = bool(getattr(self.vision, "late_interaction", False))
+        encode_multi = getattr(self.vision, "encode_queries_multi", None)
+        if late and callable(encode_multi) and self.image_toks is not None:
+            from abcite_core.visual_qa import maxsim_matrix
+
+            return maxsim_matrix(encode_multi(questions), self.image_toks)
         qv = self.encode_queries(questions, holdout_captions=False)
         if qv.size == 0 or qv.shape[1] != self.image_vecs.shape[1]:
             return np.zeros((len(questions), self.n), dtype=np.float32)
@@ -278,6 +367,10 @@ class FigureGallery:
         return hashing_vector(text)
 
     def clip_image_only_scores(self, question: str) -> np.ndarray:
+        late = bool(getattr(self.vision, "late_interaction", False))
+        encode_multi = getattr(self.vision, "encode_queries_multi", None)
+        if late and callable(encode_multi) and self.image_toks is not None:
+            return self.clip_score_matrix([question])[0]
         qv = self._query_vec(question, None)
         if qv.shape[0] != self.image_vecs.shape[1]:
             return np.zeros(self.n, dtype=np.float32)
