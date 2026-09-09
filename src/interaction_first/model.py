@@ -343,6 +343,7 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         intra_chain_geometry_neighbor_k: int | None = 32,
         intra_chain_geometry_neighbor_radius: float | None = None,
         intra_chain_geometry_attention_topology: str = "spatial",
+        pair_decoder: str = "bilinear",
     ) -> None:
         require_torch()
         super().__init__()
@@ -409,7 +410,12 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         )
         self.final_antigen_norm = nn.LayerNorm(d_model)
         self.final_antibody_norm = nn.LayerNorm(d_model)
-        self.decoder = BidirectionalBilinearDecoder(d_model, pair_dim)
+        if pair_decoder not in PAIR_DECODERS:
+            raise ValueError(
+                f"pair_decoder must be one of {sorted(PAIR_DECODERS)}, got {pair_decoder!r}"
+            )
+        self.pair_decoder_name = pair_decoder
+        self.decoder = PAIR_DECODERS[pair_decoder](d_model, pair_dim)
         self.epitope_head = nn.Linear(d_model, 1)
         self.paratope_head = nn.Linear(d_model, 1)
         nn.init.constant_(self.epitope_head.bias, -2.5)

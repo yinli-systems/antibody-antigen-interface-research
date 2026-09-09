@@ -236,3 +236,50 @@ def test_registry_exposes_both_decoders() -> None:
     from interaction_first.model import PAIR_DECODERS
 
     assert set(PAIR_DECODERS) == {"bilinear", "hadamard_mlp"}
+
+
+def test_the_model_can_select_either_decoder() -> None:
+    import torch
+
+    from interaction_first.model import (
+        BidirectionalBilinearDecoder,
+        HadamardPairDecoder,
+        PartnerSpecificInteractionModel,
+    )
+
+    expected = {"bilinear": BidirectionalBilinearDecoder, "hadamard_mlp": HadamardPairDecoder}
+    for name, decoder_type in expected.items():
+        model = PartnerSpecificInteractionModel(
+            antigen_input_dim=8, antibody_input_dim=8, d_model=16, pair_dim=8,
+            num_heads=2, num_layers=1, dropout=0.0, pair_decoder=name,
+        ).eval()
+        with torch.no_grad():
+            out = model(
+                torch.randn(1, 5, 8), torch.randn(1, 4, 8),
+                torch.ones(1, 5, dtype=torch.bool), torch.ones(1, 4, dtype=torch.bool),
+            )
+        assert isinstance(model.decoder, decoder_type)
+        assert model.pair_decoder_name == name
+        assert out["pair_logits"].shape == (1, 5, 4)
+
+
+def test_the_default_decoder_is_unchanged() -> None:
+    """Adding an option must not silently change what existing runs build."""
+    from interaction_first.model import BidirectionalBilinearDecoder, PartnerSpecificInteractionModel
+
+    model = PartnerSpecificInteractionModel(
+        antigen_input_dim=8, antibody_input_dim=8, d_model=16, pair_dim=8,
+        num_heads=2, num_layers=1, dropout=0.0,
+    )
+
+    assert isinstance(model.decoder, BidirectionalBilinearDecoder)
+    assert model.pair_decoder_name == "bilinear"
+
+
+def test_an_unknown_decoder_name_is_rejected() -> None:
+    import pytest as _pytest
+
+    from interaction_first.model import PartnerSpecificInteractionModel
+
+    with _pytest.raises(ValueError, match="pair_decoder must be one of"):
+        PartnerSpecificInteractionModel(pair_decoder="nope")
