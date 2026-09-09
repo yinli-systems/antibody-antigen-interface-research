@@ -937,6 +937,7 @@ def command_train(args: argparse.Namespace) -> None:
         score_top_fraction=args.score_top_fraction,
         center_partner_score=not args.disable_score_centering,
         cross_attention_gate_initial_logit=args.cross_attention_gate_initial_logit,
+        pair_decoder=args.pair_decoder,
     ).to(device)
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
@@ -959,6 +960,7 @@ def command_train(args: argparse.Namespace) -> None:
         "architecture": "PartnerSpecificInteractionModelV2",
         "input_dim": args.input_dim,
         "d_model": args.d_model,
+        "pair_decoder": args.pair_decoder,
         "pair_dim": args.pair_dim,
         "num_heads": args.num_heads,
         "num_layers": args.num_layers,
@@ -1031,6 +1033,7 @@ def command_train(args: argparse.Namespace) -> None:
             "score_top_fraction",
             "center_partner_score",
             "cross_attention_gate_initial_logit",
+            "pair_decoder",
             "negative_count",
             "negative_directions",
             "hard_pool_size",
@@ -1209,6 +1212,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
         cross_attention_gate_initial_logit=float(
             config["cross_attention_gate_initial_logit"]
         ),
+        # Absent from checkpoints written before the decoder became selectable,
+        # which were all bilinear.
+        pair_decoder=str(config.get("pair_decoder", "bilinear")),
     ).to(device)
     model.load_state_dict(checkpoint["model_state_dict"], strict=True)
     model.eval()
@@ -1600,6 +1606,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--selection-metric",
         choices=("partner_rank", "total"),
         default="partner_rank",
+    )
+    train.add_argument(
+        "--pair-decoder",
+        choices=("bilinear", "hadamard_mlp"),
+        default="bilinear",
+        help="pair decoder head; the default reproduces every earlier run",
     )
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
