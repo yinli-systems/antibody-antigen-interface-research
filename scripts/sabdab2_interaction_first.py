@@ -53,6 +53,53 @@ def atomic_write_dataframe_parquet(frame: Any, path: Path) -> None:
     os.replace(temporary, path)
 
 
+def directory_fingerprint(path: Path) -> dict[str, Any]:
+    """Identify a data directory without hashing gigabytes of it.
+
+    Embedding and contact stores run to gigabytes across thousands of shards,
+    so a content digest is not affordable on every run. The resolved path and
+    the file count are affordable, and together they distinguish the stores
+    this pipeline can be pointed at.
+    """
+    resolved = path.expanduser().resolve()
+    if not resolved.is_dir():
+        return {"path": str(resolved), "exists": False}
+    return {
+        "path": str(resolved),
+        "exists": True,
+        "file_count": sum(1 for entry in resolved.rglob("*") if entry.is_file()),
+    }
+
+
+def input_provenance(args: argparse.Namespace) -> dict[str, Any]:
+    """Record which data a run actually read.
+
+    The receipts named every hyperparameter and the split manifest digest but
+    no input directory, so a finished run did not say what it was trained or
+    evaluated on. Recovering that for the seed replication meant matching the
+    split file by digest and the embedding store by tensor width -- and the
+    store that width identified was not the one the directory name suggested.
+    """
+    prepare = args.prepare_dir.expanduser().resolve()
+    instances = prepare / "instances.parquet"
+    manifest = args.split_manifest.expanduser().resolve()
+    return {
+        "coverage": (
+            "paths and cheap identifiers only; the contact and embedding "
+            "stores are identified by path and file count, not by content"
+        ),
+        "prepare_dir": {
+            "path": str(prepare),
+            "instances_parquet_sha256": (
+                sha256_file(instances) if instances.is_file() else None
+            ),
+        },
+        "contact_dir": directory_fingerprint(args.contact_dir),
+        "embedding_dir": directory_fingerprint(args.embedding_dir),
+        "split_manifest": {"path": str(manifest), "sha256": sha256_file(manifest)},
+    }
+
+
 def sha256_file(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
     """Return the SHA-256 digest of one file using bounded memory."""
     digest = hashlib.sha256()
@@ -1000,6 +1047,7 @@ def command_train(args: argparse.Namespace) -> None:
         "selection_metric": args.selection_metric,
         "seed": args.seed,
         "split_manifest_sha256": split_digest,
+        "inputs": input_provenance(args),
         "class_weights": class_weights,
         "max_positive_weight": args.max_positive_weight,
         "train_instance_count": len(train_frame),
@@ -1415,6 +1463,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "checkpoint": str(checkpoint_path),
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "split_manifest_sha256": expected_split_digest,
+        "inputs": input_provenance(args),
         "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection",
         "pair": {
             "micro": pair_micro,
