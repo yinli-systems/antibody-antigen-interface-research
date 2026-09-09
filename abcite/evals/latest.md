@@ -51,12 +51,12 @@ abstain failures                 none
 ## CLIP contrast (not SOTA)
 
 ```
-CLIP encoder                   clip-vit-b-32
+CLIP encoder                   local-image
 figure queries                 14
-mean fused RRF gap             0.001289
-mean image-only cosine gap     0.009883
-mean caption BM25 gap          12.189275
-min gap fused                  0.000768
+mean fused RRF gap             0.001326
+mean image-only cosine gap     0.006296
+mean caption BM25 gap          12.341795
+min gap fused                  0.000529
 self-hit rate                  100.0%
 hub figs (rank1 for >1 query)  {}
 BiomedCLIP                     not requested
@@ -82,6 +82,26 @@ Gallery **N=1200** (). n_answerable=**49**. Query is a visual question (panel la
 | ColPali / ColQwen2 T→I | — | — | — | — |
 
 Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=0.000 vision=0.122. VQA e2e=0.1864 oracle=0.6441 cite@1=0.1224. ColPali: ColPali not requested this run. Next GPU job: ABCITE_COLPALI=1 ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali See `evals/visual_qa_latest.json`.
+
+## Audio / video QA (unified multimodal RAG)
+
+Audio gallery **N=6** (encoder=wav-hash; synthetic fixture). Query is not the transcript. RRF is within-audio only.
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| transcript BM25 | 0.500 | 1.000 | 1.000 | 0.782 |
+| CLAP / wav-hash T→A | 0.167 | 0.833 | 1.000 | 0.470 |
+| within-audio RRF | 0.167 | 1.000 | 1.000 | 0.597 |
+
+Video gallery **N=4** (encoder=local-image; synthetic keyframes). RRF is within-video (frames ⟂ audio), never into paper caption BM25.
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| transcript BM25 | 0.250 | 1.000 | 1.000 | 0.640 |
+| keyframe CLIP T→I | 0.250 | 1.000 | 1.000 | 0.640 |
+| audio track T→A | 0.250 | 1.000 | 1.000 | 0.640 |
+| within-video RRF | 0.250 | 1.000 | 1.000 | 0.608 |
+See `evals/audio_qa_latest.json` and `evals/video_qa_latest.json`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)
 

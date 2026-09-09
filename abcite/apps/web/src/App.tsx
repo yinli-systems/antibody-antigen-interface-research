@@ -37,14 +37,33 @@ const VISUAL_EXAMPLES = [
   "flowchart split by dotted silver rules with emerald checkmarks and crimson x-marks",
 ];
 
+const AUDIO_EXAMPLES = [
+  "spoken remark about a viral protein's far-end triplicate top, without reading a slide",
+  "which recording describes a mid-mass protein rung that appears only after a chemical kick",
+];
+
+const VIDEO_EXAMPLES = [
+  "lecture cut from a scarlet similarity grid to a blue volcano of points",
+  "two-frame microscopy: first a dark view of emerald dots, then an indigo oval overlay",
+];
+
+type Task = "evidence" | "visual_qa" | "audio_qa" | "video_qa" | "unified";
+
 export default function App() {
-  const [task, setTask] = useState<"evidence" | "visual_qa">("visual_qa");
+  const [task, setTask] = useState<Task>("visual_qa");
   const [question, setQuestion] = useState(VISUAL_EXAMPLES[0]);
   const [highStakes, setHighStakes] = useState(false);
   const [resp, setResp] = useState<QueryResponse | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const examples = task === "visual_qa" ? VISUAL_EXAMPLES : EVIDENCE_EXAMPLES;
+  const examples =
+    task === "visual_qa"
+      ? VISUAL_EXAMPLES
+      : task === "audio_qa"
+        ? AUDIO_EXAMPLES
+        : task === "video_qa"
+          ? VIDEO_EXAMPLES
+          : EVIDENCE_EXAMPLES;
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -89,24 +108,36 @@ export default function App() {
     <div className="shell">
       <header className="top">
         <h1>AbCite</h1>
-        <span>Cite-or-abstain copilot · visual figure QA · papers · PDB maps · Yin Li 2026-09-10</span>
+        <span>Cite-or-abstain multimodal RAG · text · figure · audio · video · Yin Li 2026-09-10</span>
       </header>
 
       <form className="panel" onSubmit={onSubmit}>
         <label htmlFor="q">Question</label>
         <textarea id="q" value={question} onChange={(e) => setQuestion(e.target.value)} />
-        <label className="flag">
-          <input
-            type="checkbox"
-            checked={task === "visual_qa"}
-            onChange={(e) => {
-              const next = e.target.checked ? "visual_qa" : "evidence";
-              setTask(next);
-              setQuestion(next === "visual_qa" ? VISUAL_EXAMPLES[0] : EVIDENCE_EXAMPLES[0]);
-            }}
-          />
-          Visual figure QA (`task=visual_qa`)
-        </label>
+        <label htmlFor="task">Task</label>
+        <select
+          id="task"
+          value={task}
+          onChange={(e) => {
+            const next = e.target.value as Task;
+            setTask(next);
+            setQuestion(
+              next === "visual_qa"
+                ? VISUAL_EXAMPLES[0]
+                : next === "audio_qa"
+                  ? AUDIO_EXAMPLES[0]
+                  : next === "video_qa"
+                    ? VIDEO_EXAMPLES[0]
+                    : EVIDENCE_EXAMPLES[0],
+            );
+          }}
+        >
+          <option value="visual_qa">visual figure QA</option>
+          <option value="audio_qa">audio QA</option>
+          <option value="video_qa">video QA</option>
+          <option value="unified">unified multimodal</option>
+          <option value="evidence">text evidence</option>
+        </select>
         <label className="flag">
           <input type="checkbox" checked={highStakes} onChange={(e) => setHighStakes(e.target.checked)} />
           Mark high-stakes (forces HITL)

@@ -11,3 +11,6 @@ apps/web/dist/
 *.log
 evals/.cache/
 evals/figures/cache/
+evals/audio/cache/
+evals/video/cache/
+evals/av_cache/

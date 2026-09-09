@@ -1,12 +1,12 @@
 # AbCite — antibody evidence copilot
 
-**Yin Li · 2026-09-09.** Cite-or-abstain RAG over papers, figures, and PDB residue maps. Not a chatbot.
+**Yin Li · 2026-09-10.** Cite-or-abstain **unified multimodal RAG** over papers, figures, audio, video, and PDB residue maps. Not a chatbot.
 
-抗体证据副驾驶：问一篇论文声称的 epitope 是否与 PDB / 同一抗原上其他抗体重叠。答案必须引用 chunk；证据不足则弃权；高风险声明走 HITL。
+抗体证据副驾驶：问一篇论文声称的 epitope 是否与 PDB / 同一抗原上其他抗体重叠。答案必须引用 chunk（文本 / 图 / 音频 / 视频）；证据不足则弃权；高风险声明走 HITL。
 
 ## Problem
 
-Antibody papers often claim epitope overlap without linking residue evidence to a PDB complex or to another antibody on the same antigen. AbCite retrieves **text + figure + structure** chunks, attaches claim-level citations (with thumbnails), and **abstains** when the index cannot support the claim.
+Antibody papers often claim epitope overlap without linking residue evidence to a PDB complex or to another antibody on the same antigen. AbCite retrieves **text + figure + audio + video + structure**, attaches claim-level citations (with thumbnails), and **abstains** when the index cannot support the claim.
 
 FrameContact training code is **not** modified. Public development-validation overlap numbers are cited with their claim boundary (not official test / not SOTA): true epitope Jaccard **0.0566**, a0 predicted top-k Jaccard mean **0.484**.
 
@@ -14,18 +14,22 @@ FrameContact training code is **not** modified. Public development-validation ov
 
 ```mermaid
 flowchart LR
-  UI[React desktop UI] --> API[FastAPI /query]
+  UI[React desktop UI] --> API["FastAPI /query or /rag"]
   API --> G[Evidence graph]
-  G --> R[Hybrid BM25 + dense; CLIP fusion off]
-  G --> V[Visual QA: text → figure pixels]
-  G --> T[MCP: RCSB cache / overlap / literature]
-  G --> L[LLM phrasing if keys else extractive]
-  R --> C[Corpus: text / SVG figures / residue maps]
+  G --> R[Text BM25 + dense; CLIP fusion off]
+  G --> V[Visual QA: CLIP / ColPali T→I]
+  G --> A[Audio: Whisper + CLAP / wav-hash + transcript BM25]
+  G --> VD[Video: keyframes + Whisper track]
+  G --> T[MCP: RCSB / overlap]
+  R --> C[Papers + PDB maps]
   V --> F[PMC OA figures]
-  G -->|low evidence| A[Abstain]
-  G -->|clinical / annotation change| H[HITL interrupt]
-  G -->|ok| ANS[Answer + citations]
+  A --> W[OA / synthetic wav]
+  VD --> K[Keyframes + wav]
+  G -->|per-modality cite| ANS[Answer + citations]
+  G -->|low evidence| X[Abstain]
 ```
+
+One `/query` (`/rag` alias) accepts `task=evidence|visual_qa|audio_qa|video_qa|unified` plus optional `image_path` / `audio_path` / `video_path`. **Fusion is within-modality only.** Do not RRF vision into caption BM25 for the text-only protocol (that already hurt).
 
 ## 60-second demo
 
@@ -38,8 +42,12 @@ python evals/build_corpus.py
 pytest
 python evals/run.py
 python evals/download_figures.py --max 16000 --source pmc --workers 12   # OA jpg/png gallery; resume-able
+python evals/build_av_fixtures.py                 # tiny committed wav + keyframe fixtures
 python evals/run_visual_qa.py --fixture           # visual figure QA on 12 OA jpgs
-python evals/run_visual_qa.py                     # primary multimodal: visual QA + pixel retrieval
+python evals/run_visual_qa.py                     # visual QA + pixel retrieval (ColPali: --try-colpali)
+python evals/run_audio_qa.py                      # transcript BM25 vs CLAP/hash
+python evals/run_video_qa.py                      # keyframes vs transcript
+python evals/run_unified.py                       # four-modality snapshot
 python evals/run_multimodal.py                    # appendix: held-out caption-as-query + Protocol B
 python -m uvicorn apps.api.main:app --reload --port 8000
 # other terminal
@@ -102,13 +110,40 @@ All loaded answerable queries are the BM25-should-fail subset (`python evals/run
 | rerank-on-BM25-top50 (BiomedCLIP) | 0.020 | 0.082 | 0.102 | 0.049 |
 | ColPali / ColQwen2 T→I | — | — | — | — |
 
-Vision T→I **beats caption BM25** at R@1 and nDCG@5 on this fair visual gold. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (**hurts** T→I **0.122→0.020** at R@1); fusion/RRF ablation. ColPali not run (5090 SSH unreachable; install with `pip install -e ".[colpali]"`).
+Vision T→I **beats caption BM25** at R@1 and nDCG@5 on this fair visual gold. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (**hurts** T→I **0.122→0.020** at R@1); fusion/RRF ablation. ColPali: 5090 is up (`ssh runpod-5090` → `157.157.221.30:58649` / `c474d51dce71`). Hub **429** from the pod. Mac cached `vidore/colqwen2-v1.0` + `Qwen/Qwen2-VL-2B-Instruct` (4.1 GB); adapter rsynced, base rsync still in flight — **no ColPali R@K yet**.
 
 VQA cite-or-abstain (heuristic, not a VLM): e2e **18.6%**, oracle-figure **64.4%**, cite@1 **12.2%**, abstain **70%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`.
 
 **Not SOTA.** ViDoRe ColPali nDCG@5 **81.3** is page retrieval with late interaction. Ours is figure-jpg CLIP on n=49 / N=1,200: nDCG@5 **0.228** (OpenCLIP) / **0.187** (BiomedCLIP). SciMMIR-FT Hits@10 **13.5%** and BiomedCLIP paper R@1 **~56%** are caption-as-query on different galleries — see appendix, do not mix.
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
+
+### Audio + video (unified multimodal RAG)
+
+Same cite-or-abstain product. Queries are **not** the transcript. RRF is **within-audio** or **within-video** only. CI fixtures are **synthetic** (labeled sine wav + PNG keyframes); `python evals/download_av.py` can add short Wikimedia Commons clips. Whisper (`faster-whisper`) and LAION CLAP are opt-in (`ABCITE_WHISPER=1`, `ABCITE_CLAP=1`).
+
+Gold: `evals/gold/audio_qa.jsonl` (**n=8**: 6 answerable + 2 abstain) and `evals/gold/video_qa.jsonl` (**n=6**: 4 answerable + 2 abstain). All answerable items are `transcript_bm25_should_fail`.
+
+**Audio** (`python evals/run_audio_qa.py`, wav-hash, N=6 synthetic):
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| transcript BM25 | **0.500** | 1.000 | 1.000 | 0.782 |
+| CLAP / wav-hash T→A | 0.167 | 0.833 | 1.000 | 0.470 |
+| within-audio RRF | 0.167 | 1.000 | 1.000 | 0.597 |
+
+On this tiny sine-tone fixture, **transcript BM25 still wins R@1** (wav-hash is not CLAP). That is honest. GPU CLAP/Whisper is the next column.
+
+**Video** (`python evals/run_video_qa.py`, local-image, N=4 synthetic keyframes):
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| transcript BM25 | 0.250 | 1.000 | 1.000 | 0.640 |
+| keyframe CLIP / hash T→I | 0.250 | 1.000 | 1.000 | 0.640 |
+| audio track T→A | 0.250 | 1.000 | 1.000 | 0.640 |
+| within-video RRF | 0.250 | 1.000 | 1.000 | 0.608 |
+
+Frames do **not** beat transcript BM25 on n=4 synthetic tiles. Receipts: `evals/audio_qa_latest.json`, `evals/video_qa_latest.json`. `POST /query` `task=audio_qa|video_qa|unified`.
 
 OpenCLIP ViT-B-32 is the default real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Optional ColPali: `pip install -e ".[colpali]"` and `ABCITE_COLPALI=1`. Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`.
 
@@ -166,7 +201,8 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary multimodal demo; CLIP fusion **off** by default | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColPali engine installed, **weights blocked** (Hub 429) |
+| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColPali weights: Mac HF cache → rsync to 5090 |
+| Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified` | CLAP/Whisper opt-in; CI uses synthetic wav/PNG fixtures; CC download is `evals/download_av.py` |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
 | Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |
@@ -175,7 +211,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 
 ## Tests
 
-`pytest` (40+ + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, fixture≥150 + hard≥35, multimodal, **visual figure QA** on 12 OA jpgs, caption-as-query appendix, paper holdout, vision rerank top-K, fusion off by default, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate.
+`pytest` (40+ + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, fixture≥150 + hard≥35, multimodal, **visual figure QA** on 12 OA jpgs, **audio QA** + **video QA** synthetic fixtures, caption-as-query appendix, paper holdout, vision rerank top-K, fusion off by default, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate.
 
 ## Security
 

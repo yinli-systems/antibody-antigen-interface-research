@@ -31,6 +31,8 @@ clip = [
   "pillow>=10.0.0",
 ]
 colpali = ["colpali-engine>=0.3.0"]
+audio = ["faster-whisper>=1.0.0"]
+av = ["faster-whisper>=1.0.0"]
 mcp = ["mcp>=1.2.0"]
 
 [tool.setuptools.packages.find]

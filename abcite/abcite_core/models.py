@@ -12,6 +12,8 @@ class Modality(str, Enum):
     TEXT = "text"
     FIGURE = "figure"
     STRUCTURE = "structure"
+    AUDIO = "audio"
+    VIDEO = "video"
 
 
 class Chunk(BaseModel):
@@ -58,6 +60,9 @@ class QueryRequest(BaseModel):
     high_stakes: bool = False
     top_k: int = 6
     task: str = "evidence"
+    image_path: str | None = None
+    audio_path: str | None = None
+    video_path: str | None = None
 
 
 class QueryResponse(BaseModel):

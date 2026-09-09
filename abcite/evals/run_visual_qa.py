@@ -74,8 +74,29 @@ def main() -> None:
     ap.add_argument("--fixture", action="store_true")
     ap.add_argument("--rerank-k", type=int, default=DEFAULT_RERANK_K)
     ap.add_argument("--try-colpali", action="store_true")
+    ap.add_argument("--max-n", type=int, default=0, help="Cap gallery size (keep gold ids first)")
     args = ap.parse_args()
     recs = load_figure_records(prefer_cache=not args.fixture)
+    if args.max_n and args.max_n < len(recs):
+        from abcite_core.visual_qa import load_visual_qa_gold
+
+        gold_ids: list[str] = []
+        for it in load_visual_qa_gold({r.figure_id for r in recs}, recs, require_gold=False):
+            gold_ids.extend(it.get("gold_figure_ids") or [])
+        by = {r.figure_id: r for r in recs}
+        keep: list = []
+        seen: set[str] = set()
+        for gid in gold_ids:
+            if gid in by and gid not in seen:
+                keep.append(by[gid])
+                seen.add(gid)
+        for rec in recs:
+            if rec.figure_id not in seen:
+                keep.append(rec)
+                seen.add(rec.figure_id)
+            if len(keep) >= args.max_n:
+                break
+        recs = keep
     vision = build_vision_encoder()
     gallery = FigureGallery(recs, vision)
     items = load_visual_qa_gold(set(gallery.ids), recs)

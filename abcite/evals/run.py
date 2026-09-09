@@ -93,7 +93,64 @@ def _visual_qa_snapshot_md() -> str:
         f"cite@1={vqa.get('cite_top1', '—')}. "
         f"{('ColPali: ' + col_skip) if col_skip and not col else ''} "
         "See `evals/visual_qa_latest.json`.\n"
+        f"{_av_snapshot_md()}"
     )
+
+
+def _av_snapshot_md() -> str:
+    audio = _load_json(ROOT / "evals" / "audio_qa_latest.json")
+    video = _load_json(ROOT / "evals" / "video_qa_latest.json")
+    if not audio and not video:
+        return ""
+    parts = ["\n## Audio / video QA (unified multimodal RAG)\n"]
+    if audio:
+        parts.append(
+            f"\nAudio gallery **N={audio.get('n_gallery')}** "
+            f"(encoder={audio.get('encoder')}; "
+            f"{'synthetic fixture' if audio.get('synthetic_fixture') else 'downloaded clips'}). "
+            "Query is not the transcript. RRF is within-audio only.\n\n"
+            "| Column | R@1 | R@5 | R@10 | nDCG@5 |\n"
+            "|---|---|---|---|---|\n"
+            f"| transcript BM25 | {_rk(audio.get('transcript_bm25'), 'recall@1')} | "
+            f"{_rk(audio.get('transcript_bm25'), 'recall@5')} | "
+            f"{_rk(audio.get('transcript_bm25'), 'recall@10')} | "
+            f"{_rk(audio.get('transcript_bm25'), 'ndcg@5')} |\n"
+            f"| CLAP / wav-hash T→A | {_rk(audio.get('clap_t2a'), 'recall@1')} | "
+            f"{_rk(audio.get('clap_t2a'), 'recall@5')} | "
+            f"{_rk(audio.get('clap_t2a'), 'recall@10')} | "
+            f"{_rk(audio.get('clap_t2a'), 'ndcg@5')} |\n"
+            f"| within-audio RRF | {_rk(audio.get('within_audio_rrf'), 'recall@1')} | "
+            f"{_rk(audio.get('within_audio_rrf'), 'recall@5')} | "
+            f"{_rk(audio.get('within_audio_rrf'), 'recall@10')} | "
+            f"{_rk(audio.get('within_audio_rrf'), 'ndcg@5')} |\n"
+        )
+    if video:
+        parts.append(
+            f"\nVideo gallery **N={video.get('n_gallery')}** "
+            f"(encoder={video.get('encoder')}; "
+            f"{'synthetic keyframes' if video.get('synthetic_fixture') else 'CC clips'}). "
+            "RRF is within-video (frames ⟂ audio), never into paper caption BM25.\n\n"
+            "| Column | R@1 | R@5 | R@10 | nDCG@5 |\n"
+            "|---|---|---|---|---|\n"
+            f"| transcript BM25 | {_rk(video.get('transcript_bm25'), 'recall@1')} | "
+            f"{_rk(video.get('transcript_bm25'), 'recall@5')} | "
+            f"{_rk(video.get('transcript_bm25'), 'recall@10')} | "
+            f"{_rk(video.get('transcript_bm25'), 'ndcg@5')} |\n"
+            f"| keyframe CLIP T→I | {_rk(video.get('frame_clip_t2i'), 'recall@1')} | "
+            f"{_rk(video.get('frame_clip_t2i'), 'recall@5')} | "
+            f"{_rk(video.get('frame_clip_t2i'), 'recall@10')} | "
+            f"{_rk(video.get('frame_clip_t2i'), 'ndcg@5')} |\n"
+            f"| audio track T→A | {_rk(video.get('audio_clap_t2a'), 'recall@1')} | "
+            f"{_rk(video.get('audio_clap_t2a'), 'recall@5')} | "
+            f"{_rk(video.get('audio_clap_t2a'), 'recall@10')} | "
+            f"{_rk(video.get('audio_clap_t2a'), 'ndcg@5')} |\n"
+            f"| within-video RRF | {_rk(video.get('within_video_rrf'), 'recall@1')} | "
+            f"{_rk(video.get('within_video_rrf'), 'recall@5')} | "
+            f"{_rk(video.get('within_video_rrf'), 'recall@10')} | "
+            f"{_rk(video.get('within_video_rrf'), 'ndcg@5')} |\n"
+        )
+    parts.append("See `evals/audio_qa_latest.json` and `evals/video_qa_latest.json`.\n")
+    return "".join(parts)
 
 
 def _multimodal_snapshot_md() -> str:

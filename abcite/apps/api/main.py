@@ -104,6 +104,7 @@ def search_image(
 
 
 @app.post("/query", response_model=QueryResponse)
+@app.post("/rag", response_model=QueryResponse)
 def query(req: QueryRequest) -> QueryResponse:
     graph: EvidenceGraph = app.state.graph
     return graph.invoke(
@@ -111,6 +112,9 @@ def query(req: QueryRequest) -> QueryResponse:
         high_stakes=req.high_stakes,
         top_k=req.top_k,
         task=req.task,
+        image_path=req.image_path,
+        audio_path=req.audio_path,
+        video_path=req.video_path,
     )
 
 

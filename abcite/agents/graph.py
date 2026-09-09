@@ -159,20 +159,32 @@ class EvidenceGraph:
         hitl_enabled: bool,
         provider_name: str,
         llm: LLMProvider | None = None,
+        audio_gallery=None,
+        video_gallery=None,
     ) -> None:
         self.index = index
         self.abstain_threshold = abstain_threshold
         self.hitl_enabled = hitl_enabled
         self.llm = llm or LocalLLM()
         self.provider_name = provider_name or self.llm.name
+        self.audio_gallery = audio_gallery
+        self.video_gallery = video_gallery
 
     def invoke(
-        self, question: str, high_stakes: bool = False, top_k: int = 6, task: str = "evidence"
+        self,
+        question: str,
+        high_stakes: bool = False,
+        top_k: int = 6,
+        task: str = "evidence",
+        image_path: str | None = None,
+        audio_path: str | None = None,
+        video_path: str | None = None,
     ) -> QueryResponse:
         t0 = time.perf_counter()
         trace_id = str(uuid.uuid4())
         log.info("trace=%s retrieve task=%s q=%r", trace_id, task, question[:180])
-        if (task or "evidence").lower() in {"visual_qa", "visual", "vqa"}:
+        task_l = (task or "evidence").lower()
+        if task_l in {"visual_qa", "visual", "vqa"}:
             from abcite_core.visual_qa import visual_qa_response
 
             hits = self.index.search_visual(question, top_k=top_k)
@@ -190,6 +202,38 @@ class EvidenceGraph:
                 {"status": resp.status.value},
             )
             return resp
+        if task_l in {"audio_qa", "audio"}:
+            from abcite_core.audio_rag import audio_qa_response, load_audio_records, AudioGallery
+
+            gal = self.audio_gallery or AudioGallery(load_audio_records(prefer_cache=True))
+            self.audio_gallery = gal
+            resp = audio_qa_response(
+                question,
+                gal,
+                provider=self.provider_name,
+                trace_id=trace_id,
+                latency_ms=(time.perf_counter() - t0) * 1000,
+                top_k=top_k,
+            )
+            emit_run("abcite.audio_qa", trace_id, {"question": question, "task": "audio_qa"}, {"status": resp.status.value})
+            return resp
+        if task_l in {"video_qa", "video"}:
+            from abcite_core.video_rag import video_qa_response, load_video_records, VideoGallery
+
+            gal = self.video_gallery or VideoGallery(load_video_records(prefer_cache=True))
+            self.video_gallery = gal
+            resp = video_qa_response(
+                question,
+                gal,
+                provider=self.provider_name,
+                trace_id=trace_id,
+                latency_ms=(time.perf_counter() - t0) * 1000,
+                top_k=top_k,
+            )
+            emit_run("abcite.video_qa", trace_id, {"question": question, "task": "video_qa"}, {"status": resp.status.value})
+            return resp
+        if task_l in {"unified", "rag", "multimodal"}:
+            return self._invoke_unified(question, high_stakes, top_k, trace_id, t0)
         hits = self.index.search(question, top_k=top_k)
         tools = run_tools(question)
         chunks = [h.chunk for h in hits]
@@ -250,6 +294,125 @@ class EvidenceGraph:
             trace_id,
             {"question": question},
             {"status": resp.status.value, "n_cite": len(citations)},
+        )
+        return resp
+
+    def _invoke_unified(
+        self,
+        question: str,
+        high_stakes: bool,
+        top_k: int,
+        trace_id: str,
+        t0: float,
+    ) -> QueryResponse:
+        """Per-modality retrieve + cite. No cross-modal RRF into caption BM25."""
+        from abcite_core.models import Citation
+        from providers.base import citations_from_chunks
+
+        text_hits = self.index.search(question, top_k=top_k)
+        visual_hits = self.index.search_visual(question, top_k=min(3, top_k))
+        citations: list[Citation] = []
+        scores: dict[str, float] = {}
+        notes: list[str] = []
+        if text_hits and not should_abstain(
+            question,
+            text_hits,
+            self.abstain_threshold,
+            {(c.pdb_id or "").upper() for c in self.index.chunks if c.pdb_id},
+        ):
+            citations.extend(citations_from_chunks([h.chunk for h in text_hits[:3]], claim=question))
+            scores.update({h.chunk.chunk_id: h.score for h in text_hits[:3]})
+            notes.append("text")
+        if visual_hits and visual_hits[0].image > 0.05:
+            from abcite_core.visual_qa import visual_qa_response
+
+            vresp = visual_qa_response(
+                question,
+                visual_hits,
+                provider=self.provider_name,
+                trace_id=trace_id,
+                latency_ms=0,
+            )
+            if vresp.status == AnswerStatus.ANSWERED:
+                citations.extend(vresp.citations)
+                scores.update(vresp.retrieval_scores)
+                notes.append("figure")
+        try:
+            from abcite_core.audio_rag import AudioGallery, audio_qa_response, load_audio_records
+
+            gal = self.audio_gallery or AudioGallery(load_audio_records(prefer_cache=True))
+            self.audio_gallery = gal
+            aresp = audio_qa_response(
+                question, gal, provider=self.provider_name, trace_id=trace_id, latency_ms=0, top_k=3
+            )
+            if aresp.status == AnswerStatus.ANSWERED:
+                citations.extend(aresp.citations)
+                scores.update(aresp.retrieval_scores)
+                notes.append("audio")
+        except Exception:
+            pass
+        try:
+            from abcite_core.video_rag import VideoGallery, load_video_records, video_qa_response
+
+            vgal = self.video_gallery or VideoGallery(load_video_records(prefer_cache=True))
+            self.video_gallery = vgal
+            vresp = video_qa_response(
+                question, vgal, provider=self.provider_name, trace_id=trace_id, latency_ms=0, top_k=3
+            )
+            if vresp.status == AnswerStatus.ANSWERED:
+                citations.extend(vresp.citations)
+                scores.update(vresp.retrieval_scores)
+                notes.append("video")
+        except Exception:
+            pass
+        seen: set[str] = set()
+        uniq: list[Citation] = []
+        for c in citations:
+            if c.chunk_id in seen:
+                continue
+            seen.add(c.chunk_id)
+            uniq.append(c)
+        latency = (time.perf_counter() - t0) * 1000
+        if not uniq:
+            resp = QueryResponse(
+                trace_id=trace_id,
+                status=AnswerStatus.ABSTAIN,
+                answer=(
+                    "Insufficient evidence across text, figures, audio, and video. Abstaining."
+                ),
+                citations=[],
+                provider=self.provider_name,
+                retrieval_scores=scores,
+                latency_ms=latency,
+            )
+            emit_run("abcite.unified", trace_id, {"question": question}, {"status": "abstain"})
+            return resp
+        answer = (
+            f"Unified cite-or-abstain over {', '.join(notes) or 'no'} modalit"
+            f"{'y' if len(notes) == 1 else 'ies'}. "
+            "Each citation is from its own retriever; vision was not RRF'd into caption BM25."
+        )
+        if needs_hitl(question, high_stakes, self.hitl_enabled):
+            status = AnswerStatus.HITL_PENDING
+            reason = "High-stakes claim requires human approval before release."
+        else:
+            status = AnswerStatus.ANSWERED
+            reason = None
+        resp = QueryResponse(
+            trace_id=trace_id,
+            status=status,
+            answer=answer,
+            citations=uniq[:8],
+            hitl_reason=reason,
+            provider=self.provider_name,
+            retrieval_scores=scores,
+            latency_ms=latency,
+        )
+        emit_run(
+            "abcite.unified",
+            trace_id,
+            {"question": question, "modalities": notes},
+            {"status": resp.status.value, "n_cite": len(uniq)},
         )
         return resp
 

@@ -1,0 +1,6 @@
+{"audio_id": "aud-01", "path": "evals/audio/fixture/aud-01.wav", "transcript": "The prefusion spike displays a three-fold crown at its distal tip.", "title": "spike crown remark", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-02", "path": "evals/audio/fixture/aud-02.wav", "transcript": "Western blot lanes show a fifty kilodalton band only after induction.", "title": "blot induction remark", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-03", "path": "evals/audio/fixture/aud-03.wav", "transcript": "Confocal stacks reveal nuclear speckles after the emerald dye.", "title": "speckle remark", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-04", "path": "evals/audio/fixture/aud-04.wav", "transcript": "The lecturer notes a gadolinium-enhancing orbit lesion on the left.", "title": "orbit remark", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-05", "path": "evals/audio/fixture/aud-05.wav", "transcript": "A forest plot diamond sits below the dashed null line.", "title": "forest remark", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-06", "path": "evals/audio/fixture/aud-06.wav", "transcript": "Room tone only. No scientific claim is spoken.", "title": "room tone", "source": "synthetic-fixture", "synthetic": true}

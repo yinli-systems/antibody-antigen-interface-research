@@ -1,0 +1,52 @@
+{
+  "protocol": "video_qa",
+  "n_gallery": 4,
+  "n_queries": 6,
+  "n_answerable": 4,
+  "encoder": "local-image",
+  "synthetic_fixture": true,
+  "transcript_bm25": {
+    "recall@1": 0.25,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "ndcg@5": 0.6404,
+    "n": 4
+  },
+  "frame_clip_t2i": {
+    "recall@1": 0.25,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "ndcg@5": 0.6404,
+    "n": 4
+  },
+  "audio_clap_t2a": {
+    "recall@1": 0.25,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "ndcg@5": 0.6404,
+    "n": 4
+  },
+  "within_video_rrf": {
+    "recall@1": 0.25,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "ndcg@5": 0.6077,
+    "n": 4
+  },
+  "transcript_bm25_should_fail_subset": {
+    "recall@1": 0.25,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "ndcg@5": 0.6404,
+    "n": 4
+  },
+  "frame_should_fail_subset": {
+    "recall@1": 0.25,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "ndcg@5": 0.6404,
+    "n": 4
+  },
+  "note": "Video keyframe + spoken-track retrieval. Query is not the lecture transcript. RRF is within-video (frames \u27c2 audio). Not mixed with paper caption BM25. Fixtures are synthetic spectrogram/keyframe pairs unless cache/ has CC downloads.",
+  "frames_beat_transcript_bm25_r@1": false
+}
