@@ -166,10 +166,21 @@ class EsmIf1Backend(_TorchBackend):
                 f"backbone has {coordinates.shape[0]} residues for a "
                 f"{len(unit.sequence)}-residue sequence"
             )
+        # fair-esm's get_encoder_output builds its batch with no device, so with
+        # the model on CUDA it raises "expected all tensors to be on the same
+        # device". CoordBatchConverter accepts a device; the wrapper simply never
+        # passes one, so do the conversion here instead of falling back to CPU.
+        converter = inverse_folding.util.CoordBatchConverter(alphabet)
         with torch.no_grad():
-            representation = inverse_folding.util.get_encoder_output(
-                model, alphabet, coordinates.numpy()
+            batch_coordinates, confidence, _, _, padding_mask = converter(
+                [(coordinates.numpy(), None, None)], device=self.device
             )
+            encoder_out = model.encoder.forward(
+                batch_coordinates, padding_mask, confidence, return_all_hiddens=False
+            )
+            # CoordBatchConverter pads one row at each end, so the encoder
+            # returns [length + 2, batch, dim]; drop both to recover the residues.
+            representation = encoder_out["encoder_out"][0][1:-1, 0]
         if representation.shape[0] != len(unit.sequence):
             raise RepresentationError("ESM-IF1 returned an unexpected residue count")
         return representation.to(torch.float32).cpu()
