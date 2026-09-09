@@ -1,11 +1,16 @@
 #!/bin/bash
 # Aggregate the seed replicates of the baseline margin into one verdict.
 #
-# This is CPU-only work, but it does not belong on the login node: the
+# This is CPU-only work, but it does not belong on an interactive session: the
 # aggregation reads ten evaluations of ~9.6M candidate pairs each and runs
-# single-threaded for tens of minutes, and two attempts to run it interactively
-# were killed without a traceback and without writing their output. Submitting
-# it gives the work a real allocation and a log that survives a dropped session.
+# single-threaded for roughly fifty minutes. The first attempt was attached to
+# an ssh session that dropped, which took the process with it. Submitting it
+# gives the work an allocation and a log that outlives the session that started
+# it.
+#
+# It is not a watchdog problem: a second attempt, detached with setsid, ran to
+# completion on the login node. Its output arrives only at the end, so an empty
+# log part-way through says nothing about whether it is alive.
 #
 #   sbatch --export=ALL,\
 #MARGIN_SOURCE_ROOT=...,MARGIN_OUTPUT_ROOT=...,MARGIN_PYTHON_BIN=... \
