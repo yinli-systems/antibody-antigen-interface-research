@@ -1,12 +1,19 @@
-"""Download real OA paper figures (SciMMIR stream or Europe PMC).
+"""Download real OA paper figures (PMC Cloud / Europe PMC / NCBI fallback).
+
+Fast path (2026): AWS Open Data bucket ``pmc-oa-opendata`` (us-east-1),
+anonymous HTTPS — not per-article NCBI ``/pmc/articles/instance/.../bin``
+and not E-utilities per figure.
 
 Usage:
-  python evals/download_figures.py --max 1200
+  python evals/download_figures.py --max 1200 --source pmc --workers 12
   python evals/download_figures.py --max 20 --fixture-only
+  python evals/download_figures.py --max 1200 --source scimmir
+
+SciMMIR/HuggingFace is opt-in (--source scimmir). Default pmc skips HF.
 
 Cache: abcite/evals/figures/cache/ (gitignored).
 Tiny fixture: abcite/evals/figures/fixture/ (committed, 8–16 PNGs).
-License: PMC Open Access / arXiv source papers (see LICENSE.md). Resume-able via metadata.jsonl.
+License: PMC Open Access (see LICENSE.md). Resume-able via metadata.jsonl.
 """
 
 from __future__ import annotations
@@ -14,20 +21,26 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import re
 import ssl
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 FIG_ROOT = ROOT / "evals" / "figures"
 CACHE = FIG_ROOT / "cache"
 FIXTURE = FIG_ROOT / "fixture"
-UA = "abcite-figure-downloader/1.0 (research eval; mailto:abcite@local)"
+UA = "abcite-figure-downloader/1.2 (research eval; mailto:abcite@local)"
 CTX = ssl.create_default_context()
+# NCBI PMC Cloud on AWS Open Data (no login). Legacy oa_bulk FTP packages
+# were removed the week of 2026-08-24.
+S3_HTTPS = "https://pmc-oa-opendata.s3.amazonaws.com"
+_COMMERCIAL_LICENSES = frozenset({"CC0", "CC BY", "CC BY-SA", "CC BY-ND"})
 
 # Europe PMC OA papers that typically expose several figures.
 _SEED_PMC = [
@@ -45,6 +58,36 @@ _SEED_PMC = [
     "PMC9362871",
     "PMC9665892",
     "PMC10025890",
+]
+
+# Multiple OA journal/year bins so NCBI/EuropePMC rate limits on one query
+# cannot starve the gallery.
+_OA_BINS = [
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2018-01-01 TO 2018-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2019-01-01 TO 2019-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2020-01-01 TO 2020-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2021-01-01 TO 2021-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2019-01-01 TO 2019-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2020-01-01 TO 2020-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS Pathogens" AND FIRST_PDATE:[2018-01-01 TO 2022-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Frontiers in Immunology" AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Nature Communications" AND FIRST_PDATE:[2019-01-01 TO 2020-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND (antibody OR epitope OR immunoglobulin) AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"BMC Biology" AND FIRST_PDATE:[2018-01-01 TO 2022-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"eLife" AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
+]
+
+_NCBI_TERMS = [
+    '("PLoS One"[journal]) AND 2018[dp] AND open access[filter]',
+    '("PLoS One"[journal]) AND 2019[dp] AND open access[filter]',
+    '("PLoS One"[journal]) AND 2020[dp] AND open access[filter]',
+    '("PLoS One"[journal]) AND 2021[dp] AND open access[filter]',
+    '("Sci Rep"[journal]) AND 2019[dp] AND open access[filter]',
+    '("Sci Rep"[journal]) AND 2020[dp] AND open access[filter]',
+    '("PLoS Pathog"[journal]) AND antibody AND open access[filter]',
+    '("Front Immunol"[journal]) AND 2020[dp] AND open access[filter]',
+    '("Nat Commun"[journal]) AND 2019[dp] AND open access[filter]',
+    '("Elife"[journal]) AND 2020[dp] AND open access[filter]',
 ]
 
 _VISUAL_HINTS = (
@@ -76,13 +119,75 @@ def _visual_class(caption: str) -> str:
     return "scientific figure panel"
 
 
-def _get(url: str, timeout: int = 30) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
-    with urllib.request.urlopen(req, timeout=timeout, context=CTX) as resp:
-        return resp.read()
+def _get(url: str, timeout: int = 25, retries: int = 3) -> bytes:
+    last: Exception | None = None
+    for attempt in range(retries):
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout, context=CTX) as resp:
+                return resp.read()
+        except urllib.error.HTTPError as exc:
+            last = exc
+            code = int(getattr(exc, "code", 0) or 0)
+            if code == 404:
+                raise
+            if code in {429, 500, 502, 503, 504}:
+                delay = min(20.0, (1.5**attempt) + random.random())
+                print(f"  HTTP {code} retry {attempt + 1}/{retries} sleep={delay:.1f}s {url[:80]}", flush=True)
+                time.sleep(delay)
+                continue
+            raise
+        except (urllib.error.URLError, TimeoutError, TimeoutError, OSError) as exc:
+            last = exc
+            delay = min(20.0, (1.5**attempt) + random.random())
+            print(f"  net fail retry {attempt + 1}/{retries} {exc} sleep={delay:.1f}s", flush=True)
+            time.sleep(delay)
+    assert last is not None
+    raise last
 
 
-def _esearch_pmc(term: str, retmax: int = 400) -> list[str]:
+def _europepmc_search(query: str, retmax: int = 200) -> list[str]:
+    ids: list[str] = []
+    cursor = "*"
+    while len(ids) < retmax:
+        page = min(100, retmax - len(ids))
+        q = urllib.parse.urlencode(
+            {
+                "query": query,
+                "resultType": "lite",
+                "pageSize": page,
+                "format": "json",
+                "cursorMark": cursor,
+            }
+        )
+        url = f"https://www.ebi.ac.uk/europepmc/webservices/rest/search?{q}"
+        try:
+            payload = json.loads(_get(url, timeout=45).decode("utf-8"))
+        except Exception as exc:
+            print(f"europepmc search failed: {exc}", flush=True)
+            break
+        hits = (payload.get("resultList") or {}).get("result") or []
+        if not hits:
+            break
+        for hit in hits:
+            pmcid = hit.get("pmcid") or ""
+            if pmcid:
+                ids.append(str(pmcid) if str(pmcid).startswith("PMC") else f"PMC{pmcid}")
+        nxt = payload.get("nextCursorMark")
+        if not nxt or nxt == cursor:
+            break
+        cursor = nxt
+        time.sleep(0.25)
+    seen: set[str] = set()
+    out = []
+    for i in ids:
+        if i not in seen:
+            seen.add(i)
+            out.append(i)
+    return out
+
+
+def _esearch_pmc(term: str, retmax: int = 200) -> list[str]:
     ids: list[str] = []
     retstart = 0
     while len(ids) < retmax:
@@ -98,7 +203,7 @@ def _esearch_pmc(term: str, retmax: int = 400) -> list[str]:
         )
         url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?{q}"
         try:
-            payload = json.loads(_get(url, timeout=30).decode("utf-8"))
+            payload = json.loads(_get(url, timeout=40).decode("utf-8"))
         except Exception as exc:
             print(f"esearch failed: {exc}", flush=True)
             break
@@ -107,48 +212,129 @@ def _esearch_pmc(term: str, retmax: int = 400) -> list[str]:
             break
         ids.extend(batch)
         retstart += len(batch)
-        time.sleep(0.34)
+        time.sleep(0.4)
     return [f"PMC{i}" if not str(i).startswith("PMC") else str(i) for i in ids]
 
 
-def _pmc_figures_from_xml(pmcid: str) -> list[tuple[str, str]]:
-    numeric = pmcid.replace("PMC", "")
-    url = (
-        "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-        f"?db=pmc&id={numeric}&rettype=xml"
-    )
-    try:
-        xml = _get(url, timeout=40).decode("utf-8", errors="ignore")
-    except Exception as exc:
-        print(f"  xml fail {pmcid}: {exc}", flush=True)
-        return []
+def _parse_fig_xml(xml: str) -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     for fig in re.finditer(r"<fig[\s\S]*?</fig>", xml, flags=re.I):
         block = fig.group(0)
         cap_m = re.search(r"<caption[\s\S]*?</caption>", block, flags=re.I)
         cap = re.sub(r"<[^>]+>", " ", cap_m.group(0) if cap_m else "")
         cap = " ".join(cap.split())
-        for h in re.findall(r'xlink:href="([^"]+)"', block):
+        hrefs = re.findall(r'(?:xlink:href|href)="([^"]+)"', block)
+        for h in hrefs:
             low = h.lower()
             if any(low.endswith(ext) for ext in (".jpg", ".jpeg", ".png", ".gif")):
                 out.append((h.split("/")[-1], cap[:2000]))
     if not out:
-        for h in re.findall(r'xlink:href="([^"]+\.(?:jpg|jpeg|png|gif))"', xml, flags=re.I):
+        for h in re.findall(r'(?:xlink:href|href)="([^"]+\.(?:jpg|jpeg|png|gif))"', xml, flags=re.I):
             name = h.split("/")[-1]
             if name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                 out.append((name, ""))
-    return out[:12]
+    # de-dupe
+    seen: set[str] = set()
+    uniq = []
+    for name, cap in out:
+        if name in seen:
+            continue
+        seen.add(name)
+        uniq.append((name, cap))
+    return uniq[:16]
 
 
-def _download_pmc_graphic(pmcid: str, href: str, dest: Path) -> bool:
-    name = href.split("/")[-1]
+def _s3_key_to_https(url_or_key: str) -> str:
+    raw = url_or_key.strip()
+    if raw.startswith("s3://pmc-oa-opendata/"):
+        raw = raw[len("s3://pmc-oa-opendata/") :]
+    if raw.startswith("https://"):
+        return raw.split("?", 1)[0]
+    return f"{S3_HTTPS}/{raw.split('?', 1)[0]}"
+
+
+def _s3_latest_prefix(pmcid: str) -> str | None:
+    pmcid = pmcid if pmcid.startswith("PMC") else f"PMC{pmcid}"
+    url = f"{S3_HTTPS}/?list-type=2&prefix={pmcid}.&delimiter=/"
+    try:
+        xml = _get(url, timeout=20, retries=2).decode("utf-8", errors="ignore")
+    except Exception as exc:
+        print(f"  s3 list fail {pmcid}: {exc}", flush=True)
+        return None
+    prefixes = re.findall(r"<Prefix>(PMC\d+\.\d+)/</Prefix>", xml)
+    if not prefixes:
+        return None
+    prefixes.sort(key=lambda p: int(p.rsplit(".", 1)[-1]))
+    return prefixes[-1]
+
+
+def _s3_article_meta(prefix: str) -> dict | None:
+    url = f"{S3_HTTPS}/metadata/{prefix}.json"
+    try:
+        return json.loads(_get(url, timeout=20, retries=2).decode("utf-8"))
+    except Exception as exc:
+        print(f"  s3 meta fail {prefix}: {exc}", flush=True)
+        return None
+
+
+def _pmc_figures_from_xml(pmcid: str, *, prefix: str | None = None) -> list[tuple[str, str]]:
+    urls: list[str] = []
+    if prefix:
+        urls.append(f"{S3_HTTPS}/{prefix}/{prefix}.xml")
     numeric = pmcid.replace("PMC", "")
-    urls = [
-        f"https://www.ncbi.nlm.nih.gov/pmc/articles/instance/{numeric}/bin/{name}",
-    ]
+    urls.extend(
+        [
+            f"https://www.ebi.ac.uk/europepmc/webservices/rest/{pmcid}/fullTextXML",
+            f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={numeric}&retmode=xml",
+            f"https://www.ncbi.nlm.nih.gov/pmc/oai/oai.cgi?verb=GetRecord&identifier=oai:pubmedcentral.nih.gov:{numeric}&metadataPrefix=pmc",
+        ]
+    )
     for url in urls:
         try:
-            raw = _get(url, timeout=30)
+            xml = _get(url, timeout=25, retries=2).decode("utf-8", errors="ignore")
+        except Exception as exc:
+            print(f"  xml fail {pmcid}: {exc}", flush=True)
+            continue
+        figs = _parse_fig_xml(xml)
+        if figs:
+            return figs
+    return []
+
+
+def _download_pmc_graphic(
+    pmcid: str,
+    href: str,
+    dest: Path,
+    *,
+    prefix: str | None = None,
+    media_https: list[str] | None = None,
+) -> bool:
+    name = href.split("/")[-1].split("?")[0]
+    numeric = pmcid.replace("PMC", "")
+    urls: list[str] = []
+    if media_https:
+        for u in media_https:
+            if u.rsplit("/", 1)[-1].split("?")[0] == name:
+                urls.append(u)
+    if prefix:
+        urls.append(f"{S3_HTTPS}/{prefix}/{name}")
+    urls.extend(
+        [
+            f"https://www.ncbi.nlm.nih.gov/pmc/articles/instance/{numeric}/bin/{name}",
+            f"https://europepmc.org/backend/ptpmcrender.fcgi?acc={pmcid}&blobtype=image&blobname={urllib.parse.quote(name)}",
+            f"https://journals.plos.org/plosone/article/figure/image?size=medium&id=10.1371/journal.pone.{name.split('.')[1]}.{name.split('.')[2]}"
+            if name.startswith("pone.") and len(name.split(".")) >= 3
+            else "",
+        ]
+    )
+    urls = [u for u in urls if u]
+    seen: set[str] = set()
+    for url in urls:
+        if url in seen:
+            continue
+        seen.add(url)
+        try:
+            raw = _get(url, timeout=18, retries=2)
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError):
             continue
         if _save_image_bytes(dest, raw):
@@ -157,76 +343,158 @@ def _download_pmc_graphic(pmcid: str, href: str, dest: Path) -> bool:
 
 
 def _search_pmc_ids(need: int) -> list[str]:
-    terms = [
-        '("PLoS One"[journal]) AND 2019[dp] AND open access[filter]',
-        '("PLoS One"[journal]) AND 2020[dp] AND open access[filter]',
-        '("Sci Rep"[journal]) AND 2020[dp] AND open access[filter]',
-        '("PLoS Pathog"[journal]) AND antibody AND open access[filter]',
-    ]
+    cache_ids = CACHE / "pmc_ids.json"
     ids: list[str] = []
-    per = max(40, need // len(terms))
-    for term in terms:
-        if len(ids) >= need:
-            break
-        ids.extend(_esearch_pmc(term, retmax=per))
-        time.sleep(0.34)
-    # unique preserve order
+    if cache_ids.exists():
+        try:
+            ids = json.loads(cache_ids.read_text(encoding="utf-8"))
+            print(f"  reused {len(ids)} cached PMC ids", flush=True)
+        except Exception:
+            ids = []
+    per = max(80, need // max(1, len(_OA_BINS)))
+    if len(ids) < need:
+        for query in _OA_BINS:
+            if len(ids) >= need:
+                break
+            print(f"  europepmc bin: {query[:70]}…", flush=True)
+            ids.extend(_europepmc_search(query, retmax=per))
+            time.sleep(0.2)
+    if len(ids) < need // 2:
+        per_n = max(40, need // max(1, len(_NCBI_TERMS)))
+        for term in _NCBI_TERMS:
+            if len(ids) >= need:
+                break
+            print(f"  ncbi bin: {term[:70]}…", flush=True)
+            ids.extend(_esearch_pmc(term, retmax=per_n))
+            time.sleep(0.4)
     seen: set[str] = set()
     out = []
     for i in ids:
         if i not in seen:
             seen.add(i)
             out.append(i)
-    return out[:need]
+    CACHE.mkdir(parents=True, exist_ok=True)
+    cache_ids.write_text(json.dumps(out), encoding="utf-8")
+    return out[: max(need, len(out))]
 
 
-def _try_pmc(max_n: int, image_dir: Path, existing: set[str], start_i: int) -> list[dict]:
+def _next_pmc_index(image_dir: Path, existing: set[str]) -> int:
+    nums = [0]
+    for fid in existing:
+        if fid.startswith("pmc-") and fid.split("-")[-1].isdigit():
+            nums.append(int(fid.split("-")[-1]))
+    for p in image_dir.glob("pmc-*.jpg"):
+        tail = p.stem.split("-")[-1]
+        if tail.isdigit():
+            nums.append(int(tail))
+    return max(nums)
+
+
+def _try_pmc(
+    max_n: int,
+    image_dir: Path,
+    existing: set[str],
+    start_i: int,
+    *,
+    workers: int = 8,
+    commercial_only: bool = False,
+) -> list[dict]:
     rows: list[dict] = []
     pmc_ids = list(_SEED_PMC)
-    extra = _search_pmc_ids(max(400, max_n))
+    extra = _search_pmc_ids(max(800, max_n))
     for p in extra:
         if p not in pmc_ids:
             pmc_ids.append(p)
     n = start_i
-    print(f"NCBI PMC OA: {len(pmc_ids)} papers", flush=True)
+    print(f"PMC OA papers queued: {len(pmc_ids)} (S3 first, workers={workers})", flush=True)
     accumulated = _load_meta(CACHE / "metadata.jsonl")
+    done_pmc = {str(r.get("pmcid") or "") for r in accumulated}
+    skip_path = CACHE / "skip_pmc.json"
+    skip_pmc: set[str] = set()
+    if skip_path.exists():
+        try:
+            skip_pmc = set(json.loads(skip_path.read_text(encoding="utf-8")))
+        except Exception:
+            skip_pmc = set()
+
+    def _one_fig(
+        item: tuple[int, str, str, str, str | None, list[str]],
+    ) -> tuple[int, str, str, Path, bool]:
+        idx, paper_id, href, cap, prefix, media = item
+        fid = f"pmc-{idx:05d}"
+        dest = image_dir / f"{fid}.jpg"
+        ok = _download_pmc_graphic(paper_id, href, dest, prefix=prefix, media_https=media)
+        if not ok:
+            dest.unlink(missing_ok=True)
+        return idx, href, cap, dest, ok
+
     for pmcid in pmc_ids:
         if len(accumulated) >= max_n:
             break
+        if pmcid in done_pmc or pmcid in skip_pmc:
+            continue
         print(f"  paper {pmcid} saved={len(accumulated)}", flush=True)
-        figs = _pmc_figures_from_xml(pmcid)
-        time.sleep(0.34)
-        got = 0
+        prefix = _s3_latest_prefix(pmcid)
+        meta = _s3_article_meta(prefix) if prefix else None
+        license_code = str((meta or {}).get("license_code") or "")
+        if commercial_only and license_code and license_code.upper() not in _COMMERCIAL_LICENSES:
+            skip_pmc.add(pmcid)
+            skip_path.write_text(json.dumps(sorted(skip_pmc)), encoding="utf-8")
+            continue
+        media_https: list[str] = []
+        if meta:
+            for u in meta.get("media_urls") or []:
+                https = _s3_key_to_https(str(u))
+                low = https.lower()
+                if any(low.split("?")[0].endswith(ext) for ext in (".jpg", ".jpeg", ".png", ".gif")):
+                    media_https.append(https)
+        figs = _pmc_figures_from_xml(pmcid, prefix=prefix)
+        if not figs and media_https:
+            figs = [(u.rsplit("/", 1)[-1].split("?")[0], "") for u in media_https]
+        if prefix is None:
+            time.sleep(0.2)
+        pending: list[tuple[int, str, str, str, str | None, list[str]]] = []
         for href, cap in figs:
-            if len(accumulated) >= max_n:
+            if len(accumulated) + len(pending) >= max_n:
                 break
             n += 1
             fid = f"pmc-{n:05d}"
             if fid in existing:
                 continue
-            dest = image_dir / f"{fid}.jpg"
-            if not _download_pmc_graphic(pmcid, href, dest):
-                dest.unlink(missing_ok=True)
-                continue
-            visual = _visual_class(cap or href)
-            rec = {
-                "figure_id": fid,
-                "path": str(dest.relative_to(FIG_ROOT)),
-                "pmcid": pmcid,
-                "caption": cap,
-                "split": "oa",
-                "visual_class": visual,
-                "source": "pmc-oa",
-                "href": href,
-            }
-            rows.append(rec)
-            accumulated.append(rec)
-            existing.add(fid)
-            got += 1
-            time.sleep(0.08)
+            pending.append((n, pmcid, href, cap, prefix, media_https))
+        got = 0
+        if pending:
+            with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+                futures = [pool.submit(_one_fig, item) for item in pending]
+                for fut in as_completed(futures):
+                    idx, href, cap, dest, ok = fut.result()
+                    if not ok:
+                        continue
+                    fid = f"pmc-{idx:05d}"
+                    visual = _visual_class(cap or href)
+                    rec = {
+                        "figure_id": fid,
+                        "path": str(dest.relative_to(FIG_ROOT)),
+                        "pmcid": pmcid,
+                        "caption": cap,
+                        "split": "oa",
+                        "visual_class": visual,
+                        "source": "pmc-oa-s3" if prefix else "pmc-oa",
+                        "href": href,
+                        "license_code": license_code or None,
+                        "s3_prefix": prefix,
+                    }
+                    rows.append(rec)
+                    accumulated.append(rec)
+                    existing.add(fid)
+                    got += 1
+        done_pmc.add(pmcid)
         if got:
             _write_meta(CACHE / "metadata.jsonl", accumulated)
-            print(f"  PMC +{got} total={len(accumulated)} (last {pmcid})", flush=True)
+            print(f"  PMC +{got} total={len(accumulated)} (last {pmcid} s3={prefix})", flush=True)
+        else:
+            skip_pmc.add(pmcid)
+            skip_path.write_text(json.dumps(sorted(skip_pmc)), encoding="utf-8")
     return rows
 
 
@@ -251,7 +519,6 @@ def _save_image_bytes(dest: Path, raw: bytes) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if len(raw) < 800:
         return False
-    # JPEG / PNG / GIF / WEBP magic
     if not (
         raw[:3] == b"\xff\xd8\xff"
         or raw[:8] == b"\x89PNG\r\n\x1a\n"
@@ -270,7 +537,8 @@ def _try_scimmir(max_n: int, image_dir: Path, existing: set[str]) -> list[dict]:
         print("datasets not installed; skip HuggingFace SciMMIR", flush=True)
         return []
     rows: list[dict] = []
-    print("Streaming m-a-p/SciMMIR (HF)…", flush=True)
+    os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "1")
+    print("Streaming m-a-p/SciMMIR (HF, streaming=True; hf_transfer if installed)…", flush=True)
     try:
         ds = load_dataset("m-a-p/SciMMIR", split="test", streaming=True)
     except Exception as exc:
@@ -319,6 +587,10 @@ def _try_scimmir(max_n: int, image_dir: Path, existing: set[str]) -> list[dict]:
 
 def _copy_fixture(rows: list[dict], limit: int = 12) -> None:
     FIXTURE.mkdir(parents=True, exist_ok=True)
+    existing_fix = list(FIXTURE.glob("fix-*"))
+    if len(existing_fix) >= 8:
+        print(f"Keeping existing fixture n={len(existing_fix)}", flush=True)
+        return
     chosen = rows[:limit]
     out_meta = []
     for i, row in enumerate(chosen, start=1):
@@ -379,7 +651,13 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max", type=int, default=1200)
     ap.add_argument("--fixture-only", action="store_true")
-    ap.add_argument("--source", choices=["auto", "scimmir", "pmc"], default="auto")
+    ap.add_argument("--source", choices=["pmc", "scimmir", "auto"], default="pmc")
+    ap.add_argument("--workers", type=int, default=8, help="parallel S3/HTTPS figure fetches")
+    ap.add_argument(
+        "--commercial-only",
+        action="store_true",
+        help="skip CC-BY-NC / TDM (keep CC0, CC BY, CC BY-SA, CC BY-ND)",
+    )
     args = ap.parse_args()
     image_dir = CACHE / "images"
     image_dir.mkdir(parents=True, exist_ok=True)
@@ -387,23 +665,27 @@ def main() -> None:
     rows = _load_meta(meta_path)
     existing = {r["figure_id"] for r in rows}
     target = min(args.max, 20) if args.fixture_only else args.max
-    print(f"resume n={len(rows)} target={target}", flush=True)
-    if len(rows) < target and args.source in {"auto", "scimmir"}:
+    print(f"resume n={len(rows)} target={target} source={args.source}", flush=True)
+    if len(rows) < target and args.source == "scimmir":
         rows.extend(_try_scimmir(target, image_dir, existing))
         _write_meta(meta_path, rows)
+    if len(rows) < target and args.source == "auto":
+        print("source=auto: PMC OA first; SciMMIR only if still short and datasets is installed", flush=True)
     if len(rows) < target and args.source in {"auto", "pmc"}:
-        start = max(
-            len(rows),
-            max(
-                [0]
-                + [
-                    int(p.stem.split("-")[1])
-                    for p in image_dir.glob("pmc-*.jpg")
-                    if p.stem.split("-")[-1].isdigit()
-                ]
-            ),
+        start = _next_pmc_index(image_dir, existing)
+        rows.extend(
+            _try_pmc(
+                target,
+                image_dir,
+                existing,
+                start_i=start,
+                workers=max(1, args.workers),
+                commercial_only=args.commercial_only,
+            )
         )
-        rows.extend(_try_pmc(target, image_dir, existing, start_i=start))
+        _write_meta(meta_path, rows)
+    if len(rows) < target and args.source == "auto":
+        rows.extend(_try_scimmir(target, image_dir, existing))
         _write_meta(meta_path, rows)
     _write_meta(meta_path, rows)
     print(f"Indexed metadata n={len(rows)} at {meta_path}", flush=True)
@@ -412,9 +694,8 @@ def main() -> None:
     if len(rows) < 1000:
         print(
             "NOTE: fewer than 1000 figures in this run. Re-run:\n"
-            "  pip install datasets\n"
-            "  python evals/download_figures.py --max 1200 --source auto\n"
-            "HF SciMMIR is large; PMC OA is the resume-able fallback.",
+            "  python evals/download_figures.py --max 1200 --source pmc --workers 12\n"
+            "SciMMIR is opt-in: --source scimmir (needs `datasets`).",
             flush=True,
         )
 
