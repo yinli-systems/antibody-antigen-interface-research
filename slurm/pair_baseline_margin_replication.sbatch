@@ -19,14 +19,17 @@
 #     slurm/pair_baseline_margin_replication.sbatch
 
 #SBATCH --job-name=margin-replication
-#SBATCH --partition=gpu_5090
+# gpu_5090 has free cards but its RTX 5090s are sm_120, and the torch this
+# project runs (2.4.1+cu121) compiles only up to sm_90. Every task there dies
+# at .to(device) within a minute. gpu_4090 queues but works.
+#SBATCH --partition=gpu_4090
 #SBATCH --array=1-10
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=6
-# gpu_4090 and gpu_5090 both forbid --mem/--mem-per-cpu/--mem-per-gpu: the
-# site's job_submit_lua plugin allocates memory per card and rejects requests.
+# gpu_4090 forbids --mem/--mem-per-cpu/--mem-per-gpu: the site's job_submit_lua
+# plugin allocates memory per card and rejects any explicit request.
 #SBATCH --time=12:00:00
 #SBATCH --output=%x-%A_%a.out
 #SBATCH --error=%x-%A_%a.err
