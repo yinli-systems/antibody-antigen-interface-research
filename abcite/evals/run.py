@@ -69,6 +69,7 @@ def _metrics_for(items: list[dict], index: HybridIndex, graph: EvidenceGraph, ju
     abstain_ok = 0
     abstain_fail: list[str] = []
     failures: list[str] = []
+    taxonomy_rows: list[dict] = []
     by_source: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
 
     for item in unans:
@@ -86,9 +87,21 @@ def _metrics_for(items: list[dict], index: HybridIndex, graph: EvidenceGraph, ju
             cited_ids=cited,
             retrieved_ids=ids,
             required_ids=item.get("must_cite_chunk_ids") or [],
+            query_class=item.get("query_class"),
+            required_image_id=item.get("must_cite_image_id"),
         )
-        if lab:
-            failures.append(lab)
+        failures.append(lab)
+        taxonomy_rows.append(
+            {
+                "id": item["id"],
+                "query_class": item.get("query_class"),
+                "class": lab,
+                "expected_status": "abstain",
+                "actual_status": resp.status.value,
+                "retrieved_ids": ids[:8],
+                "cited_ids": cited,
+            }
+        )
 
     hit5_flags: list[float] = []
     recs: list[float] = []
@@ -128,9 +141,21 @@ def _metrics_for(items: list[dict], index: HybridIndex, graph: EvidenceGraph, ju
             cited_ids=cited_ids,
             retrieved_ids=ids,
             required_ids=required,
+            query_class=item.get("query_class"),
+            required_image_id=item.get("must_cite_image_id"),
         )
-        if lab:
-            failures.append(lab)
+        failures.append(lab)
+        taxonomy_rows.append(
+            {
+                "id": item["id"],
+                "query_class": item.get("query_class"),
+                "class": lab,
+                "expected_status": item["expected_status"],
+                "actual_status": resp.status.value,
+                "retrieved_ids": ids[:8],
+                "cited_ids": cited_ids,
+            }
+        )
 
     mm_ok = 0
     for item in multimodal:
@@ -166,6 +191,7 @@ def _metrics_for(items: list[dict], index: HybridIndex, graph: EvidenceGraph, ju
         "multimodal_citation_id_match": mm_ok / max(1, len(multimodal)),
         "by_source": source_rows,
         "failure_counts": dict(Counter(failures)),
+        "taxonomy": taxonomy_rows,
     }
 
 
@@ -186,6 +212,7 @@ def _fmt_split(name: str, m: dict) -> str:
         ("judge score (lexical heuristic)", f"{m['judge_score']:.1%}"),
         ("multimodal citation-id match", f"{m['multimodal_citation_id_match']:.1%}"),
         ("auto failure counts", json.dumps(m["failure_counts"])),
+        ("taxonomy n", str(len(m.get("taxonomy") or []))),
         ("abstain failures", str(m["failures_ids"] or "none")),
     ]
     for src, sm in sorted(m.get("by_source", {}).items()):
@@ -235,8 +262,8 @@ def judge_alignment_report(graph: EvidenceGraph, judge: HeuristicJudge) -> dict:
             }
         )
     n_annotators = int(human.get("n_annotators") or 1)
-    kappa_lex = cohens_kappa(h_bin, lex_bin) if len(set(h_bin)) >= 2 else None
-    kappa_nli = cohens_kappa(h_bin, nli_bin) if len(set(h_bin)) >= 2 else None
+    kappa_lex = cohens_kappa(h_bin, lex_bin)
+    kappa_nli = cohens_kappa(h_bin, nli_bin)
     report = {
         "n_human_labeled": len(details),
         "n_annotators": n_annotators,
@@ -246,10 +273,10 @@ def judge_alignment_report(graph: EvidenceGraph, judge: HeuristicJudge) -> dict:
         "cohens_kappa_human_vs_claim_nli": kappa_nli,
         "note": human.get("note"),
         "kappa_note": (
-            "Cohen's κ vs a second human is not available (one annotator). "
-            "κ vs automatic judges is omitted when all human labels share one binary class."
-            if len(set(h_bin)) < 2
-            else "Cohen's κ below is human vs automatic judges, not inter-annotator."
+            "Cohen's κ is human vs machine (lexical / claim-NLI), not inter-human κ. "
+            "Second annotator is not a duplicate of the first; n_annotators=1."
+            if n_annotators < 2
+            else "Inter-human κ is available."
         ),
         "items": details,
     }
@@ -322,6 +349,16 @@ def run_gate() -> dict:
     if clip_hub_n:
         hard_fail["clip_hub"] = clip_hub_n
 
+    tax_path = ROOT / "evals" / "traces" / "hard_taxonomy.json"
+    tax_path.parent.mkdir(parents=True, exist_ok=True)
+    tax_payload = {
+        "n": len(hard_m.get("taxonomy") or []),
+        "counts": hard_m["failure_counts"],
+        "items": hard_m.get("taxonomy") or [],
+        "note": "Auto labels on all hard-dev items. Classes: ok / hallucinated_cite / missed_abstain / over_abstain / miss_figure / miss_multi_hop.",
+    }
+    tax_path.write_text(json.dumps(tax_payload, indent=2) + "\n", encoding="utf-8")
+
     alignment = judge_alignment_report(graph, judge)
     demo = write_demo_1n8z(graph, index)
 
@@ -345,11 +382,14 @@ def run_gate() -> dict:
         "hard": hard_m,
         "clip_contrast": clip_public,
         "failure_counts_hard": hard_fail,
+        "hard_taxonomy_path": "evals/traces/hard_taxonomy.json",
         "judge_alignment": {
             "n_human_labeled": alignment["n_human_labeled"],
             "n_annotators": alignment["n_annotators"],
+            "kappa_human_vs_human": alignment["cohens_kappa_human_vs_human"],
             "kappa_human_vs_lexical": alignment["cohens_kappa_human_vs_lexical"],
             "kappa_human_vs_claim_nli": alignment["cohens_kappa_human_vs_claim_nli"],
+            "kappa_kind": "human_vs_machine",
             "second_annotator": alignment["second_annotator"],
         },
         "demo_1n8z": {
@@ -367,18 +407,23 @@ def run_gate() -> dict:
         [
             ("CLIP encoder", str(clip_public.get("encoder"))),
             ("figure queries", str(clip_public.get("n_figure_queries"))),
-            ("mean gap (rank1-rank2)", str(clip_public.get("mean_gap_rank1_minus_rank2"))),
-            ("min gap", str(clip_public.get("min_gap"))),
+            ("mean fused RRF gap", str(clip_public.get("mean_gap_rank1_minus_rank2"))),
+            ("mean image-only cosine gap", str(clip_public.get("mean_gap_image_only"))),
+            ("mean caption BM25 gap", str(clip_public.get("mean_caption_bm25_gap"))),
+            ("min gap fused", str(clip_public.get("min_gap"))),
             ("self-hit rate", f"{clip_public.get('self_hit_rate', 0):.1%}"),
             ("hub figs (rank1 for >1 query)", str(clip_public.get("hub_figures_rank1_for_others"))),
+            ("BiomedCLIP", str(clip_public.get("biomedclip_skip") or "not requested")),
             ("CLIP SOTA claim", "false"),
         ]
     )
-    kappa_note = alignment.get("kappa_note") or (
-        "Single annotator on human_labels.json; Cohen's κ vs a second human is not available. "
-        f"κ human vs lexical={alignment['cohens_kappa_human_vs_lexical']!r}; "
-        f"κ human vs claim-NLI={alignment['cohens_kappa_human_vs_claim_nli']!r}."
+    kappa_note = (
+        f"{alignment.get('kappa_note')} "
+        f"κ human-vs-lexical={alignment['cohens_kappa_human_vs_lexical']!r}; "
+        f"κ human-vs-claim-NLI={alignment['cohens_kappa_human_vs_claim_nli']!r}; "
+        f"κ human-vs-human={alignment['cohens_kappa_human_vs_human']!r}."
     )
+    tax_counts = json.dumps(hard_m["failure_counts"])
     md = (
         "# AbCite eval snapshot (fixture vs hard-dev)\n\n"
         "Fixture is the in-corpus 150 used by CI (abstain-on-unanswerable must be 100%). "
@@ -391,7 +436,9 @@ def run_gate() -> dict:
         "```\n\n## CLIP contrast (not SOTA)\n\n```\n"
         f"{clip_lines}\n"
         "```\n\n"
-        f"Judge alignment: {kappa_note}\n\n"
+        f"Judge alignment (**human vs machine**, not inter-human κ): {kappa_note}\n\n"
+        f"Hard taxonomy counts (all {hard_m['n_gold']} items): `{tax_counts}` "
+        "— see `evals/traces/hard_taxonomy.json`.\n\n"
         "Demo receipt: `evals/traces/demo_1n8z.json` (Cho 2003 / RCSB 1N8Z).\n"
         "Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heuristics, not RAGAS.\n"
     )

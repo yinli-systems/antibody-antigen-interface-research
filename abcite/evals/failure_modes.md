@@ -15,3 +15,7 @@ Auto-labels from `evals/run.py` on the **hard** set (plus CLIP hubness). Not 100
 | F9 | Hallucinated cite | Citation id not in retrieved hits or required gold | `hallucinated_cite` |
 | F10 | Over-abstain | Answerable hard item abstained | `over_abstain` |
 | F11 | CLIP hub | Same figure is rank-1 for multiple image queries | `clip_hub` count from `evals/clip_margin.py` |
+| F12 | Miss figure | Required image id missing from top-k / cites | `miss_figure` on all 40 hard items |
+| F13 | Miss multi-hop | Multi-hop required ids not jointly retrieved | `miss_multi_hop` |
+
+Per-item labels: `evals/traces/hard_taxonomy.json`.

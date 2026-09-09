@@ -1,0 +1,911 @@
+{
+  "n": 40,
+  "counts": {
+    "ok": 38,
+    "miss_multi_hop": 1,
+    "miss_figure": 1
+  },
+  "items": [
+    {
+      "id": "h023",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-cb6",
+        "txt-6w41",
+        "fig-6w41",
+        "txt-pertuzumab",
+        "struct-6w41",
+        "txt-pgt121",
+        "txt-framecontact-overlap",
+        "txt-sabdab"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h024",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-4fqi",
+        "txt-1n8z-child-epitope",
+        "txt-pgt121",
+        "fig-4fqi",
+        "txt-1n8z-parent",
+        "txt-cb6",
+        "fig-1n8z",
+        "txt-hyhel10"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h025",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-1hzh",
+        "txt-framecontact-overlap",
+        "fig-1hzh",
+        "txt-sabdab",
+        "struct-2ny7",
+        "txt-pertuzumab",
+        "txt-cb6",
+        "txt-pgt121"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h026",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "fig-4jhw",
+        "txt-motavizumab",
+        "txt-4jhw",
+        "fig-4fqi",
+        "struct-4jhw",
+        "txt-4fqi",
+        "txt-pgt121",
+        "txt-1hzh"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h027",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-1n8z-child-epitope",
+        "txt-cb6",
+        "fig-1n8z",
+        "txt-motavizumab",
+        "txt-1n8z-parent",
+        "txt-pgt121",
+        "fig-6w41",
+        "txt-1vfb"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h028",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-framecontact-overlap",
+        "fig-6w41",
+        "txt-cb6",
+        "txt-6w41",
+        "struct-6w41",
+        "txt-pertuzumab",
+        "txt-sabdab",
+        "txt-1hzh"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h029",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-cb6",
+        "txt-1hzh",
+        "txt-motavizumab",
+        "txt-pgt121",
+        "txt-sabdab",
+        "txt-framecontact-overlap",
+        "fig-4fqi",
+        "txt-1n8z-child-epitope"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h030",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-sabdab",
+        "fig-1hzh",
+        "txt-1hzh",
+        "txt-cb6",
+        "txt-1n8z-child-epitope",
+        "struct-1n8z",
+        "txt-4jhw",
+        "struct-2ny7"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h031",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "fig-6w41",
+        "txt-1hzh",
+        "txt-4fqi",
+        "fig-1hzh",
+        "fig-1vfb",
+        "txt-6w41",
+        "txt-1n8z-parent",
+        "fig-1n8z"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h032",
+      "query_class": "out_of_index",
+      "class": "ok",
+      "expected_status": "abstain",
+      "actual_status": "abstain",
+      "retrieved_ids": [
+        "txt-1hzh",
+        "txt-cb6",
+        "txt-pgt121",
+        "txt-sabdab",
+        "fig-1n8z",
+        "txt-1n8z-child-epitope",
+        "txt-framecontact-overlap",
+        "fig-4fqi"
+      ],
+      "cited_ids": []
+    },
+    {
+      "id": "h001",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-pertuzumab",
+        "txt-1n8z-child-epitope",
+        "struct-1n8z",
+        "txt-motavizumab",
+        "txt-hyhel10",
+        "txt-framecontact-overlap"
+      ],
+      "cited_ids": [
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-pertuzumab",
+        "txt-1n8z-child-epitope",
+        "struct-1n8z"
+      ]
+    },
+    {
+      "id": "h002",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-1n8z-child-epitope",
+        "txt-pertuzumab",
+        "struct-1n8z",
+        "txt-framecontact-overlap",
+        "txt-motavizumab",
+        "fig-3ngb"
+      ],
+      "cited_ids": [
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-1n8z-child-epitope",
+        "txt-pertuzumab",
+        "struct-1n8z"
+      ]
+    },
+    {
+      "id": "h003",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-1n8z",
+        "struct-1n8z",
+        "fig-4jhw",
+        "fig-3ngb",
+        "fig-4fqi",
+        "fig-1hzh",
+        "fig-1vfb",
+        "struct-4jhw"
+      ],
+      "cited_ids": [
+        "fig-1n8z",
+        "struct-1n8z",
+        "fig-4jhw",
+        "fig-3ngb",
+        "fig-4fqi"
+      ]
+    },
+    {
+      "id": "h004",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-4jhw",
+        "txt-motavizumab",
+        "txt-4jhw",
+        "txt-4fqi",
+        "struct-4jhw",
+        "fig-3ngb",
+        "txt-pgt121",
+        "fig-4fqi"
+      ],
+      "cited_ids": [
+        "fig-4jhw",
+        "txt-motavizumab",
+        "txt-4jhw",
+        "txt-4fqi",
+        "struct-4jhw"
+      ]
+    },
+    {
+      "id": "h005",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-pgt121",
+        "fig-3ngb",
+        "txt-3ngb",
+        "txt-1hzh",
+        "struct-3ngb",
+        "txt-2ny7",
+        "txt-4jhw",
+        "txt-motavizumab"
+      ],
+      "cited_ids": [
+        "txt-pgt121",
+        "fig-3ngb",
+        "txt-3ngb",
+        "txt-1hzh",
+        "struct-3ngb"
+      ]
+    },
+    {
+      "id": "h006",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-6w41",
+        "txt-6w41",
+        "txt-cb6",
+        "struct-6w41",
+        "txt-motavizumab",
+        "txt-4jhw",
+        "txt-4fqi",
+        "fig-4jhw"
+      ],
+      "cited_ids": [
+        "fig-6w41",
+        "txt-6w41",
+        "txt-cb6",
+        "struct-6w41",
+        "txt-motavizumab"
+      ]
+    },
+    {
+      "id": "h007",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-1vfb",
+        "txt-hyhel10",
+        "fig-1vfb",
+        "struct-1vfb",
+        "txt-4jhw",
+        "fig-3ngb",
+        "txt-2ny7",
+        "fig-4jhw"
+      ],
+      "cited_ids": [
+        "txt-1vfb",
+        "txt-hyhel10",
+        "fig-1vfb",
+        "struct-1vfb",
+        "txt-4jhw"
+      ]
+    },
+    {
+      "id": "h008",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-4fqi",
+        "fig-4fqi",
+        "struct-4fqi",
+        "txt-motavizumab",
+        "txt-4jhw",
+        "txt-1hzh",
+        "fig-4jhw",
+        "txt-sabdab"
+      ],
+      "cited_ids": [
+        "txt-4fqi",
+        "fig-4fqi",
+        "struct-4fqi",
+        "txt-motavizumab",
+        "txt-4jhw"
+      ]
+    },
+    {
+      "id": "h009",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-1hzh",
+        "fig-1hzh",
+        "txt-2ny7",
+        "fig-4jhw",
+        "fig-3ngb",
+        "txt-4jhw",
+        "txt-1n8z-parent",
+        "struct-4jhw"
+      ],
+      "cited_ids": [
+        "txt-1hzh",
+        "fig-1hzh",
+        "txt-2ny7",
+        "fig-4jhw",
+        "fig-3ngb"
+      ]
+    },
+    {
+      "id": "h010",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-cb6",
+        "fig-6w41",
+        "txt-6w41",
+        "fig-4jhw",
+        "struct-6w41",
+        "fig-4fqi",
+        "txt-4jhw",
+        "txt-4fqi"
+      ],
+      "cited_ids": [
+        "txt-cb6",
+        "fig-6w41",
+        "txt-6w41",
+        "fig-4jhw",
+        "struct-6w41"
+      ]
+    },
+    {
+      "id": "h011",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-1n8z-child-epitope",
+        "struct-1n8z",
+        "txt-pertuzumab",
+        "txt-motavizumab",
+        "txt-4jhw",
+        "struct-4jhw"
+      ],
+      "cited_ids": [
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-1n8z-child-epitope",
+        "struct-1n8z",
+        "txt-pertuzumab"
+      ]
+    },
+    {
+      "id": "h012",
+      "query_class": "paraphrase",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-sabdab",
+        "txt-1hzh",
+        "txt-framecontact-overlap",
+        "struct-6w41",
+        "struct-1vfb",
+        "fig-1hzh",
+        "struct-3ngb",
+        "struct-2ny7"
+      ],
+      "cited_ids": [
+        "txt-sabdab",
+        "txt-1hzh",
+        "txt-framecontact-overlap",
+        "struct-6w41",
+        "struct-1vfb"
+      ]
+    },
+    {
+      "id": "h013",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-1n8z-child-epitope",
+        "fig-1n8z",
+        "txt-pertuzumab",
+        "txt-1n8z-parent",
+        "txt-motavizumab",
+        "struct-1n8z",
+        "fig-1vfb",
+        "txt-hyhel10"
+      ],
+      "cited_ids": [
+        "txt-1n8z-child-epitope",
+        "fig-1n8z",
+        "txt-pertuzumab",
+        "txt-1n8z-parent",
+        "txt-motavizumab"
+      ]
+    },
+    {
+      "id": "h014",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-3ngb",
+        "txt-3ngb",
+        "txt-2ny7",
+        "txt-1hzh",
+        "txt-pgt121",
+        "struct-2ny7",
+        "txt-motavizumab",
+        "txt-1vfb"
+      ],
+      "cited_ids": [
+        "fig-3ngb",
+        "txt-3ngb",
+        "txt-2ny7",
+        "txt-1hzh",
+        "txt-pgt121"
+      ]
+    },
+    {
+      "id": "h015",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-motavizumab",
+        "fig-4jhw",
+        "txt-4jhw",
+        "struct-4jhw",
+        "txt-pertuzumab",
+        "fig-3ngb",
+        "fig-1n8z",
+        "txt-1n8z-parent"
+      ],
+      "cited_ids": [
+        "txt-motavizumab",
+        "fig-4jhw",
+        "txt-4jhw",
+        "struct-4jhw",
+        "txt-pertuzumab"
+      ]
+    },
+    {
+      "id": "h016",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-6w41",
+        "txt-cb6",
+        "txt-6w41",
+        "txt-framecontact-overlap",
+        "txt-1n8z-child-epitope",
+        "fig-1n8z",
+        "fig-1vfb",
+        "struct-6w41"
+      ],
+      "cited_ids": [
+        "fig-6w41",
+        "txt-cb6",
+        "txt-6w41",
+        "txt-framecontact-overlap",
+        "txt-1n8z-child-epitope"
+      ]
+    },
+    {
+      "id": "h017",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-4fqi",
+        "fig-4fqi",
+        "txt-motavizumab",
+        "struct-4fqi",
+        "txt-4jhw",
+        "fig-4jhw",
+        "fig-1vfb",
+        "txt-pertuzumab"
+      ],
+      "cited_ids": [
+        "txt-4fqi",
+        "fig-4fqi",
+        "txt-motavizumab",
+        "struct-4fqi",
+        "txt-4jhw"
+      ]
+    },
+    {
+      "id": "h018",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-3ngb",
+        "fig-3ngb",
+        "txt-pgt121",
+        "txt-4jhw",
+        "txt-2ny7",
+        "fig-1vfb",
+        "fig-6w41",
+        "fig-4jhw"
+      ],
+      "cited_ids": [
+        "txt-3ngb",
+        "fig-3ngb",
+        "txt-pgt121",
+        "txt-4jhw",
+        "txt-2ny7"
+      ]
+    },
+    {
+      "id": "h019",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-hyhel10",
+        "fig-1vfb",
+        "txt-1vfb",
+        "struct-1vfb",
+        "txt-motavizumab",
+        "txt-1n8z-parent",
+        "fig-1n8z",
+        "txt-framecontact-overlap"
+      ],
+      "cited_ids": [
+        "txt-hyhel10",
+        "fig-1vfb",
+        "txt-1vfb",
+        "struct-1vfb",
+        "txt-motavizumab"
+      ]
+    },
+    {
+      "id": "h020",
+      "query_class": "multi_hop",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "txt-framecontact-overlap",
+        "txt-sabdab",
+        "txt-6w41",
+        "txt-hyhel10",
+        "struct-4jhw",
+        "fig-4jhw",
+        "txt-1hzh",
+        "struct-1vfb"
+      ],
+      "cited_ids": [
+        "txt-framecontact-overlap",
+        "txt-sabdab",
+        "txt-6w41",
+        "txt-hyhel10",
+        "struct-4jhw"
+      ]
+    },
+    {
+      "id": "h021",
+      "query_class": "multi_hop",
+      "class": "miss_multi_hop",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-1n8z",
+        "struct-1n8z",
+        "fig-1hzh",
+        "fig-4fqi",
+        "fig-1vfb",
+        "fig-4jhw",
+        "struct-6w41",
+        "fig-6w41"
+      ],
+      "cited_ids": [
+        "fig-1n8z",
+        "struct-1n8z",
+        "fig-1hzh",
+        "fig-4fqi",
+        "fig-1vfb"
+      ]
+    },
+    {
+      "id": "h022",
+      "query_class": "multi_hop",
+      "class": "miss_figure",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-3ngb",
+        "fig-4jhw",
+        "fig-1vfb",
+        "struct-4jhw",
+        "fig-4fqi",
+        "fig-1n8z",
+        "fig-1hzh",
+        "struct-4fqi"
+      ],
+      "cited_ids": [
+        "fig-3ngb",
+        "fig-4jhw",
+        "fig-1vfb",
+        "struct-4jhw",
+        "fig-4fqi"
+      ]
+    },
+    {
+      "id": "h033",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "struct-1n8z",
+        "fig-1n8z",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-4jhw",
+        "struct-1vfb",
+        "struct-2ny7",
+        "struct-6w41"
+      ],
+      "cited_ids": [
+        "struct-1n8z",
+        "fig-1n8z",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-4jhw"
+      ]
+    },
+    {
+      "id": "h034",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-4fqi",
+        "fig-1hzh",
+        "struct-2ny7",
+        "struct-1n8z",
+        "fig-3ngb"
+      ],
+      "cited_ids": [
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-4fqi",
+        "fig-1hzh"
+      ]
+    },
+    {
+      "id": "h035",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "struct-6w41",
+        "struct-4jhw",
+        "struct-1n8z",
+        "struct-3ngb",
+        "struct-4fqi",
+        "fig-6w41",
+        "struct-2ny7",
+        "struct-1vfb"
+      ],
+      "cited_ids": [
+        "struct-6w41",
+        "struct-4jhw",
+        "struct-1n8z",
+        "struct-3ngb",
+        "struct-4fqi"
+      ]
+    },
+    {
+      "id": "h036",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-1vfb",
+        "txt-1vfb",
+        "struct-4jhw",
+        "struct-1vfb",
+        "struct-4fqi",
+        "txt-motavizumab",
+        "struct-6w41",
+        "struct-2ny7"
+      ],
+      "cited_ids": [
+        "fig-1vfb",
+        "txt-1vfb",
+        "struct-4jhw",
+        "struct-1vfb",
+        "struct-4fqi"
+      ]
+    },
+    {
+      "id": "h037",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-4fqi",
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-1hzh",
+        "struct-1n8z",
+        "struct-6w41",
+        "fig-3ngb"
+      ],
+      "cited_ids": [
+        "fig-4fqi",
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-1hzh"
+      ]
+    },
+    {
+      "id": "h038",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "struct-2ny7",
+        "struct-3ngb",
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-4fqi",
+        "fig-3ngb",
+        "struct-1n8z",
+        "fig-1hzh"
+      ],
+      "cited_ids": [
+        "struct-2ny7",
+        "struct-3ngb",
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-4fqi"
+      ]
+    },
+    {
+      "id": "h039",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "fig-1n8z",
+        "struct-1n8z",
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-2ny7",
+        "fig-4fqi",
+        "fig-3ngb",
+        "fig-1hzh"
+      ],
+      "cited_ids": [
+        "fig-1n8z",
+        "struct-1n8z",
+        "fig-4jhw",
+        "struct-4jhw",
+        "struct-2ny7"
+      ]
+    },
+    {
+      "id": "h040",
+      "query_class": "residue",
+      "class": "ok",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "retrieved_ids": [
+        "struct-4jhw",
+        "fig-4jhw",
+        "struct-2ny7",
+        "struct-1n8z",
+        "struct-1vfb",
+        "struct-4fqi",
+        "struct-6w41",
+        "struct-3ngb"
+      ],
+      "cited_ids": [
+        "struct-4jhw",
+        "fig-4jhw",
+        "struct-2ny7",
+        "struct-1n8z",
+        "struct-1vfb"
+      ]
+    }
+  ],
+  "note": "Auto labels on all hard-dev items. Classes: ok / hallucinated_cite / missed_abstain / over_abstain / miss_figure / miss_multi_hop."
+}

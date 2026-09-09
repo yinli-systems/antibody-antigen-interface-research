@@ -1,4 +1,4 @@
-from abcite_core.clip_encoder import biomedclip_requested, clip_model_name
+from abcite_core.clip_encoder import biomedclip_requested, biomedclip_skip_reason, clip_model_name
 from abcite_core.metrics import (
     claim_faithfulness,
     cohens_kappa,
@@ -53,9 +53,20 @@ def test_cohens_kappa_and_failures():
         )
         == "over_abstain"
     )
+    assert (
+        label_failure(
+            expected_status="answered",
+            actual_status="answered",
+            cited_ids=["txt-1n8z-parent"],
+            retrieved_ids=["txt-1n8z-parent"],
+            required_ids=["txt-1n8z-parent"],
+        )
+        == "ok"
+    )
 
 
 def test_biomedclip_env_stub(monkeypatch):
     monkeypatch.setenv("ABCITE_CLIP_MODEL", "biomedclip")
     assert clip_model_name() == "biomedclip"
     assert biomedclip_requested() is True
+    assert biomedclip_skip_reason() is not None

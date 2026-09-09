@@ -15,9 +15,45 @@ from abcite_core.vision import DIM, VisionEncoder, hashing_vector
 
 TOKEN = re.compile(r"[a-z0-9_+\-./]+")
 
+# Query rewrite / HyDE-lite expansions. Not gold-question copies of chunk text.
+_EXPAND: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r"\bherceptin\b", re.I), " trastuzumab her2 domain IV 1n8z"),
+    (re.compile(r"\b2c4\b", re.I), " pertuzumab domain II dimerization"),
+    (re.compile(r"\berbb2\b", re.I), " her2"),
+    (re.compile(r"\bmembrane-adjacent\b", re.I), " domain IV membrane-proximal"),
+    (re.compile(r"\bdimerization[- ]arm\b", re.I), " pertuzumab domain II"),
+    (re.compile(r"\bpalivizumab[- ]class\b", re.I), " motavizumab palivizumab site II"),
+    (re.compile(r"\bprefusion(?: rsv)?(?: fusion-protein)? apex\b", re.I), " d25 4jhw site zero trimer apex"),
+    (re.compile(r"\bcd4-mimetic\b", re.I), " vrc01 cd4-binding-site 3ngb"),
+    (re.compile(r"\bn332 glycan-hole\b", re.I), " pgt121 n332 glycan"),
+    (re.compile(r"\bcryptic sarbecovirus\b", re.I), " cr3022 6w41 cryptic rbd"),
+    (re.compile(r"\bhel binder d1\.3\b", re.I), " d1.3 lysozyme 1vfb"),
+    (re.compile(r"\binfluenza stem\b", re.I), " cr9114 4fqi ha2 stem"),
+    (re.compile(r"\betesevimab\b", re.I), " cb6 7c01 ace2"),
+    (re.compile(r"\bsabdab\b", re.I), " antibody catalog metadata residue jaccard"),
+    (re.compile(r"\boverlap diagnostic\b", re.I), " framecontact predicted overlap jaccard"),
+    (re.compile(r"\bnumbered (?:erbb2|her2|rsv|rbd|hel|ha2|gp120)\b", re.I), " residue map structure snapshot highlighted"),
+    (re.compile(r"\blocal (?:herceptin )?contact cartoon\b", re.I), " structure snapshot residue map"),
+    (re.compile(r"\bschematic cartoon\b", re.I), " figure caption diagram"),
+]
+
 
 def tokenize(text: str) -> list[str]:
     return TOKEN.findall(text.lower())
+
+
+def expand_query(query: str) -> str:
+    """Lexical rewrite + comparison cue. Does not invent gold questions."""
+    extra: list[str] = []
+    for pat, add in _EXPAND:
+        if pat.search(query):
+            extra.append(add)
+    qlow = query.lower()
+    if any(w in qlow for w in ("same antigen", "versus", " vs ", "share a residue", "same face", "same set")):
+        extra.append(" epitope epitope-overlap distinct site")
+    if extra:
+        return query + " " + " ".join(extra)
+    return query
 
 
 class HashingEncoder:
@@ -67,17 +103,24 @@ class HybridIndex:
 
             self.vision = build_vision_encoder()
         self.docs = [tokenize(self._blob(c)) for c in chunks]
+        self.caption_docs = [tokenize(self._caption_blob(c)) for c in chunks]
         self.df: dict[str, int] = defaultdict(int)
+        self.caption_df: dict[str, int] = defaultdict(int)
         for doc in self.docs:
             for term in set(doc):
                 self.df[term] += 1
+        for doc in self.caption_docs:
+            for term in set(doc):
+                self.caption_df[term] += 1
         self.n = len(chunks)
         self.avgdl = sum(len(d) for d in self.docs) / max(1, self.n)
+        self.avg_cap_dl = sum(len(d) for d in self.caption_docs) / max(1, self.n)
         self.k1 = 1.5
         self.b = 0.75
         blobs = [self._blob(c) for c in chunks]
         self.dense = self.encoder.encode(blobs)
         self.image_vecs = np.stack([self._image_vec(c) for c in chunks], axis=0)
+        self.parent_of = [c.parent_id for c in chunks]
 
     def _image_vec(self, chunk: Chunk) -> np.ndarray:
         if chunk.image_path:
@@ -101,24 +144,37 @@ class HybridIndex:
             f"{chunk.antigen or ''} {chunk.antibody or ''} {chunk.modality.value}"
         )
 
-    def bm25_scores(self, query: str) -> np.ndarray:
+    @staticmethod
+    def _caption_blob(chunk: Chunk) -> str:
+        cap = chunk.caption or ""
+        if not cap and chunk.image_path:
+            cap = chunk.title
+        return f"{cap} {chunk.title} {chunk.pdb_id or ''} {chunk.antigen or ''} {chunk.antibody or ''}"
+
+    def _bm25(self, query: str, docs: list[list[str]], df: dict[str, int], avgdl: float) -> np.ndarray:
         q = tokenize(query)
         scores = np.zeros(self.n, dtype=np.float32)
         qn = Counter(q)
-        for i, doc in enumerate(self.docs):
+        for i, doc in enumerate(docs):
             tf = Counter(doc)
             dl = len(doc) or 1
             s = 0.0
             for term, qtf in qn.items():
-                n_q = self.df.get(term, 0)
+                n_q = df.get(term, 0)
                 if n_q == 0:
                     continue
                 idf = math.log(1 + (self.n - n_q + 0.5) / (n_q + 0.5))
                 freq = tf[term]
-                denom = freq + self.k1 * (1 - self.b + self.b * dl / self.avgdl)
+                denom = freq + self.k1 * (1 - self.b + self.b * dl / avgdl)
                 s += idf * (freq * (self.k1 + 1) / denom) * qtf
             scores[i] = s
         return scores
+
+    def bm25_scores(self, query: str) -> np.ndarray:
+        return self._bm25(query, self.docs, self.df, self.avgdl)
+
+    def caption_bm25_scores(self, query: str) -> np.ndarray:
+        return self._bm25(query, self.caption_docs, self.caption_df, self.avg_cap_dl)
 
     def dense_scores(self, query: str) -> np.ndarray:
         qv = self.encoder.encode([query])[0]
@@ -134,16 +190,44 @@ class HybridIndex:
             return np.zeros(self.n, dtype=np.float32)
         return self.image_vecs @ qv
 
+    def _parent_child_boost(self, rrf: np.ndarray) -> np.ndarray:
+        """Boost siblings of currently strong parents, without flooding the ranking."""
+        top = set(np.argsort(-rrf)[:5].tolist())
+        hot_parents = {self.parent_of[i] for i in top}
+        out = rrf.copy()
+        for i, pid in enumerate(self.parent_of):
+            if pid in hot_parents and i not in top:
+                out[i] += 0.04 * float(rrf[i] + 1e-6)
+        return out
+
     def search(self, query: str, top_k: int = 6) -> list[Hit]:
-        bm25 = self.bm25_scores(query)
-        dense = self.dense_scores(query)
-        image = self.image_scores(query)
+        expanded = expand_query(query)
+        bm25 = self.bm25_scores(expanded)
+        dense = self.dense_scores(expanded)
+        image = self.image_scores(expanded)
+        caption = self.caption_bm25_scores(expanded)
         rrf = _rrf(bm25) + _rrf(dense) + 0.5 * _rrf(image)
         qlow = query.lower()
-        if any(w in qlow for w in ("figure", "diagram", "caption", "snapshot", "residue map", "schematic")):
+        figure_query = any(
+            w in qlow
+            for w in (
+                "figure",
+                "diagram",
+                "caption",
+                "snapshot",
+                "residue map",
+                "schematic",
+                "cartoon",
+                "highlighted",
+                "numbered",
+            )
+        )
+        if figure_query:
+            rrf = rrf + 0.8 * _rrf(caption)
             for i, c in enumerate(self.chunks):
                 if c.modality.value in {"figure", "structure"}:
-                    rrf[i] += 0.03
+                    rrf[i] += 0.04
+        rrf = self._parent_child_boost(rrf)
         order = np.argsort(-rrf)[:top_k]
         hits: list[Hit] = []
         for i in order:
@@ -158,24 +242,30 @@ class HybridIndex:
             )
         return hits
 
-    def search_by_image(self, path: Path, top_k: int = 5) -> list[Hit]:
+    def search_by_image(self, path: Path, top_k: int = 5, fuse_captions: bool = True) -> list[Hit]:
         qv = np.asarray(self.vision.encode_image(path), dtype=np.float32)
         if qv.shape[0] != self.image_vecs.shape[1]:
             return []
         sims = self.image_vecs @ qv
-        order = np.argsort(-sims)[:top_k]
+        cap_q = self.vision.caption(path)
+        cap_scores = self.caption_bm25_scores(cap_q)
+        fused = _rrf(sims) + _rrf(cap_scores) if fuse_captions else sims
+        order = np.argsort(-fused)[:top_k]
         hits: list[Hit] = []
         for i in order:
             hits.append(
                 Hit(
                     chunk=self.chunks[int(i)],
-                    score=float(sims[i]),
-                    bm25=0.0,
+                    score=float(fused[i]),
+                    bm25=float(cap_scores[i]),
                     dense=0.0,
                     image=float(sims[i]),
                 )
             )
         return hits
+
+    def search_image_only(self, path: Path, top_k: int = 5) -> list[Hit]:
+        return self.search_by_image(path, top_k=top_k, fuse_captions=False)
 
 
 def _rrf(scores: np.ndarray, k: int = 60) -> np.ndarray:

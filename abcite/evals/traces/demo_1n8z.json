@@ -16,9 +16,9 @@
     "txt-1n8z-parent",
     "fig-1n8z",
     "txt-motavizumab",
+    "struct-1n8z",
     "txt-hyhel10",
-    "txt-4fqi",
-    "txt-pgt121"
+    "txt-4fqi"
   ],
   "retrieved_scores": {
     "txt-1n8z-child-epitope": 0.0405,
@@ -26,9 +26,9 @@
     "txt-1n8z-parent": 0.0389,
     "fig-1n8z": 0.0389,
     "txt-motavizumab": 0.038,
+    "struct-1n8z": 0.0371,
     "txt-hyhel10": 0.037,
-    "txt-4fqi": 0.0365,
-    "txt-pgt121": 0.0364
+    "txt-4fqi": 0.0365
   },
   "status": "answered",
   "abstain": false,

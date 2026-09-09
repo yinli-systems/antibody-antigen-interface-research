@@ -60,6 +60,27 @@ def biomedclip_requested() -> bool:
     return clip_model_name() in {"biomedclip", "biomed-clip", "pmc-clip"}
 
 
+def biomedclip_weights_present() -> bool:
+    cache = clip_cache_dir()
+    candidates = [
+        cache / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
+        cache / "biomedclip.pt",
+        cache / "open_clip_pytorch_model_biomedclip.bin",
+    ]
+    return any(p.is_file() and p.stat().st_size > 50_000_000 for p in candidates)
+
+
+def biomedclip_skip_reason() -> str | None:
+    if not biomedclip_requested():
+        return None
+    if biomedclip_weights_present():
+        return None
+    return (
+        "BiomedCLIP skipped: ABCITE_CLIP_MODEL=biomedclip but weights are not in "
+        f"{clip_cache_dir()}. No download. Using OpenCLIP if cached, else local encoder."
+    )
+
+
 def clip_cache_dir() -> Path:
     return Path(os.environ.get("ABCITE_CLIP_CACHE", Path.home() / ".cache" / "clip"))
 
@@ -230,13 +251,11 @@ def build_vision_encoder() -> VisionEncoder:
     ABCITE_CLIP_MODEL=biomedclip is an interface stub: we do not download BiomedCLIP.
     OpenCLIP ViT-B-32 remains the real encoder path when weights are cached.
     """
-    if biomedclip_requested():
-        log.warning(
-            "ABCITE_CLIP_MODEL=%s is a stub (no BiomedCLIP download). "
-            "Using OpenCLIP if weights exist, else the local encoder. "
-            "Do not treat scores as domain-CLIP SOTA.",
-            clip_model_name(),
-        )
+    skip = biomedclip_skip_reason()
+    if skip:
+        log.warning(skip)
+    elif biomedclip_requested() and biomedclip_weights_present():
+        log.info("ABCITE_CLIP_MODEL=biomedclip weights present; loader not wired — using OpenCLIP path.")
     if clip_forced_off():
         return LocalImageEncoder()
     if clip_stack_available() and (clip_forced_on() or clip_weights_cached()):

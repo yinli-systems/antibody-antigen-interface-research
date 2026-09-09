@@ -161,6 +161,16 @@ def cohens_kappa(a: list[int], b: list[int]) -> float | None:
     return float((agree - pe) / (1 - pe))
 
 
+TAXONOMY_CLASSES = (
+    "ok",
+    "hallucinated_cite",
+    "missed_abstain",
+    "over_abstain",
+    "miss_figure",
+    "miss_multi_hop",
+)
+
+
 def label_failure(
     *,
     expected_status: str,
@@ -168,18 +178,31 @@ def label_failure(
     cited_ids: list[str],
     retrieved_ids: list[str],
     required_ids: list[str],
-) -> str | None:
-    """Auto-label one gold item. None = no taxonomy hit."""
+    query_class: str | None = None,
+    required_image_id: str | None = None,
+    k: int = 5,
+) -> str:
+    """Auto-label one gold item. Always one of TAXONOMY_CLASSES."""
     if expected_status == "abstain" and actual_status != "abstain":
         return "missed_abstain"
     if expected_status in {"answered", "hitl_pending"} and actual_status == "abstain":
         return "over_abstain"
+    retrieved = set(retrieved_ids)
+    required = set(required_ids or [])
+    topk = set(retrieved_ids[:k])
     if actual_status != "abstain" and cited_ids:
-        retrieved = set(retrieved_ids)
-        required = set(required_ids)
         for cid in cited_ids:
             if cid not in retrieved and cid not in required:
                 return "hallucinated_cite"
         if required and not (set(cited_ids) & required) and set(cited_ids) - retrieved:
             return "hallucinated_cite"
-    return None
+    img = required_image_id
+    if img and img not in topk and img not in set(cited_ids):
+        return "miss_figure"
+    qclass = (query_class or "").lower()
+    if qclass == "multi_hop" and required:
+        if not required.issubset(set(retrieved_ids[:10])):
+            return "miss_multi_hop"
+        if len(set(cited_ids) & required) < min(2, len(required)) and actual_status != "abstain":
+            return "miss_multi_hop"
+    return "ok"
