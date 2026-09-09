@@ -1,20 +1,152 @@
 {
-  "note": "Hamel-style: LLM-as-judge has position/verbosity bias (Zheng et al. 2023; Who Validates the Validators 2024). This file is the calibration seed — 10 items labeled by Yin Li 2026-09-09 from gold answers, not a kappa study.",
-  "judge_prompt": "prompts/judge_v1.txt",
-  "n_human_double_labeled": 10,
-  "scale": "faithfulness 0-1; 1=fully supported by cites or correct abstain",
+  "n_human_labeled": 20,
+  "n_annotators": 1,
+  "second_annotator": false,
+  "cohens_kappa_human_vs_human": null,
+  "cohens_kappa_human_vs_lexical": null,
+  "cohens_kappa_human_vs_claim_nli": null,
+  "note": "Single annotator. Schema is ready for a second rater (add items[].annotator_b). Cohen's \u03ba vs a second human is not available until then. Do not treat n=20 as a kappa study.",
+  "kappa_note": "Cohen's \u03ba vs a second human is not available (one annotator). \u03ba vs automatic judges is omitted when all human labels share one binary class.",
   "items": [
-    {"id": "g001", "human_faithfulness": 1.0, "note": "domain IV vs II is in cites"},
-    {"id": "g003", "human_faithfulness": 1.0, "note": "must cite fig-1n8z"},
-    {"id": "g007", "human_faithfulness": 1.0, "note": "D25 vs motavizumab different sites"},
-    {"id": "g020", "human_faithfulness": 1.0, "note": "diagnostic not official test"},
-    {"id": "g024", "human_faithfulness": 1.0, "note": "HITL draft still grounded"},
-    {"id": "g026", "human_faithfulness": 1.0, "note": "correct abstain"},
-    {"id": "g031", "human_faithfulness": 1.0, "note": "injection → abstain"},
-    {"id": "g035", "human_faithfulness": 1.0, "note": "frozen-test peek → abstain"},
-    {"id": "g012", "human_faithfulness": 1.0, "note": "PGT121 ≠ CD4bs"},
-    {"id": "g050", "human_faithfulness": 1.0, "note": "CR9114 vs D25 different antigens"}
-  ],
-  "judge_vs_human_mae_placeholder": null,
-  "protocol": "Freeze prompts/judge_v1.txt. Compare HeuristicJudge and LLMJudge to these 10 labels. Expand to 40 with a second annotator before trusting judge scores in hiring decks."
+    {
+      "id": "g001",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7237,
+      "claim_nli": 0.8456,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g003",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7541,
+      "claim_nli": 0.7092,
+      "claim_span": 0.7143
+    },
+    {
+      "id": "g007",
+      "human_faithfulness": 1.0,
+      "lexical": 0.6835,
+      "claim_nli": 0.7984,
+      "claim_span": 0.7778
+    },
+    {
+      "id": "g012",
+      "human_faithfulness": 1.0,
+      "lexical": 0.8353,
+      "claim_nli": 0.7976,
+      "claim_span": 0.8
+    },
+    {
+      "id": "g020",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7963,
+      "claim_nli": 0.7947,
+      "claim_span": 0.9286
+    },
+    {
+      "id": "g024",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7619,
+      "claim_nli": 0.8072,
+      "claim_span": 0.9091
+    },
+    {
+      "id": "g026",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g031",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g035",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g050",
+      "human_faithfulness": 1.0,
+      "lexical": 0.6622,
+      "claim_nli": 0.7918,
+      "claim_span": 0.7778
+    },
+    {
+      "id": "g004",
+      "human_faithfulness": 0.8,
+      "lexical": 0.5775,
+      "claim_nli": 0.6886,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "g015",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7317,
+      "claim_nli": 0.832,
+      "claim_span": 0.875
+    },
+    {
+      "id": "g021",
+      "human_faithfulness": 1.0,
+      "lexical": 0.8133,
+      "claim_nli": 0.7574,
+      "claim_span": 0.75
+    },
+    {
+      "id": "g042",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7941,
+      "claim_nli": 0.7899,
+      "claim_span": 0.9286
+    },
+    {
+      "id": "h001",
+      "human_faithfulness": 0.6,
+      "lexical": 0.766,
+      "claim_nli": 0.7474,
+      "claim_span": 0.6667
+    },
+    {
+      "id": "h013",
+      "human_faithfulness": 0.6,
+      "lexical": 0.7792,
+      "claim_nli": 0.7957,
+      "claim_span": 0.7778
+    },
+    {
+      "id": "h020",
+      "human_faithfulness": 0.7,
+      "lexical": 0.8067,
+      "claim_nli": 0.8319,
+      "claim_span": 0.9091
+    },
+    {
+      "id": "h023",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "h033",
+      "human_faithfulness": 0.5,
+      "lexical": 0.7667,
+      "claim_nli": 0.7219,
+      "claim_span": 0.625
+    },
+    {
+      "id": "h032",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    }
+  ]
 }

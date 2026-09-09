@@ -23,6 +23,7 @@ log = logging.getLogger("abcite.clip")
 CLIP_NAME = "clip-vit-b-32"
 CLIP_ARCH = "ViT-B-32"
 CLIP_TAG = "openai"
+BIOMEDCLIP_STUB = "biomedclip-stub"
 CLIP_MIN_BYTES = 340_000_000
 CLIP_SHA256 = "40d365715913c9da98579312b702a82c18be219cc2a73407c4526f58eba950af"
 CLIP_URL = (
@@ -49,6 +50,14 @@ def clip_forced_off() -> bool:
 
 def clip_forced_on() -> bool:
     return os.environ.get("ABCITE_CLIP", "auto").lower() in {"1", "true", "yes", "clip"}
+
+
+def clip_model_name() -> str:
+    return (os.environ.get("ABCITE_CLIP_MODEL") or "openclip").strip().lower()
+
+
+def biomedclip_requested() -> bool:
+    return clip_model_name() in {"biomedclip", "biomed-clip", "pmc-clip"}
 
 
 def clip_cache_dir() -> Path:
@@ -216,7 +225,18 @@ def load_open_clip() -> OpenCLIPEncoder:
 
 
 def build_vision_encoder() -> VisionEncoder:
-    """CLIP when `[clip]` + weights are available; local encoder otherwise."""
+    """CLIP when `[clip]` + weights are available; local encoder otherwise.
+
+    ABCITE_CLIP_MODEL=biomedclip is an interface stub: we do not download BiomedCLIP.
+    OpenCLIP ViT-B-32 remains the real encoder path when weights are cached.
+    """
+    if biomedclip_requested():
+        log.warning(
+            "ABCITE_CLIP_MODEL=%s is a stub (no BiomedCLIP download). "
+            "Using OpenCLIP if weights exist, else the local encoder. "
+            "Do not treat scores as domain-CLIP SOTA.",
+            clip_model_name(),
+        )
     if clip_forced_off():
         return LocalImageEncoder()
     if clip_stack_available() and (clip_forced_on() or clip_weights_cached()):

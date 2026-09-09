@@ -13,7 +13,7 @@ One page: UK Applied AI Engineer skills → files in this project.
 | FastAPI serving | `apps/api/main.py` (`/query` `/search-image` `/feedback` `/health` `/docs`) |
 | Provider-used phrasing (keys → OpenAI/Azure; else extractive) | `providers/__init__.py` `get_llm`, `agents/graph.py` `compose_with_provider`, `tests/test_provider.py` |
 | Desktop UI + citation thumbnails + residue chips | `apps/web/src/App.tsx`, `apps/web/src/styles.css` |
-| Evals that are numbers, not placeholders | `abcite_core/metrics.py`, `abcite_core/judge.py`, `evals/run.py`, `evals/latest.md`, `evals/gold/gold.jsonl` (**150**) |
+| Evals that are numbers, not placeholders | `abcite_core/metrics.py`, `evals/run.py`, `evals/gold/fixture.jsonl` (150) + `evals/gold/hard.jsonl` (~40), `evals/latest.md` |
 | LLM-as-judge (heuristic CI + prompt contract + optional live) | `abcite_core/judge.py`, `prompts/judge_v1.txt`, `evals/judge_alignment.json`, `tests/test_judge.py` |
 | Azure AI Search hybrid+semantic | `abcite_core/azure_search.py`, `tests/test_azure_search.py` |
 | Terraform starter (RG, Search, OpenAI account) | `infra/terraform/main.tf`, `variables.tf`, `outputs.tf`, `terraform.tfvars.example` |

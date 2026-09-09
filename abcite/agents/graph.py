@@ -11,7 +11,7 @@ from typing import Any, Callable
 
 from abcite_core.models import AnswerStatus, Chunk, QueryResponse
 from abcite_core.overlap import lookup_predicted_overlap
-from abcite_core.rcsb import RcsbError, fetch_entry
+from abcite_core.rcsb import ALLOWLIST, RcsbError, fetch_entry
 from abcite_core.retrieval import HybridIndex
 from abcite_core.tracing import emit_run
 from providers.base import LLMProvider, citations_from_chunks, format_evidence
@@ -29,9 +29,11 @@ UNANSWERABLE_HINTS = re.compile(
     r"pmid 00000000|ignore retrieved|nhs number|alicesecret|1abcde|"
     r"pdb 1foo|not in the index|malaria antigen|peeking at frozen|"
     r"official-test sota|patient nhs|no public structure|synthetic_exam|"
-    r"toy pdb 0xxx|fabricated complex",
+    r"toy pdb 0xxx|fabricated complex|not stored locally|closed index",
     re.I,
 )
+
+PDB_TOKEN = re.compile(r"\b([0-9][A-Za-z0-9]{3})\b")
 
 
 @dataclass
@@ -49,8 +51,30 @@ class GraphState:
     trace_id: str = ""
 
 
-def should_abstain(question: str, hits: list[Any], threshold: float) -> bool:
+def unknown_pdb_mentioned(question: str, known_pdb_ids: set[str]) -> bool:
+    """True if the question names a 4-char PDB that is not in the local corpus.
+
+    PDB codes start with a digit and contain at least one letter (skips years/PMIDs).
+    """
+    known = {p.upper() for p in known_pdb_ids if p}
+    for token in PDB_TOKEN.findall(question):
+        if not re.search(r"[A-Za-z]", token):
+            continue
+        pid = token.upper()
+        if pid not in known and pid not in ALLOWLIST:
+            return True
+    return False
+
+
+def should_abstain(
+    question: str,
+    hits: list[Any],
+    threshold: float,
+    known_pdb_ids: set[str] | None = None,
+) -> bool:
     if UNANSWERABLE_HINTS.search(question):
+        return True
+    if known_pdb_ids is not None and unknown_pdb_mentioned(question, known_pdb_ids):
         return True
     if not hits:
         return True
@@ -150,8 +174,9 @@ class EvidenceGraph:
         tools = run_tools(question)
         chunks = [h.chunk for h in hits]
         scores = {h.chunk.chunk_id: h.score for h in hits}
+        known_pdbs = {(c.pdb_id or "").upper() for c in self.index.chunks if c.pdb_id}
 
-        if should_abstain(question, hits, self.abstain_threshold):
+        if should_abstain(question, hits, self.abstain_threshold, known_pdbs):
             resp = QueryResponse(
                 trace_id=trace_id,
                 status=AnswerStatus.ABSTAIN,

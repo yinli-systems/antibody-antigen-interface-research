@@ -836,7 +836,9 @@ def main() -> None:
 
     gold.extend(extra_gold_rows())
 
-    gp = GOLD / "gold.jsonl"
+    for row in gold:
+        row.setdefault("split", "fixture")
+    gp = GOLD / "fixture.jsonl"
     with gp.open("w", encoding="utf-8") as fh:
         for row in gold:
             fh.write(json.dumps(row) + "\n")

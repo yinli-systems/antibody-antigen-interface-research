@@ -13,6 +13,7 @@
     "high_stakes": { "type": "boolean" },
     "query_class": { "type": "string" },
     "source": { "enum": ["public_pdb", "synthetic_exam"] },
+    "split": { "enum": ["fixture", "hard"] },
     "notes": { "type": "string" }
   }
 }

@@ -58,18 +58,31 @@ With keys (not baked into the image): `OPENAI_API_KEY=... docker compose -f infr
 
 ## Eval numbers (`python evals/run.py`, 2026-09-09)
 
-| Metric | Value |
-|---|---|
-| Gold size | **150** (45 unanswerable / 35 figure-grounded) |
-| Abstain-on-unanswerable | **100%** (CI fails if < 100%) |
-| Hit@5 (any required chunk) | **99.0%** |
-| Recall@5 | **99.0%** |
-| Faithfulness (lexical vs cited quotes) | **73.7%** |
-| Judge score (heuristic, same formula in CI) | **73.7%** |
-| Multimodal citation-id match | **100%** |
-| Judge vs human | 10-item seed in `evals/judge_alignment.json` (not a kappa study) |
+CI gates **fixture** only (150 in-corpus items). **Hard-dev** is 40 paraphrases / multi-hop / out-of-index / residue questions; Hit@5 is supposed to drop.
 
-Source table: [`evals/latest.md`](evals/latest.md).
+| Metric | Fixture (n=150) | Hard-dev (n=40) |
+|---|---|---|
+| Gold | 105 answerable + 45 unanswerable (35 figure-grounded) | 30 answerable + 10 out-of-index abstain |
+| Abstain-on-unanswerable | **100%** (CI fails if < 100%) | **100%** (unknown PDB / closed-index) |
+| Hit@5 | **99.0%** (vanity / in-corpus) | **86.7%** |
+| Recall@5 | 99.0% | 80.0% |
+| nDCG@10 | 0.907 | 0.652 |
+| MRR | 0.880 | 0.597 |
+| Faithfulness (lexical vs cites) | 73.7% | 76.9% |
+| Faithfulness (claim-span) | 80.6% | 76.5% |
+| Claim-NLI heuristic | 77.5% | 76.7% |
+| Judge (lexical heuristic, CI) | 73.7% | 76.9% |
+| Multimodal citation-id match | 100% | 54.5% |
+
+By `source` (answerable ranking only): fixture `public_pdb` n=105 Hit@5 99.0% / nDCG@10 0.907 / MRR 0.880. Hard `public_pdb` n=30 Hit@5 86.7% / nDCG@10 0.652 / MRR 0.597. `synthetic_exam` items are unanswerable (no ranking).
+
+CLIP contrast (local hashing encoder in default CI): mean rank1−rank2 gap **0.006**; self-hit 100% on a 14-figure gallery; **not SOTA**. `ABCITE_CLIP_MODEL=biomedclip` is a stub (no download); OpenCLIP ViT-B-32 is the real path when `[clip]` + weights are present.
+
+Human labels: 20 items, **one annotator**. Cohen’s κ vs a second human is **not available**. Binary κ vs judges is omitted because every human label is ≥0.5.
+
+**Demo (real public PDB):** trastuzumab–HER2 **1N8Z** / Cho et al. Nature 2003 PMID 12610673 — [DOI](https://doi.org/10.1038/nature01392) — [RCSB 1N8Z](https://www.rcsb.org/structure/1N8Z). Receipt: [`evals/traces/demo_1n8z.json`](evals/traces/demo_1n8z.json).
+
+Source tables: [`evals/latest.md`](evals/latest.md). Gaps: [`IMPROVEMENTS.md`](IMPROVEMENTS.md).
 
 **CLIP:** default CI is fast (`ABCITE_CLIP=0`, hashing / tiny fallback). Real OpenCLIP ViT-B-32 is the default encoder after:
 
@@ -89,9 +102,9 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Piece | Real now | Still stub / optional |
 |---|---|---|
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
-| Gold | **150** labeled items | Second annotator / Cohen kappa |
+| Gold | **150 fixture** + **40 hard-dev** | Second annotator / Cohen κ vs human |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed | default CI uses hashing/tiny (`ABCITE_CLIP=0`) |
+| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed | default CI uses hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP is **stub only** |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
 | Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |
@@ -100,7 +113,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 
 ## Tests
 
-`pytest` (35 + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, gold≥150, multimodal, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate.
+`pytest` (40+ + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, fixture≥150 + hard≥35, multimodal, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate (fixture vs hard, CLIP gap).
 
 ## Security
 
