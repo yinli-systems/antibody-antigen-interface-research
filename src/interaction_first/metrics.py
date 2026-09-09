@@ -416,7 +416,21 @@ def macro_metric_summary(records: Sequence[Mapping[str, float | None]]) -> dict[
     if not records:
         raise ValueError("Macro metrics require at least one record")
     excluded = {"count", "positive_count", "threshold"}
-    keys = sorted(set.intersection(*(set(record) for record in records)) - excluded)
+    shared = set.intersection(*(set(record) for record in records)) - excluded
+
+    def numeric(key: str) -> bool:
+        # The docstring promises numeric keys only, but the exclusion list alone
+        # does not deliver that: ranking_at_k reports a string tie_policy, and
+        # averaging it raises. Skip any key that is not numeric in every record.
+        for record in records:
+            value = record[key]
+            if value is None:
+                continue
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                return False
+        return True
+
+    keys = sorted(key for key in shared if numeric(key))
     return {key: optional_mean(record[key] for record in records) for key in keys}
 
 
