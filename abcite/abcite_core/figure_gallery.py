@@ -1,7 +1,8 @@
-"""Image gallery for the visual multimodal protocol (not the 14-SVG cite-id demo).
+"""Image gallery for multimodal figure retrieval (not the 14-SVG cite-id demo).
 
 Image vectors are CLIP/hash pixels only — captions and PDB ids never enter encode_image.
-Queries are visual-content text; PDB tokens are stripped before CLIP text encode.
+Caption-as-query uses stripped captions as text queries (SciMMIR-style pair retrieval).
+Unique-gold visual questions stay caption-free and PDB-free.
 """
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
-from abcite_core.holdout import strip_caption_leak, strip_pdb_ids, visual_query_ok
+from abcite_core.holdout import strip_accession_tokens, strip_caption_leak, visual_query_ok
 from abcite_core.vision import hashing_vector
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +31,7 @@ class FigureRec:
     split: str
     visual_class: str
     source: str
+    href: str = ""
 
 
 def _tokenize(text: str) -> list[str]:
@@ -44,7 +46,8 @@ def load_figure_records(prefer_cache: bool = True) -> list[FigureRec]:
     meta = cache_meta if prefer_cache and cache_meta.exists() else fixture_meta
     if not meta.exists():
         raise FileNotFoundError(
-            f"No figure metadata. Run: python evals/download_figures.py --max 1200\nlooked for {cache_meta} and {fixture_meta}"
+            "No figure metadata. Run: python evals/download_figures.py --max 1200\n"
+            f"looked for {cache_meta} and {fixture_meta}"
         )
     recs: list[FigureRec] = []
     for line in meta.read_text(encoding="utf-8").splitlines():
@@ -63,11 +66,40 @@ def load_figure_records(prefer_cache: bool = True) -> list[FigureRec]:
                 split=str(raw.get("split") or ""),
                 visual_class=str(raw.get("visual_class") or "scientific figure panel"),
                 source=str(raw.get("source") or ""),
+                href=str(raw.get("href") or ""),
             )
         )
     if not recs:
         raise FileNotFoundError(f"metadata at {meta} has no readable images")
     return recs
+
+
+def fix_to_gallery_ids(recs: list[FigureRec]) -> dict[str, str]:
+    """Map committed fixture `fix-*` ids onto gallery ids via href, then caption."""
+    fixture_meta = FIG_ROOT / "fixture" / "metadata.jsonl"
+    if not fixture_meta.exists():
+        return {}
+    href_to_gid: dict[str, str] = {}
+    cap_to_gids: dict[str, list[str]] = defaultdict(list)
+    for rec in recs:
+        if rec.href:
+            href_to_gid[rec.href] = rec.figure_id
+        cap = (rec.caption or "").strip()
+        if cap:
+            cap_to_gids[cap].append(rec.figure_id)
+    alias: dict[str, str] = {}
+    for line in fixture_meta.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        raw = json.loads(line)
+        fid = str(raw.get("figure_id") or "")
+        href = str(raw.get("href") or "")
+        cap = str(raw.get("caption") or "").strip()
+        if href and href in href_to_gid:
+            alias[fid] = href_to_gid[href]
+        elif cap and cap_to_gids.get(cap):
+            alias[fid] = cap_to_gids[cap][0]
+    return alias
 
 
 class FigureGallery:
@@ -76,63 +108,101 @@ class FigureGallery:
         self.vision = vision
         self.ids = [r.figure_id for r in recs]
         self.captions = [r.caption for r in recs]
-        self.cap_docs = [_tokenize(strip_pdb_ids(c)) for c in self.captions]
+        self.cap_docs = [_tokenize(strip_accession_tokens(c)) for c in self.captions]
         self.df: dict[str, int] = defaultdict(int)
-        for doc in self.cap_docs:
-            for t in set(doc):
+        self.postings: dict[str, list[tuple[int, int]]] = defaultdict(list)
+        for i, doc in enumerate(self.cap_docs):
+            tf = Counter(doc)
+            for t, f in tf.items():
                 self.df[t] += 1
+                self.postings[t].append((i, f))
         self.n = len(recs)
         self.avgdl = sum(len(d) for d in self.cap_docs) / max(1, self.n)
+        self.dl = [len(d) or 1 for d in self.cap_docs]
         self.image_vecs = self._load_or_encode()
 
     def _cache_key(self) -> Path:
         name = getattr(self.vision, "name", "enc")
         return FIG_ROOT / "cache" / f"embeddings-{name}-n{self.n}.npy"
 
-    def _load_or_encode(self) -> np.ndarray:
-        cache = self._cache_key()
+    def _committed_key(self) -> Path:
+        name = getattr(self.vision, "name", "enc")
+        return ROOT / "evals" / f"embeddings-{name}-n{self.n}.npy"
+
+    def _try_load_cache(self, cache: Path) -> np.ndarray | None:
         ids_path = cache.with_suffix(".ids.json")
-        if cache.exists() and ids_path.exists():
-            ids = json.loads(ids_path.read_text(encoding="utf-8"))
-            if ids == self.ids:
-                arr = np.load(cache)
-                if arr.shape[0] == self.n:
-                    return arr.astype(np.float32)
+        if not (cache.exists() and ids_path.exists()):
+            return None
+        ids = json.loads(ids_path.read_text(encoding="utf-8"))
+        if ids != self.ids:
+            return None
+        arr = np.load(cache)
+        if arr.shape[0] != self.n:
+            return None
+        return arr.astype(np.float32)
+
+    def _load_or_encode(self) -> np.ndarray:
+        for cache in (self._cache_key(), self._committed_key()):
+            arr = self._try_load_cache(cache)
+            if arr is not None:
+                return arr
         vecs = []
         encode_image = self.vision.encode_image
         for rec in self.recs:
             # Caption / PDB must not be concatenated into this vector.
             vecs.append(np.asarray(encode_image(rec.path), dtype=np.float32))
         arr = np.stack(vecs, axis=0)
+        cache = self._cache_key()
         cache.parent.mkdir(parents=True, exist_ok=True)
         if "fixture" not in str(self.recs[0].path):
             np.save(cache, arr)
-            ids_path.write_text(json.dumps(self.ids), encoding="utf-8")
+            cache.with_suffix(".ids.json").write_text(json.dumps(self.ids), encoding="utf-8")
         return arr
 
     def _bm25(self, query: str) -> np.ndarray:
-        q = _tokenize(strip_pdb_ids(query))
+        q = _tokenize(strip_accession_tokens(query))
         scores = np.zeros(self.n, dtype=np.float32)
         qn = Counter(q)
         k1, b = 1.5, 0.75
-        for i, doc in enumerate(self.cap_docs):
-            tf = Counter(doc)
-            dl = len(doc) or 1
-            s = 0.0
-            for term, qtf in qn.items():
-                n_q = self.df.get(term, 0)
-                if n_q == 0:
-                    continue
-                idf = math.log(1 + (self.n - n_q + 0.5) / (n_q + 0.5))
-                freq = tf[term]
-                denom = freq + k1 * (1 - b + b * dl / self.avgdl)
-                s += idf * (freq * (k1 + 1) / denom) * qtf
-            scores[i] = s
+        avgdl = self.avgdl or 1.0
+        for term, qtf in qn.items():
+            posts = self.postings.get(term)
+            if not posts:
+                continue
+            n_q = self.df.get(term, 0)
+            idf = math.log(1 + (self.n - n_q + 0.5) / (n_q + 0.5))
+            for i, freq in posts:
+                denom = freq + k1 * (1 - b + b * self.dl[i] / avgdl)
+                scores[i] += idf * (freq * (k1 + 1) / denom) * qtf
         return scores
 
+    def encode_queries(self, questions: list[str], *, holdout_captions: bool = False) -> np.ndarray:
+        texts: list[str] = []
+        for i, question in enumerate(questions):
+            cap = self.captions[i] if holdout_captions and i < len(self.captions) else None
+            texts.append(strip_accession_tokens(strip_caption_leak(question, cap)))
+        encode_batch = getattr(self.vision, "encode_texts", None)
+        if callable(encode_batch):
+            return np.asarray(encode_batch(texts), dtype=np.float32)
+        encode_text = getattr(self.vision, "encode_text", None)
+        vecs = []
+        for text in texts:
+            if callable(encode_text):
+                vecs.append(np.asarray(encode_text(text), dtype=np.float32))
+            else:
+                vecs.append(hashing_vector(text))
+        if not vecs:
+            return np.zeros((0, self.image_vecs.shape[1]), dtype=np.float32)
+        return np.stack(vecs, axis=0)
+
+    def clip_score_matrix(self, questions: list[str]) -> np.ndarray:
+        qv = self.encode_queries(questions, holdout_captions=False)
+        if qv.size == 0 or qv.shape[1] != self.image_vecs.shape[1]:
+            return np.zeros((len(questions), self.n), dtype=np.float32)
+        return qv @ self.image_vecs.T
+
     def _query_vec(self, question: str, caption_for_holdout: str | None) -> np.ndarray:
-        text = strip_caption_leak(question, caption_for_holdout)
-        text = strip_pdb_ids(text)
+        text = strip_accession_tokens(strip_caption_leak(question, caption_for_holdout))
         encode_text = getattr(self.vision, "encode_text", None)
         if callable(encode_text):
             return np.asarray(encode_text(text), dtype=np.float32)
@@ -183,14 +253,34 @@ def recall_at_k(ranked: list[str], gold: list[str], k: int) -> float:
 
 
 def mean_text_gap(gallery: FigureGallery, questions: list[str]) -> float:
+    if not questions:
+        return 0.0
+    mat = gallery.clip_score_matrix(questions)
     gaps: list[float] = []
-    for q in questions:
-        scores = gallery.clip_image_only_scores(q)
-        order = np.argsort(-scores)
+    for row in mat:
+        order = np.argsort(-row)
         if len(order) < 2:
             continue
-        gaps.append(float(scores[order[0]] - scores[order[1]]))
+        gaps.append(float(row[order[0]] - row[order[1]]))
     return float(sum(gaps) / len(gaps)) if gaps else 0.0
+
+
+def caption_as_query_items(recs: list[FigureRec], min_tokens: int = 6) -> list[dict]:
+    """SciMMIR-style pair retrieval: query = accession-stripped caption, gold = that figure."""
+    items: list[dict] = []
+    for rec in recs:
+        q = strip_accession_tokens(rec.caption or "")
+        if len(_tokenize(q)) < min_tokens:
+            continue
+        items.append(
+            {
+                "id": f"cap-{rec.figure_id}",
+                "question": q,
+                "gold_figure_ids": [rec.figure_id],
+                "protocol": "caption_as_query",
+            }
+        )
+    return items
 
 
 def synthesize_visual_queries(recs: list[FigureRec], limit: int | None = None) -> list[dict]:

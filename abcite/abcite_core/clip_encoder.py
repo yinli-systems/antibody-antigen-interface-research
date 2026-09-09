@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import time
 import urllib.request
 from pathlib import Path
 
@@ -60,14 +61,63 @@ def biomedclip_requested() -> bool:
     return clip_model_name() in {"biomedclip", "biomed-clip", "pmc-clip"}
 
 
+BIOMEDCLIP_REPO = "microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+BIOMEDCLIP_HF_NAMES = (
+    "hf-hub:microsoft/BiomedCLIP-PubMedBERT-256-vit-base-patch16-224",
+    f"hf-hub:{BIOMEDCLIP_REPO}",
+)
+_BIOMEDCLIP_FILES = (
+    "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
+    "biomedclip.pt",
+    "open_clip_pytorch_model_biomedclip.bin",
+    "open_clip_pytorch_model.bin",
+)
+
+
+def _hf_token() -> str | None:
+    for key in ("HF_TOKEN", "HUGGING_FACE_HUB_TOKEN", "HUGGINGFACE_HUB_TOKEN"):
+        val = os.environ.get(key)
+        if val:
+            return val
+    for path in (
+        Path.home() / ".cache" / "huggingface" / "token",
+        Path("/root/.cache/huggingface/token"),
+        Path("/workspace/.huggingface/token"),
+    ):
+        if path.is_file():
+            token = path.read_text(encoding="utf-8").strip()
+            if token:
+                return token
+    return None
+
+
+def _hf_home() -> Path:
+    raw = os.environ.get("HF_HOME") or os.environ.get("HUGGINGFACE_HUB_CACHE")
+    if raw:
+        return Path(raw)
+    if Path("/workspace").is_dir():
+        return Path("/workspace/hf")
+    return Path.home() / ".cache" / "huggingface"
+
+
+def _biomedclip_cached_files() -> list[Path]:
+    found: list[Path] = []
+    roots = [clip_cache_dir(), _hf_home(), _hf_home() / "hub"]
+    for root in roots:
+        if not root.exists():
+            continue
+        for name in _BIOMEDCLIP_FILES:
+            cand = root / name
+            if cand.is_file() and cand.stat().st_size > 50_000_000:
+                found.append(cand)
+        for match in root.glob("**/models--microsoft--BiomedCLIP*/**/*"):
+            if match.is_file() and match.stat().st_size > 50_000_000:
+                found.append(match)
+    return found
+
+
 def biomedclip_weights_present() -> bool:
-    cache = clip_cache_dir()
-    candidates = [
-        cache / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
-        cache / "biomedclip.pt",
-        cache / "open_clip_pytorch_model_biomedclip.bin",
-    ]
-    if any(p.is_file() and p.stat().st_size > 50_000_000 for p in candidates):
+    if _biomedclip_cached_files():
         return True
     return os.environ.get("ABCITE_BIOMEDCLIP_DOWNLOAD", "").lower() in {"1", "true", "yes"}
 
@@ -154,15 +204,24 @@ class OpenCLIPEncoder(VisionEncoder):
         return vec
 
     def encode_text(self, text: str) -> list[float]:
+        return self.encode_texts([text])[0].tolist()
+
+    def encode_texts(self, texts: list[str], batch_size: int = 64) -> np.ndarray:
         import torch
 
-        tokens = self.tokenizer([text])
-        if hasattr(tokens, "to"):
-            tokens = tokens.to(self.device)
-        with torch.no_grad():
-            feat = self.model.encode_text(tokens)
-            feat = feat / feat.norm(dim=-1, keepdim=True)
-        return feat[0].detach().cpu().numpy().astype(np.float32).tolist()
+        if not texts:
+            return np.zeros((0, self.dim), dtype=np.float32)
+        chunks: list[np.ndarray] = []
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+            tokens = self.tokenizer(batch)
+            if hasattr(tokens, "to"):
+                tokens = tokens.to(self.device)
+            with torch.no_grad():
+                feat = self.model.encode_text(tokens)
+                feat = feat / feat.norm(dim=-1, keepdim=True)
+            chunks.append(feat.detach().cpu().numpy().astype(np.float32))
+        return np.concatenate(chunks, axis=0)
 
     def caption(self, path: Path) -> str:
         return LocalImageEncoder().caption(path)
@@ -260,9 +319,87 @@ def load_open_clip() -> OpenCLIPEncoder:
 
 class BiomedCLIPEncoder(OpenCLIPEncoder):
     name = "biomedclip"
+    dim = 512
 
 
-BIOMEDCLIP_HF = "hf-hub:microsoft/BiomedCLIP-PubMedBERT-256-vit-base-patch16-224"
+def _allow_biomedclip_download() -> bool:
+    return os.environ.get("ABCITE_BIOMEDCLIP_DOWNLOAD", "").lower() in {"1", "true", "yes"}
+
+
+def download_biomedclip_weights() -> Path | None:
+    """Fetch BiomedCLIP into the CLIP/HF cache. Returns a local file or None."""
+    existing = _biomedclip_cached_files()
+    if existing:
+        return existing[0]
+    if not _allow_biomedclip_download():
+        return None
+    dest_dir = clip_cache_dir()
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    os.environ.setdefault("HF_HOME", str(_hf_home()))
+    os.environ.setdefault("HF_HUB_CACHE", str(_hf_home() / "hub"))
+    token = _hf_token()
+    last_err: Exception | None = None
+    endpoints = ["https://hf-mirror.com", os.environ.get("HF_ENDPOINT") or "https://huggingface.co"]
+    filenames = (
+        "open_clip_pytorch_model.bin",
+        "open_clip_model.safetensors",
+        "pytorch_model.bin",
+    )
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError:
+        hf_hub_download = None  # type: ignore[assignment]
+    if hf_hub_download is not None:
+        for endpoint in endpoints:
+            os.environ["HF_ENDPOINT"] = endpoint
+            for filename in filenames:
+                for attempt in range(2):
+                    try:
+                        path = hf_hub_download(
+                            repo_id=BIOMEDCLIP_REPO,
+                            filename=filename,
+                            token=token,
+                            cache_dir=str(_hf_home() / "hub"),
+                            resume_download=True,
+                        )
+                        p = Path(path)
+                        if p.is_file() and p.stat().st_size > 50_000_000:
+                            return p
+                    except Exception as exc:
+                        last_err = exc
+                        log.warning(
+                            "BiomedCLIP hf_hub_download %s %s attempt %s: %s",
+                            endpoint,
+                            filename,
+                            attempt + 1,
+                            exc,
+                        )
+                        time.sleep(min(20.0, 2.0**attempt))
+    # huggingface-cli fallback
+    import shutil
+    import subprocess
+
+    cli = shutil.which("huggingface-cli") or shutil.which("hf")
+    if cli:
+        env = os.environ.copy()
+        if token:
+            env["HF_TOKEN"] = token
+        for endpoint in endpoints:
+            env["HF_ENDPOINT"] = endpoint
+            local_dir = dest_dir / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+            cmd = [cli, "download", BIOMEDCLIP_REPO, "--local-dir", str(local_dir)]
+            try:
+                subprocess.run(cmd, check=True, env=env, timeout=600)
+            except Exception as exc:
+                last_err = exc
+                log.warning("BiomedCLIP huggingface-cli %s: %s", endpoint, exc)
+                continue
+            hits = _biomedclip_cached_files()
+            if hits:
+                return hits[0]
+    if last_err:
+        log.warning("BiomedCLIP download failed: %s", last_err)
+    return None
 
 
 def _load_biomedclip() -> BiomedCLIPEncoder:
@@ -271,48 +408,72 @@ def _load_biomedclip() -> BiomedCLIPEncoder:
 
     device = _torch_device()
     cache = clip_cache_dir()
-    allow_download = os.environ.get("ABCITE_BIOMEDCLIP_DOWNLOAD", "").lower() in {
-        "1",
-        "true",
-        "yes",
-    }
-    for name in (
-        "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
-        "biomedclip.pt",
-        "open_clip_pytorch_model_biomedclip.bin",
-    ):
-        ckpt = cache / name
-        if ckpt.is_file() and ckpt.stat().st_size > 50_000_000:
+    for ckpt in _biomedclip_cached_files():
+        if ckpt.suffix.lower() not in {".bin", ".pt", ".pth", ".safetensors"}:
+            continue
+        try:
             model, _, preprocess = open_clip.create_model_and_transforms(
                 "ViT-B-16", pretrained=str(ckpt), device=device
             )
             model.eval()
             tok = open_clip.get_tokenizer("ViT-B-16")
-            return BiomedCLIPEncoder(model, preprocess, tok)
-    if allow_download:
-        model, _, preprocess = open_clip.create_model_and_transforms(
-            BIOMEDCLIP_HF, device=device
-        )
-        model.eval()
-        tok = open_clip.get_tokenizer(BIOMEDCLIP_HF)
-        return BiomedCLIPEncoder(model, preprocess, tok)
+            enc = BiomedCLIPEncoder(model, preprocess, tok)
+            enc.dim = int(getattr(model, "embed_dim", enc.dim) or enc.dim)
+            return enc
+        except Exception as exc:
+            log.warning("BiomedCLIP local ckpt %s failed (%s)", ckpt, exc)
+    downloaded = download_biomedclip_weights()
+    allow = _allow_biomedclip_download() or downloaded is not None
+    if allow:
+        last: Exception | None = None
+        for name in BIOMEDCLIP_HF_NAMES:
+            try:
+                create = getattr(open_clip, "create_model_from_pretrained", None)
+                if callable(create):
+                    model, preprocess = create(name, device=device)
+                    tok = open_clip.get_tokenizer(name)
+                else:
+                    model, _, preprocess = open_clip.create_model_and_transforms(
+                        name, device=device
+                    )
+                    tok = open_clip.get_tokenizer(name)
+                model.eval()
+                enc = BiomedCLIPEncoder(model, preprocess, tok)
+                enc.dim = int(getattr(model, "embed_dim", enc.dim) or enc.dim)
+                return enc
+            except Exception as exc:
+                last = exc
+                log.warning("BiomedCLIP hub load %s failed (%s)", name, exc)
+        if last:
+            raise last
     raise FileNotFoundError(f"no BiomedCLIP checkpoint in {cache}")
+
+
+def try_load_biomedclip() -> tuple[VisionEncoder | None, str | None]:
+    """Best-effort BiomedCLIP. Never raises; skip reason is for the eval receipt."""
+    if not clip_stack_available():
+        return None, "BiomedCLIP skipped: open_clip/torch not installed"
+    try:
+        enc = _load_biomedclip()
+        return enc, None
+    except Exception as exc:
+        return None, f"BiomedCLIP skipped: {exc}"
 
 
 def build_vision_encoder() -> VisionEncoder:
     """CLIP when `[clip]` + weights are available; local encoder otherwise.
 
-    ABCITE_CLIP_MODEL=biomedclip is an interface stub: we do not download BiomedCLIP.
-    OpenCLIP ViT-B-32 remains the real encoder path when weights are cached.
+    ABCITE_CLIP_MODEL=biomedclip loads only if weights are cached or
+    ABCITE_BIOMEDCLIP_DOWNLOAD=1. OpenCLIP ViT-B-32 remains the default path.
     """
     skip = biomedclip_skip_reason()
     if skip:
         log.warning(skip)
-    elif biomedclip_requested() and biomedclip_weights_present():
-        try:
-            return _load_biomedclip()
-        except Exception as exc:
-            log.warning("BiomedCLIP weights present but load failed (%s); trying OpenCLIP.", exc)
+    elif biomedclip_requested():
+        enc, err = try_load_biomedclip()
+        if enc is not None:
+            return enc
+        log.warning("%s; trying OpenCLIP.", err)
     if clip_forced_off():
         return LocalImageEncoder()
     if clip_stack_available() and (clip_forced_on() or clip_weights_cached()):

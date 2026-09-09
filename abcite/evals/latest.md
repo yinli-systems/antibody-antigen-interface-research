@@ -50,8 +50,6 @@ abstain failures                 none
 
 ## CLIP contrast (not SOTA)
 
-14-SVG cite-id demo (CI hashing encoder):
-
 ```
 CLIP encoder                   local-image
 figure queries                 14
@@ -62,21 +60,6 @@ min gap fused                  0.000529
 self-hit rate                  100.0%
 hub figs (rank1 for >1 query)  {}
 BiomedCLIP                     not requested
-CLIP SOTA claim                false
-```
-
-OpenCLIP ViT-B-32 on **1200 PMC OA jpg** (RTX 5090, 64 visual-class queries):
-
-```
-n_gallery                      1200
-encoder                        clip-vit-b-32
-GPU                            NVIDIA GeForce RTX 5090
-caption BM25 R@1/5/10          0.000 / 0.000 / 0.016
-CLIP image-only R@1/5/10       0.000 / 0.000 / 0.000
-fusion RRF R@1/5/10            0.000 / 0.016 / 0.016
-mean i2i gap                   0.088586
-mean T→I gap                   0.002163
-BiomedCLIP                     skipped (HF Hub 429; no cached weights)
 CLIP SOTA claim                false
 ```
 

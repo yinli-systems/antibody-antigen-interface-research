@@ -55,6 +55,11 @@ class LocalImageEncoder(VisionEncoder):
     def encode_text(self, text: str) -> list[float]:
         return hashing_vector(text).tolist()
 
+    def encode_texts(self, texts: list[str]) -> np.ndarray:
+        if not texts:
+            return np.zeros((0, DIM), dtype=np.float32)
+        return np.stack([hashing_vector(t) for t in texts], axis=0)
+
     def caption(self, path: Path) -> str:
         sidecar = path.with_suffix(".json")
         if sidecar.exists():
@@ -100,7 +105,10 @@ def try_clip_encoder():
 
 
 def build_vision_encoder(prefer_clip: bool = False) -> VisionEncoder:
-    """Delegate to OpenCLIP when `[clip]` is installed. `prefer_clip` is unused (kept for callers)."""
+    """Delegate to OpenCLIP when `[clip]` is installed.
+
+    `prefer_clip` is unused (kept for callers).
+    """
     from abcite_core.clip_encoder import build_vision_encoder as _build
 
     _ = prefer_clip
