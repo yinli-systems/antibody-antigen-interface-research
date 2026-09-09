@@ -28,7 +28,7 @@ Still vanity. Hard-dev Hit@5 **96.7%** after rewrite is still a small closed ind
 
 ### 2. CLIP contrast
 
-The **14-SVG cite-id** number is a demo. Image cosine gap **0.006** on that toy set is collapse. The protocol that counts is `evals/run_multimodal.py` on OA paper figures (74 indexed this run; `download_figures.py --max 1200` to resume toward 1000). OpenCLIP ViT-B-32 on real jpg: image-only R@1/5/10 **0.016 / 0.125 / 0.188**, caption BM25 **0.047 / 0.109 / 0.156**, fusion **0.031 / 0.078 / 0.141**. i2i gap **0.162** (not 0.006). T→I gap still **0.0036** — CLIP still collapses for generic visual-class queries; not SciMMIR FT or BiomedCLIP PMC (weights missing).
+The **14-SVG cite-id** number is a demo. Image cosine gap **0.006** on that toy set is collapse. The protocol that counts is `evals/run_multimodal.py` on OA paper figures (**N=1200** PMC OA jpg this run). OpenCLIP ViT-B-32 on real jpg: image-only R@1/5/10 **0.000 / 0.000 / 0.000**, caption BM25 **0.000 / 0.000 / 0.016**, fusion **0.000 / 0.016 / 0.016**. i2i gap **0.090** (not 0.006). T→I gap still **0.0022** — generic visual-class queries do not retrieve a unique panel in a 10³ gallery; not SciMMIR FT or BiomedCLIP PMC. Downloader: `--source pmc` (AWS pmc-oa-opendata / Europe PMC / NCBI fallback, retries, OA bins); SciMMIR skipped unless `--source scimmir`.
 
 ### 3. Faithfulness
 

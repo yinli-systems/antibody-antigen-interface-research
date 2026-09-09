@@ -5,8 +5,8 @@ This cache is for retrieval eval, not a republication of the papers.
 To fetch ≥1000 jpg/png + metadata:
 
     cd abcite
-    pip install datasets   # optional SciMMIR stream
-    python evals/download_figures.py --max 1200
+    python evals/download_figures.py --max 1200 --source pmc
+    # optional: --source scimmir  (needs `pip install datasets`)
 
 Resume-able: `evals/figures/cache/metadata.jsonl`. Gitignores the cache.
 The committed `fixture/` folder is 8–16 OA thumbnails for unit tests only.
