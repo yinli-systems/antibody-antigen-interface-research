@@ -67,7 +67,9 @@ def biomedclip_weights_present() -> bool:
         cache / "biomedclip.pt",
         cache / "open_clip_pytorch_model_biomedclip.bin",
     ]
-    return any(p.is_file() and p.stat().st_size > 50_000_000 for p in candidates)
+    if any(p.is_file() and p.stat().st_size > 50_000_000 for p in candidates):
+        return True
+    return os.environ.get("ABCITE_BIOMEDCLIP_DOWNLOAD", "").lower() in {"1", "true", "yes"}
 
 
 def biomedclip_skip_reason() -> str | None:
@@ -110,6 +112,12 @@ def clip_weights_cached() -> bool:
     return True
 
 
+def _torch_device():
+    import torch
+
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 class OpenCLIPEncoder(VisionEncoder):
     name = CLIP_NAME
     dim = 512
@@ -121,6 +129,7 @@ class OpenCLIPEncoder(VisionEncoder):
         self.preprocess = preprocess
         self.tokenizer = tokenizer
         self.last_preprocess: dict | None = None
+        self.device = next(model.parameters()).device
 
     def encode_image(self, path: Path) -> list[float]:
         import torch
@@ -136,6 +145,7 @@ class OpenCLIPEncoder(VisionEncoder):
             tensor = torch.as_tensor(np.asarray(tensor))
         if tensor.ndim == 3:
             tensor = tensor.unsqueeze(0)
+        tensor = tensor.to(self.device)
         with torch.no_grad():
             feat = self.model.encode_image(tensor)
             feat = feat / feat.norm(dim=-1, keepdim=True)
@@ -147,6 +157,8 @@ class OpenCLIPEncoder(VisionEncoder):
         import torch
 
         tokens = self.tokenizer([text])
+        if hasattr(tokens, "to"):
+            tokens = tokens.to(self.device)
         with torch.no_grad():
             feat = self.model.encode_text(tokens)
             feat = feat / feat.norm(dim=-1, keepdim=True)
@@ -224,10 +236,11 @@ def _load_open_clip():
     ckpt = download_openclip_weights()
     cfg_mean = (0.48145466, 0.4578275, 0.40821073)
     cfg_std = (0.26862954, 0.26130258, 0.27577711)
+    device = _torch_device()
     model, _, preprocess = open_clip.create_model_and_transforms(
         CLIP_ARCH,
         pretrained=str(ckpt),
-        device="cpu",
+        device=device,
         force_quick_gelu=True,
         image_mean=cfg_mean,
         image_std=cfg_std,
@@ -249,11 +262,20 @@ class BiomedCLIPEncoder(OpenCLIPEncoder):
     name = "biomedclip"
 
 
+BIOMEDCLIP_HF = "hf-hub:microsoft/BiomedCLIP-PubMedBERT-256-vit-base-patch16-224"
+
+
 def _load_biomedclip() -> BiomedCLIPEncoder:
-    """Load cached BiomedCLIP; never download here."""
+    """Load cached BiomedCLIP; download only if ABCITE_BIOMEDCLIP_DOWNLOAD=1."""
     import open_clip
 
+    device = _torch_device()
     cache = clip_cache_dir()
+    allow_download = os.environ.get("ABCITE_BIOMEDCLIP_DOWNLOAD", "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
     for name in (
         "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
         "biomedclip.pt",
@@ -262,11 +284,18 @@ def _load_biomedclip() -> BiomedCLIPEncoder:
         ckpt = cache / name
         if ckpt.is_file() and ckpt.stat().st_size > 50_000_000:
             model, _, preprocess = open_clip.create_model_and_transforms(
-                "ViT-B-16", pretrained=str(ckpt), device="cpu"
+                "ViT-B-16", pretrained=str(ckpt), device=device
             )
             model.eval()
             tok = open_clip.get_tokenizer("ViT-B-16")
             return BiomedCLIPEncoder(model, preprocess, tok)
+    if allow_download:
+        model, _, preprocess = open_clip.create_model_and_transforms(
+            BIOMEDCLIP_HF, device=device
+        )
+        model.eval()
+        tok = open_clip.get_tokenizer(BIOMEDCLIP_HF)
+        return BiomedCLIPEncoder(model, preprocess, tok)
     raise FileNotFoundError(f"no BiomedCLIP checkpoint in {cache}")
 
 

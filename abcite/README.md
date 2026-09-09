@@ -82,15 +82,15 @@ Hard auto-taxonomy (all 40): **ok 38**, **miss_multi_hop 1**, **miss_figure 1** 
 
 CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**): **image-only** mean rank1−rank2 cosine gap **0.006** on that toy gallery; caption BM25 gap **12.34**; fused RRF gap is small by construction. Self-hit 100% on 14 figures; **not SOTA**. Do **not** call caption-only cite-id “CLIP multimodal”.
 
-**Real multimodal protocol** (OpenCLIP ViT-B-32, 2026-09-09, **74 real PMC OA jpg** — not 14 SVGs). Queries are visual content (no PDB ids). Captions held out of the image encoder. Three columns:
+**Real multimodal protocol** (OpenCLIP ViT-B-32, 2026-09-09, **N=1200 real PMC OA jpg**, encoded on an RTX 5090 — not 14 SVGs). Queries are 64 synthesized visual-class strings (no PDB ids; captions held out of the image encoder). Three columns:
 
 | Column | R@1 | R@5 | R@10 | mean rank1−2 gap |
 |---|---|---|---|---|
-| caption BM25 | 0.047 | 0.109 | 0.156 | (lexical) |
-| **CLIP image-only** | **0.016** | **0.125** | **0.188** | i2i **0.162** (was 0.006 on 14 SVGs); T→I gap **0.0036** still collapsed |
-| fusion (RRF) | 0.031 | 0.078 | 0.141 | — |
+| caption BM25 | 0.000 | 0.000 | 0.016 | (lexical; generic class queries collide) |
+| **CLIP image-only** | **0.000** | **0.000** | **0.000** | i2i **0.089** (was 0.006 on 14 SVGs / 0.162 on 74 jpg); T→I gap **0.0022** still collapsed |
+| fusion (RRF) | 0.000 | 0.016 | 0.016 | — |
 
-This is **not** SciMMIR CLIP-FT Hits@10 ~13.5% and **not** BiomedCLIP PMC R@1 ~56% (those galleries are 10⁵–10⁶). Zero-shot CLIP T→I on generic panel queries remains weak; i2i gap on real photos is no longer the 14-SVG 0.006 artifact. BiomedCLIP weights were **not in cache** (skipped, no download). Gallery <1000 in this environment: `python evals/download_figures.py --max 1200 --source pmc` (resume-able NCBI OA). Committed fixture is 12 OA jpgs for pytest only. Do **not** call caption-only cite-id “CLIP multimodal”. See `evals/multimodal_visual_latest.json`.
+This is **not** SciMMIR CLIP-FT Hits@10 ~13.5% and **not** BiomedCLIP PMC R@1 ~56% (those galleries are 10⁵–10⁶). Zero-shot CLIP T→I on generic panel queries is expected to collapse as N grows; i2i cosine gap on real photos is the CLIP-on-pixels signal. BiomedCLIP did **not** run (Hugging Face Hub HTTP 429; no cached weights). JPG binaries stay gitignored; committed vectors are `evals/embeddings-clip-vit-b-32-n1200.npy` (2.3 MB). Fixture remains 12 OA jpgs for pytest. Do **not** call caption-only cite-id “CLIP multimodal”. See `evals/multimodal_visual_latest.json`.
 
 OpenCLIP ViT-B-32 is the real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads only if weights are already in cache; otherwise **skipped** (no download).
 
@@ -122,7 +122,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed | default CI uses hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP **skipped** unless cached weights exist |
+| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed; 1200 PMC OA figures encoded on GPU | default CI uses hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP **skipped** (HF 429 / no cached weights) |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
 | Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |
