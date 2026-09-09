@@ -656,12 +656,16 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def _wrap_with_representations(
-    embedding_store: Any, args: argparse.Namespace, frame: Any
+    embedding_store: Any, args: argparse.Namespace, frame: Any, base_dim: int
 ) -> tuple[Any, int, int, dict[str, Any] | None]:
     """Return the store to use and the input width of each side.
 
+    ``base_dim`` is the width of the store being wrapped. Train takes it from
+    ``--input-dim``; evaluate has no such flag and takes it from the checkpoint,
+    which is the only place it is recorded once a run is over.
+
     With no extra representation named this is the identity, and the widths are
-    the pinned ``EMBEDDING_DIM`` on both sides. With one named, the store is
+    ``base_dim`` on both sides. With one named, the store is
     wrapped and the two sides diverge -- AntiBERTy covers antibodies only -- so
     the widths are computed rather than assumed, and checked to be constant
     across the cohort. A width that varied by instance would build a model that
@@ -669,7 +673,7 @@ def _wrap_with_representations(
     """
     roots = (args.antiberty_root, args.esm_if1_root)
     if all(root is None for root in roots):
-        return embedding_store, args.input_dim, args.input_dim, None
+        return embedding_store, base_dim, base_dim, None
     if args.representation_manifest is None:
         raise ValueError(
             "--representation-manifest is required with --antiberty-root/--esm-if1-root: "
@@ -694,7 +698,7 @@ def _wrap_with_representations(
     widths = {"antibody": set(), "antigen": set()}
     for side, column in (("antibody", "ab_sequence_sha256"), ("antigen", "ag_sequence_sha256")):
         for key in frame[column].astype(str).unique():
-            widths[side].add(store.width_for(key, args.input_dim))
+            widths[side].add(store.width_for(key, base_dim))
     for side, observed in widths.items():
         if len(observed) != 1:
             raise ValueError(
@@ -1032,7 +1036,7 @@ def command_train(args: argparse.Namespace) -> None:
     )
     embedding_store = EmbeddingStore(args.embedding_dir.expanduser().resolve(), args.embedding_cache_gib)
     embedding_store, antibody_input_dim, antigen_input_dim, representation_summary = (
-        _wrap_with_representations(embedding_store, args, train_frame)
+        _wrap_with_representations(embedding_store, args, train_frame, args.input_dim)
     )
     raw_class_weights = _class_weights(train_frame, contact_dir)
     class_weights = {
@@ -1311,9 +1315,6 @@ def command_evaluate(args: argparse.Namespace) -> None:
     embedding_store = EmbeddingStore(
         args.embedding_dir.expanduser().resolve(), args.embedding_cache_gib
     )
-    embedding_store, _, _, representation_summary = _wrap_with_representations(
-        embedding_store, args, selected
-    )
     checkpoint_path = args.checkpoint.expanduser().resolve()
     checkpoint = safe_torch_load(checkpoint_path, map_location=device)
     if checkpoint.get("format_version") != MODEL_FORMAT_VERSION:
@@ -1322,6 +1323,11 @@ def command_evaluate(args: argparse.Namespace) -> None:
     expected_split_digest = sha256_file(split_path)
     if config.get("split_manifest_sha256") != expected_split_digest:
         raise ValueError("Checkpoint and evaluation split manifests differ")
+    # After the checkpoint, because the base width lives in its config: evaluate
+    # has no --input-dim, and a finished run records it nowhere else.
+    embedding_store, _, _, representation_summary = _wrap_with_representations(
+        embedding_store, args, selected, int(config["input_dim"])
+    )
     # Checkpoints written before the sides could differ record only input_dim.
     model = PartnerSpecificInteractionModel(
         antigen_input_dim=int(config.get("antigen_input_dim", config["input_dim"])),

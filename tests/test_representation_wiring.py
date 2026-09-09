@@ -81,7 +81,7 @@ def _arguments(**overrides) -> argparse.Namespace:
 def test_naming_no_encoder_is_the_identity() -> None:
     store = object()
 
-    wrapped, antibody, antigen, summary = _wrap(store, _arguments(), _frame())
+    wrapped, antibody, antigen, summary = _wrap(store, _arguments(), _frame(), BASE_DIM)
 
     assert wrapped is store
     assert (antibody, antigen) == (BASE_DIM, BASE_DIM)
@@ -95,7 +95,7 @@ def test_antiberty_widens_only_the_antibody_side(tmp_path: Path) -> None:
         antiberty_root=tmp_path / "ab",
     )
 
-    _, antibody, antigen, _ = _wrap(object(), arguments, _frame())
+    _, antibody, antigen, _ = _wrap(object(), arguments, _frame(), BASE_DIM)
 
     assert antibody == BASE_DIM + EXTRA_DIM + PRESENCE_COLUMNS
     assert antigen == BASE_DIM
@@ -107,7 +107,7 @@ def test_esm_if1_widens_both_sides(tmp_path: Path) -> None:
         esm_if1_root=tmp_path / "if1",
     )
 
-    _, antibody, antigen, _ = _wrap(object(), arguments, _frame())
+    _, antibody, antigen, _ = _wrap(object(), arguments, _frame(), BASE_DIM)
 
     assert antibody == antigen == BASE_DIM + EXTRA_DIM + PRESENCE_COLUMNS
 
@@ -119,7 +119,7 @@ def test_both_encoders_stack(tmp_path: Path) -> None:
         esm_if1_root=tmp_path / "if1",
     )
 
-    _, antibody, antigen, summary = _wrap(object(), arguments, _frame())
+    _, antibody, antigen, summary = _wrap(object(), arguments, _frame(), BASE_DIM)
 
     assert antibody == BASE_DIM + 2 * (EXTRA_DIM + PRESENCE_COLUMNS)
     assert antigen == BASE_DIM + EXTRA_DIM + PRESENCE_COLUMNS
@@ -139,7 +139,7 @@ def test_an_instance_outside_the_manifest_makes_the_width_inconsistent(tmp_path:
     }
 
     with pytest.raises(ValueError, match="antibody input width is not constant"):
-        _wrap(object(), arguments, frame)
+        _wrap(object(), arguments, frame, BASE_DIM)
 
 
 def test_naming_an_encoder_without_the_manifest_is_refused(tmp_path: Path) -> None:
@@ -147,7 +147,7 @@ def test_naming_an_encoder_without_the_manifest_is_refused(tmp_path: Path) -> No
     arguments = _arguments(antiberty_root=tmp_path / "ab")
 
     with pytest.raises(ValueError, match="--representation-manifest is required"):
-        _wrap(object(), arguments, _frame())
+        _wrap(object(), arguments, _frame(), BASE_DIM)
 
 
 def test_the_summary_names_every_source_and_its_width(tmp_path: Path) -> None:
@@ -156,9 +156,39 @@ def test_the_summary_names_every_source_and_its_width(tmp_path: Path) -> None:
         esm_if1_root=tmp_path / "if1",
     )
 
-    _, _, _, summary = _wrap(object(), arguments, _frame())
+    _, _, _, summary = _wrap(object(), arguments, _frame(), BASE_DIM)
 
     source = summary["sources"][0]
     assert source["representation_dim"] == EXTRA_DIM
     assert source["presence_columns"] == PRESENCE_COLUMNS
     assert source["keys_covered"] == 4
+
+
+def test_evaluate_has_no_input_dim_flag_so_the_base_width_is_a_parameter() -> None:
+    """The failure this exists for: ten trained runs died at the evaluate step.
+
+    ``--input-dim`` is a train-only argument. Reading it from the namespace made
+    every evaluation raise AttributeError after its training had finished, which
+    is the same shape of defect as the aggregation crashes -- the work was done
+    and the run still reported failure.
+    """
+    arguments = _arguments()
+    del arguments.input_dim
+
+    _, antibody, antigen, summary = _wrap(object(), arguments, _frame(), 777)
+
+    assert (antibody, antigen) == (777, 777)
+    assert summary is None
+
+
+def test_the_base_width_comes_from_the_caller_not_the_namespace(tmp_path: Path) -> None:
+    """Evaluate passes the checkpoint's recorded width, which may not be 1280."""
+    arguments = _arguments(
+        representation_manifest=_manifest(tmp_path / "m.csv"),
+        esm_if1_root=tmp_path / "if1",
+        input_dim=1,
+    )
+
+    _, antibody, _, _ = _wrap(object(), arguments, _frame(), 640)
+
+    assert antibody == 640 + EXTRA_DIM + PRESENCE_COLUMNS
