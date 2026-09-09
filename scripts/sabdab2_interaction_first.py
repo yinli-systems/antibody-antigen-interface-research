@@ -636,6 +636,19 @@ def _load_group_metadata(path: Path | None) -> dict[str, dict[str, str]]:
     return result
 
 
+def _representation_summary(embedding_store: Any) -> dict[str, Any] | None:
+    """Return the concatenation summary, or None when nothing was concatenated.
+
+    Called where the receipt is written rather than where the store is built:
+    the zero-fill counters are zero until the data has actually been read, so a
+    snapshot taken at construction reports a count that was never measured.
+    """
+    summary = getattr(embedding_store, "summary", None)
+    if summary is None or not hasattr(embedding_store, "describe"):
+        return None
+    return summary()
+
+
 def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
     """Extra frozen encoders to concatenate onto the ESM-2 input.
 
@@ -704,12 +717,7 @@ def _wrap_with_representations(
             raise ValueError(
                 f"{side} input width is not constant across the cohort: {sorted(observed)}"
             )
-    return (
-        store,
-        widths["antibody"].pop(),
-        widths["antigen"].pop(),
-        store.summary(),
-    )
+    return store, widths["antibody"].pop(), widths["antigen"].pop(), store.describe()
 
 
 def _selected_embedding(
@@ -1325,7 +1333,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
         raise ValueError("Checkpoint and evaluation split manifests differ")
     # After the checkpoint, because the base width lives in its config: evaluate
     # has no --input-dim, and a finished run records it nowhere else.
-    embedding_store, _, _, representation_summary = _wrap_with_representations(
+    embedding_store, _, _, _ = _wrap_with_representations(
         embedding_store, args, selected, int(config["input_dim"])
     )
     # Checkpoints written before the sides could differ record only input_dim.
@@ -1552,7 +1560,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "split_manifest_sha256": expected_split_digest,
         "inputs": input_provenance(args),
-        "representations": representation_summary,
+        "representations": _representation_summary(embedding_store),
         "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection",
         "pair": {
             "micro": pair_micro,

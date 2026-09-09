@@ -241,3 +241,32 @@ def test_coverage_is_decided_by_the_manifest_not_by_what_is_on_disk(tmp_path: Pa
 
     assert antiberty.covers(_digest("AAAACC"))
     assert antiberty.width == 512 + PRESENCE_COLUMNS
+
+
+def test_describe_carries_no_count_that_has_not_been_measured(tmp_path: Path) -> None:
+    """The defect this exists for: a receipt written before any load reported 0.
+
+    The training config is built before the first batch is read, so a zero-fill
+    counter taken there is always zero -- it looked like "no instance was ever
+    missing a feature" when the truth was "nothing has been read yet".
+    """
+    key = _digest("AAAA")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+    store = CompositeEmbeddingStore(_Base(4), [source])
+
+    described = store.describe()
+
+    assert "loads_zero_filled" not in described["sources"][0]
+    assert described["sources"][0]["keys_covered"] == 1
+
+
+def test_summary_reports_the_counter_once_loads_have_happened(tmp_path: Path) -> None:
+    key = _digest("AAAA")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+    store = CompositeEmbeddingStore(_Base(4), [source])
+
+    before = store.summary()["sources"][0]["loads_zero_filled"]
+    store.load(key, "cpu")
+    after = store.summary()["sources"][0]["loads_zero_filled"]
+
+    assert (before, after) == (0, 1)

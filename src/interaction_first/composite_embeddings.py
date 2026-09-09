@@ -161,11 +161,15 @@ class CompositeEmbeddingStore:
             )
         return [torch.cat(columns, dim=1)], [0], length
 
-    def summary(self) -> dict[str, Any]:
-        """Report what was concatenated and how often a source was absent."""
-        base_summary = self.base.summary() if hasattr(self.base, "summary") else {}
+    def describe(self) -> dict[str, Any]:
+        """Report what will be concatenated, without any running counts.
+
+        This is what a receipt written *before* the data is read may record. The
+        zero-fill counters belong to ``summary`` and are zero until loads have
+        happened, so reporting them here would state a fact that has not been
+        measured yet.
+        """
         return {
-            "base": base_summary,
             "sources": [
                 {
                     "name": source.name,
@@ -173,11 +177,18 @@ class CompositeEmbeddingStore:
                     "representation_dim": source.dim,
                     "presence_columns": PRESENCE_COLUMNS,
                     "keys_covered": len(source.parts_by_key),
-                    "loads_zero_filled": self.filled[source.name],
                 }
                 for source in self.sources
-            ],
+            ]
         }
+
+    def summary(self) -> dict[str, Any]:
+        """Report what was concatenated and how often a source was absent."""
+        described = self.describe()
+        for entry in described["sources"]:
+            entry["loads_zero_filled"] = self.filled[entry["name"]]
+        described["base"] = self.base.summary() if hasattr(self.base, "summary") else {}
+        return described
 
 
 # How each encoder was run, and therefore how its artifacts have to be joined.
