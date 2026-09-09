@@ -636,6 +636,78 @@ def _load_group_metadata(path: Path | None) -> dict[str, dict[str, str]]:
     return result
 
 
+def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
+    """Extra frozen encoders to concatenate onto the ESM-2 input.
+
+    Train and evaluate must be given the same set: the checkpoint records the
+    per-side widths it was built with, and a mismatch fails the state-dict load
+    rather than producing a quietly different model.
+    """
+    parser.add_argument(
+        "--representation-manifest",
+        type=Path,
+        default=None,
+        help="canonical manifest; supplies the chain keys AntiBERTy is stored under",
+    )
+    parser.add_argument("--antiberty-root", type=Path, default=None)
+    parser.add_argument("--antiberty-dim", type=int, default=512)
+    parser.add_argument("--esm-if1-root", type=Path, default=None)
+    parser.add_argument("--esm-if1-dim", type=int, default=512)
+
+
+def _wrap_with_representations(
+    embedding_store: Any, args: argparse.Namespace, frame: Any
+) -> tuple[Any, int, int, dict[str, Any] | None]:
+    """Return the store to use and the input width of each side.
+
+    With no extra representation named this is the identity, and the widths are
+    the pinned ``EMBEDDING_DIM`` on both sides. With one named, the store is
+    wrapped and the two sides diverge -- AntiBERTy covers antibodies only -- so
+    the widths are computed rather than assumed, and checked to be constant
+    across the cohort. A width that varied by instance would build a model that
+    cannot accept some of its own training data.
+    """
+    roots = (args.antiberty_root, args.esm_if1_root)
+    if all(root is None for root in roots):
+        return embedding_store, args.input_dim, args.input_dim, None
+    if args.representation_manifest is None:
+        raise ValueError(
+            "--representation-manifest is required with --antiberty-root/--esm-if1-root: "
+            "the chain keys AntiBERTy is stored under are derived from it"
+        )
+
+    from interaction_first.composite_embeddings import CompositeEmbeddingStore, build_sources
+
+    sources = build_sources(
+        args.representation_manifest.expanduser().resolve(),
+        antiberty_root=(
+            args.antiberty_root.expanduser().resolve() if args.antiberty_root else None
+        ),
+        antiberty_dim=args.antiberty_dim,
+        esm_if1_root=(
+            args.esm_if1_root.expanduser().resolve() if args.esm_if1_root else None
+        ),
+        esm_if1_dim=args.esm_if1_dim,
+    )
+    store = CompositeEmbeddingStore(embedding_store, sources)
+
+    widths = {"antibody": set(), "antigen": set()}
+    for side, column in (("antibody", "ab_sequence_sha256"), ("antigen", "ag_sequence_sha256")):
+        for key in frame[column].astype(str).unique():
+            widths[side].add(store.width_for(key, args.input_dim))
+    for side, observed in widths.items():
+        if len(observed) != 1:
+            raise ValueError(
+                f"{side} input width is not constant across the cohort: {sorted(observed)}"
+            )
+    return (
+        store,
+        widths["antibody"].pop(),
+        widths["antigen"].pop(),
+        store.summary(),
+    )
+
+
 def _selected_embedding(
     embedding_store: Any,
     sequence_key: str,
@@ -959,6 +1031,9 @@ def command_train(args: argparse.Namespace) -> None:
         seed=args.seed,
     )
     embedding_store = EmbeddingStore(args.embedding_dir.expanduser().resolve(), args.embedding_cache_gib)
+    embedding_store, antibody_input_dim, antigen_input_dim, representation_summary = (
+        _wrap_with_representations(embedding_store, args, train_frame)
+    )
     raw_class_weights = _class_weights(train_frame, contact_dir)
     class_weights = {
         **raw_class_weights,
@@ -968,8 +1043,8 @@ def command_train(args: argparse.Namespace) -> None:
     }
 
     model = PartnerSpecificInteractionModel(
-        antigen_input_dim=args.input_dim,
-        antibody_input_dim=args.input_dim,
+        antigen_input_dim=antigen_input_dim,
+        antibody_input_dim=antibody_input_dim,
         d_model=args.d_model,
         pair_dim=args.pair_dim,
         num_heads=args.num_heads,
@@ -1006,6 +1081,9 @@ def command_train(args: argparse.Namespace) -> None:
         "format_version": MODEL_FORMAT_VERSION,
         "architecture": "PartnerSpecificInteractionModelV2",
         "input_dim": args.input_dim,
+        "antibody_input_dim": antibody_input_dim,
+        "antigen_input_dim": antigen_input_dim,
+        "representations": representation_summary,
         "d_model": args.d_model,
         "pair_decoder": args.pair_decoder,
         "pair_dim": args.pair_dim,
@@ -1233,6 +1311,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
     embedding_store = EmbeddingStore(
         args.embedding_dir.expanduser().resolve(), args.embedding_cache_gib
     )
+    embedding_store, _, _, representation_summary = _wrap_with_representations(
+        embedding_store, args, selected
+    )
     checkpoint_path = args.checkpoint.expanduser().resolve()
     checkpoint = safe_torch_load(checkpoint_path, map_location=device)
     if checkpoint.get("format_version") != MODEL_FORMAT_VERSION:
@@ -1241,9 +1322,10 @@ def command_evaluate(args: argparse.Namespace) -> None:
     expected_split_digest = sha256_file(split_path)
     if config.get("split_manifest_sha256") != expected_split_digest:
         raise ValueError("Checkpoint and evaluation split manifests differ")
+    # Checkpoints written before the sides could differ record only input_dim.
     model = PartnerSpecificInteractionModel(
-        antigen_input_dim=int(config["input_dim"]),
-        antibody_input_dim=int(config["input_dim"]),
+        antigen_input_dim=int(config.get("antigen_input_dim", config["input_dim"])),
+        antibody_input_dim=int(config.get("antibody_input_dim", config["input_dim"])),
         d_model=int(config["d_model"]),
         pair_dim=int(config["pair_dim"]),
         num_heads=int(config["num_heads"]),
@@ -1464,6 +1546,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "split_manifest_sha256": expected_split_digest,
         "inputs": input_provenance(args),
+        "representations": representation_summary,
         "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection",
         "pair": {
             "micro": pair_micro,
@@ -1616,6 +1699,7 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--prepare-dir", type=Path, required=True)
     train.add_argument("--contact-dir", type=Path, required=True)
     train.add_argument("--embedding-dir", type=Path, required=True)
+    _add_representation_arguments(train)
     train.add_argument("--split-manifest", type=Path, required=True)
     train.add_argument("--partner-metadata", type=Path)
     train.add_argument("--output-dir", type=Path, required=True)
@@ -1697,6 +1781,7 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--prepare-dir", type=Path, required=True)
     evaluate.add_argument("--contact-dir", type=Path, required=True)
     evaluate.add_argument("--embedding-dir", type=Path, required=True)
+    _add_representation_arguments(evaluate)
     evaluate.add_argument("--split-manifest", type=Path, required=True)
     evaluate.add_argument("--partner-metadata", type=Path)
     evaluate.add_argument("--checkpoint", type=Path, required=True)
