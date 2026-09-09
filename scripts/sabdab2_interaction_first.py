@@ -1383,11 +1383,26 @@ def command_evaluate(args: argparse.Namespace) -> None:
             threshold,
         )
     sensitivity_ci = None
-    if epitope_delta_by_instance:
-        if component_by_instance:
+    sensitivity_ci_skipped = None
+    if epitope_delta_by_instance and component_by_instance:
+        # component_by_instance covers every instance in the split file, while
+        # the deltas cover only the evaluated ones, so the mapping has to be
+        # restricted before the bootstrap, which requires an exact match. Left
+        # unrestricted this raised and failed the whole evaluation after the
+        # predictions had already been written.
+        evaluated = set(epitope_delta_by_instance)
+        missing = sorted(evaluated - set(component_by_instance))
+        if missing:
+            sensitivity_ci_skipped = (
+                f"{len(missing)} evaluated instance(s) have no component assignment"
+            )
+        else:
             sensitivity_ci = cluster_bootstrap_mean_ci(
                 epitope_delta_by_instance,
-                component_by_instance,
+                {
+                    instance_id: component_by_instance[instance_id]
+                    for instance_id in evaluated
+                },
                 iterations=args.bootstrap_iterations,
                 seed=args.seed,
             )
@@ -1396,6 +1411,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "stage": "evaluate",
         "split": args.split,
         "instance_count": len(selected),
+        "sensitivity_ci_skipped": sensitivity_ci_skipped,
         "checkpoint": str(checkpoint_path),
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "split_manifest_sha256": expected_split_digest,
