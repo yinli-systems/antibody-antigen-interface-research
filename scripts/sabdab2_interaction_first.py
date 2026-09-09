@@ -666,6 +666,13 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--antiberty-dim", type=int, default=512)
     parser.add_argument("--esm-if1-root", type=Path, default=None)
     parser.add_argument("--esm-if1-dim", type=int, default=512)
+    parser.add_argument(
+        "--random-projection-control",
+        action="store_true",
+        help="append fixed random projections of the base embedding instead of real "
+        "encoders, matching the encoder arm's widths and parameter count exactly",
+    )
+    parser.add_argument("--random-projection-seed", type=int, default=20260910)
 
 
 def _wrap_with_representations(
@@ -685,7 +692,7 @@ def _wrap_with_representations(
     cannot accept some of its own training data.
     """
     roots = (args.antiberty_root, args.esm_if1_root)
-    if all(root is None for root in roots):
+    if all(root is None for root in roots) and not args.random_projection_control:
         return embedding_store, base_dim, base_dim, None
     if args.representation_manifest is None:
         raise ValueError(
@@ -693,7 +700,37 @@ def _wrap_with_representations(
             "the chain keys AntiBERTy is stored under are derived from it"
         )
 
-    from interaction_first.composite_embeddings import CompositeEmbeddingStore, build_sources
+    from interaction_first.composite_embeddings import (
+        CompositeEmbeddingStore,
+        build_random_control,
+        build_sources,
+    )
+
+    if args.random_projection_control:
+        if any(root is not None for root in roots):
+            raise ValueError(
+                "--random-projection-control is the width-matched control for the "
+                "encoder arm and cannot be combined with it"
+            )
+        sources = build_random_control(
+            args.representation_manifest.expanduser().resolve(),
+            dim=args.antiberty_dim,
+            seed=args.random_projection_seed,
+        )
+        store = CompositeEmbeddingStore(embedding_store, sources)
+        widths = {"antibody": set(), "antigen": set()}
+        for side, column in (
+            ("antibody", "ab_sequence_sha256"),
+            ("antigen", "ag_sequence_sha256"),
+        ):
+            for key in frame[column].astype(str).unique():
+                widths[side].add(store.width_for(key, base_dim))
+        for side, observed in widths.items():
+            if len(observed) != 1:
+                raise ValueError(
+                    f"{side} input width is not constant across the cohort: {sorted(observed)}"
+                )
+        return store, widths["antibody"].pop(), widths["antigen"].pop(), store.describe()
 
     sources = build_sources(
         args.representation_manifest.expanduser().resolve(),

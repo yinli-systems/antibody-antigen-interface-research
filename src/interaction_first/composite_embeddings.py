@@ -75,6 +75,81 @@ class RepresentationSource:
     def width(self) -> int:
         return self.dim + PRESENCE_COLUMNS
 
+    def features(self, key: str, length: int, device: Any, base: Any) -> Any:
+        """Return this source's columns, or None when its artifacts are missing."""
+        del base  # a stored encoder does not depend on the base embedding
+        return _concatenate_parts(self, key, length, device)
+
+    def describe_entry(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "kind": "stored_artifacts",
+            "root": str(self.root),
+            "representation_dim": self.dim,
+            "presence_columns": PRESENCE_COLUMNS,
+            "keys_covered": len(self.parts_by_key),
+        }
+
+
+class RandomProjectionSource:
+    """A width-matched control that carries no information the base lacks.
+
+    The treatment arm is wider than the control and therefore has more
+    parameters in the input projections, so part of any gain could come from the
+    wider projection rather than from the encoders. This source appends a fixed
+    random linear projection of the base embedding: identical width, identical
+    parameter count, and nothing the model could not already compute from its
+    own input.
+
+    The matrix is drawn once from ``seed`` and reused for every call and every
+    process, so an arm built on it is reproducible in the way the encoders are.
+    """
+
+    def __init__(self, name: str, dim: int, seed: int, keys: Mapping[str, Any]) -> None:
+        self.name = name
+        self.dim = dim
+        self.seed = seed
+        self.parts_by_key = keys
+        self._matrix: Any = None
+
+    def covers(self, key: str) -> bool:
+        return key in self.parts_by_key
+
+    @property
+    def width(self) -> int:
+        return self.dim + PRESENCE_COLUMNS
+
+    def _projection(self, base_dim: int, device: Any, dtype: Any) -> Any:
+        import torch
+
+        if self._matrix is None or int(self._matrix.shape[0]) != base_dim:
+            generator = torch.Generator().manual_seed(self.seed)
+            matrix = torch.randn(base_dim, self.dim, generator=generator)
+            # Keep the projected columns on the scale of the base ones, so the
+            # control differs from the treatment in content and not in size.
+            self._matrix = matrix / (base_dim ** 0.5)
+        return self._matrix.to(device=device, dtype=dtype)
+
+    def features(self, key: str, length: int, device: Any, base: Any) -> Any:
+        del key
+        projected = base @ self._projection(int(base.shape[1]), device, base.dtype)
+        if int(projected.shape[0]) != length:
+            raise RepresentationError(
+                f"{self.name} projected {int(projected.shape[0])} residues, "
+                f"but the sequence has {length}"
+            )
+        return projected
+
+    def describe_entry(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "kind": "random_projection_of_base",
+            "representation_dim": self.dim,
+            "presence_columns": PRESENCE_COLUMNS,
+            "keys_covered": len(self.parts_by_key),
+            "seed": self.seed,
+        }
+
 
 def _concatenate_parts(
     source: RepresentationSource, key: str, length: int, device: Any
@@ -143,7 +218,7 @@ class CompositeEmbeddingStore:
         for source in self.sources:
             if not source.covers(sequence_key):
                 continue
-            features = _concatenate_parts(source, sequence_key, length, device)
+            features = source.features(sequence_key, length, device, merged)
             present = features is not None
             if not present:
                 self.filled[source.name] += 1
@@ -169,18 +244,7 @@ class CompositeEmbeddingStore:
         happened, so reporting them here would state a fact that has not been
         measured yet.
         """
-        return {
-            "sources": [
-                {
-                    "name": source.name,
-                    "root": str(source.root),
-                    "representation_dim": source.dim,
-                    "presence_columns": PRESENCE_COLUMNS,
-                    "keys_covered": len(source.parts_by_key),
-                }
-                for source in self.sources
-            ]
-        }
+        return {"sources": [source.describe_entry() for source in self.sources]}
 
     def summary(self) -> dict[str, Any]:
         """Report what was concatenated and how often a source was absent."""
@@ -227,6 +291,28 @@ def manifest_chain_keys(manifest: Path) -> dict[str, dict[str, Any]]:
                 ),
             }
     return rows
+
+
+def build_random_control(
+    manifest: Path, dim: int = 512, seed: int = 20260910
+) -> list[RandomProjectionSource]:
+    """Build the width-matched control for the AntiBERTy + ESM-IF1 arm.
+
+    It mirrors that arm's coverage exactly -- two sources on the antibody side
+    and one on the antigen -- so both arms present the model with the same input
+    widths and the same parameter count. The difference between them is only
+    what the appended columns contain.
+    """
+    chains = manifest_chain_keys(manifest)
+    antibody = {entry["antibody_key"]: () for entry in chains.values()}
+    both = {}
+    for entry in chains.values():
+        both[entry["antibody_key"]] = ()
+        both[entry["antigen_key"]] = ()
+    return [
+        RandomProjectionSource("random_antibody", dim, seed, antibody),
+        RandomProjectionSource("random_both", dim, seed + 1, both),
+    ]
 
 
 def build_sources(
