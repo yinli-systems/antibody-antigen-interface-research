@@ -219,6 +219,102 @@ class BidirectionalBilinearDecoder(_ModuleBase):
         return self.components(antigen, antibody)["pair_logits"]
 
 
+class HadamardPairDecoder(_ModuleBase):
+    """Produce supervised pair logits from an MLP over the Hadamard product.
+
+    An alternative to ``BidirectionalBilinearDecoder`` for ablation. **It is not
+    an established improvement and nothing selects it by default.**
+
+    The motivation was the link-prediction literature, where bilinear and
+    concatenation decoders "are used much less than Dot Product and HadamardMLP
+    in the state-of-the-art LP models possibly due to their lower effectiveness"
+    (Wang et al., *Flashlight*, PMLR 2022), attributing the advantage to the
+    MLP's universal approximation capability. The hope was that this explains
+    why a native pair head loses to an outer product of marginals.
+
+    That did not reproduce here. On synthetic pairs with held-out residues, the
+    bilinear decoder reaches ~0.98 average precision on a monotone bilinear
+    signal while every Hadamard variant tried lands near 0.60 -- including one
+    with an explicit dot-product residual, which makes the bilinear form
+    exactly representable. The gap is therefore generalisation, not hypothesis
+    class. See ``tests/test_hadamard_pair_decoder.py``, which records both
+    outcomes so a future change is noticed. Whether either decoder is better on
+    real contact data is untested.
+
+    The unary/interaction decomposition is preserved exactly, because the
+    gauge-fixed attribution and the double-centred partner-specificity
+    diagnostics depend on the interaction term being separately identifiable.
+
+    Unlike the bilinear form, this materialises a ``[batch, antigen, antibody,
+    pair_dim]`` tensor, so ``chunk_size`` splits the antigen axis when the full
+    grid does not fit.
+    """
+
+    def __init__(
+        self,
+        d_model: int,
+        pair_dim: int,
+        hidden_dim: int | None = None,
+        chunk_size: int | None = None,
+    ) -> None:
+        require_torch()
+        super().__init__()
+        if d_model <= 0 or pair_dim <= 0:
+            raise ValueError("Decoder dimensions must be positive")
+        if chunk_size is not None and chunk_size <= 0:
+            raise ValueError("chunk_size must be positive when given")
+        hidden_dim = hidden_dim if hidden_dim is not None else pair_dim
+        if hidden_dim <= 0:
+            raise ValueError("hidden_dim must be positive")
+        self.ag_project = nn.Linear(d_model, pair_dim, bias=False)
+        self.ab_project = nn.Linear(d_model, pair_dim, bias=False)
+        self.interaction = nn.Sequential(
+            nn.LayerNorm(pair_dim),
+            nn.Linear(pair_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 1),
+        )
+        self.ag_bias = nn.Linear(d_model, 1)
+        self.ab_bias = nn.Linear(d_model, 1)
+        self.global_bias = nn.Parameter(torch.tensor(-4.0))
+        self.chunk_size = chunk_size
+
+    def _interaction_logits(self, antigen: Any, antibody: Any) -> Any:
+        ag = self.ag_project(antigen)
+        ab = self.ab_project(antibody)
+        length = ag.shape[-2]
+        step = self.chunk_size or length
+        chunks = []
+        for start in range(0, length, step):
+            block = ag[..., start : start + step, :].unsqueeze(-2)
+            chunks.append(self.interaction(block * ab.unsqueeze(-3)).squeeze(-1))
+        return torch.cat(chunks, dim=-2) if len(chunks) > 1 else chunks[0]
+
+    def components(self, antigen: Any, antibody: Any) -> dict[str, Any]:
+        """Return pair-specific energy and separately identifiable unary terms."""
+        interaction_logits = self._interaction_logits(antigen, antibody)
+        antigen_bias = self.ag_bias(antigen)
+        antibody_bias = self.ab_bias(antibody).transpose(-2, -1)
+        pair_logits = interaction_logits + antigen_bias + antibody_bias + self.global_bias
+        return {
+            "pair_logits": pair_logits,
+            "interaction_logits": interaction_logits,
+            "antigen_bias": antigen_bias,
+            "antibody_bias": antibody_bias,
+            "global_bias": self.global_bias,
+        }
+
+    def forward(self, antigen: Any, antibody: Any) -> Any:
+        """Return calibrated-task logits with shape ``[batch, antigen, antibody]``."""
+        return self.components(antigen, antibody)["pair_logits"]
+
+
+PAIR_DECODERS = {
+    "bilinear": BidirectionalBilinearDecoder,
+    "hadamard_mlp": HadamardPairDecoder,
+}
+
+
 class PartnerSpecificInteractionModel(_ModuleBase):
     """Predict a contact map whose marginals are antibody- and antigen-conditioned."""
 
@@ -247,6 +343,7 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         intra_chain_geometry_neighbor_k: int | None = 32,
         intra_chain_geometry_neighbor_radius: float | None = None,
         intra_chain_geometry_attention_topology: str = "spatial",
+        pair_decoder: str = "bilinear",
     ) -> None:
         require_torch()
         super().__init__()
@@ -313,7 +410,12 @@ class PartnerSpecificInteractionModel(_ModuleBase):
         )
         self.final_antigen_norm = nn.LayerNorm(d_model)
         self.final_antibody_norm = nn.LayerNorm(d_model)
-        self.decoder = BidirectionalBilinearDecoder(d_model, pair_dim)
+        if pair_decoder not in PAIR_DECODERS:
+            raise ValueError(
+                f"pair_decoder must be one of {sorted(PAIR_DECODERS)}, got {pair_decoder!r}"
+            )
+        self.pair_decoder_name = pair_decoder
+        self.decoder = PAIR_DECODERS[pair_decoder](d_model, pair_dim)
         self.epitope_head = nn.Linear(d_model, 1)
         self.paratope_head = nn.Linear(d_model, 1)
         nn.init.constant_(self.epitope_head.bias, -2.5)

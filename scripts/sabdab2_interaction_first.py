@@ -53,6 +53,53 @@ def atomic_write_dataframe_parquet(frame: Any, path: Path) -> None:
     os.replace(temporary, path)
 
 
+def directory_fingerprint(path: Path) -> dict[str, Any]:
+    """Identify a data directory without hashing gigabytes of it.
+
+    Embedding and contact stores run to gigabytes across thousands of shards,
+    so a content digest is not affordable on every run. The resolved path and
+    the file count are affordable, and together they distinguish the stores
+    this pipeline can be pointed at.
+    """
+    resolved = path.expanduser().resolve()
+    if not resolved.is_dir():
+        return {"path": str(resolved), "exists": False}
+    return {
+        "path": str(resolved),
+        "exists": True,
+        "file_count": sum(1 for entry in resolved.rglob("*") if entry.is_file()),
+    }
+
+
+def input_provenance(args: argparse.Namespace) -> dict[str, Any]:
+    """Record which data a run actually read.
+
+    The receipts named every hyperparameter and the split manifest digest but
+    no input directory, so a finished run did not say what it was trained or
+    evaluated on. Recovering that for the seed replication meant matching the
+    split file by digest and the embedding store by tensor width -- and the
+    store that width identified was not the one the directory name suggested.
+    """
+    prepare = args.prepare_dir.expanduser().resolve()
+    instances = prepare / "instances.parquet"
+    manifest = args.split_manifest.expanduser().resolve()
+    return {
+        "coverage": (
+            "paths and cheap identifiers only; the contact and embedding "
+            "stores are identified by path and file count, not by content"
+        ),
+        "prepare_dir": {
+            "path": str(prepare),
+            "instances_parquet_sha256": (
+                sha256_file(instances) if instances.is_file() else None
+            ),
+        },
+        "contact_dir": directory_fingerprint(args.contact_dir),
+        "embedding_dir": directory_fingerprint(args.embedding_dir),
+        "split_manifest": {"path": str(manifest), "sha256": sha256_file(manifest)},
+    }
+
+
 def sha256_file(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
     """Return the SHA-256 digest of one file using bounded memory."""
     digest = hashlib.sha256()
@@ -937,6 +984,7 @@ def command_train(args: argparse.Namespace) -> None:
         score_top_fraction=args.score_top_fraction,
         center_partner_score=not args.disable_score_centering,
         cross_attention_gate_initial_logit=args.cross_attention_gate_initial_logit,
+        pair_decoder=args.pair_decoder,
     ).to(device)
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
@@ -959,6 +1007,7 @@ def command_train(args: argparse.Namespace) -> None:
         "architecture": "PartnerSpecificInteractionModelV2",
         "input_dim": args.input_dim,
         "d_model": args.d_model,
+        "pair_decoder": args.pair_decoder,
         "pair_dim": args.pair_dim,
         "num_heads": args.num_heads,
         "num_layers": args.num_layers,
@@ -998,6 +1047,7 @@ def command_train(args: argparse.Namespace) -> None:
         "selection_metric": args.selection_metric,
         "seed": args.seed,
         "split_manifest_sha256": split_digest,
+        "inputs": input_provenance(args),
         "class_weights": class_weights,
         "max_positive_weight": args.max_positive_weight,
         "train_instance_count": len(train_frame),
@@ -1031,6 +1081,7 @@ def command_train(args: argparse.Namespace) -> None:
             "score_top_fraction",
             "center_partner_score",
             "cross_attention_gate_initial_logit",
+            "pair_decoder",
             "negative_count",
             "negative_directions",
             "hard_pool_size",
@@ -1209,6 +1260,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
         cross_attention_gate_initial_logit=float(
             config["cross_attention_gate_initial_logit"]
         ),
+        # Absent from checkpoints written before the decoder became selectable,
+        # which were all bilinear.
+        pair_decoder=str(config.get("pair_decoder", "bilinear")),
     ).to(device)
     model.load_state_dict(checkpoint["model_state_dict"], strict=True)
     model.eval()
@@ -1377,11 +1431,26 @@ def command_evaluate(args: argparse.Namespace) -> None:
             threshold,
         )
     sensitivity_ci = None
-    if epitope_delta_by_instance:
-        if component_by_instance:
+    sensitivity_ci_skipped = None
+    if epitope_delta_by_instance and component_by_instance:
+        # component_by_instance covers every instance in the split file, while
+        # the deltas cover only the evaluated ones, so the mapping has to be
+        # restricted before the bootstrap, which requires an exact match. Left
+        # unrestricted this raised and failed the whole evaluation after the
+        # predictions had already been written.
+        evaluated = set(epitope_delta_by_instance)
+        missing = sorted(evaluated - set(component_by_instance))
+        if missing:
+            sensitivity_ci_skipped = (
+                f"{len(missing)} evaluated instance(s) have no component assignment"
+            )
+        else:
             sensitivity_ci = cluster_bootstrap_mean_ci(
                 epitope_delta_by_instance,
-                component_by_instance,
+                {
+                    instance_id: component_by_instance[instance_id]
+                    for instance_id in evaluated
+                },
                 iterations=args.bootstrap_iterations,
                 seed=args.seed,
             )
@@ -1390,9 +1459,11 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "stage": "evaluate",
         "split": args.split,
         "instance_count": len(selected),
+        "sensitivity_ci_skipped": sensitivity_ci_skipped,
         "checkpoint": str(checkpoint_path),
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "split_manifest_sha256": expected_split_digest,
+        "inputs": input_provenance(args),
         "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection",
         "pair": {
             "micro": pair_micro,
@@ -1600,6 +1671,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--selection-metric",
         choices=("partner_rank", "total"),
         default="partner_rank",
+    )
+    train.add_argument(
+        "--pair-decoder",
+        choices=("bilinear", "hadamard_mlp"),
+        default="bilinear",
+        help="pair decoder head; the default reproduces every earlier run",
     )
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
