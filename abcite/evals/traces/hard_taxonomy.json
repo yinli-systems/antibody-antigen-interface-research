@@ -1,8 +1,8 @@
 {
   "n": 40,
   "counts": {
-    "ok": 38,
-    "miss_multi_hop": 1,
+    "ok": 37,
+    "miss_multi_hop": 2,
     "miss_figure": 1
   },
   "items": [
@@ -16,11 +16,11 @@
         "txt-cb6",
         "txt-6w41",
         "fig-6w41",
-        "txt-pertuzumab",
         "struct-6w41",
-        "txt-pgt121",
+        "txt-pertuzumab",
         "txt-framecontact-overlap",
-        "txt-sabdab"
+        "txt-sabdab",
+        "txt-1n8z-child-epitope"
       ],
       "cited_ids": []
     },
@@ -31,14 +31,14 @@
       "expected_status": "abstain",
       "actual_status": "abstain",
       "retrieved_ids": [
-        "txt-4fqi",
         "txt-1n8z-child-epitope",
+        "txt-4fqi",
+        "txt-1hzh",
         "txt-pgt121",
-        "fig-4fqi",
         "txt-1n8z-parent",
         "txt-cb6",
-        "fig-1n8z",
-        "txt-hyhel10"
+        "fig-4fqi",
+        "txt-sabdab"
       ],
       "cited_ids": []
     },
@@ -49,14 +49,14 @@
       "expected_status": "abstain",
       "actual_status": "abstain",
       "retrieved_ids": [
-        "txt-1hzh",
-        "txt-framecontact-overlap",
-        "fig-1hzh",
         "txt-sabdab",
+        "txt-framecontact-overlap",
         "struct-2ny7",
+        "fig-1hzh",
+        "txt-1hzh",
+        "txt-1n8z-parent",
         "txt-pertuzumab",
-        "txt-cb6",
-        "txt-pgt121"
+        "txt-cb6"
       ],
       "cited_ids": []
     },
@@ -68,13 +68,13 @@
       "actual_status": "abstain",
       "retrieved_ids": [
         "fig-4jhw",
-        "txt-motavizumab",
         "txt-4jhw",
-        "fig-4fqi",
+        "txt-motavizumab",
         "struct-4jhw",
+        "fig-4fqi",
         "txt-4fqi",
-        "txt-pgt121",
-        "txt-1hzh"
+        "txt-1hzh",
+        "txt-hyhel10"
       ],
       "cited_ids": []
     },
@@ -85,14 +85,14 @@
       "expected_status": "abstain",
       "actual_status": "abstain",
       "retrieved_ids": [
+        "txt-1n8z-parent",
         "txt-1n8z-child-epitope",
         "txt-cb6",
         "fig-1n8z",
         "txt-motavizumab",
-        "txt-1n8z-parent",
         "txt-pgt121",
-        "fig-6w41",
-        "txt-1vfb"
+        "txt-1vfb",
+        "txt-1hzh"
       ],
       "cited_ids": []
     },
@@ -103,14 +103,14 @@
       "expected_status": "abstain",
       "actual_status": "abstain",
       "retrieved_ids": [
-        "txt-framecontact-overlap",
-        "fig-6w41",
-        "txt-cb6",
         "txt-6w41",
+        "fig-6w41",
+        "txt-framecontact-overlap",
         "struct-6w41",
-        "txt-pertuzumab",
+        "txt-cb6",
         "txt-sabdab",
-        "txt-1hzh"
+        "txt-1hzh",
+        "txt-1n8z-child-epitope"
       ],
       "cited_ids": []
     },
@@ -121,14 +121,14 @@
       "expected_status": "abstain",
       "actual_status": "abstain",
       "retrieved_ids": [
-        "txt-cb6",
         "txt-1hzh",
-        "txt-motavizumab",
-        "txt-pgt121",
+        "txt-cb6",
         "txt-sabdab",
         "txt-framecontact-overlap",
-        "fig-4fqi",
-        "txt-1n8z-child-epitope"
+        "txt-motavizumab",
+        "txt-1n8z-child-epitope",
+        "txt-pgt121",
+        "txt-1n8z-parent"
       ],
       "cited_ids": []
     },
@@ -140,13 +140,13 @@
       "actual_status": "abstain",
       "retrieved_ids": [
         "txt-sabdab",
-        "fig-1hzh",
-        "txt-1hzh",
-        "txt-cb6",
         "txt-1n8z-child-epitope",
+        "fig-1hzh",
+        "struct-2ny7",
         "struct-1n8z",
-        "txt-4jhw",
-        "struct-2ny7"
+        "txt-2ny7",
+        "txt-1hzh",
+        "txt-pertuzumab"
       ],
       "cited_ids": []
     },
@@ -157,14 +157,14 @@
       "expected_status": "abstain",
       "actual_status": "abstain",
       "retrieved_ids": [
-        "fig-6w41",
         "txt-1hzh",
-        "txt-4fqi",
-        "fig-1hzh",
-        "fig-1vfb",
         "txt-6w41",
+        "txt-4fqi",
+        "fig-6w41",
+        "fig-1n8z",
         "txt-1n8z-parent",
-        "fig-1n8z"
+        "txt-1n8z-child-epitope",
+        "txt-framecontact-overlap"
       ],
       "cited_ids": []
     },
@@ -176,13 +176,13 @@
       "actual_status": "abstain",
       "retrieved_ids": [
         "txt-1hzh",
+        "txt-sabdab",
+        "txt-framecontact-overlap",
         "txt-cb6",
         "txt-pgt121",
-        "txt-sabdab",
         "fig-1n8z",
         "txt-1n8z-child-epitope",
-        "txt-framecontact-overlap",
-        "fig-4fqi"
+        "struct-2ny7"
       ],
       "cited_ids": []
     },
@@ -198,8 +198,8 @@
         "txt-pertuzumab",
         "txt-1n8z-child-epitope",
         "struct-1n8z",
-        "txt-motavizumab",
         "txt-hyhel10",
+        "txt-motavizumab",
         "txt-framecontact-overlap"
       ],
       "cited_ids": [
@@ -247,8 +247,8 @@
         "fig-3ngb",
         "fig-4fqi",
         "fig-1hzh",
-        "fig-1vfb",
-        "struct-4jhw"
+        "struct-4jhw",
+        "fig-1vfb"
       ],
       "cited_ids": [
         "fig-1n8z",
@@ -268,18 +268,18 @@
         "fig-4jhw",
         "txt-motavizumab",
         "txt-4jhw",
-        "txt-4fqi",
         "struct-4jhw",
+        "txt-4fqi",
         "fig-3ngb",
-        "txt-pgt121",
-        "fig-4fqi"
+        "txt-hyhel10",
+        "txt-pgt121"
       ],
       "cited_ids": [
         "fig-4jhw",
         "txt-motavizumab",
         "txt-4jhw",
-        "txt-4fqi",
-        "struct-4jhw"
+        "struct-4jhw",
+        "txt-4fqi"
       ]
     },
     {
@@ -296,7 +296,7 @@
         "struct-3ngb",
         "txt-2ny7",
         "txt-4jhw",
-        "txt-motavizumab"
+        "txt-framecontact-overlap"
       ],
       "cited_ids": [
         "txt-pgt121",
@@ -313,21 +313,21 @@
       "expected_status": "answered",
       "actual_status": "answered",
       "retrieved_ids": [
-        "fig-6w41",
         "txt-6w41",
+        "fig-6w41",
         "txt-cb6",
         "struct-6w41",
-        "txt-motavizumab",
-        "txt-4jhw",
         "txt-4fqi",
-        "fig-4jhw"
+        "txt-motavizumab",
+        "txt-1n8z-parent",
+        "txt-4jhw"
       ],
       "cited_ids": [
-        "fig-6w41",
         "txt-6w41",
+        "fig-6w41",
         "txt-cb6",
         "struct-6w41",
-        "txt-motavizumab"
+        "txt-4fqi"
       ]
     },
     {
@@ -338,18 +338,18 @@
       "actual_status": "answered",
       "retrieved_ids": [
         "txt-1vfb",
-        "txt-hyhel10",
         "fig-1vfb",
+        "txt-hyhel10",
         "struct-1vfb",
         "txt-4jhw",
         "fig-3ngb",
         "txt-2ny7",
-        "fig-4jhw"
+        "txt-4fqi"
       ],
       "cited_ids": [
         "txt-1vfb",
-        "txt-hyhel10",
         "fig-1vfb",
+        "txt-hyhel10",
         "struct-1vfb",
         "txt-4jhw"
       ]
@@ -365,17 +365,17 @@
         "fig-4fqi",
         "struct-4fqi",
         "txt-motavizumab",
+        "fig-4jhw",
         "txt-4jhw",
         "txt-1hzh",
-        "fig-4jhw",
-        "txt-sabdab"
+        "struct-4jhw"
       ],
       "cited_ids": [
         "txt-4fqi",
         "fig-4fqi",
         "struct-4fqi",
         "txt-motavizumab",
-        "txt-4jhw"
+        "fig-4jhw"
       ]
     },
     {
@@ -387,19 +387,19 @@
       "retrieved_ids": [
         "txt-1hzh",
         "fig-1hzh",
+        "fig-3ngb",
         "txt-2ny7",
         "fig-4jhw",
-        "fig-3ngb",
+        "struct-4jhw",
         "txt-4jhw",
-        "txt-1n8z-parent",
-        "struct-4jhw"
+        "txt-1n8z-parent"
       ],
       "cited_ids": [
         "txt-1hzh",
         "fig-1hzh",
+        "fig-3ngb",
         "txt-2ny7",
-        "fig-4jhw",
-        "fig-3ngb"
+        "fig-4jhw"
       ]
     },
     {
@@ -413,17 +413,17 @@
         "fig-6w41",
         "txt-6w41",
         "fig-4jhw",
+        "txt-4fqi",
         "struct-6w41",
-        "fig-4fqi",
-        "txt-4jhw",
-        "txt-4fqi"
+        "txt-1hzh",
+        "struct-4jhw"
       ],
       "cited_ids": [
         "txt-cb6",
         "fig-6w41",
         "txt-6w41",
         "fig-4jhw",
-        "struct-6w41"
+        "txt-4fqi"
       ]
     },
     {
@@ -435,18 +435,18 @@
       "retrieved_ids": [
         "txt-1n8z-parent",
         "fig-1n8z",
-        "txt-1n8z-child-epitope",
         "struct-1n8z",
+        "txt-1n8z-child-epitope",
         "txt-pertuzumab",
         "txt-motavizumab",
-        "txt-4jhw",
-        "struct-4jhw"
+        "struct-4jhw",
+        "txt-cb6"
       ],
       "cited_ids": [
         "txt-1n8z-parent",
         "fig-1n8z",
-        "txt-1n8z-child-epitope",
         "struct-1n8z",
+        "txt-1n8z-child-epitope",
         "txt-pertuzumab"
       ]
     },
@@ -459,18 +459,18 @@
       "retrieved_ids": [
         "txt-sabdab",
         "txt-1hzh",
-        "txt-framecontact-overlap",
         "struct-6w41",
+        "txt-framecontact-overlap",
         "struct-1vfb",
-        "fig-1hzh",
         "struct-3ngb",
-        "struct-2ny7"
+        "struct-2ny7",
+        "struct-4fqi"
       ],
       "cited_ids": [
         "txt-sabdab",
         "txt-1hzh",
-        "txt-framecontact-overlap",
         "struct-6w41",
+        "txt-framecontact-overlap",
         "struct-1vfb"
       ]
     },
@@ -481,21 +481,21 @@
       "expected_status": "answered",
       "actual_status": "answered",
       "retrieved_ids": [
-        "txt-1n8z-child-epitope",
         "fig-1n8z",
+        "txt-1n8z-child-epitope",
         "txt-pertuzumab",
         "txt-1n8z-parent",
-        "txt-motavizumab",
+        "txt-hyhel10",
         "struct-1n8z",
-        "fig-1vfb",
-        "txt-hyhel10"
+        "txt-motavizumab",
+        "fig-1vfb"
       ],
       "cited_ids": [
-        "txt-1n8z-child-epitope",
         "fig-1n8z",
+        "txt-1n8z-child-epitope",
         "txt-pertuzumab",
         "txt-1n8z-parent",
-        "txt-motavizumab"
+        "txt-hyhel10"
       ]
     },
     {
@@ -506,20 +506,20 @@
       "actual_status": "answered",
       "retrieved_ids": [
         "fig-3ngb",
-        "txt-3ngb",
         "txt-2ny7",
         "txt-1hzh",
-        "txt-pgt121",
+        "txt-3ngb",
         "struct-2ny7",
-        "txt-motavizumab",
+        "txt-pgt121",
+        "txt-sabdab",
         "txt-1vfb"
       ],
       "cited_ids": [
         "fig-3ngb",
-        "txt-3ngb",
         "txt-2ny7",
         "txt-1hzh",
-        "txt-pgt121"
+        "txt-3ngb",
+        "struct-2ny7"
       ]
     },
     {
@@ -535,8 +535,8 @@
         "struct-4jhw",
         "txt-pertuzumab",
         "fig-3ngb",
-        "fig-1n8z",
-        "txt-1n8z-parent"
+        "txt-1n8z-parent",
+        "txt-4fqi"
       ],
       "cited_ids": [
         "txt-motavizumab",
@@ -556,42 +556,42 @@
         "fig-6w41",
         "txt-cb6",
         "txt-6w41",
-        "txt-framecontact-overlap",
-        "txt-1n8z-child-epitope",
-        "fig-1n8z",
+        "struct-6w41",
+        "txt-sabdab",
         "fig-1vfb",
-        "struct-6w41"
+        "txt-framecontact-overlap",
+        "txt-1n8z-child-epitope"
       ],
       "cited_ids": [
         "fig-6w41",
         "txt-cb6",
         "txt-6w41",
-        "txt-framecontact-overlap",
-        "txt-1n8z-child-epitope"
+        "struct-6w41",
+        "txt-sabdab"
       ]
     },
     {
       "id": "h017",
       "query_class": "multi_hop",
-      "class": "ok",
+      "class": "miss_multi_hop",
       "expected_status": "answered",
       "actual_status": "answered",
       "retrieved_ids": [
-        "txt-4fqi",
         "fig-4fqi",
-        "txt-motavizumab",
+        "txt-4fqi",
         "struct-4fqi",
-        "txt-4jhw",
+        "txt-motavizumab",
         "fig-4jhw",
         "fig-1vfb",
+        "txt-4jhw",
         "txt-pertuzumab"
       ],
       "cited_ids": [
-        "txt-4fqi",
         "fig-4fqi",
-        "txt-motavizumab",
+        "txt-4fqi",
         "struct-4fqi",
-        "txt-4jhw"
+        "txt-motavizumab",
+        "fig-4jhw"
       ]
     },
     {
@@ -604,18 +604,18 @@
         "txt-3ngb",
         "fig-3ngb",
         "txt-pgt121",
-        "txt-4jhw",
         "txt-2ny7",
+        "txt-1hzh",
         "fig-1vfb",
-        "fig-6w41",
-        "fig-4jhw"
+        "txt-4jhw",
+        "struct-3ngb"
       ],
       "cited_ids": [
         "txt-3ngb",
         "fig-3ngb",
         "txt-pgt121",
-        "txt-4jhw",
-        "txt-2ny7"
+        "txt-2ny7",
+        "txt-1hzh"
       ]
     },
     {
@@ -625,21 +625,21 @@
       "expected_status": "answered",
       "actual_status": "answered",
       "retrieved_ids": [
-        "txt-hyhel10",
         "fig-1vfb",
+        "txt-hyhel10",
         "txt-1vfb",
-        "struct-1vfb",
-        "txt-motavizumab",
         "txt-1n8z-parent",
         "fig-1n8z",
+        "struct-1vfb",
+        "txt-motavizumab",
         "txt-framecontact-overlap"
       ],
       "cited_ids": [
-        "txt-hyhel10",
         "fig-1vfb",
+        "txt-hyhel10",
         "txt-1vfb",
-        "struct-1vfb",
-        "txt-motavizumab"
+        "txt-1n8z-parent",
+        "fig-1n8z"
       ]
     },
     {
@@ -651,18 +651,18 @@
       "retrieved_ids": [
         "txt-framecontact-overlap",
         "txt-sabdab",
-        "txt-6w41",
         "txt-hyhel10",
+        "txt-6w41",
         "struct-4jhw",
-        "fig-4jhw",
+        "struct-1vfb",
         "txt-1hzh",
-        "struct-1vfb"
+        "fig-4jhw"
       ],
       "cited_ids": [
         "txt-framecontact-overlap",
         "txt-sabdab",
-        "txt-6w41",
         "txt-hyhel10",
+        "txt-6w41",
         "struct-4jhw"
       ]
     },
@@ -678,9 +678,9 @@
         "fig-1hzh",
         "fig-4fqi",
         "fig-1vfb",
-        "fig-4jhw",
         "struct-6w41",
-        "fig-6w41"
+        "fig-6w41",
+        "fig-4jhw"
       ],
       "cited_ids": [
         "fig-1n8z",
@@ -725,17 +725,17 @@
         "fig-1n8z",
         "struct-4jhw",
         "struct-4fqi",
-        "fig-4jhw",
         "struct-1vfb",
+        "fig-4jhw",
         "struct-2ny7",
-        "struct-6w41"
+        "struct-3ngb"
       ],
       "cited_ids": [
         "struct-1n8z",
         "fig-1n8z",
         "struct-4jhw",
         "struct-4fqi",
-        "fig-4jhw"
+        "struct-1vfb"
       ]
     },
     {
@@ -748,18 +748,18 @@
         "fig-4jhw",
         "struct-4jhw",
         "struct-4fqi",
-        "fig-4fqi",
-        "fig-1hzh",
         "struct-2ny7",
         "struct-1n8z",
-        "fig-3ngb"
+        "fig-4fqi",
+        "fig-1hzh",
+        "struct-6w41"
       ],
       "cited_ids": [
         "fig-4jhw",
         "struct-4jhw",
         "struct-4fqi",
-        "fig-4fqi",
-        "fig-1hzh"
+        "struct-2ny7",
+        "struct-1n8z"
       ]
     },
     {
@@ -795,18 +795,18 @@
       "retrieved_ids": [
         "fig-1vfb",
         "txt-1vfb",
-        "struct-4jhw",
         "struct-1vfb",
+        "struct-4jhw",
         "struct-4fqi",
-        "txt-motavizumab",
         "struct-6w41",
-        "struct-2ny7"
+        "txt-hyhel10",
+        "txt-motavizumab"
       ],
       "cited_ids": [
         "fig-1vfb",
         "txt-1vfb",
-        "struct-4jhw",
         "struct-1vfb",
+        "struct-4jhw",
         "struct-4fqi"
       ]
     },
@@ -819,18 +819,18 @@
       "retrieved_ids": [
         "fig-4fqi",
         "fig-4jhw",
-        "struct-4jhw",
         "struct-4fqi",
+        "struct-4jhw",
         "fig-1hzh",
         "struct-1n8z",
         "struct-6w41",
-        "fig-3ngb"
+        "struct-3ngb"
       ],
       "cited_ids": [
         "fig-4fqi",
         "fig-4jhw",
-        "struct-4jhw",
         "struct-4fqi",
+        "struct-4jhw",
         "fig-1hzh"
       ]
     },
@@ -842,18 +842,18 @@
       "actual_status": "answered",
       "retrieved_ids": [
         "struct-2ny7",
+        "fig-3ngb",
         "struct-3ngb",
-        "fig-4jhw",
         "struct-4jhw",
         "struct-4fqi",
-        "fig-3ngb",
         "struct-1n8z",
+        "fig-4jhw",
         "fig-1hzh"
       ],
       "cited_ids": [
         "struct-2ny7",
+        "fig-3ngb",
         "struct-3ngb",
-        "fig-4jhw",
         "struct-4jhw",
         "struct-4fqi"
       ]
@@ -870,8 +870,8 @@
         "fig-4jhw",
         "struct-4jhw",
         "struct-2ny7",
+        "struct-4fqi",
         "fig-4fqi",
-        "fig-3ngb",
         "fig-1hzh"
       ],
       "cited_ids": [
@@ -890,8 +890,8 @@
       "actual_status": "answered",
       "retrieved_ids": [
         "struct-4jhw",
-        "fig-4jhw",
         "struct-2ny7",
+        "fig-4jhw",
         "struct-1n8z",
         "struct-1vfb",
         "struct-4fqi",
@@ -900,8 +900,8 @@
       ],
       "cited_ids": [
         "struct-4jhw",
-        "fig-4jhw",
         "struct-2ny7",
+        "fig-4jhw",
         "struct-1n8z",
         "struct-1vfb"
       ]

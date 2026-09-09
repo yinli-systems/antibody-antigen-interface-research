@@ -17,6 +17,7 @@ import numpy as np
 
 from abcite_core.holdout import strip_accession_tokens, strip_caption_leak, visual_query_ok
 from abcite_core.vision import hashing_vector
+from abcite_core.vision_flags import DEFAULT_RERANK_K
 
 ROOT = Path(__file__).resolve().parents[1]
 FIG_ROOT = ROOT / "evals" / "figures"
@@ -141,20 +142,88 @@ class FigureGallery:
             return None
         return arr.astype(np.float32)
 
-    def _load_or_encode(self) -> np.ndarray:
-        for cache in (self._cache_key(), self._committed_key()):
-            arr = self._try_load_cache(cache)
-            if arr is not None:
-                return arr
-        vecs = []
+    def _cached_by_id(self) -> dict[str, np.ndarray]:
+        """Reuse any same-encoder npy (resume 1196 → 16k without re-encoding)."""
+        name = getattr(self.vision, "name", "enc")
+        found: dict[str, np.ndarray] = {}
+        candidates = [
+            *sorted((FIG_ROOT / "cache").glob(f"embeddings-{name}-n*.npy")),
+            *sorted((ROOT / "evals").glob(f"embeddings-{name}-n*.npy")),
+        ]
+        candidates.sort(key=lambda p: p.stat().st_size if p.exists() else 0, reverse=True)
+        for cache in candidates:
+            ids_path = cache.with_suffix(".ids.json")
+            if not ids_path.exists():
+                continue
+            try:
+                ids = json.loads(ids_path.read_text(encoding="utf-8"))
+                arr = np.load(cache)
+            except Exception:
+                continue
+            if arr.shape[0] != len(ids):
+                continue
+            for i, fid in enumerate(ids):
+                if fid not in found:
+                    found[fid] = np.asarray(arr[i], dtype=np.float32)
+        return found
+
+    def _encode_paths(self, paths: list[Path]) -> np.ndarray:
+        encode_batch = getattr(self.vision, "encode_images", None)
+        if callable(encode_batch) and paths:
+            return np.asarray(encode_batch(paths), dtype=np.float32)
         encode_image = self.vision.encode_image
-        for rec in self.recs:
-            # Caption / PDB must not be concatenated into this vector.
-            vecs.append(np.asarray(encode_image(rec.path), dtype=np.float32))
-        arr = np.stack(vecs, axis=0)
+        vecs = [np.asarray(encode_image(p), dtype=np.float32) for p in paths]
+        if not vecs:
+            dim = int(getattr(self.vision, "dim", 256) or 256)
+            return np.zeros((0, dim), dtype=np.float32)
+        return np.stack(vecs, axis=0)
+
+    def _load_or_encode(self) -> np.ndarray:
+        exact = self._try_load_cache(self._cache_key())
+        if exact is None:
+            exact = self._try_load_cache(self._committed_key())
+        if exact is not None:
+            return exact
+        by_id = self._cached_by_id()
+        dim: int | None = None
+        if by_id:
+            dim = int(next(iter(by_id.values())).shape[0])
+        missing_idx = [i for i, fid in enumerate(self.ids) if fid not in by_id]
+        checkpoint = bool(self.recs) and "fixture" not in str(self.recs[0].path)
+        if missing_idx:
+            name = getattr(self.vision, "name", "enc")
+            print(
+                f"encoding {len(missing_idx)}/{self.n} images "
+                f"encoder={name}",
+                flush=True,
+            )
+            chunk = 1024
+            if dim is None:
+                dim = int(getattr(self.vision, "dim", 256) or 256)
+            for start in range(0, len(missing_idx), chunk):
+                sl = missing_idx[start : start + chunk]
+                paths = [self.recs[i].path for i in sl]
+                encoded = self._encode_paths(paths)
+                dim = int(encoded.shape[1]) if encoded.size else dim
+                for row, i in enumerate(sl):
+                    by_id[self.ids[i]] = encoded[row]
+                if checkpoint:
+                    done_ids = [fid for fid in self.ids if fid in by_id]
+                    ck = FIG_ROOT / "cache" / f"embeddings-{name}-n{len(done_ids)}.npy"
+                    np.save(ck, np.stack([by_id[fid] for fid in done_ids], axis=0))
+                    ck.with_suffix(".ids.json").write_text(
+                        json.dumps(done_ids), encoding="utf-8"
+                    )
+                    print(f"  checkpoint {len(done_ids)}/{self.n}", flush=True)
+        if dim is None:
+            dim = int(getattr(self.vision, "dim", 256) or 256)
+        arr = np.stack(
+            [by_id.get(fid, np.zeros(dim, dtype=np.float32)) for fid in self.ids],
+            axis=0,
+        ).astype(np.float32)
         cache = self._cache_key()
         cache.parent.mkdir(parents=True, exist_ok=True)
-        if "fixture" not in str(self.recs[0].path):
+        if self.recs and "fixture" not in str(self.recs[0].path):
             np.save(cache, arr)
             cache.with_suffix(".ids.json").write_text(json.dumps(self.ids), encoding="utf-8")
         return arr
@@ -222,6 +291,13 @@ class FigureGallery:
         img = self.clip_image_only_scores(question)
         return _rrf(cap) + _rrf(img)
 
+    def vision_rerank_scores(
+        self, question: str, k: int = DEFAULT_RERANK_K, text_scores: np.ndarray | None = None
+    ) -> np.ndarray:
+        text = self.caption_bm25_scores(question) if text_scores is None else text_scores
+        img = self.clip_image_only_scores(question)
+        return vision_rerank_scores(text, img, k=k)
+
     def ranked_ids(self, scores: np.ndarray) -> list[str]:
         order = np.argsort(-scores)
         return [self.ids[int(i)] for i in order]
@@ -244,6 +320,26 @@ def _rrf(scores: np.ndarray, k: int = 60) -> np.ndarray:
     out = np.zeros_like(scores, dtype=np.float32)
     for rank, idx in enumerate(order, start=1):
         out[idx] = 1.0 / (k + rank)
+    return out
+
+
+def vision_rerank_scores(
+    text_scores: np.ndarray, image_scores: np.ndarray, k: int = DEFAULT_RERANK_K
+) -> np.ndarray:
+    """Reorder BM25 top-K by CLIP cosine; keep ranks >K in original text order.
+
+    Gold outside the text top-K cannot enter R@1/5/10 via rerank. That is the point.
+    """
+    n = int(text_scores.shape[0])
+    k = max(1, min(int(k), n))
+    text_order = np.argsort(-text_scores, kind="mergesort")
+    top = text_order[:k]
+    rest = text_order[k:]
+    top_reranked = top[np.argsort(-image_scores[top], kind="mergesort")]
+    new_order = np.concatenate([top_reranked, rest]) if rest.size else top_reranked
+    out = np.empty(n, dtype=np.float32)
+    for rank, idx in enumerate(new_order):
+        out[int(idx)] = float(n - rank)
     return out
 
 
@@ -278,6 +374,7 @@ def caption_as_query_items(recs: list[FigureRec], min_tokens: int = 6) -> list[d
                 "question": q,
                 "gold_figure_ids": [rec.figure_id],
                 "protocol": "caption_as_query",
+                "pmcid": rec.pmcid,
             }
         )
     return items

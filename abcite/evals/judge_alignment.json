@@ -25,9 +25,9 @@
     {
       "id": "g007",
       "human_faithfulness": 1.0,
-      "lexical": 0.6962,
-      "claim_nli": 0.8069,
-      "claim_span": 0.7778
+      "lexical": 0.6835,
+      "claim_nli": 0.82,
+      "claim_span": 0.8889
     },
     {
       "id": "g012",
@@ -39,16 +39,16 @@
     {
       "id": "g020",
       "human_faithfulness": 1.0,
-      "lexical": 0.7963,
-      "claim_nli": 0.7947,
-      "claim_span": 0.9286
+      "lexical": 0.8226,
+      "claim_nli": 0.8169,
+      "claim_span": 0.9333
     },
     {
       "id": "g024",
       "human_faithfulness": 1.0,
-      "lexical": 0.7619,
-      "claim_nli": 0.8072,
-      "claim_span": 0.9091
+      "lexical": 0.7396,
+      "claim_nli": 0.7478,
+      "claim_span": 0.8
     },
     {
       "id": "g026",
@@ -74,9 +74,9 @@
     {
       "id": "g050",
       "human_faithfulness": 1.0,
-      "lexical": 0.7037,
-      "claim_nli": 0.8252,
-      "claim_span": 0.8889
+      "lexical": 0.6757,
+      "claim_nli": 0.7754,
+      "claim_span": 0.75
     },
     {
       "id": "g004",
@@ -95,16 +95,16 @@
     {
       "id": "g021",
       "human_faithfulness": 1.0,
-      "lexical": 0.8333,
-      "claim_nli": 0.8111,
-      "claim_span": 0.9091
+      "lexical": 0.8,
+      "claim_nli": 0.7922,
+      "claim_span": 0.9
     },
     {
       "id": "g042",
       "human_faithfulness": 1.0,
-      "lexical": 0.7941,
-      "claim_nli": 0.7899,
-      "claim_span": 0.9286
+      "lexical": 0.7928,
+      "claim_nli": 0.7745,
+      "claim_span": 0.9231
     },
     {
       "id": "h001",
@@ -116,16 +116,16 @@
     {
       "id": "h013",
       "human_faithfulness": 0.6,
-      "lexical": 0.7143,
-      "claim_nli": 0.8233,
+      "lexical": 0.7792,
+      "claim_nli": 0.8541,
       "claim_span": 0.8889
     },
     {
       "id": "h020",
       "human_faithfulness": 0.7,
       "lexical": 0.8226,
-      "claim_nli": 0.7959,
-      "claim_span": 0.8182
+      "claim_nli": 0.837,
+      "claim_span": 0.9091
     },
     {
       "id": "h023",
@@ -137,8 +137,8 @@
     {
       "id": "h033",
       "human_faithfulness": 0.5,
-      "lexical": 0.6071,
-      "claim_nli": 0.6727,
+      "lexical": 0.625,
+      "claim_nli": 0.6802,
       "claim_span": 0.5714
     },
     {
@@ -152,7 +152,7 @@
       "id": "g002",
       "human_faithfulness": 1.0,
       "lexical": 0.8116,
-      "claim_nli": 0.869,
+      "claim_nli": 0.8683,
       "claim_span": 1.0
     },
     {
@@ -165,21 +165,21 @@
     {
       "id": "g008",
       "human_faithfulness": 1.0,
-      "lexical": 0.5758,
-      "claim_nli": 0.719,
+      "lexical": 0.5606,
+      "claim_nli": 0.7014,
       "claim_span": 0.5714
     },
     {
       "id": "g010",
       "human_faithfulness": 0.8,
-      "lexical": 0.75,
+      "lexical": 0.7667,
       "claim_nli": 0.7155,
       "claim_span": 0.7143
     },
     {
       "id": "g014",
       "human_faithfulness": 1.0,
-      "lexical": 0.78,
+      "lexical": 0.7843,
       "claim_nli": 0.7466,
       "claim_span": 0.7143
     },
@@ -193,9 +193,9 @@
     {
       "id": "g025",
       "human_faithfulness": 1.0,
-      "lexical": 0.7596,
-      "claim_nli": 0.8065,
-      "claim_span": 0.8
+      "lexical": 0.7723,
+      "claim_nli": 0.8561,
+      "claim_span": 0.9
     },
     {
       "id": "g027",
@@ -221,15 +221,15 @@
     {
       "id": "h004",
       "human_faithfulness": 0.7,
-      "lexical": 0.7467,
-      "claim_nli": 0.8294,
-      "claim_span": 0.8
+      "lexical": 0.7432,
+      "claim_nli": 0.7597,
+      "claim_span": 0.6667
     },
     {
       "id": "h014",
       "human_faithfulness": 0.4,
-      "lexical": 0.7931,
-      "claim_nli": 0.8415,
+      "lexical": 0.8161,
+      "claim_nli": 0.8626,
       "claim_span": 1.0
     },
     {
@@ -256,15 +256,15 @@
     {
       "id": "h034",
       "human_faithfulness": 0.4,
-      "lexical": 0.62,
+      "lexical": 0.6607,
       "claim_nli": 0.6811,
       "claim_span": 0.5714
     },
     {
       "id": "h038",
       "human_faithfulness": 0.3,
-      "lexical": 0.7018,
-      "claim_nli": 0.6888,
+      "lexical": 0.7188,
+      "claim_nli": 0.6531,
       "claim_span": 0.5714
     },
     {

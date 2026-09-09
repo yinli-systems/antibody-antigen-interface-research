@@ -15,20 +15,20 @@
     "txt-pertuzumab",
     "txt-1n8z-parent",
     "fig-1n8z",
-    "txt-motavizumab",
     "struct-1n8z",
+    "txt-motavizumab",
     "txt-hyhel10",
     "txt-4fqi"
   ],
   "retrieved_scores": {
-    "txt-1n8z-child-epitope": 0.0405,
-    "txt-pertuzumab": 0.0401,
-    "txt-1n8z-parent": 0.0389,
-    "fig-1n8z": 0.0389,
-    "txt-motavizumab": 0.038,
-    "struct-1n8z": 0.0371,
-    "txt-hyhel10": 0.037,
-    "txt-4fqi": 0.0365
+    "txt-1n8z-child-epitope": 0.0328,
+    "txt-pertuzumab": 0.032,
+    "txt-1n8z-parent": 0.0318,
+    "fig-1n8z": 0.0315,
+    "struct-1n8z": 0.0309,
+    "txt-motavizumab": 0.0301,
+    "txt-hyhel10": 0.0292,
+    "txt-4fqi": 0.029
   },
   "status": "answered",
   "abstain": false,
@@ -54,9 +54,9 @@
       "source_url": "https://www.rcsb.org/structure/1N8Z"
     },
     {
-      "chunk_id": "txt-motavizumab",
-      "quote": "Palivizumab and motavizumab target antigenic site II on RSV F, structurally distinct from the prefusion-specific site \u00d8 occupied by D25 in 4JHW. Site II remains available on postfusion F.",
-      "source_url": "https://www.rcsb.org/structure/3IXT"
+      "chunk_id": "struct-1n8z",
+      "quote": "Residue-level 2D snapshot highlighting HER2 positions often discussed for trastuzumab domain IV contacts, including residues near 557-593.",
+      "source_url": "https://www.rcsb.org/structure/1N8Z"
     }
   ],
   "answer_preview": "Grounded summary for: Does trastuzumab on HER2 (PDB 1N8Z) share the pertuzumab domain II epitope, and which public paper/PDB path supports that?\n\nChild chunk: trastuzumab epitope on HER2 domain IV in PDB 1N8Z is membrane-proximal and does not match pertuzumab domain II. Pertuzumab (2C4) binds HER2 domain II and blocks dimerization. PDB 1S78. This epitope does not coincide with trastuzumab's domain IV site on 1N8Z. PMID 15093539. https://doi.org/10.1016/S1535-6108(04)00083-2 Crystal structure PDB 1N8Z shows trastuzumab (Herceptin) Fab bound to the extracellular region of HER2. The epitope lies ",

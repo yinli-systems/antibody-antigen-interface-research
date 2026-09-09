@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     azure_search_endpoint: str = Field(default="", alias="AZURE_SEARCH_ENDPOINT")
     azure_search_api_key: str = Field(default="", alias="AZURE_SEARCH_API_KEY")
     azure_search_index: str = Field(default="abcite-chunks", alias="AZURE_SEARCH_INDEX")
+    vision_fusion: bool = Field(default=False, alias="ABCITE_VISION_FUSION")
+    vision_rerank: bool = Field(default=False, alias="ABCITE_VISION_RERANK")
+    vision_rerank_k: int = Field(default=50, alias="ABCITE_VISION_RERANK_K")
 
 
 def get_settings() -> Settings:

@@ -1,52 +1,108 @@
 {
   "protocol": "caption_as_query",
-  "n_gallery": 1196,
-  "n_queries": 1127,
+  "n_gallery": 15949,
+  "n_queries": 2805,
   "encoder": "clip-vit-b-32",
   "gpu": "NVIDIA GeForce RTX 5090",
+  "rerank_k": 50,
   "caption_bm25": {
-    "recall@1": 0.63,
-    "recall@5": 0.9831,
-    "recall@10": 0.9965
+    "recall@1": 0.8349,
+    "recall@5": 0.9636,
+    "recall@10": 0.985
   },
   "clip_image_only": {
-    "recall@1": 0.0284,
-    "recall@5": 0.0639,
-    "recall@10": 0.0834
+    "recall@1": 0.0467,
+    "recall@5": 0.0963,
+    "recall@10": 0.1241
+  },
+  "vision_rerank": {
+    "recall@1": 0.1633,
+    "recall@5": 0.426,
+    "recall@10": 0.5868
   },
   "fusion": {
-    "recall@1": 0.1136,
-    "recall@5": 0.3052,
-    "recall@10": 0.528
+    "recall@1": 0.2524,
+    "recall@5": 0.6952,
+    "recall@10": 0.897
   },
-  "mean_gap_image_i2i": 0.088263,
-  "mean_gap_clip_text_to_image": 0.009164,
+  "fusion_default": "off",
+  "rerank_helps_bm25": {
+    "helps_any": false,
+    "hurts_any": true,
+    "helps": {
+      "recall@1": false,
+      "recall@5": false,
+      "recall@10": false
+    },
+    "delta": {
+      "recall@1": -0.6716,
+      "recall@5": -0.5376,
+      "recall@10": -0.3982
+    },
+    "note": "Positive delta means CLIP rerank of BM25 top-K beat caption BM25. Fusion RRF is a separate ablation and is off in the product default."
+  },
+  "mean_gap_image_i2i": 0.080677,
+  "mean_gap_clip_text_to_image": 0.006514,
   "biomedclip_skip": null,
-  "note": "Protocol A: caption-as-query pair retrieval. Query is the figure caption with PDB / UniProt / RefSeq tokens stripped. Gold is that figure id. clip_image_only is T\u2192I; captions never enter the image encoder. caption_bm25 is lexical captions (SciMMIR-like text baseline), not CLIP.",
+  "note": "Protocol A: held-out caption-as-query pair retrieval, split by PMCID. Query is the figure caption with PDB / UniProt / RefSeq tokens stripped. Gold is that figure id. clip_image_only is T\u2192I over the eval gallery; captions never enter the image encoder. caption_bm25 is lexical captions. vision_rerank reorders BM25 top-K by CLIP cosine (K=50 unless overridden). fusion RRF is an ablation and is OFF in the product default.",
   "published_ranges": {
     "scimmir_clip_ft_hits@10_t2i": "~0.135 (ALL, different 530k gallery; not a target to match)",
     "scimmir_zs_clip_hits@10": "~0.0067 on 16k test (pair retrieval, not class)",
     "scimmir_zs_vlm_hits@10": "<0.0023 typical",
     "biomedclip_pmc_r@1_r@5": "~0.56 / ~0.77 on ~726k pairs (not this gallery)"
   },
+  "holdout": {
+    "n_papers": 2491,
+    "n_index_papers": 1993,
+    "n_query_papers": 498,
+    "n_index_figures": 12927,
+    "n_query_figures": 3022,
+    "query_frac": 0.2,
+    "seed": 7,
+    "split_by": "pmcid",
+    "note": "Queries are captions from the query-paper split. Those papers are absent from the 80% index-paper set. Eval gallery mode decides whether query-paper images are included as retrieval candidates.",
+    "gallery_mode": "full",
+    "held_out": true,
+    "n_queries": 2805
+  },
   "biomedclip": {
     "encoder": "biomedclip",
     "caption_bm25": {
-      "recall@1": 0.63,
-      "recall@5": 0.9831,
-      "recall@10": 0.9965
+      "recall@1": 0.8349,
+      "recall@5": 0.9636,
+      "recall@10": 0.985
     },
     "clip_image_only": {
-      "recall@1": 0.0728,
-      "recall@5": 0.1517,
-      "recall@10": 0.1872
+      "recall@1": 0.6011,
+      "recall@5": 0.7358,
+      "recall@10": 0.764
+    },
+    "vision_rerank": {
+      "recall@1": 0.6606,
+      "recall@5": 0.8153,
+      "recall@10": 0.8513
     },
     "fusion": {
-      "recall@1": 0.1571,
-      "recall@5": 0.3656,
-      "recall@10": 0.5821
+      "recall@1": 0.7294,
+      "recall@5": 0.8406,
+      "recall@10": 0.9016
     },
-    "mean_gap_image_i2i": 0.256876,
-    "mean_gap_clip_text_to_image": 0.061378
+    "rerank_helps_bm25": {
+      "helps_any": false,
+      "hurts_any": true,
+      "helps": {
+        "recall@1": false,
+        "recall@5": false,
+        "recall@10": false
+      },
+      "delta": {
+        "recall@1": -0.1743,
+        "recall@5": -0.1483,
+        "recall@10": -0.1337
+      },
+      "note": "Positive delta means CLIP rerank of BM25 top-K beat caption BM25. Fusion RRF is a separate ablation and is off in the product default."
+    },
+    "mean_gap_image_i2i": 0.284495,
+    "mean_gap_clip_text_to_image": 0.068633
   }
 }

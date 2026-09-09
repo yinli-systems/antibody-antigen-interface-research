@@ -17,3 +17,17 @@
 {"id": "mv-pmc-00290", "question": "workflow diagram split by dashed gray lines with green tick marks on optimal outcomes", "gold_figure_ids": ["pmc-00290"], "visual_class": "workflow diagram"}
 {"id": "mv-pmc-00014", "question": "multi-panel scanning electron microscopy of a polymer surface after photocatalytic degradation treatments", "gold_figure_ids": ["pmc-00014"], "visual_class": "electron microscopy"}
 {"id": "mv-pmc-00313", "question": "fluorescence microscopy of green nuclear foci marking DNA double-strand breaks in cultured melanoma cells", "gold_figure_ids": ["pmc-00313"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00104", "question": "schematic diagram of a single-chain variable fragment with labeled VH, VL, linker, His-tag and FLAG boxes", "gold_figure_ids": ["pmc-00104"], "visual_class": "schematic panel"}
+{"id": "mv-pmc-00113", "question": "scatter plot of effective number of codons versus GC3 with a superimposed expected-Nc curve and color-coded virus groups", "gold_figure_ids": ["pmc-00113"], "visual_class": "scatter plot"}
+{"id": "mv-pmc-00366", "question": "fluorescence microscopy three-panel of green nuclear immunolabel, DAPI stain, and the merged overlay with a 50 μm scale bar", "gold_figure_ids": ["pmc-00366"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00370", "question": "dark-field photo series of a fibrin clot growing from a tissue-factor activator edge in plasma", "gold_figure_ids": ["pmc-00370"], "visual_class": "microscopy"}
+{"id": "mv-pmc-00388", "question": "two-channel DAPI and FITC microscopy of cultured cells with arrows marking stained versus unstained nuclei", "gold_figure_ids": ["pmc-00388"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00416", "question": "histology micrograph of a tumor section with brown CD66b stain and hematoxylin counterstain at 200×", "gold_figure_ids": ["pmc-00416"], "visual_class": "histology"}
+{"id": "mv-pmc-00067", "question": "photo panel of a 1970s spearfishing contest beside a scuba diver watching a grouper on a reef", "gold_figure_ids": ["pmc-00067"], "visual_class": "photo panel"}
+{"id": "mv-pmc-00356", "question": "forest plot from a meta-analysis with study rows and a pooled-effect diamond", "gold_figure_ids": ["pmc-00356"], "visual_class": "scientific plot"}
+{"id": "mv-pmc-00513", "question": "agarose gel electrophoresis of plasmid digests with a kilobase ladder on the left", "gold_figure_ids": ["pmc-00513"], "visual_class": "gel electrophoresis"}
+{"id": "mv-pmc-01188", "question": "overlaid cryo-EM ribbon cartoons of a transporter in outward-open, occluded, and inward-open states in brown, green, and pink", "gold_figure_ids": ["pmc-01188"], "visual_class": "electron microscopy"}
+{"id": "mv-pmc-00853", "question": "confocal microscopy of lung airway epithelium with cyanine-5 signal and DAPI-stained nuclei", "gold_figure_ids": ["pmc-00853"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00075", "question": "phylogenetic tree diagram of viral hexon nucleotide sequences", "gold_figure_ids": ["pmc-00075"], "visual_class": "scientific figure panel"}
+{"id": "mv-pmc-00432", "question": "immunoblot panel of twelve sucrose-gradient fractions run as SDS-PAGE lanes", "gold_figure_ids": ["pmc-00432"], "visual_class": "western blot"}
+{"id": "mv-pmc-00689", "question": "forest plot of pooled prevalence estimates with confidence-interval whiskers", "gold_figure_ids": ["pmc-00689"], "visual_class": "scientific plot"}

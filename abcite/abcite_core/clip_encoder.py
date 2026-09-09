@@ -189,27 +189,74 @@ class OpenCLIPEncoder(VisionEncoder):
         self.last_preprocess: dict | None = None
         self.device = next(model.parameters()).device
 
-    def encode_image(self, path: Path) -> list[float]:
-        import torch
+    def _cache_key(self, path: Path) -> str:
+        return f"{self.name}:{Path(path).resolve()}"
 
-        key = str(Path(path).resolve())
+    def encode_image(self, path: Path) -> list[float]:
+        key = self._cache_key(path)
         cached = _VEC_CACHE.get(key)
         if cached is not None:
             return list(cached)
-        rgb = load_rgb(path)
-        self.last_preprocess = {"mode": rgb.mode, "size": rgb.size, "path": str(path)}
-        tensor = self.preprocess(rgb)
-        if not hasattr(tensor, "unsqueeze"):
-            tensor = torch.as_tensor(np.asarray(tensor))
-        if tensor.ndim == 3:
-            tensor = tensor.unsqueeze(0)
-        tensor = tensor.to(self.device)
+        arr = self.encode_images([path])
+        return arr[0].tolist()
+
+    def encode_images(self, paths: list[Path], batch_size: int = 32) -> np.ndarray:
+        """Pixel-only batched encode. Captions never enter this path."""
+        if not paths:
+            return np.zeros((0, self.dim), dtype=np.float32)
+        out = np.zeros((len(paths), self.dim), dtype=np.float32)
+        pending_i: list[int] = []
+        pending_p: list[Path] = []
+        encoded = 0
+        for i, path in enumerate(paths):
+            key = self._cache_key(path)
+            cached = _VEC_CACHE.get(key)
+            if cached is not None:
+                out[i] = np.asarray(cached, dtype=np.float32)
+                continue
+            pending_i.append(i)
+            pending_p.append(path)
+            if len(pending_p) >= batch_size:
+                self._encode_image_batch(pending_i, pending_p, out)
+                encoded += len(pending_p)
+                if encoded % 256 < batch_size:
+                    print(f"  {self.name} encoded {encoded}/{len(paths)}", flush=True)
+                pending_i, pending_p = [], []
+        if pending_p:
+            self._encode_image_batch(pending_i, pending_p, out)
+        return out
+
+    def _encode_image_batch(
+        self, indices: list[int], paths: list[Path], out: np.ndarray
+    ) -> None:
+        import torch
+        from concurrent.futures import ThreadPoolExecutor
+
+        def _prep(path: Path):
+            rgb = load_rgb(path)
+            tensor = self.preprocess(rgb)
+            if not hasattr(tensor, "unsqueeze"):
+                tensor = torch.as_tensor(np.asarray(tensor))
+            if tensor.ndim == 3:
+                tensor = tensor.unsqueeze(0)
+            return path, rgb, tensor
+
+        workers = min(8, max(1, len(paths)))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            prepped = list(pool.map(_prep, paths))
+        tensors = []
+        for path, rgb, tensor in prepped:
+            self.last_preprocess = {"mode": rgb.mode, "size": rgb.size, "path": str(path)}
+            tensors.append(tensor)
+        batch = torch.cat(tensors, dim=0).to(self.device)
         with torch.no_grad():
-            feat = self.model.encode_image(tensor)
+            feat = self.model.encode_image(batch)
             feat = feat / feat.norm(dim=-1, keepdim=True)
-        vec = feat[0].detach().cpu().numpy().astype(np.float32).tolist()
-        _VEC_CACHE[key] = vec
-        return vec
+        vecs = feat.detach().cpu().numpy().astype(np.float32)
+        self.dim = int(vecs.shape[1])
+        for row, path, idx in zip(vecs, paths, indices, strict=True):
+            _VEC_CACHE[self._cache_key(path)] = row.tolist()
+            out[idx] = row
 
     def encode_text(self, text: str) -> list[float]:
         return self.encode_texts([text])[0].tolist()

@@ -12,6 +12,7 @@ import numpy as np
 
 from abcite_core.models import Chunk
 from abcite_core.vision import DIM, VisionEncoder, hashing_vector
+from abcite_core.vision_flags import vision_fusion_enabled, vision_rerank_enabled, vision_rerank_k
 
 TOKEN = re.compile(r"[a-z0-9_+\-./]+")
 
@@ -204,9 +205,8 @@ class HybridIndex:
         expanded = expand_query(query)
         bm25 = self.bm25_scores(expanded)
         dense = self.dense_scores(expanded)
-        image = self.image_scores(expanded)
         caption = self.caption_bm25_scores(expanded)
-        rrf = _rrf(bm25) + _rrf(dense) + 0.5 * _rrf(image)
+        rrf = _rrf(bm25) + _rrf(dense)
         qlow = query.lower()
         figure_query = any(
             w in qlow
@@ -228,6 +228,15 @@ class HybridIndex:
                 if c.modality.value in {"figure", "structure"}:
                     rrf[i] += 0.04
         rrf = self._parent_child_boost(rrf)
+        image = None
+        if vision_rerank_enabled() or vision_fusion_enabled():
+            image = self.image_scores(expanded)
+        if vision_rerank_enabled() and image is not None:
+            from abcite_core.figure_gallery import vision_rerank_scores
+
+            rrf = vision_rerank_scores(rrf, image, k=vision_rerank_k())
+        elif vision_fusion_enabled() and image is not None:
+            rrf = rrf + 0.5 * _rrf(image)
         order = np.argsort(-rrf)[:top_k]
         hits: list[Hit] = []
         for i in order:
@@ -237,7 +246,7 @@ class HybridIndex:
                     score=float(rrf[i]),
                     bm25=float(bm25[i]),
                     dense=float(dense[i]),
-                    image=float(image[i]),
+                    image=float(image[i]) if image is not None else 0.0,
                 )
             )
         return hits

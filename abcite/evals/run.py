@@ -29,6 +29,81 @@ ROOT = Path(__file__).resolve().parents[1]
 GOLD_DIR = ROOT / "evals" / "gold"
 
 
+def _rk(col: dict | None, key: str) -> str:
+    if not col or key not in col:
+        return "—"
+    return f"{float(col[key]):.3f}"
+
+
+def _multimodal_snapshot_md() -> str:
+    """Keep Protocol A/B tables when `evals/run.py` rewrites latest.md."""
+    path = ROOT / "evals" / "multimodal_protocols_latest.json"
+    if not path.exists():
+        return ""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ""
+    four = data.get("four_column") or {}
+    hold = data.get("holdout") or {}
+    vis = data.get("biomedclip_unique_gold_visual") or {}
+    oc = (data.get("unique_gold_visual") or {}).get("clip_image_only") or {}
+    n_gal = data.get("n_gallery") or data.get("n_readable")
+    gpu = data.get("gpu") or ""
+    rerank = four.get("rerank_helps_bm25") or {}
+    delta = (rerank.get("delta") or {}).get("recall@1")
+    helps = rerank.get("helps_any")
+    delta_s = f"{float(delta):+.3f}" if delta is not None else "—"
+    vis_rerank = vis.get("rerank_helps_bm25") or {}
+    vis_delta = (vis_rerank.get("delta") or {}).get("recall@1")
+    vis_delta_s = f"{float(vis_delta):+.3f}" if vis_delta is not None else "—"
+    return (
+        "\n## Protocol A — held-out caption-as-query (PMC OA)\n\n"
+        f"Gallery **N={n_gal}** readable jpg ({gpu}). Split by PMCID 80/20 "
+        f"(seed={hold.get('seed', 7)}): **{hold.get('n_papers')} papers** → "
+        f"{hold.get('n_index_papers')} index / **{hold.get('n_query_papers')} query**; "
+        f"query figures {hold.get('n_query_figures')}; **n_queries={hold.get('n_queries')}**. "
+        "PDB / UniProt stripped. CLIP fusion off by default. "
+        "Rerank = BiomedCLIP cosine on BM25 top-50.\n\n"
+        "| Column | R@1 | R@5 | R@10 |\n"
+        "|---|---|---|---|\n"
+        f"| caption BM25 | {_rk(four.get('caption_bm25'), 'recall@1')} | "
+        f"{_rk(four.get('caption_bm25'), 'recall@5')} | "
+        f"{_rk(four.get('caption_bm25'), 'recall@10')} |\n"
+        f"| BiomedCLIP T→I full-gallery | {_rk(four.get('biomedclip_t2i_full_gallery'), 'recall@1')} | "
+        f"{_rk(four.get('biomedclip_t2i_full_gallery'), 'recall@5')} | "
+        f"{_rk(four.get('biomedclip_t2i_full_gallery'), 'recall@10')} |\n"
+        f"| OpenCLIP ViT-B-32 T→I | {_rk(four.get('openclip_t2i_full_gallery'), 'recall@1')} | "
+        f"{_rk(four.get('openclip_t2i_full_gallery'), 'recall@5')} | "
+        f"{_rk(four.get('openclip_t2i_full_gallery'), 'recall@10')} |\n"
+        f"| rerank-on-BM25-top50 (BiomedCLIP) | {_rk(four.get('vision_rerank'), 'recall@1')} | "
+        f"{_rk(four.get('vision_rerank'), 'recall@5')} | "
+        f"{_rk(four.get('vision_rerank'), 'recall@10')} |\n\n"
+        f"Rerank helps BM25? **{'yes' if helps else 'no'}** "
+        f"(ΔR@1 {delta_s}). See `evals/multimodal_caption_latest.json`.\n\n"
+        "## Protocol B — unique visual questions (small-n)\n\n"
+        f"n_queries=**{vis.get('n_queries')}** (small-n, labeled). "
+        "Caption-free visual gold remapped to `pmc-*`. "
+        "Not mixed with Protocol A.\n\n"
+        "| Column | R@1 | R@5 | R@10 |\n"
+        "|---|---|---|---|\n"
+        f"| caption BM25 | {_rk(vis.get('caption_bm25'), 'recall@1')} | "
+        f"{_rk(vis.get('caption_bm25'), 'recall@5')} | "
+        f"{_rk(vis.get('caption_bm25'), 'recall@10')} |\n"
+        f"| BiomedCLIP T→I | {_rk(vis.get('clip_image_only'), 'recall@1')} | "
+        f"{_rk(vis.get('clip_image_only'), 'recall@5')} | "
+        f"{_rk(vis.get('clip_image_only'), 'recall@10')} |\n"
+        f"| OpenCLIP T→I | {_rk(oc, 'recall@1')} | "
+        f"{_rk(oc, 'recall@5')} | "
+        f"{_rk(oc, 'recall@10')} |\n"
+        f"| rerank-on-BM25-top50 (BiomedCLIP) | {_rk(vis.get('vision_rerank'), 'recall@1')} | "
+        f"{_rk(vis.get('vision_rerank'), 'recall@5')} | "
+        f"{_rk(vis.get('vision_rerank'), 'recall@10')} |\n\n"
+        f"Rerank helps BM25? **{'yes' if vis_rerank.get('helps_any') else 'no'}** "
+        f"(ΔR@1 {vis_delta_s}). See `evals/multimodal_visual_latest.json`.\n"
+    )
+
+
 def _read_jsonl(path: Path) -> list[dict]:
     rows: list[dict] = []
     if not path.exists():
@@ -441,6 +516,7 @@ def run_gate() -> dict:
         "— see `evals/traces/hard_taxonomy.json`.\n\n"
         "Demo receipt: `evals/traces/demo_1n8z.json` (Cho 2003 / RCSB 1N8Z).\n"
         "Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heuristics, not RAGAS.\n"
+        f"{_multimodal_snapshot_md()}"
     )
     (ROOT / "evals" / "latest.md").write_text(md, encoding="utf-8")
     print(t_fix)

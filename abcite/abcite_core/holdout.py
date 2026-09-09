@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import random
 import re
+from dataclasses import dataclass
+from typing import Any, Sequence
 
 # Real PDB ids are 4 chars: digit + alnum with at least one letter (not years like 2023).
 _PDB_TOKEN = re.compile(r"\b[0-9][a-zA-Z0-9]{3}\b")
@@ -107,5 +110,81 @@ def visual_query_ok(question: str) -> bool:
         "sds-page",
         "immunofluoresc",
         "ct scan",
+        "phylogen",
+        "forest plot",
+        "confocal",
+        "cryo",
+        "immunoblot",
+        "agarose",
+        "histolog",
     )
     return any(c in q for c in cues)
+
+
+def paper_key(pmcid: str | None, figure_id: str) -> str:
+    pmc = (pmcid or "").strip()
+    return pmc if pmc else f"fig:{figure_id}"
+
+
+@dataclass(frozen=True)
+class PaperSplit:
+    index_recs: tuple[Any, ...]
+    query_recs: tuple[Any, ...]
+    index_papers: frozenset[str]
+    query_papers: frozenset[str]
+    n_papers: int
+    query_frac: float
+    seed: int
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "n_papers": self.n_papers,
+            "n_index_papers": len(self.index_papers),
+            "n_query_papers": len(self.query_papers),
+            "n_index_figures": len(self.index_recs),
+            "n_query_figures": len(self.query_recs),
+            "query_frac": self.query_frac,
+            "seed": self.seed,
+            "split_by": "pmcid",
+            "note": (
+                "Queries are captions from the query-paper split. Those papers are absent "
+                "from the 80% index-paper set. Eval gallery mode decides whether query-paper "
+                "images are included as retrieval candidates."
+            ),
+        }
+
+
+def split_by_paper(
+    recs: Sequence[Any],
+    query_frac: float = 0.2,
+    seed: int = 7,
+) -> PaperSplit:
+    """80/20 (default) split by PMCID so query papers are not the index-paper set.
+
+    Figures without a PMCID are treated as their own paper (`fig:<id>`).
+    """
+    if not recs:
+        return PaperSplit((), (), frozenset(), frozenset(), 0, query_frac, seed)
+    grouped: dict[str, list[Any]] = {}
+    for rec in recs:
+        key = paper_key(getattr(rec, "pmcid", None), getattr(rec, "figure_id", ""))
+        grouped.setdefault(key, []).append(rec)
+    papers = sorted(grouped)
+    rng = random.Random(seed)
+    rng.shuffle(papers)
+    n_q = max(1, min(len(papers) - 1 if len(papers) > 1 else 1, round(len(papers) * query_frac)))
+    if len(papers) == 1:
+        n_q = 1
+    query_papers = frozenset(papers[:n_q])
+    index_papers = frozenset(papers[n_q:])
+    query_recs = tuple(rec for p in papers[:n_q] for rec in grouped[p])
+    index_recs = tuple(rec for p in papers[n_q:] for rec in grouped[p])
+    return PaperSplit(
+        index_recs=index_recs,
+        query_recs=query_recs,
+        index_papers=index_papers,
+        query_papers=query_papers,
+        n_papers=len(papers),
+        query_frac=query_frac,
+        seed=seed,
+    )

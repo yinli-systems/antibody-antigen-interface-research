@@ -16,7 +16,7 @@ FrameContact training code is **not** modified. Public development-validation ov
 flowchart LR
   UI[React desktop UI] --> API[FastAPI /query]
   API --> G[Evidence graph]
-  G --> R[Hybrid BM25 + dense + image]
+  G --> R[Hybrid BM25 + dense; CLIP rerank off]
   G --> T[MCP: RCSB cache / overlap / literature]
   G --> L[LLM phrasing if keys else extractive]
   R --> C[Corpus: text / SVG figures / residue maps]
@@ -35,8 +35,8 @@ pip install -e ".[dev]"
 python evals/build_corpus.py
 pytest
 python evals/run.py
-python evals/download_figures.py --max 1200   # OA jpg/png gallery; resume-able
-python evals/run_multimodal.py                 # caption-as-query + unique-gold visual (two protocols)
+python evals/download_figures.py --max 16000 --source pmc --workers 12   # OA jpg/png gallery; resume-able
+python evals/run_multimodal.py                 # held-out caption-as-query + unique-gold visual (two protocols)
 python -m uvicorn apps.api.main:app --reload --port 8000
 # other terminal
 cd apps/web && npm install && npm run dev
@@ -66,51 +66,51 @@ CI gates **fixture** only (150 in-corpus items). **Hard-dev** is 40 paraphrases 
 |---|---|---|
 | Gold | 105 answerable + 45 unanswerable (35 figure-grounded) | 30 answerable + 10 out-of-index abstain |
 | Abstain-on-unanswerable | **100%** (CI fails if < 100%) | **100%** (unknown PDB / closed-index) |
-| Hit@5 | **99.0%** (vanity / in-corpus) | **96.7%** (rewrite; not a 99% target) |
-| Recall@5 | 98.6% | 93.3% |
-| nDCG@10 | 0.899 | **0.809** (was 0.652 before rewrite/caption fusion) |
-| MRR | 0.866 | 0.798 |
-| Faithfulness (lexical vs cites) | 73.7% | 73.7% |
-| Faithfulness (claim-span) | 80.4% | 73.0% |
-| Claim-NLI heuristic | 77.5% | 74.2% |
-| Judge (lexical heuristic, CI) | 73.7% | 73.7% |
+| Hit@5 | **100.0%** (vanity / in-corpus; CLIP fusion off) | **96.7%** (rewrite; not a 99% target) |
+| Recall@5 | 99.5% | 90.0% |
+| nDCG@10 | 0.891 | **0.801** |
+| MRR | 0.857 | 0.787 |
+| Faithfulness (lexical vs cites) | 73.8% | 74.5% |
+| Faithfulness (claim-span) | 80.2% | 73.6% |
+| Claim-NLI heuristic | 77.2% | 74.6% |
+| Judge (lexical heuristic, CI) | 73.8% | 74.5% |
 | Multimodal citation-id match | 100% | 90.9% |
 
-By `source` (answerable ranking only): fixture `public_pdb` n=105 Hit@5 99.0% / nDCG@10 0.899 / MRR 0.866. Hard `public_pdb` n=30 Hit@5 96.7% / nDCG@10 0.809 / MRR 0.798. `synthetic_exam` items are unanswerable (no ranking).
+By `source` (answerable ranking only): fixture `public_pdb` n=105 Hit@5 100.0% / nDCG@10 0.891 / MRR 0.857. Hard `public_pdb` n=30 Hit@5 96.7% / nDCG@10 0.801 / MRR 0.787. `synthetic_exam` items are unanswerable (no ranking). Fixture Hit@5 went 99%→100% after CLIP fusion was turned **off** — still a closed toy index, not a bar we chased.
 
-Hard auto-taxonomy (all 40): **ok 38**, **miss_multi_hop 1**, **miss_figure 1** — [`evals/traces/hard_taxonomy.json`](evals/traces/hard_taxonomy.json).
+Hard auto-taxonomy (all 40): **ok 37**, **miss_multi_hop 2**, **miss_figure 1** — [`evals/traces/hard_taxonomy.json`](evals/traces/hard_taxonomy.json).
 
 CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**): **image-only** mean rank1−rank2 cosine gap **0.006** on that toy gallery; caption BM25 gap **12.34**; fused RRF gap is small by construction. Self-hit 100% on 14 figures; **not SOTA**. Do **not** call caption-only cite-id “CLIP multimodal”.
 
-**Real multimodal eval** (OpenCLIP ViT-B-32 + BiomedCLIP, 2026-09-10, RTX 5090). Same PMC OA gallery: **N=1196** readable jpg (1200 metadata rows, 4 missing files). Captions never enter the image encoder. PDB / UniProt / RefSeq tokens are stripped from queries. **Two protocols, not mixed.** BiomedCLIP weights were cached under `/workspace/hf-cache` (Hub 429 on the GPU IP; snapshot copied from a working Hub client). Not SciMMIR FT Hits@10 ~13.5% and not BiomedCLIP PMC R@1 ~56% on 726k pairs.
+**Real multimodal eval** (OpenCLIP ViT-B-32 + BiomedCLIP, 2026-09-10, RTX 5090). PMC OA gallery: **N=15,949** readable jpg (15,953 metadata rows, 4 missing files; target 16,000, NCBI 429 near the end). Captions never enter the image encoder. PDB / UniProt / RefSeq tokens are stripped from queries. **Two protocols, not mixed.** Product default: **hybrid text (BM25 + dense), CLIP fusion OFF, CLIP rerank OFF.** `ABCITE_VISION_RERANK=1` reranks BM25 top-50. BiomedCLIP weights from `/workspace/hf-cache`. Not SciMMIR FT Hits@10 ~13.5% and not BiomedCLIP PMC R@1 ~56% on 726k pairs.
 
-### Protocol A — caption-as-query pair retrieval (SciMMIR-style)
+### Protocol A — held-out caption-as-query (SciMMIR-style)
 
-Query = accession-stripped figure caption; gold = that figure id. n_queries=**1127**. Caption BM25 is the lexical text baseline (captions as documents). CLIP image-only is T→I.
+Split **by PMCID 80/20** (seed=7): **2,491 papers** → 1,993 index papers / **498 query papers**. Queries = accession-stripped captions from query papers (**n_queries=2,805**). Gallery = **full N=15,949** (query-paper figures stay retrievable; index papers are distractors). Caption BM25 still sees the gold caption in the index (pair retrieval; transductive for that item). CLIP T→I is image-only over the full gallery.
 
-| Column | R@1 | R@5 | R@10 | gap |
+| Column | R@1 | R@5 | R@10 | note |
 |---|---|---|---|---|
-| caption BM25 | 0.630 | 0.983 | 0.996 | lexical; duplicate captions keep R@1 off 1.0 |
-| OpenCLIP ViT-B-32 T→I | 0.028 | 0.064 | 0.083 | i2i **0.088**; T→I **0.009** |
-| **BiomedCLIP T→I** | **0.073** | **0.152** | **0.187** | i2i **0.257**; T→I **0.061** |
-| OpenCLIP fusion (RRF) | 0.114 | 0.305 | 0.528 | — |
-| BiomedCLIP fusion (RRF) | 0.157 | 0.366 | 0.582 | — |
+| caption BM25 | **0.835** | **0.964** | **0.985** | lexical; duplicate captions keep R@1 off 1.0 |
+| BiomedCLIP T→I full-gallery | 0.601 | 0.736 | 0.764 | i2i **0.284**; T→I gap **0.069** |
+| OpenCLIP ViT-B-32 T→I | 0.047 | 0.096 | 0.124 | i2i **0.081**; T→I gap **0.007** |
+| **rerank-on-BM25-top50 (BiomedCLIP)** | 0.661 | 0.815 | 0.851 | **hurts BM25** (ΔR@1 **−0.174**) |
 
-Zero-shot OpenCLIP T→I Hits@10 **8.3%** vs BiomedCLIP **18.7%** on this ~1.2k gallery. Domain CLIP helps; it is still not the paper’s ~56% R@1 on 726k PMC pairs. See `evals/multimodal_caption_latest.json`.
+Rerank does **not** help BM25 at R@1/5/10. Fusion RRF ablation (off by default) also loses to BM25 (BiomedCLIP fusion R@10 **0.902** vs BM25 **0.985**). Domain CLIP is far above OpenCLIP on this PMC gallery; it is still not the paper’s ~56% R@1 on 726k pairs, and the product path stays text. See `evals/multimodal_caption_latest.json`.
 
 ### Protocol B — unique-gold visual questions
 
-Caption-free visual queries (panel layout, stain, gel, microscopy; no PDB / **1N8Z**). Committed `fix-*` gold remapped to `pmc-*` via href, plus 7 extra unique visual items. n_queries=**19**. Small-n, reported separately.
+Caption-free visual queries (panel layout, stain, gel, microscopy, cryo-EM; no PDB / **1N8Z**). Committed `fix-*` gold remapped to `pmc-*` via href, plus extra unique visual items grounded in OA captions. n_queries=**33**. **Small-n, reported separately.**
 
 | Column | R@1 | R@5 | R@10 |
 |---|---|---|---|
-| caption BM25 | 0.632 | 0.947 | 0.947 |
-| **CLIP image-only (T→I)** | **0.105** | **0.316** | **0.368** |
-| fusion (RRF) | 0.368 | 0.737 | 0.789 |
+| caption BM25 | **0.576** | **0.818** | **0.849** |
+| BiomedCLIP T→I | 0.091 | 0.212 | 0.242 |
+| OpenCLIP T→I | 0.030 | 0.091 | 0.121 |
+| rerank-on-BM25-top50 (BiomedCLIP) | 0.242 | 0.394 | 0.455 |
 
-The previous class-query table (64 generic “scientific figure panel” strings, R@K≈0) was a protocol bug, not a 5090 encode failure. JPG binaries stay gitignored; committed vectors are `evals/embeddings-clip-vit-b-32-n1196.npy`. Fixture remains 12 OA jpgs for pytest caption-as-query. See `evals/multimodal_visual_latest.json`.
+Rerank **hurts** BM25 here too (ΔR@1 **−0.333**). The previous class-query table (64 generic “scientific figure panel” strings, R@K≈0) was a protocol bug, not a 5090 encode failure. JPG binaries stay gitignored. Fixture remains 12 OA jpgs for pytest (holdout, `ABCITE_VISION_RERANK`, fusion-off). See `evals/multimodal_visual_latest.json`.
 
-OpenCLIP ViT-B-32 is the default real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI).
+OpenCLIP ViT-B-32 is the default real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`. Optional rerank: `ABCITE_VISION_RERANK=1` (K=50).
 
 Human labels: **40 items, one annotator**. Cohen’s κ vs a second human is **N/A**. **Human vs machine** (not inter-human): κ vs lexical **0.0**, κ vs claim-NLI **0.0** (automatic judges almost always score ≥0.5).
 
@@ -138,7 +138,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed; 1196 PMC OA figures encoded on GPU | default CI uses hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP loads from cache (`ABCITE_CLIP_MODEL=biomedclip`) |
+| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed; 15,949 PMC OA figures encoded on GPU; CLIP fusion **off** by default | default CI uses hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP loads from cache (`ABCITE_CLIP_MODEL=biomedclip`); `ABCITE_VISION_RERANK=1` is opt-in |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
 | Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |
@@ -147,7 +147,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 
 ## Tests
 
-`pytest` (40+ + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, fixture≥150 + hard≥35, multimodal, caption-as-query on 12 OA jpgs, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate (fixture vs hard, CLIP caption fusion, human-vs-machine κ, hard taxonomy n=40).
+`pytest` (40+ + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, fixture≥150 + hard≥35, multimodal, caption-as-query on 12 OA jpgs, paper holdout, vision rerank top-K, fusion off by default, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate (fixture vs hard, CLIP caption fusion diagnostic, human-vs-machine κ, hard taxonomy n=40).
 
 ## Security
 

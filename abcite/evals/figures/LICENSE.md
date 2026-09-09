@@ -5,7 +5,7 @@ This cache is for retrieval eval, not a republication of the papers.
 To fetch ≥1000 jpg/png + metadata:
 
     cd abcite
-    python evals/download_figures.py --max 1200 --source pmc
+    python evals/download_figures.py --max 16000 --source pmc --workers 12
     # optional: --source scimmir  (needs `pip install datasets`)
 
 Resume-able: `evals/figures/cache/metadata.jsonl`. Gitignores the cache.

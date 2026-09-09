@@ -10,19 +10,19 @@ unanswerable                     45
 answerable (incl HITL)           105
 multimodal (image id required)   35
 abstain-on-unanswerable          100.0%
-Hit@5                            99.0%
-Recall@5                         98.6%
-nDCG@10                          0.899
-MRR                              0.866
-faithfulness (lexical only)      73.7%
-faithfulness (claim-span)        80.4%
-claim-NLI heuristic              77.5%
-judge score (lexical heuristic)  73.7%
+Hit@5                            100.0%
+Recall@5                         99.5%
+nDCG@10                          0.891
+MRR                              0.857
+faithfulness (lexical only)      73.8%
+faithfulness (claim-span)        80.2%
+claim-NLI heuristic              77.2%
+judge score (lexical heuristic)  73.8%
 multimodal citation-id match     100.0%
 auto failure counts              {"ok": 149, "miss_multi_hop": 1}
 taxonomy n                       150
 abstain failures                 none
-  public_pdb n=105               Hit@5 99.0%  nDCG@10 0.899  MRR 0.866
+  public_pdb n=105               Hit@5 100.0%  nDCG@10 0.891  MRR 0.857
 ```
 
 ## Hard-dev
@@ -34,18 +34,18 @@ answerable (incl HITL)           30
 multimodal (image id required)   11
 abstain-on-unanswerable          100.0%
 Hit@5                            96.7%
-Recall@5                         93.3%
-nDCG@10                          0.809
-MRR                              0.798
-faithfulness (lexical only)      73.7%
-faithfulness (claim-span)        73.0%
-claim-NLI heuristic              74.2%
-judge score (lexical heuristic)  73.7%
+Recall@5                         90.0%
+nDCG@10                          0.801
+MRR                              0.787
+faithfulness (lexical only)      74.5%
+faithfulness (claim-span)        73.6%
+claim-NLI heuristic              74.6%
+judge score (lexical heuristic)  74.5%
 multimodal citation-id match     90.9%
-auto failure counts              {"ok": 38, "miss_multi_hop": 1, "miss_figure": 1}
+auto failure counts              {"ok": 37, "miss_multi_hop": 2, "miss_figure": 1}
 taxonomy n                       40
 abstain failures                 none
-  public_pdb n=30                Hit@5 96.7%  nDCG@10 0.809  MRR 0.798
+  public_pdb n=30                Hit@5 96.7%  nDCG@10 0.801  MRR 0.787
 ```
 
 ## CLIP contrast (not SOTA)
@@ -59,26 +59,39 @@ mean caption BM25 gap          12.341795
 min gap fused                  0.000529
 self-hit rate                  100.0%
 hub figs (rank1 for >1 query)  {}
-BiomedCLIP                     not requested (14-SVG demo)
+BiomedCLIP                     not requested
 CLIP SOTA claim                false
 ```
 
-Protocol A caption-as-query on the **same 1196 PMC OA jpg** / RTX 5090 (n_queries=1127). Caption BM25 is lexical. T→I is image-only.
-
-```
-                    R@1     R@5     R@10    i2i gap   T→I gap
-caption BM25        0.630   0.983   0.996   lexical
-OpenCLIP ViT-B-32   0.028   0.064   0.083   0.088     0.009
-BiomedCLIP          0.073   0.152   0.187   0.257     0.061
-OpenCLIP fusion     0.114   0.305   0.528
-BiomedCLIP fusion   0.157   0.366   0.582
-```
-
-Not SciMMIR FT Hits@10 ~13.5% and not BiomedCLIP PMC R@1 ~56% on 726k pairs. Receipt: `evals/multimodal_caption_latest.json`.
-
 Judge alignment (**human vs machine**, not inter-human κ): Cohen's κ is human vs machine (lexical / claim-NLI), not inter-human κ. Second annotator is not a duplicate of the first; n_annotators=1. κ human-vs-lexical=0.0; κ human-vs-claim-NLI=0.0; κ human-vs-human=None.
 
-Hard taxonomy counts (all 40 items): `{"ok": 38, "miss_multi_hop": 1, "miss_figure": 1}` — see `evals/traces/hard_taxonomy.json`.
+Hard taxonomy counts (all 40 items): `{"ok": 37, "miss_multi_hop": 2, "miss_figure": 1}` — see `evals/traces/hard_taxonomy.json`.
 
 Demo receipt: `evals/traces/demo_1n8z.json` (Cho 2003 / RCSB 1N8Z).
 Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heuristics, not RAGAS.
+
+## Protocol A — held-out caption-as-query (PMC OA)
+
+Gallery **N=15949** readable jpg (NVIDIA GeForce RTX 5090). Split by PMCID 80/20 (seed=7): **2491 papers** → 1993 index / **498 query**; query figures 3022; **n_queries=2805**. PDB / UniProt stripped. CLIP fusion off by default. Rerank = BiomedCLIP cosine on BM25 top-50.
+
+| Column | R@1 | R@5 | R@10 |
+|---|---|---|---|
+| caption BM25 | 0.835 | 0.964 | 0.985 |
+| BiomedCLIP T→I full-gallery | 0.601 | 0.736 | 0.764 |
+| OpenCLIP ViT-B-32 T→I | 0.047 | 0.096 | 0.124 |
+| rerank-on-BM25-top50 (BiomedCLIP) | 0.661 | 0.815 | 0.851 |
+
+Rerank helps BM25? **no** (ΔR@1 -0.174). See `evals/multimodal_caption_latest.json`.
+
+## Protocol B — unique visual questions (small-n)
+
+n_queries=**33** (small-n, labeled). Caption-free visual gold remapped to `pmc-*`. Not mixed with Protocol A.
+
+| Column | R@1 | R@5 | R@10 |
+|---|---|---|---|
+| caption BM25 | 0.576 | 0.818 | 0.849 |
+| BiomedCLIP T→I | 0.091 | 0.212 | 0.242 |
+| OpenCLIP T→I | 0.030 | 0.091 | 0.121 |
+| rerank-on-BM25-top50 (BiomedCLIP) | 0.242 | 0.394 | 0.455 |
+
+Rerank helps BM25? **no** (ΔR@1 -0.333). See `evals/multimodal_visual_latest.json`.

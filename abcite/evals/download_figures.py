@@ -5,9 +5,9 @@ anonymous HTTPS — not per-article NCBI ``/pmc/articles/instance/.../bin``
 and not E-utilities per figure.
 
 Usage:
-  python evals/download_figures.py --max 1200 --source pmc --workers 12
+  python evals/download_figures.py --max 16000 --source pmc --workers 12
   python evals/download_figures.py --max 20 --fixture-only
-  python evals/download_figures.py --max 1200 --source scimmir
+  python evals/download_figures.py --max 16000 --source scimmir
 
 SciMMIR/HuggingFace is opt-in (--source scimmir). Default pmc skips HF.
 
@@ -30,6 +30,7 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+from threading import Lock
 
 ROOT = Path(__file__).resolve().parents[1]
 FIG_ROOT = ROOT / "evals" / "figures"
@@ -63,18 +64,36 @@ _SEED_PMC = [
 # Multiple OA journal/year bins so NCBI/EuropePMC rate limits on one query
 # cannot starve the gallery.
 _OA_BINS = [
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2015-01-01 TO 2015-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2015-07-01 TO 2015-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2016-01-01 TO 2016-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2016-07-01 TO 2016-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2017-01-01 TO 2017-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2017-07-01 TO 2017-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2018-01-01 TO 2018-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2018-07-01 TO 2018-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2019-01-01 TO 2019-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2019-07-01 TO 2019-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2020-01-01 TO 2020-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2020-07-01 TO 2020-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2021-01-01 TO 2021-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2021-07-01 TO 2021-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2022-01-01 TO 2022-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2022-07-01 TO 2022-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS ONE" AND FIRST_PDATE:[2023-01-01 TO 2023-06-30]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2018-01-01 TO 2018-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2019-01-01 TO 2019-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2020-01-01 TO 2020-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2021-01-01 TO 2021-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Scientific Reports" AND FIRST_PDATE:[2022-01-01 TO 2022-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"PLoS Pathogens" AND FIRST_PDATE:[2018-01-01 TO 2022-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Frontiers in Immunology" AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Nature Communications" AND FIRST_PDATE:[2019-01-01 TO 2020-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND (antibody OR epitope OR immunoglobulin) AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"BMC Biology" AND FIRST_PDATE:[2018-01-01 TO 2022-12-31]',
     'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"eLife" AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"BMC Genomics" AND FIRST_PDATE:[2018-01-01 TO 2022-12-31]',
+    'OPEN_ACCESS:y AND HAS_FT:y AND JOURNAL:"Frontiers in Microbiology" AND FIRST_PDATE:[2019-01-01 TO 2021-12-31]',
 ]
 
 _NCBI_TERMS = [
@@ -150,7 +169,7 @@ def _europepmc_search(query: str, retmax: int = 200) -> list[str]:
     ids: list[str] = []
     cursor = "*"
     while len(ids) < retmax:
-        page = min(100, retmax - len(ids))
+        page = min(1000, retmax - len(ids))
         q = urllib.parse.urlencode(
             {
                 "query": query,
@@ -241,7 +260,7 @@ def _parse_fig_xml(xml: str) -> list[tuple[str, str]]:
             continue
         seen.add(name)
         uniq.append((name, cap))
-    return uniq[:16]
+    return uniq[:32]
 
 
 def _s3_key_to_https(url_or_key: str) -> str:
@@ -351,7 +370,7 @@ def _search_pmc_ids(need: int) -> list[str]:
             print(f"  reused {len(ids)} cached PMC ids", flush=True)
         except Exception:
             ids = []
-    per = max(80, need // max(1, len(_OA_BINS)))
+    per = max(120, need // max(1, len(_OA_BINS)))
     if len(ids) < need:
         for query in _OA_BINS:
             if len(ids) >= need:
@@ -390,6 +409,28 @@ def _next_pmc_index(image_dir: Path, existing: set[str]) -> int:
     return max(nums)
 
 
+def _harvest_paper(
+    pmcid: str, *, commercial_only: bool
+) -> tuple[str, str, str | None, str, list[str], list[tuple[str, str]]]:
+    prefix = _s3_latest_prefix(pmcid)
+    meta = _s3_article_meta(prefix) if prefix else None
+    license_code = str((meta or {}).get("license_code") or "")
+    if commercial_only and license_code and license_code.upper() not in _COMMERCIAL_LICENSES:
+        return pmcid, "skip-license", prefix, license_code, [], []
+    media_https: list[str] = []
+    if meta:
+        for u in meta.get("media_urls") or []:
+            https = _s3_key_to_https(str(u))
+            low = https.lower()
+            if any(low.split("?")[0].endswith(ext) for ext in (".jpg", ".jpeg", ".png", ".gif")):
+                media_https.append(https)
+    figs = _pmc_figures_from_xml(pmcid, prefix=prefix)
+    if not figs and media_https:
+        figs = [(u.rsplit("/", 1)[-1].split("?")[0], "") for u in media_https]
+    status = "ok" if figs else "empty"
+    return pmcid, status, prefix, license_code, media_https, figs
+
+
 def _try_pmc(
     max_n: int,
     image_dir: Path,
@@ -401,12 +442,17 @@ def _try_pmc(
 ) -> list[dict]:
     rows: list[dict] = []
     pmc_ids = list(_SEED_PMC)
-    extra = _search_pmc_ids(max(800, max_n))
+    extra = _search_pmc_ids(max(2500, (max_n * 2) // 5))
     for p in extra:
         if p not in pmc_ids:
             pmc_ids.append(p)
     n = start_i
-    print(f"PMC OA papers queued: {len(pmc_ids)} (S3 first, workers={workers})", flush=True)
+    paper_workers = max(1, min(8, workers))
+    print(
+        f"PMC OA papers queued: {len(pmc_ids)} (S3 first, fig_workers={workers}, "
+        f"paper_workers={paper_workers})",
+        flush=True,
+    )
     accumulated = _load_meta(CACHE / "metadata.jsonl")
     done_pmc = {str(r.get("pmcid") or "") for r in accumulated}
     skip_path = CACHE / "skip_pmc.json"
@@ -416,85 +462,112 @@ def _try_pmc(
             skip_pmc = set(json.loads(skip_path.read_text(encoding="utf-8")))
         except Exception:
             skip_pmc = set()
+    lock = Lock()
 
     def _one_fig(
         item: tuple[int, str, str, str, str | None, list[str]],
     ) -> tuple[int, str, str, Path, bool]:
         idx, paper_id, href, cap, prefix, media = item
-        fid = f"pmc-{idx:05d}"
-        dest = image_dir / f"{fid}.jpg"
+        dest = image_dir / f"pmc-{idx:05d}.jpg"
         ok = _download_pmc_graphic(paper_id, href, dest, prefix=prefix, media_https=media)
         if not ok:
             dest.unlink(missing_ok=True)
         return idx, href, cap, dest, ok
 
-    for pmcid in pmc_ids:
-        if len(accumulated) >= max_n:
-            break
-        if pmcid in done_pmc or pmcid in skip_pmc:
-            continue
-        print(f"  paper {pmcid} saved={len(accumulated)}", flush=True)
-        prefix = _s3_latest_prefix(pmcid)
-        meta = _s3_article_meta(prefix) if prefix else None
-        license_code = str((meta or {}).get("license_code") or "")
-        if commercial_only and license_code and license_code.upper() not in _COMMERCIAL_LICENSES:
-            skip_pmc.add(pmcid)
-            skip_path.write_text(json.dumps(sorted(skip_pmc)), encoding="utf-8")
-            continue
-        media_https: list[str] = []
-        if meta:
-            for u in meta.get("media_urls") or []:
-                https = _s3_key_to_https(str(u))
-                low = https.lower()
-                if any(low.split("?")[0].endswith(ext) for ext in (".jpg", ".jpeg", ".png", ".gif")):
-                    media_https.append(https)
-        figs = _pmc_figures_from_xml(pmcid, prefix=prefix)
-        if not figs and media_https:
-            figs = [(u.rsplit("/", 1)[-1].split("?")[0], "") for u in media_https]
-        if prefix is None:
-            time.sleep(0.2)
-        pending: list[tuple[int, str, str, str, str | None, list[str]]] = []
-        for href, cap in figs:
-            if len(accumulated) + len(pending) >= max_n:
-                break
-            n += 1
-            fid = f"pmc-{n:05d}"
-            if fid in existing:
+    todo = [p for p in pmc_ids if p not in done_pmc and p not in skip_pmc]
+    fig_pool = ThreadPoolExecutor(max_workers=max(1, workers))
+    fig_futs: dict = {}
+    pending_meta: dict[int, tuple[str, str, str, str | None]] = {}
+
+    def _flush_figs() -> None:
+        nonlocal accumulated
+        done = [f for f in list(fig_futs) if f.done()]
+        if not done:
+            return
+        got_by_paper: dict[str, int] = {}
+        for fut in done:
+            pmcid_job = fig_futs.pop(fut)
+            del pmcid_job
+            try:
+                idx, href, cap, dest, ok = fut.result()
+            except Exception as exc:
+                print(f"  fig fail {exc}", flush=True)
                 continue
-            pending.append((n, pmcid, href, cap, prefix, media_https))
-        got = 0
-        if pending:
-            with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-                futures = [pool.submit(_one_fig, item) for item in pending]
-                for fut in as_completed(futures):
-                    idx, href, cap, dest, ok = fut.result()
-                    if not ok:
-                        continue
-                    fid = f"pmc-{idx:05d}"
-                    visual = _visual_class(cap or href)
-                    rec = {
-                        "figure_id": fid,
-                        "path": str(dest.relative_to(FIG_ROOT)),
-                        "pmcid": pmcid,
-                        "caption": cap,
-                        "split": "oa",
-                        "visual_class": visual,
-                        "source": "pmc-oa-s3" if prefix else "pmc-oa",
-                        "href": href,
-                        "license_code": license_code or None,
-                        "s3_prefix": prefix,
-                    }
-                    rows.append(rec)
-                    accumulated.append(rec)
-                    existing.add(fid)
-                    got += 1
-        done_pmc.add(pmcid)
-        if got:
-            _write_meta(CACHE / "metadata.jsonl", accumulated)
-            print(f"  PMC +{got} total={len(accumulated)} (last {pmcid} s3={prefix})", flush=True)
-        else:
-            skip_pmc.add(pmcid)
-            skip_path.write_text(json.dumps(sorted(skip_pmc)), encoding="utf-8")
+            meta_row = pending_meta.pop(idx, None)
+            if not ok or meta_row is None:
+                continue
+            paper_id, license_code, prefix, _cap = meta_row
+            fid = f"pmc-{idx:05d}"
+            visual = _visual_class(cap or href)
+            rec = {
+                "figure_id": fid,
+                "path": str(dest.relative_to(FIG_ROOT)),
+                "pmcid": paper_id,
+                "caption": cap,
+                "split": "oa",
+                "visual_class": visual,
+                "source": "pmc-oa-s3" if prefix else "pmc-oa",
+                "href": href,
+                "license_code": license_code or None,
+                "s3_prefix": prefix,
+            }
+            with lock:
+                rows.append(rec)
+                accumulated.append(rec)
+                existing.add(fid)
+            got_by_paper[paper_id] = got_by_paper.get(paper_id, 0) + 1
+        if got_by_paper:
+            with lock:
+                _write_meta(CACHE / "metadata.jsonl", accumulated)
+            total = len(accumulated)
+            last = next(iter(got_by_paper))
+            print(f"  PMC +{sum(got_by_paper.values())} total={total} (last {last})", flush=True)
+
+    try:
+        with ThreadPoolExecutor(max_workers=paper_workers) as papers:
+            paper_futs = {
+                papers.submit(_harvest_paper, pmcid, commercial_only=commercial_only): pmcid
+                for pmcid in todo
+            }
+            for fut in as_completed(paper_futs):
+                if len(accumulated) >= max_n:
+                    break
+                try:
+                    pmcid, status, prefix, license_code, media_https, figs = fut.result()
+                except Exception as exc:
+                    print(f"  paper fail {paper_futs[fut]}: {exc}", flush=True)
+                    skip_pmc.add(paper_futs[fut])
+                    continue
+                if status != "ok" or not figs:
+                    skip_pmc.add(pmcid)
+                    continue
+                pending: list[tuple[int, str, str, str, str | None, list[str]]] = []
+                with lock:
+                    if len(accumulated) >= max_n:
+                        break
+                    for href, cap in figs:
+                        if len(accumulated) + len(pending) + len(fig_futs) >= max_n:
+                            break
+                        n += 1
+                        fid = f"pmc-{n:05d}"
+                        if fid in existing:
+                            continue
+                        pending.append((n, pmcid, href, cap, prefix, media_https))
+                        pending_meta[n] = (pmcid, license_code, prefix, cap)
+                for item in pending:
+                    fig_futs[fig_pool.submit(_one_fig, item)] = pmcid
+                done_pmc.add(pmcid)
+                if len(fig_futs) >= workers * 4:
+                    _flush_figs()
+        while fig_futs:
+            _flush_figs()
+            if fig_futs:
+                time.sleep(0.05)
+    finally:
+        fig_pool.shutdown(wait=True)
+        _flush_figs()
+        skip_path.write_text(json.dumps(sorted(skip_pmc)), encoding="utf-8")
+        _write_meta(CACHE / "metadata.jsonl", accumulated)
     return rows
 
 
@@ -510,9 +583,11 @@ def _load_meta(path: Path) -> list[dict]:
 
 def _write_meta(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as fh:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as fh:
         for row in rows:
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+    tmp.replace(path)
 
 
 def _save_image_bytes(dest: Path, raw: bytes) -> bool:
@@ -649,7 +724,7 @@ def _copy_fixture(rows: list[dict], limit: int = 12) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--max", type=int, default=1200)
+    ap.add_argument("--max", type=int, default=16000)
     ap.add_argument("--fixture-only", action="store_true")
     ap.add_argument("--source", choices=["pmc", "scimmir", "auto"], default="pmc")
     ap.add_argument("--workers", type=int, default=8, help="parallel S3/HTTPS figure fetches")
@@ -694,8 +769,14 @@ def main() -> None:
     if len(rows) < 1000:
         print(
             "NOTE: fewer than 1000 figures in this run. Re-run:\n"
-            "  python evals/download_figures.py --max 1200 --source pmc --workers 12\n"
+            "  python evals/download_figures.py --max 16000 --source pmc --workers 12\n"
             "SciMMIR is opt-in: --source scimmir (needs `datasets`).",
+            flush=True,
+        )
+    elif len(rows) < 16000:
+        print(
+            f"NOTE: indexed n={len(rows)} < 16000. Resume with:\n"
+            "  python evals/download_figures.py --max 16000 --source pmc --workers 12",
             flush=True,
         )
 

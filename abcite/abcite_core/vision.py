@@ -60,6 +60,12 @@ class LocalImageEncoder(VisionEncoder):
             return np.zeros((0, DIM), dtype=np.float32)
         return np.stack([hashing_vector(t) for t in texts], axis=0)
 
+    def encode_images(self, paths: list[Path], batch_size: int = 32) -> np.ndarray:
+        del batch_size
+        if not paths:
+            return np.zeros((0, DIM), dtype=np.float32)
+        return np.stack([np.asarray(self.encode_image(p), dtype=np.float32) for p in paths], axis=0)
+
     def caption(self, path: Path) -> str:
         sidecar = path.with_suffix(".json")
         if sidecar.exists():
