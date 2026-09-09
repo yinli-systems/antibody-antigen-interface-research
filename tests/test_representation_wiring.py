@@ -73,6 +73,8 @@ def _arguments(**overrides) -> argparse.Namespace:
         "antiberty_dim": EXTRA_DIM,
         "esm_if1_root": None,
         "esm_if1_dim": EXTRA_DIM,
+        "random_projection_control": False,
+        "random_projection_seed": 20260910,
     }
     base.update(overrides)
     return argparse.Namespace(**base)
@@ -192,3 +194,34 @@ def test_the_base_width_comes_from_the_caller_not_the_namespace(tmp_path: Path) 
     _, antibody, _, _ = _wrap(object(), arguments, _frame(), 640)
 
     assert antibody == 640 + EXTRA_DIM + PRESENCE_COLUMNS
+
+
+def test_the_random_control_matches_the_encoder_arm_widths(tmp_path: Path) -> None:
+    """The control exists to hold width and parameter count fixed, so it must."""
+    manifest = _manifest(tmp_path / "m.csv")
+    encoders = _arguments(
+        representation_manifest=manifest,
+        antiberty_root=tmp_path / "ab",
+        esm_if1_root=tmp_path / "if1",
+    )
+    control = _arguments(representation_manifest=manifest, random_projection_control=True)
+
+    _, encoder_antibody, encoder_antigen, _ = _wrap(object(), encoders, _frame(), BASE_DIM)
+    _, control_antibody, control_antigen, summary = _wrap(
+        object(), control, _frame(), BASE_DIM
+    )
+
+    assert (control_antibody, control_antigen) == (encoder_antibody, encoder_antigen)
+    assert {entry["kind"] for entry in summary["sources"]} == {"random_projection_of_base"}
+
+
+def test_the_control_cannot_be_combined_with_the_encoders(tmp_path: Path) -> None:
+    """Running both at once would be neither arm, and silently so."""
+    arguments = _arguments(
+        representation_manifest=_manifest(tmp_path / "m.csv"),
+        antiberty_root=tmp_path / "ab",
+        random_projection_control=True,
+    )
+
+    with pytest.raises(ValueError, match="cannot be combined"):
+        _wrap(object(), arguments, _frame(), BASE_DIM)
