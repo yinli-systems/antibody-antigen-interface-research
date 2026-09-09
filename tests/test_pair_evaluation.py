@@ -7,6 +7,10 @@ import pytest
 
 from interaction_first.pair_evaluation import (
     ComplexPrediction,
+    balanced_accuracy_metrics,
+    bedroc_score,
+    best_threshold_metrics,
+    discrimination_metrics,
     PairEvaluationError,
     enrichment_factor,
     evaluate_pair_predictions,
@@ -254,3 +258,134 @@ def test_cutoffs_larger_than_the_candidate_set_are_skipped() -> None:
 
     assert "precision_at_1" in record
     assert "precision_at_100" not in record
+
+
+# --- early recognition ---------------------------------------------------
+
+
+def _ranked(total: int = 10000, actives: int = 200):
+    labels = np.zeros(total)
+    labels[:actives] = 1.0
+    perfect = np.concatenate([np.linspace(1, 0.9, actives), np.linspace(0.5, 0, total - actives)])
+    worst = np.concatenate([np.linspace(0.1, 0, actives), np.linspace(1, 0.2, total - actives)])
+    return labels, perfect, worst
+
+
+def test_bedroc_is_one_for_a_perfect_ranking_and_zero_for_the_worst() -> None:
+    labels, perfect, worst = _ranked()
+
+    assert bedroc_score(labels, perfect) == pytest.approx(1.0, abs=1e-9)
+    assert bedroc_score(labels, worst) == pytest.approx(0.0, abs=1e-9)
+
+
+def test_bedroc_stays_inside_the_unit_interval() -> None:
+    labels, perfect, worst = _ranked()
+    random = np.random.default_rng(0).random(labels.size)
+
+    for scores in (perfect, worst, random):
+        assert 0.0 <= bedroc_score(labels, scores) <= 1.0
+
+
+def test_bedroc_rewards_early_hits_more_than_auprc_does() -> None:
+    """Two rankings with equal actives, one front-loaded: BEDROC separates them."""
+    labels = np.zeros(1000)
+    labels[:20] = 1.0
+    early = np.zeros(1000)
+    early[:20] = 1.0                       # all actives first
+    late = np.zeros(1000)
+    late[:20] = 0.5                        # actives mid-pack
+    late[500:520] = 1.0                    # decoys ranked above them
+
+    assert bedroc_score(labels, early) > bedroc_score(labels, late)
+
+
+def test_bedroc_needs_both_classes() -> None:
+    assert bedroc_score(np.zeros(10), np.ones(10)) is None
+    assert bedroc_score(np.ones(10), np.ones(10)) is None
+    assert bedroc_score(np.array([1.0, 0.0]), np.array([1.0, 0.0]), alpha=0.0) is None
+
+
+def test_higher_alpha_concentrates_weight_further_forward() -> None:
+    labels = np.zeros(1000)
+    labels[:10] = 1.0
+    scores = np.zeros(1000)
+    scores[:10] = 0.9          # actives at the very top
+    scores[10:] = np.linspace(0.8, 0, 990)
+
+    assert bedroc_score(labels, scores, alpha=80.0) >= bedroc_score(labels, scores, alpha=8.0)
+
+
+# --- balanced accuracy and thresholds ------------------------------------
+
+
+def test_balanced_accuracy_averages_sensitivity_and_specificity() -> None:
+    labels = np.array([1.0, 1.0, 0.0, 0.0])
+    scores = np.array([0.9, 0.1, 0.9, 0.1])
+
+    record = balanced_accuracy_metrics(labels, scores, threshold=0.5)
+
+    assert record["sensitivity"] == pytest.approx(0.5)
+    assert record["specificity"] == pytest.approx(0.5)
+    assert record["balanced_accuracy"] == pytest.approx(0.5)
+
+
+def test_balanced_accuracy_is_none_for_a_single_class() -> None:
+    assert balanced_accuracy_metrics(np.ones(4), np.ones(4))["specificity"] is None
+
+
+def test_best_threshold_finds_a_better_operating_point_than_a_fixed_one() -> None:
+    """A fixed 0.5 conflates ranking quality with calibration."""
+    labels = np.array([1.0, 1.0, 0.0, 0.0, 0.0, 0.0])
+    scores = np.array([0.30, 0.28, 0.10, 0.08, 0.05, 0.01])  # ranks perfectly, all below 0.5
+
+    fixed = binary_metrics_f1(labels, scores, 0.5)
+    best = best_threshold_metrics(labels, scores)
+
+    assert fixed == pytest.approx(0.0)
+    assert best["best_f1"] == pytest.approx(1.0)
+    assert best["best_f1_threshold"] < 0.5
+
+
+def binary_metrics_f1(labels, scores, threshold):
+    from interaction_first.metrics import binary_metrics
+
+    return binary_metrics(labels, scores, threshold=threshold)["f1"]
+
+
+def test_best_threshold_is_none_without_positives() -> None:
+    assert best_threshold_metrics(np.zeros(5), np.linspace(0, 1, 5))["best_f1"] is None
+
+
+# --- cognate versus decoy discrimination ---------------------------------
+
+
+def test_discrimination_separates_cognate_from_decoy() -> None:
+    rng = np.random.default_rng(0)
+
+    record = discrimination_metrics(rng.normal(3.0, 1.0, 200), rng.normal(0.0, 1.0, 2000))
+
+    assert record["discrimination_auroc"] > 0.95
+    assert record["cohens_d"] > 2.0
+    assert record["cognate_count"] == 200
+    assert record["decoy_count"] == 2000
+
+
+def test_discrimination_is_chance_when_the_two_are_drawn_alike() -> None:
+    rng = np.random.default_rng(1)
+
+    record = discrimination_metrics(rng.normal(0, 1, 500), rng.normal(0, 1, 500))
+
+    assert record["discrimination_auroc"] == pytest.approx(0.5, abs=0.06)
+
+
+def test_discrimination_requires_both_sides() -> None:
+    with pytest.raises(PairEvaluationError, match="both cognate and decoy"):
+        discrimination_metrics([], [1.0, 2.0])
+
+
+def test_new_metrics_appear_in_the_per_complex_record() -> None:
+    report = evaluate_pair_predictions([_perfect()])
+    record = report["per_complex"][0]
+
+    for key in ("balanced_accuracy", "specificity", "best_f1", "bedroc_alpha20"):
+        assert key in record

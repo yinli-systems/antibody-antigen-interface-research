@@ -198,8 +198,14 @@ def evaluate_single(
         "auprc": average_precision(labels, scores),
     }
     record.update(binary_metrics(labels, scores, threshold=threshold))
+    record.update(balanced_accuracy_metrics(labels, scores, threshold=threshold))
+    record.update(best_threshold_metrics(labels, scores))
     record.update(score_separation_stats(labels, scores))
     record.update(enrichment_factor(labels, scores, fractions=fractions))
+    # Early recognition: with millions of candidates and a few hundred contacts,
+    # only the head of the ranking is ever inspected.
+    record["bedroc_alpha20"] = bedroc_score(labels, scores, alpha=20.0)
+    record["bedroc_alpha80"] = bedroc_score(labels, scores, alpha=80.0)
     usable = [cutoff for cutoff in cutoffs if cutoff <= labels.size]
     if usable and positives:
         ranking = ranking_at_k(labels, scores, cutoffs=usable)
@@ -347,3 +353,136 @@ def evaluate_pair_predictions(
         report["versus_baseline"][name] = deltas
 
     return report
+
+
+def balanced_accuracy_metrics(
+    labels: Any, scores: Any, threshold: float = 0.5
+) -> dict[str, float | None]:
+    """Sensitivity, specificity and their mean at one threshold.
+
+    The epitope literature reports balanced accuracy alongside MCC because plain
+    accuracy is uninformative when almost every pair is negative.
+    """
+    numpy = _numpy()
+    labels = numpy.asarray(labels).reshape(-1).astype(bool)
+    predicted = numpy.asarray(scores).reshape(-1) >= threshold
+    positives, negatives = int(labels.sum()), int((~labels).sum())
+    sensitivity = float((predicted & labels).sum() / positives) if positives else None
+    specificity = float((~predicted & ~labels).sum() / negatives) if negatives else None
+    balanced = (
+        (sensitivity + specificity) / 2.0
+        if sensitivity is not None and specificity is not None
+        else None
+    )
+    return {
+        "sensitivity": sensitivity,
+        "specificity": specificity,
+        "balanced_accuracy": balanced,
+    }
+
+
+def best_threshold_metrics(
+    labels: Any, scores: Any, steps: int = 200
+) -> dict[str, float | None]:
+    """Best achievable F1 and MCC over a threshold sweep, and where they occur.
+
+    Reporting F1 and MCC only at a fixed 0.5 conflates ranking quality with
+    calibration: at contact-map prevalence almost nothing exceeds 0.5, so the
+    numbers collapse for a model that ranks perfectly well. The sweep separates
+    the two, and the gap between the fixed and best value is itself a
+    calibration signal.
+    """
+    numpy = _numpy()
+    labels = numpy.asarray(labels).reshape(-1)
+    scores = numpy.asarray(scores).reshape(-1)
+    if labels.size == 0 or int(labels.sum()) == 0:
+        return {"best_f1": None, "best_f1_threshold": None, "best_mcc": None,
+                "best_mcc_threshold": None}
+    low, high = float(scores.min()), float(scores.max())
+    if high <= low:
+        candidates = [low]
+    else:
+        candidates = list(numpy.linspace(low, high, steps))
+    best = {"best_f1": -1.0, "best_f1_threshold": None,
+            "best_mcc": -2.0, "best_mcc_threshold": None}
+    for threshold in candidates:
+        record = binary_metrics(labels, scores, threshold=float(threshold))
+        f1, mcc = record.get("f1"), record.get("mcc")
+        if isinstance(f1, float) and f1 > best["best_f1"]:
+            best["best_f1"], best["best_f1_threshold"] = f1, float(threshold)
+        if isinstance(mcc, float) and mcc > best["best_mcc"]:
+            best["best_mcc"], best["best_mcc_threshold"] = mcc, float(threshold)
+    return best
+
+
+def bedroc_score(labels: Any, scores: Any, alpha: float = 20.0) -> float | None:
+    """Boltzmann-enhanced discrimination of ROC (Truchon & Bayly, 2007).
+
+    An early-recognition metric: it weights a hit by ``exp(-alpha * rank / N)``,
+    so what happens at the top of the ranking dominates. With 18 million
+    candidate pairs per complex and a few hundred contacts, AUPRC is still
+    largely a statement about the bulk of the list, while only the head is ever
+    looked at. ``alpha = 20`` concentrates roughly 80% of the weight in the top
+    8% of the ranking.
+
+    Returns a value in ``[0, 1]``: 1 for every active ranked first, ~``Ra`` for
+    a random ordering.
+    """
+    numpy = _numpy()
+    labels = numpy.asarray(labels).reshape(-1)
+    scores = numpy.asarray(scores).reshape(-1)
+    total = int(labels.size)
+    actives = int(labels.sum())
+    if total == 0 or actives == 0 or actives == total or alpha <= 0.0:
+        return None
+    ratio = actives / total
+    order = numpy.argsort(-scores, kind="stable")
+    ranks = numpy.nonzero(labels[order] > 0)[0] + 1  # 1-based ranks of actives
+
+    numerator = float(numpy.exp(-alpha * ranks / total).sum()) / actives
+    denominator = (1.0 - float(numpy.exp(-alpha))) / (total * (float(numpy.exp(alpha / total)) - 1.0))
+    rie = numerator / denominator
+
+    import math
+
+    scale = ratio * math.sinh(alpha / 2.0) / (
+        math.cosh(alpha / 2.0) - math.cosh(alpha / 2.0 - alpha * ratio)
+    )
+    offset = 1.0 / (1.0 - math.exp(alpha * (1.0 - ratio)))
+    value = rie * scale + offset
+    # A perfect ranking evaluates to 1 + ~1e-14 in floating point. Clamp the
+    # round-off, but refuse to hide a real excursion, which would mean the
+    # formula or its inputs are wrong rather than imprecise.
+    if not -1e-6 <= value <= 1.0 + 1e-6:
+        raise PairEvaluationError(f"BEDROC evaluated to {value!r}, outside [0, 1]")
+    return float(min(1.0, max(0.0, value)))
+
+
+def discrimination_metrics(cognate_scores: Any, decoy_scores: Any) -> dict[str, float | None]:
+    """Score cognate pairs against decoys as a binder/non-binder classifier.
+
+    The specificity literature evaluates a scorer by how well it separates
+    cognate complexes from shuffled non-cognate ones, reporting ROC-AUC and
+    average precision over that pooled set. The repository measures partner
+    retrieval by rank instead, which answers a related but different question:
+    a scorer can rank the true partner first within each small candidate set and
+    still assign overlapping absolute scores across complexes, which is what
+    fails when the candidate set is the whole repertoire.
+    """
+    numpy = _numpy()
+    cognate = numpy.asarray(cognate_scores, dtype=float).reshape(-1)
+    decoy = numpy.asarray(decoy_scores, dtype=float).reshape(-1)
+    if cognate.size == 0 or decoy.size == 0:
+        raise PairEvaluationError("both cognate and decoy scores are required")
+    labels = numpy.concatenate([numpy.ones(cognate.size), numpy.zeros(decoy.size)])
+    pooled = numpy.concatenate([cognate, decoy])
+    record = {
+        "cognate_count": int(cognate.size),
+        "decoy_count": int(decoy.size),
+        "discrimination_auroc": roc_auc(labels, pooled),
+        "discrimination_auprc": average_precision(labels, pooled),
+        "mean_cognate_score": float(cognate.mean()),
+        "mean_decoy_score": float(decoy.mean()),
+    }
+    record.update(score_separation_stats(labels, pooled))
+    return record

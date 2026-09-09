@@ -34,8 +34,12 @@ from interaction_first.pair_evaluation import (  # noqa: E402
 HEADLINE = (
     "auprc",
     "auroc",
+    "bedroc_alpha20",
     "mcc",
+    "best_mcc",
     "f1",
+    "best_f1",
+    "balanced_accuracy",
     "precision_at_true_count",
     "ef_at_1pct",
     "cohens_d",
