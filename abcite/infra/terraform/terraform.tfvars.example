@@ -1,0 +1,6 @@
+location             = "uksouth"
+resource_group_name  = "rg-abcite-demo"
+search_service_name  = "srch-abcite-demo"
+search_sku           = "basic"
+openai_account_name  = "aoai-abcite-demo"
+openai_sku           = "S0"

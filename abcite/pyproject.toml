@@ -23,6 +23,7 @@ dependencies = [
 dev = ["pytest>=8.3.0", "ruff>=0.6.0"]
 langgraph = ["langgraph>=0.2.0", "langchain-core>=0.3.0"]
 embeddings = ["sentence-transformers>=3.0.0"]
+clip = ["sentence-transformers>=3.0.0", "pillow>=10.0.0"]
 mcp = ["mcp>=1.2.0"]
 
 [tool.setuptools.packages.find]

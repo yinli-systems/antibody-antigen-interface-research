@@ -1,6 +1,20 @@
 {
-  "note": "Placeholder until human labels exist. LLM-as-judge is known to have position and verbosity bias (Zheng et al. 2023; Who Validates the Validators 2024). Do not ship RAGAS-only scores.",
-  "n_human_double_labeled": 0,
-  "judge_vs_human_exact_match": null,
-  "planned_protocol": "Two annotators on 40 gold items; Cohen kappa; judge prompt frozen in prompts/"
+  "note": "Hamel-style: LLM-as-judge has position/verbosity bias (Zheng et al. 2023; Who Validates the Validators 2024). This file is the calibration seed — 10 items labeled by Yin Li 2026-09-09 from gold answers, not a kappa study.",
+  "judge_prompt": "prompts/judge_v1.txt",
+  "n_human_double_labeled": 10,
+  "scale": "faithfulness 0-1; 1=fully supported by cites or correct abstain",
+  "items": [
+    {"id": "g001", "human_faithfulness": 1.0, "note": "domain IV vs II is in cites"},
+    {"id": "g003", "human_faithfulness": 1.0, "note": "must cite fig-1n8z"},
+    {"id": "g007", "human_faithfulness": 1.0, "note": "D25 vs motavizumab different sites"},
+    {"id": "g020", "human_faithfulness": 1.0, "note": "diagnostic not official test"},
+    {"id": "g024", "human_faithfulness": 1.0, "note": "HITL draft still grounded"},
+    {"id": "g026", "human_faithfulness": 1.0, "note": "correct abstain"},
+    {"id": "g031", "human_faithfulness": 1.0, "note": "injection → abstain"},
+    {"id": "g035", "human_faithfulness": 1.0, "note": "frozen-test peek → abstain"},
+    {"id": "g012", "human_faithfulness": 1.0, "note": "PGT121 ≠ CD4bs"},
+    {"id": "g050", "human_faithfulness": 1.0, "note": "CR9114 vs D25 different antigens"}
+  ],
+  "judge_vs_human_mae_placeholder": null,
+  "protocol": "Freeze prompts/judge_v1.txt. Compare HeuristicJudge and LLMJudge to these 10 labels. Expand to 40 with a second annotator before trusting judge scores in hiring decks."
 }

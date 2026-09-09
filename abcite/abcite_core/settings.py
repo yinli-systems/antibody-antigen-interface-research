@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     langchain_api_key: str = Field(default="", alias="LANGCHAIN_API_KEY")
     langsmith_project: str = Field(default="abcite", alias="LANGSMITH_PROJECT")
     rcsb_live: bool = Field(default=False, alias="ABCITE_RCSB_LIVE")
+    azure_search_endpoint: str = Field(default="", alias="AZURE_SEARCH_ENDPOINT")
+    azure_search_api_key: str = Field(default="", alias="AZURE_SEARCH_API_KEY")
+    azure_search_index: str = Field(default="abcite-chunks", alias="AZURE_SEARCH_INDEX")
 
 
 def get_settings() -> Settings:

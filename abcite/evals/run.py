@@ -1,10 +1,11 @@
-"""CI eval gate + Hit@5 / faithfulness / multimodal citation-id match."""
+"""CI eval gate + Hit@5 / faithfulness / judge / multimodal citation-id match."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
+from abcite_core.judge import HeuristicJudge
 from abcite_core.metrics import citation_id_match, faithfulness, hit_at_k, recall_at_k
 from abcite_core.retrieval import HybridIndex
 from agents.graph import EvidenceGraph
@@ -25,14 +26,14 @@ def load_gold() -> list[dict]:
 
 def _table(rows: list[tuple[str, str]]) -> str:
     width = max(len(k) for k, _ in rows)
-    lines = [f"{k.ljust(width)}  {v}" for k, v in rows]
-    return "\n".join(lines)
+    return "\n".join(f"{k.ljust(width)}  {v}" for k, v in rows)
 
 
 def run_gate() -> dict:
     chunks = load_corpus(ROOT / "corpus")
     index = HybridIndex(chunks)
     graph = EvidenceGraph(index, abstain_threshold=0.12, hitl_enabled=True, provider_name="local")
+    judge = HeuristicJudge()
     gold = load_gold()
     unans = [g for g in gold if g.get("expected_status") == "abstain"]
     answerable = [g for g in gold if g.get("expected_status") in {"answered", "hitl_pending"}]
@@ -51,8 +52,8 @@ def run_gate() -> dict:
     hit5_ok = 0
     rec_sum = 0.0
     faith_sum = 0.0
+    judge_sum = 0.0
     faith_n = 0
-    mm_ok = 0
     for item in answerable:
         required = item.get("must_cite_chunk_ids") or []
         hits = index.search(item["question"], top_k=5)
@@ -61,17 +62,13 @@ def run_gate() -> dict:
             hit5_ok += 1
         rec_sum += recall_at_k(ids, required, 5)
         resp = graph.invoke(item["question"], high_stakes=item.get("high_stakes", False))
-        cited_ids = [c.chunk_id for c in resp.citations]
         cited_texts = [c.quote for c in resp.citations]
         faith_sum += faithfulness(resp.answer, cited_texts, resp.status.value)
+        judge_sum += judge.score(
+            item["question"], resp.answer, cited_texts, resp.status.value
+        ).score
         faith_n += 1
-        img = item.get("must_cite_image_id")
-        if img:
-            if citation_id_match(cited_ids, img) or citation_id_match(ids, img):
-                # citation-id match: image id in citations, else in Hit@5 as retrieval evidence
-                if citation_id_match(cited_ids, img):
-                    mm_ok += 1
-    # recount multimodal strictly on citations from graph.invoke
+
     mm_ok = 0
     for item in multimodal:
         resp = graph.invoke(item["question"], high_stakes=item.get("high_stakes", False))
@@ -82,6 +79,7 @@ def run_gate() -> dict:
     hit5 = hit5_ok / max(1, len(answerable))
     recall5 = rec_sum / max(1, len(answerable))
     faith = faith_sum / max(1, faith_n)
+    judge_score = judge_sum / max(1, faith_n)
     mm_rate = mm_ok / max(1, len(multimodal))
 
     summary = {
@@ -94,6 +92,8 @@ def run_gate() -> dict:
         "hit_at_5": hit5,
         "recall_at_5": recall5,
         "faithfulness": faith,
+        "judge_score": judge_score,
+        "judge_backend": judge.backend,
         "multimodal_citation_id_match": mm_rate,
     }
 
@@ -107,17 +107,19 @@ def run_gate() -> dict:
             ("Hit@5 (any required chunk)", f"{hit5:.1%}"),
             ("Recall@5 (required chunks)", f"{recall5:.1%}"),
             ("faithfulness (lexical vs cites)", f"{faith:.1%}"),
+            ("judge score (heuristic)", f"{judge_score:.1%}"),
             ("multimodal citation-id match", f"{mm_rate:.1%}"),
             ("abstain failures", str(abstain_fail or "none")),
         ]
     )
-    out = ROOT / "evals" / "latest.md"
-    out.write_text(
+    (ROOT / "evals" / "latest.md").write_text(
         "# AbCite eval snapshot (local extractive graph)\n\n"
         "```\n"
         f"{table}\n"
         "```\n\n"
-        "CI gate: abstain-on-unanswerable must be 100% on this fixture set.\n",
+        "CI gate: abstain-on-unanswerable must be 100% on this fixture set.\n"
+        "Judge: HeuristicJudge in CI; LLMJudge when OPENAI_API_KEY/Azure is set "
+        "(cache under evals/.cache). See evals/judge_alignment.json.\n",
         encoding="utf-8",
     )
     print(table)
@@ -128,6 +130,8 @@ def main() -> None:
     summary = run_gate()
     if summary["abstain_on_unanswerable"] < 1.0:
         raise SystemExit(f"GATE FAIL: {summary}")
+    if summary["n_gold"] < 150:
+        raise SystemExit(f"GATE FAIL gold < 150: {summary['n_gold']}")
     print("GATE PASS")
 
 

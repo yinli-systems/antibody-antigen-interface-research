@@ -244,4 +244,10 @@ def extra_gold_rows() -> list[dict]:
             query_class=cls,
             source="public_pdb",
         )
+    try:
+        from evals.gold_wave2 import gold_wave2
+    except ImportError:
+        from gold_wave2 import gold_wave2
+
+    rows.extend(gold_wave2())
     return rows

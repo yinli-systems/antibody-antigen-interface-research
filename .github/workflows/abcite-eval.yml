@@ -1,0 +1,57 @@
+name: AbCite eval gate
+on:
+  push:
+    paths: ["abcite/**"]
+  pull_request:
+    paths: ["abcite/**"]
+jobs:
+  eval:
+    name: fast tests (tiny CLIP-like, no HF download)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: abcite
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: python evals/build_corpus.py
+      - run: pytest
+      - run: python evals/run.py
+
+  clip:
+    name: optional HF CLIP (cached)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: abcite
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-clip-vit-b-32-${{ runner.os }}
+      - run: pip install -e ".[dev,clip]"
+      - run: python evals/build_corpus.py
+      - name: Real CLIP figure retrieval if weights available
+        env:
+          ABCITE_CLIP: "1"
+        run: |
+          python - <<'PY'
+          import os, sys
+          os.environ["ABCITE_CLIP"] = "1"
+          from pathlib import Path
+          try:
+              from abcite_core.tiny_clip import load_hf_clip
+              enc = load_hf_clip()
+          except Exception as exc:
+              print("HF CLIP unavailable (expected without cache):", exc)
+              sys.exit(0)
+          print("HF CLIP encoder loaded:", enc.name)
+          PY

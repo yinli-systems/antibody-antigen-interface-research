@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 from abcite_core.models import Chunk
-from abcite_core.vision import DIM, hashing_vector, LocalImageEncoder, encode_image_file
+from abcite_core.vision import DIM, hashing_vector, LocalImageEncoder
 
 TOKEN = re.compile(r"[a-z0-9_+\-./]+")
 
@@ -80,7 +80,7 @@ class HybridIndex:
             if not path.is_absolute():
                 path = Path(__file__).resolve().parents[1] / path
             if path.exists():
-                return encode_image_file(path)
+                return np.asarray(self.vision.encode_image(path), dtype=np.float32)
         cap = f"{chunk.caption or ''} {chunk.title}"
         return hashing_vector(cap)
 
@@ -145,7 +145,7 @@ class HybridIndex:
         return hits
 
     def search_by_image(self, path: Path, top_k: int = 5) -> list[Hit]:
-        qv = encode_image_file(path)
+        qv = np.asarray(self.vision.encode_image(path), dtype=np.float32)
         sims = self.image_vecs @ qv
         order = np.argsort(-sims)[:top_k]
         hits: list[Hit] = []

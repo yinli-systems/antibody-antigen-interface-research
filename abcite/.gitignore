@@ -9,4 +9,4 @@ node_modules/
 apps/web/dist/
 .env
 *.log
-.langsmith/
+evals/.cache/

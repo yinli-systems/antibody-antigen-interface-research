@@ -1,31 +1,28 @@
-# Azure starter (no subscription required to read)
+# Azure starter (UK South)
 
-AbCite’s cloud path is the `LLMProvider` adapter, not a full Foundry/Terraform product.
-
-## What exists
+## Python
 
 | File | Role |
 |---|---|
-| `providers/azure.py` | Chat completions against Azure OpenAI (`/openai/deployments/{name}/chat/completions`) |
-| `providers/openai.py` | Same phrasing role for public OpenAI |
-| `abcite_core/settings.py` | `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_DEPLOYMENT` |
-| `infra/terraform/main.tf` | Non-deployable note only |
-
-## Wire it
+| `providers/azure.py` | Azure OpenAI chat completions for **/query phrasing** |
+| `abcite_core/azure_search.py` | Hybrid + semantic ranker query body (`queryType=semantic`, `vectorQueries`) |
+| `tests/test_azure_search.py` | Mocked HTTP — no live Azure |
 
 ```bash
-export ABCITE_PROVIDER=azure   # or auto
-export AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE.openai.azure.com
+export AZURE_SEARCH_ENDPOINT=https://srch-abcite-demo.search.windows.net
+export AZURE_SEARCH_API_KEY=...          # from `az search admin-key`, not git
+export AZURE_OPENAI_ENDPOINT=https://aoai-abcite-demo.openai.azure.com
 export AZURE_OPENAI_API_KEY=...
 export AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
-cd abcite
-python -m uvicorn apps.api.main:app --port 8000
 ```
 
-`/query` will call Azure for **phrasing** and still attach citations from retrieved chunks. Without keys, `ABCITE_PROVIDER=auto` falls back to local extractive.
+## Terraform
 
-## Next (not in this commit)
+```bash
+cd abcite/infra/terraform
+cp terraform.tfvars.example terraform.tfvars   # edit unique names
+terraform init
+terraform plan
+```
 
-- Azure AI Search hybrid + semantic ranker instead of in-process BM25
-- Private endpoint / Key Vault for the API key
-- `azd` bicep for UK South
+Resources: `azurerm_resource_group`, `azurerm_search_service` (hybrid-capable SKU), `azurerm_cognitive_account` kind=OpenAI. Outputs: `search_endpoint`, `openai_endpoint`. No secrets in the repo.

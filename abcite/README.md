@@ -59,15 +59,18 @@ With keys (not baked into the image): `OPENAI_API_KEY=... docker compose -f infr
 
 | Metric | Value |
 |---|---|
-| Gold size | **90** (schema ready for 150; 30 unanswerable / 20 figure-grounded) |
+| Gold size | **150** (45 unanswerable / 35 figure-grounded) |
 | Abstain-on-unanswerable | **100%** (CI fails if < 100%) |
-| Hit@5 (any required chunk) | **98.3%** |
-| Recall@5 | **98.3%** |
+| Hit@5 (any required chunk) | **99.0%** |
+| Recall@5 | **99.0%** |
 | Faithfulness (lexical vs cited quotes) | **73.7%** |
+| Judge score (heuristic, same formula in CI) | **73.7%** |
 | Multimodal citation-id match | **100%** |
-| Judge vs human | still unlabeled (`evals/judge_alignment.json`) |
+| Judge vs human | 10-item seed in `evals/judge_alignment.json` (not a kappa study) |
 
 Source table: [`evals/latest.md`](evals/latest.md).
+
+**CLIP CI:** default GitHub job uses the vendored **tiny CLIP-like** patch projector (`abcite_core/tiny_clip.py`) — no 600MB download. Optional `clip` job sets `ABCITE_CLIP=1`, caches `~/.cache/huggingface`, `continue-on-error: true`. Honest: default green CI is **not** OpenAI CLIP-ViT-B/32.
 
 ## Skill coverage (UK Applied AI Engineer)
 
@@ -77,19 +80,19 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 
 | Piece | Real now | Still stub / optional |
 |---|---|---|
-| Hit@5 + faithfulness + multimodal cite-id | yes, printed by `evals/run.py` | LLM-as-judge / RAGAS not run |
-| Gold | 90 labeled items | 150 target; generator in `evals/more_items.py` |
-| RCSB | allowlist + on-disk cache + MCP; live HTTP if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | local 256-d image encoder used in RRF; figure-only + image-NN tests | CLIP weights not downloaded in CI |
-| OpenAI/Azure phrasing | called when keys set; citations still from retrieval | needs a real key for live phrasing |
-| LangSmith | `emit_run` POSTs if `LANGSMITH_TRACING` + key; no crash if off | no hosted project in this repo |
-| Compose | `infra/compose.yaml` API + web with `PROXY_API` | not a cloud deploy |
-| Azure | `providers/azure.py` + [`infra/azure.md`](infra/azure.md) | Terraform is a note, not a subscription |
-| LangGraph compile | optional extra | default is in-process `EvidenceGraph` |
+| Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
+| Gold | **150** labeled items | Second annotator / Cohen kappa |
+| RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
+| Vision | local encoder + **tiny CLIP-like** in tests | HF `clip-ViT-B-32` only in optional CI job |
+| OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
+| Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
+| Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |
+| LangSmith | `emit_run` if tracing+key | no hosted project in this repo |
+| Compose | `infra/compose.yaml` | not a cloud deploy |
 
 ## Tests
 
-`pytest` (21): cite-or-abstain, unanswerable, multimodal `fig-1n8z`, figure-only retrieval, image NN, HITL, MCP/RCSB cache, fake OpenAI HTTP, LangSmith emit, eval gate.
+`pytest` (33): cite-or-abstain, unanswerable, gold≥150, multimodal, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate.
 
 ## Security
 
