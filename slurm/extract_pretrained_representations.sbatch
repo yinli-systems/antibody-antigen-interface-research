@@ -32,6 +32,14 @@ OUTPUT_ROOT=${REPRESENTATION_OUTPUT_ROOT:?REPRESENTATION_OUTPUT_ROOT is required
 PYTHON_BIN=${REPRESENTATION_PYTHON_BIN:?REPRESENTATION_PYTHON_BIN is required}
 SPLITS=${REPRESENTATION_SPLITS:-train}
 
+# The manifest's own train/test division is not the double-cold split, so
+# selecting by manifest split alone leaves a quarter of the development
+# instances unextracted. Setting these two selects by instance instead: pass
+# every manifest split in REPRESENTATION_SPLITS and name the development splits
+# here. The test split is refused by the CLI, not merely counted.
+INSTANCE_SPLIT_MANIFEST=${REPRESENTATION_INSTANCE_SPLIT_MANIFEST:-}
+INSTANCE_SPLITS=${REPRESENTATION_INSTANCE_SPLITS:-}
+
 # Frozen by the split artifacts; a mismatch stops extraction rather than
 # silently encoding a different manifest.
 MANIFEST_SHA256=${REPRESENTATION_MANIFEST_SHA256:-548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63}
@@ -68,6 +76,14 @@ if [ "${BACKEND}" = "esm_if1" ]; then
     BACKBONE_ARGS=(--backbones "${REPRESENTATION_BACKBONES:?esm_if1 needs REPRESENTATION_BACKBONES}")
 fi
 
+INSTANCE_ARGS=()
+if [ -n "${INSTANCE_SPLIT_MANIFEST}" ] || [ -n "${INSTANCE_SPLITS}" ]; then
+    INSTANCE_ARGS=(
+        --instance-split-manifest "${INSTANCE_SPLIT_MANIFEST:?set both or neither}"
+        --instance-splits ${INSTANCE_SPLITS:?set both or neither}
+    )
+fi
+
 echo "[run] backend=${BACKEND} chains=${CHAINS} splits=${SPLITS}"
 "${PYTHON_BIN}" scripts/extract_pretrained_representations.py \
     --manifest "${MANIFEST}" \
@@ -78,6 +94,7 @@ echo "[run] backend=${BACKEND} chains=${CHAINS} splits=${SPLITS}"
     --output-root "${OUTPUT_ROOT}/${BACKEND}" \
     --receipt "${OUTPUT_ROOT}/${BACKEND}_receipt.json" \
     --device cuda \
-    "${BACKBONE_ARGS[@]}"
+    "${BACKBONE_ARGS[@]}" \
+    "${INSTANCE_ARGS[@]}"
 
 echo "[done] ${BACKEND}"
