@@ -35,6 +35,8 @@ pip install -e ".[dev]"
 python evals/build_corpus.py
 pytest
 python evals/run.py
+python evals/download_figures.py --max 1200   # OA jpg/png gallery; resume-able
+python evals/run_multimodal.py                 # caption BM25 vs CLIP image-only vs fusion
 python -m uvicorn apps.api.main:app --reload --port 8000
 # other terminal
 cd apps/web && npm install && npm run dev
@@ -78,7 +80,19 @@ By `source` (answerable ranking only): fixture `public_pdb` n=105 Hit@5 99.0% / 
 
 Hard auto-taxonomy (all 40): **ok 38**, **miss_multi_hop 1**, **miss_figure 1** — [`evals/traces/hard_taxonomy.json`](evals/traces/hard_taxonomy.json).
 
-CLIP contrast (local hashing encoder in default CI): **image-only** mean rank1−rank2 cosine gap **0.006**; caption BM25 gap **12.34**; fused RRF gap is small by construction (RRF). Self-hit 100% on a 14-figure gallery; **not SOTA**. `ABCITE_CLIP_MODEL=biomedclip` loads only if weights are already in cache; otherwise **skipped** (no download). OpenCLIP ViT-B-32 is the real path when `[clip]` + weights are present.
+CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**): **image-only** mean rank1−rank2 cosine gap **0.006** on that toy gallery; caption BM25 gap **12.34**; fused RRF gap is small by construction. Self-hit 100% on 14 figures; **not SOTA**. Do **not** call caption-only cite-id “CLIP multimodal”.
+
+**Real multimodal protocol** (OpenCLIP ViT-B-32, 2026-09-09, **74 real PMC OA jpg** — not 14 SVGs). Queries are visual content (no PDB ids). Captions held out of the image encoder. Three columns:
+
+| Column | R@1 | R@5 | R@10 | mean rank1−2 gap |
+|---|---|---|---|---|
+| caption BM25 | 0.047 | 0.109 | 0.156 | (lexical) |
+| **CLIP image-only** | **0.016** | **0.125** | **0.188** | i2i **0.162** (was 0.006 on 14 SVGs); T→I gap **0.0036** still collapsed |
+| fusion (RRF) | 0.031 | 0.078 | 0.141 | — |
+
+This is **not** SciMMIR CLIP-FT Hits@10 ~13.5% and **not** BiomedCLIP PMC R@1 ~56% (those galleries are 10⁵–10⁶). Zero-shot CLIP T→I on generic panel queries remains weak; i2i gap on real photos is no longer the 14-SVG 0.006 artifact. BiomedCLIP weights were **not in cache** (skipped, no download). Gallery <1000 in this environment: `python evals/download_figures.py --max 1200 --source pmc` (resume-able NCBI OA). Committed fixture is 12 OA jpgs for pytest only. Do **not** call caption-only cite-id “CLIP multimodal”. See `evals/multimodal_visual_latest.json`.
+
+OpenCLIP ViT-B-32 is the real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads only if weights are already in cache; otherwise **skipped** (no download).
 
 Human labels: **40 items, one annotator**. Cohen’s κ vs a second human is **N/A**. **Human vs machine** (not inter-human): κ vs lexical **0.0**, κ vs claim-NLI **0.0** (automatic judges almost always score ≥0.5).
 

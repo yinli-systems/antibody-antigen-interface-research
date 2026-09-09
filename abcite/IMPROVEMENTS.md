@@ -28,7 +28,7 @@ Still vanity. Hard-dev Hit@5 **96.7%** after rewrite is still a small closed ind
 
 ### 2. CLIP contrast
 
-CI default encoder is local hashing: **image cosine gap 0.006** (collapse). Caption BM25 gap **12.34** is the discrimination we actually have. OpenCLIP path exists when weights are cached. BiomedCLIP: **skipped unless weights are present** (`ABCITE_CLIP_MODEL=biomedclip`). [NNN / hubness](https://arxiv.org/html/2410.24114).
+The **14-SVG cite-id** number is a demo. Image cosine gap **0.006** on that toy set is collapse. The protocol that counts is `evals/run_multimodal.py` on OA paper figures (74 indexed this run; `download_figures.py --max 1200` to resume toward 1000). OpenCLIP ViT-B-32 on real jpg: image-only R@1/5/10 **0.016 / 0.125 / 0.188**, caption BM25 **0.047 / 0.109 / 0.156**, fusion **0.031 / 0.078 / 0.141**. i2i gap **0.162** (not 0.006). T→I gap still **0.0036** — CLIP still collapses for generic visual-class queries; not SciMMIR FT or BiomedCLIP PMC (weights missing).
 
 ### 3. Faithfulness
 
@@ -37,6 +37,22 @@ Lexical **73.7%**. Human n=40, one annotator. κ human-vs-machine **0.0**. Need 
 ### 4. Next bar (not this sprint)
 
 PaperQA2-style live literature, GraphRAG, PubMedQA, residue overlap vs PDB beyond one cached 1N8Z demo; second human rater.
+
+## Where this sits in *multimodal* retrieval (2026-09 web)
+
+**Verdict:** demo / portfolio engineering, **not** multimodal SOTA and **not** in the same game as public figure corpora. Hard cite-id **90.9%** is 10/11 figure-id matches on a **14-SVG** gallery (`corpus/figures/`), driven by caption BM25 (gap **12.34**) after RRF; image-only CLIP gap **0.006** is collapse. Public work ranks among **10⁴–10⁶** real figures.
+
+Closest public numbers (not apples-to-apples; AbCite is cite-or-abstain on a toy index):
+
+| AbCite (Sep 2026) | Closest public multimodal number |
+|---|---|
+| cite-id 90.9% hard (n=11), 100% fixture (n=35); 14 SVGs | [SciMMIR](https://arxiv.org/abs/2401.13478) 530k paper figures/tables: CLIP-base **FT Hits@10 13.5%** T→I (ALL); most ZS VLMs Hits@10 **<0.23%** |
+| CLIP image-only rank1−2 gap 0.006; self-hit 100% on 14 figs | [BiomedCLIP](https://arxiv.org/abs/2303.00915) **R@1 ~56% / R@5 ~77%** among **725,739** PMC pairs; [NNN / hubness](https://arxiv.org/abs/2410.24114) |
+| nDCG@10 0.809 hard (text+caption fusion) | [ColPali](https://arxiv.org/abs/2407.01449) ViDoRe **nDCG@5 81.3** (page images, not 14 cartoons) |
+| multimodal cite-id as RAG Hit | [MMDocRAG](https://arxiv.org/abs/2505.16470): hybrid ColQ+BGE image **R@20 85.2%** / text **47.7%** on 4,055 QA + 32k image quotes |
+| OpenCLIP ViT-B-32 on SVG rasters | CLIP ViT-B Flickr30k T→I **R@1 ~58.8%** ([Radford 2021](https://arxiv.org/abs/2103.00020)); natural photos, ~1k gallery — still not diagrams |
+
+**Real multimodal number next (not a bigger ViT):** ≥10³ unique **paper** figures with caption-ablated image-only Recall@K vs BiomedCLIP/SciMMIR; queries that cannot be solved by PDB id in the caption; report image-only gap (must not stay 0.006). PaperQA2 figures are **caption enrichment**, not CLIP ranking ([github.com/Future-House/paper-qa](https://github.com/Future-House/paper-qa)). MMMU / ScienceQA / DocVQA / FigureQA are **VQA**, not retrieval.
 
 ## What NOT to do
 

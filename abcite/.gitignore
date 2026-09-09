@@ -10,3 +10,4 @@ apps/web/dist/
 .env
 *.log
 evals/.cache/
+evals/figures/cache/

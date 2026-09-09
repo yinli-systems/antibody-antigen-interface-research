@@ -23,6 +23,29 @@ jobs:
       - run: pytest
       - run: python evals/run.py
 
+  multimodal_figures:
+    name: OA figure gallery (skip if no cache)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: abcite
+    env:
+      ABCITE_CLIP: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: Fixture multimodal eval only
+        run: |
+          if [ -f evals/figures/cache/metadata.jsonl ]; then
+            python evals/run_multimodal.py
+          else
+            echo "No 1000-figure cache in CI; pytest uses committed fixture."
+            pytest tests/test_multimodal_visual.py
+          fi
+
   clip:
     name: OpenCLIP ViT-B-32 (cached weights)
     runs-on: ubuntu-latest

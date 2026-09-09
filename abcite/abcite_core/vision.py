@@ -52,6 +52,9 @@ class LocalImageEncoder(VisionEncoder):
     def encode_image(self, path: Path) -> list[float]:
         return encode_image_file(path).tolist()
 
+    def encode_text(self, text: str) -> list[float]:
+        return hashing_vector(text).tolist()
+
     def caption(self, path: Path) -> str:
         sidecar = path.with_suffix(".json")
         if sidecar.exists():

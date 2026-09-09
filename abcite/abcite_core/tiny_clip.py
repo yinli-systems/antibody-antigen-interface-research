@@ -62,6 +62,9 @@ class TinyCLIPEncoder(VisionEncoder):
     def encode_image(self, path: Path) -> list[float]:
         return encode_patches(path).tolist()
 
+    def encode_text(self, text: str) -> list[float]:
+        return hashing_vector(text).tolist()
+
     def caption(self, path: Path) -> str:
         return LocalImageEncoder().caption(path)
 

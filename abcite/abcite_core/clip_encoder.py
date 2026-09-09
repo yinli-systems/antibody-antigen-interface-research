@@ -245,6 +245,31 @@ def load_open_clip() -> OpenCLIPEncoder:
     return OpenCLIPEncoder()
 
 
+class BiomedCLIPEncoder(OpenCLIPEncoder):
+    name = "biomedclip"
+
+
+def _load_biomedclip() -> BiomedCLIPEncoder:
+    """Load cached BiomedCLIP; never download here."""
+    import open_clip
+
+    cache = clip_cache_dir()
+    for name in (
+        "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
+        "biomedclip.pt",
+        "open_clip_pytorch_model_biomedclip.bin",
+    ):
+        ckpt = cache / name
+        if ckpt.is_file() and ckpt.stat().st_size > 50_000_000:
+            model, _, preprocess = open_clip.create_model_and_transforms(
+                "ViT-B-16", pretrained=str(ckpt), device="cpu"
+            )
+            model.eval()
+            tok = open_clip.get_tokenizer("ViT-B-16")
+            return BiomedCLIPEncoder(model, preprocess, tok)
+    raise FileNotFoundError(f"no BiomedCLIP checkpoint in {cache}")
+
+
 def build_vision_encoder() -> VisionEncoder:
     """CLIP when `[clip]` + weights are available; local encoder otherwise.
 
@@ -255,7 +280,10 @@ def build_vision_encoder() -> VisionEncoder:
     if skip:
         log.warning(skip)
     elif biomedclip_requested() and biomedclip_weights_present():
-        log.info("ABCITE_CLIP_MODEL=biomedclip weights present; loader not wired — using OpenCLIP path.")
+        try:
+            return _load_biomedclip()
+        except Exception as exc:
+            log.warning("BiomedCLIP weights present but load failed (%s); trying OpenCLIP.", exc)
     if clip_forced_off():
         return LocalImageEncoder()
     if clip_stack_available() and (clip_forced_on() or clip_weights_cached()):
