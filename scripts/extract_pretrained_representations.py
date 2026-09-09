@@ -8,11 +8,19 @@ one backend, and writes validated artifacts plus a receipt.
         --manifest canonical_manifest.csv --backend antiberty \
         --chains vh vl --output-root /path/antiberty --receipt receipt.json
 
-The manifest carries train, validation and test rows. Splits other than ``train``
-are refused unless named explicitly, and the receipt records exactly which splits
+The manifest carries train and test rows. Splits other than ``train`` are
+refused unless named explicitly, and the receipt records exactly which splits
 were parsed, mirroring the ``data_firewall`` accounting the split artifacts use.
 Frozen unsupervised features are not labels, but parsing a sealed sequence is
 still an event this project counts, so it is counted here.
+
+The manifest's own train/test division is **not** the double-cold split. Rows
+the manifest calls ``train`` include instances the split manifest assigns to
+validation, and instances the split manifest assigns to train are found under
+the manifest's ``test``. Selecting by manifest split therefore cannot express
+"the development instances and nothing else": it either misses some of them or
+parses the frozen test split to reach them. ``--instance-split-manifest`` selects
+by instance instead, which can.
 """
 
 from __future__ import annotations
@@ -20,6 +28,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import json
 import sys
 from collections import Counter
 from collections.abc import Mapping
@@ -51,13 +60,54 @@ CHAIN_COLUMNS = {
 BACKBONE_FIELD = {"ab": "antibody_backbone", "ag": "antigen_backbone"}
 
 
+# The split whose sequences this project does not read. Naming it in an instance
+# selection is refused rather than counted: every other split here is a
+# development split, and a frozen one reached by accident is not recoverable.
+SEALED_SPLIT = "test"
+
+
+def load_split_instances(
+    split_manifest: Path, split_names: list[str]
+) -> tuple[set[str], dict[str, int]]:
+    """Return the instance ids the split manifest assigns to the named splits."""
+    document = json.loads(split_manifest.read_text(encoding="utf-8"))
+    splits = document.get("splits")
+    if not isinstance(splits, Mapping):
+        raise RepresentationError("split manifest has no 'splits' mapping")
+    sealed = [name for name in split_names if name == SEALED_SPLIT]
+    if sealed:
+        raise RepresentationError(
+            f"refusing to select instances from the {SEALED_SPLIT!r} split; "
+            "this project does not read it"
+        )
+    unknown = [name for name in split_names if name not in splits]
+    if unknown:
+        raise RepresentationError(
+            f"split manifest has no split(s) {unknown}; it has {sorted(splits)}"
+        )
+    selected: set[str] = set()
+    counts: dict[str, int] = {}
+    for name in split_names:
+        members = {str(instance) for instance in splits[name]}
+        counts[name] = len(members)
+        selected |= members
+    return selected, counts
+
+
 def load_units(
     manifest: Path,
     chains: list[str],
     splits: set[str],
     backbones: Mapping[str, Any] | None,
+    instances: set[str] | None = None,
 ) -> tuple[list[RepresentationUnit], dict[str, int], dict[str, int]]:
-    """Read the manifest and build one unit per requested chain of each row."""
+    """Read the manifest and build one unit per requested chain of each row.
+
+    ``instances`` restricts the rows to an explicit set of instance ids. It is
+    applied in addition to ``splits``, so a caller that wants the development
+    instances wherever the manifest happens to file them passes every manifest
+    split and the instance ids it actually wants.
+    """
     if backbones is not None:
         unsupported = [name for name in chains if name not in BACKBONE_FIELD]
         if unsupported:
@@ -78,6 +128,9 @@ def load_units(
         for row in reader:
             split = (row["split"] or "").strip()
             if split not in splits:
+                continue
+            if instances is not None and row["INSTANCE"] not in instances:
+                dropped["instance_not_selected"] += 1
                 continue
             parsed[split] += 1
             for name in chains:
@@ -119,6 +172,18 @@ def main(argv: list[str] | None = None) -> int:
         default=["train"],
         help="manifest splits to parse; anything beyond train must be named explicitly",
     )
+    parser.add_argument(
+        "--instance-split-manifest",
+        type=Path,
+        default=None,
+        help="select rows by instance id from this split manifest instead of by manifest split alone",
+    )
+    parser.add_argument(
+        "--instance-splits",
+        nargs="+",
+        default=None,
+        help=f"splits of --instance-split-manifest to select; {SEALED_SPLIT!r} is refused",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--backbones", type=Path, default=None, help="torch file for esm_if1")
     parser.add_argument("--limit", type=int, default=None, help="encode at most N units")
@@ -144,8 +209,25 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{arguments.backend} requires --backbones", file=sys.stderr)
         return 2
 
+    instances = None
+    instance_counts: dict[str, int] = {}
+    instance_digest = None
+    if (arguments.instance_split_manifest is None) != (arguments.instance_splits is None):
+        print(
+            "--instance-split-manifest and --instance-splits are used together",
+            file=sys.stderr,
+        )
+        return 2
+    if arguments.instance_split_manifest is not None:
+        instance_digest = hashlib.sha256(
+            arguments.instance_split_manifest.read_bytes()
+        ).hexdigest()
+        instances, instance_counts = load_split_instances(
+            arguments.instance_split_manifest, arguments.instance_splits
+        )
+
     units, parsed, dropped = load_units(
-        arguments.manifest, arguments.chains, set(arguments.splits), backbones
+        arguments.manifest, arguments.chains, set(arguments.splits), backbones, instances
     )
     if arguments.limit is not None:
         units = units[: arguments.limit]
@@ -163,6 +245,17 @@ def main(argv: list[str] | None = None) -> int:
             "splits_parsed": parsed,
             "dropped_units": dropped,
             "sealed_splits_parsed": sorted(set(arguments.splits) - {"train"}),
+            "instance_selection": (
+                None
+                if instances is None
+                else {
+                    "split_manifest": str(arguments.instance_split_manifest),
+                    "split_manifest_sha256": instance_digest,
+                    "splits": list(arguments.instance_splits),
+                    "instances_per_split": instance_counts,
+                    "instances_selected": len(instances),
+                }
+            ),
             "claim_boundary": (
                 "Frozen unsupervised per-residue features. No label, contact, prediction, "
                 "or score was read. Extraction authorizes no training, selection, or "
