@@ -21,7 +21,7 @@
   },
   "mean_gap_image_i2i": 0.088263,
   "mean_gap_clip_text_to_image": 0.008559,
-  "biomedclip_skip": "BiomedCLIP skipped: Hugging Face Hub HTTP 429 even with a local token; hf-mirror.com 308-redirects to huggingface.co (also 429). No cached weights on /workspace.",
+  "biomedclip_skip": "Protocol B not re-run with BiomedCLIP; OpenCLIP numbers unchanged.",
   "note": "Protocol B: unique-gold visual questions (caption-free, no PDB). Committed fix-* gold is remapped to pmc-* via href when the 1200 cache is used. Not mixed with caption-as-query. 14 SVG cite-id match is a demo, not this protocol.",
   "published_ranges": {
     "scimmir_clip_ft_hits@10_t2i": "~0.135 (ALL, different 530k gallery; not a target to match)",

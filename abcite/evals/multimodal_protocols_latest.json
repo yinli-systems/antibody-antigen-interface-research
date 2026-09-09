@@ -26,13 +26,33 @@
     },
     "mean_gap_image_i2i": 0.088263,
     "mean_gap_clip_text_to_image": 0.009164,
-    "biomedclip_skip": "BiomedCLIP skipped: Hugging Face Hub HTTP 429 even with a local token; hf-mirror.com 308-redirects to huggingface.co (also 429). No cached weights on /workspace.",
+    "biomedclip_skip": null,
     "note": "Protocol A: caption-as-query pair retrieval. Query is the figure caption with PDB / UniProt / RefSeq tokens stripped. Gold is that figure id. clip_image_only is T\u2192I; captions never enter the image encoder. caption_bm25 is lexical captions (SciMMIR-like text baseline), not CLIP.",
     "published_ranges": {
       "scimmir_clip_ft_hits@10_t2i": "~0.135 (ALL, different 530k gallery; not a target to match)",
       "scimmir_zs_clip_hits@10": "~0.0067 on 16k test (pair retrieval, not class)",
       "scimmir_zs_vlm_hits@10": "<0.0023 typical",
       "biomedclip_pmc_r@1_r@5": "~0.56 / ~0.77 on ~726k pairs (not this gallery)"
+    },
+    "biomedclip": {
+      "encoder": "biomedclip",
+      "caption_bm25": {
+        "recall@1": 0.63,
+        "recall@5": 0.9831,
+        "recall@10": 0.9965
+      },
+      "clip_image_only": {
+        "recall@1": 0.0728,
+        "recall@5": 0.1517,
+        "recall@10": 0.1872
+      },
+      "fusion": {
+        "recall@1": 0.1571,
+        "recall@5": 0.3656,
+        "recall@10": 0.5821
+      },
+      "mean_gap_image_i2i": 0.256876,
+      "mean_gap_clip_text_to_image": 0.061378
     }
   },
   "unique_gold_visual": {
@@ -58,7 +78,7 @@
     },
     "mean_gap_image_i2i": 0.088263,
     "mean_gap_clip_text_to_image": 0.008559,
-    "biomedclip_skip": "BiomedCLIP skipped: Hugging Face Hub HTTP 429 even with a local token; hf-mirror.com 308-redirects to huggingface.co (also 429). No cached weights on /workspace.",
+    "biomedclip_skip": "Protocol B not re-run with BiomedCLIP; OpenCLIP numbers unchanged.",
     "note": "Protocol B: unique-gold visual questions (caption-free, no PDB). Committed fix-* gold is remapped to pmc-* via href when the 1200 cache is used. Not mixed with caption-as-query. 14 SVG cite-id match is a demo, not this protocol.",
     "published_ranges": {
       "scimmir_clip_ft_hits@10_t2i": "~0.135 (ALL, different 530k gallery; not a target to match)",
@@ -67,7 +87,36 @@
       "biomedclip_pmc_r@1_r@5": "~0.56 / ~0.77 on ~726k pairs (not this gallery)"
     }
   },
-  "biomedclip_skip": "BiomedCLIP skipped: Hugging Face Hub HTTP 429 even with a local token; hf-mirror.com 308-redirects to huggingface.co (also 429). No cached weights on /workspace.",
-  "n_metadata": 1200,
-  "n_missing_files": 4
+  "biomedclip_caption_as_query": {
+    "protocol": "caption_as_query",
+    "n_gallery": 1196,
+    "n_queries": 1127,
+    "encoder": "biomedclip",
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "caption_bm25": {
+      "recall@1": 0.63,
+      "recall@5": 0.9831,
+      "recall@10": 0.9965
+    },
+    "clip_image_only": {
+      "recall@1": 0.0728,
+      "recall@5": 0.1517,
+      "recall@10": 0.1872
+    },
+    "fusion": {
+      "recall@1": 0.1571,
+      "recall@5": 0.3656,
+      "recall@10": 0.5821
+    },
+    "mean_gap_image_i2i": 0.256876,
+    "mean_gap_clip_text_to_image": 0.061378,
+    "biomedclip_skip": null,
+    "note": "Protocol A: caption-as-query pair retrieval. Query is the figure caption with PDB / UniProt / RefSeq tokens stripped. Gold is that figure id. clip_image_only is T\u2192I; captions never enter the image encoder. caption_bm25 is lexical captions (SciMMIR-like text baseline), not CLIP.",
+    "published_ranges": {
+      "scimmir_clip_ft_hits@10_t2i": "~0.135 (ALL, different 530k gallery; not a target to match)",
+      "scimmir_zs_clip_hits@10": "~0.0067 on 16k test (pair retrieval, not class)",
+      "scimmir_zs_vlm_hits@10": "<0.0023 typical",
+      "biomedclip_pmc_r@1_r@5": "~0.56 / ~0.77 on ~726k pairs (not this gallery)"
+    }
+  }
 }

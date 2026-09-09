@@ -59,9 +59,22 @@ mean caption BM25 gap          12.341795
 min gap fused                  0.000529
 self-hit rate                  100.0%
 hub figs (rank1 for >1 query)  {}
-BiomedCLIP                     not requested
+BiomedCLIP                     not requested (14-SVG demo)
 CLIP SOTA claim                false
 ```
+
+Protocol A caption-as-query on the **same 1196 PMC OA jpg** / RTX 5090 (n_queries=1127). Caption BM25 is lexical. T→I is image-only.
+
+```
+                    R@1     R@5     R@10    i2i gap   T→I gap
+caption BM25        0.630   0.983   0.996   lexical
+OpenCLIP ViT-B-32   0.028   0.064   0.083   0.088     0.009
+BiomedCLIP          0.073   0.152   0.187   0.257     0.061
+OpenCLIP fusion     0.114   0.305   0.528
+BiomedCLIP fusion   0.157   0.366   0.582
+```
+
+Not SciMMIR FT Hits@10 ~13.5% and not BiomedCLIP PMC R@1 ~56% on 726k pairs. Receipt: `evals/multimodal_caption_latest.json`.
 
 Judge alignment (**human vs machine**, not inter-human κ): Cohen's κ is human vs machine (lexical / claim-NLI), not inter-human κ. Second annotator is not a duplicate of the first; n_annotators=1. κ human-vs-lexical=0.0; κ human-vs-claim-NLI=0.0; κ human-vs-human=None.
 

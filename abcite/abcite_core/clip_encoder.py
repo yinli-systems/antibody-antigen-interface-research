@@ -62,15 +62,17 @@ def biomedclip_requested() -> bool:
 
 
 BIOMEDCLIP_REPO = "microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
-BIOMEDCLIP_HF_NAMES = (
-    "hf-hub:microsoft/BiomedCLIP-PubMedBERT-256-vit-base-patch16-224",
-    f"hf-hub:{BIOMEDCLIP_REPO}",
+BIOMEDCLIP_HF_NAMES = (f"hf-hub:{BIOMEDCLIP_REPO}",)
+BIOMEDCLIP_TEXT_REPOS = (
+    "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract",
+    "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract",
 )
 _BIOMEDCLIP_FILES = (
     "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224.bin",
     "biomedclip.pt",
     "open_clip_pytorch_model_biomedclip.bin",
     "open_clip_pytorch_model.bin",
+    "open_clip_model.safetensors",
 )
 
 
@@ -82,6 +84,8 @@ def _hf_token() -> str | None:
     for path in (
         Path.home() / ".cache" / "huggingface" / "token",
         Path("/root/.cache/huggingface/token"),
+        Path("/workspace/hf-cache/token"),
+        Path("/workspace/hf/token"),
         Path("/workspace/.huggingface/token"),
     ):
         if path.is_file():
@@ -92,11 +96,15 @@ def _hf_token() -> str | None:
 
 
 def _hf_home() -> Path:
-    raw = os.environ.get("HF_HOME") or os.environ.get("HUGGINGFACE_HUB_CACHE")
+    raw = os.environ.get("HF_HOME")
     if raw:
         return Path(raw)
-    if Path("/workspace").is_dir():
+    if Path("/workspace/hf-cache").is_dir():
+        return Path("/workspace/hf-cache")
+    if Path("/workspace/hf").is_dir():
         return Path("/workspace/hf")
+    if Path("/workspace").is_dir():
+        return Path("/workspace/hf-cache")
     return Path.home() / ".cache" / "huggingface"
 
 
@@ -326,8 +334,96 @@ def _allow_biomedclip_download() -> bool:
     return os.environ.get("ABCITE_BIOMEDCLIP_DOWNLOAD", "").lower() in {"1", "true", "yes"}
 
 
+def _snapshot_repo(
+    repo_id: str, *, token: str | None, cache_dir: Path, local_dir: Path | None
+) -> Path | None:
+    """Download one Hub repo with retries. Prefer huggingface.co when a token is set."""
+    import shutil
+    import subprocess
+
+    endpoints: list[str] = []
+    forced = os.environ.get("HF_ENDPOINT")
+    if forced:
+        endpoints.append(forced)
+    if token:
+        endpoints.append("https://huggingface.co")
+    endpoints.extend(["https://huggingface.co", "https://hf-mirror.com"])
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for ep in endpoints:
+        if ep and ep not in seen:
+            seen.add(ep)
+            ordered.append(ep)
+
+    last_err: Exception | None = None
+    try:
+        from huggingface_hub import login, snapshot_download
+    except ImportError:
+        snapshot_download = None  # type: ignore[assignment]
+        login = None  # type: ignore[assignment]
+    if token and callable(login):
+        try:
+            login(token=token, add_to_git_credential=False)
+        except Exception as exc:
+            log.warning("huggingface login skipped: %s", type(exc).__name__)
+
+    kwargs: dict = {
+        "repo_id": repo_id,
+        "token": token,
+        "cache_dir": str(cache_dir),
+        "max_workers": 1,
+    }
+    if local_dir is not None:
+        kwargs["local_dir"] = str(local_dir)
+
+    if snapshot_download is not None:
+        for endpoint in ordered:
+            os.environ["HF_ENDPOINT"] = endpoint
+            for attempt in range(8):
+                try:
+                    path = snapshot_download(**kwargs)
+                    p = Path(path)
+                    if p.exists():
+                        return p
+                except Exception as exc:
+                    last_err = exc
+                    wait = min(120.0, 5.0 * (2**attempt))
+                    log.warning(
+                        "snapshot_download %s %s attempt %s: %s; sleep %.0fs",
+                        repo_id,
+                        endpoint,
+                        attempt + 1,
+                        exc,
+                        wait,
+                    )
+                    time.sleep(wait)
+
+    cli = shutil.which("huggingface-cli") or shutil.which("hf")
+    if cli:
+        dest = local_dir or (cache_dir / repo_id.replace("/", "--"))
+        dest.mkdir(parents=True, exist_ok=True)
+        for endpoint in ordered:
+            env = os.environ.copy()
+            env["HF_ENDPOINT"] = endpoint
+            if token:
+                env["HF_TOKEN"] = token
+                env["HUGGING_FACE_HUB_TOKEN"] = token
+            cmd = [cli, "download", repo_id, "--local-dir", str(dest)]
+            try:
+                subprocess.run(cmd, check=True, env=env, timeout=1200)
+            except Exception as exc:
+                last_err = exc
+                log.warning("huggingface-cli %s %s: %s", repo_id, endpoint, exc)
+                continue
+            if dest.exists():
+                return dest
+    if last_err:
+        log.warning("Hub download failed for %s: %s", repo_id, last_err)
+    return None
+
+
 def download_biomedclip_weights() -> Path | None:
-    """Fetch BiomedCLIP into the CLIP/HF cache. Returns a local file or None."""
+    """Fetch BiomedCLIP (and PubMedBERT tokenizer) into the CLIP/HF cache."""
     existing = _biomedclip_cached_files()
     if existing:
         return existing[0]
@@ -335,117 +431,65 @@ def download_biomedclip_weights() -> Path | None:
         return None
     dest_dir = clip_cache_dir()
     dest_dir.mkdir(parents=True, exist_ok=True)
-    os.environ.setdefault("HF_HOME", str(_hf_home()))
-    os.environ.setdefault("HF_HUB_CACHE", str(_hf_home() / "hub"))
+    home = _hf_home()
+    home.mkdir(parents=True, exist_ok=True)
+    hub = home / "hub"
+    hub.mkdir(parents=True, exist_ok=True)
+    os.environ["HF_HOME"] = str(home)
+    os.environ["HF_HUB_CACHE"] = str(hub)
+    os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "0")
     token = _hf_token()
-    last_err: Exception | None = None
-    endpoints = ["https://hf-mirror.com", os.environ.get("HF_ENDPOINT") or "https://huggingface.co"]
-    filenames = (
-        "open_clip_pytorch_model.bin",
-        "open_clip_model.safetensors",
-        "pytorch_model.bin",
-    )
-    try:
-        from huggingface_hub import hf_hub_download
-    except ImportError:
-        hf_hub_download = None  # type: ignore[assignment]
-    if hf_hub_download is not None:
-        for endpoint in endpoints:
-            os.environ["HF_ENDPOINT"] = endpoint
-            for filename in filenames:
-                for attempt in range(2):
-                    try:
-                        path = hf_hub_download(
-                            repo_id=BIOMEDCLIP_REPO,
-                            filename=filename,
-                            token=token,
-                            cache_dir=str(_hf_home() / "hub"),
-                            resume_download=True,
-                        )
-                        p = Path(path)
-                        if p.is_file() and p.stat().st_size > 50_000_000:
-                            return p
-                    except Exception as exc:
-                        last_err = exc
-                        log.warning(
-                            "BiomedCLIP hf_hub_download %s %s attempt %s: %s",
-                            endpoint,
-                            filename,
-                            attempt + 1,
-                            exc,
-                        )
-                        time.sleep(min(20.0, 2.0**attempt))
-    # huggingface-cli fallback
-    import shutil
-    import subprocess
-
-    cli = shutil.which("huggingface-cli") or shutil.which("hf")
-    if cli:
-        env = os.environ.copy()
-        if token:
-            env["HF_TOKEN"] = token
-        for endpoint in endpoints:
-            env["HF_ENDPOINT"] = endpoint
-            local_dir = dest_dir / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
-            cmd = [cli, "download", BIOMEDCLIP_REPO, "--local-dir", str(local_dir)]
-            try:
-                subprocess.run(cmd, check=True, env=env, timeout=600)
-            except Exception as exc:
-                last_err = exc
-                log.warning("BiomedCLIP huggingface-cli %s: %s", endpoint, exc)
-                continue
-            hits = _biomedclip_cached_files()
-            if hits:
-                return hits[0]
-    if last_err:
-        log.warning("BiomedCLIP download failed: %s", last_err)
+    local_dir = dest_dir / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+    snapped = _snapshot_repo(BIOMEDCLIP_REPO, token=token, cache_dir=hub, local_dir=local_dir)
+    for dep in BIOMEDCLIP_TEXT_REPOS:
+        _snapshot_repo(dep, token=token, cache_dir=hub, local_dir=None)
+    hits = _biomedclip_cached_files()
+    if hits:
+        return hits[0]
+    if snapped is not None:
+        for match in Path(snapped).rglob("*"):
+            if match.is_file() and match.stat().st_size > 50_000_000:
+                return match
     return None
 
 
 def _load_biomedclip() -> BiomedCLIPEncoder:
-    """Load cached BiomedCLIP; download only if ABCITE_BIOMEDCLIP_DOWNLOAD=1."""
+    """Load BiomedCLIP via open_clip hf-hub; download only if ABCITE_BIOMEDCLIP_DOWNLOAD=1."""
     import open_clip
 
     device = _torch_device()
     cache = clip_cache_dir()
-    for ckpt in _biomedclip_cached_files():
-        if ckpt.suffix.lower() not in {".bin", ".pt", ".pth", ".safetensors"}:
-            continue
+    downloaded = download_biomedclip_weights()
+    cached = bool(_biomedclip_cached_files())
+    allow = _allow_biomedclip_download() or downloaded is not None or cached
+    if not allow:
+        raise FileNotFoundError(f"no BiomedCLIP checkpoint in {cache}")
+
+    names: list[str] = list(BIOMEDCLIP_HF_NAMES)
+    local_dir = cache / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+    if (local_dir / "open_clip_config.json").is_file():
+        names.insert(0, f"hf-hub:{local_dir}")
+    last: Exception | None = None
+    for name in names:
         try:
-            model, _, preprocess = open_clip.create_model_and_transforms(
-                "ViT-B-16", pretrained=str(ckpt), device=device
-            )
+            create = getattr(open_clip, "create_model_from_pretrained", None)
+            if callable(create):
+                model, preprocess = create(name, device=device)
+                tok = open_clip.get_tokenizer(name)
+            else:
+                model, _, preprocess = open_clip.create_model_and_transforms(name, device=device)
+                tok = open_clip.get_tokenizer(name)
             model.eval()
-            tok = open_clip.get_tokenizer("ViT-B-16")
+            for p in model.parameters():
+                p.requires_grad_(False)
             enc = BiomedCLIPEncoder(model, preprocess, tok)
             enc.dim = int(getattr(model, "embed_dim", enc.dim) or enc.dim)
             return enc
         except Exception as exc:
-            log.warning("BiomedCLIP local ckpt %s failed (%s)", ckpt, exc)
-    downloaded = download_biomedclip_weights()
-    allow = _allow_biomedclip_download() or downloaded is not None
-    if allow:
-        last: Exception | None = None
-        for name in BIOMEDCLIP_HF_NAMES:
-            try:
-                create = getattr(open_clip, "create_model_from_pretrained", None)
-                if callable(create):
-                    model, preprocess = create(name, device=device)
-                    tok = open_clip.get_tokenizer(name)
-                else:
-                    model, _, preprocess = open_clip.create_model_and_transforms(
-                        name, device=device
-                    )
-                    tok = open_clip.get_tokenizer(name)
-                model.eval()
-                enc = BiomedCLIPEncoder(model, preprocess, tok)
-                enc.dim = int(getattr(model, "embed_dim", enc.dim) or enc.dim)
-                return enc
-            except Exception as exc:
-                last = exc
-                log.warning("BiomedCLIP hub load %s failed (%s)", name, exc)
-        if last:
-            raise last
+            last = exc
+            log.warning("BiomedCLIP hub load %s failed (%s)", name, exc)
+    if last:
+        raise last
     raise FileNotFoundError(f"no BiomedCLIP checkpoint in {cache}")
 
 

@@ -250,7 +250,11 @@ def main() -> None:
             print(f"BiomedCLIP: {skip}")
         else:
             bio_gal = FigureGallery(recs, bio)
-            bio_items = caption_as_query_items(recs)
+            bio_items = [
+                it
+                for it in caption_as_query_items(recs)
+                if not query_contains_pdb(it["question"]) and "1n8z" not in it["question"].lower()
+            ]
             bio_report = evaluate(bio_gal, bio_items, protocol="caption_as_query")
             bio_report["encoder"] = getattr(bio, "name", "biomedclip")
             combined["biomedclip_caption_as_query"] = bio_report

@@ -74,7 +74,7 @@ Flickr ~1k 上 R@1≈59% 是因为每条 query 是 **unique caption**。换成 �
 
 **0.000 拆开（诚实）：**
 
-- CLIP T→I R@K=0：**协议为主**（class query + unique gold + 6 unique strings）。模型为辅：即便改成 caption-as-query，OpenCLIP ZS 在 SciMMIR 上也只有 0.67% Hits@10；BiomedCLIP **没跑**（HF 429）。
+- CLIP T→I R@K=0：**协议为主**（class query + unique gold + 6 unique strings）。模型为辅：caption-as-query 上 OpenCLIP Hits@10 **8.3%**、BiomedCLIP **18.7%**；都不是 726k 上的 ~56% R@1。
 - caption BM25 0/0/0.016：**协议**。class 词撞 caption；1/64 进 top-10 正好是碰撞率。
 - fusion 0.016：**协议**，RRF 吃到 BM25 那 1 hit。
 - T→I gap 0.002：**协议期望**（同类打平），不是 encoder NaN。
@@ -83,14 +83,14 @@ Flickr ~1k 上 R@1≈59% 是因为每条 query 是 **unique caption**。换成 �
 
 ## Caption-as-query landed (2026-09-10)
 
-**结论先行：** 同一 1196 张 PMC OA jpg / OpenCLIP ViT-B-32 / RTX 5090 上，**caption-as-query** 把 CLIP T→I R@10 从 class-query 的 **0.000** 抬到 **0.083**。caption BM25 R@10 **0.996** 是词面基线（重复 caption 让 R@1 停在 0.63）。这是 SciMMIR 风格的 pair retrieval，不是 class。BiomedCLIP **仍没跑**（HF 429；hf-mirror 308 到 huggingface.co）。
+**结论先行：** 同一 1196 张 PMC OA jpg / RTX 5090 上，**caption-as-query** 把 OpenCLIP T→I R@10 从 class-query 的 **0.000** 抬到 **0.083**；BiomedCLIP T→I R@1/5/10 = **0.073 / 0.152 / 0.187**（约 2.2× OpenCLIP Hits@10）。caption BM25 R@10 **0.996** 是词面基线。这是 SciMMIR 风格的 pair retrieval，不是 class，也不是论文里 726k 的 R@1 ~56%。
 
 Committed `fix-*` gold 已 remap 到 `pmc-*`，unique-gold 视觉问句是**第二张表**（n=19），不要和 caption-as-query 混报。
 
 ### Next sprint（按「真能抬 R@K」排序）
 
-1. **BiomedCLIP / PMC-CLIP 权重**：本地 cache，避开 HF 429。同一 caption-as-query split 上并排 OpenCLIP。预期量级是域内 pair retrieval，不是 class。
-2. **ColPali**（页/图 late-interaction）：对「问句 → 哪一页/哪张图」更接近产品。ViDoRe 是 page retrieval，不是 1200 jpg class。
+1. **ColPali**（页/图 late-interaction）：对「问句 → 哪一页/哪张图」更接近产品。ViDoRe 是 page retrieval，不是 1200 jpg class。
+2. **PMC-CLIP / 更大域内 checkpoint**：BiomedCLIP 已在同一 split 上跑完；还没摸到 56% R@1。
 3. **不要**把 1N8Z / PDB id 写进 query（holdout 已禁；14-SVG cite-id 不要混进这条协议）。
 
 ## What NOT to do
