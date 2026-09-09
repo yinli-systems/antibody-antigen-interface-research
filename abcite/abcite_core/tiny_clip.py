@@ -1,12 +1,7 @@
-"""Tiny CLIP-like patch projector (vendored weights, no HF download).
-
-This is a real vision encoder: rasterize bytes → 8×8 patches → fixed linear map.
-Optional `ABCITE_CLIP=1` loads sentence-transformers CLIP from the HF cache.
-"""
+"""Tiny CLIP-like patch projector (vendored, no HF download). Fallback when [clip] is absent."""
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import numpy as np
@@ -71,32 +66,7 @@ class TinyCLIPEncoder(VisionEncoder):
         return LocalImageEncoder().caption(path)
 
 
-def load_hf_clip():
-    """Real OpenCLIP/ST CLIP. Only when ABCITE_CLIP=1 and weights are cached."""
-    from sentence_transformers import SentenceTransformer
+def build_clip_encoder():
+    from abcite_core.clip_encoder import build_vision_encoder
 
-    model = SentenceTransformer("clip-ViT-B-32")
-
-    class HFCLIP(VisionEncoder):
-        name = "clip-vit-b-32"
-
-        def encode_image(self, path: Path) -> list[float]:
-            from PIL import Image
-
-            img = Image.open(path).convert("RGB")
-            vec = model.encode([img], normalize_embeddings=True)
-            return np.asarray(vec[0], dtype=np.float32).tolist()
-
-        def caption(self, path: Path) -> str:
-            return LocalImageEncoder().caption(path)
-
-    return HFCLIP()
-
-
-def build_clip_encoder() -> VisionEncoder:
-    if os.environ.get("ABCITE_CLIP", "0") in {"1", "true", "TRUE"}:
-        try:
-            return load_hf_clip()
-        except Exception:
-            pass
-    return TinyCLIPEncoder()
+    return build_vision_encoder()

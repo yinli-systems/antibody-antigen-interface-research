@@ -80,33 +80,25 @@ def encode_image_file(path: Path, dim: int = DIM) -> np.ndarray:
 
 
 def try_clip_encoder():
-    """Optional CLIP via sentence-transformers. Returns None if unavailable (CI default)."""
-    try:
-        from sentence_transformers import SentenceTransformer
+    """OpenCLIP ViT-B-32 when `[clip]` + weights are available. Returns None otherwise."""
+    from abcite_core.clip_encoder import (
+        clip_forced_off,
+        clip_stack_available,
+        clip_weights_cached,
+        load_open_clip,
+    )
 
-        model = SentenceTransformer("clip-ViT-B-32")
+    if clip_forced_off() or not clip_stack_available() or not clip_weights_cached():
+        return None
+    try:
+        return load_open_clip()
     except Exception:
         return None
 
-    class CLIPVision(VisionEncoder):
-        name = "clip-vit-b-32"
-
-        def encode_image(self, path: Path) -> list[float]:
-            from PIL import Image
-
-            img = Image.open(path).convert("RGB")
-            vec = model.encode([img], normalize_embeddings=True)
-            return np.asarray(vec[0], dtype=np.float32).tolist()
-
-        def caption(self, path: Path) -> str:
-            return LocalImageEncoder().caption(path)
-
-    return CLIPVision()
-
 
 def build_vision_encoder(prefer_clip: bool = False) -> VisionEncoder:
-    if prefer_clip:
-        clip = try_clip_encoder()
-        if clip is not None:
-            return clip
-    return LocalImageEncoder()
+    """Delegate to OpenCLIP when `[clip]` is installed. `prefer_clip` is unused (kept for callers)."""
+    from abcite_core.clip_encoder import build_vision_encoder as _build
+
+    _ = prefer_clip
+    return _build()

@@ -6,11 +6,13 @@ on:
     paths: ["abcite/**"]
 jobs:
   eval:
-    name: fast tests (tiny CLIP-like, no HF download)
+    name: fast tests (no CLIP download)
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: abcite
+    env:
+      ABCITE_CLIP: "0"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,12 +24,14 @@ jobs:
       - run: python evals/run.py
 
   clip:
-    name: optional HF CLIP (cached)
+    name: OpenCLIP ViT-B-32 (cached weights)
     runs-on: ubuntu-latest
-    continue-on-error: true
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: abcite
+    env:
+      ABCITE_CLIP: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -35,23 +39,14 @@ jobs:
           python-version: "3.11"
       - uses: actions/cache@v4
         with:
-          path: ~/.cache/huggingface
-          key: hf-clip-vit-b-32-${{ runner.os }}
+          path: |
+            ~/.cache/huggingface
+            ~/.cache/torch
+            ~/.cache/clip
+          key: openclip-vit-b-32-openai-${{ runner.os }}
       - run: pip install -e ".[dev,clip]"
       - run: python evals/build_corpus.py
-      - name: Real CLIP figure retrieval if weights available
-        env:
-          ABCITE_CLIP: "1"
-        run: |
-          python - <<'PY'
-          import os, sys
-          os.environ["ABCITE_CLIP"] = "1"
-          from pathlib import Path
-          try:
-              from abcite_core.tiny_clip import load_hf_clip
-              enc = load_hf_clip()
-          except Exception as exc:
-              print("HF CLIP unavailable (expected without cache):", exc)
-              sys.exit(0)
-          print("HF CLIP encoder loaded:", enc.name)
-          PY
+      - name: Download OpenCLIP weights
+        run: python -u -m abcite_core.download_clip
+      - name: CLIP tests must use real encoder
+        run: pytest tests/test_clip.py tests/test_tiny_clip.py tests/test_vision_retrieval.py -v

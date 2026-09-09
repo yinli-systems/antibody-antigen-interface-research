@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
         provider_name=llm.name,
         llm=llm,
     )
-    log.info("loaded %s chunks provider=%s", len(corpus), llm.name)
+    log.info("loaded %s chunks provider=%s vision=%s", len(corpus), llm.name, index.vision.name)
     yield
 
 
@@ -70,7 +70,18 @@ if figures.exists():
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "service": "abcite"}
+    vision = "unloaded"
+    graph = getattr(app.state, "graph", None)
+    if graph is not None:
+        vision = graph.index.vision.name
+    return {"ok": True, "service": "abcite", "vision": vision}
+
+
+@app.post("/search-image")
+def search_image(path: str, top_k: int = 5) -> list[dict]:
+    graph: EvidenceGraph = app.state.graph
+    hits = graph.index.search_by_image(Path(path), top_k=top_k)
+    return [{"chunk_id": h.chunk.chunk_id, "score": h.image, "title": h.chunk.title} for h in hits]
 
 
 @app.post("/query", response_model=QueryResponse)

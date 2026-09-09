@@ -31,6 +31,7 @@ flowchart LR
 cd abcite
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
+# Real CLIP (optional): pip install -e ".[clip]" && python -m abcite_core.download_clip
 python evals/build_corpus.py
 pytest
 python evals/run.py
@@ -70,7 +71,14 @@ With keys (not baked into the image): `OPENAI_API_KEY=... docker compose -f infr
 
 Source table: [`evals/latest.md`](evals/latest.md).
 
-**CLIP CI:** default GitHub job uses the vendored **tiny CLIP-like** patch projector (`abcite_core/tiny_clip.py`) — no 600MB download. Optional `clip` job sets `ABCITE_CLIP=1`, caches `~/.cache/huggingface`, `continue-on-error: true`. Honest: default green CI is **not** OpenAI CLIP-ViT-B/32.
+**CLIP:** default CI is fast (`ABCITE_CLIP=0`, hashing / tiny fallback). Real OpenCLIP ViT-B-32 is the default encoder after:
+
+```bash
+pip install -e ".[clip]"
+python -m abcite_core.download_clip
+```
+
+SVG figures are rasterized to RGB before CLIP (PIL cannot open SVG). The GitHub `clip` job downloads/caches weights and **fails** if the encoder is not CLIP.
 
 ## Skill coverage (UK Applied AI Engineer)
 
@@ -83,7 +91,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150** labeled items | Second annotator / Cohen kappa |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | local encoder + **tiny CLIP-like** in tests | HF `clip-ViT-B-32` only in optional CI job |
+| Vision | SVG→RGB raster + OpenCLIP ViT-B-32 when `[clip]` is installed | default CI uses hashing/tiny (`ABCITE_CLIP=0`) |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
 | Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |
@@ -92,7 +100,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 
 ## Tests
 
-`pytest` (33): cite-or-abstain, unanswerable, gold≥150, multimodal, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate.
+`pytest` (35 + live CLIP skip-if-no-weights): cite-or-abstain, unanswerable, gold≥150, multimodal, SVG raster, tiny-CLIP NN, HITL, MCP/RCSB, fake OpenAI, Azure Search mock, judge prompt contract, LangSmith, eval gate.
 
 ## Security
 

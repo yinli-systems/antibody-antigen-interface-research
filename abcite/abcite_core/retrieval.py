@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 from abcite_core.models import Chunk
-from abcite_core.vision import DIM, hashing_vector, LocalImageEncoder
+from abcite_core.vision import DIM, VisionEncoder, hashing_vector
 
 TOKEN = re.compile(r"[a-z0-9_+\-./]+")
 
@@ -57,10 +57,15 @@ class Hit:
 
 
 class HybridIndex:
-    def __init__(self, chunks: list[Chunk], encoder=None, vision: LocalImageEncoder | None = None) -> None:
+    def __init__(self, chunks: list[Chunk], encoder=None, vision: VisionEncoder | None = None) -> None:
         self.chunks = chunks
         self.encoder = encoder or HashingEncoder()
-        self.vision = vision or LocalImageEncoder()
+        if vision is not None:
+            self.vision = vision
+        else:
+            from abcite_core.clip_encoder import build_vision_encoder
+
+            self.vision = build_vision_encoder()
         self.docs = [tokenize(self._blob(c)) for c in chunks]
         self.df: dict[str, int] = defaultdict(int)
         for doc in self.docs:
@@ -82,6 +87,9 @@ class HybridIndex:
             if path.exists():
                 return np.asarray(self.vision.encode_image(path), dtype=np.float32)
         cap = f"{chunk.caption or ''} {chunk.title}"
+        encode_text = getattr(self.vision, "encode_text", None)
+        if callable(encode_text):
+            return np.asarray(encode_text(cap), dtype=np.float32)
         return hashing_vector(cap)
 
     @staticmethod
@@ -117,7 +125,13 @@ class HybridIndex:
         return self.dense @ qv
 
     def image_scores(self, query: str) -> np.ndarray:
-        qv = hashing_vector(query)
+        encode_text = getattr(self.vision, "encode_text", None)
+        if callable(encode_text):
+            qv = np.asarray(encode_text(query), dtype=np.float32)
+        else:
+            qv = hashing_vector(query)
+        if qv.shape[0] != self.image_vecs.shape[1]:
+            return np.zeros(self.n, dtype=np.float32)
         return self.image_vecs @ qv
 
     def search(self, query: str, top_k: int = 6) -> list[Hit]:
@@ -146,6 +160,8 @@ class HybridIndex:
 
     def search_by_image(self, path: Path, top_k: int = 5) -> list[Hit]:
         qv = np.asarray(self.vision.encode_image(path), dtype=np.float32)
+        if qv.shape[0] != self.image_vecs.shape[1]:
+            return []
         sims = self.image_vecs @ qv
         order = np.argsort(-sims)[:top_k]
         hits: list[Hit] = []
