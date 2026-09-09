@@ -1,0 +1,118 @@
+{
+  "artifact_counts": {
+    "antiberty": 2558,
+    "esm_if1": 2968
+  },
+  "claim_boundary": "Frozen unsupervised per-residue features on the development splits. The frozen test split was refused, not counted.",
+  "coverage": {
+    "train": {
+      "all_three": 3224,
+      "antiberty_antibody": 3229,
+      "esm_if1_antibody": 3227,
+      "esm_if1_antigen": 3226,
+      "instances": 3229,
+      "single_domain": 822
+    },
+    "validation": {
+      "all_three": 215,
+      "antiberty_antibody": 217,
+      "esm_if1_antibody": 215,
+      "esm_if1_antigen": 217,
+      "instances": 217,
+      "single_domain": 120
+    }
+  },
+  "format_version": "pretrained_representation_coverage_v1",
+  "manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+  "receipts": {
+    "antiberty": {
+      "backend": "antiberty",
+      "chains": [
+        "vh",
+        "vl"
+      ],
+      "claim_boundary": "Frozen unsupervised per-residue features. No label, contact, prediction, or score was read. Extraction authorizes no training, selection, or evaluation.",
+      "complete": true,
+      "device": "cuda",
+      "dropped_units": {
+        "empty_sequence": 942,
+        "instance_not_selected": 217
+      },
+      "failed": [],
+      "format_version": "pretrained_representation_receipt_v1",
+      "instance_selection": {
+        "instances_per_split": {
+          "train": 3229,
+          "validation": 217
+        },
+        "instances_selected": 3446,
+        "split_manifest": "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json",
+        "split_manifest_sha256": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396",
+        "splits": [
+          "train",
+          "validation"
+        ]
+      },
+      "manifest": "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv",
+      "manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+      "representation_dim": 512,
+      "requested_unique_sequences": 2430,
+      "revision": "antiberty-pypi",
+      "sealed_splits_parsed": [
+        "test"
+      ],
+      "skipped_existing": 2053,
+      "splits_parsed": {
+        "test": 423,
+        "train": 3023
+      },
+      "written": 377,
+      "written_keys_sha256": "fc3e55df79657dd52aadb698b6210e434d7138900c1290f6d5811bd1d3daa6fb"
+    },
+    "esm_if1": {
+      "backend": "esm_if1_gvp4_t16_142M_UR50",
+      "chains": [
+        "ab",
+        "ag"
+      ],
+      "claim_boundary": "Frozen unsupervised per-residue features. No label, contact, prediction, or score was read. Extraction authorizes no training, selection, or evaluation.",
+      "complete": true,
+      "device": "cuda",
+      "dropped_units": {
+        "backbone_length_mismatch": 10,
+        "instance_not_selected": 217
+      },
+      "failed": [],
+      "format_version": "pretrained_representation_receipt_v1",
+      "instance_selection": {
+        "instances_per_split": {
+          "train": 3229,
+          "validation": 217
+        },
+        "instances_selected": 3446,
+        "split_manifest": "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json",
+        "split_manifest_sha256": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396",
+        "splits": [
+          "train",
+          "validation"
+        ]
+      },
+      "manifest": "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv",
+      "manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+      "representation_dim": 512,
+      "requested_unique_sequences": 2792,
+      "revision": "esm_if1_gvp4_t16_142M_UR50",
+      "sealed_splits_parsed": [
+        "test"
+      ],
+      "skipped_existing": 2323,
+      "splits_parsed": {
+        "test": 423,
+        "train": 3023
+      },
+      "written": 469,
+      "written_keys_sha256": "3517512a8220534edb7a2311fcdb9e2862332fbc6cfabae3b09138d281c05b23"
+    }
+  },
+  "split_manifest_sha256": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396"
+}
