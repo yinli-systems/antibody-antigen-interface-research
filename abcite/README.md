@@ -45,7 +45,7 @@ python evals/download_figures.py --max 16000 --source pmc --workers 12   # OA jp
 python evals/build_av_fixtures.py                 # tiny committed wav + keyframe fixtures
 python evals/run_visual_qa.py --fixture           # visual figure QA on 12 OA jpgs
 python evals/run_visual_qa.py                     # visual QA + pixel retrieval (ColPali: --try-colpali)
-python evals/run_vidore.py                        # official ViDoRe v1 subset (page retrieval nDCG@5)
+python evals/run_vidore.py --suite                # official ViDoRe v1 10-task page retrieval nDCG@5
 python evals/run_audio_qa.py                      # transcript BM25 vs CLAP/hash
 python evals/run_video_qa.py                      # keyframes vs transcript
 python evals/run_unified.py                       # four-modality snapshot
@@ -121,14 +121,23 @@ VQA cite-or-abstain on the 16k ColQwen2 run (heuristic, not a VLM): e2e **18.0%*
 
 ### Official ViDoRe v1 (same ColQwen2 weights)
 
-Same cached `vidore/colqwen2-v1.0` on the 5090 (`python evals/run_vidore.py`). Official QA-format subsets, late-interaction nDCG@5. Not the 10-task average.
+Same cached `vidore/colqwen2-v1.0` on the 5090 (`python evals/run_vidore.py --suite`). Official QA-format Hub subsets, our MaxSim + binary nDCG@5. Page retrieval, not PMC figure visual QA.
 
-| Official subset | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
+| Official task | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---:|---:|---:|---:|---:|---:|
-| TabFQuAD (`vidore/tabfquad_test_subsampled`) | 280 | 70 | 0.854 | 0.932 | 0.950 | **0.898** |
-| DocVQA (`vidore/docvqa_test_subsampled`) | 500 | 500 | 0.484 | 0.622 | 0.700 | **0.557** |
+| ArxivQA | 500 | 500 | 0.820 | 0.920 | 0.946 | **0.875** |
+| DocVQA | 500 | 500 | 0.484 | 0.622 | 0.700 | **0.557** |
+| InfoVQA | 500 | 499 | 0.872 | 0.946 | 0.958 | **0.910** |
+| TabFQuAD | 280 | 70 | 0.854 | 0.932 | 0.950 | **0.898** |
+| TAT-DQA | 831 | 139 | 0.793 | 0.962 | 0.975 | **0.887** |
+| ShiftProject | 100 | 83 | 0.780 | 0.830 | 0.830 | **0.810** |
+| SyntheticDocQA-AI | 100 | 63 | 0.950 | 0.950 | 0.960 | **0.950** |
+| SyntheticDocQA-Energy | 100 | 67 | 0.820 | 0.850 | 0.860 | **0.839** |
+| SyntheticDocQA-Gov | 100 | 47 | 0.710 | 0.740 | 0.760 | **0.723** |
+| SyntheticDocQA-Health | 100 | 53 | 0.830 | 0.870 | 0.880 | **0.848** |
+| **10-task mean** | | | | | | **0.830** |
 
-ColPali paper ViDoRe v1 **average** nDCG@5 **81.3** (10 tasks). Published ColQwen2-v1.0 **average** **89.2** (10 tasks). We ran **2 / 10** official tasks: TabFQuAD is above 81.3 (easy table pages); DocVQA is below it (the hard academic split). Remaining gap to the paper average is the other eight tasks, not a fix to PMC figure QA. Receipt: `evals/vidore_latest.json`.
+**10/10 mean nDCG@5 = 0.8296 (83.0).** ColPali paper average **81.3** (**+1.66**). Published ColQwen2-v1.0 average **89.2** (**−6.27**). Above the ColPali paper number; below the published ColQwen2-v1.0 number. Not SOTA. DocVQA (0.557) and SyntheticDocQA-Gov (0.723) are the drag. This is our scorer on the official QA-format splits, not the `vidore-benchmark` harness; `colpali-engine` query prefix may differ from the 89.2 recipe. Does not change the PMC figure protocol (nDCG@5 **0.107**). Receipt: `evals/vidore_latest.json`.
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 

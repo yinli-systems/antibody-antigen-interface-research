@@ -1,0 +1,19 @@
+{
+  "protocol": "vidore_v1_page_retrieval",
+  "dataset": "vidore/tatdqa_test",
+  "split": "test",
+  "task": "TAT-DQA",
+  "n_queries": 831,
+  "n_pages": 139,
+  "encoder": "colqwen2",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "metric": "nDCG@5 (binary, official ColPali / ViDoRe page retrieval)",
+  "recall@1": 0.793,
+  "recall@5": 0.9615,
+  "recall@10": 0.9747,
+  "ndcg@5": 0.8872,
+  "n": 831,
+  "vidore_colpali_paper_avg_ndcg@5": 0.813,
+  "published_colqwen2_v1_avg_ndcg@5": 0.8923,
+  "note": "Official ViDoRe v1 QA-format subset: visual question \u2192 document page. Not AbCite PMC figure visual QA (n=51 / N=15949). ColPali paper nDCG@5 81.3 is the 10-task ViDoRe v1 average."
+}

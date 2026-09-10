@@ -85,14 +85,23 @@ Vision beats caption BM25 at R@1? **yes**. ColQwen2 leads at R@1 (0.078 vs Biome
 
 ## Official ViDoRe v1 — page retrieval (same ColQwen2)
 
-Different protocol from PMC figure visual QA. Same `vidore/colqwen2-v1.0` on NVIDIA GeForce RTX 5090. ColPali paper 10-task average nDCG@5 is **81.3**; this is 2 official subsets, not that average.
+Different protocol from PMC figure visual QA. Same `vidore/colqwen2-v1.0` on NVIDIA GeForce RTX 5090. 10/10 official QA-format tasks.
 
-| Official subset | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
+| Official task | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---:|---:|---:|---:|---:|---:|
-| TabFQuAD | 280 | 70 | 0.854 | 0.932 | 0.950 | 0.898 |
+| ArxivQA | 500 | 500 | 0.820 | 0.920 | 0.946 | 0.875 |
 | DocVQA | 500 | 500 | 0.484 | 0.622 | 0.700 | 0.557 |
+| InfoVQA | 500 | 499 | 0.872 | 0.946 | 0.958 | 0.910 |
+| TabFQuAD | 280 | 70 | 0.854 | 0.932 | 0.950 | 0.898 |
+| TAT-DQA | 831 | 139 | 0.793 | 0.962 | 0.975 | 0.887 |
+| ShiftProject | 100 | 83 | 0.780 | 0.830 | 0.830 | 0.810 |
+| SyntheticDocQA-AI | 100 | 63 | 0.950 | 0.950 | 0.960 | 0.950 |
+| SyntheticDocQA-Energy | 100 | 67 | 0.820 | 0.850 | 0.860 | 0.839 |
+| SyntheticDocQA-Gov | 100 | 47 | 0.710 | 0.740 | 0.760 | 0.723 |
+| SyntheticDocQA-Health | 100 | 53 | 0.830 | 0.870 | 0.880 | 0.848 |
+| **10-task mean** | | | | | | **0.830** |
 
-See `evals/vidore_latest.json`.
+Mean nDCG@5 **0.8296** vs ColPali paper **81.3** (+1.66) vs published ColQwen2-v1.0 **89.2** (−6.27). Not SOTA. See `evals/vidore_latest.json`.
 
 ## Audio / video QA (unified multimodal RAG)
 
