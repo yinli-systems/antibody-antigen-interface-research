@@ -144,3 +144,37 @@ def test_the_registry_names_what_is_implemented() -> None:
     silently filled in.
     """
     assert sorted(BALANCERS) == ["gradnorm", "none", "pcgrad"]
+
+
+def test_every_balancer_reports_something_the_training_loop_can_record():
+    """The step return is the arm's only mechanistic evidence.
+
+    ``_run_epoch`` averages whatever ``step`` returns into the training history
+    under a ``balancer_`` prefix. A balancer that returned an empty dict, or one
+    whose keys were renamed, would train exactly as well and record nothing --
+    and the failure would be invisible until the arms were compared and had no
+    weights to compare. So pin the keys here.
+    """
+    import torch
+
+    model = torch.nn.Linear(4, 1, bias=False)
+    shared = list(model.parameters())
+    expected = {
+        "none": {"weight_node", "weight_pair"},
+        "pcgrad": {"pcgrad_conflict_rate"},
+        "gradnorm": {"weight_node", "weight_pair"},
+    }
+    assert set(expected) == set(BALANCERS), "a balancer exists with no pinned keys"
+
+    for name, keys in expected.items():
+        balancer = build_balancer(name)
+        model.zero_grad(set_to_none=True)
+        inputs = torch.ones(1, 4)
+        losses = {
+            "node": (model(inputs) ** 2).sum(),
+            "pair": (model(inputs) * 2.0).sum() ** 2,
+        }
+        state = balancer.step(losses, shared, model)
+        assert set(state) == keys, f"{name} reported {sorted(state)}"
+        for value in state.values():
+            assert isinstance(float(value), float)

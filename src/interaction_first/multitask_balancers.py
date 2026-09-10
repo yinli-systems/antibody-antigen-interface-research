@@ -72,14 +72,20 @@ class PCGrad:
 
         projected = [g.clone() for g in flats]
         self.steps += 1
+        # Counted for this step, not cumulatively: the caller averages what is
+        # returned over the epoch, and the mean of a running average is not a
+        # quantity anyone can interpret. Over one step the two agree, which is
+        # why the unit tests read the same either way.
+        conflicts_here = 0
         for i in range(len(flats)):
             for j in range(len(flats)):
                 if i == j:
                     continue
                 dot = torch.dot(projected[i], flats[j])
                 if float(dot) < 0.0:
-                    self.conflicts += 1
+                    conflicts_here += 1
                     projected[i] = projected[i] - dot / (flats[j].norm() ** 2 + 1e-12) * flats[j]
+        self.conflicts += conflicts_here
 
         _assign(shared, sum(projected))
         # Head parameters take their own task's gradient untouched: a head only
@@ -90,7 +96,7 @@ class PCGrad:
         heads = [p for p in model.parameters() if id(p) not in shared_ids and p.requires_grad]
         if heads:
             sum(losses.values()).backward(inputs=heads)
-        return {"pcgrad_conflict_rate": self.conflicts / max(self.steps, 1)}
+        return {"pcgrad_conflict_rate": float(conflicts_here)}
 
 
 class GradNorm:

@@ -1055,6 +1055,13 @@ def _run_epoch(
                     balancer_state = balancer.step(
                         {"node": node_loss, "pair": pair_loss}, shared_parameters, model
                     )
+                    # What the balancer did is the evidence this arm exists to
+                    # produce. GradNorm's task weights say whether it rediscovers
+                    # the hand-tuned loss scale; PCGrad's conflict rate says how
+                    # often it had anything to project. Averaged over the epoch
+                    # like every other component, so it lands in the history.
+                    for state_name, state_value in balancer_state.items():
+                        totals[f"balancer_{state_name}"] += float(state_value)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.gradient_clip)
                 optimizer.step()
             totals["total"] += float(loss.detach().item())
