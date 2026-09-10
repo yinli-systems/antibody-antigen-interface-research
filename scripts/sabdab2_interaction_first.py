@@ -902,6 +902,7 @@ def _run_epoch(
     import torch
 
     from interaction_first.losses import InteractionLossWeights, interaction_first_loss
+    from interaction_first.metrics import average_precision, binary_metrics
 
     training = optimizer is not None
     model.train(training)
@@ -910,6 +911,13 @@ def _run_epoch(
         order = np.random.default_rng(args.seed + epoch).permutation(len(identifiers))
         identifiers = [identifiers[int(index)] for index in order]
     totals: dict[str, float] = defaultdict(float)
+    # Per-complex node generalisation, recorded on validation epochs only.
+    # The history used to carry validation *losses* alone, which cannot answer
+    # whether a selection signal tracks node generalisation -- that needs the
+    # metric the model is ultimately judged on, per epoch. Nothing extra is
+    # computed on training epochs, and no extra forward pass is made on either:
+    # these are the predictions the epoch already produced.
+    node_records: list[dict[str, float | None]] = []
     processed = 0
     context = torch.enable_grad() if training else torch.no_grad()
     weights = InteractionLossWeights(
@@ -1082,6 +1090,18 @@ def _run_epoch(
                         totals[f"balancer_{state_name}"] += float(state_value)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.gradient_clip)
                 optimizer.step()
+            if not training:
+                span = int(antigen_mask[0].sum().item())
+                truth = epitope_labels[0, :span].detach().cpu().numpy().astype(bool)
+                probability = (
+                    matched["epitope_probability"][0, :span].detach().cpu().numpy()
+                )
+                record: dict[str, float | None] = {
+                    "node_epitope_auprc": average_precision(truth, probability)
+                }
+                for name, value in binary_metrics(truth, probability, 0.5).items():
+                    record[f"node_epitope_{name}"] = value
+                node_records.append(record)
             totals["total"] += float(loss.detach().item())
             for name, value in components.items():
                 totals[name] += float(value.detach().item())
@@ -1095,7 +1115,14 @@ def _run_epoch(
             del antigen, antibody, matched, stacked_negative_scores, loss
     if processed == 0:
         raise ValueError("Epoch received no instances")
-    return {name: value / processed for name, value in sorted(totals.items())}
+    summary = {name: value / processed for name, value in sorted(totals.items())}
+    if node_records:
+        from interaction_first.metrics import macro_metric_summary
+
+        for name, value in macro_metric_summary(node_records).items():
+            if isinstance(value, (int, float)):
+                summary[name] = float(value)
+    return summary
 
 
 def command_train(args: argparse.Namespace) -> None:
