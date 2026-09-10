@@ -1,4 +1,12 @@
-# Part two: the pathology is the ranking term
+# Part two: removing the ranking term improves both endpoints
+
+> **Read `RUN_CONTRACT.md` first.** `selection_metric` drives the learning-rate
+> schedule and the checkpoint choice as well as the stopping counter, and all
+> four arms monitor a `total` composed of whichever terms they enable. The arms
+> therefore differ in schedule and selected epoch as well as in the loss. The
+> effect survives a fixed-epoch check at eleven of twelve epochs, so it is not a
+> selection artefact — but this is an intervention on the training procedure,
+> not an isolation of the ranking gradient.
 
 Four arms, ten seeds each, AsEP `epitope_group` validation, `--selection-metric
 total`. The arms differ only in two loss weights; everything else — data, split,
@@ -22,7 +30,11 @@ seeds, epochs, capacity, representations — is identical.
 **Deleting the ranking term improves both endpoints, on every seed.** Not a
 trade-off, not a wash: +0.0214 pair AUPRC and +0.0369 node MCC, unanimous.
 
-## Contact supervision costs nothing on the node side
+Both *measured* endpoints. The ranking objective's own retrieval metrics are not
+in this table, so this is not a Pareto improvement across all tasks and is not
+described as one.
+
+## Contact supervision buys pair prediction with no detectable node cost
 
 | node + edge vs node only | | |
 |---|---|---|
@@ -31,14 +43,18 @@ trade-off, not a wash: +0.0214 pair AUPRC and +0.0369 node MCC, unanimous.
 | node AUPRC | −0.0055, 5/10 | **undecided** |
 
 Contact-edge supervision raises pair AUPRC from 0.0072 to 0.0905 — an order of
-magnitude — with no detectable cost to node prediction. And `node + rank` is
+magnitude — **with no detectable cost to node prediction**. Undecided is not
+equivalence: no non-inferiority margin was registered in advance, and one may
+not be read off these intervals now. The claim is the absence of a detected
+loss, not a demonstrated absence of loss. And `node + rank` is
 worse than `node only` on the node metrics by 0.075 MCC, so the ranking objective
 damages node learning even with no contact supervision present to interact with.
 
 ## What this establishes
 
-> The optimisation pathology localises to the **ranking auxiliary objective**,
-> not to relational supervision as a whole.
+> In this training and selection procedure, disabling the **ranking auxiliary
+> term** improves both prediction endpoints, while removing contact supervision
+> does not. The two relational objectives are not interchangeable.
 
 Contact supervision and node prediction are compatible: one is nearly free given
 the other, and together they beat either alone on its own endpoint. The
@@ -46,7 +62,12 @@ complex-level ranking term is what costs both.
 
 ## What it does not establish, and this matters
 
-**First-order shared-trunk gradient geometry does not explain it.**
+**First-order shared-trunk gradient geometry does not explain it.** And the
+converse inference — that a small gradient rules the term out — was made earlier
+in this project and is withdrawn: updates pass through AdamW's accumulated
+moments, so a short-window trunk gradient norm bounds neither the term's long-run
+effect on the parameters nor its effect through paths outside the trunk.
+
 `results/objective_component_localisation_v1/` measures the ranking gradient on
 the shared trunk at **23-40× smaller in norm** than the node gradient, with
 cosines against both other tasks within noise of zero. A term that small and that
