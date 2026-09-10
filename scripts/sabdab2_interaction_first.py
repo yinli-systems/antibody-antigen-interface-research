@@ -683,6 +683,14 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
         "length and the vector distribution while destroying which residue each "
         "vector describes; an attribution control, not a training option",
     )
+    parser.add_argument(
+        "--shift-representation-residues",
+        type=int,
+        default=0,
+        help="displace each extra representation's rows by this many residues, "
+        "cyclically; the severity knob for correspondence corruption, and an "
+        "evaluation-time control rather than a training option",
+    )
 
 
 def _wrap_with_representations(
@@ -758,7 +766,9 @@ def _wrap_with_representations(
         igfold_dim=args.igfold_dim,
     )
     store = CompositeEmbeddingStore(
-        embedding_store, sources, shuffle_seed=args.shuffle_representation_residues
+        embedding_store, sources,
+        shuffle_seed=args.shuffle_representation_residues,
+        shift=args.shift_representation_residues,
     )
 
     widths = {"antibody": set(), "antigen": set()}

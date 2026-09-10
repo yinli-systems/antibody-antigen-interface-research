@@ -198,6 +198,7 @@ class CompositeEmbeddingStore:
         base: Any,
         sources: Sequence[RepresentationSource],
         shuffle_seed: int | None = None,
+        shift: int = 0,
     ) -> None:
         names = [source.name for source in sources]
         if len(set(names)) != len(names):
@@ -205,7 +206,30 @@ class CompositeEmbeddingStore:
         self.base = base
         self.sources = tuple(sources)
         self.shuffle_seed = shuffle_seed
+        self.shift = int(shift)
+        if self.shift and shuffle_seed is not None:
+            raise RepresentationError(
+                "shift and shuffle are two settings of one knob; applying both "
+                "makes the displacement uninterpretable"
+            )
         self.filled: dict[str, int] = {source.name: 0 for source in self.sources}
+
+    def _shift(self, features: Any) -> Any:
+        """Displace every row by a fixed number of residues, cyclically.
+
+        The severity knob. Unlike a permutation this has one interpretable
+        parameter -- every residue is described by the vector of the residue
+        ``shift`` positions away -- and it preserves the multiset of vectors
+        exactly at every setting, so the only thing varying along a ladder of
+        shifts is displacement.
+        """
+        import torch
+
+        length = int(features.shape[0])
+        if length == 0 or self.shift % length == 0:
+            return features
+        order = (torch.arange(length, device=features.device) + self.shift) % length
+        return features.index_select(0, order)
 
     def _permute(self, features: Any, source_name: str, key: str, device: Any) -> Any:
         """Reorder a source's rows, destroying the residue correspondence.
@@ -255,6 +279,8 @@ class CompositeEmbeddingStore:
             present = features is not None
             if present and self.shuffle_seed is not None:
                 features = self._permute(features, source.name, sequence_key, device)
+            elif present and self.shift:
+                features = self._shift(features)
             if not present:
                 self.filled[source.name] += 1
                 features = torch.zeros(
@@ -280,6 +306,12 @@ class CompositeEmbeddingStore:
         measured yet.
         """
         described = {"sources": [source.describe_entry() for source in self.sources]}
+        if self.shift:
+            described["residue_shift"] = self.shift
+            described["residue_shift_note"] = (
+                "every row displaced by this many residues, cyclically; the "
+                "multiset of vectors is unchanged"
+            )
         if self.shuffle_seed is not None:
             described["residue_shuffle_seed"] = self.shuffle_seed
             described["residue_shuffle"] = (

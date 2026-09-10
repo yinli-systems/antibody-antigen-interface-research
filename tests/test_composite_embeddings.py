@@ -382,3 +382,65 @@ def test_two_structural_encoders_stack_on_the_antibody_side(tmp_path: Path) -> N
     assert [s.name for s in sources] == ["igfold", "esm_if1"]
     assert store.width_for(_digest("AAAACC"), 1280) == 1280 + 2 * (512 + PRESENCE_COLUMNS)
     assert store.width_for(_digest("GGGG"), 1280) == 1280 + (512 + PRESENCE_COLUMNS)
+
+
+def test_a_shift_of_zero_is_the_unperturbed_model(tmp_path: Path) -> None:
+    """k=0 must reproduce the recorded figure; it is the wiring control."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    plain = CompositeEmbeddingStore(_Base(10), [source]).load(key, "cpu")[0][0]
+    shifted = CompositeEmbeddingStore(_Base(10), [source], shift=0).load(key, "cpu")[0][0]
+
+    assert torch.equal(plain, shifted)
+
+
+def test_a_shift_displaces_every_row_by_the_same_amount(tmp_path: Path) -> None:
+    """One interpretable parameter: residue i is described by residue i+k."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    features = CompositeEmbeddingStore(_Base(10), [source], shift=3).load(key, "cpu")[0][0]
+    column = features[:, BASE_DIM]
+
+    assert [float(v) for v in column] == [3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 0.0, 1.0, 2.0]
+
+
+def test_a_shift_preserves_the_multiset_of_vectors(tmp_path: Path) -> None:
+    """So the only thing varying along a ladder of shifts is displacement."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    plain = CompositeEmbeddingStore(_Base(10), [source]).load(key, "cpu")[0][0][:, BASE_DIM]
+    shifted = CompositeEmbeddingStore(_Base(10), [source], shift=4).load(key, "cpu")[0][0][:, BASE_DIM]
+
+    assert torch.equal(plain.sort().values, shifted.sort().values)
+    assert not torch.equal(plain, shifted)
+
+
+def test_a_shift_of_the_full_length_is_the_identity(tmp_path: Path) -> None:
+    """Cyclic, so the ladder wraps rather than running off the end."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    plain = CompositeEmbeddingStore(_Base(10), [source]).load(key, "cpu")[0][0]
+    wrapped = CompositeEmbeddingStore(_Base(10), [source], shift=10).load(key, "cpu")[0][0]
+
+    assert torch.equal(plain, wrapped)
+
+
+def test_shift_and_shuffle_cannot_both_be_set(tmp_path: Path) -> None:
+    """Two settings of one knob; together the displacement means nothing."""
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {})
+
+    with pytest.raises(RepresentationError, match="two settings of one knob"):
+        CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=7, shift=3)
+
+
+def test_the_receipt_records_the_shift(tmp_path: Path) -> None:
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {})
+
+    described = CompositeEmbeddingStore(_Base(10), [source], shift=5).describe()
+
+    assert described["residue_shift"] == 5
+    assert "multiset of vectors is unchanged" in described["residue_shift_note"]
