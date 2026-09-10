@@ -1,7 +1,15 @@
 # Checkpoint selection: discovery, replication, independent confirmation
 
 Registered 2026-09-10, **before the group-validation replication reported and
-before any ratio-split run using the new selection metric existed**.
+before any run of the selection-metric configuration on the ratio split
+existed**.
+
+A correction to the first version of this line, which implied more than is true:
+the `epitope_ratio` **test split has already been read once**, for the original
+frozen configuration, giving MCC 0.2584. What is registered here in advance is
+the *second* reading, of the selection-metric configuration. The protocol history
+is: ratio test read once for the baseline configuration, then once more for this
+one, and no further.
 
 ## What was discovered, and where
 
@@ -43,15 +51,16 @@ observation is recorded as a single-seed artefact and nothing further happens.
 ## Stage three: independent confirmation on the ratio split
 
 The `epitope_ratio` test split has been read **once**, for the original frozen
-configuration, giving MCC 0.2584. This registers the **second and final**
-reading, for the selection-metric configuration.
+configuration, giving MCC 0.2584 — that reading is already reported in
+`results/asep_benchmark_v1/`. This registers the **second and final** reading,
+for the selection-metric configuration.
 
 **Everything is fixed here, before that split is touched:**
 
 | | fixed to |
 |---|---|
 | selection metric | `total` |
-| `d_model` | whichever of 128 / 256 has the higher mean epitope MCC in the **group-validation** replication |
+| `d_model` | `d*` by the mechanical rule below |
 | layers | 1 |
 | loss weights | the defaults, unchanged |
 | epochs | 12 |
@@ -61,8 +70,30 @@ reading, for the selection-metric configuration.
 | primary figure | **single model**, mean over ten seeds, because the published rows are single models |
 | secondary figure | ten-seed mean-score ensemble, reported separately and labelled |
 
-`d_model` is chosen from group validation and from nothing else. The choice is
-made before any ratio-split training starts.
+### The `d_model` rule, stated so it cannot be exercised
+
+Let `M(d)` be the mean per-complex epitope MCC on **group validation** over the
+ten paired seeds of the replication, at `d_model = d`, with the threshold chosen
+per seed on that same validation split.
+
+Let `[lo, hi]` be the percentile bootstrap 95% interval of the paired difference
+`M(256) − M(128)` over those ten seeds.
+
+    if lo > 0 or hi < 0:   d* = argmax over d in {128, 256} of M(d)
+    otherwise:             d* = 128
+
+That is: the larger model is used only when the paired difference is decided.
+When the interval contains zero the smaller model wins by rule, not by judgement
+— an undecided difference must not be resolved by preferring whichever number is
+nominally larger, and preferring the smaller model on a tie is a fixed
+convention rather than a decision taken after seeing the numbers.
+
+Nothing else enters. Not AUPRC, not AUROC, not precision, not the ratio split,
+not the sweep's single-seed figures that produced the hypothesis. `M` is the one
+quantity and the rule above is the whole procedure.
+
+The choice is computed and recorded before any ratio-split training of this
+configuration starts.
 
 **What will not happen on the ratio split**: no comparison of selection metrics
 there, no choice of `d_model` after seeing its test numbers, no threshold
