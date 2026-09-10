@@ -68,6 +68,40 @@ The honest characterisation is a **different operating point at comparable
 overall quality**: this model finds far more of each epitope and is wrong more
 often when it calls a residue positive.
 
+## Ensembling the ten seeds
+
+The ten checkpoints were already trained and their predictions already on disk,
+so averaging them costs nothing. The aggregation and the threshold were both
+selected on validation before the test figures were read.
+
+| | single model | **ten-seed ensemble** |
+|---|---:|---:|
+| MCC | 0.1572 | **0.1743** |
+| precision | 0.1889 | 0.1901 |
+| recall | 0.4288 | **0.4836** |
+| F1 | 0.2445 | **0.2579** |
+| AUROC | 0.6970 | **0.7088** |
+
+With the ensemble this work is at or above the published best on MCC (0.171),
+AUROC (0.706), F1 (0.215) and recall (0.299), and still below on precision.
+
+**This is not a like-for-like comparison.** The published figures are single
+models reported with a seed standard deviation; ten averaged models are a
+different object and the row is labelled accordingly. The single-model row is
+the one to compare.
+
+### A selection that did not survive
+
+Four ways of deriving a node score were tried: the model's own epitope head, and
+the maximum, mean and top-three mean of its pair predictions over each antigen
+residue's partners. Read off the test split, `top3` looked best at MCC 0.1764.
+Selected on validation, as it must be, `head` wins — validation MCC 0.3024
+against 0.2974 — and its test MCC is 0.1743.
+
+The apparent 0.002 gain was selection on the split being estimated. The
+ensembling gain of 0.017 survives the same discipline. Both are recorded because
+the contrast is the useful part.
+
 ## What this does not establish
 
 1. **This compares against published numbers, not re-run models.** No baseline
