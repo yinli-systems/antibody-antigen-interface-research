@@ -18,7 +18,13 @@ from pathlib import Path
 
 import numpy as np
 
-from abcite_core.figure_gallery import FigureGallery, FigureRec, fix_to_gallery_ids, recall_at_k
+from abcite_core.figure_gallery import (
+    FigureGallery,
+    FigureRec,
+    fix_to_gallery_ids,
+    recall_at_k,
+    resolve_figure_pixels,
+)
 from abcite_core.holdout import query_contains_pdb, strip_pdb_ids, visual_query_ok
 from abcite_core.models import AnswerStatus, Citation, QueryResponse
 from abcite_core.vision_flags import DEFAULT_RERANK_K
@@ -658,20 +664,43 @@ def visual_qa_response(
             retrieval_scores=scores,
             latency_ms=latency_ms,
         )
-    top = hits[0]
-    path = Path(top.chunk.image_path) if top.chunk.image_path else None
-    if path is not None and not path.is_absolute():
-        path = ROOT / path
-    rec = FigureRec(
-        figure_id=top.chunk.chunk_id,
-        path=path or Path("."),
-        caption=top.chunk.caption or "",
-        pmcid=None,
-        split="",
-        visual_class=top.chunk.modality.value,
-        source=top.chunk.source_label,
-    )
-    pred = answer_visual_question(q, rec, path, answerer=answerer)
+    chosen = None
+    pred = None
+    path: Path | None = None
+    for top in hits:
+        hint = Path(top.chunk.image_path) if top.chunk.image_path else None
+        if hint is not None and not hint.is_absolute():
+            hint = ROOT / hint
+        path = resolve_figure_pixels(top.chunk.chunk_id, hint)
+        if path is None:
+            continue
+        rec = FigureRec(
+            figure_id=top.chunk.chunk_id,
+            path=path,
+            caption=top.chunk.caption or "",
+            pmcid=None,
+            split="",
+            visual_class=top.chunk.modality.value,
+            source=top.chunk.source_label,
+        )
+        pred = answer_visual_question(q, rec, path, answerer=answerer)
+        chosen = top
+        break
+    if chosen is None or pred is None or path is None:
+        return QueryResponse(
+            trace_id=trace_id,
+            status=AnswerStatus.ABSTAIN,
+            answer=(
+                "Retrieved figures have no on-disk pixels in the jpg cache. "
+                "MaxSim ranking from npz is retrieval-first; heuristic VQA needs "
+                "evals/figures/cache (or ABCITE_PMC_IMAGE_DIR). Abstaining."
+            ),
+            citations=[],
+            provider=provider,
+            retrieval_scores=scores,
+            latency_ms=latency_ms,
+        )
+    top = chosen
     if pred.status == "abstain":
         return QueryResponse(
             trace_id=trace_id,
@@ -683,9 +712,7 @@ def visual_qa_response(
             latency_ms=latency_ms,
         )
     quote = (pred.evidence or pred.pixel_desc or "")[:280]
-    thumb = None
-    if top.chunk.image_path:
-        thumb = f"/media/{Path(top.chunk.image_path).name}"
+    thumb = f"/media/{path.name}"
     cite = Citation(
         chunk_id=top.chunk.chunk_id,
         claim=q,

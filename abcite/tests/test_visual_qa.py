@@ -6,7 +6,7 @@ import pytest
 from abcite_core.figure_gallery import FigureGallery, FigureRec, load_figure_records
 from abcite_core.holdout import query_contains_pdb, visual_query_ok
 from abcite_core.models import Chunk, Modality
-from abcite_core.retrieval import HybridIndex
+from abcite_core.retrieval import HybridIndex, Hit
 from abcite_core.vision import LocalImageEncoder
 from abcite_core.visual_qa import (
     caption_keyword_overlap,
@@ -15,6 +15,7 @@ from abcite_core.visual_qa import (
     load_visual_qa_gold,
     maxsim,
     maxsim_matrix,
+    visual_qa_response,
 )
 from agents.graph import EvidenceGraph
 from evals.run import _multimodal_snapshot_md
@@ -400,6 +401,69 @@ def test_search_by_image_uses_pmc_npz_when_flagged(tmp_path, monkeypatch):
     g_off = EvidenceGraph(idx, 0.12, False, "local")
     off = g_off.search_by_image(qpath, top_k=1, fuse_captions=False)
     assert off[0].chunk.chunk_id == "fig-fixture"
+
+
+def _pmc_hit(fid: str, image_path: str | None, score: float = 1.0) -> Hit:
+    return Hit(
+        chunk=Chunk(
+            chunk_id=fid,
+            parent_id=fid,
+            modality=Modality.FIGURE,
+            title=fid,
+            text=fid,
+            caption="",
+            source_url="",
+            source_label="pmc",
+            image_path=image_path,
+        ),
+        score=score,
+        bm25=0.0,
+        dense=0.0,
+        image=score,
+    )
+
+
+def test_pmc_vqa_abstains_when_jpg_missing(monkeypatch):
+    monkeypatch.delenv("ABCITE_PMC_IMAGE_DIR", raising=False)
+    monkeypatch.delenv("ABCITE_FIGURES_CACHE", raising=False)
+    monkeypatch.setenv("ABCITE_VLM", "0")
+    hits = [_pmc_hit("pmc-missing-pixels", None)]
+    resp = visual_qa_response(
+        "emerald nuclear speckles against a dark field",
+        hits,
+        provider="local",
+        trace_id="t-npz",
+        latency_ms=1.0,
+    )
+    assert resp.status.value == "abstain"
+    assert "no on-disk pixels" in resp.answer.lower() or "jpg cache" in resp.answer.lower()
+    assert resp.citations == []
+
+
+def test_pmc_vqa_heuristic_runs_on_cached_jpg(tmp_path, monkeypatch):
+    from PIL import Image
+
+    from abcite_core.figure_gallery import resolve_figure_pixels
+    from abcite_core.models import AnswerStatus
+
+    img_dir = tmp_path / "images"
+    img_dir.mkdir()
+    jpg = img_dir / "pmc-alpha.jpg"
+    Image.new("RGB", (16, 16), (20, 200, 40)).save(jpg, "JPEG")
+    monkeypatch.setenv("ABCITE_PMC_IMAGE_DIR", str(img_dir))
+    monkeypatch.setenv("ABCITE_VLM", "0")
+    found = resolve_figure_pixels("pmc-alpha")
+    assert found == jpg
+    hits = [_pmc_hit("pmc-alpha", None)]
+    resp = visual_qa_response(
+        "green emerald nuclear speckles against a dark field",
+        hits,
+        provider="local",
+        trace_id="t-jpg",
+        latency_ms=1.0,
+    )
+    assert resp.status in {AnswerStatus.ANSWERED, AnswerStatus.ABSTAIN}
+    assert resp.answer
 
 
 def test_eval_snapshot_keeps_visual_qa_primary():

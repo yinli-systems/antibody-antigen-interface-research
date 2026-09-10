@@ -160,13 +160,70 @@ def _figure_meta_index() -> dict[str, dict]:
     return found
 
 
+_IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def pmc_image_roots() -> list[Path]:
+    """On-disk jpg roots. npz retrieval does not require these files."""
+    roots: list[Path] = []
+    env = (os.environ.get("ABCITE_PMC_IMAGE_DIR") or os.environ.get("ABCITE_FIGURES_CACHE") or "").strip()
+    if env:
+        roots.append(Path(env).expanduser())
+    roots.extend(
+        [
+            FIG_ROOT / "cache" / "images",
+            FIG_ROOT / "cache",
+            Path("/workspace/abcite/evals/figures/cache/images"),
+            Path("/workspace/abcite/evals/figures/cache"),
+        ]
+    )
+    out: list[Path] = []
+    seen: set[str] = set()
+    for root in roots:
+        key = str(root)
+        if key not in seen:
+            seen.add(key)
+            out.append(root)
+    return out
+
+
+def resolve_figure_pixels(figure_id: str, hint: Path | str | None = None) -> Path | None:
+    """Find jpg/png for a gallery id. None → heuristic VQA must abstain."""
+    candidates: list[Path] = []
+    if hint is not None and str(hint) not in {"", ".", "None"}:
+        p = Path(str(hint))
+        candidates.append(p)
+        if not p.is_absolute():
+            candidates.append(ROOT / p)
+            candidates.append(FIG_ROOT / p)
+    fid = str(figure_id or "").strip()
+    if fid:
+        for root in pmc_image_roots():
+            for ext in _IMAGE_EXTS:
+                candidates.append(root / f"{fid}{ext}")
+            candidates.append(root / "images" / f"{fid}.jpg")
+    seen: set[str] = set()
+    for cand in candidates:
+        key = str(cand)
+        if key in seen:
+            continue
+        seen.add(key)
+        try:
+            if cand.is_file() and cand.stat().st_size > 32:
+                return cand
+        except OSError:
+            continue
+    return None
+
+
 def recs_for_npz_ids(ids: list[str]) -> list[FigureRec]:
     meta = _figure_meta_index()
     recs: list[FigureRec] = []
     for fid in ids:
         raw = meta.get(fid, {})
         rel = str(raw.get("path") or "")
-        path = FIG_ROOT / rel if rel else Path(".")
+        hint = FIG_ROOT / rel if rel else None
+        path = resolve_figure_pixels(fid, hint) or hint or Path(".")
         recs.append(
             FigureRec(
                 figure_id=fid,
@@ -548,7 +605,7 @@ class FigureGallery:
         hits: list[Hit] = []
         for i in order:
             rec = self.recs[int(i)]
-            path = rec.path if rec.path.is_file() else None
+            path = resolve_figure_pixels(rec.figure_id, rec.path)
             hits.append(
                 Hit(
                     chunk=Chunk(
