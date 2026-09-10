@@ -1,0 +1,110 @@
+{
+  "claim_boundary": "One cohort, one architecture. It shows this coupling does not transfer; it does not show that no coupling could.",
+  "comparison": "pair-supervised minus node-supervision-only, paired within seed",
+  "dataset": "AsEP",
+  "evaluated_on": "test",
+  "format_version": "multitask_coupling_v1",
+  "metrics": {
+    "epitope_node_macro_auprc": {
+      "bootstrap_ci95": [
+        0.004767986583553378,
+        0.010197396171852693
+      ],
+      "decided": true,
+      "favourable_seed_count": 10,
+      "node_only_mean": 0.24520495236760395,
+      "pair_supervised_mean": 0.23776729400837843,
+      "paired_difference": 0.007437658359225529,
+      "relative": 0.03128125081393003,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "epitope_node_macro_auroc": {
+      "bootstrap_ci95": [
+        -0.0038235090419456576,
+        0.004842886933303827
+      ],
+      "decided": false,
+      "favourable_seed_count": 5,
+      "node_only_mean": 0.69755384129206,
+      "pair_supervised_mean": 0.6970412293534994,
+      "paired_difference": 0.0005126119385605032,
+      "relative": 0.000735411216687924,
+      "seed_count": 10,
+      "sign_lower_bound": 0.2224411010081294
+    },
+    "epitope_node_macro_mcc": {
+      "bootstrap_ci95": [
+        -0.003507581585090129,
+        0.01623801830305894
+      ],
+      "decided": false,
+      "favourable_seed_count": 7,
+      "node_only_mean": 0.1454965273075028,
+      "pair_supervised_mean": 0.13896788846906058,
+      "paired_difference": 0.006528638838442194,
+      "relative": 0.04697947785178957,
+      "seed_count": 10,
+      "sign_lower_bound": 0.39337578389458766
+    },
+    "pair_macro_auprc": {
+      "bootstrap_ci95": [
+        -0.03472879342971398,
+        -0.030662705434586247
+      ],
+      "decided": true,
+      "favourable_seed_count": 0,
+      "node_only_mean": 0.00583796592457521,
+      "pair_supervised_mean": 0.038797225884311004,
+      "paired_difference": -0.032959259959735795,
+      "relative": -0.8495262021572529,
+      "seed_count": 10,
+      "sign_lower_bound": 0.0
+    },
+    "pair_macro_mcc": {
+      "bootstrap_ci95": [
+        -0.08360346936650065,
+        -0.08112586213095123
+      ],
+      "decided": true,
+      "favourable_seed_count": 0,
+      "node_only_mean": -5.600833682132083e-07,
+      "pair_supervised_mean": 0.08231604947678851,
+      "paired_difference": -0.08231660956015673,
+      "relative": -1.0000068040603476,
+      "seed_count": 10,
+      "sign_lower_bound": 0.0
+    },
+    "pair_macro_precision_at_true_contact_count": {
+      "bootstrap_ci95": [
+        -0.04746593392471346,
+        -0.04283370697462831
+      ],
+      "decided": true,
+      "favourable_seed_count": 0,
+      "node_only_mean": 0.0031516001697255982,
+      "pair_supervised_mean": 0.04851935067225778,
+      "paired_difference": -0.04536775050253218,
+      "relative": -0.9350444693496772,
+      "seed_count": 10,
+      "sign_lower_bound": 0.0
+    },
+    "paratope_node_macro_mcc": {
+      "bootstrap_ci95": [
+        -0.011250353963796497,
+        0.012541331636233749
+      ],
+      "decided": false,
+      "favourable_seed_count": 8,
+      "node_only_mean": 0.523512532816917,
+      "pair_supervised_mean": 0.5214653742664539,
+      "paired_difference": 0.0020471585504630795,
+      "relative": 0.0039257804093758295,
+      "seed_count": 10,
+      "sign_lower_bound": 0.4930986989367976
+    }
+  },
+  "seed_count": 10,
+  "split": "epitope_group",
+  "threshold_policy": "fixed 0.5 as written in the evaluation receipts"
+}
