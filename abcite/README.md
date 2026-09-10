@@ -111,12 +111,12 @@ Four-column on NVIDIA GeForce RTX 5090 (**n=273** / **N=15,949**). ColQwen2: GPU
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| caption BM25 | 0.000 | 0.007 | 0.007 | 0.003 |
-| BiomedCLIP T→I | 0.040 | 0.084 | 0.117 | 0.062 |
-| OpenCLIP ViT-B-32 T→I | 0.015 | 0.062 | 0.088 | 0.040 |
-| **ColQwen2 late-interaction T→I** | **0.073** | **0.176** | **0.209** | **0.128** |
+| caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
+| BiomedCLIP T→I | 0.040 | 0.084 | 0.114 | 0.062 |
+| OpenCLIP ViT-B-32 T→I | 0.015 | 0.062 | 0.092 | 0.040 |
+| **ColQwen2 late-interaction T→I** | **0.073** | **0.179** | **0.212** | **0.130** |
 
-ColQwen2 leads every cutoff. vs the previous **n=242** four-column **0.078 / 0.194 / 0.231 / 0.141**: R@1 **0.078 → 0.073**; R@5 **0.194 → 0.176**; R@10 **0.231 → 0.209**; nDCG@5 **0.141 → 0.128**. vs **n=166** **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066; R@5/nDCG a bit below that smaller gold. BM25 R@5 is 2/273. Vision still beats caption BM25 at R@1. Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline). Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json`.
+ColQwen2 leads every cutoff. BM25 leak closed: `vqa-pmc-02280` dropped **haplotype** and `vqa-pmc-00657` dropped **panoramic** (those were the 2/273 R@5 hits). Caption overlap still ≤1. vs **n=242** **0.078 / 0.194 / 0.231 / 0.141**: R@1 **0.078 → 0.073**; R@5 **0.194 → 0.179**; R@10 **0.231 → 0.212**; nDCG@5 **0.141 → 0.130**. vs **n=166** **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066; nDCG matches 0.130. Vision still beats caption BM25 at R@1. Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline). Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json`.
 
 Prior **n=242** same-gallery four-column (not this table): BiomedCLIP 0.041 / 0.083 / 0.120 / 0.062; OpenCLIP 0.016 / 0.070 / 0.099 / 0.045; ColQwen2 0.078 / 0.194 / 0.231 / 0.141; BM25 0 / 0.008 / 0.008 / 0.004. Prior **n=166**: BiomedCLIP 0.042 / 0.078 / 0.102 / 0.060; OpenCLIP 0.018 / 0.072 / 0.102 / 0.048; ColQwen2 0.066 / 0.187 / 0.217 / 0.130; BM25 0.
 
@@ -131,7 +131,7 @@ VQA cite-or-abstain is **not** retrieval R@K and **not** ViDoRe (official mean *
 
 The 2B VLM **does not beat** the heuristic on the prior gold. It over-answered (abstain **0%** on 10 unanswerable items). Do not set `ABCITE_VLM_MODEL=vidore/colqwen2-base`. Cached `embeddings-colqwen2-n15949.npz`; no 16k re-encode.
 
-**Not SOTA on the PMC figure protocol.** That nDCG@5 **0.128** is not ViDoRe. ViDoRe is **page retrieval** (visual question → PDF page). AbCite visual QA is **figure-jpg retrieval** on 273 PMC questions over N=15,949. Do not put 0.128 next to 81.3 or 89.2.
+**Not SOTA on the PMC figure protocol.** That nDCG@5 **0.130** is not ViDoRe. ViDoRe is **page retrieval** (visual question → PDF page). AbCite visual QA is **figure-jpg retrieval** on 273 PMC questions over N=15,949. Do not put 0.130 next to 81.3 or 89.2.
 
 ### Official ViDoRe v1 (same ColQwen2 weights)
 
@@ -171,7 +171,7 @@ Same weights, `Query: ` prefix restored, `ViDoReEvaluatorQA` (`python evals/run_
 | SyntheticDocQA-Health | 0.988 | **0.983** |
 | **10-task mean** | **0.892** | **0.891** |
 
-**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Does not change PMC figure visual QA (nDCG@5 **0.128** on n=273).
+**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Does not change PMC figure visual QA (nDCG@5 **0.130** on n=273).
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 
