@@ -133,7 +133,8 @@
     },
     "colqwen2_5_npz": "embeddings-colqwen2.5-n15949.npz hit",
     "colqwen2_5_maxsim": "GPU n_q=273 n_d=15949 max_q=52 max_d=768 obs_q=52 obs_d=779",
-    "colqwen2_5_maxsim_query_cap_note": "Tried ABCITE_MAXSIM_MAX_Q=128 vs 64; encoded queries obs_q=52 so q_trunc=0. R@1/5/10/nDCG@5 unchanged at 0.1026/0.2088/0.2564/0.155. Kept default query cap 64. 255/15949 cached docs exceed 768 tokens (obs_d=779); doc cap unchanged.",
+    "colqwen2_5_maxsim_query_cap_note": "Tried ABCITE_MAXSIM_MAX_Q=128 vs 64; encoded queries obs_q=52 so q_trunc=0. R@1/5/10/nDCG@5 unchanged at 0.1026/0.2088/0.2564/0.155. Kept default query cap 64.",
+    "colqwen2_5_maxsim_doc_cap_note": "npz stores full doc sequences (max 779; 255/15949 >768, max overage 11). GPU MaxSim max_d=779 (cap 1024) d_trunc=0 left R@K unchanged. Default doc cap stays 768. Receipt: visual_qa_colqwen2_5_maxd1024.json. No 16k re-encode.",
     "colqwen2_5_protocol_note": "Extra late-interaction column on the same cropped-PMC n=273 / N=15949 gold. Not ViDoRe page retrieval; do not mix with 89.11 / 89.2."
   },
   "vqa": {
