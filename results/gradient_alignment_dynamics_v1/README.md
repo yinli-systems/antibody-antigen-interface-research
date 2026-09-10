@@ -74,6 +74,28 @@ A sign this close to zero is exactly what a numerical artefact could
 manufacture. Two toolchains agreeing on where it flips is the evidence that it
 does not.
 
+## The norm ratio points opposite ways in the two cohorts
+
+![gradient trajectory](gradient_trajectory.png)
+
+The lower panels of the figure are `‖g_edge‖ / ‖g_node‖` on the same axis as the
+cosine. They do not agree:
+
+| cohort | ratio, settled | reading |
+|---|---|---|
+| AsEP | ~1.1 – 1.3 | the contact-edge gradient is the larger one |
+| sabdab2 | **~0.3** | the contact-edge gradient is about a third of the node gradient |
+
+`results/gradient_conflict_v1/` reports 1.37 – 1.50 at converged AsEP
+checkpoints, consistent with the AsEP panel. But the account built on it — that
+the relational term takes too large a step in a shared direction — is an **AsEP**
+observation. By the same measure on sabdab2 the relational term takes a much
+smaller step than the node term, and "over-steps" is the wrong word there.
+
+Both cohorts still show the transient, so the sign story generalises across these
+two and the magnitude story does not. Any statement about loss scale must name
+its cohort.
+
 ## What may be said
 
 That gradient measurements taken at convergence can conceal conflict that
@@ -88,6 +110,10 @@ geometry, and nothing here shows that a downstream quantity depends on it.
 
 Not that it generalises beyond these two cohorts and this architecture. Two
 cohorts agreeing is not a family of models agreeing.
+
+Not that loss-scale imbalance follows from it. The gradient norm ratio settles
+above one on AsEP and near a third on sabdab2, so the magnitude account does not
+survive the second cohort even though the sign account does.
 
 Not that this settles the mechanism behind the pair-supervision effect. The
 `results/gradient_conflict_v1/` figure keeps its numbers and its narrowed scope —
