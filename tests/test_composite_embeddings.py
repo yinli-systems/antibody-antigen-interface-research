@@ -343,3 +343,42 @@ def test_the_receipt_says_the_rows_were_shuffled(tmp_path: Path) -> None:
 
     assert described["residue_shuffle_seed"] == 7
     assert "correspondence is destroyed" in described["residue_shuffle"]
+
+
+def test_igfold_covers_the_antibody_side_only(tmp_path: Path) -> None:
+    """It predicts antibody structure and says nothing about an antigen.
+
+    The same asymmetry AntiBERTy has, for a different reason, and the reason the
+    two sides end up different widths.
+    """
+    manifest = _manifest(tmp_path / "m.csv")
+
+    (igfold,) = build_sources(manifest, igfold_root=tmp_path / "ig")
+
+    assert igfold.name == "igfold"
+    assert igfold.covers(_digest("AAAACC"))
+    assert not igfold.covers(_digest("GGGG"))
+
+
+def test_igfold_artifacts_are_keyed_by_the_antibody_digest(tmp_path: Path) -> None:
+    """The mapping is the identity; a different key would look up nothing."""
+    manifest = _manifest(tmp_path / "m.csv")
+
+    (igfold,) = build_sources(manifest, igfold_root=tmp_path / "ig")
+    key = _digest("AAAACC")
+
+    assert igfold.parts_by_key[key] == (key,)
+
+
+def test_two_structural_encoders_stack_on_the_antibody_side(tmp_path: Path) -> None:
+    """The generality experiment runs both, so their widths have to compose."""
+    manifest = _manifest(tmp_path / "m.csv")
+
+    sources = build_sources(
+        manifest, igfold_root=tmp_path / "ig", esm_if1_root=tmp_path / "if1"
+    )
+    store = CompositeEmbeddingStore(_Base(6), sources)
+
+    assert [s.name for s in sources] == ["igfold", "esm_if1"]
+    assert store.width_for(_digest("AAAACC"), 1280) == 1280 + 2 * (512 + PRESENCE_COLUMNS)
+    assert store.width_for(_digest("GGGG"), 1280) == 1280 + (512 + PRESENCE_COLUMNS)

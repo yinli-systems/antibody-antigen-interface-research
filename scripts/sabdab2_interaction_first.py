@@ -666,6 +666,8 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--antiberty-dim", type=int, default=512)
     parser.add_argument("--esm-if1-root", type=Path, default=None)
     parser.add_argument("--esm-if1-dim", type=int, default=512)
+    parser.add_argument("--igfold-root", type=Path, default=None)
+    parser.add_argument("--igfold-dim", type=int, default=512)
     parser.add_argument(
         "--random-projection-control",
         action="store_true",
@@ -699,7 +701,7 @@ def _wrap_with_representations(
     across the cohort. A width that varied by instance would build a model that
     cannot accept some of its own training data.
     """
-    roots = (args.antiberty_root, args.esm_if1_root)
+    roots = (args.antiberty_root, args.esm_if1_root, args.igfold_root)
     if all(root is None for root in roots) and not args.random_projection_control:
         return embedding_store, base_dim, base_dim, None
     if args.representation_manifest is None:
@@ -750,6 +752,10 @@ def _wrap_with_representations(
             args.esm_if1_root.expanduser().resolve() if args.esm_if1_root else None
         ),
         esm_if1_dim=args.esm_if1_dim,
+        igfold_root=(
+            args.igfold_root.expanduser().resolve() if args.igfold_root else None
+        ),
+        igfold_dim=args.igfold_dim,
     )
     store = CompositeEmbeddingStore(
         embedding_store, sources, shuffle_seed=args.shuffle_representation_residues

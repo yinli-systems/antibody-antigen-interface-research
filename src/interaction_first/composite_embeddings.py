@@ -363,6 +363,8 @@ def build_sources(
     antiberty_dim: int = 512,
     esm_if1_root: Path | None = None,
     esm_if1_dim: int = 512,
+    igfold_root: Path | None = None,
+    igfold_dim: int = 512,
 ) -> list[RepresentationSource]:
     """Build the sources for the encoders this project has extracted.
 
@@ -379,6 +381,22 @@ def build_sources(
                 dim=antiberty_dim,
                 parts_by_key={
                     entry["antibody_key"]: entry["antibody_parts"]
+                    for entry in chains.values()
+                },
+            )
+        )
+    if igfold_root is not None:
+        # IgFold predicts antibody structure and says nothing about an antigen,
+        # so it covers the antibody side alone -- the same asymmetry AntiBERTy
+        # has, for a different reason. Its artifacts are keyed by the antibody
+        # digest directly, so the mapping is the identity.
+        sources.append(
+            RepresentationSource(
+                name="igfold",
+                root=igfold_root,
+                dim=igfold_dim,
+                parts_by_key={
+                    entry["antibody_key"]: (entry["antibody_key"],)
                     for entry in chains.values()
                 },
             )
