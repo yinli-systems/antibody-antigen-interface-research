@@ -187,31 +187,31 @@ VIDEO_CANDIDATES = [
     },
     {
         "id": "oa-vid-neutrophil",
-        "file": "File:Neutrophil_chasing_bacteria.ogv",
-        "title": "Neutrophil chasing bacteria",
-        "question": "which clip shows a crawling cell chasing smaller rods across a field",
-        "answer": "Crawling leukocyte chasing rods.",
+        "file": "File:Monomeric-and-Dimeric-CXCL8-Are-Both-Essential-for-In-Vivo-Neutrophil-Recruitment-pone.0011754.s004.ogv",
+        "title": "In-vivo neutrophil recruitment",
+        "question": "which clip shows round white cells tumbling along a vessel wall in living tissue",
+        "answer": "Neutrophils rolling in a vessel.",
     },
     {
         "id": "oa-vid-mitosis",
-        "file": "File:Mitosis.ogv",
-        "title": "Mitosis",
-        "question": "which clip shows a nucleus splitting into two daughter nuclei",
-        "answer": "Mitosis / nuclear split.",
+        "file": "File:Global-Analysis-of-CPEBs-Reveals-Sequential-and-Non-Redundant-Functions-in-Mitotic-Cell-Cycle-pone.0138794.s004.ogv",
+        "title": "Mitotic cell-cycle movie",
+        "question": "which clip shows a round cell with chromosomes lining up then pulling into two masses",
+        "answer": "Mitotic chromosome split.",
     },
     {
-        "id": "oa-vid-sem",
-        "file": "File:Scanning_electron_microscope.ogv",
-        "title": "Scanning electron microscope",
-        "question": "which clip shows a scanning-electron chamber with a sample stub",
-        "answer": "SEM chamber / stub.",
+        "id": "oa-vid-polarize",
+        "file": "File:A-Mathematical-Model-for-Neutrophil-Gradient-Sensing-and-Polarization-pcbi.0030036.sv002.ogv",
+        "title": "Neutrophil polarization",
+        "question": "which clip shows one cell flattening and sending a single leading edge toward one pole",
+        "answer": "A cell polarizing to one pole.",
     },
     {
-        "id": "oa-vid-bacteria",
-        "file": "File:Bacteria_swimming.ogv",
-        "title": "Bacteria swimming",
-        "question": "which clip shows tiny rods darting in a wet-mount field",
-        "answer": "Swimming rods in wet mount.",
+        "id": "oa-vid-mitosis2",
+        "file": "File:Global-Analysis-of-CPEBs-Reveals-Sequential-and-Non-Redundant-Functions-in-Mitotic-Cell-Cycle-pone.0138794.s003.ogv",
+        "title": "Second mitotic time-lapse",
+        "question": "which clip is a time-lapse of a cell rounding up before the chromosomes segregate",
+        "answer": "Cell rounding before anaphase.",
     },
 ]
 
@@ -358,6 +358,8 @@ def _gold_video_row(cid: str, question: str, answer: str) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max", type=int, default=16)
+    ap.add_argument("--audio-only", action="store_true")
+    ap.add_argument("--video-only", action="store_true")
     args = ap.parse_args()
     CACHE.mkdir(parents=True, exist_ok=True)
     AUD_OA.mkdir(parents=True, exist_ok=True)
@@ -365,71 +367,73 @@ def main() -> None:
 
     audio_rows: list[dict] = []
     audio_gold: list[dict] = []
-    for i, cand in enumerate(AUDIO_CANDIDATES[: args.max]):
-        url = commons_file_url(cand["file"])
-        print(f"{cand['id']} url={url or 'missing'}", flush=True)
-        if not url:
-            continue
-        raw = CACHE / f"{cand['id']}{_url_suffix(url)}"
-        if not (raw.exists() or _get(url, raw)):
-            continue
-        wav = AUD_OA / f"{cand['id']}.wav"
-        if not extract_wav(raw, wav):
-            print(f"  wav extract fail {cand['id']}", flush=True)
-            continue
-        filler = FILLER[i % len(FILLER)]
-        transcript = _maybe_whisper(wav, filler)
-        rel = str(wav.relative_to(ROOT))
-        audio_rows.append(
-            {
-                "audio_id": cand["id"],
-                "path": rel,
-                "transcript": transcript,
-                "title": cand["title"],
-                "source": "wikimedia-commons",
-                "href": url,
-                "synthetic": False,
-            }
-        )
-        audio_gold.append(_gold_audio_row(cand["id"], cand["question"], cand["answer"]))
+    if not args.video_only:
+        for i, cand in enumerate(AUDIO_CANDIDATES[: args.max]):
+            url = commons_file_url(cand["file"])
+            print(f"{cand['id']} url={url or 'missing'}", flush=True)
+            if not url:
+                continue
+            raw = CACHE / f"{cand['id']}{_url_suffix(url)}"
+            if not (raw.exists() or _get(url, raw)):
+                continue
+            wav = AUD_OA / f"{cand['id']}.wav"
+            if not extract_wav(raw, wav):
+                print(f"  wav extract fail {cand['id']}", flush=True)
+                continue
+            filler = FILLER[i % len(FILLER)]
+            transcript = _maybe_whisper(wav, filler)
+            rel = str(wav.relative_to(ROOT))
+            audio_rows.append(
+                {
+                    "audio_id": cand["id"],
+                    "path": rel,
+                    "transcript": transcript,
+                    "title": cand["title"],
+                    "source": "wikimedia-commons",
+                    "href": url,
+                    "synthetic": False,
+                }
+            )
+            audio_gold.append(_gold_audio_row(cand["id"], cand["question"], cand["answer"]))
 
     video_rows: list[dict] = []
     video_gold: list[dict] = []
-    n_vid = max(0, args.max - 0)
-    for i, cand in enumerate(VIDEO_CANDIDATES[:n_vid]):
-        url = commons_file_url(cand["file"])
-        print(f"{cand['id']} url={url or 'missing'}", flush=True)
-        if not url:
-            continue
-        raw = CACHE / f"{cand['id']}{_url_suffix(url)}"
-        if not (raw.exists() or _get(url, raw)):
-            continue
-        from abcite_core.video_rag import extract_keyframes
+    if not args.audio_only:
+        n_vid = max(0, args.max)
+        for i, cand in enumerate(VIDEO_CANDIDATES[:n_vid]):
+            url = commons_file_url(cand["file"])
+            print(f"{cand['id']} url={url or 'missing'}", flush=True)
+            if not url:
+                continue
+            raw = CACHE / f"{cand['id']}{_url_suffix(url)}"
+            if not (raw.exists() or _get(url, raw)):
+                continue
+            from abcite_core.video_rag import extract_keyframes
 
-        frames = extract_keyframes(raw, CACHE / cand["id"], max_frames=4)
-        if not frames:
-            frames = extract_frames_ffmpeg(raw, CACHE / cand["id"], max_frames=4)
-        if not frames:
-            print(f"  no keyframes {cand['id']}", flush=True)
-            continue
-        wav = VID_OA / f"{cand['id']}.wav"
-        extract_wav(raw, wav)
-        filler = FILLER[(i + 3) % len(FILLER)]
-        transcript = _maybe_whisper(wav, filler) if wav.exists() else filler
-        video_rows.append(
-            {
-                "video_id": cand["id"],
-                "frames": [str(p.relative_to(ROOT)) for p in frames],
-                "audio_path": str(wav.relative_to(ROOT)) if wav.exists() else None,
-                "transcript": transcript,
-                "title": cand["title"],
-                "source": "wikimedia-commons",
-                "href": url,
-                "synthetic": False,
-                "captions": [],
-            }
-        )
-        video_gold.append(_gold_video_row(cand["id"], cand["question"], cand["answer"]))
+            frames = extract_keyframes(raw, CACHE / cand["id"], max_frames=4)
+            if not frames:
+                frames = extract_frames_ffmpeg(raw, CACHE / cand["id"], max_frames=4)
+            if not frames:
+                print(f"  no keyframes {cand['id']}", flush=True)
+                continue
+            wav = VID_OA / f"{cand['id']}.wav"
+            extract_wav(raw, wav)
+            filler = FILLER[(i + 3) % len(FILLER)]
+            transcript = _maybe_whisper(wav, filler) if wav.exists() else filler
+            video_rows.append(
+                {
+                    "video_id": cand["id"],
+                    "frames": [str(p.relative_to(ROOT)) for p in frames],
+                    "audio_path": str(wav.relative_to(ROOT)) if wav.exists() else None,
+                    "transcript": transcript,
+                    "title": cand["title"],
+                    "source": "wikimedia-commons",
+                    "href": url,
+                    "synthetic": False,
+                    "captions": [],
+                }
+            )
+            video_gold.append(_gold_video_row(cand["id"], cand["question"], cand["answer"]))
 
     for abs_row in ABSTAIN_AUDIO:
         audio_gold.append(

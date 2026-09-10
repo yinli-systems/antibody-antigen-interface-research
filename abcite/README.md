@@ -103,20 +103,20 @@ CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**
 
 **Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). Retrieval is ColQwen2 late-interaction T→I (`vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0`). VQA is a separate cite-or-abstain step on the retrieved (or oracle) figure pixels. Product default stays extractive/heuristic. `ABCITE_VLM=1` runs `Qwen/Qwen2-VL-2B-Instruct` generate — not ColQwen2 MaxSim (`custom_text_proj` is retrieval-only). Product: `POST /query` with `task=visual_qa`. CLIP fusion/rerank **off**.
 
-Gold: `evals/gold/visual_qa.jsonl` (**n=182**: 166 unique-gold answerable + 16 abstain; every answerable item is `caption_bm25_should_fail`). All 166 answerable gold IDs are in the 16k gallery. Gallery: **N=15,949** readable PMC OA jpg on the 5090. Encoder: ColQwen2 late-interaction (GPU MaxSim, `Query: ` prefix). OpenCLIP / BiomedCLIP were **not** re-scored on this larger gold (prior n=51 same-gallery numbers stay below).
+Gold: `evals/gold/visual_qa.jsonl` (**n=182**: 166 unique-gold answerable + 16 abstain; every answerable item is `caption_bm25_should_fail`). All 166 answerable gold IDs are in the 16k gallery. Gallery: **N=15,949** readable PMC OA jpg on the 5090. Encoder: ColQwen2 late-interaction (GPU MaxSim, `Query: ` prefix). OpenCLIP and BiomedCLIP were re-scored on this **same n=166 / N=15,949** gold (npy cache hits; no 16k re-encode).
 
 ### Headline: vision beats caption BM25 (fair visual gold)
 
-ColQwen2 column: `ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali --colpali-only` on NVIDIA GeForce RTX 5090 (**n=166** / **N=15,949**), GPU MaxSim (`maxsim GPU n_q=166 n_d=15949`), npz cache hit (`embeddings-colqwen2-n15949.npz`), `Query: ` prefix, query/doc tokens capped 64/768. All answerable items are `caption_bm25_should_fail`. CLIP columns are **not** in this table (not re-run on n=166).
+Four-column on NVIDIA GeForce RTX 5090 (**n=166** / **N=15,949**). ColQwen2: GPU MaxSim (`maxsim GPU n_q=166 n_d=15949`), npz hit (`embeddings-colqwen2-n15949.npz`), `Query: ` prefix, query/doc tokens capped 64/768. OpenCLIP / BiomedCLIP: pooled T→I, `embeddings-clip-vit-b-32-n15949.npy` / `embeddings-biomedclip-n15949.npy` hits. All answerable items are `caption_bm25_should_fail`.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
 | caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
+| BiomedCLIP T→I | 0.042 | 0.078 | 0.102 | 0.060 |
+| OpenCLIP ViT-B-32 T→I | 0.018 | 0.072 | 0.102 | 0.048 |
 | **ColQwen2 late-interaction T→I** | **0.066** | **0.187** | **0.217** | **0.130** |
 
-vs the previous **n=51** / N=15,949 ColQwen2 receipt **0.078 / 0.176 / 0.196 / 0.124**: R@1 **0.078 → 0.066** (larger, more diverse gold); R@5 **0.176 → 0.187**; R@10 **0.196 → 0.217**; nDCG@5 **0.124 → 0.130**. Vision still beats caption BM25 (0). Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline). Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json`.
-
-Prior **n=51** same-gallery CLIP reference (not re-scored on n=166): BiomedCLIP T→I 0.059 / 0.098 / 0.118 / 0.080; OpenCLIP ViT-B-32 0.039 / 0.137 / 0.176 / 0.096; BM25 0.
+ColQwen2 leads every cutoff. vs the previous **n=51** / N=15,949 ColQwen2 receipt **0.078 / 0.176 / 0.196 / 0.124**: R@1 **0.078 → 0.066** (larger, more diverse gold); R@5 **0.176 → 0.187**; R@10 **0.196 → 0.217**; nDCG@5 **0.124 → 0.130**. Same-gold CLIP vs that n=51 reference dropped too (BiomedCLIP R@1 0.059→0.042; OpenCLIP 0.039→0.018). Vision still beats caption BM25 (0). Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline). Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json`.
 
 N=1,200 n=51 reference (not the headline): ColQwen2 0.196 / 0.353 / 0.373 / 0.283; OpenCLIP 0.176 / 0.314 / 0.333 / 0.247; BiomedCLIP 0.098 / 0.176 / 0.274 / 0.135; BM25 0.020 / 0.039 / 0.059 / 0.029.
 
@@ -210,16 +210,16 @@ CLAP **beats** transcript BM25 at R@1 (0.333 vs 0.000) on this 9-clip Commons se
 
 Frames **beat transcript BM25** at R@1 (0.583 vs 0.083) on color/layout queries. Receipts: `evals/audio_qa_latest.json`, `evals/video_qa_latest.json`. `POST /query` `task=audio_qa|video_qa|unified`.
 
-**OA Wikimedia video** (`python evals/run_video_qa.py --oa`, N=6 real keyframes, OpenCLIP ViT-B-32 on the 5090). Extra Commons titles were missing; gallery did not grow. Small-n; not SOTA. Audio track is now real CLAP (R@1 0.000 on these silent/lab clips).
+**OA Wikimedia video** (`python evals/download_av.py --video-only && ABCITE_CLAP=1 python evals/run_video_qa.py --oa`, N=10 real keyframes, OpenCLIP ViT-B-32 on the 5090). Grew from 6 clips (PLOS mitosis / neutrophil movies replaced missing Commons titles). Small-n; not SOTA. Several clips have no audio stream; audio-track CLAP R@1 is **0.000**.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.167 | 0.833 | 1.000 | 0.506 |
-| **keyframe OpenCLIP T→I** | **0.500** | **0.833** | **1.000** | **0.677** |
-| audio track CLAP T→A | 0.000 | 0.833 | 1.000 | 0.420 |
-| within-video RRF | 0.167 | 0.833 | 1.000 | 0.554 |
+| transcript BM25 | 0.100 | 0.600 | 1.000 | 0.358 |
+| **keyframe OpenCLIP T→I** | **0.300** | **0.700** | **1.000** | **0.526** |
+| audio track CLAP T→A | 0.000 | 0.700 | 1.000 | 0.329 |
+| within-video RRF | 0.400 | 0.700 | 1.000 | 0.536 |
 
-Frames beat BM25 at R@1 (0.500 vs 0.167) on this 6-clip set. Receipt: `evals/video_qa_oa_latest.json`.
+Frames beat BM25 at R@1 (0.300 vs 0.100) on this 10-clip set. vs prior N=6: frame R@1 0.500→0.300 (larger gallery). Receipt: `evals/video_qa_oa_latest.json`.
 
 OpenCLIP ViT-B-32 is the default real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Optional ColPali: `pip install -e ".[colpali]"` and `ABCITE_COLPALI=1`. Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`.
 
@@ -277,7 +277,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColQwen2 late-interaction on 5090 N=15,949 n=166 (R@1 **0.066**); heuristic VQA e2e **11.0%** / oracle **57.7%** / abstain **75%**; prior 2B VLM n=61 e2e **1.6%** / oracle **42.6%** / abstain **0%** (not re-run; does not beat heuristic) |
+| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); four-column n=166 / N=15,949: ColQwen2 R@1 **0.066**, BiomedCLIP **0.042**, OpenCLIP **0.018**, BM25 0; heuristic VQA e2e **11.0%** / oracle **57.7%** / abstain **75%**; prior 2B VLM n=61 e2e **1.6%** (not re-run; does not beat heuristic) |
 | Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified`; OA Commons path `evals/download_av.py` + `--oa` | OA CLAP encoder=`clap` N=9 R@1 **0.333** vs BM25 0; CI uses synthetic wav/PNG fixtures; OA media is gitignored |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |

@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from abcite_core.models import AnswerStatus
 from abcite_core.video_rag import (
     VideoGallery,
@@ -56,6 +58,26 @@ def test_oa_video_candidates_should_fail_filler_bm25():
     blob = " ".join(FILLER)
     ids = [c["id"] for c in VIDEO_CANDIDATES]
     assert len(ids) == len(set(ids))
+    assert len(VIDEO_CANDIDATES) >= 8
     for cand in VIDEO_CANDIDATES:
         ov = caption_keyword_overlap(cand["question"], blob)
         assert ov["should_fail"], (cand["id"], ov["overlap_tokens"])
+
+
+def test_oa_video_gold_unique_ids():
+    gold = ROOT / "evals" / "gold" / "video_qa_oa.jsonl"
+    if not gold.exists():
+        pytest.skip("no OA video gold")
+    rows = [
+        __import__("json").loads(line)
+        for line in gold.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    ids = [r["id"] for r in rows]
+    assert len(ids) == len(set(ids))
+    ans = [r for r in rows if r.get("gold_video_ids")]
+    assert len(ans) >= 8
+    golds = [r["gold_video_ids"][0] for r in ans]
+    assert len(golds) == len(set(golds))
+    for r in rows:
+        assert r.get("transcript_bm25_should_fail") is True

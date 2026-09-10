@@ -72,14 +72,16 @@ Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heur
 
 ## Visual figure QA — primary multimodal demo
 
-Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=182** (166 unique-gold answerable + 16 abstain). All 166 answerable IDs are in-gallery. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query; every answerable item is `caption_bm25_should_fail`. Retrieval is ColQwen2 MaxSim (table below). OpenCLIP / BiomedCLIP were **not** re-scored on n=166. VQA is scored separately. Do not mix with official ViDoRe **89.11** vs published **89.2**. Do not put 0.130 next to 89.2.
+Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=182** (166 unique-gold answerable + 16 abstain). All 166 answerable IDs are in-gallery. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query; every answerable item is `caption_bm25_should_fail`. Retrieval is the four-column table below (same n=166 / N=15,949). VQA is scored separately. Do not mix with official ViDoRe **89.11** vs published **89.2**. Do not put 0.130 next to 89.2.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
 | caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
+| BiomedCLIP T→I | 0.042 | 0.078 | 0.102 | 0.060 |
+| OpenCLIP ViT-B-32 T→I | 0.018 | 0.072 | 0.102 | 0.048 |
 | ColQwen2 late-interaction T→I | 0.066 | 0.187 | 0.217 | 0.130 |
 
-Vision beats caption BM25 at R@1? **yes**. ColQwen2 GPU MaxSim (`maxsim GPU n_q=166 n_d=15949`) + `Query: ` prefix (tokens capped 64/768); npz hit `embeddings-colqwen2-n15949.npz` (no 16k re-encode). vs prior n=51 ColQwen2 **0.078 / 0.176 / 0.196 / 0.124**: R@1 0.078→0.066; R@5 0.176→0.187; R@10 0.196→0.217; nDCG@5 0.124→0.130. Prior n=51 CLIP (same gallery, not re-run): BiomedCLIP 0.059 / 0.098 / 0.118 / 0.080; OpenCLIP 0.039 / 0.137 / 0.176 / 0.096. Not ViDoRe; not SOTA.
+Vision beats caption BM25 at R@1? **yes**. ColQwen2 leads. GPU MaxSim (`maxsim GPU n_q=166 n_d=15949`) + `Query: ` prefix; npz hit `embeddings-colqwen2-n15949.npz`. CLIP/BiomedCLIP npy hits (`embeddings-clip-vit-b-32-n15949.npy`, `embeddings-biomedclip-n15949.npy`); no 16k re-encode. vs prior n=51 ColQwen2 **0.078 / 0.176 / 0.196 / 0.124**: R@1 0.078→0.066; R@5 0.176→0.187; R@10 0.196→0.217; nDCG@5 0.124→0.130. Same-gold CLIP vs that n=51 reference: BiomedCLIP R@1 0.059→0.042; OpenCLIP 0.039→0.018. Not ViDoRe; not SOTA.
 
 VQA cite-or-abstain (separate from R@K). Heuristic on the new gold (n=182 / N=15949 / 5090). Qwen2-VL-2B was **not** re-run (prior n=61 receipt).
 
@@ -157,7 +159,7 @@ OA Wikimedia audio (N=9 real wav, encoder=`clap` on CUDA, 5090; Hub still 429 �
 
 CLAP beats transcript BM25 at R@1 (0.333 vs 0.000). Prior wav-hash on n=6 was tied at 0.167.
 
-OA Wikimedia video still N=6 (extra Commons titles missing). Frames OpenCLIP R@1 **0.500** vs BM25 0.167. Audio-track CLAP R@1 **0.000**. See `evals/audio_qa_oa_latest.json`, `evals/video_qa_oa_latest.json`.
+OA Wikimedia video N=10 (grew from 6; OpenCLIP frames). Frames R@1 **0.300** vs BM25 0.100. Audio-track CLAP R@1 **0.000** (several clips have no audio stream). See `evals/audio_qa_oa_latest.json`, `evals/video_qa_oa_latest.json`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)
 

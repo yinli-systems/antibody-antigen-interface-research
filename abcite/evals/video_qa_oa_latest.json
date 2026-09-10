@@ -1,51 +1,51 @@
 {
   "protocol": "video_qa",
-  "n_gallery": 6,
-  "n_queries": 8,
-  "n_answerable": 6,
+  "n_gallery": 10,
+  "n_queries": 12,
+  "n_answerable": 10,
   "encoder": "clip-vit-b-32",
   "synthetic_fixture": false,
   "transcript_bm25": {
-    "recall@1": 0.1667,
-    "recall@5": 0.8333,
+    "recall@1": 0.1,
+    "recall@5": 0.6,
     "recall@10": 1.0,
-    "ndcg@5": 0.5059,
-    "n": 6
+    "ndcg@5": 0.3579,
+    "n": 10
   },
   "frame_clip_t2i": {
-    "recall@1": 0.5,
-    "recall@5": 0.8333,
+    "recall@1": 0.3,
+    "recall@5": 0.7,
     "recall@10": 1.0,
-    "ndcg@5": 0.6769,
-    "n": 6
+    "ndcg@5": 0.5262,
+    "n": 10
   },
   "audio_clap_t2a": {
     "recall@1": 0.0,
-    "recall@5": 0.8333,
+    "recall@5": 0.7,
     "recall@10": 1.0,
-    "ndcg@5": 0.4196,
-    "n": 6
+    "ndcg@5": 0.3291,
+    "n": 10
   },
   "within_video_rrf": {
-    "recall@1": 0.3333,
-    "recall@5": 0.8333,
+    "recall@1": 0.4,
+    "recall@5": 0.7,
     "recall@10": 1.0,
-    "ndcg@5": 0.5863,
-    "n": 6
+    "ndcg@5": 0.5361,
+    "n": 10
   },
   "transcript_bm25_should_fail_subset": {
-    "recall@1": 0.1667,
-    "recall@5": 0.8333,
+    "recall@1": 0.1,
+    "recall@5": 0.6,
     "recall@10": 1.0,
-    "ndcg@5": 0.5059,
-    "n": 6
+    "ndcg@5": 0.3579,
+    "n": 10
   },
   "frame_should_fail_subset": {
-    "recall@1": 0.5,
-    "recall@5": 0.8333,
+    "recall@1": 0.3,
+    "recall@5": 0.7,
     "recall@10": 1.0,
-    "ndcg@5": 0.6769,
-    "n": 6
+    "ndcg@5": 0.5262,
+    "n": 10
   },
   "note": "Video keyframe + spoken-track retrieval. Query describes scene (color, layout), not the lecture transcript. RRF is within-video (frames \u27c2 audio). CI local-image uses shared-space scene cues; CLIP when weights are present. Not mixed with paper caption BM25.",
   "frames_beat_transcript_bm25_r@1": true,

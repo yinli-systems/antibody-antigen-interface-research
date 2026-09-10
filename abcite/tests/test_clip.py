@@ -126,3 +126,16 @@ def test_live_openclip_figure_retrieval():
     text_hits = idx.search("trastuzumab HER2 domain IV epitope diagram", top_k=6)
     ids = [h.chunk.chunk_id for h in text_hits]
     assert "fig-1n8z" in ids or any(c.startswith("fig-") for c in ids)
+
+
+def test_biomedclip_local_snapshot(tmp_path, monkeypatch):
+    from abcite_core.clip_encoder import _biomedclip_local_snapshot
+
+    snap = tmp_path / "hub" / "models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224" / "snapshots" / "abc"
+    snap.mkdir(parents=True)
+    (snap / "open_clip_config.json").write_text("{}", encoding="utf-8")
+    (snap / "open_clip_pytorch_model.bin").write_bytes(b"x" * 51_000_000)
+    monkeypatch.setenv("HF_HOME", str(tmp_path))
+    monkeypatch.setattr("abcite_core.clip_encoder.clip_cache_dir", lambda: tmp_path / "clip")
+    found = _biomedclip_local_snapshot()
+    assert found == snap

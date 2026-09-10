@@ -78,8 +78,20 @@
       "ndcg@5": 0.0,
       "n": 166
     },
-    "biomedclip_t2i": null,
-    "openclip_t2i": null,
+    "biomedclip_t2i": {
+      "recall@1": 0.0422,
+      "recall@5": 0.0783,
+      "recall@10": 0.1024,
+      "ndcg@5": 0.06,
+      "n": 166
+    },
+    "openclip_t2i": {
+      "recall@1": 0.0181,
+      "recall@5": 0.0723,
+      "recall@10": 0.1024,
+      "ndcg@5": 0.048,
+      "n": 166
+    },
     "colpali_t2i": {
       "recall@1": 0.0663,
       "recall@5": 0.1867,
@@ -90,8 +102,8 @@
     "vision_rerank_biomedclip": {
       "recall@1": 0.006,
       "recall@5": 0.0241,
-      "recall@10": 0.0301,
-      "ndcg@5": 0.0154,
+      "recall@10": 0.0241,
+      "ndcg@5": 0.0162,
       "n": 166
     },
     "vqa": {
@@ -124,7 +136,12 @@
       "n": 166
     },
     "vision_beats_bm25_r@1": true,
-    "vision_beats_bm25_ndcg@5": true
+    "vision_beats_bm25_ndcg@5": true,
+    "n_answerable": 166,
+    "n_gallery": 15949,
+    "same_gold": true,
+    "clip_npy": "embeddings-clip-vit-b-32-n15949.npy and embeddings-biomedclip-n15949.npy hit; no 16k CLIP re-encode",
+    "colqwen2_npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode"
   },
   "colpali_t2i": {
     "recall@1": 0.0663,
@@ -134,7 +151,23 @@
     "n": 166
   },
   "colpali_encoder": "colqwen2",
+  "openclip_t2i": {
+    "recall@1": 0.0181,
+    "recall@5": 0.0723,
+    "recall@10": 0.1024,
+    "ndcg@5": 0.048,
+    "n": 166
+  },
+  "biomedclip_t2i": {
+    "recall@1": 0.0422,
+    "recall@5": 0.0783,
+    "recall@10": 0.1024,
+    "ndcg@5": 0.06,
+    "n": 166
+  },
   "maxsim": "GPU n_q=166 n_d=15949",
   "npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode",
-  "query_prefix": "Query: "
+  "query_prefix": "Query: ",
+  "skipped_clip_columns": false,
+  "clip_columns_n": 166
 }

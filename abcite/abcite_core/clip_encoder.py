@@ -108,8 +108,39 @@ def _hf_home() -> Path:
     return Path.home() / ".cache" / "huggingface"
 
 
+def _biomedclip_local_snapshot() -> Path | None:
+    """Hub snapshot with open_clip_config.json, if already on disk."""
+    roots = [
+        clip_cache_dir() / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224",
+        _hf_home()
+        / "hub"
+        / "models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+        / "snapshots",
+    ]
+    candidates: list[Path] = []
+    for root in roots:
+        if root.is_dir() and (root / "open_clip_config.json").is_file():
+            candidates.append(root)
+        elif root.is_dir():
+            for snap in sorted(root.iterdir(), reverse=True):
+                if (snap / "open_clip_config.json").is_file():
+                    candidates.append(snap)
+    for snap in candidates:
+        if (snap / "open_clip_pytorch_model.bin").is_file() or (
+            snap / "open_clip_model.safetensors"
+        ).is_file():
+            return snap
+    return candidates[0] if candidates else None
+
+
 def _biomedclip_cached_files() -> list[Path]:
     found: list[Path] = []
+    snap = _biomedclip_local_snapshot()
+    if snap is not None:
+        for name in ("open_clip_pytorch_model.bin", "open_clip_model.safetensors"):
+            cand = snap / name
+            if cand.is_file() and cand.stat().st_size > 50_000_000:
+                found.append(cand)
     roots = [clip_cache_dir(), _hf_home(), _hf_home() / "hub"]
     for root in roots:
         if not root.exists():
@@ -506,6 +537,9 @@ def _load_biomedclip() -> BiomedCLIPEncoder:
 
     device = _torch_device()
     cache = clip_cache_dir()
+    home = _hf_home()
+    os.environ.setdefault("HF_HOME", str(home))
+    os.environ.setdefault("HF_HUB_CACHE", str(home / "hub"))
     downloaded = download_biomedclip_weights()
     cached = bool(_biomedclip_cached_files())
     allow = _allow_biomedclip_download() or downloaded is not None or cached
@@ -513,6 +547,10 @@ def _load_biomedclip() -> BiomedCLIPEncoder:
         raise FileNotFoundError(f"no BiomedCLIP checkpoint in {cache}")
 
     names: list[str] = list(BIOMEDCLIP_HF_NAMES)
+    snap = _biomedclip_local_snapshot()
+    if snap is not None:
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
+        os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     local_dir = cache / "BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
     if (local_dir / "open_clip_config.json").is_file():
         names.insert(0, f"hf-hub:{local_dir}")

@@ -4,26 +4,18 @@
   "n_readable": 15949,
   "n_queries": 182,
   "n_answerable": 166,
-  "encoder": "colqwen2",
   "gpu": "NVIDIA GeForce RTX 5090",
-  "source": "pmc-oa",
   "fusion_default": "off",
-  "rerank_k": 50,
-  "vlm": {
-    "requested": false,
-    "model": "Qwen/Qwen2-VL-2B-Instruct",
-    "weights_cached": null,
-    "note": "VQA generate is Qwen2-VL-Instruct. Retrieval stays vidore/colqwen2-base + LoRA vidore/colqwen2-v1.0. Do not score Qwen2-VL as ColQwen2 (missing custom_text_proj). Do not mix PMC figure VQA with official ViDoRe 89.11."
-  },
-  "skipped_clip_columns": true,
-  "colpali": {
-    "protocol": "visual_qa",
-    "n_gallery": 15949,
-    "n_queries": 182,
-    "n_answerable": 166,
-    "n_caption_bm25_should_fail": 166,
-    "encoder": "colqwen2",
-    "rerank_k": 50,
+  "skipped_clip_columns": false,
+  "openclip": {
+    "encoder": "clip-vit-b-32",
+    "clip_image_only": {
+      "recall@1": 0.0181,
+      "recall@5": 0.0723,
+      "recall@10": 0.1024,
+      "ndcg@5": 0.048,
+      "n": 166
+    },
     "caption_bm25": {
       "recall@1": 0.0,
       "recall@5": 0.0,
@@ -31,6 +23,29 @@
       "ndcg@5": 0.0,
       "n": 166
     },
+    "npy": "embeddings-clip-vit-b-32-n15949.npy hit"
+  },
+  "biomedclip": {
+    "encoder": "biomedclip",
+    "clip_image_only": {
+      "recall@1": 0.0422,
+      "recall@5": 0.0783,
+      "recall@10": 0.1024,
+      "ndcg@5": 0.06,
+      "n": 166
+    },
+    "caption_bm25": {
+      "recall@1": 0.0,
+      "recall@5": 0.0,
+      "recall@10": 0.0,
+      "ndcg@5": 0.0,
+      "n": 166
+    },
+    "npy": "embeddings-biomedclip-n15949.npy hit",
+    "loaded_from": "local hub snapshot; HF_HOME=/workspace/hf-cache"
+  },
+  "colpali": {
+    "encoder": "colqwen2",
     "clip_image_only": {
       "recall@1": 0.0663,
       "recall@5": 0.1867,
@@ -38,56 +53,16 @@
       "ndcg@5": 0.1296,
       "n": 166
     },
-    "vision_rerank": {
-      "recall@1": 0.006,
-      "recall@5": 0.0241,
-      "recall@10": 0.0301,
-      "ndcg@5": 0.0154,
-      "n": 166
-    },
-    "fusion": {
-      "recall@1": 0.006,
-      "recall@5": 0.0361,
-      "recall@10": 0.1145,
-      "ndcg@5": 0.02,
-      "n": 166
-    },
-    "caption_bm25_should_fail_subset": {
+    "caption_bm25": {
       "recall@1": 0.0,
       "recall@5": 0.0,
       "recall@10": 0.0,
       "ndcg@5": 0.0,
       "n": 166
     },
-    "vision_should_fail_subset": {
-      "recall@1": 0.0663,
-      "recall@5": 0.1867,
-      "recall@10": 0.2169,
-      "ndcg@5": 0.1296,
-      "n": 166
-    },
-    "fusion_default": "off",
-    "vqa": {
-      "n": 182,
-      "end_to_end_accuracy": 0.1099,
-      "oracle_figure_accuracy": 0.5769,
-      "cite_top1": 0.0663,
-      "abstain_accuracy": 0.75,
-      "n_abstain": 16,
-      "gold_answer_overlap_e2e": 0.1019,
-      "gold_answer_overlap_oracle": 0.0687,
-      "path": "extractive/heuristic pixel cues; not a VLM",
-      "vlm_skip": null,
-      "not_vidore": true,
-      "not_maxsim": true,
-      "scored": true
-    },
-    "mean_gap_image_i2i": 0.178737,
-    "mean_gap_clip_text_to_image": 0.345209,
-    "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. Retrieval R@K is not VQA and not ViDoRe. VQA is cite-or-abstain given the retrieved figure (extractive/heuristic pixel cues; not a VLM).",
-    "vision_beats_bm25_r@1": true,
-    "vision_beats_bm25_ndcg@5": true,
-    "gpu": "NVIDIA GeForce RTX 5090"
+    "npz": "embeddings-colqwen2-n15949.npz hit",
+    "maxsim": "GPU n_q=166 n_d=15949",
+    "query_prefix": "Query: "
   },
   "four_column": {
     "caption_bm25": {
@@ -97,8 +72,20 @@
       "ndcg@5": 0.0,
       "n": 166
     },
-    "biomedclip_t2i": null,
-    "openclip_t2i": null,
+    "biomedclip_t2i": {
+      "recall@1": 0.0422,
+      "recall@5": 0.0783,
+      "recall@10": 0.1024,
+      "ndcg@5": 0.06,
+      "n": 166
+    },
+    "openclip_t2i": {
+      "recall@1": 0.0181,
+      "recall@5": 0.0723,
+      "recall@10": 0.1024,
+      "ndcg@5": 0.048,
+      "n": 166
+    },
     "colpali_t2i": {
       "recall@1": 0.0663,
       "recall@5": 0.1867,
@@ -109,8 +96,8 @@
     "vision_rerank_biomedclip": {
       "recall@1": 0.006,
       "recall@5": 0.0241,
-      "recall@10": 0.0301,
-      "ndcg@5": 0.0154,
+      "recall@10": 0.0241,
+      "ndcg@5": 0.0162,
       "n": 166
     },
     "vqa": {
@@ -143,10 +130,29 @@
       "n": 166
     },
     "vision_beats_bm25_r@1": true,
-    "vision_beats_bm25_ndcg@5": true
+    "vision_beats_bm25_ndcg@5": true,
+    "n_answerable": 166,
+    "n_gallery": 15949,
+    "same_gold": true,
+    "clip_npy": "embeddings-clip-vit-b-32-n15949.npy and embeddings-biomedclip-n15949.npy hit; no 16k CLIP re-encode",
+    "colqwen2_npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode"
   },
-  "maxsim": "GPU n_q=166 n_d=15949",
-  "npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode",
-  "query_prefix": "Query: ",
-  "clip_columns": "not re-scored on n=166; prior n=51 BiomedCLIP/OpenCLIP kept in README as a separate same-gallery reference"
+  "vqa": {
+    "n": 182,
+    "end_to_end_accuracy": 0.1099,
+    "oracle_figure_accuracy": 0.5769,
+    "cite_top1": 0.0663,
+    "abstain_accuracy": 0.75,
+    "n_abstain": 16,
+    "gold_answer_overlap_e2e": 0.1019,
+    "gold_answer_overlap_oracle": 0.0687,
+    "path": "extractive/heuristic pixel cues; not a VLM",
+    "vlm_skip": null,
+    "not_vidore": true,
+    "not_maxsim": true,
+    "scored": true
+  },
+  "clip_columns": "OpenCLIP and BiomedCLIP re-scored on the same n=166 / N=15949 gold as ColQwen2. Prior n=51 CLIP numbers are a separate smaller-gold reference only.",
+  "not_vidore": true,
+  "not_sota": true
 }
