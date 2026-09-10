@@ -27,12 +27,41 @@ and a relative margin resembling **a different arm's**, and presented them as on
 result. Withdrawn. Where a margin over the outer product is quoted, it is one of
 the rows above and it names its arm.
 
-**Two relative margins, both correct, not interchangeable.** The replication
-README reports +16.1%; the table above reports +16.7% for the same run. The first
-is the ratio of means, `mean(margin) / mean(baseline)`; the second is the mean of
-per-seed ratios. Any relative figure must say which, and this project uses the
-**mean of per-seed ratios** because that is the quantity the paired design
-supports.
+**Relative figures are bound per number, not unified.** The replication README
+reports +16.1% and the table above +16.7% for the same run: the first is
+`mean(margin) / mean(baseline)`, the second the mean of per-seed ratios. Both are
+correct and they are different estimands.
+
+An earlier version of this file declared that the project "uses the mean of
+per-seed ratios". It does not — `aggregate_representation_ablation.py` computes
+`mean_difference / control_mean`, a ratio of means, and renaming a number in a
+table would not have changed what the code produced. The aggregators now record
+`relative_estimand` in their own receipts, and where the per-seed data exists
+both estimands are emitted under separate names. Nothing was renamed.
+
+**The absolute paired difference is the primary report.** Percentages are an aid
+to the reader and nothing more. These baselines are small — macro pair AUPRC
+around 0.02 — so a relative figure magnifies an absolute difference of a few
+thousandths, and a paper that leads with the percentage misleads.
+
+**"Decided" is an internal protocol state, not a reported statistic.** Three
+different rules are registered across this project's protocols and they are not
+reconciled after the fact:
+
+| rule id | where | criterion |
+|---|---|---|
+| `bootstrap_ci_excludes_zero` | representation ablation | the percentile bootstrap 95% interval of the mean paired difference excludes zero |
+| `sign_bound_exceeds_half` | corruption ladder | the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5 |
+| `sign_bound_exceeds_half_and_ci_above_sesoi` | baseline margin | both of the above, against a pre-set smallest effect worth caring about |
+
+Each number carries its own `decision_rule_id`. The paper reports the mean
+difference, the interval, the count of favourable seeds and the registered
+criterion, and does not use the word "decided" as if it were a statistical term.
+
+**A small bound in one direction is not proof of the other.** An improvement
+probability whose lower bound is far below 0.5 does not establish worsening; the
+bound for the opposite direction has to be computed, and the aggregators do
+compute it.
 
 ## The ledger
 

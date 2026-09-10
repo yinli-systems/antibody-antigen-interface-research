@@ -57,6 +57,28 @@ constant, because the schedules diverged on the way there.
 is decided at eleven of the twelve. It is therefore not an artefact of the arms
 selecting different epochs.
 
+### And it appears before either arm's schedule moves
+
+`ReduceLROnPlateau` had not fired in **either** arm, in **any** seed, through
+epoch 7: every run of `node + edge` and of `node + edge + rank` is still at its
+initial learning rate for the first seven epochs. The earliest reduction in any
+seed is epoch 9 for `node + edge` and epoch 8 for the full objective.
+
+Within that window the learning rates are identical, and the advantage is
+already there:
+
+| epoch | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|
+| mean Δ node MCC | +0.0007 | +0.0033 | +0.0031 | +0.0095 | +0.0109 | +0.0167 | +0.0204 |
+| verdict | better | better | undecided | better | better | better | better |
+
+So the schedule confound does not apply to the first seven epochs, and the
+effect is established there — six of seven decided, growing thirtyfold across the
+window. What differs in that window is the objective and the trajectory it
+produces, not the learning rate and not the selected epoch.
+
+![run contract](run_contract.png)
+
 Per-epoch node MCC also shows where each arm ends up: `node only` and
 `node + edge` climb to ≈0.31 by epoch 12, the full objective stalls at ≈0.26,
 and `node + rank` plateaus at ≈0.245.
@@ -73,8 +95,10 @@ and were not held fixed.
 ## What may not
 
 Not that the ranking **gradient** causes the harm. The fixed-epoch check removes
-the selection confound and not the schedule confound, and no experiment here
-isolates the gradient from the optimiser state it accumulates into.
+the selection confound, and the first seven epochs remove the schedule confound,
+but the loss term still shapes the whole optimisation trajectory in every other
+way — no experiment here isolates the gradient from the optimiser state it
+accumulates into, or from paths outside the shared trunk.
 
 Not that a small trunk gradient rules the term out either — that inference was
 made earlier in this project and is withdrawn. Updates pass through AdamW's
