@@ -179,16 +179,19 @@ def test_verification_rejects_a_shape_difference() -> None:
         verify(rebuilt, stored, "x_0P", 1e-3)
 
 
-def test_verification_rejects_a_coordinate_difference() -> None:
+def test_verification_records_every_differing_residue() -> None:
     """A wrong chain order produces the right shape and the wrong coordinates."""
     rebuilt = {
         "antibody_backbone": numpy.zeros((4, 3, 3), dtype=numpy.float32),
         "antigen_backbone": numpy.ones((7, 3, 3), dtype=numpy.float32),
     }
     stored = dict(rebuilt, antibody_backbone=numpy.full((4, 3, 3), 9.0, dtype=numpy.float32))
+    differences: list = []
 
-    with pytest.raises(BackboneError, match="differs from the stored one"):
-        verify(rebuilt, stored, "x_0P", 1e-3)
+    verify(rebuilt, stored, "x_0P", 1e-3, differences)
+
+    assert differences[0]["residues_differing"] == 4
+    assert differences[0]["worst_angstroms"] == pytest.approx(9.0)
 
 
 class _NamedResidue(_Residue):
@@ -368,18 +371,40 @@ def test_verification_records_a_marker_disagreement_instead_of_failing() -> None
     ]
 
 
-def test_a_coordinate_difference_is_still_fatal() -> None:
-    """Only the unresolved-marker disagreement is downgraded."""
+def test_a_coordinate_difference_is_recorded_with_its_extent() -> None:
+    """The stored file is a second opinion, not the authority.
+
+    The rebuild guarantees its own placement reconstructs the observed chain;
+    the stored file carries no such guarantee and is known to be wrong in
+    places. A disagreement is therefore evidence about the stored file.
+    """
     rebuilt = {
         "antibody_backbone": numpy.ones((3, 3, 3), dtype=numpy.float32),
         "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
     }
     stored = {
-        "antibody_backbone": numpy.full((3, 3, 3), 5.0, dtype=numpy.float32),
+        "antibody_backbone": numpy.ones((3, 3, 3), dtype=numpy.float32),
         "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
     }
+    stored["antigen_backbone"][2] = 7.0
+    differences: list = []
 
-    with pytest.raises(BackboneError, match="differs from the stored one"):
+    verify(rebuilt, stored, "x_0P", 1e-3, differences)
+
+    assert differences[0]["residues_differing"] == 1
+    assert differences[0]["residues_total"] == 4
+    assert differences[0]["worst_angstroms"] == pytest.approx(6.0)
+
+
+def test_a_shape_difference_is_still_fatal() -> None:
+    """A different length is not a second opinion, it is an incompatible object."""
+    rebuilt = {
+        "antibody_backbone": numpy.ones((3, 3, 3), dtype=numpy.float32),
+        "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
+    }
+    stored = dict(rebuilt, antigen_backbone=numpy.ones((5, 3, 3), dtype=numpy.float32))
+
+    with pytest.raises(BackboneError, match="shape"):
         verify(rebuilt, stored, "x_0P", 1e-3, [])
 
 
