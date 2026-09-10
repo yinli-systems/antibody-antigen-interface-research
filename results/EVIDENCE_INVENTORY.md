@@ -11,7 +11,7 @@ found; `epitope_ratio` has had both of its two registered readings.
 
 | finding | evidence | strength |
 |---|---|---|
-| The pair head beats a predicted-marginal outer product | +30.5% macro pair AUPRC, 20 seeds, 20/20 positive, sign bound 0.861 | replicated; the original single-seed +32.7% was about 2× the truth |
+| The pair head beats a predicted-marginal outer product | **+16.7%** macro pair AUPRC, 10 seeds, 10/10, sign bound 0.741 (`baseline_margin_replication_v1`) | replicated; the original single-seed +32.7% was about 2× the truth. **The "+30.5% at 20 seeds" this row used to carry belongs to no artifact — see `CLAIMS_LEDGER.md`** |
 | ESM-IF1's contribution is in the residue correspondence, not the vectors | aligned +22.8% over ESM-2 (10/10); width-matched random −2.6% (undecided); shuffled −13.8% (decided worse); aligned vs shuffled +42.4% (10/10) | the full chain, one cohort, one encoder |
 | Displacing a frozen per-residue representation is harmful | reproduced on a second cohort with a second representation — a **sequence** model, AntiBERTy, not a second structural encoder. Quote the **pair AUPRC** endpoint: +30.2%, 6/6 seeds, sign bound 0.607 | two representations, two cohorts, confounded by coverage and provenance |
 | Correspondence damage saturates by ~8 **representation rows** | k=8, k=16 and global permutation within a hair of each other on both ladders | 10 seeds ESM-IF1, 6 seeds AntiBERTy; **the displacement is in CDR-selected row index, not verified as peptide distance** |
@@ -48,8 +48,12 @@ stronger for saying them out loud.
 
 ## Method defects that change what may be quoted
 
+Every main-text number is bound to its artifact in `CLAIMS_LEDGER.md`.
+
 | defect | consequence |
 |---|---|
+| A headline margin quoted as "+30.5%, 20 seeds, bound 0.8609" combined a twenty-seed arm's seed count and bound with a relative margin resembling a third arm | withdrawn; the ledger lists the five margin artifacts that do exist and what each says |
+| Relative margins were quoted without saying whether they are the ratio of means or the mean of per-seed ratios (+16.1% against +16.7% for one run) | the project uses the mean of per-seed ratios and says so |
 | `igfold_generality_v1` marks a comparison "decided" from a bootstrap interval alone, at 3/6 seeds and a sign bound of 0.153 | that row may not be called consistent across seeds. The project's endpoint, pair AUPRC, is 6/6 on the same comparison and is the figure to quote |
 | Stage two's arms differ in width, not in selection metric | the +0.0278 is a width effect; the selection-metric question is untested at ten seeds |
 | Stage three changes width **and** selection metric at once | it confirms a configuration bundle and can attribute nothing to either knob |
