@@ -21,6 +21,13 @@ at **epoch 1** and then overfits for eleven more. 763,401 parameters against
 3,229 training instances is data-limited, and the lever for a data-limited model
 is better frozen features, not more capacity.
 
+> **Scope of the width control, checked 2026-09-11.** `random_control` matches
+> `esm2_antiberty_esmif1` exactly — 2306/1793 input widths and 963,471
+> parameters against the same — and that is the pair this control was built for.
+> It is **wider than `esm_if1_only`** (1793/1793, 896,781), so any comparison
+> against that arm is across widths, in the conservative direction. Only
+> `esm_if1_shuffled` is width-matched to the aligned arm.
+
 Two encoders were added to the frozen ESM-2 input: **AntiBERTy**, which carries
 antibody statistics 3,229 pairs cannot supply, and **ESM-IF1**, which carries
 structure the sequence encoder never sees. Ten seeds per arm, the same ten in

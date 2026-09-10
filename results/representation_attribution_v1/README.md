@@ -20,13 +20,30 @@ AUPRC. Three explanations survive that observation on its own:
 3. the model gained **residue-level structural information** — the vector at
    position *i* describes the local geometry of residue *i*.
 
-Two controls separate them. Both keep the width, the parameter count and the
-cohort fixed, and differ only in what the added columns contain.
+Two controls separate them, and **they are matched to different things**. This
+was checked against the run configs rather than taken from this file's earlier
+wording, which claimed both were matched to the aligned arm. One is.
 
-| arm | added columns | what it removes |
-|---|---|---|
-| `random_control` | fixed random projection of the base embedding | all information; keeps width |
-| `esm_if1_shuffled` | the real ESM-IF1 vectors, rows permuted per key | the residue correspondence; keeps the vectors, their distribution, the complex and its length |
+| arm | antibody / antigen width | parameters | added columns | what it removes |
+|---|---|---|---|---|
+| `esm_if1_only` (aligned) | 1793 / 1793 | 896,781 | real ESM-IF1 | — |
+| `esm_if1_shuffled` | **1793 / 1793** | **896,781** | the real ESM-IF1 vectors, rows permuted per key | the residue correspondence; keeps the vectors, their distribution, the complex and its length |
+| `random_control` | **2306** / 1793 | **963,471** | fixed random projection of the base embedding | all information; keeps width |
+
+`esm_if1_shuffled` is matched to the aligned arm exactly — identical widths,
+identical parameter count, the same tensors in a different row order.
+
+`random_control` is **not**. It was built to mirror the three-encoder arm
+`esm2_antiberty_esmif1`, whose widths and parameter count it matches to the
+digit (963,471 against 963,471), and it is therefore **wider and larger than the
+aligned arm it is compared to** — 513 more antibody columns and 66,690 more
+parameters.
+
+That mismatch runs in the conservative direction: the aligned arm beats a random
+arm with **more** width and **more** parameters. So it does not weaken the
+comparison, and the comparison may not be described as width-matched.
+
+Audited by `scripts/audit_control_contract.py`.
 
 ## Result
 
@@ -50,9 +67,15 @@ The ordering is
 
 ## What it means
 
-**Capacity is not the explanation.** Two hundred thousand parameters of width
-carrying a linear function of the model's own input leave it where it was:
-interval containing zero, four seeds of ten.
+**Capacity is not the explanation.** The comparison that establishes this is
+`random_control` against `esm2`, where the parameter counts are 963,471 against
+763,401 — two hundred thousand parameters of width carrying a linear function of
+the model's own input leave the model where it was: interval containing zero,
+four seeds of ten. Those two arms are the pair the width control was designed
+for and its receipt records both counts.
+
+The aligned-versus-random figure below (+26.1%) is a comparison **across**
+widths, with the random arm the wider one, and it is reported as such.
 
 **"Some structured signal" is not the explanation either, and the evidence is
 stronger than a null.** Misaligned real features are **worse than no features at

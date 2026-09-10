@@ -143,6 +143,15 @@ def main(argv: list[str] | None = None) -> int:
         "sesoi": arguments.sesoi,
         "significant": significant,
         "meaningful": meaningful,
+        "decision_rule_id": "sign_bound_exceeds_half_and_ci_above_sesoi",
+        "decision_rule": (
+            "both: the exact sign lower bound exceeds 0.5, and the lower end of "
+            "the bootstrap interval exceeds the smallest effect worth caring about"
+        ),
+        "relative_estimand": (
+            "per_seed_ratios: each seed's (model - baseline) / baseline; the "
+            "mean and median of these are reported, not a ratio of means"
+        ),
         "verdict": "established" if (significant and meaningful) else "not established",
         "per_seed": per_seed,
         "claim_boundary": (

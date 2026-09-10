@@ -125,7 +125,26 @@ def main(argv: list[str] | None = None) -> int:
         "control_mean": control_mean,
         "treatment_mean": sum(treatment[seed] for seed in shared) / count,
         "mean_difference": mean,
+        # Two relative estimands, both correct and not interchangeable. The
+        # first divides the mean paired difference by the control's mean; the
+        # second averages each seed's own ratio. On a small baseline they can
+        # differ noticeably, so each is named rather than one being called "the"
+        # relative difference.
         "relative_difference": (mean / control_mean) if control_mean else None,
+        "relative_estimand": "ratio_of_means: mean paired difference / control arm mean",
+        "relative_difference_mean_of_paired_ratios": (
+            sum((row["treatment"] - row["control"]) / row["control"]
+                for row in per_seed if row["control"]) / len(per_seed)
+            if all(row["control"] for row in per_seed) else None
+        ),
+        # The rule this comparison was registered under. Three different rules
+        # are in use across this project's protocols and they are not unified
+        # after the fact: each number carries the rule it was registered with.
+        "decision_rule_id": "bootstrap_ci_excludes_zero",
+        "decision_rule": (
+            "the percentile bootstrap 95% interval of the mean paired difference "
+            "excludes zero"
+        ),
         "sd_difference": sd,
         "effect_size": (mean / sd) if sd > 0 else None,
         "bootstrap_ci95": [lower, upper],

@@ -109,6 +109,11 @@ def summarise(rows: list[dict]) -> dict:
         bound = clopper_pearson_lower_bound(negative, count)
         summary["sign_lower_bound"] = bound
         summary["damaged"] = bound > 0.5
+        summary["decision_rule_id"] = "sign_bound_exceeds_half"
+        summary["decision_rule"] = (
+            "the exact Clopper-Pearson lower bound on the fraction of seeds in "
+            "the stated direction exceeds 0.5"
+        )
     return summary
 
 
