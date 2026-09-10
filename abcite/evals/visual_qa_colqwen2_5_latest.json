@@ -1,0 +1,78 @@
+{
+  "protocol": "visual_qa",
+  "n_gallery": 15949,
+  "n_queries": 295,
+  "n_answerable": 273,
+  "n_caption_bm25_should_fail": 273,
+  "encoder": "colqwen2.5",
+  "rerank_k": 50,
+  "caption_bm25": {
+    "recall@1": 0.0,
+    "recall@5": 0.0,
+    "recall@10": 0.0,
+    "ndcg@5": 0.0,
+    "n": 273
+  },
+  "clip_image_only": {
+    "recall@1": 0.1026,
+    "recall@5": 0.2088,
+    "recall@10": 0.2564,
+    "ndcg@5": 0.155,
+    "n": 273
+  },
+  "vision_rerank": {
+    "recall@1": 0.0183,
+    "recall@5": 0.0256,
+    "recall@10": 0.0293,
+    "ndcg@5": 0.0222,
+    "n": 273
+  },
+  "fusion": {
+    "recall@1": 0.0147,
+    "recall@5": 0.0623,
+    "recall@10": 0.1282,
+    "ndcg@5": 0.0371,
+    "n": 273
+  },
+  "caption_bm25_should_fail_subset": {
+    "recall@1": 0.0,
+    "recall@5": 0.0,
+    "recall@10": 0.0,
+    "ndcg@5": 0.0,
+    "n": 273
+  },
+  "vision_should_fail_subset": {
+    "recall@1": 0.1026,
+    "recall@5": 0.2088,
+    "recall@10": 0.2564,
+    "ndcg@5": 0.155,
+    "n": 273
+  },
+  "fusion_default": "off",
+  "vqa": {
+    "n": 295,
+    "end_to_end_accuracy": 0.1017,
+    "oracle_figure_accuracy": 0.6068,
+    "cite_top1": 0.1026,
+    "abstain_accuracy": 0.7727,
+    "n_abstain": 22,
+    "gold_answer_overlap_e2e": 0.0474,
+    "gold_answer_overlap_oracle": 0.0661,
+    "path": "extractive/heuristic pixel cues; not a VLM",
+    "vlm_skip": null,
+    "not_vidore": true,
+    "not_maxsim": true,
+    "scored": true
+  },
+  "mean_gap_image_i2i": 0.167209,
+  "mean_gap_clip_text_to_image": 0.317508,
+  "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. Retrieval R@K is not VQA and not ViDoRe. VQA is cite-or-abstain given the retrieved figure (extractive/heuristic pixel cues; not a VLM).",
+  "vision_beats_bm25_r@1": true,
+  "vision_beats_bm25_ndcg@5": true,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "npz": "embeddings-colqwen2.5-n15949.npz hit",
+  "maxsim": "GPU n_q=273 n_d=15949",
+  "query_prefix": "Query: ",
+  "device": "cuda",
+  "cuda": true
+}

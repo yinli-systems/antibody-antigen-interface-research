@@ -113,7 +113,27 @@
     "maxsim": "GPU n_q=273 n_d=15949",
     "bm25_leak_fix": "rewrote vqa-pmc-02280 (dropped haplotype) and vqa-pmc-00657 (dropped panoramic)",
     "vision_beats_bm25_r@1": true,
-    "vision_beats_bm25_ndcg@5": true
+    "vision_beats_bm25_ndcg@5": true,
+    "colpali_v1_3_t2i": {
+      "recall@1": 0.044,
+      "recall@5": 0.1319,
+      "recall@10": 0.1722,
+      "ndcg@5": 0.0904,
+      "n": 273
+    },
+    "colpali_v1_3_npz": "embeddings-colpali-v1.3-n15949.npz hit",
+    "colpali_v1_3_maxsim": "GPU n_q=273 n_d=15949",
+    "colpali_v1_3_protocol_note": "Paper ViDoRe nDCG@5 81.3 is PAGE retrieval (visual question \u2192 PDF page). This extra column is cropped PMC figures on the same n=273 / N=15949 gold. Do not put this R@K next to 81.3 or official ViDoRe 89.11 / published 89.2.",
+    "colqwen2_5_t2i": {
+      "recall@1": 0.1026,
+      "recall@5": 0.2088,
+      "recall@10": 0.2564,
+      "ndcg@5": 0.155,
+      "n": 273
+    },
+    "colqwen2_5_npz": "embeddings-colqwen2.5-n15949.npz hit",
+    "colqwen2_5_maxsim": "GPU n_q=273 n_d=15949",
+    "colqwen2_5_protocol_note": "Extra late-interaction column on the same cropped-PMC n=273 / N=15949 gold. Not ViDoRe page retrieval; do not mix with 89.11 / 89.2."
   },
   "vqa": {
     "n": 295,
@@ -132,5 +152,59 @@
   },
   "same_gold": true,
   "vision_beats_bm25_r@1": true,
-  "vision_beats_bm25_ndcg@5": true
+  "vision_beats_bm25_ndcg@5": true,
+  "extra_columns": {
+    "colpali-v1.3": {
+      "encoder": "colpali-v1.3",
+      "clip_image_only": {
+        "recall@1": 0.044,
+        "recall@5": 0.1319,
+        "recall@10": 0.1722,
+        "ndcg@5": 0.0904,
+        "n": 273
+      },
+      "caption_bm25": {
+        "recall@1": 0.0,
+        "recall@5": 0.0,
+        "recall@10": 0.0,
+        "ndcg@5": 0.0,
+        "n": 273
+      },
+      "npz": "embeddings-colpali-v1.3-n15949.npz hit",
+      "maxsim": "GPU n_q=273 n_d=15949",
+      "query_prefix": "Query: ",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "device": "cuda",
+      "cuda": true,
+      "n_gallery": 15949,
+      "n_answerable": 273,
+      "protocol_note": "Paper ViDoRe nDCG@5 81.3 is PAGE retrieval (visual question \u2192 PDF page). This extra column is cropped PMC figures on the same n=273 / N=15949 gold. Do not put this R@K next to 81.3 or official ViDoRe 89.11 / published 89.2."
+    },
+    "colqwen2.5": {
+      "encoder": "colqwen2.5",
+      "clip_image_only": {
+        "recall@1": 0.1026,
+        "recall@5": 0.2088,
+        "recall@10": 0.2564,
+        "ndcg@5": 0.155,
+        "n": 273
+      },
+      "caption_bm25": {
+        "recall@1": 0.0,
+        "recall@5": 0.0,
+        "recall@10": 0.0,
+        "ndcg@5": 0.0,
+        "n": 273
+      },
+      "npz": "embeddings-colqwen2.5-n15949.npz hit",
+      "maxsim": "GPU n_q=273 n_d=15949",
+      "query_prefix": "Query: ",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "device": "cuda",
+      "cuda": true,
+      "n_gallery": 15949,
+      "n_answerable": 273,
+      "protocol_note": "Extra late-interaction column on the same cropped-PMC n=273 / N=15949 gold. Not ViDoRe page retrieval; do not mix with 89.11 / 89.2."
+    }
+  }
 }

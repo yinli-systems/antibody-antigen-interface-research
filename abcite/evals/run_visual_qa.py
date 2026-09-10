@@ -15,7 +15,7 @@ from abcite_core.clip_encoder import (
     build_vision_encoder,
     try_load_biomedclip,
 )
-from abcite_core.colpali_encoder import try_load_colpali
+from abcite_core.colpali_encoder import encoder_cache_name, try_load_colpali
 from abcite_core.figure_gallery import FigureGallery, load_figure_records
 from abcite_core.vision_flags import DEFAULT_RERANK_K
 from abcite_core.visual_qa import evaluate_visual_qa, load_visual_qa_gold
@@ -83,6 +83,89 @@ def _four_column(openclip: dict | None, biomed: dict | None, colpali: dict | Non
     }
 
 
+def _attach_late_receipt(report: dict, gallery, encoder) -> dict:
+    name = encoder_cache_name(str(getattr(encoder, "name", "") or report.get("encoder") or ""))
+    n = int(getattr(gallery, "n", 0) or report.get("n_gallery") or 0)
+    cache = gallery._cache_key().with_suffix(".npz")
+    nq = int(report.get("n_answerable") or 0)
+    cuda = False
+    device = str(getattr(encoder, "device", "") or "")
+    try:
+        import torch
+
+        cuda = bool(torch.cuda.is_available())
+        if not device:
+            device = "cuda" if cuda else "cpu"
+    except Exception:
+        pass
+    prefix = getattr(getattr(encoder, "processor", None), "query_prefix", None)
+    report["encoder"] = name
+    report["npz"] = f"embeddings-{name}-n{n}.npz {'hit' if cache.exists() else 'wrote'}"
+    report["maxsim"] = f"{'GPU' if cuda else 'CPU'} n_q={nq} n_d={n}"
+    report["query_prefix"] = prefix or "Query: "
+    report["device"] = device
+    report["cuda"] = cuda
+    return report
+
+
+def _extra_column_note(enc: str) -> str:
+    if enc == "colpali-v1.3":
+        return (
+            "Paper ViDoRe nDCG@5 81.3 is PAGE retrieval (visual question → PDF page). "
+            "This extra column is cropped PMC figures on the same n=273 / N=15949 gold. "
+            "Do not put this R@K next to 81.3 or official ViDoRe 89.11 / published 89.2."
+        )
+    if enc == "colqwen2.5":
+        return (
+            "Extra late-interaction column on the same cropped-PMC n=273 / N=15949 gold. "
+            "Not ViDoRe page retrieval; do not mix with 89.11 / 89.2."
+        )
+    return (
+        "PMC cropped-figure T→I on the visual_qa gold. Not ViDoRe page retrieval."
+    )
+
+
+def _merge_extra_into_protocols(prev: dict, col_report: dict) -> dict:
+    """Keep the ColQwen2 four-column; attach v1.3 / 2.5 as extra keys."""
+    enc = encoder_cache_name(str(col_report.get("encoder") or ""))
+    slim = {
+        "encoder": col_report.get("encoder"),
+        "clip_image_only": col_report.get("clip_image_only"),
+        "caption_bm25": col_report.get("caption_bm25"),
+        "npz": col_report.get("npz"),
+        "maxsim": col_report.get("maxsim"),
+        "query_prefix": col_report.get("query_prefix"),
+        "gpu": col_report.get("gpu"),
+        "device": col_report.get("device"),
+        "cuda": col_report.get("cuda"),
+        "n_gallery": col_report.get("n_gallery"),
+        "n_answerable": col_report.get("n_answerable"),
+        "protocol_note": _extra_column_note(enc),
+    }
+    extra = dict(prev.get("extra_columns") or {})
+    extra[enc] = slim
+    prev["extra_columns"] = extra
+    fc = dict(prev.get("four_column") or {})
+    t2i = col_report.get("clip_image_only")
+    if enc == "colqwen2":
+        prev["colpali"] = col_report
+        fc["colpali_t2i"] = t2i
+        fc["colqwen2_npz"] = col_report.get("npz")
+        fc["maxsim"] = col_report.get("maxsim")
+    elif enc == "colpali-v1.3":
+        fc["colpali_v1_3_t2i"] = t2i
+        fc["colpali_v1_3_npz"] = col_report.get("npz")
+        fc["colpali_v1_3_maxsim"] = col_report.get("maxsim")
+        fc["colpali_v1_3_protocol_note"] = slim["protocol_note"]
+    elif enc == "colqwen2.5":
+        fc["colqwen2_5_t2i"] = t2i
+        fc["colqwen2_5_npz"] = col_report.get("npz")
+        fc["colqwen2_5_maxsim"] = col_report.get("maxsim")
+        fc["colqwen2_5_protocol_note"] = slim["protocol_note"]
+    prev["four_column"] = fc
+    return prev
+
+
 def main() -> None:
     import argparse
 
@@ -135,7 +218,7 @@ def main() -> None:
     if args.colpali_only:
         items = load_visual_qa_gold({r.figure_id for r in recs}, recs)
         n_gallery = len(recs)
-        encoder_name = "colqwen2"
+        encoder_name = os.environ.get("ABCITE_COLPALI_MODEL") or "colqwen2"
         print("colpali-only: skipping CLIP/BiomedCLIP", flush=True)
     else:
         vision = build_vision_encoder()
@@ -225,13 +308,25 @@ def main() -> None:
             )
             print(f"ColPali: {combined['colpali_skip']}")
         else:
-            col_gal = FigureGallery(recs, col)
-            col_items = load_visual_qa_gold(set(col_gal.ids), recs)
-            col_report = evaluate_visual_qa(col_gal, col_items, rerank_k=args.rerank_k)
-            col_report["gpu"] = combined["gpu"]
-            col_report["encoder"] = getattr(col, "name", "colpali")
-            combined["colpali"] = col_report
-            _print(col_report)
+            try:
+                import torch
+            except Exception:
+                torch = None  # type: ignore[assignment]
+            if n_gallery > 200 and (torch is None or not torch.cuda.is_available()):
+                combined["colpali_skip"] = (
+                    f"refusing CPU late-interaction encode n={n_gallery}; need CUDA"
+                )
+                print(combined["colpali_skip"], flush=True)
+            else:
+                col_gal = FigureGallery(recs, col)
+                col_items = load_visual_qa_gold(set(col_gal.ids), recs)
+                col_report = evaluate_visual_qa(col_gal, col_items, rerank_k=args.rerank_k)
+                col_report["gpu"] = combined["gpu"]
+                _attach_late_receipt(col_report, col_gal, col)
+                combined["gpu"] = col_report.get("gpu") or combined["gpu"]
+                if encoder_cache_name(str(col_report.get("encoder") or "")) == "colqwen2":
+                    combined["colpali"] = col_report
+                _print(col_report)
     else:
         combined["colpali_skip"] = (
             "ColPali not requested this run. Next GPU job: ABCITE_COLPALI=1 "
@@ -248,8 +343,25 @@ def main() -> None:
             combined["openclip"] = report
             _print(report)
 
-    combined["four_column"] = _four_column(report, bio_report, col_report)
     dest = ROOT / "evals" / "visual_qa_protocols_latest.json"
+    extra_name = encoder_cache_name(str((col_report or {}).get("encoder") or combined.get("encoder") or ""))
+    if args.colpali_only and col_report is not None:
+        prev = json.loads(dest.read_text(encoding="utf-8")) if dest.exists() else combined
+        combined = _merge_extra_into_protocols(prev, col_report)
+        sidecar = ROOT / "evals" / f"visual_qa_{extra_name.replace('.', '_')}_latest.json"
+        sidecar.write_text(json.dumps(col_report, indent=2), encoding="utf-8")
+        dest.write_text(json.dumps(combined, indent=2), encoding="utf-8")
+        if extra_name == "colqwen2":
+            dest_one.write_text(json.dumps(col_report, indent=2), encoding="utf-8")
+        print(
+            f"extra-column encoder={extra_name} sidecar={sidecar.name} "
+            f"npz={col_report.get('npz')} maxsim={col_report.get('maxsim')} "
+            f"cuda={col_report.get('cuda')} device={col_report.get('device')}",
+            flush=True,
+        )
+        return
+
+    combined["four_column"] = _four_column(report, bio_report, col_report)
     dest.write_text(json.dumps(combined, indent=2), encoding="utf-8")
     primary = col_report or bio_report or report
     if primary is None:

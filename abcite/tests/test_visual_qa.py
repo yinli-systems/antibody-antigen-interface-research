@@ -219,3 +219,30 @@ def test_four_column_colpali_only_none_safe():
     assert four["colpali_t2i"]["recall@1"] == 0.08
     assert four["openclip_t2i"] is None
     assert four["vision_beats_bm25_r@1"] is True
+
+
+def test_merge_extra_column_keeps_colqwen2_four_column():
+    from evals.run_visual_qa import _merge_extra_into_protocols
+
+    prev = {
+        "four_column": {
+            "colpali_t2i": {"recall@1": 0.0733, "n": 273},
+            "colqwen2_npz": "embeddings-colqwen2-n15949.npz hit",
+        },
+        "colpali": {"encoder": "colqwen2"},
+    }
+    extra = {
+        "encoder": "colqwen2.5",
+        "clip_image_only": {"recall@1": 0.1026, "n": 273},
+        "npz": "embeddings-colqwen2.5-n15949.npz hit",
+        "maxsim": "GPU n_q=273 n_d=15949",
+        "device": "cuda",
+        "cuda": True,
+        "n_gallery": 15949,
+        "n_answerable": 273,
+    }
+    out = _merge_extra_into_protocols(prev, extra)
+    assert out["four_column"]["colpali_t2i"]["recall@1"] == 0.0733
+    assert out["four_column"]["colqwen2_5_t2i"]["recall@1"] == 0.1026
+    assert out["extra_columns"]["colqwen2.5"]["encoder"] == "colqwen2.5"
+    assert out["colpali"]["encoder"] == "colqwen2"

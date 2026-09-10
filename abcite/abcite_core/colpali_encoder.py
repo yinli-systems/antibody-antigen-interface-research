@@ -42,13 +42,12 @@ def _hub_snapshot(repo_dir: str) -> Path | None:
     return snaps[0] if snaps else None
 
 
-def _patched_colqwen2_adapter() -> Path | None:
-    """Point the LoRA adapter at a local vidore/colqwen2-base snapshot (offline)."""
-    adapter = _hub_snapshot("models--vidore--colqwen2-v1.0")
-    base = _hub_snapshot("models--vidore--colqwen2-base")
+def _patched_lora_adapter(adapter_repo: str, base_repo: str, dest: Path) -> Path | None:
+    """Point a LoRA adapter at a local base snapshot (offline-friendly)."""
+    adapter = _hub_snapshot(f"models--{adapter_repo.replace('/', '--')}")
+    base = _hub_snapshot(f"models--{base_repo.replace('/', '--')}")
     if adapter is None or base is None:
         return None
-    dest = Path(os.environ.get("ABCITE_COLPALI_PATCH", "/tmp/colqwen2-local"))
     dest.mkdir(parents=True, exist_ok=True)
     import json
     import shutil
@@ -70,6 +69,46 @@ def _patched_colqwen2_adapter() -> Path | None:
         cfg["base_model_name_or_path"] = str(base)
         cfg_path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     return dest
+
+
+def _patched_colqwen2_adapter() -> Path | None:
+    """Point the LoRA adapter at a local vidore/colqwen2-base snapshot (offline)."""
+    dest = Path(os.environ.get("ABCITE_COLPALI_PATCH", "/tmp/colqwen2-local"))
+    return _patched_lora_adapter("vidore/colqwen2-v1.0", "vidore/colqwen2-base", dest)
+
+
+def _patched_colpali_v13_adapter() -> Path | None:
+    """Point colpali-v1.3 LoRA at a local colpaligemma-3b-pt-448-base snapshot."""
+    dest = Path(os.environ.get("ABCITE_COLPALI_V13_PATCH", "/tmp/colpali-v1.3-local"))
+    return _patched_lora_adapter(
+        "vidore/colpali-v1.3",
+        "vidore/colpaligemma-3b-pt-448-base",
+        dest,
+    )
+
+
+def _patched_colqwen25_adapter() -> Path | None:
+    """Point colqwen2.5-v0.2 LoRA at a local vidore/colqwen2.5-base snapshot."""
+    dest = Path(os.environ.get("ABCITE_COLQWEN25_PATCH", "/tmp/colqwen2.5-local"))
+    return _patched_lora_adapter(
+        "vidore/colqwen2.5-v0.2",
+        "vidore/colqwen2.5-base",
+        dest,
+    )
+
+
+def encoder_cache_name(model_id: str, tag: str = "") -> str:
+    """Stable FigureGallery cache stem. Never reuse embeddings-colqwen2-n*.npz."""
+    blob = f"{model_id} {tag}".lower()
+    if "colqwen2.5" in blob or "colqwen2_5" in blob:
+        return "colqwen2.5"
+    if "colqwen2" in blob:
+        return "colqwen2"
+    if "colpali-v1.3" in blob or "colpali_v1.3" in blob:
+        return "colpali-v1.3"
+    if "colpali" in blob:
+        return "colpali"
+    return tag or "colpali"
 
 
 def ensure_query_prefix(processor, default: str = "Query: ") -> str:
@@ -265,15 +304,35 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
     names: list[tuple[str, str]] = []
     forced = (os.environ.get("ABCITE_COLPALI_MODEL") or "").strip()
     if forced:
+        if "colpali-v1.3" in forced.lower():
+            v13 = _patched_colpali_v13_adapter()
+            v13_snap = _hub_snapshot("models--vidore--colpali-v1.3")
+            if v13 is not None and v13_snap is not None:
+                names.append((str(v13), str(v13_snap)))
+        if "colqwen2.5" in forced.lower() or "colqwen2_5" in forced.lower():
+            q25 = _patched_colqwen25_adapter()
+            q25_snap = _hub_snapshot("models--vidore--colqwen2.5-v0.2")
+            if q25 is not None and q25_snap is not None:
+                names.append((str(q25), str(q25_snap)))
+        elif "colqwen2" in forced.lower():
+            patched = _patched_colqwen2_adapter()
+            adapter_snap = _hub_snapshot("models--vidore--colqwen2-v1.0")
+            if patched is not None and adapter_snap is not None:
+                names.append((str(patched), str(adapter_snap)))
         names.append((forced, forced))
-    patched = _patched_colqwen2_adapter()
-    adapter_snap = _hub_snapshot("models--vidore--colqwen2-v1.0")
-    if patched is not None and adapter_snap is not None:
-        # Model from patched adapter (local base path); processor from the
-        # original snapshot so chat-template relative symlinks resolve.
-        names.append((str(patched), str(adapter_snap)))
-    for hub_name in COLPALI_MODELS:
-        names.append((hub_name, hub_name))
+    else:
+        patched = _patched_colqwen2_adapter()
+        adapter_snap = _hub_snapshot("models--vidore--colqwen2-v1.0")
+        if patched is not None and adapter_snap is not None:
+            # Model from patched adapter (local base path); processor from the
+            # original snapshot so chat-template relative symlinks resolve.
+            names.append((str(patched), str(adapter_snap)))
+        v13 = _patched_colpali_v13_adapter()
+        v13_snap = _hub_snapshot("models--vidore--colpali-v1.3")
+        if v13 is not None and v13_snap is not None:
+            names.append((str(v13), str(v13_snap)))
+        for hub_name in COLPALI_MODELS:
+            names.append((hub_name, hub_name))
     seen: set[tuple[str, str]] = set()
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
     for name, proc_name in names:
@@ -281,10 +340,21 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
             continue
         seen.add((name, proc_name))
         low = name.lower() + " " + proc_name.lower()
-        if "colqwen2" in low and "colqwen2.5" not in low and "colqwen2_5" not in low:
+        fl = forced.lower()
+        if fl and ("colpali-v1.3" in fl or "colpali_v1.3" in fl):
+            # Forced v1.3 must not fall through to ColQwen2 (would poison the v1.3 npz).
+            ordered = [p for p in pairs if p[0] == "colpali"]
+        elif fl and ("colqwen2.5" in fl or "colqwen2_5" in fl):
+            ordered = [p for p in pairs if p[0] == "colqwen2.5"]
+        elif fl and "colqwen2" in fl:
+            ordered = [p for p in pairs if p[0] == "colqwen2"]
+        elif "colqwen2" in low and "colqwen2.5" not in low and "colqwen2_5" not in low:
             ordered = [p for p in pairs if p[0] == "colqwen2"] + [p for p in pairs if p[0] != "colqwen2"]
         else:
             ordered = [p for p in pairs if p[0] in low] + [p for p in pairs if p[0] not in low]
+        if not ordered:
+            last = RuntimeError(f"no matching late-interaction class for {name!r} forced={forced!r}")
+            continue
         for tag, model_cls, proc_cls in ordered:
             try:
                 model = model_cls.from_pretrained(
@@ -294,9 +364,14 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
                     local_files_only=local_only,
                 ).eval()
                 processor = proc_cls.from_pretrained(proc_name, local_files_only=local_only)
-                ensure_query_prefix(processor)
+                prefix = ensure_query_prefix(processor)
                 enc = ColPaliEncoder(model, processor, device)
-                enc.name = "colqwen2" if "colqwen" in low else "colpali"
+                enc.name = encoder_cache_name(forced or name, tag)
+                print(
+                    f"loaded late-interaction encoder={enc.name} src={name} "
+                    f"device={device} query_prefix={prefix!r}",
+                    flush=True,
+                )
                 log.info("loaded ColPali encoder %s (%s) on %s", name, tag, device)
                 return enc, None
             except Exception as exc:

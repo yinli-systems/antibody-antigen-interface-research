@@ -72,16 +72,18 @@ Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heur
 
 ## Visual figure QA — primary multimodal demo
 
-Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=295** (273 unique-gold answerable + 22 abstain). All 273 answerable IDs are in-gallery. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query; every answerable item is `caption_bm25_should_fail`. Retrieval is the four-column table below (same n=273 / N=15,949). VQA is scored separately. Do not mix with official ViDoRe **89.11** vs published **89.2**. Do not put 0.130 next to 89.2.
+Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=295** (273 unique-gold answerable + 22 abstain). All 273 answerable IDs are in-gallery. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query; every answerable item is `caption_bm25_should_fail`. Retrieval is the same-gold table below (n=273 / N=15,949), including extra ColPali-v1.3 and ColQwen2.5. VQA is scored separately. Do not mix with official ViDoRe **89.11** vs published **89.2**. Do not put 0.155, 0.130, or 0.090 next to 89.2 or paper ColPali 81.3.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
 | caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
 | BiomedCLIP T→I | 0.040 | 0.084 | 0.114 | 0.062 |
 | OpenCLIP ViT-B-32 T→I | 0.015 | 0.062 | 0.092 | 0.040 |
+| ColPali-v1.3 late-interaction T→I | 0.044 | 0.132 | 0.172 | 0.090 |
 | ColQwen2 late-interaction T→I | 0.073 | 0.179 | 0.212 | 0.130 |
+| ColQwen2.5 late-interaction T→I | 0.103 | 0.209 | 0.256 | 0.155 |
 
-Vision beats caption BM25 at R@1? **yes**. ColQwen2 leads. GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix; npz hit `embeddings-colqwen2-n15949.npz`. CLIP/BiomedCLIP npy hits; no 16k re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not ViDoRe; not SOTA. ColQwen2.5 was not run (no offline snapshot).
+Vision beats caption BM25 at R@1? **yes**. ColQwen2.5 leads this cropped-PMC gold. All three late-interaction columns: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix on NVIDIA GeForce RTX 5090. ColQwen2 npz `embeddings-colqwen2-n15949.npz` (untouched). ColPali-v1.3 wrote **separate** `embeddings-colpali-v1.3-n15949.npz`. ColQwen2.5 wrote **separate** `embeddings-colqwen2.5-n15949.npz` (`device=cuda`). Paper ColPali ViDoRe **81.3** is PAGE retrieval; these extra columns are cropped PMC figures — not 81.3. Do not put 0.155, 0.130, or 0.090 next to official ViDoRe **89.11** / published **89.2**. CLIP/BiomedCLIP npy hits; no 16k CLIP re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not SOTA. Product retrieval stays ColQwen2 until a product switch.
 
 VQA cite-or-abstain (separate from R@K). Heuristic on the new gold (n=295 / N=15949 / 5090). Qwen2-VL-2B was **not** re-run (prior n=61 receipt).
 
