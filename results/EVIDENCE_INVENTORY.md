@@ -13,7 +13,7 @@ found; `epitope_ratio` has had both of its two registered readings.
 |---|---|---|
 | The pair head beats a predicted-marginal outer product | +30.5% macro pair AUPRC, 20 seeds, 20/20 positive, sign bound 0.861 | replicated; the original single-seed +32.7% was about 2× the truth |
 | ESM-IF1's contribution is in the residue correspondence, not the vectors | aligned +22.8% over ESM-2 (10/10); width-matched random −2.6% (undecided); shuffled −13.8% (decided worse); aligned vs shuffled +42.4% (10/10) | the full chain, one cohort, one encoder |
-| Displacing a frozen per-residue representation is harmful | reproduced on a second cohort with a second representation — a **sequence** model, AntiBERTy, not a second structural encoder | two representations, two cohorts, confounded by coverage and provenance |
+| Displacing a frozen per-residue representation is harmful | reproduced on a second cohort with a second representation — a **sequence** model, AntiBERTy, not a second structural encoder. Quote the **pair AUPRC** endpoint: +30.2%, 6/6 seeds, sign bound 0.607 | two representations, two cohorts, confounded by coverage and provenance |
 | Correspondence damage saturates by ~8 residues | k=8, k=16 and global permutation within a hair of each other on both ladders | 10 seeds ESM-IF1, 6 seeds AntiBERTy; **the displacement is in CDR-selected row index, not verified as peptide distance** |
 | A one-residue register error already costs a lot | 52% of total damage (ESM-IF1), 44% (AntiBERTy) | ESM-IF1 lands between the registered cliff and slope boundaries; reported as intermediate |
 | Down-weighting the relational term improves **both** tasks | interior optimum near λ=0.25; node +13.3% and pair +10.8% together | refuted the competition framing this project started from |
@@ -34,7 +34,8 @@ stronger for saying them out loud.
 | "PCGrad is a negative control here" | it projects on ~1.6 of 2 ordered pairs per step. The premise rested on a cosine measured with a term missing. Withdrawn |
 | "`partner_rank` selects badly because its trunk gradient is small" | does not follow: selection quality depends on ordering, not gradient norm. Withdrawn; replaced with a measurement that has not read out |
 | "The optimisation pathology is the ranking term" | refuted by the three-way geometry. The ranking gradient is 23-40× smaller than the node gradient and near-orthogonal |
-| "Checkpoint selection on total loss is better" | +0.0278 replicated on group validation, 8/10 seeds, interval excluding zero — then **did not transfer**. Ratio test 0.2551 vs 0.2584 prior, interval containing the prior value. Now reported as split-specific |
+| "Checkpoint selection on total loss is worth +0.0278" | **the comparison was never run.** Both arms used `--selection-metric total`; they differed in `d_model`, 256 against 128. The number is a width effect. Withdrawn |
+| "The checkpoint-selection effect is split-specific" | stage three changed **both** the selection metric and the width relative to the frozen configuration, so it confirmed a bundle. What is recorded: a development-set configuration did not confirm on the ratio test. No mechanism is attributed |
 
 ## Open, with measurements in flight
 
@@ -44,6 +45,14 @@ stronger for saying them out loud.
 | Is contact supervision or ranking the relational component that matters? | four arms × 10 seeds: node only, node+edge, node+rank, node+edge+rank |
 | Is `partner_rank` a poorly aligned selection signal? | Spearman against the per-epoch node metric, and paired selection regret against `total`. Both are required before the claim may be written |
 | Do gradient-balancing methods recover what hand-tuning λ recovers? | on hold. Whether the comparison is even scientific depends on the first question |
+
+## Method defects that change what may be quoted
+
+| defect | consequence |
+|---|---|
+| `igfold_generality_v1` marks a comparison "decided" from a bootstrap interval alone, at 3/6 seeds and a sign bound of 0.153 | that row may not be called consistent across seeds. The project's endpoint, pair AUPRC, is 6/6 on the same comparison and is the figure to quote |
+| Stage two's arms differ in width, not in selection metric | the +0.0278 is a width effect; the selection-metric question is untested at ten seeds |
+| Stage three changes width **and** selection metric at once | it confirms a configuration bundle and can attribute nothing to either knob |
 
 ## What may not be written yet
 

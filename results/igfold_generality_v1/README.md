@@ -89,3 +89,22 @@ antigen.
 3. Validation split, AsEP cohort. The ESM-IF1 attribution was measured on
    sabdab2, so this is also a different cohort — a second difference between the
    two experiments that this design does not separate.
+
+
+---
+
+## An inconsistent decision rule, recorded 2026-09-11
+
+This report marks `aligned_vs_shuffled_node_auprc` as **decided** on the strength
+of a bootstrap interval that excludes zero, while only **3 of 6** seeds favour
+the arm and the exact sign lower bound is 0.153. Everywhere else in this project
+"decided" requires that bound to exceed 0.5. Two different meanings of the same
+word are in the same repository, and this one is the weaker.
+
+The endpoint of this project is **pair macro AUPRC**, and on that endpoint the
+same comparison is **6 of 6 seeds**, +30.2%, sign bound 0.607 — decided under
+either rule. That is the figure to quote.
+
+The node-AUPRC row must not be described as consistent across seeds. It is not,
+and no comparison in this report may be reported as replicating across seeds on
+the basis of an interval alone.

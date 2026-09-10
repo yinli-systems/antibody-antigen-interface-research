@@ -1,10 +1,16 @@
 # Stage three: the effect does not transfer
 
 > **Status in the paper: supplementary.** This line is not a main claim and does
-> not get main-text space. Its one sentence there is: *a checkpoint-selection
-> improvement observed and replicated on the group validation split did not
-> transfer to an independently evaluated ratio split.* The table below goes in
-> the appendix. Nine pages are worth more than half a page spent explaining an
+> not get main-text space.
+>
+> **Corrected 2026-09-11.** Stage two varied `d_model` at a fixed
+> `--selection-metric total`, so what stage three confirms is a **configuration
+> bundle** — `total` selection *and* `d_model` 256 together, against a frozen
+> configuration that used `partner_rank` selection at `d_model` 128. The two
+> changes cannot be separated by this design. The one sentence for the main text
+> is therefore: *a configuration selected on development data did not show an
+> improvement under a pre-registered confirmation on an independently evaluated
+> ratio split.* The table goes in the appendix. Nine pages are worth more than half a page spent explaining an
 > effect that did not reproduce across splits.
 
 The second and final registered reading of the AsEP `epitope_ratio` test split,
@@ -14,7 +20,9 @@ taken once, with the configuration fixed before the split was touched.
 
 Selection metric `total`, `d_model` 256 — the value the mechanical rule chose
 from group validation — ten seeds, threshold selected per seed on ratio
-validation and applied unchanged to ratio test.
+validation and applied unchanged to ratio test. The prior reading's frozen
+configuration is `partner_rank` selection at `d_model` 128, so **both** knobs
+differ between the two rows.
 
 | | prior reading (frozen configuration) | this reading |
 |---|---|---|
@@ -28,8 +36,11 @@ Both readings use ten seeds and the identical convention: threshold chosen on
 validation to maximise per-complex MCC, applied to test, metrics averaged per
 complex. The comparison is like for like.
 
-**The difference is −0.0033 and the interval contains the prior value.** Not
-worse; indistinguishable.
+**The difference is −0.0033 and the interval contains the prior value.** No
+improvement was shown. That an interval contains a value is not evidence the two
+are equal — it is the absence of evidence that they differ, and with one arm
+having ten seeds and the other being a previously recorded mean, this design
+cannot support an equivalence claim either way.
 
 The ten-seed mean-score ensemble reaches MCC 0.2670. It is reported here as
 registered and is **not** the headline figure, because the published rows this
@@ -37,19 +48,20 @@ sits beside are single models.
 
 ## What this settles
 
-On group **validation**, selecting the checkpoint on total loss rather than on
-`partner_rank` was worth +0.0278 mean per-complex MCC over ten paired seeds,
-with the interval excluding zero. That replication holds and is not in doubt.
+On group **validation**, at a fixed `total` selection metric, `d_model` 256 beat
+`d_model` 128 by +0.0278 mean per-complex MCC over ten paired seeds, with the
+interval excluding zero. That replication holds and is not in doubt — as a
+statement about **width**, which is what it measured.
 
-It does not transfer. On an independent split's test set, with everything fixed
-in advance, the configuration chosen that way performs the same as the one it
-was meant to improve on.
+The configuration built from it showed no improvement on an independent split's
+test set, with everything fixed in advance.
 
-Under the registered outcomes this is the second: *the misalignment is
-pronounced on group-split validation and does not transfer.* The
-group-validation replication is therefore reported as **split-specific**, and
-the checkpoint-selection observation is a property of that split's validation
-set rather than of the model.
+Under the registered outcomes this is the second. What is recorded is that a
+configuration chosen on development data did not confirm, and that the
+development-set effect is reported as **specific to the split and the metric it
+was found on**. It is not recorded that checkpoint selection has some
+split-specific mechanism: the design changed two things at once and cannot
+attribute the outcome to either.
 
 ## What does not follow
 
@@ -69,9 +81,11 @@ It is worth being plain about what the negative result costs: the most promising
 development-set finding of this line of work did not survive an independent
 confirmation. That is what the confirmation was for.
 
-The accurate summary is not that the optimisation failed. It is that **seltotal
-was a real but non-transferable validation effect** — replicated at eight of ten
-seeds where it was found, absent where it was tested independently. It cuts a
+The accurate summary is not that the optimisation failed. It is that **a
+development-set configuration effect was real where it was found and did not
+confirm where it was tested** — eight of ten seeds on group validation, no
+improvement on the ratio test. Calling it a "checkpoint-selection effect"
+overstates what varied. It cuts a
 story that was not general enough, and the way it was cut is itself worth more
 to this paper than the half-point it would have added: a promising validation
 finding was put to an independent confirmation with every choice locked
