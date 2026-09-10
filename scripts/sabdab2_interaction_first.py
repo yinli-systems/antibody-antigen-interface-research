@@ -1837,6 +1837,13 @@ def add_benchmark_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--skip-manifest-hash", action="store_true")
 
 
+def _balancer_names() -> tuple[str, ...]:
+    """The balancer names that actually exist, read from the registry."""
+    from interaction_first.multitask_balancers import BALANCERS
+
+    return tuple(BALANCERS)
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the staged interaction-first command-line interface."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1884,11 +1891,14 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--embedding-dir", type=Path, required=True)
     train.add_argument(
         "--multitask-balancer",
-        choices=("none", "gradnorm", "pcgrad"),
+        # Derived from the registry rather than restated. A hardcoded list here
+        # drifted from the implementation the moment a balancer was added, and
+        # rejected an arm that existed and worked.
+        choices=tuple(sorted(_balancer_names())),
         default="none",
-        help="rebalance the node and pair objectives during training; pcgrad is a "
-        "negative control here, since its projection fires only on conflicting "
-        "gradients and this model's are aligned",
+        help="rebalance the node, edge and rank objectives during training; "
+        "measure applies the ordinary summed gradient and only reports the "
+        "gradient geometry, so it is the control arm with a readout attached",
     )
     _add_representation_arguments(train)
     train.add_argument("--split-manifest", type=Path, required=True)

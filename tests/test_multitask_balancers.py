@@ -223,3 +223,23 @@ def test_the_reported_cosine_matches_a_hand_computed_one():
     assert state["cosine_node_pair"] == pytest.approx(-1.0, abs=1e-5), (
         "gradients that are exact opposites must read as fully opposed"
     )
+
+
+def test_the_command_line_offers_exactly_the_balancers_that_exist():
+    """The parser's choices are the registry, not a copy of it.
+
+    A hardcoded list here drifted the moment a balancer was added and rejected
+    an arm that existed and worked, costing a submitted job. Deriving it removes
+    the failure mode; this test keeps it derived.
+    """
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    import sabdab2_interaction_first as script
+
+    action = next(
+        entry for entry in script.build_parser()._subparsers._group_actions[0].choices["train"]._actions
+        if "--multitask-balancer" in getattr(entry, "option_strings", [])
+    )
+    assert set(action.choices) == set(BALANCERS)

@@ -121,3 +121,58 @@ the pathology localises to the ranking term, the informative comparison is no
 longer which gradient-surgery method wins but whether any of them recovers what
 deleting the term recovers, and that comparison is registered separately once
 the ablation is in.
+
+
+---
+
+## Amendment, 2026-09-11: the selection claim needed its own evidence
+
+Part one found the ranking gradient on the shared trunk 23-40× smaller in norm
+than the node gradient, and the README drew from that the conclusion that
+`partner_rank` is a poor early-stopping signal because the model barely
+optimises it.
+
+That does not follow. Whether a signal selects well depends on whether it orders
+epochs the way node generalisation does, not on how large its gradient is. A
+term the trunk hardly moves could still track generalisation perfectly, and a
+term with a large gradient could track it not at all. The inference is withdrawn
+and replaced with a measurement.
+
+### The measurement
+
+Per seed, over the epochs the run actually took, on **validation**:
+
+    rho_signal = Spearman(signal, node metric)     across epochs
+    R_signal   = M(e*_oracle) - M(e*_signal)       selection regret
+
+Spearman because selection uses only the ordering. Every recorded signal is a
+loss, so all are negated to a common higher-is-better sense; a positive `rho`
+therefore always means aligned. `e*_oracle` is the epoch with the best node
+metric, so regret is zero exactly when the rule picked as well as anything could,
+and is never negative.
+
+`partner_rank` and `total` are rules applied to identical trajectories, so their
+regrets are compared **paired**, with the percentile bootstrap interval and the
+exact sign bound. The claim
+
+> partner_rank is a poorly aligned checkpoint-selection signal for node
+> generalisation
+
+is available only if `rho` is low or negative **and** the paired regret
+difference is decided against it. Either one alone is not enough, and if the
+regrets are indistinguishable the recorded finding is that the two rules select
+equally well despite differing in what they measure.
+
+### Why this needed a code change
+
+Validation epochs recorded losses, not metrics. A loss is not the quantity the
+model is judged on, and substituting one would have measured whether
+`partner_rank` predicts `epitope_bce` -- a different and less interesting
+question. Each validation epoch now records per-complex node metrics from the
+predictions it already produced. No extra forward pass, nothing added to
+training epochs, and the `localise` and `measure-traj` arrays were resubmitted
+on that code within minutes of launch so the trajectories and the ablation come
+from the same runs.
+
+Trajectories written before this change lack the key and are dropped by the
+analysis rather than being filled in with a loss.
