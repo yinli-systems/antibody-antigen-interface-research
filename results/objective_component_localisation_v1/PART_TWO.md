@@ -1,0 +1,83 @@
+# Part two: the pathology is the ranking term
+
+Four arms, ten seeds each, AsEP `epitope_group` validation, `--selection-metric
+total`. The arms differ only in two loss weights; everything else — data, split,
+seeds, epochs, capacity, representations — is identical.
+
+| arm | `edge` | `partner_rank` | pair AUPRC | node MCC | node AUPRC |
+|---|---|---|---:|---:|---:|
+| node only | 0 | 0 | 0.00724 | **0.2798** | **0.4299** |
+| **node + edge** | 1.0 | 0 | **0.09055** | 0.2773 | 0.4244 |
+| node + rank | 0 | 0.5 | 0.00670 | 0.2050 | 0.3558 |
+| node + edge + rank (the trained objective) | 1.0 | 0.5 | 0.06917 | 0.2404 | 0.3884 |
+
+## Paired against the full objective, ten seeds
+
+| arm | pair AUPRC | node MCC | node AUPRC |
+|---|---|---|---|
+| node only | −0.0619, 0/10 — **worse** | +0.0395, 10/10 — **better** | +0.0416, 9/10 — better |
+| **node + edge** | **+0.0214, 10/10 — better** | **+0.0369, 10/10 — better** | +0.0361, 10/10 — better |
+| node + rank | −0.0625, 0/10 — worse | −0.0354, 0/10 — worse | −0.0326, 0/10 — worse |
+
+**Deleting the ranking term improves both endpoints, on every seed.** Not a
+trade-off, not a wash: +0.0214 pair AUPRC and +0.0369 node MCC, unanimous.
+
+## Contact supervision costs nothing on the node side
+
+| node + edge vs node only | | |
+|---|---|---|
+| pair AUPRC | +0.0833, 10/10 | decidedly better |
+| node MCC | −0.0026, 3/10 | **undecided** |
+| node AUPRC | −0.0055, 5/10 | **undecided** |
+
+Contact-edge supervision raises pair AUPRC from 0.0072 to 0.0905 — an order of
+magnitude — with no detectable cost to node prediction. And `node + rank` is
+worse than `node only` on the node metrics by 0.075 MCC, so the ranking objective
+damages node learning even with no contact supervision present to interact with.
+
+## What this establishes
+
+> The optimisation pathology localises to the **ranking auxiliary objective**,
+> not to relational supervision as a whole.
+
+Contact supervision and node prediction are compatible: one is nearly free given
+the other, and together they beat either alone on its own endpoint. The
+complex-level ranking term is what costs both.
+
+## What it does not establish, and this matters
+
+**First-order shared-trunk gradient geometry does not explain it.**
+`results/objective_component_localisation_v1/` measures the ranking gradient on
+the shared trunk at **23-40× smaller in norm** than the node gradient, with
+cosines against both other tasks within noise of zero. A term that small and that
+orthogonal cannot, at first order on the trunk, be worth 0.037 node MCC.
+
+So the effect is real and its mechanism is somewhere the trunk geometry does not
+look. The candidates are the ones that were named before this ran: parameters
+outside the shared trunk — the ranking term reaches a complex-scoring path the
+cosine never measured — the training trajectory, an interaction with checkpoint
+selection, and higher-order effects. Nothing here distinguishes them.
+
+The honest statement is that the ablation locates the term and the geometry does
+not account for it, and both halves are the result.
+
+## What this revises
+
+**The dose-response reading.** `results/joint_task_competition_v1/` found an
+interior optimum near λ = 0.25 and it was written up as loss-scale imbalance
+across the relational branch. The branch is not homogeneous. What benefits from
+down-weighting is the ranking part; down-weighting the contact part to zero costs
+an order of magnitude in pair AUPRC.
+
+**The supervision-parity reading.** Node-only was compared to the full objective
+and found close, which supported the benchmark comparison being fair. At ten
+seeds here node-only is decidedly **better** than the full objective on node
+metrics (+0.0395 MCC). The parity result was measured under a different
+configuration and cohort split and is not contradicted, but "the relational
+branch does not feed the node heads" understates what the full objective costs.
+
+## Scope
+
+Validation only. The `epitope_group` test split is permanently frozen and was not
+read. One cohort, one architecture, one setting of the ranking weight (0.5); the
+arms establish that removing the term helps, not what the best weight is.
