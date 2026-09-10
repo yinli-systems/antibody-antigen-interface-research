@@ -1,0 +1,86 @@
+{
+  "bootstrap_ci95": [
+    0.0044625554785484405,
+    0.00739576657053018
+  ],
+  "claim_boundary": "Development-only paired ablation on the validation split. It compares two input representations and authorizes no test access and no model selection.",
+  "control": "esm2",
+  "control_mean": 0.022459984574757865,
+  "decided": true,
+  "effect_size": 2.354988002070032,
+  "favourable_seed_count": 10,
+  "format_version": "representation_ablation_v1",
+  "mean_difference": 0.005993358439542782,
+  "metric": "auprc",
+  "per_seed": [
+    {
+      "control": 0.021606163771986847,
+      "difference": 0.006566441768643332,
+      "seed": 1,
+      "treatment": 0.02817260554063018
+    },
+    {
+      "control": 0.022107076154888827,
+      "difference": 0.006417830250033757,
+      "seed": 2,
+      "treatment": 0.028524906404922584
+    },
+    {
+      "control": 0.025880530640236814,
+      "difference": 0.0007974036587330632,
+      "seed": 3,
+      "treatment": 0.026677934298969877
+    },
+    {
+      "control": 0.02048978975090211,
+      "difference": 0.00796120555206625,
+      "seed": 4,
+      "treatment": 0.02845099530296836
+    },
+    {
+      "control": 0.022238961314528592,
+      "difference": 0.00455519293761248,
+      "seed": 5,
+      "treatment": 0.026794154252141072
+    },
+    {
+      "control": 0.02165880547506052,
+      "difference": 0.009170421206015418,
+      "seed": 6,
+      "treatment": 0.030829226681075936
+    },
+    {
+      "control": 0.020892723987348167,
+      "difference": 0.008821399234880546,
+      "seed": 7,
+      "treatment": 0.029714123222228713
+    },
+    {
+      "control": 0.0222929486467705,
+      "difference": 0.006330179345657563,
+      "seed": 8,
+      "treatment": 0.028623127992428065
+    },
+    {
+      "control": 0.022571848643549698,
+      "difference": 0.005894950525502363,
+      "seed": 9,
+      "treatment": 0.02846679916905206
+    },
+    {
+      "control": 0.024860997362306566,
+      "difference": 0.003418559916283044,
+      "seed": 10,
+      "treatment": 0.02827955727858961
+    }
+  ],
+  "relative_difference": 0.26684606214193696,
+  "scope": "macro",
+  "sd_difference": 0.0025449634708434297,
+  "seed_count": 10,
+  "sign_lower_bound": 0.7411344491069477,
+  "treatment": "esm2_antiberty_esmif1",
+  "treatment_mean": 0.028453343014300643,
+  "unpaired_seeds": [],
+  "verdict": "treatment better"
+}
