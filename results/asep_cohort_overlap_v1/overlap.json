@@ -1,0 +1,183 @@
+{
+  "claim_boundary": "Overlap by PDB accession only. Two entries of the same structure are counted as shared regardless of chains, resolution or preparation.",
+  "format_version": "cohort_overlap_v1",
+  "left": "sabdab2",
+  "left_totals": {
+    "test": 137,
+    "train": 2295,
+    "validation": 119
+  },
+  "pairs": {
+    "test_vs_test": {
+      "contaminating": false,
+      "left_pdb_count": 137,
+      "left_split": "test",
+      "right_pdb_count": 168,
+      "right_split": "test",
+      "share_of_right": 0.02976190476190476,
+      "shared_pdb_count": 5
+    },
+    "test_vs_train": {
+      "contaminating": false,
+      "left_pdb_count": 137,
+      "left_split": "test",
+      "right_pdb_count": 1321,
+      "right_split": "train",
+      "share_of_right": 0.016654049962149888,
+      "shared_pdb_count": 22
+    },
+    "test_vs_validation": {
+      "contaminating": false,
+      "left_pdb_count": 137,
+      "left_split": "test",
+      "right_pdb_count": 168,
+      "right_split": "validation",
+      "share_of_right": 0.017857142857142856,
+      "shared_pdb_count": 3
+    },
+    "train_vs_test": {
+      "contaminating": true,
+      "left_pdb_count": 2295,
+      "left_split": "train",
+      "right_pdb_count": 168,
+      "right_split": "test",
+      "share_of_right": 0.23214285714285715,
+      "shared_pdb_count": 39
+    },
+    "train_vs_train": {
+      "contaminating": false,
+      "left_pdb_count": 2295,
+      "left_split": "train",
+      "right_pdb_count": 1321,
+      "right_split": "train",
+      "share_of_right": 0.2732778198334595,
+      "shared_pdb_count": 361
+    },
+    "train_vs_validation": {
+      "contaminating": true,
+      "left_pdb_count": 2295,
+      "left_split": "train",
+      "right_pdb_count": 168,
+      "right_split": "validation",
+      "share_of_right": 0.3392857142857143,
+      "shared_pdb_count": 57
+    },
+    "validation_vs_test": {
+      "contaminating": false,
+      "left_pdb_count": 119,
+      "left_split": "validation",
+      "right_pdb_count": 168,
+      "right_split": "test",
+      "share_of_right": 0.017857142857142856,
+      "shared_pdb_count": 3
+    },
+    "validation_vs_train": {
+      "contaminating": false,
+      "left_pdb_count": 119,
+      "left_split": "validation",
+      "right_pdb_count": 1321,
+      "right_split": "train",
+      "share_of_right": 0.016654049962149888,
+      "shared_pdb_count": 22
+    },
+    "validation_vs_validation": {
+      "contaminating": false,
+      "left_pdb_count": 119,
+      "left_split": "validation",
+      "right_pdb_count": 168,
+      "right_split": "validation",
+      "share_of_right": 0.005952380952380952,
+      "shared_pdb_count": 1
+    }
+  },
+  "reverse_pairs": {
+    "test_vs_test": {
+      "contaminating": false,
+      "left_pdb_count": 168,
+      "left_split": "test",
+      "right_pdb_count": 137,
+      "right_split": "test",
+      "share_of_right": 0.0364963503649635,
+      "shared_pdb_count": 5
+    },
+    "test_vs_train": {
+      "contaminating": false,
+      "left_pdb_count": 168,
+      "left_split": "test",
+      "right_pdb_count": 2295,
+      "right_split": "train",
+      "share_of_right": 0.01699346405228758,
+      "shared_pdb_count": 39
+    },
+    "test_vs_validation": {
+      "contaminating": false,
+      "left_pdb_count": 168,
+      "left_split": "test",
+      "right_pdb_count": 119,
+      "right_split": "validation",
+      "share_of_right": 0.025210084033613446,
+      "shared_pdb_count": 3
+    },
+    "train_vs_test": {
+      "contaminating": true,
+      "left_pdb_count": 1321,
+      "left_split": "train",
+      "right_pdb_count": 137,
+      "right_split": "test",
+      "share_of_right": 0.16058394160583941,
+      "shared_pdb_count": 22
+    },
+    "train_vs_train": {
+      "contaminating": false,
+      "left_pdb_count": 1321,
+      "left_split": "train",
+      "right_pdb_count": 2295,
+      "right_split": "train",
+      "share_of_right": 0.15729847494553376,
+      "shared_pdb_count": 361
+    },
+    "train_vs_validation": {
+      "contaminating": true,
+      "left_pdb_count": 1321,
+      "left_split": "train",
+      "right_pdb_count": 119,
+      "right_split": "validation",
+      "share_of_right": 0.18487394957983194,
+      "shared_pdb_count": 22
+    },
+    "validation_vs_test": {
+      "contaminating": false,
+      "left_pdb_count": 168,
+      "left_split": "validation",
+      "right_pdb_count": 137,
+      "right_split": "test",
+      "share_of_right": 0.021897810218978103,
+      "shared_pdb_count": 3
+    },
+    "validation_vs_train": {
+      "contaminating": false,
+      "left_pdb_count": 168,
+      "left_split": "validation",
+      "right_pdb_count": 2295,
+      "right_split": "train",
+      "share_of_right": 0.02483660130718954,
+      "shared_pdb_count": 57
+    },
+    "validation_vs_validation": {
+      "contaminating": false,
+      "left_pdb_count": 168,
+      "left_split": "validation",
+      "right_pdb_count": 119,
+      "right_split": "validation",
+      "share_of_right": 0.008403361344537815,
+      "shared_pdb_count": 1
+    }
+  },
+  "right": "asep",
+  "right_totals": {
+    "test": 168,
+    "train": 1321,
+    "validation": 168
+  },
+  "unit": "pdb_accession"
+}
