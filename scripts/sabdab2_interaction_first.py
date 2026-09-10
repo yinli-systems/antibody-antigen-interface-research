@@ -925,12 +925,23 @@ def _run_epoch(
         paratope_consistency=args.paratope_consistency_weight,
         partner_rank=args.partner_rank_weight,
     )
-    node_only_weights = dataclasses.replace(weights, edge=0.0, partner_rank=0.0)
-    pair_only_weights = dataclasses.replace(
-        weights, epitope_bce=0.0, paratope_bce=0.0, epitope_dice=0.0, paratope_dice=0.0,
+    # Three tasks, not two. Splitting the objective into node against
+    # "everything relational" hid the thing worth seeing: contact edges and
+    # complex-level ranking are different objectives that happen to share a
+    # branch, and the cosine measured against their sum cannot say which of them
+    # a conflict belongs to. The three weight sets partition the loss exactly --
+    # every term appears in exactly one of them at its configured weight -- so
+    # the three task losses sum to the objective actually optimised.
+    _NODE_TERMS = dict(
+        epitope_bce=0.0, paratope_bce=0.0, epitope_dice=0.0, paratope_dice=0.0,
         epitope_count=0.0, paratope_count=0.0, epitope_consistency=0.0,
         paratope_consistency=0.0,
     )
+    task_weights = {
+        "node": dataclasses.replace(weights, edge=0.0, partner_rank=0.0),
+        "edge": dataclasses.replace(weights, partner_rank=0.0, **_NODE_TERMS),
+        "rank": dataclasses.replace(weights, edge=0.0, **_NODE_TERMS),
+    }
     with context:
         for instance_id in identifiers:
             row = frame.loc[instance_id]
@@ -1032,28 +1043,35 @@ def _run_epoch(
                     # The balancer needs the two objectives separately. The model
                     # forward is already done; only the loss is recomputed, which
                     # is cheap beside it.
-                    node_loss, _ = interaction_first_loss(
-                        matched, pair_targets=pair_labels, epitope_targets=epitope_labels,
-                        paratope_targets=paratope_labels, antigen_mask=antigen_mask,
-                        antibody_mask=antibody_mask, weights=node_only_weights,
-                        edge_positive_weight=class_weights["edge"],
-                        epitope_positive_weight=class_weights["epitope"],
-                        paratope_positive_weight=class_weights["paratope"],
-                        negative_scores=stacked_negative_scores,
-                        partner_temperature=args.partner_temperature,
+                    task_losses = {}
+                    for task_name, task_weight in task_weights.items():
+                        task_losses[task_name], _ = interaction_first_loss(
+                            matched, pair_targets=pair_labels,
+                            epitope_targets=epitope_labels,
+                            paratope_targets=paratope_labels, antigen_mask=antigen_mask,
+                            antibody_mask=antibody_mask, weights=task_weight,
+                            edge_positive_weight=class_weights["edge"],
+                            epitope_positive_weight=class_weights["epitope"],
+                            paratope_positive_weight=class_weights["paratope"],
+                            negative_scores=stacked_negative_scores,
+                            partner_temperature=args.partner_temperature,
+                        )
+                    # The partition is the premise of everything the balancers
+                    # report: if the three tasks do not reconstruct the objective,
+                    # a cosine between them describes some other optimisation
+                    # problem. Checked every step because it costs one comparison
+                    # and a silent violation would invalidate the whole arm.
+                    partition_error = abs(
+                        float(sum(task_losses.values()).detach().item())
+                        - float(loss.detach().item())
                     )
-                    pair_loss, _ = interaction_first_loss(
-                        matched, pair_targets=pair_labels, epitope_targets=epitope_labels,
-                        paratope_targets=paratope_labels, antigen_mask=antigen_mask,
-                        antibody_mask=antibody_mask, weights=pair_only_weights,
-                        edge_positive_weight=class_weights["edge"],
-                        epitope_positive_weight=class_weights["epitope"],
-                        paratope_positive_weight=class_weights["paratope"],
-                        negative_scores=stacked_negative_scores,
-                        partner_temperature=args.partner_temperature,
-                    )
+                    if partition_error > 1e-4 * max(1.0, abs(float(loss.detach().item()))):
+                        raise FloatingPointError(
+                            f"task losses do not sum to the objective for {instance_id}: "
+                            f"difference {partition_error:.3e}"
+                        )
                     balancer_state = balancer.step(
-                        {"node": node_loss, "pair": pair_loss}, shared_parameters, model
+                        task_losses, shared_parameters, model
                     )
                     # What the balancer did is the evidence this arm exists to
                     # produce. GradNorm's task weights say whether it rediscovers
