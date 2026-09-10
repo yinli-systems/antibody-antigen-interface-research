@@ -4,9 +4,17 @@ Registered in `protocols/CORRESPONDENCE_CORRUPTION_CURVE_V1.md`, with the
 endpoint and decision rule fixed in its 2026-09-11 amendment before any
 evaluation was opened. Validation splits only; no test split was read.
 
-Trained models are left alone. At evaluation the structural representation's
-rows are displaced cyclically by `k` positions against the residues they
-describe. The base ESM-2 columns are untouched, so `k` moves correspondence and
+> **`k` is an index-space perturbation.** It displaces **rows of the
+> representation array after cohort-specific residue selection**, not residues
+> along the peptide chain. The selected rows are the modelled CDR or interface
+> residues, so consecutive rows can be separated by gaps, by segment boundaries,
+> or by the heavy/light junction. `k = 8` therefore means *eight rows*, and
+> whether that is eight contiguous biological residues is unverified. Read the
+> saturation below as a computational observation about correspondence, not as a
+> length scale in ångström or in residues.
+
+Trained models are left alone. At evaluation the representation's rows are
+displaced cyclically by `k` positions against the rows they are aligned to. The base ESM-2 columns are untouched, so `k` moves correspondence and
 nothing else — the multiset of structural vectors is identical at every `k`.
 
 Endpoint: macro pair AUPRC, paired to `k = 0` on the same seed and checkpoint.
@@ -47,7 +55,7 @@ itself rather than resolved by moving a boundary, so it is.
 
 ## What is actually going on
 
-**Damage saturates by k ≈ 8.** On both encoders, `k = 8`, `k = 16` and the
+**Damage saturates by about eight rows of displacement.** On both encoders, `k = 8`, `k = 16` and the
 global permutation sit within a hair of each other. Being eight residues wrong
 about which residue is which is, to this model, the same as having no
 correspondence at all. The interpretable endpoints of the ladder are `k = 1`
