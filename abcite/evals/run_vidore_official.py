@@ -62,10 +62,11 @@ def _load_hf_dataset(dataset: str, split: str):
 
 
 def _restore_query_prefix(processor) -> str:
-    """colpali-engine>=0.3.13 dropped Query: ; the v1.0 checkpoint was trained with it."""
+    from abcite_core.colpali_encoder import ensure_query_prefix
+
     old = getattr(processor, "query_prefix", None)
-    processor.query_prefix = "Query: "
-    return f"processor.query_prefix {old!r} -> 'Query: '"
+    now = ensure_query_prefix(processor)
+    return f"processor.query_prefix {old!r} -> {now!r}"
 
 
 def _load_retriever():

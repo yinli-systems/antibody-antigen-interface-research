@@ -72,6 +72,14 @@ def _patched_colqwen2_adapter() -> Path | None:
     return dest
 
 
+def ensure_query_prefix(processor, default: str = "Query: ") -> str:
+    """colpali-engine>=0.3.13 dropped the training-time prefix."""
+    old = getattr(processor, "query_prefix", None)
+    if old in (None, ""):
+        processor.query_prefix = default
+    return str(getattr(processor, "query_prefix"))
+
+
 def colpali_forced_off() -> bool:
     return os.environ.get("ABCITE_COLPALI", "auto").lower() in {"0", "false", "no", "off"}
 
@@ -286,6 +294,7 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
                     local_files_only=local_only,
                 ).eval()
                 processor = proc_cls.from_pretrained(proc_name, local_files_only=local_only)
+                ensure_query_prefix(processor)
                 enc = ColPaliEncoder(model, processor, device)
                 enc.name = "colqwen2" if "colqwen" in low else "colpali"
                 log.info("loaded ColPali encoder %s (%s) on %s", name, tag, device)
