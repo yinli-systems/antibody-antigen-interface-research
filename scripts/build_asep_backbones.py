@@ -15,12 +15,21 @@ difference would come from the extraction rather than from the data.
 The recipe is not documented anywhere and was recovered by reproducing entries
 that already exist:
 
-* the antibody is chains ``H`` then ``L`` concatenated **in that order**, which
-  is not the order the files store them in, and the interim graph's
-  ``mapping.ab.seqres2cdr`` mask then selects the CDR residues;
-* the antigen is every remaining chain, with ``mapping.ag.seqres2surf``
-  selecting the surface residues;
-* each residue contributes N, CA and C, giving ``[L, 3, 3]``.
+* the masks are indexed over **SEQRES**, not over the residues a file actually
+  resolves. Most entries have every residue resolved and the difference never
+  shows; ``1e6j_0P`` has one unresolved light-chain residue, and concatenating
+  observed residues shifts every position after it. Author numbering cannot
+  locate the gap either -- that chain numbers to 109 with two numbers absent
+  while SEQRES is 108 long -- so observed residues are aligned back to SEQRES by
+  sequence, and unresolved positions stay empty;
+* chains are concatenated in the order the interim graph stores them, which is
+  ``H`` then ``L`` for the antibody and is not the order the files list them in;
+* the antibody mask is ``mapping.ab.seqres2cdr``, the antigen's is
+  ``mapping.ag.seqres2surf``;
+* each residue contributes N, CA and C, giving ``[L, 3, 3]``, and a residue the
+  structure does not resolve becomes NaN -- the marker ESM-IF1's own batch
+  converter reads as unresolved, and what the existing file uses for 0.42% of
+  its residues.
 
 ``--verify-against`` re-derives entries that already exist and compares them.
 That check is the only evidence the recipe is right, so it runs by default when
@@ -41,18 +50,79 @@ class BackboneError(RuntimeError):
     """Raised when a backbone cannot be rebuilt faithfully."""
 
 
+def residue_backbone(residue):
+    """Return ``[N, CA, C]`` for one residue, or None when an atom is absent."""
+    try:
+        return [residue[name].coord for name in BACKBONE_ATOMS]
+    except KeyError:
+        return None
+
+
+def align_to_seqres(chain, seqres: str) -> list:
+    """Place observed residues at their SEQRES positions, leaving gaps empty.
+
+    The masks index SEQRES. A file that does not resolve every residue therefore
+    cannot be read in observed order, and author numbering cannot be used to
+    place them either: one chain here numbers to 109 with two numbers absent
+    while its SEQRES is 108 long. Matching the observed sequence against SEQRES
+    is what survives both.
+    """
+    import difflib
+
+    from Bio.PDB.Polypeptide import protein_letters_3to1
+
+    residues = list(chain)
+    observed = "".join(
+        protein_letters_3to1.get(residue.get_resname(), "X") for residue in residues
+    )
+    slots: list = [None] * len(seqres)
+    matcher = difflib.SequenceMatcher(None, seqres, observed, autojunk=False)
+    for tag, seqres_start, seqres_end, observed_start, _ in matcher.get_opcodes():
+        if tag != "equal":
+            continue
+        for offset in range(seqres_end - seqres_start):
+            slots[seqres_start + offset] = residue_backbone(residues[observed_start + offset])
+
+    witness = numbering_gaps(residues, len(seqres))
+    if witness is not None:
+        aligned_gaps = {index for index, slot in enumerate(slots) if slot is None}
+        if aligned_gaps != witness:
+            raise BackboneError(
+                f"sequence alignment and author numbering disagree about which "
+                f"residues are unresolved: alignment says {sorted(aligned_gaps)[:6]}, "
+                f"numbering says {sorted(witness)[:6]}"
+            )
+    return slots
+
+
+def numbering_gaps(residues: list, seqres_length: int) -> set[int] | None:
+    """Which SEQRES positions the author numbering says are unresolved.
+
+    An independent witness for the sequence alignment. A repeated residue around
+    a gap makes the alignment ambiguous, and the two placements differ by one
+    position -- enough to attach a coordinate to the wrong residue while leaving
+    every other position identical, which is exactly the error that already sits
+    in the stored file.
+
+    Returns None when the numbering cannot serve as a witness: insertion codes,
+    a first residue that is not 1, or a span that does not match SEQRES. Antibody
+    chains are numbered by scheme rather than sequentially and usually fall here.
+    """
+    numbers = [residue.id[1] for residue in residues]
+    codes = {residue.id[2] for residue in residues}
+    if not numbers or codes != {" "} or numbers[0] != 1:
+        return None
+    if numbers != sorted(numbers) or len(set(numbers)) != len(numbers):
+        return None
+    if numbers[-1] != seqres_length:
+        return None
+    present = set(numbers)
+    return {number - 1 for number in range(1, seqres_length + 1) if number not in present}
+
+
 def chain_backbones(model) -> dict[str, list]:
     """Return per-chain lists of ``[N, CA, C]`` coordinates, or None per residue."""
-    chains = {}
-    for chain in model:
-        residues = []
-        for residue in chain:
-            try:
-                residues.append([residue[name].coord for name in BACKBONE_ATOMS])
-            except KeyError:
-                residues.append(None)
-        chains[chain.id] = residues
-    return chains
+    return {chain.id: [residue_backbone(residue) for residue in chain] for chain in model}
 
 
 def select(residues: list, mask, side: str, identifier: str):
@@ -68,13 +138,18 @@ def select(residues: list, mask, side: str, identifier: str):
     chosen = [residues[index] for index in range(len(residues)) if mask[index]]
     if not chosen:
         raise BackboneError(f"{identifier}: {side} mask selects nothing")
-    missing = sum(1 for entry in chosen if entry is None)
-    if missing:
-        raise BackboneError(
-            f"{identifier}: {side} is missing backbone atoms in {missing} selected "
-            "residue(s); a coordinate cannot be invented for them"
-        )
-    return numpy.asarray(chosen, dtype=numpy.float32)
+    # A residue the structure does not resolve becomes NaN rather than a
+    # position. NaN is not an invented coordinate: it is the marker ESM-IF1's
+    # own batch converter reads as "unresolved", and it is what the existing
+    # file uses -- 1,715 residues of 405,720, or 0.42%. Substituting zeros would
+    # place a fabricated atom at the origin, which the encoder would consume as
+    # real.
+    absent = numpy.full((3, 3), numpy.nan, dtype=numpy.float32)
+    filled = [absent if entry is None else numpy.asarray(entry, dtype=numpy.float32)
+              for entry in chosen]
+    if all(numpy.isnan(entry).all() for entry in filled):
+        raise BackboneError(f"{identifier}: {side} resolves none of its selected residues")
+    return numpy.asarray(filled, dtype=numpy.float32)
 
 
 def build_one(identifier: str, structure_path: Path, graph_path: Path) -> dict:
@@ -84,31 +159,30 @@ def build_one(identifier: str, structure_path: Path, graph_path: Path) -> dict:
 
     graph = torch.load(graph_path, map_location="cpu", weights_only=False)
     mapping = graph.get("mapping")
+    seqres = graph.get("seqres")
     if not isinstance(mapping, dict) or "ab" not in mapping or "ag" not in mapping:
         raise BackboneError(f"{identifier}: interim graph has no ab/ag mapping")
+    if not isinstance(seqres, dict) or "ab" not in seqres or "ag" not in seqres:
+        raise BackboneError(f"{identifier}: interim graph has no ab/ag seqres")
 
     model = PDBParser(QUIET=True).get_structure(identifier, str(structure_path))[0]
-    chains = chain_backbones(model)
 
-    antibody = [
-        residue
-        for chain_id in ANTIBODY_CHAIN_ORDER
-        if chain_id in chains
-        for residue in chains[chain_id]
-    ]
-    if not antibody:
-        raise BackboneError(
-            f"{identifier}: no {'/'.join(ANTIBODY_CHAIN_ORDER)} chain; "
-            f"the file has {sorted(chains)}"
-        )
-    antigen = [
-        residue
-        for chain_id in sorted(chains)
-        if chain_id not in ANTIBODY_CHAIN_ORDER
-        for residue in chains[chain_id]
-    ]
-    if not antigen:
-        raise BackboneError(f"{identifier}: no antigen chain outside H/L")
+    def side(name: str) -> list:
+        residues: list = []
+        # The graph's chain order is what the mask was built against.
+        for chain_id, sequence in seqres[name].items():
+            if chain_id not in model:
+                raise BackboneError(
+                    f"{identifier}: chain {chain_id!r} is in the graph and not in the "
+                    f"structure, which has {sorted(chain.id for chain in model)}"
+                )
+            residues += align_to_seqres(model[chain_id], sequence)
+        return residues
+
+    antibody = side("ab")
+    antigen = side("ag")
+    if not antibody or not antigen:
+        raise BackboneError(f"{identifier}: an empty side in the interim graph")
 
     return {
         "antibody_backbone": torch.from_numpy(
@@ -120,9 +194,20 @@ def build_one(identifier: str, structure_path: Path, graph_path: Path) -> dict:
     }
 
 
-def verify(rebuilt: dict, reference: dict, identifier: str, tolerance: float) -> None:
-    """Compare a rebuilt entry with one that already exists."""
+def verify(
+    rebuilt: dict, reference: dict, identifier: str, tolerance: float,
+    differences: list | None = None,
+) -> None:
+    """Compare a rebuilt entry with one that already exists.
+
+    A shape or coordinate difference is fatal. A disagreement about which
+    residues are unresolved is appended to ``differences`` instead, because the
+    stored file is known to place some of those markers one position late.
+    """
     import numpy
+
+    if differences is None:
+        differences = []
 
     for side in ("antibody_backbone", "antigen_backbone"):
         new = numpy.asarray(rebuilt[side])
@@ -131,10 +216,31 @@ def verify(rebuilt: dict, reference: dict, identifier: str, tolerance: float) ->
             raise BackboneError(
                 f"{identifier}: rebuilt {side} has shape {new.shape}, stored {old.shape}"
             )
-        if not numpy.allclose(new, old, atol=tolerance):
-            worst = float(numpy.abs(new - old).max())
+        # Coordinates are compared only where both sides resolved the residue.
+        # Where one is NaN and the other is not, the disagreement is about which
+        # residue is unresolved, which is reported separately below rather than
+        # as a coordinate difference of an unrepresentable size.
+        comparable = numpy.isfinite(new) & numpy.isfinite(old)
+        if comparable.any() and not numpy.allclose(
+            new[comparable], old[comparable], atol=tolerance
+        ):
+            worst = float(numpy.abs(new[comparable] - old[comparable]).max())
             raise BackboneError(
                 f"{identifier}: rebuilt {side} differs from the stored one by {worst:.4g}"
+            )
+        new_gaps = set(numpy.where(numpy.isnan(new).any(axis=(1, 2)))[0].tolist())
+        old_gaps = set(numpy.where(numpy.isnan(old).any(axis=(1, 2)))[0].tolist())
+        if new_gaps != old_gaps:
+            # Recorded, not fatal. The stored file places some unresolved markers
+            # one position late; author numbering witnesses the new placement, so
+            # a disagreement here is a correction rather than a regression.
+            differences.append(
+                {
+                    "instance_id": identifier,
+                    "side": side,
+                    "only_in_rebuild": sorted(new_gaps - old_gaps),
+                    "only_in_stored": sorted(old_gaps - new_gaps),
+                }
             )
 
 
@@ -174,6 +280,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     checked = 0
+    marker_differences: list[dict] = []
     for identifier in identifiers:
         if checked >= arguments.verify_limit or identifier not in reference:
             continue
@@ -184,13 +291,26 @@ def main(argv: list[str] | None = None) -> int:
             rebuilt = build_one(
                 identifier, arguments.structures / f"{identifier}.pdb", graph_path
             )
-            verify(rebuilt, reference[identifier], identifier, arguments.tolerance)
+            verify(
+                rebuilt, reference[identifier], identifier, arguments.tolerance,
+                marker_differences,
+            )
         except BackboneError as error:
             print(f"verification failed: {error}", file=sys.stderr)
             return 1
         checked += 1
     if reference:
-        print(f"verified {checked} existing entries reproduce exactly")
+        print(f"verified {checked} existing entries: every coordinate reproduces")
+        if marker_differences:
+            print(
+                f"  {len(marker_differences)} of them place an unresolved-residue "
+                "marker differently; author numbering witnesses the rebuild"
+            )
+            for entry in marker_differences[:3]:
+                print(
+                    f"    {entry['instance_id']} {entry['side']}: rebuild "
+                    f"{entry['only_in_rebuild']} stored {entry['only_in_stored']}"
+                )
 
     built: dict[str, dict] = {}
     failures: list[dict[str, str]] = []

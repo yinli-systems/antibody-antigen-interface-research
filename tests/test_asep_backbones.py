@@ -103,12 +103,32 @@ def test_the_mask_picks_the_indices_it_marks_in_order() -> None:
     assert [float(row[0][0]) for row in chosen] == [1.0, 3.0, 4.0]
 
 
-def test_a_selected_residue_without_coordinates_is_refused() -> None:
-    """Inventing a coordinate would put a fabricated atom into a structure encoder."""
+def test_a_selected_residue_without_coordinates_becomes_nan_not_zero() -> None:
+    """NaN is ESM-IF1's marker for unresolved; zeros would be an atom at the origin."""
     residues = [_residue(0.0), None, _residue(2.0)]
 
-    with pytest.raises(BackboneError, match="missing backbone atoms"):
-        select(residues, numpy.array([1, 1, 0]), "antigen", "x_0P")
+    chosen = select(residues, numpy.array([1, 1, 0]), "antigen", "x_0P")
+
+    assert chosen.shape == (2, 3, 3)
+    assert numpy.isnan(chosen[1]).all()
+    assert not numpy.isnan(chosen[0]).any()
+
+
+def test_a_side_that_resolves_nothing_is_refused() -> None:
+    """An all-NaN backbone carries no structure and should not reach an encoder."""
+    with pytest.raises(BackboneError, match="resolves none"):
+        select([None, None], numpy.array([1, 1]), "antigen", "x_0P")
+
+
+def test_verification_treats_nan_as_equal_to_nan() -> None:
+    """Otherwise every unresolved residue reads as a difference."""
+    entry = {
+        "antibody_backbone": numpy.full((3, 3, 3), numpy.nan, dtype=numpy.float32),
+        "antigen_backbone": numpy.ones((5, 3, 3), dtype=numpy.float32),
+    }
+    entry["antibody_backbone"][0] = 1.0
+
+    verify(entry, entry, "x_0P", 1e-3)
 
 
 def test_an_unselected_residue_without_coordinates_is_tolerated() -> None:
@@ -155,3 +175,142 @@ def test_verification_rejects_a_coordinate_difference() -> None:
 
     with pytest.raises(BackboneError, match="differs from the stored one"):
         verify(rebuilt, stored, "x_0P", 1e-3)
+
+
+class _NamedResidue(_Residue):
+    """A residue with a name and an author id, as Biopython supplies."""
+
+    def __init__(self, coords, name: str, number: int, icode: str = " ") -> None:
+        super().__init__(coords)
+        self._name = name
+        self.id = (" ", number, icode)
+
+    def get_resname(self) -> str:
+        return self._name
+
+
+class _NamedChain:
+    def __init__(self, residues) -> None:
+        self._residues = list(residues)
+
+    def __iter__(self):
+        return iter(self._residues)
+
+
+def test_an_unresolved_residue_leaves_a_gap_rather_than_shifting_the_rest() -> None:
+    """The defect the first version had: concatenating observed residues.
+
+    Most entries resolve every residue and the difference never shows. One
+    unresolved residue shifts every SEQRES position after it, which produces a
+    backbone of exactly the right shape and entirely wrong coordinates.
+    """
+    align_to_seqres = _MODULE.align_to_seqres
+
+    # SEQRES is ACDE; the structure resolves A, C and E, skipping D at number 3.
+    chain = _NamedChain([
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "CYS", 2),
+        _NamedResidue(_residue(3.0), "GLU", 4),
+    ])
+
+    slots = align_to_seqres(chain, "ACDE")
+
+    assert len(slots) == 4
+    assert slots[2] is None
+    assert float(slots[3][0][0]) == 3.0
+
+
+def test_a_fully_resolved_chain_aligns_position_for_position() -> None:
+    align_to_seqres = _MODULE.align_to_seqres
+
+    chain = _NamedChain([
+        _NamedResidue(_residue(float(index)), name, index + 1)
+        for index, name in enumerate(("ALA", "CYS", "ASP"))
+    ])
+
+    slots = align_to_seqres(chain, "ACD")
+
+    assert [float(slot[0][0]) for slot in slots] == [0.0, 1.0, 2.0]
+
+
+def test_author_numbering_witnesses_the_alignment() -> None:
+    """The check that caught a misplaced marker in the stored file."""
+    numbering_gaps = _MODULE.numbering_gaps
+
+    residues = [_NamedResidue(_residue(0.0), "ALA", n) for n in (1, 2, 4, 5)]
+
+    assert numbering_gaps(residues, 5) == {2}
+
+
+def test_numbering_declines_to_witness_when_it_cannot(tmp_path: Path) -> None:
+    """Antibody chains are numbered by scheme, not sequentially."""
+    numbering_gaps = _MODULE.numbering_gaps
+
+    with_icodes = [
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "CYS", 1, "A"),
+    ]
+    not_starting_at_one = [_NamedResidue(_residue(0.0), "ALA", n) for n in (5, 6)]
+
+    assert numbering_gaps(with_icodes, 2) is None
+    assert numbering_gaps(not_starting_at_one, 6) is None
+    assert numbering_gaps([], 3) is None
+
+
+def test_an_ambiguous_gap_is_refused_when_numbering_disagrees() -> None:
+    """A repeated residue lets the alignment place the gap on either side.
+
+    The two placements differ by one position, which attaches a coordinate to the
+    wrong residue while leaving every other position identical -- exactly the
+    error already present in the stored file, and invisible to a coordinate
+    comparison.
+    """
+    align_to_seqres = _MODULE.align_to_seqres
+
+    # SEQRES AKKD with one K resolved; numbering says the *second* K is missing.
+    chain = _NamedChain([
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "LYS", 2),
+        _NamedResidue(_residue(3.0), "ASP", 4),
+    ])
+
+    slots = align_to_seqres(chain, "AKKD")
+
+    assert slots[2] is None and slots[1] is not None
+
+
+def test_verification_records_a_marker_disagreement_instead_of_failing() -> None:
+    """The stored file places some markers one position late; that is a correction."""
+    rebuilt = {
+        "antibody_backbone": numpy.ones((3, 3, 3), dtype=numpy.float32),
+        "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
+    }
+    stored = {
+        "antibody_backbone": numpy.ones((3, 3, 3), dtype=numpy.float32),
+        "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
+    }
+    rebuilt["antigen_backbone"][1] = numpy.nan
+    stored["antigen_backbone"][2] = numpy.nan
+    differences: list = []
+
+    verify(rebuilt, stored, "x_0P", 1e-3, differences)
+
+    assert differences == [
+        {"instance_id": "x_0P", "side": "antigen_backbone",
+         "only_in_rebuild": [1], "only_in_stored": [2]}
+    ]
+
+
+def test_a_coordinate_difference_is_still_fatal() -> None:
+    """Only the unresolved-marker disagreement is downgraded."""
+    rebuilt = {
+        "antibody_backbone": numpy.ones((3, 3, 3), dtype=numpy.float32),
+        "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
+    }
+    stored = {
+        "antibody_backbone": numpy.full((3, 3, 3), 5.0, dtype=numpy.float32),
+        "antigen_backbone": numpy.ones((4, 3, 3), dtype=numpy.float32),
+    }
+
+    with pytest.raises(BackboneError, match="differs from the stored one"):
+        verify(rebuilt, stored, "x_0P", 1e-3, [])
