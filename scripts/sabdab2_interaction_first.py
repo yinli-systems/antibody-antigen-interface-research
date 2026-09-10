@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import hashlib
 import json
 import math
@@ -894,6 +895,8 @@ def _run_epoch(
     epoch: int,
     args: argparse.Namespace,
     class_weights: Mapping[str, float],
+    balancer: Any | None = None,
+    shared_parameters: Sequence[Any] | None = None,
 ) -> dict[str, float]:
     import numpy as np
     import torch
@@ -921,6 +924,12 @@ def _run_epoch(
         epitope_consistency=args.epitope_consistency_weight,
         paratope_consistency=args.paratope_consistency_weight,
         partner_rank=args.partner_rank_weight,
+    )
+    node_only_weights = dataclasses.replace(weights, edge=0.0, partner_rank=0.0)
+    pair_only_weights = dataclasses.replace(
+        weights, epitope_bce=0.0, paratope_bce=0.0, epitope_dice=0.0, paratope_dice=0.0,
+        epitope_count=0.0, paratope_count=0.0, epitope_consistency=0.0,
+        paratope_consistency=0.0,
     )
     with context:
         for instance_id in identifiers:
@@ -1017,7 +1026,35 @@ def _run_epoch(
                 raise FloatingPointError(f"Non-finite loss for {instance_id}")
             if training:
                 optimizer.zero_grad(set_to_none=True)
-                loss.backward()
+                if balancer is None:
+                    loss.backward()
+                else:
+                    # The balancer needs the two objectives separately. The model
+                    # forward is already done; only the loss is recomputed, which
+                    # is cheap beside it.
+                    node_loss, _ = interaction_first_loss(
+                        matched, pair_targets=pair_labels, epitope_targets=epitope_labels,
+                        paratope_targets=paratope_labels, antigen_mask=antigen_mask,
+                        antibody_mask=antibody_mask, weights=node_only_weights,
+                        edge_positive_weight=class_weights["edge"],
+                        epitope_positive_weight=class_weights["epitope"],
+                        paratope_positive_weight=class_weights["paratope"],
+                        negative_scores=stacked_negative_scores,
+                        partner_temperature=args.partner_temperature,
+                    )
+                    pair_loss, _ = interaction_first_loss(
+                        matched, pair_targets=pair_labels, epitope_targets=epitope_labels,
+                        paratope_targets=paratope_labels, antigen_mask=antigen_mask,
+                        antibody_mask=antibody_mask, weights=pair_only_weights,
+                        edge_positive_weight=class_weights["edge"],
+                        epitope_positive_weight=class_weights["epitope"],
+                        paratope_positive_weight=class_weights["paratope"],
+                        negative_scores=stacked_negative_scores,
+                        partner_temperature=args.partner_temperature,
+                    )
+                    balancer_state = balancer.step(
+                        {"node": node_loss, "pair": pair_loss}, shared_parameters, model
+                    )
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.gradient_clip)
                 optimizer.step()
             totals["total"] += float(loss.detach().item())
@@ -1139,6 +1176,21 @@ def command_train(args: argparse.Namespace) -> None:
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
     )
+    balancer = None
+    shared_parameters: list = []
+    if args.multitask_balancer != "none":
+        from interaction_first.multitask_balancers import build_balancer
+
+        balancer = build_balancer(args.multitask_balancer)
+        # The trunk the cosine was measured on: everything that is not a head.
+        shared_parameters = [
+            parameter
+            for name, parameter in model.named_parameters()
+            if parameter.requires_grad
+            and not name.startswith(("decoder.", "epitope_head.", "paratope_head."))
+        ]
+        if not shared_parameters:
+            raise ValueError("no shared parameters found; the balancer would act on nothing")
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer,
         mode="min",
@@ -1275,6 +1327,8 @@ def command_train(args: argparse.Namespace) -> None:
             epoch,
             args,
             class_weights,
+            balancer=balancer,
+            shared_parameters=shared_parameters,
         )
         validation_metrics = _run_epoch(
             model,
@@ -1776,6 +1830,14 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--prepare-dir", type=Path, required=True)
     train.add_argument("--contact-dir", type=Path, required=True)
     train.add_argument("--embedding-dir", type=Path, required=True)
+    train.add_argument(
+        "--multitask-balancer",
+        choices=("none", "gradnorm", "pcgrad"),
+        default="none",
+        help="rebalance the node and pair objectives during training; pcgrad is a "
+        "negative control here, since its projection fires only on conflicting "
+        "gradients and this model's are aligned",
+    )
     _add_representation_arguments(train)
     train.add_argument("--split-manifest", type=Path, required=True)
     train.add_argument("--partner-metadata", type=Path)
