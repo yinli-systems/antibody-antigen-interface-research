@@ -103,33 +103,35 @@ CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**
 
 **Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). Retrieval is ColQwen2 late-interaction T→I (`vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0`). VQA is a separate cite-or-abstain step on the retrieved (or oracle) figure pixels. Product default stays extractive/heuristic. `ABCITE_VLM=1` runs `Qwen/Qwen2-VL-2B-Instruct` generate — not ColQwen2 MaxSim (`custom_text_proj` is retrieval-only). Product: `POST /query` with `task=visual_qa`. CLIP fusion/rerank **off**.
 
-Gold: `evals/gold/visual_qa.jsonl` (**n=182**: 166 unique-gold answerable + 16 abstain; every answerable item is `caption_bm25_should_fail`). All 166 answerable gold IDs are in the 16k gallery. Gallery: **N=15,949** readable PMC OA jpg on the 5090. Encoder: ColQwen2 late-interaction (GPU MaxSim, `Query: ` prefix). OpenCLIP and BiomedCLIP were re-scored on this **same n=166 / N=15,949** gold (npy cache hits; no 16k re-encode).
+Gold: `evals/gold/visual_qa.jsonl` (**n=295**: 273 unique-gold answerable + 22 abstain; every answerable item is `caption_bm25_should_fail`). In-gallery answerable **n=273** on N=15,949. Encoder: ColQwen2 late-interaction (GPU MaxSim, `Query: ` prefix). OpenCLIP and BiomedCLIP were re-scored on this **same n=273 / N=15,949** gold (npy cache hits; no 16k re-encode). ColQwen2.5 was **not** run (no complete snapshot in Mac or pod HF cache; no Hub download).
 
 ### Headline: vision beats caption BM25 (fair visual gold)
 
-Four-column on NVIDIA GeForce RTX 5090 (**n=166** / **N=15,949**). ColQwen2: GPU MaxSim (`maxsim GPU n_q=166 n_d=15949`), npz hit (`embeddings-colqwen2-n15949.npz`), `Query: ` prefix, query/doc tokens capped 64/768. OpenCLIP / BiomedCLIP: pooled T→I, `embeddings-clip-vit-b-32-n15949.npy` / `embeddings-biomedclip-n15949.npy` hits. All answerable items are `caption_bm25_should_fail`.
+Four-column on NVIDIA GeForce RTX 5090 (**n=273** / **N=15,949**). ColQwen2: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`), npz hit (`embeddings-colqwen2-n15949.npz`), `Query: ` prefix. OpenCLIP / BiomedCLIP: pooled T→I, npy hits. All answerable items are `caption_bm25_should_fail`.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
-| BiomedCLIP T→I | 0.042 | 0.078 | 0.102 | 0.060 |
-| OpenCLIP ViT-B-32 T→I | 0.018 | 0.072 | 0.102 | 0.048 |
-| **ColQwen2 late-interaction T→I** | **0.066** | **0.187** | **0.217** | **0.130** |
+| caption BM25 | 0.000 | 0.007 | 0.007 | 0.003 |
+| BiomedCLIP T→I | 0.040 | 0.084 | 0.117 | 0.062 |
+| OpenCLIP ViT-B-32 T→I | 0.015 | 0.062 | 0.088 | 0.040 |
+| **ColQwen2 late-interaction T→I** | **0.073** | **0.176** | **0.209** | **0.128** |
 
-ColQwen2 leads every cutoff. vs the previous **n=51** / N=15,949 ColQwen2 receipt **0.078 / 0.176 / 0.196 / 0.124**: R@1 **0.078 → 0.066** (larger, more diverse gold); R@5 **0.176 → 0.187**; R@10 **0.196 → 0.217**; nDCG@5 **0.124 → 0.130**. Same-gold CLIP vs that n=51 reference dropped too (BiomedCLIP R@1 0.059→0.042; OpenCLIP 0.039→0.018). Vision still beats caption BM25 (0). Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline). Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json`.
+ColQwen2 leads every cutoff. vs the previous **n=242** four-column **0.078 / 0.194 / 0.231 / 0.141**: R@1 **0.078 → 0.073**; R@5 **0.194 → 0.176**; R@10 **0.231 → 0.209**; nDCG@5 **0.141 → 0.128**. vs **n=166** **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066; R@5/nDCG a bit below that smaller gold. BM25 R@5 is 2/273. Vision still beats caption BM25 at R@1. Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline). Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json`.
+
+Prior **n=242** same-gallery four-column (not this table): BiomedCLIP 0.041 / 0.083 / 0.120 / 0.062; OpenCLIP 0.016 / 0.070 / 0.099 / 0.045; ColQwen2 0.078 / 0.194 / 0.231 / 0.141; BM25 0 / 0.008 / 0.008 / 0.004. Prior **n=166**: BiomedCLIP 0.042 / 0.078 / 0.102 / 0.060; OpenCLIP 0.018 / 0.072 / 0.102 / 0.048; ColQwen2 0.066 / 0.187 / 0.217 / 0.130; BM25 0.
 
 N=1,200 n=51 reference (not the headline): ColQwen2 0.196 / 0.353 / 0.373 / 0.283; OpenCLIP 0.176 / 0.314 / 0.333 / 0.247; BiomedCLIP 0.098 / 0.176 / 0.274 / 0.135; BM25 0.020 / 0.039 / 0.059 / 0.029.
 
-VQA cite-or-abstain is **not** retrieval R@K and **not** ViDoRe (official mean **89.11** vs published **89.2**). Heuristic on the new gold (n=182 queries / 166 answerable / 16 abstain, N=15,949, 5090). Product default stays extractive/heuristic (`ABCITE_VLM=0`). Qwen2-VL-2B was **not** re-run.
+VQA cite-or-abstain is **not** retrieval R@K and **not** ViDoRe (official mean **89.11** vs published **89.2**). Heuristic on the new gold (n=295 queries / 273 answerable / 22 abstain, N=15,949, 5090). Product default stays extractive/heuristic (`ABCITE_VLM=0`). Qwen2-VL-2B was **not** re-run.
 
 | Answerer | e2e | oracle-figure | abstain | cite@1 |
 |---|---:|---:|---:|---:|
-| heuristic pixel cues (n=182 / N=15949) | **11.0%** | **57.7%** | **75%** | 6.6% |
+| heuristic pixel cues (n=295 / N=15949) | **9.5%** | **60.3%** | **73%** | 7.3% |
 | Qwen2-VL-2B-Instruct generate (prior n=61 receipt; not re-run) | 1.6% | 42.6% | 0% | 7.8% |
 
 The 2B VLM **does not beat** the heuristic on the prior gold. It over-answered (abstain **0%** on 10 unanswerable items). Do not set `ABCITE_VLM_MODEL=vidore/colqwen2-base`. Cached `embeddings-colqwen2-n15949.npz`; no 16k re-encode.
 
-**Not SOTA on the PMC figure protocol.** That nDCG@5 **0.130** is not ViDoRe. ViDoRe is **page retrieval** (visual question → PDF page). AbCite visual QA is **figure-jpg retrieval** on 166 PMC questions over N=15,949. Do not put 0.130 next to 81.3 or 89.2.
+**Not SOTA on the PMC figure protocol.** That nDCG@5 **0.128** is not ViDoRe. ViDoRe is **page retrieval** (visual question → PDF page). AbCite visual QA is **figure-jpg retrieval** on 273 PMC questions over N=15,949. Do not put 0.128 next to 81.3 or 89.2.
 
 ### Official ViDoRe v1 (same ColQwen2 weights)
 
@@ -169,7 +171,7 @@ Same weights, `Query: ` prefix restored, `ViDoReEvaluatorQA` (`python evals/run_
 | SyntheticDocQA-Health | 0.988 | **0.983** |
 | **10-task mean** | **0.892** | **0.891** |
 
-**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Does not change PMC figure visual QA (nDCG@5 **0.130** on n=166).
+**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Does not change PMC figure visual QA (nDCG@5 **0.128** on n=273).
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 
@@ -277,7 +279,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); four-column n=166 / N=15,949: ColQwen2 R@1 **0.066**, BiomedCLIP **0.042**, OpenCLIP **0.018**, BM25 0; heuristic VQA e2e **11.0%** / oracle **57.7%** / abstain **75%**; prior 2B VLM n=61 e2e **1.6%** (not re-run; does not beat heuristic) |
+| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); four-column n=273 / N=15,949: ColQwen2 R@1 **0.073**, BiomedCLIP **0.040**, OpenCLIP **0.015**, BM25 0; heuristic VQA e2e **9.5%** / oracle **60.3%** / abstain **73%**; prior 2B VLM n=61 e2e **1.6%** (not re-run; does not beat heuristic) |
 | Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified`; OA Commons path `evals/download_av.py` + `--oa` | OA CLAP encoder=`clap` N=9 R@1 **0.333** vs BM25 0; CI uses synthetic wav/PNG fixtures; OA media is gitignored |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |

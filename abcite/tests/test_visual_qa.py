@@ -41,7 +41,7 @@ def test_visual_qa_gold_constraints():
         for line in GOLD.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
-    assert len(rows) >= 150
+    assert len(rows) >= 280
     golds: list[str] = []
     fail_n = 0
     ids: list[str] = []
@@ -62,8 +62,8 @@ def test_visual_qa_gold_constraints():
     assert len(golds) == len(set(golds))
     assert fail_n == len(rows)
     abstain = [r for r in rows if r.get("expected_status") == "abstain"]
-    assert len(abstain) >= 12
-    assert len(golds) >= 120
+    assert len(abstain) >= 20
+    assert len(golds) >= 250
 
 
 def test_visual_qa_gold_caption_overlap_on_cache_metadata():

@@ -1,158 +1,135 @@
 {
   "protocol": "visual_qa",
   "n_gallery": 15949,
-  "n_readable": 15949,
-  "n_queries": 182,
-  "n_answerable": 166,
+  "n_queries": 295,
+  "n_answerable": 273,
   "gpu": "NVIDIA GeForce RTX 5090",
-  "fusion_default": "off",
   "skipped_clip_columns": false,
   "openclip": {
     "encoder": "clip-vit-b-32",
     "clip_image_only": {
-      "recall@1": 0.0181,
-      "recall@5": 0.0723,
-      "recall@10": 0.1024,
-      "ndcg@5": 0.048,
-      "n": 166
+      "recall@1": 0.0147,
+      "recall@5": 0.0623,
+      "recall@10": 0.0879,
+      "ndcg@5": 0.04,
+      "n": 273
     },
     "caption_bm25": {
       "recall@1": 0.0,
-      "recall@5": 0.0,
-      "recall@10": 0.0,
-      "ndcg@5": 0.0,
-      "n": 166
+      "recall@5": 0.0073,
+      "recall@10": 0.0073,
+      "ndcg@5": 0.0034,
+      "n": 273
     },
     "npy": "embeddings-clip-vit-b-32-n15949.npy hit"
   },
   "biomedclip": {
     "encoder": "biomedclip",
     "clip_image_only": {
-      "recall@1": 0.0422,
-      "recall@5": 0.0783,
-      "recall@10": 0.1024,
-      "ndcg@5": 0.06,
-      "n": 166
+      "recall@1": 0.0403,
+      "recall@5": 0.0842,
+      "recall@10": 0.1172,
+      "ndcg@5": 0.0623,
+      "n": 273
     },
     "caption_bm25": {
       "recall@1": 0.0,
-      "recall@5": 0.0,
-      "recall@10": 0.0,
-      "ndcg@5": 0.0,
-      "n": 166
+      "recall@5": 0.0073,
+      "recall@10": 0.0073,
+      "ndcg@5": 0.0034,
+      "n": 273
     },
-    "npy": "embeddings-biomedclip-n15949.npy hit",
-    "loaded_from": "local hub snapshot; HF_HOME=/workspace/hf-cache"
+    "npy": "embeddings-biomedclip-n15949.npy hit"
   },
   "colpali": {
     "encoder": "colqwen2",
     "clip_image_only": {
-      "recall@1": 0.0663,
-      "recall@5": 0.1867,
-      "recall@10": 0.2169,
-      "ndcg@5": 0.1296,
-      "n": 166
+      "recall@1": 0.0733,
+      "recall@5": 0.1758,
+      "recall@10": 0.2088,
+      "ndcg@5": 0.1284,
+      "n": 273
     },
     "caption_bm25": {
       "recall@1": 0.0,
-      "recall@5": 0.0,
-      "recall@10": 0.0,
-      "ndcg@5": 0.0,
-      "n": 166
+      "recall@5": 0.0073,
+      "recall@10": 0.0073,
+      "ndcg@5": 0.0034,
+      "n": 273
     },
     "npz": "embeddings-colqwen2-n15949.npz hit",
-    "maxsim": "GPU n_q=166 n_d=15949",
+    "maxsim": "GPU n_q=273 n_d=15949",
     "query_prefix": "Query: "
   },
   "four_column": {
     "caption_bm25": {
       "recall@1": 0.0,
-      "recall@5": 0.0,
-      "recall@10": 0.0,
-      "ndcg@5": 0.0,
-      "n": 166
+      "recall@5": 0.0073,
+      "recall@10": 0.0073,
+      "ndcg@5": 0.0034,
+      "n": 273
     },
     "biomedclip_t2i": {
-      "recall@1": 0.0422,
-      "recall@5": 0.0783,
-      "recall@10": 0.1024,
-      "ndcg@5": 0.06,
-      "n": 166
+      "recall@1": 0.0403,
+      "recall@5": 0.0842,
+      "recall@10": 0.1172,
+      "ndcg@5": 0.0623,
+      "n": 273
     },
     "openclip_t2i": {
-      "recall@1": 0.0181,
-      "recall@5": 0.0723,
-      "recall@10": 0.1024,
-      "ndcg@5": 0.048,
-      "n": 166
+      "recall@1": 0.0147,
+      "recall@5": 0.0623,
+      "recall@10": 0.0879,
+      "ndcg@5": 0.04,
+      "n": 273
     },
     "colpali_t2i": {
-      "recall@1": 0.0663,
-      "recall@5": 0.1867,
-      "recall@10": 0.2169,
-      "ndcg@5": 0.1296,
-      "n": 166
-    },
-    "vision_rerank_biomedclip": {
-      "recall@1": 0.006,
-      "recall@5": 0.0241,
-      "recall@10": 0.0241,
-      "ndcg@5": 0.0162,
-      "n": 166
+      "recall@1": 0.0733,
+      "recall@5": 0.1758,
+      "recall@10": 0.2088,
+      "ndcg@5": 0.1284,
+      "n": 273
     },
     "vqa": {
-      "n": 182,
-      "end_to_end_accuracy": 0.1099,
-      "oracle_figure_accuracy": 0.5769,
-      "cite_top1": 0.0663,
-      "abstain_accuracy": 0.75,
-      "n_abstain": 16,
-      "gold_answer_overlap_e2e": 0.1019,
-      "gold_answer_overlap_oracle": 0.0687,
+      "n": 295,
+      "end_to_end_accuracy": 0.0949,
+      "oracle_figure_accuracy": 0.6034,
+      "cite_top1": 0.0733,
+      "abstain_accuracy": 0.7273,
+      "n_abstain": 22,
+      "gold_answer_overlap_e2e": 0.1013,
+      "gold_answer_overlap_oracle": 0.0661,
       "path": "extractive/heuristic pixel cues; not a VLM",
       "vlm_skip": null,
       "not_vidore": true,
       "not_maxsim": true,
       "scored": true
     },
-    "caption_bm25_should_fail_subset": {
-      "recall@1": 0.0,
-      "recall@5": 0.0,
-      "recall@10": 0.0,
-      "ndcg@5": 0.0,
-      "n": 166
-    },
-    "vision_should_fail_subset": {
-      "recall@1": 0.0663,
-      "recall@5": 0.1867,
-      "recall@10": 0.2169,
-      "ndcg@5": 0.1296,
-      "n": 166
-    },
-    "vision_beats_bm25_r@1": true,
-    "vision_beats_bm25_ndcg@5": true,
-    "n_answerable": 166,
+    "n_answerable": 273,
     "n_gallery": 15949,
     "same_gold": true,
-    "clip_npy": "embeddings-clip-vit-b-32-n15949.npy and embeddings-biomedclip-n15949.npy hit; no 16k CLIP re-encode",
-    "colqwen2_npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode"
+    "clip_npy": "embeddings-clip-vit-b-32-n15949.npy and embeddings-biomedclip-n15949.npy hit",
+    "colqwen2_npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode",
+    "maxsim": "GPU n_q=273 n_d=15949",
+    "vision_beats_bm25_r@1": true,
+    "vision_beats_bm25_ndcg@5": true
   },
   "vqa": {
-    "n": 182,
-    "end_to_end_accuracy": 0.1099,
-    "oracle_figure_accuracy": 0.5769,
-    "cite_top1": 0.0663,
-    "abstain_accuracy": 0.75,
-    "n_abstain": 16,
-    "gold_answer_overlap_e2e": 0.1019,
-    "gold_answer_overlap_oracle": 0.0687,
+    "n": 295,
+    "end_to_end_accuracy": 0.0949,
+    "oracle_figure_accuracy": 0.6034,
+    "cite_top1": 0.0733,
+    "abstain_accuracy": 0.7273,
+    "n_abstain": 22,
+    "gold_answer_overlap_e2e": 0.1013,
+    "gold_answer_overlap_oracle": 0.0661,
     "path": "extractive/heuristic pixel cues; not a VLM",
     "vlm_skip": null,
     "not_vidore": true,
     "not_maxsim": true,
     "scored": true
   },
-  "clip_columns": "OpenCLIP and BiomedCLIP re-scored on the same n=166 / N=15949 gold as ColQwen2. Prior n=51 CLIP numbers are a separate smaller-gold reference only.",
-  "not_vidore": true,
-  "not_sota": true
+  "same_gold": true,
+  "vision_beats_bm25_r@1": true,
+  "vision_beats_bm25_ndcg@5": true
 }
