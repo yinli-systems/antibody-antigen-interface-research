@@ -172,3 +172,24 @@ registered criterion, because whether the geometry differs between cohorts over
 training is a separate question from whether there is an early transient. The
 five-seeds-per-cohort design and the transition criterion stand as registered
 for that question.
+
+### Two refinements to the step criterion, before any trace existed
+
+Both were found by testing the rule against constructed traces, and both make it
+strictly more sensitive rather than more permissive.
+
+**A short probe alongside the 40-step window.** `OPENING` was set to 40 because
+that is what the smoke covered. But if the negative phase is briefer than 40
+steps, the 40-step mean can already be positive and the run would be recorded as
+never having started in conflict — missing exactly the transient the window was
+chosen to find. A run now counts as opening negative if **either** the first 10
+or the first 40 steps average below zero.
+
+**A crossing must be early to count as a transient.** The crossing is the step
+after which conflict never returns, so a run that goes negative again for a long
+stretch and recovers near the end still has one — at the end. Classifying that
+alongside a run which settles in the first few dozen steps would be wrong, so
+`transient` now additionally requires every seed's crossing to fall within the
+first quarter of the epoch. A universal but late crossing is reported as **late
+crossing**, which is a different statement and not the one this protocol
+predicted.
