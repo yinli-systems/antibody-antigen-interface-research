@@ -48,6 +48,49 @@ class NoBalancer:
         return {f"weight_{k}": 1.0 for k in losses}
 
 
+def _pairwise_geometry(names: Sequence[str], flats: Sequence[Any]) -> dict[str, float]:
+    """Cosine and norms between task gradients on the shared trunk."""
+    import torch
+
+    geometry: dict[str, float] = {}
+    for index, name in enumerate(names):
+        geometry[f"grad_norm_{name}"] = float(flats[index].norm())
+    for first in range(len(names)):
+        for second in range(first + 1, len(names)):
+            denominator = flats[first].norm() * flats[second].norm()
+            geometry[f"cosine_{names[first]}_{names[second]}"] = (
+                float(torch.dot(flats[first], flats[second]) / denominator)
+                if float(denominator) > 0.0 else 0.0
+            )
+    return geometry
+
+
+class MeasuringBalancer:
+    """Applies the unmodified summed gradient and reports the geometry.
+
+    Numerically this is ``none``. It exists because ``none`` takes the ordinary
+    backward path and so cannot report anything, and a diagnostic arm whose
+    trajectory is not identical to the control would be measuring its own
+    perturbation. Any divergence between this arm and ``none`` is a bug in the
+    separated-loss path, which makes it a test of the other balancers too.
+    """
+
+    name = "measure"
+
+    def step(self, losses, shared, model) -> dict[str, float]:  # noqa: ARG002
+        import torch
+
+        names = list(losses)
+        flats = [
+            _flat(torch.autograd.grad(losses[name], shared, retain_graph=True,
+                                      allow_unused=True), shared)
+            for name in names
+        ]
+        geometry = _pairwise_geometry(names, flats)
+        sum(losses.values()).backward()
+        return geometry
+
+
 class PCGrad:
     """Project conflicting task gradients apart (Yu et al., 2020).
 
@@ -87,6 +130,12 @@ class PCGrad:
                     projected[i] = projected[i] - dot / (flats[j].norm() ** 2 + 1e-12) * flats[j]
         self.conflicts += conflicts_here
 
+        # The cosine is already paid for: both task gradients are in hand. It is
+        # reported because the conflict measurement that made this a control was
+        # taken on a decomposition that excluded the partner-ranking term, and
+        # the objective trained here includes it. Reporting it in situ is the
+        # only way the control's premise gets checked on the split it applies to.
+        geometry = _pairwise_geometry(names, flats)
         _assign(shared, sum(projected))
         # Head parameters take their own task's gradient untouched: a head only
         # one loss reaches cannot conflict with anything. Identity comparison,
@@ -96,7 +145,7 @@ class PCGrad:
         heads = [p for p in model.parameters() if id(p) not in shared_ids and p.requires_grad]
         if heads:
             sum(losses.values()).backward(inputs=heads)
-        return {"pcgrad_conflict_rate": float(conflicts_here)}
+        return {"pcgrad_conflict_rate": float(conflicts_here), **geometry}
 
 
 class GradNorm:
@@ -158,7 +207,12 @@ class GradNorm:
         return {f"weight_{name}": self.weights[name] for name in names}
 
 
-BALANCERS = {"none": NoBalancer, "pcgrad": PCGrad, "gradnorm": GradNorm}
+BALANCERS = {
+    "none": NoBalancer,
+    "measure": MeasuringBalancer,
+    "pcgrad": PCGrad,
+    "gradnorm": GradNorm,
+}
 
 
 def build_balancer(name: str):

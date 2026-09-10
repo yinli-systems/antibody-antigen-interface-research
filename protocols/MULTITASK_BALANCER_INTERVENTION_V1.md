@@ -66,3 +66,60 @@ head-specific gradients cannot conflict or compete by construction.
 If a balancer cannot be implemented faithfully in the time available it is
 dropped and its absence recorded, rather than shipped as an approximation whose
 behaviour is not the published method's.
+
+---
+
+## Amendment, 2026-09-11: the control's premise does not hold as registered
+
+This protocol calls PCGrad a negative control on the strength of
+`results/gradient_conflict_v1/`: cosine +0.70 between the node and pair
+gradients on the shared trunk, negative on none of 240 complexes. A method that
+acts only when the dot product is negative should then be the identity.
+
+The first smoke run reports a PCGrad conflict rate of **1.6 projections per
+step** out of a maximum of 2. The prediction is wrong, and the reason is a
+mismatch in what "the two tasks" means:
+
+| | node task | pair task | partner ranking |
+|---|---|---|---|
+| `gradient_conflict.py` | node terms | edge only | **excluded from both** |
+| the training loop | node terms | edge **and partner rank** | inside the pair task |
+
+`interaction_first_loss` returns a zero tensor for the ranking term when no
+negative scores are supplied, and the conflict script supplies none, so that
+measurement could not have included it. The cosine that made PCGrad a control
+describes node against contact edges. The gradient PCGrad projects is node
+against contact edges **plus complex-level ranking**.
+
+So the +0.70 stands as a statement about node versus edge, and says nothing
+about the decomposition actually trained.
+
+### What happens before the arms run
+
+A fourth arm, `measure`, is added. It computes both task gradients and reports
+their cosine and norms, then applies the ordinary summed gradient, so it is
+`none` numerically with a readout attached — a unit test asserts the two land on
+identical gradients, which also checks that the separated-loss path every
+balancer uses reconstructs the objective. PCGrad reports the same geometry,
+since it has already computed it.
+
+The cosine under the trained decomposition is therefore measured **in situ**,
+across training, on the split the intervention runs on, rather than at one
+checkpoint with one term missing.
+
+### The prediction, restated
+
+The original prediction is left standing above, wrong, rather than edited.
+
+Replacing it: **if the measured in-situ cosine is positive and PCGrad's conflict
+rate is near zero**, the control holds as registered and the original reasoning
+applies unchanged. **If the cosine is frequently negative**, then node and
+partner-ranking gradients do conflict, PCGrad is a treatment rather than a
+control on this objective, and the conflict-removal family cannot be dismissed —
+in which case the honest report is that the mechanism question was settled
+against a decomposition that excluded a third of the objective, and
+`results/gradient_conflict_v1/` needs its scope narrowed in print to node versus
+edge.
+
+Which of those holds is decided by the measurement, not chosen. The full arms
+are not launched until it is read.

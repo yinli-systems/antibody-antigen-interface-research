@@ -143,7 +143,7 @@ def test_the_registry_names_what_is_implemented() -> None:
     method's must not be shipped, so their absence is visible rather than
     silently filled in.
     """
-    assert sorted(BALANCERS) == ["gradnorm", "none", "pcgrad"]
+    assert sorted(BALANCERS) == ["gradnorm", "measure", "none", "pcgrad"]
 
 
 def test_every_balancer_reports_something_the_training_loop_can_record():
@@ -159,9 +159,11 @@ def test_every_balancer_reports_something_the_training_loop_can_record():
 
     model = torch.nn.Linear(4, 1, bias=False)
     shared = list(model.parameters())
+    geometry = {"grad_norm_node", "grad_norm_pair", "cosine_node_pair"}
     expected = {
         "none": {"weight_node", "weight_pair"},
-        "pcgrad": {"pcgrad_conflict_rate"},
+        "measure": geometry,
+        "pcgrad": {"pcgrad_conflict_rate"} | geometry,
         "gradnorm": {"weight_node", "weight_pair"},
     }
     assert set(expected) == set(BALANCERS), "a balancer exists with no pinned keys"
@@ -178,3 +180,46 @@ def test_every_balancer_reports_something_the_training_loop_can_record():
         assert set(state) == keys, f"{name} reported {sorted(state)}"
         for value in state.values():
             assert isinstance(float(value), float)
+
+
+def test_the_measuring_arm_leaves_the_gradient_exactly_as_none_does():
+    """It is the control's trajectory plus a readout, or it is not a control.
+
+    ``none`` takes the ordinary backward path and reports nothing; ``measure``
+    separates the losses to compute the geometry and must still land on the same
+    gradient. A divergence here would mean the separated-loss path used by every
+    balancer does not reconstruct the objective, which would invalidate the
+    other arms rather than just this one.
+    """
+    import torch
+
+    def run(name):
+        torch.manual_seed(0)
+        model = torch.nn.Linear(4, 2, bias=False)
+        shared = list(model.parameters())
+        inputs = torch.ones(1, 4)
+        model.zero_grad(set_to_none=True)
+        losses = {"node": (model(inputs) ** 2).sum(),
+                  "pair": (model(inputs) * 3.0).sum() ** 2}
+        state = build_balancer(name).step(losses, shared, model)
+        return shared[0].grad.clone(), state
+
+    plain, _ = run("none")
+    measured, state = run("measure")
+    assert torch.allclose(plain, measured, atol=1e-6)
+    assert -1.0 <= state["cosine_node_pair"] <= 1.0
+
+
+def test_the_reported_cosine_matches_a_hand_computed_one():
+    import torch
+
+    model = torch.nn.Linear(3, 1, bias=False)
+    shared = list(model.parameters())
+    inputs = torch.tensor([[1.0, 2.0, 3.0]])
+    model.zero_grad(set_to_none=True)
+    node = model(inputs).sum()
+    pair = (model(inputs) * -1.0).sum()
+    state = build_balancer("measure").step({"node": node, "pair": pair}, shared, model)
+    assert state["cosine_node_pair"] == pytest.approx(-1.0, abs=1e-5), (
+        "gradients that are exact opposites must read as fully opposed"
+    )
