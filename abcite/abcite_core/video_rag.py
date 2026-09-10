@@ -19,8 +19,8 @@ import numpy as np
 from abcite_core.audio_rag import AudioEncoder
 from abcite_core.metrics import ndcg_at_k
 from abcite_core.models import AnswerStatus, Citation, Modality, QueryResponse
-from abcite_core.visual_qa import caption_keyword_overlap, content_tokens
-from abcite_core.vision import hashing_vector
+from abcite_core.visual_qa import caption_keyword_overlap
+from abcite_core.vision import DIM, hashing_vector
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLD = ROOT / "evals" / "gold" / "video_qa.jsonl"
@@ -45,6 +45,118 @@ def _tokenize(text: str) -> list[str]:
     import re
 
     return re.findall(r"[a-z0-9_\-]+", text.lower())
+
+
+# Color / shape words that describe the frame, not the lecture transcript.
+SCENE_COLOR = {
+    "scarlet": (0.95, 0.15, 0.1),
+    "crimson": (0.9, 0.1, 0.1),
+    "red": (0.9, 0.12, 0.1),
+    "heatmap": (0.85, 0.2, 0.12),
+    "blue": (0.12, 0.18, 0.9),
+    "indigo": (0.15, 0.15, 0.75),
+    "navy": (0.08, 0.12, 0.7),
+    "volcano": (0.12, 0.2, 0.85),
+    "emerald": (0.12, 0.85, 0.2),
+    "green": (0.15, 0.8, 0.18),
+    "teal": (0.1, 0.65, 0.55),
+    "gold": (0.85, 0.7, 0.12),
+    "yellow": (0.9, 0.85, 0.15),
+    "magenta": (0.85, 0.15, 0.75),
+    "cyan": (0.1, 0.8, 0.85),
+    "orange": (0.9, 0.45, 0.08),
+    "grainy": (0.4, 0.4, 0.4),
+    "dark": (0.12, 0.12, 0.12),
+}
+
+SCENE_SHAPE = {
+    "grid": 0,
+    "heatmap": 0,
+    "scatter": 1,
+    "volcano": 1,
+    "lanes": 2,
+    "rungs": 2,
+    "gel": 2,
+    "bands": 3,
+    "dots": 4,
+    "foci": 4,
+    "speckles": 4,
+    "oval": 5,
+    "overlay": 5,
+    "pointer": 6,
+    "arrow": 6,
+    "slice": 7,
+    "orbit": 7,
+    "rings": 5,
+    "wave": 1,
+    "bars": 3,
+    "blob": 4,
+}
+
+
+def query_scene_cues(text: str) -> list[str]:
+    blob = text.lower()
+    keys = list(SCENE_COLOR) + list(SCENE_SHAPE)
+    return [k for k in keys if k in blob]
+
+
+def _hue_bin(rgb: np.ndarray) -> int:
+    r, g, b = (float(x) for x in rgb)
+    mx, mn = max(r, g, b), min(r, g, b)
+    if mx - mn < 0.08:
+        return 8  # gray
+    if mx == r:
+        h = (g - b) / (mx - mn)
+    elif mx == g:
+        h = 2.0 + (b - r) / (mx - mn)
+    else:
+        h = 4.0 + (r - g) / (mx - mn)
+    h = (h / 6.0) % 1.0
+    return min(7, int(h * 8))
+
+
+def scene_image_embed(path: Path, dim: int = DIM) -> np.ndarray:
+    """Hue histogram + coarse shape slots. Shared with scene_text_embed for CI."""
+    from PIL import Image
+
+    im = Image.open(path).convert("RGB").resize((64, 48))
+    arr = np.asarray(im, dtype=np.float32) / 255.0
+    pixels = arr.reshape(-1, 3)
+    hue = np.zeros(9, dtype=np.float32)
+    for pix in pixels[::4]:
+        hue[_hue_bin(pix)] += 1.0
+    hue = hue / max(1.0, float(hue.sum()))
+    gray = arr.mean(axis=2)
+    edges = float(np.mean(np.abs(np.diff(gray, axis=1)))) + float(np.mean(np.abs(np.diff(gray, axis=0))))
+    vec = np.zeros(dim, dtype=np.float32)
+    vec[0:9] = hue
+    vec[9] = float(np.mean(gray))
+    vec[10] = min(edges * 4.0, 1.0)
+    vec[11] = float(np.mean(gray > 0.7))
+    vec[12] = float(np.mean(gray < 0.2))
+    nrm = float(np.linalg.norm(vec))
+    return (vec / nrm) if nrm else vec
+
+
+def scene_text_embed(text: str, dim: int = DIM) -> np.ndarray:
+    cues = query_scene_cues(text)
+    vec = np.zeros(dim, dtype=np.float32)
+    if not cues:
+        return vec
+    hue = np.zeros(9, dtype=np.float32)
+    n_col = 0
+    for cue in cues:
+        if cue in SCENE_COLOR:
+            hue[_hue_bin(np.asarray(SCENE_COLOR[cue], dtype=np.float32))] += 1.0
+            n_col += 1
+        if cue in SCENE_SHAPE:
+            vec[18 + SCENE_SHAPE[cue]] = 1.0
+    if n_col:
+        hue = hue / float(n_col)
+        vec[0:9] = hue
+        vec[12] = float(hue[8] > 0.4)
+    nrm = float(np.linalg.norm(vec))
+    return (vec / nrm) if nrm else vec
 
 
 def load_video_records(prefer_cache: bool = True) -> list[VideoRec]:
@@ -123,8 +235,12 @@ class VideoGallery:
         self.avgdl = sum(len(d) for d in self.docs) / max(1, self.n)
         self.dl = [len(d) or 1 for d in self.docs]
         frame_vecs: list[np.ndarray] = []
+        local = getattr(self.vision, "name", "") == "local-image"
         for rec in recs:
-            vecs = [np.asarray(self.vision.encode_image(p), dtype=np.float32) for p in rec.frames]
+            if local:
+                vecs = [scene_image_embed(p) for p in rec.frames]
+            else:
+                vecs = [np.asarray(self.vision.encode_image(p), dtype=np.float32) for p in rec.frames]
             mean = np.mean(np.stack(vecs, axis=0), axis=0) if vecs else hashing_vector(rec.video_id)
             nrm = float(np.linalg.norm(mean))
             frame_vecs.append(mean / nrm if nrm else mean)
@@ -155,11 +271,14 @@ class VideoGallery:
         return scores
 
     def frame_scores(self, query: str) -> np.ndarray:
-        encode_text = getattr(self.vision, "encode_text", None)
-        if callable(encode_text):
-            qv = np.asarray(encode_text(query), dtype=np.float32)
+        if getattr(self.vision, "name", "") == "local-image":
+            qv = scene_text_embed(query)
         else:
-            qv = hashing_vector(query)
+            encode_text = getattr(self.vision, "encode_text", None)
+            if callable(encode_text):
+                qv = np.asarray(encode_text(query), dtype=np.float32)
+            else:
+                qv = hashing_vector(query)
         if qv.shape[0] != self.frame_vecs.shape[1]:
             return np.zeros(self.n, dtype=np.float32)
         return self.frame_vecs @ qv
@@ -245,9 +364,10 @@ def evaluate_video_qa(gallery: VideoGallery, items: list[dict]) -> dict:
             _recall_block([frame_rows[i] for i in idx], fail, gallery) if fail else empty
         ),
         "note": (
-            "Video keyframe + spoken-track retrieval. Query is not the lecture transcript. "
-            "RRF is within-video (frames ⟂ audio). Not mixed with paper caption BM25. "
-            "Fixtures are synthetic spectrogram/keyframe pairs unless cache/ has CC downloads."
+            "Video keyframe + spoken-track retrieval. Query describes scene (color, layout), "
+            "not the lecture transcript. RRF is within-video (frames ⟂ audio). "
+            "CI local-image uses shared-space scene cues; CLIP when weights are present. "
+            "Not mixed with paper caption BM25."
         ),
     }
     bm25_r1 = float(report["transcript_bm25"]["recall@1"])
@@ -277,10 +397,13 @@ def video_qa_response(
             retrieval_scores=scores,
             latency_ms=latency_ms,
         )
-    rec, _score, _bm25, _frames = hits[0]
+    rec, _score, _bm25, frames = hits[0]
     blob = " ".join([rec.transcript] + rec.captions)
     ov = caption_keyword_overlap(question, blob)
-    if ov["n_overlap"] == 0:
+    cues = query_scene_cues(question)
+    second = float(hits[1][3]) if len(hits) > 1 else 0.0
+    scene_ok = bool(cues) and frames > 0.12 and frames >= second
+    if not scene_ok and ov["n_overlap"] == 0:
         return QueryResponse(
             trace_id=trace_id,
             status=AnswerStatus.ABSTAIN,

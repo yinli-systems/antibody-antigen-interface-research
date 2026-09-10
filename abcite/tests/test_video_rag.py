@@ -17,10 +17,10 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_video_gold_and_bm25_should_fail():
     recs = load_video_records(prefer_cache=False)
     by = {r.video_id: r for r in recs}
-    assert len(recs) >= 4
+    assert len(recs) >= 12
     items = load_video_qa_gold(set(by))
     flagged = [it for it in items if it.get("transcript_bm25_should_fail") and it.get("gold_video_ids")]
-    assert len(flagged) >= 3
+    assert len(flagged) >= 8
     for it in flagged:
         cap = by[it["gold_video_ids"][0]].transcript
         ov = caption_keyword_overlap(it["question"], cap)
@@ -34,8 +34,9 @@ def test_video_eval_and_cite_or_abstain():
     report = evaluate_video_qa(gal, items)
     assert report["protocol"] == "video_qa"
     assert report["n_gallery"] == len(recs)
-    assert report["n_answerable"] >= 3
+    assert report["n_answerable"] >= 8
     assert "transcript_bm25" in report and "frame_clip_t2i" in report
+    assert report["frames_beat_transcript_bm25_r@1"]
     resp = video_qa_response(
         items[0]["question"],
         gal,

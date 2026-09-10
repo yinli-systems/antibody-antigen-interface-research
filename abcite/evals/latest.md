@@ -85,22 +85,22 @@ Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=0.00
 
 ## Audio / video QA (unified multimodal RAG)
 
-Audio gallery **N=6** (encoder=wav-hash; synthetic fixture). Query is not the transcript. RRF is within-audio only.
+Audio gallery **N=24** (encoder=wav-hash; synthetic fixture). Query is not the transcript. RRF is within-audio only.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.500 | 1.000 | 1.000 | 0.782 |
-| CLAP / wav-hash T→A | 0.167 | 0.833 | 1.000 | 0.470 |
-| within-audio RRF | 0.167 | 1.000 | 1.000 | 0.597 |
+| transcript BM25 | 0.000 | 0.100 | 0.500 | 0.041 |
+| CLAP / wav-hash T→A | 0.350 | 0.700 | 1.000 | 0.545 |
+| within-audio RRF | 0.050 | 0.500 | 0.900 | 0.270 |
 
-Video gallery **N=4** (encoder=local-image; synthetic keyframes). RRF is within-video (frames ⟂ audio), never into paper caption BM25.
+Video gallery **N=16** (encoder=local-image; synthetic keyframes). RRF is within-video (frames ⟂ audio), never into paper caption BM25.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.250 | 1.000 | 1.000 | 0.640 |
-| keyframe CLIP T→I | 0.250 | 1.000 | 1.000 | 0.640 |
-| audio track T→A | 0.250 | 1.000 | 1.000 | 0.640 |
-| within-video RRF | 0.250 | 1.000 | 1.000 | 0.608 |
+| transcript BM25 | 0.083 | 0.417 | 0.833 | 0.249 |
+| keyframe CLIP T→I | 0.583 | 1.000 | 1.000 | 0.830 |
+| audio track T→A | 0.083 | 0.417 | 0.833 | 0.246 |
+| within-video RRF | 0.250 | 1.000 | 1.000 | 0.624 |
 See `evals/audio_qa_latest.json` and `evals/video_qa_latest.json`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)

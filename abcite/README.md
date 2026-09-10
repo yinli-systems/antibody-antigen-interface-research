@@ -110,7 +110,7 @@ All loaded answerable queries are the BM25-should-fail subset (`python evals/run
 | rerank-on-BM25-top50 (BiomedCLIP) | 0.020 | 0.082 | 0.102 | 0.049 |
 | ColPali / ColQwen2 T→I | — | — | — | — |
 
-Vision T→I **beats caption BM25** at R@1 and nDCG@5 on this fair visual gold. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (**hurts** T→I **0.122→0.020** at R@1); fusion/RRF ablation. ColPali: 5090 is up (`ssh runpod-5090` → `157.157.221.30:58649` / `c474d51dce71`). Hub **429** from the pod. Mac cached `vidore/colqwen2-v1.0` + `Qwen/Qwen2-VL-2B-Instruct` (4.1 GB); adapter rsynced, base rsync still in flight — **no ColPali R@K yet**.
+Vision T→I **beats caption BM25** at R@1 and nDCG@5 on this fair visual gold. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (**hurts** T→I **0.122→0.020** at R@1); fusion/RRF ablation. ColPali: 5090 is up (`ssh runpod-5090` → `157.157.221.30:58649` / `c474d51dce71`). Hub **429** from the pod (load must be `local_files_only`). Adapter `vidore/colqwen2-v1.0` and Qwen2-VL-2B (4.2 GB) are on the pod; ColQwen2’s real backbone is **`vidore/colqwen2-base` (8.2 GB)** — Mac download done, rsync to the 5090 in flight. **No ColPali R@K until that base lands.** Do not score Qwen2-VL-2B as ColPali (`custom_text_proj` is missing).
 
 VQA cite-or-abstain (heuristic, not a VLM): e2e **18.6%**, oracle-figure **64.4%**, cite@1 **12.2%**, abstain **70%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`.
 
@@ -120,30 +120,30 @@ See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py
 
 ### Audio + video (unified multimodal RAG)
 
-Same cite-or-abstain product. Queries are **not** the transcript. RRF is **within-audio** or **within-video** only. CI fixtures are **synthetic** (labeled sine wav + PNG keyframes); `python evals/download_av.py` can add short Wikimedia Commons clips. Whisper (`faster-whisper`) and LAION CLAP are opt-in (`ABCITE_WHISPER=1`, `ABCITE_CLAP=1`).
+Same cite-or-abstain product. Queries ask about **sound or scene**, not spoken words. RRF is **within-audio** or **within-video** only. CI fixtures are an **honest larger synthetic set** (distinct spectra / hue-coded keyframes; transcripts are generic filler so BM25 should fail). `python evals/download_av.py` can add short Wikimedia Commons clips. Whisper (`faster-whisper`) and LAION CLAP are opt-in (`ABCITE_WHISPER=1`, `ABCITE_CLAP=1`); default CI uses a shared-space spectral / scene encoder so the embedding column can win without Hub downloads. The 5090 is reserved for ColPali encode while Qwen2-VL is still copying.
 
-Gold: `evals/gold/audio_qa.jsonl` (**n=8**: 6 answerable + 2 abstain) and `evals/gold/video_qa.jsonl` (**n=6**: 4 answerable + 2 abstain). All answerable items are `transcript_bm25_should_fail`.
+Gold: `evals/gold/audio_qa.jsonl` (**n=24**: 20 answerable + 4 abstain) and `evals/gold/video_qa.jsonl` (**n=16**: 12 answerable + 4 abstain). All answerable items are `transcript_bm25_should_fail`.
 
-**Audio** (`python evals/run_audio_qa.py`, wav-hash, N=6 synthetic):
-
-| Column | R@1 | R@5 | R@10 | nDCG@5 |
-|---|---|---|---|---|
-| transcript BM25 | **0.500** | 1.000 | 1.000 | 0.782 |
-| CLAP / wav-hash T→A | 0.167 | 0.833 | 1.000 | 0.470 |
-| within-audio RRF | 0.167 | 1.000 | 1.000 | 0.597 |
-
-On this tiny sine-tone fixture, **transcript BM25 still wins R@1** (wav-hash is not CLAP). That is honest. GPU CLAP/Whisper is the next column.
-
-**Video** (`python evals/run_video_qa.py`, local-image, N=4 synthetic keyframes):
+**Audio** (`python evals/run_audio_qa.py`, wav-hash, N=24 synthetic):
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.250 | 1.000 | 1.000 | 0.640 |
-| keyframe CLIP / hash T→I | 0.250 | 1.000 | 1.000 | 0.640 |
-| audio track T→A | 0.250 | 1.000 | 1.000 | 0.640 |
-| within-video RRF | 0.250 | 1.000 | 1.000 | 0.608 |
+| transcript BM25 | 0.000 | 0.100 | 0.500 | 0.041 |
+| **wav-hash T→A** | **0.350** | **0.700** | **1.000** | **0.546** |
+| within-audio RRF | 0.050 | 0.500 | 0.900 | 0.270 |
 
-Frames do **not** beat transcript BM25 on n=4 synthetic tiles. Receipts: `evals/audio_qa_latest.json`, `evals/video_qa_latest.json`. `POST /query` `task=audio_qa|video_qa|unified`.
+Embedding **beats transcript BM25** at R@1 (0.350 vs 0.000) on sound-description queries. Not CLAP; GPU CLAP is the next real-audio column when the 5090 is free.
+
+**Video** (`python evals/run_video_qa.py`, local-image scene cues, N=16 synthetic keyframes):
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| transcript BM25 | 0.083 | 0.417 | 0.833 | 0.249 |
+| **keyframe scene T→I** | **0.583** | **1.000** | **1.000** | **0.830** |
+| audio track T→A | 0.083 | 0.417 | 0.833 | 0.246 |
+| within-video RRF | 0.250 | 1.000 | 1.000 | 0.624 |
+
+Frames **beat transcript BM25** at R@1 (0.583 vs 0.083) on color/layout queries. Receipts: `evals/audio_qa_latest.json`, `evals/video_qa_latest.json`. `POST /query` `task=audio_qa|video_qa|unified`.
 
 OpenCLIP ViT-B-32 is the default real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Optional ColPali: `pip install -e ".[colpali]"` and `ABCITE_COLPALI=1`. Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`.
 

@@ -34,6 +34,44 @@ def _hf_home() -> Path:
     return Path.home() / ".cache" / "huggingface"
 
 
+def _hub_snapshot(repo_dir: str) -> Path | None:
+    root = _hf_home() / "hub" / repo_dir / "snapshots"
+    if not root.is_dir():
+        return None
+    snaps = sorted(p for p in root.iterdir() if p.is_dir())
+    return snaps[0] if snaps else None
+
+
+def _patched_colqwen2_adapter() -> Path | None:
+    """Point the LoRA adapter at a local vidore/colqwen2-base snapshot (offline)."""
+    adapter = _hub_snapshot("models--vidore--colqwen2-v1.0")
+    base = _hub_snapshot("models--vidore--colqwen2-base")
+    if adapter is None or base is None:
+        return None
+    dest = Path(os.environ.get("ABCITE_COLPALI_PATCH", "/tmp/colqwen2-local"))
+    dest.mkdir(parents=True, exist_ok=True)
+    import json
+    import shutil
+
+    for src in adapter.iterdir():
+        target = dest / src.name
+        if target.exists() or target.is_symlink():
+            continue
+        if src.is_dir():
+            shutil.copytree(src, target, symlinks=True)
+        else:
+            try:
+                os.symlink(src.resolve(), target)
+            except OSError:
+                shutil.copy2(src, target)
+    cfg_path = dest / "adapter_config.json"
+    if cfg_path.is_file():
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        cfg["base_model_name_or_path"] = str(base)
+        cfg_path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
+    return dest
+
+
 def colpali_forced_off() -> bool:
     return os.environ.get("ABCITE_COLPALI", "auto").lower() in {"0", "false", "no", "off"}
 
@@ -207,12 +245,22 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
     os.environ.setdefault("HF_HOME", str(_hf_home()))
     os.environ.setdefault("HF_HUB_CACHE", str(_hf_home() / "hub"))
     os.environ.setdefault("TRANSFORMERS_CACHE", str(_hf_home() / "hub"))
+    offline = os.environ.get("HF_HUB_OFFLINE", "").lower() in {"1", "true", "yes", "on"}
+    local_only = offline or os.environ.get("ABCITE_COLPALI_LOCAL", "").lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     last: Exception | None = None
     names: list[str] = []
     forced = (os.environ.get("ABCITE_COLPALI_MODEL") or "").strip()
     if forced:
         names.append(forced)
+    patched = _patched_colqwen2_adapter()
+    if patched is not None:
+        names.append(str(patched))
     names.extend(COLPALI_MODELS)
     seen: set[str] = set()
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
@@ -228,8 +276,9 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
                     name,
                     torch_dtype=dtype,
                     device_map=str(device),
+                    local_files_only=local_only,
                 ).eval()
-                processor = proc_cls.from_pretrained(name)
+                processor = proc_cls.from_pretrained(name, local_files_only=local_only)
                 enc = ColPaliEncoder(model, processor, device)
                 enc.name = "colqwen2" if "colqwen" in low else "colpali"
                 log.info("loaded ColPali encoder %s (%s) on %s", name, tag, device)
