@@ -174,6 +174,36 @@ architectural gap rather than a null. Either way, this is direct evidence
 against adding pair modelling in order to improve a node-level epitope
 prediction.
 
+## The other split, where this model is not competitive
+
+AsEP publishes a second division, `epitope_ratio`, which stratifies by the
+fraction of epitope residues rather than clustering by epitope identity. It is
+the easier of the two. Ten seeds, same arm, same convention, its own test split:
+
+| method | MCC | AUROC | precision | recall | F1 |
+|---|---:|---:|---:|---:|---:|
+| WALLE | 0.210 | 0.635 | 0.235 | 0.422 | 0.258 |
+| GF3DRoPE | 0.324 | **0.822** | 0.405 | 0.333 | 0.360 |
+| PEPNet+LE | 0.337 | 0.765 | 0.465 | 0.295 | 0.361 |
+| PEPNet | 0.401 | 0.765 | **0.544** | 0.340 | 0.419 |
+| LF3DRoPE | **0.410** | 0.846 | 0.469 | 0.428 | **0.447** |
+| **this work** | 0.258 | 0.764 | 0.245 | **0.580** | 0.328 |
+
+**On the easier split this model beats only WALLE.** Its MCC is 63% of the best
+published figure. Recall is the highest in the table and nothing else is.
+
+Put beside the group split, the contrast is the finding:
+
+| | `epitope_group` (unseen epitopes) | `epitope_ratio` (easier) |
+|---|---|---|
+| this work vs best published MCC | 0.157 against 0.171 — same tier | 0.258 against 0.410 — **37% behind** |
+
+The relative standing depends entirely on which split is used, and it is better
+where generalisation is harder. That is consistent with frozen structural
+representations helping most where a model cannot lean on epitopes it has
+already seen — but it is equally a statement that **this model is weak
+in-distribution**. Both halves are the result and neither is presentable alone.
+
 ## What this does not establish
 
 1. **This compares against published numbers, not re-run models.** No baseline
