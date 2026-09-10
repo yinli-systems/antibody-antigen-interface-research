@@ -7,7 +7,8 @@ The frozen test split was never named and never read.
 Date: 2026-09-10
 
 Machine-readable: [`report.json`](report.json) (paired metrics and the
-final-epoch comparison), [`margin_esm2.json`](margin_esm2.json) and
+final-epoch comparison), [`width_control.json`](width_control.json) (the
+width-matched control), [`margin_esm2.json`](margin_esm2.json) and
 [`margin_esm2_antiberty_esmif1.json`](margin_esm2_antiberty_esmif1.json) (each
 arm against its own outer-product baseline). Predictions stay on the cluster.
 
@@ -84,6 +85,38 @@ partner-specific share of it grew from 16.1% to 25.1% of baseline, but the
 growth of the margin itself is not established at ten seeds. At an 8/10 rate the
 sign bound needs roughly fifteen to twenty seeds to clear 0.5.
 
+## Result: the width confound is measured, and it is not the explanation
+
+The treatment carries 26.2% more parameters than ESM-2 (763,401 → 963,471), all
+of it in the input projections that consume the wider input. A gain measured
+only against the narrow arm cannot separate the content of the added columns
+from their width.
+
+`random_control` settles it. It appends fixed random linear projections of the
+base embedding, mirroring the treatment's coverage exactly: **identical widths
+(2306 / 1793) and an identical parameter count (963,471)**. The added columns
+are a linear function of the model's own input and carry nothing new.
+
+| macro auprc | mean | paired difference | 95% CI | seeds | verdict |
+|---|---:|---:|---|---:|---|
+| `random_control` vs `esm2` | 0.021865 | −0.000595 (−2.6%) | [−0.002151, +0.000970] | 4/10 | **no decision** |
+| `esm2_antiberty_esmif1` vs `random_control` | 0.028453 | **+0.006588 (+30.1%)** | [+0.005277, +0.007869] | **10/10** | **decided** |
+| `esm2_antiberty_esmif1` vs `esm2` | 0.028453 | +0.005993 (+26.7%) | [+0.004463, +0.007396] | 10/10 | decided |
+
+**Two hundred thousand extra parameters of width, carrying no new information,
+do not help.** The point estimate is slightly negative and the interval contains
+zero at 4/10 seeds.
+
+The analysis plan registered before these runs said that if the width-matched
+control gained, the headline would have to be restated as the smaller number.
+That branch did not fire. The opposite did: because `random_control` sits a
+little below `esm2`, removing the confound makes the estimate **larger** and its
+interval **narrower**.
+
+Both numbers are true and they mean different things. **+26.7%** is against a
+smaller model. **+30.1%** is against a model with exactly the same parameter
+count, and is the number that survives the obvious objection.
+
 ## The selection metric disagrees between arms, but is not picking bad epochs
 
 The treatment is worse on `partner_rank` — the checkpoint selection metric — in
@@ -121,11 +154,10 @@ Three independent checks, all exact:
 
 ## Limits
 
-1. **The treatment has 26.2% more parameters** (763,401 → 963,471), all of it in
-   the input projections that consume the wider input. This is inherent to
-   adding features and is not separated here. A same-width arm fed random
-   projections would separate "these features carry signal" from "a wider input
-   projection helps", and has not been run.
+1. ~~The treatment has 26.2% more parameters and this is not separated here.~~
+   **Resolved above.** The width-matched control was run: extra width alone does
+   not help (−2.6%, interval containing zero, 4/10 seeds), and the confound-free
+   estimate of the encoders is +30.1%.
 2. **Ten instances have no ESM-IF1 artifact** and are zero-filled with a
    presence column set to 0, rather than dropped, so that the cohort stays
    identical to the ten-seed baseline. Five of them are in the training cohort.
