@@ -46,18 +46,30 @@ shift seen on sabdab2.
 
 ## Against the published table
 
+> **Version audit, 2026-09-11.** Published numbers for the same method differ
+> between a repository README and the peer-reviewed paper, and between a main
+> table and other configurations in the same preprint. Every comparison below
+> now names its source. Where two figures exist for one method, both are shown
+> and no claim rests on the more favourable one.
+>
+> These figures were supplied by a collaborator's audit of the source PDFs and
+> repositories. **They have not been re-read from the sources in this session**,
+> and the final check against the published PDFs is an open item before
+> submission.
+
 Epitope-group split. Published figures for WALLE differ between sources — the
-AsEP paper and later re-tabulations disagree — so both are shown and the
-comparison is not rested on either.
+AsEP repository README and the NeurIPS 2024 paper disagree — so both are shown
+and the comparison is not rested on either.
 
 | method | MCC | AUROC | precision | recall | F1 |
 |---|---:|---:|---:|---:|---:|
-| WALLE (arXiv 2608.01092 Table 2b) | 0.077 | 0.544 | 0.143 | 0.266 | 0.145 |
-| WALLE (later tabulation) | 0.152 | 0.596 | 0.207 | 0.299 | 0.204 |
+| WALLE (AsEP repository README) | 0.077 | 0.544 | 0.143 | 0.266 | 0.145 |
+| WALLE (NeurIPS 2024 paper, Table 1) | 0.152 | 0.596 | 0.207 | 0.299 | 0.204 |
 | PEPNet | 0.139 | 0.612 | 0.230 | 0.143 | 0.177 |
 | PEPNet+LE | 0.156 | 0.627 | **0.250** | 0.155 | 0.191 |
 | GF3DRoPE | 0.159 | **0.706** | 0.212 | 0.216 | 0.212 |
-| LF3DRoPE | **0.171** | 0.690 | 0.248 | 0.189 | 0.215 |
+| LF3DRoPE (main table) | 0.171 | 0.690 | 0.248 | 0.189 | 0.215 |
+| LF3DRoPE (CDR-type configuration, same preprint) | **0.188 ± 0.009** | — | — | — | — |
 | **this work** | 0.157 | 0.697 | 0.189 | **0.429** | **0.245** |
 
 **This is not above the published best.** On MCC it sits level with PEPNet+LE
@@ -82,8 +94,16 @@ selected on validation before the test figures were read.
 | F1 | 0.2445 | **0.2579** |
 | AUROC | 0.6970 | **0.7088** |
 
-With the ensemble this work is at or above the published best on MCC (0.171),
-AUROC (0.706), F1 (0.215) and recall (0.299), and still below on precision.
+**Corrected 2026-09-11.** An earlier version said the ensemble is "at or above
+the published best on MCC (0.171)". It is not. The same preprint reports a
+CDR-type configuration at **0.188 ± 0.009**, so 0.1743 is below the best
+published figure for that method, and taking the main-table row as "the
+published best" was selecting the comparison that favoured this work.
+
+What the ensemble row supports: it exceeds the LF3DRoPE **main-table** MCC of
+0.171, the best published AUROC of 0.706, F1 of 0.215 and recall of 0.299, and
+remains below on precision — and it is not a single model, so none of that is a
+like-for-like comparison in the first place.
 
 **This is not a like-for-like comparison.** The published figures are single
 models reported with a seed standard deviation; ten averaged models are a
@@ -182,27 +202,39 @@ the easier of the two. Ten seeds, same arm, same convention, its own test split:
 
 | method | MCC | AUROC | precision | recall | F1 |
 |---|---:|---:|---:|---:|---:|
-| WALLE | 0.210 | 0.635 | 0.235 | 0.422 | 0.258 |
+| WALLE (AsEP repository README) | 0.210 | 0.635 | 0.235 | 0.422 | 0.258 |
+| WALLE (NeurIPS 2024 paper, Table 1) | **0.305** | — | — | — | — |
 | GF3DRoPE | 0.324 | **0.822** | 0.405 | 0.333 | 0.360 |
 | PEPNet+LE | 0.337 | 0.765 | 0.465 | 0.295 | 0.361 |
 | PEPNet | 0.401 | 0.765 | **0.544** | 0.340 | 0.419 |
 | LF3DRoPE | **0.410** | 0.846 | 0.469 | 0.428 | **0.447** |
 | **this work** | 0.258 | 0.764 | 0.245 | **0.580** | 0.328 |
 
-**On the easier split this model beats only WALLE.** Its MCC is 63% of the best
-published figure. Recall is the highest in the table and nothing else is.
+**Corrected 2026-09-11: this model does not beat WALLE on this split either.**
+The 0.210 above is the repository README figure; the peer-reviewed paper reports
+**0.305**, above this work's 0.258. Against the published paper this model is
+last in the table on MCC. Recall is the highest in the table and nothing else
+is.
+
+Its MCC is 63% of the best published figure.
 
 Put beside the group split, the contrast is the finding:
 
 | | `epitope_group` (unseen epitopes) | `epitope_ratio` (easier) |
 |---|---|---|
-| this work vs best published MCC | 0.157 against 0.171 — same tier | 0.258 against 0.410 — **37% behind** |
+| this work vs best published MCC | 0.157 against 0.171 main-table, 0.188 best configuration — same tier or slightly behind | 0.258 against 0.410 — **37% behind**, and behind WALLE's paper figure of 0.305 |
 
 The relative standing depends entirely on which split is used, and it is better
 where generalisation is harder. That is consistent with frozen structural
 representations helping most where a model cannot lean on epitopes it has
 already seen — but it is equally a statement that **this model is weak
 in-distribution**. Both halves are the result and neither is presentable alone.
+
+And the consistency is not evidence. A model that is weak on the easier split
+and mid-table on the harder one has a smaller gap to close on the harder one;
+that arithmetic produces the same pattern with no representational cause. The
+split contrast may be described and may not be offered as evidence that
+structural representations confer out-of-distribution robustness.
 
 ## Contamination control: the result does not depend on shared structures
 
