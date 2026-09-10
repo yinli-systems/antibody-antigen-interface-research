@@ -1,13 +1,13 @@
 {
   "baseline": "outer_product",
   "bootstrap_ci95": [
-    0.0019686912510177143,
-    0.004290434941020674
+    0.0021721397258004952,
+    0.0034484790767682324
   ],
   "claim_boundary": "Development-only replication on the validation split. It establishes a margin over a baseline, not a benchmark result, and authorizes no test access or model selection.",
-  "effect_size": 1.5473717805639606,
+  "effect_size": 1.833194727734923,
   "format_version": "pair_baseline_margin_replication_v1",
-  "mean_margin": 0.0031134461184687,
+  "mean_margin": 0.002792116658878455,
   "meaningful": true,
   "metric": "auprc",
   "per_seed": [
@@ -70,14 +70,74 @@
       "margin": 0.005451098231978521,
       "model": 0.024860997362306566,
       "seed": 10
+    },
+    {
+      "baseline": 0.017291733984807742,
+      "margin": 0.0028329441365116045,
+      "model": 0.020124678121319347,
+      "seed": 11
+    },
+    {
+      "baseline": 0.017638726161926018,
+      "margin": 0.003381126721784068,
+      "model": 0.021019852883710086,
+      "seed": 12
+    },
+    {
+      "baseline": 0.019053843352954028,
+      "margin": 0.0027505255476922806,
+      "model": 0.02180436890064631,
+      "seed": 13
+    },
+    {
+      "baseline": 0.017354407013028893,
+      "margin": 0.0029725562807972547,
+      "model": 0.020326963293826147,
+      "seed": 14
+    },
+    {
+      "baseline": 0.018665245604549754,
+      "margin": 0.0033173522387707627,
+      "model": 0.021982597843320517,
+      "seed": 15
+    },
+    {
+      "baseline": 0.02006645173139218,
+      "margin": 0.0012739456026132114,
+      "model": 0.02134039733400539,
+      "seed": 16
+    },
+    {
+      "baseline": 0.01735570623310937,
+      "margin": 0.0021515216977058757,
+      "model": 0.019507227930815246,
+      "seed": 17
+    },
+    {
+      "baseline": 0.01870177281774677,
+      "margin": 0.002923804206711674,
+      "model": 0.021625577024458446,
+      "seed": 18
+    },
+    {
+      "baseline": 0.02117375796121351,
+      "margin": 0.001287163854242393,
+      "model": 0.022460921815455902,
+      "seed": 19
+    },
+    {
+      "baseline": 0.018676328316524705,
+      "margin": 0.0018169317060529808,
+      "model": 0.020493260022577686,
+      "seed": 20
     }
   ],
-  "positive_seed_count": 10,
+  "positive_seed_count": 20,
   "scope": "macro",
-  "sd_margin": 0.002012086660475327,
-  "seed_count": 10,
+  "sd_margin": 0.0015230878731188403,
+  "seed_count": 20,
   "sesoi": 0.0,
-  "sign_lower_bound": 0.7411344491069477,
+  "sign_lower_bound": 0.8608916593317348,
   "significant": true,
   "verdict": "established"
 }

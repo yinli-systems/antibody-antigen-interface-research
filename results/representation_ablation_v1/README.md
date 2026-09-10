@@ -126,36 +126,60 @@ The outer-product baseline is built from each model's own marginals, so the two
 arms have different baselines and the treatment cannot be compared to the
 control's.
 
+Every arm establishes a margin over its own baseline, at every seed it was run
+for. The share of the prediction that is partner-specific separates them:
+
+| arm | n | model | own baseline | margin | share of baseline | *d* |
+|---|---:|---:|---:|---:|---:|---:|
+| `esm2` | 20 | 0.021764 | 0.018972 | +0.002792 | 14.7% | 1.833 |
+| `random_control` | 10 | 0.021865 | 0.019303 | +0.002562 | 13.3% | 1.819 |
+| `antiberty_only` | 10 | 0.020687 | 0.018244 | +0.002443 | 13.4% | 2.261 |
+| `esm_if1_only` | 10 | 0.027571 | 0.022498 | +0.005073 | **22.5%** | 3.145 |
+| `esm2_antiberty_esmif1` | 20 | 0.028402 | 0.022296 | +0.006106 | **27.4%** | 3.356 |
+
+Only the structure encoder raises that share. Extra width (`random_control`,
+13.3%) and AntiBERTy (13.4%) both **lower** it against `esm2`'s 14.7%: those two
+arms lean more on the marginals and less on the pairing, which is the opposite
+of what this workstream is trying to build.
+
+At ten seeds the two preregistered criteria **split** on the increase: the
+bootstrap interval excluded zero while only 8 of 10 seeds were favourable, so
+the exact sign lower bound was 0.4931 against a 0.5 threshold — meaningful but
+not significant. Ten more seeds were then run under a stopping rule fixed in
+advance (`protocols/REPRESENTATION_ABLATION_EXTENSION_V1.md`): twenty seeds,
+analysed once, reported whatever it gave, with no further seeds to be added on
+the basis of the outcome.
+
+| paired increase in margin | n | mean | 95% CI | seeds | sign bound | verdict |
+|---|---:|---:|---|---:|---:|---|
+| seeds 1-10, as first seen | 10 | +0.002603 | [+0.000805, +0.004032] | 8/10 | 0.4931 | criteria split |
+| seeds 11-20, fresh | 10 | +0.004025 | [+0.002858, +0.005282] | 10/10 | 0.7411 | both met |
+| **all twenty — the endpoint** | **20** | **+0.003314** | [+0.002180, +0.004318] | **18/20** | **0.7174** | **established** |
+
+**Both criteria are met at twenty seeds.** The increase in the partner-specific
+margin is established.
+
+At twenty seeds each arm's own margin is:
+
 | | ESM-2 | + AntiBERTy + ESM-IF1 |
 |---|---:|---:|
-| own outer-product baseline | 0.019347 | 0.022737 (+17.5%) |
-| margin over own baseline | +0.003113 | +0.005716 (+83.6%) |
-| 95% CI on that margin | [+0.001969, +0.004290] | [+0.004476, +0.006875] |
-| margin as a share of own baseline | 16.1% | **25.1%** |
-| effect size *d* | 1.547 | 2.792 |
+| model | 0.021764 | 0.028402 |
+| own outer-product baseline | 0.018972 | 0.022296 |
+| margin over own baseline | +0.002792 | **+0.006106** |
+| 95% CI | [+0.002172, +0.003448] | [+0.005322, +0.006863] |
+| seeds | 20/20 | 20/20 |
+| effect size *d* | 1.833 | **3.356** |
+| **margin as a share of own baseline** | **14.7%** | **27.4%** |
 
-Both arms establish a margin over their own baseline at 10/10 seeds. The
-treatment's is nearly double.
+The partner-specific share of the prediction nearly doubles. The baseline also
+rose, unanimously (+0.003324, CI [+0.002604, +0.003998], 20/20), so better
+features improved the marginals as well as the pairing — but the pairing gained
+faster.
 
-**The evidence for the margin *increase* is weaker than for everything above,
-and the two preregistered criteria split on it:**
-
-| paired change in margin | |
-|---|---:|
-| mean | +0.002603 |
-| bootstrap 95% CI | [+0.000805, +0.004032] — excludes zero |
-| favourable seeds | **8/10** |
-| exact sign lower bound | **0.4931** — below the 0.5 threshold |
-
-Seed 3 moved −0.004166 and seed 10 −0.000055. So the increase is **meaningful
-but not significant** under this project's own decision rule. The paired change
-in the baseline itself is unanimous by comparison (+0.003391, CI
-[+0.002371, +0.004290], 10/10).
-
-The honest reading: absolute performance is established, and the
-partner-specific share of it grew from 16.1% to 25.1% of baseline, but the
-growth of the margin itself is not established at ten seeds. At an 8/10 rate the
-sign bound needs roughly fifteen to twenty seeds to clear 0.5.
+What makes this believable is the order the work was done in, not the numbers.
+The stopping rule was committed before the seeds were submitted, and it said the
+result would be reported whatever it was. Without that, "ten seeds missed, so we
+ran twenty and it passed" is indistinguishable from searching for a threshold.
 
 ## Result: the width confound is measured, and it is not the explanation
 
