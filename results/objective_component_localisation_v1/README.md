@@ -34,14 +34,26 @@ branch stands and the ranking term is not special. That is the honest reading,
 with the caveat that calling cos(g_node, g_rank) = −0.005 "negative" reads more
 into a number ten times smaller than its neighbour than it can carry.
 
-## What it does explain
+## What it does not license
 
-The checkpoint-selection failure now has a mechanism that fits rather than
-competing with this. `partner_rank` is a poor early-stopping signal **because**
-the model barely optimises it on the shared trunk: selecting on a quantity the
-training dynamics hardly touch picks an epoch close to arbitrary. That is a
-different claim from "ranking gradients conflict", and it is the one the data
-supports.
+An earlier version of this file argued that the checkpoint-selection failure
+follows: `partner_rank` selects badly **because** the trunk barely optimises it.
+That inference is withdrawn. How well a signal selects depends on whether it
+orders epochs the way node generalisation does, and gradient norm does not
+determine that — a term the trunk hardly moves could still track generalisation
+perfectly.
+
+The replacement is a measurement, registered in the protocol amendment: the rank
+correlation between each candidate signal and the per-epoch node metric, and the
+paired selection regret of `partner_rank` against `total` on identical
+trajectories. The claim is available only if the correlation is low or negative
+**and** the regret difference is decided; if the two rules select equally well
+that is the finding.
+
+This needed a code change, because validation epochs recorded losses and not the
+metric the model is judged on. They now record per-complex node metrics from the
+predictions each epoch already produced, and the running arrays were resubmitted
+on that code so the trajectories and the ablation come from the same runs.
 
 ## What it does not explain, and what is running
 
