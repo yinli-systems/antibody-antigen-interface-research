@@ -239,3 +239,26 @@ def test_the_control_cannot_be_combined_with_the_encoders(tmp_path: Path) -> Non
 
     with pytest.raises(ValueError, match="cannot be combined"):
         _wrap(object(), arguments, _frame(), BASE_DIM)
+
+
+def test_the_representation_flags_are_accepted_by_both_subcommands() -> None:
+    """The set a launcher may safely share between train and evaluate.
+
+    Twice in one day a launcher built one flag array and gave it to both
+    subcommands, and both times a training-only flag was in it: --input-dim
+    once, --edge-loss-weight and --partner-rank-weight again. Training then ran
+    to completion -- an hour on a GPU -- and evaluate died on `unrecognized
+    arguments`, after the expensive part was already done.
+
+    Only these flags belong to both. Anything else a launcher shares has to be
+    split into a train-only array and a shared one.
+    """
+    shared = set(_representation_defaults())
+
+    train = argparse.ArgumentParser()
+    _MODULE._add_representation_arguments(train)
+    evaluate = argparse.ArgumentParser()
+    _MODULE._add_representation_arguments(evaluate)
+
+    assert set(vars(train.parse_args([]))) == shared
+    assert set(vars(evaluate.parse_args([]))) == shared
