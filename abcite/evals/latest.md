@@ -101,7 +101,25 @@ Different protocol from PMC figure visual QA. Same `vidore/colqwen2-v1.0` on NVI
 | SyntheticDocQA-Health | 100 | 53 | 0.830 | 0.870 | 0.880 | 0.848 |
 | **10-task mean** | | | | | | **0.830** |
 
-Mean nDCG@5 **0.8296** vs ColPali paper **81.3** (+1.66) vs published ColQwen2-v1.0 **89.2** (−6.27). Not SOTA. See `evals/vidore_latest.json`.
+Custom MaxSim mean nDCG@5 **0.8296** is **not** comparable to 89.2 (no `Query: ` prefix / no official scorer).
+
+## Official vidore-benchmark harness (comparable)
+
+`python evals/run_vidore_official.py --suite`. Same ColQwen2-v1.0. 10/10. Mean nDCG@5 **0.8911** vs published **89.2** (−0.09). Not SOTA. See `evals/vidore_official_latest.json`.
+
+| Official task | published | nDCG@5 |
+|---|---:|---:|
+| ArxivQA | 0.880 | 0.878 |
+| DocVQA | 0.615 | 0.602 |
+| InfoVQA | 0.925 | 0.921 |
+| TabFQuAD | 0.890 | 0.896 |
+| TAT-DQA | 0.822 | 0.814 |
+| ShiftProject | 0.899 | 0.907 |
+| SyntheticDocQA-AI | 0.990 | 0.990 |
+| SyntheticDocQA-Energy | 0.959 | 0.963 |
+| SyntheticDocQA-Gov | 0.955 | 0.959 |
+| SyntheticDocQA-Health | 0.988 | 0.983 |
+| **10-task mean** | **0.892** | **0.891** |
 
 ## Audio / video QA (unified multimodal RAG)
 

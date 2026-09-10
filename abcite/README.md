@@ -45,7 +45,8 @@ python evals/download_figures.py --max 16000 --source pmc --workers 12   # OA jp
 python evals/build_av_fixtures.py                 # tiny committed wav + keyframe fixtures
 python evals/run_visual_qa.py --fixture           # visual figure QA on 12 OA jpgs
 python evals/run_visual_qa.py                     # visual QA + pixel retrieval (ColPali: --try-colpali)
-python evals/run_vidore.py --suite                # official ViDoRe v1 10-task page retrieval nDCG@5
+python evals/run_vidore.py --suite                # MaxSim ViDoRe v1 (not comparable to 89.2)
+python evals/run_vidore_official.py --suite       # vidore-benchmark harness (comparable to 89.2)
 python evals/run_audio_qa.py                      # transcript BM25 vs CLAP/hash
 python evals/run_video_qa.py                      # keyframes vs transcript
 python evals/run_unified.py                       # four-modality snapshot
@@ -137,7 +138,27 @@ Same cached `vidore/colqwen2-v1.0` on the 5090 (`python evals/run_vidore.py --su
 | SyntheticDocQA-Health | 100 | 53 | 0.830 | 0.870 | 0.880 | **0.848** |
 | **10-task mean** | | | | | | **0.830** |
 
-**10/10 mean nDCG@5 = 0.8296 (83.0).** ColPali paper average **81.3** (**+1.66**). Published ColQwen2-v1.0 average **89.2** (**−6.27**). Above the ColPali paper number; below the published ColQwen2-v1.0 number. Not SOTA. DocVQA (0.557) and SyntheticDocQA-Gov (0.723) are the drag. This is our scorer on the official QA-format splits, not the `vidore-benchmark` harness; `colpali-engine` query prefix may differ from the 89.2 recipe. Does not change the PMC figure protocol (nDCG@5 **0.107**). Receipt: `evals/vidore_latest.json`.
+**Custom MaxSim 10-task mean nDCG@5 = 0.8296 (83.0)** — missing the training-time `Query: ` prefix and official query-dedup scorer. **Not the number to compare to 89.2.**
+
+### Official vidore-benchmark harness (comparable to 89.2)
+
+Same weights, `Query: ` prefix restored, `ViDoReEvaluatorQA` (`python evals/run_vidore_official.py --suite`). 10/10.
+
+| Official task | published ColQwen2 | our nDCG@5 |
+|---|---:|---:|
+| ArxivQA | 0.880 | **0.878** |
+| DocVQA | 0.615 | **0.602** |
+| InfoVQA | 0.925 | **0.921** |
+| TabFQuAD | 0.890 | **0.896** |
+| TAT-DQA | 0.822 | **0.814** |
+| ShiftProject | 0.899 | **0.907** |
+| SyntheticDocQA-AI | 0.990 | **0.990** |
+| SyntheticDocQA-Energy | 0.959 | **0.963** |
+| SyntheticDocQA-Gov | 0.955 | **0.959** |
+| SyntheticDocQA-Health | 0.988 | **0.983** |
+| **10-task mean** | **0.892** | **0.891** |
+
+**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Does not change PMC figure visual QA (nDCG@5 **0.107**).
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 
