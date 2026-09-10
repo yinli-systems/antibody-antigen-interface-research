@@ -1,7 +1,13 @@
-# The two objectives agree; the relational one over-steps
+# The node and contact-edge objectives agree at convergence
+
+> **Scope narrowed 2026-09-11.** This measures the node objective against the
+> **contact-edge** objective, at **converged sabdab2 checkpoints**. It does not
+> describe the full relational objective, and it does not describe training. See
+> "What this does not say" at the bottom, which was added after a second
+> measurement disagreed with it. The numbers below are unchanged and stand.
 
 Status: a direct gradient measurement at three trained checkpoints, eighty
-validation complexes each. It rules one mechanism out and supports another.
+validation complexes each, on one cohort and at one point in training.
 
 Date: 2026-09-10
 
@@ -36,9 +42,10 @@ about half again as large.
 
 ## What it rules out, and what is left
 
-**Gradient conflict is ruled out.** A cosine of +0.70 with no negative instances
-is the opposite of objectives fighting. This was the assumed explanation and it
-is wrong.
+**Gradient conflict is ruled out at convergence, between these two terms.** A
+cosine of +0.70 with no negative instances is the opposite of objectives
+fighting. The original text said "gradient conflict is ruled out" without
+qualification; that claim was too broad and is corrected below.
 
 **Loss-scale imbalance is what survives**, and three independent measurements
 agree on it:
@@ -87,3 +94,41 @@ objective learning irrelevant relations would not produce a cosine of 0.70.
 | instances | 80 validation complexes per seed |
 | node objective | `epitope_bce`, `epitope_dice`, `paratope_bce`, `paratope_dice` at their trained weights |
 | pair objective | `edge` at weight 1.0 |
+
+
+---
+
+## What this does not say
+
+Added 2026-09-11, after the same quantity was measured a second time and
+disagreed in sign.
+
+**The partner-ranking term is absent from both tasks here.** `node_weights` and
+`pair_weights` both set it to zero, and `interaction_first_loss` returns a zero
+tensor for it when no negative scores are supplied, which this script does not
+supply. So "pair" above means **contact edges only**. The objective the model is
+actually trained on also contains complex-level ranking, and nothing here
+describes it. (Measured separately: the ranking gradient on this trunk is 23-40×
+smaller in norm than the node gradient and near-orthogonal to it —
+`results/objective_component_localisation_v1/`.)
+
+**These are converged checkpoints.** Measured in situ during training on AsEP,
+the cosine between the node and contact-edge gradients is **negative** — −0.059
+and −0.051 over the first two epochs. That is the same decomposition as the
++0.70 here, so the two disagree about the same quantity.
+
+Which of stage or cohort accounts for the disagreement is being measured, five
+seeds per cohort, twelve epochs each, under
+`protocols/GRADIENT_ALIGNMENT_DYNAMICS_V1.md`. Until that reads out:
+
+- the +0.70 stands as a statement about **node versus contact edges at
+  convergence on sabdab2**, and is reported that way;
+- "gradient conflict is ruled out" may **not** be written without that
+  qualification, because a converged cosine cannot speak for the trajectory that
+  produced it;
+- "loss-scale imbalance is the mechanism" may not be written either. The three
+  measurements listed above still agree with each other, but the first of them
+  is now known to be stage-specific, and it was the one doing the work.
+
+The dose-response result (`results/joint_task_competition_v1/`) and the norm
+ratio are unaffected: neither depends on the sign of a cosine.
