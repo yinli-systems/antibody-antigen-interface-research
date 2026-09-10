@@ -56,6 +56,28 @@ class BackboneError(RuntimeError):
     """Raised when a backbone cannot be rebuilt faithfully."""
 
 
+def is_amino_acid(residue) -> bool:
+    """Whether a residue belongs in a chain's sequence.
+
+    Biopython yields every residue a chain holds, waters and ligands included,
+    and those inflate the observed sequence until it no longer aligns -- one
+    chain here offers 195 residues against a 120-residue SEQRES. Modified
+    residues must survive the filter, though: selenomethionine is stored as a
+    hetero record and is a real methionine in the chain, so filtering on the
+    hetero flag alone would delete it and misalign everything after it.
+    """
+    from Bio.Data.PDBData import protein_letters_3to1_extended
+
+    return residue.get_resname() in protein_letters_3to1_extended
+
+
+def one_letter(residue) -> str:
+    """The one-letter code for a residue, including modified ones."""
+    from Bio.Data.PDBData import protein_letters_3to1_extended
+
+    return protein_letters_3to1_extended.get(residue.get_resname(), "X")
+
+
 def residue_backbone(residue):
     """Return ``[N, CA, C]`` for one residue, or None when an atom is absent."""
     try:
@@ -75,12 +97,8 @@ def align_to_seqres(chain, seqres: str) -> list:
     """
     import difflib
 
-    from Bio.PDB.Polypeptide import protein_letters_3to1
-
-    residues = list(chain)
-    observed = "".join(
-        protein_letters_3to1.get(residue.get_resname(), "X") for residue in residues
-    )
+    residues = [residue for residue in chain if is_amino_acid(residue)]
+    observed = "".join(one_letter(residue) for residue in residues)
     slots: list = [None] * len(seqres)
     matcher = difflib.SequenceMatcher(None, seqres, observed, autojunk=False)
     for tag, seqres_start, seqres_end, observed_start, _ in matcher.get_opcodes():
@@ -102,7 +120,12 @@ def align_to_seqres(chain, seqres: str) -> list:
 
 def chain_backbones(model) -> dict[str, list]:
     """Return per-chain lists of ``[N, CA, C]`` coordinates, or None per residue."""
-    return {chain.id: [residue_backbone(residue) for residue in chain] for chain in model}
+    return {
+        chain.id: [
+            residue_backbone(residue) for residue in chain if is_amino_acid(residue)
+        ]
+        for chain in model
+    }
 
 
 def select(residues: list, mask, side: str, identifier: str):

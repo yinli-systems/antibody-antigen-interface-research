@@ -74,7 +74,21 @@ def test_the_antibody_is_heavy_then_light_not_file_order() -> None:
 
 
 def test_a_residue_without_backbone_atoms_becomes_none() -> None:
-    chains = chain_backbones([_Chain("H", [_residue(1.0), None])])
+    class _NamedOnly(_Residue):
+        def __init__(self, coords) -> None:
+            super().__init__(coords)
+            self.id = (" ", 1, " ")
+
+        def get_resname(self) -> str:
+            return "ALA"
+
+    class _Chain2:
+        id = "H"
+
+        def __iter__(self):
+            return iter([_NamedOnly(_residue(1.0)), _NamedOnly(None)])
+
+    chains = chain_backbones([_Chain2()])
 
     assert chains["H"][1] is None
 
@@ -308,3 +322,38 @@ def test_a_coordinate_difference_is_still_fatal() -> None:
 
     with pytest.raises(BackboneError, match="differs from the stored one"):
         verify(rebuilt, stored, "x_0P", 1e-3, [])
+
+
+def test_waters_and_ligands_are_not_part_of_the_sequence() -> None:
+    """One chain offers 195 residues against a 120-residue SEQRES."""
+    is_amino_acid = _MODULE.is_amino_acid
+
+    class _Het:
+        def __init__(self, name: str) -> None:
+            self._name = name
+
+        def get_resname(self) -> str:
+            return self._name
+
+    assert not is_amino_acid(_Het("HOH"))
+    assert is_amino_acid(_Het("ALA"))
+
+
+def test_a_modified_residue_stays_in_the_sequence() -> None:
+    """Selenomethionine is a hetero record and a real methionine in the chain.
+
+    Filtering on the hetero flag alone would delete it and misalign everything
+    after it -- the same class of one-position error, from the opposite cause.
+    """
+    is_amino_acid = _MODULE.is_amino_acid
+    one_letter = _MODULE.one_letter
+
+    class _Het:
+        def __init__(self, name: str) -> None:
+            self._name = name
+
+        def get_resname(self) -> str:
+            return self._name
+
+    assert is_amino_acid(_Het("MSE"))
+    assert one_letter(_Het("MSE")) == "M"
