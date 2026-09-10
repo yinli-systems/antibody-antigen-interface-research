@@ -45,6 +45,7 @@ python evals/download_figures.py --max 16000 --source pmc --workers 12   # OA jp
 python evals/build_av_fixtures.py                 # tiny committed wav + keyframe fixtures
 python evals/run_visual_qa.py --fixture           # visual figure QA on 12 OA jpgs
 python evals/run_visual_qa.py                     # visual QA + pixel retrieval (ColPali: --try-colpali)
+python evals/run_vidore.py                        # official ViDoRe v1 subset (page retrieval nDCG@5)
 python evals/run_audio_qa.py                      # transcript BM25 vs CLAP/hash
 python evals/run_video_qa.py                      # keyframes vs transcript
 python evals/run_unified.py                       # four-modality snapshot
@@ -116,7 +117,18 @@ N=1,200 same-gold reference (not the headline): ColQwen2 0.196 / 0.353 / 0.373 /
 
 VQA cite-or-abstain on the 16k ColQwen2 run (heuristic, not a VLM): e2e **18.0%**, oracle-figure **55.7%**, cite@1 **7.8%**, abstain **70%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`.
 
-**Not SOTA.** ViDoRe ColPali nDCG@5 **81.3** is page retrieval with late interaction. Ours is figure-jpg ColQwen2 on n=51 / N=15,949: nDCG@5 **0.107** (ColQwen2) / **0.096** (OpenCLIP) / **0.080** (BiomedCLIP). SciMMIR-FT Hits@10 **13.5%** and BiomedCLIP paper R@1 **~56%** are caption-as-query on different galleries — see appendix, do not mix.
+**Not SOTA on the PMC figure protocol.** That nDCG@5 **0.107** is not ViDoRe. ViDoRe is **page retrieval** (visual question → PDF page). AbCite visual QA is **figure-jpg retrieval** on 51 PMC questions over N=15,949. Do not put 0.107 next to 81.3.
+
+### Official ViDoRe v1 (same ColQwen2 weights)
+
+Same cached `vidore/colqwen2-v1.0` on the 5090 (`python evals/run_vidore.py`). Official QA-format subsets, late-interaction nDCG@5. Not the 10-task average.
+
+| Official subset | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---:|---:|---:|---:|---:|---:|
+| TabFQuAD (`vidore/tabfquad_test_subsampled`) | 280 | 70 | 0.854 | 0.932 | 0.950 | **0.898** |
+| DocVQA (`vidore/docvqa_test_subsampled`) | 500 | 500 | 0.484 | 0.622 | 0.700 | **0.557** |
+
+ColPali paper ViDoRe v1 **average** nDCG@5 **81.3** (10 tasks). Published ColQwen2-v1.0 **average** **89.2** (10 tasks). We ran **2 / 10** official tasks: TabFQuAD is above 81.3 (easy table pages); DocVQA is below it (the hard academic split). Remaining gap to the paper average is the other eight tasks, not a fix to PMC figure QA. Receipt: `evals/vidore_latest.json`.
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 

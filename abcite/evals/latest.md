@@ -83,6 +83,17 @@ Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** (same gold as
 
 Vision beats caption BM25 at R@1? **yes**. ColQwen2 leads at R@1 (0.078 vs BiomedCLIP 0.059 vs OpenCLIP 0.039). Drop vs N=1,200: ColQwen2 R@1 0.196→0.078. VQA e2e=0.1803 oracle=0.5574 cite@1=0.0784. See `evals/visual_qa_latest.json`.
 
+## Official ViDoRe v1 — page retrieval (same ColQwen2)
+
+Different protocol from PMC figure visual QA. Same `vidore/colqwen2-v1.0` on NVIDIA GeForce RTX 5090. ColPali paper 10-task average nDCG@5 is **81.3**; this is 2 official subsets, not that average.
+
+| Official subset | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---:|---:|---:|---:|---:|---:|
+| TabFQuAD | 280 | 70 | 0.854 | 0.932 | 0.950 | 0.898 |
+| DocVQA | 500 | 500 | 0.484 | 0.622 | 0.700 | 0.557 |
+
+See `evals/vidore_latest.json`.
+
 ## Audio / video QA (unified multimodal RAG)
 
 Audio gallery **N=24** (encoder=wav-hash; synthetic fixture). Query is not the transcript. RRF is within-audio only.
