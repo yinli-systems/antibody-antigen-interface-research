@@ -83,7 +83,7 @@ Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=295** (273 unique-gold a
 | ColQwen2 late-interaction T→I | 0.073 | 0.179 | 0.212 | 0.130 |
 | ColQwen2.5 late-interaction T→I | 0.103 | 0.209 | 0.256 | 0.155 |
 
-Vision beats caption BM25 at R@1? **yes**. ColQwen2.5 leads this cropped-PMC gold. All three late-interaction columns: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix on NVIDIA GeForce RTX 5090. ColQwen2 npz `embeddings-colqwen2-n15949.npz` (untouched). ColPali-v1.3 wrote **separate** `embeddings-colpali-v1.3-n15949.npz`. ColQwen2.5 wrote **separate** `embeddings-colqwen2.5-n15949.npz` (`device=cuda`). Paper ColPali ViDoRe **81.3** is PAGE retrieval; these extra columns are cropped PMC figures — not 81.3. Do not put 0.155, 0.130, or 0.090 next to official ViDoRe **89.11** / published **89.2**. CLIP/BiomedCLIP npy hits; no 16k CLIP re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not SOTA. Product visual retrieval prefers ColQwen2.5 when those weights are local; fallback ColQwen2 → CLIP → hash. Text RAG stays BM25.
+Vision beats caption BM25 at R@1? **yes**. ColQwen2.5 leads this cropped-PMC gold. All three late-interaction columns: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix on NVIDIA GeForce RTX 5090. ColQwen2 npz `embeddings-colqwen2-n15949.npz` (untouched). ColPali-v1.3 wrote **separate** `embeddings-colpali-v1.3-n15949.npz`. ColQwen2.5 wrote **separate** `embeddings-colqwen2.5-n15949.npz` (`device=cuda`). Paper ColPali ViDoRe **81.3** is PAGE retrieval; these extra columns are cropped PMC figures — not 81.3. Do not put 0.155, 0.130, or 0.090 next to official ViDoRe **89.11** / published **89.2**. CLIP/BiomedCLIP npy hits; no 16k CLIP re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not SOTA. Product visual retrieval prefers ColQwen2.5 when those weights are local; fallback ColQwen2 → CLIP → hash. `/query` `task=visual_qa` scores MaxSim on the loaded product corpus (default CI: 14 SVGs), not mean-pool and not the 16k PMC gallery. Text RAG stays BM25.
 
 VQA cite-or-abstain (separate from R@K). Heuristic on the new gold (n=295 / N=15949 / 5090). Qwen2-VL-2B was **not** re-run (prior n=61 receipt).
 
@@ -116,7 +116,7 @@ Custom MaxSim mean nDCG@5 **0.8296** is **not** comparable to 89.2 (no `Query: `
 
 ## Official vidore-benchmark harness (comparable)
 
-`python evals/run_vidore_official.py --suite`. Same ColQwen2-v1.0. 10/10. Mean nDCG@5 **0.8911** vs published **89.2** (−0.09). Not SOTA. See `evals/vidore_official_latest.json`.
+`python evals/run_vidore_official.py --suite`. Same ColQwen2-v1.0. 10/10. Mean nDCG@5 **0.8911** vs published **89.2** (−0.09). **Not ViDoRe SOTA** (`sota=false`; 2026 v1 pack ~92.7). See `evals/vidore_official_latest.json`.
 
 | Official task | published | nDCG@5 |
 |---|---:|---:|
@@ -134,7 +134,7 @@ Custom MaxSim mean nDCG@5 **0.8296** is **not** comparable to 89.2 (no `Query: `
 
 ## Official vidore-benchmark — ColQwen2.5 (same PMC checkpoint)
 
-Same `vidore/colqwen2.5-v0.2` as the PMC extra column. GPU `device=cuda`. Mean nDCG@5 **0.8947** vs published ColQwen2.5-v0.2 **89.4** (~89.5) (**+0.07**) and vs our ColQwen2 **89.11**. Receipt `sota=true` vs the 89.4 bar only — not leaderboard SOTA. Do not put 89.47 next to PMC 0.155. See `evals/vidore_official_colqwen2_5_latest.json`.
+Same `vidore/colqwen2.5-v0.2` as the PMC extra column. GPU `device=cuda`. Mean nDCG@5 **0.8947**. Reproduced published ColQwen2.5-v0.2 **89.4** (~89.5) (**+0.07**) vs our ColQwen2 **89.11**. **Not ViDoRe SOTA** (`sota=false`; 2026 v1 pack ~**92.7** Argus/Nemotron). Matching 89.4 is a checkpoint reproduction, not a leaderboard claim. Do not put 89.47 next to PMC 0.155. See `evals/vidore_official_colqwen2_5_latest.json`.
 
 | Official task | ColQwen2 | ColQwen2.5 |
 |---|---:|---:|

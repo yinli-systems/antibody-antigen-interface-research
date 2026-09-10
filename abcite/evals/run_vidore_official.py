@@ -43,6 +43,8 @@ PUBLISHED = {
 # colpali README ViDoRe table: vidore/colqwen2.5-v0.2 = 89.4 (often rounded ~89.5).
 PUBLISHED_COLQWEN2_V1 = 0.892
 PUBLISHED_COLQWEN25_V1 = 0.894
+# 2026 ViDoRe v1 pack (Argus/Nemotron ~92.7). Checkpoint reproduction is not leaderboard SOTA.
+LEADERBOARD_SOTA_V1 = 0.927
 
 
 def _encoder_stem(encoder: str) -> str:
@@ -171,6 +173,7 @@ def _write_suite(reports: list[dict], missing: list[str], encoder: str) -> dict:
     from abcite_core.colpali_encoder import encoder_cache_name
 
     enc_name = encoder_cache_name(encoder)
+    reproduced = bool(avg is not None and abs(avg - published) <= 0.005)
     suite = {
         "protocol": "vidore_v1_official_harness",
         "harness": "vidore-benchmark==5.0.0 ViDoReEvaluatorQA",
@@ -184,18 +187,21 @@ def _write_suite(reports: list[dict], missing: list[str], encoder: str) -> dict:
         "published_colqwen2_5_v1_avg_ndcg@5": PUBLISHED_COLQWEN25_V1,
         "published_this_model_v1_avg_ndcg@5": published,
         "our_colqwen2_official_mean_ndcg@5": 0.8911,
+        "leaderboard_sota_v1_ndcg@5": LEADERBOARD_SOTA_V1,
         "gap_vs_colpali_paper": None if avg is None else round(avg - 0.813, 4),
         "gap_vs_published_this_model": None if avg is None else round(avg - published, 4),
         "abcite_maxsim_mean_ndcg@5": 0.8296,
-        "sota": bool(avg is not None and avg + 1e-9 >= published),
+        "reproduced_published_checkpoint": reproduced,
+        "sota": bool(avg is not None and avg + 1e-9 >= LEADERBOARD_SOTA_V1),
         "query_prefix": "Query: ",
         "note": (
             "Official vidore-benchmark QA evaluator (query dedup + processor scores). "
             "Page retrieval, not AbCite MaxSim (0.8296) and not PMC cropped-figure visual QA. "
-            f"SOTA bar is published {enc_name} ViDoRe v1 {published:.3f} "
-            "(colpali README: ColQwen2.5-v0.2 = 89.4, often rounded ~89.5; "
-            "ColQwen2-v1.0 published 89.2 in our prior receipt, README table 89.3). "
-            "Do not mix this mean with PMC figure R@K or with the other model's 89.11/89.2."
+            f"Reproduced published {enc_name} ViDoRe v1 {published:.3f} "
+            f"(colpali README ColQwen2.5-v0.2 = 89.4). "
+            f"sota=true only if mean >= current v1 leaderboard ~{LEADERBOARD_SOTA_V1:.3f} "
+            "(2026 pack Argus/Nemotron ~92.7). Matching 89.4 is not ViDoRe SOTA. "
+            "Do not mix this mean with PMC figure R@K or with ColQwen2 89.11/89.2."
         ),
         "subsets": {_slug(r["dataset"]): r for r in reports},
         "missing": missing,

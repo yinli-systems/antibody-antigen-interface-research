@@ -111,3 +111,15 @@ def test_text_rag_stays_bm25_default() -> None:
     hits = idx.search("Does trastuzumab bind the HER2 domain IV epitope?", top_k=5)
     assert hits
     assert any(h.bm25 > 0 for h in hits)
+
+
+def test_vidore_sota_flag_is_leaderboard_not_checkpoint() -> None:
+    from evals.run_vidore_official import LEADERBOARD_SOTA_V1, PUBLISHED_COLQWEN25_V1
+
+    assert LEADERBOARD_SOTA_V1 > PUBLISHED_COLQWEN25_V1
+    assert 0.8947 < LEADERBOARD_SOTA_V1
+    assert abs(0.8947 - PUBLISHED_COLQWEN25_V1) <= 0.005
+    receipt = (ROOT / "evals" / "vidore_official_colqwen2_5_latest.json").read_text(encoding="utf-8")
+    assert '"sota": false' in receipt
+    assert '"reproduced_published_checkpoint": true' in receipt
+    assert "not ViDoRe SOTA" in receipt

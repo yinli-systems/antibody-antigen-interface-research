@@ -184,6 +184,83 @@ def test_search_visual_and_graph_task():
     assert evidence.trace_id != resp.trace_id
 
 
+class _LateToy:
+    """MaxSim and mean-pool disagree on ranking — used to prove product path is MaxSim."""
+
+    name = "late-toy"
+    dim = 4
+    late_interaction = True
+
+    def encode_image(self, path: Path) -> list[float]:
+        toks = self.encode_images_multi([path])[0]
+        vec = toks.mean(axis=0)
+        return vec.tolist()
+
+    def encode_text(self, text: str) -> list[float]:
+        toks = self.encode_queries_multi([text])[0]
+        return toks.mean(axis=0).tolist()
+
+    def caption(self, path: Path) -> str:
+        return ""
+
+    def encode_images_multi(self, paths: list[Path], batch_size: int = 1):
+        import numpy as np
+
+        out = []
+        for path in paths:
+            if "1n8z" in Path(path).name:
+                out.append(np.array([[1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.1]], dtype=np.float32))
+            else:
+                out.append(np.array([[0.6, 0.6, 0.0, 0.0]], dtype=np.float32))
+        return out
+
+    def encode_queries_multi(self, texts: list[str], batch_size: int = 8):
+        import numpy as np
+
+        return [np.array([[1.0, 0.0, 0.0, 0.0]], dtype=np.float32) for _ in texts]
+
+
+def test_search_visual_uses_maxsim_not_mean_pool():
+    chunks = [
+        Chunk(
+            chunk_id="fig-alpha",
+            parent_id="txt-a",
+            modality=Modality.FIGURE,
+            title="Alpha",
+            text="alpha",
+            caption="alpha",
+            source_url="https://example.test/a",
+            source_label="a",
+            image_path="corpus/figures/fig-1n8z.svg",
+        ),
+        Chunk(
+            chunk_id="fig-beta",
+            parent_id="txt-b",
+            modality=Modality.FIGURE,
+            title="Beta",
+            text="beta",
+            caption="beta",
+            source_url="https://example.test/b",
+            source_label="b",
+            image_path="corpus/figures/fig-6w41.svg",
+        ),
+    ]
+    toy = _LateToy()
+    idx = HybridIndex(chunks, vision=toy)
+    assert idx.visual_score_path == "maxsim"
+    import numpy as np
+
+    pooled = np.stack([np.asarray(toy.encode_image(Path(c.image_path))) for c in chunks])
+    qv = np.asarray(toy.encode_text("token-match"), dtype=np.float32)
+    pooled_order = [chunks[i].chunk_id for i in np.argsort(-(pooled @ qv))]
+    hits = idx.search_visual("token-match", top_k=2)
+    maxsim_order = [h.chunk.chunk_id for h in hits]
+    assert pooled_order[0] == "fig-beta"
+    assert maxsim_order[0] == "fig-alpha"
+    local = HybridIndex(chunks, vision=LocalImageEncoder())
+    assert local.visual_score_path == "pooled"
+
+
 def test_eval_snapshot_keeps_visual_qa_primary():
     md = _multimodal_snapshot_md()
     if not md:

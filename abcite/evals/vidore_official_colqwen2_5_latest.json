@@ -14,9 +14,11 @@
   "gap_vs_colpali_paper": 0.0817,
   "gap_vs_published_this_model": 0.0007,
   "abcite_maxsim_mean_ndcg@5": 0.8296,
-  "sota": true,
+  "sota": false,
+  "reproduced_published_checkpoint": true,
+  "leaderboard_sota_v1_ndcg@5": 0.927,
   "query_prefix": "Query: ",
-  "note": "Official vidore-benchmark QA evaluator (query dedup + processor scores). Page retrieval, not AbCite MaxSim (0.8296) and not PMC cropped-figure visual QA. SOTA bar is published colqwen2.5 ViDoRe v1 0.894 (colpali README: ColQwen2.5-v0.2 = 89.4, often rounded ~89.5; ColQwen2-v1.0 published 89.2 in our prior receipt, README table 89.3). Do not mix this mean with PMC figure R@K or with the other model's 89.11/89.2.",
+  "note": "Official vidore-benchmark QA evaluator (query dedup + processor scores). Page retrieval, not AbCite MaxSim (0.8296) and not PMC cropped-figure visual QA. Reproduced published colqwen2.5 ViDoRe v1 0.894 (colpali README ColQwen2.5-v0.2 = 89.4). sota=true only if mean >= current v1 leaderboard ~0.927 (2026 pack Argus/Nemotron ~92.7). Matching 89.4 is not ViDoRe SOTA. Do not mix this mean with PMC figure R@K or with ColQwen2 89.11/89.2.",
   "subsets": {
     "arxivqa": {
       "protocol": "vidore_v1_official_harness",

@@ -120,16 +120,51 @@ class HybridIndex:
         self.b = 0.75
         blobs = [self._blob(c) for c in chunks]
         self.dense = self.encoder.encode(blobs)
+        self.image_toks: list[np.ndarray] | None = self._encode_late_toks()
         self.image_vecs = np.stack([self._image_vec(c) for c in chunks], axis=0)
         self.parent_of = [c.parent_id for c in chunks]
 
+    @property
+    def visual_score_path(self) -> str:
+        """Product visual_qa scoring: MaxSim when late-interaction toks exist, else pooled."""
+        if self.image_toks is not None and bool(getattr(self.vision, "late_interaction", False)):
+            return "maxsim"
+        return "pooled"
+
+    def _resolve_image_path(self, chunk: Chunk) -> Path | None:
+        if not chunk.image_path:
+            return None
+        path = Path(chunk.image_path)
+        if not path.is_absolute():
+            path = Path(__file__).resolve().parents[1] / path
+        return path if path.exists() else None
+
+    def _encode_late_toks(self) -> list[np.ndarray] | None:
+        if not bool(getattr(self.vision, "late_interaction", False)):
+            return None
+        encode_multi = getattr(self.vision, "encode_images_multi", None)
+        if not callable(encode_multi):
+            return None
+        dim = int(getattr(self.vision, "dim", 128) or 128)
+        empty = np.zeros((0, dim), dtype=np.float32)
+        idxs: list[int] = []
+        paths: list[Path] = []
+        for i, chunk in enumerate(self.chunks):
+            path = self._resolve_image_path(chunk)
+            if path is None:
+                continue
+            idxs.append(i)
+            paths.append(path)
+        if not paths:
+            return [empty.copy() for _ in self.chunks]
+        encoded = encode_multi(paths)
+        by_i = {i: np.asarray(t, dtype=np.float32) for i, t in zip(idxs, encoded, strict=True)}
+        return [by_i.get(i, empty) for i in range(self.n)]
+
     def _image_vec(self, chunk: Chunk) -> np.ndarray:
-        if chunk.image_path:
-            path = Path(chunk.image_path)
-            if not path.is_absolute():
-                path = Path(__file__).resolve().parents[1] / path
-            if path.exists():
-                return np.asarray(self.vision.encode_image(path), dtype=np.float32)
+        path = self._resolve_image_path(chunk)
+        if path is not None:
+            return np.asarray(self.vision.encode_image(path), dtype=np.float32)
         cap = f"{chunk.caption or ''} {chunk.title}"
         encode_text = getattr(self.vision, "encode_text", None)
         if callable(encode_text):
@@ -182,6 +217,12 @@ class HybridIndex:
         return self.dense @ qv
 
     def image_scores(self, query: str) -> np.ndarray:
+        late = bool(getattr(self.vision, "late_interaction", False))
+        encode_multi = getattr(self.vision, "encode_queries_multi", None)
+        if late and callable(encode_multi) and self.image_toks is not None:
+            from abcite_core.visual_qa import maxsim_matrix
+
+            return maxsim_matrix(encode_multi([query]), self.image_toks)[0]
         encode_text = getattr(self.vision, "encode_text", None)
         if callable(encode_text):
             qv = np.asarray(encode_text(query), dtype=np.float32)
@@ -252,7 +293,7 @@ class HybridIndex:
         return hits
 
     def search_visual(self, query: str, top_k: int = 6) -> list[Hit]:
-        """Text → figure pixels. No caption BM25 fusion (visual QA task)."""
+        """Text → figure pixels. MaxSim if late-interaction; else pooled cosine. No caption BM25."""
         image = self.image_scores(query)
         caption = self.caption_bm25_scores(query)
         order = np.argsort(-image)[:top_k]
