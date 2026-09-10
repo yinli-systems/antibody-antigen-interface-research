@@ -127,3 +127,54 @@ the ten ESM-IF1 seeds this protocol registered. The missing 30 IgFold points and
 24 ESM-IF1 points are being run now from an explicit task list. The ESM-IF1 curve
 is analysed at all ten registered seeds; if any point is still missing at
 analysis time, the seed count actually used is printed beside every figure.
+
+---
+
+## Extension, 2026-09-11: is correspondence special to structural features?
+
+Registered **before the AntiBERTy ladder was submitted**. Its aligned arm is
+already trained (`antiberty_only`, ten seeds) and has never been perturbed.
+
+Everything this protocol has measured so far used a **structural** encoder:
+ESM-IF1 from backbone coordinates, IgFold from predicted antibody structure. The
+finding is stated as being about structured transfer. But nothing in the
+perturbation is structural — it displaces rows of a per-residue feature matrix,
+and any per-residue representation has rows to displace.
+
+So the claim as it stands has an untested boundary. AntiBERTy is a **sequence**
+model over antibody repertoires. It produces one vector per residue, it is used
+frozen in exactly the same way, and it carries no coordinates at all.
+
+### What each outcome would mean
+
+**AntiBERTy degrades comparably** — correspondence fidelity governs the use of
+any frozen per-residue representation, not structural ones specifically. The
+paper's framing narrows: the phenomenon is about **residue-indexed features**,
+and "structured transfer" overstates it. This is the outcome that costs the
+current framing the most, which is why it is worth running.
+
+**AntiBERTy degrades much less** — the sensitivity is specific to
+representations that encode spatial relations, and the structural framing is
+earned rather than assumed.
+
+**AntiBERTy degrades more** — unanticipated, reported as it stands, and the
+framing question reopens rather than resolving.
+
+No threshold separates "comparably" from "much less" in advance, because the
+two curves are on different arms with different baselines and any cut would be
+arbitrary. What is registered instead is the comparison that will be shown: each
+encoder's damage **as a fraction of its own global-permutation damage**, at every
+ladder point, so the shapes are compared rather than the magnitudes.
+
+### Design
+
+The same ladder, the same endpoint, the same pairing: `k ∈ {0, 1, 2, 4, 8, 16}`
+plus global permutation, ten seeds, sabdab2 validation, evaluation only, macro
+pair AUPRC paired to `k = 0` within seed.
+
+`k = 0` is re-evaluated rather than reused from the existing run, because these
+evaluations run on the cu128 toolchain and the existing baseline was produced on
+cu121. Pairing a perturbed evaluation against a baseline from a different stack
+would put a toolchain difference inside the quantity being measured. Both sides
+of every pair come from the same stack, so the within-encoder curve is clean;
+the cross-encoder comparison is of curve shapes, which is what is registered.
