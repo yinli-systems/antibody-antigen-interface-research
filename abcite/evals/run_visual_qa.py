@@ -78,8 +78,6 @@ def main() -> None:
     args = ap.parse_args()
     recs = load_figure_records(prefer_cache=not args.fixture)
     if args.max_n and args.max_n < len(recs):
-        from abcite_core.visual_qa import load_visual_qa_gold
-
         gold_ids: list[str] = []
         for it in load_visual_qa_gold({r.figure_id for r in recs}, recs, require_gold=False):
             gold_ids.extend(it.get("gold_figure_ids") or [])
