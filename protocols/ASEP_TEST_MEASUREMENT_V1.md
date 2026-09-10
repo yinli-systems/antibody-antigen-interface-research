@@ -61,3 +61,48 @@ The frozen arm needs ESM-IF1 features for the test instances if it is the
 `esm2_esmif1` arm. Those are extracted as part of this measurement, counted, and
 recorded in the receipt — frozen unsupervised features carry no label, but
 parsing a benchmark's test structures is an event worth counting.
+
+---
+
+## Amendment, 2026-09-10: the published convention is now known
+
+Registered **after** the test measurement was submitted and **before** its
+results were read. The amendment is driven by what the published papers state
+about their own method, not by anything in this project's numbers.
+
+Two facts were located in the literature after this protocol was first written:
+
+**WALLE's epitope-group figures** (Table 2(b) of arXiv 2608.01092):
+
+| | MCC | precision | recall | AUROC | F1 |
+|---|---:|---:|---:|---:|---:|
+| WALLE | 0.077 ± 0.015 | 0.143 ± 0.017 | 0.266 ± 0.025 | 0.544 ± 0.010 | 0.145 ± 0.014 |
+
+**Their convention**, stated in the same paper: threshold-dependent metrics use
+"a probability threshold selected on the validation set to maximize MCC", and
+the metrics are pooled over residues rather than averaged per complex.
+
+Both differ from what this protocol assumed:
+
+1. **The comparable quantity is micro, not macro.** Every epitope-node figure
+   recorded so far in `results/asep_benchmark_v1/` is a per-complex average.
+   Those are not comparable to 0.077 and must not be placed beside it.
+2. **The comparable operating point is a validation-selected MCC-maximising
+   threshold**, applied unchanged to test. This project's sweep already computes
+   a "best" point, but takes it on the split being measured, which would
+   overstate: choosing a threshold on test and reporting the metric it maximises
+   selects on the quantity being estimated.
+
+The measurement therefore adds one operating point, defined entirely by the
+external convention:
+
+> **matched**: the threshold that maximises micro MCC on the *validation* split
+> of the frozen arm, applied unchanged to the test split.
+
+This is the only point at which a comparison to the published number is
+attempted. The other three -- fixed 0.5, best-on-test, prevalence-matched --
+remain reported as before, and the first two bracket how much the convention is
+worth.
+
+Nothing else changes. The arm is already frozen, the test measurement is already
+submitted, and this amendment cannot alter either.
