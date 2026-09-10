@@ -58,8 +58,9 @@ def test_oa_video_candidates_should_fail_filler_bm25():
     blob = " ".join(FILLER)
     ids = [c["id"] for c in VIDEO_CANDIDATES]
     assert len(ids) == len(set(ids))
-    assert len(VIDEO_CANDIDATES) >= 8
+    assert len(VIDEO_CANDIDATES) >= 20
     for cand in VIDEO_CANDIDATES:
+        assert cand.get("license"), cand["id"]
         ov = caption_keyword_overlap(cand["question"], blob)
         assert ov["should_fail"], (cand["id"], ov["overlap_tokens"])
 
@@ -76,7 +77,7 @@ def test_oa_video_gold_unique_ids():
     ids = [r["id"] for r in rows]
     assert len(ids) == len(set(ids))
     ans = [r for r in rows if r.get("gold_video_ids")]
-    assert len(ans) >= 8
+    assert len(ans) >= 20
     golds = [r["gold_video_ids"][0] for r in ans]
     assert len(golds) == len(set(golds))
     for r in rows:

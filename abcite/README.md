@@ -51,7 +51,7 @@ python evals/run_visual_qa.py                     # visual QA + pixel retrieval 
 python evals/run_vidore.py --suite                # MaxSim ViDoRe v1 (not comparable to 89.2)
 python evals/run_vidore_official.py --suite       # vidore-benchmark harness (comparable to 89.2)
 python evals/run_audio_qa.py                      # transcript BM25 vs CLAP/hash (synthetic)
-python evals/run_audio_qa.py --oa                 # after download_av.py (real Commons)
+python evals/run_audio_qa.py --oa                 # after download_av.py (Commons + NASA)
 python evals/run_video_qa.py                      # keyframes vs transcript (synthetic)
 python evals/run_video_qa.py --oa
 python evals/run_unified.py                       # four-modality snapshot
@@ -201,7 +201,7 @@ See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py
 
 ### Audio + video (unified multimodal RAG)
 
-Same cite-or-abstain product. Queries ask about **sound or scene**, not spoken words. RRF is **within-audio** or **within-video** only. CI fixtures are an **honest larger synthetic set** (distinct spectra / hue-coded keyframes; transcripts are generic lecture filler so BM25 should fail). Real Wikimedia Commons clips: `python evals/download_av.py` then `python evals/run_audio_qa.py --oa` / `python evals/run_video_qa.py --oa` (or `evals/run_av_oa.sh` on the 5090 with `ABCITE_CLAP=1 ABCITE_WHISPER=1`). Do not mix OA receipts with the synthetic wav-hash table. Whisper and LAION CLAP are opt-in; default CI uses a shared-space spectral / scene encoder.
+Same cite-or-abstain product. Queries ask about **sound or scene**, not spoken words. RRF is **within-audio** or **within-video** only. CI fixtures are an **honest larger synthetic set** (distinct spectra / hue-coded keyframes; transcripts are generic lecture filler so BM25 should fail). Real OA clips: `python evals/download_av.py --max 64` then `ABCITE_CLAP=1 python evals/run_audio_qa.py --oa` / `ABCITE_CLIP=1 ABCITE_COLPALI=0 python evals/run_video_qa.py --oa` (or `evals/run_av_oa.sh` on the 5090). Commons + NASA public-domain `~small.mp4`; licenses in `evals/oa_av_LICENSE.md`. Keep `ABCITE_WHISPER=0` so transcripts stay lecture filler. Do not mix OA receipts with the synthetic wav-hash table. Whisper and LAION CLAP are opt-in; default CI uses a shared-space spectral / scene encoder.
 
 Gold: `evals/gold/audio_qa.jsonl` (**n=24**: 20 answerable + 4 abstain) and `evals/gold/video_qa.jsonl` (**n=16**: 12 answerable + 4 abstain). All answerable items are `transcript_bm25_should_fail`.
 
@@ -215,15 +215,15 @@ Gold: `evals/gold/audio_qa.jsonl` (**n=24**: 20 answerable + 4 abstain) and `eva
 
 Embedding **beats transcript BM25** at R@1 (0.350 vs 0.000) on sound-description queries. **Not CLAP / not SOTA.**
 
-**OA Wikimedia audio** (`python evals/download_av.py && ABCITE_CLAP=1 python evals/run_audio_qa.py --oa`, N=9 real wav, 5090, 2026-09-10). Encoder is **LAION CLAP** (`laion/clap-htsat-unfused`) loaded from a complete local snapshot (`~/.cache/huggingface/clap-htsat-unfused`, rsynced to `/workspace/hf-cache/clap-htsat-unfused`; Hub API still 429). 16 kHz wavs are resampled to 48 kHz. Small-n; not SOTA. Do not mix with the synthetic wav-hash table.
+**OA Wikimedia + NASA audio** (`python evals/download_av.py --max 64 && ABCITE_CLAP=1 python evals/run_audio_qa.py --oa`, N=29 real wav, 5090, 2026-09-10). Encoder is **LAION CLAP** (`laion/clap-htsat-unfused`) loaded from a complete local snapshot (`/workspace/hf-cache/clap-htsat-unfused`; Hub API still 429). `File:Cat.ogg` failed ffmpeg extract (not in the gallery). Small-n; not SOTA. Do not mix with the synthetic wav-hash table.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.000 | 0.444 | 1.000 | 0.217 |
-| **CLAP T→A** | **0.333** | **0.778** | **1.000** | **0.577** |
-| within-audio RRF | 0.222 | 0.556 | 1.000 | 0.405 |
+| transcript BM25 | 0.000 | 0.138 | 0.276 | 0.069 |
+| **CLAP T→A** | **0.414** | **0.793** | **0.862** | **0.607** |
+| within-audio RRF | 0.103 | 0.310 | 0.655 | 0.210 |
 
-CLAP **beats** transcript BM25 at R@1 (0.333 vs 0.000) on this 9-clip Commons set. Prior wav-hash on n=6 was tied with BM25 at R@1 0.167. Receipt: `evals/audio_qa_oa_latest.json`.
+CLAP **beats** transcript BM25 at R@1 (0.414 vs 0.000) on this 29-clip Commons set (was N=9 R@1 0.333). Receipt: `evals/audio_qa_oa_latest.json`.
 
 **Video** (`python evals/run_video_qa.py`, local-image scene cues, N=16 synthetic keyframes):
 
@@ -236,16 +236,16 @@ CLAP **beats** transcript BM25 at R@1 (0.333 vs 0.000) on this 9-clip Commons se
 
 Frames **beat transcript BM25** at R@1 (0.583 vs 0.083) on color/layout queries. Receipts: `evals/audio_qa_latest.json`, `evals/video_qa_latest.json`. `POST /query` `task=audio_qa|video_qa|unified`.
 
-**OA Wikimedia video** (`python evals/download_av.py --video-only && ABCITE_CLAP=1 python evals/run_video_qa.py --oa`, N=10 real keyframes, OpenCLIP ViT-B-32 on the 5090). Grew from 6 clips (PLOS mitosis / neutrophil movies replaced missing Commons titles). Small-n; not SOTA. Several clips have no audio stream; audio-track CLAP R@1 is **0.000**.
+**OA Wikimedia + NASA video** (`ABCITE_CLIP=1 ABCITE_COLPALI=0 python evals/run_video_qa.py --oa` after `download_av.py --max 64`, N=26 real keyframes, OpenCLIP ViT-B-32 on the 5090). Grew from 10 clips (Commons microscopy + NASA `~small.mp4`; Perseverance landing skipped as 111 MB). Small-n; not SOTA. Many clips have no audio stream; audio-track CLAP R@1 is **0.077**.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.100 | 0.600 | 1.000 | 0.358 |
-| **keyframe OpenCLIP T→I** | **0.300** | **0.700** | **1.000** | **0.526** |
-| audio track CLAP T→A | 0.000 | 0.700 | 1.000 | 0.329 |
-| within-video RRF | 0.400 | 0.700 | 1.000 | 0.536 |
+| transcript BM25 | 0.038 | 0.231 | 0.462 | 0.133 |
+| **keyframe OpenCLIP T→I** | **0.423** | **0.692** | **0.885** | **0.559** |
+| audio track CLAP T→A | 0.077 | 0.154 | 0.423 | 0.118 |
+| within-video RRF | 0.192 | 0.423 | 0.769 | 0.318 |
 
-Frames beat BM25 at R@1 (0.300 vs 0.100) on this 10-clip set. vs prior N=6: frame R@1 0.500→0.300 (larger gallery). Receipt: `evals/video_qa_oa_latest.json`.
+Frames beat BM25 at R@1 (0.423 vs 0.038) on this 26-clip set (was N=10 R@1 0.300 vs 0.100). Receipt: `evals/video_qa_oa_latest.json`. Licenses: `evals/oa_av_LICENSE.md`.
 
 OpenCLIP ViT-B-32 is the CLIP fallback when `[clip]` + weights are present. Visual retrieval prefers ColQwen2.5 (then ColQwen2) when local late-interaction weights exist on CUDA / `ABCITE_COLPALI=1`. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Optional ColPali: `pip install -e ".[colpali]"`. Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`. Text RAG stays BM25.
 
@@ -304,7 +304,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
 | Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); n=273 / N=15,949: ColQwen2.5 R@1 **0.103**, ColQwen2 **0.073**, ColPali-v1.3 **0.044**, BiomedCLIP **0.040**, OpenCLIP **0.015**, BM25 0; heuristic VQA e2e **9.5%** / oracle **60.3%** / abstain **73%** (ColQwen2 path); prior 2B VLM n=61 e2e **1.6%** (not re-run; does not beat heuristic) |
-| Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified`; OA Commons path `evals/download_av.py` + `--oa` | OA CLAP encoder=`clap` N=9 R@1 **0.333** vs BM25 0; CI uses synthetic wav/PNG fixtures; OA media is gitignored |
+| Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified`; OA Commons+NASA path `evals/download_av.py` + `--oa` | OA CLAP encoder=`clap` N=29 R@1 **0.414** vs BM25 0; OA OpenCLIP video N=26 R@1 **0.423** vs BM25 0.038; CI uses synthetic wav/PNG fixtures; OA media is gitignored |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |
 | Terraform | `infra/terraform/` RG + Search + OpenAI account | not applied (no subscription in CI) |

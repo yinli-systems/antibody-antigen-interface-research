@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from abcite_core.audio_rag import (
     AudioGallery,
     audio_qa_response,
@@ -82,6 +84,25 @@ def test_oa_audio_candidates_should_fail_filler_bm25():
     blob = " ".join(FILLER)
     ids = [c["id"] for c in AUDIO_CANDIDATES]
     assert len(ids) == len(set(ids))
+    assert len(AUDIO_CANDIDATES) >= 24
     for cand in AUDIO_CANDIDATES:
+        assert cand.get("license"), cand["id"]
         ov = vis_overlap(cand["question"], blob)
         assert ov["should_fail"], (cand["id"], ov["overlap_tokens"])
+
+
+def test_oa_audio_gold_unique_ids():
+    gold = ROOT / "evals" / "gold" / "audio_qa_oa.jsonl"
+    if not gold.exists():
+        pytest.skip("no OA audio gold")
+    import json
+
+    rows = [json.loads(line) for line in gold.read_text(encoding="utf-8").splitlines() if line.strip()]
+    ids = [r["id"] for r in rows]
+    assert len(ids) == len(set(ids))
+    ans = [r for r in rows if r.get("gold_audio_ids")]
+    assert len(ans) >= 20
+    golds = [r["gold_audio_ids"][0] for r in ans]
+    assert len(golds) == len(set(golds))
+    for r in rows:
+        assert r.get("transcript_bm25_should_fail") is True

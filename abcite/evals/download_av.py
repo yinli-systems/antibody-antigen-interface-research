@@ -1,18 +1,19 @@
 """Download short CC science clips for OA audio/video RAG.
 
 CI fixtures stay synthetic (`evals/build_av_fixtures.py`). This script is
-best-effort Wikimedia Commons. Never required for pytest.
+best-effort Wikimedia Commons + NASA images (public domain). Never required
+for pytest.
 
 Usage:
-  python evals/download_av.py --max 12
+  python evals/download_av.py --max 64
   ABCITE_WHISPER=1 python evals/download_av.py   # ASR transcripts when ffmpeg+whisper exist
   python evals/run_audio_qa.py --oa
   python evals/run_video_qa.py --oa
 
 Queries describe **sound or on-screen appearance**, not Wikipedia titles.
-Transcripts default to generic lecture filler so BM25 should fail. Whisper
-ASR replaces filler when ABCITE_WHISPER=1. Do not mix OA receipts with the
-synthetic wav-hash table.
+Transcripts default to generic lecture filler so BM25 should fail. Keep
+ABCITE_WHISPER=0 for the OA BM25-should-fail table. Do not mix OA receipts
+with the synthetic wav-hash table. Licenses: evals/oa_av_LICENSE.md.
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ import os
 import shutil
 import ssl
 import subprocess
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -54,164 +56,134 @@ FILLER = [
 ]
 
 # Acoustic queries must not overlap FILLER content tokens (≤1).
-# File titles verified via Commons imageinfo (2026-09-10).
+# Commons titles verified via imageinfo (2026-09-10). Missing 404s dropped.
 AUDIO_CANDIDATES = [
-    {
-        "id": "oa-aud-heartbeat",
-        "file": "File:Heartbeat.ogg",
-        "title": "Heartbeat recording",
-        "question": "which clip is a repeating low thud pulse like a cardiac cycle",
-        "answer": "A heartbeat / lub-dub pulse train.",
-    },
-    {
-        "id": "oa-aud-geiger",
-        "file": "File:Geiger_counter.ogg",
-        "title": "Geiger counter clicks",
-        "question": "sparse sharp click train, irregular, not a sine drone",
-        "answer": "Geiger-like irregular clicks.",
-    },
-    {
-        "id": "oa-aud-noise",
-        "file": "File:White_noise.ogg",
-        "title": "White noise",
-        "question": "broadband hiss, not tonal",
-        "answer": "White-ish hiss.",
-    },
-    {
-        "id": "oa-aud-thunder",
-        "file": "File:Thunder.ogg",
-        "title": "Thunder",
-        "question": "distant rumble burst, not a hiss",
-        "answer": "Thunder rumble.",
-    },
-    {
-        "id": "oa-aud-doppler",
-        "file": "File:Fetal doppler recording heartbeat and movement.ogg",
-        "title": "Fetal Doppler",
-        "question": "whoosh pulse from a handheld fetal doppler, not a geiger click",
-        "answer": "Fetal Doppler whoosh.",
-    },
-    {
-        "id": "oa-aud-korotkoff",
-        "file": "File:Nl-Korotkoff-tonen.ogg",
-        "title": "Korotkoff sounds",
-        "question": "soft cuff thumps used to read blood pressure",
-        "answer": "Korotkoff thumps.",
-    },
-    {
-        "id": "oa-aud-mosquito",
-        "file": "File:Mosquito.ogg",
-        "title": "Mosquito",
-        "question": "thin high whine, not a hiss and not a thud pulse",
-        "answer": "Mosquito-like high whine.",
-    },
-    {
-        "id": "oa-aud-cricket",
-        "file": "File:Cricket.ogg",
-        "title": "Cricket chirp",
-        "question": "rhythmic insect chirp train, not broadband hiss",
-        "answer": "Cricket chirps.",
-    },
-    {
-        "id": "oa-aud-siren",
-        "file": "File:Siren.ogg",
-        "title": "Police siren",
-        "question": "wailing two-tone alarm glide, not a click train",
-        "answer": "Two-tone siren wail.",
-    },
-    {
-        "id": "oa-aud-a440",
-        "file": "File:440 Hz.ogg",
-        "title": "A440 tone",
-        "question": "steady pure tone, not a pulse and not a hiss",
-        "answer": "Steady A440-like tone.",
-    },
-    {
-        "id": "oa-aud-modem",
-        "file": "File:Dial-up_modem_noises.ogg",
-        "title": "Dial-up modem",
-        "question": "harsh handshake screech that is not a sine drone",
-        "answer": "Dial-up modem handshake.",
-    },
-    {
-        "id": "oa-aud-tuningfork",
-        "file": "File:Tuning_fork.ogg",
-        "title": "Tuning fork",
-        "question": "decaying pure ring of a struck metal bar",
-        "answer": "Tuning-fork ring.",
-    },
+    {"id": "oa-aud-heartbeat", "file": "File:Heartbeat.ogg", "license": "CC BY 3.0", "title": "Heartbeat recording", "question": "which clip is a repeating low thud pulse like a cardiac cycle", "answer": "A heartbeat / lub-dub pulse train."},
+    {"id": "oa-aud-geiger", "file": "File:Geiger_counter.ogg", "license": "CC BY 3.0", "title": "Geiger counter clicks", "question": "sparse sharp click train, irregular, not a sine drone", "answer": "Geiger-like irregular clicks."},
+    {"id": "oa-aud-noise", "file": "File:White_noise.ogg", "license": "Public domain", "title": "White noise", "question": "broadband hiss, not tonal", "answer": "White-ish hiss."},
+    {"id": "oa-aud-thunder", "file": "File:Thunder.ogg", "license": "CC BY 3.0", "title": "Thunder", "question": "distant rumble burst, not a hiss", "answer": "Thunder rumble."},
+    {"id": "oa-aud-doppler", "file": "File:Fetal doppler recording heartbeat and movement.ogg", "license": "CC BY-SA 3.0", "title": "Fetal Doppler", "question": "whoosh pulse from a handheld fetal doppler, not a geiger click", "answer": "Fetal Doppler whoosh."},
+    {"id": "oa-aud-korotkoff", "file": "File:Nl-Korotkoff-tonen.ogg", "license": "CC BY-SA 3.0", "title": "Korotkoff sounds", "question": "soft cuff thumps used to read blood pressure", "answer": "Korotkoff thumps."},
+    {"id": "oa-aud-cricket", "file": "File:Cricket.ogg", "license": "CC BY-SA 3.0", "title": "Cricket chirp", "question": "rhythmic insect chirp train, not broadband hiss", "answer": "Cricket chirps."},
+    {"id": "oa-aud-siren", "file": "File:Siren.ogg", "license": "Public domain", "title": "Police siren", "question": "wailing two-tone alarm glide, not a click train", "answer": "Two-tone siren wail."},
+    {"id": "oa-aud-a440", "file": "File:440 Hz.ogg", "license": "Public domain", "title": "A440 tone", "question": "steady pure tone, not a pulse and not a hiss", "answer": "Steady A440-like tone."},
+    {"id": "oa-aud-cat", "file": "File:Cat.ogg", "license": "CC BY 3.0", "title": "Cat", "question": "short feline meow, not a bark and not a chirp", "answer": "A cat meow."},
+    {"id": "oa-aud-bark", "file": "File:Barking.ogg", "license": "CC BY-SA 4.0", "title": "Barking", "question": "sharp dog bark bursts, not a meow", "answer": "Dog barks."},
+    {"id": "oa-aud-frog", "file": "File:Frog.ogg", "license": "CC BY-SA 3.0", "title": "Frog", "question": "guttural amphibian croak, not an insect chirp", "answer": "Frog croak."},
+    {"id": "oa-aud-applause", "file": "File:Applause.ogg", "license": "CC BY-SA 3.0", "title": "Applause", "question": "many hands clapping in overlapping bursts", "answer": "Applause."},
+    {"id": "oa-aud-bells", "file": "File:Church bells.ogg", "license": "Public domain", "title": "Church bells", "question": "pealing metal bells in a tower, not a siren", "answer": "Church bells."},
+    {"id": "oa-aud-fire", "file": "File:Fire.ogg", "license": "Public domain", "title": "Fire", "question": "wood-fire crackle and pop, not rain", "answer": "Fire crackle."},
+    {"id": "oa-aud-laugh", "file": "File:Laughter.ogg", "license": "Public domain", "title": "Laughter", "question": "human laugh bursts, not a sneeze", "answer": "Laughter."},
+    {"id": "oa-aud-rain", "file": "File:Rain.ogg", "license": "Public domain", "title": "Rain", "question": "steady droplet patter on a surface, not a cascade roar", "answer": "Rain patter."},
+    {"id": "oa-aud-sneeze", "file": "File:Sneeze.ogg", "license": "CC0", "title": "Sneeze", "question": "one abrupt human sneeze, not laughter", "answer": "A sneeze."},
+    {"id": "oa-aud-banjo", "file": "File:Banjo.ogg", "license": "CC BY-SA 3.0", "title": "Banjo", "question": "plucked twangy strings, not a piano", "answer": "Banjo twang."},
+    {"id": "oa-aud-clock", "file": "File:Clock ticking.ogg", "license": "Public domain", "title": "Clock ticking", "question": "regular mechanical tick-tock, not a drum hit", "answer": "Clock ticks."},
+    {"id": "oa-aud-flute", "file": "File:Flute.ogg", "license": "Public domain", "title": "Flute", "question": "airy woodwind melody, not a harmonica reed chord", "answer": "Flute."},
+    {"id": "oa-aud-harmonica", "file": "File:Harmonica.ogg", "license": "Public domain", "title": "Harmonica", "question": "blown reed chords, not a flute", "answer": "Harmonica."},
+    {"id": "oa-aud-piano", "file": "File:Piano.ogg", "license": "CC BY-SA 3.0", "title": "Piano", "question": "struck piano keys, not plucked strings", "answer": "Piano."},
+    {"id": "oa-aud-brown", "file": "File:Brown noise.ogg", "license": "CC BY-SA 3.0", "title": "Brown noise", "question": "low dull rumble noise that stays steady, not a thunder burst", "answer": "Brown noise."},
+    {"id": "oa-aud-pink", "file": "File:Pink noise.ogg", "license": "CC BY-SA 3.0", "title": "Pink noise", "question": "mid-heavy rustle distinct from white hiss and brown rumble", "answer": "Pink noise."},
+    {"id": "oa-aud-morse", "file": "File:Morse code.ogg", "license": "Public domain", "title": "Morse code", "question": "short-long beep code, not a steady sine", "answer": "Morse beeps."},
+    {"id": "oa-aud-waterfall", "file": "File:Waterfall.ogg", "license": "CC BY-SA 4.0", "title": "Waterfall", "question": "continuous cascade roar, not droplet patter", "answer": "Waterfall roar."},
+    {"id": "oa-aud-kick", "file": "File:Bass drum.ogg", "license": "CC BY-SA 3.0", "title": "Bass drum", "question": "single deep drum hit, not a clock tick", "answer": "Bass-drum hit."},
+    {"id": "oa-aud-cicada", "file": "File:Cicada.ogg", "license": "CC BY-SA 3.0", "title": "Cicada", "question": "high buzzing insect drone, not a croak", "answer": "Cicada buzz."},
+    {"id": "oa-aud-register", "file": "File:Cash register.ogg", "license": "Public domain", "title": "Cash register", "question": "bell ding plus a drawer scrape, not church bells", "answer": "Cash-register ding."},
 ]
 
+def _nasa_small(nasa_id: str) -> str:
+    enc = urllib.parse.quote(nasa_id)
+    return f"https://images-assets.nasa.gov/video/{enc}/{enc}~small.mp4"
+
+
 VIDEO_CANDIDATES = [
+    {"id": "oa-vid-gelbox", "file": "File:Conducting-Polymer-Electrodes-for-Gel-Electrophoresis-pone.0089416.s001.ogv", "license": "CC BY 4.0", "title": "Conducting polymer gel electrophoresis", "question": "which clip shows a small gel box with running sample lanes on a bench", "answer": "Benchtop gel box with lanes."},
+    {"id": "oa-vid-fige", "file": "File:Increase-in-local-protein-concentration-by-field-inversion-gel-electrophoresis-1477-5956-5-18-S2.ogv", "license": "CC BY 2.0", "title": "Field-inversion gel bands", "question": "which clip shows glowing nucleic-acid bands drifting in a dark slab", "answer": "Glowing bands in a dark gel slab."},
+    {"id": "oa-vid-anim", "file": "File:Electrophoresis explained - biology animation.webm", "license": "CC BY 3.0", "title": "Electrophoresis animation", "question": "which clip is a labeled cartoon of molecules migrating through a gel matrix", "answer": "Cartoon of migrating molecules."},
+    {"id": "oa-vid-confocal", "file": "File:Fluorescent and confocal microscopes.ogv", "license": "CC BY-SA 4.0", "title": "Fluorescent and confocal microscopes", "question": "which clip shows a fluorescence microscope body with a laser scan head", "answer": "Confocal / fluorescence scope body."},
+    {"id": "oa-vid-milk", "file": "File:Milk under the microscope.webm", "license": "CC BY 4.0", "title": "Milk under the microscope", "question": "which clip shows swirling droplets under a bright-field microscope", "answer": "Bright-field droplets (milk)."},
+    {"id": "oa-vid-tem", "file": "File:Microscope Electronique à Transmission.ogv", "license": "CC BY-SA 4.0", "title": "Transmission electron microscope", "question": "which clip shows a tall transmission-electron column in a lab", "answer": "TEM column."},
+    {"id": "oa-vid-neutrophil", "file": "File:Monomeric-and-Dimeric-CXCL8-Are-Both-Essential-for-In-Vivo-Neutrophil-Recruitment-pone.0011754.s004.ogv", "license": "CC BY 2.5", "title": "In-vivo neutrophil recruitment", "question": "which clip shows round white cells tumbling along a vessel wall in living tissue", "answer": "Neutrophils rolling in a vessel."},
+    {"id": "oa-vid-mitosis", "file": "File:Global-Analysis-of-CPEBs-Reveals-Sequential-and-Non-Redundant-Functions-in-Mitotic-Cell-Cycle-pone.0138794.s004.ogv", "license": "CC BY 4.0", "title": "Mitotic cell-cycle movie", "question": "which clip shows a round cell with chromosomes lining up then pulling into two masses", "answer": "Mitotic chromosome split."},
+    {"id": "oa-vid-polarize", "file": "File:A-Mathematical-Model-for-Neutrophil-Gradient-Sensing-and-Polarization-pcbi.0030036.sv002.ogv", "license": "CC BY 2.5", "title": "Neutrophil polarization", "question": "which clip shows one cell flattening and sending a single leading edge toward one pole", "answer": "A cell polarizing to one pole."},
+    {"id": "oa-vid-mitosis2", "file": "File:Global-Analysis-of-CPEBs-Reveals-Sequential-and-Non-Redundant-Functions-in-Mitotic-Cell-Cycle-pone.0138794.s003.ogv", "license": "CC BY 4.0", "title": "Second mitotic time-lapse", "question": "which clip is a time-lapse of a cell rounding up before the chromosomes segregate", "answer": "Cell rounding before anaphase."},
+    {"id": "oa-vid-amoeba", "file": "File:Amoeba proteus.ogv", "license": "CC BY-SA 3.0", "title": "Amoeba proteus", "question": "which clip shows a shapeless blob crawling by pushing out pseudopods", "answer": "Amoeba crawling."},
+    {"id": "oa-vid-cyclosis", "file": "File:Cyclosis.ogv", "license": "CC BY-SA 3.0", "title": "Cyclosis", "question": "which clip shows green chloroplasts streaming in a loop inside a plant cell", "answer": "Chloroplast streaming (cyclosis)."},
+    {"id": "oa-vid-vessels", "file": "File:3-D-Visualization-and-Quantitation-of-Microvessels-in-Transparent-Human-Colorectal-Carcinoma-pone.0081857.s003.ogv", "license": "CC BY 2.5", "title": "3-D microvessels", "question": "which clip is a 3-D fly-through of a dense stained vessel network in tissue", "answer": "3-D stained vessels."},
+    {"id": "oa-vid-microfluidic", "file": "File:A-Microfluidic-Platform-for-Correlative-Live-Cell-and-Super-Resolution-Microscopy-pone.0115512.s002.ogv", "license": "CC0", "title": "Microfluidic live-cell", "question": "which clip shows cells drifting through a narrow microfluidic channel", "answer": "Cells in a microfluidic channel."},
+    {"id": "oa-vid-spheroid", "file": "File:A-High-Content-Small-Molecule-Screen-Identifies-Sensitivity-of-Glioblastoma-Stem-Cells-to-pone.0077053.s011.ogv", "license": "CC BY 2.5", "title": "Glioblastoma spheroids", "question": "which clip is a multi-well time-lapse of round tumor spheroids", "answer": "Tumor spheroids in wells."},
+    {"id": "oa-vid-filter", "file": "File:A-Microfiltration-Device-for-Urogenital-Schistosomiasis-Diagnostics-pone.0154640.s003.ogv", "license": "CC BY 4.0", "title": "Schistosomiasis filter", "question": "which clip shows parasite eggs trapped on a diagnostic filter mesh", "answer": "Eggs on a filter mesh."},
+    {"id": "oa-vid-ozone", "file": "File:2023 Ozone Hole Update.webm", "license": "Public domain", "title": "Ozone hole update", "question": "which clip is a false-color polar map of a seasonal ozone-layer gap", "answer": "Polar ozone-hole map."},
+    {"id": "oa-vid-cfd", "file": "File:Advanced Simulation Library - Multicomponent flow video.ogv", "license": "GFDL", "title": "Multicomponent flow CFD", "question": "which clip is a colored two-fluid mixing simulation inside a box", "answer": "Two-fluid CFD mix."},
+    {"id": "oa-vid-chestnut", "file": "File:Chestnut with maggot CT.ogv", "license": "CC BY-SA 3.0", "title": "Chestnut CT", "question": "which clip is grayscale CT slices of a nut with a curved larva tunnel", "answer": "Chestnut CT with larva."},
     {
-        "id": "oa-vid-gelbox",
-        "file": "File:Conducting-Polymer-Electrodes-for-Gel-Electrophoresis-pone.0089416.s001.ogv",
-        "title": "Conducting polymer gel electrophoresis",
-        "question": "which clip shows a small gel box with running sample lanes on a bench",
-        "answer": "Benchtop gel box with lanes.",
+        "id": "oa-vid-earth",
+        "file": "GSFC_20140421_EarthOrbit_m11525",
+        "url": _nasa_small("GSFC_20140421_EarthOrbit_m11525"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "Earth from orbit 2013",
+        "question": "which clip shows continents and swirling clouds on a blue planet from space",
+        "answer": "Earth from orbit.",
     },
     {
-        "id": "oa-vid-fige",
-        "file": "File:Increase-in-local-protein-concentration-by-field-inversion-gel-electrophoresis-1477-5956-5-18-S2.ogv",
-        "title": "Field-inversion gel bands",
-        "question": "which clip shows glowing nucleic-acid bands drifting in a dark slab",
-        "answer": "Glowing bands in a dark gel slab.",
+        "id": "oa-vid-launch",
+        "file": "GSFC_20121101_GPM_m11129_Launch",
+        "url": _nasa_small("GSFC_20121101_GPM_m11129_Launch"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "GPM launch animation",
+        "question": "which clip is a CGI rocket leaving a pad then a satellite unfolding in orbit",
+        "answer": "Launch-and-deploy animation.",
     },
     {
-        "id": "oa-vid-anim",
-        "file": "File:Electrophoresis explained - biology animation.webm",
-        "title": "Electrophoresis animation",
-        "question": "which clip is a labeled cartoon of molecules migrating through a gel matrix",
-        "answer": "Cartoon of migrating molecules.",
+        "id": "oa-vid-solar",
+        "file": "GSFC_20160426_SDO_m12224_SolarFlare",
+        "url": _nasa_small("GSFC_20160426_SDO_m12224_SolarFlare"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "SDO solar flare",
+        "question": "which clip shows a bright looping eruption on the solar disk",
+        "answer": "Solar-flare loop.",
     },
     {
-        "id": "oa-vid-confocal",
-        "file": "File:Fluorescent and confocal microscopes.ogv",
-        "title": "Fluorescent and confocal microscopes",
-        "question": "which clip shows a fluorescence microscope body with a laser scan head",
-        "answer": "Confocal / fluorescence scope body.",
+        "id": "oa-vid-jupiter",
+        "file": "GSFC_20180313_Jupiter_m12878_GreatRedSpot",
+        "url": _nasa_small("GSFC_20180313_Jupiter_m12878_GreatRedSpot"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "Jupiter Great Red Spot",
+        "question": "which clip shows a banded gas giant with an oval rust-colored storm",
+        "answer": "Jupiter red-spot bands.",
     },
     {
-        "id": "oa-vid-milk",
-        "file": "File:Milk under the microscope.webm",
-        "title": "Milk under the microscope",
-        "question": "which clip shows swirling droplets under a bright-field microscope",
-        "answer": "Bright-field droplets (milk).",
+        "id": "oa-vid-aurora",
+        "file": "GSFC_20180314_Aurora_m12865_Steve",
+        "url": _nasa_small("GSFC_20180314_Aurora_m12865_Steve"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "Aurora STEVE",
+        "question": "which clip shows a purple-green night-sky curtain over a dark horizon",
+        "answer": "Aurora curtain.",
     },
     {
-        "id": "oa-vid-tem",
-        "file": "File:Microscope Electronique à Transmission.ogv",
-        "title": "Transmission electron microscope",
-        "question": "which clip shows a tall transmission-electron column in a lab",
-        "answer": "TEM column.",
+        "id": "oa-vid-rocket",
+        "file": "KSC-20240525-MH-RKL01-0001-Rocket_Lab_PREFIRE_1_Launch_1080p-M6988",
+        "url": _nasa_small("KSC-20240525-MH-RKL01-0001-Rocket_Lab_PREFIRE_1_Launch_1080p-M6988"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "Rocket Lab PREFIRE launch",
+        "question": "which clip shows a real slender rocket lifting off a coastal pad, not a globe",
+        "answer": "Coastal rocket liftoff.",
     },
     {
-        "id": "oa-vid-neutrophil",
-        "file": "File:Monomeric-and-Dimeric-CXCL8-Are-Both-Essential-for-In-Vivo-Neutrophil-Recruitment-pone.0011754.s004.ogv",
-        "title": "In-vivo neutrophil recruitment",
-        "question": "which clip shows round white cells tumbling along a vessel wall in living tissue",
-        "answer": "Neutrophils rolling in a vessel.",
-    },
-    {
-        "id": "oa-vid-mitosis",
-        "file": "File:Global-Analysis-of-CPEBs-Reveals-Sequential-and-Non-Redundant-Functions-in-Mitotic-Cell-Cycle-pone.0138794.s004.ogv",
-        "title": "Mitotic cell-cycle movie",
-        "question": "which clip shows a round cell with chromosomes lining up then pulling into two masses",
-        "answer": "Mitotic chromosome split.",
-    },
-    {
-        "id": "oa-vid-polarize",
-        "file": "File:A-Mathematical-Model-for-Neutrophil-Gradient-Sensing-and-Polarization-pcbi.0030036.sv002.ogv",
-        "title": "Neutrophil polarization",
-        "question": "which clip shows one cell flattening and sending a single leading edge toward one pole",
-        "answer": "A cell polarizing to one pole.",
-    },
-    {
-        "id": "oa-vid-mitosis2",
-        "file": "File:Global-Analysis-of-CPEBs-Reveals-Sequential-and-Non-Redundant-Functions-in-Mitotic-Cell-Cycle-pone.0138794.s003.ogv",
-        "title": "Second mitotic time-lapse",
-        "question": "which clip is a time-lapse of a cell rounding up before the chromosomes segregate",
-        "answer": "Cell rounding before anaphase.",
+        "id": "oa-vid-volcano",
+        "file": "GSFC_20141113_Volcanoes_m10183_Degassing",
+        "url": _nasa_small("GSFC_20141113_Volcanoes_m10183_Degassing"),
+        "source": "nasa",
+        "license": "NASA public domain",
+        "title": "Volcano degassing schematic",
+        "question": "which clip is a schematic of volcanic plumes injecting aerosols into clouds",
+        "answer": "Volcano-aerosol schematic.",
     },
 ]
 
@@ -249,7 +221,7 @@ def _get(url: str, dest: Path, max_bytes: int = 80_000_000) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     try:
-        with urllib.request.urlopen(req, context=CTX, timeout=90) as resp:
+        with urllib.request.urlopen(req, context=CTX, timeout=180) as resp:
             n = 0
             with dest.open("wb") as fh:
                 while True:
@@ -281,10 +253,19 @@ def commons_file_url(title: str) -> str | None:
     )
     api = "https://commons.wikimedia.org/w/api.php?" + qs
     req = urllib.request.Request(api, headers={"User-Agent": UA})
-    try:
-        with urllib.request.urlopen(req, context=CTX, timeout=30) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-    except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError):
+    for attempt in range(2):
+        try:
+            with urllib.request.urlopen(req, context=CTX, timeout=30) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429 and attempt == 0:
+                time.sleep(2.0)
+                continue
+            return None
+        except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError):
+            return None
+    else:
         return None
     pages = (payload.get("query") or {}).get("pages") or {}
     for page in pages.values():
@@ -292,6 +273,30 @@ def commons_file_url(title: str) -> str | None:
         if infos and infos[0].get("url"):
             return str(infos[0]["url"])
     return None
+
+
+def filepath_url(title: str) -> str:
+    name = title.removeprefix("File:")
+    return "https://commons.wikimedia.org/wiki/Special:FilePath/" + urllib.parse.quote(name)
+
+
+def resolve_url(cand: dict) -> str | None:
+    if cand.get("url"):
+        return str(cand["url"])
+    title = cand["file"]
+    url = commons_file_url(title)
+    if url:
+        return url
+    print(f"  imageinfo miss; Special:FilePath {title}", flush=True)
+    return filepath_url(title)
+
+
+def source_of(cand: dict) -> str:
+    if cand.get("source"):
+        return str(cand["source"])
+    if "nasa.gov" in str(cand.get("url") or ""):
+        return "nasa"
+    return "wikimedia-commons"
 
 
 def _ffmpeg(*args: str) -> bool:
@@ -357,7 +362,7 @@ def _gold_video_row(cid: str, question: str, answer: str) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--max", type=int, default=16)
+    ap.add_argument("--max", type=int, default=64)
     ap.add_argument("--audio-only", action="store_true")
     ap.add_argument("--video-only", action="store_true")
     args = ap.parse_args()
@@ -369,7 +374,7 @@ def main() -> None:
     audio_gold: list[dict] = []
     if not args.video_only:
         for i, cand in enumerate(AUDIO_CANDIDATES[: args.max]):
-            url = commons_file_url(cand["file"])
+            url = resolve_url(cand)
             print(f"{cand['id']} url={url or 'missing'}", flush=True)
             if not url:
                 continue
@@ -389,19 +394,20 @@ def main() -> None:
                     "path": rel,
                     "transcript": transcript,
                     "title": cand["title"],
-                    "source": "wikimedia-commons",
+                    "source": source_of(cand),
+                    "license": cand.get("license", ""),
                     "href": url,
                     "synthetic": False,
                 }
             )
             audio_gold.append(_gold_audio_row(cand["id"], cand["question"], cand["answer"]))
+            time.sleep(0.25)
 
     video_rows: list[dict] = []
     video_gold: list[dict] = []
     if not args.audio_only:
-        n_vid = max(0, args.max)
-        for i, cand in enumerate(VIDEO_CANDIDATES[:n_vid]):
-            url = commons_file_url(cand["file"])
+        for i, cand in enumerate(VIDEO_CANDIDATES[: args.max]):
+            url = resolve_url(cand)
             print(f"{cand['id']} url={url or 'missing'}", flush=True)
             if not url:
                 continue
@@ -427,13 +433,15 @@ def main() -> None:
                     "audio_path": str(wav.relative_to(ROOT)) if wav.exists() else None,
                     "transcript": transcript,
                     "title": cand["title"],
-                    "source": "wikimedia-commons",
+                    "source": source_of(cand),
+                    "license": cand.get("license", ""),
                     "href": url,
                     "synthetic": False,
                     "captions": [],
                 }
             )
             video_gold.append(_gold_video_row(cand["id"], cand["question"], cand["answer"]))
+            time.sleep(0.25)
 
     for abs_row in ABSTAIN_AUDIO:
         audio_gold.append(

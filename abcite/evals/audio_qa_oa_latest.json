@@ -1,44 +1,44 @@
 {
   "protocol": "audio_qa",
-  "n_gallery": 9,
-  "n_queries": 11,
-  "n_answerable": 9,
+  "n_gallery": 29,
+  "n_queries": 31,
+  "n_answerable": 29,
   "encoder": "clap",
   "synthetic_fixture": false,
   "transcript_bm25": {
     "recall@1": 0.0,
-    "recall@5": 0.4444,
-    "recall@10": 1.0,
-    "ndcg@5": 0.2165,
-    "n": 9
+    "recall@5": 0.1379,
+    "recall@10": 0.2759,
+    "ndcg@5": 0.0687,
+    "n": 29
   },
   "clap_t2a": {
-    "recall@1": 0.3333,
-    "recall@5": 0.7778,
-    "recall@10": 1.0,
-    "ndcg@5": 0.5769,
-    "n": 9
+    "recall@1": 0.4138,
+    "recall@5": 0.7931,
+    "recall@10": 0.8621,
+    "ndcg@5": 0.6068,
+    "n": 29
   },
   "within_audio_rrf": {
-    "recall@1": 0.2222,
-    "recall@5": 0.5556,
-    "recall@10": 1.0,
-    "ndcg@5": 0.4054,
-    "n": 9
+    "recall@1": 0.1034,
+    "recall@5": 0.3103,
+    "recall@10": 0.6552,
+    "ndcg@5": 0.2096,
+    "n": 29
   },
   "transcript_bm25_should_fail_subset": {
     "recall@1": 0.0,
-    "recall@5": 0.4444,
-    "recall@10": 1.0,
-    "ndcg@5": 0.2165,
-    "n": 9
+    "recall@5": 0.1379,
+    "recall@10": 0.2759,
+    "ndcg@5": 0.0687,
+    "n": 29
   },
   "clap_should_fail_subset": {
-    "recall@1": 0.3333,
-    "recall@5": 0.7778,
-    "recall@10": 1.0,
-    "ndcg@5": 0.5769,
-    "n": 9
+    "recall@1": 0.4138,
+    "recall@5": 0.7931,
+    "recall@10": 0.8621,
+    "ndcg@5": 0.6068,
+    "n": 29
   },
   "note": "Audio retrieval. Query describes sound (pitch, chirp, pulse, hush), not spoken words. transcript_bm25_should_fail has \u22641 content-token overlap. CI encoder is shared-space spectral cues (wav-hash); CLAP when ABCITE_CLAP=1. RRF is within-audio only. OA Wikimedia receipts are a separate table (evals/audio_qa_oa_latest.json); do not mix with synthetic wav-hash scores.",
   "clap_beats_transcript_bm25_r@1": true,

@@ -170,16 +170,16 @@ Video gallery **N=16** (encoder=local-image; synthetic keyframes). RRF is within
 | within-video RRF | 0.250 | 1.000 | 1.000 | 0.624 |
 See `evals/audio_qa_latest.json` and `evals/video_qa_latest.json`.
 
-OA Wikimedia audio (N=9 real wav, encoder=`clap` on CUDA, 5090; Hub still 429 — weights from a complete local `clap-htsat-unfused` snapshot). Small-n; not SOTA. Do not mix with the synthetic wav-hash table.
+OA Wikimedia + NASA audio (N=29 real wav, encoder=`clap` on CUDA, 5090; Hub still 429 — weights from a complete local `clap-htsat-unfused` snapshot). `File:Cat.ogg` failed wav extract. Small-n; not SOTA. Do not mix with the synthetic wav-hash table.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| transcript BM25 | 0.000 | 0.444 | 1.000 | 0.217 |
-| CLAP T→A | 0.333 | 0.778 | 1.000 | 0.577 |
+| transcript BM25 | 0.000 | 0.138 | 0.276 | 0.069 |
+| CLAP T→A | 0.414 | 0.793 | 0.862 | 0.607 |
 
-CLAP beats transcript BM25 at R@1 (0.333 vs 0.000). Prior wav-hash on n=6 was tied at 0.167.
+CLAP beats transcript BM25 at R@1 (0.414 vs 0.000). Prior N=9 was 0.333 vs 0.000.
 
-OA Wikimedia video N=10 (grew from 6; OpenCLIP frames). Frames R@1 **0.300** vs BM25 0.100. Audio-track CLAP R@1 **0.000** (several clips have no audio stream). See `evals/audio_qa_oa_latest.json`, `evals/video_qa_oa_latest.json`.
+OA Wikimedia + NASA video N=26 (OpenCLIP ViT-B-32 frames, `ABCITE_COLPALI=0`). Frames R@1 **0.423** vs BM25 0.038. Audio-track CLAP R@1 **0.077** (many clips have no audio stream). See `evals/audio_qa_oa_latest.json`, `evals/video_qa_oa_latest.json`, `evals/oa_av_LICENSE.md`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)
 
