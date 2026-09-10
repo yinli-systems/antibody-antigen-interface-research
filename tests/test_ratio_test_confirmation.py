@@ -127,3 +127,19 @@ def test_only_epitope_rows_are_read(tmp_path):
 
 def test_a_missing_split_is_reported_rather_than_guessed(tmp_path):
     assert load_node_frame(tmp_path / "absent") is None
+
+
+def test_the_ensemble_names_which_seed_disagrees_and_by_how_much():
+    """A row-count mismatch does not say which seed is wrong, or about what."""
+    first = frame({"a": [(True, 0.9), (False, 0.1)], "b": [(True, 0.8), (False, 0.2)]})
+    second = frame({"a": [(True, 0.5), (False, 0.3)], "c": [(True, 0.4), (False, 0.6)]})
+    with pytest.raises(ValueError, match="position 1 is missing 2 .* adds 2"):
+        ensemble_frame([first, second])
+
+
+def test_seeds_agreeing_on_residues_but_not_on_scores_still_average():
+    """Only the residue index has to match; disagreeing is what averaging is for."""
+    first = frame({"a": [(True, 1.0), (False, 0.0)]})
+    second = frame({"a": [(True, 0.0), (False, 1.0)]})
+    merged = ensemble_frame([first, second])
+    assert merged["score"].tolist() == pytest.approx([0.5, 0.5])

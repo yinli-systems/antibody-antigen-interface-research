@@ -97,6 +97,24 @@ def ensemble_frame(frames):
     import pandas
 
     keys = ["instance_id", "res_idx"]
+    # The residue keys every seed must agree on, checked as sets before any
+    # join. Equal row counts after an inner join do imply equal key sets, but
+    # only by an argument the next reader has to reconstruct, and the failure it
+    # would report -- a row count -- does not say which seed disagreed or about
+    # what. This says both.
+    key_sets = [set(map(tuple, frame[keys].itertuples(index=False, name=None)))
+                for frame in frames]
+    reference = key_sets[0]
+    for index, observed in enumerate(key_sets[1:], start=1):
+        if observed != reference:
+            missing = len(reference - observed)
+            extra = len(observed - reference)
+            raise ValueError(
+                f"seeds do not share a residue index: seed at position {index} is "
+                f"missing {missing} of the first seed's residues and adds {extra} "
+                f"of its own; refusing to average"
+            )
+
     merged = None
     for index, frame in enumerate(frames):
         part = frame[keys + ["label", "score"]].rename(columns={"score": f"score_{index}"})
