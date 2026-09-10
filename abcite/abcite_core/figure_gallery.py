@@ -534,14 +534,17 @@ class FigureGallery:
             return np.zeros(self.n, dtype=np.float32)
         return self.image_vecs @ qv
 
-    def search_visual(self, query: str, top_k: int = 6):
-        """Text → figure MaxSim (same scorer as eval). Hits use gallery figure ids."""
+    def _hits_from_scores(
+        self,
+        rank: np.ndarray,
+        image: np.ndarray,
+        caption: np.ndarray,
+        top_k: int,
+    ):
         from abcite_core.models import Chunk, Modality
         from abcite_core.retrieval import Hit
 
-        image = self.clip_image_only_scores(query)
-        caption = self.caption_bm25_scores(query)
-        order = np.argsort(-image)[:top_k]
+        order = np.argsort(-rank)[:top_k]
         hits: list[Hit] = []
         for i in order:
             rec = self.recs[int(i)]
@@ -559,13 +562,41 @@ class FigureGallery:
                         source_label=rec.source or rec.pmcid or rec.figure_id,
                         image_path=str(path) if path else None,
                     ),
-                    score=float(image[i]),
+                    score=float(rank[i]),
                     bm25=float(caption[i]),
                     dense=0.0,
                     image=float(image[i]),
                 )
             )
         return hits
+
+    def search_visual(self, query: str, top_k: int = 6):
+        """Text → figure MaxSim (same scorer as eval). Hits use gallery figure ids."""
+        image = self.clip_image_only_scores(query)
+        caption = self.caption_bm25_scores(query)
+        return self._hits_from_scores(image, image, caption, top_k)
+
+    def search_by_image(self, path: Path, top_k: int = 5, fuse_captions: bool = True):
+        """Pixels→pixels. MaxSim when late toks exist; else pooled. Same gallery as visual_qa."""
+        path = Path(path)
+        late = bool(getattr(self.vision, "late_interaction", False))
+        encode_multi = getattr(self.vision, "encode_images_multi", None)
+        if late and callable(encode_multi) and self.image_toks is not None:
+            from abcite_core.visual_qa import maxsim_matrix
+
+            sims = maxsim_matrix(encode_multi([path]), self.image_toks)[0]
+        else:
+            qv = np.asarray(self.vision.encode_image(path), dtype=np.float32)
+            if qv.shape[0] != self.image_vecs.shape[1]:
+                return []
+            sims = self.image_vecs @ qv
+        cap_q = ""
+        caption_fn = getattr(self.vision, "caption", None)
+        if callable(caption_fn):
+            cap_q = caption_fn(path) or ""
+        cap_scores = self.caption_bm25_scores(cap_q)
+        rank = (_rrf(sims) + _rrf(cap_scores)) if fuse_captions else sims
+        return self._hits_from_scores(rank, sims, cap_scores, top_k)
 
     def caption_bm25_scores(self, question: str) -> np.ndarray:
         return self._bm25(question)

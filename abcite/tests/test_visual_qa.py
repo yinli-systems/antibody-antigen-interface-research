@@ -261,6 +261,48 @@ def test_search_visual_uses_maxsim_not_mean_pool():
     assert local.visual_score_path == "pooled"
 
 
+def test_search_by_image_uses_maxsim_not_mean_pool():
+    chunks = [
+        Chunk(
+            chunk_id="fig-alpha",
+            parent_id="txt-a",
+            modality=Modality.FIGURE,
+            title="Alpha",
+            text="alpha",
+            caption="alpha",
+            source_url="https://example.test/a",
+            source_label="a",
+            image_path="corpus/figures/fig-1n8z.svg",
+        ),
+        Chunk(
+            chunk_id="fig-beta",
+            parent_id="txt-b",
+            modality=Modality.FIGURE,
+            title="Beta",
+            text="beta",
+            caption="beta",
+            source_url="https://example.test/b",
+            source_label="b",
+            image_path="corpus/figures/fig-6w41.svg",
+        ),
+    ]
+    toy = _LateToy()
+    idx = HybridIndex(chunks, vision=toy)
+    qpath = Path("corpus/figures/fig-1n8z.svg")
+    import numpy as np
+
+    pooled = np.stack([np.asarray(toy.encode_image(Path(c.image_path))) for c in chunks])
+    qv = np.asarray(toy.encode_image(qpath), dtype=np.float32)
+    pooled_order = [chunks[i].chunk_id for i in np.argsort(-(pooled @ qv))]
+    hits = idx.search_by_image(qpath, top_k=2, fuse_captions=False)
+    maxsim_order = [h.chunk.chunk_id for h in hits]
+    assert pooled_order[0] == "fig-beta"
+    assert maxsim_order[0] == "fig-alpha"
+    g = EvidenceGraph(idx, 0.12, False, "local")
+    assert g.visual_gallery_kind() == "fixture"
+    assert g.search_by_image(qpath, top_k=1, fuse_captions=False)[0].chunk.chunk_id == "fig-alpha"
+
+
 def _write_toy_late_npz(tmp_path: Path) -> Path:
     import numpy as np
 
@@ -330,6 +372,34 @@ def test_search_visual_uses_pmc_npz_maxsim_when_flagged(tmp_path, monkeypatch):
     assert g_off.visual_gallery_kind() == "fixture"
     fixture_hits = g_off.search_visual("token-match", top_k=1)
     assert fixture_hits[0].chunk.chunk_id == "fig-fixture"
+
+
+def test_search_by_image_uses_pmc_npz_when_flagged(tmp_path, monkeypatch):
+    npz = _write_toy_late_npz(tmp_path)
+    monkeypatch.setenv("ABCITE_PMC_GALLERY", str(npz))
+    toy = _LateToy()
+    chunks = [
+        Chunk(
+            chunk_id="fig-fixture",
+            parent_id="txt-a",
+            modality=Modality.FIGURE,
+            title="Fixture",
+            text="fixture",
+            caption="fixture",
+            source_url="https://example.test/f",
+            source_label="f",
+            image_path="corpus/figures/fig-6w41.svg",
+        )
+    ]
+    idx = HybridIndex(chunks, vision=toy)
+    g = EvidenceGraph(idx, 0.12, False, "local")
+    qpath = Path("corpus/figures/fig-1n8z.svg")
+    hits = g.search_by_image(qpath, top_k=2, fuse_captions=False)
+    assert [h.chunk.chunk_id for h in hits] == ["pmc-alpha", "pmc-beta"]
+    monkeypatch.setenv("ABCITE_PMC_GALLERY", "0")
+    g_off = EvidenceGraph(idx, 0.12, False, "local")
+    off = g_off.search_by_image(qpath, top_k=1, fuse_captions=False)
+    assert off[0].chunk.chunk_id == "fig-fixture"
 
 
 def test_eval_snapshot_keeps_visual_qa_primary():

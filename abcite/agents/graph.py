@@ -188,6 +188,13 @@ class EvidenceGraph:
             self.figure_gallery = None
         return self.figure_gallery
 
+    def search_by_image(self, path, top_k: int = 5, fuse_captions: bool = True):
+        """Pixels→pixels on the same gallery as visual_qa (fixture or PMC npz)."""
+        gal = self._ensure_pmc_gallery()
+        if gal is not None:
+            return gal.search_by_image(path, top_k=top_k, fuse_captions=fuse_captions)
+        return self.index.search_by_image(path, top_k=top_k, fuse_captions=fuse_captions)
+
     def search_visual(self, query: str, top_k: int = 6):
         """visual_qa retrieval: PMC npz MaxSim when enabled, else fixture HybridIndex."""
         gal = self._ensure_pmc_gallery()

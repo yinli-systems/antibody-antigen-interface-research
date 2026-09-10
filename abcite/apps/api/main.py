@@ -104,7 +104,7 @@ def search_image(
         ]
     if not path:
         return []
-    hits = graph.index.search_by_image(Path(path), top_k=top_k)
+    hits = graph.search_by_image(Path(path), top_k=top_k, fuse_captions=False)
     return [{"chunk_id": h.chunk.chunk_id, "score": h.image, "title": h.chunk.title} for h in hits]
 
 

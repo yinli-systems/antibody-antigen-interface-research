@@ -72,16 +72,83 @@ Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heur
 
 ## Visual figure QA — primary multimodal demo
 
-Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**273**. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query. VQA is cite-or-abstain on the retrieved figure (extractive/heuristic pixel cues; not a VLM). No Qwen2-VL accuracy is claimed until an ABCITE_VLM=1 GPU receipt exists. 
+Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=295** (273 unique-gold answerable + 22 abstain). All 273 answerable IDs are in-gallery. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query; every answerable item is `caption_bm25_should_fail`. Retrieval is the same-gold table below (n=273 / N=15,949), including extra ColPali-v1.3 and ColQwen2.5. VQA is scored separately. Do not mix with official ViDoRe **89.11** vs published **89.2**. Do not put 0.155, 0.130, or 0.090 next to 89.2 or paper ColPali 81.3.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
 | caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
 | BiomedCLIP T→I | 0.040 | 0.084 | 0.114 | 0.062 |
 | OpenCLIP ViT-B-32 T→I | 0.015 | 0.062 | 0.092 | 0.040 |
-| ColPali / ColQwen2 T→I | 0.073 | 0.179 | 0.212 | 0.130 |
+| ColPali-v1.3 late-interaction T→I | 0.044 | 0.132 | 0.172 | 0.090 |
+| ColQwen2 late-interaction T→I | 0.073 | 0.179 | 0.212 | 0.130 |
+| ColQwen2.5 late-interaction T→I | 0.103 | 0.209 | 0.256 | 0.155 |
 
-Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=— vision=—. VQA e2e=0.0949 oracle=0.6034 abstain=0.7273 cite@1=0.0733. VQA path: extractive/heuristic pixel cues; not a VLM. Retrieval R@K is not VQA and not ViDoRe (official mean 89.11 vs published 89.2).  See `evals/visual_qa_latest.json`.
+Vision beats caption BM25 at R@1? **yes**. ColQwen2.5 leads this cropped-PMC gold. All three late-interaction columns: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix on NVIDIA GeForce RTX 5090. ColQwen2 npz `embeddings-colqwen2-n15949.npz` (untouched). ColPali-v1.3 wrote **separate** `embeddings-colpali-v1.3-n15949.npz`. ColQwen2.5 wrote **separate** `embeddings-colqwen2.5-n15949.npz` (`device=cuda`). Paper ColPali ViDoRe **81.3** is PAGE retrieval; these extra columns are cropped PMC figures — not 81.3. Do not put 0.155, 0.130, or 0.090 next to official ViDoRe **89.11** / published **89.2**. CLIP/BiomedCLIP npy hits; no 16k CLIP re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not SOTA. Product visual retrieval prefers ColQwen2.5 when those weights are local; fallback ColQwen2 → CLIP → hash. `/query` `task=visual_qa` scores MaxSim on the loaded product corpus (default CI: 14 SVGs), not mean-pool. Set `ABCITE_PMC_GALLERY=1` to MaxSim `evals/embeddings-colqwen2.5-n15949.npz` (or colqwen2) with the same scorer as this table — not a CI download. `/search-image` MaxSim-ranks query-image tokens against that same gallery when ColQwen is loaded (CLIP/hash stay pooled); not ViDoRe, not this n=273 table. Text RAG stays BM25.
+
+VQA cite-or-abstain (separate from R@K). Heuristic on the new gold (n=295 / N=15949 / 5090). Qwen2-VL-2B was **not** re-run (prior n=61 receipt).
+
+| Answerer | e2e | oracle | abstain | cite@1 |
+|---|---:|---:|---:|---:|
+| heuristic pixel cues (n=295) | **0.0949** | **0.6034** | **0.7273** | 0.0733 |
+| Qwen2-VL-2B-Instruct generate (prior n=61; not re-run) | 0.0164 | 0.4262 | 0.0 | 0.0784 |
+
+`vqa.path` = extractive/heuristic pixel cues; not a VLM. Product default `ABCITE_VLM=0`. The prior 2B VLM does **not** beat the heuristic; it over-answers (abstain 0/10). See `evals/visual_qa_latest.json`.
+
+## Official ViDoRe v1 — page retrieval (same ColQwen2)
+
+Different protocol from PMC figure visual QA. Same `vidore/colqwen2-v1.0` on NVIDIA GeForce RTX 5090. 10/10 official QA-format tasks.
+
+| Official task | queries | pages | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---:|---:|---:|---:|---:|---:|
+| ArxivQA | 500 | 500 | 0.820 | 0.920 | 0.946 | 0.875 |
+| DocVQA | 500 | 500 | 0.484 | 0.622 | 0.700 | 0.557 |
+| InfoVQA | 500 | 499 | 0.872 | 0.946 | 0.958 | 0.910 |
+| TabFQuAD | 280 | 70 | 0.854 | 0.932 | 0.950 | 0.898 |
+| TAT-DQA | 831 | 139 | 0.793 | 0.962 | 0.975 | 0.887 |
+| ShiftProject | 100 | 83 | 0.780 | 0.830 | 0.830 | 0.810 |
+| SyntheticDocQA-AI | 100 | 63 | 0.950 | 0.950 | 0.960 | 0.950 |
+| SyntheticDocQA-Energy | 100 | 67 | 0.820 | 0.850 | 0.860 | 0.839 |
+| SyntheticDocQA-Gov | 100 | 47 | 0.710 | 0.740 | 0.760 | 0.723 |
+| SyntheticDocQA-Health | 100 | 53 | 0.830 | 0.870 | 0.880 | 0.848 |
+| **10-task mean** | | | | | | **0.830** |
+
+Custom MaxSim mean nDCG@5 **0.8296** is **not** comparable to 89.2 (no `Query: ` prefix / no official scorer).
+
+## Official vidore-benchmark harness (comparable)
+
+`python evals/run_vidore_official.py --suite`. Same ColQwen2-v1.0. 10/10. Mean nDCG@5 **0.8911** vs published **89.2** (−0.09). **Not ViDoRe SOTA** (`sota=false`; 2026 v1 pack ~92.7). See `evals/vidore_official_latest.json`.
+
+| Official task | published | nDCG@5 |
+|---|---:|---:|
+| ArxivQA | 0.880 | 0.878 |
+| DocVQA | 0.615 | 0.602 |
+| InfoVQA | 0.925 | 0.921 |
+| TabFQuAD | 0.890 | 0.896 |
+| TAT-DQA | 0.822 | 0.814 |
+| ShiftProject | 0.899 | 0.907 |
+| SyntheticDocQA-AI | 0.990 | 0.990 |
+| SyntheticDocQA-Energy | 0.959 | 0.963 |
+| SyntheticDocQA-Gov | 0.955 | 0.959 |
+| SyntheticDocQA-Health | 0.988 | 0.983 |
+| **10-task mean** | **0.892** | **0.891** |
+
+## Official vidore-benchmark — ColQwen2.5 (same PMC checkpoint)
+
+Same `vidore/colqwen2.5-v0.2` as the PMC extra column. GPU `device=cuda`. Mean nDCG@5 **0.8947**. Reproduced published ColQwen2.5-v0.2 **89.4** (~89.5) (**+0.07**) vs our ColQwen2 **89.11**. **Not ViDoRe SOTA** (`sota=false`; 2026 v1 pack ~**92.7** Argus/Nemotron). Matching 89.4 is a checkpoint reproduction, not a leaderboard claim. Do not put 89.47 next to PMC 0.155. See `evals/vidore_official_colqwen2_5_latest.json`.
+
+| Official task | ColQwen2 | ColQwen2.5 |
+|---|---:|---:|
+| ArxivQA | 0.878 | 0.896 |
+| DocVQA | 0.602 | 0.637 |
+| InfoVQA | 0.921 | 0.923 |
+| TabFQuAD | 0.896 | 0.916 |
+| TAT-DQA | 0.814 | 0.813 |
+| ShiftProject | 0.907 | 0.867 |
+| SyntheticDocQA-AI | 0.990 | 0.996 |
+| SyntheticDocQA-Energy | 0.963 | 0.962 |
+| SyntheticDocQA-Gov | 0.959 | 0.963 |
+| SyntheticDocQA-Health | 0.983 | 0.975 |
+| **10-task mean** | **0.891** | **0.895** |
 
 ## Audio / video QA (unified multimodal RAG)
 
@@ -102,6 +169,17 @@ Video gallery **N=16** (encoder=local-image; synthetic keyframes). RRF is within
 | audio track T→A | 0.083 | 0.417 | 0.833 | 0.246 |
 | within-video RRF | 0.250 | 1.000 | 1.000 | 0.624 |
 See `evals/audio_qa_latest.json` and `evals/video_qa_latest.json`.
+
+OA Wikimedia audio (N=9 real wav, encoder=`clap` on CUDA, 5090; Hub still 429 — weights from a complete local `clap-htsat-unfused` snapshot). Small-n; not SOTA. Do not mix with the synthetic wav-hash table.
+
+| Column | R@1 | R@5 | R@10 | nDCG@5 |
+|---|---|---|---|---|
+| transcript BM25 | 0.000 | 0.444 | 1.000 | 0.217 |
+| CLAP T→A | 0.333 | 0.778 | 1.000 | 0.577 |
+
+CLAP beats transcript BM25 at R@1 (0.333 vs 0.000). Prior wav-hash on n=6 was tied at 0.167.
+
+OA Wikimedia video N=10 (grew from 6; OpenCLIP frames). Frames R@1 **0.300** vs BM25 0.100. Audio-track CLAP R@1 **0.000** (several clips have no audio stream). See `evals/audio_qa_oa_latest.json`, `evals/video_qa_oa_latest.json`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)
 

@@ -310,11 +310,26 @@ class HybridIndex:
             )
         return hits
 
-    def search_by_image(self, path: Path, top_k: int = 5, fuse_captions: bool = True) -> list[Hit]:
+    def _image_query_scores(self, path: Path) -> np.ndarray:
+        """Pixels→pixels. MaxSim when late-interaction toks exist, else pooled cosine."""
+        late = bool(getattr(self.vision, "late_interaction", False))
+        encode_multi = getattr(self.vision, "encode_images_multi", None)
+        if late and callable(encode_multi) and self.image_toks is not None:
+            from abcite_core.visual_qa import maxsim_matrix
+
+            return maxsim_matrix(encode_multi([path]), self.image_toks)[0]
         qv = np.asarray(self.vision.encode_image(path), dtype=np.float32)
         if qv.shape[0] != self.image_vecs.shape[1]:
-            return []
-        sims = self.image_vecs @ qv
+            return np.zeros(self.n, dtype=np.float32)
+        return self.image_vecs @ qv
+
+    def search_by_image(self, path: Path, top_k: int = 5, fuse_captions: bool = True) -> list[Hit]:
+        path = Path(path)
+        if not path.is_absolute() and not path.exists():
+            alt = Path(__file__).resolve().parents[1] / path
+            if alt.exists():
+                path = alt
+        sims = self._image_query_scores(path)
         cap_q = self.vision.caption(path)
         cap_scores = self.caption_bm25_scores(cap_q)
         fused = _rrf(sims) + _rrf(cap_scores) if fuse_captions else sims
