@@ -53,6 +53,12 @@ case "${ARM}" in
   random_control) EXTRA=(--representation-manifest "${MANIFEST}" --random-projection-control) ;;
   antiberty_only) EXTRA=(--representation-manifest "${MANIFEST}" --antiberty-root "${ANTIBERTY_ROOT}") ;;
   esm_if1_only)   EXTRA=(--representation-manifest "${MANIFEST}" --esm-if1-root "${ESM_IF1_ROOT}") ;;
+  esm_if1_shuffled)
+                  # The attribution arm: same features, same complex, same
+                  # length, same distribution, with the residue correspondence
+                  # destroyed. If the gain survives this, it is not positional.
+                  EXTRA=(--representation-manifest "${MANIFEST}" --esm-if1-root "${ESM_IF1_ROOT}"
+                         --shuffle-representation-residues "${SHUFFLE_SEED:-20260911}") ;;
   esm2_antiberty_esmif1)
                   EXTRA=(--representation-manifest "${MANIFEST}" --antiberty-root "${ANTIBERTY_ROOT}" --esm-if1-root "${ESM_IF1_ROOT}") ;;
   *) echo "unknown ARM ${ARM}" >&2; exit 2 ;;

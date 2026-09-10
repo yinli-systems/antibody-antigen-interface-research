@@ -270,3 +270,76 @@ def test_summary_reports_the_counter_once_loads_have_happened(tmp_path: Path) ->
     after = store.summary()["sources"][0]["loads_zero_filled"]
 
     assert (before, after) == (0, 1)
+
+
+def _write_varying(root: Path, sequence: str, dim: int = SOURCE_DIM) -> str:
+    """Distinct rows, so a permutation is visible at all."""
+    tensor = torch.arange(len(sequence), dtype=torch.float32).unsqueeze(1).repeat(1, dim)
+    artifact = build_artifact(
+        RepresentationUnit(sequence=sequence),
+        tensor,
+        model_name="test-encoder",
+        model_revision="v0",
+    )
+    write_artifact(root, artifact)
+    return _digest(sequence)
+
+
+def test_shuffling_keeps_every_vector_and_changes_only_their_order(tmp_path: Path) -> None:
+    """The attribution control: the complex, length and distribution all survive."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+    plain = CompositeEmbeddingStore(_Base(10), [source])
+    shuffled = CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=7)
+
+    a = plain.load(key, "cpu")[0][0][:, BASE_DIM:-1]
+    b = shuffled.load(key, "cpu")[0][0][:, BASE_DIM:-1]
+
+    assert a.shape == b.shape
+    assert torch.equal(a.sum(dim=0), b.sum(dim=0))
+    assert torch.equal(a[:, 0].sort().values, b[:, 0].sort().values)
+    assert not torch.equal(a, b)
+
+
+def test_the_permutation_is_the_same_in_every_process(tmp_path: Path) -> None:
+    """A fresh permutation per call would be noise injection, a different experiment."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    one = CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=7)
+    two = CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=7)
+
+    assert torch.equal(one.load(key, "cpu")[0][0], two.load(key, "cpu")[0][0])
+    assert torch.equal(one.load(key, "cpu")[0][0], one.load(key, "cpu")[0][0])
+
+
+def test_a_different_seed_permutes_differently(tmp_path: Path) -> None:
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    one = CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=7)
+    two = CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=8)
+
+    assert not torch.equal(one.load(key, "cpu")[0][0], two.load(key, "cpu")[0][0])
+
+
+def test_shuffling_leaves_the_base_columns_alone(tmp_path: Path) -> None:
+    """Only the extra representation is the subject of the control."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+    base = _Base(10, value=3.0)
+
+    merged = CompositeEmbeddingStore(base, [source], shuffle_seed=7).load(key, "cpu")[0][0]
+
+    assert torch.equal(merged[:, :BASE_DIM], torch.full((10, BASE_DIM), 3.0))
+
+
+def test_the_receipt_says_the_rows_were_shuffled(tmp_path: Path) -> None:
+    """A reader must not mistake this arm for one carrying aligned features."""
+    key = _write_varying(tmp_path, "ACDEFGHIKL")
+    source = RepresentationSource("s", tmp_path, SOURCE_DIM, {key: (key,)})
+
+    described = CompositeEmbeddingStore(_Base(10), [source], shuffle_seed=7).describe()
+
+    assert described["residue_shuffle_seed"] == 7
+    assert "correspondence is destroyed" in described["residue_shuffle"]

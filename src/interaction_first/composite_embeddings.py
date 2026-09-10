@@ -193,13 +193,46 @@ class CompositeEmbeddingStore:
     source's columns followed by its presence column, in the order given.
     """
 
-    def __init__(self, base: Any, sources: Sequence[RepresentationSource]) -> None:
+    def __init__(
+        self,
+        base: Any,
+        sources: Sequence[RepresentationSource],
+        shuffle_seed: int | None = None,
+    ) -> None:
         names = [source.name for source in sources]
         if len(set(names)) != len(names):
             raise RepresentationError(f"duplicate source names: {names}")
         self.base = base
         self.sources = tuple(sources)
+        self.shuffle_seed = shuffle_seed
         self.filled: dict[str, int] = {source.name: 0 for source in self.sources}
+
+    def _permute(self, features: Any, source_name: str, key: str, device: Any) -> Any:
+        """Reorder a source's rows, destroying the residue correspondence.
+
+        The attribution control. A width-matched random projection shows the gain
+        is not extra capacity; it cannot show the gain is *positional*. This keeps
+        the complex, the length, the vectors themselves and their distribution,
+        and destroys only the fact that row i describes residue i.
+
+        Shuffling features between complexes would be the obvious version and is
+        not well defined here: these features are per residue and complexes differ
+        in length, so donating them requires truncating or padding, which
+        fabricates coordinates rather than removing information.
+
+        The permutation is derived from the key, so it is the same in every
+        process and every epoch: a fresh permutation each time would be noise
+        injection, a different experiment.
+        """
+        import torch
+
+        digest = hashlib.sha256(
+            f"{self.shuffle_seed}:{source_name}:{key}".encode("ascii")
+        ).digest()
+        generator = torch.Generator()
+        generator.manual_seed(int.from_bytes(digest[:8], "big") % (2**63))
+        order = torch.randperm(int(features.shape[0]), generator=generator)
+        return features.index_select(0, order.to(device=features.device))
 
     def width_for(self, key: str, base_dim: int) -> int:
         """Return the concatenated width for one key."""
@@ -220,6 +253,8 @@ class CompositeEmbeddingStore:
                 continue
             features = source.features(sequence_key, length, device, merged)
             present = features is not None
+            if present and self.shuffle_seed is not None:
+                features = self._permute(features, source.name, sequence_key, device)
             if not present:
                 self.filled[source.name] += 1
                 features = torch.zeros(
@@ -236,7 +271,7 @@ class CompositeEmbeddingStore:
             )
         return [torch.cat(columns, dim=1)], [0], length
 
-    def describe(self) -> dict[str, Any]:
+    def describe(self) -> dict[str, Any]:  # noqa: D401
         """Report what will be concatenated, without any running counts.
 
         This is what a receipt written *before* the data is read may record. The
@@ -244,7 +279,14 @@ class CompositeEmbeddingStore:
         happened, so reporting them here would state a fact that has not been
         measured yet.
         """
-        return {"sources": [source.describe_entry() for source in self.sources]}
+        described = {"sources": [source.describe_entry() for source in self.sources]}
+        if self.shuffle_seed is not None:
+            described["residue_shuffle_seed"] = self.shuffle_seed
+            described["residue_shuffle"] = (
+                "rows permuted per key; the residue correspondence is destroyed and "
+                "the complex, length and vector distribution are kept"
+            )
+        return described
 
     def summary(self) -> dict[str, Any]:
         """Report what was concatenated and how often a source was absent."""

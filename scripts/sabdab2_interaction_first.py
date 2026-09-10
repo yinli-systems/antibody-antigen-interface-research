@@ -673,6 +673,14 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
         "encoders, matching the encoder arm's widths and parameter count exactly",
     )
     parser.add_argument("--random-projection-seed", type=int, default=20260910)
+    parser.add_argument(
+        "--shuffle-representation-residues",
+        type=int,
+        default=None,
+        help="permute each extra representation's rows, keeping the complex, its "
+        "length and the vector distribution while destroying which residue each "
+        "vector describes; an attribution control, not a training option",
+    )
 
 
 def _wrap_with_representations(
@@ -743,7 +751,9 @@ def _wrap_with_representations(
         ),
         esm_if1_dim=args.esm_if1_dim,
     )
-    store = CompositeEmbeddingStore(embedding_store, sources)
+    store = CompositeEmbeddingStore(
+        embedding_store, sources, shuffle_seed=args.shuffle_representation_residues
+    )
 
     widths = {"antibody": set(), "antigen": set()}
     for side, column in (("antibody", "ab_sequence_sha256"), ("antigen", "ag_sequence_sha256")):
