@@ -204,6 +204,37 @@ representations helping most where a model cannot lean on epitopes it has
 already seen — but it is equally a statement that **this model is weak
 in-distribution**. Both halves are the result and neither is presentable alone.
 
+## Contamination control: the result does not depend on shared structures
+
+AsEP's own `epitope_group` split shares PDB entries between train and test — 7
+of its 168 test accessions, 4.2%. That is not a violation of its design, which
+holds out epitope *groups* rather than structures, but it matters here in a way
+it does not for a sequence-only method: this model consumes ESM-IF1 features, so
+a shared accession means a shared antigen backbone.
+
+Recomputing the registered predictions over the clean subset only:
+
+| test subset | complexes | MCC | AUROC | F1 | precision | recall |
+|---|---:|---:|---:|---:|---:|---:|
+| all, as registered | 169 | 0.1572 | 0.6970 | 0.2445 | 0.1889 | 0.4288 |
+| **clean** | **162** | **0.1579** | **0.6973** | 0.2468 | 0.1909 | 0.4335 |
+| sharing a PDB with train | 7 | 0.1421 | 0.6916 | 0.1897 | 0.1410 | 0.3201 |
+
+**Removing the contaminated complexes does not lower the result** — it raises
+MCC by 0.0007, far inside the seed standard deviation of 0.0055. The seven
+shared-structure complexes score *worse* than the clean ones, not better.
+
+The claim to make from this is the weaker and more robust one: the reported
+figures are not driven by structural contamination. That the contaminated subset
+is harder is measured on seven complexes and is noise at that size.
+
+`epitope_ratio` carries more of it — 15 of 170 test accessions, 8.8% — which is
+worth noting for anyone comparing on that split.
+
+**No test reading was consumed.** These are the predictions from the registered
+reading, already written; a subset of them is aggregated differently. No model
+was run again and no choice was informed by test data.
+
 ## What this does not establish
 
 1. **This compares against published numbers, not re-run models.** No baseline
