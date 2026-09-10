@@ -130,6 +130,50 @@ The apparent 0.002 gain was selection on the split being estimated. The
 ensembling gain of 0.017 survives the same discipline. Both are recorded because
 the contrast is the useful part.
 
+## Supervision parity: the advantage is not the richer training signal
+
+LF3DRoPE trains on antigen residue labels alone. This model trains on residue
+pairs and derives node marginals, so it uses strictly more of the same data, and
+until this was tested the comparison could not separate a better method from a
+richer signal. `protocols/ASEP_SUPERVISION_PARITY_V1.md` fixed what each outcome
+would mean before the arm ran.
+
+Switching off the edge loss and the partner-rank loss, leaving only the four node
+terms, changes essentially nothing:
+
+| test, per complex | pair-supervised | **node labels only** |
+|---|---:|---:|
+| MCC | 0.1572 [0.1538, 0.1608] | **0.1590** [0.1546, 0.1631] |
+| precision | 0.1889 | 0.1953 |
+| recall | 0.4288 | 0.3973 |
+| F1 | 0.2445 | 0.2447 |
+| AUROC | 0.6970 | 0.6976 |
+
+MCC is marginally *higher* without the pair supervision and the intervals
+overlap heavily. **The comparison to the published table therefore stands at
+parity of supervision**, and the node-only row is the one to quote against
+methods trained on node labels.
+
+### An unexpected finding worth separating out
+
+Pair supervision contributes nothing to the node metric. The edge loss carries
+weight 1.0 and partner-rank 0.5, together the majority of the objective, and
+removing both leaves every node figure where it was.
+
+That is not the same as saying pair information is empty: on the sabdab2 cohort
+the pair head beats the predicted-marginal outer product by 14.7% of baseline at
+20/20 seeds, so the pairing does carry signal there. Two readings survive:
+
+1. the node head learns everything it needs from node labels, and the pair
+   machinery is redundant **for this endpoint**;
+2. the pair information is real but does not reach the node head through this
+   architecture.
+
+The sabdab2 result makes the second more likely, and it points at a concrete
+architectural gap rather than a null. Either way, this is direct evidence
+against adding pair modelling in order to improve a node-level epitope
+prediction.
+
 ## What this does not establish
 
 1. **This compares against published numbers, not re-run models.** No baseline
