@@ -18,10 +18,16 @@ that already exist:
 * the masks are indexed over **SEQRES**, not over the residues a file actually
   resolves. Most entries have every residue resolved and the difference never
   shows; ``1e6j_0P`` has one unresolved light-chain residue, and concatenating
-  observed residues shifts every position after it. Author numbering cannot
-  locate the gap either -- that chain numbers to 109 with two numbers absent
-  while SEQRES is 108 long -- so observed residues are aligned back to SEQRES by
-  sequence, and unresolved positions stay empty;
+  observed residues shifts every position after it. Observed residues are
+  therefore aligned back to SEQRES by sequence, and the alignment is checked by
+  reconstruction: SEQRES with the unfilled positions removed must equal the
+  observed sequence exactly.
+
+  Author numbering cannot do this job. It looked like an independent witness and
+  is not: antibody chains are numbered by scheme, so ``2adf_0P`` skips number 95
+  while resolving every residue but the last, and the numbering would place the
+  gap fourteen positions away from where the sequence puts it. The sequence is
+  decisive there -- the observed chain is exactly ``seqres[:108]``;
 * chains are concatenated in the order the interim graph stores them, which is
   ``H`` then ``L`` for the antibody and is not the order the files list them in;
 * the antibody mask is ``mapping.ab.seqres2cdr``, the antigen's is
@@ -83,41 +89,15 @@ def align_to_seqres(chain, seqres: str) -> list:
         for offset in range(seqres_end - seqres_start):
             slots[seqres_start + offset] = residue_backbone(residues[observed_start + offset])
 
-    witness = numbering_gaps(residues, len(seqres))
-    if witness is not None:
-        aligned_gaps = {index for index, slot in enumerate(slots) if slot is None}
-        if aligned_gaps != witness:
-            raise BackboneError(
-                f"sequence alignment and author numbering disagree about which "
-                f"residues are unresolved: alignment says {sorted(aligned_gaps)[:6]}, "
-                f"numbering says {sorted(witness)[:6]}"
-            )
+    reconstructed = "".join(
+        seqres[index] for index, slot in enumerate(slots) if slot is not None
+    )
+    if reconstructed != observed:
+        raise BackboneError(
+            "the alignment does not reconstruct the observed sequence: "
+            f"{len(observed)} residues observed, {len(reconstructed)} placed"
+        )
     return slots
-
-
-def numbering_gaps(residues: list, seqres_length: int) -> set[int] | None:
-    """Which SEQRES positions the author numbering says are unresolved.
-
-    An independent witness for the sequence alignment. A repeated residue around
-    a gap makes the alignment ambiguous, and the two placements differ by one
-    position -- enough to attach a coordinate to the wrong residue while leaving
-    every other position identical, which is exactly the error that already sits
-    in the stored file.
-
-    Returns None when the numbering cannot serve as a witness: insertion codes,
-    a first residue that is not 1, or a span that does not match SEQRES. Antibody
-    chains are numbered by scheme rather than sequentially and usually fall here.
-    """
-    numbers = [residue.id[1] for residue in residues]
-    codes = {residue.id[2] for residue in residues}
-    if not numbers or codes != {" "} or numbers[0] != 1:
-        return None
-    if numbers != sorted(numbers) or len(set(numbers)) != len(numbers):
-        return None
-    if numbers[-1] != seqres_length:
-        return None
-    present = set(numbers)
-    return {number - 1 for number in range(1, seqres_length + 1) if number not in present}
 
 
 def chain_backbones(model) -> dict[str, list]:

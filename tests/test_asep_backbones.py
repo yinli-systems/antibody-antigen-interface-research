@@ -233,50 +233,44 @@ def test_a_fully_resolved_chain_aligns_position_for_position() -> None:
     assert [float(slot[0][0]) for slot in slots] == [0.0, 1.0, 2.0]
 
 
-def test_author_numbering_witnesses_the_alignment() -> None:
-    """The check that caught a misplaced marker in the stored file."""
-    numbering_gaps = _MODULE.numbering_gaps
-
-    residues = [_NamedResidue(_residue(0.0), "ALA", n) for n in (1, 2, 4, 5)]
-
-    assert numbering_gaps(residues, 5) == {2}
-
-
-def test_numbering_declines_to_witness_when_it_cannot(tmp_path: Path) -> None:
-    """Antibody chains are numbered by scheme, not sequentially."""
-    numbering_gaps = _MODULE.numbering_gaps
-
-    with_icodes = [
-        _NamedResidue(_residue(0.0), "ALA", 1),
-        _NamedResidue(_residue(1.0), "CYS", 1, "A"),
-    ]
-    not_starting_at_one = [_NamedResidue(_residue(0.0), "ALA", n) for n in (5, 6)]
-
-    assert numbering_gaps(with_icodes, 2) is None
-    assert numbering_gaps(not_starting_at_one, 6) is None
-    assert numbering_gaps([], 3) is None
-
-
-def test_an_ambiguous_gap_is_refused_when_numbering_disagrees() -> None:
-    """A repeated residue lets the alignment place the gap on either side.
-
-    The two placements differ by one position, which attaches a coordinate to the
-    wrong residue while leaving every other position identical -- exactly the
-    error already present in the stored file, and invisible to a coordinate
-    comparison.
-    """
+def test_the_alignment_must_reconstruct_the_observed_sequence() -> None:
+    """A substitution would otherwise be read as two unresolved residues."""
     align_to_seqres = _MODULE.align_to_seqres
 
-    # SEQRES AKKD with one K resolved; numbering says the *second* K is missing.
+    # SEQRES says D at position 2; the structure resolves W there.
     chain = _NamedChain([
         _NamedResidue(_residue(0.0), "ALA", 1),
-        _NamedResidue(_residue(1.0), "LYS", 2),
-        _NamedResidue(_residue(3.0), "ASP", 4),
+        _NamedResidue(_residue(1.0), "CYS", 2),
+        _NamedResidue(_residue(2.0), "TRP", 3),
     ])
 
-    slots = align_to_seqres(chain, "AKKD")
+    with pytest.raises(BackboneError, match="does not reconstruct"):
+        align_to_seqres(chain, "ACD")
 
-    assert slots[2] is None and slots[1] is not None
+
+def test_a_deletion_reconstructs_and_is_accepted() -> None:
+    align_to_seqres = _MODULE.align_to_seqres
+
+    chain = _NamedChain([
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "CYS", 2),
+    ])
+
+    slots = align_to_seqres(chain, "ACD")
+
+    assert slots[2] is None
+    assert [float(slot[0][0]) for slot in slots[:2]] == [0.0, 1.0]
+
+
+def test_author_numbering_is_not_used_as_a_witness() -> None:
+    """It looked like one and is not: scheme-numbered chains skip numbers.
+
+    2adf_0P skips author number 95 while resolving every residue but the last,
+    so numbering would place the gap fourteen positions from where the sequence
+    puts it -- and the sequence is decisive, the observed chain being exactly
+    seqres[:108].
+    """
+    assert not hasattr(_MODULE, "numbering_gaps")
 
 
 def test_verification_records_a_marker_disagreement_instead_of_failing() -> None:
