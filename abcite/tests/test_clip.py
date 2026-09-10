@@ -98,6 +98,7 @@ def test_clip_extra_requires_real_clip_encoder(monkeypatch):
 
     monkeypatch.delenv("ABCITE_CLIP", raising=False)
     monkeypatch.setenv("ABCITE_CLIP", "auto")
+    monkeypatch.setenv("ABCITE_COLPALI", "0")
     monkeypatch.setattr("abcite_core.clip_encoder.clip_weights_cached", lambda: True)
     monkeypatch.setattr("abcite_core.clip_encoder.load_open_clip", _Marker)
     enc = build_vision_encoder()

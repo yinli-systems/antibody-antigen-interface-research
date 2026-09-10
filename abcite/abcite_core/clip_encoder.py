@@ -2,7 +2,9 @@
 
 Install: `pip install -e ".[clip]"` then `python -m abcite_core.download_clip`.
 HybridIndex auto-uses CLIP when open_clip is importable **and** weights are cached,
-unless ABCITE_CLIP=0. ABCITE_CLIP=1 downloads if needed and fails hard on error.
+unless ABCITE_CLIP=0. Late-interaction ColQwen2.5 (then ColQwen2) is preferred for
+visual retrieval when CUDA + local weights are present. ABCITE_CLIP=1 downloads if
+needed and fails hard on error. Text RAG stays BM25.
 """
 
 from __future__ import annotations
@@ -590,11 +592,22 @@ def try_load_biomedclip() -> tuple[VisionEncoder | None, str | None]:
 
 
 def build_vision_encoder() -> VisionEncoder:
-    """CLIP when `[clip]` + weights are available; local encoder otherwise.
+    """Visual retrieval: ColQwen2.5 (if cached) > ColQwen2 > CLIP > local hash.
 
-    ABCITE_CLIP_MODEL=biomedclip loads only if weights are cached or
-    ABCITE_BIOMEDCLIP_DOWNLOAD=1. OpenCLIP ViT-B-32 remains the default path.
+    Late-interaction loads only on CUDA or ABCITE_COLPALI=1, and only from
+    local snapshots in auto mode (no Hub in default CI). Text RAG stays BM25.
     """
+    try:
+        from abcite_core.colpali_encoder import late_interaction_load_ok, try_load_colpali
+
+        if late_interaction_load_ok():
+            col, skip = try_load_colpali()
+            if col is not None:
+                return col
+            if skip:
+                log.warning(skip)
+    except Exception as exc:
+        log.warning("late-interaction encoder skipped: %s", exc)
     skip = biomedclip_skip_reason()
     if skip:
         log.warning(skip)

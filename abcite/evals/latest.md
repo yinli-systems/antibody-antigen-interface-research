@@ -83,7 +83,7 @@ Gallery **N=15949** (NVIDIA GeForce RTX 5090). Gold **n=295** (273 unique-gold a
 | ColQwen2 late-interaction T→I | 0.073 | 0.179 | 0.212 | 0.130 |
 | ColQwen2.5 late-interaction T→I | 0.103 | 0.209 | 0.256 | 0.155 |
 
-Vision beats caption BM25 at R@1? **yes**. ColQwen2.5 leads this cropped-PMC gold. All three late-interaction columns: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix on NVIDIA GeForce RTX 5090. ColQwen2 npz `embeddings-colqwen2-n15949.npz` (untouched). ColPali-v1.3 wrote **separate** `embeddings-colpali-v1.3-n15949.npz`. ColQwen2.5 wrote **separate** `embeddings-colqwen2.5-n15949.npz` (`device=cuda`). Paper ColPali ViDoRe **81.3** is PAGE retrieval; these extra columns are cropped PMC figures — not 81.3. Do not put 0.155, 0.130, or 0.090 next to official ViDoRe **89.11** / published **89.2**. CLIP/BiomedCLIP npy hits; no 16k CLIP re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not SOTA. Product retrieval stays ColQwen2 until a product switch.
+Vision beats caption BM25 at R@1? **yes**. ColQwen2.5 leads this cropped-PMC gold. All three late-interaction columns: GPU MaxSim (`maxsim GPU n_q=273 n_d=15949`) + `Query: ` prefix on NVIDIA GeForce RTX 5090. ColQwen2 npz `embeddings-colqwen2-n15949.npz` (untouched). ColPali-v1.3 wrote **separate** `embeddings-colpali-v1.3-n15949.npz`. ColQwen2.5 wrote **separate** `embeddings-colqwen2.5-n15949.npz` (`device=cuda`). Paper ColPali ViDoRe **81.3** is PAGE retrieval; these extra columns are cropped PMC figures — not 81.3. Do not put 0.155, 0.130, or 0.090 next to official ViDoRe **89.11** / published **89.2**. CLIP/BiomedCLIP npy hits; no 16k CLIP re-encode. BM25 leak closed (dropped `haplotype` / `panoramic` on two queries). vs prior n=242 ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 0.078→0.073; R@5 0.194→0.179; R@10 0.231→0.212; nDCG@5 0.141→0.130. vs n=166 **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066. Not SOTA. Product visual retrieval prefers ColQwen2.5 when those weights are local; fallback ColQwen2 → CLIP → hash. Text RAG stays BM25.
 
 VQA cite-or-abstain (separate from R@K). Heuristic on the new gold (n=295 / N=15949 / 5090). Qwen2-VL-2B was **not** re-run (prior n=61 receipt).
 
@@ -131,6 +131,24 @@ Custom MaxSim mean nDCG@5 **0.8296** is **not** comparable to 89.2 (no `Query: `
 | SyntheticDocQA-Gov | 0.955 | 0.959 |
 | SyntheticDocQA-Health | 0.988 | 0.983 |
 | **10-task mean** | **0.892** | **0.891** |
+
+## Official vidore-benchmark — ColQwen2.5 (same PMC checkpoint)
+
+Same `vidore/colqwen2.5-v0.2` as the PMC extra column. GPU `device=cuda`. Mean nDCG@5 **0.8947** vs published ColQwen2.5-v0.2 **89.4** (~89.5) (**+0.07**) and vs our ColQwen2 **89.11**. Receipt `sota=true` vs the 89.4 bar only — not leaderboard SOTA. Do not put 89.47 next to PMC 0.155. See `evals/vidore_official_colqwen2_5_latest.json`.
+
+| Official task | ColQwen2 | ColQwen2.5 |
+|---|---:|---:|
+| ArxivQA | 0.878 | 0.896 |
+| DocVQA | 0.602 | 0.637 |
+| InfoVQA | 0.921 | 0.923 |
+| TabFQuAD | 0.896 | 0.916 |
+| TAT-DQA | 0.814 | 0.813 |
+| ShiftProject | 0.907 | 0.867 |
+| SyntheticDocQA-AI | 0.990 | 0.996 |
+| SyntheticDocQA-Energy | 0.963 | 0.962 |
+| SyntheticDocQA-Gov | 0.959 | 0.963 |
+| SyntheticDocQA-Health | 0.983 | 0.975 |
+| **10-task mean** | **0.891** | **0.895** |
 
 ## Audio / video QA (unified multimodal RAG)
 

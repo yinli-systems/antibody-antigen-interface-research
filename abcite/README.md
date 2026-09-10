@@ -101,9 +101,9 @@ Hard auto-taxonomy (all 40): **ok 37**, **miss_multi_hop 2**, **miss_figure 1** 
 
 CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**): **image-only** mean rank1−rank2 cosine gap **0.006** on that toy gallery; caption BM25 gap **12.34**; fused RRF gap is small by construction. Self-hit 100% on 14 figures; **not SOTA**. Do **not** call caption-only cite-id “CLIP multimodal”.
 
-**Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). Retrieval is ColQwen2 late-interaction T→I (`vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0`). VQA is a separate cite-or-abstain step on the retrieved (or oracle) figure pixels. Product default stays extractive/heuristic. `ABCITE_VLM=1` runs `Qwen/Qwen2-VL-2B-Instruct` generate — not ColQwen2 MaxSim (`custom_text_proj` is retrieval-only). Product: `POST /query` with `task=visual_qa`. CLIP fusion/rerank **off**.
+**Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). Visual retrieval prefers ColQwen2.5 late-interaction T→I when local `vidore/colqwen2.5-v0.2` + `vidore/colqwen2.5-base` weights are present (CUDA or `ABCITE_COLPALI=1`); fallback ColQwen2 (`vidore/colqwen2-v1.0`), then CLIP, then hash. Text RAG stays BM25. VQA is a separate cite-or-abstain step on the retrieved (or oracle) figure pixels. Product default stays extractive/heuristic. `ABCITE_VLM=1` runs `Qwen/Qwen2-VL-2B-Instruct` generate — not ColQwen2 MaxSim (`custom_text_proj` is retrieval-only). Product: `POST /query` with `task=visual_qa`. CLIP fusion/rerank **off**.
 
-Gold: `evals/gold/visual_qa.jsonl` (**n=295**: 273 unique-gold answerable + 22 abstain; every answerable item is `caption_bm25_should_fail`). In-gallery answerable **n=273** on N=15,949. Encoder: ColQwen2 late-interaction (GPU MaxSim, `Query: ` prefix). OpenCLIP and BiomedCLIP were re-scored on this **same n=273 / N=15,949** gold (npy cache hits; no 16k re-encode). Extra columns on the same gold / same 15,949 figures, each with its own npz (ColQwen2 `embeddings-colqwen2-n15949.npz` untouched): ColPali-v1.3 (`vidore/colpali-v1.3` LoRA on `vidore/colpaligemma-3b-pt-448-base` → `embeddings-colpali-v1.3-n15949.npz`) and ColQwen2.5 (`vidore/colqwen2.5-v0.2` LoRA on `vidore/colqwen2.5-base` → `embeddings-colqwen2.5-n15949.npz`). Both extra encodes were GPU MaxSim on the 5090 (`device=cuda`).
+Gold: `evals/gold/visual_qa.jsonl` (**n=295**: 273 unique-gold answerable + 22 abstain; every answerable item is `caption_bm25_should_fail`). In-gallery answerable **n=273** on N=15,949. Product visual encoder: ColQwen2.5 when weights are local (GPU MaxSim, `Query: ` prefix); fallback ColQwen2 → CLIP → hash. Text RAG stays BM25. OpenCLIP and BiomedCLIP were re-scored on this **same n=273 / N=15,949** gold (npy cache hits; no 16k re-encode). Extra columns on the same gold / same 15,949 figures, each with its own npz (ColQwen2 `embeddings-colqwen2-n15949.npz` untouched): ColPali-v1.3 (`vidore/colpali-v1.3` LoRA on `vidore/colpaligemma-3b-pt-448-base` → `embeddings-colpali-v1.3-n15949.npz`) and ColQwen2.5 (`vidore/colqwen2.5-v0.2` LoRA on `vidore/colqwen2.5-base` → `embeddings-colqwen2.5-n15949.npz`). Both extra encodes were GPU MaxSim on the 5090 (`device=cuda`).
 
 ### Headline: vision beats caption BM25 (fair visual gold)
 
@@ -118,7 +118,7 @@ Same-gold columns on NVIDIA GeForce RTX 5090 (**n=273** / **N=15,949**). ColQwen
 | ColQwen2 late-interaction T→I | 0.073 | 0.179 | 0.212 | 0.130 |
 | **ColQwen2.5 late-interaction T→I** | **0.103** | **0.209** | **0.256** | **0.155** |
 
-ColQwen2.5 leads every cutoff on this cropped-PMC protocol. ColPali-v1.3 and ColQwen2.5 are extra columns (GPU `device=cuda`, separate npz files). The ColPali paper's ViDoRe **81.3** is **page retrieval** (visual question → PDF page), not these cropped PMC figures — do not put 0.090, 0.130, or 0.155 next to 81.3. BM25 leak closed: `vqa-pmc-02280` dropped **haplotype** and `vqa-pmc-00657` dropped **panoramic**. Caption overlap still ≤1. vs **n=242** ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 **0.078 → 0.073**; R@5 **0.194 → 0.179**; R@10 **0.231 → 0.212**; nDCG@5 **0.141 → 0.130**. vs **n=166** **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066; nDCG matches 0.130. Vision still beats caption BM25 at R@1. Product retrieval stays ColQwen2 (`vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base`) until a product switch. Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json` / `evals/visual_qa_colpali-v1_3_latest.json` / `evals/visual_qa_colqwen2_5_latest.json`.
+ColQwen2.5 leads every cutoff on this cropped-PMC protocol. ColPali-v1.3 is an extra column (GPU `device=cuda`, separate npz files). The ColPali paper's ViDoRe **81.3** is **page retrieval** (visual question → PDF page), not these cropped PMC figures — do not put 0.090, 0.130, or 0.155 next to 81.3. BM25 leak closed: `vqa-pmc-02280` dropped **haplotype** and `vqa-pmc-00657` dropped **panoramic**. Caption overlap still ≤1. vs **n=242** ColQwen2 **0.078 / 0.194 / 0.231 / 0.141**: R@1 **0.078 → 0.073**; R@5 **0.194 → 0.179**; R@10 **0.231 → 0.212**; nDCG@5 **0.141 → 0.130**. vs **n=166** **0.066 / 0.187 / 0.217 / 0.130**: R@1 still above 0.066; nDCG matches 0.130. Vision still beats caption BM25 at R@1. Product visual retrieval prefers ColQwen2.5 when those weights are local (`vidore/colqwen2.5-v0.2` LoRA on `vidore/colqwen2.5-base`); fallback ColQwen2 → CLIP → hash. Text RAG stays BM25. Do not score Qwen2-VL-2B as ColPali. Receipt: `evals/visual_qa_latest.json` / `evals/visual_qa_protocols_latest.json` / `evals/visual_qa_colpali-v1_3_latest.json` / `evals/visual_qa_colqwen2_5_latest.json`.
 
 Prior **n=242** same-gallery four-column (not this table): BiomedCLIP 0.041 / 0.083 / 0.120 / 0.062; OpenCLIP 0.016 / 0.070 / 0.099 / 0.045; ColQwen2 0.078 / 0.194 / 0.231 / 0.141; BM25 0 / 0.008 / 0.008 / 0.004. Prior **n=166**: BiomedCLIP 0.042 / 0.078 / 0.102 / 0.060; OpenCLIP 0.018 / 0.072 / 0.102 / 0.048; ColQwen2 0.066 / 0.187 / 0.217 / 0.130; BM25 0.
 
@@ -173,7 +173,27 @@ Same weights, `Query: ` prefix restored, `ViDoReEvaluatorQA` (`python evals/run_
 | SyntheticDocQA-Health | 0.988 | **0.983** |
 | **10-task mean** | **0.892** | **0.891** |
 
-**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Does not change PMC figure visual QA (ColQwen2 nDCG@5 **0.130**, ColQwen2.5 **0.155** on n=273 cropped figures — not 89.11).
+**Official mean nDCG@5 = 0.8911 (89.11).** vs ColPali paper **81.3** (**+7.81**). vs published ColQwen2-v1.0 **89.2** (**−0.09**). Matches the published recipe to 0.1 nDCG. **Not SOTA** (`sota=false` until mean ≥ 89.2). DocVQA is still the drag (0.602 vs 0.615). Receipt: `evals/vidore_official_latest.json`. Page retrieval, not PMC cropped-figure visual QA.
+
+### Official vidore-benchmark harness — ColQwen2.5 (same PMC checkpoint)
+
+Same `vidore/colqwen2.5-v0.2` LoRA on `vidore/colqwen2.5-base` as the PMC extra column (`ABCITE_COLPALI_MODEL=vidore/colqwen2.5-v0.2`). `ViDoReEvaluatorQA` on the 5090, `Query: ` prefix, GPU. Separate receipts (does not overwrite ColQwen2 `vidore_official_latest.json`).
+
+| Official task | our ColQwen2 | our ColQwen2.5 |
+|---|---:|---:|
+| ArxivQA | 0.878 | **0.896** |
+| DocVQA | 0.602 | **0.637** |
+| InfoVQA | 0.921 | **0.923** |
+| TabFQuAD | 0.896 | **0.916** |
+| TAT-DQA | 0.814 | 0.813 |
+| ShiftProject | 0.907 | 0.867 |
+| SyntheticDocQA-AI | 0.990 | **0.996** |
+| SyntheticDocQA-Energy | 0.963 | 0.962 |
+| SyntheticDocQA-Gov | 0.959 | **0.963** |
+| SyntheticDocQA-Health | 0.983 | 0.975 |
+| **10-task mean** | **0.891** | **0.895** |
+
+**Official ColQwen2.5 mean nDCG@5 = 0.8947 (89.47).** vs published ColQwen2.5-v0.2 **89.4** (colpali README ViDoRe table; often rounded **~89.5**) (**+0.07**). vs our ColQwen2 **89.11**. Receipt `sota=true` only against that **89.4** checkpoint bar — not a ViDoRe leaderboard SOTA (later models 90.6+). ShiftProject is the drag vs our ColQwen2 (0.867 vs 0.907). Do not put 89.47 next to PMC nDCG **0.155**. Receipt: `evals/vidore_official_colqwen2_5_latest.json`.
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 
@@ -225,7 +245,7 @@ Frames **beat transcript BM25** at R@1 (0.583 vs 0.083) on color/layout queries.
 
 Frames beat BM25 at R@1 (0.300 vs 0.100) on this 10-clip set. vs prior N=6: frame R@1 0.500→0.300 (larger gallery). Receipt: `evals/video_qa_oa_latest.json`.
 
-OpenCLIP ViT-B-32 is the default real path when `[clip]` + weights are present. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Optional ColPali: `pip install -e ".[colpali]"` and `ABCITE_COLPALI=1`. Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`.
+OpenCLIP ViT-B-32 is the CLIP fallback when `[clip]` + weights are present. Visual retrieval prefers ColQwen2.5 (then ColQwen2) when local late-interaction weights exist on CUDA / `ABCITE_COLPALI=1`. `ABCITE_CLIP_MODEL=biomedclip` loads cached BiomedCLIP; `ABCITE_BIOMEDCLIP_DOWNLOAD=1` may fetch Hub weights (no download in default CI). Optional ColPali: `pip install -e ".[colpali]"`. Product retrieval does **not** fuse CLIP unless `ABCITE_VISION_FUSION=1`. Text RAG stays BM25.
 
 Human labels: **40 items, one annotator**. Cohen’s κ vs a second human is **N/A**. **Human vs machine** (not inter-human): κ vs lexical **0.0**, κ vs claim-NLI **0.0** (automatic judges almost always score ≥0.5).
 

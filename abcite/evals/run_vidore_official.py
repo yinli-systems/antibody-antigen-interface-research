@@ -1,8 +1,10 @@
 """Official ViDoRe v1 harness (vidore-benchmark ViDoReEvaluatorQA).
 
-Same ColQwen2-v1.0 weights as evals/run_vidore.py. Uses query dedup +
-processor.score_multi_vector / get_scores, not AbCite MaxSim.
+Same checkpoint as the PMC extra column when ABCITE_COLPALI_MODEL is set
+(ColQwen2-v1.0 by default; ColQwen2.5 via vidore/colqwen2.5-v0.2).
+Uses query dedup + processor.score_multi_vector / get_scores, not AbCite MaxSim.
 Restores the training-time ``Query: `` prefix dropped in colpali-engine>=0.3.13.
+Does not overwrite ColQwen2 receipts when scoring ColQwen2.5.
 """
 
 from __future__ import annotations
@@ -38,6 +40,30 @@ PUBLISHED = {
     "TabFQuAD": 0.890,
     "TAT-DQA": 0.822,
 }
+# colpali README ViDoRe table: vidore/colqwen2.5-v0.2 = 89.4 (often rounded ~89.5).
+PUBLISHED_COLQWEN2_V1 = 0.892
+PUBLISHED_COLQWEN25_V1 = 0.894
+
+
+def _encoder_stem(encoder: str) -> str:
+    from abcite_core.colpali_encoder import encoder_cache_name
+
+    return encoder_cache_name(encoder).replace(".", "_")
+
+
+def _task_receipt(dataset: str, encoder: str) -> Path:
+    slug = _slug(dataset)
+    stem = _encoder_stem(encoder)
+    if stem == "colqwen2":
+        return ROOT / "evals" / f"vidore_official_{slug}.json"
+    return ROOT / "evals" / f"vidore_official_{stem}_{slug}.json"
+
+
+def _suite_receipt(encoder: str) -> Path:
+    stem = _encoder_stem(encoder)
+    if stem == "colqwen2":
+        return ROOT / "evals" / "vidore_official_latest.json"
+    return ROOT / "evals" / f"vidore_official_{stem}_latest.json"
 
 
 def _load_hf_dataset(dataset: str, split: str):
@@ -94,7 +120,15 @@ def _load_retriever():
     return _GpuVisionRetriever(model=col.model, processor=col.processor), getattr(col, "name", "colqwen2")
 
 
-def _eval_one(evaluator, dataset: str, split: str) -> dict:
+def _published_for(encoder: str) -> float:
+    from abcite_core.colpali_encoder import encoder_cache_name
+
+    if encoder_cache_name(encoder) == "colqwen2.5":
+        return PUBLISHED_COLQWEN25_V1
+    return PUBLISHED_COLQWEN2_V1
+
+
+def _eval_one(evaluator, dataset: str, split: str, encoder: str) -> dict:
     ds = _load_hf_dataset(dataset, split)
     print(f"official load {dataset} rows={len(ds)}", flush=True)
     metrics = evaluator.evaluate_dataset(
@@ -114,47 +148,59 @@ def _eval_one(evaluator, dataset: str, split: str) -> dict:
         "split": split,
         "task": task,
         "n_rows": len(ds),
-        "encoder": "colqwen2",
+        "encoder": encoder,
         "gpu": _gpu_name(),
         "metric": "nDCG@5 (vidore-benchmark QA, query-dedup)",
         "ndcg@5": None if ndcg is None else round(float(ndcg), 4),
         "raw_metrics": {k: (float(v) if isinstance(v, (int, float)) else v) for k, v in metrics.items()},
         "published_colqwen2_v1_ndcg@5": PUBLISHED.get(task),
+        "published_model_v1_avg_ndcg@5": _published_for(encoder),
         "query_prefix": "Query: ",
+        "not_pmc_figure_qa": True,
     }
-    dest = ROOT / "evals" / f"vidore_official_{_slug(dataset)}.json"
+    dest = _task_receipt(dataset, encoder)
     dest.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps(report, indent=2), flush=True)
+    print(json.dumps({k: report[k] for k in report if k != "raw_metrics"}, indent=2), flush=True)
     return report
 
 
-def _write_suite(reports: list[dict], missing: list[str]) -> dict:
+def _write_suite(reports: list[dict], missing: list[str], encoder: str) -> dict:
     ndcgs = [r["ndcg@5"] for r in reports if r.get("ndcg@5") is not None]
     avg = round(sum(ndcgs) / len(ndcgs), 4) if ndcgs else None
+    published = _published_for(encoder)
+    from abcite_core.colpali_encoder import encoder_cache_name
+
+    enc_name = encoder_cache_name(encoder)
     suite = {
         "protocol": "vidore_v1_official_harness",
         "harness": "vidore-benchmark==5.0.0 ViDoReEvaluatorQA",
-        "encoder": "colqwen2",
+        "encoder": enc_name,
         "gpu": reports[0].get("gpu") if reports else None,
         "n_tasks": len(reports),
         "n_official_v1": 10,
         "mean_ndcg@5": avg,
         "vidore_colpali_paper_avg_ndcg@5": 0.813,
-        "published_colqwen2_v1_avg_ndcg@5": 0.892,
+        "published_colqwen2_v1_avg_ndcg@5": PUBLISHED_COLQWEN2_V1,
+        "published_colqwen2_5_v1_avg_ndcg@5": PUBLISHED_COLQWEN25_V1,
+        "published_this_model_v1_avg_ndcg@5": published,
+        "our_colqwen2_official_mean_ndcg@5": 0.8911,
         "gap_vs_colpali_paper": None if avg is None else round(avg - 0.813, 4),
-        "gap_vs_published_colqwen2": None if avg is None else round(avg - 0.892, 4),
+        "gap_vs_published_this_model": None if avg is None else round(avg - published, 4),
         "abcite_maxsim_mean_ndcg@5": 0.8296,
-        "sota": bool(avg is not None and avg + 1e-9 >= 0.892),
+        "sota": bool(avg is not None and avg + 1e-9 >= published),
         "query_prefix": "Query: ",
         "note": (
             "Official vidore-benchmark QA evaluator (query dedup + processor scores). "
-            "Not AbCite MaxSim (0.8296) and not PMC figure visual QA. "
-            "Do not claim SOTA unless mean >= published ColQwen2-v1.0 89.2."
+            "Page retrieval, not AbCite MaxSim (0.8296) and not PMC cropped-figure visual QA. "
+            f"SOTA bar is published {enc_name} ViDoRe v1 {published:.3f} "
+            "(colpali README: ColQwen2.5-v0.2 = 89.4, often rounded ~89.5; "
+            "ColQwen2-v1.0 published 89.2 in our prior receipt, README table 89.3). "
+            "Do not mix this mean with PMC figure R@K or with the other model's 89.11/89.2."
         ),
         "subsets": {_slug(r["dataset"]): r for r in reports},
         "missing": missing,
     }
-    dest = ROOT / "evals" / "vidore_official_latest.json"
+    dest = _suite_receipt(encoder)
     dest.write_text(json.dumps(suite, indent=2) + "\n", encoding="utf-8")
     return suite
 
@@ -171,20 +217,28 @@ def main() -> None:
         raise SystemExit(f"vidore-benchmark not importable: {type(exc).__name__}: {exc}") from exc
 
     datasets = list(VIDORE_V1) if args.suite else (args.dataset or ["vidore/docvqa_test_subsampled"])
-    retriever, _name = _load_retriever()
+    retriever, encoder = _load_retriever()
+    print(f"official encoder={encoder}", flush=True)
     evaluator = ViDoReEvaluatorQA(retriever)
     reports: list[dict] = []
     missing: list[str] = []
     for name in datasets:
-        existing = ROOT / "evals" / f"vidore_official_{_slug(name)}.json"
+        existing = _task_receipt(name, encoder)
         if existing.is_file() and os.environ.get("ABCITE_VIDORE_RESUME", "1") not in {"0", "false"}:
             prev = json.loads(existing.read_text(encoding="utf-8"))
-            if prev.get("ndcg@5") is not None and prev.get("dataset") == name:
-                print(f"resume skip {name} nDCG@5={prev['ndcg@5']}", flush=True)
+            prev_enc = prev.get("encoder") or ""
+            from abcite_core.colpali_encoder import encoder_cache_name
+
+            if (
+                prev.get("ndcg@5") is not None
+                and prev.get("dataset") == name
+                and encoder_cache_name(str(prev_enc)) == encoder_cache_name(encoder)
+            ):
+                print(f"resume skip {name} encoder={prev_enc} nDCG@5={prev['ndcg@5']}", flush=True)
                 reports.append(prev)
                 continue
         try:
-            reports.append(_eval_one(evaluator, name, args.split))
+            reports.append(_eval_one(evaluator, name, args.split, encoder))
         except FileNotFoundError as exc:
             print(f"missing {name}: {exc}", flush=True)
             missing.append(name)
@@ -193,12 +247,13 @@ def main() -> None:
             print(f"failed {name}: {type(exc).__name__}: {exc}", flush=True)
             missing.append(name)
             continue
-        _write_suite(reports, missing)
-    suite = _write_suite(reports, missing)
+        _write_suite(reports, missing, encoder)
+    suite = _write_suite(reports, missing, encoder)
     print(
-        f"official n_tasks={suite['n_tasks']} mean_ndcg@5={suite['mean_ndcg@5']} "
-        f"vs_paper={suite['gap_vs_colpali_paper']} vs_published={suite['gap_vs_published_colqwen2']} "
-        f"sota={suite['sota']} missing={missing}",
+        f"official encoder={suite['encoder']} n_tasks={suite['n_tasks']} "
+        f"mean_ndcg@5={suite['mean_ndcg@5']} published={suite['published_this_model_v1_avg_ndcg@5']} "
+        f"gap={suite['gap_vs_published_this_model']} sota={suite['sota']} missing={missing} "
+        f"receipt={_suite_receipt(encoder).name}",
         flush=True,
     )
     if missing:

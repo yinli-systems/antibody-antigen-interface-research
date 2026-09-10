@@ -18,6 +18,7 @@ from abcite_core.vision import LocalImageEncoder, VisionEncoder
 log = logging.getLogger("abcite.colpali")
 
 COLPALI_MODELS = (
+    "vidore/colqwen2.5-v0.2",
     "vidore/colqwen2-v1.0",
     "vidore/colpali-v1.3",
     "vidore/colpali-v1.2",
@@ -125,6 +126,55 @@ def colpali_forced_off() -> bool:
 
 def colpali_requested() -> bool:
     return os.environ.get("ABCITE_COLPALI", "auto").lower() in {"1", "true", "yes", "on", "colpali"}
+
+
+def colqwen25_weights_present() -> bool:
+    """True only when the LoRA + colqwen2.5-base snapshots are already local."""
+    return _patched_colqwen25_adapter() is not None
+
+
+def colqwen2_weights_present() -> bool:
+    return _patched_colqwen2_adapter() is not None
+
+
+def preferred_late_encoder() -> str | None:
+    """Product visual retrieval: ColQwen2.5 if cached, else ColQwen2. None = no late weights."""
+    if colpali_forced_off():
+        return None
+    if colqwen25_weights_present():
+        return "colqwen2.5"
+    if colqwen2_weights_present():
+        return "colqwen2"
+    return None
+
+
+def preferred_visual_encoder_kind() -> str:
+    """Preference only (no Hub, no load): 2.5 > ColQwen2 > CLIP > local hash."""
+    late = preferred_late_encoder()
+    if late:
+        return late
+    try:
+        from abcite_core.clip_encoder import clip_forced_off, clip_stack_available, clip_weights_cached
+
+        if not clip_forced_off() and clip_stack_available() and clip_weights_cached():
+            return "clip"
+    except Exception:
+        pass
+    return "local-image"
+
+
+def late_interaction_load_ok() -> bool:
+    """Load late-interaction only on CUDA, or when ABCITE_COLPALI=1. Never in default CPU CI."""
+    if colpali_forced_off():
+        return False
+    if colpali_requested():
+        return True
+    try:
+        import torch
+
+        return bool(torch.cuda.is_available()) and preferred_late_encoder() is not None
+    except Exception:
+        return False
 
 
 class ColPaliEncoder(VisionEncoder):
@@ -293,12 +343,11 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
     os.environ.setdefault("HF_HUB_CACHE", str(_hf_home() / "hub"))
     os.environ.setdefault("TRANSFORMERS_CACHE", str(_hf_home() / "hub"))
     offline = os.environ.get("HF_HUB_OFFLINE", "").lower() in {"1", "true", "yes", "on"}
-    local_only = offline or os.environ.get("ABCITE_COLPALI_LOCAL", "").lower() in {
-        "1",
-        "true",
-        "yes",
-        "on",
-    }
+    local_only = (
+        offline
+        or os.environ.get("ABCITE_COLPALI_LOCAL", "").lower() in {"1", "true", "yes", "on"}
+        or not colpali_requested()
+    )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     last: Exception | None = None
     names: list[tuple[str, str]] = []
@@ -321,18 +370,23 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
                 names.append((str(patched), str(adapter_snap)))
         names.append((forced, forced))
     else:
+        q25 = _patched_colqwen25_adapter()
+        q25_snap = _hub_snapshot("models--vidore--colqwen2.5-v0.2")
+        if q25 is not None and q25_snap is not None:
+            names.append((str(q25), str(q25_snap)))
         patched = _patched_colqwen2_adapter()
         adapter_snap = _hub_snapshot("models--vidore--colqwen2-v1.0")
         if patched is not None and adapter_snap is not None:
             # Model from patched adapter (local base path); processor from the
             # original snapshot so chat-template relative symlinks resolve.
             names.append((str(patched), str(adapter_snap)))
-        v13 = _patched_colpali_v13_adapter()
-        v13_snap = _hub_snapshot("models--vidore--colpali-v1.3")
-        if v13 is not None and v13_snap is not None:
-            names.append((str(v13), str(v13_snap)))
-        for hub_name in COLPALI_MODELS:
-            names.append((hub_name, hub_name))
+        if colpali_requested():
+            v13 = _patched_colpali_v13_adapter()
+            v13_snap = _hub_snapshot("models--vidore--colpali-v1.3")
+            if v13 is not None and v13_snap is not None:
+                names.append((str(v13), str(v13_snap)))
+            for hub_name in COLPALI_MODELS:
+                names.append((hub_name, hub_name))
     seen: set[tuple[str, str]] = set()
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
     for name, proc_name in names:
