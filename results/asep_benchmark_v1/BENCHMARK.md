@@ -8,53 +8,65 @@ Date: 2026-09-10
 
 Machine-readable: [`test_measurement.json`](test_measurement.json).
 
-## Convention
+## Convention, and a correction to it
 
-Matched to the published one, which the literature states explicitly:
-threshold-dependent metrics use a probability threshold **selected on the
-validation split to maximise MCC**, applied unchanged to test, and metrics are
-**pooled over residues** rather than averaged per complex.
+AsEP reports "the average performance metrics across the test set samples" —
+**per-complex averages**, not a pooled confusion matrix. An earlier version of
+this record used micro (pooled) figures and compared them to the published
+table. That was wrong, and it inflated every headline:
 
-The selected threshold was 0.8465 (sd 0.049) — the model's scores sit high, the
-same shift seen on the sabdab2 cohort.
+| | micro (pooled) | **macro (per complex)** |
+|---|---:|---:|
+| MCC | 0.1893 | **0.1572** |
+| AUROC | 0.7515 | **0.6970** |
+| precision | 0.1754 | 0.1889 |
+| recall | 0.4073 | 0.4288 |
+| F1 | 0.2432 | 0.2445 |
 
-## Result, ten seeds
+The two are not equivalent and cannot be close on this data: AsEP's antigens
+differ widely in length and in epitope prevalence, so pooling weights long
+antigens more heavily than the per-complex average does. **The macro column is
+the comparable one.**
 
-| | mean | sd | 95% CI |
-|---|---:|---:|---|
-| MCC | **0.1893** | 0.0056 | [0.1859, 0.1924] |
-| precision | 0.1754 | 0.0125 | [0.1675, 0.1821] |
-| recall | 0.4073 | 0.0588 | [0.3761, 0.4447] |
-| F1 | 0.2432 | 0.0060 | [0.2396, 0.2466] |
-| **AUROC** | **0.7515** | 0.0046 | [0.7487, 0.7541] |
-| AUPRC | 0.1708 | 0.0050 | [0.1677, 0.1736] |
+Thresholds are selected on validation and applied unchanged to test, each
+convention selecting its own (micro 0.847, macro 0.843). Both sit high, the same
+shift seen on sabdab2.
 
-Test prevalence 0.0636, so AUPRC is 2.7x the floor. The test split is harder
-than validation, whose prevalence is 0.114.
+## Result, ten seeds, per-complex convention
+
+| | mean | 95% CI |
+|---|---:|---|
+| MCC | **0.1572** | [0.1538, 0.1608] |
+| precision | 0.1889 | [0.1817, 0.1947] |
+| recall | **0.4288** | [0.4015, 0.4642] |
+| F1 | **0.2445** | [0.2420, 0.2473] |
+| AUROC | 0.6970 | [0.6939, 0.7002] |
+
+169 test complexes; AUROC is defined on all of them.
 
 ## Against the published table
 
-Epitope-group split, from Table 2(b) of arXiv 2608.01092:
+Epitope-group split. Published figures for WALLE differ between sources — the
+AsEP paper and later re-tabulations disagree — so both are shown and the
+comparison is not rested on either.
 
-| method | MCC | precision | recall | AUROC | F1 |
+| method | MCC | AUROC | precision | recall | F1 |
 |---|---:|---:|---:|---:|---:|
-| ESMFold | 0.018 | 0.113 | 0.034 | – | 0.046 |
-| ESMBind | 0.002 | 0.082 | 0.076 | 0.500 | 0.064 |
-| EpiPred | −0.006 | 0.089 | 0.158 | – | 0.112 |
-| MaSIF-site | 0.046 | 0.164 | 0.174 | – | 0.128 |
-| WALLE | 0.077 | 0.143 | 0.266 | 0.544 | 0.145 |
-| PEPNet | 0.139 | 0.230 | 0.143 | 0.612 | 0.177 |
-| PEPNet+LE | 0.156 | 0.250 | 0.155 | 0.627 | 0.191 |
-| GF3DRoPE | 0.159 | 0.212 | 0.216 | 0.706 | 0.212 |
-| LF3DRoPE | 0.171 ± 0.010 | **0.248** | 0.189 | 0.690 | 0.215 |
-| **this work** | **0.189** | 0.175 | **0.407** | **0.752** | **0.243** |
+| WALLE (arXiv 2608.01092 Table 2b) | 0.077 | 0.544 | 0.143 | 0.266 | 0.145 |
+| WALLE (later tabulation) | 0.152 | 0.596 | 0.207 | 0.299 | 0.204 |
+| PEPNet | 0.139 | 0.612 | 0.230 | 0.143 | 0.177 |
+| PEPNet+LE | 0.156 | 0.627 | **0.250** | 0.155 | 0.191 |
+| GF3DRoPE | 0.159 | **0.706** | 0.212 | 0.216 | 0.212 |
+| LF3DRoPE | **0.171** | 0.690 | 0.248 | 0.189 | 0.215 |
+| **this work** | 0.157 | 0.697 | 0.189 | **0.429** | **0.245** |
 
-Higher on MCC, F1, AUROC and recall; **lower on precision** than LF3DRoPE and
-PEPNet+LE. The MCC intervals do not overlap: [0.186, 0.192] against
-[0.161, 0.181].
+**This is not above the published best.** On MCC it sits level with PEPNet+LE
+and below LF3DRoPE; on AUROC it sits between LF3DRoPE and GF3DRoPE. Where it
+leads is recall, by a wide margin, and F1. Where it trails is precision.
 
-AUROC is the cleanest line in the table because it needs no agreement about
-where anyone put a threshold.
+The honest characterisation is a **different operating point at comparable
+overall quality**: this model finds far more of each epitope and is wrong more
+often when it calls a residue positive.
 
 ## What this does not establish
 
@@ -69,9 +81,9 @@ where anyone put a threshold.
    architecture, and it has not been checked against each published method.
    Until it is, the defensible statement is that this number is higher in this
    setup, not that the method is better.
-3. **Precision is lower.** For a use that needs every reported residue to be
-   right, LF3DRoPE's operating point is preferable. The advantage here is in
-   ranking quality and recall.
+3. **Precision is lower and MCC is not higher.** For a use that needs every
+   reported residue to be right, LF3DRoPE and PEPNet+LE are preferable. The
+   advantage here is recall and F1.
 4. Ten seeds of one configuration on one split. The `epitope_ratio` split was
    not measured.
 
