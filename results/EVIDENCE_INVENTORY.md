@@ -73,10 +73,12 @@ Every main-text number is bound to its artifact in `CLAIMS_LEDGER.md`.
   contribution is the controlled attribution and the severity curve, not the
   observation that correspondence or structure matters.
 - **"Two structural encoders."** One. The other is a sequence model.
-- **"k = 8 residues" as a biological length scale.** The displacement moves rows
-  of a CDR-selected array. Whether eight rows is eight residues along the chain
-  is unverified — the selection can jump segments and chain boundaries. The
-  numerical statement stands; the biological reading does not.
+- **"k = 8 residues" as a *universal* length scale.** Measured, not assumed: on
+  **sabdab2** the arrays are full chains and eight rows is eight residues for
+  90.2% of antibody and 97.0% of antigen positions, so the residue reading holds
+  for the ESM-IF1 ladder. On **AsEP** the arrays are interface-selected, breaking
+  at 8% of steps with a 99th-percentile step of 24.9 Å, so that ladder is
+  index-space only. Two encoders in one domain is still not a universal scale.
 - **"~8 residues is a universal critical length scale."** Two encoders, one
   domain. The safe form: degradation saturates rapidly with displacement,
   reaching near-global-shuffle levels by an eight-residue offset in both

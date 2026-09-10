@@ -4,14 +4,29 @@ Registered in `protocols/CORRESPONDENCE_CORRUPTION_CURVE_V1.md`, with the
 endpoint and decision rule fixed in its 2026-09-11 amendment before any
 evaluation was opened. Validation splits only; no test split was read.
 
-> **`k` is an index-space perturbation.** It displaces **rows of the
-> representation array after cohort-specific residue selection**, not residues
-> along the peptide chain. The selected rows are the modelled CDR or interface
-> residues, so consecutive rows can be separated by gaps, by segment boundaries,
-> or by the heavy/light junction. `k = 8` therefore means *eight rows*, and
-> whether that is eight contiguous biological residues is unverified. Read the
-> saturation below as a computational observation about correspondence, not as a
-> length scale in ångström or in residues.
+> **What `k` displaces, measured rather than assumed.** `k` shifts rows of the
+> representation array. Whether that is a shift of `k` residues along the chain
+> depends on whether consecutive rows are consecutive residues, and the answer is
+> **different for the two cohorts**. It was checked geometrically: a peptide bond
+> fixes the Cα–Cα distance of adjacent residues near 3.8 Å, so a dropped residue
+> shows up as a jump.
+>
+> | | non-junction chain breaks | Cα–Cα p99 |
+> |---|---|---|
+> | **sabdab2** (the ESM-IF1 ladder) | 0.43% antibody, 0.14% antigen | 3.885 Å |
+> | **AsEP** (the AntiBERTy ladder) | 7.98% antibody, 7.03% antigen | 24.9 Å |
+>
+> The sabdab2 arrays are full VH+VL and full antigen chains and are essentially
+> contiguous. Counting the two things that do break contiguity there — the VH/VL
+> junction and the cyclic wrap — **an 8-row shift is an 8-residue shift within one
+> chain for 90.2% of antibody positions and 97.0% of antigen positions**, and
+> both exceptions are properties of the perturbation rather than of the data.
+>
+> The AsEP arrays are interface-selected: consecutive rows jump segments at 8% of
+> steps, with a 99th-percentile step of 24.9 Å. For that ladder `k` is an
+> index-space quantity and carries no residue reading.
+>
+> Reproduce with `scripts/audit_row_to_residue_mapping.py`.
 
 Trained models are left alone. At evaluation the representation's rows are
 displaced cyclically by `k` positions against the rows they are aligned to. The base ESM-2 columns are untouched, so `k` moves correspondence and
@@ -55,7 +70,8 @@ itself rather than resolved by moving a boundary, so it is.
 
 ## What is actually going on
 
-**Damage saturates by about eight rows of displacement.** On both encoders, `k = 8`, `k = 16` and the
+**Damage saturates by about eight rows of displacement — eight residues on
+sabdab2, for the ~90% of positions where the two coincide.** On both encoders, `k = 8`, `k = 16` and the
 global permutation sit within a hair of each other. Being eight residues wrong
 about which residue is which is, to this model, the same as having no
 correspondence at all. The interpretable endpoints of the ladder are `k = 1`
