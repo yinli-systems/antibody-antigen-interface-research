@@ -103,7 +103,26 @@ def summarise(rows: list[dict]) -> dict:
     return summary
 
 
-def classify(summaries: dict[int, dict]) -> dict:
+def adjacent_interval(points: dict[int, list[dict]], earlier: int, later: int):
+    """Bootstrap interval of the step between two ladder points, paired by seed.
+
+    The protocol calls a monotonicity violation noise when *the violation's*
+    interval covers zero. The violation is the step from one point to the next,
+    so this is the interval of that step -- not the interval of the later point
+    against zero, which is a different question and one that is almost always
+    answered "damaged" on a ladder where every point is damaged.
+    """
+    if earlier not in points or later not in points:
+        return None
+    before = {row["seed"]: row["difference"] for row in points[earlier]}
+    after = {row["seed"]: row["difference"] for row in points[later]}
+    shared = sorted(set(before) & set(after))
+    if len(shared) < 2:
+        return None
+    return list(bootstrap_mean_interval([after[seed] - before[seed] for seed in shared]))
+
+
+def classify(summaries: dict[int, dict], points: dict[int, list[dict]] | None = None) -> dict:
     """Apply the registered rule. Returns the verdict and why it fired."""
     if GLOBAL_KEY not in summaries or 1 not in summaries:
         return {"verdict": "not classifiable",
@@ -119,12 +138,15 @@ def classify(summaries: dict[int, dict]) -> dict:
     violations = []
     for earlier, later in zip(local, local[1:]):
         if summaries[later]["mean_difference"] > summaries[earlier]["mean_difference"]:
-            interval = summaries[later]["bootstrap_ci95"]
+            interval = adjacent_interval(points or {}, earlier, later)
             violations.append({
                 "from_k": earlier, "to_k": later,
+                "step_ci95": interval,
                 "covers_zero": bool(interval and interval[0] <= 0.0 <= interval[1]),
             })
-    monotone = not violations
+    # A violation that is indistinguishable from no step at all is noted and
+    # does not break the classification, which is what the protocol registers.
+    monotone = all(violation["covers_zero"] for violation in violations)
 
     if not summaries[1]["damaged"]:
         verdict, reason = "coarse-only", "k=1 is not established as damaging"
@@ -160,7 +182,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     summaries = {k: summarise(rows) for k, rows in points.items()}
-    verdict = classify(summaries)
+    verdict = classify(summaries, points)
     companions = {
         name: {k: (lambda rows: sum(r["difference"] for r in rows) / len(rows))(rows)
                for k, rows in collect(arguments.aligned_root, arguments.corrupt_root, name)

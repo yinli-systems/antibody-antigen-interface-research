@@ -71,20 +71,57 @@ def test_the_band_between_the_boundaries_is_reported_not_resolved():
 
 
 def test_a_small_k1_with_a_non_monotone_ladder_is_not_called_a_slope():
-    verdict = classify(ladder({1: -0.010, 2: -0.060, 4: -0.030, 8: -0.070,
-                                 16: -0.090, GLOBAL_KEY: -0.100}))
+    summaries = ladder({1: -0.010, 2: -0.060, 4: -0.030, 8: -0.070,
+                        16: -0.090, GLOBAL_KEY: -0.100})
+    points = {
+        2: [{"seed": n + 1, "difference": -0.060} for n in range(5)],
+        4: [{"seed": n + 1, "difference": -0.030} for n in range(5)],
+    }
+    verdict = classify(summaries, points)
     assert verdict["verdict"] == "intermediate"
     assert not verdict["monotone"]
     assert verdict["monotonicity_violations"][0]["from_k"] == 2
 
 
-def test_monotonicity_violations_are_printed_with_whether_they_are_noise():
-    points = ladder({1: -0.010, 2: -0.060, 4: -0.030, 8: -0.070,
-                       16: -0.090, GLOBAL_KEY: -0.100})
-    points[4]["bootstrap_ci95"] = [-0.050, 0.010]
-    violation = classify(points)["monotonicity_violations"][0]
+def seeds(values):
+    """Per-seed rows for one ladder point."""
+    return [{"seed": index + 1, "difference": value} for index, value in enumerate(values)]
+
+
+def test_a_violation_is_judged_on_the_step_not_on_the_later_point():
+    """The protocol calls a violation noise when the violation covers zero.
+
+    The violation is the step between two adjacent points. Judging the later
+    point against zero instead would answer a different question, and on a
+    ladder where every point is damaged it answers it the same way every time.
+    Here the step from k=2 to k=4 is inconsistent across seeds and the two
+    points are individually far from zero, so only the step-based reading can
+    call it noise.
+    """
+    summaries = ladder({1: -0.010, 2: -0.040, 4: -0.038, 8: -0.070,
+                        16: -0.090, GLOBAL_KEY: -0.100})
+    points = {
+        2: seeds([-0.070, -0.010, -0.060, -0.020, -0.040]),
+        4: seeds([-0.020, -0.060, -0.010, -0.070, -0.030]),
+    }
+    verdict = classify(summaries, points)
+    violation = verdict["monotonicity_violations"][0]
     assert violation["to_k"] == 4
-    assert violation["covers_zero"] is True
+    assert violation["covers_zero"] is True, "an inconsistent step is noise"
+    assert verdict["monotone"], "noise must not break the classification"
+
+
+def test_a_consistent_step_backwards_really_does_break_monotonicity():
+    summaries = ladder({1: -0.010, 2: -0.060, 4: -0.030, 8: -0.070,
+                        16: -0.090, GLOBAL_KEY: -0.100})
+    points = {
+        2: seeds([-0.060, -0.061, -0.059, -0.060, -0.062]),
+        4: seeds([-0.030, -0.031, -0.029, -0.030, -0.032]),
+    }
+    verdict = classify(summaries, points)
+    assert verdict["monotonicity_violations"][0]["covers_zero"] is False
+    assert not verdict["monotone"]
+    assert verdict["verdict"] == "intermediate"
 
 
 def test_a_global_permutation_that_does_no_damage_leaves_nothing_to_scale_by():
