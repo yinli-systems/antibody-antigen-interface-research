@@ -84,6 +84,10 @@ def test_visual_qa_eval_on_fixture():
         assert "recall@1" in report[col]
         assert "ndcg@5" in report[col]
     assert report["vqa"]["n"] >= 8
+    assert "recall@1" not in report["vqa"]
+    assert "end_to_end_accuracy" in report["vqa"]
+    assert "oracle_figure_accuracy" in report["vqa"]
+    assert "abstain_accuracy" in report["vqa"]
     assert "not the figure caption" in report["note"] or "not" in report["note"]
 
 

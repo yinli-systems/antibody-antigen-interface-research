@@ -185,11 +185,12 @@ class EvidenceGraph:
         log.info("trace=%s retrieve task=%s q=%r", trace_id, task, question[:180])
         task_l = (task or "evidence").lower()
         if task_l in {"visual_qa", "visual", "vqa"}:
-            from abcite_core.visual_qa import visual_qa_response
+            from abcite_core.visual_qa import sanitize_visual_query, visual_qa_response
 
-            hits = self.index.search_visual(question, top_k=top_k)
+            q_vis = sanitize_visual_query(question)
+            hits = self.index.search_visual(q_vis, top_k=top_k) if q_vis else []
             resp = visual_qa_response(
-                question,
+                q_vis,
                 hits,
                 provider=self.provider_name,
                 trace_id=trace_id,
@@ -310,7 +311,10 @@ class EvidenceGraph:
         from providers.base import citations_from_chunks
 
         text_hits = self.index.search(question, top_k=top_k)
-        visual_hits = self.index.search_visual(question, top_k=min(3, top_k))
+        from abcite_core.visual_qa import sanitize_visual_query
+
+        q_vis = sanitize_visual_query(question)
+        visual_hits = self.index.search_visual(q_vis, top_k=min(3, top_k)) if q_vis else []
         citations: list[Citation] = []
         scores: dict[str, float] = {}
         notes: list[str] = []
@@ -327,7 +331,7 @@ class EvidenceGraph:
             from abcite_core.visual_qa import visual_qa_response
 
             vresp = visual_qa_response(
-                question,
+                q_vis,
                 visual_hits,
                 provider=self.provider_name,
                 trace_id=trace_id,

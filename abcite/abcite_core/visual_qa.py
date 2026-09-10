@@ -3,6 +3,10 @@
 Primary multimodal product task. Query text must require looking at the
 image (panel layout, stain, gel bands, colors, arrows, microscopy type).
 Caption-as-query is a different protocol (appendix); BM25 already wins there.
+
+Retrieval (CLIP / ColQwen2 MaxSim) is scored separately from VQA. The
+product default answerer is extractive/heuristic. `ABCITE_VLM=1` loads
+Qwen2-VL-2B-Instruct as a generate path; it is not ColQwen2 retrieval.
 """
 
 from __future__ import annotations
@@ -15,9 +19,11 @@ from pathlib import Path
 import numpy as np
 
 from abcite_core.figure_gallery import FigureGallery, FigureRec, fix_to_gallery_ids, recall_at_k
-from abcite_core.holdout import query_contains_pdb, visual_query_ok
+from abcite_core.holdout import query_contains_pdb, strip_pdb_ids, visual_query_ok
 from abcite_core.models import AnswerStatus, Citation, QueryResponse
 from abcite_core.vision_flags import DEFAULT_RERANK_K
+
+HEURISTIC_PATH = "extractive/heuristic pixel cues; not a VLM"
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLD = ROOT / "evals" / "gold" / "visual_qa.jsonl"
@@ -128,6 +134,11 @@ def tokenize(text: str) -> list[str]:
 
 def content_tokens(text: str) -> set[str]:
     return {t for t in tokenize(text) if t not in STOP and len(t) >= 3}
+
+
+def sanitize_visual_query(question: str) -> str:
+    """Strip PDB ids. Visual QA never uses PDB lookup in the query path."""
+    return strip_pdb_ids(question or "")
 
 
 def caption_keyword_overlap(query: str, caption: str) -> dict:
@@ -275,6 +286,9 @@ class VQAResult:
     figure_id: str | None
     cues: list[str] = field(default_factory=list)
     pixel_desc: str = ""
+    evidence: str = ""
+    path: str = HEURISTIC_PATH
+    query_used: str = ""
 
 
 def heuristic_vqa(
@@ -285,11 +299,14 @@ def heuristic_vqa(
     min_overlap: int = 2,
 ) -> VQAResult:
     """Extractive/heuristic cite-or-abstain. Uses pixels, not the caption."""
+    q_used = sanitize_visual_query(question)
     if rec is None:
         return VQAResult(
             status="abstain",
             answer="No figure retrieved. Abstaining.",
             figure_id=None,
+            path=HEURISTIC_PATH,
+            query_used=q_used,
         )
     desc = ""
     if path is not None and path.exists():
@@ -297,10 +314,10 @@ def heuristic_vqa(
             desc = describe_pixels(path)
         except Exception:
             desc = ""
-    q = content_tokens(question)
+    q = content_tokens(q_used)
     d = content_tokens(desc)
     inter = q & d
-    supported = len(inter) >= min_overlap or _lexicon_support(question, desc)
+    supported = len(inter) >= min_overlap or _lexicon_support(q_used, desc)
     if supported:
         cite = rec.figure_id
         answer = (
@@ -313,6 +330,9 @@ def heuristic_vqa(
             figure_id=cite,
             cues=sorted(inter),
             pixel_desc=desc,
+            evidence=desc,
+            path=HEURISTIC_PATH,
+            query_used=q_used,
         )
     return VQAResult(
         status="abstain",
@@ -323,7 +343,64 @@ def heuristic_vqa(
         figure_id=None,
         cues=sorted(inter),
         pixel_desc=desc,
+        evidence=desc,
+        path=HEURISTIC_PATH,
+        query_used=q_used,
     )
+
+
+def resolve_vqa_answerer(answerer=None) -> tuple[object, str, str | None]:
+    """VLM generate when ABCITE_VLM=1 and weights load; else heuristic."""
+    if answerer is not None:
+        path = getattr(answerer, "path", None)
+        if callable(answerer) and path is None:
+            path = "injected answerer"
+        if not callable(answerer) and hasattr(answerer, "answer"):
+            return answerer.answer, getattr(answerer, "path", "injected answerer"), None
+        return answerer, str(path or "injected answerer"), None
+    try:
+        from abcite_core.vlm_vqa import get_vlm, vlm_enabled
+    except Exception as exc:
+        return heuristic_vqa, HEURISTIC_PATH, f"VLM import failed: {exc}"
+    if not vlm_enabled():
+        return heuristic_vqa, HEURISTIC_PATH, None
+    vlm, skip = get_vlm()
+    if vlm is None:
+        return heuristic_vqa, HEURISTIC_PATH, skip
+    return vlm.answer, getattr(vlm, "path", "qwen2-vl generate"), skip
+
+
+def answer_visual_question(
+    question: str,
+    rec: FigureRec | None,
+    path: Path | None,
+    *,
+    answerer=None,
+    min_overlap: int = 2,
+) -> VQAResult:
+    """Cite-or-abstain on one figure. PDB ids never enter the query path."""
+    fn, path_label, _skip = resolve_vqa_answerer(answerer)
+    q = sanitize_visual_query(question)
+    try:
+        pred = fn(q, rec, path, min_overlap=min_overlap)
+    except TypeError:
+        pred = fn(q, rec, path)
+    if not getattr(pred, "path", None):
+        pred.path = path_label
+    if not getattr(pred, "query_used", None):
+        pred.query_used = q
+    return pred
+
+
+def gold_answer_overlap(pred_answer: str, gold_answer: str) -> float:
+    """Content-token overlap of a VQA answer vs gold (diagnostic, not R@K)."""
+    if not (pred_answer or "").strip() or not (gold_answer or "").strip():
+        return 0.0
+    a = content_tokens(pred_answer)
+    g = content_tokens(gold_answer)
+    if not a or not g:
+        return 0.0
+    return round(len(a & g) / max(1, len(g)), 4)
 
 
 def _recall_block(scores_list: list[np.ndarray], items: list[dict], gallery: FigureGallery) -> dict:
@@ -357,13 +434,19 @@ def evaluate_visual_qa(
     *,
     rerank_k: int = DEFAULT_RERANK_K,
     vqa_top_k: int = 1,
+    answerer=None,
+    score_vqa: bool = True,
 ) -> dict:
-    """Retrieval R@K (BM25 vs vision) plus cite-or-abstain VQA."""
+    """Retrieval R@K (BM25 vs vision) plus cite-or-abstain VQA.
+
+    Retrieval and VQA are scored separately. Do not mix VQA accuracy with
+    ViDoRe nDCG@5. PDB ids are stripped from every visual query.
+    """
     from abcite_core.figure_gallery import _rrf, mean_text_gap, vision_rerank_scores
 
     answerable = [it for it in items if it.get("gold_figure_ids")]
     fail_subset = [it for it in answerable if it.get("caption_bm25_should_fail")]
-    questions = [it["question"] for it in answerable]
+    questions = [sanitize_visual_query(it["question"]) for it in answerable]
     clip_mat = gallery.clip_score_matrix(questions) if answerable else None
     bm25_mat = (
         np.stack([gallery.caption_bm25_scores(q) for q in questions], axis=0)
@@ -406,36 +489,56 @@ def evaluate_visual_qa(
     cite_ok = 0
     abstain_ok = 0
     abstain_n = 0
+    overlap_e2e: list[float] = []
+    overlap_oracle: list[float] = []
     path_by_id = {r.figure_id: r.path for r in gallery.recs}
     rec_by_id = {r.figure_id: r for r in gallery.recs}
     clip_by_id: dict[str, np.ndarray] = {}
     if clip_mat is not None:
         for i, it in enumerate(answerable):
             clip_by_id[it["id"]] = clip_mat[i]
+    fn, path_label, vlm_skip = (heuristic_vqa, HEURISTIC_PATH, None)
+    if score_vqa:
+        fn, path_label, vlm_skip = resolve_vqa_answerer(answerer)
     for it in items:
+        q = sanitize_visual_query(it["question"])
         expected = it.get("expected_status") or (
             "answered" if it.get("gold_figure_ids") else "abstain"
         )
         gold = it.get("gold_figure_ids") or []
+        gold_ans = str(it.get("answer") or "")
         scores = clip_by_id.get(it["id"])
         if scores is None:
-            scores = gallery.clip_image_only_scores(it["question"])
+            scores = gallery.clip_image_only_scores(q)
         ranked = gallery.ranked_ids(scores)
         top_ids = ranked[:vqa_top_k]
         retrieved = rec_by_id.get(top_ids[0]) if top_ids else None
         path = path_by_id.get(top_ids[0]) if top_ids else None
-        pred = heuristic_vqa(it["question"], retrieved, path)
+        if not score_vqa:
+            vqa_n += 1
+            continue
+        try:
+            pred = fn(q, retrieved, path, min_overlap=2)
+        except TypeError:
+            pred = fn(q, retrieved, path)
         vqa_n += 1
         if gold:
             gold_rec = rec_by_id.get(gold[0])
-            oracle = heuristic_vqa(it["question"], gold_rec, path_by_id.get(gold[0]))
+            try:
+                oracle = fn(q, gold_rec, path_by_id.get(gold[0]), min_overlap=2)
+            except TypeError:
+                oracle = fn(q, gold_rec, path_by_id.get(gold[0]))
             if top_ids and top_ids[0] in gold:
                 cite_ok += 1
             if expected == "answered":
                 if pred.status == "answered" and pred.figure_id in gold:
                     vqa_e2e_ok += 1
+                    if gold_ans:
+                        overlap_e2e.append(gold_answer_overlap(pred.answer, gold_ans))
                 if oracle.status == "answered" and oracle.figure_id in gold:
                     vqa_oracle_ok += 1
+                    if gold_ans:
+                        overlap_oracle.append(gold_answer_overlap(oracle.answer, gold_ans))
             else:
                 abstain_n += 1
                 if pred.status == "abstain":
@@ -451,6 +554,27 @@ def evaluate_visual_qa(
                 vqa_oracle_ok += 1
 
     n_ans = max(1, len(answerable))
+    vqa_block: dict = {
+        "n": vqa_n,
+        "end_to_end_accuracy": round(vqa_e2e_ok / max(1, vqa_n), 4) if score_vqa else None,
+        "oracle_figure_accuracy": round(vqa_oracle_ok / max(1, vqa_n), 4) if score_vqa else None,
+        "cite_top1": round(cite_ok / n_ans, 4) if score_vqa else None,
+        "abstain_accuracy": (
+            round(abstain_ok / max(1, abstain_n), 4) if abstain_n and score_vqa else None
+        ),
+        "n_abstain": abstain_n if score_vqa else None,
+        "gold_answer_overlap_e2e": (
+            round(sum(overlap_e2e) / len(overlap_e2e), 4) if overlap_e2e else None
+        ),
+        "gold_answer_overlap_oracle": (
+            round(sum(overlap_oracle) / len(overlap_oracle), 4) if overlap_oracle else None
+        ),
+        "path": path_label if score_vqa else "skipped (retrieval-only column)",
+        "vlm_skip": vlm_skip,
+        "not_vidore": True,
+        "not_maxsim": True,
+        "scored": score_vqa,
+    }
     report = {
         "protocol": "visual_qa",
         "n_gallery": gallery.n,
@@ -466,15 +590,7 @@ def evaluate_visual_qa(
         "caption_bm25_should_fail_subset": cols.get("caption_bm25_should_fail_subset"),
         "vision_should_fail_subset": cols.get("vision_should_fail_subset"),
         "fusion_default": "off",
-        "vqa": {
-            "n": vqa_n,
-            "end_to_end_accuracy": round(vqa_e2e_ok / max(1, vqa_n), 4),
-            "oracle_figure_accuracy": round(vqa_oracle_ok / max(1, vqa_n), 4),
-            "cite_top1": round(cite_ok / n_ans, 4),
-            "abstain_accuracy": round(abstain_ok / max(1, abstain_n), 4) if abstain_n else None,
-            "n_abstain": abstain_n,
-            "path": "extractive/heuristic pixel cues; not a VLM",
-        },
+        "vqa": vqa_block,
         "mean_gap_image_i2i": round(gallery.mean_rank_gap_image(), 6),
         "mean_gap_clip_text_to_image": round(mean_text_gap(gallery, questions), 6),
         "note": (
@@ -483,7 +599,8 @@ def evaluate_visual_qa(
             "microscopy type), not the figure caption. Gold figure is unique. "
             "caption_bm25_should_fail items have ≤1 content-token overlap with the caption. "
             "Vision column is T→I over pixels; captions never enter encode_image. "
-            "VQA is cite-or-abstain given the retrieved figure (heuristic/extractive)."
+            "Retrieval R@K is not VQA and not ViDoRe. "
+            f"VQA is cite-or-abstain given the retrieved figure ({path_label})."
         ),
     }
     bm25_r1 = float(report["caption_bm25"].get("recall@1") or 0)
@@ -503,9 +620,23 @@ def visual_qa_response(
     trace_id: str,
     latency_ms: float,
     image_threshold: float = 0.08,
+    answerer=None,
 ) -> QueryResponse:
     """Turn visual retrieval hits into a cite-or-abstain QueryResponse."""
+    q = sanitize_visual_query(question)
     scores = {h.chunk.chunk_id: h.score for h in hits}
+    if not q.strip():
+        return QueryResponse(
+            trace_id=trace_id,
+            status=AnswerStatus.ABSTAIN,
+            answer=(
+                "Visual QA query was empty after stripping structure ids. Abstaining."
+            ),
+            citations=[],
+            provider=provider,
+            retrieval_scores=scores,
+            latency_ms=latency_ms,
+        )
     if not hits or (getattr(hits[0], "image", 0.0) < image_threshold and hits[0].score <= 0):
         return QueryResponse(
             trace_id=trace_id,
@@ -532,7 +663,7 @@ def visual_qa_response(
         visual_class=top.chunk.modality.value,
         source=top.chunk.source_label,
     )
-    pred = heuristic_vqa(question, rec, path)
+    pred = answer_visual_question(q, rec, path, answerer=answerer)
     if pred.status == "abstain":
         return QueryResponse(
             trace_id=trace_id,
@@ -543,13 +674,13 @@ def visual_qa_response(
             retrieval_scores=scores,
             latency_ms=latency_ms,
         )
-    quote = (top.chunk.caption or top.chunk.text or pred.pixel_desc)[:280]
+    quote = (pred.evidence or pred.pixel_desc or "")[:280]
     thumb = None
     if top.chunk.image_path:
         thumb = f"/media/{Path(top.chunk.image_path).name}"
     cite = Citation(
         chunk_id=top.chunk.chunk_id,
-        claim=question,
+        claim=q,
         quote=quote,
         char_start=0,
         char_end=len(quote),

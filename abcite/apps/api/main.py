@@ -87,7 +87,10 @@ def search_image(
     graph: EvidenceGraph = app.state.graph
     visual = (task or "").lower() in {"visual_qa", "visual", "vqa"} or bool(query)
     if visual and query:
-        hits = graph.index.search_visual(query, top_k=top_k)
+        from abcite_core.visual_qa import sanitize_visual_query
+
+        q_vis = sanitize_visual_query(query)
+        hits = graph.index.search_visual(q_vis, top_k=top_k) if q_vis else []
         return [
             {
                 "chunk_id": h.chunk.chunk_id,

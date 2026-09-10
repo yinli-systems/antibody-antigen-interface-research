@@ -47,7 +47,12 @@ def _load_json(path: Path) -> dict:
 def _visual_qa_snapshot_md() -> str:
     data = _load_json(ROOT / "evals" / "visual_qa_protocols_latest.json")
     four = data.get("four_column") or {}
-    vqa = (data.get("biomedclip") or data.get("openclip") or {}).get("vqa") or four.get("vqa") or {}
+    vqa = (
+        (data.get("colpali") or {}).get("vqa")
+        or (data.get("biomedclip") or data.get("openclip") or {}).get("vqa")
+        or four.get("vqa")
+        or {}
+    )
     n_gal = data.get("n_gallery") or ""
     n_q = data.get("n_answerable") or data.get("n_queries") or ""
     gpu = data.get("gpu") or ""
@@ -69,7 +74,9 @@ def _visual_qa_snapshot_md() -> str:
         f"Gallery **N={n_gal}** ({gpu}). n_answerable=**{n_q}**. "
         "Query is a visual question (panel layout, stain, gel bands, colors, arrows, "
         "microscopy type), **not** the figure caption. Unique gold; no PDB in the query. "
-        "VQA is cite-or-abstain on the retrieved figure (heuristic/extractive, not a VLM).\n\n"
+        "VQA is cite-or-abstain on the retrieved figure "
+        f"({vqa.get('path') or 'heuristic/extractive, not a VLM'}). "
+        "No Qwen2-VL accuracy is claimed until an ABCITE_VLM=1 GPU receipt exists.\n\n"
         "| Column | R@1 | R@5 | R@10 | nDCG@5 |\n"
         "|---|---|---|---|---|\n"
         f"| caption BM25 | {_rk(four.get('caption_bm25'), 'recall@1')} | "
@@ -90,7 +97,10 @@ def _visual_qa_snapshot_md() -> str:
         f"vision={_rk(fail_vis, 'recall@1')}. "
         f"VQA e2e={vqa.get('end_to_end_accuracy', '—')} "
         f"oracle={vqa.get('oracle_figure_accuracy', '—')} "
+        f"abstain={vqa.get('abstain_accuracy', '—')} "
         f"cite@1={vqa.get('cite_top1', '—')}. "
+        f"VQA path: {vqa.get('path', 'heuristic/extractive, not a VLM')}. "
+        "Retrieval R@K is not VQA and not ViDoRe (official mean 89.11 vs published 89.2). "
         f"{('ColPali: ' + col_skip) if col_skip and not col else ''} "
         "See `evals/visual_qa_latest.json`.\n"
         f"{_av_snapshot_md()}"

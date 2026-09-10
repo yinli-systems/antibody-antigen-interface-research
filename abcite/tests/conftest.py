@@ -1,7 +1,8 @@
-"""Fast tests never auto-download CLIP. Live CLIP tests set ABCITE_CLIP themselves."""
+"""Fast tests never auto-download CLIP or a VLM. Live CLIP/VLM tests set the flags themselves."""
 
 from __future__ import annotations
 
 import os
 
 os.environ.setdefault("ABCITE_CLIP", "0")
+os.environ.setdefault("ABCITE_VLM", "0")
