@@ -48,6 +48,29 @@ AUROC gains only 1.2% because it is near saturation at a 0.09% positive rate;
 operationally meaningful one is precision at the true contact count: taking the
 top N pairs where N is the true contact count, **2.9% correct becomes 3.9%**.
 
+## Result: ten fresh seeds reproduce it, and twenty are unanimous
+
+Seeds 11-20 were added under a stopping rule fixed in advance
+(`protocols/REPRESENTATION_ABLATION_EXTENSION_V1.md`). They took no part in
+anything reported above.
+
+| macro auprc | n | ESM-2 | treatment | paired difference | 95% CI | seeds | sign bound |
+|---|---:|---:|---:|---:|---|---:|---:|
+| seeds 1-10, as first reported | 10 | 0.022460 | 0.028453 | +0.005993 (+26.7%) | [+0.004463, +0.007396] | 10/10 | 0.7411 |
+| seeds 11-20, fresh | 10 | 0.021069 | 0.028350 | +0.007282 (+34.6%) | [+0.006080, +0.008488] | 10/10 | 0.7411 |
+| **all twenty** | **20** | 0.021764 | 0.028402 | **+0.006638 (+30.5%)** | [+0.005598, +0.007625] | **20/20** | **0.8609** |
+
+Twenty seeds out of twenty favour the treatment. The pooled estimate, +30.5%,
+lands on the width-matched estimate of +30.1% from an independent comparison.
+
+One detail is worth more than the headline. Across the fresh seeds the **control
+fell** (0.022460 → 0.021069) while the **treatment barely moved** (0.028453 →
+0.028350). The larger relative gain in the extension comes mostly from the
+control being worse, which is to say the treatment is **less sensitive to the
+seed**. That is what a data-limited model looks like when the constraint is
+loosened: with stronger features it depends less on what a small sample happened
+to teach it.
+
 ## Result: the marginals improved too, and the margin grew faster than they did
 
 The outer-product baseline is built from each model's own marginals, so the two
