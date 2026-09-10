@@ -71,10 +71,12 @@ if figures.exists():
 @app.get("/health")
 def health() -> dict:
     vision = "unloaded"
+    gallery = "unloaded"
     graph = getattr(app.state, "graph", None)
     if graph is not None:
         vision = graph.index.vision.name
-    return {"ok": True, "service": "abcite", "vision": vision}
+        gallery = graph.visual_gallery_kind()
+    return {"ok": True, "service": "abcite", "vision": vision, "visual_gallery": gallery}
 
 
 @app.post("/search-image")
@@ -90,7 +92,7 @@ def search_image(
         from abcite_core.visual_qa import sanitize_visual_query
 
         q_vis = sanitize_visual_query(query)
-        hits = graph.index.search_visual(q_vis, top_k=top_k) if q_vis else []
+        hits = graph.search_visual(q_vis, top_k=top_k) if q_vis else []
         return [
             {
                 "chunk_id": h.chunk.chunk_id,

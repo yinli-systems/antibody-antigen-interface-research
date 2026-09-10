@@ -261,6 +261,77 @@ def test_search_visual_uses_maxsim_not_mean_pool():
     assert local.visual_score_path == "pooled"
 
 
+def _write_toy_late_npz(tmp_path: Path) -> Path:
+    import numpy as np
+
+    npz = tmp_path / "embeddings-colqwen2.5-n2.npz"
+    ids = ["pmc-alpha", "pmc-beta"]
+    np.savez_compressed(
+        npz,
+        t0=np.array([[1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.1]], dtype=np.float16),
+        t1=np.array([[0.6, 0.6, 0.0, 0.0]], dtype=np.float16),
+    )
+    npz.with_name(npz.stem + ".ids.json").write_text(json.dumps(ids), encoding="utf-8")
+    return npz
+
+
+def test_pmc_gallery_stays_off_by_default(tmp_path, monkeypatch):
+    from abcite_core.figure_gallery import resolve_pmc_gallery_npz
+
+    monkeypatch.setenv("ABCITE_PMC_GALLERY", "0")
+    npz = _write_toy_late_npz(tmp_path)
+    monkeypatch.setenv("ABCITE_PMC_GALLERY_NPZ", str(npz))
+    assert resolve_pmc_gallery_npz(_LateToy()) is None
+
+
+def test_pmc_gallery_discovers_colqwen25_npz(tmp_path, monkeypatch):
+    from abcite_core.figure_gallery import resolve_pmc_gallery_npz
+
+    monkeypatch.setenv("ABCITE_PMC_GALLERY", "1")
+    evals = tmp_path / "evals"
+    evals.mkdir()
+    src = _write_toy_late_npz(evals)
+    toy = _LateToy()
+    toy.name = "colqwen2.5"
+    found = resolve_pmc_gallery_npz(toy, root=tmp_path)
+    assert found == src
+
+
+def test_search_visual_uses_pmc_npz_maxsim_when_flagged(tmp_path, monkeypatch):
+    from abcite_core.figure_gallery import load_late_npz_gallery
+
+    npz = _write_toy_late_npz(tmp_path)
+    monkeypatch.setenv("ABCITE_PMC_GALLERY", str(npz))
+    toy = _LateToy()
+    chunks = [
+        Chunk(
+            chunk_id="fig-fixture",
+            parent_id="txt-a",
+            modality=Modality.FIGURE,
+            title="Fixture",
+            text="fixture",
+            caption="fixture",
+            source_url="https://example.test/f",
+            source_label="f",
+            image_path="corpus/figures/fig-1n8z.svg",
+        )
+    ]
+    idx = HybridIndex(chunks, vision=toy)
+    g = EvidenceGraph(idx, 0.12, False, "local")
+    assert g.visual_gallery_kind().startswith("pmc-npz")
+    hits = g.search_visual("token-match", top_k=2)
+    assert [h.chunk.chunk_id for h in hits] == ["pmc-alpha", "pmc-beta"]
+    gal = load_late_npz_gallery(npz, toy)
+    assert gal.visual_score_path == "maxsim"
+    g_off = EvidenceGraph(idx, 0.12, False, "local")
+    monkeypatch.setenv("ABCITE_PMC_GALLERY", "0")
+    g_off._pmc_gallery_loaded = False
+    g_off.figure_gallery = None
+    assert g_off.visual_gallery_kind() == "fixture"
+    fixture_hits = g_off.search_visual("token-match", top_k=1)
+    assert fixture_hits[0].chunk.chunk_id == "fig-fixture"
+
+
 def test_eval_snapshot_keeps_visual_qa_primary():
     md = _multimodal_snapshot_md()
     if not md:

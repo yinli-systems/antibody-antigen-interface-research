@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -75,6 +76,138 @@ def load_figure_records(prefer_cache: bool = True) -> list[FigureRec]:
     return recs
 
 
+def pmc_gallery_flag() -> str:
+    return (os.environ.get("ABCITE_PMC_GALLERY") or "0").strip()
+
+
+def pmc_gallery_requested() -> bool:
+    """Opt-in 16k PMC serving. Default off so CI stays on the 14-SVG fixture."""
+    flag = pmc_gallery_flag().lower()
+    if flag in {"0", "false", "no", "off", ""}:
+        return False
+    return True
+
+
+def _encoder_npz_stems(vision) -> list[str]:
+    from abcite_core.colpali_encoder import encoder_cache_name
+
+    name = str(getattr(vision, "name", "") or "") if vision is not None else ""
+    stem = encoder_cache_name(name) if name else ""
+    if stem in {"colqwen2.5", "colqwen2"}:
+        return [stem]
+    return ["colqwen2.5", "colqwen2"]
+
+
+def _discover_pmc_npz(vision, root: Path) -> Path | None:
+    dirs = [root / "evals", root / "evals" / "figures" / "cache"]
+    for stem in _encoder_npz_stems(vision):
+        found: list[Path] = []
+        for folder in dirs:
+            if folder.is_dir():
+                found.extend(folder.glob(f"embeddings-{stem}-n*.npz"))
+        if not found:
+            continue
+        exact = [p for p in found if p.name == f"embeddings-{stem}-n15949.npz"]
+        if exact:
+            return exact[0]
+        found.sort(key=lambda p: p.stat().st_size if p.is_file() else 0, reverse=True)
+        return found[0]
+    return None
+
+
+def resolve_pmc_gallery_npz(vision=None, *, root: Path | None = None) -> Path | None:
+    """npz for product visual_qa. None → keep the fixture HybridIndex."""
+    if not pmc_gallery_requested():
+        return None
+    root = Path(root or ROOT)
+    explicit = (os.environ.get("ABCITE_PMC_GALLERY_NPZ") or "").strip()
+    if explicit:
+        path = Path(explicit)
+        return path if path.is_file() else None
+    flag = pmc_gallery_flag()
+    as_path = Path(flag)
+    if flag.lower() not in {"1", "true", "yes", "on", "auto"} and as_path.suffix.lower() == ".npz":
+        return as_path if as_path.is_file() else None
+    return _discover_pmc_npz(vision, root)
+
+
+def read_late_npz(npz: Path) -> tuple[list[str], list[np.ndarray]]:
+    npz = Path(npz)
+    ids_path = npz.with_name(npz.stem + ".ids.json")
+    if not npz.is_file() or not ids_path.is_file():
+        raise FileNotFoundError(f"late npz needs {npz.name} and {ids_path.name}")
+    ids = json.loads(ids_path.read_text(encoding="utf-8"))
+    blob = np.load(npz, allow_pickle=True)
+    toks = [np.asarray(blob[f"t{i}"], dtype=np.float32) for i in range(len(ids))]
+    if len(toks) != len(ids):
+        raise ValueError(f"late npz token count {len(toks)} != ids {len(ids)}")
+    return [str(i) for i in ids], toks
+
+
+def _figure_meta_index() -> dict[str, dict]:
+    """figure_id → metadata row. Does not require the jpg to exist."""
+    found: dict[str, dict] = {}
+    for meta in (FIG_ROOT / "cache" / "metadata.jsonl", FIG_ROOT / "fixture" / "metadata.jsonl"):
+        if not meta.is_file():
+            continue
+        for line in meta.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            raw = json.loads(line)
+            fid = str(raw.get("figure_id") or "")
+            if fid and fid not in found:
+                found[fid] = raw
+    return found
+
+
+def recs_for_npz_ids(ids: list[str]) -> list[FigureRec]:
+    meta = _figure_meta_index()
+    recs: list[FigureRec] = []
+    for fid in ids:
+        raw = meta.get(fid, {})
+        rel = str(raw.get("path") or "")
+        path = FIG_ROOT / rel if rel else Path(".")
+        recs.append(
+            FigureRec(
+                figure_id=fid,
+                path=path,
+                caption=str(raw.get("caption") or ""),
+                pmcid=raw.get("pmcid"),
+                split=str(raw.get("split") or ""),
+                visual_class=str(raw.get("visual_class") or "scientific figure panel"),
+                source=str(raw.get("source") or ""),
+                href=str(raw.get("href") or ""),
+            )
+        )
+    return recs
+
+
+def load_late_npz_gallery(npz: Path, vision) -> FigureGallery:
+    """Score MaxSim from a cached npz. Never encodes or downloads figures."""
+    ids, toks = read_late_npz(npz)
+    recs = recs_for_npz_ids(ids)
+    gal = FigureGallery(recs, vision, image_toks=toks)
+    gal.npz_path = Path(npz)
+    return gal
+
+
+def load_product_pmc_gallery(vision, *, root: Path | None = None) -> FigureGallery | None:
+    """Opt-in PMC gallery for /query visual_qa. Same MaxSim as the eval receipt."""
+    if not bool(getattr(vision, "late_interaction", False)):
+        return None
+    if not callable(getattr(vision, "encode_queries_multi", None)):
+        return None
+    npz = resolve_pmc_gallery_npz(vision, root=root)
+    if npz is None:
+        return None
+    gal = load_late_npz_gallery(npz, vision)
+    print(
+        f"product PMC gallery npz={npz.name} n={gal.n} MaxSim (not the 14-SVG fixture)",
+        flush=True,
+    )
+    return gal
+
+
 def fix_to_gallery_ids(recs: list[FigureRec]) -> dict[str, str]:
     """Map committed fixture `fix-*` ids onto gallery ids via href, then caption."""
     fixture_meta = FIG_ROOT / "fixture" / "metadata.jsonl"
@@ -104,9 +237,15 @@ def fix_to_gallery_ids(recs: list[FigureRec]) -> dict[str, str]:
 
 
 class FigureGallery:
-    def __init__(self, recs: list[FigureRec], vision) -> None:
+    def __init__(
+        self,
+        recs: list[FigureRec],
+        vision,
+        image_toks: list[np.ndarray] | None = None,
+    ) -> None:
         self.recs = recs
         self.vision = vision
+        self.npz_path: Path | None = None
         self.ids = [r.figure_id for r in recs]
         self.captions = [r.caption for r in recs]
         self.cap_docs = [_tokenize(strip_accession_tokens(c)) for c in self.captions]
@@ -120,8 +259,20 @@ class FigureGallery:
         self.n = len(recs)
         self.avgdl = sum(len(d) for d in self.cap_docs) / max(1, self.n)
         self.dl = [len(d) or 1 for d in self.cap_docs]
-        self.image_toks: list[np.ndarray] | None = None
-        self.image_vecs = self._load_or_encode()
+        if image_toks is not None:
+            if len(image_toks) != self.n:
+                raise ValueError(f"image_toks {len(image_toks)} != gallery n={self.n}")
+            self.image_toks = [np.asarray(t, dtype=np.float32) for t in image_toks]
+            self.image_vecs = self._means_from_toks(self.image_toks)
+        else:
+            self.image_toks = None
+            self.image_vecs = self._load_or_encode()
+
+    @property
+    def visual_score_path(self) -> str:
+        if self.image_toks is not None and bool(getattr(self.vision, "late_interaction", False)):
+            return "maxsim"
+        return "pooled"
 
     def _cache_key(self) -> Path:
         name = getattr(self.vision, "name", "enc")
@@ -382,6 +533,39 @@ class FigureGallery:
         if qv.shape[0] != self.image_vecs.shape[1]:
             return np.zeros(self.n, dtype=np.float32)
         return self.image_vecs @ qv
+
+    def search_visual(self, query: str, top_k: int = 6):
+        """Text → figure MaxSim (same scorer as eval). Hits use gallery figure ids."""
+        from abcite_core.models import Chunk, Modality
+        from abcite_core.retrieval import Hit
+
+        image = self.clip_image_only_scores(query)
+        caption = self.caption_bm25_scores(query)
+        order = np.argsort(-image)[:top_k]
+        hits: list[Hit] = []
+        for i in order:
+            rec = self.recs[int(i)]
+            path = rec.path if rec.path.is_file() else None
+            hits.append(
+                Hit(
+                    chunk=Chunk(
+                        chunk_id=rec.figure_id,
+                        parent_id=rec.pmcid or rec.figure_id,
+                        modality=Modality.FIGURE,
+                        title=rec.figure_id,
+                        text=rec.caption or rec.figure_id,
+                        caption=rec.caption or "",
+                        source_url=rec.href or "",
+                        source_label=rec.source or rec.pmcid or rec.figure_id,
+                        image_path=str(path) if path else None,
+                    ),
+                    score=float(image[i]),
+                    bm25=float(caption[i]),
+                    dense=0.0,
+                    image=float(image[i]),
+                )
+            )
+        return hits
 
     def caption_bm25_scores(self, question: str) -> np.ndarray:
         return self._bm25(question)

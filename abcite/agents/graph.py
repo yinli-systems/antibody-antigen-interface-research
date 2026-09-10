@@ -161,6 +161,7 @@ class EvidenceGraph:
         llm: LLMProvider | None = None,
         audio_gallery=None,
         video_gallery=None,
+        figure_gallery=None,
     ) -> None:
         self.index = index
         self.abstain_threshold = abstain_threshold
@@ -169,6 +170,42 @@ class EvidenceGraph:
         self.provider_name = provider_name or self.llm.name
         self.audio_gallery = audio_gallery
         self.video_gallery = video_gallery
+        self.figure_gallery = figure_gallery
+        self._pmc_gallery_loaded = figure_gallery is not None
+
+    def _ensure_pmc_gallery(self):
+        if self.figure_gallery is not None:
+            return self.figure_gallery
+        if self._pmc_gallery_loaded:
+            return None
+        self._pmc_gallery_loaded = True
+        from abcite_core.figure_gallery import load_product_pmc_gallery
+
+        try:
+            self.figure_gallery = load_product_pmc_gallery(self.index.vision)
+        except Exception as exc:
+            log.warning("PMC gallery skipped: %s", exc)
+            self.figure_gallery = None
+        return self.figure_gallery
+
+    def search_visual(self, query: str, top_k: int = 6):
+        """visual_qa retrieval: PMC npz MaxSim when enabled, else fixture HybridIndex."""
+        gal = self._ensure_pmc_gallery()
+        if gal is not None:
+            return gal.search_visual(query, top_k=top_k)
+        return self.index.search_visual(query, top_k=top_k)
+
+    def visual_gallery_kind(self) -> str:
+        gal = self.figure_gallery
+        if gal is not None:
+            npz = getattr(gal, "npz_path", None)
+            return f"pmc-npz n={gal.n}" + (f" {npz.name}" if npz else "")
+        from abcite_core.figure_gallery import resolve_pmc_gallery_npz
+
+        npz = resolve_pmc_gallery_npz(self.index.vision)
+        if npz is not None:
+            return f"pmc-npz pending {npz.name}"
+        return "fixture"
 
     def invoke(
         self,
@@ -188,7 +225,7 @@ class EvidenceGraph:
             from abcite_core.visual_qa import sanitize_visual_query, visual_qa_response
 
             q_vis = sanitize_visual_query(question)
-            hits = self.index.search_visual(q_vis, top_k=top_k) if q_vis else []
+            hits = self.search_visual(q_vis, top_k=top_k) if q_vis else []
             resp = visual_qa_response(
                 q_vis,
                 hits,
@@ -314,7 +351,7 @@ class EvidenceGraph:
         from abcite_core.visual_qa import sanitize_visual_query
 
         q_vis = sanitize_visual_query(question)
-        visual_hits = self.index.search_visual(q_vis, top_k=min(3, top_k)) if q_vis else []
+        visual_hits = self.search_visual(q_vis, top_k=min(3, top_k)) if q_vis else []
         citations: list[Citation] = []
         scores: dict[str, float] = {}
         notes: list[str] = []

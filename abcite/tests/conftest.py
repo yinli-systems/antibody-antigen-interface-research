@@ -6,3 +6,4 @@ import os
 
 os.environ.setdefault("ABCITE_CLIP", "0")
 os.environ.setdefault("ABCITE_VLM", "0")
+os.environ.setdefault("ABCITE_PMC_GALLERY", "0")
