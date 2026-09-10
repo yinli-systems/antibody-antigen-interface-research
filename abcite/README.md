@@ -100,27 +100,27 @@ Gold: `evals/gold/visual_qa.jsonl` (**n=61**: 51 unique-gold answerable + 10 abs
 
 ### Headline: vision beats caption BM25 (fair visual gold)
 
-All loaded answerable queries are the BM25-should-fail subset (`python evals/run_visual_qa.py`, local CPU/MPS, **n=49** answerable / **n=59** total incl. abstain; 2 gold figures missing from the 1.2k cache).
+Same-run receipt on the 5090 (`python evals/run_visual_qa.py --try-colpali --max-n 1200`, **n=51** answerable / **N=1,200**, NVIDIA GeForce RTX 5090). All answerable items are `caption_bm25_should_fail`.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| caption BM25 | **0.000** | 0.020 | 0.041 | 0.013 |
-| **BiomedCLIP T→I** | **0.122** | 0.245 | 0.388 | 0.187 |
-| OpenCLIP ViT-B-32 T→I | **0.163** | **0.286** | 0.306 | **0.228** |
-| rerank-on-BM25-top50 (BiomedCLIP) | 0.020 | 0.082 | 0.102 | 0.049 |
-| ColPali / ColQwen2 T→I | — | — | — | — |
+| caption BM25 | 0.020 | 0.039 | 0.059 | 0.029 |
+| BiomedCLIP T→I | 0.098 | 0.176 | 0.274 | 0.135 |
+| OpenCLIP ViT-B-32 T→I | 0.176 | 0.314 | 0.333 | 0.247 |
+| **ColQwen2 late-interaction T→I** | **0.196** | **0.353** | **0.373** | **0.283** |
+| rerank-on-BM25-top50 (BiomedCLIP) | 0.020 | 0.059 | 0.059 | 0.037 |
 
-Vision T→I **beats caption BM25** at R@1 and nDCG@5 on this fair visual gold. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (**hurts** T→I **0.122→0.020** at R@1); fusion/RRF ablation. ColPali: 5090 is up (`ssh runpod-5090` → `157.157.221.30:58649` / `c474d51dce71`). Hub **429** from the pod (load must be `local_files_only`). Adapter `vidore/colqwen2-v1.0` and Qwen2-VL-2B (4.2 GB) are on the pod; ColQwen2’s real backbone is **`vidore/colqwen2-base` (8.2 GB)** — Mac download done, rsync to the 5090 in flight. **No ColPali R@K until that base lands.** Do not score Qwen2-VL-2B as ColPali (`custom_text_proj` is missing).
+**ColQwen2 beats OpenCLIP and BiomedCLIP** at R@1 / nDCG@5 on this fair visual gold (0.196 vs 0.176 vs 0.098). Vision still beats caption BM25. **Still loses to BM25:** caption-as-query appendix (R@1 **0.835**); BiomedCLIP rerank-on-BM25-top50 (hurts). Encoder: `vidore/colqwen2-v1.0` LoRA on local `vidore/colqwen2-base` (offline; Hub 429 from the pod). Do not score Qwen2-VL-2B as ColPali (`custom_text_proj` is missing). Receipt: `evals/visual_qa_protocols_latest.json`.
 
 VQA cite-or-abstain (heuristic, not a VLM): e2e **18.6%**, oracle-figure **64.4%**, cite@1 **12.2%**, abstain **70%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`.
 
-**Not SOTA.** ViDoRe ColPali nDCG@5 **81.3** is page retrieval with late interaction. Ours is figure-jpg CLIP on n=49 / N=1,200: nDCG@5 **0.228** (OpenCLIP) / **0.187** (BiomedCLIP). SciMMIR-FT Hits@10 **13.5%** and BiomedCLIP paper R@1 **~56%** are caption-as-query on different galleries — see appendix, do not mix.
+**Not SOTA.** ViDoRe ColPali nDCG@5 **81.3** is page retrieval with late interaction. Ours is figure-jpg ColQwen2 on n=51 / N=1,200: nDCG@5 **0.283** (ColQwen2) / **0.247** (OpenCLIP) / **0.135** (BiomedCLIP). SciMMIR-FT Hits@10 **13.5%** and BiomedCLIP paper R@1 **~56%** are caption-as-query on different galleries — see appendix, do not mix.
 
 See `evals/visual_qa_protocols_latest.json` after `python evals/run_visual_qa.py`. Caption-as-query Protocols A/B stay **appendix** — BM25 already wins there and CLIP rerank hurts; that is the wrong product task.
 
 ### Audio + video (unified multimodal RAG)
 
-Same cite-or-abstain product. Queries ask about **sound or scene**, not spoken words. RRF is **within-audio** or **within-video** only. CI fixtures are an **honest larger synthetic set** (distinct spectra / hue-coded keyframes; transcripts are generic filler so BM25 should fail). `python evals/download_av.py` can add short Wikimedia Commons clips. Whisper (`faster-whisper`) and LAION CLAP are opt-in (`ABCITE_WHISPER=1`, `ABCITE_CLAP=1`); default CI uses a shared-space spectral / scene encoder so the embedding column can win without Hub downloads. The 5090 is reserved for ColPali encode while Qwen2-VL is still copying.
+Same cite-or-abstain product. Queries ask about **sound or scene**, not spoken words. RRF is **within-audio** or **within-video** only. CI fixtures are an **honest larger synthetic set** (distinct spectra / hue-coded keyframes; transcripts are generic filler so BM25 should fail). `python evals/download_av.py` can add short Wikimedia Commons clips. Whisper (`faster-whisper`) and LAION CLAP are opt-in (`ABCITE_WHISPER=1`, `ABCITE_CLAP=1`); default CI uses a shared-space spectral / scene encoder so the embedding column can win without Hub downloads. The 5090 ColQwen2 encode for visual QA is done (see table above).
 
 Gold: `evals/gold/audio_qa.jsonl` (**n=24**: 20 answerable + 4 abstain) and `evals/gold/video_qa.jsonl` (**n=16**: 12 answerable + 4 abstain). All answerable items are `transcript_bm25_should_fail`.
 
@@ -201,7 +201,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColPali weights: Mac HF cache → rsync to 5090 |
+| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColQwen2 late-interaction on 5090 N=1,200 (R@1 **0.196**) |
 | Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified` | CLAP/Whisper opt-in; CI uses synthetic wav/PNG fixtures; CC download is `evals/download_av.py` |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |

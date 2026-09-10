@@ -181,10 +181,12 @@ def main() -> None:
     combined["four_column"] = _four_column(report, bio_report, col_report)
     dest = ROOT / "evals" / "visual_qa_protocols_latest.json"
     dest.write_text(json.dumps(combined, indent=2), encoding="utf-8")
-    dest_one.write_text(
-        json.dumps(bio_report or report, indent=2),
-        encoding="utf-8",
-    )
+    snap = dict(col_report or bio_report or report)
+    snap["four_column"] = combined["four_column"]
+    if col_report:
+        snap["colpali_t2i"] = col_report.get("clip_image_only")
+        snap["colpali_encoder"] = col_report.get("encoder")
+    dest_one.write_text(json.dumps(snap, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

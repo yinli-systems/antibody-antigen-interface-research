@@ -254,22 +254,29 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
     }
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     last: Exception | None = None
-    names: list[str] = []
+    names: list[tuple[str, str]] = []
     forced = (os.environ.get("ABCITE_COLPALI_MODEL") or "").strip()
     if forced:
-        names.append(forced)
+        names.append((forced, forced))
     patched = _patched_colqwen2_adapter()
-    if patched is not None:
-        names.append(str(patched))
-    names.extend(COLPALI_MODELS)
-    seen: set[str] = set()
+    adapter_snap = _hub_snapshot("models--vidore--colqwen2-v1.0")
+    if patched is not None and adapter_snap is not None:
+        # Model from patched adapter (local base path); processor from the
+        # original snapshot so chat-template relative symlinks resolve.
+        names.append((str(patched), str(adapter_snap)))
+    for hub_name in COLPALI_MODELS:
+        names.append((hub_name, hub_name))
+    seen: set[tuple[str, str]] = set()
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
-    for name in names:
-        if not name or name in seen:
+    for name, proc_name in names:
+        if not name or (name, proc_name) in seen:
             continue
-        seen.add(name)
-        low = name.lower()
-        ordered = [p for p in pairs if p[0] in low] + [p for p in pairs if p[0] not in low]
+        seen.add((name, proc_name))
+        low = name.lower() + " " + proc_name.lower()
+        if "colqwen2" in low and "colqwen2.5" not in low and "colqwen2_5" not in low:
+            ordered = [p for p in pairs if p[0] == "colqwen2"] + [p for p in pairs if p[0] != "colqwen2"]
+        else:
+            ordered = [p for p in pairs if p[0] in low] + [p for p in pairs if p[0] not in low]
         for tag, model_cls, proc_cls in ordered:
             try:
                 model = model_cls.from_pretrained(
@@ -278,7 +285,7 @@ def try_load_colpali() -> tuple[VisionEncoder | None, str | None]:
                     device_map=str(device),
                     local_files_only=local_only,
                 ).eval()
-                processor = proc_cls.from_pretrained(name, local_files_only=local_only)
+                processor = proc_cls.from_pretrained(proc_name, local_files_only=local_only)
                 enc = ColPaliEncoder(model, processor, device)
                 enc.name = "colqwen2" if "colqwen" in low else "colpali"
                 log.info("loaded ColPali encoder %s (%s) on %s", name, tag, device)

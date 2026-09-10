@@ -2,202 +2,274 @@
   "protocol": "visual_qa",
   "n_gallery": 1200,
   "n_readable": 1200,
-  "n_queries": 59,
-  "n_answerable": 49,
+  "n_queries": 61,
+  "n_answerable": 51,
   "encoder": "clip-vit-b-32",
-  "gpu": null,
+  "gpu": "NVIDIA GeForce RTX 5090",
   "source": "pmc-oa",
   "fusion_default": "off",
   "rerank_k": 50,
   "openclip": {
     "protocol": "visual_qa",
     "n_gallery": 1200,
-    "n_queries": 59,
-    "n_answerable": 49,
-    "n_caption_bm25_should_fail": 49,
+    "n_queries": 61,
+    "n_answerable": 51,
+    "n_caption_bm25_should_fail": 51,
     "encoder": "clip-vit-b-32",
     "rerank_k": 50,
     "caption_bm25": {
-      "recall@1": 0.0,
-      "recall@5": 0.0204,
-      "recall@10": 0.0408,
-      "ndcg@5": 0.0129,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
     },
     "clip_image_only": {
-      "recall@1": 0.1633,
-      "recall@5": 0.2857,
-      "recall@10": 0.3061,
-      "ndcg@5": 0.2275,
-      "n": 49
+      "recall@1": 0.1765,
+      "recall@5": 0.3137,
+      "recall@10": 0.3333,
+      "ndcg@5": 0.2467,
+      "n": 51
     },
     "vision_rerank": {
-      "recall@1": 0.0816,
-      "recall@5": 0.102,
-      "recall@10": 0.102,
-      "ndcg@5": 0.0918,
-      "n": 49
+      "recall@1": 0.098,
+      "recall@5": 0.1176,
+      "recall@10": 0.1176,
+      "ndcg@5": 0.1078,
+      "n": 51
     },
     "fusion": {
-      "recall@1": 0.0612,
-      "recall@5": 0.1633,
-      "recall@10": 0.2041,
-      "ndcg@5": 0.1165,
-      "n": 49
+      "recall@1": 0.0588,
+      "recall@5": 0.1569,
+      "recall@10": 0.2353,
+      "ndcg@5": 0.1142,
+      "n": 51
     },
     "caption_bm25_should_fail_subset": {
-      "recall@1": 0.0,
-      "recall@5": 0.0204,
-      "recall@10": 0.0408,
-      "ndcg@5": 0.0129,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
     },
     "vision_should_fail_subset": {
-      "recall@1": 0.1633,
-      "recall@5": 0.2857,
-      "recall@10": 0.3061,
-      "ndcg@5": 0.2275,
-      "n": 49
+      "recall@1": 0.1765,
+      "recall@5": 0.3137,
+      "recall@10": 0.3333,
+      "ndcg@5": 0.2467,
+      "n": 51
     },
     "fusion_default": "off",
     "vqa": {
-      "n": 59,
-      "end_to_end_accuracy": 0.2034,
-      "oracle_figure_accuracy": 0.6441,
-      "cite_top1": 0.1633,
-      "abstain_accuracy": 0.7,
+      "n": 61,
+      "end_to_end_accuracy": 0.1803,
+      "oracle_figure_accuracy": 0.541,
+      "cite_top1": 0.1765,
+      "abstain_accuracy": 0.6,
       "n_abstain": 10,
       "path": "extractive/heuristic pixel cues; not a VLM"
     },
-    "mean_gap_image_i2i": 0.089961,
-    "mean_gap_clip_text_to_image": 0.010368,
+    "mean_gap_image_i2i": 0.090296,
+    "mean_gap_clip_text_to_image": 0.009739,
     "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. VQA is cite-or-abstain given the retrieved figure (heuristic/extractive).",
     "vision_beats_bm25_r@1": true,
     "vision_beats_bm25_ndcg@5": true,
-    "gpu": null
+    "gpu": "NVIDIA GeForce RTX 5090"
   },
   "biomedclip": {
     "protocol": "visual_qa",
     "n_gallery": 1200,
-    "n_queries": 59,
-    "n_answerable": 49,
-    "n_caption_bm25_should_fail": 49,
+    "n_queries": 61,
+    "n_answerable": 51,
+    "n_caption_bm25_should_fail": 51,
     "encoder": "biomedclip",
     "rerank_k": 50,
     "caption_bm25": {
-      "recall@1": 0.0,
-      "recall@5": 0.0204,
-      "recall@10": 0.0408,
-      "ndcg@5": 0.0129,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
     },
     "clip_image_only": {
-      "recall@1": 0.1224,
-      "recall@5": 0.2449,
-      "recall@10": 0.3878,
-      "ndcg@5": 0.1871,
-      "n": 49
+      "recall@1": 0.098,
+      "recall@5": 0.1765,
+      "recall@10": 0.2745,
+      "ndcg@5": 0.1354,
+      "n": 51
     },
     "vision_rerank": {
-      "recall@1": 0.0204,
-      "recall@5": 0.0816,
-      "recall@10": 0.102,
-      "ndcg@5": 0.0487,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0588,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0365,
+      "n": 51
     },
     "fusion": {
-      "recall@1": 0.0204,
-      "recall@5": 0.102,
-      "recall@10": 0.2449,
-      "ndcg@5": 0.0611,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0784,
+      "recall@10": 0.1569,
+      "ndcg@5": 0.0542,
+      "n": 51
     },
     "caption_bm25_should_fail_subset": {
-      "recall@1": 0.0,
-      "recall@5": 0.0204,
-      "recall@10": 0.0408,
-      "ndcg@5": 0.0129,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
     },
     "vision_should_fail_subset": {
-      "recall@1": 0.1224,
-      "recall@5": 0.2449,
-      "recall@10": 0.3878,
-      "ndcg@5": 0.1871,
-      "n": 49
+      "recall@1": 0.098,
+      "recall@5": 0.1765,
+      "recall@10": 0.2745,
+      "ndcg@5": 0.1354,
+      "n": 51
     },
     "fusion_default": "off",
     "vqa": {
-      "n": 59,
-      "end_to_end_accuracy": 0.1864,
-      "oracle_figure_accuracy": 0.6441,
-      "cite_top1": 0.1224,
+      "n": 61,
+      "end_to_end_accuracy": 0.1639,
+      "oracle_figure_accuracy": 0.5574,
+      "cite_top1": 0.098,
       "abstain_accuracy": 0.7,
       "n_abstain": 10,
       "path": "extractive/heuristic pixel cues; not a VLM"
     },
-    "mean_gap_image_i2i": 0.260076,
-    "mean_gap_clip_text_to_image": 0.021602,
+    "mean_gap_image_i2i": 0.257381,
+    "mean_gap_clip_text_to_image": 0.021568,
     "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. VQA is cite-or-abstain given the retrieved figure (heuristic/extractive).",
     "vision_beats_bm25_r@1": true,
     "vision_beats_bm25_ndcg@5": true,
-    "gpu": null
+    "gpu": "NVIDIA GeForce RTX 5090"
   },
   "four_column": {
     "caption_bm25": {
-      "recall@1": 0.0,
-      "recall@5": 0.0204,
-      "recall@10": 0.0408,
-      "ndcg@5": 0.0129,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
     },
     "biomedclip_t2i": {
-      "recall@1": 0.1224,
-      "recall@5": 0.2449,
-      "recall@10": 0.3878,
-      "ndcg@5": 0.1871,
-      "n": 49
+      "recall@1": 0.098,
+      "recall@5": 0.1765,
+      "recall@10": 0.2745,
+      "ndcg@5": 0.1354,
+      "n": 51
     },
     "openclip_t2i": {
-      "recall@1": 0.1633,
-      "recall@5": 0.2857,
-      "recall@10": 0.3061,
-      "ndcg@5": 0.2275,
-      "n": 49
+      "recall@1": 0.1765,
+      "recall@5": 0.3137,
+      "recall@10": 0.3333,
+      "ndcg@5": 0.2467,
+      "n": 51
     },
-    "colpali_t2i": null,
+    "colpali_t2i": {
+      "recall@1": 0.1961,
+      "recall@5": 0.3529,
+      "recall@10": 0.3725,
+      "ndcg@5": 0.2826,
+      "n": 51
+    },
     "vision_rerank_biomedclip": {
-      "recall@1": 0.0204,
-      "recall@5": 0.0816,
-      "recall@10": 0.102,
-      "ndcg@5": 0.0487,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0588,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0365,
+      "n": 51
     },
     "vqa": {
-      "n": 59,
-      "end_to_end_accuracy": 0.1864,
-      "oracle_figure_accuracy": 0.6441,
-      "cite_top1": 0.1224,
+      "n": 61,
+      "end_to_end_accuracy": 0.1639,
+      "oracle_figure_accuracy": 0.5574,
+      "cite_top1": 0.098,
       "abstain_accuracy": 0.7,
       "n_abstain": 10,
       "path": "extractive/heuristic pixel cues; not a VLM"
     },
     "caption_bm25_should_fail_subset": {
-      "recall@1": 0.0,
-      "recall@5": 0.0204,
-      "recall@10": 0.0408,
-      "ndcg@5": 0.0129,
-      "n": 49
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
     },
     "vision_should_fail_subset": {
-      "recall@1": 0.1224,
-      "recall@5": 0.2449,
-      "recall@10": 0.3878,
-      "ndcg@5": 0.1871,
-      "n": 49
+      "recall@1": 0.098,
+      "recall@5": 0.1765,
+      "recall@10": 0.2745,
+      "ndcg@5": 0.1354,
+      "n": 51
     },
     "vision_beats_bm25_r@1": true,
     "vision_beats_bm25_ndcg@5": true
   },
-  "colpali_skip": "ColPali not requested this run. Next GPU job: ABCITE_COLPALI=1 ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali"
+  "colpali": {
+    "protocol": "visual_qa",
+    "n_gallery": 1200,
+    "n_queries": 61,
+    "n_answerable": 51,
+    "n_caption_bm25_should_fail": 51,
+    "encoder": "colqwen2",
+    "rerank_k": 50,
+    "caption_bm25": {
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
+    },
+    "clip_image_only": {
+      "recall@1": 0.1961,
+      "recall@5": 0.3529,
+      "recall@10": 0.3725,
+      "ndcg@5": 0.2826,
+      "n": 51
+    },
+    "vision_rerank": {
+      "recall@1": 0.0392,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0392,
+      "n": 51
+    },
+    "fusion": {
+      "recall@1": 0.0392,
+      "recall@5": 0.098,
+      "recall@10": 0.2157,
+      "ndcg@5": 0.069,
+      "n": 51
+    },
+    "caption_bm25_should_fail_subset": {
+      "recall@1": 0.0196,
+      "recall@5": 0.0392,
+      "recall@10": 0.0588,
+      "ndcg@5": 0.0294,
+      "n": 51
+    },
+    "vision_should_fail_subset": {
+      "recall@1": 0.1961,
+      "recall@5": 0.3529,
+      "recall@10": 0.3725,
+      "ndcg@5": 0.2826,
+      "n": 51
+    },
+    "fusion_default": "off",
+    "vqa": {
+      "n": 61,
+      "end_to_end_accuracy": 0.2295,
+      "oracle_figure_accuracy": 0.5738,
+      "cite_top1": 0.1961,
+      "abstain_accuracy": 0.8,
+      "n_abstain": 10,
+      "path": "extractive/heuristic pixel cues; not a VLM"
+    },
+    "mean_gap_image_i2i": 0.214418,
+    "mean_gap_clip_text_to_image": 0.426011,
+    "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. VQA is cite-or-abstain given the retrieved figure (heuristic/extractive).",
+    "vision_beats_bm25_r@1": true,
+    "vision_beats_bm25_ndcg@5": true,
+    "gpu": "NVIDIA GeForce RTX 5090"
+  }
 }

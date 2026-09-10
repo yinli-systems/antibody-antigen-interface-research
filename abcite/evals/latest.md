@@ -72,16 +72,16 @@ Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heur
 
 ## Visual figure QA — primary multimodal demo
 
-Gallery **N=1200** (). n_answerable=**49**. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query. VQA is cite-or-abstain on the retrieved figure (heuristic/extractive, not a VLM).
+Gallery **N=1200** (NVIDIA GeForce RTX 5090). n_answerable=**51**. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query. VQA is cite-or-abstain on the retrieved figure (heuristic/extractive, not a VLM).
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
-| caption BM25 | 0.000 | 0.020 | 0.041 | 0.013 |
-| BiomedCLIP T→I | 0.122 | 0.245 | 0.388 | 0.187 |
-| OpenCLIP ViT-B-32 T→I | 0.163 | 0.286 | 0.306 | 0.228 |
-| ColPali / ColQwen2 T→I | — | — | — | — |
+| caption BM25 | 0.020 | 0.039 | 0.059 | 0.029 |
+| BiomedCLIP T→I | 0.098 | 0.176 | 0.274 | 0.135 |
+| OpenCLIP ViT-B-32 T→I | 0.176 | 0.314 | 0.333 | 0.247 |
+| ColPali / ColQwen2 T→I | 0.196 | 0.353 | 0.373 | 0.283 |
 
-Vision beats caption BM25 at R@1? **yes**. BM25-should-fail subset R@1 BM25=0.000 vision=0.122. VQA e2e=0.1864 oracle=0.6441 cite@1=0.1224. ColPali: ColPali not requested this run. Next GPU job: ABCITE_COLPALI=1 ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali See `evals/visual_qa_latest.json`.
+Vision beats caption BM25 at R@1? **yes**. ColQwen2 beats OpenCLIP at R@1 (0.196 vs 0.176). BM25-should-fail subset R@1 BM25=0.020 vision=0.098. VQA e2e=0.1639 oracle=0.5574 cite@1=0.098. See `evals/visual_qa_latest.json`.
 
 ## Audio / video QA (unified multimodal RAG)
 
