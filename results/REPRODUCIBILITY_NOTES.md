@@ -41,12 +41,23 @@ Three defects in this project were the same mistake:
 | `macro_metric_summary` | a hardcoded list of keys to exclude from averaging | a string field entered the numeric average and poisoned it; all ten replication seeds failed |
 | the argument parser | a hardcoded statement of which flags each subcommand accepts | train-only flags were passed to `evaluate`; four trained seeds died after 57 minutes each |
 | `--multitask-balancer` | a hardcoded tuple of valid choices | an implemented, working arm was rejected on a submitted job |
+| `plot_gradient_trajectory.py` | its own smoothing window, 25 against the analysis's 10 | the figure caption and the results table named different crossing steps |
+| `feature_provenance.py` | the residue mapping keyed by encoder | both ESM-IF1 arms got one cohort's answer, telling the AsEP arm its rows were contiguous when 8% of its steps jump segments |
 
-Each was a hand-maintained duplicate of something the code already knew. Each
-went stale the moment the original changed. Each now derives from the original:
-the metric summary filters by value **type**, the parser test builds its
-namespace from the **real parser**, and the balancer choices come from the
-**registry**.
+Each was a hand-maintained duplicate of something the code already knew, or a
+lookup indexed by the wrong thing. Each went stale, or answered for the wrong
+subject, the moment a second case existed. Each now derives from the original or
+is keyed by what actually determines it: the metric summary filters by value
+**type**, the parser test builds its namespace from the **real parser**, the
+balancer choices come from the **registry**, the figure imports its smoothing
+from the **analysis**, and the residue mapping is keyed by **arm**, because it is
+a property of the cohort and not of the encoder.
+
+The fifth one is worth dwelling on because it appeared in the very table built to
+catch this class of error. The lesson is not that people should be more careful
+with lookup keys. It is that a table whose key does not determine its value will
+answer confidently for the wrong subject, and only an entry that says
+"unmeasured" rather than falling back to a neighbour makes that visible.
 
 ## An index that truncated instead of failing
 

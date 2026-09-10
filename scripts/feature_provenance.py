@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -31,6 +32,53 @@ VERIFICATIONS = {
         "AntiBERTy confirmed by tensor identity: mean nearest-neighbour distance "
         "0.0055 against a row norm of 22.3 (ratio 2.5e-4) over the full antibody "
         "domain, heavy/light split swept; see results/feature_provenance_v1/"
+    ),
+}
+
+# Which tensor the encoder was asked for. Read from this project's own code for
+# what it extracts, and established by the identity check for what it copied.
+EXTRACTION_LAYER = {
+    "antiberty": "AntiBERTyRunner.embed, final hidden state, BOS/EOS dropped",
+    "esm2_t33_650M_UR50D": "final representation layer, BOS/EOS dropped",
+    "esm_if1_gvp4_t16_142M_UR50": (
+        "encoder_out['encoder_out'][0], the GVP-transformer encoder output; "
+        "the two CoordBatchConverter pad rows are dropped"
+    ),
+    "igfold": (
+        "matches AntiBERTyRunner.embed to 2.5e-4, so the cache is the same "
+        "layer this project extracts for its own AntiBERTy arm"
+    ),
+    "proteinmpnn_v_48_020": (
+        "node embeddings after the three encoder layers; the autoregressive "
+        "decoder is not run, so nothing is conditioned on sequence"
+    ),
+}
+
+# What one row of the stored array indexes, measured by
+# scripts/audit_row_to_residue_mapping.py rather than assumed from the name.
+#
+# Keyed by ARM, not by backend. The same encoder over two cohorts produces two
+# different mappings -- sabdab2 stores full chains and AsEP stores
+# interface-selected rows -- and a backend-keyed table gave the AsEP ESM-IF1 arm
+# the sabdab2 answer, which is the same shape of error as every other lookup in
+# this project that was keyed by the wrong thing.
+RESIDUE_MAPPING = {
+    "esm_if1_sabdab2": (
+        "sabdab2: full VH+VL and full antigen chains; consecutive rows are "
+        "consecutive residues at 99.57% (antibody) and 99.86% (antigen) of steps"
+    ),
+    "esm_if1_asep": (
+        "AsEP: interface-selected rows; consecutive rows jump segments at 8.0% "
+        "(antibody) and 7.0% (antigen) of steps, 99th-percentile Ca-Ca step "
+        "24.9 A -- index space only"
+    ),
+    "antiberty_sabdab2": "sabdab2: full VH and VL, encoded per chain, concatenated",
+    "igfold_arm_asep": (
+        "AsEP: interface-selected rows; consecutive rows jump segments at 8.0% "
+        "of steps, 99th-percentile Ca-Ca step 24.9 A -- index space only"
+    ),
+    "proteinmpnn_sabdab2": (
+        "sabdab2: the same backbone store and the same row order as ESM-IF1"
     ),
 }
 
@@ -48,9 +96,36 @@ TRUE_MODEL = {
 
 COLUMNS = (
     "arm", "backend_recorded", "model_actually_run", "revision", "modality",
-    "dim", "chains", "extracted_here", "source", "units_written",
+    "extraction_layer", "residue_mapping", "dim", "chains", "extracted_here",
+    "source", "source_digest", "store_digest", "units_written",
     "instances_considered", "receipt_path", "verification",
 )
+
+
+def store_digest(root: Path, limit: int = 40000) -> str:
+    """A content digest of an artifact store.
+
+    sha256 over the sorted (relative path, file digest) pairs, so it changes if
+    any artifact's bytes or name change and does not depend on filesystem order.
+    Returns a marker rather than a wrong answer when the store is absent.
+    """
+    if not root.is_dir():
+        return "store not on this filesystem"
+    outer = hashlib.sha256()
+    count = 0
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        count += 1
+        if count > limit:
+            return f"more than {limit} artifacts; digest not computed"
+        inner = hashlib.sha256()
+        with path.open("rb") as handle:
+            for block in iter(lambda: handle.read(1 << 20), b""):
+                inner.update(block)
+        outer.update(str(path.relative_to(root)).encode("utf-8"))
+        outer.update(inner.digest())
+    return f"{outer.hexdigest()} over {count} artifacts" if count else "store is empty"
 
 
 def row_from_receipt(name: str, path: Path) -> dict[str, str]:
@@ -58,16 +133,29 @@ def row_from_receipt(name: str, path: Path) -> dict[str, str]:
     backend = str(payload.get("backend", ""))
     revision = str(payload.get("revision", payload.get("model_revision", "")))
     copied = revision.startswith("asep-") or "interim" in revision
+    root = path.parent / path.name.replace("_receipt.json", "")
     return {
         "arm": name,
         "backend_recorded": backend,
         "model_actually_run": TRUE_MODEL.get(backend, backend),
         "revision": revision,
         "modality": MODALITY.get(backend, "UNRECORDED -- resolve before publication"),
+        "extraction_layer": EXTRACTION_LAYER.get(
+            backend, "UNRECORDED -- resolve before publication"),
+        "residue_mapping": RESIDUE_MAPPING.get(
+            name, "UNMEASURED for this arm -- run audit_row_to_residue_mapping.py "
+                  "on its own cohort; the mapping is a property of the cohort, "
+                  "not of the encoder"),
         "dim": str(payload.get("representation_dim", "")),
         "chains": ",".join(payload.get("chains", []) or []),
         "extracted_here": "no (copied)" if copied else "yes",
         "source": ("upstream cache" if copied else "this project"),
+        "source_digest": (
+            "AsEP interim graphs, no longer on this filesystem; identity rests on "
+            "the tensor check in the verification column, not on a hash"
+            if copied else "model weights as distributed, see revision"
+        ),
+        "store_digest": store_digest(root),
         "units_written": str(payload.get("unique_sequences_written", "")),
         "instances_considered": str(payload.get("instances_considered", "")),
         "receipt_path": str(path),
