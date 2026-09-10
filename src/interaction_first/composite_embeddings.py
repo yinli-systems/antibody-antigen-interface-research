@@ -397,6 +397,8 @@ def build_sources(
     esm_if1_dim: int = 512,
     igfold_root: Path | None = None,
     igfold_dim: int = 512,
+    proteinmpnn_root: Path | None = None,
+    proteinmpnn_dim: int = 128,
 ) -> list[RepresentationSource]:
     """Build the sources for the encoders this project has extracted.
 
@@ -446,4 +448,41 @@ def build_sources(
                 name="esm_if1", root=esm_if1_root, dim=esm_if1_dim, parts_by_key=parts
             )
         )
+    if proteinmpnn_root is not None:
+        # Both sides, like ESM-IF1: a structure encoder has as much to say about
+        # an antigen backbone as an antibody one. Artifacts are keyed by the
+        # chain digest directly, so the mapping is the identity.
+        parts = {}
+        for entry in chains.values():
+            parts[entry["antibody_key"]] = (entry["antibody_key"],)
+            parts[entry["antigen_key"]] = (entry["antigen_key"],)
+        sources.append(
+            RepresentationSource(
+                name="proteinmpnn", root=proteinmpnn_root, dim=proteinmpnn_dim,
+                parts_by_key=parts,
+            )
+        )
     return sources
+
+
+def build_matched_random_control(
+    manifest: Path, sources: Sequence[RepresentationSource], seed: int = 20260910
+) -> list[RandomProjectionSource]:
+    """A random projection per real source, with that source's width and coverage.
+
+    ``build_random_control`` hardcodes the shape of one arm: two sources, one
+    antibody-only and one covering both sides, both 512 wide. That is the
+    AntiBERTy + ESM-IF1 arm and nothing else. An arm with a single 128-wide
+    source covering both sides needs a different control, and building it from
+    the arm's own sources means the control cannot drift from what it controls
+    for -- which is what a second hardcoded shape would eventually do.
+    """
+    if not sources:
+        raise RepresentationError("a matched control needs at least one real source")
+    return [
+        RandomProjectionSource(
+            f"random_{source.name}", source.dim, seed + index,
+            {key: () for key in source.parts_by_key},
+        )
+        for index, source in enumerate(sources)
+    ]

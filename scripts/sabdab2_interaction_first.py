@@ -664,6 +664,14 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
         help="canonical manifest; supplies the chain keys AntiBERTy is stored under",
     )
     parser.add_argument("--antiberty-root", type=Path, default=None)
+    parser.add_argument("--proteinmpnn-root", type=Path, default=None)
+    parser.add_argument("--proteinmpnn-dim", type=int, default=128)
+    parser.add_argument(
+        "--random-control-mirrors", default=None,
+        help="path to a ProteinMPNN root whose widths and coverage the random "
+             "control should mirror; without it the control keeps the shape of "
+             "the AntiBERTy + ESM-IF1 arm it was written for",
+    )
     parser.add_argument("--antiberty-dim", type=int, default=512)
     parser.add_argument("--esm-if1-root", type=Path, default=None)
     parser.add_argument("--esm-if1-dim", type=int, default=512)
@@ -710,7 +718,8 @@ def _wrap_with_representations(
     across the cohort. A width that varied by instance would build a model that
     cannot accept some of its own training data.
     """
-    roots = (args.antiberty_root, args.esm_if1_root, args.igfold_root)
+    roots = (args.antiberty_root, args.esm_if1_root, args.igfold_root,
+             getattr(args, "proteinmpnn_root", None))
     if all(root is None for root in roots) and not args.random_projection_control:
         return embedding_store, base_dim, base_dim, None
     if args.representation_manifest is None:
@@ -721,6 +730,7 @@ def _wrap_with_representations(
 
     from interaction_first.composite_embeddings import (
         CompositeEmbeddingStore,
+        build_matched_random_control,
         build_random_control,
         build_sources,
     )
@@ -731,11 +741,28 @@ def _wrap_with_representations(
                 "--random-projection-control is the width-matched control for the "
                 "encoder arm and cannot be combined with it"
             )
-        sources = build_random_control(
-            args.representation_manifest.expanduser().resolve(),
-            dim=args.antiberty_dim,
-            seed=args.random_projection_seed,
-        )
+        manifest_path = args.representation_manifest.expanduser().resolve()
+        mirror = getattr(args, "random_control_mirrors", None)
+        if mirror:
+            # Mirror an arm declared by name rather than the one this function
+            # was originally written around. The control has to have the same
+            # widths and the same coverage as the arm it controls for, and the
+            # only way to guarantee that is to build it from that arm's sources.
+            sources = build_matched_random_control(
+                manifest_path,
+                build_sources(
+                    manifest_path,
+                    proteinmpnn_root=(Path(mirror) if mirror != "none" else None),
+                    proteinmpnn_dim=args.proteinmpnn_dim,
+                ),
+                seed=args.random_projection_seed,
+            )
+        else:
+            sources = build_random_control(
+                manifest_path,
+                dim=args.antiberty_dim,
+                seed=args.random_projection_seed,
+            )
         store = CompositeEmbeddingStore(embedding_store, sources)
         widths = {"antibody": set(), "antigen": set()}
         for side, column in (
@@ -765,6 +792,11 @@ def _wrap_with_representations(
             args.igfold_root.expanduser().resolve() if args.igfold_root else None
         ),
         igfold_dim=args.igfold_dim,
+        proteinmpnn_root=(
+            args.proteinmpnn_root.expanduser().resolve()
+            if getattr(args, "proteinmpnn_root", None) else None
+        ),
+        proteinmpnn_dim=getattr(args, "proteinmpnn_dim", 128),
     )
     store = CompositeEmbeddingStore(
         embedding_store, sources,
