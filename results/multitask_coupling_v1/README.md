@@ -54,7 +54,52 @@ The pair branch learns a real, supervised, non-trivial function — on the sabda
 cohort its head beats the predicted-marginal outer product by 14.7% of baseline
 at 20/20 seeds — and none of what it learns reaches the node heads.
 
-### It may be slightly worse than nothing
+### Correction: this is a badly set loss weight, not a competition
+
+The paragraph below was written when only the two endpoints existed. A dose
+response over λ ∈ {1.0, 0.5, 0.25, 0}, scaling both pair terms together at ten
+paired seeds on the same split, shows the competition framing is wrong.
+
+| λ | node AUPRC | node MCC | pair AUPRC |
+|---:|---:|---:|---:|
+| 1.00 | 0.376727 | 0.220828 | 0.066119 |
+| 0.50 | 0.405256 | 0.244554 | 0.070619 |
+| **0.25** | **0.426923** | **0.266839** | **0.073286** |
+| 0.00 | 0.423680 | 0.253765 | 0.006315 |
+
+Paired against λ=1.0: at λ=0.5 node AUPRC gains 0.0285 (decided, 9/10) **and
+pair AUPRC gains 0.0045 (decided, 7/10)**. At λ=0.25 node gains 0.0502
+(decided) and pair gains 0.0072 (8/10, undecided).
+
+**Both tasks improve together as the pair weight falls from 1.0 to 0.25.** There
+is no trade to observe over that range. The competition appears only at λ=0,
+where pair AUPRC collapses by 0.0598 at 0/10 seeds while node performance is no
+longer improving.
+
+`protocols/PAIR_SUPERVISION_DOSE_RESPONSE_V1.md` registered a readability
+condition before the runs: *if the pair metrics do not fall with λ, the
+multiplier is not doing what the protocol assumes and nothing else can be read.*
+Pair metrics **rise** between λ=1.0 and λ=0.25, so that condition fires and the
+capacity reading is not available in that range. The condition was written to
+block exactly this, and it does.
+
+What the data supports instead is the plainer account, and it is one of the
+alternatives the protocol listed: **loss-scale imbalance**. The edge term at
+weight 1.0 dominates an objective whose four node terms carry 0.25 each, and
+simply reducing it improves the optimisation of everything. The joint optimum
+for both tasks sits near λ=0.25, not at 0.
+
+The usable statement is therefore:
+
+> The default pair-loss weight is too high for both tasks. Reducing it to a
+> quarter improves node AUPRC by 13.3% and pair AUPRC by 10.8% at once;
+> removing it entirely collapses the pair task without buying anything further
+> for the nodes.
+
+That is an actionable hyperparameter result rather than a claim about
+architectural coupling, and it is easier to check.
+
+### The original endpoint observation, and why its framing was wrong
 
 Epitope node AUPRC is 3.1% higher without the pair losses, at **10/10 seeds**.
 Unanimity across ten seeds is hard to read as noise. The most likely account is
