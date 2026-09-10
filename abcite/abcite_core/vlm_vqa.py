@@ -33,6 +33,12 @@ _STATUS = re.compile(r"STATUS:\s*(answered|abstain)\b", re.I)
 _CITE = re.compile(r"CITE:\s*(\S+)", re.I)
 _ANSWER = re.compile(r"ANSWER:\s*(.*?)(?:\n\s*EVIDENCE:|\Z)", re.I | re.S)
 _EVIDENCE = re.compile(r"EVIDENCE:\s*(.*)\Z", re.I | re.S)
+_REFUSE = re.compile(
+    r"\b(abstain|cannot answer|can't answer|i cannot|do not (see|show|contain)|"
+    r"does not (show|contain|support)|no (requested )?visual evidence|"
+    r"not (visible|shown|present)|insufficient evidence)\b",
+    re.I,
+)
 
 _VLM = None
 _VLM_SKIP: str | None = None
@@ -118,24 +124,23 @@ def build_vlm_prompt(question: str, figure_id: str) -> tuple[str, str]:
         q = re.sub(r"\b[0-9][a-zA-Z0-9]{3}\b", " ", q)
         q = " ".join(q.split())
     prompt = (
-        "You are AbCite visual QA. Look only at the figure pixels you are shown.\n"
-        f"The figure id is {figure_id}. Cite that id if and only if the pixels "
-        "support the question.\n"
-        "Do not use structure-database identifiers, paper captions, or filenames "
-        "as evidence. If the pixels do not show the requested visual evidence, abstain.\n\n"
-        f"Question: {q}\n\n"
-        "Reply with exactly these lines:\n"
-        "STATUS: answered OR abstain\n"
-        f"CITE: {figure_id} OR none\n"
-        "ANSWER: one sentence about what is visible (empty if abstain)\n"
-        "EVIDENCE: panel layout, stain, gel bands, colors, arrows, microscopy type; "
-        "or why those cues are missing"
+        "Look at the scientific figure image. Answer the visual question using only "
+        "what is visible (panels, stain, gel bands, colors, arrows, microscopy type).\n"
+        f"Figure id: {figure_id}\n"
+        f"Question: {q}\n"
+        "First line MUST be exactly one of:\n"
+        "STATUS: answered\n"
+        "STATUS: abstain\n"
+        "If STATUS is answered, continue with:\n"
+        f"CITE: {figure_id}\n"
+        "ANSWER: one sentence of visible evidence\n"
+        "If the image does not show what the question asks, STATUS: abstain and CITE: none."
     )
     return prompt, q
 
 
 def parse_vlm_generation(text: str, shown_figure_id: str, *, query_used: str = "") -> VQAResult:
-    """Parse STATUS/CITE/ANSWER/EVIDENCE. Parse failure → abstain."""
+    """Parse STATUS/CITE/ANSWER. Freeform non-refusal cites the shown figure."""
     raw = (text or "").strip()
     status_m = _STATUS.search(raw)
     cite_m = _CITE.search(raw)
@@ -145,15 +150,20 @@ def parse_vlm_generation(text: str, shown_figure_id: str, *, query_used: str = "
     cite_tok = (cite_m.group(1).strip() if cite_m else "")
     answer = (ans_m.group(1).strip() if ans_m else "")
     evidence = (ev_m.group(1).strip() if ev_m else "")
-    if cite_tok.lower() in {"none", "null", "n/a", "-", "no"}:
+    cite_none = cite_tok.lower() in {"none", "null", "n/a", "-", "no"}
+    if cite_none:
         cite_tok = ""
     if not status:
-        low = raw.lower()
-        if not raw or "abstain" in low[:80] or "cannot answer" in low or "not visible" in low:
+        if not raw:
+            status = "abstain"
+        elif _REFUSE.search(raw[:500]):
             status = "abstain"
         else:
-            status = "abstain"
-    if status == "answered" and (not cite_tok or cite_tok.lower() == "none"):
+            status = "answered"
+            if not answer:
+                answer = raw
+    # Explicit CITE: none wins over a missing cite line. Freeform cites the shown figure.
+    if status == "answered" and cite_none:
         status = "abstain"
     if status == "answered":
         cite = shown_figure_id
@@ -162,16 +172,34 @@ def parse_vlm_generation(text: str, shown_figure_id: str, *, query_used: str = "
         text_out = f"{answer} Cite {cite}."
         if evidence:
             text_out = f"{text_out} Evidence: {evidence[:240]}"
-        return VQAResult(
+        pred = VQAResult(
             status="answered",
             answer=text_out,
             figure_id=cite,
             cues=[],
-            pixel_desc=evidence,
-            evidence=evidence,
+            pixel_desc=evidence or answer,
+            evidence=evidence or answer,
             path=VLM_PATH,
             query_used=query_used,
         )
+        if query_used:
+            from abcite_core.visual_qa import visual_text_supports_question
+
+            if not visual_text_supports_question(query_used, f"{answer} {evidence}"):
+                return VQAResult(
+                    status="abstain",
+                    answer=(
+                        f"Retrieved figure {shown_figure_id} does not contain the requested "
+                        "visual evidence. Abstaining."
+                    ),
+                    figure_id=None,
+                    cues=[],
+                    pixel_desc=evidence or answer,
+                    evidence=evidence or answer,
+                    path=VLM_PATH,
+                    query_used=query_used,
+                )
+        return pred
     why = evidence or answer or "pixels do not support the question"
     return VQAResult(
         status="abstain",

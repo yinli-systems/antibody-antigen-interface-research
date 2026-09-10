@@ -72,7 +72,7 @@ Lexical faithfulness is a smoke test only; claim-span / claim-NLI are still heur
 
 ## Visual figure QA — primary multimodal demo
 
-Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** (same gold as the N=1,200 run). Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query. Retrieval is ColQwen2 MaxSim. VQA is cite-or-abstain on the retrieved figure (**heuristic/extractive**, not a VLM). No Qwen2-VL accuracy is claimed until an `ABCITE_VLM=1` GPU receipt exists. Do not mix these numbers with official ViDoRe **89.11** vs published **89.2**.
+Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** (same gold as the N=1,200 run). Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), **not** the figure caption. Unique gold; no PDB in the query. Retrieval is ColQwen2 MaxSim (table below). VQA is scored separately. Do not mix with official ViDoRe **89.11** vs published **89.2**.
 
 | Column | R@1 | R@5 | R@10 | nDCG@5 |
 |---|---|---|---|---|
@@ -81,7 +81,16 @@ Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** (same gold as
 | OpenCLIP ViT-B-32 T→I | 0.039 | 0.137 | 0.176 | 0.096 |
 | ColPali / ColQwen2 T→I | 0.078 | 0.176 | 0.196 | 0.124 |
 
-Vision beats caption BM25 at R@1? **yes**. ColQwen2 GPU MaxSim + `Query: ` prefix (tokens capped 64/768): R@5 0.137→0.176, nDCG@5 0.107→0.124; R@1 unchanged 0.078. CLIP columns from the prior same-gallery run. Not ViDoRe; not SOTA. VQA (heuristic, separate from R@K) e2e=0.1803 oracle=0.5574 cite@1=0.0784 abstain=0.7. See `evals/visual_qa_latest.json`. Real VLM generate (`Qwen/Qwen2-VL-2B-Instruct`, `ABCITE_VLM=1`) is implemented but **not yet run on the 5090** — do not invent those accuracies. Retrieval weights stay `vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0` (not a generate path).
+Vision beats caption BM25 at R@1? **yes**. ColQwen2 GPU MaxSim + `Query: ` prefix (tokens capped 64/768): R@5 0.137→0.176, nDCG@5 0.107→0.124; R@1 unchanged 0.078. CLIP columns from the prior same-gallery run. Not ViDoRe; not SOTA.
+
+VQA cite-or-abstain (separate from R@K), same n=61 / N=15949 / 5090:
+
+| Answerer | e2e | oracle | abstain | cite@1 |
+|---|---:|---:|---:|---:|
+| heuristic pixel cues | **0.1803** | **0.5574** | **0.7** | 0.0784 |
+| Qwen2-VL-2B-Instruct generate | 0.0164 | 0.4262 | 0.0 | 0.0784 |
+
+`vqa.path` = qwen2-vl-2b-instruct generate (cite-or-abstain); not MaxSim. The 2B VLM does **not** beat the heuristic; it over-answers (abstain 0/10). npz cache hit, no 16k re-encode. See `evals/visual_qa_latest.json`.
 
 ## Official ViDoRe v1 — page retrieval (same ColQwen2)
 

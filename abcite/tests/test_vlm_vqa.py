@@ -74,8 +74,40 @@ def test_parse_vlm_answered_cites_shown_figure_not_invented_id():
     assert "pmc-00009" in pred.answer
 
 
-def test_parse_failure_abstains():
-    pred = parse_vlm_generation("I guess it is a cat?", "pmc-00001")
+def test_parse_empty_and_refusal_abstain():
+    empty = parse_vlm_generation("", "pmc-00001")
+    assert empty.status == "abstain"
+    refuse = parse_vlm_generation(
+        "I cannot answer; the requested polar plot is not visible.",
+        "pmc-00001",
+    )
+    assert refuse.status == "abstain"
+    assert refuse.figure_id is None
+
+
+def test_freeform_generation_cites_shown_figure_when_cues_match():
+    raw = (
+        "The image is a gel electrophoresis plate with seven vertical sample "
+        "lanes of dark bands beside a rainbow-stained marker column."
+    )
+    pred = parse_vlm_generation(
+        raw,
+        "pmc-00323",
+        query_used=(
+            "seven vertical sample lanes of dark bands beside a rainbow-stained marker column"
+        ),
+    )
+    assert pred.status == "answered"
+    assert pred.figure_id == "pmc-00323"
+
+
+def test_freeform_unrelated_caption_abstains():
+    raw = "The figure shows a scatter plot with a linear trend line."
+    pred = parse_vlm_generation(
+        raw,
+        "pmc-00313",
+        query_used="emerald nuclear speckles against a dark field",
+    )
     assert pred.status == "abstain"
     assert pred.figure_id is None
 

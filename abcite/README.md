@@ -101,7 +101,7 @@ Hard auto-taxonomy (all 40): **ok 37**, **miss_multi_hop 2**, **miss_figure 1** 
 
 CLIP contrast (local hashing encoder in default CI, **14-SVG cite-id demo only**): **image-only** mean rank1−rank2 cosine gap **0.006** on that toy gallery; caption BM25 gap **12.34**; fused RRF gap is small by construction. Self-hit 100% on 14 figures; **not SOTA**. Do **not** call caption-only cite-id “CLIP multimodal”.
 
-**Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). Retrieval is ColQwen2 late-interaction T→I (`vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0`). VQA is a separate cite-or-abstain step on the retrieved (or oracle) figure pixels. Product default is still extractive/heuristic pixel cues; a real generate VLM (`Qwen/Qwen2-VL-2B-Instruct` behind `ABCITE_VLM=1`) is wired but **has no GPU receipt yet — do not invent Qwen2-VL accuracy**. Do not score Qwen2-VL-2B as ColQwen2 retrieval (missing `custom_text_proj`). `vidore/colqwen2-base` is architecture ColQwen2 / MaxSim, not a VQA generate path. Product: `POST /query` with `task=visual_qa`, or `POST /search-image?task=visual_qa&query=...`. Default evidence RAG still keeps CLIP fusion/rerank **off**.
+**Primary multimodal demo — visual figure QA + pixel retrieval** (2026-09-10). The user question must be answerable only by looking at the image (panel layout, stain, gel bands, colors, arrows, microscopy type). Query is **not** the figure caption. Gold figure is unique; no PDB id in the query. Every answerable item is `caption_bm25_should_fail` (≤1 content-token overlap with the caption). Retrieval is ColQwen2 late-interaction T→I (`vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0`). VQA is a separate cite-or-abstain step on the retrieved (or oracle) figure pixels. Product default stays extractive/heuristic. `ABCITE_VLM=1` runs `Qwen/Qwen2-VL-2B-Instruct` generate — not ColQwen2 MaxSim (`custom_text_proj` is retrieval-only). Product: `POST /query` with `task=visual_qa`. CLIP fusion/rerank **off**.
 
 Gold: `evals/gold/visual_qa.jsonl` (**n=74**: 62 unique-gold answerable + 12 abstain; every answerable item is `caption_bm25_should_fail`). The 16k receipt below is the same **n=51** used on N=1,200 so the gallery-size drop is fair. Gallery: **N=15,949** readable PMC OA jpg on the 5090. Encoder: ColQwen2 late-interaction (GPU MaxSim, `Query: ` prefix); OpenCLIP / BiomedCLIP from the prior same-gallery run.
 
@@ -121,9 +121,14 @@ ColQwen2 column: `ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-co
 
 N=1,200 same-gold reference (not the headline): ColQwen2 0.196 / 0.353 / 0.373 / 0.283; OpenCLIP 0.176 / 0.314 / 0.333 / 0.247; BiomedCLIP 0.098 / 0.176 / 0.274 / 0.135; BM25 0.020 / 0.039 / 0.059 / 0.029.
 
-VQA cite-or-abstain on the 16k ColQwen2 run (**heuristic**, not a VLM; no `ABCITE_VLM=1` GPU receipt yet): e2e **18.0%**, oracle-figure **55.7%**, cite@1 **7.8%**, abstain **70%** (n_abstain=10). Receipt: `evals/visual_qa_latest.json`. End-to-end / oracle / abstain are **not** retrieval R@K and **not** ViDoRe. Official ViDoRe v1 mean is **89.11** vs published **89.2** — do not put PMC figure VQA next to that number.
+VQA cite-or-abstain is **not** retrieval R@K and **not** ViDoRe (official mean **89.11** vs published **89.2**). Same 16k gallery / n=51+10, NVIDIA GeForce RTX 5090. Heuristic remains the product default.
 
-When the 5090 is free: `pip install -e ".[vlm]"` (transformers) plus Hub snapshot `Qwen/Qwen2-VL-2B-Instruct` (~4.4 GB; already in the Mac HF cache as `models--Qwen--Qwen2-VL-2B-Instruct`). Then `ABCITE_VLM=1 ABCITE_COLPALI=1 ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali --colpali-only --vlm` or `bash evals/run_vlm_vqa.sh`. Keep retrieval on `vidore/colqwen2-base` + LoRA `vidore/colqwen2-v1.0`. Do not set `ABCITE_VLM_MODEL=vidore/colqwen2-base`.
+| Answerer | e2e | oracle-figure | abstain | cite@1 |
+|---|---:|---:|---:|---:|
+| heuristic pixel cues (prior receipt) | **18.0%** | **55.7%** | **70%** | 7.8% |
+| Qwen2-VL-2B-Instruct generate (`vqa.path` = qwen2-vl-2b-instruct generate) | 1.6% | 42.6% | 0% | 7.8% |
+
+The 2B VLM **does not beat** the heuristic on this gold. It over-answers (abstain **0%** on 10 unanswerable items). Oracle 42.6% is still below extractive 55.7%. Gold-answer token overlap among VLM oracle hits is 0.51 (diagnostic). Cached `embeddings-colqwen2-n15949.npz`; no 16k re-encode. Do not set `ABCITE_VLM_MODEL=vidore/colqwen2-base`. Receipt: `evals/visual_qa_latest.json`.
 
 **Not SOTA on the PMC figure protocol.** That nDCG@5 **0.124** is not ViDoRe. ViDoRe is **page retrieval** (visual question → PDF page). AbCite visual QA is **figure-jpg retrieval** on 51 PMC questions over N=15,949. Do not put 0.124 next to 81.3 or 89.2.
 
@@ -273,7 +278,7 @@ See [`SKILL_COVERAGE.md`](SKILL_COVERAGE.md).
 | Hit@5 + lexical faithfulness + judge | yes (`evals/run.py`) | Live LLM judge only with API keys; cache `evals/.cache` |
 | Gold | **150 fixture** + **40 hard-dev** | Inter-human Cohen κ (one annotator; human-vs-machine κ = 0.0) |
 | RCSB | allowlist + cache + MCP; live if `ABCITE_RCSB_LIVE=1` | tests never hit the network |
-| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColQwen2 late-interaction on 5090 N=15,949 (R@1 **0.078**); VQA still heuristic until a VLM GPU receipt exists |
+| Vision | SVG→RGB raster + OpenCLIP when `[clip]` is installed; 15,949 PMC OA figures on GPU; **visual QA** (`task=visual_qa`) is the primary figure demo; CLIP fusion **off** by default; VLM generate is opt-in (`ABCITE_VLM=1`, Qwen2-VL-2B-Instruct) | default CI hashing/tiny (`ABCITE_CLIP=0`); BiomedCLIP from cache; ColQwen2 late-interaction on 5090 N=15,949 (R@1 **0.078**); VLM VQA e2e **1.6%** / oracle **42.6%** / abstain **0%** (does not beat heuristic 18.0 / 55.7 / 70) |
 | Audio / video | Whisper interface + CLAP/wav-hash + transcript BM25; video = keyframes + audio track; `/query` `task=audio_qa\|video_qa\|unified`; OA Commons path `evals/download_av.py` + `--oa` | CLAP/Whisper opt-in; CI uses synthetic wav/PNG fixtures; OA media is gitignored |
 | OpenAI/Azure phrasing | called when keys set; citations from retrieval | needs a real key |
 | Azure AI Search | `abcite_core/azure_search.py` hybrid+semantic body; mocked tests | live index needs `AZURE_SEARCH_*` |

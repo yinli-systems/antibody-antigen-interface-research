@@ -51,16 +51,22 @@
   "fusion_default": "off",
   "vqa": {
     "n": 61,
-    "end_to_end_accuracy": 0.1803,
-    "oracle_figure_accuracy": 0.5574,
+    "end_to_end_accuracy": 0.0164,
+    "oracle_figure_accuracy": 0.4262,
     "cite_top1": 0.0784,
-    "abstain_accuracy": 0.7,
+    "abstain_accuracy": 0.0,
     "n_abstain": 10,
-    "path": "extractive/heuristic pixel cues; not a VLM"
+    "gold_answer_overlap_e2e": 0.2857,
+    "gold_answer_overlap_oracle": 0.5111,
+    "path": "qwen2-vl-2b-instruct generate (cite-or-abstain); not MaxSim",
+    "vlm_skip": null,
+    "not_vidore": true,
+    "not_maxsim": true,
+    "scored": true
   },
   "mean_gap_image_i2i": 0.178737,
   "mean_gap_clip_text_to_image": 0.326746,
-  "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. VQA is cite-or-abstain given the retrieved figure (heuristic/extractive).",
+  "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. Retrieval R@K is not VQA and not ViDoRe. VQA is cite-or-abstain given the retrieved figure (qwen2-vl-2b-instruct generate (cite-or-abstain); not MaxSim).",
   "vision_beats_bm25_r@1": true,
   "vision_beats_bm25_ndcg@5": true,
   "gpu": "NVIDIA GeForce RTX 5090",
@@ -102,12 +108,18 @@
     },
     "vqa": {
       "n": 61,
-      "end_to_end_accuracy": 0.1639,
-      "oracle_figure_accuracy": 0.5738,
-      "cite_top1": 0.0588,
-      "abstain_accuracy": 0.8,
+      "end_to_end_accuracy": 0.0164,
+      "oracle_figure_accuracy": 0.4262,
+      "cite_top1": 0.0784,
+      "abstain_accuracy": 0.0,
       "n_abstain": 10,
-      "path": "extractive/heuristic pixel cues; not a VLM"
+      "gold_answer_overlap_e2e": 0.2857,
+      "gold_answer_overlap_oracle": 0.5111,
+      "path": "qwen2-vl-2b-instruct generate (cite-or-abstain); not MaxSim",
+      "vlm_skip": null,
+      "not_vidore": true,
+      "not_maxsim": true,
+      "scored": true
     },
     "caption_bm25_should_fail_subset": {
       "recall@1": 0.0,
@@ -133,13 +145,5 @@
     "ndcg@5": 0.1237,
     "n": 51
   },
-  "colpali_encoder": "colqwen2",
-  "colpali_rerun": {
-    "date": "2026-09-10",
-    "flags": "--try-colpali --colpali-only",
-    "maxsim": "gpu batched einsum, query/doc tokens capped 64/768, chunk 128",
-    "query_prefix": "Query: ",
-    "cache": "evals/figures/cache/embeddings-colqwen2-n15949.npz",
-    "note": "CLIP/BiomedCLIP columns kept from the prior same-gallery run; this pass scored ColQwen2 only."
-  }
+  "colpali_encoder": "colqwen2"
 }

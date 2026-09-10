@@ -76,7 +76,12 @@ def _visual_qa_snapshot_md() -> str:
         "microscopy type), **not** the figure caption. Unique gold; no PDB in the query. "
         "VQA is cite-or-abstain on the retrieved figure "
         f"({vqa.get('path') or 'heuristic/extractive, not a VLM'}). "
-        "No Qwen2-VL accuracy is claimed until an ABCITE_VLM=1 GPU receipt exists.\n\n"
+        + (
+            ""
+            if "qwen2-vl" in str(vqa.get("path") or "").lower()
+            else "No Qwen2-VL accuracy is claimed until an ABCITE_VLM=1 GPU receipt exists. "
+        )
+        + "\n\n"
         "| Column | R@1 | R@5 | R@10 | nDCG@5 |\n"
         "|---|---|---|---|---|\n"
         f"| caption BM25 | {_rk(four.get('caption_bm25'), 'recall@1')} | "

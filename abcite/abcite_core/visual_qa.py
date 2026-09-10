@@ -403,6 +403,14 @@ def gold_answer_overlap(pred_answer: str, gold_answer: str) -> float:
     return round(len(a & g) / max(1, len(g)), 4)
 
 
+def visual_text_supports_question(question: str, text: str, min_overlap: int = 2) -> bool:
+    """Whether a VLM/heuristic description actually addresses the visual question."""
+    if not (question or "").strip() or not (text or "").strip():
+        return False
+    inter = content_tokens(question) & content_tokens(text)
+    return len(inter) >= min_overlap or _lexicon_support(question, text)
+
+
 def _recall_block(scores_list: list[np.ndarray], items: list[dict], gallery: FigureGallery) -> dict:
     from abcite_core.metrics import ndcg_at_k
 
