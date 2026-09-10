@@ -16,7 +16,9 @@ found; `epitope_ratio` has had both of its two registered readings.
 | Displacing a frozen per-residue representation is harmful | reproduced on a second cohort with a second representation — a **sequence** model, AntiBERTy, not a second structural encoder. Quote the **pair AUPRC** endpoint: +30.2%, 6/6 seeds, sign bound 0.607 | two representations, two cohorts, confounded by coverage and provenance |
 | Correspondence damage saturates by ~8 **representation rows** | k=8, k=16 and global permutation within a hair of each other on both ladders | 10 seeds ESM-IF1, 6 seeds AntiBERTy; **the displacement is in CDR-selected row index, not verified as peptide distance** |
 | A one-residue register error already costs a lot | 52% of total damage (ESM-IF1), 44% (AntiBERTy) | ESM-IF1 lands between the registered cliff and slope boundaries; reported as intermediate |
-| Down-weighting the relational term improves **both** tasks | interior optimum near λ=0.25; node +13.3% and pair +10.8% together | refuted the competition framing this project started from |
+| The **ranking** term is what costs both tasks | deleting it improves pair AUPRC +0.0214 and node MCC +0.0369, 10/10 seeds each | causal ablation, four arms, one cohort |
+| Contact supervision is nearly free on the node side and transforms pair prediction | +0.0833 pair AUPRC over node-only, 10/10; node MCC and AUPRC undecided at 3/10 and 5/10 | same ablation |
+| Down-weighting the relational term improves both tasks | interior optimum near λ=0.25; node +13.3% and pair +10.8% together | refuted the competition framing this project started from — and now **localised**: the branch is not homogeneous, and it is the ranking part that should be down-weighted |
 | The relational branch does not feed the node heads | node-only 0.1590 vs pair-supervised 0.1572 | makes the external comparison fair |
 | sabdab2 and AsEP overlap by PDB entry | measured before any cross-cohort claim | constrains what either cohort may say about the other |
 
@@ -33,7 +35,7 @@ stronger for saying them out loud.
 | "Precision and recall both higher than published" | held only against one older WALLE row, not against PEPNet+LE or the later WALLE tabulation. Withdrawn |
 | "PCGrad is a negative control here" | it projects on ~1.6 of 2 ordered pairs per step. The premise rested on a cosine measured with a term missing. Withdrawn |
 | "`partner_rank` selects badly because its trunk gradient is small" | does not follow: selection quality depends on ordering, not gradient norm. Withdrawn; replaced with a measurement that has not read out |
-| "The optimisation pathology is the ranking term" | refuted by the three-way geometry. The ranking gradient is 23-40× smaller than the node gradient and near-orthogonal |
+| ~~"The optimisation pathology is the ranking term"~~ | **reinstated by the causal ablation.** The three-way trunk geometry appeared to refute it — the ranking gradient is 23-40× smaller and near-orthogonal — but deleting the term improves both endpoints on 10/10 seeds. The ablation decides; the geometry does not account for it, and both are reported |
 | "Checkpoint selection on total loss is worth +0.0278" | **the comparison was never run.** Both arms used `--selection-metric total`; they differed in `d_model`, 256 against 128. The number is a width effect. Withdrawn |
 | "The checkpoint-selection effect is split-specific" | stage three changed **both** the selection metric and the width relative to the frozen configuration, so it confirmed a bundle. What is recorded: a development-set configuration did not confirm on the ratio test. No mechanism is attributed |
 
@@ -42,7 +44,8 @@ stronger for saying them out loud.
 | question | what would settle it |
 |---|---|
 | ~~Why does cos(node, edge) differ between a converged checkpoint and early training?~~ | **Answered.** Both were AsEP, not two cohorts — the earlier attribution to sabdab2 was an error. The cosine is negative for ~100 steps and positive after; +0.70 is the endpoint of a trajectory that starts with the opposite sign |
-| Is contact supervision or ranking the relational component that matters? | four arms × 10 seeds: node only, node+edge, node+rank, node+edge+rank |
+| ~~Is contact supervision or ranking the relational component that matters?~~ | **Answered: ranking.** See `objective_component_localisation_v1/PART_TWO.md` |
+| By what mechanism, given the trunk gradient is far too small to explain it? | unresolved. Candidates: parameters outside the shared trunk, the trajectory, an interaction with checkpoint selection, higher-order effects. Nothing run so far separates them |
 | Is `partner_rank` a poorly aligned selection signal? | Spearman against the per-epoch node metric, and paired selection regret against `total`. Both are required before the claim may be written |
 | Do gradient-balancing methods recover what hand-tuning λ recovers? | on hold. Whether the comparison is even scientific depends on the first question |
 

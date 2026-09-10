@@ -53,6 +53,10 @@ intervals are percentile bootstrap at 95%.
 | 10 | Benchmark position, group split | vs published | AsEP `epitope_group` **test** | node (epitope) | macro | selected on validation, max per-complex MCC | 10 | MCC 0.157 | vs 0.171 main-table / 0.188 best configuration | n/a, single reading | `asep_benchmark_v1/` |
 | 11 | Benchmark position, ratio split | vs published | AsEP `epitope_ratio` **test** | node (epitope) | macro | same | 10 | MCC 0.258 | vs 0.410 best, and below WALLE's paper 0.305 | n/a, single reading | `asep_benchmark_v1/ratio_test_measurement.json` |
 | 12 | Width effect under `total` selection | d256 vs d128 | AsEP `epitope_group` **validation** | node (epitope) | macro | **best-on-split**, not comparable to published | 10, paired | +0.0278 | n/a | seeds | `checkpoint_selection_confirmation_v1/stage_two_group_validation.json` |
+| 14 | Deleting the ranking term improves **both** endpoints | `node_edge` vs `node_edge_rank` | AsEP `epitope_group` **validation** | both | macro (pair AUPRC; node MCC at fixed 0.5) | fixed 0.5 for the node metric | 10, paired | pair +0.0214, node MCC +0.0369 | pair +31% | seeds | `objective_component_localisation_v1/PART_TWO.md` |
+| 15 | Contact supervision costs nothing detectable on the node side | `node_edge` vs `node_only` | same | node | macro | fixed 0.5 | 10, paired | MCC −0.0026 (3/10), AUPRC −0.0055 (5/10) | n/a | seeds | same, **both undecided** |
+| 16 | Contact supervision transforms pair prediction | `node_edge` vs `node_only` | same | pair | macro | n/a | 10, paired | +0.0833 | 0.0905 against 0.0072 | seeds | same |
+| 17 | Ranking alone damages node learning | `node_rank` vs `node_only` | same | node | macro | fixed 0.5 | 10, paired | −0.0748 | n/a | seeds | same |
 | 13 | That configuration did not confirm | vs prior frozen configuration | AsEP `epitope_ratio` **test** | node (epitope) | macro | validation-selected | 10 | 0.2551 vs 0.2584 | −0.0033 | seeds | `ratio_test_confirmation.json` |
 
 ## Rules this ledger enforces
@@ -74,6 +78,12 @@ registered access protocol. They have no seed-level interval over repeated test
 access because there was none, and both splits are now spent.
 
 ## Open
+
+Rows 14-17 use the node MCC at a **fixed 0.5** threshold, not a validation-selected
+one, because the arms are compared to each other rather than to a published row
+and a per-arm selected threshold would let calibration differences masquerade as
+learning differences. The threshold-free node AUPRC is reported beside it and
+agrees in every case.
 
 Row 9 has no interval because the classification is per run and every run agrees;
 a resampling unit for it has not been argued for and it is reported as a count.
