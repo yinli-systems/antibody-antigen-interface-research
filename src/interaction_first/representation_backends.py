@@ -26,6 +26,8 @@ inspected, and tested on a machine with none of the weights.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from typing import Any
 
 from .pretrained_representations import RepresentationError, RepresentationUnit
@@ -186,10 +188,150 @@ class EsmIf1Backend(_TorchBackend):
         return representation.to(torch.float32).cpu()
 
 
+
+
+def place_backbone_oxygen(coordinates: Any) -> Any:
+    """Add the carbonyl oxygen to an N, CA, C backbone by ideal geometry.
+
+    ProteinMPNN featurises N, CA, C and O. The backbone store here holds only the
+    first three, because ESM-IF1 needs no more, so O is constructed rather than
+    read. It sits in the peptide plane at 1.231 A from C, along the direction
+    that bisects the two bonds leaving C -- away from CA and away from the next
+    residue's N:
+
+        d = normalise( normalise(C - CA) + normalise(C - N_next) )
+        O = C + 1.231 * d
+
+    The final residue has no next N. Its O is placed along ``C - CA`` alone,
+    which is the same construction with the missing term dropped.
+
+    This is an idealisation, and it is the same idealisation for every arm --
+    aligned, shuffled and control all receive it -- so it cannot produce a
+    difference between them. It is recorded because a reader comparing this
+    encoder to ESM-IF1 should know that one of them was given a reconstructed
+    atom and the other was not.
+    """
+    import torch
+
+    coordinates = torch.as_tensor(coordinates, dtype=torch.float32)
+    nitrogen, alpha, carbon = coordinates[:, 0], coordinates[:, 1], coordinates[:, 2]
+
+    def unit(vector):
+        return vector / vector.norm(dim=-1, keepdim=True).clamp_min(1e-8)
+
+    away_from_alpha = unit(carbon - alpha)
+    direction = away_from_alpha.clone()
+    if coordinates.shape[0] > 1:
+        away_from_next = unit(carbon[:-1] - nitrogen[1:])
+        direction[:-1] = unit(away_from_alpha[:-1] + away_from_next)
+    oxygen = carbon + 1.231 * direction
+    return torch.stack([nitrogen, alpha, carbon, oxygen], dim=1)
+
+
+class ProteinMpnnBackend(_TorchBackend):
+    """ProteinMPNN encoder latents for one chain's own backbone.
+
+    A second structure-conditioned per-residue encoder, chosen because it shares
+    no architecture and no training objective with ESM-IF1: a message-passing
+    network over a k-nearest-neighbour graph of backbone atoms, against a
+    GVP-transformer. What it shares is the input -- the same backbone store, the
+    same chains, the same manifest -- which is what makes the comparison a
+    comparison.
+    """
+
+    name = "proteinmpnn_v_48_020"
+    dim = 128
+    revision = "proteinmpnn_v_48_020"
+    requires_backbone = True
+    # Set by the caller to the checkout that holds protein_mpnn_utils.py and the
+    # vanilla weights; there is no packaged distribution whose provenance this
+    # project is willing to assume.
+    checkout: Any = None
+
+    def _ensure(self) -> Any:
+        if self._model is None:
+            import sys
+
+            if self.checkout is None:
+                raise RepresentationError(
+                    "ProteinMpnnBackend.checkout must point at a ProteinMPNN checkout"
+                )
+            checkout = str(self.checkout)
+            if checkout not in sys.path:
+                sys.path.insert(0, checkout)
+            try:
+                from protein_mpnn_utils import ProteinMPNN
+            except ModuleNotFoundError as error:
+                raise RepresentationError(
+                    f"protein_mpnn_utils.py is not under {checkout}"
+                ) from error
+            import torch
+
+            weights = Path(checkout) / "vanilla_model_weights" / "v_48_020.pt"
+            if not weights.is_file():
+                raise RepresentationError(f"no weights at {weights}")
+            checkpoint = torch.load(weights, map_location="cpu", weights_only=False)
+            model = ProteinMPNN(
+                num_letters=21, node_features=128, edge_features=128, hidden_dim=128,
+                num_encoder_layers=3, num_decoder_layers=3,
+                augment_eps=0.0, k_neighbors=int(checkpoint["num_edges"]),
+            )
+            model.load_state_dict(checkpoint["model_state_dict"])
+            self._model = model.eval().to(self.device)
+        return self._model
+
+    def encode(self, unit: RepresentationUnit) -> Any:
+        torch = self._torch()
+
+        import sys
+
+        if str(self.checkout) not in sys.path:
+            sys.path.insert(0, str(self.checkout))
+        from protein_mpnn_utils import gather_nodes
+
+        model = self._ensure()
+        if unit.backbone is None:
+            raise RepresentationError("ProteinMPNN requires a backbone")
+        coordinates = torch.as_tensor(unit.backbone, dtype=torch.float32)
+        if coordinates.ndim != 3 or coordinates.shape[1:] != (3, 3):
+            raise RepresentationError("backbone must have shape [residue, 3, 3] for N, CA, C")
+        if coordinates.shape[0] != len(unit.sequence):
+            raise RepresentationError(
+                f"backbone has {coordinates.shape[0]} residues for a "
+                f"{len(unit.sequence)}-residue sequence"
+            )
+        length = coordinates.shape[0]
+        with torch.no_grad():
+            atoms = place_backbone_oxygen(coordinates).unsqueeze(0).to(self.device)
+            mask = torch.ones(1, length, dtype=torch.float32, device=self.device)
+            residue_index = torch.arange(length, device=self.device).unsqueeze(0)
+            chain_encoding = torch.ones(1, length, dtype=torch.long, device=self.device)
+
+            # The encoder half of ProteinMPNN.forward, which is where the
+            # structure-conditioned per-residue representation lives. The decoder
+            # is autoregressive over sequence and is not run: nothing here is
+            # conditioned on the sequence, exactly as ESM-IF1's encoder output is
+            # not.
+            edges, edge_index = model.features(atoms, mask, residue_index, chain_encoding)
+            nodes = torch.zeros(
+                (edges.shape[0], edges.shape[1], edges.shape[-1]), device=edges.device
+            )
+            hidden = model.W_e(edges)
+            attend = gather_nodes(mask.unsqueeze(-1), edge_index).squeeze(-1)
+            attend = mask.unsqueeze(-1) * attend
+            for layer in model.encoder_layers:
+                nodes, hidden = layer(nodes, hidden, edge_index, mask, attend)
+            representation = nodes[0]
+        if representation.shape[0] != len(unit.sequence):
+            raise RepresentationError("ProteinMPNN returned an unexpected residue count")
+        return representation.to(torch.float32).cpu()
+
+
 BACKENDS = {
     "antiberty": AntiBertyBackend,
     "esm2": Esm2Backend,
     "esm_if1": EsmIf1Backend,
+    "proteinmpnn": ProteinMpnnBackend,
 }
 
 

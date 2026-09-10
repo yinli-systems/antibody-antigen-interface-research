@@ -90,3 +90,44 @@ an uninformative addition is harmless, a *mis*informative one is not.
 | launcher | `slurm/representation_arms.sbatch` |
 | shuffle | `--shuffle-representation-residues 20260911` |
 | split | `double_remote_split.json`, sha256 `3da484ae…` |
+
+---
+
+## Where the variance is: seeds or complexes?
+
+Added 2026-09-11. A margin averaged over seeds says the arm is reliably better
+*given this validation set*. It does not say whether the advantage is spread
+across complexes or carried by a few, and those imply different things for a new
+antigen.
+
+Aligned minus shuffled, ten seeds × 217 complexes, every cell present:
+
+| resampling unit | sd | 95% interval |
+|---|---:|---|
+| seeds (10) | 0.002151 | [+0.006943, +0.009444] |
+| **complexes (217)** | **0.015119** | [+0.006229, +0.010306] |
+
+Overall mean paired difference +0.008204, the same figure the seed-level
+comparison reports.
+
+**The complex-level spread is seven times the seed-level spread.** Which seed was
+trained matters far less than which complexes were drawn. The two intervals come
+out comparable in width only because there are 217 complexes and 10 seeds.
+
+**The advantage is broad, not carried by a tail.** 162 of 217 complexes favour
+the aligned arm — 74.7%, exact sign lower bound 0.6933, which clears 0.5.
+
+**But the mean overstates the typical complex.** Per-complex differences:
+
+| p5 | p25 | p50 | p75 | p95 |
+|---:|---:|---:|---:|---:|
+| −0.0104 | −0.0003 | **+0.0043** | +0.0144 | +0.0321 |
+
+The median is about half the mean, and the top ventile is four times it. A
+quarter of complexes are no better or worse. So "+42.4% on average" is true of
+the split and is not what to expect on an arbitrary new antigen; the median
+complex gains about half that in absolute terms.
+
+Both resampling units support the direction. Neither removes the fact that this
+validation split informed model selection elsewhere in the project, and no
+resampling can.

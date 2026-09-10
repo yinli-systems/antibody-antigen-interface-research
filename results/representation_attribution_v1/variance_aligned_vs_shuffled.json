@@ -1,0 +1,56 @@
+{
+  "arm": "aligned",
+  "baseline": "shuffled",
+  "claim_boundary": "Validation predictions only. The seed interval describes repeatability under training randomness; the complex interval describes sensitivity to which complexes were drawn. Neither removes the fact that this split informed model selection.",
+  "complex_count": 217,
+  "complex_level": {
+    "ci95_over_complexes": [
+      0.006229006733157954,
+      0.01030628710436998
+    ],
+    "favourable_complexes": 162,
+    "favourable_fraction": 0.7465437788018433,
+    "quantiles": {
+      "0.05": -0.010447742087006292,
+      "0.25": -0.0002500176192471091,
+      "0.5": 0.00433978917098789,
+      "0.75": 0.014383523713856974,
+      "0.95": 0.03212912464316135
+    },
+    "sd": 0.015118551530354764,
+    "sign_lower_bound": 0.6933030411768635
+  },
+  "format_version": "paired_complex_variance_v1",
+  "overall_mean": 0.008203640685771797,
+  "seed_level": {
+    "ci95_over_seeds": [
+      0.006943400992888998,
+      0.009443681371556307
+    ],
+    "means": [
+      0.009811788336921179,
+      0.0041541433905286276,
+      0.008923833465277803,
+      0.00720495402669654,
+      0.007056090788591119,
+      0.009067203267609805,
+      0.00632850965897277,
+      0.012053454867867788,
+      0.009036102057965715,
+      0.008400326997286614
+    ],
+    "sd": 0.002150764567922577
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ]
+}
