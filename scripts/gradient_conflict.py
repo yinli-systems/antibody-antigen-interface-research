@@ -109,8 +109,15 @@ def main(argv: list[str] | None = None) -> int:
     import pandas as pd
     import torch
 
+    from interaction_first.contacts import load_contact_map
     from interaction_first.losses import InteractionLossWeights, interaction_first_loss
+    from interaction_first.model import PartnerSpecificInteractionModel
+    from interaction_first.runtime import EmbeddingStore, safe_torch_load
 
+    # The training script is imported for the split loader and the tensor
+    # assembly, which live only there. Everything the library already exports is
+    # taken from the library: the script does not re-export those names, and
+    # reaching for them through it fails at the first call.
     training = _load_training_module()
 
     frame = pd.read_parquet(arguments.prepare_dir / "instances.parquet").set_index(
@@ -121,10 +128,10 @@ def main(argv: list[str] | None = None) -> int:
     frame = frame.sort_index().iloc[: arguments.instances]
 
     device = torch.device(arguments.device)
-    checkpoint = training.safe_torch_load(arguments.checkpoint, map_location=device)
+    checkpoint = safe_torch_load(arguments.checkpoint, map_location=device)
     config = checkpoint["config"]
 
-    store = training.EmbeddingStore(arguments.embedding_dir.expanduser().resolve(), 2.0)
+    store = EmbeddingStore(arguments.embedding_dir.expanduser().resolve(), 2.0)
     if arguments.esm_if1_root is not None:
         from interaction_first.composite_embeddings import (
             CompositeEmbeddingStore,
@@ -139,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
             ),
         )
 
-    model = training.PartnerSpecificInteractionModel(
+    model = PartnerSpecificInteractionModel(
         antigen_input_dim=int(config.get("antigen_input_dim", config["input_dim"])),
         antibody_input_dim=int(config.get("antibody_input_dim", config["input_dim"])),
         d_model=int(config["d_model"]),
@@ -185,7 +192,7 @@ def main(argv: list[str] | None = None) -> int:
     per_instance = []
     for instance_id in frame.index:
         row = frame.loc[instance_id]
-        contact = training.load_contact_map(
+        contact = load_contact_map(
             arguments.contact_dir / f"{instance_id}.npz", str(instance_id)
         )
         tensors = training._example_tensors(contact, row, store, device)
