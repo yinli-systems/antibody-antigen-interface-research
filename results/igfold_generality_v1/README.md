@@ -1,8 +1,22 @@
-# A second structural encoder does not replicate the alignment finding
+# A sequence representation shows the harm but not the benefit
+
+> **Corrected 2026-09-11. This arm is not a structural encoder.** It is
+> AntiBERTy — a sequence model with no coordinates — read from AsEP's cached
+> interim graphs under the key `igfold`. Verified by running AntiBERTy and
+> matching tensors: `results/feature_provenance_v1/`. This project never ran
+> IgFold. The numbers below stand; every claim about "a second structural
+> encoder" is withdrawn, and no such test was ever performed.
+>
+> The arm also differs from the ESM-IF1 arm in cohort (AsEP against sabdab2), in
+> coverage (antibody side only against both), and in whether the features were
+> extracted here or copied from a cache. Differences between the two arms are
+> not attributable to the encoder.
 
 Status: six paired seeds, AsEP `epitope_group` validation, antibody side only.
-This was run to test whether the ESM-IF1 attribution generalises. **It does
-not**, and the way it fails matters.
+This was run believing it tested whether the ESM-IF1 attribution generalises
+across structural encoders. It did not test that. What it does show is that a
+frozen *sequence* representation shows the harm from misalignment without
+showing a benefit from alignment.
 
 Date: 2026-09-10
 

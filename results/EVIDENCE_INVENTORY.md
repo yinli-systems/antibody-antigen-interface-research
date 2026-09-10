@@ -13,9 +13,9 @@ found; `epitope_ratio` has had both of its two registered readings.
 |---|---|---|
 | The pair head beats a predicted-marginal outer product | +30.5% macro pair AUPRC, 20 seeds, 20/20 positive, sign bound 0.861 | replicated; the original single-seed +32.7% was about 2× the truth |
 | ESM-IF1's contribution is in the residue correspondence, not the vectors | aligned +22.8% over ESM-2 (10/10); width-matched random −2.6% (undecided); shuffled −13.8% (decided worse); aligned vs shuffled +42.4% (10/10) | the full chain, one cohort, one encoder |
-| Misaligned structural features are actively harmful | reproduced on a second cohort and a second encoder: IgFold corrupted is worse than IgFold randomised | two encoders, two cohorts |
-| Correspondence damage saturates by ~8 residues | k=8, k=16 and global permutation within a hair of each other on both encoders | 10 seeds ESM-IF1, 6 seeds IgFold |
-| A one-residue register error already costs a lot | 52% of total damage (ESM-IF1), 44% (IgFold) | ESM-IF1 lands between the registered cliff and slope boundaries; reported as intermediate |
+| Displacing a frozen per-residue representation is harmful | reproduced on a second cohort with a second representation — a **sequence** model, AntiBERTy, not a second structural encoder | two representations, two cohorts, confounded by coverage and provenance |
+| Correspondence damage saturates by ~8 residues | k=8, k=16 and global permutation within a hair of each other on both ladders | 10 seeds ESM-IF1, 6 seeds AntiBERTy; **the displacement is in CDR-selected row index, not verified as peptide distance** |
+| A one-residue register error already costs a lot | 52% of total damage (ESM-IF1), 44% (AntiBERTy) | ESM-IF1 lands between the registered cliff and slope boundaries; reported as intermediate |
 | Down-weighting the relational term improves **both** tasks | interior optimum near λ=0.25; node +13.3% and pair +10.8% together | refuted the competition framing this project started from |
 | The relational branch does not feed the node heads | node-only 0.1590 vs pair-supervised 0.1572 | makes the external comparison fair |
 | sabdab2 and AsEP overlap by PDB entry | measured before any cross-cohort claim | constrains what either cohort may say about the other |
@@ -28,7 +28,7 @@ stronger for saying them out loud.
 | claim | what happened |
 |---|---|
 | "Pair supervision and node prediction compete" | the dose curve found an interior optimum. The project's own registered readability condition fired against its framing |
-| "The alignment benefit generalises across structural encoders" | IgFold aligned ≈ IgFold random (+0.1%, undecided). Only the harm half generalises. Withdrawn |
+| "The alignment benefit generalises across structural encoders" | **the second encoder was never structural.** It is AntiBERTy from AsEP's cache, verified by tensor identity. The test was not run, and the claim is withdrawn along with the framing that a second structural encoder had been tried |
 | "We are above SOTA on AsEP `epitope_group`" | micro figures had been compared to AsEP's per-complex table. Recomputed per complex: MCC 0.1893→0.1572, AUROC 0.7515→0.6970. Withdrawn |
 | "Precision and recall both higher than published" | held only against one older WALLE row, not against PEPNet+LE or the later WALLE tabulation. Withdrawn |
 | "PCGrad is a negative control here" | it projects on ~1.6 of 2 ordered pairs per step. The premise rested on a cosine measured with a term missing. Withdrawn |
@@ -40,7 +40,7 @@ stronger for saying them out loud.
 
 | question | what would settle it |
 |---|---|
-| Why does cos(node, edge) read +0.70 at a converged sabdab2 checkpoint and −0.059 during early AsEP training? | 5 seeds × 2 cohorts × 12 epochs, `measure` arm. Stage, cohort, both, or neither — the fourth outcome indicts the instruments, not the model |
+| ~~Why does cos(node, edge) differ between a converged checkpoint and early training?~~ | **Answered.** Both were AsEP, not two cohorts — the earlier attribution to sabdab2 was an error. The cosine is negative for ~100 steps and positive after; +0.70 is the endpoint of a trajectory that starts with the opposite sign |
 | Is contact supervision or ranking the relational component that matters? | four arms × 10 seeds: node only, node+edge, node+rank, node+edge+rank |
 | Is `partner_rank` a poorly aligned selection signal? | Spearman against the per-epoch node metric, and paired selection regret against `total`. Both are required before the claim may be written |
 | Do gradient-balancing methods recover what hand-tuning λ recovers? | on hold. Whether the comparison is even scientific depends on the first question |
@@ -52,9 +52,15 @@ stronger for saying them out loud.
 - **"Loss-scale imbalance is the mechanism."** Its three supporting
   measurements still agree with each other, but the load-bearing one is now
   known to be stage-specific.
-- **"Residue-level alignment is novel."** There is precedent (RLA). The
+- **"Residue-level alignment is novel."** There is precedent (RLA, and
+  DiscoTope-3.0 for inverse-folding latents in epitope prediction). The
   contribution is the controlled attribution and the severity curve, not the
-  observation that correspondence matters.
+  observation that correspondence or structure matters.
+- **"Two structural encoders."** One. The other is a sequence model.
+- **"k = 8 residues" as a biological length scale.** The displacement moves rows
+  of a CDR-selected array. Whether eight rows is eight residues along the chain
+  is unverified — the selection can jump segments and chain boundaries. The
+  numerical statement stands; the biological reading does not.
 - **"~8 residues is a universal critical length scale."** Two encoders, one
   domain. The safe form: degradation saturates rapidly with displacement,
   reaching near-global-shuffle levels by an eight-residue offset in both

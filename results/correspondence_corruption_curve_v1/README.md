@@ -27,7 +27,11 @@ correspondence entirely costs — above the registered slope boundary of 50% and
 below the cliff boundary of 80%. The protocol says that band is reported as
 itself rather than resolved by moving a boundary, so it is.
 
-## IgFold, AsEP `epitope_group`, 6 seeds
+## AntiBERTy (AsEP cache, key `igfold`), AsEP `epitope_group`, 6 seeds
+
+> **Relabelled 2026-09-11.** This ladder was reported as IgFold, a structural
+> encoder. It is AntiBERTy, a sequence model, verified by tensor identity in
+> `results/feature_provenance_v1/`. The numbers are unchanged.
 
 | k | mean Δ AUPRC | 95% CI | damaged |
 |---|---|---|---|
@@ -55,18 +59,23 @@ a real reversal rather than noise. It is 4% of the total damage. It is not
 wrap-around: the shortest chain in the split is 51 residues, so every chain's
 effective displacement is exactly `k`, which was checked rather than assumed.
 
-**IgFold is damaged more than ESM-IF1, not less.** The protocol expected a flat
+**The sequence representation is damaged more than ESM-IF1, not less.** The protocol expected a flat
 IgFold curve, because `results/igfold_generality_v1/` found IgFold's aligned
 features no better than a random projection. The prediction was wrong in an
 informative direction: correspondence-corrupted IgFold is worse than random
 IgFold, even though aligned IgFold is not better than random IgFold.
 
-That is the sabdab2 attribution chain reproduced on a second cohort and a second
-encoder: `shuffled < random ≈ aligned` for IgFold, against
-`shuffled < random ≪ aligned` for ESM-IF1. Misaligned structural features are
-actively harmful — worse than no structural information — and that half
-generalises. The half that does not generalise is the benefit of alignment,
-which is specific to encoders that carry something in the first place.
+`shuffled < random ≈ aligned` for the sequence representation, against
+`shuffled < random ≪ aligned` for ESM-IF1. So displacement harms a frozen
+per-residue representation whether or not that representation carries structure,
+while the benefit of correct alignment appears only for the structural one.
+
+That is a statement about **residue-indexed features**, not about structural
+ones. The two ladders also differ in cohort, in which chains they cover, and in
+whether the features were extracted here or copied from a cache, so the contrast
+between them is not attributable to the encoder alone. An independent AntiBERTy
+ladder on sabdab2, with features this project extracted and both chains covered,
+is running to remove those confounds.
 
 ## Claim boundary
 

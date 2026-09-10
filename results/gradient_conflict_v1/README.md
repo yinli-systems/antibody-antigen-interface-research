@@ -1,13 +1,17 @@
 # The node and contact-edge objectives agree at convergence
 
 > **Scope narrowed 2026-09-11.** This measures the node objective against the
-> **contact-edge** objective, at **converged sabdab2 checkpoints**. It does not
+> **contact-edge** objective, at **converged AsEP `epitope_group` checkpoints**.
+> (An earlier version of this note said sabdab2. It was wrong; the run config
+> reads `interaction_first_asep` and `asep_epitope_group_split.json`, and the
+> source table below always said AsEP.) It does not
 > describe the full relational objective, and it does not describe training. See
 > "What this does not say" at the bottom, which was added after a second
 > measurement disagreed with it. The numbers below are unchanged and stand.
 
 Status: a direct gradient measurement at three trained checkpoints, eighty
-validation complexes each, on one cohort and at one point in training.
+validation complexes each, on one cohort -- AsEP -- and at one point in
+training.
 
 Date: 2026-09-10
 
@@ -112,23 +116,25 @@ describes it. (Measured separately: the ranking gradient on this trunk is 23-40�
 smaller in norm than the node gradient and near-orthogonal to it —
 `results/objective_component_localisation_v1/`.)
 
-**These are converged checkpoints.** Measured in situ during training on AsEP,
-the cosine between the node and contact-edge gradients is **negative** — −0.059
-and −0.051 over the first two epochs. That is the same decomposition as the
-+0.70 here, so the two disagree about the same quantity.
+**These are converged checkpoints, and that is the whole of it.** Measured in
+situ during training on the *same cohort*, the cosine between the node and
+contact-edge gradients is **negative for roughly the first hundred optimisation
+steps** and positive thereafter — crossing at steps 104, 110 and 77 of 1383
+across three seeds, reaching +0.63 by the end of epoch one and +0.70 by
+convergence (`results/gradient_alignment_dynamics_v1/`).
 
-Which of stage or cohort accounts for the disagreement is being measured, five
-seeds per cohort, twelve epochs each, under
-`protocols/GRADIENT_ALIGNMENT_DYNAMICS_V1.md`. Until that reads out:
+Nothing here was ever wrong except its reach. The measurement is the endpoint of
+a trajectory that begins with the opposite sign.
 
 - the +0.70 stands as a statement about **node versus contact edges at
-  convergence on sabdab2**, and is reported that way;
+  convergence on AsEP**, and is reported that way;
 - "gradient conflict is ruled out" may **not** be written without that
   qualification, because a converged cosine cannot speak for the trajectory that
   produced it;
 - "loss-scale imbalance is the mechanism" may not be written either. The three
   measurements listed above still agree with each other, but the first of them
-  is now known to be stage-specific, and it was the one doing the work.
+  is now known to describe only the end of training, and it was the one doing
+  the work.
 
 The dose-response result (`results/joint_task_competition_v1/`) and the norm
 ratio are unaffected: neither depends on the sign of a cosine.
