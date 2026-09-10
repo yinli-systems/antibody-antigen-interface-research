@@ -98,6 +98,48 @@ AUDIO_CANDIDATES = [
         "question": "soft cuff thumps used to read blood pressure",
         "answer": "Korotkoff thumps.",
     },
+    {
+        "id": "oa-aud-mosquito",
+        "file": "File:Mosquito.ogg",
+        "title": "Mosquito",
+        "question": "thin high whine, not a hiss and not a thud pulse",
+        "answer": "Mosquito-like high whine.",
+    },
+    {
+        "id": "oa-aud-cricket",
+        "file": "File:Cricket.ogg",
+        "title": "Cricket chirp",
+        "question": "rhythmic insect chirp train, not broadband hiss",
+        "answer": "Cricket chirps.",
+    },
+    {
+        "id": "oa-aud-siren",
+        "file": "File:Siren.ogg",
+        "title": "Police siren",
+        "question": "wailing two-tone alarm glide, not a click train",
+        "answer": "Two-tone siren wail.",
+    },
+    {
+        "id": "oa-aud-a440",
+        "file": "File:440 Hz.ogg",
+        "title": "A440 tone",
+        "question": "steady pure tone, not a pulse and not a hiss",
+        "answer": "Steady A440-like tone.",
+    },
+    {
+        "id": "oa-aud-modem",
+        "file": "File:Dial-up_modem_noises.ogg",
+        "title": "Dial-up modem",
+        "question": "harsh handshake screech that is not a sine drone",
+        "answer": "Dial-up modem handshake.",
+    },
+    {
+        "id": "oa-aud-tuningfork",
+        "file": "File:Tuning_fork.ogg",
+        "title": "Tuning fork",
+        "question": "decaying pure ring of a struck metal bar",
+        "answer": "Tuning-fork ring.",
+    },
 ]
 
 VIDEO_CANDIDATES = [
@@ -142,6 +184,34 @@ VIDEO_CANDIDATES = [
         "title": "Transmission electron microscope",
         "question": "which clip shows a tall transmission-electron column in a lab",
         "answer": "TEM column.",
+    },
+    {
+        "id": "oa-vid-neutrophil",
+        "file": "File:Neutrophil_chasing_bacteria.ogv",
+        "title": "Neutrophil chasing bacteria",
+        "question": "which clip shows a crawling cell chasing smaller rods across a field",
+        "answer": "Crawling leukocyte chasing rods.",
+    },
+    {
+        "id": "oa-vid-mitosis",
+        "file": "File:Mitosis.ogv",
+        "title": "Mitosis",
+        "question": "which clip shows a nucleus splitting into two daughter nuclei",
+        "answer": "Mitosis / nuclear split.",
+    },
+    {
+        "id": "oa-vid-sem",
+        "file": "File:Scanning_electron_microscope.ogv",
+        "title": "Scanning electron microscope",
+        "question": "which clip shows a scanning-electron chamber with a sample stub",
+        "answer": "SEM chamber / stub.",
+    },
+    {
+        "id": "oa-vid-bacteria",
+        "file": "File:Bacteria_swimming.ogv",
+        "title": "Bacteria swimming",
+        "question": "which clip shows tiny rods darting in a wet-mount field",
+        "answer": "Swimming rods in wet mount.",
     },
 ]
 
@@ -287,7 +357,7 @@ def _gold_video_row(cid: str, question: str, answer: str) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--max", type=int, default=12)
+    ap.add_argument("--max", type=int, default=16)
     args = ap.parse_args()
     CACHE.mkdir(parents=True, exist_ok=True)
     AUD_OA.mkdir(parents=True, exist_ok=True)

@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -40,24 +41,65 @@ def test_visual_qa_gold_constraints():
         for line in GOLD.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
-    assert len(rows) >= 50
+    assert len(rows) >= 150
     golds: list[str] = []
     fail_n = 0
+    ids: list[str] = []
     for row in rows:
+        ids.append(row["id"])
         assert visual_query_ok(row["question"])
         assert not query_contains_pdb(row["question"])
         assert "1n8z" not in row["question"].lower()
-        assert "caption_bm25_should_fail" in row
-        if row.get("caption_bm25_should_fail"):
-            fail_n += 1
+        assert row.get("caption_bm25_should_fail") is True
+        fail_n += 1
         if row.get("expected_status") != "abstain":
             assert row.get("gold_figure_ids")
             golds.append(row["gold_figure_ids"][0])
             assert row.get("must_look_at_image") is True
+        else:
+            assert not row.get("gold_figure_ids")
+    assert len(ids) == len(set(ids))
     assert len(golds) == len(set(golds))
-    assert fail_n >= 20
+    assert fail_n == len(rows)
     abstain = [r for r in rows if r.get("expected_status") == "abstain"]
-    assert len(abstain) >= 4
+    assert len(abstain) >= 12
+    assert len(golds) >= 120
+
+
+def test_visual_qa_gold_caption_overlap_on_cache_metadata():
+    meta = ROOT / "evals" / "figures" / "cache" / "metadata.jsonl"
+    fix = ROOT / "evals" / "figures" / "fixture" / "metadata.jsonl"
+    if not meta.exists() and not fix.exists():
+        pytest.skip("no figure metadata")
+    caps: dict[str, str] = {}
+    for path in (meta, fix):
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            raw = json.loads(line)
+            caps[str(raw.get("figure_id") or "")] = str(raw.get("caption") or "")
+    rows = [
+        json.loads(line)
+        for line in GOLD.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    checked = 0
+    for row in rows:
+        if row.get("expected_status") == "abstain":
+            continue
+        cap = None
+        for gid in row.get("gold_figure_ids") or []:
+            if gid in caps:
+                cap = caps[gid]
+                break
+        if cap is None:
+            continue
+        ov = caption_keyword_overlap(row["question"], cap)
+        assert ov["should_fail"], (row["id"], ov["overlap_tokens"])
+        checked += 1
+    assert checked >= 20
 
 
 def test_caption_bm25_should_fail_on_fixture_captions():

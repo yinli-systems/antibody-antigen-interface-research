@@ -20,17 +20,17 @@
     "n": 6
   },
   "audio_clap_t2a": {
-    "recall@1": 0.1667,
+    "recall@1": 0.0,
     "recall@5": 0.8333,
     "recall@10": 1.0,
-    "ndcg@5": 0.4914,
+    "ndcg@5": 0.4196,
     "n": 6
   },
   "within_video_rrf": {
-    "recall@1": 0.1667,
+    "recall@1": 0.3333,
     "recall@5": 0.8333,
     "recall@10": 1.0,
-    "ndcg@5": 0.5539,
+    "ndcg@5": 0.5863,
     "n": 6
   },
   "transcript_bm25_should_fail_subset": {

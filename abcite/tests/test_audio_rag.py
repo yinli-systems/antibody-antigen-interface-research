@@ -56,6 +56,26 @@ def test_audio_encoder_defaults_to_wav_hash():
     assert enc.name == "wav-hash"
 
 
+def test_resample_mono_changes_length():
+    from abcite_core.audio_rag import _resample_mono
+    import numpy as np
+
+    x = np.linspace(-1.0, 1.0, 1600, dtype=np.float32)
+    y = _resample_mono(x, 16000, 48000)
+    assert abs(len(y) - 4800) <= 1
+
+
+def test_resolve_clap_source_prefers_local_dir(tmp_path, monkeypatch):
+    from abcite_core.audio_rag import resolve_clap_source
+
+    d = tmp_path / "clap-htsat-unfused"
+    d.mkdir()
+    (d / "config.json").write_text("{}", encoding="utf-8")
+    (d / "pytorch_model.bin").write_bytes(b"fake")
+    monkeypatch.setenv("ABCITE_CLAP_MODEL", str(d))
+    assert resolve_clap_source() == str(d)
+
+
 def test_oa_audio_candidates_should_fail_filler_bm25():
     from evals.download_av import AUDIO_CANDIDATES, FILLER
 

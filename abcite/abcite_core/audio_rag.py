@@ -47,6 +47,17 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r"[a-z0-9_\-]+", text.lower())
 
 
+def _resample_mono(samples: np.ndarray, src_rate: int, dst_rate: int) -> np.ndarray:
+    """Linear resample. CLAP was trained at 48 kHz; fixtures are 16 kHz wav."""
+    arr = np.asarray(samples, dtype=np.float32).reshape(-1)
+    if src_rate == dst_rate or arr.size == 0:
+        return arr
+    n_dst = max(1, int(round(arr.size * dst_rate / src_rate)))
+    t_old = np.linspace(0.0, 1.0, num=arr.size, endpoint=False)
+    t_new = np.linspace(0.0, 1.0, num=n_dst, endpoint=False)
+    return np.interp(t_new, t_old, arr).astype(np.float32)
+
+
 def load_wav_mono(path: Path) -> tuple[np.ndarray, int]:
     with wave.open(str(path), "rb") as fh:
         nch = fh.getnchannels()
@@ -347,13 +358,14 @@ class _ClapEnc:
         import torch
 
         samples, rate = load_wav_mono(path)
-        inputs = self.processor(audios=samples, sampling_rate=rate, return_tensors="pt")
+        if rate != 48000:
+            samples = _resample_mono(samples, rate, 48000)
+            rate = 48000
+        inputs = self.processor(audio=samples, sampling_rate=rate, return_tensors="pt")
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
         with torch.no_grad():
             out = self.model.get_audio_features(**inputs)
-        vec = out[0].float().cpu().numpy()
-        n = float(np.linalg.norm(vec))
-        return (vec / n) if n else vec.astype(np.float32)
+        return _clap_vec(out)
 
     def encode_text(self, text: str) -> np.ndarray:
         import torch
@@ -362,12 +374,51 @@ class _ClapEnc:
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
         with torch.no_grad():
             out = self.model.get_text_features(**inputs)
-        vec = out[0].float().cpu().numpy()
-        n = float(np.linalg.norm(vec))
-        return (vec / n) if n else vec.astype(np.float32)
+        return _clap_vec(out)
+
+
+def _clap_vec(out) -> np.ndarray:
+    """Normalize a CLAP embedding. Newer transformers return BaseModelOutputWithPooling."""
+    import torch
+
+    if hasattr(out, "pooler_output") and out.pooler_output is not None:
+        tensor = out.pooler_output
+    elif torch.is_tensor(out):
+        tensor = out
+    else:
+        tensor = out[0]
+    vec = tensor.detach().float().cpu().numpy()
+    vec = np.asarray(vec, dtype=np.float32)
+    if vec.ndim >= 2:
+        vec = vec.reshape(-1, vec.shape[-1]).mean(axis=0)
+    n = float(np.linalg.norm(vec))
+    return (vec / n) if n else vec
 
 
 _CLAP: _ClapEnc | None | bool = False
+_HUB_CLAP = "laion/clap-htsat-unfused"
+
+
+def resolve_clap_source() -> str:
+    """Prefer a complete local snapshot so eval does not hit a 429 Hub."""
+    env = (os.environ.get("ABCITE_CLAP_MODEL") or "").strip()
+    candidates: list[Path] = []
+    if env:
+        path = Path(env).expanduser()
+        if path.is_dir():
+            candidates.append(path)
+    candidates.extend(
+        [
+            Path("/workspace/hf-cache/clap-htsat-unfused"),
+            Path.home() / ".cache/huggingface/clap-htsat-unfused",
+        ]
+    )
+    for path in candidates:
+        if not path.is_dir() or not (path / "config.json").is_file():
+            continue
+        if (path / "pytorch_model.bin").is_file() or (path / "model.safetensors").is_file():
+            return str(path)
+    return env or _HUB_CLAP
 
 
 def _try_clap() -> _ClapEnc | None:
@@ -381,10 +432,11 @@ def _try_clap() -> _ClapEnc | None:
             import torch
             from transformers import ClapModel, ClapProcessor
 
-            name = os.environ.get("ABCITE_CLAP_MODEL", "laion/clap-htsat-unfused")
+            name = resolve_clap_source()
+            local = Path(name).is_dir()
             device = "cuda" if torch.cuda.is_available() else "cpu"
-            model = ClapModel.from_pretrained(name).to(device).eval()
-            proc = ClapProcessor.from_pretrained(name)
+            model = ClapModel.from_pretrained(name, local_files_only=local).to(device).eval()
+            proc = ClapProcessor.from_pretrained(name, local_files_only=local)
             _CLAP = _ClapEnc(model, proc, device)
             print(f"CLAP loaded {name} on {device}", flush=True)
         except Exception as exc:
