@@ -77,6 +77,16 @@ class MeasuringBalancer:
 
     name = "measure"
 
+    # An epoch mean cannot resolve a transient that lives inside one epoch. The
+    # first evidence of conflict came from a 40-instance smoke whose whole epoch
+    # was 40 steps, while a full AsEP epoch is 1383; the two disagree in sign,
+    # which is what a sign change early in the first epoch would look like from
+    # each. So individual steps are kept, capped, alongside the mean.
+    TRACE_LIMIT = 4000
+
+    def __init__(self) -> None:
+        self.trace: list[dict[str, float]] = []
+
     def step(self, losses, shared, model) -> dict[str, float]:  # noqa: ARG002
         import torch
 
@@ -87,6 +97,8 @@ class MeasuringBalancer:
             for name in names
         ]
         geometry = _pairwise_geometry(names, flats)
+        if len(self.trace) < self.TRACE_LIMIT:
+            self.trace.append(dict(geometry))
         sum(losses.values()).backward()
         return geometry
 

@@ -243,3 +243,46 @@ def test_the_command_line_offers_exactly_the_balancers_that_exist():
         if "--multitask-balancer" in getattr(entry, "option_strings", [])
     )
     assert set(action.choices) == set(BALANCERS)
+
+
+def test_the_measuring_arm_keeps_individual_steps_not_only_their_mean():
+    """An epoch mean averages away a sign change that happens inside the epoch.
+
+    A 40-instance smoke reported a negative mean cosine over its whole epoch,
+    and a full 1383-instance epoch of the same configuration reported a strongly
+    positive one. Both are consistent with a negative transient in the first few
+    dozen steps, and neither can show it, so the steps are kept.
+    """
+    import torch
+
+    balancer = build_balancer("measure")
+    model = torch.nn.Linear(4, 1, bias=False)
+    shared = list(model.parameters())
+    inputs = torch.ones(1, 4)
+    for _ in range(3):
+        model.zero_grad(set_to_none=True)
+        balancer.step({"node": (model(inputs) ** 2).sum(),
+                       "pair": (model(inputs) * 2.0).sum() ** 2}, shared, model)
+    assert len(balancer.trace) == 3
+    assert all("cosine_node_pair" in entry for entry in balancer.trace)
+
+
+def test_the_trace_is_capped_so_a_long_run_cannot_fill_the_disk():
+    import torch
+
+    balancer = build_balancer("measure")
+    balancer.TRACE_LIMIT = 2
+    model = torch.nn.Linear(2, 1, bias=False)
+    shared = list(model.parameters())
+    inputs = torch.ones(1, 2)
+    for _ in range(5):
+        model.zero_grad(set_to_none=True)
+        balancer.step({"node": model(inputs).sum(), "pair": (model(inputs) * 2).sum()},
+                      shared, model)
+    assert len(balancer.trace) == 2, "the cap must hold, and keep the earliest steps"
+
+
+def test_each_balancer_starts_with_its_own_trace():
+    """A class-level list would accumulate across runs in the same process."""
+    first, second = build_balancer("measure"), build_balancer("measure")
+    assert first.trace is not second.trace

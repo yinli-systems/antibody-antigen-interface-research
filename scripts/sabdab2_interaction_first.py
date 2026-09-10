@@ -1431,6 +1431,20 @@ def command_train(args: argparse.Namespace) -> None:
         if improved:
             atomic_torch_save(payload, best_path)
         atomic_write_json(history_path, {"config": config, "history": history})
+        # Per-step gradient geometry, when a balancer collected it. The epoch
+        # mean is in the history above; this is what resolves a sign change that
+        # happens inside an epoch, which an epoch mean averages away.
+        trace = getattr(balancer, "trace", None)
+        if trace:
+            atomic_write_json(output_dir / "balancer_trace.json", {
+                "format_version": "balancer_step_trace_v1",
+                "balancer": args.multitask_balancer,
+                "steps_recorded": len(trace),
+                "trace_limit": getattr(type(balancer), "TRACE_LIMIT", None),
+                "note": ("one entry per training step in order, truncated at the "
+                         "limit; step counts are not reset between epochs"),
+                "steps": trace,
+            })
         print(json.dumps(record, sort_keys=True), flush=True)
         if epochs_without_improvement >= args.patience:
             print(f"Early stopping at epoch {epoch}", flush=True)
