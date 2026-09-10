@@ -58,6 +58,11 @@ Every other leg agrees under both rules.
 
 **Every leg replicates in direction and the ordering replicates exactly.**
 
+The ordering that carries no protocol ambiguity is `shuffled < random ≈ esm2 ≲
+aligned`: the first and last relations rest on legs that agree under both rules,
+and the `≈` is the undecided `random − esm2`. The `≲` is where the two rules
+disagree and is written weakly on purpose.
+
 **The harm replicates in magnitude too**: −12.6% against −13.8%, and 0 of 10
 seeds against 1 of 10. Displacing the rows of a second, architecturally unrelated
 structural encoder costs almost exactly what displacing ESM-IF1's costs.
@@ -101,10 +106,17 @@ carbonyl oxygen was reconstructed by ideal geometry. This was registered in
 advance as a caveat on cross-encoder magnitude comparisons, and it is **not**
 used to explain the smaller benefit away.
 
-It also does not fit the data. The same features, with the same reconstructed
-oxygen, produce a decided harm when their rows are displaced — 0 of 10 seeds
-above ESM-2. Features degraded to the point of carrying nothing would be inert
-under displacement, not harmful.
+**Nor is it ruled out.** An earlier version of this file argued that the same
+features produce a decided harm when displaced, so the reconstruction cannot have
+degraded them. That does not follow. A representation that is noisy but still
+informative can be indistinguishable from the baseline when aligned and worse
+than it when shuffled, because shuffling places the residual information on the
+wrong residues. Harm under displacement is therefore compatible with a
+reconstruction that depressed the features.
+
+What can be said is what was measured: the correspondence effect remained clearly
+detectable under this preprocessing — aligned above shuffled on all ten seeds —
+and the absolute representation quality under a reconstructed oxygen is unknown.
 
 ## Scope
 
