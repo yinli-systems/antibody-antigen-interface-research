@@ -12,6 +12,7 @@ Qwen2-VL-2B-Instruct as a generate path; it is not ColQwen2 retrieval.
 from __future__ import annotations
 
 import json
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -738,6 +739,34 @@ def visual_qa_response(
     )
 
 
+LAST_MAXSIM_META: dict = {}
+
+
+def maxsim_query_cap() -> int:
+    raw = (os.environ.get("ABCITE_MAXSIM_MAX_Q") or "").strip()
+    if raw.isdigit():
+        return max(1, int(raw))
+    return 64
+
+
+def maxsim_doc_cap() -> int:
+    raw = (os.environ.get("ABCITE_MAXSIM_MAX_D") or "").strip()
+    if raw.isdigit():
+        return max(1, int(raw))
+    return 768
+
+
+def _token_rows(toks: list[np.ndarray]) -> list[int]:
+    out: list[int] = []
+    for t in toks:
+        arr = np.asarray(t)
+        if arr.ndim == 2 and arr.size:
+            out.append(int(arr.shape[0]))
+        else:
+            out.append(0)
+    return out
+
+
 def maxsim(query_toks: np.ndarray, doc_toks: np.ndarray) -> float:
     """ColBERT/ColPali late interaction: sum of per-query-token max similarities."""
     if query_toks.size == 0 or doc_toks.size == 0:
@@ -757,7 +786,14 @@ def maxsim_matrix(query_toks: list[np.ndarray], doc_toks: list[np.ndarray]) -> n
         import torch
 
         if torch.cuda.is_available() and n_d >= 16:
-            print(f"maxsim GPU n_q={n_q} n_d={n_d}", flush=True)
+            q_rows = _token_rows(query_toks)
+            d_rows = _token_rows(doc_toks)
+            print(
+                f"maxsim GPU n_q={n_q} n_d={n_d} "
+                f"obs_q={max(q_rows or [0])} obs_d={max(d_rows or [0])} "
+                f"cap_q={maxsim_query_cap()} cap_d={maxsim_doc_cap()}",
+                flush=True,
+            )
             return _maxsim_torch(query_toks, doc_toks)
     except Exception as exc:
         print(f"maxsim GPU failed ({type(exc).__name__}: {exc}); CPU fallback", flush=True)
@@ -784,10 +820,36 @@ def _maxsim_torch(query_toks: list[np.ndarray], doc_toks: list[np.ndarray]) -> n
         if arr.ndim == 2 and arr.size:
             dim = int(arr.shape[-1])
             break
-    max_d = 768
-    max_q = 64
+    q_rows = _token_rows(query_toks)
+    d_rows = _token_rows(doc_toks)
+    obs_q = max(q_rows or [1])
+    obs_d = max(d_rows or [1])
+    max_q = min(maxsim_query_cap(), max(obs_q, 1))
+    max_d = min(maxsim_doc_cap(), max(obs_d, 1))
     n_q = len(query_toks)
     n_d = len(doc_toks)
+    payload = {
+        "backend": "gpu",
+        "n_q": n_q,
+        "n_d": n_d,
+        "obs_q": obs_q,
+        "obs_d": obs_d,
+        "max_q": max_q,
+        "max_d": max_d,
+        "cap_q": maxsim_query_cap(),
+        "cap_d": maxsim_doc_cap(),
+        "n_q_truncated": sum(1 for n in q_rows if n > max_q),
+        "n_d_truncated": sum(1 for n in d_rows if n > max_d),
+    }
+    if int(LAST_MAXSIM_META.get("n_q") or 0) <= n_q:
+        LAST_MAXSIM_META.clear()
+        LAST_MAXSIM_META.update(payload)
+    print(
+        f"maxsim GPU pad max_q={max_q}/{maxsim_query_cap()} (obs={obs_q}) "
+        f"max_d={max_d}/{maxsim_doc_cap()} (obs={obs_d}) "
+        f"q_trunc={payload['n_q_truncated']} d_trunc={payload['n_d_truncated']}",
+        flush=True,
+    )
     q_pad = torch.zeros((n_q, max_q, dim), device=device, dtype=torch.float16)
     q_mask = torch.zeros((n_q, max_q), device=device, dtype=torch.bool)
     for i, q in enumerate(query_toks):

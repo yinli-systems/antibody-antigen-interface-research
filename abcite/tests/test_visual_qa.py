@@ -477,6 +477,48 @@ def test_eval_snapshot_keeps_visual_qa_primary():
     assert "Rerank helps BM25? **no**" in md
 
 
+def test_align_recs_to_cached_late_ids(tmp_path, monkeypatch):
+    from evals import run_visual_qa as rvq
+
+    monkeypatch.setattr(rvq, "ROOT", tmp_path)
+    cache = tmp_path / "evals" / "figures" / "cache"
+    cache.mkdir(parents=True)
+    (cache / "embeddings-colqwen2.5-n15949.ids.json").write_text(
+        json.dumps(["a", "b"]), encoding="utf-8"
+    )
+    recs = [
+        FigureRec("c", tmp_path / "c.jpg", "", None, "", "", ""),
+        FigureRec("b", tmp_path / "b.jpg", "", None, "", "", ""),
+        FigureRec("a", tmp_path / "a.jpg", "", None, "", "", ""),
+    ]
+    out = rvq._align_recs_to_cached_late_ids(recs, "vidore/colqwen2.5-v0.2")
+    assert [r.figure_id for r in out] == ["a", "b"]
+
+
+def test_maxsim_query_cap_defaults_to_64(monkeypatch):
+    from abcite_core.visual_qa import maxsim_doc_cap, maxsim_query_cap
+
+    monkeypatch.delenv("ABCITE_MAXSIM_MAX_Q", raising=False)
+    monkeypatch.delenv("ABCITE_MAXSIM_MAX_D", raising=False)
+    assert maxsim_query_cap() == 64
+    assert maxsim_doc_cap() == 768
+    monkeypatch.setenv("ABCITE_MAXSIM_MAX_Q", "128")
+    monkeypatch.setenv("ABCITE_MAXSIM_MAX_D", "512")
+    assert maxsim_query_cap() == 128
+    assert maxsim_doc_cap() == 512
+
+
+def test_maxsim_truncation_drops_late_query_tokens():
+    q = __import__("numpy").zeros((80, 4), dtype="float32")
+    q[70, 0] = 1.0
+    d = __import__("numpy").zeros((3, 4), dtype="float32")
+    d[0, 0] = 1.0
+    full = maxsim(q, d)
+    trunc = maxsim(q[:64], d)
+    assert full > trunc
+    assert abs(float(full) - 1.0) < 1e-5
+
+
 def test_maxsim_matrix_shape_matches_scalar():
     rng = __import__("numpy").random.default_rng(0)
     queries = [rng.standard_normal((8, 128)).astype("float32") for _ in range(3)]

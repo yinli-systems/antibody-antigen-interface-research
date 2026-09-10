@@ -24,6 +24,30 @@ from abcite_core.vlm_vqa import DEFAULT_VLM_MODEL, vlm_enabled, vlm_weights_cach
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def _align_recs_to_cached_late_ids(recs: list, encoder_hint: str) -> list:
+    """Keep N=15949 when metadata grew; exact id order is required for npz hit."""
+    stem = encoder_cache_name(encoder_hint)
+    ids_path = ROOT / "evals" / "figures" / "cache" / f"embeddings-{stem}-n15949.ids.json"
+    if not recs or not ids_path.is_file():
+        return recs
+    ids = json.loads(ids_path.read_text(encoding="utf-8"))
+    by = {r.figure_id: r for r in recs}
+    missing = [i for i in ids if i not in by]
+    if missing:
+        print(
+            f"late-ids align abort encoder={stem} missing={len(missing)}/{len(ids)}",
+            flush=True,
+        )
+        return recs
+    extra = len(recs) - len(ids)
+    aligned = [by[i] for i in ids]
+    print(
+        f"aligned recs to {ids_path.name} n={len(aligned)} extra_dropped={extra}",
+        flush=True,
+    )
+    return aligned
+
+
 def _gpu_name() -> str | None:
     try:
         import torch
@@ -102,6 +126,26 @@ def _attach_late_receipt(report: dict, gallery, encoder) -> dict:
     report["encoder"] = name
     report["npz"] = f"embeddings-{name}-n{n}.npz {'hit' if cache.exists() else 'wrote'}"
     report["maxsim"] = f"{'GPU' if cuda else 'CPU'} n_q={nq} n_d={n}"
+    try:
+        from abcite_core.visual_qa import LAST_MAXSIM_META, maxsim_doc_cap, maxsim_query_cap
+
+        meta = dict(LAST_MAXSIM_META)
+        report["maxsim_max_q"] = meta.get("max_q", maxsim_query_cap())
+        report["maxsim_max_d"] = meta.get("max_d", maxsim_doc_cap())
+        report["maxsim_cap_q"] = meta.get("cap_q", maxsim_query_cap())
+        report["maxsim_cap_d"] = meta.get("cap_d", maxsim_doc_cap())
+        report["maxsim_obs_q"] = meta.get("obs_q")
+        report["maxsim_obs_d"] = meta.get("obs_d")
+        report["maxsim_n_q_truncated"] = meta.get("n_q_truncated")
+        report["maxsim_n_d_truncated"] = meta.get("n_d_truncated")
+        if meta:
+            report["maxsim"] = (
+                f"{'GPU' if cuda else 'CPU'} n_q={nq} n_d={n} "
+                f"max_q={meta.get('max_q')} max_d={meta.get('max_d')} "
+                f"obs_q={meta.get('obs_q')} obs_d={meta.get('obs_d')}"
+            )
+    except Exception:
+        report["maxsim_max_q"] = None
     report["query_prefix"] = prefix or "Query: "
     report["device"] = device
     report["cuda"] = cuda
@@ -134,6 +178,13 @@ def _merge_extra_into_protocols(prev: dict, col_report: dict) -> dict:
         "caption_bm25": col_report.get("caption_bm25"),
         "npz": col_report.get("npz"),
         "maxsim": col_report.get("maxsim"),
+        "maxsim_max_q": col_report.get("maxsim_max_q"),
+        "maxsim_max_d": col_report.get("maxsim_max_d"),
+        "maxsim_cap_q": col_report.get("maxsim_cap_q"),
+        "maxsim_obs_q": col_report.get("maxsim_obs_q"),
+        "maxsim_obs_d": col_report.get("maxsim_obs_d"),
+        "maxsim_n_q_truncated": col_report.get("maxsim_n_q_truncated"),
+        "maxsim_n_d_truncated": col_report.get("maxsim_n_d_truncated"),
         "query_prefix": col_report.get("query_prefix"),
         "gpu": col_report.get("gpu"),
         "device": col_report.get("device"),
@@ -192,6 +243,15 @@ def main() -> None:
             flush=True,
         )
     recs = load_figure_records(prefer_cache=not args.fixture)
+    late_hint = (os.environ.get("ABCITE_COLPALI_MODEL") or "").strip()
+    try_col_env = os.environ.get("ABCITE_COLPALI", "").lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    if args.colpali_only or args.try_colpali or try_col_env:
+        recs = _align_recs_to_cached_late_ids(recs, late_hint or "colqwen2.5")
     if args.max_n and args.max_n < len(recs):
         gold_ids: list[str] = []
         for it in load_visual_qa_gold({r.figure_id for r in recs}, recs, require_gold=False):
