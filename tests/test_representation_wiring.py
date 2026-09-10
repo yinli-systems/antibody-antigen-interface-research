@@ -65,19 +65,33 @@ def _frame() -> pandas.DataFrame:
     )
 
 
+def _representation_defaults() -> dict:
+    """Every representation flag, taken from the parser that defines them.
+
+    Hardcoding this dict drifted twice: a flag was added, `_wrap_with_representations`
+    read it, and every test in this file raised AttributeError because the
+    namespace here had not been updated. Deriving it from the real parser makes
+    that impossible -- a new flag arrives with its default already present.
+    """
+    parser = argparse.ArgumentParser()
+    _MODULE._add_representation_arguments(parser)
+    return vars(parser.parse_args([]))
+
+
 def _arguments(**overrides) -> argparse.Namespace:
-    base = {
-        "input_dim": BASE_DIM,
-        "representation_manifest": None,
-        "antiberty_root": None,
-        "antiberty_dim": EXTRA_DIM,
-        "esm_if1_root": None,
-        "esm_if1_dim": EXTRA_DIM,
-        "random_projection_control": False,
-        "random_projection_seed": 20260910,
-    }
+    base = {"input_dim": BASE_DIM, **_representation_defaults()}
+    base["antiberty_dim"] = EXTRA_DIM
+    base["esm_if1_dim"] = EXTRA_DIM
     base.update(overrides)
     return argparse.Namespace(**base)
+
+
+def test_the_namespace_helper_covers_every_representation_flag() -> None:
+    """The guard for the drift that broke this file twice."""
+    declared = set(_representation_defaults())
+    supplied = set(vars(_arguments()))
+
+    assert declared <= supplied
 
 
 def test_naming_no_encoder_is_the_identity() -> None:
