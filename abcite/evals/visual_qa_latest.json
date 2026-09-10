@@ -15,23 +15,23 @@
   },
   "clip_image_only": {
     "recall@1": 0.0784,
-    "recall@5": 0.1373,
+    "recall@5": 0.1765,
     "recall@10": 0.1961,
-    "ndcg@5": 0.1065,
+    "ndcg@5": 0.1237,
     "n": 51
   },
   "vision_rerank": {
     "recall@1": 0.0,
-    "recall@5": 0.0,
+    "recall@5": 0.0196,
     "recall@10": 0.0196,
-    "ndcg@5": 0.0,
+    "ndcg@5": 0.0084,
     "n": 51
   },
   "fusion": {
     "recall@1": 0.0,
-    "recall@5": 0.0392,
-    "recall@10": 0.1176,
-    "ndcg@5": 0.016,
+    "recall@5": 0.0196,
+    "recall@10": 0.098,
+    "ndcg@5": 0.0098,
     "n": 51
   },
   "caption_bm25_should_fail_subset": {
@@ -43,9 +43,9 @@
   },
   "vision_should_fail_subset": {
     "recall@1": 0.0784,
-    "recall@5": 0.1373,
+    "recall@5": 0.1765,
     "recall@10": 0.1961,
-    "ndcg@5": 0.1065,
+    "ndcg@5": 0.1237,
     "n": 51
   },
   "fusion_default": "off",
@@ -59,7 +59,7 @@
     "path": "extractive/heuristic pixel cues; not a VLM"
   },
   "mean_gap_image_i2i": 0.178737,
-  "mean_gap_clip_text_to_image": 0.38511,
+  "mean_gap_clip_text_to_image": 0.326746,
   "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. VQA is cite-or-abstain given the retrieved figure (heuristic/extractive).",
   "vision_beats_bm25_r@1": true,
   "vision_beats_bm25_ndcg@5": true,
@@ -88,9 +88,9 @@
     },
     "colpali_t2i": {
       "recall@1": 0.0784,
-      "recall@5": 0.1373,
+      "recall@5": 0.1765,
       "recall@10": 0.1961,
-      "ndcg@5": 0.1065,
+      "ndcg@5": 0.1237,
       "n": 51
     },
     "vision_rerank_biomedclip": {
@@ -128,10 +128,18 @@
   },
   "colpali_t2i": {
     "recall@1": 0.0784,
-    "recall@5": 0.1373,
+    "recall@5": 0.1765,
     "recall@10": 0.1961,
-    "ndcg@5": 0.1065,
+    "ndcg@5": 0.1237,
     "n": 51
   },
-  "colpali_encoder": "colqwen2"
+  "colpali_encoder": "colqwen2",
+  "colpali_rerun": {
+    "date": "2026-09-10",
+    "flags": "--try-colpali --colpali-only",
+    "maxsim": "gpu batched einsum, query/doc tokens capped 64/768, chunk 128",
+    "query_prefix": "Query: ",
+    "cache": "evals/figures/cache/embeddings-colqwen2-n15949.npz",
+    "note": "CLIP/BiomedCLIP columns kept from the prior same-gallery run; this pass scored ColQwen2 only."
+  }
 }

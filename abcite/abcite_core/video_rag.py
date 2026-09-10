@@ -159,8 +159,8 @@ def scene_text_embed(text: str, dim: int = DIM) -> np.ndarray:
     return (vec / nrm) if nrm else vec
 
 
-def load_video_records(prefer_cache: bool = True) -> list[VideoRec]:
-    meta = CACHE_META if prefer_cache and CACHE_META.exists() else FIX_META
+def load_video_records(prefer_cache: bool = True, *, meta_path: Path | None = None) -> list[VideoRec]:
+    meta = meta_path or (CACHE_META if prefer_cache and CACHE_META.exists() else FIX_META)
     if not meta.exists():
         raise FileNotFoundError(f"no video metadata at {meta}")
     recs: list[VideoRec] = []
@@ -440,26 +440,54 @@ def video_qa_response(
 
 
 def extract_keyframes(video_path: Path, dest: Path, max_frames: int = 4) -> list[Path]:
-    """Best-effort keyframe dump. Uses OpenCV if present; otherwise no-op."""
+    """Best-effort keyframe dump. OpenCV first, then ffmpeg."""
     dest.mkdir(parents=True, exist_ok=True)
     try:
         import cv2
-    except Exception:
-        return []
-    cap = cv2.VideoCapture(str(video_path))
-    n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
-    if n <= 0:
+
+        cap = cv2.VideoCapture(str(video_path))
+        n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        if n > 0:
+            idxs = np.linspace(0, n - 1, num=min(max_frames, n), dtype=int)
+            out: list[Path] = []
+            for i, idx in enumerate(idxs):
+                cap.set(cv2.CAP_PROP_POS_FRAMES, int(idx))
+                ok, frame = cap.read()
+                if not ok:
+                    continue
+                path = dest / f"{video_path.stem}_k{i:02d}.jpg"
+                cv2.imwrite(str(path), frame)
+                out.append(path)
+            cap.release()
+            if out:
+                return out
         cap.release()
+    except Exception:
+        pass
+    import shutil
+    import subprocess
+
+    bin_ = shutil.which("ffmpeg")
+    if not bin_:
         return []
-    idxs = np.linspace(0, n - 1, num=min(max_frames, n), dtype=int)
-    out: list[Path] = []
-    for i, idx in enumerate(idxs):
-        cap.set(cv2.CAP_PROP_POS_FRAMES, int(idx))
-        ok, frame = cap.read()
-        if not ok:
-            continue
-        path = dest / f"{video_path.stem}_k{i:02d}.jpg"
-        cv2.imwrite(str(path), frame)
-        out.append(path)
-    cap.release()
-    return out
+    pattern = dest / "k%02d.jpg"
+    r = subprocess.run(
+        [
+            bin_,
+            "-y",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-i",
+            str(video_path),
+            "-vf",
+            f"fps=1/{max(1, max_frames)}",
+            "-frames:v",
+            str(max_frames),
+            str(pattern),
+        ],
+        check=False,
+    )
+    if r.returncode != 0:
+        return []
+    return sorted(dest.glob("k*.jpg"))[:max_frames]

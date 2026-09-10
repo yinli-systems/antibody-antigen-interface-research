@@ -591,9 +591,11 @@ def maxsim_matrix(query_toks: list[np.ndarray], doc_toks: list[np.ndarray]) -> n
         import torch
 
         if torch.cuda.is_available() and n_d >= 16:
+            print(f"maxsim GPU n_q={n_q} n_d={n_d}", flush=True)
             return _maxsim_torch(query_toks, doc_toks)
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"maxsim GPU failed ({type(exc).__name__}: {exc}); CPU fallback", flush=True)
+    print(f"maxsim CPU n_q={n_q} n_d={n_d} (slow)", flush=True)
     for i, q in enumerate(query_toks):
         if q is None or np.asarray(q).size == 0:
             continue
@@ -613,40 +615,46 @@ def _maxsim_torch(query_toks: list[np.ndarray], doc_toks: list[np.ndarray]) -> n
     dim = 128
     for t in doc_toks:
         arr = np.asarray(t)
-        if arr.size:
+        if arr.ndim == 2 and arr.size:
             dim = int(arr.shape[-1])
             break
-    max_len = 1
-    for t in doc_toks:
-        arr = np.asarray(t)
-        if arr.ndim == 2 and arr.shape[0] > max_len:
-            max_len = int(arr.shape[0])
+    max_d = 768
+    max_q = 64
+    n_q = len(query_toks)
     n_d = len(doc_toks)
-    # Keep activation under ~6 GB: chunk documents.
-    chunk = max(64, min(n_d, int(6e9 / max(1, max_len * dim * 2))))
-    rows: list[np.ndarray] = []
-    for q in query_toks:
-        qv = np.asarray(q, dtype=np.float32)
-        if qv.size == 0:
-            rows.append(np.zeros(n_d, dtype=np.float32))
+    q_pad = torch.zeros((n_q, max_q, dim), device=device, dtype=torch.float16)
+    q_mask = torch.zeros((n_q, max_q), device=device, dtype=torch.bool)
+    for i, q in enumerate(query_toks):
+        arr = np.asarray(q, dtype=np.float32)
+        if arr.ndim != 2 or arr.size == 0:
             continue
-        qt = torch.from_numpy(qv).to(device=device, dtype=torch.float16)
-        scores = np.zeros(n_d, dtype=np.float32)
-        for start in range(0, n_d, chunk):
-            sl = doc_toks[start : start + chunk]
-            padded = torch.zeros((len(sl), max_len, dim), device=device, dtype=torch.float16)
-            mask = torch.zeros((len(sl), max_len), device=device, dtype=torch.bool)
-            for j, d in enumerate(sl):
-                arr = np.asarray(d, dtype=np.float32)
-                if arr.size == 0:
-                    continue
-                n = min(int(arr.shape[0]), max_len)
-                padded[j, :n].copy_(torch.from_numpy(arr[:n]).to(dtype=torch.float16))
-                mask[j, :n] = True
-            sims = torch.einsum("qd,ntd->qnt", qt, padded)
-            sims = sims.masked_fill(~mask.unsqueeze(0), -1.0e4)
-            scores[start : start + len(sl)] = sims.max(dim=2).values.sum(dim=0).float().cpu().numpy()
-            del padded, mask, sims
-        rows.append(scores)
-        del qt
-    return np.stack(rows, axis=0).astype(np.float32)
+        n = min(int(arr.shape[0]), max_q)
+        q_pad[i, :n].copy_(torch.from_numpy(arr[:n]).to(dtype=torch.float16))
+        q_mask[i, :n] = True
+    out = np.zeros((n_q, n_d), dtype=np.float32)
+    chunk = 128
+    for start in range(0, n_d, chunk):
+        sl = doc_toks[start : start + chunk]
+        nd = len(sl)
+        d_pad = torch.zeros((nd, max_d, dim), device=device, dtype=torch.float16)
+        d_mask = torch.zeros((nd, max_d), device=device, dtype=torch.bool)
+        host = np.zeros((nd, max_d, dim), dtype=np.float16)
+        host_m = np.zeros((nd, max_d), dtype=np.uint8)
+        for j, d in enumerate(sl):
+            arr = np.asarray(d, dtype=np.float32)
+            if arr.ndim != 2 or arr.size == 0:
+                continue
+            n = min(int(arr.shape[0]), max_d)
+            host[j, :n] = arr[:n].astype(np.float16, copy=False)
+            host_m[j, :n] = 1
+        d_pad.copy_(torch.from_numpy(host))
+        d_mask.copy_(torch.from_numpy(host_m.astype(bool)))
+        # [q,t,d] x [n,l,d] -> [q,n,t,l]
+        sims = torch.einsum("qtd,nld->qntl", q_pad, d_pad)
+        sims = sims.masked_fill(~d_mask.unsqueeze(0).unsqueeze(2), -1.0e4)
+        per_qtok = sims.max(dim=3).values
+        per_qtok = per_qtok.masked_fill(~q_mask.unsqueeze(1), 0.0)
+        out[:, start : start + nd] = per_qtok.sum(dim=2).float().cpu().numpy()
+        del d_pad, d_mask, sims, per_qtok
+        print(f"  maxsim GPU docs {min(start + chunk, n_d)}/{n_d}", flush=True)
+    return out

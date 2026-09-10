@@ -1,0 +1,46 @@
+{
+  "protocol": "audio_qa",
+  "n_gallery": 6,
+  "n_queries": 8,
+  "n_answerable": 6,
+  "encoder": "wav-hash",
+  "synthetic_fixture": false,
+  "transcript_bm25": {
+    "recall@1": 0.1667,
+    "recall@5": 0.8333,
+    "recall@10": 1.0,
+    "ndcg@5": 0.4696,
+    "n": 6
+  },
+  "clap_t2a": {
+    "recall@1": 0.1667,
+    "recall@5": 0.6667,
+    "recall@10": 1.0,
+    "ndcg@5": 0.4051,
+    "n": 6
+  },
+  "within_audio_rrf": {
+    "recall@1": 0.3333,
+    "recall@5": 0.6667,
+    "recall@10": 1.0,
+    "ndcg@5": 0.4696,
+    "n": 6
+  },
+  "transcript_bm25_should_fail_subset": {
+    "recall@1": 0.1667,
+    "recall@5": 0.8333,
+    "recall@10": 1.0,
+    "ndcg@5": 0.4696,
+    "n": 6
+  },
+  "clap_should_fail_subset": {
+    "recall@1": 0.1667,
+    "recall@5": 0.6667,
+    "recall@10": 1.0,
+    "ndcg@5": 0.4051,
+    "n": 6
+  },
+  "note": "Audio retrieval. Query describes sound (pitch, chirp, pulse, hush), not spoken words. transcript_bm25_should_fail has \u22641 content-token overlap. CI encoder is shared-space spectral cues (wav-hash); CLAP when ABCITE_CLAP=1. RRF is within-audio only. OA Wikimedia receipts are a separate table (evals/audio_qa_oa_latest.json); do not mix with synthetic wav-hash scores.",
+  "clap_beats_transcript_bm25_r@1": false,
+  "oa": true
+}

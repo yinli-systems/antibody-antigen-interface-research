@@ -287,13 +287,20 @@ class FigureGallery:
         if cache.exists() and ids_path.exists() and callable(encode_multi):
             try:
                 ids = json.loads(ids_path.read_text(encoding="utf-8"))
+                print(f"loading late npz {cache.name} n={len(ids)}", flush=True)
                 blob = np.load(cache, allow_pickle=True)
                 toks = [np.asarray(blob[f"t{i}"], dtype=np.float32) for i in range(len(ids))]
                 if ids == self.ids and len(toks) == self.n:
                     self.image_toks = toks
+                    print(f"late npz hit encoder={getattr(self.vision, 'name', '')}", flush=True)
                     return self._means_from_toks(toks)
-            except Exception:
-                pass
+                print(
+                    f"late npz id mismatch cached={len(ids)} gallery={self.n}; shards fallback",
+                    flush=True,
+                )
+            except Exception as exc:
+                print(f"late npz failed ({type(exc).__name__}: {exc})", flush=True)
+        print("loading late shards (slow if thousands of npy files)", flush=True)
         by_id = self._load_late_shards()
         if not callable(encode_multi):
             return self._encode_paths([r.path for r in self.recs])

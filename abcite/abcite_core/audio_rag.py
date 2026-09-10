@@ -291,14 +291,29 @@ class AudioEncoder:
     name = "wav-hash"
     dim = DIM
 
+    def __init__(self) -> None:
+        self._clap: _ClapEnc | None = None
+        self._clap_checked = False
+        self.name = "wav-hash"
+        self.dim = DIM
+
+    def _ensure_clap(self) -> _ClapEnc | None:
+        if not self._clap_checked:
+            self._clap_checked = True
+            self._clap = _try_clap()
+            if self._clap is not None:
+                self.name = self._clap.name
+                self.dim = self._clap.dim
+        return self._clap
+
     def encode_audio(self, path: Path) -> np.ndarray:
-        clap = _try_clap()
+        clap = self._ensure_clap()
         if clap is not None:
             return clap.encode_audio(path)
         return wav_embed(path, self.dim)
 
     def encode_text(self, text: str) -> np.ndarray:
-        clap = _try_clap()
+        clap = self._ensure_clap()
         if clap is not None:
             return clap.encode_text(text)
         return acoustic_text_embed(text, self.dim)
@@ -371,13 +386,15 @@ def _try_clap() -> _ClapEnc | None:
             model = ClapModel.from_pretrained(name).to(device).eval()
             proc = ClapProcessor.from_pretrained(name)
             _CLAP = _ClapEnc(model, proc, device)
-        except Exception:
+            print(f"CLAP loaded {name} on {device}", flush=True)
+        except Exception as exc:
+            print(f"CLAP skipped ({type(exc).__name__}: {exc})", flush=True)
             _CLAP = None
     return None if _CLAP is False else _CLAP
 
 
-def load_audio_records(prefer_cache: bool = True) -> list[AudioRec]:
-    meta = CACHE_META if prefer_cache and CACHE_META.exists() else FIX_META
+def load_audio_records(prefer_cache: bool = True, *, meta_path: Path | None = None) -> list[AudioRec]:
+    meta = meta_path or (CACHE_META if prefer_cache and CACHE_META.exists() else FIX_META)
     if not meta.exists():
         raise FileNotFoundError(f"no audio metadata at {meta}")
     recs: list[AudioRec] = []
@@ -546,7 +563,8 @@ def evaluate_audio_qa(gallery: AudioGallery, items: list[dict]) -> dict:
             "Audio retrieval. Query describes sound (pitch, chirp, pulse, hush), not spoken words. "
             "transcript_bm25_should_fail has ≤1 content-token overlap. "
             "CI encoder is shared-space spectral cues (wav-hash); CLAP when ABCITE_CLAP=1. "
-            "RRF is within-audio only."
+            "RRF is within-audio only. OA Wikimedia receipts are a separate table "
+            "(evals/audio_qa_oa_latest.json); do not mix with synthetic wav-hash scores."
         ),
     }
     bm25_r1 = float(report["transcript_bm25"]["recall@1"])

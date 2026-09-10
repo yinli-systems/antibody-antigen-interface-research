@@ -13,3 +13,8 @@ def test_ensure_query_prefix_keeps_existing() -> None:
     proc = SimpleNamespace(query_prefix="Question: ")
     assert ensure_query_prefix(proc) == "Question: "
     assert proc.query_prefix == "Question: "
+
+
+def test_ensure_query_prefix_fills_empty_string() -> None:
+    proc = SimpleNamespace(query_prefix="")
+    assert ensure_query_prefix(proc) == "Query: "

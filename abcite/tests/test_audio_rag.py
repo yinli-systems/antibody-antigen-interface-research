@@ -47,3 +47,21 @@ def test_audio_eval_and_cite_or_abstain():
     abs_q = next(it for it in items if it.get("expected_status") == "abstain")
     abs_resp = audio_qa_response(abs_q["question"], gal, provider="local", trace_id="t-abs", latency_ms=1.0)
     assert abs_resp.status == AnswerStatus.ABSTAIN
+
+
+def test_audio_encoder_defaults_to_wav_hash():
+    from abcite_core.audio_rag import AudioEncoder
+
+    enc = AudioEncoder()
+    assert enc.name == "wav-hash"
+
+
+def test_oa_audio_candidates_should_fail_filler_bm25():
+    from evals.download_av import AUDIO_CANDIDATES, FILLER
+
+    blob = " ".join(FILLER)
+    ids = [c["id"] for c in AUDIO_CANDIDATES]
+    assert len(ids) == len(set(ids))
+    for cand in AUDIO_CANDIDATES:
+        ov = vis_overlap(cand["question"], blob)
+        assert ov["should_fail"], (cand["id"], ov["overlap_tokens"])

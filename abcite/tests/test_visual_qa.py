@@ -12,6 +12,8 @@ from abcite_core.visual_qa import (
     evaluate_visual_qa,
     heuristic_vqa,
     load_visual_qa_gold,
+    maxsim,
+    maxsim_matrix,
 )
 from agents.graph import EvidenceGraph
 from evals.run import _multimodal_snapshot_md
@@ -145,3 +147,29 @@ def test_eval_snapshot_keeps_visual_qa_primary():
     assert "N=15949" in md
     assert "0.835" in md
     assert "Rerank helps BM25? **no**" in md
+
+
+def test_maxsim_matrix_shape_matches_scalar():
+    rng = __import__("numpy").random.default_rng(0)
+    queries = [rng.standard_normal((8, 128)).astype("float32") for _ in range(3)]
+    docs = [rng.standard_normal((12, 128)).astype("float32") for _ in range(5)]
+    mat = maxsim_matrix(queries, docs)
+    assert mat.shape == (3, 5)
+    for i in range(3):
+        for j in range(5):
+            assert abs(float(mat[i, j]) - maxsim(queries[i], docs[j])) < 0.05
+
+
+def test_four_column_colpali_only_none_safe():
+    from evals.run_visual_qa import _four_column
+
+    col = {
+        "caption_bm25": {"recall@1": 0.0, "ndcg@5": 0.0},
+        "clip_image_only": {"recall@1": 0.08, "ndcg@5": 0.11},
+        "vqa": {"n": 61},
+    }
+    four = _four_column(None, None, col)
+    assert four["caption_bm25"]["recall@1"] == 0.0
+    assert four["colpali_t2i"]["recall@1"] == 0.08
+    assert four["openclip_t2i"] is None
+    assert four["vision_beats_bm25_r@1"] is True

@@ -1,15 +1,28 @@
-"""Download short CC science clips (optional). Fixtures stay synthetic.
+"""Download short CC science clips for OA audio/video RAG.
 
-Tries Wikimedia Commons File Paths for short open clips. Never required for CI.
+CI fixtures stay synthetic (`evals/build_av_fixtures.py`). This script is
+best-effort Wikimedia Commons. Never required for pytest.
+
 Usage:
-  python evals/download_av.py --max 8
+  python evals/download_av.py --max 12
+  ABCITE_WHISPER=1 python evals/download_av.py   # ASR transcripts when ffmpeg+whisper exist
+  python evals/run_audio_qa.py --oa
+  python evals/run_video_qa.py --oa
+
+Queries describe **sound or on-screen appearance**, not Wikipedia titles.
+Transcripts default to generic lecture filler so BM25 should fail. Whisper
+ASR replaces filler when ABCITE_WHISPER=1. Do not mix OA receipts with the
+synthetic wav-hash table.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import ssl
+import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -17,67 +30,379 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "evals" / "av_cache"
-UA = "abcite-av-downloader/0.1 (research eval; mailto:abcite@local)"
+AUD_OA = ROOT / "evals" / "audio" / "oa"
+VID_OA = ROOT / "evals" / "video" / "oa"
+AUD_GOLD = ROOT / "evals" / "gold" / "audio_qa_oa.jsonl"
+VID_GOLD = ROOT / "evals" / "gold" / "video_qa_oa.jsonl"
+UA = "abcite-av-downloader/0.2 (research eval; https://github.com/abcite)"
 CTX = ssl.create_default_context()
 
-# Short, openly licensed science clips (Wikimedia Commons). May 404; script is best-effort.
-CANDIDATES = [
-    (
-        "wm-electrophoresis",
-        "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/3a/Agarose_gel_electrophoresis.ogv/Agarose_gel_electrophoresis.ogv.480p.vp9.webm",
-        "Gel electrophoresis demonstration (Wikimedia Commons).",
-    ),
-    (
-        "wm-microscope",
-        "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/47/Optical_microscope.ogv/Optical_microscope.ogv.480p.vp9.webm",
-        "Optical microscope demonstration (Wikimedia Commons).",
-    ),
+# Generic lecture filler — no acoustic/scene cue tokens (same idea as fixtures).
+FILLER = [
+    "The seminar continues without a slide title.",
+    "Please hold while the host adjusts the microphone.",
+    "The chair asks the audience to wait a moment.",
+    "Someone coughs then the feed resumes.",
+    "A door closes in the hallway behind the speaker.",
+    "Papers shuffle on the lectern.",
+    "The technician says the capture light is on.",
+    "Water is poured into a glass off microphone.",
+    "A seat scrapes then the pause returns.",
+    "The projector fan is mentioned only in passing.",
+    "Someone whispers that the talk will start late.",
+    "The ventilation is audible under the pause.",
+]
+
+# Acoustic queries must not overlap FILLER content tokens (≤1).
+# File titles verified via Commons imageinfo (2026-09-10).
+AUDIO_CANDIDATES = [
+    {
+        "id": "oa-aud-heartbeat",
+        "file": "File:Heartbeat.ogg",
+        "title": "Heartbeat recording",
+        "question": "which clip is a repeating low thud pulse like a cardiac cycle",
+        "answer": "A heartbeat / lub-dub pulse train.",
+    },
+    {
+        "id": "oa-aud-geiger",
+        "file": "File:Geiger_counter.ogg",
+        "title": "Geiger counter clicks",
+        "question": "sparse sharp click train, irregular, not a sine drone",
+        "answer": "Geiger-like irregular clicks.",
+    },
+    {
+        "id": "oa-aud-noise",
+        "file": "File:White_noise.ogg",
+        "title": "White noise",
+        "question": "broadband hiss, not tonal",
+        "answer": "White-ish hiss.",
+    },
+    {
+        "id": "oa-aud-thunder",
+        "file": "File:Thunder.ogg",
+        "title": "Thunder",
+        "question": "distant rumble burst, not a hiss",
+        "answer": "Thunder rumble.",
+    },
+    {
+        "id": "oa-aud-doppler",
+        "file": "File:Fetal doppler recording heartbeat and movement.ogg",
+        "title": "Fetal Doppler",
+        "question": "whoosh pulse from a handheld fetal doppler, not a geiger click",
+        "answer": "Fetal Doppler whoosh.",
+    },
+    {
+        "id": "oa-aud-korotkoff",
+        "file": "File:Nl-Korotkoff-tonen.ogg",
+        "title": "Korotkoff sounds",
+        "question": "soft cuff thumps used to read blood pressure",
+        "answer": "Korotkoff thumps.",
+    },
+]
+
+VIDEO_CANDIDATES = [
+    {
+        "id": "oa-vid-gelbox",
+        "file": "File:Conducting-Polymer-Electrodes-for-Gel-Electrophoresis-pone.0089416.s001.ogv",
+        "title": "Conducting polymer gel electrophoresis",
+        "question": "which clip shows a small gel box with running sample lanes on a bench",
+        "answer": "Benchtop gel box with lanes.",
+    },
+    {
+        "id": "oa-vid-fige",
+        "file": "File:Increase-in-local-protein-concentration-by-field-inversion-gel-electrophoresis-1477-5956-5-18-S2.ogv",
+        "title": "Field-inversion gel bands",
+        "question": "which clip shows glowing nucleic-acid bands drifting in a dark slab",
+        "answer": "Glowing bands in a dark gel slab.",
+    },
+    {
+        "id": "oa-vid-anim",
+        "file": "File:Electrophoresis explained - biology animation.webm",
+        "title": "Electrophoresis animation",
+        "question": "which clip is a labeled cartoon of molecules migrating through a gel matrix",
+        "answer": "Cartoon of migrating molecules.",
+    },
+    {
+        "id": "oa-vid-confocal",
+        "file": "File:Fluorescent and confocal microscopes.ogv",
+        "title": "Fluorescent and confocal microscopes",
+        "question": "which clip shows a fluorescence microscope body with a laser scan head",
+        "answer": "Confocal / fluorescence scope body.",
+    },
+    {
+        "id": "oa-vid-milk",
+        "file": "File:Milk under the microscope.webm",
+        "title": "Milk under the microscope",
+        "question": "which clip shows swirling droplets under a bright-field microscope",
+        "answer": "Bright-field droplets (milk).",
+    },
+    {
+        "id": "oa-vid-tem",
+        "file": "File:Microscope Electronique à Transmission.ogv",
+        "title": "Transmission electron microscope",
+        "question": "which clip shows a tall transmission-electron column in a lab",
+        "answer": "TEM column.",
+    },
+]
+
+ABSTAIN_AUDIO = [
+    {
+        "id": "oa-aud-abs-01",
+        "question": "speaker names a magenta Maltese-cross lipid droplet with a 5 μm scale bar",
+    },
+    {
+        "id": "oa-aud-abs-02",
+        "question": "talk that uniquely mentions a ring chromosome marked by a crimson chevron",
+    },
+]
+ABSTAIN_VIDEO = [
+    {
+        "id": "oa-vid-abs-01",
+        "question": "spinning-disk movie still with a tracked vesicle and a 2 μm scale bar",
+    },
+    {
+        "id": "oa-vid-abs-02",
+        "question": "anaglyph ribosome cartoon with unique offset missing from this gallery",
+    },
 ]
 
 
-def _get(url: str, dest: Path) -> bool:
+def _url_suffix(url: str) -> str:
+    path = urllib.parse.urlparse(url).path
+    ext = Path(path).suffix.lower()
+    if ext in {".ogg", ".ogv", ".oga", ".mp3", ".wav", ".webm", ".mp4", ".mkv", ".flac"}:
+        return ext
+    return ".bin"
+
+
+def _get(url: str, dest: Path, max_bytes: int = 80_000_000) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     try:
-        with urllib.request.urlopen(req, context=CTX, timeout=30) as resp:
-            dest.write_bytes(resp.read())
+        with urllib.request.urlopen(req, context=CTX, timeout=90) as resp:
+            n = 0
+            with dest.open("wb") as fh:
+                while True:
+                    chunk = resp.read(1 << 20)
+                    if not chunk:
+                        break
+                    n += len(chunk)
+                    if n > max_bytes:
+                        dest.unlink(missing_ok=True)
+                        print(f"  skip oversize {url}", flush=True)
+                        return False
+                    fh.write(chunk)
         return dest.stat().st_size > 1024
-    except (urllib.error.URLError, TimeoutError, OSError):
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        print(f"  fetch fail {type(exc).__name__}: {exc}", flush=True)
+        dest.unlink(missing_ok=True)
         return False
+
+
+def commons_file_url(title: str) -> str | None:
+    qs = urllib.parse.urlencode(
+        {
+            "action": "query",
+            "titles": title,
+            "prop": "imageinfo",
+            "iiprop": "url|size|mime",
+            "format": "json",
+        }
+    )
+    api = "https://commons.wikimedia.org/w/api.php?" + qs
+    req = urllib.request.Request(api, headers={"User-Agent": UA})
+    try:
+        with urllib.request.urlopen(req, context=CTX, timeout=30) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError):
+        return None
+    pages = (payload.get("query") or {}).get("pages") or {}
+    for page in pages.values():
+        infos = page.get("imageinfo") or []
+        if infos and infos[0].get("url"):
+            return str(infos[0]["url"])
+    return None
+
+
+def _ffmpeg(*args: str) -> bool:
+    bin_ = shutil.which("ffmpeg")
+    if not bin_:
+        return False
+    r = subprocess.run([bin_, "-y", "-hide_banner", "-loglevel", "error", *args], check=False)
+    return r.returncode == 0
+
+
+def extract_wav(src: Path, dest: Path, seconds: float = 20.0) -> bool:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if dest.exists() and dest.stat().st_size > 1024:
+        return True
+    return _ffmpeg("-i", str(src), "-t", str(seconds), "-ac", "1", "-ar", "16000", str(dest))
+
+
+def extract_frames_ffmpeg(src: Path, dest: Path, max_frames: int = 4) -> list[Path]:
+    dest.mkdir(parents=True, exist_ok=True)
+    pattern = dest / "k%02d.jpg"
+    if not _ffmpeg("-i", str(src), "-vf", f"fps=1/{max(1, max_frames)}", "-frames:v", str(max_frames), str(pattern)):
+        return []
+    return sorted(dest.glob("k*.jpg"))[:max_frames]
+
+
+def _maybe_whisper(path: Path, fallback: str) -> str:
+    if os.environ.get("ABCITE_WHISPER", "0").lower() not in {"1", "true", "yes", "on"}:
+        return fallback
+    try:
+        from abcite_core.audio_rag import AudioEncoder
+
+        text = AudioEncoder().transcribe(path, fallback=fallback)
+        return text or fallback
+    except Exception:
+        return fallback
+
+
+def _gold_audio_row(cid: str, question: str, answer: str) -> dict:
+    return {
+        "id": cid,
+        "question": question,
+        "gold_audio_ids": [cid],
+        "answer": answer,
+        "transcript_bm25_should_fail": True,
+        "expected_status": "answered",
+        "must_listen": True,
+        "oa": True,
+    }
+
+
+def _gold_video_row(cid: str, question: str, answer: str) -> dict:
+    return {
+        "id": cid,
+        "question": question,
+        "gold_video_ids": [cid],
+        "answer": answer,
+        "transcript_bm25_should_fail": True,
+        "expected_status": "answered",
+        "must_watch": True,
+        "oa": True,
+    }
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--max", type=int, default=8)
+    ap.add_argument("--max", type=int, default=12)
     args = ap.parse_args()
     CACHE.mkdir(parents=True, exist_ok=True)
-    rows = []
-    for i, (vid, url, title) in enumerate(CANDIDATES[: args.max]):
-        dest = CACHE / f"{vid}.webm"
-        ok = dest.exists() or _get(url, dest)
-        print(f"{vid} {'ok' if ok else 'fail'} {url}")
-        if not ok:
-            continue
-        from abcite_core.video_rag import extract_keyframes
+    AUD_OA.mkdir(parents=True, exist_ok=True)
+    VID_OA.mkdir(parents=True, exist_ok=True)
 
-        frames = extract_keyframes(dest, CACHE / vid, max_frames=4)
-        rows.append(
+    audio_rows: list[dict] = []
+    audio_gold: list[dict] = []
+    for i, cand in enumerate(AUDIO_CANDIDATES[: args.max]):
+        url = commons_file_url(cand["file"])
+        print(f"{cand['id']} url={url or 'missing'}", flush=True)
+        if not url:
+            continue
+        raw = CACHE / f"{cand['id']}{_url_suffix(url)}"
+        if not (raw.exists() or _get(url, raw)):
+            continue
+        wav = AUD_OA / f"{cand['id']}.wav"
+        if not extract_wav(raw, wav):
+            print(f"  wav extract fail {cand['id']}", flush=True)
+            continue
+        filler = FILLER[i % len(FILLER)]
+        transcript = _maybe_whisper(wav, filler)
+        rel = str(wav.relative_to(ROOT))
+        audio_rows.append(
             {
-                "video_id": vid,
-                "frames": [str(p.relative_to(ROOT)) for p in frames],
-                "audio_path": None,
-                "transcript": title,
-                "title": title,
+                "audio_id": cand["id"],
+                "path": rel,
+                "transcript": transcript,
+                "title": cand["title"],
                 "source": "wikimedia-commons",
                 "href": url,
                 "synthetic": False,
             }
         )
-    meta = ROOT / "evals" / "video" / "cache" / "metadata.jsonl"
-    if rows:
-        meta.parent.mkdir(parents=True, exist_ok=True)
-        meta.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
-    print(f"downloaded={len(rows)} (synthetic fixtures remain the CI default)")
+        audio_gold.append(_gold_audio_row(cand["id"], cand["question"], cand["answer"]))
+
+    video_rows: list[dict] = []
+    video_gold: list[dict] = []
+    n_vid = max(0, args.max - 0)
+    for i, cand in enumerate(VIDEO_CANDIDATES[:n_vid]):
+        url = commons_file_url(cand["file"])
+        print(f"{cand['id']} url={url or 'missing'}", flush=True)
+        if not url:
+            continue
+        raw = CACHE / f"{cand['id']}{_url_suffix(url)}"
+        if not (raw.exists() or _get(url, raw)):
+            continue
+        from abcite_core.video_rag import extract_keyframes
+
+        frames = extract_keyframes(raw, CACHE / cand["id"], max_frames=4)
+        if not frames:
+            frames = extract_frames_ffmpeg(raw, CACHE / cand["id"], max_frames=4)
+        if not frames:
+            print(f"  no keyframes {cand['id']}", flush=True)
+            continue
+        wav = VID_OA / f"{cand['id']}.wav"
+        extract_wav(raw, wav)
+        filler = FILLER[(i + 3) % len(FILLER)]
+        transcript = _maybe_whisper(wav, filler) if wav.exists() else filler
+        video_rows.append(
+            {
+                "video_id": cand["id"],
+                "frames": [str(p.relative_to(ROOT)) for p in frames],
+                "audio_path": str(wav.relative_to(ROOT)) if wav.exists() else None,
+                "transcript": transcript,
+                "title": cand["title"],
+                "source": "wikimedia-commons",
+                "href": url,
+                "synthetic": False,
+                "captions": [],
+            }
+        )
+        video_gold.append(_gold_video_row(cand["id"], cand["question"], cand["answer"]))
+
+    for abs_row in ABSTAIN_AUDIO:
+        audio_gold.append(
+            {
+                "id": abs_row["id"],
+                "question": abs_row["question"],
+                "gold_audio_ids": [],
+                "answer": "",
+                "transcript_bm25_should_fail": True,
+                "expected_status": "abstain",
+                "must_listen": True,
+                "oa": True,
+            }
+        )
+    for abs_row in ABSTAIN_VIDEO:
+        video_gold.append(
+            {
+                "id": abs_row["id"],
+                "question": abs_row["question"],
+                "gold_video_ids": [],
+                "answer": "",
+                "transcript_bm25_should_fail": True,
+                "expected_status": "abstain",
+                "must_watch": True,
+                "oa": True,
+            }
+        )
+
+    if audio_rows:
+        (AUD_OA / "metadata.jsonl").write_text(
+            "".join(json.dumps(r) + "\n" for r in audio_rows), encoding="utf-8"
+        )
+        AUD_GOLD.write_text("".join(json.dumps(r) + "\n" for r in audio_gold), encoding="utf-8")
+    if video_rows:
+        (VID_OA / "metadata.jsonl").write_text(
+            "".join(json.dumps(r) + "\n" for r in video_rows), encoding="utf-8"
+        )
+        VID_GOLD.write_text("".join(json.dumps(r) + "\n" for r in video_gold), encoding="utf-8")
+    print(
+        f"oa-audio={len(audio_rows)} oa-video={len(video_rows)} "
+        "(synthetic fixtures remain the CI default; eval with --oa)",
+        flush=True,
+    )
 
 
 if __name__ == "__main__":

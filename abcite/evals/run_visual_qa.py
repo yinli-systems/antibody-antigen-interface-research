@@ -43,26 +43,29 @@ def _print(report: dict) -> None:
     )
 
 
-def _four_column(openclip: dict, biomed: dict | None, colpali: dict | None) -> dict:
-    bm25 = openclip["caption_bm25"]
+def _four_column(openclip: dict | None, biomed: dict | None, colpali: dict | None) -> dict:
+    openclip = openclip or {}
+    biomed = biomed or {}
+    colpali = colpali or {}
+    base = biomed or openclip or colpali
+    bm25 = base.get("caption_bm25")
+    vision = (biomed or openclip or colpali).get("clip_image_only")
     return {
         "caption_bm25": bm25,
-        "biomedclip_t2i": (biomed or {}).get("clip_image_only"),
-        "openclip_t2i": openclip["clip_image_only"],
-        "colpali_t2i": (colpali or {}).get("clip_image_only") if colpali else None,
-        "vision_rerank_biomedclip": (biomed or openclip).get("vision_rerank"),
-        "vqa": (biomed or openclip).get("vqa"),
-        "caption_bm25_should_fail_subset": (biomed or openclip).get(
+        "biomedclip_t2i": biomed.get("clip_image_only") or None,
+        "openclip_t2i": openclip.get("clip_image_only") or None,
+        "colpali_t2i": colpali.get("clip_image_only") or None,
+        "vision_rerank_biomedclip": (biomed or openclip or colpali).get("vision_rerank"),
+        "vqa": (biomed or openclip or colpali).get("vqa"),
+        "caption_bm25_should_fail_subset": (biomed or openclip or colpali).get(
             "caption_bm25_should_fail_subset"
         ),
-        "vision_should_fail_subset": (biomed or openclip).get("vision_should_fail_subset"),
+        "vision_should_fail_subset": (biomed or openclip or colpali).get("vision_should_fail_subset"),
         "vision_beats_bm25_r@1": bool(
-            ((biomed or openclip).get("clip_image_only") or {}).get("recall@1", 0)
-            > (bm25 or {}).get("recall@1", 0)
+            (vision or {}).get("recall@1", 0) > (bm25 or {}).get("recall@1", 0)
         ),
         "vision_beats_bm25_ndcg@5": bool(
-            ((biomed or openclip).get("clip_image_only") or {}).get("ndcg@5", 0)
-            > (bm25 or {}).get("ndcg@5", 0)
+            (vision or {}).get("ndcg@5", 0) > (bm25 or {}).get("ndcg@5", 0)
         ),
     }
 
@@ -74,6 +77,7 @@ def main() -> None:
     ap.add_argument("--fixture", action="store_true")
     ap.add_argument("--rerank-k", type=int, default=DEFAULT_RERANK_K)
     ap.add_argument("--try-colpali", action="store_true")
+    ap.add_argument("--colpali-only", action="store_true", help="Skip CLIP/BiomedCLIP columns")
     ap.add_argument("--max-n", type=int, default=0, help="Cap gallery size (keep gold ids first)")
     args = ap.parse_args()
     recs = load_figure_records(prefer_cache=not args.fixture)
@@ -95,46 +99,58 @@ def main() -> None:
             if len(keep) >= args.max_n:
                 break
         recs = keep
-    vision = build_vision_encoder()
-    gallery = FigureGallery(recs, vision)
-    items = load_visual_qa_gold(set(gallery.ids), recs)
+    dest_one = ROOT / "evals" / "visual_qa_latest.json"
+    report = None
+    bio_report = None
+    gpu = _gpu_name()
+    if args.colpali_only:
+        items = load_visual_qa_gold({r.figure_id for r in recs}, recs)
+        n_gallery = len(recs)
+        encoder_name = "colqwen2"
+        print("colpali-only: skipping CLIP/BiomedCLIP", flush=True)
+    else:
+        vision = build_vision_encoder()
+        gallery = FigureGallery(recs, vision)
+        items = load_visual_qa_gold(set(gallery.ids), recs)
+        n_gallery = gallery.n
+        encoder_name = getattr(gallery.vision, "name", "unknown")
     combined: dict = {
         "protocol": "visual_qa",
-        "n_gallery": gallery.n,
+        "n_gallery": n_gallery,
         "n_readable": len(recs),
         "n_queries": len(items),
         "n_answerable": sum(1 for it in items if it.get("gold_figure_ids")),
-        "encoder": getattr(gallery.vision, "name", "unknown"),
-        "gpu": _gpu_name(),
+        "encoder": encoder_name,
+        "gpu": gpu,
         "source": recs[0].source if recs else "",
         "fusion_default": "off",
         "rerank_k": args.rerank_k,
     }
-    report = evaluate_visual_qa(gallery, items, rerank_k=args.rerank_k)
-    report["gpu"] = combined["gpu"]
-    _print(report)
-    combined["openclip"] = report
-    dest_one = ROOT / "evals" / "visual_qa_latest.json"
-    dest_one.write_text(json.dumps(report, indent=2), encoding="utf-8")
-
-    bio, skip = try_load_biomedclip()
-    bio_report = None
-    if bio is None:
-        combined["biomedclip_skip"] = skip or biomedclip_skip_reason()
-        print(f"BiomedCLIP: {combined['biomedclip_skip']}")
+    if args.colpali_only:
+        combined["skipped_clip_columns"] = True
     else:
-        bio_gal = FigureGallery(recs, bio)
-        bio_items = load_visual_qa_gold(set(bio_gal.ids), recs)
-        bio_report = evaluate_visual_qa(bio_gal, bio_items, rerank_k=args.rerank_k)
-        bio_report["gpu"] = combined["gpu"]
-        bio_report["encoder"] = getattr(bio, "name", "biomedclip")
-        combined["biomedclip"] = bio_report
-        _print(bio_report)
+        report = evaluate_visual_qa(gallery, items, rerank_k=args.rerank_k)
+        report["gpu"] = combined["gpu"]
+        _print(report)
+        combined["openclip"] = report
+        dest_one.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
-    combined["four_column"] = _four_column(report, bio_report, None)
-    dest = ROOT / "evals" / "visual_qa_protocols_latest.json"
-    dest.write_text(json.dumps(combined, indent=2), encoding="utf-8")
-    dest_one.write_text(json.dumps(bio_report or report, indent=2), encoding="utf-8")
+        bio, skip = try_load_biomedclip()
+        if bio is None:
+            combined["biomedclip_skip"] = skip or biomedclip_skip_reason()
+            print(f"BiomedCLIP: {combined['biomedclip_skip']}")
+        else:
+            bio_gal = FigureGallery(recs, bio)
+            bio_items = load_visual_qa_gold(set(bio_gal.ids), recs)
+            bio_report = evaluate_visual_qa(bio_gal, bio_items, rerank_k=args.rerank_k)
+            bio_report["gpu"] = combined["gpu"]
+            bio_report["encoder"] = getattr(bio, "name", "biomedclip")
+            combined["biomedclip"] = bio_report
+            _print(bio_report)
+        combined["four_column"] = _four_column(report, bio_report, None)
+        dest = ROOT / "evals" / "visual_qa_protocols_latest.json"
+        dest.write_text(json.dumps(combined, indent=2), encoding="utf-8")
+        dest_one.write_text(json.dumps(bio_report or report, indent=2), encoding="utf-8")
 
     col_report = None
     col_skip = None
@@ -155,10 +171,10 @@ def main() -> None:
         if col is None:
             combined["colpali_skip"] = col_skip
             print(f"ColPali: {col_skip}")
-        elif gallery.n > 200 and not encode_ok:
+        elif n_gallery > 200 and not encode_ok:
             combined["colpali_skip"] = (
                 f"ColPali loaded ({getattr(col, 'name', 'colpali')}) but late-interaction "
-                f"encode of n={gallery.n} figures is the next GPU job. "
+                f"encode of n={n_gallery} figures is the next GPU job. "
                 "Re-run with ABCITE_COLPALI_ENCODE=1 python evals/run_visual_qa.py --try-colpali"
             )
             print(f"ColPali: {combined['colpali_skip']}")
@@ -179,7 +195,10 @@ def main() -> None:
     combined["four_column"] = _four_column(report, bio_report, col_report)
     dest = ROOT / "evals" / "visual_qa_protocols_latest.json"
     dest.write_text(json.dumps(combined, indent=2), encoding="utf-8")
-    snap = dict(col_report or bio_report or report)
+    primary = col_report or bio_report or report
+    if primary is None:
+        return
+    snap = dict(primary)
     snap["four_column"] = combined["four_column"]
     if col_report:
         snap["colpali_t2i"] = col_report.get("clip_image_only")

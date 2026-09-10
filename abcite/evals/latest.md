@@ -79,9 +79,9 @@ Gallery **N=15949** (NVIDIA GeForce RTX 5090). n_answerable=**51** (same gold as
 | caption BM25 | 0.000 | 0.000 | 0.000 | 0.000 |
 | BiomedCLIP T→I | 0.059 | 0.098 | 0.118 | 0.080 |
 | OpenCLIP ViT-B-32 T→I | 0.039 | 0.137 | 0.176 | 0.096 |
-| ColPali / ColQwen2 T→I | 0.078 | 0.137 | 0.196 | 0.107 |
+| ColPali / ColQwen2 T→I | 0.078 | 0.176 | 0.196 | 0.124 |
 
-Vision beats caption BM25 at R@1? **yes**. ColQwen2 leads at R@1 (0.078 vs BiomedCLIP 0.059 vs OpenCLIP 0.039). Drop vs N=1,200: ColQwen2 R@1 0.196→0.078. VQA e2e=0.1803 oracle=0.5574 cite@1=0.0784. See `evals/visual_qa_latest.json`.
+Vision beats caption BM25 at R@1? **yes**. ColQwen2 GPU MaxSim + `Query: ` prefix (tokens capped 64/768): R@5 0.137→0.176, nDCG@5 0.107→0.124; R@1 unchanged 0.078. CLIP columns from the prior same-gallery run. Not ViDoRe; not SOTA. VQA e2e=0.1803 oracle=0.5574 cite@1=0.0784. See `evals/visual_qa_latest.json`.
 
 ## Official ViDoRe v1 — page retrieval (same ColQwen2)
 
@@ -140,6 +140,8 @@ Video gallery **N=16** (encoder=local-image; synthetic keyframes). RRF is within
 | audio track T→A | 0.083 | 0.417 | 0.833 | 0.246 |
 | within-video RRF | 0.250 | 1.000 | 1.000 | 0.624 |
 See `evals/audio_qa_latest.json` and `evals/video_qa_latest.json`.
+
+OA Wikimedia (N=6 audio wav-hash, N=6 video OpenCLIP; 5090; not CLAP-SOTA): audio R@1 wav-hash 0.167 vs BM25 0.167 (no win); video frames R@1 0.500 vs BM25 0.167. Hub 429 blocked LAION CLAP. See `evals/audio_qa_oa_latest.json`, `evals/video_qa_oa_latest.json`.
 
 ## Appendix — Protocol A held-out caption-as-query (PMC OA)
 

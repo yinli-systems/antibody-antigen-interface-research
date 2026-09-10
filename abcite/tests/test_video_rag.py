@@ -48,3 +48,14 @@ def test_video_eval_and_cite_or_abstain():
     abs_q = next(it for it in items if it.get("expected_status") == "abstain")
     abs_resp = video_qa_response(abs_q["question"], gal, provider="local", trace_id="t-vabs", latency_ms=1.0)
     assert abs_resp.status == AnswerStatus.ABSTAIN
+
+
+def test_oa_video_candidates_should_fail_filler_bm25():
+    from evals.download_av import FILLER, VIDEO_CANDIDATES
+
+    blob = " ".join(FILLER)
+    ids = [c["id"] for c in VIDEO_CANDIDATES]
+    assert len(ids) == len(set(ids))
+    for cand in VIDEO_CANDIDATES:
+        ov = caption_keyword_overlap(cand["question"], blob)
+        assert ov["should_fail"], (cand["id"], ov["overlap_tokens"])

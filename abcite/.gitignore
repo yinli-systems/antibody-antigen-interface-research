@@ -14,3 +14,7 @@ evals/figures/cache/
 evals/audio/cache/
 evals/video/cache/
 evals/av_cache/
+evals/audio/oa/*.wav
+evals/video/oa/*.wav
+evals/video/oa/*.jpg
+evals/video/oa/*.png
