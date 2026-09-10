@@ -247,18 +247,17 @@ def test_a_fully_resolved_chain_aligns_position_for_position() -> None:
     assert [float(slot[0][0]) for slot in slots] == [0.0, 1.0, 2.0]
 
 
-def test_the_alignment_must_reconstruct_the_observed_sequence() -> None:
-    """A substitution would otherwise be read as two unresolved residues."""
+def test_a_substitution_is_refused_rather_than_read_as_a_gap() -> None:
+    """SEQRES says D at position 2; the structure resolves W there."""
     align_to_seqres = _MODULE.align_to_seqres
 
-    # SEQRES says D at position 2; the structure resolves W there.
     chain = _NamedChain([
         _NamedResidue(_residue(0.0), "ALA", 1),
         _NamedResidue(_residue(1.0), "CYS", 2),
         _NamedResidue(_residue(2.0), "TRP", 3),
     ])
 
-    with pytest.raises(BackboneError, match="does not reconstruct"):
+    with pytest.raises(BackboneError, match="neither author numbering nor"):
         align_to_seqres(chain, "ACD")
 
 
@@ -276,15 +275,75 @@ def test_a_deletion_reconstructs_and_is_accepted() -> None:
     assert [float(slot[0][0]) for slot in slots[:2]] == [0.0, 1.0]
 
 
-def test_author_numbering_is_not_used_as_a_witness() -> None:
-    """It looked like one and is not: scheme-numbered chains skip numbers.
+def test_numbering_places_residues_when_it_reconstructs() -> None:
+    """Preferred because it is the depositor's assignment, not a string property."""
+    numbering_placement = _MODULE.numbering_placement
 
-    2adf_0P skips author number 95 while resolving every residue but the last,
-    so numbering would place the gap fourteen positions from where the sequence
-    puts it -- and the sequence is decisive, the observed chain being exactly
-    seqres[:108].
+    residues = [_NamedResidue(_residue(0.0), "ALA", n) for n in (1, 2, 4, 5)]
+
+    assert numbering_placement(residues, "ACDEF"[:5]) == [0, 1, 3, 4]
+
+
+def test_numbering_declines_when_it_cannot_mean_a_position() -> None:
+    numbering_placement = _MODULE.numbering_placement
+
+    with_icodes = [
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "CYS", 1, "A"),
+    ]
+    short_of_seqres = [_NamedResidue(_residue(0.0), "ALA", n) for n in (1, 2)]
+
+    assert numbering_placement(with_icodes, "AC") is None
+    assert numbering_placement(short_of_seqres, "ACDEF") is None
+    assert numbering_placement([], "AC") is None
+
+
+def test_alignment_is_used_when_numbering_does_not_reconstruct() -> None:
+    """2adf_0P: a scheme-numbered chain skips 95 and resolves all but the last."""
+    align_to_seqres = _MODULE.align_to_seqres
+
+    # Numbering claims positions 0,1,3 but the residues spell "ACD", which only
+    # reconstructs at 0,1,2.
+    chain = _NamedChain([
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "CYS", 2),
+        _NamedResidue(_residue(2.0), "ASP", 4),
+    ])
+
+    slots = align_to_seqres(chain, "ACDF")
+
+    assert [index for index, slot in enumerate(slots) if slot is not None] == [0, 1, 2]
+
+
+def test_numbering_wins_when_both_reconstruct() -> None:
+    """A repeat lets several placements reconstruct; only one is right.
+
+    This is 2cmr_0P in miniature: a tandem repeat where the sequence cannot
+    choose and the depositor's numbering can.
     """
-    assert not hasattr(_MODULE, "numbering_gaps")
+    align_to_seqres = _MODULE.align_to_seqres
+
+    chain = _NamedChain([
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "ALA", 3),
+    ])
+
+    slots = align_to_seqres(chain, "AAA")
+
+    assert [index for index, slot in enumerate(slots) if slot is not None] == [0, 2]
+
+
+def test_neither_placement_reconstructing_is_refused() -> None:
+    """A substitution breaks both, and a wrong placement must not be written."""
+    align_to_seqres = _MODULE.align_to_seqres
+
+    chain = _NamedChain([
+        _NamedResidue(_residue(0.0), "ALA", 1),
+        _NamedResidue(_residue(1.0), "TRP", 2),
+    ])
+
+    with pytest.raises(BackboneError, match="neither author numbering nor"):
+        align_to_seqres(chain, "AC")
 
 
 def test_verification_records_a_marker_disagreement_instead_of_failing() -> None:

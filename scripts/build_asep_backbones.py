@@ -23,11 +23,13 @@ that already exist:
   reconstruction: SEQRES with the unfilled positions removed must equal the
   observed sequence exactly.
 
-  Author numbering cannot do this job. It looked like an independent witness and
-  is not: antibody chains are numbered by scheme, so ``2adf_0P`` skips number 95
-  while resolving every residue but the last, and the numbering would place the
-  gap fourteen positions away from where the sequence puts it. The sequence is
-  decisive there -- the observed chain is exactly ``seqres[:108]``;
+  Two ways to place them exist and each fails where the other works, so
+  reconstruction arbitrates. Author numbering wins when it reconstructs, being
+  the depositor's own assignment rather than a property of the string, and it is
+  decisive on ``2cmr_0P``, a tandem-repeat antigen where several placements
+  reconstruct perfectly and only one is right. Sequence alignment is the
+  fallback and is needed: antibody chains are numbered by scheme, so ``2adf_0P``
+  skips number 95 while resolving every residue but the last;
 * chains are concatenated in the order the interim graph stores them, which is
   ``H`` then ``L`` for the antibody and is not the order the files list them in;
 * the antibody mask is ``mapping.ab.seqres2cdr``, the antigen's is
@@ -86,35 +88,81 @@ def residue_backbone(residue):
         return None
 
 
+def numbering_placement(residues: list, seqres: str) -> list[int] | None:
+    """SEQRES positions the depositor's own numbering assigns to these residues.
+
+    Returns None when the numbering cannot mean that: insertion codes, numbers
+    out of order or repeated, or a last number that is not the SEQRES length.
+    """
+    numbers = [residue.id[1] for residue in residues]
+    codes = {residue.id[2] for residue in residues}
+    if not numbers or codes != {" "}:
+        return None
+    if numbers != sorted(numbers) or len(set(numbers)) != len(numbers):
+        return None
+    if numbers[0] < 1 or numbers[-1] != len(seqres):
+        return None
+    return [number - 1 for number in numbers]
+
+
+def alignment_placement(seqres: str, observed: str) -> list[int]:
+    """SEQRES positions a global alignment assigns to the observed sequence."""
+    from Bio import Align
+
+    aligner = Align.PairwiseAligner(
+        mode="global",
+        match_score=1,
+        mismatch_score=-10,
+        open_gap_score=-1,
+        extend_gap_score=-0.5,
+    )
+    alignment = aligner.align(seqres, observed)[0]
+    return [index for start, end in alignment.aligned[0] for index in range(start, end)]
+
+
 def align_to_seqres(chain, seqres: str) -> list:
     """Place observed residues at their SEQRES positions, leaving gaps empty.
 
-    The masks index SEQRES. A file that does not resolve every residue therefore
-    cannot be read in observed order, and author numbering cannot be used to
-    place them either: one chain here numbers to 109 with two numbers absent
-    while its SEQRES is 108 long. Matching the observed sequence against SEQRES
-    is what survives both.
-    """
-    import difflib
+    The masks index SEQRES, so a file that does not resolve every residue cannot
+    be read in observed order. Two independent ways to place them exist and each
+    fails on cases the other handles, so both are computed and **reconstruction
+    arbitrates**: SEQRES restricted to the chosen positions must equal the
+    observed sequence exactly.
 
+    Author numbering is preferred when it reconstructs, because it is the
+    depositor's own assignment of residues to positions rather than a property
+    of the string. It is decisive where the sequence cannot be: ``2cmr_0P``
+    carries a tandem-repeat antigen where several placements reconstruct
+    perfectly and only one is right.
+
+    Sequence alignment is the fallback, and it is needed: antibody chains are
+    numbered by scheme, so ``2adf_0P`` skips number 95 while resolving every
+    residue but the last, and its numbering reconstructs nothing.
+    """
     residues = [residue for residue in chain if is_amino_acid(residue)]
     observed = "".join(one_letter(residue) for residue in residues)
-    slots: list = [None] * len(seqres)
-    matcher = difflib.SequenceMatcher(None, seqres, observed, autojunk=False)
-    for tag, seqres_start, seqres_end, observed_start, _ in matcher.get_opcodes():
-        if tag != "equal":
-            continue
-        for offset in range(seqres_end - seqres_start):
-            slots[seqres_start + offset] = residue_backbone(residues[observed_start + offset])
 
-    reconstructed = "".join(
-        seqres[index] for index, slot in enumerate(slots) if slot is not None
-    )
-    if reconstructed != observed:
-        raise BackboneError(
-            "the alignment does not reconstruct the observed sequence: "
-            f"{len(observed)} residues observed, {len(reconstructed)} placed"
-        )
+    def reconstructs(indices) -> bool:
+        return indices is not None and len(indices) == len(residues) and "".join(
+            seqres[index] for index in indices
+        ) == observed
+
+    numbering = numbering_placement(residues, seqres)
+    if reconstructs(numbering):
+        chosen = numbering
+    else:
+        alignment = alignment_placement(seqres, observed)
+        if not reconstructs(alignment):
+            raise BackboneError(
+                "neither author numbering nor sequence alignment reconstructs the "
+                f"observed chain: {len(observed)} residues observed, "
+                f"{len(alignment)} placed by alignment"
+            )
+        chosen = alignment
+
+    slots: list = [None] * len(seqres)
+    for position, residue in zip(chosen, residues):
+        slots[position] = residue_backbone(residue)
     return slots
 
 
