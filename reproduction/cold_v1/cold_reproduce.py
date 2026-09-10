@@ -133,6 +133,10 @@ def main(argv: list[str] | None = None) -> int:
                         help="root holding the AsEP-side runs")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--receipt", type=Path, default=None)
+    parser.add_argument("--analysis-commit", default=None,
+                        help="the commit this tree was archived from; an archive "
+                             "carries no git metadata, so it is passed in and "
+                             "recorded rather than guessed")
     arguments = parser.parse_args(argv)
     arguments.out.mkdir(parents=True, exist_ok=True)
 
@@ -207,12 +211,13 @@ def main(argv: list[str] | None = None) -> int:
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "python_version": sys.version.split()[0],
         "platform": platform.platform(),
-        "analysis_commit": subprocess.run(
+        "analysis_commit": arguments.analysis_commit or subprocess.run(
             ["git", "rev-parse", "HEAD"], cwd=str(REPOSITORY),
-            capture_output=True, text=True).stdout.strip(),
-        "analysis_tree_dirty": bool(subprocess.run(
-            ["git", "status", "--porcelain"], cwd=str(REPOSITORY),
-            capture_output=True, text=True).stdout.strip()),
+            capture_output=True, text=True).stdout.strip() or "unrecorded",
+        "analysis_tree_source": (
+            "git archive of the stated commit; no working tree, so nothing can be "
+            "dirty" if arguments.analysis_commit else "live working tree"
+        ),
         "scripts_digest": tree_digest(REPOSITORY / "scripts"),
         "src_digest": tree_digest(REPOSITORY / "src"),
         "output_digest": tree_digest(arguments.out),
