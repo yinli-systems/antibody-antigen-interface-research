@@ -418,10 +418,13 @@ def build_sources(
             )
         )
     if igfold_root is not None:
-        # IgFold predicts antibody structure and says nothing about an antigen,
-        # so it covers the antibody side alone -- the same asymmetry AntiBERTy
-        # has, for a different reason. Its artifacts are keyed by the antibody
-        # digest directly, so the mapping is the identity.
+        # Named for AsEP's cache key, not for what the tensor is. These are
+        # AntiBERTy embeddings of the full antibody domain, verified by running
+        # AntiBERTy and matching rows -- see results/feature_provenance_v1/.
+        # This project never ran IgFold. The name is kept because it is the key
+        # on disk and in AsEP's graphs; every reader-facing description says
+        # AntiBERTy. It covers the antibody side alone, as a sequence model over
+        # antibody repertoires must.
         sources.append(
             RepresentationSource(
                 name="igfold",
