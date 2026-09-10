@@ -185,7 +185,12 @@ def main(argv: list[str] | None = None) -> int:
         help=f"splits of --instance-split-manifest to select; {SEALED_SPLIT!r} is refused",
     )
     parser.add_argument("--device", default="cpu")
-    parser.add_argument("--backbones", type=Path, default=None, help="torch file for esm_if1")
+    parser.add_argument("--backbones", type=Path, default=None,
+                        help="torch file of per-instance backbones, for structure encoders")
+    parser.add_argument("--proteinmpnn-checkout", type=Path, default=None,
+                        help="directory holding protein_mpnn_utils.py and "
+                             "vanilla_model_weights/; there is no packaged distribution "
+                             "whose provenance this project assumes")
     parser.add_argument("--limit", type=int, default=None, help="encode at most N units")
     arguments = parser.parse_args(argv)
 
@@ -208,6 +213,11 @@ def main(argv: list[str] | None = None) -> int:
     if backend.requires_backbone and backbones is None:
         print(f"{arguments.backend} requires --backbones", file=sys.stderr)
         return 2
+    if arguments.backend == "proteinmpnn":
+        if arguments.proteinmpnn_checkout is None:
+            print("proteinmpnn requires --proteinmpnn-checkout", file=sys.stderr)
+            return 2
+        backend.checkout = arguments.proteinmpnn_checkout
 
     instances = None
     instance_counts: dict[str, int] = {}
