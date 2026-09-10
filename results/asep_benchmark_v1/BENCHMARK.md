@@ -90,6 +90,34 @@ models reported with a seed standard deviation; ten averaged models are a
 different object and the row is labelled accordingly. The single-model row is
 the one to compare.
 
+### The ensemble saturates at two, and the seed spread is the real finding
+
+Measured on validation, averaging more seeds stops helping almost immediately:
+
+| ensemble size | validation macro MCC |
+|---:|---:|
+| 1 | 0.2591 (range 0.1996 – 0.3185) |
+| 2 | 0.3036 |
+| 3 | 0.2967 |
+| 5 | 0.2953 |
+| 7 | 0.3024 |
+| 10 | 0.3021 |
+
+Two seeds capture the gain; three to ten are flat within noise. Training more
+seeds would add nothing, so this lever is exhausted.
+
+**The spread across single seeds is the part worth keeping.** Validation macro
+MCC ranges 0.1996 to 0.3185 — the best seed is 1.6x the worst. The ensemble gain
+is largely that variance being averaged away.
+
+This bears directly on the comparison. LF3DRoPE is reported as 0.171 ± 0.010. If
+that is a seed standard deviation, its variance is an order of magnitude below
+what this cohort produces, which would itself need explaining; if it is over
+something else — folds, say — then the error bars in the two rows are not the
+same quantity and a gap of 0.003 between point estimates means very little
+either way. **Neither has been checked**, and until it is, the point estimates
+should be read as coarser than their decimals suggest.
+
 ### A selection that did not survive
 
 Four ways of deriving a node score were tried: the model's own epitope head, and
