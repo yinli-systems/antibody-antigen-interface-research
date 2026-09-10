@@ -90,3 +90,60 @@ is running to remove those confounds.
 This measures what correspondence fidelity is worth, not how well the model
 performs. Nothing here is a benchmark number and nothing here touched a test
 split.
+
+
+---
+
+## AntiBERTy on sabdab2, extracted here, both chains, 10 seeds
+
+Added 2026-09-11, registered before submission. This removes every confound
+between the two earlier ladders. Same cohort as the ESM-IF1 ladder, features
+this project extracted rather than copied, both antibody chains, the same
+protocol, the same endpoint, ten seeds. `k = 0` was re-evaluated on the same
+toolchain as the perturbed arms rather than reused.
+
+| k | mean Δ AUPRC | 95% CI | damaged |
+|---|---|---|---|
+| 1 | −0.00273 | [−0.00302, −0.00248] | 10/10 |
+| 2 | −0.00281 | [−0.00320, −0.00243] | 10/10 |
+| 4 | −0.00415 | [−0.00474, −0.00356] | 10/10 |
+| 8 | −0.00443 | [−0.00504, −0.00382] | 10/10 |
+| 16 | −0.00444 | [−0.00513, −0.00376] | 10/10 |
+| global | −0.00614 | [−0.00657, −0.00574] | 10/10 |
+
+**Verdict: slope.**
+
+### The shapes differ, and that is the result
+
+Each ladder as a fraction of its own global-permutation damage, which is the
+comparison registered in the extension because the arms have different baselines:
+
+| k | ESM-IF1 (structure, sabdab2) | AntiBERTy (sequence, sabdab2) |
+|---|---|---|
+| 1 | 52% | 44% |
+| 2 | 59% | 46% |
+| 4 | 88% | 68% |
+| 8 | **94%** | 72% |
+| 16 | 90% | 72% |
+| global | 100% | 100% |
+
+**Displacement harms a sequence representation too.** Ten of ten seeds at every
+ladder point. So the harm from destroyed correspondence is a property of frozen
+residue-indexed features, not of structural ones — which is the outcome the
+extension named as costing the current framing the most, and it is what happened.
+
+**The structural ladder saturates and the sequence ladder does not.** ESM-IF1 is
+at 94% of its total damage by eight rows and flat thereafter; AntiBERTy is at
+72% and still climbing to the global permutation. Whatever ESM-IF1 carries that
+correspondence unlocks is exhausted by a local displacement; what AntiBERTy
+carries degrades gradually and is only fully destroyed by a global one.
+
+That asymmetry is stated as an observation about these two encoders on this
+cohort. It is not a mechanism, and two encoders are not a family.
+
+### What this does to the earlier AntiBERTy ladder
+
+`k = 1` costs 44% of the global damage in both AntiBERTy ladders — the AsEP one
+read from the cache under the key `igfold`, and this one extracted here on
+sabdab2 with both chains. Two cohorts, two extractions, two coverages, the same
+figure. The earlier ladder's numbers survive the relabelling.

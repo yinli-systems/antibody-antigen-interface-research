@@ -58,11 +58,20 @@ def read_metric(evaluation: Path, metric: str) -> float | None:
     return None
 
 
-def collect(aligned_root: Path, corrupt_root: Path, metric: str) -> dict:
-    """Per-k, per-seed paired differences against the unperturbed model."""
+def collect(aligned_root: Path, corrupt_root: Path, metric: str,
+            aligned_subdir: str = "validation") -> dict:
+    """Per-k, per-seed paired differences against the unperturbed model.
+
+    ``aligned_subdir`` is a path concern only. Training runs write their
+    evaluation under ``seed_N/validation/``; a ladder that evaluates ``k = 0``
+    as its own arm writes ``seed_N/`` directly. Nothing about the comparison
+    changes with it.
+    """
     baseline: dict[int, float] = {}
     for directory in sorted(aligned_root.glob("seed_*")):
-        value = read_metric(directory / "validation" / "evaluation.json", metric)
+        receipt = directory / aligned_subdir / "evaluation.json" if aligned_subdir \
+            else directory / "evaluation.json"
+        value = read_metric(receipt, metric)
         if value is not None:
             baseline[int(directory.name.split("_")[1])] = value
 
@@ -172,10 +181,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--corrupt-root", type=Path, required=True,
                         help="directory of k*/seed_* evaluations")
     parser.add_argument("--label", default="")
+    parser.add_argument("--aligned-subdir", default="validation",
+                        help="subdirectory of each aligned seed holding evaluation.json; "
+                             "empty when the baseline is a ladder arm of its own")
     parser.add_argument("--json", type=Path, default=None)
     arguments = parser.parse_args(argv)
 
-    collected = collect(arguments.aligned_root, arguments.corrupt_root, ENDPOINT)
+    collected = collect(arguments.aligned_root, arguments.corrupt_root, ENDPOINT,
+                        arguments.aligned_subdir)
     points = collected["points"]
     if not points:
         print(f"no ladder points under {arguments.corrupt_root}", file=sys.stderr)
@@ -185,8 +198,8 @@ def main(argv: list[str] | None = None) -> int:
     verdict = classify(summaries, points)
     companions = {
         name: {k: (lambda rows: sum(r["difference"] for r in rows) / len(rows))(rows)
-               for k, rows in collect(arguments.aligned_root, arguments.corrupt_root, name)
-               ["points"].items()}
+               for k, rows in collect(arguments.aligned_root, arguments.corrupt_root,
+                                      name, arguments.aligned_subdir)["points"].items()}
         for name in COMPANIONS
     }
 

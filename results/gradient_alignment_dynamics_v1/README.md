@@ -4,13 +4,16 @@ Registered in `protocols/GRADIENT_ALIGNMENT_DYNAMICS_V1.md` and its two
 amendments, which fixed the endpoint, the crossing rule and all four possible
 verdicts before any trace was written.
 
-**Partial: AsEP only.** The sabdab2 traces are still running, and whether this
-is a property of training or of this cohort is not yet decided.
+**Complete: both cohorts, both toolchains, twelve runs.** Every one is a
+transient.
 
 ## What was contradictory
 
 The cosine between the node and contact-edge gradients on the shared trunk read
-**+0.70** at converged sabdab2 checkpoints and **−0.059** in a smoke run. Two
+**+0.70** at converged checkpoints and **−0.059** in a smoke run — both on
+**AsEP**. (An earlier version of this file said the +0.70 was sabdab2. It was
+not; the run config reads `interaction_first_asep`. So there was never a
+cohort question in the reconciliation, only a stage one.) Two
 explanations for that were proposed and both were wrong: it was blamed on the
 partner-ranking term, which turned out to be 23-40× too small to matter, and
 then on training stage measured in epochs, which the epoch-wise trajectories
@@ -38,6 +41,17 @@ The two figures that appeared to contradict each other are both correct and both
 incomplete. A 40-step window sits inside the transient. A converged checkpoint
 sits four hundred thousand steps past it.
 
+## Both cohorts
+
+| cohort | steps in an epoch | crossings | as a fraction of the epoch |
+|---|---|---|---|
+| AsEP | 1383 | 104, 110, 77 | 5.6% – 8.0% |
+| sabdab2 | 3229 | 50, 39, 38 | 1.2% – 1.5% |
+
+Every seed of both cohorts opens with a negative mean cosine and crosses to a
+durably positive one. sabdab2 crosses sooner, both absolutely and relative to its
+longer epoch. The transient is not a property of one cohort.
+
 ## The toolchain replication
 
 The same six runs on a different stack: torch 2.11+cu128 on sm_120 against
@@ -45,8 +59,12 @@ The same six runs on a different stack: torch 2.11+cu128 on sm_120 against
 
 | | 4090 crossing | 5090 crossing |
 |---|---|---|
-| seed 1 | 104 | 104 |
-| seed 2 | 110 | 110 |
+| AsEP seed 1 | 104 | 104 |
+| AsEP seed 2 | 110 | 110 |
+| AsEP seed 3 | 77 | 77 |
+| sabdab2 seed 1 | 50 | 48 |
+| sabdab2 seed 2 | 39 | 40 |
+| sabdab2 seed 3 | 38 | 35 |
 
 The opening means agree to four decimals and the first twenty steps agree to
 three. The late-epoch means drift apart slightly (+0.6156 against +0.6106),
@@ -68,8 +86,8 @@ a measurement at either end alone would report the opposite of the other.
 Not that the transient causes anything. It is a description of optimisation
 geometry, and nothing here shows that a downstream quantity depends on it.
 
-Not that it generalises: the sabdab2 traces are unread. If sabdab2 shows no
-transient, this is a property of the cohort and not of training.
+Not that it generalises beyond these two cohorts and this architecture. Two
+cohorts agreeing is not a family of models agreeing.
 
 Not that this settles the mechanism behind the pair-supervision effect. The
 `results/gradient_conflict_v1/` figure keeps its numbers and its narrowed scope —
