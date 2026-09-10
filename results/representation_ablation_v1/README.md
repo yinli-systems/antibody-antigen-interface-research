@@ -8,7 +8,8 @@ Date: 2026-09-10
 
 Machine-readable: [`report.json`](report.json) (paired metrics and the
 final-epoch comparison), [`width_control.json`](width_control.json) (the
-width-matched control), [`margin_esm2.json`](margin_esm2.json) and
+width-matched control), [`arms.json`](arms.json) (every arm against `esm2`),
+[`margin_esm2.json`](margin_esm2.json) and
 [`margin_esm2_antiberty_esmif1.json`](margin_esm2_antiberty_esmif1.json) (each
 arm against its own outer-product baseline). Predictions stay on the cluster.
 
@@ -70,6 +71,54 @@ control being worse, which is to say the treatment is **less sensitive to the
 seed**. That is what a data-limited model looks like when the constraint is
 loosened: with stronger features it depends less on what a small sample happened
 to teach it.
+
+## Result: it is the structure encoder, and the antibody language model hurts
+
+Two single-encoder arms decompose the gain. Ten seeds each, paired against
+`esm2`.
+
+| macro auprc | paired difference | 95% CI | seeds | verdict |
+|---|---:|---|---:|---|
+| `antiberty_only` | **−0.001773 (−7.9%)** | [−0.002820, −0.000768] | **1/10** | **decided — worse** |
+| `esm_if1_only` | **+0.005111 (+22.8%)** | [+0.003780, +0.006439] | 10/10 | decided |
+| `random_control` | −0.000595 (−2.6%) | [−0.002151, +0.000970] | 4/10 | no decision |
+| `esm2_antiberty_esmif1` | +0.006638 (+30.5%) | [+0.005598, +0.007625] | 20/20 | decided |
+
+And against each single-encoder arm:
+
+| macro auprc | paired difference | 95% CI | seeds | verdict |
+|---|---:|---|---:|---|
+| both vs `antiberty_only` | +0.007766 (+37.5%) | [+0.006511, +0.008964] | 10/10 | decided |
+| both vs `esm_if1_only` | +0.000883 (+3.2%) | [−0.000327, +0.002134] | 7/10 | **no decision** |
+
+Three things follow.
+
+**AntiBERTy on its own makes the model worse**, and that is decided: nine seeds
+of ten move down and the interval lies entirely below zero. An encoder trained
+specifically on antibodies, added to the antibody side, costs 7.9%.
+
+**ESM-IF1 on its own delivers almost all of the gain.** The lever is
+*structure*, not antibody-specific sequence statistics.
+
+**Adding AntiBERTy on top of ESM-IF1 buys nothing measurable.** The interval
+contains zero at 7/10 seeds.
+
+So the configuration to carry forward is not the arm that produced the headline.
+It is **ESM-2 + ESM-IF1**: narrower (1793 / 1793 against 2306 / 1793), smaller
+(896,781 parameters against 963,471), and statistically indistinguishable from
+the pair. Simpler, smaller, and as good.
+
+The two encoders do interact. Summing the single-encoder differences gives
++0.003338 against +0.005993 observed together, so AntiBERTy is harmful alone and
+not harmful alongside ESM-IF1. That ratio is **not** reported as "1.8x
+superadditive": one of the two components is negative, which makes the ratio a
+misleading way to describe what is really an interaction, and ten seeds cannot
+establish an interaction anyway.
+
+This also confirms the width control from a second direction. `random_control`
+is **wider** than `esm_if1_only` (2306 against 1793) and scores 2.6% *below*
+`esm2`, while `esm_if1_only` scores 22.8% above it. Width does not explain the
+gain; its sign is not even the same.
 
 ## Result: the marginals improved too, and the margin grew faster than they did
 
