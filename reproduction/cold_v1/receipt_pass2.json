@@ -1,0 +1,115 @@
+{
+  "analysis_commit": "f222c1927b7e6562f4e9990a47459a2cf35c1109",
+  "analysis_tree_source": "git archive of the stated commit; no working tree, so nothing can be dirty",
+  "forbidden_inputs": [
+    "README.md",
+    "EVIDENCE_INVENTORY.md",
+    "CLAIMS_LEDGER.md",
+    "REPRODUCIBILITY_NOTES.md",
+    "BENCHMARK.md",
+    "STAGE_THREE.md",
+    "PART_TWO.md",
+    "RUN_CONTRACT.md"
+  ],
+  "format_version": "cold_reproduction_receipt_v1",
+  "mismatches": {
+    "baseline_margin": [
+      {
+        "cold": "missing",
+        "field": "<file>",
+        "frozen": "present"
+      }
+    ]
+  },
+  "output_digest": "b88b6ec9c6664d718f06096e4ed0431fdaee8bccf243eba4689f1b3db5dc9991:3",
+  "pass_rule": "every numeric leaf within 1e-10 of the frozen receipt, every bootstrap interval exact, every script exiting zero",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+  "python_version": "3.10.20",
+  "scripts_digest": "3cafe461beed0c19af2861d59407f2f2cf3e01b3f9b3764265a0574c1aaf8e56:413",
+  "src_digest": "32805f5a176311c3650bd7dce8453d10e35fb6c841cfea401ee979f9da3fcafc:139",
+  "steps": [
+    {
+      "arguments": [
+        "--run-root",
+        "/ssd/scxi253/margin_replication/out"
+      ],
+      "compared_against": "results/baseline_margin_replication_v1/report.json",
+      "compared_against_sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+      "mismatches": 1,
+      "output": "/ssd/scxi253/cold_v1/output2/baseline_margin.json",
+      "output_sha256": null,
+      "returncode": -9,
+      "script": "aggregate_baseline_margin.py",
+      "script_sha256": "41964e36dd9a3cd2323d544845c688a90ff9b58a71092f25982a890c31b1f925",
+      "seconds": 4165.9,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--aligned-root",
+        "/ssd/scxi253/repr_ablation/out/esm_if1_only",
+        "--corrupt-root",
+        "/ssd/scxi253/asep_bench/corrupt/esm_if1",
+        "--label",
+        "esm_if1"
+      ],
+      "compared_against": "results/correspondence_corruption_curve_v1/curve_esm_if1.json",
+      "compared_against_sha256": "b5ce5afb76f9893987041065817db7c91f4f0fb8b10f12cd3e8057d53020d15e",
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output2/corruption_esm_if1.json",
+      "output_sha256": "b5ce5afb76f9893987041065817db7c91f4f0fb8b10f12cd3e8057d53020d15e",
+      "returncode": 0,
+      "script": "aggregate_corruption_curve.py",
+      "script_sha256": "7e0f51c75c8216fda3dc63dc0c501b6dc4cd4d13ba6ff08ae0d88e3c816ba0b0",
+      "seconds": 6.9,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--aligned-root",
+        "/ssd/scxi253/asep_bench/antiberty_ladder/k0",
+        "--corrupt-root",
+        "/ssd/scxi253/asep_bench/antiberty_ladder",
+        "--label",
+        "antiberty_sabdab2",
+        "--aligned-subdir",
+        ""
+      ],
+      "compared_against": "results/correspondence_corruption_curve_v1/curve_antiberty_sabdab2.json",
+      "compared_against_sha256": "d19d1d5ba57e8f020ec262034d087d09cc5bf68269e08c063719a928f715d795",
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output2/corruption_antiberty.json",
+      "output_sha256": "d19d1d5ba57e8f020ec262034d087d09cc5bf68269e08c063719a928f715d795",
+      "returncode": 0,
+      "script": "aggregate_corruption_curve.py",
+      "script_sha256": "7e0f51c75c8216fda3dc63dc0c501b6dc4cd4d13ba6ff08ae0d88e3c816ba0b0",
+      "seconds": 6.2,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--cohort",
+        "asep=/ssd/scxi253/asep_bench/steptrace/asep_seed*",
+        "--cohort",
+        "sabdab2=/ssd/scxi253/asep_bench/steptrace/sabdab2_seed*",
+        "--cohort",
+        "asep_5090=/ssd/scxi253/asep_bench/steptrace_5090/asep_seed*",
+        "--cohort",
+        "sabdab2_5090=/ssd/scxi253/asep_bench/steptrace_5090/sabdab2_seed*"
+      ],
+      "compared_against": "results/gradient_alignment_dynamics_v1/step_trace_summary.json",
+      "compared_against_sha256": "8251cfdf5842d1a70715e5bd970a5769258dd9513cf03eeedc9c075034e8defb",
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output2/gradient_step_trace.json",
+      "output_sha256": "8251cfdf5842d1a70715e5bd970a5769258dd9513cf03eeedc9c075034e8defb",
+      "returncode": 0,
+      "script": "aggregate_step_trace.py",
+      "script_sha256": "39ff4b0e7dec079ff607cb2fb5260728e9fe197e43f14ac4427bf5865fcc4662",
+      "seconds": 0.5,
+      "stderr_tail": []
+    }
+  ],
+  "timestamp_utc": "2026-09-11T09:21:58Z",
+  "tolerance": 1e-10,
+  "verdict": "FAIL"
+}

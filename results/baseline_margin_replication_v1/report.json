@@ -5,6 +5,8 @@
     0.004290434941020674
   ],
   "claim_boundary": "Development-only replication on the validation split. It establishes a margin over a baseline, not a benchmark result, and authorizes no test access or model selection.",
+  "decision_rule": "both: the exact sign lower bound exceeds 0.5, and the lower end of the bootstrap interval exceeds the smallest effect worth caring about",
+  "decision_rule_id": "sign_bound_exceeds_half_and_ci_above_sesoi",
   "effect_size": 1.5473717805639606,
   "format_version": "pair_baseline_margin_replication_v1",
   "mean_margin": 0.0031134461184687,
@@ -73,6 +75,7 @@
     }
   ],
   "positive_seed_count": 10,
+  "relative_estimand": "per_seed_ratios: each seed's (model - baseline) / baseline; the mean and median of these are reported, not a ratio of means",
   "scope": "macro",
   "sd_margin": 0.002012086660475327,
   "seed_count": 10,

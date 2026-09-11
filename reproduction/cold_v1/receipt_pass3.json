@@ -1,0 +1,64 @@
+{
+  "analysis_commit": "abcdd4c82424a5f9d3f0af3cda801c93097ec10b",
+  "analysis_tree_source": "git archive of the stated commit; no working tree, so nothing can be dirty",
+  "forbidden_inputs": [
+    "README.md",
+    "EVIDENCE_INVENTORY.md",
+    "CLAIMS_LEDGER.md",
+    "REPRODUCIBILITY_NOTES.md",
+    "BENCHMARK.md",
+    "STAGE_THREE.md",
+    "PART_TWO.md",
+    "RUN_CONTRACT.md"
+  ],
+  "format_version": "cold_reproduction_receipt_v1",
+  "mismatches": {
+    "baseline_margin": [
+      {
+        "cold": true,
+        "field": ".decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".relative_estimand",
+        "frozen": false,
+        "kind": "field present in only one"
+      }
+    ]
+  },
+  "output_digest": "b575b0446bc4a7459f9e2cf6d7ea43fc74787708170873441a82523fd6987163:1",
+  "pass_rule": "every numeric leaf within 1e-10 of the frozen receipt, every bootstrap interval exact, every script exiting zero",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+  "python_version": "3.10.20",
+  "scripts_digest": "3cafe461beed0c19af2861d59407f2f2cf3e01b3f9b3764265a0574c1aaf8e56:413",
+  "src_digest": "32805f5a176311c3650bd7dce8453d10e35fb6c841cfea401ee979f9da3fcafc:139",
+  "steps": [
+    {
+      "arguments": [
+        "--run-root",
+        "/ssd/scxi253/margin_replication/out"
+      ],
+      "compared_against": "results/baseline_margin_replication_v1/report.json",
+      "compared_against_sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+      "mismatches": 3,
+      "output": "/ssd/scxi253/cold_v1/output3/baseline_margin.json",
+      "output_sha256": "35dc8cf83c05e75d78aee1c2d4d3515ebeae8938091ea9c9d94e7e21a6f6e119",
+      "returncode": 0,
+      "script": "aggregate_baseline_margin.py",
+      "script_sha256": "41964e36dd9a3cd2323d544845c688a90ff9b58a71092f25982a890c31b1f925",
+      "seconds": 2915.3,
+      "stderr_tail": []
+    }
+  ],
+  "timestamp_utc": "2026-09-11T10:41:05Z",
+  "tolerance": 1e-10,
+  "verdict": "FAIL"
+}
