@@ -63,6 +63,8 @@
         -0.0024764809202737896
       ],
       "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
       "mean_difference": -0.0027275467027022236,
       "negative_seed_count": 10,
       "seed_count": 10,
@@ -86,6 +88,8 @@
         -0.003758947662738539
       ],
       "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
       "mean_difference": -0.004439916839680452,
       "negative_seed_count": 10,
       "seed_count": 10,
@@ -109,6 +113,8 @@
         -0.00243444525896154
       ],
       "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
       "mean_difference": -0.0028052848734399158,
       "negative_seed_count": 10,
       "seed_count": 10,
@@ -132,6 +138,8 @@
         -0.0035585301754999387
       ],
       "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
       "mean_difference": -0.004145967764483402,
       "negative_seed_count": 10,
       "seed_count": 10,
@@ -155,6 +163,8 @@
         -0.0038172857757446358
       ],
       "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
       "mean_difference": -0.0044305194055202545,
       "negative_seed_count": 10,
       "seed_count": 10,
@@ -178,6 +188,8 @@
         -0.005738482639388867
       ],
       "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
       "mean_difference": -0.006140546844556198,
       "negative_seed_count": 10,
       "seed_count": 10,

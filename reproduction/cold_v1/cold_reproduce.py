@@ -86,6 +86,40 @@ def run(script: str, arguments: list[str], out: Path, name: str) -> dict:
     return record
 
 
+def compare_mapped(cold: Path, frozen: Path, pointer: str,
+                   field_map: dict[str, str]) -> list[dict]:
+    """Compare named fields against a sub-object of a frozen receipt.
+
+    Two scripts can compute the same quantity and record it under different
+    keys: `aggregate_representation_ablation` writes one comparison per file as
+    `mean_difference`, while the attribution report collects several under
+    `comparisons.<name>` as `paired_difference`. A whole-file comparison would
+    call that a total mismatch and say nothing about the numbers, which is the
+    opposite of what this exists to check.
+
+    The map is written out rather than inferred, so a renamed field fails loudly
+    instead of being matched by guesswork.
+    """
+    if not cold.is_file() or not frozen.is_file():
+        return [{"field": "<file>", "cold": cold.is_file(), "frozen": frozen.is_file()}]
+    target = json.loads(frozen.read_text())
+    for key in pointer.split("."):
+        if key not in target:
+            return [{"field": pointer, "cold": "n/a", "frozen": "pointer not found"}]
+        target = target[key]
+    source = json.loads(cold.read_text())
+    bad = []
+    for cold_key, frozen_key in sorted(field_map.items()):
+        if cold_key not in source:
+            bad.append({"field": cold_key, "cold": "missing", "frozen": "mapped"})
+            continue
+        if frozen_key not in target:
+            bad.append({"field": frozen_key, "cold": "mapped", "frozen": "missing"})
+            continue
+        bad += _walk(source[cold_key], target[frozen_key], f"{cold_key}->{frozen_key}")
+    return bad
+
+
 def compare(cold: Path, frozen: Path, path: str = "") -> list[dict]:
     """Every numeric leaf, compared. Returns the mismatches."""
     if not cold.is_file():
@@ -131,6 +165,13 @@ def main(argv: list[str] | None = None) -> int:
                         help="root holding the frozen run directories")
     parser.add_argument("--asep", type=Path, required=True,
                         help="root holding the AsEP-side runs")
+    parser.add_argument("--margin-runs", type=Path, required=True,
+                        help="root holding the baseline-margin replication seeds; a "
+                             "different arm from the ablation runs, which the first "
+                             "version of this plan conflated")
+    parser.add_argument("--only", action="append", default=None,
+                        help="run only these steps by name; steps are independent "
+                             "and the slow ones need not be repeated to recheck a fast one")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--receipt", type=Path, default=None)
     parser.add_argument("--analysis-commit", default=None,
@@ -146,12 +187,22 @@ def main(argv: list[str] | None = None) -> int:
     # name -> (script, args, frozen receipt to compare against)
     plan = [
         ("baseline_margin", "aggregate_baseline_margin.py",
-         ["--run-root", str(runs / "esm_if1_only")],
+         ["--run-root", str(arguments.margin_runs)],
          results / "baseline_margin_replication_v1" / "report.json"),
         ("attribution_aligned_vs_shuffled", "aggregate_representation_ablation.py",
          ["--run-root", str(runs), "--control", "esm_if1_shuffled",
           "--treatment", "esm_if1_only", "--metric", "auprc", "--scope", "macro"],
-         None),
+         (results / "representation_attribution_v1" / "report.json",
+          "comparisons.aligned_vs_shuffled",
+          {"mean_difference": "paired_difference",
+           "treatment_mean": "arm_mean",
+           "control_mean": "baseline_mean",
+           "relative_difference": "relative",
+           "bootstrap_ci95": "bootstrap_ci95",
+           "sign_lower_bound": "sign_lower_bound",
+           "favourable_seed_count": "favourable_seed_count",
+           "seed_count": "seed_count",
+           "decided": "decided"})),
         ("corruption_esm_if1", "aggregate_corruption_curve.py",
          ["--aligned-root", str(runs / "esm_if1_only"),
           "--corrupt-root", str(asep / "corrupt" / "esm_if1"), "--label", "esm_if1"],
@@ -163,7 +214,9 @@ def main(argv: list[str] | None = None) -> int:
          results / "correspondence_corruption_curve_v1" / "curve_antiberty_sabdab2.json"),
         ("gradient_step_trace", "aggregate_step_trace.py",
          ["--cohort", f"asep={asep}/steptrace/asep_seed*",
-          "--cohort", f"sabdab2={asep}/steptrace/sabdab2_seed*"],
+          "--cohort", f"sabdab2={asep}/steptrace/sabdab2_seed*",
+          "--cohort", f"asep_5090={asep}/steptrace_5090/asep_seed*",
+          "--cohort", f"sabdab2_5090={asep}/steptrace_5090/sabdab2_seed*"],
          results / "gradient_alignment_dynamics_v1" / "step_trace_summary.json"),
         ("selection_stage_two", "aggregate_selection_metric_confirmation.py",
          ["--arm", f"128={asep}/seltotal/d128", "--arm", f"256={asep}/seltotal/d256"],
@@ -177,11 +230,28 @@ def main(argv: list[str] | None = None) -> int:
          results / "representation_attribution_v1" / "variance_aligned_vs_shuffled.json"),
     ]
 
+    if arguments.only:
+        wanted = set(arguments.only)
+        unknown = wanted - {entry[0] for entry in plan}
+        if unknown:
+            print(f"unknown step(s): {sorted(unknown)}", file=sys.stderr)
+            return 2
+        plan = [entry for entry in plan if entry[0] in wanted]
+
     steps, mismatches = [], {}
     for name, script, args, frozen in plan:
         print(f"[{name}] {script}", flush=True)
         record = run(script, args, arguments.out, name)
-        if frozen is not None:
+        if isinstance(frozen, tuple):
+            target, pointer, field_map = frozen
+            bad = compare_mapped(arguments.out / f"{name}.json", target, pointer, field_map)
+            record["compared_against"] = f"{target.relative_to(REPOSITORY)}#{pointer}"
+            record["compared_against_sha256"] = digest(target) if target.is_file() else None
+            record["field_map"] = field_map
+            record["mismatches"] = len(bad)
+            if bad:
+                mismatches[name] = bad[:40]
+        elif frozen is not None:
             bad = compare(arguments.out / f"{name}.json", frozen)
             record["compared_against"] = str(frozen.relative_to(REPOSITORY))
             record["compared_against_sha256"] = digest(frozen) if frozen.is_file() else None

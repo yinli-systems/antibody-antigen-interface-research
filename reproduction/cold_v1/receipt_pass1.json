@@ -1,0 +1,606 @@
+{
+  "analysis_commit": "80a220d145e4faba591dfa5e81532047cbd57b34",
+  "analysis_tree_source": "git archive of the stated commit; no working tree, so nothing can be dirty",
+  "forbidden_inputs": [
+    "README.md",
+    "EVIDENCE_INVENTORY.md",
+    "CLAIMS_LEDGER.md",
+    "REPRODUCIBILITY_NOTES.md",
+    "BENCHMARK.md",
+    "STAGE_THREE.md",
+    "PART_TWO.md",
+    "RUN_CONTRACT.md"
+  ],
+  "format_version": "cold_reproduction_receipt_v1",
+  "mismatches": {
+    "baseline_margin": [
+      {
+        "cold": 0.004230022289813403,
+        "delta": 0.002261331038795689,
+        "field": ".bootstrap_ci95[0]",
+        "frozen": 0.0019686912510177143,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.006133941500667156,
+        "delta": 0.001843506559646482,
+        "field": ".bootstrap_ci95[1]",
+        "frozen": 0.004290434941020674,
+        "kind": "numeric"
+      },
+      {
+        "cold": true,
+        "field": ".decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": 3.1453460286487527,
+        "delta": 1.597974248084792,
+        "field": ".effect_size",
+        "frozen": 1.5473717805639606,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.005072789735643017,
+        "delta": 0.0019593436171743174,
+        "field": ".mean_margin",
+        "frozen": 0.0031134461184687,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.021219302271312433,
+        "delta": 0.002420678577459985,
+        "field": ".per_seed[0].baseline",
+        "frozen": 0.018798623693852448,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.008764687412096392,
+        "delta": 0.005957147333961993,
+        "field": ".per_seed[0].margin",
+        "frozen": 0.002807540078134399,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.029983989683408825,
+        "delta": 0.008377825911421978,
+        "field": ".per_seed[0].model",
+        "frozen": 0.021606163771986847,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.021490490535703708,
+        "delta": 0.0005057384981667634,
+        "field": ".per_seed[1].baseline",
+        "frozen": 0.020984752037536945,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.0039842423210772054,
+        "delta": 0.002861918203725323,
+        "field": ".per_seed[1].margin",
+        "frozen": 0.0011223241173518826,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.025474732856780914,
+        "delta": 0.0033676567018920862,
+        "field": ".per_seed[1].model",
+        "frozen": 0.022107076154888827,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.022635346889464485,
+        "delta": 0.002450223681107592,
+        "field": ".per_seed[2].baseline",
+        "frozen": 0.020185123208356893,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.005890843236880047,
+        "delta": 0.00019543580500012633,
+        "field": ".per_seed[2].margin",
+        "frozen": 0.00569540743187992,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.028526190126344532,
+        "delta": 0.002645659486107718,
+        "field": ".per_seed[2].model",
+        "frozen": 0.025880530640236814,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.021615809921117293,
+        "delta": 0.0032774531571842756,
+        "field": ".per_seed[3].baseline",
+        "frozen": 0.018338356763933018,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.006290721134508154,
+        "delta": 0.004139288147539062,
+        "field": ".per_seed[3].margin",
+        "frozen": 0.0021514329869690915,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.027906531055625447,
+        "delta": 0.007416741304723338,
+        "field": ".per_seed[3].model",
+        "frozen": 0.02048978975090211,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.0200097550960805,
+        "delta": -0.0006743658684167791,
+        "field": ".per_seed[4].baseline",
+        "frozen": 0.020684120964497277,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.00427292658883462,
+        "delta": 0.002718086238803305,
+        "field": ".per_seed[4].margin",
+        "frozen": 0.0015548403500313147,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.024282681684915118,
+        "delta": 0.002043720370386526,
+        "field": ".per_seed[4].model",
+        "frozen": 0.022238961314528592,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.02273722519106719,
+        "delta": 0.002740641495324877,
+        "field": ".per_seed[5].baseline",
+        "frozen": 0.019996583695742313,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.005465798794850318,
+        "delta": 0.0038035770155321127,
+        "field": ".per_seed[5].margin",
+        "frozen": 0.0016622217793182056,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.028203023985917508,
+        "delta": 0.00654421851085699,
+        "field": ".per_seed[5].model",
+        "frozen": 0.02165880547506052,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.022401822523891207,
+        "delta": 0.005783580069800367,
+        "field": ".per_seed[6].baseline",
+        "frozen": 0.01661824245409084,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.0032499649248554155,
+        "delta": -0.0010245166084019118,
+        "field": ".per_seed[6].margin",
+        "frozen": 0.004274481533257327,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.025651787448746622,
+        "delta": 0.004759063461398455,
+        "field": ".per_seed[6].model",
+        "frozen": 0.020892723987348167,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.025811662625173266,
+        "delta": 0.004135841116491727,
+        "field": ".per_seed[7].baseline",
+        "frozen": 0.02167582150868154,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.0038798277041482768,
+        "delta": 0.0032627005660593143,
+        "field": ".per_seed[7].margin",
+        "frozen": 0.0006171271380889624,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.029691490329321543,
+        "delta": 0.0073985416825510415,
+        "field": ".per_seed[7].model",
+        "frozen": 0.0222929486467705,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.02355832857808023,
+        "delta": 0.006784467472207904,
+        "field": ".per_seed[8].baseline",
+        "frozen": 0.016773861105872326,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.00474906453180134,
+        "delta": -0.0010489230058760325,
+        "field": ".per_seed[8].margin",
+        "frozen": 0.005797987537677372,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.02830739310988157,
+        "delta": 0.005735544466331871,
+        "field": ".per_seed[8].model",
+        "frozen": 0.022571848643549698,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.023499082845987326,
+        "delta": 0.0040891837156592815,
+        "field": ".per_seed[9].baseline",
+        "frozen": 0.019409899130328045,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.004179820707378407,
+        "delta": -0.0012712775246001146,
+        "field": ".per_seed[9].margin",
+        "frozen": 0.005451098231978521,
+        "kind": "numeric"
+      },
+      {
+        "cold": 0.027678903553365733,
+        "delta": 0.002817906191059167,
+        "field": ".per_seed[9].model",
+        "frozen": 0.024860997362306566,
+        "kind": "numeric"
+      },
+      {
+        "cold": true,
+        "field": ".relative_estimand",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": 0.0016127922617856765,
+        "delta": -0.00039929439868965043,
+        "field": ".sd_margin",
+        "frozen": 0.002012086660475327,
+        "kind": "numeric"
+      }
+    ],
+    "corruption_antiberty": [
+      {
+        "cold": true,
+        "field": ".per_k.1.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.1.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.16.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.16.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.2.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.2.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.4.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.4.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.8.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.8.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.999.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.999.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      }
+    ],
+    "corruption_esm_if1": [
+      {
+        "cold": true,
+        "field": ".per_k.1.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.1.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.16.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.16.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.2.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.2.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.4.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.4.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.8.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.8.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.999.decision_rule",
+        "frozen": false,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": true,
+        "field": ".per_k.999.decision_rule_id",
+        "frozen": false,
+        "kind": "field present in only one"
+      }
+    ],
+    "gradient_step_trace": [
+      {
+        "cold": false,
+        "field": ".cohorts.asep_5090",
+        "frozen": true,
+        "kind": "field present in only one"
+      },
+      {
+        "cold": false,
+        "field": ".cohorts.sabdab2_5090",
+        "frozen": true,
+        "kind": "field present in only one"
+      }
+    ]
+  },
+  "output_digest": "6b0386f66f8b9f3f39a33c3bd846ce8c4dcd7fb9aa8ac1841c2ddbede65a4afb:8",
+  "pass_rule": "every numeric leaf within 1e-10 of the frozen receipt, every bootstrap interval exact, every script exiting zero",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+  "python_version": "3.10.20",
+  "scripts_digest": "3cafe461beed0c19af2861d59407f2f2cf3e01b3f9b3764265a0574c1aaf8e56:413",
+  "src_digest": "32805f5a176311c3650bd7dce8453d10e35fb6c841cfea401ee979f9da3fcafc:139",
+  "steps": [
+    {
+      "arguments": [
+        "--run-root",
+        "/ssd/scxi253/repr_ablation/out/esm_if1_only"
+      ],
+      "compared_against": "results/baseline_margin_replication_v1/report.json",
+      "compared_against_sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+      "mismatches": 38,
+      "output": "/ssd/scxi253/cold_v1/output/baseline_margin.json",
+      "output_sha256": "e172c92a624456145c9eec42afb115580575351867fcc6224520763852cf6d59",
+      "returncode": 0,
+      "script": "aggregate_baseline_margin.py",
+      "script_sha256": "41964e36dd9a3cd2323d544845c688a90ff9b58a71092f25982a890c31b1f925",
+      "seconds": 4590.5,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--run-root",
+        "/ssd/scxi253/repr_ablation/out",
+        "--control",
+        "esm_if1_shuffled",
+        "--treatment",
+        "esm_if1_only",
+        "--metric",
+        "auprc",
+        "--scope",
+        "macro"
+      ],
+      "compared_against": null,
+      "mismatches": null,
+      "output": "/ssd/scxi253/cold_v1/output/attribution_aligned_vs_shuffled.json",
+      "output_sha256": "42fd6839439b8b6abde0d3fcfce4e8fe6687d09ef7c19ab951d01a38b467df49",
+      "returncode": 0,
+      "script": "aggregate_representation_ablation.py",
+      "script_sha256": "8f1841e9425ab17b6d7ca3ecfaba86b3e31b6e87280519d26a900db43a6d06f0",
+      "seconds": 10563.7,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--aligned-root",
+        "/ssd/scxi253/repr_ablation/out/esm_if1_only",
+        "--corrupt-root",
+        "/ssd/scxi253/asep_bench/corrupt/esm_if1",
+        "--label",
+        "esm_if1"
+      ],
+      "compared_against": "results/correspondence_corruption_curve_v1/curve_esm_if1.json",
+      "compared_against_sha256": "5d100aa7f27fa07110e4171f1149cfd205bbb22c02ec1ebc028861a8b9dbb67a",
+      "mismatches": 12,
+      "output": "/ssd/scxi253/cold_v1/output/corruption_esm_if1.json",
+      "output_sha256": "b5ce5afb76f9893987041065817db7c91f4f0fb8b10f12cd3e8057d53020d15e",
+      "returncode": 0,
+      "script": "aggregate_corruption_curve.py",
+      "script_sha256": "7e0f51c75c8216fda3dc63dc0c501b6dc4cd4d13ba6ff08ae0d88e3c816ba0b0",
+      "seconds": 9.2,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--aligned-root",
+        "/ssd/scxi253/asep_bench/antiberty_ladder/k0",
+        "--corrupt-root",
+        "/ssd/scxi253/asep_bench/antiberty_ladder",
+        "--label",
+        "antiberty_sabdab2",
+        "--aligned-subdir",
+        ""
+      ],
+      "compared_against": "results/correspondence_corruption_curve_v1/curve_antiberty_sabdab2.json",
+      "compared_against_sha256": "08cd958cd512a47efa77685f2dc42005ee6b6d1fcbdd001bbc0033ee49d20471",
+      "mismatches": 12,
+      "output": "/ssd/scxi253/cold_v1/output/corruption_antiberty.json",
+      "output_sha256": "d19d1d5ba57e8f020ec262034d087d09cc5bf68269e08c063719a928f715d795",
+      "returncode": 0,
+      "script": "aggregate_corruption_curve.py",
+      "script_sha256": "7e0f51c75c8216fda3dc63dc0c501b6dc4cd4d13ba6ff08ae0d88e3c816ba0b0",
+      "seconds": 5.6,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--cohort",
+        "asep=/ssd/scxi253/asep_bench/steptrace/asep_seed*",
+        "--cohort",
+        "sabdab2=/ssd/scxi253/asep_bench/steptrace/sabdab2_seed*"
+      ],
+      "compared_against": "results/gradient_alignment_dynamics_v1/step_trace_summary.json",
+      "compared_against_sha256": "8251cfdf5842d1a70715e5bd970a5769258dd9513cf03eeedc9c075034e8defb",
+      "mismatches": 2,
+      "output": "/ssd/scxi253/cold_v1/output/gradient_step_trace.json",
+      "output_sha256": "62f98919de01eea75148b3dc85da10057327fc02d51890c0742cfef3c6edc44f",
+      "returncode": 0,
+      "script": "aggregate_step_trace.py",
+      "script_sha256": "39ff4b0e7dec079ff607cb2fb5260728e9fe197e43f14ac4427bf5865fcc4662",
+      "seconds": 0.4,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--arm",
+        "128=/ssd/scxi253/asep_bench/seltotal/d128",
+        "--arm",
+        "256=/ssd/scxi253/asep_bench/seltotal/d256"
+      ],
+      "compared_against": "results/checkpoint_selection_confirmation_v1/stage_two_group_validation.json",
+      "compared_against_sha256": "a02f3ec3a7e46d2988e20f95a322f42666aa1f5674a05c5c4c4075ff900866c1",
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output/selection_stage_two.json",
+      "output_sha256": "a02f3ec3a7e46d2988e20f95a322f42666aa1f5674a05c5c4c4075ff900866c1",
+      "returncode": 0,
+      "script": "aggregate_selection_metric_confirmation.py",
+      "script_sha256": "38358fb1495f82f5f4bf502917e1efc4274620843acc7a9e52534d3d92a066fd",
+      "seconds": 11.5,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--run-root",
+        "/ssd/scxi253/asep_bench/ratio_seltotal/d256"
+      ],
+      "compared_against": "results/checkpoint_selection_confirmation_v1/ratio_test_confirmation.json",
+      "compared_against_sha256": "83256bfca2c73751a3f0755ac7c6dd902c588b1e047242ef41888ed016120aa6",
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output/ratio_test_confirmation.json",
+      "output_sha256": "83256bfca2c73751a3f0755ac7c6dd902c588b1e047242ef41888ed016120aa6",
+      "returncode": 0,
+      "script": "ratio_test_confirmation.py",
+      "script_sha256": "f4df7a8cc746f89bea9c417e2415c073aa0dd059fc1654619dcc8e5efa09ae70",
+      "seconds": 12.3,
+      "stderr_tail": []
+    },
+    {
+      "arguments": [
+        "--arm",
+        "aligned=/ssd/scxi253/repr_ablation/out/esm_if1_only",
+        "--arm",
+        "shuffled=/ssd/scxi253/repr_ablation/out/esm_if1_shuffled"
+      ],
+      "compared_against": "results/representation_attribution_v1/variance_aligned_vs_shuffled.json",
+      "compared_against_sha256": "ee34fa6ade41fa6881e02df3068e8dfd2ba3ee42e877c709a90942ce3702d369",
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output/complex_heterogeneity.json",
+      "output_sha256": "ee34fa6ade41fa6881e02df3068e8dfd2ba3ee42e877c709a90942ce3702d369",
+      "returncode": 0,
+      "script": "paired_complex_variance.py",
+      "script_sha256": "13ac122981d98053b27264cfaa86de8492c1e77d211cc654d088e70b7e1ff830",
+      "seconds": 615.5,
+      "stderr_tail": []
+    }
+  ],
+  "timestamp_utc": "2026-09-11T02:51:32Z",
+  "tolerance": 1e-10,
+  "verdict": "FAIL"
+}
