@@ -169,6 +169,11 @@ def main(argv: list[str] | None = None) -> int:
                         help="root holding the baseline-margin replication seeds; a "
                              "different arm from the ablation runs, which the first "
                              "version of this plan conflated")
+    parser.add_argument("--compare-only", action="store_true",
+                        help="do not recompute; compare an output this driver "
+                             "already produced. For a step whose recomputation is "
+                             "recorded in an earlier receipt and whose comparison "
+                             "was the part that was missing")
     parser.add_argument("--only", action="append", default=None,
                         help="run only these steps by name; steps are independent "
                              "and the slow ones need not be repeated to recheck a fast one")
@@ -241,7 +246,22 @@ def main(argv: list[str] | None = None) -> int:
     steps, mismatches = [], {}
     for name, script, args, frozen in plan:
         print(f"[{name}] {script}", flush=True)
-        record = run(script, args, arguments.out, name)
+        if arguments.compare_only:
+            target = arguments.out / f"{name}.json"
+            record = {
+                "script": script,
+                "script_sha256": digest(REPOSITORY / "scripts" / script),
+                "arguments": args,
+                "returncode": 0 if target.is_file() else 1,
+                "seconds": 0.0,
+                "recomputed": False,
+                "recompute_recorded_in": "an earlier receipt; this pass compares only",
+                "output": str(target),
+                "output_sha256": digest(target) if target.is_file() else None,
+                "stderr_tail": [],
+            }
+        else:
+            record = run(script, args, arguments.out, name)
         if isinstance(frozen, tuple):
             target, pointer, field_map = frozen
             bad = compare_mapped(arguments.out / f"{name}.json", target, pointer, field_map)
