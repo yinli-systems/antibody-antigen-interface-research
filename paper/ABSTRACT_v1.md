@@ -1,9 +1,10 @@
 # Abstract, draft 1
 
 > **Status.** Every number below is bound to an artifact in
-> `results/CLAIMS_LEDGER.md`. Seven of the eight cold-reproduction steps have
-> verified exactly; the eighth (`baseline_margin`) is still running and is
-> **not** cited here. Nothing in this draft depends on it.
+> `results/CLAIMS_LEDGER.md`. All eight cold-reproduction steps verify with zero
+> numeric mismatches. **Revised after the held-out read** — the correspondence
+> claim is now scoped to what confirmed on a split that took no part in
+> development, and the paragraph that carried it has been rewritten downward.
 
 ---
 
@@ -40,6 +41,14 @@ shows the damage is not confined to total scrambling — a displacement of eight
 rows already costs 94% of what a global permutation costs, and on this cohort
 those eight rows are eight contiguous residues for 90% of positions, verified
 geometrically rather than assumed.
+
+**On a held-out split that took no part in development, one of two encoders
+confirms this.** A single preregistered read of 217 unseen complexes, using the
+same checkpoints without retraining, finds the aligned-minus-shuffled contrast
+positive for both encoders: decided for ProteinMPNN (+0.0036, 9 of 10 paired
+seeds) and undecided for ESM-IF1 (+0.0023, 6 of 10, interval [−7e−6, +0.0049]),
+whose development advantage shrank roughly threefold. The encoder with the larger
+development effect is the one that did not confirm.
 
 Second, correspondence is necessary but not sufficient, and the asymmetry
 replicates where the benefit does not. Across a second inverse-folding encoder
@@ -92,6 +101,8 @@ so this stays close to what a bidder will actually read.
 | cosine +0.70 at convergence | 9 | `gradient_conflict_v1` |
 | crossings 77–110 / 38–50 | 9 | `step_trace_summary.json` |
 | benchmark position | 10, 11 | `asep_benchmark_v1` |
+| held-out: ProteinMPNN +0.0036, 9/10 | — | `holdout_confirmation_v1/confirmation.json` |
+| held-out: ESM-IF1 +0.0023, undecided | — | same |
 
 ## Deliberately absent
 
@@ -102,3 +113,8 @@ so this stays close to what a bidder will actually read.
 - "Contact supervision is free" — the node comparison is undecided, and
   undecided is not equivalence.
 - Any causal reading of the group-versus-ratio split contrast.
+- "Confirmed on held-out data" without saying one of two. ESM-IF1's interval
+  misses zero by 7e−6 and that is reported as undecided, not as nearly decided.
+- The 185-complex subset used in place of the registered 217. It is a sensitivity
+  check on a 14.7% exposure to an unrelated baseline's test set, and it agrees in
+  direction; it does not replace the registered answer.
