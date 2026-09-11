@@ -1,8 +1,14 @@
-# Evidence Freeze v1
+# Evidence Freeze v2
 
 Everything the paper will claim is pinned here. From this tag, **no new
 scientific experiments**: paper writing, figure layout, typography, references
 and anonymous packaging only.
+
+> **v2 = v1 + one preregistered, one-read sabdab2 test confirmation, with no
+> training and no model-selection changes.** `evidence-freeze-v1` is unchanged
+> and remains a valid tag. The amendment is additive: nothing in v1 was
+> recomputed, and one claim in the paper was **narrowed** by what the read
+> returned.
 
 ## What is pinned
 
@@ -21,6 +27,25 @@ directories and configs in processes with no access to this project's prose. The
 two heaviest recompute from prediction parquets and land on their frozen values
 to 5e−18 and exactly. `reproduction/cold_v1/RESULT.md` records the three passes
 it took and every failure along the way.
+
+## The held-out confirmation, added in v2
+
+One read of 217 sabdab2 test complexes that took no part in selecting the
+checkpoints evaluated on them. Registered in
+`protocols/HOLDOUT_CONFIRMATION_V1.md` before any test prediction existed;
+recorded in `results/holdout_confirmation_v1/`.
+
+| contrast | difference | 95% CI | seeds | registered rule |
+|---|---|---|---|---|
+| ProteinMPNN aligned − shuffled | +0.003594 | [+0.001559, +0.005881] | 9/10 | **decided** |
+| ESM-IF1 aligned − shuffled | +0.002260 | [−0.000007, +0.004901] | 6/10 | **undecided** |
+
+One contrast of two confirmed. ESM-IF1's development advantage shrank roughly
+threefold and its interval misses zero by 7 × 10⁻⁶, which is reported as
+undecided because the rule was fixed before the read.
+
+The abstract was revised downward accordingly. **The sabdab2 test split is now
+permanently closed, and this project has no unread test data remaining.**
 
 ## What a freeze does not mean
 
