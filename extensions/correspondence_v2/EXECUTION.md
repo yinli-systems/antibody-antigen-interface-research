@@ -1,40 +1,28 @@
-# Execution — 2026-09-30
+# Execution completed — 2026-09-30
 
-New branch `kevin/correspondence-upgrade-20260930` at implementation commit
-`3d9cb70`, based on frozen `55cfd137`. No frozen source, protocol, result or
-checkpoint was changed. This is a post-freeze exploratory extension.
+Branch: `kevin/correspondence-upgrade-20260930`, additive to frozen base `55cfd137`.
 
-## Verified completed
+| Stage | Actual terminal result |
+|---|---|
+| Extension contract suite | 34 passed |
+| Independent auditor synthetic checks | 4 passed |
+| RTX 4090 smoke 1639862 | COMPLETED, 0:0 |
+| Full development array 1639865_0–8 | 9/9 COMPLETED, all 0:0 |
+| Identity parity | 27 comparisons passed; max absolute difference 5.9274449341895075e-09 |
+| Complete-campaign analysis 1639880 | COMPLETED, 0:0; 144 descriptive contrasts |
 
-- Standalone extension contract suite: **34 tests passed** on the cluster.
-- Slurm smoke **1639862**: **COMPLETED, exit 0:0**, RTX 4090.
-- Three validation complexes evaluated across all 12 perturbation conditions.
-- Identity repeat maximum probability difference: **0**.
-- Known-inverse restoration maximum probability difference: **0**.
-- Input plan: **217 validation complexes, 1,045 SHA-bound input files, 9 tasks**.
-- Plan SHA-256: `98aa7753dba0cbcb4c4f769cc2ed630cb7c0a43d2e77f5813644947c962f868f`.
+Measured scope: 217 validation complexes, 68 components, 3 encoders × 3 fixed
+training seeds × 12 inference-time conditions; 23,436 complex-condition records
+and 864 bounded known-cognate retrieval panels. Repeat and inverse-restoration
+errors were zero in every task. No new model was trained and no blind test was read.
 
-## Submitted, not yet a completed scientific result
+The complete results, both useful and adverse, are in [READOUT.md](READOUT.md).
+Raw lightweight measurement records are preserved losslessly as compressed JSON,
+with exact hashes and reproduction instructions under `evidence/attempt1/`.
+The initial running-state snapshot is retained as `EXECUTION_START.json`; it is
+not the terminal status. `EXECUTION_COMPLETE.json` and `SACCT_COMPLETED.txt`
+are the terminal execution evidence.
 
-Array **1639865**, task indices 0–8, max 3 concurrent single-4090 allocations,
-45-minute wall limit per task. At the first post-submission check, tasks 0–2
-were RUNNING and 3–8 were PENDING at the concurrency limit.
-
-The full design is three existing encoders × three existing training seeds ×
-12 evaluation-time conditions, on 217 development-validation complexes.
-No new training, new test read, SOTA claim or metric improvement is asserted.
-The retrieval component is a bounded matched-panel diagnostic, not a completed
-large all-vs-all specificity benchmark and not a verified non-binder assay.
-
-## Evidence
-
-`evidence/attempt1/` contains the frozen plan, its external digest, job IDs,
-standalone test transcript, engineering smoke result and timestamped start
-snapshot. Later task results must be matched to the exact plan before aggregation.
-
-## Remaining program
-
-See the explicit NOT-completed matrix in `README.md`. Modern encoder extraction,
-learned rescue, new OOD admission, new baseline reproduction, co-folder comparison
-and affinity transfer have not been run by this extension. Existing PCGrad,
-GradNorm and the older corruption ladder were not counted as new implementations.
+No accuracy improvement or SOTA result is claimed. The unexecuted workstreams are
+listed explicitly in `README.md` and `READOUT.md`. Historical frozen source,
+protocols, results and checkpoints are unchanged. Main was not merged or rewritten.

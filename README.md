@@ -1,5 +1,15 @@
 # Partner-aware antibody-antigen interface research
 
+> **Post-freeze development extension, 2026-09-30 (this branch only).**
+> The additive correspondence campaign has completed: 9 GPU evaluations, 217
+> validation complexes, 3 encoders, 12 conditions, and an independently checked
+> historical identity baseline. Read the [new result report](extensions/correspondence_v2/READOUT.md)
+> and [terminal execution evidence](extensions/correspondence_v2/EXECUTION.md).
+> This does not replace frozen paper claims, reopen closed tests, establish SOTA,
+> or imply completion of the entire research roadmap. The historical snapshot
+> below is retained.
+
+
 This private repository is an evidence-gated research codebase for antibody-
 antigen interface prediction on SAbDab2-derived data. It contains importable
 models and metrics, data and split contracts, cluster launchers, immutable

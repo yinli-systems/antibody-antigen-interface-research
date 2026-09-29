@@ -1,5 +1,7 @@
 # Additive correspondence research extension
 
+**First campaign completed.** See [READOUT.md](READOUT.md) for the measured effects and limitations, and [EXECUTION.md](EXECUTION.md) for the terminal job and parity evidence.
+
 Base: `kevin/representation-ablation-v1@55cfd137aee2b3b749f244fcb76dd11d30dda2c5`.
 New work: `kevin/correspondence-upgrade-20260930`.
 The original source and evidence-freeze artifacts are unchanged.
