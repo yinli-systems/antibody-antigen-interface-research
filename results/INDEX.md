@@ -17,6 +17,12 @@ This page is the human-readable index for the strongest completed evidence in th
 
 The representation paper's complete number-to-artifact mapping is [`CLAIMS_LEDGER.md`](CLAIMS_LEDGER.md). The ledger explicitly withdraws an earlier unsupported “+30.5%, 20 seeds” headline and records the correct arm-specific values instead.
 
+### Three-seed learned correspondence rescue (development only)
+
+A learned residue-correspondence matcher was evaluated on the same 217 development complexes across three paired rescue/downstream seeds and 68 frozen split-authority components. For same-amino-acid shuffling, the crossed equal-component/equal-seed rescued−corrupted effect is **+0.015721 pair AP** with 95% CI **[+0.011256,+0.021153]**; rescued−untrained is **+0.016605 [ +0.011902,+0.022490 ]**. The same matcher also reproduces a clean-input cost: clean-rescued−aligned is **−0.001430 [−0.002675,−0.000107]**. This is strong development evidence for recoverable synthetic misregistration, but it is **not OOD, not a production improvement, and not clean-input noninferiority**; no noninferiority margin was added after seeing the result.
+
+Canonical research snapshot: [`kevin/rescue-qualification-20260930@fdb51b2`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/fdb51b29c6fb22ccc55e89f05e38a779d64389e2/extensions/rescue_qualification_v2).
+
 ## 2. Objective interference and optimisation dynamics
 
 | Evidence | Result | Boundary | Artifact |
@@ -75,6 +81,20 @@ Official RePaRank **sequence** checkpoint, no added head/fine-tuning, 217 valida
 Source: [`../extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json`](../extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json).
 
 Boundary: the public checkpoint's training accessions are not bound by the official repository, so overlap with this cohort is unknown. Treat this as an **exposed pretrained checkpoint diagnostic**, not a blind architecture comparison.
+
+### Sequence+structure checkpoint: official-style centering correction
+
+The strict predicted-chain authority now covers all 217 cases (3,385 chain units; 40 newly strict-audited AF3 chains) without using bound antibody–antigen poses. The first complete structure run omitted RePaRank's official per-chain `CenterMesh` preprocessing and is retained as an uncentered negative control. The corrected hash-bound centered resume (`1642417`) completed 217/217 cases using **12 validated centered artifacts + 205 fresh forwards**, with the exact same 9,638,880-pair / 9,036-positive grid as sequence-only.
+
+| Arm | Macro pair AP | Pooled pair AP | AUROC | Epitope AP | Paratope AP |
+|---|---:|---:|---:|---:|---:|
+| sequence | **0.037808** | **0.008739** | **0.786064** | **0.202039** | **0.557707** |
+| structure, uncentered protocol mismatch | 0.010743 | 0.002896 | 0.660171 | 0.182829 | 0.409777 |
+| structure, official-style centered | **0.016014** | 0.002366 | 0.672153 | **0.193265** | **0.479202** |
+
+Across 68 frozen components, centered−uncentered pair AP is **+0.004142**, 95% component-bootstrap CI **[−0.003506,+0.011360]** (directional but undecided); centered−sequence is **−0.026838 [−0.043918,−0.011823]**. Centering clearly recovers paratope performance relative to uncentered (**+0.065083 [ +0.022944,+0.107171 ]**) but does not close the sequence gap. Raw pooled AP moves in the opposite direction from macro AP; post-hoc within-complex percentile/z calibration reverses the centered-vs-uncentered pooled ordering, indicating cross-complex score calibration contributes to that discrepancy. Those normalized pooled values are diagnostic only and do not replace the registered raw endpoint.
+
+This does **not** show that structure is useless: the checkpoint receives independently predicted chain-local N/CA/C/O geometry, not a correctly docked complex pose, and checkpoint training overlap is unknown. Full audit, failure provenance for `1642386/1642395`, exact commands, grid hashes and heterogeneity are pinned at [`kevin/rescue-qualification-20260930@fdb51b2`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/fdb51b29c6fb22ccc55e89f05e38a779d64389e2/extensions/frontier_multimodel_v1).
 
 ## 5. Partner-score dissociation
 
