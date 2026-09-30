@@ -89,3 +89,21 @@ References:
 - `gate_heuristic_diagnostic.py`
 
 The next scientific step is not to tune this threshold on the same 217 contact outcomes. It is to finish the label-free heuristic diagnostic, preserve the negative calibration-shift result, and then evaluate any frozen selective rule only on an actually untouched cohort when one passes the admission gate.
+
+## Cheap-gate diagnostic: synthetic detection is largely construction-driven
+
+Job array `1642830_[0-2]` completed `0:0` without reading contact metrics or test/OOD data. The same train-only 99.5th-percentile threshold rule was applied to five label-free statistics. On validation clean inputs, seed101/202/303 false-trigger rates were:
+
+| statistic | seed101 | seed202 | seed303 |
+|---|---:|---:|---:|
+| optimal assignment gain | 15.67% | 17.97% | 0.46% |
+| moved fraction | 11.06% | 13.36% | 0.46% |
+| mean absolute displacement | 10.14% | 16.13% | 0.46% |
+| row top-1 nonidentity | 8.29% | 16.13% | 0.46% |
+| row-max minus diagonal | 15.21% | 25.35% | 0.46% |
+
+For same-AA corruption, validation detection is 100% for optimal-gain, moved-fraction and mean-displacement in all three seeds; row-top1 is 100% / 100% / 98.16%. Global shuffle is 100% for every listed detector and seed. Shift-8 is also 100% for most detectors, although seed303 mean-displacement detects only 10.60%, demonstrating that the detectors are not mathematically identical.
+
+The known synthetic construction moves a very large fraction of residues: mean validation moved fraction is **1.00** for shift-8, **0.9969** for global shuffle and **0.9115** for same-AA shuffle. Those values use the hidden construction only as a severity audit and are forbidden as a deployable gate.
+
+Therefore the headline “100% synthetic corruption detection” is not a unique property of the learned optimal-gain selector and should not be treated as evidence for natural biological misregistration detection. The synthetic rescue line is considered mechanistically informative but saturated for development tuning. No threshold will be retuned on the 217 contact outcomes. The next high-value experiment is strict partner-specific retrieval under prospectively frozen dual-axis homology separation.
