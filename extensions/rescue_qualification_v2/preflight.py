@@ -46,8 +46,10 @@ def inspect(plan_path,expected):
     covered={};absent={};available_bytes=0
     # Metadata only: no feature tensors are loaded and no contact files opened.
     for key,parts in {**tf,**vf}.items():
-        missing=[str(feature_root/p[:2]/(p+'.pt')) for p in parts
-                 if not (feature_root/p[:2]/(p+'.pt')).is_file()]
+        # Legacy ESM-IF1 stores combined VH+VL under the full key; biological
+        # chain parts above are for leakage, NOT physical artifact lookup.
+        missing=[str(feature_root/key[:2]/(key+'.pt'))]
+        if (feature_root/key[:2]/(key+'.pt')).is_file(): missing=[]
         if missing: absent[key]=missing
         else: covered[key]=parts
     for role,keys in [('train',tf),('validation',vf)]:
@@ -69,6 +71,7 @@ def inspect(plan_path,expected):
             'affected_validation_complexes':affected,
             'legacy_evaluator_risk':'load_full_features raises for unavailable source; all-one flags are not historical missingness',
             'supplemental_resolution':'retain every complex; exact zero-feature/zero-presence behavior of original CompositeEmbeddingStore',
+            'feature_storage_contract':'legacy ESM-IF1 full-key combined antibody tensor; biological parts audited separately',
             'homology_leakage_audited':False,'pretrained_encoder_contamination_audited':False,
             'feature_tensor_bytes_hashed':False,'input_source_and_downstream_checkpoint_hashes_verified':True,
             'contact_labels_read':False,'test_labels_read':False,'ood_labels_read':False,

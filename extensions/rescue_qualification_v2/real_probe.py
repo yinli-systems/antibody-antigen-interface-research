@@ -4,7 +4,7 @@ import argparse, importlib.util, json, time
 from pathlib import Path
 import numpy as np
 import torch
-from qualification_core import canonical_assignment,new_json,digest
+from qualification_core import canonical_assignment,new_json,digest,observed_transforms
 from preflight import inspect
 
 
@@ -58,8 +58,22 @@ def main():
             if loss_error>1e-10 or grad_error>1e-10 or not record['canonical_hard_output_equal_across_all_pure_permutations']:
                 raise RuntimeError('algebra probe failed: '+json.dumps(record))
             samples.append(record)
+    missing_checks=[]
+    for key in metadata['absent_validation_keys']:
+        try:
+            original.load_full_features(key,base_store,representation,torch.device('cpu'))
+        except ValueError as error: old_error=str(error)
+        else: raise RuntimeError('expected old evaluator missing-feature failure not reproduced')
+        composite=original.CompositeEmbeddingStore(base_store,[representation])
+        chunks,starts,length=composite.load(key,torch.device('cpu'))
+        joined=original.merge_chunk_embeddings(chunks,starts,length,torch.device('cpu'))
+        def must_not_run(*args): raise RuntimeError('matcher called for absent source')
+        variants,present=observed_transforms(joined,seqs[key],np.arange(length),must_not_run)
+        if present or not all(torch.equal(x,joined) for x in variants.values()): raise RuntimeError('missingness preservation failed')
+        missing_checks.append({'sequence_key':key,'length':length,'original_failure':old_error,
+                               'replacement_presence_zero':True,'all_four_arms_unchanged':True,'matcher_called':False})
     result={'status':'PASS_REAL_FEATURE_EQUIVARIANCE_PROBE','at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-            'samples':samples,'feature_pairs':len(samples),'dtype':'float64','device':'CPU',
+            'samples':samples,'missing_feature_checks':missing_checks,'feature_pairs':len(samples),'dtype':'float64','device':'CPU',
             'matcher':'untrained seeded original v1 model; not a trained performance measurement',
             'metadata':metadata,'contact_labels_read':False,'test_labels_read':False,'ood_labels_read':False,
             'model_training_performed':False,'downstream_contact_inference_performed':False,
