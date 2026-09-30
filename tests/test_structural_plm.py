@@ -52,3 +52,22 @@ def test_saprot_allowed_missing_keys_are_only_non_hidden_state_heads():
         "esm.contact_head.regression.bias",
         "esm.contact_head.regression.weight",
     }
+
+
+def test_prosst_official_quantizer_environment_is_explicit():
+    from extensions.frontier_multimodel_v1.structural_plm import PROSST_OFFICIAL_ENVIRONMENT
+    assert PROSST_OFFICIAL_ENVIRONMENT == {
+        "scikit_learn":"1.2.2", "numpy":"1.26.4", "scipy":"1.12.0",
+        "joblib":"1.3.2", "threadpoolctl":"3.3.0",
+    }
+
+
+def test_tree_sha256_is_path_content_and_size_sensitive(tmp_path: Path):
+    from extensions.frontier_multimodel_v1.structural_plm_full import tree_sha256
+    (tmp_path / "a").mkdir(); (tmp_path / "a/x").write_text("one")
+    first=tree_sha256(tmp_path)
+    assert first[1:] == (1,3)
+    (tmp_path / "a/x").write_text("two")
+    assert tree_sha256(tmp_path)[0] != first[0]
+    (tmp_path / "a/x").rename(tmp_path / "a/y")
+    assert tree_sha256(tmp_path)[0] != first[0]

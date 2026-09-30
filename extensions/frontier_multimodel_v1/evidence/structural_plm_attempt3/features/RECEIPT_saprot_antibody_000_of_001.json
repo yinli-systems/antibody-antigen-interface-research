@@ -1,0 +1,56 @@
+{
+  "contact_labels_loaded": false,
+  "dtype_on_disk": "float16",
+  "format_version": "structural_plm_extract_shard_v1",
+  "hidden_size": 1280,
+  "layers": [
+    0,
+    8,
+    16,
+    24,
+    33
+  ],
+  "model_kind": "saprot",
+  "model_loading_info": {
+    "mismatched_keys": [],
+    "missing_keys": [
+      "esm.contact_head.regression.bias",
+      "esm.contact_head.regression.weight",
+      "esm.embeddings.position_embeddings.weight"
+    ],
+    "saprot_allowed_missing_keys": [
+      "esm.contact_head.regression.bias",
+      "esm.contact_head.regression.weight",
+      "esm.embeddings.position_embeddings.weight"
+    ],
+    "unexpected_keys": []
+  },
+  "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+  "model_tree_sha256": "fd34bfdb891dd36fab3c03a7a1fceff1ff8b86b94804790201360467d9857c72",
+  "record_count": 1,
+  "records": [
+    {
+      "length": 118,
+      "sequence_sha256": "0038062ac1b76707245ba122643ae6d03326a9482ce5efce6e1348a8a1b59207",
+      "side": "antibody",
+      "token_sha256": "a73a640105ce363dcfc9c6bb4cd8390b1334c8a3701bc58ad28457cb2b74e085",
+      "windows": [
+        [
+          0,
+          118
+        ]
+      ]
+    }
+  ],
+  "shard_count": 1,
+  "shard_index": 0,
+  "side": "antibody",
+  "status": "PASS",
+  "structure_units_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+  "test_loaded": false,
+  "window_policy": {
+    "max_residues": 1000,
+    "merge": "uniform mean in overlap",
+    "overlap": 128
+  }
+}

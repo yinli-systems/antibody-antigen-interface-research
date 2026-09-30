@@ -1,0 +1,14 @@
+{
+  "contact_labels_loaded": false,
+  "format_version": "prosst_token_shard_receipt_v1",
+  "keys_sha256": "7a2166b40e8f101f230e40ff83897e6e792ba397cbda5b4aae7be2002d98d74f",
+  "requested": 1,
+  "shard_count": 1,
+  "shard_index": 0,
+  "side": "antibody",
+  "skipped_exact_existing": 0,
+  "status": "PASS",
+  "structure_units_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+  "test_loaded": false,
+  "written": 1
+}

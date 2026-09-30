@@ -11,6 +11,15 @@ import argparse, hashlib, json, os, subprocess, tempfile, time
 from pathlib import Path
 from typing import Any
 
+
+PROSST_OFFICIAL_ENVIRONMENT={
+ "scikit_learn":"1.2.2",
+ "numpy":"1.26.4",
+ "scipy":"1.12.0",
+ "joblib":"1.3.2",
+ "threadpoolctl":"3.3.0",
+}
+
 SAPROT_ALLOWED_MISSING_KEYS={
  'esm.embeddings.position_embeddings.weight',
  'esm.contact_head.regression.bias',
@@ -137,6 +146,14 @@ def quantize_one(pdb:Path,model,cluster,source:Path,device:str,batch_nodes:int=8
  flush(); return graph.aa_seq,labels
 
 def prepare_prosst(args):
+ import joblib, numpy, scipy, sklearn, threadpoolctl
+ actual={
+  "scikit_learn":sklearn.__version__, "numpy":numpy.__version__,
+  "scipy":scipy.__version__, "joblib":joblib.__version__,
+  "threadpoolctl":threadpoolctl.__version__,
+ }
+ if actual!=PROSST_OFFICIAL_ENVIRONMENT:
+  raise RuntimeError(f"ProSST quantizer environment drift: {actual} != {PROSST_OFFICIAL_ENVIRONMENT}")
  authority,rows=load_units(args.structure_units); todo=selected(rows,args.side,args.shard_index,args.shard_count)
  if args.max_records is not None: todo=todo[:args.max_records]
  out=args.output.resolve(); out.mkdir(parents=True,exist_ok=True)
@@ -153,12 +170,16 @@ def prepare_prosst(args):
     'sequence':aa,'structure_tokens':labels,'pdb_sha256':r['pdb_sha256'],'quantizer_source_commit':args.prosst_source_commit,
     'quantizer_ae_sha256':sha256_file(args.prosst_source/'prosst/structure/static/AE.pt'),
     'quantizer_cluster_sha256':sha256_file(args.prosst_source/'prosst/structure/static/2048.joblib'),
+    'quantizer_environment':actual,
+    'official_requirements_sha256':sha256_file(args.prosst_source/'requirements.txt'),
     'structure_authority_sha256':sha256_file(args.structure_units)})
   written.append(r['sequence_sha256'])
   if n%25==0 or n==len(todo): print(f'quantized {args.side} shard={args.shard_index} {n}/{len(todo)}',flush=True)
  receipt={'status':'PASS','format_version':'prosst_token_shard_receipt_v1','side':args.side,'shard_index':args.shard_index,'shard_count':args.shard_count,
   'requested':len(todo),'written':len(written),'skipped_exact_existing':len(skipped),'keys_sha256':hashlib.sha256(('\n'.join(sorted([r['sequence_sha256'] for r in todo]))+'\n').encode()).hexdigest(),
-  'structure_units_sha256':sha256_file(args.structure_units),'test_loaded':False,'contact_labels_loaded':False}
+  'structure_units_sha256':sha256_file(args.structure_units),'quantizer_environment':actual,
+  'official_requirements_sha256':sha256_file(args.prosst_source/'requirements.txt'),
+  'test_loaded':False,'contact_labels_loaded':False}
  atomic_json(out/f'RECEIPT_{args.side}_{args.shard_index:03d}_of_{args.shard_count:03d}.json',receipt); print(json.dumps(receipt))
 
 def merge_windows(sequence:str,token_payload:dict,model_kind:str,model,tokenizer,layers:list[int],device:str,max_residues:int,overlap:int):
