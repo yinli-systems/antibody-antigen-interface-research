@@ -43,9 +43,9 @@ def main():
  receipt={"format_version":"strict_partner_retrieval_contact_cache_v1","status":"COMPLETE_TRAINING_ONLY_CONTACT_CACHE",
           "fold":d["fold"],"train_sequence_cache_sha256":sha(a.train_sequences),"entry_count":len(entries),"entries":entries,
           "pair_count":len({x["pair_id"] for x in entries}),"source_instance_count":len(entries),
-          "model_execution_authorized":d.get("model_execution_authorized") is True,
+          "training_and_model_selection_authorized":d.get("training_and_model_selection_authorized") is True,
           "contact_distance_authority":"precomputed frozen sabdab2_sparse_contact_v1 at 4.5A source protocol",
           "validation_contact_labels_staged":False,"test_access":False,"ood_access":False}
  (a.output_root/"CONTACT_CACHE_RECEIPT.json").write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n")
- print(json.dumps({"status":receipt["status"],"fold":receipt["fold"],"instances":len(entries),"pairs":receipt["pair_count"],"authorized":receipt["model_execution_authorized"]},indent=2))
+ print(json.dumps({"status":receipt["status"],"fold":receipt["fold"],"instances":len(entries),"pairs":receipt["pair_count"],"training_authorized":receipt["training_and_model_selection_authorized"]},indent=2))
 if __name__=="__main__":main()
