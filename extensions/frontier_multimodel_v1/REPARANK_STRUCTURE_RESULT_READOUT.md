@@ -1,5 +1,7 @@
 # RePaRank sequence+structure same-grid readout — 2026-09-30
 
+> **Final correction available.** The official-style centered 217-case result is now complete (`1642417`). The uncentered result below remains preserved as a protocol-mismatch negative control. The canonical three-arm comparison is [`REPARANK_CENTERED_THREE_ARM_READOUT.md`](REPARANK_CENTERED_THREE_ARM_READOUT.md).
+
 ## Completed uncentered run (preserved negative result)
 
 Job `1642234` completed `0:0` using the official sequence+structure checkpoint on the same 217 development-validation complexes and exact 9,638,880-pair / 9,036-positive candidate authority as the sequence checkpoint. The resume wrapper reused 26 previously computed NPZ files only after exact checkpoint, candidate/label, structure-chain and file-hash compatibility checks, and computed the remaining 191 cases. No test/OOD labels were read.
