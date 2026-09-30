@@ -1,0 +1,749 @@
+{
+  "format_version": "untouched_ood_metadata_freeze_v1",
+  "created_utc": "2026-09-29T23:54:35Z",
+  "source_metadata_path": "/Users/kevin/frontier-model-sources-20260930/ood_metadata_candidates_20260912_20260930.json",
+  "source_metadata_sha256": "d921863253292dda69a4c3464d78c636071b7f82dd1ba2c4bd10411e9f1d6a0c",
+  "query_window": {
+    "after_inclusive": "2026-09-12",
+    "before_inclusive": "2026-09-30"
+  },
+  "selection_stage": "metadata_only_before_coordinate_or_contact_access",
+  "pdb_count": 14,
+  "records": [
+    {
+      "pdb_id": "12IU",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "CryoEM structure of monoclonal Fab 047-09M 2F03 binding the lateral patch of influenza virus H1 HA (A/California/04/2009)",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "2F03 light chain",
+          "auth_asym_ids": [
+            "I",
+            "Y",
+            "Z"
+          ],
+          "sequence": "DIQMTQSPSSLSASVGDRVTITCRASQDINNNLNWFQHKPGKAPKLLMYAASNLENLEAGVPSRFSGTGSGTHFTFTISGLQPEDIATYYCQQYRTPLLTFGGGTKVEI"
+        },
+        {
+          "entity_id": "2",
+          "description": "2F03 heavy chain",
+          "auth_asym_ids": [
+            "V",
+            "W",
+            "X"
+          ],
+          "sequence": "EVQLLESGGALVQPGGSLRLSCAASGFTFHQFAMTWVRQAPGKGLEWLSAINADGAITYYADSVKGRFTISRDNSKNTLYLQLSGLRAEDTALYYCGKYDSSGHHYVRRMHFWGQGTLVTVSS"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "3",
+          "description": "Hemagglutinin HA1",
+          "auth_asym_ids": [
+            "A",
+            "H",
+            "O"
+          ],
+          "sequence": "DTLCIGYHANNSTDTVDTVLEKNVTVTHSVNLLEDKHNGKLCKLRGVAPLHLGKCNIAGWILGNPECESLSTASSWSYIVETPSSDNGTCFPGDFIDYEELREQLSSVSSFERFEIFPKTSSWPNHDSNKGVTAACPHAGAKSFYKNLIWLVKKGNSYPKLSKSYINDKGKEVLVLWGIHHPSTSADQQSLYQNADTYVFVGSSRYSKKFKPEIAIRPKVRDQEGRMNYYWTLVEPGDKITFEATGNLVVPRYAFAMERNAGSGIIISDTPVHDCNTTCQTPKGAINTSLPFQNIHPITIGKCPKYVKSTKLRLATGLRNIPS"
+        },
+        {
+          "entity_id": "4",
+          "description": "Hemagglutinin HA2",
+          "auth_asym_ids": [
+            "a",
+            "b",
+            "c"
+          ],
+          "sequence": "GGWTGMVDGWYGYHHQNEQGSGYAADLKSTQNAIDKITNKVNSVIEKMNTQFTAVGKEFNHLEKRIENLNKKVDDGFLDIWTYNAELLVLLENERTLDYHDSNVKNLYEKVRSQLKNNAKEIGNGCFEFYHKCDNTCMESVKNGTYDYPKYSEEAKLNREEID"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "12IV",
+      "release_date": "2026-09-23T00:00:00Z",
+      "title": "CryoEM structure of monoclonal Fab 047-09 1A02 binding the lateral patch of influenza virus H1 HA (A/California/04/2009 H1N1)",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "3",
+          "description": "Heavy chain 1A02",
+          "auth_asym_ids": [
+            "I",
+            "J",
+            "K"
+          ],
+          "sequence": "EVQLLESGGALVQPGGSLRLSCTASGFTLGHFAMAWVRQAPGKGLEWLSAISGGGGTTYYADSVKGRFTISRDNSKNTLYLQLSGLRAEDTALYFCGKYDSSGHHYVRRMHFWGQGTLVTV"
+        },
+        {
+          "entity_id": "4",
+          "description": "Light chain 1A02",
+          "auth_asym_ids": [
+            "P",
+            "Q",
+            "R"
+          ],
+          "sequence": "DIQMTQSPSSLSASVGDRVTITCRASQDINNNLNWYQQKPGKAPKLLMYDASNLEAGVPSRFSGTGSGTDFTFTISSLQAEDIATYYCQQYRNPLLTFGGGTKVEI"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "1",
+          "description": "Hemagglutinin HA2",
+          "auth_asym_ids": [
+            "A",
+            "B",
+            "D"
+          ],
+          "sequence": "GGWTGMVDGWYGYHHQNEQGSGYAADLKSTQNAIDKITNKVNSVIEKMNTQFTAVGKEFNHLEKRIENLNKKVDDGFLDIWTYNAELLVLLENERTLDYHDSNVKNLYEKVRSQLKNNAKEIGNGCFEFYHKCDNTCMESVKNGTYDYPKYSEEAKLNRE"
+        },
+        {
+          "entity_id": "2",
+          "description": "Hemagglutinin HA1",
+          "auth_asym_ids": [
+            "C",
+            "E",
+            "F"
+          ],
+          "sequence": "TLCIGYHANNSTDTVDTVLEKNVTVTHSVNLLEDKHNGKLCKLRGVAPLHLGKCNIAGWILGNPECESLSTASSWSYIVETPSSDNGTCYPGDFIDYEELREQLSSVSSFERFEIFPKTSSWPNHDSNKGVTAACPHAGAKSFYKNLIWLVKKGNSYPKLSKSYINDKGKEVLVLWGIHHPSTSADQQSLYQNADTYVFVGSSRYSKKFKPEIAIRPKVRDQEGRMNYYWTLVEPGDKITFEATGNLVVPRYAFAMERNAGSGIIISDTPVHDCNTTCQTPKGAINTSLPFQNIHPITIGKCPKYVKSTKLRLATGLRNIP"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "21RN",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Cryo-EM structure of mouse myeloperoxidase in complex with Fab fragments of antibodies mAb-A24 and mAb-A46",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "mAb-A46 Fab Heavy chain",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "QVQLQQSGPELVKPGASVKLSCKASGYTFTNYDINWVKQRPGQGLEWIGWIYPRDGSTTYNEKFKDKATLTVDTSSSTAYMELHSLTSEDSAVYFCARYQYDAYFDVWGTGTTVTVSSAKTTAPSVYPLAPVCGDTTGSSVTLGCLVKGYFPEPVTLTWNSGSLSSGVHTFPAVLQSDLYTLSSSVTVTSSTWPSQSITCNVAHPASSTKVDKKIEPRGPTIKP"
+        },
+        {
+          "entity_id": "2",
+          "description": "mAb-A46 Fab Light chain",
+          "auth_asym_ids": [
+            "B"
+          ],
+          "sequence": "DIVLTQSPSSLSASLGGKVTITCKASQDINKYIAWYQHKPGKGPRLLIHYTSTLQPGIPSRFSGSGSGRDYSFSISNLEPEDIAAYYCLQYDSLWTFGGGTKLEIKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        },
+        {
+          "entity_id": "3",
+          "description": "mAb-A24 Fab Heavy chain",
+          "auth_asym_ids": [
+            "C"
+          ],
+          "sequence": "EVQLQQSGAELARPGASVKLSCKASGYTFTSYGISWVKQRTGQGLEWIGEIYPRSGNTYYNEKFKGKATLTADKSSSTAYMELRSLTSEDSAVYFCARGTTTRHFDVWGTGTTVTVSSAKTTAPSVYPLAPVCGDTTGSSVTLGCLVKGYFPEPVTLTWNSGSLSSGVHTFPAVLQSDLYTLSSSVTVTSSTWPSQSITCNVAHPASSTKVDKKIEPRGPTIKP"
+        },
+        {
+          "entity_id": "4",
+          "description": "mAb-A24 Fab Light chain",
+          "auth_asym_ids": [
+            "D"
+          ],
+          "sequence": "DIVMTQSPSSLSASLGGKVTITCKASQDINKYIAWYQHKPGKGPRLLIHYTSTLQPGIPSRFSGSGSGRDYSFSISNLEPEDIATYYCLQYDNLYTFGGGTKLELKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "5",
+          "description": "Myeloperoxidase light chain",
+          "auth_asym_ids": [
+            "E"
+          ],
+          "sequence": "VTCPPNDKYRTITGHCNNRRSPTLGASNRAFVRWLPAEYEDGVSMPFGWTPGVNRNGFKVPLARQVSNAIVRFPNDQLTKDQERALMFMQWGQFLDHDITLTPEPATRFSFFTG"
+        },
+        {
+          "entity_id": "6",
+          "description": "Myeloperoxidase",
+          "auth_asym_ids": [
+            "F"
+          ],
+          "sequence": "LNCETSCLQQPPCFPLKIPPNDPRIKNQKDCIPFFRSCPACTRNNITIRNQINALTSFVDASGVYGSEDPLARKLRNLTNQLGLLAVNTRFQDNGRALMPFDSLHDDPCLLTNRSARIPCFLAGDMRSSEMPELTSMHTLFVREHNRLATQLKRLNPRWNGEKLYQEARKIVGAMVQIITYRDYLPLVLGPAAMKKYLPQYRSYNDSVDPRIANVFTNAFRYGHTLIQPFMFRLNNQYRPTGPNPRVPLSKVFFASWRVVLEGGIDPILRGLMATPAKLNRQNQIVVDEIRERLFEQVMRIGLDLPALNMQRSRDHGLPGYNAWRRFCGLPQPSTVGELGTVLKNLELARKLMAQYGTPNNIDIWMGGVSEPLEPNGRVGQLLACLIGTQFRKLRDGDRFWWENPGVFSKQQRQALASISLPRIICDNTGITTVSKNNIFMSNTYPRDFVSCNTLPKLNLTSWKETHHHHHHHHHH"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "21RT",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Cryo-EM structure of mouse myeloperoxidase in complex with Fab fragments of antibodies mAb-A46 and mAb-B88",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "mAb-A46 Fab Heavy chain",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "QVQLQQSGPELVKPGASVKLSCKASGYTFTNYDINWVKQRPGQGLEWIGWIYPRDGSTTYNEKFKDKATLTVDTSSSTAYMELHSLTSEDSAVYFCARYQYDAYFDVWGTGTTVTVSSAKTTAPSVYPLAPVCGDTTGSSVTLGCLVKGYFPEPVTLTWNSGSLSSGVHTFPAVLQSDLYTLSSSVTVTSSTWPSQSITCNVAHPASSTKVDKKIEPRGPTIKP"
+        },
+        {
+          "entity_id": "2",
+          "description": "mAb-A46 Fab Light chain",
+          "auth_asym_ids": [
+            "B"
+          ],
+          "sequence": "DIVLTQSPSSLSASLGGKVTITCKASQDINKYIAWYQHKPGKGPRLLIHYTSTLQPGIPSRFSGSGSGRDYSFSISNLEPEDIAAYYCLQYDSLWTFGGGTKLEIKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        },
+        {
+          "entity_id": "3",
+          "description": "mAb-B88 Fab Heavy chain",
+          "auth_asym_ids": [
+            "C"
+          ],
+          "sequence": "EVQLQHSGPVLVKPGASVKMSCKASGYTFTHYYMSWVKQSHGKSLEWIGVINPYNGVISYNQRFKGKATLTVDKSSSTAYMELNSLTSEDSAVYYCARGPGERYFDVWGTGTSVTVSSAKTTAPSVYPLAPVCGDTTGSSVTLGCLVKGYFPEPVTLTWNSGSLSSGVHTFPAVLQSDLYTLSSSVTVTSSTWPSQSITCNVAHPASSTKVDKKIEPRGPTIKP"
+        },
+        {
+          "entity_id": "4",
+          "description": "mAb-B88 Fab Light chain",
+          "auth_asym_ids": [
+            "D"
+          ],
+          "sequence": "DIVMTQSHKFMSTSVGDRVSITCKASQDVRTAVAWYQQKPGQSPKLLIYWASTRHTGVPDRFTGSGSGTDYTLTFNSVQAEDLALYYCQQHYSTPWTFGGGTKLEIKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "5",
+          "description": "Myeloperoxidase light chain",
+          "auth_asym_ids": [
+            "E"
+          ],
+          "sequence": "VTCPPNDKYRTITGHCNNRRSPTLGASNRAFVRWLPAEYEDGVSMPFGWTPGVNRNGFKVPLARQVSNAIVRFPNDQLTKDQERALMFMQWGQFLDHDITLTPEPATRFSFFTG"
+        },
+        {
+          "entity_id": "6",
+          "description": "Myeloperoxidase",
+          "auth_asym_ids": [
+            "F"
+          ],
+          "sequence": "LNCETSCLQQPPCFPLKIPPNDPRIKNQKDCIPFFRSCPACTRNNITIRNQINALTSFVDASGVYGSEDPLARKLRNLTNQLGLLAVNTRFQDNGRALMPFDSLHDDPCLLTNRSARIPCFLAGDMRSSEMPELTSMHTLFVREHNRLATQLKRLNPRWNGEKLYQEARKIVGAMVQIITYRDYLPLVLGPAAMKKYLPQYRSYNDSVDPRIANVFTNAFRYGHTLIQPFMFRLNNQYRPTGPNPRVPLSKVFFASWRVVLEGGIDPILRGLMATPAKLNRQNQIVVDEIRERLFEQVMRIGLDLPALNMQRSRDHGLPGYNAWRRFCGLPQPSTVGELGTVLKNLELARKLMAQYGTPNNIDIWMGGVSEPLEPNGRVGQLLACLIGTQFRKLRDGDRFWWENPGVFSKQQRQALASISLPRIICDNTGITTVSKNNIFMSNTYPRDFVSCNTLPKLNLTSWKETHHHHHHHHHH"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "22PD",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Cryo EM structure of SARS-COV-2 (BA.4) RBD in complex with THZ937 Fab (local refine)",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "THZ937 fab heavy chain",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "EVQLVESGGGLIQPGGSLRLSCAASGFSVSTNYMSWVRQAPGKGLEWVSVIYGGDTTYYADSVRGRFTISRDNSKNTLYLEMNSLRTDDTAVYYCARDEGRYFDIWTGHVGPNCFDYWGQGTLVTVSS"
+        },
+        {
+          "entity_id": "2",
+          "description": "THZ937 fab light chain",
+          "auth_asym_ids": [
+            "B"
+          ],
+          "sequence": "DIQLTQSPSSLSASVGDRVTITCRASQSISTYLNWYQQKPGKAPKLLIYGASNLQSGVPSRFSGSGSGTDFTLTISSLQPEDFATYYCQQSYITLVTFGQGTRLEIKRTVAA"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "3",
+          "description": "SARS-CoV-2 BA.4 spike RBD",
+          "auth_asym_ids": [
+            "C"
+          ],
+          "sequence": "NLCPFDEVFNATRFASVYAWNRKRISNCVADYSVLYNFAPFFAFKCYGVSPTKLNDLCFTNVYADSFVIRGNEVSQIAPGQTGNIADYNYKLPDDFTGCVIAWNSNKLDSKVGGNYNYRYRLFRKSNLKPFERDISTEIYQAGNKPCNGVAGVNCYFPLQSYGFRPTYGVGHQPYRVVVLSFELLHAPATVCGPKKSTNL"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "45IC",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Complex structure of THZ-65 Fab bound to SARS-CoV-1 RBD",
+      "methods": [
+        "X-RAY DIFFRACTION"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "THZ-65 Fab Light chain",
+          "auth_asym_ids": [
+            "A",
+            "D"
+          ],
+          "sequence": "QLVLTQPPSASGTPGQRVSISCSGSSSNVGSNTVNWYQQLPGTAPKLLIYSIDQRPSGIPDRFSGSKSGTSASLAISGLQSEDEADYYCATWDDSLTGVVFGGGTKLTVLGQPKAAPSVTLFPPSSEELQANKATLVCLISDFYPGAVTVAWKADSSPVKAGVETTTPSKQSNNKYAASSYLSLTPEQWKSHRSYSCQVTHEGSTVEKTVAPT"
+        },
+        {
+          "entity_id": "3",
+          "description": "THZ-65 Fab Heavy chain",
+          "auth_asym_ids": [
+            "C",
+            "F"
+          ],
+          "sequence": "EVQLVESGGGVVQPGGSLRLSCAASGFTFDDYAIHWVRQVPGKGLEWVSLISADGFRTYYADSVKGRFTISRDNSRSSLSLQLTSLRTEDTALYYCAKDNEKYGGAMGYYYFYGMDVWGQGTTVTVSSASTKGPSVFPLAPSSKSTSGGTAALGCLVKDYFPEPVTVSWNSGALTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTQTYICNVNHKPSNTKVDKRVEPKS"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "2",
+          "description": "Spike protein S1",
+          "auth_asym_ids": [
+            "B",
+            "E"
+          ],
+          "sequence": "TNLCPFGEVFNATKFPSVYAWERKKISNCVADYSVLYNSTFFSTFKCYGVSATKLNDLCFSNVYADSFVVKGDDVRQIAPGQTGVIADYNYKLPDDFMGCVLAWNTRNIDATSTGNYNYKYRYLRHGKLRPFERDISNVPFSPDGKPCTPPALNCYWPLNDYGFYTTTGIGYQPYRVVVLSFELLNAPATVCGP"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "45ID",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Complex structure of THZ-939 Fab bound to SARS-CoV-2 WT RBD",
+      "methods": [
+        "X-RAY DIFFRACTION"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "THZ-939 Fab Heavy chain",
+          "auth_asym_ids": [
+            "B"
+          ],
+          "sequence": "QVQLVESGGGLVKPGGSLRLSCAASGFIFSYAPMSWVRQAPGKGLEWVGRIKSNTDDGTTDYAAPVKGRFSISRDDSENTLYLQMNSLKSEDTAVYYCITRPGIVGTYWGQGTLVTVSSASTKGPSVFPLAPSSKSTSGGTAALGCLVKDYFPEPVTVSWNSGALTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTQTYICNVNHKPSNTKVDKRVEPKSCDKTHTCPP"
+        },
+        {
+          "entity_id": "2",
+          "description": "THZ-939 Fab Light chain",
+          "auth_asym_ids": [
+            "C"
+          ],
+          "sequence": "DVVMTQSPLSLPVTPGEPASISCRSSQSLLHVSGYNYLDWFLQKPGQSPQLLIYLGSNRASGVPDRFSGSGSGTDFTLKISRVEAEDVGVYYCMQGLRTPFTFGPGTKVAIRTVAAPSVFIFPPSDEQLKSGTASVVCLLNNFYPREAKVQWKVDNALQSGNSQESVTEQDSKDSTYSLSSTLTLSKADYEKHKVYACEVTHQGLSSPVTKSFNRGEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "3",
+          "description": "Spike protein S1",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "RVQPTESIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNF"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9TXJ",
+      "release_date": "2026-09-23T00:00:00Z",
+      "title": "Cryo-EM structure of native ITIH4 with 12A12 F(ab)",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "2",
+          "description": "12A12 mAb F(ab) heavy chain",
+          "auth_asym_ids": [
+            "D"
+          ],
+          "sequence": "EVQLQQSGPELVKPGASVKMSCKASGYTFKTYLMHWVKQKPGQGLEWIGYIDPYNDGTKYNEKFKGKATLTSDKSSSTAYMELSSLTSEDSAVYYCAKDYGYDTYWGQGTLVTVSAAKTTPPSVYPLAPGCGDTTGSSVTLGCLVKGYFPESVTVTWNSGSLSSSVHTFPALLQSGLYTMSSSVTVPSSTWPSQTVTCSVAHPASSTTVDKKLEPSGPISTINPCPP"
+        },
+        {
+          "entity_id": "3",
+          "description": "12A12 mAb F(ab) light chain",
+          "auth_asym_ids": [
+            "E"
+          ],
+          "sequence": "DIQMTQSPSSLSASLGGKVTITCKASQDINKYIAWYQHKPGKGPRLLIHYTSTLHPDIPSRFSGSGSGRDYSFSISNLEPEDIATYYCLQYDNLWTFGGGTKLEIKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "1",
+          "description": "Isoform 3 of Inter-alpha-trypsin inhibitor heavy chain H4",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "MKPPRPVRTCSKVLVLLSLLAIHQTTTAEKNGIDIYSLTVDSRVSSRFAHTVVTSRVVNRANTVQEATFQMELPKKAFITNFSMIIDGMTYPGIIKEKAEAQAQYSAAVAKGKSAGLVKATGRNMEQFQVSVSVAPNAKITFELVYEELLKRRLGVYELLLKVRPQQLVKHLQMDIHIFEPQGISFLETESTFMTNQLVDALTTWQNKTKAHIRFKPTLSQQQKSPEQQETVLDGNLIIRYDVDRAISGGSIQIENGYFVHYFAPEGLTTMPKNVVFVIDKSGSMSGRKIQQTREALIKILDDLSPRDQFNLIVFSTEATQWRPSLVPASAENVNKARSFAAGIQALGGTNINDAMLMAVQLLDSSNQEERLPEGSVSLIILLTDGDPTVGETNPRSIQNNVREAVSGRYSLFCLGFGFDVSYAFLEKLALDNGGLARRIHEDSDSALQLQDFYQEVANPLLTAVTFEYPSNAVEEVTQNNFRLLFKGSEMVVAGKLQDRGPDVLTATVSGKLPTQNITFQTESSVAEQEAEFQSPKYIFHNFMERLWAYLTIQQLLEQTVSASDADQQALRNQALNLSLAYSFVTPLTSMVVTKPDDQEQSQVAEKPMEGESRNRNVHSAGAAGSRMNFRPGVLSSRQLGLPGPPDVPDHAAYHPFRRLAILPASAPPATSNPDPAVSRVMNMKIEETTMTTQTPAPIQAPSAILPLPGQSVERLCVDPRHRQGPVNLLSDPEQGVEVTGQYEREKAGFSWIEVTFKNPLVWVHASPEHVVVTRNRRSSAYKWKETLFSVMPGLKMTMDKTGLLLLSDPDKVTIGLLFWDGRGEGLRLLLRDTDRFSSHVGGTLGQFYQEVLWGSPAASDDGRRTLRVQGNDHSATRERRLDYQEGPPGVEISCWSVELHHHHHH"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9TXK",
+      "release_date": "2026-09-23T00:00:00Z",
+      "title": "Cryo-EM structure of active ITIH4N with 12A12 F(ab)",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "2",
+          "description": "12A12 mAb F(ab) heavy chain",
+          "auth_asym_ids": [
+            "D"
+          ],
+          "sequence": "EVQLQQSGPELVKPGASVKMSCKASGYTFKTYLMHWVKQKPGQGLEWIGYIDPYNDGTKYNEKFKGKATLTSDKSSSTAYMELSSLTSEDSAVYYCAKDYGYDTYWGQGTLVTVSAAKTTPPSVYPLAPGCGDTTGSSVTLGCLVKGYFPESVTVTWNSGSLSSSVHTFPALLQSGLYTMSSSVTVPSSTWPSQTVTCSVAHPASSTTVDKKLEPSGPISTINPCPP"
+        },
+        {
+          "entity_id": "3",
+          "description": "12A12 mAb F(ab) light chain",
+          "auth_asym_ids": [
+            "E"
+          ],
+          "sequence": "DIQMTQSPSSLSASLGGKVTITCKASQDINKYIAWYQHKPGKGPRLLIHYTSTLHPDIPSRFSGSGSGRDYSFSISNLEPEDIATYYCLQYDNLWTFGGGTKLEIKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "1",
+          "description": "Isoform 3 of Inter-alpha-trypsin inhibitor heavy chain H4",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "EKNGIDIYSLTVDSRVSSRFAHTVVTSRVVNRANTVQEATFQMELPKKAFITNFSMIIDGMTYPGIIKEKAEAQAQYSAAVAKGKSAGLVKATGRNMEQFQVSVSVAPNAKITFELVYEELLKRRLGVYELLLKVRPQQLVKHLQMDIHIFEPQGISFLETESTFMTNQLVDALTTWQNKTKAHIRFKPTLSQQQKSPEQQETVLDGNLIIRYDVDRAISGGSIQIENGYFVHYFAPEGLTTMPKNVVFVIDKSGSMSGRKIQQTREALIKILDDLSPRDQFNLIVFSTEATQWRPSLVPASAENVNKARSFAAGIQALGGTNINDAMLMAVQLLDSSNQEERLPEGSVSLIILLTDGDPTVGETNPRSIQNNVREAVSGRYSLFCLGFGFDVSYAFLEKLALDNGGLARRIHEDSDSALQLQDFYQEVANPLLTAVTFEYPSNAVEEVTQNNFRLLFKGSEMVVAGKLQDRGPDVLTATVSGKLPTQNITFQTESSVAEQEAEFQSPKYIFHNFMERLWAYLTIQQLLEQTVSASDADQQALRNQALNLSLAYSFVTPLTSMVVTKPDDQEQSQVAEKPMEGESRNRNVHSAGAAGSRMNFRPGVLSSRQLGLPGPPDVPDHAAYHPFR"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9TXL",
+      "release_date": "2026-09-23T00:00:00Z",
+      "title": "ITIH4N:MASP-1cf:12A12 F(ab) 2:1:2 complex (Composite)",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "3",
+          "description": "12A12 mAb F(ab) heavy chain",
+          "auth_asym_ids": [
+            "D",
+            "F"
+          ],
+          "sequence": "EVQLQQSGPELVKPGASVKMSCKASGYTFKTYLMHWVKQKPGQGLEWIGYIDPYNDGTKYNEKFKGKATLTSDKSSSTAYMELSSLTSEDSAVYYCAKDYGYDTYWGQGTLVTVSAAKTTPPSVYPLAPGCGDTTGSSVTLGCLVKGYFPESVTVTWNSGSLSSSVHTFPALLQSGLYTMSSSVTVPSSTWPSQTVTCSVAHPASSTTVDKKLEPSGPISTINPCPP"
+        },
+        {
+          "entity_id": "4",
+          "description": "12A12 mAb F(ab) light chain",
+          "auth_asym_ids": [
+            "E",
+            "G"
+          ],
+          "sequence": "DIQMTQSPSSLSASLGGKVTITCKASQDINKYIAWYQHKPGKGPRLLIHYTSTLHPDIPSRFSGSGSGRDYSFSISNLEPEDIATYYCLQYDNLWTFGGGTKLEIKRADAAPTVSIFPPSSEQLTSGGASVVCFLNNFYPKDINVKWKIDGSERQNGVLNSWTDQDSKDSTYSMSSTLTLTKDEYERHNSYTCEATHKTSTSPIVKSFNRNEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "1",
+          "description": "Isoform 3 of Inter-alpha-trypsin inhibitor heavy chain H4",
+          "auth_asym_ids": [
+            "A",
+            "B"
+          ],
+          "sequence": "EKNGIDIYSLTVDSRVSSRFAHTVVTSRVVNRANTVQEATFQMELPKKAFITNFSMIIDGMTYPGIIKEKAEAQAQYSAAVAKGKSAGLVKATGRNMEQFQVSVSVAPNAKITFELVYEELLKRRLGVYELLLKVRPQQLVKHLQMDIHIFEPQGISFLETESTFMTNQLVDALTTWQNKTKAHIRFKPTLSQQQKSPEQQETVLDGNLIIRYDVDRAISGGSIQIENGYFVHYFAPEGLTTMPKNVVFVIDKSGSMSGRKIQQTREALIKILDDLSPRDQFNLIVFSTEATQWRPSLVPASAENVNKARSFAAGIQALGGTNINDAMLMAVQLLDSSNQEERLPEGSVSLIILLTDGDPTVGETNPRSIQNNVREAVSGRYSLFCLGFGFDVSYAFLEKLALDNGGLARRIHEDSDSALQLQDFYQEVANPLLTAVTFEYPSNAVEEVTQNNFRLLFKGSEMVVAGKLQDRGPDVLTATVSGKLPTQNITFQTESSVAEQEAEFQSPKYIFHNFMERLWAYLTIQQLLEQTVSASDADQQALRNQALNLSLAYSFVTPLTSMVVTKPDDQEQSQVAEKPMEGESRNRNVHSAGAAGSRMNFRPGVLSSRQLGLPGPPDVPDHAAYHPFR"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9Y7C",
+      "release_date": "2026-09-23T00:00:00Z",
+      "title": "HB3VAR03 CIDRa1.4 in complex with B57 and C50 fabs",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "B57 heavy chain",
+          "auth_asym_ids": [
+            "H"
+          ],
+          "sequence": "QVQLVQSGAEVRKPGSSVKVSCKVSGGTFSIFGINWIRKAPGQGFEWMGGIVPQLGGPNYVKKFQGRVSFTADELTTTAYMELRSLTPEDSALYFCAKGAQTYALLYYFDSWGQGTLVTVSS"
+        },
+        {
+          "entity_id": "2",
+          "description": "B57 light chain",
+          "auth_asym_ids": [
+            "L"
+          ],
+          "sequence": "QSALTQPPSASGSPGQSVTISCTGTSSDIGGYNYVSWYQQHPGKAPKVVIYDVTKRPSGVPDRFSGSKSGNTASLTVSGLQADDEAIYYCSSYAYNNNLVFGGGTSLAVL"
+        },
+        {
+          "entity_id": "3",
+          "description": "C50 heavy chain",
+          "auth_asym_ids": [
+            "B"
+          ],
+          "sequence": "QVQLVESGGGVVQPGRSLRLSCAASGFTFETYVMHWVRQTPGKGLEWVALTSYDGKRKYYADSVKGRFSASRDNSENTVSLQMSSLSTEDTAVYYCVRSRHGYSFTNMDVWGRGTTVIVSS"
+        },
+        {
+          "entity_id": "4",
+          "description": "C50 light chain",
+          "auth_asym_ids": [
+            "C"
+          ],
+          "sequence": "VSAAPGQTVTISCSEYISNIGDNYVSWYQHVPGTAPRVVMSHYNERPSGIPDRFSGSKSGASATLGITGLQTGDEADYYCGAWDDRLKIFVFGTATKVTVL"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "5",
+          "description": "PfEMP1",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "MGSSASKFSKIVVGNETHKSARNVLEGFAKDIKGKASIDAEKHAYSLKGNLKDAKFNHDFFKIKSDMPGNPCYLDFAFHSNTPGNQREYRHPCARSMNKNLFNLEGAVCTNSKIKGNEEKINGAGACAPYRRRHICDLNLEHIDVHNVQNIHDLLGNVLVTAKYEGESIVEKHPNRGSSEVCTALARSFADIGDIIRGKDLYLGHEQGNNKLEARLKTIFQNIKNKNKSPLDKLSLEQVREYWWALNREDVWKALTCFADGSEEYFIQSSDKEHSFSSEYCGHEQGNVPTNLDYVPQFLRWFDEWADDFCRIKKIKLENVKNACRDEKKRKYCSLNGFDCTQTIWKKGVLHRSNECTGCLVKCNPYEIWLGNQREAFRKQKEKYENEIKTYVHDTGISNSNINNEYYKEFYKILKNNNYETANEFIKLLNEGRYCNKKEKIEEEEDIDFTNTNEKGTFYRSDYCQVCPDCGVECKNETCTPKTVIYPDCGKNEKYEPPGDAKNTEINVINSGDKEGYIFEKLSEFCTNENNENGKNYEQWKCYYDNKKNNNKCKMEINIANSKLKNKVTSFDEFFDFWVRKLLIDTIKWETELTYCINNTDVTDCNKCNKNCVCFDKWVKQKEDEWTNIMKLFTNKHDIPKKYYLNINDLFDSFFFQVIYKFNEGEAKWNELKENLKKQIASSKANNGTKDSEAAIKVLFNHIKEIATICKDNNTNEGCDPSVDSKTNSCGKNTKAGSDKVISVKQIAQYYKRIAHKQLNERGSRSALKGDASKGTYKKNGTPSNLKEICEITAKHSNDSRRDGEPCTGKDGGQVRVRTKIGTPWTKIVEINKTSYKEVFLPPRRQHMCTSNLEHLNTGNKGLKDGKLAIHSLLGDVLLAAKEQANFIKNKYKRQKASNGFKDKGTICRAIRYSYADLGDIIKGTDLWEANPGEKNTQRRLKTVFGIIKKNMPGIKDNQKYKDDEKNNPPYKLLREDWWEANRDQVWQAMKCAMKNGITCGSSDHTPLDDYIPQKLRWLTEWAEWYCKAQSKEYEKLKEKCKECKGNDQCTQDTPDCEKCKAACKKYGKNIKTWEDQWKVISSKYKELYKQAEIYAGNGGPGYYNTKVQEEDKPVVDFLYNLYLQNGGKKGPPPDTHPSKSVTAPLKQVATVDTPSTVYSTPEGYIHQEAAMDCKQQHVFCDDNSGGKDDNKQYAFRHQPHDYDEALRCDQRDKPPPESKKVEKAKKEKDENDDGGSHHHHHHGGGSAHIVMVDAYKPTK"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9Y7F",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Crystal structure of nanobody R3D8 in complex with human voltage-gated sodium channel Nav1.7 P-loop 1.",
+      "methods": [
+        "X-RAY DIFFRACTION"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "1",
+          "description": "Nanobody R3D8",
+          "auth_asym_ids": [
+            "A"
+          ],
+          "sequence": "QVQLQESGGGLVQDGGSLRLSCVASGFIFDDYAIGWFRQAPGKEREFVAAISWNGLSTRYADSVKGRFTISRDNAKIAVYLQMDNLTPDDTARYYCTMRAWSENTGNFASRGQGTQVTVSSHHHHHH"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "2",
+          "description": "Sodium channel protein type 9 subunit alpha",
+          "auth_asym_ids": [
+            "B"
+          ],
+          "sequence": "CFRNSLENNETLESIMNTLESEEDFRKYFCS"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9ZRS",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Shigella flexneri type III secretion system (T3SS) protein IpaD bound to hemolysis blocking Fab D02-F2 and hemolysis enhancing Fab D02-E4",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "2",
+          "description": "D02-F2 antibody fragment heavy chain",
+          "auth_asym_ids": [
+            "H"
+          ],
+          "sequence": "QVQLQESGPGLVKPSETLSLTCAVSDGSVSSSYWTWIRQPPGKGLEWIGFIYGGNGNTGYNPSLKSRVTISTDMSKNQFSLNLDSVTAADTAVYHCVRGHSSLDRWGQGVLVTVSSASTKGPSVFPLAPSSRSTSESTAALGCLVKDYFPEPVTVSWNSGSLTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTQTYVCNVNHKPSNTKVDKRVEIKTCGGG"
+        },
+        {
+          "entity_id": "3",
+          "description": "D02-F2 antibody fragment light chain",
+          "auth_asym_ids": [
+            "L"
+          ],
+          "sequence": "DIVMTQSPLSLSVTPGQPASISCVSSQSLVHSNGNTYLAWYHQRPGQPPRRLIYEVSDRDSGAPDRFRGSGAGTDFTLKISRVEAEDVGVYYCGQGTHLPFTFGPGTKVDIKRTVAAPSVFIFPPSEDQVKSGTVSVVCLLNNFYPREASVKWKVDGALKTGNSQESVTEQDSKDNTYSLSSTLTLSSTEYQSHKVYACEVTHQGLSSPVTKSFNRGEC"
+        },
+        {
+          "entity_id": "4",
+          "description": "D02-E4 antibody fragment heavy chain",
+          "auth_asym_ids": [
+            "O"
+          ],
+          "sequence": "QVQLQESGPGLVKPSETLSLTCAVSGGSISSNYWWIWIRQPPGRGLEWIGNIGGSIDTTYYNPSLKSRVTISKDMSKNQFSLKLNSVTTADTAIYYCARHSRAAAGDSWGQGVVVTVSSASTKGPSVFPLAPSSRSTSESTAALGCLVKDYFPEPVTVSWNSGSLTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTQTYVCNVNHKPSNTKVDKRVEIKTCGGG"
+        },
+        {
+          "entity_id": "5",
+          "description": "D02-E4 antibody fragment light chain",
+          "auth_asym_ids": [
+            "P"
+          ],
+          "sequence": "DIQMTQSPSSLFASVGDRVTITCQASQPISDWLAWYQQKPGKAPKRLIYAASSLESGVPSRFSGSGSGTEFTLTISSLQPEDFATYYCQQHDSYPLTFGGGTKVEIKRTVAAPSVFIFPPSEDQVKSGTVSVVCLLNNFYPREASVKWKVDGALKTGNSQESVTEQDSKDNTYSLSSTLTLSSTEYQSHKVYACEVTHQGLSSPVTKSFNRGEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "1",
+          "description": "Invasin IpaD",
+          "auth_asym_ids": [
+            "D"
+          ],
+          "sequence": "MHHHHHHGLNDIFEAQKIEWHEGSGSNITTLTNSISTSSFSPNNTNGSSTETVNSDIKTTTSSHPVSSLTMLNDTLHNIRTTNQALKKELSQKTLTKTSLEEIALHSSQISMDVNKSAQLLDILSRNEYPINKDARELLHSAPKEAELDGDQMISHRELWAKIANSINDINEQYLKVYEHAVSSYTQMYQDFSAVLSSLAGWISPGGNDGNSVKLQVNSLKKALEELKEKYKDKPLYPANNTVSQEQANKWLTELGGTIGKVSQKNGGYVVSINMTPIDNMLKSLDNLGGNGEVVLDNAKYQAWNAGFSAEDETMKNNLQTLVQKYSNANSIFDNLVKVLSSTISSCTDTDKLFLHF"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    },
+    {
+      "pdb_id": "9ZRT",
+      "release_date": "2026-09-16T00:00:00Z",
+      "title": "Shigella flexneri type III secretion system (T3SS) protein IpaD bound to hemolysis blocking antibody fragment D13r-34",
+      "methods": [
+        "ELECTRON MICROSCOPY"
+      ],
+      "antibody_entities": [
+        {
+          "entity_id": "2",
+          "description": "D13r-34 antibody fragment heavy chain",
+          "auth_asym_ids": [
+            "H"
+          ],
+          "sequence": "EVQLAESGPGLVKPLETLSLTCAVSGDYIRNAHYWSWIRQVPGKGPEWMGGIDGRSSSTDYNPSLESRVTVSTDTSNNQLSLKLTSVTAADTAVYYCARDARTGVIFMPTNWFELWGLGVLVTVSSASTKGPSVFPLAPSSRSTSESTAALGCLVKDYFPEPVTVSWNSGSLTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTQTYVCNVNHKPSNTKVDKRVEIKTCGGG"
+        },
+        {
+          "entity_id": "3",
+          "description": "D13r-34 antibody fragment light chain",
+          "auth_asym_ids": [
+            "L"
+          ],
+          "sequence": "DIVMTQSPSSLSACVGDRVTITCRASQDIGAFLNWYQQKPGKAPKFLVLDRNRLEGGVPSRFSGSGSGTEFTLTISSLQPEDFATYYCQQHKNFPFTFGPGTKVEIKRTVAAPSVFIFPPSEDQVKSGTVSVVCLLNNFYPREASVKWKVDGALKTGNSQESVTEQDSKDNTYSLSSTLTLSSTEYQSHKVYACEVTHQGLSSPVTKSFNRGEC"
+        }
+      ],
+      "antigen_entities": [
+        {
+          "entity_id": "1",
+          "description": "Invasin IpaD",
+          "auth_asym_ids": [
+            "D"
+          ],
+          "sequence": "MHHHHHHGLNDIFEAQKIEWHEGSGSNITTLTNSISTSSFSPNNTNGSSTETVNSDIKTTTSSHPVSSLTMLNDTLHNIRTTNQALKKELSQKTLTKTSLEEIALHSSQISMDVNKSAQLLDILSRNEYPINKDARELLHSAPKEAELDGDQMISHRELWAKIANSINDINEQYLKVYEHAVSSYTQMYQDFSAVLSSLAGWISPGGNDGNSVKLQVNSLKKALEELKEKYKDKPLYPANNTVSQEQANKWLTELGGTIGKVSQKNGGYVVSINMTPIDNMLKSLDNLGGNGEVVLDNAKYQAWNAGFSAEDETMKNNLQTLVQKYSNANSIFDNLVKVLSSTISSCTDTDKLFLHF"
+        }
+      ],
+      "role_assignment_basis": "RCSB title and entity descriptions only; coordinates and contact labels not read"
+    }
+  ],
+  "excluded_metadata_candidates": [
+    {
+      "pdb_id": "28IY",
+      "title": "Crystal structure of the TPR domain of KLC1 in complex with the C-terminal peptide of JIP1 at 2.13 Angstrom resolution",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9N84",
+      "title": "Yeast TIM23 complex inhibited by stendomycin",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9T8C",
+      "title": "Cryo-EM structure of cariprazine-bound D3 dopamine receptor with mini-Go",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9U40",
+      "title": "Cryo-EM structure of peptide GPCR-Gq complex",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9U43",
+      "title": "Cryo-EM structure of D-peptide-GPCR-Gq complex",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9V6T",
+      "title": "Cryo-EM structure of the GLPG1205-bound GPR84 receptor",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9WPQ",
+      "title": "5-HT2AR bound to LSD in complex with mini-Gq and scFv16 obtained by cryo-electron microscopy (cryoEM)",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9WPX",
+      "title": "5-HT2AR bound to IHCH-1904 in complex with mini-Gq and scFv16 obtained by cryo-electron microscopy (cryoEM)",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9WQ5",
+      "title": "5-HT2AR bound to IHCH-6122 in complex with mini-Gq and scFv16 obtained by cryo-electron microscopy (cryoEM)",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9WQA",
+      "title": "5-HT2B receptor bound to IHCH-1906 in complex with an antibody obtained by cryo-electron microscopy (cryoEM)",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9WQB",
+      "title": "5-HT2B receptor bound to IHCH-6122 in complex with an antibody obtained by cryo-electron microscopy (cryoEM)",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9XH2",
+      "title": "Structure of the CX3CL1.44-US28-GqiN18-scFv16 in the E-state",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9XIX",
+      "title": "Structure of the CX3CL1.44-US28-GqiN18-scFv16 in the C-state",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9XIY",
+      "title": "Structure of the CX3CL1.44-US28-GqiN18-scFv16 in the T2C-state",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9XJ5",
+      "title": "Structure of the CX3CL1.44-US28-GqiN18-scFv16 in the C-state, full chemokine domain modeled",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9XJ7",
+      "title": "Structure of the CX3CL1.44-US28-GqiN18-scFv16 in the C'-state with AHD visible",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9XJP",
+      "title": "Structure of the CX3CL1.44-US28-GqiN18-scFv16 in the E-state, chemokine domain fully modeled",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9YCX",
+      "title": "Neurotensin Receptor 1 (NTSR1) bound to Octotensin in complex with Gi3 in the Non-Canonical Orientation",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    },
+    {
+      "pdb_id": "9YCY",
+      "title": "Neurotensin Receptor 1 (NTSR1) bound to Octotensin in complex with Gi3 in the Canonical Orientation",
+      "reason": "metadata does not establish a target antibody-antigen interface; likely false-positive term or fiducial/stabilizing scFv"
+    }
+  ],
+  "next_gates": [
+    "PDB ID absent from every project cohort",
+    "sequence similarity audit against all project sequences",
+    "structure/interface similarity audit after coordinates are admitted but before contact labels are opened",
+    "minimum unique antigen/antibody families and effective sample-size gate"
+  ],
+  "coordinates_read_for_selected_entries": false,
+  "contact_labels_read": false,
+  "thresholds_selected": false,
+  "claim_boundary": "candidate cohort only; not yet admitted OOD evidence and not guaranteed to survive decontamination"
+}

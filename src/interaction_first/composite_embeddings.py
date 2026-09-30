@@ -37,6 +37,7 @@ from __future__ import annotations
 import csv
 import dataclasses
 import hashlib
+import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -67,6 +68,9 @@ class RepresentationSource:
     root: Path
     dim: int
     parts_by_key: Mapping[str, tuple[str, ...]]
+    expected_model_name: str | None = None
+    expected_model_revision: str | None = None
+    provenance: Mapping[str, Any] | None = None
 
     def covers(self, key: str) -> bool:
         return key in self.parts_by_key
@@ -81,7 +85,7 @@ class RepresentationSource:
         return _concatenate_parts(self, key, length, device)
 
     def describe_entry(self) -> dict[str, Any]:
-        return {
+        entry = {
             "name": self.name,
             "kind": "stored_artifacts",
             "root": str(self.root),
@@ -89,6 +93,15 @@ class RepresentationSource:
             "presence_columns": PRESENCE_COLUMNS,
             "keys_covered": len(self.parts_by_key),
         }
+        # Omit absent keys so historical checkpoint summaries remain byte-for-byte
+        # comparable after adding strict identity checks for new generic sources.
+        if self.expected_model_name is not None:
+            entry["expected_model_name"] = self.expected_model_name
+        if self.expected_model_revision is not None:
+            entry["expected_model_revision"] = self.expected_model_revision
+        if self.provenance is not None:
+            entry["provenance"] = dict(self.provenance)
+        return entry
 
 
 class RandomProjectionSource:
@@ -168,6 +181,18 @@ def _concatenate_parts(
     pieces = []
     for part in parts:
         artifact = read_artifact(source.root, part, expected_dim=source.dim)
+        if source.expected_model_name is not None and artifact.get("model_name") != source.expected_model_name:
+            raise RepresentationError(
+                f"{source.name} artifact {part[:12]} model_name {artifact.get('model_name')!r} "
+                f"does not match {source.expected_model_name!r}"
+            )
+        if (source.expected_model_revision is not None
+                and artifact.get("model_revision") != source.expected_model_revision):
+            raise RepresentationError(
+                f"{source.name} artifact {part[:12]} revision "
+                f"{artifact.get('model_revision')!r} does not match "
+                f"{source.expected_model_revision!r}"
+            )
         chunks = [chunk.to(device=device, dtype=torch.float32) for chunk in artifact["chunks"]]
         starts = [int(value) for value in artifact["starts"]]
         pieces.append(
@@ -464,6 +489,85 @@ def build_sources(
         )
     return sources
 
+
+
+def build_generic_sources(manifest: Path, specifications: Sequence[Path]) -> list[RepresentationSource]:
+    """Build strictly-described representation sources without adding encoder-specific flags.
+
+    Each JSON specification is one immutable feature source. ``antibody_storage``
+    is either ``parts`` (VH and VL artifacts are encoded separately and
+    concatenated) or ``combined`` (one artifact keyed by VH+VL). Antigen
+    artifacts are always keyed by the antigen sequence. Coverage is a schema
+    property, never inferred from whichever files happen to exist on disk.
+    """
+    if not specifications:
+        return []
+    chains = manifest_chain_keys(manifest)
+    sources: list[RepresentationSource] = []
+    names: set[str] = set()
+    for raw_path in specifications:
+        path = Path(raw_path).expanduser().resolve()
+        raw = path.read_bytes()
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as error:
+            raise RepresentationError(f"invalid source specification {path}: {error}") from error
+        if payload.get("format_version") != "generic_representation_source_v1":
+            raise RepresentationError(f"unsupported generic source format in {path}")
+        allowed = {
+            "format_version", "name", "root", "dim", "sides", "antibody_storage",
+            "model_name", "model_revision", "evidence_role", "source_commit",
+            "model_sha256", "tokenizer_sha256", "structure_authority_sha256",
+        }
+        extra = set(payload) - allowed
+        if extra:
+            raise RepresentationError(f"unknown keys in {path}: {sorted(extra)}")
+        name = payload.get("name")
+        if not isinstance(name, str) or not name or name in names:
+            raise RepresentationError(f"generic source name is empty or duplicated: {name!r}")
+        names.add(name)
+        dim = payload.get("dim")
+        if isinstance(dim, bool) or not isinstance(dim, int) or dim <= 0:
+            raise RepresentationError(f"{name} dim must be a positive integer")
+        sides = payload.get("sides")
+        if not isinstance(sides, list) or not sides or set(sides) - {"antibody", "antigen"}:
+            raise RepresentationError(f"{name} sides must be a nonempty subset of antibody/antigen")
+        storage = payload.get("antibody_storage", "parts")
+        if storage not in {"parts", "combined"}:
+            raise RepresentationError(f"{name} antibody_storage must be parts or combined")
+        root = Path(payload.get("root", "")).expanduser()
+        if not root.is_absolute():
+            raise RepresentationError(f"{name} root must be absolute")
+        parts: dict[str, tuple[str, ...]] = {}
+        for entry in chains.values():
+            if "antibody" in sides:
+                parts[entry["antibody_key"]] = (
+                    entry["antibody_parts"] if storage == "parts"
+                    else (entry["antibody_key"],)
+                )
+            if "antigen" in sides:
+                parts[entry["antigen_key"]] = (entry["antigen_key"],)
+        provenance = {
+            "specification_path": str(path),
+            "specification_sha256": hashlib.sha256(raw).hexdigest(),
+            "source_commit": payload.get("source_commit"),
+            "model_sha256": payload.get("model_sha256"),
+            "tokenizer_sha256": payload.get("tokenizer_sha256"),
+            "structure_authority_sha256": payload.get("structure_authority_sha256"),
+            "evidence_role": payload.get("evidence_role"),
+            "sides": list(sides),
+            "antibody_storage": storage,
+        }
+        sources.append(RepresentationSource(
+            name=name,
+            root=root,
+            dim=dim,
+            parts_by_key=parts,
+            expected_model_name=payload.get("model_name"),
+            expected_model_revision=payload.get("model_revision"),
+            provenance=provenance,
+        ))
+    return sources
 
 def build_matched_random_control(
     manifest: Path, sources: Sequence[RepresentationSource], seed: int = 20260910

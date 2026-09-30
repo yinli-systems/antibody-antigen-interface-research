@@ -678,6 +678,15 @@ def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--igfold-root", type=Path, default=None)
     parser.add_argument("--igfold-dim", type=int, default=512)
     parser.add_argument(
+        "--generic-representation-source",
+        action="append",
+        type=Path,
+        default=[],
+        help="repeatable generic_representation_source_v1 JSON specification; "
+             "used for SaProt/ProSST layers and future admitted encoders without "
+             "mislabeling their artifacts as a historical named source",
+    )
+    parser.add_argument(
         "--random-projection-control",
         action="store_true",
         help="append fixed random projections of the base embedding instead of real "
@@ -720,7 +729,9 @@ def _wrap_with_representations(
     """
     roots = (args.antiberty_root, args.esm_if1_root, args.igfold_root,
              getattr(args, "proteinmpnn_root", None))
-    if all(root is None for root in roots) and not args.random_projection_control:
+    generic_specifications = tuple(getattr(args, "generic_representation_source", ()) or ())
+    if (all(root is None for root in roots) and not generic_specifications
+            and not args.random_projection_control):
         return embedding_store, base_dim, base_dim, None
     if args.representation_manifest is None:
         raise ValueError(
@@ -730,16 +741,17 @@ def _wrap_with_representations(
 
     from interaction_first.composite_embeddings import (
         CompositeEmbeddingStore,
+        build_generic_sources,
         build_matched_random_control,
         build_random_control,
         build_sources,
     )
 
     if args.random_projection_control:
-        if any(root is not None for root in roots):
+        if any(root is not None for root in roots) or generic_specifications:
             raise ValueError(
-                "--random-projection-control is the width-matched control for the "
-                "encoder arm and cannot be combined with it"
+                "--random-projection-control cannot be combined with real named or "
+                "generic representation sources"
             )
         manifest_path = args.representation_manifest.expanduser().resolve()
         mirror = getattr(args, "random_control_mirrors", None)
@@ -778,8 +790,9 @@ def _wrap_with_representations(
                 )
         return store, widths["antibody"].pop(), widths["antigen"].pop(), store.describe()
 
+    manifest_path = args.representation_manifest.expanduser().resolve()
     sources = build_sources(
-        args.representation_manifest.expanduser().resolve(),
+        manifest_path,
         antiberty_root=(
             args.antiberty_root.expanduser().resolve() if args.antiberty_root else None
         ),
@@ -798,6 +811,9 @@ def _wrap_with_representations(
         ),
         proteinmpnn_dim=getattr(args, "proteinmpnn_dim", 128),
     )
+    sources.extend(build_generic_sources(manifest_path, generic_specifications))
+    if len({source.name for source in sources}) != len(sources):
+        raise ValueError("representation source names must be unique across named and generic inputs")
     store = CompositeEmbeddingStore(
         embedding_store, sources,
         shuffle_seed=args.shuffle_representation_residues,
@@ -1356,6 +1372,9 @@ def command_train(args: argparse.Namespace) -> None:
         previous_config = checkpoint["config"]
         resume_keys = (
             "input_dim",
+            "antibody_input_dim",
+            "antigen_input_dim",
+            "representations",
             "d_model",
             "pair_dim",
             "num_heads",
@@ -1548,9 +1567,19 @@ def command_evaluate(args: argparse.Namespace) -> None:
         raise ValueError("Checkpoint and evaluation split manifests differ")
     # After the checkpoint, because the base width lives in its config: evaluate
     # has no --input-dim, and a finished run records it nowhere else.
-    embedding_store, _, _, _ = _wrap_with_representations(
-        embedding_store, args, selected, int(config["input_dim"])
+    embedding_store, observed_antibody_dim, observed_antigen_dim, observed_representations = (
+        _wrap_with_representations(embedding_store, args, selected, int(config["input_dim"]))
     )
+    if observed_antibody_dim != int(config.get("antibody_input_dim", config["input_dim"])):
+        raise ValueError("evaluation antibody representation width differs from the checkpoint")
+    if observed_antigen_dim != int(config.get("antigen_input_dim", config["input_dim"])):
+        raise ValueError("evaluation antigen representation width differs from the checkpoint")
+    expected_representations = config.get("representations")
+    if expected_representations != observed_representations:
+        raise ValueError(
+            "evaluation representation sources/provenance differ from the checkpoint; "
+            "same-width feature substitution is forbidden"
+        )
     # Checkpoints written before the sides could differ record only input_dim.
     model = PartnerSpecificInteractionModel(
         antigen_input_dim=int(config.get("antigen_input_dim", config["input_dim"])),
