@@ -1,0 +1,11 @@
+{
+  "implementation_commit": "6f0962403b7d94bdbf37c38c155da8d97293f941",
+  "base_original_rescue_commit": "f1fe5affe119230635b862b0985f2ee92fd781fc",
+  "rescore_measured_source_commit": "3645b588c96ee89ca8d5fa5c188bdafafb9b5c10",
+  "source_archive_sha256": "4288e4fd44b6f18bd4c6e9afa8e0f65d09439b936ea51c270845fa84d1b2b35d",
+  "evidence_export_sha256": "4af34974027f6564828639517dafd9f18e5568e2e9345dae0092f0f445d2e76a",
+  "initial_failure_preserved": true,
+  "latest_contract_tests": 48,
+  "live_sources_modified": false,
+  "main_modified": false
+}

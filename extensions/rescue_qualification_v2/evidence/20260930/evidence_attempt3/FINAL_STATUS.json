@@ -1,0 +1,79 @@
+{
+  "at_utc": "2026-09-30T09:54:14.028776+00:00",
+  "sacct": "1640503_0|struct-plm-train|COMPLETED|0:0|02:36:35\n1640503_1|struct-plm-train|COMPLETED|0:0|02:36:57\n1640503_2|struct-plm-train|COMPLETED|0:0|02:37:13\n1640503_3|struct-plm-train|COMPLETED|0:0|02:39:56\n1640503_4|struct-plm-train|COMPLETED|0:0|02:34:12\n1640503_5|struct-plm-train|COMPLETED|0:0|02:33:50\n1640503_6|struct-plm-train|COMPLETED|0:0|02:40:34\n1640503_7|struct-plm-train|COMPLETED|0:0|02:40:01\n1640503_8|struct-plm-train|COMPLETED|0:0|02:32:50\n1640503_9|struct-plm-train|COMPLETED|0:0|02:35:56\n1640503_10|struct-plm-train|COMPLETED|0:0|02:36:32\n1640503_11|struct-plm-train|COMPLETED|0:0|02:38:28\n1640503_12|struct-plm-train|RUNNING|0:0|02:00:22\n1640503_13|struct-plm-train|RUNNING|0:0|01:56:51\n1640503_14|struct-plm-train|RUNNING|0:0|01:55:51\n1640503_15|struct-plm-train|RUNNING|0:0|01:55:21\n1640503_16|struct-plm-train|RUNNING|0:0|01:55:21\n1640503_17|struct-plm-train|RUNNING|0:0|01:51:21\n1640503_[18-35%6]|struct-plm-train|PENDING|0:0|00:00:00\n1640514|struct-plm-analyze|PENDING|0:0|00:00:00\n1641627|ab-layer-schema-fix|PENDING|0:0|00:00:00\n1641712_1|ab-af3r-397193cd|COMPLETED|0:0|00:02:40\n1641712_2|ab-af3r-397193cd|COMPLETED|0:0|00:03:00\n1641712_3|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_4|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_5|ab-af3r-397193cd|COMPLETED|0:0|00:02:20\n1641712_6|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_7|ab-af3r-397193cd|COMPLETED|0:0|00:02:19\n1641712_8|ab-af3r-397193cd|COMPLETED|0:0|00:02:19\n1641712_9|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_10|ab-af3r-397193cd|COMPLETED|0:0|00:02:21\n1641712_11|ab-af3r-397193cd|COMPLETED|0:0|00:02:19\n1641712_12|ab-af3r-397193cd|COMPLETED|0:0|00:02:24\n1641712_13|ab-af3r-397193cd|COMPLETED|0:0|00:02:21\n1641712_14|ab-af3r-397193cd|COMPLETED|0:0|00:02:20\n1641712_15|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_16|ab-af3r-397193cd|COMPLETED|0:0|00:02:21\n1641712_17|ab-af3r-397193cd|COMPLETED|0:0|00:02:20\n1641712_18|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_19|ab-af3r-397193cd|COMPLETED|0:0|00:02:20\n1641712_20|ab-af3r-397193cd|COMPLETED|0:0|00:02:20\n1641712_21|ab-af3r-397193cd|COMPLETED|0:0|00:02:24\n1641712_22|ab-af3r-397193cd|COMPLETED|0:0|00:02:21\n1641712_23|ab-af3r-397193cd|COMPLETED|0:0|00:02:21\n1641712_24|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_25|ab-af3r-397193cd|COMPLETED|0:0|00:02:21\n1641712_26|ab-af3r-397193cd|COMPLETED|0:0|00:03:02\n1641712_27|ab-af3r-397193cd|COMPLETED|0:0|00:02:26\n1641712_28|ab-af3r-397193cd|COMPLETED|0:0|00:02:34\n1641712_29|ab-af3r-397193cd|COMPLETED|0:0|00:03:49\n1641712_30|ab-af3r-397193cd|COMPLETED|0:0|00:03:48\n1641712_31|ab-af3r-397193cd|COMPLETED|0:0|00:03:49\n1641712_32|ab-af3r-397193cd|COMPLETED|0:0|00:03:59\n1641712_33|ab-af3r-397193cd|COMPLETED|0:0|00:03:50\n1641712_34|ab-af3r-397193cd|COMPLETED|0:0|00:03:59\n1641712_35|ab-af3r-397193cd|COMPLETED|0:0|00:04:01\n1641712_36|ab-af3r-397193cd|COMPLETED|0:0|00:06:49\n1641712_37|ab-af3r-397193cd|COMPLETED|0:0|00:06:25\n1641712_38|ab-af3r-397193cd|COMPLETED|0:0|00:06:24\n1641712_39|ab-af3r-397193cd|COMPLETED|0:0|00:06:26\n1641809_0|ab-rescue-v1|COMPLETED|0:0|00:05:49\n1641809_1|ab-rescue-v1|COMPLETED|0:0|00:05:23\n1641809_2|ab-rescue-v1|RUNNING|0:0|00:05:12\n1641841|ab-af3-strict-a5729c4|CANCELLED by 1256|0:0|00:00:00\n",
+  "squeue": "1641627|ab-layer-schema-fix|PENDING\n1640503_18|struct-plm-train|PENDING\n1640503_19|struct-plm-train|PENDING\n1640503_20|struct-plm-train|PENDING\n1640503_21|struct-plm-train|PENDING\n1640503_22|struct-plm-train|PENDING\n1640503_23|struct-plm-train|PENDING\n1640503_24|struct-plm-train|PENDING\n1640503_25|struct-plm-train|PENDING\n1640503_26|struct-plm-train|PENDING\n1640503_27|struct-plm-train|PENDING\n1640503_28|struct-plm-train|PENDING\n1640503_29|struct-plm-train|PENDING\n1640503_30|struct-plm-train|PENDING\n1640503_31|struct-plm-train|PENDING\n1640503_32|struct-plm-train|PENDING\n1640503_33|struct-plm-train|PENDING\n1640503_34|struct-plm-train|PENDING\n1640503_35|struct-plm-train|PENDING\n1640514|struct-plm-analyze|PENDING\n1641809_2|ab-rescue-v1|RUNNING\n1640503_17|struct-plm-train|RUNNING\n1640503_15|struct-plm-train|RUNNING\n1640503_16|struct-plm-train|RUNNING\n1640503_14|struct-plm-train|RUNNING\n1640503_13|struct-plm-train|RUNNING\n1640503_12|struct-plm-train|RUNNING\n",
+  "af3_complete_task_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "layer_sweep_complete_task_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "rescue_model_readiness": {
+    "101": {
+      "checkpoint": true,
+      "terminal_history": true
+    },
+    "202": {
+      "checkpoint": true,
+      "terminal_history": true
+    },
+    "303": {
+      "checkpoint": true,
+      "terminal_history": false
+    }
+  },
+  "new_gpu_jobs_submitted": 0,
+  "existing_jobs_modified": false,
+  "qualified_trained_rescue_evaluation_completed": false,
+  "rescore_complete": true
+}

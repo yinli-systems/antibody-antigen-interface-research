@@ -1,0 +1,126 @@
+{
+  "exported_utc": "2026-09-30T09:57:46.518065+00:00",
+  "files": [
+    {
+      "path": "evidence/REAL_PROBE.log",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence/REAL_PROBE.log",
+      "sha256": "6d5403b668c37e88f70da613583fef7058aea035b05b8f7f6eed2b7cb42e2915",
+      "bytes": 797
+    },
+    {
+      "path": "evidence/UNIT_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence/UNIT_TESTS.txt",
+      "sha256": "3a61739490bf86d77dbb046f6d12baf4eea687fefd1e9385af3fd674cee3066f",
+      "bytes": 1938
+    },
+    {
+      "path": "evidence_attempt2/REAL_PROBE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/REAL_PROBE.json",
+      "sha256": "de6351237ceb6a5e1263ae52a0dbbb6ceba575b420f30e4d05778322b4dcee2a",
+      "bytes": 5279
+    },
+    {
+      "path": "evidence_attempt2/REAL_PROBE.log",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/REAL_PROBE.log",
+      "sha256": "1503183b76e34229101f369d5c51d70d86063fdd267867a97b366c3e8c572ebb",
+      "bytes": 5279
+    },
+    {
+      "path": "evidence_attempt2/RESCORE.log",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/RESCORE.log",
+      "sha256": "c750c0a22c565ad92acf428855cac440ac2b95defeb9eedf063544ab15299b40",
+      "bytes": 2971
+    },
+    {
+      "path": "evidence_attempt2/RESCORE_FREEZE.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/RESCORE_FREEZE.txt",
+      "sha256": "692d3c0144b2677c703871041bedb9dc801acccc5f378e3b50674a22cf705147",
+      "bytes": 72
+    },
+    {
+      "path": "evidence_attempt2/RESCORE_PLAN.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/RESCORE_PLAN.json",
+      "sha256": "34e638f4659c1bca7530f96cc850ca0cf5d039dbfac0992c0ae479ffcf5a178d",
+      "bytes": 50104
+    },
+    {
+      "path": "evidence_attempt2/RESCORE_RESULT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/RESCORE_RESULT.json",
+      "sha256": "f70c4c4c91af225b2b26e0751dfcdbddbef0cd9ea28cb8ac5b674db5e304c19b",
+      "bytes": 380049
+    },
+    {
+      "path": "evidence_attempt2/UNIT_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt2/UNIT_TESTS.txt",
+      "sha256": "f158cc1b6337417cdf191f9262b4148289b8fbf3434da0b60fa5c5fc64ae7d50",
+      "bytes": 143
+    },
+    {
+      "path": "evidence_attempt3/CLOSING_STATUS.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/CLOSING_STATUS.json",
+      "sha256": "1e05a921657a60b52c1ff6501edd32adc006752ae0b8c7966903c3ffdf93f140",
+      "bytes": 4770
+    },
+    {
+      "path": "evidence_attempt3/EVALUATION_PLAN.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/EVALUATION_PLAN.json",
+      "sha256": "9b84a97c3f68dbc0f6ba167b2ee573ee8a6e6f5c7663794b74b9af1a42ba907a",
+      "bytes": 141309
+    },
+    {
+      "path": "evidence_attempt3/EVALUATION_PREPARE.log",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/EVALUATION_PREPARE.log",
+      "sha256": "32b773a7da15806296346e3e28b514f94accb0665d4a13e945f3355386be976c",
+      "bytes": 84
+    },
+    {
+      "path": "evidence_attempt3/EVAL_SEED101_SUBMISSION_INTENT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/EVAL_SEED101_SUBMISSION_INTENT.json",
+      "sha256": "330dd9ca36b4c70a5dbfbdc2328ac5b0280383299c5d6960a3e6a8f637b7c730",
+      "bytes": 1964
+    },
+    {
+      "path": "evidence_attempt3/EVAL_SEED101_SUBMITTED.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/EVAL_SEED101_SUBMITTED.json",
+      "sha256": "a0da836ca675d01b35a243f0b911f0e24132fe93cc38bf0908989e8a17dedbf1",
+      "bytes": 2771
+    },
+    {
+      "path": "evidence_attempt3/FINAL_STATUS.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/FINAL_STATUS.json",
+      "sha256": "9f5dd353d576441cb12001d163ead89ff3ba87af157482ef4148fb0c346bab74",
+      "bytes": 5253
+    },
+    {
+      "path": "evidence_attempt3/UNIT_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/UNIT_TESTS.txt",
+      "sha256": "40fa83fc0e875cb311e645bdfb4cce37cdd72b5cd450770b6b5df81c0d891259",
+      "bytes": 3104
+    },
+    {
+      "path": "evidence_attempt3/evaluate_seed101.sbatch",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/evaluate_seed101.sbatch",
+      "sha256": "1ca66721a6d3642b96e93f200e93bcc472eabf9a5925e72990beb12a6c582a24",
+      "bytes": 727
+    },
+    {
+      "path": "original_training/seed_101_history.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/learned_rescue_v1/training/seed_101/history.json",
+      "sha256": "8f987c8f49d4d1d81c742c2cd817a7282827866cb72e033438a6ad5ab383c9f7",
+      "bytes": 1716
+    },
+    {
+      "path": "original_training/seed_202_history.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/learned_rescue_v1/training/seed_202/history.json",
+      "sha256": "79815be00f1de7b2e4d57d2f270579b8a63b4541521acccb927b270577dda828",
+      "bytes": 1713
+    },
+    {
+      "path": "original_training/seed_303_history.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/learned_rescue_v1/training/seed_303/history.json",
+      "sha256": "44d3126707d904ba81fbf4fd600b1f6f7c6bf6e1df30d14356aaee367801967a",
+      "bytes": 1717
+    }
+  ],
+  "source_code_commit": "6f0962403b7d94bdbf37c38c155da8d97293f941"
+}
