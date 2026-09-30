@@ -125,18 +125,21 @@ AsEP is retained to prevent internal improvements from being mistaken for benchm
 
 See [`asep_benchmark_v1/BENCHMARK.md`](asep_benchmark_v1/BENCHMARK.md).
 
-## 7. Active structural-PLM programme (historical snapshot below)
+## 7. Structural-PLM programme — final development decision
 
-For the latest timestamped observation, use [operations/README.md](operations/README.md). The table below preserves the first consolidation snapshot.
+The formal SaProt/ProSST sweep is now complete: **36/36 training tasks completed with zero training failures**, covering five real layers plus one contemporaneous width-matched random-feature control for each family, each at three seeds on the same 217-complex / 68-component development authority.
 
-The frozen SaProt/ProSST formal sweep contains 36 tasks. The current committed snapshot contains six completed SaProt tasks:
+The historical analyzer `1640514` failed only because it expected the obsolete `partner_retrieval.mrr` schema field. The pre-registered schema-repair job `1641627` completed `0:0` without retraining and produced the authoritative corrected analysis.
 
-| Layer | Seed APs | 3-seed mean AP |
-|---|---|---:|
-| SaProt 0 | 0.017988 / 0.021676 / 0.022082 | **0.020582** |
-| SaProt 8 | 0.020780 / 0.020481 / 0.021858 | **0.021040** |
+| Family / selected development layer | Mean pair macro AP | Matched random AP | Equal-component/equal-seed Δ | 95% crossed seed×component CI |
+|---|---:|---:|---:|---:|
+| ProSST layer 12 | 0.022176 | 0.022357 | **−0.000148** | **[−0.003767,+0.002989]** |
+| SaProt layer 24 | 0.024452 | 0.022075 | **+0.002789** | **[−0.001843,+0.008483]** |
+| SaProt layer 33, raw highest | 0.024989 | 0.022075 | +0.001785 | [−0.002194,+0.005860] |
 
-These are **intermediate development results**, not a layer selection. Exact-width/coverage random controls and the remaining SaProt/ProSST layers must finish before promotion. See [`CURRENT_STATUS_20260930.md`](CURRENT_STATUS_20260930.md).
+No tested real structural-PLM layer reliably exceeds its matched random-width control under the registered paired component/seed analysis. The prospectively stated promotion decision is therefore **NO-PROMOTION_STRUCTURAL_PLM_FOR_STRICT_PARTNER_RETRIEVAL**. Positive SaProt point estimates are retained as suggestive development evidence, not promoted features. This does not establish that structural PLMs are useless; it is specific to this architecture, cohort and endpoint.
+
+Full raw corrected analysis, original failure log, repair authority, exact reproduction command and decision receipt are pinned at [`kevin/structural-plm-final-20260930`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/kevin/structural-plm-final-20260930/extensions/frontier_multimodel_v1).
 
 ## 8. Negative and failed results remain first-class evidence
 
