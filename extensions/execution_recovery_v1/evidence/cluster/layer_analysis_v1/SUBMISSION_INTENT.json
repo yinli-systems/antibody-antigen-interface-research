@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--no-requeue",
+    "--job-name=ab-layer-schema-fix",
+    "--partition=gpu_4090",
+    "--nodes=1",
+    "--ntasks=1",
+    "--gres=gpu:1",
+    "--cpus-per-task=6",
+    "--time=02:00:00",
+    "--dependency=afterok:1640503,afterany:1640514",
+    "--chdir=/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1",
+    "--output=/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/%j.out",
+    "--error=/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/%j.err",
+    "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/analysis.sbatch"
+  ],
+  "authority_sha256": "146222211e5a88d789ba61174103db3a88e34e6ef944978295d94a149d1ed505",
+  "script_sha256": "287954501b42c8eb924ab96c323a33caebb1a05f9746e191299bd1d118a574e2",
+  "state": "INTENT"
+}

@@ -126,3 +126,7 @@ The consolidated main intentionally preserves, among others:
 For exhaustive discovery, use the [clickable branch evidence directory](ALL_BRANCHES.md), [`BRANCH_EVIDENCE_INDEX.json`](BRANCH_EVIDENCE_INDEX.json), and the [complete tracked-tree manifest](../archive/FULL_SNAPSHOT_MANIFEST_20260930.json).
 
 All paper-level interpretation must also follow [CLAIM_BOUNDARIES.md](../docs/CLAIM_BOUNDARIES.md). The first consolidation README used overly general “necessary” wording; it is superseded by scoped empirical statements. Historical raw reports remain unchanged.
+
+## 9. Execution repair and subsequent operational snapshots
+
+The [engineered recovery](../extensions/execution_recovery_v1/README.md) repairs AF3 staging/runtime and the frozen analyzer receipt schema without modifying existing experiments. See [current timestamped operations](operations/README.md). These are engineering and scheduling outcomes, not additional model-performance claims.

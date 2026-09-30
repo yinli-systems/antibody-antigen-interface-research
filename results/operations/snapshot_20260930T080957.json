@@ -1,0 +1,219 @@
+{
+  "accounting": "1640503_0|struct-plm-train|COMPLETED|0:0|02:36:35\n1640503_1|struct-plm-train|COMPLETED|0:0|02:36:57\n1640503_2|struct-plm-train|COMPLETED|0:0|02:37:13\n1640503_3|struct-plm-train|COMPLETED|0:0|02:39:56\n1640503_4|struct-plm-train|COMPLETED|0:0|02:34:12\n1640503_5|struct-plm-train|COMPLETED|0:0|02:33:50\n1640503_6|struct-plm-train|COMPLETED|0:0|02:40:34\n1640503_7|struct-plm-train|COMPLETED|0:0|02:40:01\n1640503_8|struct-plm-train|COMPLETED|0:0|02:32:50\n1640503_9|struct-plm-train|COMPLETED|0:0|02:35:56\n1640503_10|struct-plm-train|COMPLETED|0:0|02:36:32\n1640503_11|struct-plm-train|COMPLETED|0:0|02:38:28\n1640503_12|struct-plm-train|RUNNING|0:0|00:16:05\n1640503_13|struct-plm-train|RUNNING|0:0|00:12:34\n1640503_14|struct-plm-train|RUNNING|0:0|00:11:34\n1640503_15|struct-plm-train|RUNNING|0:0|00:11:04\n1640503_16|struct-plm-train|RUNNING|0:0|00:11:04\n1640503_17|struct-plm-train|RUNNING|0:0|00:07:04\n1640503_[18-35%6]|struct-plm-train|PENDING|0:0|00:00:00\n1640514|struct-plm-analyze|PENDING|0:0|00:00:00\n1640914_0|sabdab2-sdh-af3|FAILED|2:0|00:00:01\n1641607_[0%4]|ab-af3r-6db2ca82|PENDING|0:0|00:00:00\n1641627|ab-layer-schema-fix|PENDING|0:0|00:00:00\n",
+  "af3_recovery": {
+    "complete_task_receipts": 0,
+    "job_id": "1641607",
+    "plan_sha256": "6db2ca822003647080561af7124795d855117a920fd634ce0392d8e995539df3",
+    "reason": "Priority",
+    "state": "PENDING",
+    "submitted_task_ids": [
+      0
+    ],
+    "unsubmitted_task_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ]
+  },
+  "checks": {
+    "completed_checkpoint_and_receipt_preflight_count": 12,
+    "original_training_source_hashes_unchanged": true,
+    "synthetic_full_pipeline_tests": 1,
+    "synthetic_tests_are_scientific_results": false,
+    "unit_tests": 49
+  },
+  "completed": [
+    {
+      "arm": "saprot_layer_00",
+      "best_pair_ap": 0.017987586488391646,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/COMPLETE.json",
+      "last_pair_ap": 0.015838758048241218,
+      "seed": 1,
+      "sha256": "7bde8e56ba9c19f60042dbfe193a1b5d21397553e53cb7481e94a40b443e079a",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 0
+    },
+    {
+      "arm": "saprot_layer_00",
+      "best_pair_ap": 0.021676013546326405,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/COMPLETE.json",
+      "last_pair_ap": 0.01887444848263688,
+      "seed": 2,
+      "sha256": "871b8b1f6a258d664b43dfe8077e6bc174fd07ff996dc6bc1f6a04a584a8841e",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 1
+    },
+    {
+      "arm": "saprot_layer_00",
+      "best_pair_ap": 0.02208172702986689,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/COMPLETE.json",
+      "last_pair_ap": 0.01846897965097707,
+      "seed": 3,
+      "sha256": "1c10c538856d887648f135dcb546aa3c5ae99e26d7b55e0fbfd2dbf352c6e37e",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 2
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best_pair_ap": 0.020779976587368174,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/COMPLETE.json",
+      "last_pair_ap": 0.018392170426271177,
+      "seed": 1,
+      "sha256": "0a8bd917b9eca42f8599874afc15d1b623ef0f1c93d58f42589e9d7955378ad8",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 3
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best_pair_ap": 0.020481103124502915,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/COMPLETE.json",
+      "last_pair_ap": 0.018312717798222574,
+      "seed": 2,
+      "sha256": "88e85ea549870e4498ff063b4431aa8ee436db874413468ddb66052828e01082",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 4
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best_pair_ap": 0.021858266032348632,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/COMPLETE.json",
+      "last_pair_ap": 0.01877035582776343,
+      "seed": 3,
+      "sha256": "f1bfabfce1dcb4b25c342599a8d9ebd81bf8dbb4e51e1cf2a7d66aac90a367b7",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 5
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best_pair_ap": 0.02285507060039928,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/COMPLETE.json",
+      "last_pair_ap": 0.020608188818553523,
+      "seed": 1,
+      "sha256": "e2795e6a5fe062ce713032b379118e8956a45c13ee93e6978438aec34302d546",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 6
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best_pair_ap": 0.023087032306693317,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/COMPLETE.json",
+      "last_pair_ap": 0.01979845283095602,
+      "seed": 2,
+      "sha256": "fa0f79b96cd39caeaed31c55e2e9978c3125fa6390a9630184205bf6095c01fb",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 7
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best_pair_ap": 0.02334987478547089,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/COMPLETE.json",
+      "last_pair_ap": 0.01986860123900172,
+      "seed": 3,
+      "sha256": "6ca5715a56666a934df6aefd41e487b0449636653eb54e45d74605aa26350e45",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 8
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best_pair_ap": 0.022856068325896928,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/COMPLETE.json",
+      "last_pair_ap": 0.019488197875194624,
+      "seed": 1,
+      "sha256": "ca71a96e76ce9a424950f3982b34a77564c1c44f9802f66c1d71a3d2a1c24f0b",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 9
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best_pair_ap": 0.025875527105945213,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/COMPLETE.json",
+      "last_pair_ap": 0.02101787322951646,
+      "seed": 2,
+      "sha256": "446bea326999eca20c313a3f443bb231de107c050d2cfcb89c6446ce008eec23",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 10
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best_pair_ap": 0.024624226201108032,
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_11/COMPLETE.json",
+      "last_pair_ap": 0.021637619713192238,
+      "seed": 3,
+      "sha256": "950ab2f0e59924d53cf251a4707b06680d6f5e9998b1add740e65d4e1beca0ca",
+      "status": "COMPLETE_DEVELOPMENT_TRAINING",
+      "task_id": 11
+    }
+  ],
+  "failures": [],
+  "observed_at_utc": "2026-09-30T08:09:57.023969+00:00",
+  "queue": "1641607_[0%4]|ab-af3r-6db2ca82|PENDING|0:00|(Priority)\n1641627|ab-layer-schema-fix|PENDING|0:00|(Dependency)\n1640503_[18-35%6]|struct-plm-train|PENDING|0:00|(JobArrayTaskLimit)\n1640514|struct-plm-analyze|PENDING|0:00|(Dependency)\n1640503_17|struct-plm-train|RUNNING|7:04|wqd10naf13g1\n1640503_15|struct-plm-train|RUNNING|11:04|wqd10naf05g2\n1640503_16|struct-plm-train|RUNNING|11:04|wqd10naf06g3\n1640503_14|struct-plm-train|RUNNING|11:34|wqd10nae09g3\n1640503_13|struct-plm-train|RUNNING|12:34|wqd10naf06g3\n1640503_12|struct-plm-train|RUNNING|16:05|wqd10naf05g8\n",
+  "reparank_sequence": {
+    "checkpoint_training_overlap_audited": false,
+    "epitope_macro_AP": 0.20203910628196645,
+    "paratope_macro_AP": 0.5577073439412932,
+    "pooled_pair_metrics": {
+      "auroc": 0.7860643617166425,
+      "average_precision": 0.008738584064940456,
+      "pair_count": 9638880,
+      "positive_count": 9036
+    },
+    "primary_equal_component_analysis": {
+      "bootstrap_repeats": 10000,
+      "complex_count": 217,
+      "complex_weighted_estimate": 0.03780779120862989,
+      "component_bootstrap_ci95": [
+        0.02633102266268606,
+        0.06218666145165621
+      ],
+      "component_count": 68,
+      "estimand": "equal_authority_component_mean_per_complex_AP",
+      "estimate": 0.04322164360822419
+    },
+    "primary_macro_mean_per_complex_AP": 0.03780779120862989,
+    "raw_pair_prediction_file_count": 217
+  },
+  "schema_analysis": {
+    "authority_sha256": "146222211e5a88d789ba61174103db3a88e34e6ef944978295d94a149d1ed505",
+    "dependency": "afterok:1640503,afterany:1640514",
+    "job_id": "1641627",
+    "reason": "Dependency",
+    "state": "PENDING"
+  },
+  "scope": "live read-only snapshot; two earlier recovery submissions separately recorded; original jobs/data/sources not modified"
+}

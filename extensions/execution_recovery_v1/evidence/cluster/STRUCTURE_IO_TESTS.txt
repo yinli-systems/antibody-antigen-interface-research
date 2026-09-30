@@ -1,0 +1,10 @@
+test_cif_and_pdb_roundtrip (__main__.StructuralIO) ... ok
+test_foreign_chain_rejected (__main__.StructuralIO) ... ok
+test_missing_atom_rejected (__main__.StructuralIO) ... ok
+test_pdb_output_never_overwritten (__main__.StructuralIO) ... ok
+test_sequence_mismatch_rejected (__main__.StructuralIO) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.669s
+
+OK

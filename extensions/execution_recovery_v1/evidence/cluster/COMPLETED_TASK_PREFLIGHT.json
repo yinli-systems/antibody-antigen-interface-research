@@ -1,0 +1,490 @@
+{
+  "at_utc": "2026-09-30T07:59:45Z",
+  "checked_input_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/COMPLETE.json": "7bde8e56ba9c19f60042dbfe193a1b5d21397553e53cb7481e94a40b443e079a",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/validation_best/evaluation.json": "87383e2d202b6478eac3433ab31adf895d1efba4459e03f8143b7cada2cabc64",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/validation_last/evaluation.json": "1fb4343a04eece6ee5d48fd4aac1462de73ef2b6f9c1936ceaae256c168bfb51",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/COMPLETE.json": "871b8b1f6a258d664b43dfe8077e6bc174fd07ff996dc6bc1f6a04a584a8841e",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/validation_best/evaluation.json": "6fdd8c0daad6730824a7b8691b88af67d2819cc91b5a1c707119913d086d1f37",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/validation_last/evaluation.json": "1c8289b0358aa75d8815027ce8f048846f3fd50a7b45f832c7e2afee2968c290",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/COMPLETE.json": "1c10c538856d887648f135dcb546aa3c5ae99e26d7b55e0fbfd2dbf352c6e37e",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/validation_best/evaluation.json": "9b0642fee4788695c3c64f5c54fb375e09a7914f34343c0220ec0d5941f5c866",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/validation_last/evaluation.json": "5d4edf9bde6728c36ffb89abbefbe3306a5dc36ec3d0f8f6583defea7160928d",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/COMPLETE.json": "0a8bd917b9eca42f8599874afc15d1b623ef0f1c93d58f42589e9d7955378ad8",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/validation_best/evaluation.json": "1d8bb41a4339d8dc823fd585f06414f844e81c37e0c36110878770dff2f9225e",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/validation_last/evaluation.json": "d5444989272c5c53d1dbe06d0d7fdeabc5c2fe5bfc2786d54c1f18a4dbbc05a8",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/COMPLETE.json": "88e85ea549870e4498ff063b4431aa8ee436db874413468ddb66052828e01082",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/validation_best/evaluation.json": "9118a66a4ee9a2e24fc3877bd92dbca1ab7d170a1bc97dc6f38935b0c6840504",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/validation_last/evaluation.json": "631d9586326c626b30b98d198b6ffe6f713428f10e73553850cfc3ea3cbfc4b4",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/COMPLETE.json": "f1bfabfce1dcb4b25c342599a8d9ebd81bf8dbb4e51e1cf2a7d66aac90a367b7",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/validation_best/evaluation.json": "66ab4cf189f6ccdc6bf379d779d5a7409c0dabb0b66d92b48040f9ce5afe6a03",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/validation_last/evaluation.json": "7686fdd5a387840dcc409604aee5414a2824f6838cfe41dbdea08950c2f3a7ac",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/COMPLETE.json": "e2795e6a5fe062ce713032b379118e8956a45c13ee93e6978438aec34302d546",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/validation_best/evaluation.json": "d73d504097f3413a41a4fc0ab275d58acd2a12b8fb27d24f6a9ded6ce19a5338",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/validation_last/evaluation.json": "5d3220a645d8b138e982de9c5b878da3d1c28911c5ca9485f5872bfdf7054be5",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/COMPLETE.json": "fa0f79b96cd39caeaed31c55e2e9978c3125fa6390a9630184205bf6095c01fb",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/validation_best/evaluation.json": "fffabeed92a50f551cbee007561ea5f13eb7736cbadccb20f688b1a78db30174",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/validation_last/evaluation.json": "c5a02ab6d81e87dd295d02ae3df988a09770815aacb10137d323af538b03e040",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/COMPLETE.json": "6ca5715a56666a934df6aefd41e487b0449636653eb54e45d74605aa26350e45",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/validation_best/evaluation.json": "b34b41f7442e69ae6bdf3b79258ceed6a44c35aebbf80f7b5b55dbb742fcacc6",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/validation_last/evaluation.json": "5da084dca8e0019c436dc68924263ac2ebd5571e7b03d975ff792d51dd102d21",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/COMPLETE.json": "ca71a96e76ce9a424950f3982b34a77564c1c44f9802f66c1d71a3d2a1c24f0b",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/validation_best/evaluation.json": "b09f9bb0e3e7fb54d8f903d628ca7a4c044f7c933016b08f7502b20586f82f4b",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/validation_last/evaluation.json": "0aa83e2ecdd1ff8c4849e850a25d12b8bfe5aa1b112e9859910ffc70c2eb1159",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/COMPLETE.json": "446bea326999eca20c313a3f443bb231de107c050d2cfcb89c6446ce008eec23",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/validation_best/evaluation.json": "cf8782de5b68195b519a261e06779c0a9b9e81c322a7330a45b5d28911eb6930",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/validation_last/evaluation.json": "b780a1a4a7e7db764d8b8bbe52fbb65b4c6c1fe4704d3962f7dc4069ec6ed418"
+  },
+  "missing_task_ids": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35
+  ],
+  "plan_sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12",
+  "promotion_authorized": false,
+  "rows": [
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.1654826612122789,
+          "instance_count": 217,
+          "pair_macro_ap": 0.017987586488391646,
+          "pair_macro_auroc": 0.9174420071517829,
+          "pair_micro_ap": 0.01108995938226375,
+          "paratope_macro_ap": 0.6319237510108171,
+          "partner_mrr": 0.3814296686416503,
+          "partner_recall_at_1": 0.16589861751152074
+        },
+        "last": {
+          "epitope_macro_ap": 0.16675094473920093,
+          "instance_count": 217,
+          "pair_macro_ap": 0.015838758048241218,
+          "pair_macro_auroc": 0.9104261208255202,
+          "pair_micro_ap": 0.01000545622562944,
+          "paratope_macro_ap": 0.6365714813278194,
+          "partner_mrr": 0.4003328213005633,
+          "partner_recall_at_1": 0.20276497695852536
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_00",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 0,
+        "random_projection_control": false,
+        "seed": 1,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antigen.json"
+        ],
+        "task_id": 0
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.16992639064521994,
+          "instance_count": 217,
+          "pair_macro_ap": 0.021676013546326405,
+          "pair_macro_auroc": 0.9158212799353536,
+          "pair_micro_ap": 0.011585044535315513,
+          "paratope_macro_ap": 0.6484602601001912,
+          "partner_mrr": 0.40117950405968844,
+          "partner_recall_at_1": 0.1935483870967742
+        },
+        "last": {
+          "epitope_macro_ap": 0.16794194406041676,
+          "instance_count": 217,
+          "pair_macro_ap": 0.01887444848263688,
+          "pair_macro_auroc": 0.901626334475367,
+          "pair_micro_ap": 0.010149107290307328,
+          "paratope_macro_ap": 0.6298702181536587,
+          "partner_mrr": 0.41002304147465435,
+          "partner_recall_at_1": 0.17050691244239632
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_00",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 0,
+        "random_projection_control": false,
+        "seed": 2,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antigen.json"
+        ],
+        "task_id": 1
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.18042167990851346,
+          "instance_count": 217,
+          "pair_macro_ap": 0.02208172702986689,
+          "pair_macro_auroc": 0.9179235097953468,
+          "pair_micro_ap": 0.01110303984441228,
+          "paratope_macro_ap": 0.646901012515735,
+          "partner_mrr": 0.37954063345768413,
+          "partner_recall_at_1": 0.18433179723502305
+        },
+        "last": {
+          "epitope_macro_ap": 0.165114460831037,
+          "instance_count": 217,
+          "pair_macro_ap": 0.01846897965097707,
+          "pair_macro_auroc": 0.9062451669856538,
+          "pair_micro_ap": 0.010386238748863588,
+          "paratope_macro_ap": 0.6512953902116416,
+          "partner_mrr": 0.43092677931387613,
+          "partner_recall_at_1": 0.22580645161290322
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_00",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 0,
+        "random_projection_control": false,
+        "seed": 3,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antigen.json"
+        ],
+        "task_id": 2
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.1763391126084698,
+          "instance_count": 217,
+          "pair_macro_ap": 0.020779976587368174,
+          "pair_macro_auroc": 0.9158171123054045,
+          "pair_micro_ap": 0.011340554471775897,
+          "paratope_macro_ap": 0.6125205904396522,
+          "partner_mrr": 0.3777192597469095,
+          "partner_recall_at_1": 0.16589861751152074
+        },
+        "last": {
+          "epitope_macro_ap": 0.1676330389067292,
+          "instance_count": 217,
+          "pair_macro_ap": 0.018392170426271177,
+          "pair_macro_auroc": 0.8990894873737459,
+          "pair_micro_ap": 0.011294417554619523,
+          "paratope_macro_ap": 0.6097754304503737,
+          "partner_mrr": 0.39908016970228954,
+          "partner_recall_at_1": 0.17972350230414746
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_08",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 8,
+        "random_projection_control": false,
+        "seed": 1,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antigen.json"
+        ],
+        "task_id": 3
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.17381767155431457,
+          "instance_count": 217,
+          "pair_macro_ap": 0.020481103124502915,
+          "pair_macro_auroc": 0.91038127530957,
+          "pair_micro_ap": 0.010638988283273037,
+          "paratope_macro_ap": 0.6268937132812884,
+          "partner_mrr": 0.3748719918074757,
+          "partner_recall_at_1": 0.17511520737327188
+        },
+        "last": {
+          "epitope_macro_ap": 0.1696664653075023,
+          "instance_count": 217,
+          "pair_macro_ap": 0.018312717798222574,
+          "pair_macro_auroc": 0.8967424797598658,
+          "pair_micro_ap": 0.011336148583743523,
+          "paratope_macro_ap": 0.6198989621002511,
+          "partner_mrr": 0.39625850340136054,
+          "partner_recall_at_1": 0.2073732718894009
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_08",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 8,
+        "random_projection_control": false,
+        "seed": 2,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antigen.json"
+        ],
+        "task_id": 4
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.17328386136123694,
+          "instance_count": 217,
+          "pair_macro_ap": 0.021858266032348632,
+          "pair_macro_auroc": 0.9146254230736707,
+          "pair_micro_ap": 0.010272777746505372,
+          "paratope_macro_ap": 0.6162183558913473,
+          "partner_mrr": 0.3691555116670325,
+          "partner_recall_at_1": 0.14746543778801843
+        },
+        "last": {
+          "epitope_macro_ap": 0.16254093915156462,
+          "instance_count": 217,
+          "pair_macro_ap": 0.01877035582776343,
+          "pair_macro_auroc": 0.902148875367173,
+          "pair_micro_ap": 0.010141855126482167,
+          "paratope_macro_ap": 0.6232901400438247,
+          "partner_mrr": 0.39402018872064953,
+          "partner_recall_at_1": 0.1935483870967742
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_08",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 8,
+        "random_projection_control": false,
+        "seed": 3,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antigen.json"
+        ],
+        "task_id": 5
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.18379762287307932,
+          "instance_count": 217,
+          "pair_macro_ap": 0.02285507060039928,
+          "pair_macro_auroc": 0.9091710411227434,
+          "pair_micro_ap": 0.012617842671503352,
+          "paratope_macro_ap": 0.5925304730165143,
+          "partner_mrr": 0.3561224489795919,
+          "partner_recall_at_1": 0.14746543778801843
+        },
+        "last": {
+          "epitope_macro_ap": 0.18014936916732904,
+          "instance_count": 217,
+          "pair_macro_ap": 0.020608188818553523,
+          "pair_macro_auroc": 0.9028577318305159,
+          "pair_micro_ap": 0.012934370816132933,
+          "paratope_macro_ap": 0.5877297832202582,
+          "partner_mrr": 0.4130074610489357,
+          "partner_recall_at_1": 0.21658986175115208
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_16",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 16,
+        "random_projection_control": false,
+        "seed": 1,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antigen.json"
+        ],
+        "task_id": 6
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.1816167759372142,
+          "instance_count": 217,
+          "pair_macro_ap": 0.023087032306693317,
+          "pair_macro_auroc": 0.914205831761277,
+          "pair_micro_ap": 0.01234582475818049,
+          "paratope_macro_ap": 0.6146917877446345,
+          "partner_mrr": 0.4014739229024944,
+          "partner_recall_at_1": 0.22119815668202766
+        },
+        "last": {
+          "epitope_macro_ap": 0.18028015773817413,
+          "instance_count": 217,
+          "pair_macro_ap": 0.01979845283095602,
+          "pair_macro_auroc": 0.9077234350612687,
+          "pair_micro_ap": 0.012555710588514974,
+          "paratope_macro_ap": 0.5966357198498,
+          "partner_mrr": 0.399800672957355,
+          "partner_recall_at_1": 0.1935483870967742
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_16",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 16,
+        "random_projection_control": false,
+        "seed": 2,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antigen.json"
+        ],
+        "task_id": 7
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.1805101911567131,
+          "instance_count": 217,
+          "pair_macro_ap": 0.02334987478547089,
+          "pair_macro_auroc": 0.9113774244718019,
+          "pair_micro_ap": 0.01053916898972159,
+          "paratope_macro_ap": 0.6155211278651076,
+          "partner_mrr": 0.36297088727964305,
+          "partner_recall_at_1": 0.1382488479262673
+        },
+        "last": {
+          "epitope_macro_ap": 0.17162154023980455,
+          "instance_count": 217,
+          "pair_macro_ap": 0.01986860123900172,
+          "pair_macro_auroc": 0.9004846904112537,
+          "pair_micro_ap": 0.010777929857457458,
+          "paratope_macro_ap": 0.6039157027111437,
+          "partner_mrr": 0.4029679613780996,
+          "partner_recall_at_1": 0.17511520737327188
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_16",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 16,
+        "random_projection_control": false,
+        "seed": 3,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antigen.json"
+        ],
+        "task_id": 8
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.19416599183809724,
+          "instance_count": 217,
+          "pair_macro_ap": 0.022856068325896928,
+          "pair_macro_auroc": 0.9034474801535861,
+          "pair_micro_ap": 0.012603057674200693,
+          "paratope_macro_ap": 0.6034992428055269,
+          "partner_mrr": 0.35371589496013456,
+          "partner_recall_at_1": 0.15207373271889402
+        },
+        "last": {
+          "epitope_macro_ap": 0.17599325802499988,
+          "instance_count": 217,
+          "pair_macro_ap": 0.019488197875194624,
+          "pair_macro_auroc": 0.8939757297536753,
+          "pair_micro_ap": 0.011882080731627007,
+          "paratope_macro_ap": 0.6008951015009605,
+          "partner_mrr": 0.48225806451612907,
+          "partner_recall_at_1": 0.2764976958525346
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_24",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 24,
+        "random_projection_control": false,
+        "seed": 1,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_24_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_24_antigen.json"
+        ],
+        "task_id": 9
+      }
+    },
+    {
+      "parameter_count": 1096461,
+      "snapshots": {
+        "best": {
+          "epitope_macro_ap": 0.19707404622437136,
+          "instance_count": 217,
+          "pair_macro_ap": 0.025875527105945213,
+          "pair_macro_auroc": 0.9094896776397695,
+          "pair_micro_ap": 0.011706554128172716,
+          "paratope_macro_ap": 0.626537553253336,
+          "partner_mrr": 0.3389858093775145,
+          "partner_recall_at_1": 0.1336405529953917
+        },
+        "last": {
+          "epitope_macro_ap": 0.17607739128992178,
+          "instance_count": 217,
+          "pair_macro_ap": 0.02101787322951646,
+          "pair_macro_auroc": 0.8920720840489642,
+          "pair_micro_ap": 0.011168301150530222,
+          "paratope_macro_ap": 0.6090786398252014,
+          "partner_mrr": 0.4373692487747787,
+          "partner_recall_at_1": 0.2488479262672811
+        }
+      },
+      "task": {
+        "arm": "saprot_layer_24",
+        "family": "saprot",
+        "kind": "real",
+        "layer": 24,
+        "random_projection_control": false,
+        "seed": 2,
+        "specs": [
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_24_antibody.json",
+          "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_24_antigen.json"
+        ],
+        "task_id": 10
+      }
+    }
+  ],
+  "status": "INCOMPLETE_NO_LAYER_SELECTION",
+  "terminal_receipt_count": 11,
+  "test_labels_read": false
+}

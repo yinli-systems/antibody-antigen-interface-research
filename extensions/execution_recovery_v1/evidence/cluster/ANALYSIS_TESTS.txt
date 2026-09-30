@@ -1,0 +1,14 @@
+test_ambiguous_key_rejected (__main__.SchemaTests) ... ok
+test_correct_mrr_source (__main__.SchemaTests) ... ok
+test_distractor_change_rejected (__main__.SchemaTests) ... ok
+test_invalid_metric (__main__.SchemaTests) ... ok
+test_old_key_failure_reproduced (__main__.SchemaTests) ... ok
+test_partial_collection_cannot_promote (__main__.SchemaTests) ... ok
+test_primary_ap_unchanged (__main__.SchemaTests) ... ok
+test_smoke_rejected (__main__.SchemaTests) ... ok
+test_test_split_rejected (__main__.SchemaTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.004s
+
+OK

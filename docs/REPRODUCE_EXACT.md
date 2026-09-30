@@ -82,3 +82,7 @@ python3 tools/evidence/test_publication.py
 New results require a reviewed registry entry with source digest, exact JSON
 selector, cohort, evidence class, aggregation and interpretation limits. Do not
 edit a rounded headline to conceal a changed raw artifact.
+
+## Execution recovery
+
+`python3 tools/evidence/checkout_experiment.py execution-recovery ../antibody-execution-recovery` prepares the new exact source. Read its `extensions/execution_recovery_v1/README.md` before execution: live jobs use separately pinned snapshots, and the helper itself submits no work.

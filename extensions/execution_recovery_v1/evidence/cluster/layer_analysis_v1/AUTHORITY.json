@@ -1,0 +1,22 @@
+{
+  "allocated_gpus": 1,
+  "compute_kind": "CPU analysis on GPU partition; GPU allocation required by partition",
+  "dependency": "afterok:1640503,afterany:1640514",
+  "executor_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_b72e6bf/extensions/execution_recovery_v1/af3.py": "43396aae158486c3287502388e991cd0c41ea417f8969c7fa51ca7107bdd7bc1",
+    "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_b72e6bf/extensions/execution_recovery_v1/analysis_adapter.py": "d0d13a804f3f3e43e31eae9347ebfa0a4140ea48e9ab6dcef11f8b6b5a0b7997",
+    "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_b72e6bf/extensions/execution_recovery_v1/run_scheduled_analysis.py": "1a8ce8cd76d5d779ea3a1689669a29ab20e434614afba5d06ed18e623d0d3aa9"
+  },
+  "max_cpu_cores": 6,
+  "original_attempt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3",
+  "original_plan": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/PLAN.json",
+  "original_plan_sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12",
+  "output": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/output/ANALYSIS.json",
+  "reason": "Wait for unchanged training and original analyzer terminal result; independent schema repair with original AP/bootstrap/selection algorithms",
+  "schema": "layer_schema_analysis_authority_v1",
+  "source_commit": "b72e6bf1736e763135f2104303383b3e4ef0336a",
+  "synthetic_validation_sha256": "2397a355bfea872f955bb25a068ac8fe29c3589dc6bdd3f98206aa7b5edf966f",
+  "test_access": false,
+  "training_submitted": false,
+  "walltime": "02:00:00"
+}

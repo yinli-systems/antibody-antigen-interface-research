@@ -914,3 +914,7 @@ Pinned source: `54afd798700bc41ac1352065414d8687c9627871`. Preserved ref: `archi
 - [results/sabdab2_top10_case_study_v1/top10_ranked_pairs.csv](https://github.com/yinli-systems/antibody-antigen-interface-research/blob/54afd798700bc41ac1352065414d8687c9627871/results/sabdab2_top10_case_study_v1/top10_ranked_pairs.csv) — `A`, blob `097cc2d9383d`.
 
 </details>
+
+## Post-consolidation execution branch
+
+The original 747-path catalogue above is unchanged. Additional engineering work is in `kevin/execution-recovery-20260930` at `ecc826ee0394ce864aef872d146cda303206ff94`, with [source, execution records and tests](../extensions/execution_recovery_v1/README.md) now indexed on main. It is not part of the 17 pre-consolidation archival snapshots.

@@ -64,6 +64,16 @@
         "README.md",
         "scripts/sabdab2_interaction_first.py"
       ]
+    },
+    "execution-recovery": {
+      "commit": "ecc826ee0394ce864aef872d146cda303206ff94",
+      "purpose": "Verified AF3 orchestration and layer-report schema repair; original live source remains separately pinned",
+      "read_first": "extensions/execution_recovery_v1/README.md",
+      "entrypoints": [
+        "extensions/execution_recovery_v1/af3.py",
+        "extensions/execution_recovery_v1/analysis_adapter.py",
+        "extensions/execution_recovery_v1/assemble.py"
+      ]
     }
   }
 }

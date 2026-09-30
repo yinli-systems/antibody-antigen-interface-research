@@ -17,6 +17,8 @@ def products(root=ROOT):
     corr = 'extensions/correspondence_v2/READOUT.md'
     rr = 'extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json'
     ranking = 'extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md'
+    recovery = status.get('af3_recovery')
+    recovery_line = (f"AF3 recovery task 0 `{recovery['job_id']}` is **{recovery['state']}** ({recovery['reason']}); its 39 successor tasks are not submitted. [Engineered recovery and exact source](extensions/execution_recovery_v1/README.md)" if recovery else '')
     readme = f'''# Antibody–antigen interface research
 
 **From interface localisation to residue-pair correspondence.**
@@ -77,7 +79,7 @@ python3 tools/evidence/checkout_experiment.py multimodel ../antibody-multimodel
 
 ## Ongoing — separate from completed findings
 
-As of **{stamp}**, the frozen SaProt/ProSST sweep has **{len(status['completed'])}/36** formal tasks complete. No winning layer is selected before the matched controls finish. RePaRank's full structure arm remains incomplete; the first AF3 missing-chain job failed before inference. [Timestamped jobs and receipts](results/operations/README.md)
+As of **{stamp}**, the frozen SaProt/ProSST sweep has **{len(status['completed'])}/36** formal tasks complete. No winning layer is selected before the matched controls finish. RePaRank's full structure arm remains incomplete. {recovery_line} [Timestamped jobs and receipts](results/operations/README.md)
 
 ## Nothing discarded to make the front page cleaner
 
@@ -101,6 +103,12 @@ Original branches, archive tags, failed experiments and superseded interpretatio
     for row in status['completed']:
         ops.append(f"| {row['task_id']} | {row['arm']} | {row['seed']} | {row['best_pair_ap']:.6f} | {row['last_pair_ap']:.6f} |")
     ops+=['','These intermediate values do not select a winner and are not independent test scores.','','## Actual scheduler records','','```text',status['accounting'].strip(),'```','','AF3 job `1640914_0` failed before prediction. Earlier references to `1640888` were not the actual ID found in `TASK0_JOB_ID.txt`. No structure result is promoted from that failed launch.','','## Still unfinished','','Full layer/control comparison; learned realignment; a newly admitted untouched OOD cohort; same-split RePaRank retraining; complete structure-RePaRank evaluation; co-folder comparison; affinity endpoint. The prior 14 OOD candidates were not admitted.','']
+    if recovery:
+        fixed = status['schema_analysis']
+        ops += ['', '## Additive execution recovery', '',
+                f"AF3 task 0 `{recovery['job_id']}`: **{recovery['state']}** ({recovery['reason']}); audited completed structures: **{recovery['complete_task_receipts']}**. The remaining 39 tasks are not submitted.", '',
+                f"Separate schema-corrected analysis `{fixed['job_id']}`: **{fixed['state']}** ({fixed['reason']}); dependency `{fixed['dependency']}`. Original training and original analyzer were not changed.", '',
+                '[Verified defects, 49 tests and synthetic integration check](../../extensions/execution_recovery_v1/README.md). This is not an accuracy improvement or completed structural benchmark.', '']
     return {'README.md':readme,'figures/evidence/representation_transfer.svg':'\n'.join(svg)+'\n','results/operations/README.md':'\n'.join(ops)}
 
 

@@ -1,0 +1,11 @@
+{
+  "source_sha256": {
+    "run_alphafold.py": "29cd160b06ac591a356a1f07e144d07613e7b21c823650e81bd168b8bae6a645",
+    "src/alphafold3/model/post_processing.py": "aff8b433dfd648d243e0bd128ba2e543c4afa92c0059636998d76cba6d2a98c4",
+    "src/alphafold3/version.py": "f2885ac26b7c86d1d43a7d7b45d55bef0642369216cfa574f494eaad2e523118"
+  },
+  "version_declaration": [
+    "__version__ = '3.0.1'"
+  ],
+  "probe": "read-only installed container source; no inference or model import"
+}

@@ -1,0 +1,11 @@
+test_coverage_is_sequence_exact_not_fuzzy (__main__.Assembly) ... ok
+test_failed_task_not_a_completion (__main__.Assembly) ... ok
+test_foreign_receipt_rejected (__main__.Assembly) ... ok
+test_incomplete_campaign_fails (__main__.Assembly) ... ok
+test_no_closed_split_overlap (__main__.Assembly) ... ok
+test_no_output_on_incomplete_campaign (__main__.Assembly) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.010s
+
+OK

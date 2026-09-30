@@ -1,0 +1,12 @@
+{
+  "adapter_sha256": "d0d13a804f3f3e43e31eae9347ebfa0a4140ea48e9ab6dcef11f8b6b5a0b7997",
+  "known_effects_checked": 10,
+  "legacy_aggregator_sha256": "6b8621a46e7e2fc215bd1dcbcaf48bc72d8997a675f722547642c122254eded4",
+  "real_model_or_dataset_scored": false,
+  "scientific_result": false,
+  "shallower_layer_tie_rule_checked": true,
+  "status": "PASS_SYNTHETIC_END_TO_END_AGGREGATION",
+  "synthetic_complexes": 217,
+  "synthetic_components": 68,
+  "synthetic_tasks": 36
+}

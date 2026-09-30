@@ -1,0 +1,35 @@
+test_active_same_plan_prevents_submission (__main__.Contracts) ... ok
+test_ambiguous_acknowledgement_stays_locked (__main__.Contracts) ... ok
+test_complete_25_sample_grid (__main__.Contracts) ... ok
+test_duplicate_json_keys (__main__.Contracts) ... ok
+test_duplicate_task_list (__main__.Contracts) ... ok
+test_empty_task_list (__main__.Contracts) ... ok
+test_foreign_protein_field (__main__.Contracts) ... ok
+test_foreign_top_model_fails (__main__.Contracts) ... ok
+test_input_hash_drift (__main__.Contracts) ... ok
+test_input_identity (__main__.Contracts) ... ok
+test_json_exclusive (__main__.Contracts) ... ok
+test_missing_confidence_payload (__main__.Contracts) ... ok
+test_missing_grid_fails (__main__.Contracts) ... ok
+test_msa_rejected (__main__.Contracts) ... ok
+test_multiple_chains_rejected (__main__.Contracts) ... ok
+test_no_prediction_outside_scheduler (__main__.Contracts) ... ok
+test_nonfinite_json (__main__.Contracts) ... ok
+test_processed_input_drift (__main__.Contracts) ... ok
+test_requeue_rejected (__main__.Contracts) ... ok
+test_rounded_summary_does_not_affect_selection (__main__.Contracts) ... ok
+test_same_count_duplicate_grid_fails (__main__.Contracts) ... ok
+test_seed_change_rejected (__main__.Contracts) ... ok
+test_staging_independent_exact_copy (__main__.Contracts) ... ok
+test_staging_never_overwrites (__main__.Contracts) ... ok
+test_submit_persists_job_and_rejects_repeat (__main__.Contracts) ... {"job_id": "123", "tasks": [0], "state": "SUBMITTED_NOT_COMPLETED"}
+ok
+test_task_index_validation (__main__.Contracts) ... ok
+test_template_rejected (__main__.Contracts) ... ok
+test_timestamped_result_directory_rejected (__main__.Contracts) ... ok
+test_unsafe_name (__main__.Contracts) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.145s
+
+OK

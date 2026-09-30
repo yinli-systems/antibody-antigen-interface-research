@@ -58,7 +58,7 @@ python3 tools/evidence/checkout_experiment.py multimodel ../antibody-multimodel
 
 ## Ongoing — separate from completed findings
 
-As of **2026-09-30T07:18:25 UTC**, the frozen SaProt/ProSST sweep has **6/36** formal tasks complete. No winning layer is selected before the matched controls finish. RePaRank's full structure arm remains incomplete; the first AF3 missing-chain job failed before inference. [Timestamped jobs and receipts](results/operations/README.md)
+As of **2026-09-30T08:09:57 UTC**, the frozen SaProt/ProSST sweep has **12/36** formal tasks complete. No winning layer is selected before the matched controls finish. RePaRank's full structure arm remains incomplete. AF3 recovery task 0 `1641607` is **PENDING** (Priority); its 39 successor tasks are not submitted. [Engineered recovery and exact source](extensions/execution_recovery_v1/README.md) [Timestamped jobs and receipts](results/operations/README.md)
 
 ## Nothing discarded to make the front page cleaner
 
