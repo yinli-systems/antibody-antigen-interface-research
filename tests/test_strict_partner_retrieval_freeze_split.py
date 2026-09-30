@@ -33,6 +33,14 @@ def _fold(prefix: str) -> dict:
     }
 
 
+def _scientific(value: dict) -> dict:
+    material = dict(value)
+    material["scientific_payload_sha256"] = __import__("hashlib").sha256(
+        json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")
+    ).hexdigest()
+    return material
+
+
 def _inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
     contract = tmp_path / "contract.json"
     assignment = tmp_path / "assignment.json"
@@ -43,19 +51,46 @@ def _inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
         fold = _fold(f"o{oi}")
         fold["inner_level"] = {"folds": [_fold(f"o{oi}i{ii}") for ii in range(3)]}
         outer.append(fold)
-    assignment.write_text(json.dumps({
+    avalue=_scientific({
         "artifact_role": "externally_pinned_core_feasibility_replay",
-        "scientific_payload_sha256": "1" * 64,
+        "stage": "completed_externally_pinned_core_feasibility_replay",
+        "core_feasibility_constraints_passed": True,
+        "construction_invariants_passed": True,
+        "authorized_for_training": False,
+        "authorized_for_model_selection": False,
+        "authorized_for_nested_model_selection": False,
+        "split_domain_gate0_requirement_satisfied": False,
+        "workflow_identity": {
+            "joint_assignment_mode": "externally_pinned_replay",
+            "provisional_attempt_id": None,
+            "pinned_replay_id": "replay_001",
+            "source_provisional_attempt_id": "provisional_001",
+        },
         "construction": {"outer_level": {"folds": outer}},
-    }))
-    audit.write_text(json.dumps({
+    })
+    assignment.write_text(json.dumps(avalue,sort_keys=True))
+    asha=_sha(assignment)
+    uvalue=_scientific({
         "valid_audit_execution": True,
         "core_feasibility_precursor_passed": True,
+        "split_domain_gate0_requirement_satisfied": False,
+        "authorized_for_training": False,
+        "authorized_for_model_selection": False,
+        "authorized_for_nested_model_selection": False,
+        "approval_status": "core_feasibility_precursor_passed_non_authorizing",
+        "independent_gates": {"gate_a": True,"gate_b": True},
         "boundary_count": 12,
         "exhaustive_accounting": {"threshold_crossing_edge_count": 0},
         "data_firewall": {"validation_or_test_labels_predictions_or_scores_read": 0},
-        "scientific_payload_sha256": "2" * 64,
-    }))
+        "inputs": {"assignment": {"sha256": asha}},
+        "assignment_scientific_payload_sha256": avalue["scientific_payload_sha256"],
+        "workflow_identity": {
+            "joint_assignment_mode": "externally_pinned_replay",
+            "pinned_replay_id": "replay_001",
+            "source_provisional_attempt_id": "provisional_001",
+        },
+    })
+    audit.write_text(json.dumps(uvalue,sort_keys=True))
     return contract, assignment, audit
 
 
@@ -105,3 +140,15 @@ def test_valid_scoped_gate0_authorizes_training_but_not_outer(tmp_path: Path) ->
     assert result["training_and_model_selection_authorized"] is True
     assert result["h0_execution_authorized"] is True
     assert result["outer_evaluation_authorized"] is False
+
+
+def test_audit_assignment_binding_is_required(tmp_path: Path) -> None:
+    contract, assignment, audit = _inputs(tmp_path)
+    value=json.loads(audit.read_text())
+    value["inputs"]["assignment"]["sha256"]="0"*64
+    material=dict(value);material.pop("scientific_payload_sha256")
+    value["scientific_payload_sha256"]=_scientific(material)["scientific_payload_sha256"]
+    audit.write_text(json.dumps(value,sort_keys=True))
+    result=subprocess.run([sys.executable,str(SCRIPT),"--contract",str(contract),"--assignment",str(assignment),"--audit",str(audit),"--output",str(tmp_path/"bad.json")],capture_output=True,text=True)
+    assert result.returncode != 0
+    assert "bind assignment" in result.stderr

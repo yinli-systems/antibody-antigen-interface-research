@@ -23,6 +23,14 @@ def sha256_file(path: Path) -> str:
 def canonical_sha(value: Any) -> str:
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")).hexdigest()
 
+def verify_scientific_hash(value:dict[str,Any],label:str)->str:
+    claimed=value.get("scientific_payload_sha256")
+    if not isinstance(claimed,str) or len(claimed)!=64:raise ValueError(f"{label} scientific hash missing")
+    material=dict(value);material.pop("scientific_payload_sha256",None)
+    actual=canonical_sha(material)
+    if actual!=claimed:raise ValueError(f"{label} scientific hash mismatch")
+    return actual
+
 def membership_sha(values) -> str:
     return hashlib.sha256("".join(f"{x}\n" for x in sorted(set(values))).encode()).hexdigest()
 
@@ -130,11 +138,27 @@ def main():
     if a.output.exists(): raise FileExistsError(a.output)
     contract=load(a.contract);assignment=load(a.assignment);audit=load(a.audit)
     if contract.get("format_version")!=CONTRACT_FORMAT: raise ValueError("contract format")
-    if assignment.get("artifact_role")!="externally_pinned_core_feasibility_replay": raise ValueError("assignment is not pinned replay")
+    if assignment.get("artifact_role")!="externally_pinned_core_feasibility_replay" or assignment.get("stage")!="completed_externally_pinned_core_feasibility_replay": raise ValueError("assignment is not a complete pinned replay")
+    if assignment.get("core_feasibility_constraints_passed") is not True or assignment.get("construction_invariants_passed") is not True: raise ValueError("assignment feasibility/invariants failed")
+    for key in ("authorized_for_training","authorized_for_model_selection","authorized_for_nested_model_selection","split_domain_gate0_requirement_satisfied"):
+        if assignment.get(key) is not False: raise ValueError(f"assignment falsely enables {key}")
+    assignment_scientific=verify_scientific_hash(assignment,"assignment")
     if audit.get("valid_audit_execution") is not True or audit.get("core_feasibility_precursor_passed") is not True: raise ValueError("precursor audit not passed")
+    if audit.get("approval_status")!="core_feasibility_precursor_passed_non_authorizing": raise ValueError("unexpected audit approval status")
+    for key in ("authorized_for_training","authorized_for_model_selection","authorized_for_nested_model_selection","split_domain_gate0_requirement_satisfied"):
+        if audit.get(key) is not False: raise ValueError(f"audit falsely enables {key}")
+    gates=audit.get("independent_gates")
+    if not isinstance(gates,dict) or not gates or not all(value is True for value in gates.values()): raise ValueError("independent audit gates not all true")
     if int(audit.get("boundary_count",-1))!=12 or audit.get("exhaustive_accounting",{}).get("threshold_crossing_edge_count")!=0: raise ValueError("boundary audit failed")
     if audit.get("data_firewall",{}).get("validation_or_test_labels_predictions_or_scores_read")!=0: raise ValueError("split audit read forbidden data")
+    audit_scientific=verify_scientific_hash(audit,"audit")
     asha=sha256_file(a.assignment); audsha=sha256_file(a.audit)
+    audit_assignment=audit.get("inputs",{}).get("assignment",{})
+    if audit_assignment.get("sha256")!=asha: raise ValueError("audit does not bind assignment file bytes")
+    if audit.get("assignment_scientific_payload_sha256")!=assignment_scientific: raise ValueError("audit does not bind assignment scientific payload")
+    aw=assignment.get("workflow_identity",{}); uw=audit.get("workflow_identity",{})
+    if aw.get("joint_assignment_mode")!="externally_pinned_replay" or uw.get("joint_assignment_mode")!="externally_pinned_replay": raise ValueError("workflow is not pinned replay")
+    if aw.get("pinned_replay_id")!=uw.get("pinned_replay_id") or aw.get("source_provisional_attempt_id")!=uw.get("source_provisional_attempt_id"): raise ValueError("audit/replay workflow identity mismatch")
     outer=assignment.get("construction",{}).get("outer_level",{})
     folds=outer.get("folds")
     if not isinstance(folds,list) or len(folds)!=3: raise ValueError("need 3 outer folds")
@@ -162,8 +186,8 @@ def main():
       # frozen model-selection authority is required for that transition.
       "outer_evaluation_authorized":False,
       "contract":{"path":str(a.contract.resolve()),"sha256":sha256_file(a.contract)},
-      "assignment":{"path":str(a.assignment.resolve()),"sha256":asha,"scientific_payload_sha256":assignment.get("scientific_payload_sha256")},
-      "independent_audit":{"path":str(a.audit.resolve()),"sha256":audsha,"scientific_payload_sha256":audit.get("scientific_payload_sha256")},
+      "assignment":{"path":str(a.assignment.resolve()),"sha256":asha,"scientific_payload_sha256":assignment_scientific},
+      "independent_audit":{"path":str(a.audit.resolve()),"sha256":audsha,"scientific_payload_sha256":audit_scientific},
       "gate0_authority":None if g is None else {"path":str(a.gate0_authority.resolve()),"sha256":sha256_file(a.gate0_authority),"authority_sha256":g["authority_sha256"]},
       "fold_count":12,"libraries":libs,
       "aggregate_disclosure":{

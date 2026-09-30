@@ -6,3 +6,10 @@ The two regression functions in tests/test_strict_partner_retrieval_freeze_split
 - valid scoped Gate0 grants training/model-selection but never outer evaluation.
 Result: 2/2 direct regression cases PASS.
 Both source and test files compile successfully.
+Additional post-replay binding tests added after the initial authorization-field fix:
+- assignment and audit embedded scientific hashes must recompute;
+- audit must bind exact assignment file SHA and scientific SHA;
+- replay IDs must match between assignment and audit;
+- every independent audit gate must be true;
+- an audit pointing to another assignment fails closed.
+Result: 3/3 binding/authority regression cases PASS.
