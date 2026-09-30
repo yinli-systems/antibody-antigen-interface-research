@@ -1,0 +1,40 @@
+{
+  "at_utc": "2026-09-30T11:36:49.736121+00:00",
+  "audit": {
+    "component_count": 134,
+    "extra_instance_ids": [],
+    "instance_count": 3663,
+    "missing_instance_ids": [],
+    "split_component_counts": {
+      "test": 65,
+      "train": 1,
+      "validation": 68
+    },
+    "split_instance_counts": {
+      "test": 217,
+      "train": 3229,
+      "validation": 217
+    },
+    "valid": true,
+    "violation_count": 0,
+    "violations": []
+  },
+  "intended_use": "development_only",
+  "limitations": [
+    "A split rebuilt from previously inspected benchmark instances is suitable for development but is not a new prospective test set.",
+    "A prospective claim requires structures released after a locked temporal cutoff."
+  ],
+  "mmseqs_version": "5d152c612b6ad2a56f657b7a02c127eceaea2a75-64bit",
+  "note": "Split authority itself reports zero component violations under its registered MMseqs thresholds; this audit does not convert development validation into a prospective test set.",
+  "ood_labels_read": false,
+  "split_sha256": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396",
+  "status": "PASS_FROZEN_SPLIT_AUTHORITY_AUDIT",
+  "test_labels_read": false,
+  "thresholds": {
+    "antibody_full_identity": 0.8,
+    "antigen_full_identity": 0.7,
+    "bidirectional_coverage": 0.8,
+    "cdrh3_identity_with_same_vh_vl_and_length": 0.7
+  },
+  "validation_component_count": 68
+}

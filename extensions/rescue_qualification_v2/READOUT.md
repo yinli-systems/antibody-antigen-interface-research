@@ -115,3 +115,23 @@ The published gap-recovery ratio is exactly `(mean(rescued AP) − mean(corrupte
 The exact recomputation is preserved in `evidence/20260930/evidence_attempt3/SEED101_GROUPED_ANALYSIS.json`; the raw 651-row terminal receipt is preserved under `evaluation_runs/seed_101/COMPLETE.json`.
 
 Remaining qualification requires the already trained rescue seeds 202 and 303 paired with downstream seeds 2 and 3 under the same frozen evaluation plan, followed by the preregistered crossed paired-seed/component aggregation. Until then the result remains single-seed-pair development evidence.
+
+## 9. Final three-seed paired/component qualification
+
+The remaining two evaluations completed successfully after preserving a zero-second launcher-path failure from job `1642017`. That failed launcher pointed to the earlier source directory and performed no model evaluation. Recovery job `1642022` changed only the launcher source path to the frozen `source_attempt3`; it did not retrain rescue models or rerun seed101.
+
+The final frozen aggregate contains **1,953 records = 3 paired rescue/downstream seeds × 217 development complexes × 3 registered synthetic corruptions**. The three corruption families are not treated as independent biological replications. The authoritative aggregate SHA-256 is `b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc`.
+
+| Condition | Aligned AP | Corrupted AP | Rescued AP | Gap recovered | Equal-component/equal-paired-seed rescue effect | 95% crossed bootstrap CI |
+|---|---:|---:|---:|---:|---:|---|
+| same-AA | 0.027994971 | 0.011100353 | **0.025606964** | **85.87%** | **+0.0157209** | **[+0.0112560, +0.0211527]** |
+| shift-8 | 0.027994971 | 0.009683473 | **0.025606964** | **86.96%** | **+0.0173471** | **[+0.0128400, +0.0227690]** |
+| global shuffle | 0.027994971 | 0.009398676 | **0.025606964** | **87.16%** | **+0.0177846** | **[+0.0133127, +0.0232857]** |
+
+Against the untrained-matcher control, the equal-component/equal-paired-seed effect is **+0.0166045**, with pointwise crossed-bootstrap 95% CI **[+0.0119025, +0.0224902]**. `canonical_rescued_ap - rescued_ap` is exactly zero for all three conditions, consistent with the pure-permutation equivariance analysis; this is not an additional independent replication.
+
+The clean-input cost also replicates across all three seed pairs. Equal-complex clean-rescued minus aligned AP is **−0.0023880**. The registered equal-component/equal-paired-seed effect is **−0.00143046**, with 95% crossed-bootstrap CI **[−0.00267527, −0.00010714]**. The frozen protocol did not preregister a clean-input noninferiority margin, so no post-hoc margin is introduced and no noninferiority claim is made.
+
+Per-complex heterogeneity remains material. Averaged over the three seed pairs, same-AA rescue improves 87.1% of complexes but harms 12.9%; shift-8 and global rescue improve 95.9% and harm 4.1%. Clean rescue improves only 33.2% of complexes and harms 66.4%; its median effect is close to zero (`−0.0001001`) but the lower tail is substantial. Full quantiles and component summaries are in `THREE_SEED_HETEROGENEITY.json`.
+
+The frozen split authority reports 68 validation components and zero split-component violations under its MMseqs gates: antibody full-sequence identity 0.80, antigen full-sequence identity 0.70, bidirectional coverage 0.80, plus the registered CDR-H3 rule. This remains development-only evidence; the split itself states that a prospective claim requires a post-cutoff cohort. No test or OOD labels were opened.
