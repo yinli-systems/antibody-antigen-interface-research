@@ -44,7 +44,12 @@ class Contracts(unittest.TestCase):
             w=csv.writer(f); w.writerow(['seed','sample','ranking_score']); w.writerows(rows)
         s,i,_=max(rows,key=lambda x:x[2])
         (result/'af3_unit_model.cif').write_bytes((result/('seed-%d_sample-%d'%(s,i))/'model.cif').read_bytes())
-        (result/'af3_unit_data.json').write_text(json.dumps(self.payload))
+        processed={'dialect':'alphafold3','version':3,'name':'af3_unit','modelSeeds':SEEDS,
+                   'bondedAtomPairs':None,'userCCD':None,
+                   'sequences':[{'protein':{'id':'A','sequence':self.seq,'modifications':[],
+                   'unpairedMsa':'>Original query\n'+self.seq+'\n',
+                   'pairedMsa':'>Original query\n'+self.seq+'\n','templates':[]}}]}
+        (result/'af3_unit_data.json').write_text(json.dumps(processed))
         return result
     def test_input_identity(self):
         self.assertEqual(af3.check_input(self.task,SEEDS),self.payload)

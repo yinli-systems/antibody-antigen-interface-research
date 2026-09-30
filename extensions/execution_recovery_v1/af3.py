@@ -225,11 +225,17 @@ def audit_task(plan, task_id):
     # both raw byte hashes remain recorded for provenance.
     chosen = sorted(matching,key=lambda r:(r['seed'],r['sample']))[0]
     actual_input = read_json(result/(task['name']+'_data.json'))
-    # Verify AF3 did not silently add MSA/templates; schema normalization allowed.
+    # Official AF3 converts an explicitly empty MSA to a query-only A3M before
+    # featurisation. This is still MSA-free: no homologous sequence is present.
     protein = actual_input['sequences'][0]['protein']
-    if (protein['sequence']!=task['sequence'] or actual_input['modelSeeds']!=plan['model_seeds'] or
-        protein.get('templates')!=[] or protein.get('pairedMsa') not in ('',None) or
-        protein.get('unpairedMsa') not in ('',None)):
+    query_only = '>Original query\n'+task['sequence']+'\n'
+    if (actual_input.get('dialect')!='alphafold3' or actual_input.get('version')!=3 or
+        actual_input.get('name')!=task['name'] or actual_input['modelSeeds']!=plan['model_seeds'] or
+        actual_input.get('bondedAtomPairs') is not None or actual_input.get('userCCD') is not None or
+        len(actual_input.get('sequences',[]))!=1 or set(actual_input['sequences'][0])!={'protein'} or
+        protein.get('id')!='A' or protein.get('sequence')!=task['sequence'] or
+        protein.get('modifications')!=[] or protein.get('templates')!=[] or
+        protein.get('pairedMsa')!=query_only or protein.get('unpairedMsa')!=query_only):
         raise ValueError('AF3 processed inputs changed the scientific input contract')
     manifest = {str(p.relative_to(task_dir(plan,task_id))):digest(p)
                 for p in sorted(base.rglob('*')) if p.is_file()}
