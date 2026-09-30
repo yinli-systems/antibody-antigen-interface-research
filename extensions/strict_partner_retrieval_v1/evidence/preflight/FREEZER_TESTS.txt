@@ -1,0 +1,8 @@
+2026-09-30
+Local system Python: pytest unavailable (No module named pytest).
+ParaCloud repr_extract Python: pytest unavailable (No module named pytest).
+The two regression functions in tests/test_strict_partner_retrieval_freeze_split.py were invoked directly with isolated temporary directories:
+- precursor-only artifact remains PREPARED_SPLIT_NOT_AUTHORIZED and grants no training or outer evaluation;
+- valid scoped Gate0 grants training/model-selection but never outer evaluation.
+Result: 2/2 direct regression cases PASS.
+Both source and test files compile successfully.

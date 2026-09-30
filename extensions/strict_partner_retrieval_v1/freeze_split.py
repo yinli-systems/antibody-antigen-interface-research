@@ -153,6 +153,10 @@ def main():
       "format_version":OUT_FORMAT,
       "status":"FROZEN_SPLIT_AUTHORIZED" if authorized else "PREPARED_SPLIT_NOT_AUTHORIZED",
       "model_execution_authorized":authorized,
+      "training_and_model_selection_authorized":authorized,
+      # Gate 0 deliberately cannot grant outer evaluation.  A later, separately
+      # frozen model-selection authority is required for that transition.
+      "outer_evaluation_authorized":False,
       "contract":{"path":str(a.contract.resolve()),"sha256":sha256_file(a.contract)},
       "assignment":{"path":str(a.assignment.resolve()),"sha256":asha,"scientific_payload_sha256":assignment.get("scientific_payload_sha256")},
       "independent_audit":{"path":str(a.audit.resolve()),"sha256":audsha,"scientific_payload_sha256":audit.get("scientific_payload_sha256")},
