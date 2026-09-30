@@ -748,14 +748,24 @@ def _wrap_with_representations(
     )
 
     if args.random_projection_control:
-        if any(root is not None for root in roots) or generic_specifications:
+        if any(root is not None for root in roots):
             raise ValueError(
-                "--random-projection-control cannot be combined with real named or "
-                "generic representation sources"
+                "--random-projection-control cannot be combined with real named sources"
             )
         manifest_path = args.representation_manifest.expanduser().resolve()
         mirror = getattr(args, "random_control_mirrors", None)
-        if mirror:
+        if generic_specifications:
+            if mirror:
+                raise ValueError(
+                    "generic source specifications and --random-control-mirrors are "
+                    "two alternative shape authorities"
+                )
+            sources = build_matched_random_control(
+                manifest_path,
+                build_generic_sources(manifest_path, generic_specifications),
+                seed=args.random_projection_seed,
+            )
+        elif mirror:
             # Mirror an arm declared by name rather than the one this function
             # was originally written around. The control has to have the same
             # widths and the same coverage as the arm it controls for, and the

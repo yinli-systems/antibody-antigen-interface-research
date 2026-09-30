@@ -23,6 +23,7 @@ from interaction_first.composite_embeddings import (  # noqa: E402
     CompositeEmbeddingStore,
     RepresentationSource,
     build_generic_sources,
+    build_matched_random_control,
     build_sources,
     manifest_chain_keys,
 )
@@ -522,3 +523,30 @@ def test_generic_source_verifies_artifact_model_identity(tmp_path: Path) -> None
     )
     with pytest.raises(RepresentationError, match="model_name"):
         CompositeEmbeddingStore(_Base(4), [source]).load(key, "cpu")
+
+
+
+def test_generic_structural_source_gets_exact_width_and_side_matched_random_control(tmp_path: Path) -> None:
+    import json
+
+    manifest = _manifest_for_generic(tmp_path / "manifest.csv")
+    spec_ab = tmp_path / "ab.json"
+    spec_ag = tmp_path / "ag.json"
+    common = {
+        "format_version": "generic_representation_source_v1",
+        "dim": 1280,
+        "antibody_storage": "parts",
+        "model_name": "saprot_rev_layer_8",
+        "model_revision": "rev",
+        "evidence_role": "development layer sweep",
+    }
+    spec_ab.write_text(json.dumps({**common, "name": "saprot_l08_ab", "root": str((tmp_path / "features" / "ab").resolve()), "sides": ["antibody"]}))
+    spec_ag.write_text(json.dumps({**common, "name": "saprot_l08_ag", "root": str((tmp_path / "features" / "ag").resolve()), "sides": ["antigen"]}))
+    real = build_generic_sources(manifest, [spec_ab, spec_ag])
+    random = build_matched_random_control(manifest, real, seed=17)
+    assert [source.dim for source in random] == [1280, 1280]
+    assert [set(source.parts_by_key) for source in random] == [
+        set(real[0].parts_by_key), set(real[1].parts_by_key)
+    ]
+    assert random[0].name == "random_saprot_l08_ab"
+    assert random[1].name == "random_saprot_l08_ag"
