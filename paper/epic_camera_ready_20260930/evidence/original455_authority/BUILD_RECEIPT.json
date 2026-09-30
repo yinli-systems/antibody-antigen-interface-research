@@ -1,0 +1,8 @@
+{
+  "development_embedding_artifacts_verified": 2501,
+  "status": "PASS_ORIGINAL_SPLIT_DEVELOPMENT_CACHE",
+  "test_instances_reserved": 455,
+  "test_label_artifacts_opened": false,
+  "train_instances": 2887,
+  "validation_instances": 321
+}

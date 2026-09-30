@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "test": 455,
+    "train": 2887,
+    "validation": 321
+  },
+  "role_id_sha256": {
+    "test": "9a42ea95391659b068dd1e1070290368a5f4c440e73a66e0a5ee2577c71efcd8",
+    "train": "d1a8fb93c61a73518c4bd1f61396ae5221c3d6ee677d789609b2d37d078a212f",
+    "validation": "4dbe01f0dd5ca6fadaa99c4412d8f620b3c1167b975b1ad7a24875804e68e19d"
+  }
+}

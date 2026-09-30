@@ -1,0 +1,34 @@
+% EPIC camera-ready replacement fragments.
+% This is a source fragment because the original anonymous .tex was not present
+% in the connected repository/GPU snapshot. Do not compile as a standalone paper.
+
+% ---- Abstract replacement ----
+\begin{abstract}
+Predicting antibody--antigen interfaces from sequence inputs is difficult because residue--residue contacts are extremely sparse, partner-specific, and coupled to residue-level paratope and epitope labels. We present EPIC, a multi-task framework that combines frozen protein-language-model representations with intra-chain geometry from predicted monomer structures. EPIC uses geometry-aware self-attention, bidirectional cross-chain communication, and a shared low-rank residue-pair representation to predict contacts, paratopes, and epitopes. We evaluate EPIC on the official SAbDab2 split. Because contact positives constitute only 0.0705\% of training candidate pairs, we emphasize average precision and practical ranking budgets rather than AUROC alone. EPIC provides a unified prediction profile across the three interface resolutions without requiring an experimentally determined antibody--antigen complex at inference. The results support EPIC as a sequence-input, predicted-geometry framework, while controlled analyses show that the contributions of geometry, task coupling, and pairwise decoding are heterogeneous and should not be interpreted as universal improvements.
+\end{abstract}
+
+% ---- Modality clarification ----
+\paragraph{Inference inputs.}
+EPIC takes antibody and antigen sequences together with predicted monomer backbones. It does not require the experimentally determined antibody--antigen complex at inference, but it is not a structure-free predictor. All comparison tables distinguish sequence-only, sequence plus predicted-monomer geometry, and native-complex-structure inputs.
+
+% ---- Imbalance/evaluation paragraph ----
+\paragraph{Sparse-contact evaluation.}
+The contact task is extremely imbalanced: the training split contains 110,155 positive contacts among 156,171,838 candidate residue pairs (0.0705\%). We therefore treat mean per-complex average precision as the primary threshold-free contact-ranking metric. We additionally report pooled prevalence, fixed-budget precision and recall, enrichment over prevalence, Brier score, expected calibration error, and both pooled and equal-complex recall at fixed operating points. AUROC is retained as a secondary discrimination statistic.
+
+% ---- Results correction ----
+\paragraph{Contact results.}
+Contact AUROC is high, but the practically relevant ranking result is more modest under the 0.0705--0.1071\% prevalence regime. EPIC's reported contact AUPRC is 0.0761, below the literature-reported 0.0957 value for ImaPEp in the original context table; these values are not treated as a controlled head-to-head comparison because the input modalities and evaluation protocols differ. We therefore report per-complex AP and fixed-budget ranking diagnostics in the supplement rather than interpreting AUROC or recall in isolation.
+
+\paragraph{Epitope results.}
+EPIC achieves high epitope recall but lower AUROC/AUPRC than MIPE and EpiFormer in the literature-context table. This is a sensitivity--ranking trade-off rather than an across-metric win. Precision, F1, calibration, and matched-recall comparisons are reported in the supplement. The conditional-proportion term can influence the operating point, but we do not assign a stable causal benefit without a matched multi-seed intervention.
+
+% ---- Baseline caption ----
+\caption{Literature-context numbers are reproduced from cited sources or benchmark reports and may differ in structure authority, split construction, candidate masks, per-complex versus pooled aggregation, and threshold selection. Boldface is not used to imply a controlled head-to-head comparison. Same-protocol internal measurements are reported separately.}
+
+% ---- Metric harmonization ----
+\paragraph{Recall estimands.}
+We report pooled recall, obtained by aggregating true positives and false negatives over the cohort, and macro recall, obtained by averaging per-complex recalls. Their different weighting is stated explicitly. Primary ranking comparisons use per-complex AP/AUROC; pooled operating-point metrics are reported separately.
+
+% ---- Limitations addition ----
+\paragraph{Additional limitations.}
+The structure-predictor sensitivity analyses do not constitute a paired OpenDDE-versus-alternative-predictor experiment on an identical frozen checkpoint. External and post-submission evidence is labelled separately. The official SAbDab2 test is historical rather than prospective, and no clinical or experimental validation is claimed. Individual architectural components are established techniques; our contribution is their integrated multi-resolution formulation and its controlled evidence, not a claim that every block is independently novel.

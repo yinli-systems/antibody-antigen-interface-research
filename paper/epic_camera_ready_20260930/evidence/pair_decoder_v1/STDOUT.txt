@@ -1,0 +1,46 @@
+{
+  "output": "/ssd/scxi253/frontier_multimodel_v1/epic_camera_ready_20260930/pair_decoder_v1/ANALYSIS.json",
+  "sha256": "171985f3a433c31dc31d76dd920426c7e93f1c79d0c2dc040ad0815e3a5baae9",
+  "ap_full_minus_unary": {
+    "equal_complex": 0.0023658290063322614,
+    "equal_antigen_cluster_equal_seed": 0.001285975539839686,
+    "crossed_seed_cluster_ci95": [
+      -0.0006993492689394563,
+      0.003110299187062426
+    ],
+    "cluster_only_ci95_conditional_on_fixed_seeds": [
+      0.0001596760238219601,
+      0.0024297486026279985
+    ],
+    "positive_seed_cluster_cell_fraction": 0.5339506172839507,
+    "seed_effects": {
+      "17": 0.0003385223952059787,
+      "29": 0.0034729678614356294,
+      "43": 0.003285996762355177
+    },
+    "cluster_count": 108,
+    "complex_count": 549,
+    "bootstrap_repeats": 10000
+  },
+  "ap_full_minus_outer": {
+    "equal_complex": 0.004958826228106766,
+    "equal_antigen_cluster_equal_seed": 0.004257384068802852,
+    "crossed_seed_cluster_ci95": [
+      0.0022898190376824377,
+      0.006293240391986953
+    ],
+    "cluster_only_ci95_conditional_on_fixed_seeds": [
+      0.0030120951104442074,
+      0.005484336738094166
+    ],
+    "positive_seed_cluster_cell_fraction": 0.8333333333333334,
+    "seed_effects": {
+      "17": 0.005717336059913773,
+      "29": 0.003892759514883053,
+      "43": 0.0052663831095234705
+    },
+    "cluster_count": 108,
+    "complex_count": 549,
+    "bootstrap_repeats": 10000
+  }
+}

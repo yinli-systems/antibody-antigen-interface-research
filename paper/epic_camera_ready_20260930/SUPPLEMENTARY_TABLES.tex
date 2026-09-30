@@ -1,0 +1,39 @@
+% EPIC reviewer-response supplementary table fragments.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Post-submission practical contact-ranking analysis on an audited AF3-geometry retrain using the official 455 historical split. This is not the exact submitted OpenDDE checkpoint.}
+\begin{tabular}{lr}
+\toprule
+Quantity & Value \\
+\midrule
+Candidate pairs / positives & 18,473,412 / 19,786 \\
+Pooled prevalence & 0.001071 \\
+Macro per-complex AP & 0.02479 \\
+Pooled AP / AUROC & 0.01084 / 0.91195 \\
+P@10 / P@50 / P@100 & 0.03934 / 0.02809 / 0.02415 \\
+P@Lmin / R@Lmin & 0.02379 / 0.06972 \\
+P@true-contact-count & 0.02941 \\
+Top-1\% precision / recall & 0.02041 / 0.14797 \\
+Brier / ECE-15 & 0.05506 / 0.12170 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Component evidence and its authorized interpretation. All non-submission results are labelled post-submission or successor evidence.}
+\begin{tabular}{p{0.22\linewidth}p{0.30\linewidth}p{0.38\linewidth}}
+\toprule
+Concern & Evidence & Interpretation \\
+\midrule
+Joint supervision & Contact supervision adds approximately 0.0833 pair AUPRC; removing global ranking adds 0.0214 pair AUPRC and 0.0369 node MCC. & Contact labels help; objectives can interfere. \\
+Geometry & Distance+direction versus topology-only: joint macro AUPRC $+0.0142$, CI $[0.0019,0.0229]$ in a single-seed development screen. & Suggestive, not multiplicity-adjusted confirmation. \\
+Pair decoder & Full score versus marginal outer product: $+0.00426$ AP, crossed CI $[0.00229,0.00629]$. & Evidence beyond separable paratope/epitope propensity. \\
+Contact gate & No exact frozen three-seed submitted-model intervention found. & Independent causal claim removed. \\
+Epitope count term & At dropout 0.2, recall $+0.0382$, precision $-0.0150$, macro AP $+0.00288$. & Operating-point trade-off; single-seed and regularization-dependent. \\
+\bottomrule
+\end{tabular}
+\end{table}
