@@ -75,6 +75,8 @@ def test_precursor_only_never_authorizes_training_or_outer(tmp_path: Path) -> No
     assert result["model_execution_authorized"] is False
     assert result["training_and_model_selection_authorized"] is False
     assert result["outer_evaluation_authorized"] is False
+    assert result["h0_execution_authorized"] is True
+    assert result["fold_cache_materialization_authorized"] is True
     assert result["fold_count"] == 12
 
 
@@ -101,4 +103,5 @@ def test_valid_scoped_gate0_authorizes_training_but_not_outer(tmp_path: Path) ->
     assert result["status"] == "FROZEN_SPLIT_AUTHORIZED"
     assert result["model_execution_authorized"] is True
     assert result["training_and_model_selection_authorized"] is True
+    assert result["h0_execution_authorized"] is True
     assert result["outer_evaluation_authorized"] is False

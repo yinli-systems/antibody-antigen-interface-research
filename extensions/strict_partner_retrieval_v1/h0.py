@@ -64,6 +64,9 @@ def antibody_nw(x:dict[str,str],y:dict[str,str],aligner)->float:
 
 def validate_cache(d:dict[str,Any]):
     if d.get("format_version")!="strict_partner_retrieval_h0_cache_v1":raise ValueError("cache format")
+    if d.get("role")!="h0_evaluation_only":raise ValueError("cache role")
+    if d.get("h0_execution_authorized") is not True:raise PermissionError("H0 execution authority absent")
+    if d.get("test_access") is not False or d.get("ood_access") is not False:raise PermissionError("sealed access")
     for key in ("training_antibodies","training_antigens","validation_antibodies","validation_antigens","training_pairs","validation_pairs"):
         if key not in d:raise ValueError(f"missing {key}")
     for side in ("training_antibodies","validation_antibodies"):

@@ -154,6 +154,10 @@ def main():
       "status":"FROZEN_SPLIT_AUTHORIZED" if authorized else "PREPARED_SPLIT_NOT_AUTHORIZED",
       "model_execution_authorized":authorized,
       "training_and_model_selection_authorized":authorized,
+      # H0 is a no-training, no-label baseline.  It is authorized only because
+      # this freezer has already required the independent precursor audit to pass.
+      "h0_execution_authorized":True,
+      "fold_cache_materialization_authorized":True,
       # Gate 0 deliberately cannot grant outer evaluation.  A later, separately
       # frozen model-selection authority is required for that transition.
       "outer_evaluation_authorized":False,
@@ -171,6 +175,8 @@ def main():
       "test_access":False,"ood_access":False
     }
     payload["scientific_payload_sha256"]=canonical_sha(payload)
-    a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(payload,indent=2,sort_keys=True,allow_nan=False)+"\n")
+    a.output.parent.mkdir(parents=True,exist_ok=True)
+    with a.output.open("x",encoding="utf-8") as handle:
+        handle.write(json.dumps(payload,indent=2,sort_keys=True,allow_nan=False)+"\n")
     print(json.dumps({"status":payload["status"],"training_authorized":payload["training_and_model_selection_authorized"],"outer_evaluation_authorized":payload["outer_evaluation_authorized"],"output":str(a.output),"scientific_payload_sha256":payload["scientific_payload_sha256"]},indent=2))
 if __name__=="__main__": main()

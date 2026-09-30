@@ -45,13 +45,19 @@ def find_fold(assignment,label):
 def ids(rows):return {x["pair_id"] for x in rows}
 
 def write_new(p:Path,obj):
- if p.exists():raise FileExistsError(p)
- p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(obj,indent=2,sort_keys=True,allow_nan=False)+"\n")
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open("x",encoding="utf-8") as handle:
+  handle.write(json.dumps(obj,indent=2,sort_keys=True,allow_nan=False)+"\n")
 
 def main():
  ap=argparse.ArgumentParser();ap.add_argument("--frozen-split",type=Path,required=True);ap.add_argument("--assignment",type=Path,required=True);ap.add_argument("--canonical-manifest",type=Path,required=True);ap.add_argument("--canonical-manifest-sha256",required=True);ap.add_argument("--fold",required=True);ap.add_argument("--output-root",type=Path,required=True)
  a=ap.parse_args()
  fs=load(a.frozen_split);ass=load(a.assignment)
+ if fs.get("format_version")!="strict_partner_retrieval_frozen_split_v1":raise ValueError("frozen split format")
+ if fs.get("status") not in ("PREPARED_SPLIT_NOT_AUTHORIZED","FROZEN_SPLIT_AUTHORIZED"):raise ValueError("frozen split status")
+ if fs.get("h0_execution_authorized") is not True or fs.get("fold_cache_materialization_authorized") is not True:raise PermissionError("fold cache/H0 authority absent")
+ if fs.get("test_access") is not False or fs.get("ood_access") is not False:raise PermissionError("sealed access")
+ if sha(a.assignment)!=fs.get("assignment",{}).get("sha256"):raise ValueError("assignment differs from frozen split")
  if sha(a.canonical_manifest)!=a.canonical_manifest_sha256:raise ValueError("canonical manifest hash")
  # Sequence caches may be prepared before full Gate0, but model training may not use them unless frozen split is authorized.
  antibodies,antigens,pairs,source_to_pair=inventory(a.canonical_manifest)
@@ -63,7 +69,7 @@ def main():
   pp=[pairs[p] for p in sorted(pairids)];aa=sorted({x["antibody_id"] for x in pp});gg=sorted({x["antigen_id"] for x in pp})
   return pp,{x:antibodies[x] for x in aa},{x:antigens[x] for x in gg}
  trp,tra,trg=subset(tr_ids);vap,vaa,vag=subset(va_ids)
- base={"format_version":"strict_partner_retrieval_sequence_cache_v1","fold":a.fold,"frozen_split_sha256":sha(a.frozen_split),"assignment_sha256":sha(a.assignment),"canonical_manifest_sha256":sha(a.canonical_manifest),"training_and_model_selection_authorized":bool(fs.get("training_and_model_selection_authorized")),"outer_evaluation_authorized":bool(fs.get("outer_evaluation_authorized")),"test_access":False,"ood_access":False}
+ base={"format_version":"strict_partner_retrieval_sequence_cache_v1","fold":a.fold,"frozen_split_sha256":sha(a.frozen_split),"assignment_sha256":sha(a.assignment),"canonical_manifest_sha256":sha(a.canonical_manifest),"training_and_model_selection_authorized":bool(fs.get("training_and_model_selection_authorized")),"h0_execution_authorized":bool(fs.get("h0_execution_authorized")),"outer_evaluation_authorized":bool(fs.get("outer_evaluation_authorized")),"test_access":False,"ood_access":False}
  train={**base,"role":"training_only","pairs":trp,"antibodies":tra,"antigens":trg,
         "source_instance_allowlist":sorted({i for x in trp for i in x["source_instance_ids"]})}
  evaluation={**base,"role":"evaluation_only","pairs":vap,"antibodies":vaa,"antigens":vag,
