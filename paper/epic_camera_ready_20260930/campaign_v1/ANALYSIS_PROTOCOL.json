@@ -1,0 +1,75 @@
+{
+  "bootstrap": {
+    "interval": "2.5th and 97.5th percentiles",
+    "method": "paired crossed resampling of the three seeds and shared validation complexes",
+    "random_seed": 20260930,
+    "replicates": 10000,
+    "same_complex_resample_shared_across_paired_conditions": true,
+    "same_seed_resample_shared_across_paired_conditions": true
+  },
+  "campaign_protocol_sha256": "d6647c4421eebb910d8adae73f41c814690e50f5b41ea1d6264179dcea7f0bc7",
+  "claim_boundaries": [
+    "This is post-submission matched evidence under independently sequence-predicted AF3 monomer geometry, not the unavailable submitted OpenDDE checkpoint.",
+    "The official 455 test authority remains unopened by the campaign until all 36 checkpoints and validation receipts are frozen.",
+    "Validation analysis cannot establish prospective biological generalization or clinical utility.",
+    "Exact OpenDDE-versus-alternative-predictor substitution remains unresolved unless a hash-bound OpenDDE authority is recovered.",
+    "Any later test analysis is report-only and cannot select conditions, thresholds, checkpoints, or manuscript claims retroactively."
+  ],
+  "created_utc": "2026-09-30T22:14:24Z",
+  "format_version": "epic_reviewer_closure_analysis_protocol_v1",
+  "implementation": {
+    "aggregate_validation.py": "71b0b3805a636fcfff37c5624f5a5d99d7a076f239d4ed942f292efa94f4b894",
+    "freeze_and_analyze.sbatch": "e380b128d67c780ca66fa0c6eb8e28d347312648b4ca6c649e7ee8b0dddb5757",
+    "freeze_training.py": "f2d59d80423ebf53da5a92120120ad0ede0924b44d3a252f00a7ae1d53daa586"
+  },
+  "interpretation_policy": [
+    "All deltas are ablation condition minus the full learned-gate reference, paired by seed and validation complex.",
+    "A directional component statement requires all three seed effects to agree and the crossed seed-by-complex 95% interval to exclude zero for the named metric.",
+    "Otherwise the result is reported as inconclusive or heterogeneous; no favorable metric may erase a cross-task or calibration trade-off.",
+    "Validation intervals are descriptive because the same 321-complex validation authority participated in checkpoint selection.",
+    "No p-values, best-component ranking, or prospective-generalization claim will be produced from this campaign."
+  ],
+  "metrics": {
+    "calibration": [
+      "Brier score",
+      "20-bin expected calibration error"
+    ],
+    "contact_budget": [
+      "P@10",
+      "R@10",
+      "P@20",
+      "R@20",
+      "P@50",
+      "R@50",
+      "P@100",
+      "R@100",
+      "P@Lmin",
+      "R@Lmin",
+      "top-1% enrichment",
+      "true-contact-count precision"
+    ],
+    "cost": [
+      "selected epoch",
+      "executed epochs",
+      "wall seconds",
+      "total parameters",
+      "trainable parameters"
+    ],
+    "operating_point": [
+      "pooled precision at 0.5",
+      "pooled recall at 0.5"
+    ],
+    "primary_rank_metrics": [
+      "mean per-complex average precision for contact",
+      "mean per-complex average precision for epitope",
+      "mean per-complex average precision for paratope"
+    ],
+    "secondary_discrimination": [
+      "mean per-complex AUROC"
+    ]
+  },
+  "reference_condition": "full_learned_gate",
+  "status": "PREREGISTERED_BEFORE_FIRST_FULL_TRAINING_RESULT",
+  "training_array_job_id": "1643900",
+  "training_result_count_at_registration": 0
+}

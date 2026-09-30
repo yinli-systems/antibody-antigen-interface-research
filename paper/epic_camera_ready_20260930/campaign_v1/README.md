@@ -28,3 +28,8 @@ The campaign does **not** claim to solve the exact OpenDDE-vs-alternative-predic
 - ParaCloud root: `/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z`.
 
 `parent_*_reference.py` and `PARENT_PROTOCOL.json` are small frozen provenance snapshots. Executable authority is the parent ParaCloud bundle identified in `CAMPAIGN_PROTOCOL.json`; the snapshots are not used as runtime substitutes.
+## Frozen post-training analysis plan
+
+Before any full 20-epoch result existed, `ANALYSIS_PROTOCOL.json` was frozen with SHA-256 `163245a45aee020b71c9f995a997ba7e08913286a95d8b10d7cf8a2a7c581012`. It preregisters paired three-seed deltas, crossed seed×complex bootstrap intervals, contact ranking budgets, calibration, and strict interpretation boundaries. The authority-freeze and aggregation pipeline passed a six-run synthetic integration test (`SYNTHETIC_PIPELINE_TEST_RECEIPT.json`, SHA-256 `5a5e4bb6d2fa52504d8a840ec7af0f6aa074d64184854403c87a65fdfc35e167`).
+
+Slurm job `1643939` is queued with `afterok:1643900`. It will verify and hash every checkpoint/result/validation/log, freeze all 36 runs into a training manifest, and only then compute the validation analysis. It does not open or score the 455-complex test authority.
