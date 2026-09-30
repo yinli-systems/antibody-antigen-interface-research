@@ -349,8 +349,14 @@ def command_evaluate(args: argparse.Namespace) -> None:
 
     state_before = {name: value.detach().cpu().clone() for name, value in model.state_dict().items()}
     device = torch.device(args.device)
+    output_dir = args.output.resolve()
+    output_dir.mkdir(parents=True, exist_ok=False)
+    pair_output_dir = output_dir / "pair_predictions"
+    if args.write_pair_predictions:
+        pair_output_dir.mkdir()
     rows = []
-    pair_rows = []
+    pooled_labels: list[np.ndarray] = []
+    pooled_scores: list[np.ndarray] = []
     primary: dict[str, float] = {}
     began = time.monotonic()
 
@@ -412,6 +418,8 @@ def command_evaluate(args: argparse.Namespace) -> None:
             scores_vector = score_matrix[mask].astype(np.float64)
             metrics = per_complex_metrics(labels_vector, scores_vector)
             primary[instance] = metrics["average_precision"]
+            pooled_labels.append(labels_vector.copy())
+            pooled_scores.append(scores_vector.copy())
 
             epitope_labels, paratope_labels = contact.node_labels()
             epitope_score = score_matrix.max(axis=1)
@@ -430,16 +438,15 @@ def command_evaluate(args: argparse.Namespace) -> None:
             })
             if args.write_pair_predictions:
                 antigen_local, antibody_local = np.nonzero(mask)
-                for ag_local, ab_local, label, score in zip(
-                    antigen_local, antibody_local, labels_vector, scores_vector, strict=True
-                ):
-                    pair_rows.append({
-                        "instance_id": instance,
-                        "ag_res_idx": int(contact.antigen_indices[ag_local]),
-                        "ab_res_idx": int(contact.antibody_indices[ab_local]),
-                        "label": int(label),
-                        "score": float(score),
-                    })
+                np.savez_compressed(
+                    pair_output_dir / f"{instance}.npz",
+                    instance_id=np.asarray(instance),
+                    antigen_residue_index=contact.antigen_indices[antigen_local].astype(np.int64),
+                    antibody_residue_index=contact.antibody_indices[antibody_local].astype(np.int64),
+                    label=labels_vector,
+                    score=scores_vector.astype(np.float32),
+                    score_definition=np.asarray("negative_euclidean_distance"),
+                )
             if index % args.log_every == 0 or index == len(validation):
                 print(f"evaluated {index}/{len(validation)}", flush=True)
 
@@ -447,24 +454,17 @@ def command_evaluate(args: argparse.Namespace) -> None:
         if not torch.equal(value.cpu(), state_before[name]):
             raise RuntimeError("inference mutated model state")
 
-    # Pair rows may be disabled, so pooled metrics are emitted only when raw rows were requested.
-    # Pooled metrics are emitted only when raw pair rows were requested.
-    pooled = None
-    if pair_rows:
-        frame = pd.DataFrame(pair_rows)
-        pooled = {
-            "average_precision": float(average_precision_score(frame["label"], frame["score"])),
-            "auroc": float(roc_auc_score(frame["label"], frame["score"])),
-            "pair_count": int(len(frame)),
-            "positive_count": int(frame["label"].sum()),
-        }
-    output_dir = args.output.resolve()
-    output_dir.mkdir(parents=True, exist_ok=False)
+    pooled_label = np.concatenate(pooled_labels)
+    pooled_score = np.concatenate(pooled_scores)
+    pooled = {
+        "average_precision": float(average_precision_score(pooled_label, pooled_score)),
+        "auroc": float(roc_auc_score(pooled_label, pooled_score)),
+        "pair_count": int(pooled_label.size),
+        "positive_count": int(pooled_label.sum()),
+    }
     pd.DataFrame([{key: value for key, value in row.items() if key != "structure_receipts"} for row in rows]).to_csv(
         output_dir / "per_complex.csv", index=False
     )
-    if pair_rows:
-        pd.DataFrame(pair_rows).to_parquet(output_dir / "pair_predictions.parquet", index=False)
     payload = {
         "format_version": "reparank_same_protocol_evaluation_v1",
         "status": "PASS_ENGINEERING_CANARY" if args.max_instances is not None else "COMPLETE_EXPOSED_PRETRAINED_VALIDATION_DIAGNOSTIC",
@@ -485,6 +485,8 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "epitope_macro_AP": float(np.mean([row["epitope_average_precision"] for row in rows])),
         "paratope_macro_AP": float(np.mean([row["paratope_average_precision"] for row in rows])),
         "pooled_pair_metrics": pooled,
+        "raw_pair_prediction_directory": str(pair_output_dir) if args.write_pair_predictions else None,
+        "raw_pair_prediction_file_count": len(rows) if args.write_pair_predictions else 0,
         "per_complex": rows,
         "score_definition": "negative Euclidean distance between official RePaRank complex embeddings",
         "candidate_grid": "exact existing complete antibody-by-antigen residue grid",
