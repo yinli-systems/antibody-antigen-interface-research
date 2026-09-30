@@ -181,3 +181,18 @@ def test_official_style_backbone_centering_does_not_add_nonofficial_residual_gat
     expected = x - x.mean(axis=(0, 1), keepdims=True)
     actual = center_backbone_like_official_inference(x)
     np.testing.assert_array_equal(actual, expected)
+
+
+def test_reusable_pair_prediction_requires_exact_grid_and_labels(tmp_path: Path) -> None:
+    from types import SimpleNamespace
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import load_reusable_pair_prediction
+    ag=np.array([4,8],dtype=np.int64);ab=np.array([2,5,9],dtype=np.int64)
+    labels=np.array([[1,0,0],[0,1,0]],dtype=np.uint8);mask=np.ones_like(labels,dtype=bool)
+    contact=SimpleNamespace(antigen_indices=ag,antibody_indices=ab,dense=lambda:(labels,mask))
+    al,bl=np.nonzero(mask);p=tmp_path/'x.npz'
+    np.savez_compressed(p,instance_id=np.asarray('x'),antigen_residue_index=ag[al],antibody_residue_index=ab[bl],label=labels[mask],score=np.linspace(-2,-1,6,dtype=np.float32),score_definition=np.asarray('negative_euclidean_distance'))
+    score,y,dense=load_reusable_pair_prediction(p,'x',contact)
+    np.testing.assert_array_equal(y,labels[mask]);np.testing.assert_allclose(dense[mask],score)
+    bad=tmp_path/'bad.npz';np.savez_compressed(bad,instance_id=np.asarray('x'),antigen_residue_index=ag[al],antibody_residue_index=ab[bl],label=1-labels[mask],score=np.linspace(-2,-1,6,dtype=np.float32),score_definition=np.asarray('negative_euclidean_distance'))
+    import pytest
+    with pytest.raises(ValueError,match='labels mismatch'):load_reusable_pair_prediction(bad,'x',contact)

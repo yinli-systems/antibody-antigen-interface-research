@@ -327,6 +327,42 @@ def command_audit(args: argparse.Namespace) -> None:
     print(json.dumps(payload, indent=2, sort_keys=True))
 
 
+def load_reusable_pair_prediction(path: Path, instance: str, contact) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Validate and load one prior pair-score artifact on the exact current grid.
+
+    Reuse is score-only: labels and residue indices must be byte-equivalent in
+    value to the frozen contact authority. The returned dense score matrix is
+    reconstructed so node metrics use the same pair scores as a fresh forward.
+    """
+    data = np.load(path, allow_pickle=False)
+    required = {"instance_id", "antigen_residue_index", "antibody_residue_index", "label", "score", "score_definition"}
+    if not required <= set(data.files):
+        raise ValueError(f"reused pair artifact lacks required fields {path}")
+    if str(data["instance_id"].item()) != instance:
+        raise ValueError(f"reused pair artifact instance mismatch {path}")
+    if str(data["score_definition"].item()) != "negative_euclidean_distance":
+        raise ValueError(f"reused pair artifact score definition mismatch {path}")
+    labels, mask = contact.dense()
+    antigen_local, antibody_local = np.nonzero(mask)
+    expected_ag = contact.antigen_indices[antigen_local].astype(np.int64)
+    expected_ab = contact.antibody_indices[antibody_local].astype(np.int64)
+    expected_label = labels[mask].astype(np.uint8)
+    if not np.array_equal(data["antigen_residue_index"].astype(np.int64), expected_ag):
+        raise ValueError(f"reused antigen residue grid mismatch {path}")
+    if not np.array_equal(data["antibody_residue_index"].astype(np.int64), expected_ab):
+        raise ValueError(f"reused antibody residue grid mismatch {path}")
+    if not np.array_equal(data["label"].astype(np.uint8), expected_label):
+        raise ValueError(f"reused labels mismatch {path}")
+    score = data["score"].astype(np.float64)
+    if score.shape != expected_label.shape or not np.isfinite(score).all():
+        raise ValueError(f"reused score vector invalid {path}")
+    dense_score = np.full(labels.shape, -np.inf, dtype=np.float64)
+    dense_score[mask] = score
+    if not np.isfinite(dense_score[mask]).all():
+        raise ValueError(f"reused dense score reconstruction failed {path}")
+    return score, expected_label, dense_score
+
+
 def command_evaluate(args: argparse.Namespace) -> None:
     import pandas as pd
     import torch
@@ -373,6 +409,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
     pair_output_dir = output_dir / "pair_predictions"
     if args.write_pair_predictions:
         pair_output_dir.mkdir()
+    reuse_root = args.reuse_pair_predictions_dir.resolve() if args.reuse_pair_predictions_dir else None
+    reused_pair_prediction_count = 0
+    fresh_model_forward_count = 0
     rows = []
     pooled_labels: list[np.ndarray] = []
     pooled_scores: list[np.ndarray] = []
@@ -384,60 +423,71 @@ def command_evaluate(args: argparse.Namespace) -> None:
     with torch.inference_mode():
         for index, instance in enumerate(validation, 1):
             sequence = canonical[instance]
-            sequences: dict[str, tuple[str, ...]] = {"heavy": (sequence["heavy"],)}
-            if sequence["light"]:
-                sequences["light"] = (sequence["light"],)
-            sequences["antigen"] = (sequence["antigen"],)
-            positions: dict[str, torch.Tensor] = {}
-            structure_receipts = {}
-            if requires_positions:
-                for name, chain_sequence in sequence.items():
-                    if name == "light" and not chain_sequence:
-                        continue
-                    key = sequence_key(chain_sequence)
-                    if key not in structure_by_key:
-                        raise ValueError(f"missing predicted-chain structure {name}:{key}")
-                    record = structure_by_key[key]
-                    pdb_path = args.structure_manifest.resolve().parent / record["pdb_path"]
-                    if sha256(pdb_path) != record["pdb_sha256"]:
-                        raise ValueError(f"predicted PDB hash mismatch {pdb_path}")
-                    backbone = parse_backbone_pdb(pdb_path, chain_sequence)
-                    if args.center_structure_coordinates:
-                        backbone = center_backbone_like_official_inference(backbone)
-                    pos_num = int(hyperparameters.get("pos_num") or 1)
-                    if pos_num == 1:
-                        backbone = backbone[:, 1:2, :]
-                    elif pos_num != 4:
-                        raise ValueError(f"unsupported checkpoint pos_num={pos_num}")
-                    positions[name] = torch.as_tensor(backbone, device=device).unsqueeze(0)
-                    structure_receipts[name] = {
-                        "sequence_sha256": key,
-                        "pdb_path": str(pdb_path),
-                        "pdb_sha256": record["pdb_sha256"],
-                    }
-            output = model(RePaRankInput(sequences=sequences, positions=positions))
-            antibody_embeddings = [output.complex_embeddings["heavy"]]
-            if "light" in output.complex_embeddings:
-                antibody_embeddings.append(output.complex_embeddings["light"])
-            antibody = torch.cat(antibody_embeddings, dim=1)[0]
-            antigen = output.complex_embeddings["antigen"][0]
-
             contact = load_contact_map(args.contact_dir.resolve() / f"{instance}.npz", instance)
-            antibody_indices = torch.as_tensor(contact.antibody_indices, dtype=torch.long, device=device)
-            antigen_indices = torch.as_tensor(contact.antigen_indices, dtype=torch.long, device=device)
-            if int(antibody.shape[0]) != len(sequence["heavy"]) + len(sequence["light"]):
-                raise ValueError(f"antibody embedding length mismatch {instance}")
-            if int(antigen.shape[0]) != len(sequence["antigen"]):
-                raise ValueError(f"antigen embedding length mismatch {instance}")
-            selected_ab = antibody.index_select(0, antibody_indices)
-            selected_ag = antigen.index_select(0, antigen_indices)
-            score_matrix = -torch.cdist(selected_ag, selected_ab).cpu().numpy()
-            labels, mask = contact.dense()
-            if score_matrix.shape != labels.shape or mask.shape != labels.shape:
-                raise ValueError(f"candidate-grid mismatch {instance}")
-            labels_vector = labels[mask].astype(np.uint8)
-            scores_vector = score_matrix[mask].astype(np.float64)
+            reuse_path = reuse_root / f"{instance}.npz" if reuse_root is not None else None
+            structure_receipts = {}
+            if reuse_path is not None and reuse_path.is_file():
+                scores_vector, labels_vector, score_matrix = load_reusable_pair_prediction(
+                    reuse_path, instance, contact
+                )
+                reused_pair_prediction_count += 1
+                structure_receipts["reused_pair_prediction"] = {
+                    "path": str(reuse_path), "sha256": sha256(reuse_path)
+                }
+            else:
+                sequences: dict[str, tuple[str, ...]] = {"heavy": (sequence["heavy"],)}
+                if sequence["light"]:
+                    sequences["light"] = (sequence["light"],)
+                sequences["antigen"] = (sequence["antigen"],)
+                positions: dict[str, torch.Tensor] = {}
+                if requires_positions:
+                    for name, chain_sequence in sequence.items():
+                        if name == "light" and not chain_sequence:
+                            continue
+                        key = sequence_key(chain_sequence)
+                        if key not in structure_by_key:
+                            raise ValueError(f"missing predicted-chain structure {name}:{key}")
+                        record = structure_by_key[key]
+                        pdb_path = args.structure_manifest.resolve().parent / record["pdb_path"]
+                        if sha256(pdb_path) != record["pdb_sha256"]:
+                            raise ValueError(f"predicted PDB hash mismatch {pdb_path}")
+                        backbone = parse_backbone_pdb(pdb_path, chain_sequence)
+                        if args.center_structure_coordinates:
+                            backbone = center_backbone_like_official_inference(backbone)
+                        pos_num = int(hyperparameters.get("pos_num") or 1)
+                        if pos_num == 1:
+                            backbone = backbone[:, 1:2, :]
+                        elif pos_num != 4:
+                            raise ValueError(f"unsupported checkpoint pos_num={pos_num}")
+                        positions[name] = torch.as_tensor(backbone, device=device).unsqueeze(0)
+                        structure_receipts[name] = {
+                            "sequence_sha256": key,
+                            "pdb_path": str(pdb_path),
+                            "pdb_sha256": record["pdb_sha256"],
+                        }
+                output = model(RePaRankInput(sequences=sequences, positions=positions))
+                fresh_model_forward_count += 1
+                antibody_embeddings = [output.complex_embeddings["heavy"]]
+                if "light" in output.complex_embeddings:
+                    antibody_embeddings.append(output.complex_embeddings["light"] )
+                antibody = torch.cat(antibody_embeddings, dim=1)[0]
+                antigen = output.complex_embeddings["antigen"][0]
+                antibody_indices = torch.as_tensor(contact.antibody_indices, dtype=torch.long, device=device)
+                antigen_indices = torch.as_tensor(contact.antigen_indices, dtype=torch.long, device=device)
+                if int(antibody.shape[0]) != len(sequence["heavy"]) + len(sequence["light"]):
+                    raise ValueError(f"antibody embedding length mismatch {instance}")
+                if int(antigen.shape[0]) != len(sequence["antigen"]):
+                    raise ValueError(f"antigen embedding length mismatch {instance}")
+                selected_ab = antibody.index_select(0, antibody_indices)
+                selected_ag = antigen.index_select(0, antigen_indices)
+                score_matrix = -torch.cdist(selected_ag, selected_ab).cpu().numpy()
+                labels, mask = contact.dense()
+                if score_matrix.shape != labels.shape or mask.shape != labels.shape:
+                    raise ValueError(f"candidate-grid mismatch {instance}")
+                labels_vector = labels[mask].astype(np.uint8)
+                scores_vector = score_matrix[mask].astype(np.float64)
             metrics = per_complex_metrics(labels_vector, scores_vector)
+            labels, mask = contact.dense()
             primary[instance] = metrics["average_precision"]
             pooled_labels.append(labels_vector.copy())
             pooled_scores.append(scores_vector.copy())
@@ -513,6 +563,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "pooled_pair_metrics": pooled,
         "raw_pair_prediction_directory": str(pair_output_dir) if args.write_pair_predictions else None,
         "raw_pair_prediction_file_count": len(rows) if args.write_pair_predictions else 0,
+        "reused_pair_prediction_count": reused_pair_prediction_count,
+        "fresh_model_forward_count": fresh_model_forward_count,
+        "reuse_pair_prediction_directory": str(reuse_root) if reuse_root else None,
         "per_complex": rows,
         "score_definition": "negative Euclidean distance between official RePaRank complex embeddings",
         "candidate_grid": "exact existing complete antibody-by-antigen residue grid",
@@ -560,6 +613,10 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
     evaluate.add_argument("--max-instances", type=int)
     evaluate.add_argument("--write-pair-predictions", action="store_true")
+    evaluate.add_argument(
+        "--reuse-pair-predictions-dir", type=Path,
+        help="Reuse only exact-grid validated prior NPZ pair scores; missing cases are freshly inferred.",
+    )
     evaluate.add_argument("--log-every", type=int, default=25)
     evaluate.set_defaults(function=command_evaluate)
     return parser
