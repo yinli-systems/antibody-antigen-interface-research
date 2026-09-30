@@ -14,6 +14,8 @@ PY=/ssd/scxi253/repr_extract/venv/bin/python3
 cd "$ROOT/source"
 ACTUAL=$(sha256sum "$PLAN" | cut -d" " -f1)
 [[ "$ACTUAL" == "$PLAN_SHA256" ]]
+[[ $(sha256sum "$ROOT/models/saprot650/pytorch_model.bin" | cut -d" " -f1) == 513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216 ]]
+[[ $(sha256sum "$ROOT/models/saprot650/vocab.txt" | cut -d" " -f1) == d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28 ]]
 
 export PYTHONPATH="$ROOT/pylibs:$PWD/src:$PWD" PYTHONHASHSEED=0 CUBLAS_WORKSPACE_CONFIG=:4096:8
 TASK=${SLURM_ARRAY_TASK_ID:?}

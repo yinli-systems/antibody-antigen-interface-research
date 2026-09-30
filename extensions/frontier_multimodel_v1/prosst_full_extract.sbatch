@@ -14,6 +14,8 @@ PY=/ssd/scxi253/repr_extract/venv/bin/python3
 cd "$ROOT/source"
 ACTUAL=$(sha256sum "$PLAN" | cut -d" " -f1)
 [[ "$ACTUAL" == "$PLAN_SHA256" ]]
+[[ $(sha256sum "$ROOT/models/prosst2048/model.safetensors" | cut -d" " -f1) == aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368 ]]
+[[ $(sha256sum "$ROOT/models/prosst2048/vocab.txt" | cut -d" " -f1) == 89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c ]]
 
 export PYTHONNOUSERSITE=1
 export PYTHONPATH="$ROOT/pylibs_prosst_official_v1:$ROOT/pylibs:$ROOT/external/ProSST:$PWD/src:$PWD" PYTHONHASHSEED=0 CUBLAS_WORKSPACE_CONFIG=:4096:8

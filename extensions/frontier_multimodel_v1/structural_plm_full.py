@@ -79,6 +79,10 @@ def freeze(arguments: argparse.Namespace) -> None:
     structure = arguments.structure_units.resolve()
     saprot_tokens = arguments.saprot_tokens.resolve()
     model_authority = arguments.model_authority.resolve()
+    programme_root = arguments.programme_root.resolve()
+    prosst_source = programme_root / "external/ProSST"
+    saprot_model = programme_root / "models/saprot650"
+    prosst_model = programme_root / "models/prosst2048"
     authority, rows = load_units(structure)
     counts = {side: sum(row["side"] == side for row in rows) for side in ("antibody", "antigen")}
     if counts != {"antibody": 2174, "antigen": 1171}:
@@ -95,10 +99,32 @@ def freeze(arguments: argparse.Namespace) -> None:
         raise ValueError("SaProt revision drift")
     if by_name["prosst2048"]["hf_revision"] != MODEL["prosst"]["revision"]:
         raise ValueError("ProSST revision drift")
+    import subprocess
+    prosst_commit = subprocess.check_output(["git", "-C", str(prosst_source), "rev-parse", "HEAD"], text=True).strip()
+    if prosst_commit != MODEL["prosst"]["source_commit"]:
+        raise ValueError(f"ProSST source commit drift: {prosst_commit}")
+    weight_paths = {
+        "saprot_weight": saprot_model / "pytorch_model.bin",
+        "saprot_tokenizer": saprot_model / "vocab.txt",
+        "prosst_weight": prosst_model / "model.safetensors",
+        "prosst_tokenizer": prosst_model / "vocab.txt",
+        "prosst_ae": prosst_source / "prosst/structure/static/AE.pt",
+        "prosst_cluster": prosst_source / "prosst/structure/static/2048.joblib",
+        "prosst_requirements": prosst_source / "requirements.txt",
+    }
+    if sha256_file(weight_paths["saprot_weight"]) != MODEL["saprot"]["weight_sha256"]:
+        raise ValueError("SaProt weight authority drift")
+    if sha256_file(weight_paths["saprot_tokenizer"]) != MODEL["saprot"]["tokenizer_sha256"]:
+        raise ValueError("SaProt tokenizer authority drift")
+    if sha256_file(weight_paths["prosst_weight"]) != MODEL["prosst"]["weight_sha256"]:
+        raise ValueError("ProSST weight authority drift")
+    if sha256_file(weight_paths["prosst_tokenizer"]) != MODEL["prosst"]["tokenizer_sha256"]:
+        raise ValueError("ProSST tokenizer authority drift")
     inputs = [
         structure,
         saprot_tokens / "RECEIPT.json",
         model_authority,
+        *weight_paths.values(),
         REPO / "extensions/frontier_multimodel_v1/structural_plm.py",
         REPO / "extensions/frontier_multimodel_v1/structural_plm_full.py",
         REPO / "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_LAYER_SWEEP_PROTOCOL.md",
@@ -116,6 +142,8 @@ def freeze(arguments: argparse.Namespace) -> None:
         "saprot_token_tree_files": saprot_files,
         "saprot_token_tree_bytes": saprot_bytes,
         "model_authority": str(model_authority),
+        "programme_root": str(programme_root),
+        "prosst_source_commit_observed": prosst_commit,
         "models": MODEL,
         "layers": {key: list(value) for key, value in LAYERS.items()},
         "shards": SHARDS,
@@ -142,13 +170,16 @@ def expected_by_side(rows: list[dict[str, Any]]) -> dict[str, dict[str, dict[str
 
 
 def verify_receipt_coverage(receipts: Iterable[Path], expected: set[str], *, kind: str,
-                            model: str | None = None, layers: tuple[int, ...] | None = None) -> list[dict]:
+                            expected_side: str, model: str | None = None,
+                            layers: tuple[int, ...] | None = None) -> list[dict]:
     seen: set[str] = set()
     payloads = []
     for path in sorted(receipts):
         payload = json.loads(path.read_text())
         if payload.get("status") != "PASS" or payload.get("test_loaded") or payload.get("contact_labels_loaded"):
             raise ValueError(f"bad receipt firewall/status: {path}")
+        if payload.get("side") != expected_side:
+            raise ValueError(f"receipt side mismatch: {path}")
         if kind == "extract":
             if payload.get("model_kind") != model or tuple(payload.get("layers", [])) != tuple(layers or ()):
                 raise ValueError(f"extract receipt model/layer mismatch: {path}")
@@ -203,13 +234,13 @@ def audit(arguments: argparse.Namespace) -> None:
     for side in ("antibody", "antigen"):
         side_expected = set(expected[side])
         quant_receipts = list(token_root.glob(f"RECEIPT_{side}_*_of_*.json"))
-        quant_payloads = verify_receipt_coverage(quant_receipts, side_expected, kind="token")
+        quant_payloads = verify_receipt_coverage(quant_receipts, side_expected, kind="token", expected_side=side)
         for payload in quant_payloads:
             if payload.get("quantizer_environment") != PROSST_OFFICIAL_ENVIRONMENT:
                 raise ValueError("ProSST official environment not recorded")
         for model in ("saprot", "prosst"):
             receipt_paths = list(feature_root.glob(f"RECEIPT_{model}_{side}_*_of_*.json"))
-            payloads = verify_receipt_coverage(receipt_paths, side_expected, kind="extract", model=model, layers=LAYERS[model])
+            payloads = verify_receipt_coverage(receipt_paths, side_expected, kind="extract", expected_side=side, model=model, layers=LAYERS[model])
             loading[(model, side)] = [payload.get("model_loading_info") for payload in payloads]
             for payload in payloads:
                 info = payload.get("model_loading_info", {})
@@ -303,6 +334,7 @@ def parser() -> argparse.ArgumentParser:
     freeze_parser.add_argument("--structure-units", type=Path, required=True)
     freeze_parser.add_argument("--saprot-tokens", type=Path, required=True)
     freeze_parser.add_argument("--model-authority", type=Path, required=True)
+    freeze_parser.add_argument("--programme-root", type=Path, required=True)
     freeze_parser.add_argument("--output-root", type=Path, required=True)
     freeze_parser.add_argument("--commit", required=True)
     freeze_parser.add_argument("--plan", type=Path, required=True)

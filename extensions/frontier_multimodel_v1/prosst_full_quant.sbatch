@@ -14,6 +14,7 @@ PY=/ssd/scxi253/repr_extract/venv/bin/python3
 cd "$ROOT/source"
 ACTUAL=$(sha256sum "$PLAN" | cut -d" " -f1)
 [[ "$ACTUAL" == "$PLAN_SHA256" ]]
+[[ $(git -C "$ROOT/external/ProSST" rev-parse HEAD) == 13bd56495641a84cd5475eaef7aa98b14fdc6ed5 ]]
 
 export PYTHONNOUSERSITE=1
 export PYTHONPATH="$ROOT/pylibs_prosst_official_v1:$ROOT/pylibs:$ROOT/external/ProSST:$PWD/src:$PWD" PYTHONHASHSEED=0 CUBLAS_WORKSPACE_CONFIG=:4096:8
