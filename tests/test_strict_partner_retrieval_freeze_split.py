@@ -121,8 +121,12 @@ def test_valid_scoped_gate0_authorizes_training_but_not_outer(tmp_path: Path) ->
     gate0.write_text(json.dumps({
         "format_version": "strict_partner_retrieval_gate0_authority_v1",
         "status": "AUTHORIZED_FOR_STRICT_PARTNER_RETRIEVAL_TRAINING",
+        "scope": "authority_train_development_only",
         "authorized_for_training": True,
         "authorized_for_nested_model_selection": True,
+        "outer_evaluation_authorized": False,
+        "full_v0_confirmatory_gate0_claimed": False,
+        "sealed_authority_validation_access": False,
         "test_access": False,
         "ood_access": False,
         "assignment_sha256": _sha(assignment),

@@ -122,8 +122,12 @@ def gate0_ok(g:dict[str,Any], assignment_sha:str,audit_sha:str)->bool:
     return (
       g.get("format_version")=="strict_partner_retrieval_gate0_authority_v1"
       and g.get("status")=="AUTHORIZED_FOR_STRICT_PARTNER_RETRIEVAL_TRAINING"
+      and g.get("scope")=="authority_train_development_only"
       and g.get("authorized_for_training") is True
       and g.get("authorized_for_nested_model_selection") is True
+      and g.get("outer_evaluation_authorized") is False
+      and g.get("full_v0_confirmatory_gate0_claimed") is False
+      and g.get("sealed_authority_validation_access") is False
       and g.get("test_access") is False and g.get("ood_access") is False
       and g.get("assignment_sha256")==assignment_sha and g.get("independent_audit_sha256")==audit_sha
       and isinstance(g.get("authority_sha256"),str) and len(g["authority_sha256"])==64

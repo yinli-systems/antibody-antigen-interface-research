@@ -1,0 +1,6 @@
+2026-09-30
+Two isolated direct regression cases were executed:
+- an exact replay/audit/prepared-library fixture issues authority_train_development_only training permission while outer/full-V0/test/OOD remain disabled;
+- a library claiming unlabeled candidates are measured non-binders fails closed.
+Result: 2/2 development-authority cases PASS.
+Implementation and test files compile successfully.
