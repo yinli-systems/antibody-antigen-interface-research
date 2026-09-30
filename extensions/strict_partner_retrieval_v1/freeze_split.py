@@ -168,5 +168,5 @@ def main():
     }
     payload["scientific_payload_sha256"]=canonical_sha(payload)
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(payload,indent=2,sort_keys=True,allow_nan=False)+"\n")
-    print(json.dumps({"status":payload["status"],"output":str(a.output),"scientific_payload_sha256":payload["scientific_payload_sha256"]},indent=2))
+    print(json.dumps({"status":payload["status"],"training_authorized":payload["training_and_model_selection_authorized"],"outer_evaluation_authorized":payload["outer_evaluation_authorized"],"output":str(a.output),"scientific_payload_sha256":payload["scientific_payload_sha256"]},indent=2))
 if __name__=="__main__": main()
