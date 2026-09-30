@@ -1,0 +1,2 @@
+# Preserve raw source/receipt/log bytes for hash verification.
+* -text

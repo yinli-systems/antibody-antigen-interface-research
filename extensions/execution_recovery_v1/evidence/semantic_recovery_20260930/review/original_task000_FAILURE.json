@@ -1,0 +1,9 @@
+{
+  "at_utc": "2026-09-30T08:40:42Z",
+  "error": "top-level model is not a maximum-score sample byte for byte",
+  "error_type": "ValueError",
+  "execution_plan_sha256": "6db2ca822003647080561af7124795d855117a920fd634ce0392d8e995539df3",
+  "slurm_job_id": "1641607",
+  "state": "FAILED",
+  "task_id": 0
+}

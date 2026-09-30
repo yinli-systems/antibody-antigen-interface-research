@@ -1,0 +1,39 @@
+{"argv": ["/ssd/scxi253/repr_extract/venv/bin/python3", "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/source_e61c6bd/extensions/execution_recovery_v1/semantic_audit.py", "--plan", "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt4/PLAN.json", "--plan-sha256", "397193cd9248d4157b836de3db6c1e3f729cc9665817b9af49117c5f59b880ea", "--task-id", "2", "--output", "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK002.json"]}
+{
+  "state": "PASS_STRICT_SEMANTIC_POST_AUDIT",
+  "task_id": 2,
+  "sample_count": 25,
+  "sequence_length": 84,
+  "selected": {
+    "seed": 37,
+    "sample": 0,
+    "score": 0.4970275770004049,
+    "model_sha256": "4e7e55d6589ed2f0c793707befe4f1dacb105f915a228426012eb0802e63d8b0",
+    "summary_confidences_sha256": "6747a70298512d56889b3837fb8704cfc51a8405c31cc99466ed001a7d0800ef",
+    "confidences_sha256": "9a519e8022c9f5408977cf8c43083dfeec0cdada09d1af961f112ba3dd3f1e70",
+    "residues": 84,
+    "atom_count": 668,
+    "backbone_atoms": 336,
+    "backbone_sha256": "739be942779878a7f923e79ef7f0246d84139efea7639c2d0e53ace1d59084c3",
+    "all_atom_sha256": "59d6624e40e400ce088dfdad3fa491c7d4377dc762b54ad4097d3115a923a4ba",
+    "atom_bfactor_sha256": "d79d3c2a4e42641e099cb163cae4439c36cb29b78f84d6a0ef749a8a7a69a2da",
+    "atom_topology_sha256": "bf8dabc51113c5a70e83d4b6fcdbaff7fa1feb7a20d0d9dae6749e845c2989c2"
+  },
+  "top_model_comparison": {
+    "equivalent": true,
+    "raw_difference_keys": [
+      "_ma_model_list.model_group_name"
+    ],
+    "normalized_difference_keys": [],
+    "top_semantic_sha256": "c1b526376a2411c27cc34b61f939480093850c0e997f9c3c22dd28d057441e0e",
+    "sample_semantic_sha256": "c1b526376a2411c27cc34b61f939480093850c0e997f9c3c22dd28d057441e0e",
+    "normalised_fields": [
+      "_ma_model_list.model_group_name"
+    ],
+    "comparison_mode": "STRICT_MMCIF_SEMANTIC_EQUIVALENCE"
+  },
+  "recovered_source": null,
+  "task_tree_unchanged": true,
+  "runtime_deep_hashes_verified": false,
+  "inference_performed": false
+}

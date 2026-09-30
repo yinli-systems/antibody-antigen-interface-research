@@ -1,0 +1,38 @@
+{
+  "state": "PASS_STRICT_SEMANTIC_POST_AUDIT",
+  "task_id": 0,
+  "sample_count": 25,
+  "sequence_length": 78,
+  "selected": {
+    "seed": 42,
+    "sample": 2,
+    "score": 0.6402947117306571,
+    "model_sha256": "2dbe2afcf7ea105c571ec0712a30746f9a5c8332814b5485efd19768cabb88de",
+    "summary_confidences_sha256": "fe3df4e1ffb85c96c26e275cc82cd8cef4c59745c146e11342d1d45c4e03b309",
+    "confidences_sha256": "e09ca37dfc1608eac51a1cc1e69b7123a86909aa7b1c85a7eae6f748a715ab9b",
+    "residues": 78,
+    "atom_count": 597,
+    "backbone_atoms": 312,
+    "backbone_sha256": "0329c150a53756a1d8fbf520317dcf56d514a50da5fd4f574c3380f46c205ab2",
+    "all_atom_sha256": "c354bb955cc7e979c762ee87172a89cb860144bc517975b4e21240cb41287d12",
+    "atom_bfactor_sha256": "cf0c501390f666413dfdbb322879877dcf071ebfb648f9015c45b1a1ed1e86df",
+    "atom_topology_sha256": "8544e9833b3ea46112e3e8953a42ebf3b1f2304cd1ff64b31a7f44f37151be4c"
+  },
+  "top_model_comparison": {
+    "equivalent": true,
+    "raw_difference_keys": [
+      "_ma_model_list.model_group_name"
+    ],
+    "normalized_difference_keys": [],
+    "top_semantic_sha256": "724b4cd1691e7e0beefb8afa5cb1fd7ae0ffd25de5411f1b7c3076eab188568f",
+    "sample_semantic_sha256": "724b4cd1691e7e0beefb8afa5cb1fd7ae0ffd25de5411f1b7c3076eab188568f",
+    "normalised_fields": [
+      "_ma_model_list.model_group_name"
+    ],
+    "comparison_mode": "STRICT_MMCIF_SEMANTIC_EQUIVALENCE"
+  },
+  "recovered_source": null,
+  "task_tree_unchanged": true,
+  "runtime_deep_hashes_verified": false,
+  "inference_performed": false
+}

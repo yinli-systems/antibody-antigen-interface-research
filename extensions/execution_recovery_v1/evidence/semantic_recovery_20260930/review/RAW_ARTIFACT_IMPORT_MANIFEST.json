@@ -1,0 +1,167 @@
+{
+  "files": [
+    {
+      "file": "TESTS_INITIAL_SOURCE.txt",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TESTS_001.txt",
+      "sha256": "8d2b0c280c43e64cc298fe7ed23a4fbf09cb3d9b9b1981c965280e003bf29e44",
+      "bytes": 238
+    },
+    {
+      "file": "TESTS_COMMITTED_SOURCE.txt",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TESTS_COMMITTED_SOURCE.txt",
+      "sha256": "4cbdbd921cdaa74ff96970cc34c2b9539027d686696ee74027f21b212796e8b8",
+      "bytes": 238
+    },
+    {
+      "file": "TESTS_CLOSURE_COMMITTED_SOURCE.txt",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TESTS_CLOSURE_COMMITTED_SOURCE.txt",
+      "sha256": "d25fd17a972c396e124acebdb636f80d8014ffcd0d459eb32a6d84f12a8370b5",
+      "bytes": 245
+    },
+    {
+      "file": "STATE_001.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/STATE_001.json",
+      "sha256": "eb3d7c799426cfdaae243e97f711b6019906dfd9fcf9990d5289d7e4cf99db90",
+      "bytes": 3308
+    },
+    {
+      "file": "original_task000_FAILURE.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs/task_000/FAILURE.json",
+      "sha256": "9b36a76b1ec6e856c16a87a31cb4f19de00bf14a6cc76c7e5189a24e779944f1",
+      "bytes": 304
+    },
+    {
+      "file": "original_task000.stdout.txt",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/logs/1641607_0.out",
+      "sha256": "59dd0f332f8df7270fec7fc21485dfaaa1d7fbc3844e3aa5fec33e4006eb8981",
+      "bytes": 3014
+    },
+    {
+      "file": "original_task000.stderr.txt",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/logs/1641607_0.err",
+      "sha256": "9d390d9b255959c9658461ac68e316fa00a00868dd2e41d098a71b3461c77b94",
+      "bytes": 7602
+    },
+    {
+      "file": "original_execution_PLAN.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/PLAN.json",
+      "sha256": "6db2ca822003647080561af7124795d855117a920fd634ce0392d8e995539df3",
+      "bytes": 40914
+    },
+    {
+      "file": "active_execution_PLAN.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt4/PLAN.json",
+      "sha256": "397193cd9248d4157b836de3db6c1e3f729cc9665817b9af49117c5f59b880ea",
+      "bytes": 40914
+    },
+    {
+      "file": "active_task000_COMPLETE.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt4/runs/task_000/COMPLETE.json",
+      "sha256": "542637ba103d1f19fef47adc14234970c82e5b5f38428dc275fe2975ddb66654",
+      "bytes": 22219
+    },
+    {
+      "file": "remaining_SUBMITTED.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt4/remaining_SUBMITTED.json",
+      "sha256": "7fab698413bb0cbb7b4becc27517ddee14979ddfc54c029a04e725de03c9167d",
+      "bytes": 3068
+    },
+    {
+      "file": "remaining_SUBMIT_COMMAND.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt4/remaining_SUBMIT_COMMAND.json",
+      "sha256": "499dea7a0dda4f698056bb0fea60412ea3ac5e82983f2a29f951a66671e2b3a1",
+      "bytes": 2947
+    },
+    {
+      "file": "scientific_PLAN.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/PLAN.json",
+      "sha256": "f2199a1f1940ff64fb75d7810b974963ed984fc293c6d3f2f0f150663b1bd615",
+      "bytes": 38721
+    },
+    {
+      "file": "receipts/TASK000_ADMITTED.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK000_ADMITTED.json",
+      "sha256": "f6d8c780758de75c0906e69bca04cda40d4618c17ea981736e36e9715ab1f810",
+      "bytes": 50243
+    },
+    {
+      "file": "receipts/TASK000_ORIGINAL.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK000_ORIGINAL.json",
+      "sha256": "f2bd9191ab01bca635d98b160f5989a933fcf314228b06b0d93f2b6657074b09",
+      "bytes": 50080
+    },
+    {
+      "file": "receipts/TASK001.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK001.json",
+      "sha256": "19c44225e0b66c205e0d744824fbec58f316c1b05577f8710f235963d88711cf",
+      "bytes": 50084
+    },
+    {
+      "file": "receipts/TASK002.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK002.json",
+      "sha256": "49970011df0d214dc882e8916e13d476ccd687d7278c53dae39c5bd0e5fd8c50",
+      "bytes": 50086
+    },
+    {
+      "file": "receipts/TASK003.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK003.json",
+      "sha256": "9a8ee688b4e00170a054c92fd7e33205a36ba4a60e39b299430fb9fe7aea5659",
+      "bytes": 49878
+    },
+    {
+      "file": "receipts/TASK004.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK004.json",
+      "sha256": "25b3004f7171adcecb80bec4225a4fa5545576edef335b245c4bacce94ee6a6c",
+      "bytes": 50116
+    },
+    {
+      "file": "receipts/TASK005.json",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK005.json",
+      "sha256": "9985e6a39e3aa1686cc4955d155cef69c950e6119611eb587ad4e3a2bf1e0d7f",
+      "bytes": 50120
+    },
+    {
+      "file": "audit_logs/TASK000_ADMITTED.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK000_ADMITTED.log",
+      "sha256": "17a155d80a248376853e37e661e21fc7fac501cb644099921959a5a4053ef7ab",
+      "bytes": 1799
+    },
+    {
+      "file": "audit_logs/TASK000_ORIGINAL.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK000_ORIGINAL.log",
+      "sha256": "90336b83dcaad20babe95b329822f5a2fbaa93c1daa1f28e1c0f152aa02396d9",
+      "bytes": 1554
+    },
+    {
+      "file": "audit_logs/TASK001.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK001.log",
+      "sha256": "693fb6b7fa6f73b57487b0f27c7e79e17049423b7708f6bf0828358264c18fd9",
+      "bytes": 2092
+    },
+    {
+      "file": "audit_logs/TASK002.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK002.log",
+      "sha256": "c15ab9a9859ab5eb7dab553e6978cb46ef7291910a1b54c9f418eef253b5bc70",
+      "bytes": 2092
+    },
+    {
+      "file": "audit_logs/TASK003.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK003.log",
+      "sha256": "f2b2c1894d646e5cb01726351cbdcc8727cc903f80e57b8ff0521a24e9f0dc33",
+      "bytes": 1861
+    },
+    {
+      "file": "audit_logs/TASK004.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK004.log",
+      "sha256": "d55eefa85e00ab308948a11fef5d14090ec9d5fa3211e6bcbdb13bf76aa1b76a",
+      "bytes": 2095
+    },
+    {
+      "file": "audit_logs/TASK005.log",
+      "source": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/TASK005.log",
+      "sha256": "e42ca3caedb162f434854ad81192ae78444c7fcab5afb80fd62c1a49dddb09a8",
+      "bytes": 2095
+    }
+  ],
+  "original_prediction_files_modified": false
+}

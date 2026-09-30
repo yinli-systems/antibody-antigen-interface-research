@@ -1,0 +1,72 @@
+squashfuse/0.6.1 loaded (bin=/data/apps/squashfuse/0.6.1/bin)
+cuda-12.8 loaded successful
+cudnn-8.9.6.50_CUDA 12.x loaded successful
+apptainer/1.4.5 loaded (bin=/data/apps/apptainer/1.4.5/bin)
+需要 FUSE 挂载 SIF 时请先: module load squashfuse/0.6.1
+构建 SIF 时若需外部 mksquashfs/unsquashfs 请加载: module load squashfs-tools/4.6.1
+INFO:    fuse2fs not found, will not be able to mount EXT3 filesystems
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/data/home/scxi253/.profile: line 29: /data/home/scxi253/ssd/huaizhe/opendde/tools/bin/env: No such file or directory
+INFO:2026-09-30 16:38:01,574:jax._src.xla_bridge:749: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0930 16:38:01.574659 22831981330752 xla_bridge.py:749] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0930 16:38:08.283253 22831981330752 pipeline.py:474] Skipping MSA and template search for protein chain A because it already has MSAs and templates.
+I0930 16:38:08.283567 22831981330752 pipeline.py:480] Using empty unpaired MSA for protein chain A
+I0930 16:38:08.283664 22831981330752 pipeline.py:482] Using empty paired MSA for protein chain A
+I0930 16:38:08.283739 22831981330752 pipeline.py:484] Using no templates for protein chain A
+I0930 16:38:15.146661 22831981330752 pipeline.py:173] processing af3_missing_17b7471b4979f8a662f30e9a, random_seed=42
+I0930 16:38:15.252404 22831981330752 pipeline.py:266] Calculating bucket size for input with 78 tokens.
+I0930 16:38:15.252643 22831981330752 pipeline.py:272] Got bucket size 256 for input with 78 tokens, resulting in 178 padded tokens.
+I0930 16:38:16.261195 22831981330752 pipeline.py:173] processing af3_missing_17b7471b4979f8a662f30e9a, random_seed=100
+I0930 16:38:16.271031 22831981330752 pipeline.py:266] Calculating bucket size for input with 78 tokens.
+I0930 16:38:16.271222 22831981330752 pipeline.py:272] Got bucket size 256 for input with 78 tokens, resulting in 178 padded tokens.
+I0930 16:38:17.103361 22831981330752 pipeline.py:173] processing af3_missing_17b7471b4979f8a662f30e9a, random_seed=18
+I0930 16:38:17.114030 22831981330752 pipeline.py:266] Calculating bucket size for input with 78 tokens.
+I0930 16:38:17.114169 22831981330752 pipeline.py:272] Got bucket size 256 for input with 78 tokens, resulting in 178 padded tokens.
+I0930 16:38:17.958951 22831981330752 pipeline.py:173] processing af3_missing_17b7471b4979f8a662f30e9a, random_seed=37
+I0930 16:38:17.969279 22831981330752 pipeline.py:266] Calculating bucket size for input with 78 tokens.
+I0930 16:38:17.969406 22831981330752 pipeline.py:272] Got bucket size 256 for input with 78 tokens, resulting in 178 padded tokens.
+I0930 16:38:18.796987 22831981330752 pipeline.py:173] processing af3_missing_17b7471b4979f8a662f30e9a, random_seed=79
+I0930 16:38:18.807260 22831981330752 pipeline.py:266] Calculating bucket size for input with 78 tokens.
+I0930 16:38:18.807438 22831981330752 pipeline.py:272] Got bucket size 256 for input with 78 tokens, resulting in 178 padded tokens.
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+/alphafold3_venv/lib/python3.12/site-packages/triton/language/semantic.py:1687: UserWarning: tl.where with a non-boolean condition is deprecated and will error out in a future triton release. Got int8
+  warnings.warn(
+Traceback (most recent call last):
+  File "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_0bd7366/extensions/execution_recovery_v1/af3.py", line 393, in <module>
+    if __name__=='__main__': main()
+  File "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_0bd7366/extensions/execution_recovery_v1/af3.py", line 385, in main
+    elif a.action=='run': run_task(a.plan,a.plan_sha256,a.task_id)
+  File "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_0bd7366/extensions/execution_recovery_v1/af3.py", line 254, in run_task
+    result = audit_task(plan,task_id)
+  File "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_0bd7366/extensions/execution_recovery_v1/af3.py", line 220, in audit_task
+    raise ValueError('top-level model is not a maximum-score sample byte for byte')
+ValueError: top-level model is not a maximum-score sample byte for byte
