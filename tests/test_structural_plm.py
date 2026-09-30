@@ -43,3 +43,12 @@ def test_load_units_enforces_firewall_and_unique_side_sequence(tmp_path:Path):
     with pytest.raises(ValueError):load_units(path)
     payload=fixture_payload();payload["records"].append(payload["records"][0]);payload["record_count"]+=1;path.write_text(json.dumps(payload))
     with pytest.raises(ValueError):load_units(path)
+
+
+def test_saprot_allowed_missing_keys_are_only_non_hidden_state_heads():
+    from extensions.frontier_multimodel_v1.structural_plm import SAPROT_ALLOWED_MISSING_KEYS
+    assert SAPROT_ALLOWED_MISSING_KEYS == {
+        "esm.embeddings.position_embeddings.weight",
+        "esm.contact_head.regression.bias",
+        "esm.contact_head.regression.weight",
+    }

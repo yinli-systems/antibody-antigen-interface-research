@@ -72,3 +72,21 @@ confirmed without a newly admitted cohort.
 
 Smoke tests, installed weights, extracted interfaces and partial shards are not
 reported as completed training or performance results.
+
+## Amendment after first real-token smoke
+
+SaProt smoke job `1639988` completed one real 3Di sequence across all five
+registered layers, but the generic Hugging Face loader reported three missing
+parameters: the contact-regression head and the absolute position-embedding
+weight. The downstream extraction consumes transformer hidden states; the model
+configuration uses rotary positions and does not consume the contact head. These
+three names are now an explicit allowed-missing whitelist. Any other missing,
+unexpected or mismatched key fails closed and is written to the extraction
+receipt. The first smoke remains preserved and is not used as final extraction
+evidence.
+
+ProSST quantizer smoke `1639989` failed before writing a token because the
+scikit-learn cluster object expected its own centre dtype and rejected the GVP
+array dtype. The retry converts the contiguous embedding array to the exact
+`cluster_centers_.dtype`; it does not alter embeddings, centres or labels. Job
+`1639990` never ran because its dependency failed. A new attempt is required.

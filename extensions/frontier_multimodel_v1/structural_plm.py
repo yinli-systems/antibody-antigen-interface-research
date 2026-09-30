@@ -11,6 +11,12 @@ import argparse, hashlib, json, os, subprocess, tempfile, time
 from pathlib import Path
 from typing import Any
 
+SAPROT_ALLOWED_MISSING_KEYS={
+ 'esm.embeddings.position_embeddings.weight',
+ 'esm.contact_head.regression.bias',
+ 'esm.contact_head.regression.weight',
+}
+
 REPOSITORY_ROOT=Path(__file__).resolve().parents[2]
 import sys
 sys.path.insert(0,str(REPOSITORY_ROOT/'src'))
@@ -119,7 +125,10 @@ def quantize_one(pdb:Path,model,cluster,source:Path,device:str,batch_nodes:int=8
   h=(batch.node_s,batch.node_v); e=(batch.edge_s,batch.edge_v)
   z=model.get_embedding(h,batch.edge_index,e)
   z=scatter_mean(z,batch.batch,dim=0).float().cpu(); z=torch.nn.functional.normalize(z,p=2,dim=1)
-  labels.extend(int(x) for x in cluster.predict(z.numpy()).tolist()); sub=[]; nodes=0
+  import numpy as np
+  expected_dtype=getattr(getattr(cluster,'cluster_centers_',None),'dtype',np.dtype('float32'))
+  cluster_input=np.ascontiguousarray(z.numpy(),dtype=expected_dtype)
+  labels.extend(int(x) for x in cluster.predict(cluster_input).tolist()); sub=[]; nodes=0
  for anchor in range(len(graph.aa_seq)):
   item=convert_graph(generate_pos_subgraph(graph,subgraph_depth=None,max_distance=10,anchor_nodes=anchor,verbose=False,pure_subgraph=True)[anchor])
   n=int(item.node_s.shape[0])
@@ -187,10 +196,19 @@ def extract(args):
  if args.max_records is not None: todo=todo[:args.max_records]
  if args.model_kind=='saprot':
   tokenizer=EsmTokenizer.from_pretrained(args.model_path,local_files_only=True)
-  model=EsmForMaskedLM.from_pretrained(args.model_path,local_files_only=True).to(args.device).eval(); token_format='saprot_structural_tokens_v1'
+  model,loading_info=EsmForMaskedLM.from_pretrained(args.model_path,local_files_only=True,output_loading_info=True)
+  missing=set(loading_info.get('missing_keys',[])); unexpected=set(loading_info.get('unexpected_keys',[])); mismatched=loading_info.get('mismatched_keys',[])
+  if missing-SAPROT_ALLOWED_MISSING_KEYS or unexpected or mismatched:
+   raise ValueError(f'unapproved SaProt model loading difference: missing={sorted(missing)} unexpected={sorted(unexpected)} mismatched={mismatched}')
+  model=model.to(args.device).eval(); token_format='saprot_structural_tokens_v1'
  else:
   tokenizer=AutoTokenizer.from_pretrained(args.model_path,local_files_only=True,trust_remote_code=True)
-  model=AutoModelForMaskedLM.from_pretrained(args.model_path,local_files_only=True,trust_remote_code=True).to(args.device).eval(); token_format='prosst_structural_tokens_v1'
+  loaded=AutoModelForMaskedLM.from_pretrained(args.model_path,local_files_only=True,trust_remote_code=True,output_loading_info=True)
+  if isinstance(loaded,tuple): model,loading_info=loaded
+  else: model,loading_info=loaded,{}
+  if loading_info.get('missing_keys') or loading_info.get('unexpected_keys') or loading_info.get('mismatched_keys'):
+   raise ValueError(f'ProSST model loading difference: {loading_info}')
+  model=model.to(args.device).eval(); token_format='prosst_structural_tokens_v1'
  if max(args.layers)>int(model.config.num_hidden_layers) or min(args.layers)<0: raise ValueError('layer outside model')
  model_hashes={str(p.relative_to(args.model_path)):sha256_file(p) for p in sorted(args.model_path.rglob('*')) if p.is_file() and '.cache' not in p.parts}
  model_tree_sha=hashlib.sha256(json.dumps(model_hashes,sort_keys=True).encode()).hexdigest()
@@ -218,7 +236,12 @@ def extract(args):
   'model_tree_sha256':model_tree_sha,'layers':args.layers,'hidden_size':int(model.config.hidden_size),'side':args.side,
   'shard_index':args.shard_index,'shard_count':args.shard_count,'records':receipts,'record_count':len(receipts),
   'structure_units_sha256':sha256_file(args.structure_units),'test_loaded':False,'contact_labels_loaded':False,
-  'dtype_on_disk':'float16','window_policy':{'max_residues':args.max_residues,'overlap':args.overlap,'merge':'uniform mean in overlap'}}
+  'dtype_on_disk':'float16','model_loading_info':{
+   'missing_keys':sorted(loading_info.get('missing_keys',[])),
+   'unexpected_keys':sorted(loading_info.get('unexpected_keys',[])),
+   'mismatched_keys':loading_info.get('mismatched_keys',[]),
+   'saprot_allowed_missing_keys':sorted(SAPROT_ALLOWED_MISSING_KEYS) if args.model_kind=='saprot' else [],
+  },'window_policy':{'max_residues':args.max_residues,'overlap':args.overlap,'merge':'uniform mean in overlap'}}
  atomic_json(args.output/f'RECEIPT_{args.model_kind}_{args.side}_{args.shard_index:03d}_of_{args.shard_count:03d}.json',receipt); print(json.dumps({k:receipt[k] for k in ['status','model_kind','side','record_count']}))
 
 def build_parser():
