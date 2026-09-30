@@ -1,0 +1,411 @@
+{
+  "artifact_manifest_sha256": "3d01467e9352a3d6e0aa02d4aa203e380ec4fa4643dc9fe6cf7ac717d2a3a19d",
+  "contact_labels_loaded": false,
+  "feature_artifact_count": 33450,
+  "feature_artifacts_expected": 33450,
+  "format_version": "structural_plm_full_audit_v1",
+  "layers": {
+    "prosst": [
+      0,
+      3,
+      6,
+      9,
+      12
+    ],
+    "saprot": [
+      0,
+      8,
+      16,
+      24,
+      33
+    ]
+  },
+  "plan_sha256": "2ae83660e2b89d231fe48c9cb07308cada6502e1a755002e24f7572542b27cd1",
+  "scope": "complete development-only frozen feature authority; not downstream performance",
+  "source_specifications": [
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_0",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l00_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_00/antibody",
+      "sha256": "1b6c42b07bd1eeb25f884a9ab848b44acd3c4e5dd03b477f21891be00fe87d3b",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_0",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l00_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_00_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_00/antigen",
+      "sha256": "68c8516d5d470f79d4e8b7a88f8436aa4b6af84f11b44bc3690edfc74af55b6c",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_8",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l08_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_08/antibody",
+      "sha256": "7739f8d764a4317caea1d8debff992b31f9db3c27925db5ee593a6efa64dc8a2",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_8",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l08_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_08/antigen",
+      "sha256": "fde90e2165f2b80a4e8f1f21aa1f522909a5a37038a46427e3e6b21fa2288fa4",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_16",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l16_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_16/antibody",
+      "sha256": "5fb3351053c9fc509ef8908b911c947c40415a76642655c092e9f8a157db60a9",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_16",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l16_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_16/antigen",
+      "sha256": "3dd10613c03dab399d35eed04dc86bdf98e7e8ead63779ce7c5796b5469ac372",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_24",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l24_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_24_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_24/antibody",
+      "sha256": "cc81d929825a1e2329dc50f5faae6c01b13277c07bdfa6e4a16d1f163e52aa2d",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_24",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l24_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_24_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_24/antigen",
+      "sha256": "b3b8a636478f728210120ef206ecdc2f66e0d64decd8fe1e462f15ec76036c83",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_33",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l33_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_33_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_33/antibody",
+      "sha256": "bc826862529f09b2777510bbf869b91a8f0b4b0cbcc1c37bf73e318cb58f6286",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 1280,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_33",
+      "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+      "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+      "name": "saprot_l33_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_33_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_33/antigen",
+      "sha256": "22fbcd230cfda33d71adc9357256fc33d08e94f3ca4fb4af1d7e82618db8ccc3",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_0",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l00_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_00_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_00/antibody",
+      "sha256": "0a830ab764466ed483cbcf4b6cdb487fb6510c46388f0b9a4d4a24c720e86965",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_0",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l00_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_00_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_00/antigen",
+      "sha256": "dcf53cf98771f50fa5567ea7ddf373f1eecf45284cef3241bc38ace445f00bae",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_3",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l03_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_03_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_03/antibody",
+      "sha256": "397eaa92249134b46d3356e30be4b849128a0a6f6d98b0ab8707646a4685fd25",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_3",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l03_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_03_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_03/antigen",
+      "sha256": "dec387bcef3bcc6d188a2871a1db52a3ccf1ec044367c348c59ec575995d0767",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_6",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l06_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_06_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_06/antibody",
+      "sha256": "db82626fd2405743d05c20433bf37c7c42cd1ca082176dc592820022f4341da1",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_6",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l06_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_06_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_06/antigen",
+      "sha256": "88c5ca4c8467239f80a19d63915b32203ed7080b27d61ee9bc3d17e50a92e4b8",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_9",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l09_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_09_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_09/antibody",
+      "sha256": "202f947b57b59413e5e31870c99de41e12b1509dcec6bed9521c08a86bfecb5c",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_9",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l09_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_09_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_09/antigen",
+      "sha256": "e9785171ef17f72232f72004587fc96686a7b9297e9d7c7b557db44b462187fe",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_12",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l12_ab",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_12_antibody.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_12/antibody",
+      "sha256": "2240fad1cca32f0852506d7d6b076debb89d1be4ca6d8c20c1e6e5b8228e8b7f",
+      "sides": [
+        "antibody"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    },
+    {
+      "antibody_storage": "parts",
+      "dim": 768,
+      "evidence_role": "development-only frozen structural PLM layer sweep",
+      "format_version": "generic_representation_source_v1",
+      "model_name": "prosst_e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8_layer_12",
+      "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+      "model_sha256": "aa6742cd2fd4c0ad3b908f19358136c66614f07093cdf9a995120723c6d54368",
+      "name": "prosst_l12_ag",
+      "path": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/prosst_layer_12_antigen.json",
+      "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/prosst_layer_12/antigen",
+      "sha256": "6330b60632ec6b28a8853454684833e7f1d6f1d9315acacfbfb5a7aa0057bb70",
+      "sides": [
+        "antigen"
+      ],
+      "source_commit": "13bd56495641a84cd5475eaef7aa98b14fdc6ed5",
+      "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+      "tokenizer_sha256": "89b5c54e41dff9efbc23323f0750ab329585cb01ccb77144dd8838adddaf358c"
+    }
+  ],
+  "status": "PASS_COMPLETE_STRUCTURAL_PLM_FEATURE_AUTHORITY",
+  "structure_record_count": 3345,
+  "test_loaded": false,
+  "training_performed": false
+}

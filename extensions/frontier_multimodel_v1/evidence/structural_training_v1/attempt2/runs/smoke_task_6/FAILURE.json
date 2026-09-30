@@ -1,0 +1,9 @@
+{
+  "error": "Command '['/ssd/scxi253/model_deployment/envs/contact/bin/python3.10', '-u', '/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/source_exact_4c4b8d1/scripts/sabdab2_interaction_first.py', 'evaluate', '--prepare-dir', '/ssd/scxi253/model_deployment/data/interaction_first_sabdab2', '--contact-dir', '/ssd/scxi253/model_deployment/data/interaction_first/contacts', '--embedding-dir', '/ssd/scxi253/model_deployment/data/sppider_seq_sabdab2_embeddings', '--split-manifest', '/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json', '--representation-manifest', '/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv', '--generic-representation-source', '/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antibody.json', '--generic-representation-source', '/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antigen.json', '--checkpoint', '/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt2/runs/smoke_task_6/train/best.pt', '--output-dir', '/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt2/runs/smoke_task_6/validation_best', '--split', 'validation', '--device', 'cuda', '--seed', '1', '--embedding-cache-gib', '12', '--log-every', '12', '--max-instances', '24']' returned non-zero exit status 1.",
+  "error_type": "CalledProcessError",
+  "ood_labels_read": false,
+  "slurm_job_id": "1640468",
+  "sota_claim_authorized": false,
+  "status": "FAILED",
+  "test_labels_read": false
+}

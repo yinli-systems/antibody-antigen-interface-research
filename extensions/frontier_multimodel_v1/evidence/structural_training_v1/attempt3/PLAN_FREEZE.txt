@@ -1,0 +1,1 @@
+{"arm_count": 12, "feature_artifacts": 33450, "plan": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/PLAN.json", "sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12", "source_specs": 20, "task_count": 36}
