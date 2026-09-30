@@ -171,3 +171,13 @@ def test_official_style_backbone_centering_rejects_wrong_shape_and_nonfinite() -
     bad = np.zeros((2, 4, 3), dtype=np.float32); bad[0, 0, 0] = np.nan
     with pytest.raises(ValueError, match="non-finite"):
         center_backbone_like_official_inference(bad)
+
+
+def test_official_style_backbone_centering_does_not_add_nonofficial_residual_gate() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    # Large absolute coordinates / long chain exercise float32 reduction residue.
+    rng = np.random.default_rng(29)
+    x = (rng.normal(size=(700, 4, 3)) * 10000.0 + 1_000_000.0).astype(np.float32)
+    expected = x - x.mean(axis=(0, 1), keepdims=True)
+    actual = center_backbone_like_official_inference(x)
+    np.testing.assert_array_equal(actual, expected)

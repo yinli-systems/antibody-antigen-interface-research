@@ -100,10 +100,10 @@ def center_backbone_like_official_inference(backbone: np.ndarray) -> np.ndarray:
         raise ValueError(f"expected [residue,4,3] backbone, got {array.shape}")
     if not np.isfinite(array).all():
         raise ValueError("non-finite backbone coordinates")
-    centered = array - array.mean(axis=(0, 1), keepdims=True)
-    if not np.allclose(centered.mean(axis=(0, 1)), 0.0, atol=1e-5):
-        raise RuntimeError("official-style coordinate centering failed")
-    return centered.astype(np.float32, copy=False)
+    # Match official CenterMesh exactly: subtract the per-chain point mean and
+    # do not impose a stricter post-hoc zero-mean tolerance. Float32 reduction
+    # can leave tiny residuals for long chains even when this operation is exact.
+    return (array - array.mean(axis=(0, 1), keepdims=True)).astype(np.float32, copy=False)
 
 
 def parse_backbone_pdb(path: Path, expected_sequence: str) -> np.ndarray:
