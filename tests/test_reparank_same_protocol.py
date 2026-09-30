@@ -138,3 +138,36 @@ def test_protocol_names_overlap_and_threshold_boundaries() -> None:
     assert "Threshold metrics never" in text
     assert "Experimental bound antibody-antigen pose is forbidden" in text
     assert "binary BCE would be a different model" in text
+
+
+def test_official_style_backbone_centering_matches_center_mesh_semantics() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    rng = np.random.default_rng(17)
+    x = rng.normal(size=(9, 4, 3)).astype(np.float32)
+    expected = x - x.mean(axis=(0, 1), keepdims=True)
+    actual = center_backbone_like_official_inference(x)
+    np.testing.assert_allclose(actual, expected, rtol=0, atol=1e-6)
+    np.testing.assert_allclose(actual.mean(axis=(0, 1)), np.zeros(3), rtol=0, atol=1e-6)
+
+
+def test_official_style_backbone_centering_removes_global_translation() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    rng = np.random.default_rng(23)
+    x = rng.normal(size=(7, 4, 3)).astype(np.float32)
+    shift = np.asarray([31.0, -17.5, 8.25], dtype=np.float32)
+    np.testing.assert_allclose(
+        center_backbone_like_official_inference(x),
+        center_backbone_like_official_inference(x + shift),
+        rtol=0,
+        atol=4e-6,
+    )
+
+
+def test_official_style_backbone_centering_rejects_wrong_shape_and_nonfinite() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    import pytest
+    with pytest.raises(ValueError, match="expected"):
+        center_backbone_like_official_inference(np.zeros((4, 3), dtype=np.float32))
+    bad = np.zeros((2, 4, 3), dtype=np.float32); bad[0, 0, 0] = np.nan
+    with pytest.raises(ValueError, match="non-finite"):
+        center_backbone_like_official_inference(bad)

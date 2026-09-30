@@ -87,6 +87,25 @@ AA3_TO_1 = {
 }
 
 
+def center_backbone_like_official_inference(backbone: np.ndarray) -> np.ndarray:
+    """Apply RePaRank's official CenterMesh inference transform.
+
+    Official validation/test preprocessing subtracts the mean over residue and
+    atom axes independently for each chain: points - points.mean((0, 1)).
+    Keeping this explicit prevents raw PDB coordinate frames from entering the
+    structure checkpoint.
+    """
+    array = np.asarray(backbone, dtype=np.float32)
+    if array.ndim != 3 or array.shape[1:] != (4, 3):
+        raise ValueError(f"expected [residue,4,3] backbone, got {array.shape}")
+    if not np.isfinite(array).all():
+        raise ValueError("non-finite backbone coordinates")
+    centered = array - array.mean(axis=(0, 1), keepdims=True)
+    if not np.allclose(centered.mean(axis=(0, 1)), 0.0, atol=1e-5):
+        raise RuntimeError("official-style coordinate centering failed")
+    return centered.astype(np.float32, copy=False)
+
+
 def parse_backbone_pdb(path: Path, expected_sequence: str) -> np.ndarray:
     """Read exact N/CA/C/O coordinates from one structure-unit PDB."""
     residues: dict[tuple[str, str, str], dict[str, np.ndarray]] = {}
@@ -383,6 +402,8 @@ def command_evaluate(args: argparse.Namespace) -> None:
                     if sha256(pdb_path) != record["pdb_sha256"]:
                         raise ValueError(f"predicted PDB hash mismatch {pdb_path}")
                     backbone = parse_backbone_pdb(pdb_path, chain_sequence)
+                    if args.center_structure_coordinates:
+                        backbone = center_backbone_like_official_inference(backbone)
                     pos_num = int(hyperparameters.get("pos_num") or 1)
                     if pos_num == 1:
                         backbone = backbone[:, 1:2, :]
@@ -479,6 +500,11 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "structure_manifest_sha256": (
             sha256(args.structure_manifest.resolve()) if args.structure_manifest else None
         ),
+        "structure_coordinate_transform": (
+            "official_CenterMesh_mean_over_residue_and_atom_axes"
+            if requires_positions and args.center_structure_coordinates
+            else ("raw_uncentered_coordinates" if requires_positions else None)
+        ),
         "instance_count": len(rows),
         "primary_macro_mean_per_complex_AP": float(np.mean(list(primary.values()))),
         "primary_equal_component_analysis": equal_component_bootstrap(primary, components),
@@ -526,6 +552,10 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--split-manifest", type=Path, required=True)
     evaluate.add_argument("--contact-dir", type=Path, required=True)
     evaluate.add_argument("--structure-manifest", type=Path)
+    evaluate.add_argument(
+        "--center-structure-coordinates", action="store_true",
+        help="Apply official RePaRank validation/test CenterMesh to each chain before inference.",
+    )
     evaluate.add_argument("--output", type=Path, required=True)
     evaluate.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
     evaluate.add_argument("--max-instances", type=int)
