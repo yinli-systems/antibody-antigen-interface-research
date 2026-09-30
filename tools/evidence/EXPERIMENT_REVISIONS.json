@@ -1,0 +1,69 @@
+{
+  "schema": "exact_experiment_revisions_v1",
+  "warning": "Snapshots are not interchangeable; outputs and data are not copied by this helper. No test access or job launch is authorised by preparing a worktree.",
+  "experiments": {
+    "representation": {
+      "commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "purpose": "Original representation study and original analysis scripts",
+      "read_first": "reproduction/README.md",
+      "entrypoints": [
+        "reproduction/README.md",
+        "src/interaction_first/composite_embeddings.py",
+        "scripts/aggregate_representation_ablation.py"
+      ]
+    },
+    "correspondence": {
+      "commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "purpose": "Completed three-encoder perturbation experiment",
+      "read_first": "extensions/correspondence_v2/PROTOCOL.md",
+      "entrypoints": [
+        "extensions/correspondence_v2/run.py",
+        "src/interaction_first/composite_embeddings.py"
+      ]
+    },
+    "multimodel": {
+      "commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "purpose": "Structural PLM/RePaRank development programme snapshot",
+      "read_first": "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_EXECUTION_STATUS.md",
+      "entrypoints": [
+        "extensions/frontier_multimodel_v1/run_structural_training.py",
+        "src/interaction_first/composite_embeddings.py"
+      ]
+    },
+    "layer-sweep-runtime": {
+      "commit": "3eb4293464552199c66eff9b6add14d7ed75ae14",
+      "purpose": "Exact source revision bound by active 36-task training plan",
+      "read_first": "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_TRAINING_PROTOCOL.md",
+      "entrypoints": [
+        "extensions/frontier_multimodel_v1/run_structural_training.py",
+        "src/interaction_first/composite_embeddings.py"
+      ]
+    },
+    "reparank-sequence-runtime": {
+      "commit": "a9af80bc71e92e3c007e6ac4549c68e415900a66",
+      "purpose": "Exact project wrapper revision for full RePaRank sequence transfer",
+      "read_first": "extensions/frontier_multimodel_v1/REPARANK_SAME_PROTOCOL_PROTOCOL.md",
+      "entrypoints": [
+        "extensions/frontier_multimodel_v1/reparank_same_protocol.py"
+      ]
+    },
+    "framecontact-handoff": {
+      "commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "purpose": "Corrected 549-case historical evaluation handoff",
+      "read_first": "paper/neurips_2026_framecontact/CHECKPOINT_TEST_ALIGNMENT_20260905.md",
+      "entrypoints": [
+        "remote_tools/aligned_test549_handoff_v1/README.md",
+        "results/aligned_test549_replay_v1/RESULT.json"
+      ]
+    },
+    "legacy-main": {
+      "commit": "910b752ecf3e1493b80a7605151048bf2cd3e69b",
+      "purpose": "Main branch before evidence consolidation",
+      "read_first": "README.md",
+      "entrypoints": [
+        "README.md",
+        "scripts/sabdab2_interaction_first.py"
+      ]
+    }
+  }
+}

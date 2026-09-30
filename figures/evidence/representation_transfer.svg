@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="306" viewBox="0 0 960 306" role="img" aria-labelledby="title desc">
+<title id="title">Frozen-feature transfer on development validation</title>
+<desc id="desc">Mean per-complex contact AP averaged over the same ten training seeds. Values are not percentages or held-out performance. The horizontal axis starts at zero.</desc>
+<rect width="960" height="306" fill="white"/>
+<g font-family="sans-serif" fill="black">
+<text x="24" y="29" font-size="21" font-weight="bold">Frozen-feature transfer: what correct residue alignment adds</text>
+<text x="24" y="53" font-size="13">Development validation · mean-per-complex contact AP · same 10 seeds · paired effects in registry</text>
+<text x="24" y="100" font-size="14">ESM-2</text>
+<rect x="310" y="84" width="381.820" height="23"/>
+<text x="701.820" y="101" font-size="14">0.022460</text>
+<text x="24" y="142" font-size="14">ESM-2 + random width control</text>
+<rect x="310" y="126" width="371.704" height="23"/>
+<text x="691.704" y="143" font-size="14">0.021865</text>
+<text x="24" y="184" font-size="14">ESM-2 + aligned ESM-IF1</text>
+<rect x="310" y="168" width="468.701" height="23"/>
+<text x="788.701" y="185" font-size="14">0.027571</text>
+<text x="24" y="226" font-size="14">ESM-2 + shuffled ESM-IF1</text>
+<rect x="310" y="210" width="329.240" height="23"/>
+<text x="649.240" y="227" font-size="14">0.019367</text>
+<path d="M310 245 H820" fill="none" stroke="black"/>
+<path d="M310 245 v5" stroke="black"/>
+<text x="310" y="268" font-size="13" text-anchor="middle">0.00</text>
+<path d="M480.0 245 v5" stroke="black"/>
+<text x="480.0" y="268" font-size="13" text-anchor="middle">0.01</text>
+<path d="M650.0 245 v5" stroke="black"/>
+<text x="650.0" y="268" font-size="13" text-anchor="middle">0.02</text>
+<path d="M820.0 245 v5" stroke="black"/>
+<text x="820.0" y="268" font-size="13" text-anchor="middle">0.03</text>
+<text x="24" y="296" font-size="12">Not a model leaderboard. No claim of random-control equivalence; see paired intervals and holdout qualifications.</text>
+</g></svg>

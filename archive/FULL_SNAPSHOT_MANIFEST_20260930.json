@@ -1,0 +1,149 @@
+{
+  "schema": "full_branch_snapshot_manifest_v1",
+  "generated_utc": "2026-09-30T07:19:25.957270+00:00",
+  "snapshots": [
+    {
+      "branch": "main (before consolidation)",
+      "head_sha": "910b752ecf3e1493b80a7605151048bf2cd3e69b",
+      "archive_tag": "archive/2026-09-30/main-pre-consolidation",
+      "tree_sha": "177e696e15e32cb74e6691e05cb7107ade1655d7",
+      "entries": 3171,
+      "ls_tree_sha256": "95a8c3a1ee48010130c347f09ae346e90a804a3d4bf9a592580be4c79afdb973"
+    },
+    {
+      "branch": "abcite/multimodal-copilot",
+      "head_sha": "fb871f35678c4462074c0868a7738f1dc9483b05",
+      "archive_tag": "archive/2026-09-30/branch/abcite/multimodal-copilot",
+      "tree_sha": "af553fc085cee276e85d431ac2d528480b371590",
+      "entries": 3477,
+      "ls_tree_sha256": "53049fc80fa705cbf9d33eecca2896fb96c959fcc8c35dcb7c1a0b7260056dd6"
+    },
+    {
+      "branch": "feature/asep-pretraining-pipeline",
+      "head_sha": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+      "archive_tag": "archive/2026-09-30/branch/feature/asep-pretraining-pipeline",
+      "tree_sha": "89d865b39b4c9ba53c09c6ef61b7a39d73006a23",
+      "entries": 3193,
+      "ls_tree_sha256": "1006298dbbbea8c6e28f3cf82e0b03effb881522118e5a7dd3c4321e7a0044a9"
+    },
+    {
+      "branch": "kevin/correspondence-upgrade-20260930",
+      "head_sha": "14a385feaec24b3141331963ba71dda788a164e1",
+      "archive_tag": "archive/2026-09-30/branch/kevin/correspondence-upgrade-20260930",
+      "tree_sha": "4a49726c4b9115df1ef91bef36741734a012cb3c",
+      "entries": 3372,
+      "ls_tree_sha256": "618815dbf2e6d69b728b3b7edf58ab334375ce3d2d40684f20ee3cf8bd90577f"
+    },
+    {
+      "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+      "head_sha": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+      "archive_tag": "archive/2026-09-30/branch/kevin/evaluate-sensitivity-ci-fix-v1",
+      "tree_sha": "e9b8cfafe07c1ab60ecdfe0efc33349710f18bb0",
+      "entries": 3187,
+      "ls_tree_sha256": "c49913ab727fad7d4895ffbdb743f06749ee07b509e6e767737dc97b55094b23"
+    },
+    {
+      "branch": "kevin/framecontact-multimodal-evidence-20260902",
+      "head_sha": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "archive_tag": "archive/2026-09-30/branch/kevin/framecontact-multimodal-evidence-20260902",
+      "tree_sha": "a7dbb2a21695d35c391fda1cadb97c996e0f4139",
+      "entries": 3691,
+      "ls_tree_sha256": "05fe96578cb290ac07e5d8a99b6db3b02c8b416f0b446c6287cc523b9ddf9833"
+    },
+    {
+      "branch": "kevin/geometry-gate-power-reanalysis-v1",
+      "head_sha": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+      "archive_tag": "archive/2026-09-30/branch/kevin/geometry-gate-power-reanalysis-v1",
+      "tree_sha": "fe8d32f47ddeb9b53e80d6d62eb0764049612c5d",
+      "entries": 3176,
+      "ls_tree_sha256": "3d2dc88ca031fb35aeb6217eab4d9ae44d300fba3348e59544be3c08418b6615"
+    },
+    {
+      "branch": "kevin/geometry-powered-replication-v1",
+      "head_sha": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+      "archive_tag": "archive/2026-09-30/branch/kevin/geometry-powered-replication-v1",
+      "tree_sha": "289906011d110c0080a86ca3789f054b8585f66d",
+      "entries": 3176,
+      "ls_tree_sha256": "e106f01e9023d3d4dfe414b91b1e58507b4853720ddb1e58f0efcf7ab76d81d8"
+    },
+    {
+      "branch": "kevin/graph-community-split-v1",
+      "head_sha": "822d91590a42ce970c9d13c176cbe3ef671de42a",
+      "archive_tag": "archive/2026-09-30/branch/kevin/graph-community-split-v1",
+      "tree_sha": "c672e5775d418af5afa3c17667467a5c2a194131",
+      "entries": 3174,
+      "ls_tree_sha256": "d285ade503493cd7fd118dcb201aa90013ebcdfb357f33812f8937372f83be2d"
+    },
+    {
+      "branch": "kevin/hadamard-pair-decoder-v1",
+      "head_sha": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+      "archive_tag": "archive/2026-09-30/branch/kevin/hadamard-pair-decoder-v1",
+      "tree_sha": "84390df1963eadb65fa6c7570903019d4fa2fa3e",
+      "entries": 3178,
+      "ls_tree_sha256": "01b4a379a13608612cec04d8e67b816c7335c717f4344775560794b33f4e1ada"
+    },
+    {
+      "branch": "kevin/multimodel-scale-program-20260930",
+      "head_sha": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "archive_tag": "archive/2026-09-30/branch/kevin/multimodel-scale-program-20260930",
+      "tree_sha": "e4001e2d3c86f8ed808ef4b3e0a8c2d57309a23c",
+      "entries": 3551,
+      "ls_tree_sha256": "1d65d91d89e203a4dbbece680ccbc4d3414de28fb65a91f5db75ef28d41f68b1"
+    },
+    {
+      "branch": "kevin/partner-pose-contract-v1",
+      "head_sha": "c72fa83be658c6a7f5a28900409649e37233f327",
+      "archive_tag": "archive/2026-09-30/branch/kevin/partner-pose-contract-v1",
+      "tree_sha": "7ef58e99b52b95c4a4af3ff045b7e1759ac9495c",
+      "entries": 3174,
+      "ls_tree_sha256": "2c4bf981663fa1969ed71c034747dab91c721b08a319b334e8b98c3be31291b1"
+    },
+    {
+      "branch": "kevin/pretrained-representations-v1",
+      "head_sha": "400022a29f05f8ef43502f39a2e52c345199e644",
+      "archive_tag": "archive/2026-09-30/branch/kevin/pretrained-representations-v1",
+      "tree_sha": "a5ba9ca4cf22a15206a0eaf13fa78bf1901af8dc",
+      "entries": 3176,
+      "ls_tree_sha256": "1370339b49914228f80e6dd76d8de7260ab7d88828d97c91a949b2def02dec5e"
+    },
+    {
+      "branch": "kevin/protocol-binding-ci-v1",
+      "head_sha": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+      "archive_tag": "archive/2026-09-30/branch/kevin/protocol-binding-ci-v1",
+      "tree_sha": "04cef1aaddcf56c353b404569aca490e4eca9564",
+      "entries": 3177,
+      "ls_tree_sha256": "cd398dc8e59269e13523100fd36899e4ec88e27081dbbcb19f1e96912cd296b3"
+    },
+    {
+      "branch": "kevin/representation-ablation-v1",
+      "head_sha": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "archive_tag": "archive/2026-09-30/branch/kevin/representation-ablation-v1",
+      "tree_sha": "66d8d6dbfb9c1d90612f268d2bf7b10ff682a0e7",
+      "entries": 3329,
+      "ls_tree_sha256": "4299c2f22cfbe70daab8d069e56375fa1bcc4f44a98b70eb42c1deeb141821c3"
+    },
+    {
+      "branch": "kevin/s2-split-readiness-v1",
+      "head_sha": "053a0665cb4ccb9df5ce325df330ebae2fc4f973",
+      "archive_tag": "archive/2026-09-30/branch/kevin/s2-split-readiness-v1",
+      "tree_sha": "a5f7aa7075dac943c84f05fe27206ce7df4e30ec",
+      "entries": 3174,
+      "ls_tree_sha256": "7e0a77369ce346c5dd441d2ac433ca4ff308441bc2c46502c1796fb82dfe0434"
+    },
+    {
+      "branch": "kevin/teacher-paper-handoff-20260903",
+      "head_sha": "54afd798700bc41ac1352065414d8687c9627871",
+      "archive_tag": "archive/2026-09-30/branch/kevin/teacher-paper-handoff-20260903",
+      "tree_sha": "17089fd9b70b4e2a32248127677e931bc9c801c7",
+      "entries": 3254,
+      "ls_tree_sha256": "78d68fef7603aa4fcecc0d291a5200ef65695a1b489a40882f70f19696c0e751"
+    }
+  ],
+  "snapshot_count": 17,
+  "file_entries_including_repetition": 55630,
+  "distinct_path_blob_versions": 4526,
+  "unique_blob_count": 4394,
+  "compressed_manifest": "archive/FULL_SNAPSHOT_TREES_20260930.jsonl.gz",
+  "compressed_manifest_sha256": "59961c9c97e8c78b88f21d3e33c43b6608ebef302a269be2917a5b5fd169b008",
+  "scope": "Complete tracked Git trees at the 17 pre-consolidation tips, not just diffs. Tags and original branch heads retained. Does not package untracked files, cluster data, issue discussions or LFS payloads."
+}

@@ -1,0 +1,88 @@
+{
+  "observed_at_utc": "2026-09-30T07:18:25.058730+00:00",
+  "queue": "1640503_[12-35%6]|PENDING|0:00|(JobArrayTaskLimit)\n1640514|PENDING|0:00|(Dependency)\n1640503_11|RUNNING|1:54:11|wqd10naf13g1\n1640503_10|RUNNING|1:56:41|wqd10nae09g3\n1640503_9|RUNNING|1:57:11|wqd10naf06g3\n1640503_8|RUNNING|1:57:41|wqd10naf05g8\n1640503_7|RUNNING|1:59:41|wqd10naf06g3\n1640503_6|RUNNING|2:00:11|wqd10naf05g2\n",
+  "accounting": "1640503_0|COMPLETED|0:0|02:36:35\n1640503_1|COMPLETED|0:0|02:36:57\n1640503_2|COMPLETED|0:0|02:37:13\n1640503_3|COMPLETED|0:0|02:39:56\n1640503_4|COMPLETED|0:0|02:34:12\n1640503_5|COMPLETED|0:0|02:33:50\n1640503_6|RUNNING|0:0|02:00:11\n1640503_7|RUNNING|0:0|01:59:41\n1640503_8|RUNNING|0:0|01:57:41\n1640503_9|RUNNING|0:0|01:57:11\n1640503_10|RUNNING|0:0|01:56:41\n1640503_11|RUNNING|0:0|01:54:11\n1640503_[12-35%6]|PENDING|0:0|00:00:00\n1640514|PENDING|0:0|00:00:00\n1640813|COMPLETED|0:0|00:01:09\n1640868|FAILED|1:0|00:00:10\n1640914_0|FAILED|2:0|00:00:01\n",
+  "completed": [
+    {
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/COMPLETE.json",
+      "task_id": 0,
+      "arm": "saprot_layer_00",
+      "seed": 1,
+      "best_pair_ap": 0.017987586488391646,
+      "last_pair_ap": 0.015838758048241218,
+      "status": "COMPLETE_DEVELOPMENT_TRAINING"
+    },
+    {
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/COMPLETE.json",
+      "task_id": 1,
+      "arm": "saprot_layer_00",
+      "seed": 2,
+      "best_pair_ap": 0.021676013546326405,
+      "last_pair_ap": 0.01887444848263688,
+      "status": "COMPLETE_DEVELOPMENT_TRAINING"
+    },
+    {
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/COMPLETE.json",
+      "task_id": 2,
+      "arm": "saprot_layer_00",
+      "seed": 3,
+      "best_pair_ap": 0.02208172702986689,
+      "last_pair_ap": 0.01846897965097707,
+      "status": "COMPLETE_DEVELOPMENT_TRAINING"
+    },
+    {
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/COMPLETE.json",
+      "task_id": 3,
+      "arm": "saprot_layer_08",
+      "seed": 1,
+      "best_pair_ap": 0.020779976587368174,
+      "last_pair_ap": 0.018392170426271177,
+      "status": "COMPLETE_DEVELOPMENT_TRAINING"
+    },
+    {
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/COMPLETE.json",
+      "task_id": 4,
+      "arm": "saprot_layer_08",
+      "seed": 2,
+      "best_pair_ap": 0.020481103124502915,
+      "last_pair_ap": 0.018312717798222574,
+      "status": "COMPLETE_DEVELOPMENT_TRAINING"
+    },
+    {
+      "file": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/COMPLETE.json",
+      "task_id": 5,
+      "arm": "saprot_layer_08",
+      "seed": 3,
+      "best_pair_ap": 0.021858266032348632,
+      "last_pair_ap": 0.01877035582776343,
+      "status": "COMPLETE_DEVELOPMENT_TRAINING"
+    }
+  ],
+  "failures": [],
+  "reparank_sequence": {
+    "primary_macro_mean_per_complex_AP": 0.03780779120862989,
+    "primary_equal_component_analysis": {
+      "bootstrap_repeats": 10000,
+      "complex_count": 217,
+      "complex_weighted_estimate": 0.03780779120862989,
+      "component_bootstrap_ci95": [
+        0.02633102266268606,
+        0.06218666145165621
+      ],
+      "component_count": 68,
+      "estimand": "equal_authority_component_mean_per_complex_AP",
+      "estimate": 0.04322164360822419
+    },
+    "epitope_macro_AP": 0.20203910628196645,
+    "paratope_macro_AP": 0.5577073439412932,
+    "pooled_pair_metrics": {
+      "auroc": 0.7860643617166425,
+      "average_precision": 0.008738584064940456,
+      "pair_count": 9638880,
+      "positive_count": 9036
+    },
+    "checkpoint_training_overlap_audited": false,
+    "raw_pair_prediction_file_count": 217
+  },
+  "scope": "read-only live snapshot; no submissions or cancellations"
+}

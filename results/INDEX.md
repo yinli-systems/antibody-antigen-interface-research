@@ -10,7 +10,7 @@ This page is the human-readable index for the strongest completed evidence in th
 | ESM-IF1 shuffled vs ESM-2 | same | Δ **−0.003093**; −13.8%; CI [−0.004391, −0.001807] | Development attribution | same |
 | Aligned vs shuffled | same | Δ **+0.008204**; +42.4%; 10/10 favourable seeds | Development attribution | same |
 | Width-matched random vs ESM-2 | same | Δ −0.000595; CI crosses zero | **Undecided**, not equivalence | same |
-| k=8 row displacement | corruption ladder | −0.0175 AP vs aligned; ≈94% of global permutation damage | Development mechanism | [`correspondence_corruption_curve_v1`](correspondence_corruption_curve_v1/) |
+| k=8 row displacement | corruption ladder | −0.0175 AP vs aligned; ≈94% of global permutation damage | Development perturbation | [`correspondence_corruption_curve_v1`](correspondence_corruption_curve_v1/) |
 | Same-AA shuffle, ESM-IF1 | 217 validation complexes, 68 components, 3 fixed seeds | identity 0.027995 → 0.011100; equal-component/equal-seed Δ **−0.017151**, CI [−0.022688, −0.012434] | Post-freeze exploratory development | [`../extensions/correspondence_v2/READOUT.md`](../extensions/correspondence_v2/READOUT.md) |
 | Holdout ProteinMPNN | one registered 217-complex read, 10 paired seeds | aligned−shuffled **+0.003594**, 9/10, CI [0.001559, 0.005881] | Holdout confirmation | [`holdout_confirmation_v1/confirmation.json`](holdout_confirmation_v1/confirmation.json) |
 | Holdout ESM-IF1 | same | **+0.002260**, 6/10, CI [−0.000007, 0.004901] | **Undecided** | same |
@@ -97,7 +97,9 @@ AsEP is retained to prevent internal improvements from being mistaken for benchm
 
 See [`asep_benchmark_v1/BENCHMARK.md`](asep_benchmark_v1/BENCHMARK.md).
 
-## 7. Active structural-PLM programme
+## 7. Active structural-PLM programme (historical snapshot below)
+
+For the latest timestamped observation, use [operations/README.md](operations/README.md). The table below preserves the first consolidation snapshot.
 
 The frozen SaProt/ProSST formal sweep contains 36 tasks. The current committed snapshot contains six completed SaProt tasks:
 
@@ -121,4 +123,6 @@ The consolidated main intentionally preserves, among others:
 - RePaRank structure full evaluation failed closed when predicted-chain authority was incomplete;
 - AF3 completion task-0 currently has a pre-inference orchestration failure and is not counted as a structure result.
 
-For exhaustive discovery, use [`BRANCH_EVIDENCE_INDEX.json`](BRANCH_EVIDENCE_INDEX.json) and [`../docs/BRANCH_PROVENANCE.md`](../docs/BRANCH_PROVENANCE.md).
+For exhaustive discovery, use the [clickable branch evidence directory](ALL_BRANCHES.md), [`BRANCH_EVIDENCE_INDEX.json`](BRANCH_EVIDENCE_INDEX.json), and the [complete tracked-tree manifest](../archive/FULL_SNAPSHOT_MANIFEST_20260930.json).
+
+All paper-level interpretation must also follow [CLAIM_BOUNDARIES.md](../docs/CLAIM_BOUNDARIES.md). The first consolidation README used overly general “necessary” wording; it is superseded by scoped empirical statements. Historical raw reports remain unchanged.

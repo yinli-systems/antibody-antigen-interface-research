@@ -1,0 +1,24 @@
+test_ambiguous_selector_fails (__main__.ExtractionTests) ... ok
+test_exact_scalar (__main__.ExtractionTests) ... ok
+test_missing_selector_fails (__main__.ExtractionTests) ... ok
+test_no_nan_inf_comparisons (__main__.ExtractionTests) ... ok
+test_reduction (__main__.ExtractionTests) ... ok
+test_source_drift_rejected (__main__.ExtractionTests) ... ok
+test_unique_selector (__main__.ExtractionTests) ... ok
+test_vector_length_must_match (__main__.ExtractionTests) ... ok
+test_wildcard (__main__.ExtractionTests) ... ok
+test_wildcard_rejects_object (__main__.ExtractionTests) ... ok
+test_broken_local_link_detected (__main__.RepositoryTests) ... ok
+test_checkout_refuses_existing_destination (__main__.RepositoryTests) ... ok
+test_checkout_uses_exact_commit_and_no_jobs (__main__.RepositoryTests) ... ok
+test_front_page_links (__main__.RepositoryTests) ... ok
+test_generated_files_exact (__main__.RepositoryTests) ... ok
+test_known_negative_evidence_retained (__main__.RepositoryTests) ... ok
+test_registry_has_boundaries_and_values (__main__.RepositoryTests) ... ok
+test_same_cohort_chart_zero_origin (__main__.RepositoryTests) ... ok
+test_unknown_experiment_fails (__main__.RepositoryTests) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.135s
+
+OK

@@ -1,0 +1,1077 @@
+{
+  "schema": "headline_registry_v1",
+  "method": "Each displayed headline value is extracted from an exact hashed artifact. Historical source bytes are not rewritten. The registry validates reporting, not biological correctness.",
+  "metrics": [
+    {
+      "id": "rep_base",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "arm_means",
+        "esm2"
+      ],
+      "value": 0.022459984574757865
+    },
+    {
+      "id": "rep_aligned",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "arm_means",
+        "esm_if1_only"
+      ],
+      "value": 0.027570672383430774
+    },
+    {
+      "id": "rep_shuffled",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "arm_means",
+        "esm_if1_shuffled"
+      ],
+      "value": 0.01936703169765898
+    },
+    {
+      "id": "rep_random",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "arm_means",
+        "random_control"
+      ],
+      "value": 0.021864936435361807
+    },
+    {
+      "id": "rep_aligned_delta",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "aligned_vs_esm2",
+        "paired_difference"
+      ],
+      "value": 0.005110687808672911
+    },
+    {
+      "id": "rep_aligned_ci",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "aligned_vs_esm2",
+        "bootstrap_ci95"
+      ],
+      "value": [
+        0.0037804980020868864,
+        0.006439117257188512
+      ]
+    },
+    {
+      "id": "rep_aligned_n",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "aligned_vs_esm2",
+        "seed_count"
+      ],
+      "value": 10
+    },
+    {
+      "id": "rep_shuffled_delta",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "shuffled_vs_esm2",
+        "paired_difference"
+      ],
+      "value": -0.003092952877098886
+    },
+    {
+      "id": "rep_shuffled_ci",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "shuffled_vs_esm2",
+        "bootstrap_ci95"
+      ],
+      "value": [
+        -0.004391297892447222,
+        -0.0018068432339909488
+      ]
+    },
+    {
+      "id": "rep_shuffled_n",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "shuffled_vs_esm2",
+        "seed_count"
+      ],
+      "value": 10
+    },
+    {
+      "id": "rep_random_delta",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "random_vs_esm2",
+        "paired_difference"
+      ],
+      "value": -0.0005950481393960573
+    },
+    {
+      "id": "rep_random_ci",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "random_vs_esm2",
+        "bootstrap_ci95"
+      ],
+      "value": [
+        -0.0021509073762782096,
+        0.0009703236011609193
+      ]
+    },
+    {
+      "id": "rep_random_n",
+      "source": "results/representation_attribution_v1/report.json",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "comparisons",
+        "random_vs_esm2",
+        "seed_count"
+      ],
+      "value": 10
+    },
+    {
+      "id": "corr_esm_if1_identity",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "esm_if1:1:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:2:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:3:identity:0"
+        ]
+      ],
+      "reduce": "mean",
+      "value": 0.027994970888844756
+    },
+    {
+      "id": "corr_esm_if1_same_aa",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "esm_if1:1:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:2:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:3:same_aa_shuffle:0"
+        ]
+      ],
+      "reduce": "mean",
+      "value": 0.011100352687647625
+    },
+    {
+      "id": "corr_esm_if1_delta",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "encoder": "esm_if1",
+            "condition": "same_aa_shuffle:0",
+            "metric": "pair_ap"
+          }
+        },
+        "mean_difference"
+      ],
+      "value": -0.017151325302456014
+    },
+    {
+      "id": "corr_esm_if1_ci",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "encoder": "esm_if1",
+            "condition": "same_aa_shuffle:0",
+            "metric": "pair_ap"
+          }
+        },
+        "crossed_seed_cluster_ci95"
+      ],
+      "value": [
+        -0.022688197094407773,
+        -0.012434039894905642
+      ]
+    },
+    {
+      "id": "corr_antiberty_identity",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "antiberty:1:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:2:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:3:identity:0"
+        ]
+      ],
+      "reduce": "mean",
+      "value": 0.021403718532192823
+    },
+    {
+      "id": "corr_antiberty_same_aa",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "antiberty:1:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:2:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:3:same_aa_shuffle:0"
+        ]
+      ],
+      "reduce": "mean",
+      "value": 0.017459472990593108
+    },
+    {
+      "id": "corr_antiberty_delta",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "encoder": "antiberty",
+            "condition": "same_aa_shuffle:0",
+            "metric": "pair_ap"
+          }
+        },
+        "mean_difference"
+      ],
+      "value": -0.005720954371272334
+    },
+    {
+      "id": "corr_antiberty_ci",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "encoder": "antiberty",
+            "condition": "same_aa_shuffle:0",
+            "metric": "pair_ap"
+          }
+        },
+        "crossed_seed_cluster_ci95"
+      ],
+      "value": [
+        -0.008787191301539102,
+        -0.003088773077164388
+      ]
+    },
+    {
+      "id": "corr_proteinmpnn_identity",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "proteinmpnn:1:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:2:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:3:identity:0"
+        ]
+      ],
+      "reduce": "mean",
+      "value": 0.023017781581199246
+    },
+    {
+      "id": "corr_proteinmpnn_same_aa",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "proteinmpnn:1:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:2:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:3:same_aa_shuffle:0"
+        ]
+      ],
+      "reduce": "mean",
+      "value": 0.014943382932378714
+    },
+    {
+      "id": "corr_proteinmpnn_delta",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "encoder": "proteinmpnn",
+            "condition": "same_aa_shuffle:0",
+            "metric": "pair_ap"
+          }
+        },
+        "mean_difference"
+      ],
+      "value": -0.008499074062229326
+    },
+    {
+      "id": "corr_proteinmpnn_ci",
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "encoder": "proteinmpnn",
+            "condition": "same_aa_shuffle:0",
+            "metric": "pair_ap"
+          }
+        },
+        "crossed_seed_cluster_ci95"
+      ],
+      "value": [
+        -0.011953311770545552,
+        -0.005751938699175821
+      ]
+    },
+    {
+      "id": "holdout_ESM-IF1_delta",
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "contrasts",
+        "ESM-IF1",
+        "all_217",
+        "mean"
+      ],
+      "value": 0.002260074267027126
+    },
+    {
+      "id": "holdout_ESM-IF1_ci",
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "contrasts",
+        "ESM-IF1",
+        "all_217",
+        "ci"
+      ],
+      "value": [
+        -7.198970681111876e-06,
+        0.004900886221604488
+      ]
+    },
+    {
+      "id": "holdout_ESM-IF1_positive_seeds",
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "contrasts",
+        "ESM-IF1",
+        "all_217",
+        "up"
+      ],
+      "value": 6
+    },
+    {
+      "id": "holdout_ProteinMPNN_delta",
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "contrasts",
+        "ProteinMPNN",
+        "all_217",
+        "mean"
+      ],
+      "value": 0.0035941254577831964
+    },
+    {
+      "id": "holdout_ProteinMPNN_ci",
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "contrasts",
+        "ProteinMPNN",
+        "all_217",
+        "ci"
+      ],
+      "value": [
+        0.0015589868078879768,
+        0.005881458517017491
+      ]
+    },
+    {
+      "id": "holdout_ProteinMPNN_positive_seeds",
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "contrasts",
+        "ProteinMPNN",
+        "all_217",
+        "up"
+      ],
+      "value": 9
+    },
+    {
+      "id": "framecontact_contact_ap",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "contact",
+        "MPC_AP"
+      ],
+      "value": 0.026674939866968273
+    },
+    {
+      "id": "framecontact_contact_pooled_ap",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "contact",
+        "auprc"
+      ],
+      "value": 0.010012902970376155
+    },
+    {
+      "id": "framecontact_contact_auroc",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "contact",
+        "auroc"
+      ],
+      "value": 0.9257969993478157
+    },
+    {
+      "id": "framecontact_epitope_ap",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "epitope",
+        "MPC_AP"
+      ],
+      "value": 0.22031151958597614
+    },
+    {
+      "id": "framecontact_epitope_pooled_ap",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "epitope",
+        "auprc"
+      ],
+      "value": 0.12599121808909616
+    },
+    {
+      "id": "framecontact_epitope_auroc",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "epitope",
+        "auroc"
+      ],
+      "value": 0.6718376132885369
+    },
+    {
+      "id": "framecontact_paratope_ap",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "paratope",
+        "MPC_AP"
+      ],
+      "value": 0.6985876493387135
+    },
+    {
+      "id": "framecontact_paratope_pooled_ap",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "paratope",
+        "auprc"
+      ],
+      "value": 0.634032543098221
+    },
+    {
+      "id": "framecontact_paratope_auroc",
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "selector": [
+        "seed_medians",
+        "paratope",
+        "auroc"
+      ],
+      "value": 0.9539890654167656
+    },
+    {
+      "id": "reparank_macro_ap",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "primary_macro_mean_per_complex_AP"
+      ],
+      "value": 0.03780779120862989
+    },
+    {
+      "id": "reparank_pooled_ap",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "average_precision"
+      ],
+      "value": 0.008738584064940456
+    },
+    {
+      "id": "reparank_auroc",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "auroc"
+      ],
+      "value": 0.7860643617166425
+    },
+    {
+      "id": "reparank_epitope_ap",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "epitope_macro_AP"
+      ],
+      "value": 0.20203910628196645
+    },
+    {
+      "id": "reparank_paratope_ap",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "paratope_macro_AP"
+      ],
+      "value": 0.5577073439412932
+    },
+    {
+      "id": "reparank_pairs",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "pair_count"
+      ],
+      "value": 9638880
+    },
+    {
+      "id": "reparank_positives",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "positive_count"
+      ],
+      "value": 9036
+    },
+    {
+      "id": "reparank_component_ap",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "primary_equal_component_analysis",
+        "estimate"
+      ],
+      "value": 0.04322164360822419
+    },
+    {
+      "id": "reparank_component_ci",
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "primary_equal_component_analysis",
+        "component_bootstrap_ci95"
+      ],
+      "value": [
+        0.02633102266268606,
+        0.06218666145165621
+      ]
+    },
+    {
+      "id": "ranking_tasks",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "Cartesian candidate pairs and repeated measurements",
+      "interpretation_limit": "Unobserved alternatives are not experimental non-binders",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "tasks"
+      ],
+      "value": 9
+    },
+    {
+      "id": "ranking_total_pair_evaluations",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "Cartesian candidate pairs and repeated measurements",
+      "interpretation_limit": "Unobserved alternatives are not experimental non-binders",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "total_pair_evaluations"
+      ],
+      "value": 130662
+    },
+    {
+      "id": "ranking_unique_pair_count_per_task",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "Cartesian candidate pairs and repeated measurements",
+      "interpretation_limit": "Unobserved alternatives are not experimental non-binders",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "unique_pair_count_per_task"
+      ],
+      "value": 14518
+    },
+    {
+      "id": "ranking_rank_antibody_for_antigen_identity:0",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "direction": "rank_antibody_for_antigen",
+            "condition": "identity:0",
+            "score_name": "score_current_centered_lme",
+            "metric": "mrr_tie_expected"
+          }
+        },
+        "mean"
+      ],
+      "value": 0.07045057779638876
+    },
+    {
+      "id": "ranking_rank_antibody_for_antigen_global_shuffle:0",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "direction": "rank_antibody_for_antigen",
+            "condition": "global_shuffle:0",
+            "score_name": "score_current_centered_lme",
+            "metric": "mrr_tie_expected"
+          }
+        },
+        "mean"
+      ],
+      "value": 0.0755205487550579
+    },
+    {
+      "id": "ranking_rank_antigen_for_antibody_identity:0",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "direction": "rank_antigen_for_antibody",
+            "condition": "identity:0",
+            "score_name": "score_current_centered_lme",
+            "metric": "mrr_tie_expected"
+          }
+        },
+        "mean"
+      ],
+      "value": 0.06119707330809172
+    },
+    {
+      "id": "ranking_rank_antigen_for_antibody_global_shuffle:0",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "direction": "rank_antigen_for_antibody",
+            "condition": "global_shuffle:0",
+            "score_name": "score_current_centered_lme",
+            "metric": "mrr_tie_expected"
+          }
+        },
+        "mean"
+      ],
+      "value": 0.06328316755999165
+    },
+    {
+      "id": "ranking_dispersion_rho",
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "cohort": "122 x 119 grid, nine runs",
+      "evidence_class": "exploratory development",
+      "aggregation": "mean of nine Spearman correlations",
+      "interpretation_limit": "Descriptive association, not proven causal bias",
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "selector": [
+        "mechanism_correlations",
+        "*",
+        "spearman_current_score_vs_centered_std"
+      ],
+      "reduce": "mean",
+      "value": 0.9742513789315748
+    },
+    {
+      "id": "asep_group_mcc",
+      "source": "results/asep_benchmark_v1/test_micro_macro.json",
+      "source_sha256": "f43e1b76a0e485dc044f0e7423a1a45be26d5512b5183f0c1839ee170e1630b9",
+      "cohort": "AsEP epitope_group test",
+      "evidence_class": "historical benchmark",
+      "aggregation": "mean of per-complex MCC over ten trained seeds",
+      "interpretation_limit": "Use macro convention only; not an SOTA result",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "*",
+        "macro_mcc"
+      ],
+      "reduce": "mean",
+      "value": 0.15724713931069248
+    },
+    {
+      "id": "asep_ratio_mcc",
+      "source": "results/asep_benchmark_v1/ratio_test_measurement.json",
+      "source_sha256": "b91423003f149ca72c7645d1a5eaee8a6b6ec1a021184a3c353d6deb46609a37",
+      "cohort": "AsEP epitope_ratio test",
+      "evidence_class": "historical benchmark",
+      "aggregation": "mean of per-complex MCC over ten trained seeds",
+      "interpretation_limit": "Do not confuse published protocol variants; no test reuse",
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "selector": [
+        "metrics",
+        "mcc",
+        "mean"
+      ],
+      "value": 0.25839540723437454
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "status": "PASS_OFFLINE_RESTORE",
+  "recorded_utc": "2026-09-30T07:24:51.738665+00:00",
+  "bundle_path": "/Users/kevin/antibody-preservation-20260930/all-original-research-refs.bundle",
+  "bundle_bytes": 30468372,
+  "bundle_sha256": "c90404a1df8be1ec55ceb51dc8ef9d2147b0a1deb0d1ea14d3759a8602efab91",
+  "restore_path": "/Users/kevin/antibody-preservation-20260930/restore-test.git",
+  "restored_snapshot_count": 17,
+  "git_fsck_exit_code": 0,
+  "small_blob_scan_count": 1360,
+  "detected_lfs_pointer_count": 0,
+  "lfs_pointer_oids": [],
+  "checks": [
+    {
+      "tag": "archive/2026-09-30/main-pre-consolidation",
+      "commit": "910b752ecf3e1493b80a7605151048bf2cd3e69b",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/abcite/multimodal-copilot",
+      "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/feature/asep-pretraining-pipeline",
+      "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/correspondence-upgrade-20260930",
+      "commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/evaluate-sensitivity-ci-fix-v1",
+      "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/framecontact-multimodal-evidence-20260902",
+      "commit": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/geometry-gate-power-reanalysis-v1",
+      "commit": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/geometry-powered-replication-v1",
+      "commit": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/graph-community-split-v1",
+      "commit": "822d91590a42ce970c9d13c176cbe3ef671de42a",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/hadamard-pair-decoder-v1",
+      "commit": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/multimodel-scale-program-20260930",
+      "commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/partner-pose-contract-v1",
+      "commit": "c72fa83be658c6a7f5a28900409649e37233f327",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/pretrained-representations-v1",
+      "commit": "400022a29f05f8ef43502f39a2e52c345199e644",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/protocol-binding-ci-v1",
+      "commit": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/representation-ablation-v1",
+      "commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/s2-split-readiness-v1",
+      "commit": "053a0665cb4ccb9df5ce325df330ebae2fc4f973",
+      "tree_matches": true
+    },
+    {
+      "tag": "archive/2026-09-30/branch/kevin/teacher-paper-handoff-20260903",
+      "commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "tree_matches": true
+    }
+  ],
+  "scope": "Git tracked snapshot objects and reachable commit history. No cluster files, untracked local files, issue comments, secrets, or external-service state copied. Original experimental branches and cluster paths are untouched."
+}

@@ -1,90 +1,67 @@
-# Residue correspondence and partner-specific antibody–antigen interfaces
+# Antibody–antigen interface research
 
-An evidence-gated research codebase for understanding **what residue-level protein representations know about exact antibody–antigen contacts — and what they do not**.
+**From interface localisation to residue-pair correspondence.**
 
-The project goes beyond marginal epitope/paratope propensity. Its central question is whether a model preserves the **partner-specific residue correspondence** needed to identify which antibody residue interacts with which antigen residue under strict split, provenance and leakage controls.
+FrameContact and controlled protein-representation experiments: contact maps, epitope/paratope prediction, partner retrieval, and the evidence needed to tell these capabilities apart.
 
-> **Research status — 30 Sep 2026.** The strongest completed evidence is consolidated below. We deliberately make **no state-of-the-art claim**: benchmark comparability, exposed historical tests, failed promotion gates and negative results are kept explicit. The current SaProt/ProSST layer sweep is still running and is not used to choose a headline result.
+[Results](results/INDEX.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [All branches](results/ALL_BRANCHES.md) · [Run status](results/operations/README.md) · [Preservation](archive/README.md)
 
-## What the project has established
+## FrameContact: three endpoints, one documented evaluation
 
-| Finding | Audited result | Evidence boundary |
+Sequence inputs plus independently predicted intra-chain geometry; **no experimental bound coordinates as model input**. On the checkpoint-aligned **549-case historical test**, fixed routed medians over seeds 17/29/43 are:
+
+| Contact AP | Epitope AP | Paratope AP |
+|---:|---:|---:|
+| **0.02667** | **0.22031** | **0.69859** |
+
+Mean-per-complex AP, not pooled AP or accuracy. This is **exposed historical evidence**, not a fresh blind or proven sequence-double-cold test; some AF3 predictions use homolog MSAs. [Per-seed results](results/aligned_test549_replay_v1/RESULT.json) · [455/549 split correction](paper/neurips_2026_framecontact/CHECKPOINT_TEST_ALIGNMENT_20260905.md)
+
+## Controlled findings
+
+| Question | Measured answer | Scope |
 |---|---|---|
-| **Residue correspondence governs frozen-feature transfer** | Aligned ESM-IF1 improves macro pair AUPRC over ESM-2 by **+0.005111 (+22.8%)** across 10 paired seeds; shuffled ESM-IF1 is **−0.003093 (−13.8%)** below ESM-2; aligned vs shuffled is **+0.008204 (+42.4%)**. A width-matched random control is undecided vs ESM-2. | Development attribution; [`results/representation_attribution_v1/report.json`](results/representation_attribution_v1/report.json) |
-| **The effect survives stronger correspondence-preserving controls** | Same-amino-acid shuffling reduces contact AP from **0.027995 → 0.011100** for ESM-2+ESM-IF1; equal-component/equal-seed Δ **−0.017151**, pointwise crossed-bootstrap 95% CI **[−0.022688, −0.012434]**. | Exploratory development extension; [`extensions/correspondence_v2/READOUT.md`](extensions/correspondence_v2/READOUT.md) |
-| **Correspondence is necessary for useful transfer, but not sufficient** | On a preregistered 217-complex holdout, ProteinMPNN aligned−shuffled is **+0.003594** with 9/10 seeds and CI **[0.001559, 0.005881]**; ESM-IF1 is **+0.002260** but undecided, CI **[−0.000007, 0.004901]**. | Single holdout read; [`results/holdout_confirmation_v1/confirmation.json`](results/holdout_confirmation_v1/confirmation.json) |
-| **Auxiliary objectives are not interchangeable** | Contact supervision raises pair AUPRC by **+0.0833**; removing the complex-ranking term improves **pair AUPRC +0.0214** and **node MCC +0.0369** across 10 paired seeds. | Development factorial ablation; [`results/CLAIMS_LEDGER.md`](results/CLAIMS_LEDGER.md) |
-| **Optimisation geometry changes sign during training** | Node/contact gradient cosine is negative early and crosses to durably positive at steps **77–110** on AsEP and **38–50** on SAbDab2; every registered seed shows the transition. | Training-time diagnostic, not a causal mechanism; [`results/gradient_alignment_dynamics_v1/step_trace_summary.json`](results/gradient_alignment_dynamics_v1/step_trace_summary.json) |
-| **Exact contact correspondence remains much harder than interface localisation** | Official RePaRank sequence checkpoint on the exact 217-complex grid: **macro pair AP 0.037808**, pooled AP **0.008739**, AUROC **0.786064**, epitope AP **0.202039**, paratope AP **0.557707** over **9,638,880** residue pairs / 9,036 positives. | Exposed pretrained checkpoint; training-overlap not audited; [`evaluation.json`](extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json) |
+| Does aligned structural information transfer? | ESM-IF1 vs ESM-2: **+0.005111 AP**, 95% CI [0.003780, 0.006439]. Shuffled ESM-IF1: **-0.003093 AP** vs ESM-2. | Ten paired training seeds; development data; intervals resample seeds. [Artifact](results/representation_attribution_v1/report.json) |
+| Is the damage only an amino-acid-type mismatch? | Same-AA shuffling: **0.027995 → 0.011100 AP**. Equal-component paired effect **-0.017151**, CI [-0.022688, -0.012434]. | Three fixed seeds; 217 development complexes; crossed seed/component interval. [Readout](extensions/correspondence_v2/READOUT.md) |
+| Does the correspondence contrast confirm on held-out data? | **One of two encoders confirms:** ProteinMPNN **+0.003594 AP**; ESM-IF1 **+0.002260**, interval includes zero. | One registered 217-case holdout read; now closed. Not a universal necessity claim. [Both results](results/holdout_confirmation_v1/README.md) |
 
-### FrameContact: deployable predicted-geometry evidence
+![Frozen-feature transfer, four-arm development experiment](figures/evidence/representation_transfer.svg)
 
-The no-privileged-distance three-seed development system reaches median mean-per-complex AP of approximately **0.0261 contact / 0.2327 epitope / 0.6962 paratope** using sequence plus independently predicted intra-chain geometry. On the correctly aligned **549-case historical test** the fixed three-seed routed medians are **0.02667 / 0.22031 / 0.69859**. The 549-case result is explicitly an **exposed historical test**, not fresh blind evidence and not proven antibody+antigen sequence-double-cold generalisation.
+The random width control is **undecided**, not proven equivalent. The figure and headline metrics are derived from [hashed source artifacts](results/HEADLINE_REGISTRY.json); different seed sets and aggregation units are never pooled into a stronger-looking number.
 
-See [`paper/neurips_2026_framecontact/TEACHER_HANDOFF_20260903.md`](paper/neurips_2026_framecontact/TEACHER_HANDOFF_20260903.md) and [`results/aligned_test549_replay_v1/RESULT.json`](results/aligned_test549_replay_v1/RESULT.json).
+**Objective ablation:** removing complex-ranking supervision improved both contact and node endpoints in the recorded factorial study. This is an intervention on the full training/selection procedure, not an isolated gradient mechanism. [Ablation and qualifications](results/objective_component_localisation_v1/PART_TWO.md)
 
-### Partner ranking: a negative result that clarified the science
+## External baseline — measured here, not invented here
 
-A complete **122 antibody × 119 antigen = 14,518 pair** diagnostic showed that the earlier small-panel “contact down, MRR up” observation **does not robustly reproduce**. The current complex score is instead strongly associated with interaction dispersion (mean Spearman ≈ **0.9743**) and has substantial length/surface/node-prior associations. This separates **global partner ranking** from **local residue correspondence** and prevents the project from overclaiming specificity.
+The **official RePaRank sequence checkpoint** scores **0.037808 macro pair AP** and **0.008739 pooled pair AP** on **9,638,880 candidate residue pairs** (9,036 contacts) from 217 validation complexes. Its epitope/paratope macro AP is **0.202039 / 0.557707**. [Raw measurement summary](extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json)
 
-See [`extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md`](extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md).
+This is a pretrained-baseline diagnostic, **not an improvement produced by our model**. Checkpoint training overlap is unknown, and training budgets are not matched. Do not rank it against the 549-case table above.
 
-## External benchmark reality check
+## Evidence that limits the claims
 
-The AsEP benchmark is intentionally retained even though it is not a headline win. On `epitope_group`, the registered 10-seed single-model macro MCC is **0.1572**; on `epitope_ratio` it is **0.258**. Published configurations on those protocols can score higher. This repo therefore treats its contribution as **controlled attribution, mechanisms, failure boundaries and reproducibility**, not a disguised SOTA claim.
+The complete **122 × 119** partner grid (14,518 distinct pairs; 130,662 repeated evaluations) **did not robustly reproduce** the earlier small-panel MRR increase under corruption. Unobserved pairings are unlabelled alternatives, not verified non-binders. [Full-grid counterevidence](extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md)
 
-See [`results/asep_benchmark_v1/BENCHMARK.md`](results/asep_benchmark_v1/BENCHMARK.md).
+On AsEP, ten-seed macro MCC is **0.1572** on `epitope_group` and **0.2584** on `epitope_ratio`; these are not benchmark-leading results. [Benchmark conventions](results/asep_benchmark_v1/BENCHMARK.md) · [Corrections and negative results](docs/CLAIM_BOUNDARIES.md)
 
-## Active programme — not yet a result
+## Reproduce without mixing source revisions
 
-A frozen **36-task SaProt/ProSST layer sweep** is running: 10 real structure-token layers × 3 seeds plus two exact-width/coverage random controls × 3 seeds. At the latest committed snapshot, six SaProt tasks are complete:
+**Main is the curated evidence hub.** Historical results and experimental extensions have different source commits; copying their results here did not merge every training implementation.
 
-- SaProt layer 0, 3-seed mean validation pair AP ≈ **0.02058**.
-- SaProt layer 8, 3-seed mean validation pair AP ≈ **0.02104**.
+```bash
+# Standard-library reporting and preservation checks; no GPU or dataset required.
+python3 tools/evidence/verify.py --history
 
-The difference is small and **no layer winner is selected** until all 36 tasks and matched controls finish. The RePaRank structure checkpoint also remains incomplete on the full 217 cases because the existing predicted-structure authority covers 187/217 complexes; a 40-chain AF3 completion authority is frozen separately.
-
-Current execution details: [`results/CURRENT_STATUS_20260930.md`](results/CURRENT_STATUS_20260930.md).
-
-## Evidence map
-
-Start here instead of browsing branch names:
-
-- **Canonical results:** [`results/INDEX.md`](results/INDEX.md)
-- **Every paper-level number and its artifact:** [`results/CLAIMS_LEDGER.md`](results/CLAIMS_LEDGER.md)
-- **Reproducibility notes:** [`results/REPRODUCIBILITY_NOTES.md`](results/REPRODUCIBILITY_NOTES.md)
-- **Frozen representation evidence:** [`freeze/FREEZE.md`](freeze/FREEZE.md)
-- **Cold reproduction:** [`reproduction/README.md`](reproduction/README.md)
-- **Branch provenance / archive tags:** [`docs/BRANCH_PROVENANCE.md`](docs/BRANCH_PROVENANCE.md)
-- **Machine-readable branch evidence index:** [`results/BRANCH_EVIDENCE_INDEX.json`](results/BRANCH_EVIDENCE_INDEX.json)
-- **Complete pre-consolidation branch file inventory:** [`archive/BRANCH_FILE_INVENTORY_20260930.json`](archive/BRANCH_FILE_INVENTORY_20260930.json)
-
-## Repository design
-
-```text
-results/        canonical measurements, ledgers, benchmark reports and receipts
-paper/          paper-facing narratives, figures and corrected handoffs
-protocols/      preregistered/frozen experimental contracts
-freeze/         immutable claim/provenance freeze for the representation study
-reproduction/   cold-reproduction entry points and receipts
-extensions/     post-freeze programmes (correspondence, structural PLMs, RePaRank)
-archive/        machine-readable preservation inventory; no experimental history deleted
+# Prepare the exact experimental source in a NEW detached worktree.
+python3 tools/evidence/checkout_experiment.py multimodel ../antibody-multimodel
 ```
 
-The repository intentionally does **not** store raw datasets, full model weights, complete embedding banks or every dense prediction tensor. Large artifacts remain receipt-bound by path/hash; lightweight summaries and provenance stay in Git.
+[Exact-source routes and prerequisites](docs/REPRODUCE_EXACT.md) distinguish artifact verification, metric recomputation, and training reproduction. Large datasets, checkpoints, embedding stores and most raw prediction tensors remain outside Git.
 
-## Claims policy
+## Ongoing — separate from completed findings
 
-1. **Absolute paired effects are primary.** Relative percentages are secondary because the pair-AP baselines are small.
-2. **Development, historical exposed test, holdout and blind/OOD are different evidence classes.** They are never collapsed into one “test” label.
-3. **Failed gates remain results.** Hadamard decoding, focal pair loss, temporal OOD admission failures, structure-authority failures and disqualified scaling candidates remain discoverable.
-4. **No metric borrows another experiment's seed count, confidence bound or cohort.** See the claims ledger for the defect that motivated this rule.
-5. **No branch was deleted during consolidation.** Every pre-consolidation branch head is pinned by an `archive/2026-09-30/...` tag.
+As of **2026-09-30T07:18:25 UTC**, the frozen SaProt/ProSST sweep has **6/36** formal tasks complete. No winning layer is selected before the matched controls finish. RePaRank's full structure arm remains incomplete; the first AF3 missing-chain job failed before inference. [Timestamped jobs and receipts](results/operations/README.md)
 
-## Why the main branch is curated this way
+## Nothing discarded to make the front page cleaner
 
-GitHub recommends using the README to explain what the project does, why it is useful and how to get started, while reproducibility guidance emphasises complete artifact inventories, executable workflows and clear links from claims to evidence. The main branch therefore keeps the scientific story compact and pushes complete provenance into machine-readable indexes rather than hiding it or flooding the front page.
+**17 preserved pre-consolidation snapshots · 4,526 distinct path/blob versions · 55,630 tracked-file entries including repetitions.**
 
----
-
-**Current scientific thesis:** models can learn strong interface propensity and global interaction signals without learning the exact partner-specific residue correspondence required for reliable contact prediction. The most reproducible gains in this repository come from preserving that correspondence and from separating useful contact supervision from objectives that interfere with it.
+Original branches, archive tags, failed experiments and superseded interpretations remain available. [747 evidence-path links](results/ALL_BRANCHES.md) · [Complete tracked-tree inventory](archive/FULL_SNAPSHOT_MANIFEST_20260930.json) · [Offline restore procedure](archive/README.md) · [Full result catalogue](results/INDEX.md)
