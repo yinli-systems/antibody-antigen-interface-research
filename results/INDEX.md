@@ -143,19 +143,20 @@ Full raw corrected analysis, original failure log, repair authority, exact repro
 
 ## 8. EPIC accepted-paper reviewer-response closure
 
-The accepted AI4DD paper **EPIC: Epitope–Paratope Interleaved Contact Learning for Antibody–Antigen Interface Prediction** received reviewer requests covering extreme contact imbalance, missing component ablations, OpenDDE dependence, AsEP overclaim, input-modality wording, baseline comparability, uncertainty/OOD, calibration, the undefined TOPK2 expert, metric aggregation and training cost. A dedicated camera-ready package now maps every concern to an exact correction, frozen evidence, claim moderation, or an explicitly unresolved intervention.
+The accepted AI4DD paper **EPIC: Epitope–Paratope Interleaved Contact Learning for Antibody–Antigen Interface Prediction** received reviewer requests covering extreme contact imbalance, missing component ablations, OpenDDE dependence, the unsupported AsEP sentence, input-modality wording, baseline comparability, uncertainty/OOD, calibration, the undefined TOPK2 expert, metric aggregation and training cost. The camera-ready package now gives **all 19 concerns an explicit disposition**: factual correction, audited evidence, bounded successor/post-submission evidence, or claim moderation. “Closed” does not mean an unavailable exact intervention was fabricated.
 
 Key additions include:
 
 - practical contact ranking on an audited official-455 post-submission retrain: macro AP **0.02479**, P@10 **0.03934**, P@Lmin **0.02379**, top-1%-candidate precision/recall **0.02041/0.14797**, with pooled prevalence **0.001071**;
 - complex-bootstrap AP intervals across three fixed seeds: contact **0.01943 [0.01763,0.02129]**, epitope **0.20639 [0.19452,0.21873]**, paratope **0.65464 [0.64049,0.66826]**;
 - three-seed pair-score evidence: full contact score minus separable marginal outer product **+0.00426 AP**, crossed seed×antigen-cluster CI **[+0.00229,+0.00629]**;
-- a frozen epitope count/proportion-loss screen showing a recall–precision trade-off rather than an unqualified gain;
+- a frozen auxiliary epitope-loss screen showing that the count/proportion term can raise recall while lowering precision at dropout 0.2, but reverses AP direction at dropout 0.1—development evidence for an operating-point trade-off, not a stable causal gain;
+- a recovered single-seed successor ICG campaign: M3/M4/M6 completed with contact macro AP **0.02596 / 0.02663 / 0.02029**, while the intended ordinary/no-gate M2 control timed out after three days with no final result. This supports mechanism feasibility/heterogeneity only; it cannot identify the submitted EPIC gate effect;
 - exact camera-ready replacements removing the unsupported AsEP claim, correcting EPIC to **sequence-input + predicted monomer geometry**, separating same-protocol results from literature context, deleting the orphan TOPK2 sentence, and distinguishing pooled from equal-complex recall.
 
-The package does **not** backfill successor FrameContact or AF3 evidence as if it belonged to the anonymous OpenDDE submission. Exact unavailable interventions—especially a checkpoint-matched OpenDDE-vs-AF3 substitution and a frozen learned-contact-gate ablation—remain explicitly qualified, with claims moderated rather than invented.
+The package does **not** backfill successor FrameContact or AF3 evidence as if it belonged to the anonymous OpenDDE submission. An executable exact-submission authority audit records that the unchanged submitted checkpoint/source and bound OpenDDE prediction authority were not found in the connected roots. Therefore checkpoint-matched OpenDDE→AF3 substitution, exact submitted gate/no-gate factorial, exact multi-seed auxiliary-loss factorial, and prospective biological validation remain unavailable and explicitly bounded.
 
-Canonical package: [`kevin/epic-reviewer-response-20260930@387da05`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/387da055c104b23491c82667070b4f5d5199bccf/paper/epic_camera_ready_20260930).
+Canonical package: [`kevin/epic-reviewer-response-20260930@a0a583f`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/a0a583f39ee13d91f7f1b671d636cda058a09cdf/paper/epic_camera_ready_20260930). The machine-readable closure ledger is [`REVIEWER_CONCERN_CLOSURE.json`](https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a0a583f39ee13d91f7f1b671d636cda058a09cdf/paper/epic_camera_ready_20260930/REVIEWER_CONCERN_CLOSURE.json).
 
 ## 9. Negative and failed results remain first-class evidence
 
