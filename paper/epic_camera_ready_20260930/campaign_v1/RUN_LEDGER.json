@@ -1,0 +1,29 @@
+{
+  "authority": {
+    "receipt_path": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z/receipts/AUTHORITY_RECEIPT.json",
+    "receipt_sha256": "22758cac5289c70393711a6e17456ee8747aa5341ecdb8384c5d2372e7f79130",
+    "status": "PASS_FULL_PARENT_BUNDLE_VERIFICATION",
+    "verified_file_count": 6597,
+    "verified_total_bytes": 123904952
+  },
+  "campaign_protocol_sha256": "d6647c4421eebb910d8adae73f41c814690e50f5b41ea1d6264179dcea7f0bc7",
+  "format_version": "epic_reviewer_closure_run_ledger_v1",
+  "main_training": {
+    "array_task_count": 36,
+    "job_id": "1643900",
+    "result_count_at_submission": 0,
+    "state_at_2026-09-30T22:08:12Z": "RUNNING_ALL_36_TASKS"
+  },
+  "remote_root": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z",
+  "smoke": {
+    "array_task_count": 12,
+    "job_id": "1643888",
+    "manifest_path": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z/receipts/SMOKE_MANIFEST.json",
+    "manifest_sha256": "f9eb682edd0dbff8559b71df708b8f3d31989329ed199db9a4839c8b15f92534",
+    "nonempty_stderr_count": 0,
+    "result_count": 12,
+    "status": "PASS_ALL_CONDITION_SMOKES_FROZEN"
+  },
+  "test_label_artifacts_opened": false,
+  "test_selection_performed": false
+}

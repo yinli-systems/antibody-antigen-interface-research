@@ -1,0 +1,162 @@
+{
+  "base_model": {
+    "adapter_mode": "epiformer_style_same_protocol",
+    "d_model": 128,
+    "distance_bin_count": 5,
+    "dropout": 0.1,
+    "fusion_mode": "interleaved",
+    "geometry_feature_mode": "full_pose",
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "num_heads": 8,
+    "num_rbf": 16,
+    "num_self_layers": 2,
+    "pair_rank": 128,
+    "sequence_window": 32
+  },
+  "base_objective": {
+    "contact_focal_gamma": 1.0,
+    "contact_weight": 1.0,
+    "contrastive_weight": 0.0,
+    "distance_weight": 0.0,
+    "epitope_dice_weight": 1.0,
+    "epitope_proportion_weight": 0.2,
+    "epitope_weight": 0.5,
+    "paratope_weight": 0.1,
+    "specificity_weight": 0.0
+  },
+  "claim_boundaries": [
+    "The parent geometry cache is independent sequence-predicted AF3, not OpenDDE.",
+    "The official 455 test membership has historical exposure; no result from this campaign is prospective.",
+    "Ablations support component attribution only within this frozen AF3-substitution implementation and protocol.",
+    "No comparison to an unavailable OpenDDE authority may be claimed as exact predictor substitution."
+  ],
+  "conditions": [
+    {
+      "description": "Full AF3-substitution reference: predicted monomer geometry, symmetric rank-128 pair decoder, learned contact-gated interleaved cross-attention, contact/paratope/epitope supervision, Dice and conditional-proportion epitope auxiliaries.",
+      "name": "full_learned_gate",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Replace contact-gated cross-attention with content-only cross-attention; all other settings unchanged.",
+      "name": "no_contact_gate",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Freeze both cross-attention residual paths at zero; retain geometry, pair decoder, losses, and residue readouts.",
+      "name": "no_cross_attention",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Freeze antibody and antigen geometry residual paths at zero; retain dense sequence attention, learned contact gate, pair decoder, and losses.",
+      "name": "no_geometry_branch",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Zero and freeze low-rank query/key factors so contacts contain only antibody unary, antigen unary, and bias terms.",
+      "name": "unary_pair_decoder",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Reduce the symmetric low-rank interaction channel from rank 128 to rank 1 while preserving all other modules.",
+      "name": "rank1_pair_decoder",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Remove pair-contact marginal evidence from paratope and epitope readouts while retaining the contact map and contact-gated cross-attention.",
+      "name": "unary_residue_readout",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Train only with pairwise contact supervision; residue outputs remain measurable but receive no paratope, epitope, Dice, or proportion loss.",
+      "name": "contact_only",
+      "selection": "contact_only"
+    },
+    {
+      "description": "Remove direct pairwise contact supervision while retaining paratope and epitope supervision and the shared pair representation.",
+      "name": "residue_only",
+      "selection": "epitope_then_paratope"
+    },
+    {
+      "description": "Use epitope class-balanced BCE without Dice or conditional-proportion auxiliaries.",
+      "name": "no_epitope_aux",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Use epitope class-balanced BCE plus Dice, with conditional-proportion weight fixed to zero.",
+      "name": "dice_only",
+      "selection": "epitope_then_contact"
+    },
+    {
+      "description": "Use epitope class-balanced BCE plus conditional-proportion loss, with Dice weight fixed to zero.",
+      "name": "proportion_only",
+      "selection": "epitope_then_contact"
+    }
+  ],
+  "created_utc": "2026-09-30T21:59:26Z",
+  "data_counts": {
+    "test": 455,
+    "train": 2887,
+    "validation": 321
+  },
+  "evidence_class": "post-submission matched ablation campaign on the historical official 455 SAbDab2 split; not the exact submitted OpenDDE checkpoint and not fresh blind evidence",
+  "format_version": "epic_reviewer_closure_campaign_v1",
+  "implementation": {
+    "freeze_smokes.py": "c4250a8db79cd6387b972997987e6fd151855d1e63826cc1c8d5a45057717a8f",
+    "smoke_conditions.sbatch": "646c76b4a6e53122ca325923af40689e7cec15be64667359660fe264c6935e6a",
+    "train_condition.py": "34c1e7a07fa6a09e91f2ab32e6a435827693c411c4daa981209c54a3115f0ba2",
+    "train_conditions.sbatch": "37c9e4c27e4840d9c2d7ee1ddf0df5d3cf2c35019f606c1d89ebb5dc5105d287",
+    "verify_authority.py": "01e5d369db0e4b6d19b5249ea6bf3d9a7d7be7c0884fbe99e58f2761a1ec8ee3"
+  },
+  "parent_authority": {
+    "build_receipt_sha256": "e069c5df7db5d4b27de1042a2516c9936c564e0701710c56469053a77d2b2677",
+    "bundle_json_sha256": "0312e79e306e42c087cd653ac79a7a14459691dab0376bc33f1fdbe1275b55a4",
+    "contact_manifest_sha256": "8fde4f85ca2ca13bf6b27c2c322997179997f0acc00c8ac42f0254b2ae481756",
+    "full_split_sha256": "8286aaf715016b360fa01db09cb4af2b35f00ddb9c95cb56cc2f735e77085b82",
+    "model_source_sha256": "a85584f288b32e66e6ab34bcd93b0001ffcd2b173bb1b0fc9e3ab48bccd6171c",
+    "objective_source_sha256": "c633ef3cf31760d86a585aa6f6e8c9e7fbaaaede46405516b864a01c13f813fc",
+    "protocol_sha256": "d50460a3188738a84b241b5824868c676b38694856476ba1e0dbda0682b72341",
+    "root": "/ssd/scxi253/model_deployment/results/development/original455_retrain_20260906_v1/bundle",
+    "structure_manifest_sha256": "b17825e6fc0f8daaafd50126bb85a2097e963148920561391af792b589cf472c",
+    "train_source_sha256": "41ed07dd5fc058cefc74b63e004feb068dbd93b3e90fdf55a95010975c92d3f3"
+  },
+  "reporting": {
+    "multiplicity": "component-family conclusions require directionally consistent seeds and confidence intervals; otherwise report as inconclusive",
+    "primary": "three-seed condition deltas with paired seed summaries; test metrics only after the freeze gate",
+    "required_metrics": [
+      "per-complex AUROC",
+      "per-complex average precision",
+      "pooled precision/recall",
+      "precision@k",
+      "recall@k",
+      "calibration",
+      "wall-clock",
+      "parameter counts"
+    ]
+  },
+  "repository": {
+    "branch": "kevin/epic-reviewer-response-20260930",
+    "commit": "a0a583f39ee13d91f7f1b671d636cda058a09cdf",
+    "note": "Campaign implementation is added after this parent commit and frozen by file hashes below.",
+    "worktree": "/Users/kevin/antibody-epic-reviewer-response-20260930"
+  },
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "status": "PREREGISTERED_BEFORE_GPU_EXECUTION",
+  "training": {
+    "batch_size": 1,
+    "early_stopping_patience": 5,
+    "gradient_clip_norm": 1.0,
+    "initialization": "random from scratch per condition and seed",
+    "learning_rate": 0.0003,
+    "maximum_epochs": 20,
+    "optimizer": "AdamW",
+    "precision": "bf16",
+    "selection_tolerance": 0.0001,
+    "test_policy": "Freeze all condition/seed checkpoints and validation receipts before any campaign test scoring.",
+    "weight_decay": 0.0001
+  }
+}

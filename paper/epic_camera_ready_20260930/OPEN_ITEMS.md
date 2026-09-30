@@ -13,3 +13,7 @@ The 19 concerns are mapped in `REVIEWER_CONCERN_CLOSURE.json`. They are addresse
 - Later FrameContact AsEP/OOD results are subsequent evidence, not retroactive EPIC results.
 
 These are deliberate claim boundaries, not pending tasks that may be silently filled from the same development cohort.
+
+## Active matched reviewer-closure campaign
+
+Campaign v1 is preregistered under `campaign_v1/CAMPAIGN_PROTOCOL.json`; 12/12 smoke controls passed in Slurm `1643888`, and the 36-task three-seed training array `1643900` is running. No campaign test labels have been opened. The exact OpenDDE-substitution gap remains authority-blocked and must not be relabeled as closed.
