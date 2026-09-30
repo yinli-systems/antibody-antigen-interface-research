@@ -81,8 +81,8 @@ def main():
  receipt={"format_version":"strict_partner_retrieval_tensor_cache_receipt_v1","status":"COMPLETE_FOLD_LOCAL_TENSOR_CACHE",
           "role":role,"fold":cache["fold"],"sequence_cache_sha256":sha(a.sequence_cache),"source_bank_receipt_sha256":sha(a.source_bank_receipt),
           "entry_count":len(entries),"entries":entries,"antibody_count":len(cache["antibodies"]),"antigen_count":len(cache["antigens"]),
-          "model_execution_authorized":cache.get("model_execution_authorized") is True,"whole_pool_bank_visible_to_model_process":False,
+          "training_and_model_selection_authorized":cache.get("training_and_model_selection_authorized") is True,"outer_evaluation_authorized":cache.get("outer_evaluation_authorized") is True,"whole_pool_bank_visible_to_model_process":False,
           "test_access":False,"ood_access":False}
  (a.output_root/"CACHE_RECEIPT.json").write_text(json.dumps(receipt,indent=2,sort_keys=True,allow_nan=False)+"\n")
- print(json.dumps({"status":receipt["status"],"fold":receipt["fold"],"role":role,"entries":len(entries),"authorized":receipt["model_execution_authorized"]},indent=2))
+ print(json.dumps({"status":receipt["status"],"fold":receipt["fold"],"role":role,"entries":len(entries),"training_authorized":receipt["training_and_model_selection_authorized"],"outer_evaluation_authorized":receipt["outer_evaluation_authorized"]},indent=2))
 if __name__=="__main__":main()
