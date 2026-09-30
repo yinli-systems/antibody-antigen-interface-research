@@ -87,7 +87,11 @@ def run_checked(command: list[str], cwd: Path, commands_path: Path) -> None:
     with commands_path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(command) + "\n")
     print("[command]", " ".join(command), flush=True)
-    subprocess.run(command, cwd=cwd, check=True)
+    environment = os.environ.copy()
+    source_python = str((cwd / "src").resolve())
+    previous = environment.get("PYTHONPATH")
+    environment["PYTHONPATH"] = source_python if not previous else f"{source_python}:{previous}"
+    subprocess.run(command, cwd=cwd, check=True, env=environment)
 
 
 def read_evaluation(path: Path) -> dict[str, Any]:

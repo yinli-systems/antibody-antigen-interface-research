@@ -11,7 +11,7 @@ from extensions.frontier_multimodel_v1.freeze_structural_training import (
     SEEDS,
     discover_specs,
 )
-from extensions.frontier_multimodel_v1.run_structural_training import representation_args
+from extensions.frontier_multimodel_v1.run_structural_training import representation_args, run_checked
 
 
 def _spec(path: Path, family: str, layer: int, side: str, dim: int) -> Path:
@@ -118,3 +118,20 @@ def test_protocol_forbids_closed_test_and_smoke_as_science() -> None:
     assert "No test or rejected OOD label is read" in text
     assert "Smoke metrics are never scientific results" in text
     assert "No SOTA" in text
+
+
+def test_runner_prepends_source_src_to_pythonpath(tmp_path: Path, monkeypatch) -> None:
+    observed = {}
+
+    def fake_run(command, cwd, check, env):
+        observed.update({"command": command, "cwd": cwd, "check": check, "env": env})
+
+    monkeypatch.setattr("subprocess.run", fake_run)
+    monkeypatch.setenv("PYTHONPATH", "/existing")
+    commands = tmp_path / "commands.jsonl"
+    (tmp_path / "src").mkdir()
+    run_checked(["python", "script.py"], tmp_path, commands)
+    assert observed["check"] is True
+    assert observed["cwd"] == tmp_path
+    assert observed["env"]["PYTHONPATH"].split(":") == [str((tmp_path / "src").resolve()), "/existing"]
+    assert json.loads(commands.read_text().strip()) == ["python", "script.py"]
