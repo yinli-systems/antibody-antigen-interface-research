@@ -1,0 +1,29 @@
+{
+  "arms": 12,
+  "output": "/tmp/SYNTHETIC-analysis-lea3elqt/isolated_output/ANALYSIS.json",
+  "selections": {
+    "prosst": {
+      "raw_highest_arm": "prosst_layer_00",
+      "raw_highest_layer": 0,
+      "raw_highest_mean_pair_macro_ap": 1.0,
+      "role": "development selection only; no blind or SOTA status",
+      "selected_arm": "prosst_layer_00",
+      "selected_layer": 0,
+      "selected_mean_pair_macro_ap": 1.0,
+      "tie_window": 0.001
+    },
+    "saprot": {
+      "raw_highest_arm": "saprot_layer_00",
+      "raw_highest_layer": 0,
+      "raw_highest_mean_pair_macro_ap": 1.0,
+      "role": "development selection only; no blind or SOTA status",
+      "selected_arm": "saprot_layer_00",
+      "selected_layer": 0,
+      "selected_mean_pair_macro_ap": 1.0,
+      "tie_window": 0.001
+    }
+  },
+  "status": "COMPLETE_DEVELOPMENT_LAYER_SWEEP_ANALYSIS",
+  "tasks": 36
+}
+PASS: complete SYNTHETIC 36-task pipeline; not a scientific measurement
