@@ -23,6 +23,14 @@ A learned residue-correspondence matcher was evaluated on the same 217 developme
 
 Canonical research snapshot: [`kevin/rescue-qualification-20260930@fdb51b2`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/fdb51b29c6fb22ccc55e89f05e38a779d64389e2/extensions/rescue_qualification_v2).
 
+#### Train-calibrated label-free gate
+
+The follow-up gate freezes a 99.5th-percentile threshold from 256 clean **training** sequence keys per matcher seed and never uses contact AP to choose the threshold. On the 217 development complexes, all three registered synthetic corruptions trigger at 100%, so gated recovery equals unconditional recovery: same-AA equal-component/equal-seed Δ **+0.015721**, crossed seed×component 95% CI **[+0.011160,+0.021192]**. Clean damage is reduced but not eliminated: gated-clean−aligned is **−0.000460 [−0.001143,+0.000020]**, versus unconditional **−0.001430 [−0.002716,−0.000085]**.
+
+The important negative result is calibration shift. Clean trigger rates are 0.39% on the train calibration keys for every seed, but **15.67% / 17.97% / 0.46%** on validation for seeds 101/202/303. The 101/202 trigger sets overlap strongly (31 shared cases; Jaccard ≈0.738) and concentrate in 15–16 components. Therefore the train quantile is **not** presented as a validation or deployment guarantee. The synthetic corruptions are also not treated as real biological OOD; a frozen label-free heuristic diagnostic now tests whether 100% detection is largely a property of the explicit permutation construction.
+
+Raw 651-row seed receipts, crossed analysis, hashes and reproduction code are pinned at [`kevin/rescue-qualification-20260930@cc10181`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/cc101811c7452a593d24040c7b4159f7bff641d0/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1). The human-readable gate readout is at [`20d55fe`](https://github.com/yinli-systems/antibody-antigen-interface-research/blob/20d55fe5f8bd5606b569ab1a7767e9baf9fa344a/extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md).
+
 ## 2. Objective interference and optimisation dynamics
 
 | Evidence | Result | Boundary | Artifact |
