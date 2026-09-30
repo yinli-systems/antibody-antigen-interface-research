@@ -171,12 +171,24 @@ def read_ca(path: Path) -> np.ndarray:
 
 
 def chain_local_packing(parts: Sequence[str], structure_records: dict[tuple[str, str], dict], side: str,
-                        structure_root: Path) -> dict[str, float]:
+                        structure_root: Path) -> dict[str, float | bool | None]:
+    # Packing is an optional covariate, never an admission criterion. Some of the
+    # historical ESM-IF1 arm is deliberately zero-filled because no predicted
+    # structure exists. Excluding those sequences here would silently change the
+    # all-vs-all candidate universe, so a missing part makes the whole sequence
+    # proxy missing and records an explicit presence flag.
+    missing = [key for key in parts if (side, key) not in structure_records]
+    if missing:
+        return {
+            "packing_available": False,
+            "packing_missing_part_count": len(missing),
+            "packing_mean_neighbors_10a": None,
+            "packing_median_neighbors_10a": None,
+            "packing_surface_fraction_le12_10a": None,
+        }
     all_counts = []
     for key in parts:
-        record = structure_records.get((side, key))
-        if record is None:
-            raise ValueError(f"no structure authority for {side}:{key}")
+        record = structure_records[(side, key)]
         xyz = read_ca(structure_root / record["pdb_path"])
         if len(xyz) != int(record["length"]):
             raise ValueError(f"CA count differs from sequence length: {key}")
@@ -185,6 +197,8 @@ def chain_local_packing(parts: Sequence[str], structure_records: dict[tuple[str,
         all_counts.extend(int(value) for value in counts)
     array = np.asarray(all_counts, dtype=float)
     return {
+        "packing_available": True,
+        "packing_missing_part_count": 0,
         "packing_mean_neighbors_10a": float(array.mean()),
         "packing_median_neighbors_10a": float(np.median(array)),
         "packing_surface_fraction_le12_10a": float(np.mean(array <= 12)),
@@ -208,6 +222,8 @@ def safe_spearman(left: Sequence[float], right: Sequence[float]) -> float | None
     from scipy.stats import spearmanr
     left = np.asarray(left, dtype=float)
     right = np.asarray(right, dtype=float)
+    keep = np.isfinite(left) & np.isfinite(right)
+    left, right = left[keep], right[keep]
     if len(left) < 3 or np.all(left == left[0]) or np.all(right == right[0]):
         return None
     value = float(spearmanr(left, right).statistic)
@@ -429,6 +445,13 @@ def main() -> None:
         "unique_pair_count": len(grid),
         "anchor_metric_rows": len(anchor_frame),
         "known_positive_pair_count_in_grid": int(grid.known_complex.sum()),
+        "packing_proxy_coverage": {
+            "antibody_unique_available": int(sum(bool(static[("antibody", key)]["packing_available"]) for key in ab_keys)),
+            "antibody_unique_total": len(ab_keys),
+            "antigen_unique_available": int(sum(bool(static[("antigen", key)]["packing_available"]) for key in ag_keys)),
+            "antigen_unique_total": len(ag_keys),
+            "missingness_policy": "retain every candidate; proxy correlations use available pairs only",
+        },
         "candidate_semantics": "project-observed sequence pairs are known positives; all others are unlabelled distractors, not non-binders",
         "score_columns": list(SCORE_COLUMNS),
         "checkpoint": str(checkpoint_path),

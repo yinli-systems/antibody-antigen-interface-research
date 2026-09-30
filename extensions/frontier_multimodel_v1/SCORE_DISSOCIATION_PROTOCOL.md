@@ -76,3 +76,16 @@ non-binders. No result here changes the closed evidence freeze.
   in this diagnostic.
 - The 106x106 VHH and CALM studies motivate rigorous retrieval controls, but
   manually recombined or unobserved pairs remain unverified non-binders.
+
+## Amendment after pre-inference canary failure
+
+Canary job `1639957_0` failed before model inference because the initial code
+incorrectly required every candidate chain to have a packing structure. Eighteen
+unique validation antibodies and nineteen unique validation antigens lack at
+least one chain-level structure authority; this is consistent with the historical
+zero-filled representation contract. The candidate universe, endpoints and score
+family remain unchanged. Packing is now an optional covariate with an explicit
+presence flag; no sequence is dropped, imputed or assigned a fabricated value,
+and proxy correlations use finite available pairs only. Attempt 1 remains a
+preserved failed plan. A new plan/hash is required before retrying. No scientific
+score output was produced or inspected before this amendment.

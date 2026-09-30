@@ -105,3 +105,8 @@ def test_safe_spearman_reports_monotone_and_constant_boundary():
     assert safe_spearman([1, 2, 3], [2, 4, 8]) == pytest.approx(1.0)
     assert safe_spearman([1, 2, 3], [8, 4, 2]) == pytest.approx(-1.0)
     assert safe_spearman([1, 1, 1], [1, 2, 3]) is None
+
+
+def test_safe_spearman_drops_missing_proxy_pairs_without_imputation():
+    assert safe_spearman([1, 2, 3, 4], [1, float("nan"), 3, 4]) == pytest.approx(1.0)
+    assert safe_spearman([1, 2], [float("nan"), 2]) is None
