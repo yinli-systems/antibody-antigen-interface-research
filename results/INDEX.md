@@ -141,7 +141,23 @@ No tested real structural-PLM layer reliably exceeds its matched random-width co
 
 Full raw corrected analysis, original failure log, repair authority, exact reproduction command and decision receipt are pinned at [`kevin/structural-plm-final-20260930`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/kevin/structural-plm-final-20260930/extensions/frontier_multimodel_v1).
 
-## 8. Negative and failed results remain first-class evidence
+## 8. EPIC accepted-paper reviewer-response closure
+
+The accepted AI4DD paper **EPIC: Epitope–Paratope Interleaved Contact Learning for Antibody–Antigen Interface Prediction** received reviewer requests covering extreme contact imbalance, missing component ablations, OpenDDE dependence, AsEP overclaim, input-modality wording, baseline comparability, uncertainty/OOD, calibration, the undefined TOPK2 expert, metric aggregation and training cost. A dedicated camera-ready package now maps every concern to an exact correction, frozen evidence, claim moderation, or an explicitly unresolved intervention.
+
+Key additions include:
+
+- practical contact ranking on an audited official-455 post-submission retrain: macro AP **0.02479**, P@10 **0.03934**, P@Lmin **0.02379**, top-1%-candidate precision/recall **0.02041/0.14797**, with pooled prevalence **0.001071**;
+- complex-bootstrap AP intervals across three fixed seeds: contact **0.01943 [0.01763,0.02129]**, epitope **0.20639 [0.19452,0.21873]**, paratope **0.65464 [0.64049,0.66826]**;
+- three-seed pair-score evidence: full contact score minus separable marginal outer product **+0.00426 AP**, crossed seed×antigen-cluster CI **[+0.00229,+0.00629]**;
+- a frozen epitope count/proportion-loss screen showing a recall–precision trade-off rather than an unqualified gain;
+- exact camera-ready replacements removing the unsupported AsEP claim, correcting EPIC to **sequence-input + predicted monomer geometry**, separating same-protocol results from literature context, deleting the orphan TOPK2 sentence, and distinguishing pooled from equal-complex recall.
+
+The package does **not** backfill successor FrameContact or AF3 evidence as if it belonged to the anonymous OpenDDE submission. Exact unavailable interventions—especially a checkpoint-matched OpenDDE-vs-AF3 substitution and a frozen learned-contact-gate ablation—remain explicitly qualified, with claims moderated rather than invented.
+
+Canonical package: [`kevin/epic-reviewer-response-20260930@387da05`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/387da055c104b23491c82667070b4f5d5199bccf/paper/epic_camera_ready_20260930).
+
+## 9. Negative and failed results remain first-class evidence
 
 The consolidated main intentionally preserves, among others:
 
@@ -158,6 +174,6 @@ For exhaustive discovery, use the [clickable branch evidence directory](ALL_BRAN
 
 All paper-level interpretation must also follow [CLAIM_BOUNDARIES.md](../docs/CLAIM_BOUNDARIES.md). The first consolidation README used overly general “necessary” wording; it is superseded by scoped empirical statements. Historical raw reports remain unchanged.
 
-## 9. Execution repair and subsequent operational snapshots
+## 10. Execution repair and subsequent operational snapshots
 
 The [engineered recovery](../extensions/execution_recovery_v1/README.md) repairs AF3 staging/runtime and the frozen analyzer receipt schema without modifying existing experiments. See [current timestamped operations](operations/README.md). These are engineering and scheduling outcomes, not additional model-performance claims.
