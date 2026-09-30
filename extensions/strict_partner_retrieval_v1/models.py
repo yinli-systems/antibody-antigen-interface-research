@@ -70,27 +70,34 @@ class CDRLateInteraction:
                 a=torch.nn.functional.normalize(self.antibody_projection(ab),dim=-1)
                 g=torch.nn.functional.normalize(self.antigen_projection(ag),dim=-1)
                 return a,g
-            def pair_scores(self,ab,ag,ab_mask,ag_mask,cdr_masks):
-                # cdr_masks B x 6 x L_ab, sequence-only annotations
+            def encode_antibodies(self,ab,ab_mask,cdr_masks):
                 if cdr_masks.ndim!=3 or cdr_masks.shape[0]!=ab.shape[0] or cdr_masks.shape[2]!=ab.shape[1]:
                     raise ValueError("CDR mask shape")
-                a,g=self.encode_residues(ab,ag)
+                a=torch.nn.functional.normalize(self.antibody_projection(ab),dim=-1)
                 cm=cdr_masks & ab_mask[:,None,:]
                 denom=cm.sum(-1,keepdim=True).clamp_min(1)
                 slots=(a[:,None,:,:]*cm[:,:,:,None]).sum(2)/denom
                 slots=torch.nn.functional.normalize(slots,dim=-1)
-                present=cm.any(-1)
-                # all antigen residues are candidates; no epitope mask exists here
-                sim=torch.einsum("bsd,btd->bst",slots,g)
-                local=_normalized_logmeanexp(sim,ag_mask,pool_temperature)
-                local=local.masked_fill(~present,0.)
-                score=local.sum(-1)/present.sum(-1).clamp_min(1)
+                return slots,cm.any(-1)
+            def encode_antigens(self,ag):
+                return torch.nn.functional.normalize(self.antigen_projection(ag),dim=-1)
+            def score_encoded(self,slots,present,g,ag_mask):
+                # A x slots x G x residues. All antigen residues remain eligible.
+                sim=torch.einsum("asd,gtd->asgt",slots,g)
+                valid=ag_mask[None,None,:,:]
+                neg=torch.finfo(sim.dtype).min
+                z=(sim/pool_temperature).masked_fill(~valid,neg)
+                count=valid.sum(-1).clamp_min(1)
+                local=pool_temperature*(torch.logsumexp(z,dim=-1)-count.log())
+                local=local.masked_fill(~present[:,:,None],0.)
+                score=local.sum(1)/present.sum(1).clamp_min(1)[:,None]
                 return score/self.log_temperature.exp().clamp(1e-3,1.0)
+            def score_matrix(self,ab,ag,ab_mask,ag_mask,cdr_masks):
+                slots,present=self.encode_antibodies(ab,ab_mask,cdr_masks)
+                g=self.encode_antigens(ag)
+                return self.score_encoded(slots,present,g,ag_mask)
             def forward(self,ab,ag,ab_mask,ag_mask,cdr_masks):
-                # batch contains aligned positive pairs; pairwise library scoring uses score_pairs.
-                return self.pair_scores(ab,ag,ab_mask,ag_mask,cdr_masks)
-            def score_pairs(self,ab_res,ag_res,ab_mask,ag_mask,cdr_masks):
-                return self.pair_scores(ab_res,ag_res,ab_mask,ag_mask,cdr_masks)
+                return self.score_matrix(ab,ag,ab_mask,ag_mask,cdr_masks)
         return M()
 
 class BiCrossBlock:
