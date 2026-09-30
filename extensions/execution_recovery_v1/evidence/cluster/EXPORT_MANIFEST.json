@@ -1,0 +1,215 @@
+{
+  "scope": "Selected execution evidence, not model weights or raw dataset backup",
+  "files": [
+    {
+      "path": "FINAL_SNAPSHOT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/FINAL_SNAPSHOT.json",
+      "sha256": "3396b1fdbbb69606017111099a9f07ac5254cc6e589f119e6f33c5a6a7e652ea",
+      "bytes": 8999
+    },
+    {
+      "path": "FINAL_SACCT.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/FINAL_SACCT.txt",
+      "sha256": "6c9ab05e796d1a672d0ded74ef70e660aca32099201259a7b1ec9ab16f0645fb",
+      "bytes": 1147
+    },
+    {
+      "path": "LATEST_COMPLETED_TASK_PREFLIGHT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/LATEST_COMPLETED_TASK_PREFLIGHT.json",
+      "sha256": "84209c97d217e585ac3965134a0d89ab2aafd6549a11dd725a81bd529fbc11a2",
+      "bytes": 23520
+    },
+    {
+      "path": "REAL_SCHEMA_DEFECT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/REAL_SCHEMA_DEFECT.json",
+      "sha256": "f0b2af2600b83ad13e67d961d3cc6ef17a880832a79bf38333f8598fa51f5d8d",
+      "bytes": 1276
+    },
+    {
+      "path": "COMPLETED_TASK_PREFLIGHT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/COMPLETED_TASK_PREFLIGHT.json",
+      "sha256": "2cce8651e3e283b7faffd82fadb2741cb33a06749357e671e00c9bcc02a35627",
+      "bytes": 21722
+    },
+    {
+      "path": "CONTRACT_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/CONTRACT_TESTS.txt",
+      "sha256": "6f479176968cfdc89c0c1db8152b60fc580affa6b268cb90e46a4d72f3883500",
+      "bytes": 1823
+    },
+    {
+      "path": "ANALYSIS_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/ANALYSIS_TESTS.txt",
+      "sha256": "8de25c7e7debce9be0411bdb6d28a12324bc9cd140b2de8c918df012062f448b",
+      "bytes": 614
+    },
+    {
+      "path": "ASSEMBLY_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/ASSEMBLY_TESTS.txt",
+      "sha256": "410e3028d1057e4cd0970bddaf76fbfddeab6605030f71f3e2714e55cf069924",
+      "bytes": 464
+    },
+    {
+      "path": "STRUCTURE_IO_TESTS.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/STRUCTURE_IO_TESTS.txt",
+      "sha256": "c7d8c7b13ee4eeade17ffbef4ba300e6f96b6441bf09c18fc467aa5c06f529a4",
+      "bytes": 401
+    },
+    {
+      "path": "SYNTHETIC_PIPELINE_TEST.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/SYNTHETIC_PIPELINE_TEST.json",
+      "sha256": "2397a355bfea872f955bb25a068ac8fe29c3589dc6bdd3f98206aa7b5edf966f",
+      "bytes": 473
+    },
+    {
+      "path": "SYNTHETIC_PIPELINE_TEST.log",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/SYNTHETIC_PIPELINE_TEST.log",
+      "sha256": "6f439166fc678e1da162eb54e4947e85a15aaa91c2770d7dbe5d3d7867c1bf01",
+      "bytes": 955
+    },
+    {
+      "path": "LEGACY_HASH_CORRECTION.txt",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/LEGACY_HASH_CORRECTION.txt",
+      "sha256": "93a43e7d2bd59012a67e8375b2d1b8ad693ffc35bbd19cbde78cb85c61235b8e",
+      "bytes": 251
+    },
+    {
+      "path": "RUNTIME_SOURCE_PROBE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/RUNTIME_SOURCE_PROBE.json",
+      "sha256": "4537aacdec2ab95e73673cc6f9440299561c98e3b800cc3dba99581bcfde1bca",
+      "bytes": 477
+    },
+    {
+      "path": "af3_attempt2/PLAN.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/PLAN.json",
+      "sha256": "6db2ca822003647080561af7124795d855117a920fd634ce0392d8e995539df3",
+      "bytes": 40914
+    },
+    {
+      "path": "af3_attempt2/task0.sbatch",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/task0.sbatch",
+      "sha256": "8869e3ab11e4fd864bf359e36afe658e0416765d4f5e901b82d3a71a15d7591d",
+      "bytes": 399
+    },
+    {
+      "path": "af3_attempt2/task0_SUBMITTED.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/task0_SUBMITTED.json",
+      "sha256": "f34b8c6ab3853858f4c2e87d0009e5a387f35486d20f1a7ba82862d39636193b",
+      "bytes": 3086
+    },
+    {
+      "path": "af3_attempt2/task0_SUBMIT_COMMAND.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/task0_SUBMIT_COMMAND.json",
+      "sha256": "79522579db7eecf481ebe0e18002333d7bf5e9661a8e5193bd77de90d5082f52",
+      "bytes": 2965
+    },
+    {
+      "path": "layer_analysis_v1/AUTHORITY.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/AUTHORITY.json",
+      "sha256": "146222211e5a88d789ba61174103db3a88e34e6ef944978295d94a149d1ed505",
+      "bytes": 1662
+    },
+    {
+      "path": "layer_analysis_v1/SUBMISSION_INTENT.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/SUBMISSION_INTENT.json",
+      "sha256": "1dd9ecbef07197f83d5bd954d89204fe09a309b00b01bf9720b1e952fb0119c6",
+      "bytes": 878
+    },
+    {
+      "path": "layer_analysis_v1/SUBMITTED.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/SUBMITTED.json",
+      "sha256": "3809fb1635495c8383e5afd750c74afa7e4802adc57723182956217622d0d8c2",
+      "bytes": 890
+    },
+    {
+      "path": "layer_analysis_v1/analysis.sbatch",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/analysis.sbatch",
+      "sha256": "287954501b42c8eb924ab96c323a33caebb1a05f9746e191299bd1d118a574e2",
+      "bytes": 463
+    },
+    {
+      "path": "af3_attempt2/submissions/task_000.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/submissions/task_000.json",
+      "sha256": "c96976bcc01ccd3b41828fb2dc30ac55ea035e205c87abcc35fa825200f1d471",
+      "bytes": 172
+    },
+    {
+      "path": "historical_failures/1640914_0.out",
+      "source_path": "/data/home/scxi253/slurm-1640914_0.out",
+      "sha256": "124d1579ec457cd47b5db0fac73e68a0b9dfd408a061fa2f682326001cb5bc87",
+      "bytes": 151
+    },
+    {
+      "path": "completed_training/task_00/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/COMPLETE.json",
+      "sha256": "7bde8e56ba9c19f60042dbfe193a1b5d21397553e53cb7481e94a40b443e079a",
+      "bytes": 1390
+    },
+    {
+      "path": "completed_training/task_01/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/COMPLETE.json",
+      "sha256": "871b8b1f6a258d664b43dfe8077e6bc174fd07ff996dc6bc1f6a04a584a8841e",
+      "bytes": 1389
+    },
+    {
+      "path": "completed_training/task_02/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/COMPLETE.json",
+      "sha256": "1c10c538856d887648f135dcb546aa3c5ae99e26d7b55e0fbfd2dbf352c6e37e",
+      "bytes": 1388
+    },
+    {
+      "path": "completed_training/task_03/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/COMPLETE.json",
+      "sha256": "0a8bd917b9eca42f8599874afc15d1b623ef0f1c93d58f42589e9d7955378ad8",
+      "bytes": 1390
+    },
+    {
+      "path": "completed_training/task_04/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/COMPLETE.json",
+      "sha256": "88e85ea549870e4498ff063b4431aa8ee436db874413468ddb66052828e01082",
+      "bytes": 1390
+    },
+    {
+      "path": "completed_training/task_05/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/COMPLETE.json",
+      "sha256": "f1bfabfce1dcb4b25c342599a8d9ebd81bf8dbb4e51e1cf2a7d66aac90a367b7",
+      "bytes": 1388
+    },
+    {
+      "path": "completed_training/task_06/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/COMPLETE.json",
+      "sha256": "e2795e6a5fe062ce713032b379118e8956a45c13ee93e6978438aec34302d546",
+      "bytes": 1390
+    },
+    {
+      "path": "completed_training/task_07/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/COMPLETE.json",
+      "sha256": "fa0f79b96cd39caeaed31c55e2e9978c3125fa6390a9630184205bf6095c01fb",
+      "bytes": 1390
+    },
+    {
+      "path": "completed_training/task_08/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/COMPLETE.json",
+      "sha256": "6ca5715a56666a934df6aefd41e487b0449636653eb54e45d74605aa26350e45",
+      "bytes": 1389
+    },
+    {
+      "path": "completed_training/task_09/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/COMPLETE.json",
+      "sha256": "ca71a96e76ce9a424950f3982b34a77564c1c44f9802f66c1d71a3d2a1c24f0b",
+      "bytes": 1391
+    },
+    {
+      "path": "completed_training/task_10/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/COMPLETE.json",
+      "sha256": "446bea326999eca20c313a3f443bb231de107c050d2cfcb89c6446ce008eec23",
+      "bytes": 1391
+    },
+    {
+      "path": "completed_training/task_11/COMPLETE.json",
+      "source_path": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_11/COMPLETE.json",
+      "sha256": "950ab2f0e59924d53cf251a4707b06680d6f5e9998b1add740e65d4e1beca0ca",
+      "bytes": 1392
+    }
+  ]
+}

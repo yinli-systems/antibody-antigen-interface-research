@@ -1,0 +1,1 @@
+Earlier conversational plan SHA did not match. No plan/GPU job created. Independently verified main@e8ffb2a artifact and live PLAN are byte-identical with SHA f2199a1f1940ff64fb75d7810b974963ed984fc293c6d3f2f0f150663b1bd615. Original bytes unchanged.

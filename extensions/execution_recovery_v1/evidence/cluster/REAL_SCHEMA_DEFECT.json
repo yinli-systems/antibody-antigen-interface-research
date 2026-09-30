@@ -1,0 +1,34 @@
+{
+  "adapter_sha256": "d0d13a804f3f3e43e31eae9347ebfa0a4140ea48e9ab6dcef11f8b6b5a0b7997",
+  "corrected_snapshot": {
+    "epitope_macro_ap": 0.1654826612122789,
+    "instance_count": 217,
+    "pair_macro_ap": 0.017987586488391646,
+    "pair_macro_auroc": 0.9174420071517829,
+    "pair_micro_ap": 0.01108995938226375,
+    "paratope_macro_ap": 0.6319237510108171,
+    "partner_mrr": 0.3814296686416503,
+    "partner_recall_at_1": 0.16589861751152074
+  },
+  "input_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/validation_best/evaluation.json",
+  "input_receipt_sha256": "87383e2d202b6478eac3433ab31adf895d1efba4459e03f8143b7cada2cabc64",
+  "legacy_aggregator_sha256": "6b8621a46e7e2fc215bd1dcbcaf48bc72d8997a675f722547642c122254eded4",
+  "legacy_error": "KeyError('mrr')",
+  "observed_retrieval_keys": [
+    "candidate_count_per_instance",
+    "instance_count",
+    "mean_hardest_negative_score",
+    "mean_matched_minus_hardest_negative",
+    "mean_matched_score",
+    "mean_normalized_rank",
+    "mean_rank",
+    "mean_reciprocal_rank",
+    "median_rank",
+    "recall_at_1",
+    "recall_at_10",
+    "recall_at_5"
+  ],
+  "status": "CONFIRMED_REPORT_SCHEMA_DEFECT",
+  "test_labels_read": false,
+  "training_source_modified": false
+}
