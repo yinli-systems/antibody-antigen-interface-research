@@ -104,23 +104,39 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(ValueError): af3.sample_grid(p,SEEDS,5)
     def test_rounded_summary_does_not_affect_selection(self):
         self.valid_outputs()
-        with patch.object(af3,'protein_backbone',return_value={'residues':9}):
+        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}):
             a=af3.audit_task(self.plan,0)
         self.assertEqual((a['selected']['seed'],a['selected']['sample']),(100,4))
         self.assertEqual(a['sample_count'],25)
+
+    def test_top_level_same_structure_different_bytes_is_admitted(self):
+        r=self.valid_outputs()
+        maximum=max(af3.sample_grid(r/'ranking_scores.csv',SEEDS,5))
+        # Re-serialize top bytes while preserving a canonical structure identity.
+        top=r/'af3_unit_model.cif'; top.write_bytes(b'different serialization of same structure')
+        selected=r/'seed-100_sample-4/model.cif'
+        def backbone(path,seq):
+            raw=Path(path).read_bytes()
+            identity=(selected.read_bytes() if Path(path)==top else raw)
+            return {'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(identity).hexdigest()}
+        with patch.object(af3,'protein_backbone',side_effect=backbone):
+            a=af3.audit_task(self.plan,0)
+        self.assertFalse(a['top_model_byte_identical_to_selected_sample'])
+        self.assertEqual((a['selected']['seed'],a['selected']['sample']),(100,4))
+
     def test_foreign_top_model_fails(self):
         r=self.valid_outputs(); (r/'af3_unit_model.cif').write_bytes(b'not a sample')
-        with patch.object(af3,'protein_backbone',return_value={'residues':9}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
     def test_missing_confidence_payload(self):
         r=self.valid_outputs(); (r/'seed-42_sample-0/confidences.json').unlink()
-        with patch.object(af3,'protein_backbone',return_value={'residues':9}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
     def test_timestamped_result_directory_rejected(self):
         r=self.valid_outputs(); (r.parent/'af3_unit_timestamp').mkdir()
         with self.assertRaises(ValueError): af3.audit_task(self.plan,0)
     def test_processed_input_drift(self):
         r=self.valid_outputs(); self.payload['modelSeeds']=[9]
         (r/'af3_unit_data.json').write_text(json.dumps(self.payload))
-        with patch.object(af3,'protein_backbone',return_value={'residues':9}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
     def test_empty_task_list(self):
         with self.assertRaises(ValueError): af3.validate_task_set([],40)
     def test_duplicate_task_list(self):
