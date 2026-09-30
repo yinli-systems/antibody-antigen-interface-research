@@ -57,7 +57,7 @@ These accuracies are the original validation matching criterion, over admitted s
 
 `qualified_evaluate.py` now reports aligned/corrupted/rescued/clean-rescued AP, an untrained-matcher baseline, and the canonical-solver alternative. It preserves historical masks and requires historical identity AP parity within 1e-6. All three seed-pair receipts and every 217-case/condition record are required for final component/paired-seed aggregation.
 
-One new full-cohort evaluation was submitted: **1641906**, rescue seed101 paired with downstream seed1, maximum one GPU for 45 minutes. At the snapshot it is PENDING (Priority). Seeds202/303 have not been submitted by this review. No trained rescue contact-AP improvement or completed multi-seed qualification is claimed.
+One new full-cohort evaluation was submitted as **1641906**, rescue seed101 paired with downstream seed1, maximum one GPU for 45 minutes. It was PENDING at the original snapshot and has since completed `0:0`; its terminal result is recorded in Section 7. Seeds202/303 are not part of that completed contact evaluation. No completed multi-seed qualification is claimed.
 
 ## 5. Current external work — observed, not modified
 
@@ -76,4 +76,20 @@ One new full-cohort evaluation was submitted: **1641906**, rescue seed101 paired
 - Supplemental evaluation plan SHA: `9b84a97c3f68dbc0f6ba167b2ee573ee8a6e6f5c7663794b74b9af1a42ba907a`.
 - The 20 exported evidence files are SHA/size verified against `evidence/20260930/IMPORT_MANIFEST.json`; no full embeddings or model weights are redistributed.
 
-Completed: fixed full-cohort rescoring, original-loss algebra check on real features, real missingness reproduction and correction, strict plan preparation, unit tests, source implementation and one new evaluation submission. Not completed: trained rescue contact evaluation, full three-seed qualification, structural layer-sweep conclusions, untouched OOD, new affinity or co-folder endpoints. No SOTA or first-place claim is supported by this work.
+Completed: fixed full-cohort rescoring, original-loss algebra check on real features, real missingness reproduction and correction, strict plan preparation, unit tests, source implementation, and the first full trained-rescue contact evaluation (seed101/downstream1). Not completed: full three-seed rescue qualification, structural layer-sweep conclusions, untouched OOD, new affinity or co-folder endpoints. No SOTA or first-place claim is supported by this work.
+
+## 7. First full trained-rescue qualification result (seed 101 / downstream seed 1)
+
+`1641906` completed `0:0` on all 217 validation complexes. The imported raw receipt is
+`evidence/20260930/evidence_attempt3/evaluation_runs/seed_101/COMPLETE.json` (SHA-256 `4e98f0798e3e7df0e1ce601069547188d56c01d8982db9dfe05f2c773e72f864`).
+Identity parity error is exactly `0.0`; no test or OOD labels were read and contact AP was not used for rescue checkpoint selection.
+
+| Condition | Aligned AP | Corrupted AP | Rescued AP | Rescue gain | Gap recovered |
+|---|---:|---:|---:|---:|---:|
+| `same_aa_shuffle:0` | 0.029983990 | 0.011026202 | **0.027099407** | **+0.016073205** | **84.78%** |
+| `chain_shift:8` | 0.029983990 | 0.009560514 | **0.027099407** | **+0.017538893** | **85.88%** |
+| `global_shuffle:0` | 0.029983990 | 0.009154905 | **0.027099407** | **+0.017944502** | **86.15%** |
+
+The same trained matcher applied to already-aligned inputs gives AP `0.027099407`, a change of `-0.002884583` from aligned. This clean-input cost is material and prevents presenting the matcher as an unconditional production improvement.
+
+This is a strong **single seed-pair mechanistic result**, not a finished promotion result. Seeds 202/303 and complete grouped/paired-seed inference are still required before claiming a replicated rescue effect. The result supports the narrower statement that, for seed101/downstream1, a label-free correspondence matcher recovers about 85–86% of the AP lost under three registered synthetic correspondence corruptions.
