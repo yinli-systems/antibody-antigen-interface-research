@@ -12,6 +12,14 @@ from pathlib import Path
 from typing import Any
 
 SEEDS = [42, 100, 18, 37, 79]
+SOURCE_FILES = (
+    "extensions/frontier_multimodel_v1/AF3_STRUCTURE_AUTHORITY_COMPLETION_PROTOCOL.md",
+    "extensions/frontier_multimodel_v1/build_af3_structure_completion.py",
+    "extensions/frontier_multimodel_v1/audit_af3_structure_completion_task.py",
+    "extensions/frontier_multimodel_v1/materialize_af3_structure_completion.py",
+    "extensions/frontier_multimodel_v1/structure_units.py",
+    "remote_tools/sabdab2_predicted_geometry_v1/run_af3_sdh_array.sbatch",
+)
 
 
 def sha256(path: Path) -> str:
@@ -59,6 +67,7 @@ def main() -> None:
     parser.add_argument("--base-structure-manifest", type=Path, required=True)
     parser.add_argument("--af3-runner", type=Path, required=True)
     parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--source-program-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     args = parser.parse_args()
 
@@ -66,9 +75,16 @@ def main() -> None:
     split_path = args.split_manifest.resolve()
     base_path = args.base_structure_manifest.resolve()
     runner_path = args.af3_runner.resolve()
+    source_program_root = args.source_program_root.resolve()
     for path in (canonical_path, split_path, base_path, runner_path):
         if not path.is_file():
             raise FileNotFoundError(path)
+    source_hashes = {}
+    for relative in SOURCE_FILES:
+        path = source_program_root / relative
+        if not path.is_file():
+            raise FileNotFoundError(path)
+        source_hashes[relative] = sha256(path)
 
     split = json.loads(split_path.read_text(encoding="utf-8"))
     validation = list(map(str, split["splits"]["validation"]))
@@ -159,6 +175,8 @@ def main() -> None:
         "format_version": "af3_structure_authority_completion_plan_v1",
         "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "source_commit": args.source_commit,
+        "source_program_root": str(source_program_root),
+        "source_sha256": source_hashes,
         "canonical_manifest": str(canonical_path),
         "canonical_manifest_sha256": sha256(canonical_path),
         "split_manifest": str(split_path),

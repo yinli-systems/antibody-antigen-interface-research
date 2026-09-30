@@ -114,6 +114,7 @@ def test_builder_freezes_exact_40_missing_sequences(tmp_path: Path, monkeypatch)
         "--base-structure-manifest", str(base),
         "--af3-runner", str(runner),
         "--source-commit", "commit",
+        "--source-program-root", str(Path(__file__).resolve().parents[1]),
         "--output-root", str(output),
     ])
     build_main()
