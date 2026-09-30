@@ -1,0 +1,1 @@
+{"status": "PASS_PLAN_FROZEN", "tasks": 9, "sha256": "6b66dba9c4a5dbf1d08435b5889d42d7680e0be3b1909514b9cffff37e4d0849", "output": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt2/PLAN.json"}

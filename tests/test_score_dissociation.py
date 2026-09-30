@@ -110,3 +110,25 @@ def test_safe_spearman_reports_monotone_and_constant_boundary():
 def test_safe_spearman_drops_missing_proxy_pairs_without_imputation():
     assert safe_spearman([1, 2, 3, 4], [1, float("nan"), 3, 4]) == pytest.approx(1.0)
     assert safe_spearman([1, 2], [float("nan"), 2]) is None
+
+
+def test_manifest_metadata_separates_sequences_from_artifact_keys(tmp_path: Path):
+    import csv
+    import hashlib
+    from extensions.frontier_multimodel_v1.score_dissociation import manifest_metadata
+
+    path = tmp_path / "manifest.csv"
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["INSTANCE", "vh_seq", "vl_seq", "ag_seq"])
+        writer.writeheader()
+        writer.writerow({"INSTANCE": "x", "vh_seq": "ACD", "vl_seq": "EF", "ag_seq": "GHIK"})
+    sequences, part_keys, pairs = manifest_metadata(path)
+    ab_key = hashlib.sha256(b"ACDEF").hexdigest()
+    ag_key = hashlib.sha256(b"GHIK").hexdigest()
+    assert sequences[("antibody", ab_key)] == ("ACD", "EF")
+    assert sequences[("antigen", ag_key)] == ("GHIK",)
+    assert part_keys[("antibody", ab_key)] == (
+        hashlib.sha256(b"ACD").hexdigest(), hashlib.sha256(b"EF").hexdigest()
+    )
+    assert pairs == {(ab_key, ag_key)}
+    assert sum(map(len, sequences[("antibody", ab_key)])) == 5

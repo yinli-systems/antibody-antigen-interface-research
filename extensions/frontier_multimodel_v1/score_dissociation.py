@@ -140,8 +140,15 @@ def dynamic_groups(keys: Sequence[str], lengths: dict[str, int], fixed_length: i
         yield group
 
 
-def manifest_metadata(path: Path) -> tuple[dict[tuple[str, str], tuple[str, ...]], set[tuple[str, str]]]:
-    parts: dict[tuple[str, str], tuple[str, ...]] = {}
+def manifest_metadata(path: Path) -> tuple[
+    dict[tuple[str, str], tuple[str, ...]],
+    dict[tuple[str, str], tuple[str, ...]],
+    set[tuple[str, str]],
+]:
+    # Keep biological sequences and content-addressed artifact keys separate.
+    # A SHA-256 string is 64 characters and is never a residue sequence.
+    sequences: dict[tuple[str, str], tuple[str, ...]] = {}
+    part_keys: dict[tuple[str, str], tuple[str, ...]] = {}
     pairs: set[tuple[str, str]] = set()
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
@@ -152,11 +159,14 @@ def manifest_metadata(path: Path) -> tuple[dict[tuple[str, str], tuple[str, ...]
             antibody = heavy + light
             ab_key = hashlib.sha256(antibody.encode("ascii")).hexdigest()
             ag_key = hashlib.sha256(antigen.encode("ascii")).hexdigest()
-            ab_parts = tuple(hashlib.sha256(value.encode("ascii")).hexdigest() for value in (heavy, light) if value)
-            parts[("antibody", ab_key)] = ab_parts
-            parts[("antigen", ag_key)] = (ag_key,)
+            biological_parts = tuple(value for value in (heavy, light) if value)
+            artifact_parts = tuple(hashlib.sha256(value.encode("ascii")).hexdigest() for value in biological_parts)
+            sequences[("antibody", ab_key)] = biological_parts
+            sequences[("antigen", ag_key)] = (antigen,)
+            part_keys[("antibody", ab_key)] = artifact_parts
+            part_keys[("antigen", ag_key)] = (ag_key,)
             pairs.add((ab_key, ag_key))
-    return parts, pairs
+    return sequences, part_keys, pairs
 
 
 def read_ca(path: Path) -> np.ndarray:
@@ -259,7 +269,7 @@ def main() -> None:
     if len(ab_keys) != 122 or len(ag_keys) != 119:
         raise ValueError(f"candidate authority changed: {len(ab_keys)} antibodies, {len(ag_keys)} antigens")
 
-    parts, known_pairs = manifest_metadata(arguments.canonical_manifest.resolve())
+    sequences, structure_part_keys, known_pairs = manifest_metadata(arguments.canonical_manifest.resolve())
     structure_manifest = json.loads(arguments.structure_manifest.read_text())
     if structure_manifest.get("test_loaded") or structure_manifest.get("contact_labels_loaded"):
         raise ValueError("structure authority firewall failed")
@@ -268,7 +278,7 @@ def main() -> None:
     static: dict[tuple[str, str], dict[str, float]] = {}
     for side, keys, lengths in (("antibody", ab_keys, ab_lengths), ("antigen", ag_keys, ag_lengths)):
         for key in keys:
-            static[(side, key)] = {"length": lengths[key], **chain_local_packing(parts[(side, key)], structure_records, side, structure_root)}
+            static[(side, key)] = {"length": lengths[key], **chain_local_packing(structure_part_keys[(side, key)], structure_records, side, structure_root)}
 
     checkpoint_path = arguments.checkpoint.resolve()
     checkpoint = safe_torch_load(checkpoint_path, map_location="cpu")
@@ -308,7 +318,13 @@ def main() -> None:
         cache_key = (side, key)
         if cache_key not in condition_cache:
             tensor = raw_feature(key)
-            order, _ = chain_permutation(parts[cache_key], mode, severity, 20260930, f"{side}:{key}")
+            biological_parts = sequences[cache_key]
+            if sum(map(len, biological_parts)) != int(tensor.shape[0]):
+                raise ValueError(
+                    f"feature/sequence row mismatch for {side}:{key}: "
+                    f"{int(tensor.shape[0])} vs {sum(map(len, biological_parts))}"
+                )
+            order, _ = chain_permutation(biological_parts, mode, severity, 20260930, f"{side}:{key}")
             condition_cache[cache_key] = transform_extra_columns(tensor, int(config["input_dim"]), 512, order)
         return condition_cache[cache_key]
 

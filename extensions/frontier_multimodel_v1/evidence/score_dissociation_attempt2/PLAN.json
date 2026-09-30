@@ -1,0 +1,98 @@
+{
+  "aggregate": "/ssd/scxi253/frontier_multimodel_v1/source/extensions/frontier_multimodel_v1/aggregate_score_dissociation.py",
+  "canonical_manifest": "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv",
+  "commit": "11dac754b76d52f9c7f06349b67269923789c1cc",
+  "contact_artifacts_authorized": false,
+  "created_utc": "2026-09-30T00:46:07Z",
+  "embedding_dir": "/ssd/scxi253/model_deployment/data/sppider_seq_sabdab2_embeddings",
+  "esm_if1_root": "/ssd/scxi253/repr_extract/out/esm_if1",
+  "evidence_role": "development-validation score diagnosis; no model promotion",
+  "format_version": "score_dissociation_plan_v1",
+  "input_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/STRUCTURE_UNITS_MANIFEST.json": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+    "/ssd/scxi253/frontier_multimodel_v1/source/extensions/correspondence_v2/core.py": "24a0de7caac1fc0c90ea4bab1c152beeead24dd34ac3abbeb06fb56ef4537bb1",
+    "/ssd/scxi253/frontier_multimodel_v1/source/extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_PROTOCOL.md": "626eec75b0dc5035c337fa74eaf5c32aeee8aed7fc3143ff122e05920b7189fc",
+    "/ssd/scxi253/frontier_multimodel_v1/source/extensions/frontier_multimodel_v1/aggregate_score_dissociation.py": "73a7f97a0f4962211ffb3f82979c6f8fa1ae7cae532d71364ca8382159f2d6e2",
+    "/ssd/scxi253/frontier_multimodel_v1/source/extensions/frontier_multimodel_v1/score_dissociation.py": "43256f6cd87238745a4345cd3bc1fd6fd9a80bc6e04f6d4084c5d2bc37c06553",
+    "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+    "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396",
+    "/ssd/scxi253/model_deployment/data/interaction_first_sabdab2/instances.parquet": "ef33e20a604e13956b8d7cef3d6f487b9d2bac0e48b543fbb93c73ea5a4ce625"
+  },
+  "prepare_dir": "/ssd/scxi253/model_deployment/data/interaction_first_sabdab2",
+  "protocol": "/ssd/scxi253/frontier_multimodel_v1/source/extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_PROTOCOL.md",
+  "source": "/ssd/scxi253/frontier_multimodel_v1/source/extensions/frontier_multimodel_v1/score_dissociation.py",
+  "source_root": "/ssd/scxi253/frontier_multimodel_v1/source",
+  "split_manifest": "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json",
+  "structure_manifest": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/STRUCTURE_UNITS_MANIFEST.json",
+  "tasks": [
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_1/train/best.pt",
+      "checkpoint_sha256": "1be5f3ff6d308f98dd2486f7bb46d1e46710eb31cd362ec5acc5b82fe971a87c",
+      "condition": "identity:0",
+      "task_id": 0,
+      "training_seed": 1
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_1/train/best.pt",
+      "checkpoint_sha256": "1be5f3ff6d308f98dd2486f7bb46d1e46710eb31cd362ec5acc5b82fe971a87c",
+      "condition": "chain_shift:8",
+      "task_id": 1,
+      "training_seed": 1
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_1/train/best.pt",
+      "checkpoint_sha256": "1be5f3ff6d308f98dd2486f7bb46d1e46710eb31cd362ec5acc5b82fe971a87c",
+      "condition": "global_shuffle:0",
+      "task_id": 2,
+      "training_seed": 1
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_2/train/best.pt",
+      "checkpoint_sha256": "248d634f7a721fb88fed60ec2d1cdd36a6e6dd5119f96d577dcc07bfe1d3c1cf",
+      "condition": "identity:0",
+      "task_id": 3,
+      "training_seed": 2
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_2/train/best.pt",
+      "checkpoint_sha256": "248d634f7a721fb88fed60ec2d1cdd36a6e6dd5119f96d577dcc07bfe1d3c1cf",
+      "condition": "chain_shift:8",
+      "task_id": 4,
+      "training_seed": 2
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_2/train/best.pt",
+      "checkpoint_sha256": "248d634f7a721fb88fed60ec2d1cdd36a6e6dd5119f96d577dcc07bfe1d3c1cf",
+      "condition": "global_shuffle:0",
+      "task_id": 5,
+      "training_seed": 2
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_3/train/best.pt",
+      "checkpoint_sha256": "cba9ee3298cc8b3645560fbd4ac4ef550b20376b915d07258015afe8c73806f5",
+      "condition": "identity:0",
+      "task_id": 6,
+      "training_seed": 3
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_3/train/best.pt",
+      "checkpoint_sha256": "cba9ee3298cc8b3645560fbd4ac4ef550b20376b915d07258015afe8c73806f5",
+      "condition": "chain_shift:8",
+      "task_id": 7,
+      "training_seed": 3
+    },
+    {
+      "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_3/train/best.pt",
+      "checkpoint_sha256": "cba9ee3298cc8b3645560fbd4ac4ef550b20376b915d07258015afe8c73806f5",
+      "condition": "global_shuffle:0",
+      "task_id": 8,
+      "training_seed": 3
+    }
+  ],
+  "test_authorized": false,
+  "training_authorized": false,
+  "unique_antibody_count": 122,
+  "unique_antigen_count": 119,
+  "unique_pair_count_per_task": 14518,
+  "validation_instance_count": 217
+}

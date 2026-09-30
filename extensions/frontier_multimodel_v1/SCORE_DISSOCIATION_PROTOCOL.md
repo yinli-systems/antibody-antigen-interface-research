@@ -89,3 +89,14 @@ presence flag; no sequence is dropped, imputed or assigned a fabricated value,
 and proxy correlations use finite available pairs only. Attempt 1 remains a
 preserved failed plan. A new plan/hash is required before retrying. No scientific
 score output was produced or inspected before this amendment.
+
+## Second pre-inference implementation correction
+
+Attempt 2 canary `1639965_0` also failed before inference. The runner had kept
+only SHA-256 part keys and passed those 64-character identifiers to the existing
+chain-permutation function as though they were amino-acid sequences. Its strict
+bijection check rejected the mismatch before a forward pass. The implementation
+now maintains separate maps for biological sequences and artifact keys and checks
+that the sum of biological chain lengths equals the feature-row count before any
+perturbation. Attempt 2 remains preserved; a third plan/hash is required. No
+scientific score was produced or inspected before this correction.
