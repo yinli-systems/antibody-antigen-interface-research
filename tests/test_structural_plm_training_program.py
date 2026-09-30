@@ -11,7 +11,11 @@ from extensions.frontier_multimodel_v1.freeze_structural_training import (
     SEEDS,
     discover_specs,
 )
-from extensions.frontier_multimodel_v1.run_structural_training import representation_args, run_checked
+from extensions.frontier_multimodel_v1.run_structural_training import (
+    evaluation_negative_count,
+    representation_args,
+    run_checked,
+)
 
 
 def _spec(path: Path, family: str, layer: int, side: str, dim: int) -> Path:
@@ -135,3 +139,8 @@ def test_runner_prepends_source_src_to_pythonpath(tmp_path: Path, monkeypatch) -
     assert observed["cwd"] == tmp_path
     assert observed["env"]["PYTHONPATH"].split(":") == [str((tmp_path / "src").resolve()), "/existing"]
     assert json.loads(commands.read_text().strip()) == ["python", "script.py"]
+
+
+def test_smoke_uses_one_partner_distractor_but_formal_keeps_nine() -> None:
+    assert evaluation_negative_count(True) == 1
+    assert evaluation_negative_count(False) == 9

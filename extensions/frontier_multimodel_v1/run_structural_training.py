@@ -71,6 +71,11 @@ def verify_plan(plan_path: Path, external_sha256: str) -> dict[str, Any]:
     return plan
 
 
+def evaluation_negative_count(smoke: bool) -> int:
+    """Small smoke subsets use one distractor; formal 217-case runs retain nine."""
+    return 1 if smoke else 9
+
+
 def representation_args(task: dict[str, Any], plan: dict[str, Any]) -> list[str]:
     args = ["--representation-manifest", plan["paths"]["canonical_manifest"]]
     for spec in task["specs"]:
@@ -196,6 +201,7 @@ def main() -> None:
             "--checkpoint", str(checkpoint),
             "--output-dir", str(output / directory),
             "--split", "validation", "--device", "cuda",
+            "--negative-count", str(evaluation_negative_count(args.smoke)),
             "--seed", str(task["seed"]), "--embedding-cache-gib", "12",
             "--log-every", "12" if args.smoke else "100",
         ]
