@@ -63,7 +63,7 @@ def main():
   pp=[pairs[p] for p in sorted(pairids)];aa=sorted({x["antibody_id"] for x in pp});gg=sorted({x["antigen_id"] for x in pp})
   return pp,{x:antibodies[x] for x in aa},{x:antigens[x] for x in gg}
  trp,tra,trg=subset(tr_ids);vap,vaa,vag=subset(va_ids)
- base={"format_version":"strict_partner_retrieval_sequence_cache_v1","fold":a.fold,"frozen_split_sha256":sha(a.frozen_split),"assignment_sha256":sha(a.assignment),"canonical_manifest_sha256":sha(a.canonical_manifest),"model_execution_authorized":bool(fs.get("model_execution_authorized")),"test_access":False,"ood_access":False}
+ base={"format_version":"strict_partner_retrieval_sequence_cache_v1","fold":a.fold,"frozen_split_sha256":sha(a.frozen_split),"assignment_sha256":sha(a.assignment),"canonical_manifest_sha256":sha(a.canonical_manifest),"training_and_model_selection_authorized":bool(fs.get("training_and_model_selection_authorized")),"outer_evaluation_authorized":bool(fs.get("outer_evaluation_authorized")),"test_access":False,"ood_access":False}
  train={**base,"role":"training_only","pairs":trp,"antibodies":tra,"antigens":trg,
         "source_instance_allowlist":sorted({i for x in trp for i in x["source_instance_ids"]})}
  evaluation={**base,"role":"evaluation_only","pairs":vap,"antibodies":vaa,"antigens":vag,
@@ -76,5 +76,5 @@ def main():
  receipt={**base,"status":"PREPARED_FOLD_CACHES","counts":{"train_pairs":len(trp),"validation_pairs":len(vap),"quarantined_pairs":len(qu_ids),"train_antibodies":len(tra),"train_antigens":len(trg),"validation_antibodies":len(vaa),"validation_antigens":len(vag)},"artifacts":{}}
  for name in ("TRAIN_SEQUENCES.json","EVAL_SEQUENCES.json","H0_CACHE.json"):receipt["artifacts"][name]={"sha256":sha(root/name),"bytes":(root/name).stat().st_size}
  write_new(root/"CACHE_RECEIPT.json",receipt)
- print(json.dumps({"fold":a.fold,"status":receipt["status"],"model_execution_authorized":receipt["model_execution_authorized"],"counts":receipt["counts"]},indent=2))
+ print(json.dumps({"fold":a.fold,"status":receipt["status"],"training_authorized":receipt["training_and_model_selection_authorized"],"outer_evaluation_authorized":receipt["outer_evaluation_authorized"],"counts":receipt["counts"]},indent=2))
 if __name__=="__main__":main()
