@@ -1,5 +1,6 @@
 import csv
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import tempfile
@@ -29,6 +30,12 @@ class Contracts(unittest.TestCase):
         self.task={'input_path':str(self.input),'input_sha256':af3.digest(self.input),
                    'sequence':self.seq,'length':len(self.seq),'name':'af3_unit',
                    'sequence_sha256':hashlib.sha256(self.seq.encode()).hexdigest(),'task_id':0}
+    def fake_structure(self, path, seq):
+        raw=Path(path).read_bytes()
+        identity=hashlib.sha256(raw).hexdigest()
+        return {'residues':len(seq),'atom_count':4*len(seq),
+                'backbone_atoms':4*len(seq),'backbone_sha256':identity,
+                'all_atom_sha256':identity}
     def valid_outputs(self):
         result=af3.task_dir(self.plan,0)/'results'/'af3_unit'; result.mkdir(parents=True)
         rows=[]
@@ -37,13 +44,28 @@ class Contracts(unittest.TestCase):
                 d=result/('seed-%d_sample-%d'%(s,i)); d.mkdir()
                 score=.831234 + i*.001 + s*.00001
                 (d/'model.cif').write_bytes(('%s-%s'%(s,i)).encode())
-                (d/'summary_confidences.json').write_text(json.dumps({'ranking_score':round(score,2)}))
-                (d/'confidences.json').write_text('{}')
+                summary={'chain_iptm':[None],'chain_pair_iptm':[[.5]],
+                         'chain_pair_pae_min':[[1.0]],'chain_ptm':[.5],
+                         'fraction_disordered':.2,'has_clash':0.0,'iptm':None,
+                         'ptm':.5,'ranking_score':round(score,2)}
+                confidence={'atom_chain_ids':['A']*(4*len(self.seq)),
+                            'atom_plddts':[80.]*(4*len(self.seq)),
+                            'contact_probs':[[.5]*len(self.seq) for _ in self.seq],
+                            'pae':[[1.0]*len(self.seq) for _ in self.seq],
+                            'token_chain_ids':['A']*len(self.seq),
+                            'token_res_ids':list(range(1,len(self.seq)+1))}
+                (d/'summary_confidences.json').write_text(json.dumps(summary))
+                (d/'confidences.json').write_text(json.dumps(confidence))
                 rows.append((s,i,score))
         with (result/'ranking_scores.csv').open('w',newline='') as f:
             w=csv.writer(f); w.writerow(['seed','sample','ranking_score']); w.writerows(rows)
         s,i,_=max(rows,key=lambda x:x[2])
-        (result/'af3_unit_model.cif').write_bytes((result/('seed-%d_sample-%d'%(s,i))/'model.cif').read_bytes())
+        selected=result/('seed-%d_sample-%d'%(s,i))
+        (result/'af3_unit_model.cif').write_bytes((selected/'model.cif').read_bytes())
+        (result/'af3_unit_summary_confidences.json').write_bytes(
+            (selected/'summary_confidences.json').read_bytes())
+        (result/'af3_unit_confidences.json').write_bytes(
+            (selected/'confidences.json').read_bytes())
         processed={'dialect':'alphafold3','version':3,'name':'af3_unit','modelSeeds':SEEDS,
                    'bondedAtomPairs':None,'userCCD':None,
                    'sequences':[{'protein':{'id':'A','sequence':self.seq,'modifications':[],
@@ -109,39 +131,94 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(ValueError): af3.sample_grid(p,SEEDS,5)
     def test_rounded_summary_does_not_affect_selection(self):
         self.valid_outputs()
-        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}):
+        with patch.object(af3,'protein_backbone',side_effect=self.fake_structure):
             a=af3.audit_task(self.plan,0)
         self.assertEqual((a['selected']['seed'],a['selected']['sample']),(100,4))
         self.assertEqual(a['sample_count'],25)
 
     def test_top_level_same_structure_different_bytes_is_admitted(self):
         r=self.valid_outputs()
-        maximum=max(af3.sample_grid(r/'ranking_scores.csv',SEEDS,5))
-        # Re-serialize top bytes while preserving a canonical structure identity.
         top=r/'af3_unit_model.cif'; top.write_bytes(b'different serialization of same structure')
         selected=r/'seed-100_sample-4/model.cif'
-        def backbone(path,seq):
-            raw=Path(path).read_bytes()
-            identity=(selected.read_bytes() if Path(path)==top else raw)
-            return {'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(identity).hexdigest()}
-        with patch.object(af3,'protein_backbone',side_effect=backbone):
+        selected_identity=hashlib.sha256(selected.read_bytes()).hexdigest()
+        def structure(path,seq):
+            identity=selected_identity if Path(path)==top else hashlib.sha256(Path(path).read_bytes()).hexdigest()
+            return {'residues':len(seq),'atom_count':4*len(seq),
+                    'backbone_atoms':4*len(seq),'backbone_sha256':identity,
+                    'all_atom_sha256':identity}
+        comparison={'equivalent':True,'raw_difference_keys':['_ma_model_list.model_group_name'],
+                    'normalized_difference_keys':[],'top_semantic_sha256':'s','sample_semantic_sha256':'s',
+                    'normalised_fields':['_ma_model_list.model_group_name']}
+        with patch.object(af3,'protein_backbone',side_effect=structure), \
+             patch.object(af3,'mmcif_semantic_comparison',return_value=comparison):
             a=af3.audit_task(self.plan,0)
         self.assertFalse(a['top_model_byte_identical_to_selected_sample'])
         self.assertEqual((a['selected']['seed'],a['selected']['sample']),(100,4))
+        self.assertEqual(a['top_model_comparison']['raw_difference_keys'],
+                         ['_ma_model_list.model_group_name'])
+
+    @unittest.skipUnless(importlib.util.find_spec('Bio'), 'Biopython required for mmCIF semantics')
+    def test_real_af3_timestamp_only_regression_is_semantically_equal(self):
+        # Exact field and timestamps from preserved failure 1641607_0.
+        def cif(timestamp, x='1.000', model_name='Top ranked model'):
+            return ('data_af3\n#\n'
+                    '_ma_model_list.data_id 1\n'
+                    '_ma_model_list.model_group_id 1\n'
+                    '_ma_model_list.model_group_name '
+                    '"AlphaFold-beta-20231127 (3.0.1 @ '+timestamp+')"\n'
+                    '_ma_model_list.model_id 1\n'
+                    '_ma_model_list.model_name "'+model_name+'"\n'
+                    '_ma_model_list.model_type "Ab initio model"\n'
+                    '_atom_site.Cartn_x '+x+'\n'
+                    '_atom_site.Cartn_y 2.000\n'
+                    '_atom_site.Cartn_z 3.000\n#\n')
+        selected=self.root/'selected.cif'; top=self.root/'top.cif'
+        selected.write_text(cif('2026-09-30 16:40:10'))
+        top.write_text(cif('2026-09-30 16:40:11'))
+        result=af3.mmcif_semantic_comparison(top,selected)
+        self.assertTrue(result['equivalent'])
+        self.assertEqual(result['raw_difference_keys'],['_ma_model_list.model_group_name'])
+        self.assertEqual(result['normalized_difference_keys'],[])
+        self.assertEqual(result['top_semantic_sha256'],result['sample_semantic_sha256'])
+        top.write_text(cif('2026-09-30 16:40:11',x='1.001'))
+        changed=af3.mmcif_semantic_comparison(top,selected)
+        self.assertFalse(changed['equivalent'])
+        self.assertIn('_atom_site.Cartn_x',changed['normalized_difference_keys'])
+        top.write_text(cif('2026-09-30 16:40:11',model_name='Foreign model'))
+        changed=af3.mmcif_semantic_comparison(top,selected)
+        self.assertFalse(changed['equivalent'])
+        self.assertIn('_ma_model_list.model_name',changed['normalized_difference_keys'])
 
     def test_foreign_top_model_fails(self):
         r=self.valid_outputs(); (r/'af3_unit_model.cif').write_bytes(b'not a sample')
-        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+        comparison={'equivalent':False,'raw_difference_keys':['foreign'],
+                    'normalized_difference_keys':['foreign'],
+                    'top_semantic_sha256':'x','sample_semantic_sha256':'y',
+                    'normalised_fields':[]}
+        with patch.object(af3,'protein_backbone',side_effect=self.fake_structure), \
+             patch.object(af3,'mmcif_semantic_comparison',return_value=comparison), \
+             self.assertRaises(ValueError):
+            af3.audit_task(self.plan,0)
     def test_missing_confidence_payload(self):
         r=self.valid_outputs(); (r/'seed-42_sample-0/confidences.json').unlink()
-        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+        with patch.object(af3,'protein_backbone',side_effect=self.fake_structure), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+    def test_confidence_shape_corruption_rejected(self):
+        r=self.valid_outputs(); p=r/'seed-42_sample-0/confidences.json'
+        payload=json.loads(p.read_text()); payload['token_chain_ids'].pop(); p.write_text(json.dumps(payload))
+        with patch.object(af3,'protein_backbone',side_effect=self.fake_structure), self.assertRaises(ValueError):
+            af3.audit_task(self.plan,0)
+    def test_top_confidence_payload_must_match_selected_sample(self):
+        r=self.valid_outputs(); p=r/'af3_unit_summary_confidences.json'
+        payload=json.loads(p.read_text()); payload['ptm']=.1; p.write_text(json.dumps(payload))
+        with patch.object(af3,'protein_backbone',side_effect=self.fake_structure), self.assertRaises(ValueError):
+            af3.audit_task(self.plan,0)
     def test_timestamped_result_directory_rejected(self):
         r=self.valid_outputs(); (r.parent/'af3_unit_timestamp').mkdir()
         with self.assertRaises(ValueError): af3.audit_task(self.plan,0)
     def test_processed_input_drift(self):
         r=self.valid_outputs(); self.payload['modelSeeds']=[9]
         (r/'af3_unit_data.json').write_text(json.dumps(self.payload))
-        with patch.object(af3,'protein_backbone',side_effect=lambda path,seq:{'residues':9,'backbone_atoms':36,'backbone_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
+        with patch.object(af3,'protein_backbone',side_effect=self.fake_structure), self.assertRaises(ValueError): af3.audit_task(self.plan,0)
     def test_empty_task_list(self):
         with self.assertRaises(ValueError): af3.validate_task_set([],40)
     def test_duplicate_task_list(self):
