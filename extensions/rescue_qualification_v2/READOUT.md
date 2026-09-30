@@ -93,3 +93,25 @@ Identity parity error is exactly `0.0`; no test or OOD labels were read and cont
 The same trained matcher applied to already-aligned inputs gives AP `0.027099407`, a change of `-0.002884583` from aligned. This clean-input cost is material and prevents presenting the matcher as an unconditional production improvement.
 
 This is a strong **single seed-pair mechanistic result**, not a finished promotion result. Seeds 202/303 and complete grouped/paired-seed inference are still required before claiming a replicated rescue effect. The result supports the narrower statement that, for seed101/downstream1, a label-free correspondence matcher recovers about 85–86% of the AP lost under three registered synthetic correspondence corruptions.
+
+## 8. Seed-101 grouped inference after terminal completion
+
+The terminal `1641906` receipt contains 651 rows because three corruption conditions are recorded for each of the same 217 complexes. They are **not 651 independent biological cases**. The registered grouping has 68 independent split-authority components. Recomputing paired effects by first averaging within each component and bootstrapping the 68 component effects gives:
+
+| Condition | Contrast | Equal-component effect | Component bootstrap 95% CI | Positive components |
+|---|---|---:|---|---:|
+| same-AA | rescued − corrupted | +0.0157334 | [+0.0105792, +0.0221971] | 89.7% |
+| shift-8 | rescued − corrupted | +0.0180131 | [+0.0129516, +0.0243604] | 95.6% |
+| global shuffle | rescued − corrupted | +0.0183485 | [+0.0133422, +0.0247360] | 94.1% |
+| all three pure permutations | rescued − untrained rescue | +0.0173965 | approximately [+0.0125, +0.0239] | 94.1% |
+| clean input | clean-rescued − aligned | **−0.0020299** | **[−0.00324, −0.00089]** | 35.3% positive / 60.3% negative |
+
+The equal-complex clean-input effect is `−0.002884583`, roughly a 9.6% reduction relative to aligned macro AP. No preregistered clean-input noninferiority margin exists in the frozen v1 training protocol, so this extension does **not** retrofit a margin after seeing the result and does not declare noninferiority. The interval being below zero establishes a development-set clean-input cost under this grouped estimand, not a blind generalisation claim.
+
+The published gap-recovery ratio is exactly `(mean(rescued AP) − mean(corrupted AP)) / (mean(aligned AP) − mean(corrupted AP))` and reproduces `0.84784 / 0.85876 / 0.86151` for same-AA / shift-8 / global shuffle.
+
+`canonical_rescued_ap`, `rescued_ap`, and `clean_rescued_ap` are numerically identical for every one of the 651 records in this seed-pair. This is expected for this matcher under pure column permutations when the one-to-one optimum is stable: changing presentation order permutes score-matrix columns but does not create a new correspondence problem, and applying the trained assignment to an already aligned input maps to the same learned canonical arrangement. This equality is therefore an architectural property/diagnostic, **not three independent successful rescue replications**.
+
+The exact recomputation is preserved in `evidence/20260930/evidence_attempt3/SEED101_GROUPED_ANALYSIS.json`; the raw 651-row terminal receipt is preserved under `evaluation_runs/seed_101/COMPLETE.json`.
+
+Remaining qualification requires the already trained rescue seeds 202 and 303 paired with downstream seeds 2 and 3 under the same frozen evaluation plan, followed by the preregistered crossed paired-seed/component aggregation. Until then the result remains single-seed-pair development evidence.
