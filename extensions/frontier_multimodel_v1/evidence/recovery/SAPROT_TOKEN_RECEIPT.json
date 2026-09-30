@@ -1,0 +1,12 @@
+{
+  "contact_labels_loaded": false,
+  "created_utc": "2026-09-30T00:02:27Z",
+  "foldseek_binary_sha256": "4db94a7825d409e416643772860ddf7cfe328d582679b47e6dffda7df4d41ea0",
+  "foldseek_version": "10-941cd33",
+  "format_version": "saprot_token_receipt_v1",
+  "paths_sha256": "442aa220fb62fd1a36ca0b6fb56ee6a6166b5f256848016343285dd1109549a0",
+  "status": "PASS",
+  "structure_units_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+  "test_loaded": false,
+  "token_count": 3345
+}

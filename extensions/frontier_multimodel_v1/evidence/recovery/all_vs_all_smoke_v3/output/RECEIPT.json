@@ -1,0 +1,64 @@
+{
+  "anchor_count": 1,
+  "anchors": [
+    "pdb_000010zo_A_+"
+  ],
+  "artifacts": {
+    "scores": "scores.parquet",
+    "scores_sha256": "b53383811d83b3d8c050afedb84bf86a183e422105e08aa8228094ac99541736"
+  },
+  "candidate_count_per_direction": 217,
+  "candidate_semantics": "known complexes are positives; every other combination is an unlabelled distractor, not a confirmed non-binder",
+  "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_1/train/best.pt",
+  "checkpoint_sha256": "1be5f3ff6d308f98dd2486f7bb46d1e46710eb31cd362ec5acc5b82fe971a87c",
+  "directions": [
+    "antigen",
+    "antibody"
+  ],
+  "format_version": "partner_all_vs_all_v1",
+  "known_pair_metadata_scope": "all prepared complex identities used only to identify/exclude known positives",
+  "peak_cuda_bytes": 550724096,
+  "representations": {
+    "sources": [
+      {
+        "keys_covered": 3015,
+        "kind": "stored_artifacts",
+        "name": "esm_if1",
+        "presence_columns": 1,
+        "representation_dim": 512,
+        "root": "/ssd/scxi253/repr_extract/out/esm_if1"
+      }
+    ]
+  },
+  "residue_policy": "full sequence features; no contact artifact or contact labels loaded",
+  "score_row_count": 434,
+  "seed": 1,
+  "shard_count": 1,
+  "shard_index": 0,
+  "split_manifest_sha256": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396",
+  "status": "PASS_FULL_VALIDATION_ALL_VS_ALL",
+  "summaries": [
+    {
+      "anchor_instance_id": "pdb_000010zo_A_+",
+      "best_known_rank_id_tiebroken_for_display_only": 91,
+      "candidate_count": 217,
+      "known_positive_count": 1,
+      "mrr_tie_expected": 0.01098901098901099,
+      "recall_at_1": 0.0,
+      "recall_at_5": 0.0,
+      "swap": "antigen"
+    },
+    {
+      "anchor_instance_id": "pdb_000010zo_A_+",
+      "best_known_rank_id_tiebroken_for_display_only": 41,
+      "candidate_count": 217,
+      "known_positive_count": 1,
+      "mrr_tie_expected": 0.024390243902439025,
+      "recall_at_1": 0.0,
+      "recall_at_5": 0.0,
+      "swap": "antibody"
+    }
+  ],
+  "test_contact_labels_loaded": false,
+  "validation_contact_labels_loaded": false
+}

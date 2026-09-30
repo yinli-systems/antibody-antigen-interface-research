@@ -1,0 +1,174 @@
+{
+  "arm_means": {
+    "aligned": {
+      "node_auprc": 0.3456530922708381,
+      "node_mcc": 0.16776733123887994,
+      "pair_auprc": 0.05466647592305161
+    },
+    "random": {
+      "node_auprc": 0.3454718684697363,
+      "node_mcc": 0.16319404186289027,
+      "pair_auprc": 0.05263310968361165
+    },
+    "shuffled": {
+      "node_auprc": 0.31649077435339584,
+      "node_mcc": 0.15244603461390704,
+      "pair_auprc": 0.042001401993318706
+    }
+  },
+  "claim_boundary": "Six seeds, antibody side only. IgFold aligned features do not beat a width-matched random projection here, so the alignment question does not arise for this encoder in this setting.",
+  "comparisons": {
+    "aligned_vs_random_node_auprc": {
+      "arm": "aligned",
+      "baseline_arm": "random",
+      "bootstrap_ci95": [
+        -0.007316091516027162,
+        0.00817352994845777
+      ],
+      "decided": false,
+      "favourable_seed_count": 2,
+      "metric": "node_auprc",
+      "paired_difference": 0.00018122380110176714,
+      "relative": 0.0005245689089085485,
+      "seed_count": 6,
+      "sign_lower_bound": 0.06284989170835438
+    },
+    "aligned_vs_random_node_mcc": {
+      "arm": "aligned",
+      "baseline_arm": "random",
+      "bootstrap_ci95": [
+        -0.012085332334400789,
+        0.021231911086380135
+      ],
+      "decided": false,
+      "favourable_seed_count": 4,
+      "metric": "node_mcc",
+      "paired_difference": 0.004573289375989674,
+      "relative": 0.028023629562603677,
+      "seed_count": 6,
+      "sign_lower_bound": 0.2713383725197525
+    },
+    "aligned_vs_random_pair_auprc": {
+      "arm": "aligned",
+      "baseline_arm": "random",
+      "bootstrap_ci95": [
+        -0.00038917208479055204,
+        0.004259895299531711
+      ],
+      "decided": false,
+      "favourable_seed_count": 4,
+      "metric": "pair_auprc",
+      "paired_difference": 0.0020333662394399613,
+      "relative": 0.0386328349524271,
+      "seed_count": 6,
+      "sign_lower_bound": 0.2713383725197525
+    },
+    "aligned_vs_shuffled_node_auprc": {
+      "arm": "aligned",
+      "baseline_arm": "shuffled",
+      "bootstrap_ci95": [
+        0.0021901124629926196,
+        0.062070483215169545
+      ],
+      "decided": true,
+      "favourable_seed_count": 3,
+      "metric": "node_auprc",
+      "paired_difference": 0.029162317917442282,
+      "relative": 0.09214271088003163,
+      "seed_count": 6,
+      "sign_lower_bound": 0.15316111797522317
+    },
+    "aligned_vs_shuffled_node_mcc": {
+      "arm": "aligned",
+      "baseline_arm": "shuffled",
+      "bootstrap_ci95": [
+        -6.9262351515692044e-06,
+        0.03229218963709214
+      ],
+      "decided": false,
+      "favourable_seed_count": 4,
+      "metric": "node_mcc",
+      "paired_difference": 0.015321296624972905,
+      "relative": 0.10050308401774069,
+      "seed_count": 6,
+      "sign_lower_bound": 0.2713383725197525
+    },
+    "aligned_vs_shuffled_pair_auprc": {
+      "arm": "aligned",
+      "baseline_arm": "shuffled",
+      "bootstrap_ci95": [
+        0.004967887241120329,
+        0.02151023763464449
+      ],
+      "decided": true,
+      "favourable_seed_count": 6,
+      "metric": "pair_auprc",
+      "paired_difference": 0.01266507392973291,
+      "relative": 0.3015393136578532,
+      "seed_count": 6,
+      "sign_lower_bound": 0.6069622310029172
+    },
+    "shuffled_vs_random_node_auprc": {
+      "arm": "shuffled",
+      "baseline_arm": "random",
+      "bootstrap_ci95": [
+        -0.056775870200874774,
+        -0.00394892982382659
+      ],
+      "decided": true,
+      "favourable_seed_count": 1,
+      "metric": "node_auprc",
+      "paired_difference": -0.028981094116340516,
+      "relative": -0.08388843422971584,
+      "seed_count": 6,
+      "sign_lower_bound": 0.008512444610847119
+    },
+    "shuffled_vs_random_node_mcc": {
+      "arm": "shuffled",
+      "baseline_arm": "random",
+      "bootstrap_ci95": [
+        -0.01711876381697545,
+        -0.0044760806872620644
+      ],
+      "decided": true,
+      "favourable_seed_count": 0,
+      "metric": "node_mcc",
+      "paired_difference": -0.010748007248983232,
+      "relative": -0.06586029199530041,
+      "seed_count": 6,
+      "sign_lower_bound": 0.0
+    },
+    "shuffled_vs_random_pair_auprc": {
+      "arm": "shuffled",
+      "baseline_arm": "random",
+      "bootstrap_ci95": [
+        -0.017542573404277707,
+        -0.004480823499182891
+      ],
+      "decided": true,
+      "favourable_seed_count": 0,
+      "metric": "pair_auprc",
+      "paired_difference": -0.010631707690292948,
+      "relative": -0.20199657124958625,
+      "seed_count": 6,
+      "sign_lower_bound": 0.0
+    }
+  },
+  "dataset": "AsEP",
+  "encoder": "igfold",
+  "evaluated_on": "validation",
+  "format_version": "igfold_generality_v1",
+  "seed_count": 6,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "sides_covered": [
+    "antibody"
+  ],
+  "split": "epitope_group"
+}

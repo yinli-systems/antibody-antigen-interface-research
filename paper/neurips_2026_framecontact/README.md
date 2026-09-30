@@ -26,6 +26,10 @@ tectonic main.tex
   full-development retrained checkpoints.
 - `2,565/549`: full-development retraining; the 549 validation complexes both
   select checkpoints and supply the reported development summary.
+- Predicted-geometry sensitivity: the same 2,565/549 protocol with antibody and
+  antigen geometry predicted separately from sequence. Experimental structures
+  are not model inputs and are not required at inference; the completed run
+  still uses bound-derived contact labels and auxiliary distance supervision.
 - Historical SAbDab2 benchmark: previously exposed, non-blind, single-seed,
   measurement-only metrics reported in the appendix; not used for selection.
 - Final-retrained-checkpoint independent evaluation: not yet performed.

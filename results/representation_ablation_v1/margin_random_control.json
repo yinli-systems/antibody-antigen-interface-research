@@ -1,0 +1,83 @@
+{
+  "baseline": "outer_product",
+  "bootstrap_ci95": [
+    0.0017147449597570248,
+    0.0033643510199881355
+  ],
+  "claim_boundary": "Development-only replication on the validation split. It establishes a margin over a baseline, not a benchmark result, and authorizes no test access or model selection.",
+  "effect_size": 1.8187761153912319,
+  "format_version": "pair_baseline_margin_replication_v1",
+  "mean_margin": 0.0025616837391219437,
+  "meaningful": true,
+  "metric": "auprc",
+  "per_seed": [
+    {
+      "baseline": 0.01845781261052867,
+      "margin": 0.00044990783496836814,
+      "model": 0.018907720445497038,
+      "seed": 1
+    },
+    {
+      "baseline": 0.01664617142194658,
+      "margin": 0.004018163073696429,
+      "model": 0.02066433449564301,
+      "seed": 2
+    },
+    {
+      "baseline": 0.01968222231593015,
+      "margin": 0.0021254300749601676,
+      "model": 0.021807652390890317,
+      "seed": 3
+    },
+    {
+      "baseline": 0.01693350725408386,
+      "margin": 0.001506472762848994,
+      "model": 0.018439980016932853,
+      "seed": 4
+    },
+    {
+      "baseline": 0.02013192378750346,
+      "margin": 0.004173981536602745,
+      "model": 0.024305905324106206,
+      "seed": 5
+    },
+    {
+      "baseline": 0.020987187224648013,
+      "margin": 0.0032291335965748923,
+      "model": 0.024216320821222905,
+      "seed": 6
+    },
+    {
+      "baseline": 0.02120989160371477,
+      "margin": 0.0029284016408382928,
+      "model": 0.024138293244553063,
+      "seed": 7
+    },
+    {
+      "baseline": 0.018947396995579218,
+      "margin": 0.004157689035456994,
+      "model": 0.023105086031036212,
+      "seed": 8
+    },
+    {
+      "baseline": 0.01972591343559436,
+      "margin": 0.002525400787283392,
+      "model": 0.022251314222877752,
+      "seed": 9
+    },
+    {
+      "baseline": 0.02031050031286954,
+      "margin": 0.0005022570479891637,
+      "model": 0.020812757360858705,
+      "seed": 10
+    }
+  ],
+  "positive_seed_count": 10,
+  "scope": "macro",
+  "sd_margin": 0.0014084656805441428,
+  "seed_count": 10,
+  "sesoi": 0.0,
+  "sign_lower_bound": 0.7411344491069477,
+  "significant": true,
+  "verdict": "established"
+}

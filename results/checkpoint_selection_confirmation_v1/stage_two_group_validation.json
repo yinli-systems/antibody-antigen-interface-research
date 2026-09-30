@@ -1,0 +1,156 @@
+{
+  "bootstrap_ci95": [
+    0.009583908928893747,
+    0.044950644979848145
+  ],
+  "claim_boundary": "Group validation only. The group test split is permanently frozen and is not read here. This fixes d_model for the single registered ratio-test confirmation and authorises nothing else.",
+  "d_star": 256,
+  "decided": true,
+  "format_version": "checkpoint_selection_confirmation_stage_two_v1",
+  "mean_by_d_model": {
+    "128": 0.2986391328708781,
+    "256": 0.3264829178635038
+  },
+  "paired_difference_mean": 0.027843784992625704,
+  "paired_difference_positive_seeds": 8,
+  "per_seed": {
+    "128": {
+      "1": {
+        "complex_count": 169,
+        "mcc": 0.3152474645976635,
+        "mcc_at_half": 0.25664018121521276,
+        "threshold": 0.855
+      },
+      "10": {
+        "complex_count": 169,
+        "mcc": 0.3001996492370689,
+        "mcc_at_half": 0.22124286926325748,
+        "threshold": 0.865
+      },
+      "2": {
+        "complex_count": 169,
+        "mcc": 0.31256978530919044,
+        "mcc_at_half": 0.25540594658979876,
+        "threshold": 0.835
+      },
+      "3": {
+        "complex_count": 169,
+        "mcc": 0.2907668249928966,
+        "mcc_at_half": 0.22683845167271408,
+        "threshold": 0.865
+      },
+      "4": {
+        "complex_count": 169,
+        "mcc": 0.28760535240051993,
+        "mcc_at_half": 0.23139480498074433,
+        "threshold": 0.81
+      },
+      "5": {
+        "complex_count": 169,
+        "mcc": 0.289587881129298,
+        "mcc_at_half": 0.2375984316241671,
+        "threshold": 0.83
+      },
+      "6": {
+        "complex_count": 169,
+        "mcc": 0.2782520292717081,
+        "mcc_at_half": 0.22551122382636407,
+        "threshold": 0.855
+      },
+      "7": {
+        "complex_count": 169,
+        "mcc": 0.3063244515193466,
+        "mcc_at_half": 0.25908288572839366,
+        "threshold": 0.805
+      },
+      "8": {
+        "complex_count": 169,
+        "mcc": 0.31852181115215605,
+        "mcc_at_half": 0.25179925954876875,
+        "threshold": 0.86
+      },
+      "9": {
+        "complex_count": 169,
+        "mcc": 0.2873160790989328,
+        "mcc_at_half": 0.2379919812408597,
+        "threshold": 0.835
+      }
+    },
+    "256": {
+      "1": {
+        "complex_count": 169,
+        "mcc": 0.3529662992523522,
+        "mcc_at_half": 0.28446026110139705,
+        "threshold": 0.85
+      },
+      "10": {
+        "complex_count": 169,
+        "mcc": 0.2717732772215452,
+        "mcc_at_half": 0.19374224290486752,
+        "threshold": 0.835
+      },
+      "2": {
+        "complex_count": 169,
+        "mcc": 0.34634739505089013,
+        "mcc_at_half": 0.28234326595602455,
+        "threshold": 0.865
+      },
+      "3": {
+        "complex_count": 169,
+        "mcc": 0.3341533785529322,
+        "mcc_at_half": 0.2703726703767748,
+        "threshold": 0.835
+      },
+      "4": {
+        "complex_count": 169,
+        "mcc": 0.33107394516116284,
+        "mcc_at_half": 0.2502001412334479,
+        "threshold": 0.875
+      },
+      "5": {
+        "complex_count": 169,
+        "mcc": 0.3570798128908285,
+        "mcc_at_half": 0.28116104350997617,
+        "threshold": 0.89
+      },
+      "6": {
+        "complex_count": 169,
+        "mcc": 0.2860478433240688,
+        "mcc_at_half": 0.24823445643788164,
+        "threshold": 0.78
+      },
+      "7": {
+        "complex_count": 169,
+        "mcc": 0.31766939256538007,
+        "mcc_at_half": 0.2586548454400509,
+        "threshold": 0.815
+      },
+      "8": {
+        "complex_count": 169,
+        "mcc": 0.3145092346137686,
+        "mcc_at_half": 0.26993709568400526,
+        "threshold": 0.79
+      },
+      "9": {
+        "complex_count": 169,
+        "mcc": 0.3532086000021094,
+        "mcc_at_half": 0.2785318935979032,
+        "threshold": 0.905
+      }
+    }
+  },
+  "quantity": "mean per-complex epitope MCC on group validation, threshold chosen per seed on that same split",
+  "rule": "d* = argmax M(d) when the paired interval excludes zero, else 128",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ]
+}

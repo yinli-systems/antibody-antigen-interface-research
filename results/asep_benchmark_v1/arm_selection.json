@@ -1,0 +1,125 @@
+{
+  "claim_boundary": "Development-only paired comparison on AsEP validation. It selects a configuration; it establishes nothing against published work.",
+  "comparisons": {
+    "epitope_node_auprc": {
+      "bootstrap_ci95": [
+        0.013945699117402512,
+        0.0595872382930129
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.3767269435569775,
+      "esm2_mean": 0.3408279918685356,
+      "favourable_seed_count": 8,
+      "paired_difference": 0.03589895168844196,
+      "relative": 0.10532864830623692,
+      "seed_count": 10,
+      "sign_lower_bound": 0.4930986989367976
+    },
+    "epitope_node_auroc": {
+      "bootstrap_ci95": [
+        0.032628397347880256,
+        0.06362527506092527
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.7893605462859957,
+      "esm2_mean": 0.7418476597690027,
+      "favourable_seed_count": 10,
+      "paired_difference": 0.04751288651699306,
+      "relative": 0.06404668922429124,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "epitope_node_mcc": {
+      "bootstrap_ci95": [
+        0.047582962011849986,
+        0.06208924636006807
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.22082780346078154,
+      "esm2_mean": 0.16627423935096586,
+      "favourable_seed_count": 10,
+      "paired_difference": 0.0545535641098157,
+      "relative": 0.32809390271613836,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "epitope_node_precision": {
+      "bootstrap_ci95": [
+        0.018428521824965204,
+        0.023634239709301678
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.18335312107978075,
+      "esm2_mean": 0.1622678127436859,
+      "favourable_seed_count": 10,
+      "paired_difference": 0.021085308336094823,
+      "relative": 0.12994140969534504,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "epitope_node_recall": {
+      "bootstrap_ci95": [
+        -0.02036143833540586,
+        0.020421034437112583
+      ],
+      "decided": false,
+      "esm2_esmif1_mean": 0.8804692729928676,
+      "esm2_mean": 0.8805731424934808,
+      "favourable_seed_count": 5,
+      "paired_difference": -0.00010386950061319622,
+      "relative": -0.00011795669842833663,
+      "seed_count": 10,
+      "sign_lower_bound": 0.2224411010081294
+    },
+    "pair_macro_auprc": {
+      "bootstrap_ci95": [
+        0.009765487035529902,
+        0.02069225324994914
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.0661186887227484,
+      "esm2_mean": 0.05129298302719216,
+      "favourable_seed_count": 10,
+      "paired_difference": 0.014825705695556237,
+      "relative": 0.2890396467621434,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "pair_macro_mcc": {
+      "bootstrap_ci95": [
+        0.021214304887656393,
+        0.02432702394462018
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.10453290221651138,
+      "esm2_mean": 0.08180151048686955,
+      "favourable_seed_count": 10,
+      "paired_difference": 0.022731391729641816,
+      "relative": 0.27788474313430395,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "paratope_node_mcc": {
+      "bootstrap_ci95": [
+        0.0864879102536141,
+        0.10530774072600739
+      ],
+      "decided": true,
+      "esm2_esmif1_mean": 0.5614759651150598,
+      "esm2_mean": 0.46587386706482564,
+      "favourable_seed_count": 10,
+      "paired_difference": 0.09560209805023422,
+      "relative": 0.2052102614223934,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    }
+  },
+  "dataset": "AsEP",
+  "decider": "epitope_node_mcc",
+  "evaluated_on": "validation",
+  "format_version": "asep_arm_selection_v1",
+  "rule": "protocols/ASEP_TEST_MEASUREMENT_V1.md: higher mean validation epitope-node macro MCC, registered before the second arm reported",
+  "seed_count": 10,
+  "split": "epitope_group",
+  "winner": "esm2_esmif1"
+}

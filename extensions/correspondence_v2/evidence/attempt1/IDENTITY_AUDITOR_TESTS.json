@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "exact reference parity",
+    "detect numerical mismatch",
+    "reject different plan",
+    "reject missing complex"
+  ],
+  "count": 4,
+  "scope": "synthetic standard-library tests of the independent identity checker"
+}

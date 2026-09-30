@@ -1,280 +1,90 @@
-# Partner-aware antibody-antigen interface research
+# Residue correspondence and partner-specific antibody–antigen interfaces
 
-This private repository is an evidence-gated research codebase for antibody-
-antigen interface prediction on SAbDab2-derived data. It contains importable
-models and metrics, data and split contracts, cluster launchers, immutable
-protocols, and lightweight result receipts. It does **not** contain the raw
-datasets, model weights, full embeddings, or complete prediction tensors.
+An evidence-gated research codebase for understanding **what residue-level protein representations know about exact antibody–antigen contacts — and what they do not**.
 
-The central research question is stricter than marginal binding-site prediction:
-does a model identify the residues that interact for a **specific antibody-
-antigen pair**, under dual-axis leakage control, rather than learning which
-residues are generally interface-prone?
+The project goes beyond marginal epitope/paratope propensity. Its central question is whether a model preserves the **partner-specific residue correspondence** needed to identify which antibody residue interacts with which antigen residue under strict split, provenance and leakage controls.
 
-> **Current-results pointer.** This repository intentionally retains historical
-> protocol snapshots and their original status language. For the latest compact
-> audited evidence, start with
-> [`results/LATEST_RESULTS_20260827.md`](results/LATEST_RESULTS_20260827.md) and
-> the subsequent
-> [`predicted-geometry sensitivity`](results/sabdab2_predicted_geometry_v1/README.md).
-> A historical section saying that a run was pending is not evidence that it is
-> still pending today.
+> **Research status — 30 Sep 2026.** The strongest completed evidence is consolidated below. We deliberately make **no state-of-the-art claim**: benchmark comparability, exposed historical tests, failed promotion gates and negative results are kept explicit. The current SaProt/ProSST layer sweep is still running and is not used to choose a headline result.
 
-## Status at a glance
+## What the project has established
 
-| Workstream | What is implemented | Current evidence boundary |
+| Finding | Audited result | Evidence boundary |
 |---|---|---|
-| SPPIDER-seq adaptation | SAbDab2 adapters, training/evaluation, cluster bootstrap, calibration, sequence-similarity audit, and matched-partner permutation | Locked reused-benchmark marginal result; not native residue-pair prediction and not a pristine blind test |
-| MIPE reconstruction | Released-code-compatible five-fold evaluation, directional interaction export, pair-level metrics, OOF-only calibration, and a bound-geometry oracle audit | The completed `lr=1e-3` replay is not Appendix-exact; the fresh `lr=1e-4`, five-fold, 800-epoch replay is still running |
-| Intra-chain geometry | Distance, receiver-frame direction, and full relative-pose attention biases with parameter-unshared antibody/antigen encoders | Two-A100 replay and three historical seeds are development evidence; the preregistered five-seed superiority gate did not pass and the outer test remains unread |
-| FrameContact | Parameter-unshared geometry self-attention, explicit binary-contact/distogram pair heads, unary/contact/gated residue heads, localized triangle consistency, gauge-fixed interaction attribution, and reciprocal partner controls | Antigen-fold development arrays are still running; matched-epoch signals are mixed, frozen/external tests remain unopened, and no benchmark-improvement claim is authorized |
-| Partner retrieval and PairScale | Dual encoders, bidirectional retrieval, native pair/contact models, hard-negative and one-sided controls, calibration, and fixed-budget runners | Development-only experiments did not pass the required partner-specificity gates; no candidate is promoted |
-| Partner-geometry R2 / PAIRFormer | Explicit antibody-by-antigen pair state, bidirectional fusion, axial pair updates, contact/distance/orientation heads, losses, evaluator, execution plan, and one-shot freeze controls | Implementation complete; biological training, selection, and outer/test evaluation remain blocked at Gate 0 |
-| V6 score-free split authority | Raw-byte authority reconstruction, independent auditor, exact statistics, joint IR, CP-SAT formulation, separation oracle, HiGHS projection backend, and V6-B/V6-C diagnostics | The linear projection was reported infeasible by the primary and independent CP-SAT paths, but the required direct-HiGHS terminal receipt is not committed; this does not authorize a full-protocol infeasibility claim or training |
-| Distributed systems | Deterministic batching, distributed training helpers, immutable checkpoint/recovery, NCCL probes, and Slurm launchers | A real-OAS ABF-35M 4-to-2-to-4 DDP/DCP gate passed with exact terminal model state and bounded FP32 optimizer-moment drift; no 650M performance or 32/64-GPU scaling claim |
-| Antibody foundation pretraining | Authenticated OAS materialization, exact checkpoint recovery, memory-mapped loading, and compile/eager confirmation tooling | The eight-RTX-5090 compile candidate improved measured pilot throughput but failed frozen loss and tail-latency gates; it is disqualified, with no production-scale or 16/32-GPU claim |
+| **Residue correspondence governs frozen-feature transfer** | Aligned ESM-IF1 improves macro pair AUPRC over ESM-2 by **+0.005111 (+22.8%)** across 10 paired seeds; shuffled ESM-IF1 is **−0.003093 (−13.8%)** below ESM-2; aligned vs shuffled is **+0.008204 (+42.4%)**. A width-matched random control is undecided vs ESM-2. | Development attribution; [`results/representation_attribution_v1/report.json`](results/representation_attribution_v1/report.json) |
+| **The effect survives stronger correspondence-preserving controls** | Same-amino-acid shuffling reduces contact AP from **0.027995 → 0.011100** for ESM-2+ESM-IF1; equal-component/equal-seed Δ **−0.017151**, pointwise crossed-bootstrap 95% CI **[−0.022688, −0.012434]**. | Exploratory development extension; [`extensions/correspondence_v2/READOUT.md`](extensions/correspondence_v2/READOUT.md) |
+| **Correspondence is necessary for useful transfer, but not sufficient** | On a preregistered 217-complex holdout, ProteinMPNN aligned−shuffled is **+0.003594** with 9/10 seeds and CI **[0.001559, 0.005881]**; ESM-IF1 is **+0.002260** but undecided, CI **[−0.000007, 0.004901]**. | Single holdout read; [`results/holdout_confirmation_v1/confirmation.json`](results/holdout_confirmation_v1/confirmation.json) |
+| **Auxiliary objectives are not interchangeable** | Contact supervision raises pair AUPRC by **+0.0833**; removing the complex-ranking term improves **pair AUPRC +0.0214** and **node MCC +0.0369** across 10 paired seeds. | Development factorial ablation; [`results/CLAIMS_LEDGER.md`](results/CLAIMS_LEDGER.md) |
+| **Optimisation geometry changes sign during training** | Node/contact gradient cosine is negative early and crosses to durably positive at steps **77–110** on AsEP and **38–50** on SAbDab2; every registered seed shows the transition. | Training-time diagnostic, not a causal mechanism; [`results/gradient_alignment_dynamics_v1/step_trace_summary.json`](results/gradient_alignment_dynamics_v1/step_trace_summary.json) |
+| **Exact contact correspondence remains much harder than interface localisation** | Official RePaRank sequence checkpoint on the exact 217-complex grid: **macro pair AP 0.037808**, pooled AP **0.008739**, AUROC **0.786064**, epitope AP **0.202039**, paratope AP **0.557707** over **9,638,880** residue pairs / 9,036 positives. | Exposed pretrained checkpoint; training-overlap not audited; [`evaluation.json`](extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json) |
 
-The authoritative gate manifest is
-[`protocols/pairformer_gate_manifest_v1.json`](protocols/pairformer_gate_manifest_v1.json):
-Gate 0 is blocked, and Gates 1--4 have not started. Model scale must not be used
-to bypass missing split, provenance, leakage, or partner-dependence evidence.
+### FrameContact: deployable predicted-geometry evidence
 
-## Headline scientific evidence
+The no-privileged-distance three-seed development system reaches median mean-per-complex AP of approximately **0.0261 contact / 0.2327 epitope / 0.6962 paratope** using sequence plus independently predicted intra-chain geometry. On the correctly aligned **549-case historical test** the fixed three-seed routed medians are **0.02667 / 0.22031 / 0.69859**. The 549-case result is explicitly an **exposed historical test**, not fresh blind evidence and not proven antibody+antigen sequence-double-cold generalisation.
 
-### SPPIDER-seq: strong paratope marginals, weak epitope specificity
+See [`paper/neurips_2026_framecontact/TEACHER_HANDOFF_20260903.md`](paper/neurips_2026_framecontact/TEACHER_HANDOFF_20260903.md) and [`results/aligned_test549_replay_v1/RESULT.json`](results/aligned_test549_replay_v1/RESULT.json).
 
-The locked ensemble was evaluated on 455 reused benchmark complexes grouped
-into 84 canonical test clusters. Thresholds and the final recipe were selected
-on validation before this evaluation.
+### Partner ranking: a negative result that clarified the science
 
-| Axis | AUROC | AUPRC | MCC | Cluster-bootstrap AUPRC 95% CI |
-|---|---:|---:|---:|---:|
-| Paratope | 0.948622 | 0.651089 | 0.602334 | 0.626906--0.678340 |
-| Epitope | 0.671765 | 0.145445 | 0.126885 | 0.121265--0.166848 |
+A complete **122 antibody × 119 antigen = 14,518 pair** diagnostic showed that the earlier small-panel “contact down, MRR up” observation **does not robustly reproduce**. The current complex score is instead strongly associated with interaction dispersion (mean Spearman ≈ **0.9743**) and has substantial length/surface/node-prior associations. This separates **global partner ranking** from **local residue correspondence** and prevents the project from overclaiming specificity.
 
-Matched-minus-permuted partner AUPRC was `+0.011850` for paratope
-(`95% CI 0.000212--0.026145`) and `+0.002915` for epitope
-(`95% CI -0.000489--0.006323`). The epitope interval crosses zero. The result
-therefore supports useful marginal interface propensity prediction, especially
-on the antibody side, but only limited partner identity dependence.
+See [`extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md`](extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md).
 
-See the
-[`final research report`](results/sppider_seq/FINAL_RESEARCH_REPORT.md) and
-[`machine-readable summary`](results/sppider_seq/final_research_summary.json).
+## External benchmark reality check
 
-### MIPE: completed released-code replay, with the Appendix-exact replay pending
+The AsEP benchmark is intentionally retained even though it is not a headline win. On `epitope_group`, the registered 10-seed single-model macro MCC is **0.1572**; on `epitope_ratio` it is **0.258**. Published configurations on those protocols can score higher. This repo therefore treats its contribution as **controlled attribution, mechanisms, failure boundaries and reproducibility**, not a disguised SOTA claim.
 
-The completed five-fold released-code-compatible `lr=1e-3` ensemble scores
-epitope AUROC/AUPRC/MCC `0.892775/0.513218/0.317949` and paratope
-`0.875432/0.669642/0.492002` when validation-best checkpoints are fixed before
-provided-test scoring. OOF-only threshold calibration raises the corresponding
-MCC values to `0.484753` and `0.509856`.
+See [`results/asep_benchmark_v1/BENCHMARK.md`](results/asep_benchmark_v1/BENCHMARK.md).
 
-Pair-level evaluation remains the limiting result. Native mean-bidirectional
-attention has macro/pooled AUPRC `0.005535/0.002080`, Recall@1 `0`, and MRR
-`0.008100`; the marginal residue outer-product baseline is much stronger at
-`0.073666/0.041906`, Recall@1 `0.078125`, and MRR `0.207587`. A bound-coordinate
-oracle reaches pair macro AUPRC `0.485569`, Recall@1 `0.609375`, and MRR
-`0.785156`, but it directly uses the common bound-complex coordinate frame and
-is not a deployable unbound or sequence-only predictor.
+## Active programme — not yet a result
 
-See the
-[`audited report`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.md) and
-[`machine-readable release`](results/mipe/MIPE_OFFICIAL_REPLAY_20260821.json).
-The supplied split had pre-scoring schema access and is not pristine blind
-evidence. The released `main.py` learning rate (`1e-3`) also differs from
-Appendix section 2.3 (`1e-4`); a fresh five-fold, 800-epoch Appendix-correct
-replay is running and has no terminal metrics yet.
+A frozen **36-task SaProt/ProSST layer sweep** is running: 10 real structure-token layers × 3 seeds plus two exact-width/coverage random controls × 3 seeds. At the latest committed snapshot, six SaProt tasks are complete:
 
-#### Earlier records retained for provenance
+- SaProt layer 0, 3-seed mean validation pair AP ≈ **0.02058**.
+- SaProt layer 8, 3-seed mean validation pair AP ≈ **0.02104**.
 
-The PAIRFormer protocol records a historical five-fold 800-epoch reconstruction
-with native mean-bidirectional pair macro AUPRC `0.00342`
-(`95% CI 0.00305--0.00381`), a predicted-marginal outer-product baseline of
-`0.04045`, and validation-best epitope micro AUPRC `0.2804`. Those numbers are
-preserved as historical protocol evidence in
-[`PAIRFORMER_EXECUTION_PROTOCOL_V1.md`](protocols/PAIRFORMER_EXECUTION_PROTOCOL_V1.md)
-and the gate manifest.
+The difference is small and **no layer winner is selected** until all 36 tasks and matched controls finish. The RePaRank structure checkpoint also remains incomplete on the full 217 cases because the existing predicted-structure authority covers 187/217 complexes; a 40-chain AF3 completion authority is frozen separately.
 
-An earlier standalone MIPE result payload,
-[`MIPE_INTERACTION_100E_SUMMARY.json`](results/mipe/MIPE_INTERACTION_100E_SUMMARY.json).
-records a distinct five-fold 100-epoch held-out export: 11,431,418 residue
-pairs, 18,316 positives, and pooled mean-bidirectional AUROC/AUPRC
-`0.507190/0.001719`. It uses a different checkpoint budget and aggregation
-scope from the new provided-test replay and must not be combined with it.
-Complete 800-epoch checkpoints, raw predictions, and bootstrap artifacts are not
-stored in Git, so the 800-epoch statement is not independently reproducible from
-this repository alone.
+Current execution details: [`results/CURRENT_STATUS_20260930.md`](results/CURRENT_STATUS_20260930.md).
 
-The supplied external split had pre-scoring schema access and must be described
-as a **provided external test-split evaluation with pre-scoring schema access**,
-not as pristine blind evidence. Released code, paper, and appendix settings also
-differ in learning rate, checkpoint selection, graph construction, and dataset
-counts; the repository preserves those discrepancies instead of silently
-reconciling them.
+## Evidence map
 
-### Antibody foundation pretraining: throughput gain rejected by correctness gates
+Start here instead of browsing branch names:
 
-The authenticated OAS corpus contains 224,887,833 unique training records and
-25,259,993,406 unique training residue tokens. Exact checkpoint recovery on the
-real corpus passes, and a protocol-bound 1,024-array memory-mapped loader reduced
-measured continuous-run data preparation from 19.19 seconds to 3.97 seconds in
-the recovery gate.
+- **Canonical results:** [`results/INDEX.md`](results/INDEX.md)
+- **Every paper-level number and its artifact:** [`results/CLAIMS_LEDGER.md`](results/CLAIMS_LEDGER.md)
+- **Reproducibility notes:** [`results/REPRODUCIBILITY_NOTES.md`](results/REPRODUCIBILITY_NOTES.md)
+- **Frozen representation evidence:** [`freeze/FREEZE.md`](freeze/FREEZE.md)
+- **Cold reproduction:** [`reproduction/README.md`](reproduction/README.md)
+- **Branch provenance / archive tags:** [`docs/BRANCH_PROVENANCE.md`](docs/BRANCH_PROVENANCE.md)
+- **Machine-readable branch evidence index:** [`results/BRANCH_EVIDENCE_INDEX.json`](results/BRANCH_EVIDENCE_INDEX.json)
+- **Complete pre-consolidation branch file inventory:** [`archive/BRANCH_FILE_INVENTORY_20260930.json`](archive/BRANCH_FILE_INVENTORY_20260930.json)
 
-An eight-RTX-5090, 600-update, two-repetition compile-only confirmation measured
-202,795 useful residue tokens/s and 46.1% approximate 6N MFU, versus 150,991
-tokens/s and 34.3% for eager execution. The candidate remains disqualified:
-post-training masked cross-entropy was 2.03% worse than eager against a frozen
-1% noninferiority margin, and compiled p95/p50 step-time ratios were 1.137 and
-1.128 against a 1.10 ceiling. The failed gate, receipts, and telemetry are kept
-under `results/pretraining/antibody_compile_only_confirmation_v1_1343024/`.
-No production-scale pretraining or 16/32-GPU result is claimed from this pilot.
+## Repository design
 
-### Intra-chain geometry: a positive development signal that did not clear its gate
-
-The recommended phase-one encoding is distance RBF plus receiver-frame direction
-as an additive per-head self-attention bias. Antibody and antigen use
-parameter-unshared encoders, and geometry is computed only within each chain.
-No inter-chain coordinate frame is assumed.
-
-On the exact A100 final checkpoints, per-complex joint macro AUPRC was `0.492936`
-for distance+direction and `0.483061` for topology-only, a mean difference of
-`+0.009876` (`component-bootstrap 95% CI 0.001836--0.016695`). The corresponding
-Holm-adjusted one-sided p-value was `0.082492`, so the strict single-seed gate
-failed. Three historical fixed-budget seeds all had a positive pooled joint
-delta, but they are not the five preregistered confirmatory seeds. The frozen
-outer test was not read.
-
-See the
-[`geometry report`](results/sabdab2_structure_self_attention/FINAL_GEOMETRY_RESEARCH_REPORT.md)
-and [`tensor contract`](docs/intra_chain_geometry_attention.md).
-
-### Partner retrieval, PairScale, and R2: negative development evidence before scale
-
-The locked mean-pooled retrieval model did not beat its strongest raw-embedding
-and single-side controls with the required paired confidence intervals. Later
-PairScale contact, centering, multi-decoy, and unary-control experiments are
-retained as development evidence, including apparent train-set fits, but their
-required partner-specificity checks failed. They do not authorize model
-selection, test access, or a performance claim.
-
-The R2 code addresses the correct next task: construct an explicit
-`[L_ab, L_ag, C_pair]` state, update it with partner-conditioned fusion, and
-predict a native residue-pair contact matrix. Its training path is deliberately
-blocked until the exact dual-axis split and all independent Gate 0 audits pass.
-The current V6 evidence is compatible with an infeasible **linear projection**;
-it is not yet a complete proof about every nonlinear score-free gate. No
-threshold was relaxed and no test data were used to resolve the split.
-
-## Code architecture
-
-The current FrameContact research snapshot is preserved as an isolated,
-independently installable subproject under [`framecontact/`](framecontact/README.md).
-Its package name overlaps with historical `interaction_first` modules in this
-repository, so it is intentionally not flattened into the root `src/` tree.
-FrameContact protocols, source-tree manifests, and Slurm entry points must be
-run from that subproject root to preserve their authenticated relative paths.
-
-Reusable code lives in [`src/interaction_first/`](src/interaction_first/). The
-small export surface in `interaction_first.__init__` covers the stable contact,
-split, partner-sampling, frozen-embedding, structure-cache, and intra-chain
-geometry interfaces; research-specific modules are imported explicitly.
-
-| Module family | Responsibility |
-|---|---|
-| `contacts`, `geometry_labels`, `pair_geometry_schema`, `pairbench_schema` | Fail-closed sparse-contact, geometry-label, and benchmark contracts |
-| `intra_chain_geometry`, `sabdab2_structure` | Local `N-CA-C` frames, invariant same-chain pair features, geometry-biased attention, and authenticated structure batches |
-| `model`, `pair_geometry`, `pair_geometry_losses`, `pairformer_*` | Partner-conditioned residue fusion, explicit pair state, native contact/distance/orientation decoding, training-step provenance, and full-matrix evaluation |
-| `retrieval`, `asymmetric_retrieval`, `partners`, `partner_controls` | Bidirectional partner retrieval, multi-positive objectives, false-negative-aware sampling, and matched-partner controls |
-| `pairscale_*`, `development_*` | Train-only development cohorts, fixed-budget screens, one-sided controls, and cluster-aware statistics |
-| `splits`, `nested_joint_milp`, `score_free_*`, `v6_*` | Dual-axis components, raw-source score-free authority, independent auditing, exact joint formulations, and solver evidence |
-| `frontier_*` | Distributed batching, model construction, training, checkpoint/recovery, and parity helpers |
-| `data_registry`, `data_admission`, `source_materializer`, `license_evidence` | Content-addressed source admission, provenance, and license enforcement |
-| `avida_*` | Independently audited AVIDa annotation and normalization protocols |
-
-Operator entry points are under [`scripts/`](scripts/README.md), scheduler
-templates under `slurm/`, frozen governance under
-[`protocols/`](protocols/README.md), and lightweight evidence under
-[`results/`](results/README.md). The data registry is provenance metadata, not a
-substitute for the licensed source data.
-
-## Repository navigation
-
-| Goal | Entry point |
-|---|---|
-| Understand directory roles and preservation rules | [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md) |
-| Reproduce the interaction-first development pipeline | [`docs/INTERACTION_FIRST_PIPELINE.md`](docs/INTERACTION_FIRST_PIPELINE.md) |
-| Review active and historical protocol evidence | [`protocols/README.md`](protocols/README.md) |
-| Locate result summaries and interpretation boundaries | [`results/README.md`](results/README.md) |
-| Select an operator or Slurm entry point | [`scripts/README.md`](scripts/README.md) |
-| Verify artifact and test-set provenance | [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
-| Review third-party sources and licenses | [`THIRD_PARTY.md`](THIRD_PARTY.md) |
-
-Some files are intentionally mirrored across `protocols/` and `results/`.
-Receipts and validators may bind both their bytes and their paths. A newer
-filename does not automatically supersede an older artifact.
-
-## Installation and verification
-
-Python 3.10 or newer is required. Solver development is pinned to
-`highspy==1.15.1` and `ortools==9.15.6755`.
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -e '.[test]'
-
-# Add exact-solver dependencies only when running the V6 backends.
-.venv/bin/python -m pip install -e '.[solver]'
-
-# Portable syntax and shell checks.
-.venv/bin/python -m compileall -q src scripts tests
-find scripts slurm -type f \( -name '*.sh' -o -name '*.sbatch' \) \
-  -exec bash -n {} +
-
-# Full repository test suite.
-.venv/bin/python -m pytest -q
+```text
+results/        canonical measurements, ledgers, benchmark reports and receipts
+paper/          paper-facing narratives, figures and corrected handoffs
+protocols/      preregistered/frozen experimental contracts
+freeze/         immutable claim/provenance freeze for the representation study
+reproduction/   cold-reproduction entry points and receipts
+extensions/     post-freeze programmes (correspondence, structural PLMs, RePaRank)
+archive/        machine-readable preservation inventory; no experimental history deleted
 ```
 
-The 2026-08-29 consolidation audit parsed every newly merged Python, JSON, and
-shell/Slurm file successfully and found no embedded credentials. The combined
-production-gate conflict suite passed all 11 tests. On the available macOS
-Python 3.14 environment, the root suite excluding five collection-blocked
-optional-dependency modules produced 2,216 passes, 92 failures, 24 skips, and 37
-passing subtests; the isolated FrameContact suite produced 421 passes, five
-failures, and ten skips. The same root branch before historical-workstream
-integration already had 88 failures. Remaining failures are dominated by
-immutable protocols that intentionally bind earlier source hashes, absent
-OR-Tools/HiGHS/Biopython packages, and external or recovery artifacts excluded
-from Git. These are preserved audit boundaries, not reported as a green
-portable suite.
+The repository intentionally does **not** store raw datasets, full model weights, complete embedding banks or every dense prediction tensor. Large artifacts remain receipt-bound by path/hash; lightweight summaries and provenance stay in Git.
 
-## Claim and access boundary
+## Claims policy
 
-- SPPIDER-seq predicts marginal paratope and epitope probabilities, not a native
-  antibody-residue by antigen-residue interaction matrix.
-- The adaptation uses concatenated VH/VL sequences and 4.5-A contact labels;
-  these differ from the original SPPIDER-seq task semantics.
-- The antibody side remains highly homologous across the historical split:
-  97.58% of test instances have a high-coverage training neighbor at or above
-  70% identity.
-- The 455-case benchmark was used in earlier evaluations and is not a pristine
-  one-shot confirmatory test.
-- Unknown cross-pairs are not measured non-binders. They may supervise ranking
-  controls, but they must not be assigned fabricated all-zero contact labels.
-- No outer/test evaluation is authorized for R2 while Gate 0 is blocked.
-- No clinical, prospective, external-generalization, docking-utility, 32/64-GPU
-  scaling, or global state-of-the-art claim is supported by the tracked evidence.
+1. **Absolute paired effects are primary.** Relative percentages are secondary because the pair-AP baselines are small.
+2. **Development, historical exposed test, holdout and blind/OOD are different evidence classes.** They are never collapsed into one “test” label.
+3. **Failed gates remain results.** Hadamard decoding, focal pair loss, temporal OOD admission failures, structure-authority failures and disqualified scaling candidates remain discoverable.
+4. **No metric borrows another experiment's seed count, confidence bound or cohort.** See the claims ledger for the defect that motivated this rule.
+5. **No branch was deleted during consolidation.** Every pre-consolidation branch head is pinned by an `archive/2026-09-30/...` tag.
 
-## Preservation policy
+## Why the main branch is curated this way
 
-Raw datasets, weights, embeddings, full prediction matrices, third-party source
-trees, credentials, and cluster identities are intentionally excluded from Git.
-Obtain upstream assets under their own licenses and verify pinned revisions and
-hashes before use.
+GitHub recommends using the README to explain what the project does, why it is useful and how to get started, while reproducibility guidance emphasises complete artifact inventories, executable workflows and clear links from claims to evidence. The main branch therefore keeps the scientific story compact and pushes complete provenance into machine-readable indexes rather than hiding it or flooding the front page.
 
-Evidence is append-only. Do not rewrite or delete a failed attempt, timeout,
-superseded protocol, or mirrored receipt. Corrections require a new version or
-numbered attempt with an explicit supersession link. Model selection and
-threshold selection must remain development-only; a frozen test may be opened
-only after the governing protocol and external freeze receipt authorize it.
+---
+
+**Current scientific thesis:** models can learn strong interface propensity and global interaction signals without learning the exact partner-specific residue correspondence required for reliable contact prediction. The most reproducible gains in this repository come from preserving that correspondence and from separating useful contact supervision from objectives that interfere with it.

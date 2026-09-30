@@ -1,0 +1,4676 @@
+{
+  "base_main": "910b752ecf3e1493b80a7605151048bf2cd3e69b",
+  "branches": [
+    {
+      "ahead_of_main": 41,
+      "archive_tag": "archive/2026-09-30/branch/abcite/multimodal-copilot",
+      "behind_main": 0,
+      "branch": "abcite/multimodal-copilot",
+      "changed_file_count": 306,
+      "evidence_file_count": 3,
+      "evidence_files": [
+        {
+          "blob_sha": "ca76841789ee8ed74fdd882255a2f71ae41d48b8",
+          "bytes": 26373,
+          "path": "abcite/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c49da2933a8f06d2f7421cae6433c3ee3434dcaa",
+          "bytes": 6913,
+          "path": "abcite/abcite_core/metrics.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3352dfcf059baf52e0fe4cf8162d4621c481295b",
+          "bytes": 2250,
+          "path": "abcite/tests/test_claim_metrics.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "fb871f35678c4462074c0868a7738f1dc9483b05",
+      "role": "adjacent multimodal AbCite project; preserved but not merged into the antibody-interface headline story"
+    },
+    {
+      "ahead_of_main": 5,
+      "archive_tag": "archive/2026-09-30/branch/feature/asep-pretraining-pipeline",
+      "behind_main": 0,
+      "branch": "feature/asep-pretraining-pipeline",
+      "changed_file_count": 31,
+      "evidence_file_count": 2,
+      "evidence_files": [
+        {
+          "blob_sha": "dadbd005b134bce94fbf14c483c9f80aa0bcc747",
+          "bytes": 3242,
+          "path": "docs/evaluations/2026-09-04_sabdab2_asep_benchmarks_summary.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8956036613d370db4ccac221d38ee9fc4719e45b",
+          "bytes": 32113,
+          "path": "src/interaction_first/metrics.py",
+          "status": "M"
+        }
+      ],
+      "head_sha": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+      "role": "early AsEP/pretraining integration branch"
+    },
+    {
+      "ahead_of_main": 136,
+      "archive_tag": "archive/2026-09-30/branch/kevin/correspondence-upgrade-20260930",
+      "behind_main": 0,
+      "branch": "kevin/correspondence-upgrade-20260930",
+      "changed_file_count": 205,
+      "evidence_file_count": 126,
+      "evidence_files": [
+        {
+          "blob_sha": "97da3b87150e27db1889a84b6cc278424d1ace3e",
+          "bytes": 18939,
+          "path": "README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "8e53e841360a52e358922d8b92fa10fb045d4f68",
+          "bytes": 1447,
+          "path": "extensions/correspondence_v2/HANDOFF.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a4fe14e3906476f9f0d219322c012180988154a9",
+          "bytes": 4304,
+          "path": "extensions/correspondence_v2/PROTOCOL.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "480f64902112c3198f79c0a1fbfe4c864a124fca",
+          "bytes": 4329,
+          "path": "extensions/correspondence_v2/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "054ff8b771c6368b660b1b3eb408b571b51e0892",
+          "bytes": 6014,
+          "path": "extensions/correspondence_v2/READOUT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+          "bytes": 140685,
+          "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e6c4c3694c595a1a5c095550886bf35efdaca26",
+          "bytes": 8,
+          "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f48fe2f470995126d1953de960bdc78d99f17489",
+          "bytes": 252,
+          "path": "extensions/correspondence_v2/evidence/attempt1/CPU_POSTPROCESS_PROBE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "636f1bfcb4fda573d1ec369a4fce361477fa3953",
+          "bytes": 1083,
+          "path": "extensions/correspondence_v2/evidence/attempt1/EXECUTION_COMPLETE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c6526b4a75a344aa719238609deb6de51e068c82",
+          "bytes": 880,
+          "path": "extensions/correspondence_v2/evidence/attempt1/EXECUTION_START.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7da1cbd65965807b2c7f0888dca2afc28aabdc5c",
+          "bytes": 8,
+          "path": "extensions/correspondence_v2/evidence/attempt1/FORMAL_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "574dce79059baee3c44396e5abdf491d4064ab5c",
+          "bytes": 2870,
+          "path": "extensions/correspondence_v2/evidence/attempt1/FULL_RESULT_ARCHIVE_MANIFEST.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8a9259c0604b8a6c82e54b2997b6f01b92b4f7f6",
+          "bytes": 4679,
+          "path": "extensions/correspondence_v2/evidence/attempt1/HISTORICAL_IDENTITY_REFERENCES.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "05a77504599e3bfa425a70b6f648ef98c90766cc",
+          "bytes": 240,
+          "path": "extensions/correspondence_v2/evidence/attempt1/IDENTITY_AUDITOR_TESTS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "53a329b83f96879400b4ae63677a0bfe2c21260e",
+          "bytes": 8218,
+          "path": "extensions/correspondence_v2/evidence/attempt1/IDENTITY_PARITY.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fb3689bb02adbfbf516f1059c715807e5c0b8796",
+          "bytes": 12084,
+          "path": "extensions/correspondence_v2/evidence/attempt1/PER_TASK_METRICS.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "11025979afd46722c582bf497affe6f88a756923",
+          "bytes": 268758,
+          "path": "extensions/correspondence_v2/evidence/attempt1/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e5a37b6a36b6868cdab0c18f6469bfe6c47fe239",
+          "bytes": 65,
+          "path": "extensions/correspondence_v2/evidence/attempt1/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5274c6cd14b230bf3a97eef66fcf836190055ca2",
+          "bytes": 484,
+          "path": "extensions/correspondence_v2/evidence/attempt1/POSTPROCESS_SHA256SUMS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "41bfea49df89b4cb4dca72bd24f534a3de12f8fc",
+          "bytes": 359,
+          "path": "extensions/correspondence_v2/evidence/attempt1/SACCT_COMPLETED.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e41e888787440a159b07a4099beccb7f811a1f6d",
+          "bytes": 8,
+          "path": "extensions/correspondence_v2/evidence/attempt1/SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3c2c80febe2918c97f391852028b240f796b0bad",
+          "bytes": 1985,
+          "path": "extensions/correspondence_v2/evidence/attempt1/UNIT_TESTS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ea8b5ce819f6fcb6cd5e8f20669177d59644086a",
+          "bytes": 363461,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_0/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ed9ad19fdc06ac3545a7436f56614a64c86d9a5d",
+          "bytes": 362481,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_1/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3bd77705e8c9e0a4a3f8472e3227c51c2dab85e0",
+          "bytes": 362687,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_2/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1eece765c0eafa1dca578274c49ffee28fb68fe",
+          "bytes": 251866,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_3/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c664558d0c37b99ae7d6bb4602ae75c83faa94b3",
+          "bytes": 251611,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_4/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "586549ea3510bfb6d737bfd9f5d1e47a320c3581",
+          "bytes": 252028,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_5/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ec0b8130457163110484ef760a172dca68267668",
+          "bytes": 336476,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_6/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "01e41c1466d4fb4be17a089fadcae58a90636212",
+          "bytes": 336750,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_7/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "08baf14b63003a1b60ecbb2b69976cab299b37b7",
+          "bytes": 336781,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_8/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f483485730ce847ad5723cb41290c68a3b4a6117",
+          "bytes": 119401,
+          "path": "extensions/correspondence_v2/evidence/attempt1/out/smoke_0/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "81340532eb838655bc30cdf0c4335ea3c4e1e7a3",
+          "bytes": 8315,
+          "path": "freeze/CLAIMS_LEDGER.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b26680c2a24a510d612c82bc9445f355702097fc",
+          "bytes": 4160,
+          "path": "freeze/FREEZE.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a497854633776b8a6f5651656bc85c535916172d",
+          "bytes": 723,
+          "path": "freeze/FREEZE_INDEX.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e60918984215bbaa96972a23d65eeefac93b56ab",
+          "bytes": 248314,
+          "path": "freeze/MANIFEST.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "615485c02859cc34579647ada1fd81470396b683",
+          "bytes": 5858,
+          "path": "freeze/PROVENANCE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d8c37b53a0f87c2afefb089b08348d80c908c9b7",
+          "bytes": 34009,
+          "path": "freeze/REPRODUCTION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd51480cc92dfb3481cec99b23fe08fc3e4f00e7",
+          "bytes": 6433,
+          "path": "paper/ABSTRACT_v1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "09864f03ba6ee15f7e5f2bfcb85256033b7e8849",
+          "bytes": 2938,
+          "path": "protocols/ASEP_SUPERVISION_PARITY_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "221d128c40b112eab04778eb9dee63db31bdedce",
+          "bytes": 5040,
+          "path": "protocols/ASEP_TEST_MEASUREMENT_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1346008ce9071e7fa8ffb92b7bfbab7acbeec34b",
+          "bytes": 5573,
+          "path": "protocols/CHECKPOINT_SELECTION_CONFIRMATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a6cb5d6a12e249e9cd2e001446ebde379abe5b85",
+          "bytes": 8446,
+          "path": "protocols/CORRESPONDENCE_CORRUPTION_CURVE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "63629f55ad396628cdc38ec7114fc50b9618334a",
+          "bytes": 9484,
+          "path": "protocols/GRADIENT_ALIGNMENT_DYNAMICS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cfdc282c6f68f14bcaa5bec2c58a0ca801d0c0c1",
+          "bytes": 4968,
+          "path": "protocols/HOLDOUT_CONFIRMATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7d3f6b9c72ad4208c4b09a2bfb6ed501ad64db7b",
+          "bytes": 5878,
+          "path": "protocols/MULTITASK_BALANCER_INTERVENTION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f6ddca48b5b37527f7e67838c71626545fd1bebf",
+          "bytes": 8274,
+          "path": "protocols/OBJECTIVE_COMPONENT_LOCALISATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "71e16a2b3f9cf2a818ca27410e579e6118ecf2e7",
+          "bytes": 2988,
+          "path": "protocols/PAIR_SUPERVISION_DOSE_RESPONSE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e536dd64613299a8556933d2c39ad74ccf2305d1",
+          "bytes": 2285,
+          "path": "protocols/REPRESENTATION_ABLATION_EXTENSION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b8fd9348b85188632104f660bd481f3abb3a692f",
+          "bytes": 3673,
+          "path": "protocols/REPRESENTATION_ARMS_ANALYSIS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "01fb548fc5b4435e47d504fa8c24aa87457534f9",
+          "bytes": 4111,
+          "path": "protocols/SECOND_STRUCTURAL_ENCODER_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5f421d3c8fc8d48cd66e111d5e047fd32b75b777",
+          "bytes": 5459,
+          "path": "reproduction/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e6bf06897bdb4bea6d7e28f25a8563c52c8fa5ea",
+          "bytes": 3796,
+          "path": "reproduction/cold_v1/PASS_1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8dde9ad5b1de85f383df74bf43cd5fc44d6a5455",
+          "bytes": 3627,
+          "path": "reproduction/cold_v1/RESULT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9d1e67f8c804b6015233fe8f0714f02e224de0b6",
+          "bytes": 15788,
+          "path": "reproduction/cold_v1/cold_reproduce.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6683322468508e03c2ac362c52c0f94ecca88790",
+          "bytes": 18841,
+          "path": "reproduction/cold_v1/receipt_pass1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "728a7f2e2c6eec28398c98d249fec165d36cdd9c",
+          "bytes": 4507,
+          "path": "reproduction/cold_v1/receipt_pass2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d949a7d98800b9d13ec3f9356cd1ed320e4569ae",
+          "bytes": 2211,
+          "path": "reproduction/cold_v1/receipt_pass3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "221a4ddf97314126cd4f01091bdc56391aa3fa69",
+          "bytes": 2477,
+          "path": "reproduction/cold_v1/receipt_pass4.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "de64b7b1bd246f9119b35d9e061407514d14c995",
+          "bytes": 9650,
+          "path": "results/CLAIMS_LEDGER.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b69b06e08b18d148ad41ccf1b213bbe1603331fa",
+          "bytes": 9537,
+          "path": "results/EVIDENCE_INVENTORY.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1e4c3dba62f6c8766f90be79a11bf32320d0db2",
+          "bytes": 5089,
+          "path": "results/REPRODUCIBILITY_NOTES.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f0f3d3b50bdd99236e8ccb374fd0c6a4a479d5d3",
+          "bytes": 14066,
+          "path": "results/asep_benchmark_v1/BENCHMARK.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dbaf4ef421219c2cccaf5353e19bfd721e5f6c22",
+          "bytes": 5306,
+          "path": "results/asep_benchmark_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "00c1c914744283ccc7af37ab5c8cf0d3f857752e",
+          "bytes": 3951,
+          "path": "results/asep_benchmark_v1/arm_selection.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "070f148c17a6a3950a8becc2fcb42ac457a078f7",
+          "bytes": 12966,
+          "path": "results/asep_benchmark_v1/development.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fc02e8a6442cc1d52b6cb3286d85fd2029162ebb",
+          "bytes": 1917,
+          "path": "results/asep_benchmark_v1/ratio_test_measurement.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1340a8b25fd6f3948551ce4857cdd8975c2ce59f",
+          "bytes": 4308,
+          "path": "results/asep_benchmark_v1/test_measurement.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2b4fd38f3351223247d2945b503f268c262d10be",
+          "bytes": 5130,
+          "path": "results/asep_benchmark_v1/test_micro_macro.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2bf25c2121d716f02c1fbeafa1297f28ac156a10",
+          "bytes": 7516,
+          "path": "results/asep_benchmark_v1/threshold_epitope.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "061b191fd21caf3ccca1f615e12745125c03feb0",
+          "bytes": 2991,
+          "path": "results/asep_cohort_overlap_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd02f1503b900facdc527af7ae8b314715c1b614",
+          "bytes": 5134,
+          "path": "results/asep_cohort_overlap_v1/overlap.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bbfa944580047b877aa2a585723246b0bd11df65",
+          "bytes": 5863,
+          "path": "results/baseline_margin_replication_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c17770a59f3a035038d7cb043a0285bdd02acf41",
+          "bytes": 2532,
+          "path": "results/baseline_margin_replication_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1434257e2789d2a6941bcbd990d12c0f7053c0e3",
+          "bytes": 16920,
+          "path": "results/baseline_margin_replication_v1/seed_receipts.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ecc67741992f79262d5e2e7c733f837d33292e62",
+          "bytes": 3332,
+          "path": "results/checkpoint_selection_confirmation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0b6a3c4d62ae7722ef360917053b3585fc5c73e0",
+          "bytes": 4818,
+          "path": "results/checkpoint_selection_confirmation_v1/STAGE_THREE.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7871b47e85583711db9fc7eb3a3ea86562956cf5",
+          "bytes": 7786,
+          "path": "results/checkpoint_selection_confirmation_v1/ratio_test_confirmation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cac2704bf6be18a6af0050b539a1877851f5ec00",
+          "bytes": 4067,
+          "path": "results/checkpoint_selection_confirmation_v1/stage_two_group_validation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "983985dc0636e124de89cd0206156f6350a6ce09",
+          "bytes": 8138,
+          "path": "results/correspondence_corruption_curve_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ae57e30ff3f873975a8be69787d9102ab3a11ab",
+          "bytes": 15181,
+          "path": "results/correspondence_corruption_curve_v1/curve_antiberty_sabdab2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0994899fffdc26ea87297ddb9a2d6bf5e9b2536b",
+          "bytes": 15316,
+          "path": "results/correspondence_corruption_curve_v1/curve_esm_if1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8f6c63750dc4de754581e1530a64183b2105e9a1",
+          "bytes": 9995,
+          "path": "results/correspondence_corruption_curve_v1/curve_igfold.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6b04a2e4affb1674c37bfd120bbfefd26fb92fb0",
+          "bytes": 6292,
+          "path": "results/feature_provenance_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "aa98bc90ae6c2c19a1715a3974d546dedf89662c",
+          "bytes": 3423,
+          "path": "results/feature_provenance_v1/feature_provenance.tsv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "630d9915c3fe8b9b3c028f2b713f4d5a515cdc9f",
+          "bytes": 5345,
+          "path": "results/gradient_alignment_dynamics_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0f49113418f83716f1629a3ed8cf91f598c4a937",
+          "bytes": 485280,
+          "path": "results/gradient_alignment_dynamics_v1/gradient_trajectory.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e0d6c84e7b61ed173201645cd2f4a896c6d7b90b",
+          "bytes": 13143,
+          "path": "results/gradient_alignment_dynamics_v1/step_trace_summary.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6fd5463956c518c19318517b48c59f785db7328c",
+          "bytes": 6559,
+          "path": "results/gradient_conflict_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "589b1f4fe785fc679b82b03f2bd5434da16a7df6",
+          "bytes": 24701,
+          "path": "results/gradient_conflict_v1/seed1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "eefa8904b26ea7a5b6bcd588a7ec9cae082faa16",
+          "bytes": 24701,
+          "path": "results/gradient_conflict_v1/seed2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e8e833186e0df71a08e6a5ba18ef187435b2d826",
+          "bytes": 24699,
+          "path": "results/gradient_conflict_v1/seed3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "33eb0a3f7cf547358fd541c4949dbe48f0ca4156",
+          "bytes": 3860,
+          "path": "results/holdout_confirmation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+          "bytes": 1610,
+          "path": "results/holdout_confirmation_v1/confirmation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "94de29c7c5effc18ceeb00f07fdd6c84175297da",
+          "bytes": 5196,
+          "path": "results/igfold_generality_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "210e2013381bddf469b5c52ad29f2d8d10d1fd2a",
+          "bytes": 4896,
+          "path": "results/igfold_generality_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "efd0470ffab6d6618acfada681460b01d008acf6",
+          "bytes": 6137,
+          "path": "results/multitask_coupling_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5120bc767d1e46ed074ad91b78d3e0f2713eb01b",
+          "bytes": 3534,
+          "path": "results/multitask_coupling_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ade4fe769fc68e59dd8c9b83660e682c7f7c14",
+          "bytes": 5563,
+          "path": "results/objective_component_localisation_v1/PART_TWO.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e3e0b17cf2271c0df9740e39d1c3b2d3adf1a162",
+          "bytes": 4371,
+          "path": "results/objective_component_localisation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a3572103a562766651d9b5bbaa0138607ef7eba8",
+          "bytes": 5249,
+          "path": "results/objective_component_localisation_v1/RUN_CONTRACT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "914f86a7a2f84f5a1b044ff7c77535bcda2ea45b",
+          "bytes": 171697,
+          "path": "results/objective_component_localisation_v1/run_contract.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ec61d88ad6ad27c08db59a7dc9d385a27642a9",
+          "bytes": 5134,
+          "path": "results/pair_decoder_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "206249f88275c888fc312f35150db395db415796",
+          "bytes": 32005,
+          "path": "results/pair_decoder_ablation_v1/report_compact.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5beb1d046902d8e8b2d19927a3ffe039c644ae14",
+          "bytes": 3522,
+          "path": "results/pretrained_representation_coverage_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a1988630910692d212b5c6dcada2d8c8c838dd98",
+          "bytes": 4046,
+          "path": "results/pretrained_representation_coverage_v1/coverage.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b1ff1c0f859d702137489880e2d4381a34bd77c6",
+          "bytes": 14966,
+          "path": "results/representation_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f51f70a431dcdeddaf1b8f9550eb6fc0322f3452",
+          "bytes": 45511,
+          "path": "results/representation_ablation_v1/arms.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "03b286ddd5c0b63d95c6cc61714191bc17d0049b",
+          "bytes": 2159,
+          "path": "results/representation_ablation_v1/margin_antiberty_only.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a742424e5024ce7e23dc3e63ca25813e69285956",
+          "bytes": 3609,
+          "path": "results/representation_ablation_v1/margin_esm2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "290f726cce004f5acd005e97553fde8fe85327da",
+          "bytes": 3594,
+          "path": "results/representation_ablation_v1/margin_esm2_antiberty_esmif1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "139ed74464c2942e491bb21a18cc282f824de22b",
+          "bytes": 2155,
+          "path": "results/representation_ablation_v1/margin_esm_if1_only.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6fa4d60b36fb2dab58d6d9f8e3d2aca761128b60",
+          "bytes": 2159,
+          "path": "results/representation_ablation_v1/margin_random_control.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9510945d857b0c3556693f14f9a900249d4cfb90",
+          "bytes": 2346,
+          "path": "results/representation_ablation_v1/paired_report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b2a67a3782b83ade06df2b6bffb9801022611ca0",
+          "bytes": 5352,
+          "path": "results/representation_ablation_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "51d286a9a568223bed76966496aa160049efa4b8",
+          "bytes": 29397,
+          "path": "results/representation_ablation_v1/width_control.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3731d785637f8a58ffd44afaece19c77a70c1582",
+          "bytes": 7128,
+          "path": "results/representation_attribution_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+          "bytes": 3230,
+          "path": "results/representation_attribution_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ee47160d67ef13e97abb9039f788b0922a4d9836",
+          "bytes": 1430,
+          "path": "results/representation_attribution_v1/variance_aligned_vs_shuffled.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e52f72b44a118e9092b161f7ef25601999c1801",
+          "bytes": 5986,
+          "path": "results/second_structural_encoder_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f2cfd9b65ce0687f567e7ef35cb29764c4a3c0bc",
+          "bytes": 7617,
+          "path": "scripts/report_pair_evaluation.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd53ad18a35462bf0fde1c1713fe6a29528c55fe",
+          "bytes": 6414,
+          "path": "scripts/report_representation_arms.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "24368ec3af7054cf3e4181dad691678d16f531b9",
+          "bytes": 3239,
+          "path": "slurm/asep_benchmark.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3adcbbb6339d659562373fa8732affd2037f9e1d",
+          "bytes": 28479,
+          "path": "src/interaction_first/metrics.py",
+          "status": "M"
+        },
+        {
+          "blob_sha": "f3f0fa1a97e17a7d781c452bfc5942ce47a41c47",
+          "bytes": 2872,
+          "path": "tests/test_macro_metric_summary_types.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9ad9a39158c2956791d8fc0b296cdcf1799e8804",
+          "bytes": 5351,
+          "path": "tests/test_report_representation_arms.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "14a385feaec24b3141331963ba71dda788a164e1",
+      "role": "post-freeze correspondence perturbation extension and strict GPU evidence"
+    },
+    {
+      "ahead_of_main": 16,
+      "archive_tag": "archive/2026-09-30/branch/kevin/evaluate-sensitivity-ci-fix-v1",
+      "behind_main": 0,
+      "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+      "changed_file_count": 19,
+      "evidence_file_count": 8,
+      "evidence_files": [
+        {
+          "blob_sha": "bbfa944580047b877aa2a585723246b0bd11df65",
+          "bytes": 5863,
+          "path": "results/baseline_margin_replication_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+          "bytes": 2155,
+          "path": "results/baseline_margin_replication_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1434257e2789d2a6941bcbd990d12c0f7053c0e3",
+          "bytes": 16920,
+          "path": "results/baseline_margin_replication_v1/seed_receipts.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ec61d88ad6ad27c08db59a7dc9d385a27642a9",
+          "bytes": 5134,
+          "path": "results/pair_decoder_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "206249f88275c888fc312f35150db395db415796",
+          "bytes": 32005,
+          "path": "results/pair_decoder_ablation_v1/report_compact.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f2cfd9b65ce0687f567e7ef35cb29764c4a3c0bc",
+          "bytes": 7617,
+          "path": "scripts/report_pair_evaluation.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3adcbbb6339d659562373fa8732affd2037f9e1d",
+          "bytes": 28479,
+          "path": "src/interaction_first/metrics.py",
+          "status": "M"
+        },
+        {
+          "blob_sha": "f3f0fa1a97e17a7d781c452bfc5942ce47a41c47",
+          "bytes": 2872,
+          "path": "tests/test_macro_metric_summary_types.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+      "role": "evaluation sensitivity and CI fixes"
+    },
+    {
+      "ahead_of_main": 2,
+      "archive_tag": "archive/2026-09-30/branch/kevin/framecontact-multimodal-evidence-20260902",
+      "behind_main": 0,
+      "branch": "kevin/framecontact-multimodal-evidence-20260902",
+      "changed_file_count": 536,
+      "evidence_file_count": 160,
+      "evidence_files": [
+        {
+          "blob_sha": "20829e342e560c4c8a203eacf4ec16378bb87d10",
+          "bytes": 18963,
+          "path": "README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "59aee9325a91a562ea8d3e1bb4f95c5c809b5cb5",
+          "bytes": 9315,
+          "path": "data_registry/materialization_receipts/sabdab2_ml_zenodo_22019991.official_splits.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "385a6e7f196b138dd7a162bd6599d3a735fff89d",
+          "bytes": 1232,
+          "path": "data_registry/sources/sabdab2_ml_zenodo_22019991/license_receipt.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "97192784287739cf448e3ac8117cb54b04db807b",
+          "bytes": 1094,
+          "path": "data_registry/sources/sabdab2_ml_zenodo_22019991/normalization_receipt.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d283a6b51b3dcaf029c82d108ace8986d66896ab",
+          "bytes": 2553,
+          "path": "paper/neurips_2026_framecontact/PAIR_RANKING_NEGATIVE_EVIDENCE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "528164c1bc3fca099ec9635bb70273fc884e8013",
+          "bytes": 2471,
+          "path": "paper/neurips_2026_framecontact/README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "7befbdb0ce417d6ca20ea0ea6a082615181ca564",
+          "bytes": 2168,
+          "path": "paper/neurips_2026_framecontact/data/bilateral_topk_readout_ablation_v1.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "db2dc9126debe8bd0035086207e68dddd2f0526e",
+          "bytes": 7777,
+          "path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+          "status": "M"
+        },
+        {
+          "blob_sha": "2ab00b37a36728ef0ab633544c88a7f74b2910f4",
+          "bytes": 1110,
+          "path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f0e02f9cf1bf2cc039b33d27f4b70cbb08d1acb6",
+          "bytes": 1442695,
+          "path": "paper/neurips_2026_framecontact/figures/architecture/framecontact.pptx",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2de8593c9bcfccb1395d5e7f22ae083dc0516ff0",
+          "bytes": 1443761,
+          "path": "paper/neurips_2026_framecontact/figures/architecture/framecontact_architecture_detailed_editable.pptx",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d0ee67e757fa090756b035620c05a1eecea7a745",
+          "bytes": 25587,
+          "path": "paper/neurips_2026_framecontact/figures/overview.pdf",
+          "status": "M"
+        },
+        {
+          "blob_sha": "abcb11ae7b9ab573e9e186ba54a3a8db8d812f76",
+          "bytes": 138106,
+          "path": "paper/neurips_2026_framecontact/figures/overview.png",
+          "status": "M"
+        },
+        {
+          "blob_sha": "f079c57bb49e9fd0cd839e3015c6bd17a8300269",
+          "bytes": 147347,
+          "path": "paper/neurips_2026_framecontact/main.pdf",
+          "status": "M"
+        },
+        {
+          "blob_sha": "849e935742ad52c0f5fab0aa98e3275562a055f2",
+          "bytes": 29038,
+          "path": "paper/neurips_2026_framecontact/main.tex",
+          "status": "M"
+        },
+        {
+          "blob_sha": "ea7035f52f221c4c9011a47c50b36f2c10d14d42",
+          "bytes": 4666,
+          "path": "paper/neurips_2026_framecontact/make_figure.py",
+          "status": "M"
+        },
+        {
+          "blob_sha": "ef83e88aceeb7ff78ebe81ef7f790a4e2122351a",
+          "bytes": 2703,
+          "path": "remote_tools/abf30b_sabdab2_exposed_test_v1/adapt_test_sequence_receipt_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2c66ef916d8e0645af1e9be465b96bb2cbf72a4a",
+          "bytes": 4214,
+          "path": "remote_tools/abf30b_sabdab2_exposed_test_v1/freeze_chain_map_receipt_recovery_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "84aa1aa14ae7e2c0ca36e8ecac81c779929e32c3",
+          "bytes": 5504,
+          "path": "remote_tools/abf30b_sabdab2_exposed_test_v1/freeze_contact_authority_adapter_receipt_recovery_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4b3da2a87da110383d6aa0ebeb979dfbdf58989d",
+          "bytes": 1522,
+          "path": "remote_tools/abf_paircontact_v1/ONE_GPU_SYSTEMS_CANARY_RESULT_RECEIPT_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ad57133ca5c07e87c8eb467c410c85c78ac6bd5d",
+          "bytes": 3068,
+          "path": "remote_tools/abf_paircontact_v1/PHASE0_IMPLEMENTATION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "020f5275e8376ee1cd02995c627a325fe46f0338",
+          "bytes": 2133,
+          "path": "remote_tools/abf_paircontact_v1/PHASE1_MECHANISM_CANARY_RECOVERY_SUBMISSION_RECEIPT_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "24c72c86e4f97b2924c1371efee6a22228211fea",
+          "bytes": 2352,
+          "path": "remote_tools/abf_paircontact_v1/PHASE1_MECHANISM_CANARY_RECOVERY_SUBMISSION_RECEIPT_V3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f4e1a103a946e81a2795284a0d8ed8a59b2c3319",
+          "bytes": 3025,
+          "path": "remote_tools/abf_paircontact_v1/PHASE1_MECHANISM_CANARY_RESULT_RECEIPT_V3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "97eecd795eb9732c87d2bcb2f1f8684ad4051996",
+          "bytes": 1667,
+          "path": "remote_tools/abf_paircontact_v1/PHASE1_MECHANISM_CANARY_SUBMISSION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "58cbc33d7071eede7bb4a531c066202c7bba8616",
+          "bytes": 2254,
+          "path": "remote_tools/abf_paircontact_v1/PHASE2_ZERO_SUM_CANARY_RESULT_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "be1b2a818f8f92e24db6d60fb98e2d6d5d10fcdf",
+          "bytes": 926,
+          "path": "remote_tools/abf_paircontact_v1/PHASE2_ZERO_SUM_CANARY_SUBMISSION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ca63a335823de0202fdb695c7c534d31221a75b",
+          "bytes": 2356,
+          "path": "remote_tools/abf_paircontact_v1/PHASE3_ZERO_SUM_FP32_CANARY_PREFLIGHT_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1f6fce6a8fad446211aea9e07c1920ffb77642b7",
+          "bytes": 2941,
+          "path": "remote_tools/abf_paircontact_v1/PHASE3_ZERO_SUM_FP32_CANARY_RESULT_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4c2100a1cd9646a9e7c6931dca304616489ea8b1",
+          "bytes": 1481,
+          "path": "remote_tools/abf_paircontact_v1/PHASE3_ZERO_SUM_FP32_CANARY_SUBMISSION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f0bc6cd131d9e960bf445acc91adceb9767b9167",
+          "bytes": 4215,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_multitask_pilot_v4.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "80c70c4ec80b33de2a4a96e9b20ca2bf9ebbac33",
+          "bytes": 3057,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_multitask_v1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c6d50fe35a51b59f5332a5967cd9959851ef35c6",
+          "bytes": 5567,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_paircontact_residual_canary_v18.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c7c2da21314e85a3284d5ce542c0057a54cf6ee5",
+          "bytes": 6932,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_paircontact_residual_canary_v18_recovery_v2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b2bd99cc526e11343618de08d06006da3413dec2",
+          "bytes": 7217,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_paircontact_residual_canary_v18_recovery_v3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cecf0963d32f18a82fb5de65815c505eb988c891",
+          "bytes": 6857,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_paircontact_zero_sum_canary_v19.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "25d03c21f08a6fb3e832c0314a81535ab6109db5",
+          "bytes": 7441,
+          "path": "remote_tools/abf_paircontact_v1/candidate_source/protocols/abpairfm_stage_a1_paircontact_zero_sum_fp32_canary_v20.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b60069c0779d472358ddbbe4d9f0d64223081365",
+          "bytes": 701,
+          "path": "remote_tools/abf_paircontact_v1/pinder_scale_v1/PINDER_ANTIBODY_ADAPTATION_QUALITY_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1de8c7fd4f46bda082faa6c51bb618500b56e435",
+          "bytes": 339,
+          "path": "remote_tools/abf_paircontact_v1/pinder_scale_v1/PINDER_ANTIBODY_INVENTORY_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7ca56aa19670acadd87391f99dfa4c42e905622a",
+          "bytes": 689,
+          "path": "remote_tools/abf_paircontact_v1/pinder_scale_v1/PINDER_ANTIBODY_SEQUENCE_CLUSTER_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c3412e213ff34a9a3965067e16da4b6a9928b4ca",
+          "bytes": 704,
+          "path": "remote_tools/abf_paircontact_v1/pinder_scale_v1/PINDER_FULL_ANTIBODY_SYSTEM_RECONSTRUCTION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "95f07649343756c063b177b71daafabb32da6d2c",
+          "bytes": 1425,
+          "path": "remote_tools/abf_paircontact_v1/pinder_scale_v1/PROTOCOL_PINDER_ANTIBODY_S40_RELATION_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "315866ff70a916e071ef59e0a3b6ef9341183ba9",
+          "bytes": 229,
+          "path": "remote_tools/abpairfm_3b_unique25m_continuation_v1/ABPAIRFM_3B_UNIQUE25M_CONTINUATION_SOURCE_MANIFEST_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2fc534861e9e74a548e716cf1d40e87b9aae5e9b",
+          "bytes": 248,
+          "path": "remote_tools/abpairfm_3b_unique25m_continuation_v1/ABPAIRFM_3B_UNIQUE25M_CONTINUATION_SOURCE_MANIFEST_V2_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "590d7534b8ad8bc7cee3af5d424793cf53704617",
+          "bytes": 1022,
+          "path": "remote_tools/abpairfm_3b_unique25m_continuation_v1/ABPAIRFM_3B_UNIQUE25M_CONTINUATION_SUBMISSION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "02b35e0d6e86e575ece0cbd17f0d3a7422b1c2a8",
+          "bytes": 832,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/B_CANARY_FAILURE_1527510_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bfc801068fd5f73fd872c7dd17737f07dd9df108",
+          "bytes": 4678,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/EXECUTION_RECEIPT_20260901.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b8fa689a474fb76978d5386347a89d839d0dfa24",
+          "bytes": 2518,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_CONTACT_GUIDED_CDR_POC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "53e0b900e801c68b75f80de7dfc4d2c7acd3ecbd",
+          "bytes": 6762,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_DISTRIBUTED_PRETRAINING_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "26d80f3c7552a75e900ef6c3c90240a89e552608",
+          "bytes": 3384,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B32K_RECOVERY_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0ee01f5b0662afec83aaf0f9ee8d50352adad2bf",
+          "bytes": 3384,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B32K_RECOVERY_V3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "349ed8f33a2914287949608831a332126f9f6bc0",
+          "bytes": 3572,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B32K_RECOVERY_V4.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bda4d6ad62f8264d15c570b132b691b23f024a5a",
+          "bytes": 3384,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B32K_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7dc095f5c9d411cb5c03539beeb8f27154db3f51",
+          "bytes": 2731,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B_CANARY_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0f9a212e28967e07e859dacc0ef2a6ddb2b1b616",
+          "bytes": 3345,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B_LINK_EDGE_REFINEMENT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d7cfa527a4071d122ad59786f742277be9a9e0c4",
+          "bytes": 3270,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B_LINK_LOW_RANK_CONTROL_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5f9e9e3394fa6ee788059d8cc414bf0139825897",
+          "bytes": 3260,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B_PAIR_LOSS_ADAPTIVE_CONTROL_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0f6b8fe2951e89d1f1794ccff909c35354af9544",
+          "bytes": 3267,
+          "path": "remote_tools/abpairfm_distributed_contact_pretraining_v1/PROTOCOL_PINDER_B_PAIR_LOSS_FOCAL_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7839b4675af059e5d50b4663d009cd56a0bf8b5e",
+          "bytes": 2863,
+          "path": "remote_tools/abpairfm_multimodal_pretraining_v1/PROTOCOL_PINDER_MULTIMODAL_ALIGNMENT_AMENDMENT_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fd02df42a034ab5005f88da6c94c65f3a8461280",
+          "bytes": 1964,
+          "path": "remote_tools/abpairfm_multimodal_pretraining_v1/PROTOCOL_PINDER_MULTIMODAL_CORRUPTION_AMENDMENT_V3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ddae6989d44189bfe82e48597af04119fb400570",
+          "bytes": 5881,
+          "path": "remote_tools/abpairfm_multimodal_pretraining_v1/PROTOCOL_PINDER_MULTIMODAL_PRETRAINING_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d95e95449a19c565e53a464c7c457abcecdf8424",
+          "bytes": 8789,
+          "path": "remote_tools/bilateral_topk_readout_v1/analyze_bilateral_topk_readout_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "db30f1126cb73ec9a1e2838204f653c6ef7c53bb",
+          "bytes": 15224,
+          "path": "remote_tools/bilateral_topk_readout_v1/evaluate_bilateral_topk_readout_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "76459a18c4feae79d44fd6c036b842a1b46c4845",
+          "bytes": 4661,
+          "path": "remote_tools/bilateral_topk_readout_v1/freeze_bilateral_topk_analysis_recovery_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c48da7cba5a4e5197853f4326ac56820587e983f",
+          "bytes": 9969,
+          "path": "remote_tools/bilateral_topk_readout_v1/freeze_bilateral_topk_readout_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4dff68039879c61dff1972eedbdb86344e70a4c5",
+          "bytes": 1108,
+          "path": "remote_tools/bilateral_topk_readout_v1/slurm_analyze_bilateral_topk_readout_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2a7898c8320bbc45ccf9502e7a0e1af40c4fbbef",
+          "bytes": 1716,
+          "path": "remote_tools/bilateral_topk_readout_v1/slurm_bilateral_topk_readout_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0ea4f09f09836461694ca175d1e406438515df76",
+          "bytes": 578,
+          "path": "remote_tools/framecontact_node_cache_v1/NODE_LOCAL_CACHE_CANARY_SUBMISSION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "41841f717335b0f3dae8e239c625a7cb33660ac5",
+          "bytes": 485,
+          "path": "remote_tools/framecontact_node_cache_v1/NODE_LOCAL_CACHE_CONCURRENCY_CANARY_RESULT_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ccb0489974d84ca3b340e9382badebfbbe55e576",
+          "bytes": 492,
+          "path": "remote_tools/framecontact_node_cache_v1/NODE_LOCAL_CACHE_CONCURRENCY_CANARY_SUBMISSION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "839fe605b1f958b498f6672d3621407ca277e8d6",
+          "bytes": 4079,
+          "path": "remote_tools/framecontact_surface_hardnegative_v1/FAIL_CLOSED_PROTOCOL_RECEIPT_SCHEMA_1493976.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd0ac29529f9a2789a3f1414be5008b11e3b24d4",
+          "bytes": 2977,
+          "path": "remote_tools/framecontact_surface_hardnegative_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e0103d983d721f6a333e2c5b5ed34b4ead0f7528",
+          "bytes": 710,
+          "path": "remote_tools/framecontact_surface_hardnegative_v1/SUBMISSION_RECEIPT_RECOVERY_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "855d48f1a7ebde6de5e060bfeadcebe8507fa09e",
+          "bytes": 1704,
+          "path": "remote_tools/prospective_temporal_double_cold_v2/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7cf9944aeffa69924cf2618f7e9a664d5e3beaf0",
+          "bytes": 988,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/CONFIDENCE_GEOMETRY_PLDDT70_CONTACT_AUTHORITY_RECOVERY_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d883f0824d0b28bbb5aa42fd54ef766b6bf0147b",
+          "bytes": 1552,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/CONFIDENCE_GEOMETRY_PLDDT70_V1_RECOVERY2_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "aeb6d394a06c65adc55da5f1e3c2604584dd0523",
+          "bytes": 1283,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/CONFIDENCE_GEOMETRY_PLDDT70_V1_RECOVERY_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ccbe1843e3542ee90c972a382114b28b49d6bef8",
+          "bytes": 1132,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/CONFIDENCE_GEOMETRY_PLDDT70_V1_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a632834a084b239784c63fdad21471f2080abbec",
+          "bytes": 617,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/FAIL_CLOSED_PREPARATION_1495007_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "62acc48d8af2bbcb85836bce98ba41969dd2b4b2",
+          "bytes": 617,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/FAIL_CLOSED_PREPARATION_1495030_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8356b6d63ac19fa2656312d14881bb3f06144521",
+          "bytes": 316,
+          "path": "remote_tools/sabdab2_confidence_geometry_v1/FAIL_CLOSED_TRAINING_1495054_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fcedd7d5ac885aa74cac53fa7f52565766f000f5",
+          "bytes": 663,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/GEOMETRY_QUALITY_MECHANISM_V1_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "227e370fa5f18b37522da2a49ec57e2babb7e17c",
+          "bytes": 1224,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/GEOMETRY_TASK_ASSOCIATION_V1_ANALYZER_RECOVERY_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "24cb797b5be0870314761a0b92a3766452b7ac4b",
+          "bytes": 988,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/GEOMETRY_TASK_ASSOCIATION_V1_RECOVERY_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c6cf74f6a543cca64c0faac1a7956df12f280de9",
+          "bytes": 862,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/GEOMETRY_TASK_ASSOCIATION_V1_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "490759cc8f12bdd4bff5b9f5fbd0cb3ba61cbf92",
+          "bytes": 699,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/NO_PRIVILEGED_DISTANCE_V1_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "62dfd165b236e25473dfcfb826f29e811b30e2f4",
+          "bytes": 1594,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "23e875fad7ce246980bf35cd1da1fed90bbf9111",
+          "bytes": 2510,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/export_predicted_geometry_per_complex_metrics_recovery_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "207e4b54d1ce6e3927b3a6081086f3bc3cab63b9",
+          "bytes": 11333,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/export_predicted_geometry_per_complex_metrics_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f470ab53de309f15e74d13344ea4e514ee8769f4",
+          "bytes": 3817,
+          "path": "remote_tools/sabdab2_predicted_geometry_v1/export_predicted_geometry_per_complex_metrics_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e3a8f13b5d7b82227471f0b311d0802f645640d",
+          "bytes": 2867,
+          "path": "remote_tools/sable_external_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "80cb9f9e2be73103057e2732026159a6e72f9ac8",
+          "bytes": 1274,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_AF3_LABEL_FREE_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e86500264d2b87d53de0c129fab78bfae37dcea5",
+          "bytes": 454,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_BOUND_LABEL_MAPPING_RECOVERY_V2_COMPLETION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e1dc40c5d1928bd40a1216e9ba29b0c285f04807",
+          "bytes": 253,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_BOUND_LABEL_MAPPING_RECOVERY_V2_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "71a40dcc4a4720b7978d8bed0601eb6e844fed0d",
+          "bytes": 766,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_BOUND_LABEL_MAPPING_RECOVERY_V2_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "75737784a0ff1cf9c3b59b8178cc1f9dbdcb9300",
+          "bytes": 1265,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_BOUND_LABEL_OPENING_HARDENED_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d6e7510552d40f68fbb2cb5dd97ae62267123649",
+          "bytes": 1211,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_BOUND_LABEL_OPENING_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "88ce0a5d849190f5a64afbbd3e8bc0b0f422b9a4",
+          "bytes": 954,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_ESM2_LABEL_FREE_COMPLETION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9791aee092fe00b41233c03f1c9e88776d629b3e",
+          "bytes": 1459,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_ESM2_LABEL_FREE_RECOVERY_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dfcbd4abffa8b475ba8ea239a1773e155bc8a7f1",
+          "bytes": 1395,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_ESM2_LABEL_FREE_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1f62d6280df41a1d0bc375c8dfd10880585cc79",
+          "bytes": 448,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_EXTERNAL_ANALYSIS_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "be3d7f81c93ad9cf2e8304679daa82f9e3d7ad88",
+          "bytes": 483,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_EXTERNAL_EXECUTION_PLAN_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2300f4bf1dafa402ce2a6855fbcb522cc09e8e1d",
+          "bytes": 914,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_LABEL_FREE_SCREEN_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3181c198670c9a296abcde484593a3956dac5c34",
+          "bytes": 347,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_MEASUREMENT_SOURCE_MANIFEST_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c84a4f431b18b832afa75eaf7de83b2809c53fc5",
+          "bytes": 1266,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_NO_DISTANCE_BINDING_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b09c2a6651959c65ba1adba269c9317677558304",
+          "bytes": 1558,
+          "path": "remote_tools/sable_external_v1/SABLE_V0_2_0_PREDICTED_STRUCTURE_CACHE_SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e9d8dd4405a08039b91c25ebcdbf22d7fc9112f3",
+          "bytes": 19011,
+          "path": "results/abf30b_beyond_marginals_v1/ABF30B_BEYOND_MARGINALS_ANALYSIS_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "780c43ac9a9b772ee881a6cb96975e0dccd358ef",
+          "bytes": 653,
+          "path": "results/abf30b_beyond_marginals_v1/ABF30B_BEYOND_MARGINALS_ANALYSIS_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b1da6cf90382ed2ff73fd14738c91bd773024c10",
+          "bytes": 1922,
+          "path": "results/mipe/MIPE_800E_FIVEFOLD_OFFICIAL_REPLAY_20260901.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "839f9705e6c820cf79f850799b81c7d6d6dcec19",
+          "bytes": 1359,
+          "path": "results/mipe/MIPE_800E_FIVEFOLD_OFFICIAL_REPLAY_20260901.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e79c0310d14e6e40986d4ac1fda34d01d2133598",
+          "bytes": 2552,
+          "path": "results/pinder_antibody_s40_v1/PINDER_ANTIBODY_S40_COMPONENT_DIAGNOSTIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1d11b3d2fd900eea72cbfc63d8613e206dca936",
+          "bytes": 323,
+          "path": "results/pinder_antibody_s40_v1/PINDER_ANTIBODY_S40_RELATION_RECEIPT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1579c55782ba3560e8327b7d307d396a6663ddff",
+          "bytes": 2284,
+          "path": "results/pinder_antibody_s40_v1/PINDER_ANTIBODY_S40_RELATION_RESULT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "06f3ee503c9e2ce8d942cb9afd4aa9b3d5634181",
+          "bytes": 1331,
+          "path": "results/pinder_antibody_s40_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bb8ecff195f885c8143c1eec200947b6b018d304",
+          "bytes": 2979,
+          "path": "results/pretraining/abpairfm_bipartite_decoder_canary_v1/ANALYSIS_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cc8624f556af15af825ddcd50f2273fa9a5982d7",
+          "bytes": 1854,
+          "path": "results/pretraining/abpairfm_bipartite_decoder_canary_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d4526b0b12c30e3de0582795c10177a2df0b4bc4",
+          "bytes": 261,
+          "path": "results/pretraining/abpairfm_bipartite_decoder_canary_v1/bipartite_edge_refinement/PROGRESS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1f22cdb34984c9cef954481eb89385408af25e39",
+          "bytes": 17614,
+          "path": "results/pretraining/abpairfm_bipartite_decoder_canary_v1/bipartite_edge_refinement/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4d257b711856ec6d4dd39764cb5c6c8509d8e270",
+          "bytes": 264,
+          "path": "results/pretraining/abpairfm_bipartite_decoder_canary_v1/low_rank_control/PROGRESS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "58ac698c99fa1c1fe76c61942e7b2f6cf2783b9b",
+          "bytes": 17659,
+          "path": "results/pretraining/abpairfm_bipartite_decoder_canary_v1/low_rank_control/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cda9840fdff50ef2559f747a2f8cfabb1ca0f406",
+          "bytes": 2951,
+          "path": "results/pretraining/abpairfm_pair_loss_canary_v1/ANALYSIS_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c5711f21d34b58cf0f21d832a4444185c7bcf80c",
+          "bytes": 1735,
+          "path": "results/pretraining/abpairfm_pair_loss_canary_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ea3f95f509aec7e4390f483c4e758fa357eac025",
+          "bytes": 248,
+          "path": "results/pretraining/abpairfm_pair_loss_canary_v1/adaptive_balanced_control/PROGRESS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a7e4559c8fbc3c088b9b83540c9bdc371a8f94bf",
+          "bytes": 17861,
+          "path": "results/pretraining/abpairfm_pair_loss_canary_v1/adaptive_balanced_control/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2ef4ea2dbedf734f753a2bca0de0d0c00bbf392e",
+          "bytes": 241,
+          "path": "results/pretraining/abpairfm_pair_loss_canary_v1/balanced_focal/PROGRESS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0d379a26cc2edf6fc72a888d85f467fa04a02e2b",
+          "bytes": 17894,
+          "path": "results/pretraining/abpairfm_pair_loss_canary_v1/balanced_focal/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e31c71e6f8b625d4d059c6eb01a58953130bd11",
+          "bytes": 866,
+          "path": "results/pretraining/abpairfm_pinder_multimodal_v1/PINDER_MULTIMODAL_BFULL_INVENTORY_RESULT_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "40988344db3b52a69bf10e357b3462a2038b6778",
+          "bytes": 5757,
+          "path": "results/prospective_temporal_double_cold_v2/PROSPECTIVE_TEMPORAL_DOUBLE_COLD_PROTOCOL_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b2d018be1b3d801f3c14b449d4ae09c40f2916a8",
+          "bytes": 498,
+          "path": "results/prospective_temporal_double_cold_v2/PROSPECTIVE_TEMPORAL_DOUBLE_COLD_PROTOCOL_V2_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c8814f0a05e5f3ead22ff7934aa669257e780c7e",
+          "bytes": 1227,
+          "path": "results/prospective_temporal_double_cold_v2/PROSPECTIVE_TEMPORAL_METADATA_SCREEN_INITIAL_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1d915420a893f3f18ea7679c790e756fcc139216",
+          "bytes": 464,
+          "path": "results/prospective_temporal_double_cold_v2/PROSPECTIVE_TEMPORAL_METADATA_SCREEN_INITIAL_V2_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "14d12f02ba256e5633bb4274f709a62fd96f104d",
+          "bytes": 3624,
+          "path": "results/prospective_temporal_double_cold_v2/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e97800e67f13e1066cb799fcc6af5598c1956a6e",
+          "bytes": 1789,
+          "path": "results/prospective_temporal_double_cold_v2/authority_v2_1/PROSPECTIVE_TEMPORAL_METADATA_SCREEN_V2_1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ec604563fa355164f29e6e925f5df1f18a48d85",
+          "bytes": 670,
+          "path": "results/prospective_temporal_double_cold_v2/authority_v2_1/PROSPECTIVE_TEMPORAL_METADATA_SCREEN_V2_1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ad053bbd8128f60afa7d7e10f1147af2c4a6fec9",
+          "bytes": 1592,
+          "path": "results/prospective_temporal_double_cold_v2/authority_v2_1/PROSPECTIVE_TEMPORAL_RELEASE_DATE_AMENDMENT_V2_1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cd3c0209fc52144a66beb3319eb493395389a506",
+          "bytes": 414,
+          "path": "results/prospective_temporal_double_cold_v2/authority_v2_1/PROSPECTIVE_TEMPORAL_RELEASE_DATE_AMENDMENT_V2_1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ec2936178e36a35adfcb65f08d360ca81140b7da",
+          "bytes": 105405,
+          "path": "results/prospective_temporal_double_cold_v2/authority_v2_1/RCSB_INITIAL_RELEASE_METADATA_V2_1.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ffdc59cb0d1e84952391f7f3558996e86e0f9767",
+          "bytes": 410,
+          "path": "results/prospective_temporal_double_cold_v2/authority_v2_1/RCSB_INITIAL_RELEASE_METADATA_V2_1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7643b61096030169d933a1e1049303e876b2563f",
+          "bytes": 6424,
+          "path": "results/prospective_temporal_double_cold_v2/design_audit/TEMPORAL_GATE_PRECISION_AUDIT_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7ff90015a58f7be6260fdc051284511f6a959a45",
+          "bytes": 329,
+          "path": "results/prospective_temporal_double_cold_v2/design_audit/TEMPORAL_GATE_PRECISION_AUDIT_V2_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cdaa02a6ad6528a6d186b229de60b88dada76db3",
+          "bytes": 4777,
+          "path": "results/prospective_temporal_double_cold_v2/preregistration_bundle_v2_1/PREREGISTRATION_BUNDLE_MANIFEST_V2_1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a2f35bf21b41f074f25129d654a7cf5f501d4435",
+          "bytes": 423,
+          "path": "results/prospective_temporal_double_cold_v2/preregistration_bundle_v2_1/PREREGISTRATION_BUNDLE_RECEIPT_V2_1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b86bdf41df99dbf76574acc19ded12a405c31655",
+          "bytes": 2859,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_READOUT_DEVELOPMENT_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "39036738df3e2a681be7376b58282c74bd96f7ab",
+          "bytes": 2317,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_READOUT_DEVELOPMENT_PUBLIC_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ee5689d9c909053442df375472f2b1c52194083",
+          "bytes": 2756,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_TRAINING_ABLATION_DEVELOPMENT_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1f18d5d3b26ef63758d45c936e3b028d9e9b6296",
+          "bytes": 2062,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_TRAINING_ABLATION_DEVELOPMENT_PUBLIC_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5dd26e60a02b6a5e2327bf1194e187b7da11a7bc",
+          "bytes": 3335,
+          "path": "results/sabdab2_predicted_geometry_v1/PREDICTED_GEOMETRY_TASK_ASSOCIATION_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d949615e7b756cc13a1a34e28a42dc0ec01690a1",
+          "bytes": 539,
+          "path": "results/sabdab2_predicted_geometry_v1/PREDICTED_GEOMETRY_TASK_ASSOCIATION_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0726559343bd185621a9f55f917eb1c8606ffc97",
+          "bytes": 2763,
+          "path": "results/sabdab2_predicted_geometry_v1/README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "965e0e84c349c65f5066d4974c54cad10dd3a51a",
+          "bytes": 5126,
+          "path": "results/sable_v0_2_0_external_v1/ABF30B_SABLE_V0_2_0_MODEL_SPECIFIC_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "18cb573dc6cec7da3dbe33c246f21e91f4922e1d",
+          "bytes": 574,
+          "path": "results/sable_v0_2_0_external_v1/ABF30B_SABLE_V0_2_0_MODEL_SPECIFIC_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "067bb6b2b4aa34301db773a500d1c6243d8e7386",
+          "bytes": 2370,
+          "path": "results/sable_v0_2_0_external_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a18d8aff4176298bf99ae6a4fb27dee27f09e2f5",
+          "bytes": 799,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_ESM2_LABEL_FREE_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9110e19a3b8b4a4d4f39a1a765240d67902c7feb",
+          "bytes": 345,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_ESM2_LABEL_FREE_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "78880816fa73f6af45107d0f4437e3e8b7a514a0",
+          "bytes": 3910,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_EXTERNAL_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f436202a72f2712633d8e58c8a554cf1cba04f49",
+          "bytes": 366,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_EXTERNAL_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dcdd375c1939406a3f5f63d3e747f11d6ce8f5d4",
+          "bytes": 1133,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_LABEL_FREE_GATE_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d0bc74566397ba96be177a8626a0bf7fc3593f14",
+          "bytes": 470,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_LABEL_FREE_GATE_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4b7ee851ec08d866e5d1ff17e0457d64c25136b1",
+          "bytes": 610,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_PREDICTED_STRUCTURE_CACHE_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2e2eac9f23abc51cb6b72be5fd0d09b49a7fceaf",
+          "bytes": 434,
+          "path": "results/sable_v0_2_0_external_v1/SABLE_V0_2_0_PREDICTED_STRUCTURE_CACHE_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        }
+      ],
+      "head_sha": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "role": "FrameContact multimodal evidence and paper track"
+    },
+    {
+      "ahead_of_main": 1,
+      "archive_tag": "archive/2026-09-30/branch/kevin/geometry-gate-power-reanalysis-v1",
+      "behind_main": 0,
+      "branch": "kevin/geometry-gate-power-reanalysis-v1",
+      "changed_file_count": 6,
+      "evidence_file_count": 3,
+      "evidence_files": [
+        {
+          "blob_sha": "452196b59e1e4ffd8e86a2de08472fe635e9c940",
+          "bytes": 8791,
+          "path": "results/sabdab2_structure_self_attention/GEOMETRY_GATE_POWER_ANALYSIS_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e0830f606fe8462ff570fd5bf9d0216d6ecf7b05",
+          "bytes": 8472,
+          "path": "results/sabdab2_structure_self_attention/GEOMETRY_GATE_POWER_ANALYSIS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bf83c87acea60a60a8b0293f114e061c0fbe4182",
+          "bytes": 7377,
+          "path": "results/sabdab2_structure_self_attention/README.md",
+          "status": "M"
+        }
+      ],
+      "head_sha": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+      "role": "geometry gate power reanalysis"
+    },
+    {
+      "ahead_of_main": 3,
+      "archive_tag": "archive/2026-09-30/branch/kevin/geometry-powered-replication-v1",
+      "behind_main": 0,
+      "branch": "kevin/geometry-powered-replication-v1",
+      "changed_file_count": 5,
+      "evidence_file_count": 1,
+      "evidence_files": [
+        {
+          "blob_sha": "b24cfd3d10a543c8fbe18b1c21f9d721e48ad61f",
+          "bytes": 6616,
+          "path": "protocols/SABDAB2_GEOMETRY_POWERED_REPLICATION_PROTOCOL_V1.md",
+          "status": "A"
+        }
+      ],
+      "head_sha": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+      "role": "geometry powered replication protocol"
+    },
+    {
+      "ahead_of_main": 1,
+      "archive_tag": "archive/2026-09-30/branch/kevin/graph-community-split-v1",
+      "behind_main": 0,
+      "branch": "kevin/graph-community-split-v1",
+      "changed_file_count": 9,
+      "evidence_file_count": 0,
+      "evidence_files": [],
+      "head_sha": "822d91590a42ce970c9d13c176cbe3ef671de42a",
+      "role": "graph/community split experiment"
+    },
+    {
+      "ahead_of_main": 8,
+      "archive_tag": "archive/2026-09-30/branch/kevin/hadamard-pair-decoder-v1",
+      "behind_main": 0,
+      "branch": "kevin/hadamard-pair-decoder-v1",
+      "changed_file_count": 9,
+      "evidence_file_count": 3,
+      "evidence_files": [
+        {
+          "blob_sha": "85ec61d88ad6ad27c08db59a7dc9d385a27642a9",
+          "bytes": 5134,
+          "path": "results/pair_decoder_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "206249f88275c888fc312f35150db395db415796",
+          "bytes": 32005,
+          "path": "results/pair_decoder_ablation_v1/report_compact.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f2cfd9b65ce0687f567e7ef35cb29764c4a3c0bc",
+          "bytes": 7617,
+          "path": "scripts/report_pair_evaluation.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+      "role": "Hadamard pair decoder negative/ablation evidence"
+    },
+    {
+      "ahead_of_main": 159,
+      "archive_tag": "archive/2026-09-30/branch/kevin/multimodel-scale-program-20260930",
+      "behind_main": 0,
+      "branch": "kevin/multimodel-scale-program-20260930",
+      "changed_file_count": 384,
+      "evidence_file_count": 264,
+      "evidence_files": [
+        {
+          "blob_sha": "97da3b87150e27db1889a84b6cc278424d1ace3e",
+          "bytes": 18939,
+          "path": "README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "8e53e841360a52e358922d8b92fa10fb045d4f68",
+          "bytes": 1447,
+          "path": "extensions/correspondence_v2/HANDOFF.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a4fe14e3906476f9f0d219322c012180988154a9",
+          "bytes": 4304,
+          "path": "extensions/correspondence_v2/PROTOCOL.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "480f64902112c3198f79c0a1fbfe4c864a124fca",
+          "bytes": 4329,
+          "path": "extensions/correspondence_v2/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "054ff8b771c6368b660b1b3eb408b571b51e0892",
+          "bytes": 6014,
+          "path": "extensions/correspondence_v2/READOUT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+          "bytes": 140685,
+          "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e6c4c3694c595a1a5c095550886bf35efdaca26",
+          "bytes": 8,
+          "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f48fe2f470995126d1953de960bdc78d99f17489",
+          "bytes": 252,
+          "path": "extensions/correspondence_v2/evidence/attempt1/CPU_POSTPROCESS_PROBE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "636f1bfcb4fda573d1ec369a4fce361477fa3953",
+          "bytes": 1083,
+          "path": "extensions/correspondence_v2/evidence/attempt1/EXECUTION_COMPLETE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c6526b4a75a344aa719238609deb6de51e068c82",
+          "bytes": 880,
+          "path": "extensions/correspondence_v2/evidence/attempt1/EXECUTION_START.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7da1cbd65965807b2c7f0888dca2afc28aabdc5c",
+          "bytes": 8,
+          "path": "extensions/correspondence_v2/evidence/attempt1/FORMAL_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "574dce79059baee3c44396e5abdf491d4064ab5c",
+          "bytes": 2870,
+          "path": "extensions/correspondence_v2/evidence/attempt1/FULL_RESULT_ARCHIVE_MANIFEST.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8a9259c0604b8a6c82e54b2997b6f01b92b4f7f6",
+          "bytes": 4679,
+          "path": "extensions/correspondence_v2/evidence/attempt1/HISTORICAL_IDENTITY_REFERENCES.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "05a77504599e3bfa425a70b6f648ef98c90766cc",
+          "bytes": 240,
+          "path": "extensions/correspondence_v2/evidence/attempt1/IDENTITY_AUDITOR_TESTS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "53a329b83f96879400b4ae63677a0bfe2c21260e",
+          "bytes": 8218,
+          "path": "extensions/correspondence_v2/evidence/attempt1/IDENTITY_PARITY.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fb3689bb02adbfbf516f1059c715807e5c0b8796",
+          "bytes": 12084,
+          "path": "extensions/correspondence_v2/evidence/attempt1/PER_TASK_METRICS.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "11025979afd46722c582bf497affe6f88a756923",
+          "bytes": 268758,
+          "path": "extensions/correspondence_v2/evidence/attempt1/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e5a37b6a36b6868cdab0c18f6469bfe6c47fe239",
+          "bytes": 65,
+          "path": "extensions/correspondence_v2/evidence/attempt1/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5274c6cd14b230bf3a97eef66fcf836190055ca2",
+          "bytes": 484,
+          "path": "extensions/correspondence_v2/evidence/attempt1/POSTPROCESS_SHA256SUMS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "41bfea49df89b4cb4dca72bd24f534a3de12f8fc",
+          "bytes": 359,
+          "path": "extensions/correspondence_v2/evidence/attempt1/SACCT_COMPLETED.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e41e888787440a159b07a4099beccb7f811a1f6d",
+          "bytes": 8,
+          "path": "extensions/correspondence_v2/evidence/attempt1/SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3c2c80febe2918c97f391852028b240f796b0bad",
+          "bytes": 1985,
+          "path": "extensions/correspondence_v2/evidence/attempt1/UNIT_TESTS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ea8b5ce819f6fcb6cd5e8f20669177d59644086a",
+          "bytes": 363461,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_0/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ed9ad19fdc06ac3545a7436f56614a64c86d9a5d",
+          "bytes": 362481,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_1/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3bd77705e8c9e0a4a3f8472e3227c51c2dab85e0",
+          "bytes": 362687,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_2/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1eece765c0eafa1dca578274c49ffee28fb68fe",
+          "bytes": 251866,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_3/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c664558d0c37b99ae7d6bb4602ae75c83faa94b3",
+          "bytes": 251611,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_4/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "586549ea3510bfb6d737bfd9f5d1e47a320c3581",
+          "bytes": 252028,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_5/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ec0b8130457163110484ef760a172dca68267668",
+          "bytes": 336476,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_6/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "01e41c1466d4fb4be17a089fadcae58a90636212",
+          "bytes": 336750,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_7/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "08baf14b63003a1b60ecbb2b69976cab299b37b7",
+          "bytes": 336781,
+          "path": "extensions/correspondence_v2/evidence/attempt1/full/task_8/RESULT.json.gz",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f483485730ce847ad5723cb41290c68a3b4a6117",
+          "bytes": 119401,
+          "path": "extensions/correspondence_v2/evidence/attempt1/out/smoke_0/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "561d597562104e93bc790af8b6ee6b048424ddec",
+          "bytes": 2169,
+          "path": "extensions/frontier_multimodel_v1/RECOVERY_STATUS.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3f73027ac12d153cf3261bf678c56766804acd94",
+          "bytes": 4583,
+          "path": "extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c27344a64d695f8f48cb7921c306ecc47d9d1bcf",
+          "bytes": 6705,
+          "path": "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_EXECUTION_STATUS.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c0f7b8ec833da8660eacb56efc0bde57efb733af",
+          "bytes": 708,
+          "path": "extensions/frontier_multimodel_v1/evidence/PROSST_ENVIRONMENT_TOKEN_PARITY.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ec7793d4baf22e08e02ec940dcc0f4f3f618ceaa",
+          "bytes": 117,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/ALL_VS_ALL_SMOKE_SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "78a121c9d859c3fc8b7e5d1ceed45d421b240fc3",
+          "bytes": 99,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/GENERIC_SOURCE_TESTS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9c86447e73789b17e5a8e0de8cefcd95b2395fc3",
+          "bytes": 40861,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/OOD_SEQUENCE_AUDIT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2db69cae2f66df9aec99ee7d0bb832a3cb11d57c",
+          "bytes": 506,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/SAPROT_TOKEN_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "60f2ce6b15eea2fb9c9b52ceb11724d5ee1f7749",
+          "bytes": 240,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/STRUCTURE_UNITS_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c8105c93b5119890c58acf6597b1d37f64be36ce",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/all_vs_all_smoke_v1/JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "823ab66402c33955b2dd7d3170aa5f3b1db63932",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/all_vs_all_smoke_v2/JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fecc9b8a0db2615287b5b1f676fddb6893e57528",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/all_vs_all_smoke_v3/JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2fb0e4684611f9888c5cb8a510d113790cc75f72",
+          "bytes": 2119,
+          "path": "extensions/frontier_multimodel_v1/evidence/recovery/all_vs_all_smoke_v3/output/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2a1e48c063e1629d1afaad085d923ba4a5e7cb64",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt1/CANARY_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b5b88a657f3b9a251224e4ac6ff2e7b63063b980",
+          "bytes": 5301,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt1/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "26d80ae5f0c018c98f4deca360bc0f3e21e5f237",
+          "bytes": 65,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt1/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c8a605bf1e1c3fa65ac83914e4ff004b7a1e8725",
+          "bytes": 208,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt1/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ca2a7d3c9c64048b74d4684c3d4581f2984c0e70",
+          "bytes": 43,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt1/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fbe27a2382141d20a65688c21273d5ea2ffdfa9c",
+          "bytes": 640,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt1/SOURCE_SHA256SUMS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "308bc41d20ff5aa1e6ead2f45aa23587e0016123",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt2/CANARY_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dc8606602e5c28bb0659fba166592c7a7cc5e30c",
+          "bytes": 5301,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt2/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ea75e415257bcd927ea88841fd0cf6d08759e316",
+          "bytes": 65,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt2/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "236fb13777014743575b60864e4a4ebaae0bb3ad",
+          "bytes": 208,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt2/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ca99950c3827f117f3e2b86656778bd4f6e4e164",
+          "bytes": 43,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt2/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4934fc28a80c8b75a58c0ca31006e4e4ac4ca980",
+          "bytes": 640,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt2/SOURCE_SHA256SUMS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0a5bffa39f605b3a6b2d329303403991b319120c",
+          "bytes": 515755,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8fdb414584c67b8800750644eb3113077249e109",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e55f75127ff8f6467668ec3f82110608da1d0919",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/CANARY_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5ede5123959d9cf208e2e10f06bdb4c48fcf1653",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/FORMAL_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8158101d52d66f23eae648adb6b2bf38389794b5",
+          "bytes": 5301,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "eb03f387d5ad515972d05cb42e906726b4b8bd6d",
+          "bytes": 65,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e59a27cf5f270844beb7f8383513a3afd981a697",
+          "bytes": 208,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "be31fd26aa1d591c51a4c120688ee97f2295674e",
+          "bytes": 4169,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/REMOTE_ARTIFACT_MANIFEST.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9c249a538ab9113a4af45692e999e671e95fc2d7",
+          "bytes": 459,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "76a9af2025a7e1e20d1633212b5f56b08b65eee5",
+          "bytes": 640,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/SOURCE_SHA256SUMS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "11abcaad9d836677bbd8a9c1d4f4931193acfcfd",
+          "bytes": 2653,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_1/chain_shift_8/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "82a4de3dfe533976fff4f49fcd7872716967761b",
+          "bytes": 2655,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_1/global_shuffle_0/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f945c6b9a3553668dc74171f0e0b71bd365b8d85",
+          "bytes": 2648,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_1/identity_0/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a2d6add4cfff79af7b05c6cc4d53f3b319ff2fe0",
+          "bytes": 2652,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_2/chain_shift_8/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "56dc1ed2c35af992c07e1a2b3971d168422881f8",
+          "bytes": 2655,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_2/global_shuffle_0/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3fa796e98002e611b798f55f58c8f139d9f6630f",
+          "bytes": 2649,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_2/identity_0/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c66fcff6f8acb1791c066aab128a1f119a68ecd4",
+          "bytes": 2653,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_3/chain_shift_8/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a53a3e5cc370db51878c572a74a2de013f2d0a9a",
+          "bytes": 2656,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_3/global_shuffle_0/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7328d32b5bfdea6076269207357eb30d200d3533",
+          "bytes": 2649,
+          "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/results/seed_3/identity_0/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e8511340bcb2df831852935100f89e7496918a63",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/PROSST_EXTRACT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ee90f18a540205ead5fde42f122cec93710cc751",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/PROSST_QUANT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2d1b972f85c6b08e78daa75c45010c33f45b0350",
+          "bytes": 153,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "aee400bcb04026b55702b8a216ae635d3b288734",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/SAPROT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2910df590c99a3f50e0d3b3def6ecdd8d5dfa88c",
+          "bytes": 1052,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/features/RECEIPT_saprot_antibody_000_of_001.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "328d67ab69fa511a7b1831c7957a6744e0e8d366",
+          "bytes": 1207,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/prosst_extract_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a6143854aaad853e81db1e57ea9ad1f59b4eb5f7",
+          "bytes": 995,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/prosst_quant_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0d5e8dea5d7e02394d2299ce351a99e4133d5fa9",
+          "bytes": 1148,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt1/saprot_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "64a31b4ec4d16ee37be0f2703c219579d1305d70",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/PROSST_EXTRACT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fa5f497666d980ea5d571cc4e6a3da5b6a04cf65",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/PROSST_QUANT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ee6075b7f5f6d603df2939525899cff5dbc07b0",
+          "bytes": 153,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "493aa6c59ad12bdf738f01842997f4416d2076dc",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/SAPROT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b265d043f3ffc6579ef4df9e5fd5c79a8f9d193b",
+          "bytes": 1152,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/prosst_extract_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f00e97f7e32aad8f23604ba7dc82c8b96247a892",
+          "bytes": 967,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/prosst_quant_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fd3c21bc7b7488c2e35806bba4453396c9248a37",
+          "bytes": 1120,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt2/saprot_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8c05a5378c0d01f25b895a3fd055d5530e2ce618",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/PROSST_EXTRACT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "56dd0f64616ff85fec00a7d4317c15216306d33c",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/PROSST_QUANT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fc99f16fca5f0807a392ebfbe6dc08c79ebd46c1",
+          "bytes": 151,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d74757cd44f432c17da5781a0ee7b937dea42e82",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/SAPROT_SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "623426fea6fde3175161d6d5839737f9d4b56e63",
+          "bytes": 1196,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/features/RECEIPT_prosst_antibody_000_of_001.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "201dbe7c2a906ee16c782ebb1264066ed3d13a8b",
+          "bytes": 1481,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/features/RECEIPT_saprot_antibody_000_of_001.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0df41d6f2b0dc2f05b77611e3c2f80fc8f0ac05d",
+          "bytes": 1183,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/prosst_extract_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2f2fc5c7870bd6abbf9036cab0a38a1ca4325386",
+          "bytes": 998,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/prosst_quant_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c059f792abcafc3a1914d0e01068bd8b8490e8ec",
+          "bytes": 442,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/prosst_tokens/RECEIPT_antibody_000_of_001.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1be9b8329962eb75e681ddb127718656fff0500",
+          "bytes": 1880,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/prosst_tokens/antibody/00/0038062ac1b76707245ba122643ae6d03326a9482ce5efce6e1348a8a1b59207.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "926a309e9fcf388da8f836ae2d3d51c04a4428f5",
+          "bytes": 1151,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt3/saprot_smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cbd4d9a41e4954d6792ccdfacf53185d680ef731",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/EXTRACT_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b43d87508f1dbd9c03130878a2a1b2311cab50b1",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/QUANT_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "57fbb1ab7cb336a6bc7515d284a006baa30782a5",
+          "bytes": 108,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "623426fea6fde3175161d6d5839737f9d4b56e63",
+          "bytes": 1196,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/features/RECEIPT_prosst_antibody_000_of_001.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e7d2b9f7fc803c3001aef3e2dca7634ec2062342",
+          "bytes": 1059,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/prosst_extract_official.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "36b531e74cc8a0a7995e0e85337fe47d3bd937fe",
+          "bytes": 1343,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/prosst_quant_official.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c059f792abcafc3a1914d0e01068bd8b8490e8ec",
+          "bytes": 442,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/prosst_tokens/RECEIPT_antibody_000_of_001.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1be9b8329962eb75e681ddb127718656fff0500",
+          "bytes": 1880,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_attempt4/prosst_tokens/antibody/00/0038062ac1b76707245ba122643ae6d03326a9482ce5efce6e1348a8a1b59207.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+          "bytes": 1,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v1_failed_submission/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "bytes": 0,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v1_failed_submission/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ac72b3cb645df0a3582e55dafd21e05d59e3fac3",
+          "bytes": 896,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v1_failed_submission/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "94bab102325d105d04e3088b7e4f4078e35b150d",
+          "bytes": 2425,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v1_failed_submission/SACCT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b1abccd42a31685da169a2658450c3d0d1e568df",
+          "bytes": 753,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v1_failed_submission/SOURCE_SHA256SUMS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "34d15650a22e3e6d142a1b6679aac474f292ffa1",
+          "bytes": 22907,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/COVERAGE_AUDIT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ea2d10befbf19936e4823009c7cb270bd47a6040",
+          "bytes": 13073,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/EXECUTION_STATUS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6d3483ee39f00521fe5403893ee19391587d9515",
+          "bytes": 4555,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a76c53ef01f244ceade33cd6d31c53fe2a58fd89",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_00_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "aff26f12d9d029ce38585ee8eace6897fab47e23",
+          "bytes": 826,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_00_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "638dc1fb17e12260c7ff7e244b5f047a019e115d",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_03_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e1c2e20e7b682b773c6e181470f0229d8b2eaae2",
+          "bytes": 826,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_03_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "098c5372512cd3b17f0f422bce52cb6d7134700e",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_06_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "41552e50bd18f2fa3800a6344c5545a05fab1115",
+          "bytes": 826,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_06_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "410c494cdd689a0770a684ac90ed241a215f8678",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_09_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b8a76f25b6f17a212c25d08e0a9411580fc93856",
+          "bytes": 826,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_09_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a744dd00e09b183986ce7b5d5b9a24329ec07835",
+          "bytes": 829,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_12_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a59e09286177382bd7d72eaa77617e27f66e7763",
+          "bytes": 827,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/prosst_layer_12_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4a780ae9d3f90bfe13d72f02f34e2020900385f3",
+          "bytes": 829,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_00_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "058e6836c8529d3aad6eb9e16a794cee806f542b",
+          "bytes": 827,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_00_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "482ffc4504977075d1fdfbf94a5abf3d26fe7fa7",
+          "bytes": 829,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_08_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ad8a97a117a48906fded5bbf2a197c9952b759ca",
+          "bytes": 827,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_08_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1737221495ae7227393dd5b433245cf6cf16e980",
+          "bytes": 830,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_16_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a3c6ba690b125b7343deb2c481e18f2d42a8e0e5",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_16_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0c0e6cf3dabeebe96dcb4415c2a0a27d489b0d77",
+          "bytes": 830,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_24_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3626755f88789838c0227d3472f475e1604c8845",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_24_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd56abce2f66abb5f3f83f0372a433b7100da336",
+          "bytes": 830,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_33_antibody.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f3e6a7c1bdeca44936d12569a4371c1ae40ce9f0",
+          "bytes": 828,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_full_v2/source_specs/saprot_layer_33_antigen.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "00670c5b0839455a4bfc519d03021e34fea0595b",
+          "bytes": 41691,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dfcc43787de8d33f80345c3ed004168b6896f87a",
+          "bytes": 144,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c4c175be97dedc36757a784c0d6eefc8a58cdc2a",
+          "bytes": 251,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ef187f6fd7abe88a6201871cd2d25a3a98dd6212",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ccde245e1b59b03415915c07a5b505eef168080e",
+          "bytes": 147,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/SMOKE_SCRIPT.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fdb496149a6bd7fa329fe72afdf85fb90313f869",
+          "bytes": 99,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/TARGETED_TESTS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1627996da9a386b752895f35864566fede963581",
+          "bytes": 2063,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/runs/smoke_task_6/FAILURE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "106c8fdc6c592d67136997b7746e6280dad7c136",
+          "bytes": 679,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/runs/smoke_task_6/START.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6a0aa6605708e7f36c86183a00fe42384a74f22e",
+          "bytes": 950,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt1/smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "35563daa51380ca15ed9c99e71b52938c9760970",
+          "bytes": 41691,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "624eec637f60f6dc99ff7ff8dc28e317a12f3a24",
+          "bytes": 144,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "edb9bfbb1a3dc54f08b0301afc5f8edecfdc65c7",
+          "bytes": 251,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5580a5f9c8f585b4fa954a10ff0fbae5208554cf",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "177fe13db4c650777de0deb9eaa6352e58909add",
+          "bytes": 147,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/SMOKE_SCRIPT.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9eb97ec4b78e944d3a8d6e50c04ae9609f3ed694",
+          "bytes": 99,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/TARGETED_TESTS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "64262ec56d206e381d4d578abbc488887f0c7bc8",
+          "bytes": 1570,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/runs/smoke_task_6/FAILURE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9ca62b8e8ce95e2fdd17847a281da586b05d3f51",
+          "bytes": 679,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/runs/smoke_task_6/START.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e0acd0ef5cdf1522bf9337a392a937b5903da0c0",
+          "bytes": 951,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt2/smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e1a33ecd2b9b47b118284861536d7bd3237ca0c8",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/ANALYSIS_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dc04af81ff6b1f255a0d700e5922200c1aa12de5",
+          "bytes": 149,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/ANALYZE_SCRIPT.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f3d80f03260acb4c5683484c836deb6f566acda6",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/FORMAL_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c3bc7cdd8202f0f19d67e659b3c849e18a5f066a",
+          "bytes": 41691,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/PLAN.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "17d351e53d3cc4122d5ed176c9d6a608295d8c35",
+          "bytes": 144,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/PLAN.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "23992fd5c06e1d04aeb52cfab76091878715a387",
+          "bytes": 251,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/PLAN_FREEZE.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9528a3211d774f280e9dbb093e3b59cf1863e72a",
+          "bytes": 8,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/SMOKE_JOB_ID.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "63f04b515ef24be1c407f826fe99f8b20e3072fd",
+          "bytes": 147,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/SMOKE_SCRIPT.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b4944e1defc8a26168e46c4d4539818b2eaffe85",
+          "bytes": 1694,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/STATUS_SNAPSHOT.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "549383de292a12890969d57f0a35fba1963f2710",
+          "bytes": 99,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/TARGETED_TESTS.txt",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5ba6598198ebe9efc6e1781a0bc26e7d6c528e83",
+          "bytes": 1022,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/analyze.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b84d5e126a3800c5d83ff094090c203a72d2e3cc",
+          "bytes": 1382,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/runs/smoke_task_6/COMPLETE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a599e7007e5f2f3c3270d4757c50af39ef638310",
+          "bytes": 679,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/runs/smoke_task_6/START.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a993ddd3c3100aa982db70d5e4ea13543d846587",
+          "bytes": 996,
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_training_v1/attempt3/smoke.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "81340532eb838655bc30cdf0c4335ea3c4e1e7a3",
+          "bytes": 8315,
+          "path": "freeze/CLAIMS_LEDGER.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b26680c2a24a510d612c82bc9445f355702097fc",
+          "bytes": 4160,
+          "path": "freeze/FREEZE.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a497854633776b8a6f5651656bc85c535916172d",
+          "bytes": 723,
+          "path": "freeze/FREEZE_INDEX.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e60918984215bbaa96972a23d65eeefac93b56ab",
+          "bytes": 248314,
+          "path": "freeze/MANIFEST.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "615485c02859cc34579647ada1fd81470396b683",
+          "bytes": 5858,
+          "path": "freeze/PROVENANCE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d8c37b53a0f87c2afefb089b08348d80c908c9b7",
+          "bytes": 34009,
+          "path": "freeze/REPRODUCTION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd51480cc92dfb3481cec99b23fe08fc3e4f00e7",
+          "bytes": 6433,
+          "path": "paper/ABSTRACT_v1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "09864f03ba6ee15f7e5f2bfcb85256033b7e8849",
+          "bytes": 2938,
+          "path": "protocols/ASEP_SUPERVISION_PARITY_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "221d128c40b112eab04778eb9dee63db31bdedce",
+          "bytes": 5040,
+          "path": "protocols/ASEP_TEST_MEASUREMENT_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1346008ce9071e7fa8ffb92b7bfbab7acbeec34b",
+          "bytes": 5573,
+          "path": "protocols/CHECKPOINT_SELECTION_CONFIRMATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a6cb5d6a12e249e9cd2e001446ebde379abe5b85",
+          "bytes": 8446,
+          "path": "protocols/CORRESPONDENCE_CORRUPTION_CURVE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "63629f55ad396628cdc38ec7114fc50b9618334a",
+          "bytes": 9484,
+          "path": "protocols/GRADIENT_ALIGNMENT_DYNAMICS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cfdc282c6f68f14bcaa5bec2c58a0ca801d0c0c1",
+          "bytes": 4968,
+          "path": "protocols/HOLDOUT_CONFIRMATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7d3f6b9c72ad4208c4b09a2bfb6ed501ad64db7b",
+          "bytes": 5878,
+          "path": "protocols/MULTITASK_BALANCER_INTERVENTION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f6ddca48b5b37527f7e67838c71626545fd1bebf",
+          "bytes": 8274,
+          "path": "protocols/OBJECTIVE_COMPONENT_LOCALISATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "71e16a2b3f9cf2a818ca27410e579e6118ecf2e7",
+          "bytes": 2988,
+          "path": "protocols/PAIR_SUPERVISION_DOSE_RESPONSE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e536dd64613299a8556933d2c39ad74ccf2305d1",
+          "bytes": 2285,
+          "path": "protocols/REPRESENTATION_ABLATION_EXTENSION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b8fd9348b85188632104f660bd481f3abb3a692f",
+          "bytes": 3673,
+          "path": "protocols/REPRESENTATION_ARMS_ANALYSIS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "01fb548fc5b4435e47d504fa8c24aa87457534f9",
+          "bytes": 4111,
+          "path": "protocols/SECOND_STRUCTURAL_ENCODER_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5f421d3c8fc8d48cd66e111d5e047fd32b75b777",
+          "bytes": 5459,
+          "path": "reproduction/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e6bf06897bdb4bea6d7e28f25a8563c52c8fa5ea",
+          "bytes": 3796,
+          "path": "reproduction/cold_v1/PASS_1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8dde9ad5b1de85f383df74bf43cd5fc44d6a5455",
+          "bytes": 3627,
+          "path": "reproduction/cold_v1/RESULT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9d1e67f8c804b6015233fe8f0714f02e224de0b6",
+          "bytes": 15788,
+          "path": "reproduction/cold_v1/cold_reproduce.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6683322468508e03c2ac362c52c0f94ecca88790",
+          "bytes": 18841,
+          "path": "reproduction/cold_v1/receipt_pass1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "728a7f2e2c6eec28398c98d249fec165d36cdd9c",
+          "bytes": 4507,
+          "path": "reproduction/cold_v1/receipt_pass2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d949a7d98800b9d13ec3f9356cd1ed320e4569ae",
+          "bytes": 2211,
+          "path": "reproduction/cold_v1/receipt_pass3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "221a4ddf97314126cd4f01091bdc56391aa3fa69",
+          "bytes": 2477,
+          "path": "reproduction/cold_v1/receipt_pass4.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "de64b7b1bd246f9119b35d9e061407514d14c995",
+          "bytes": 9650,
+          "path": "results/CLAIMS_LEDGER.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b69b06e08b18d148ad41ccf1b213bbe1603331fa",
+          "bytes": 9537,
+          "path": "results/EVIDENCE_INVENTORY.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1e4c3dba62f6c8766f90be79a11bf32320d0db2",
+          "bytes": 5089,
+          "path": "results/REPRODUCIBILITY_NOTES.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f0f3d3b50bdd99236e8ccb374fd0c6a4a479d5d3",
+          "bytes": 14066,
+          "path": "results/asep_benchmark_v1/BENCHMARK.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dbaf4ef421219c2cccaf5353e19bfd721e5f6c22",
+          "bytes": 5306,
+          "path": "results/asep_benchmark_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "00c1c914744283ccc7af37ab5c8cf0d3f857752e",
+          "bytes": 3951,
+          "path": "results/asep_benchmark_v1/arm_selection.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "070f148c17a6a3950a8becc2fcb42ac457a078f7",
+          "bytes": 12966,
+          "path": "results/asep_benchmark_v1/development.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fc02e8a6442cc1d52b6cb3286d85fd2029162ebb",
+          "bytes": 1917,
+          "path": "results/asep_benchmark_v1/ratio_test_measurement.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1340a8b25fd6f3948551ce4857cdd8975c2ce59f",
+          "bytes": 4308,
+          "path": "results/asep_benchmark_v1/test_measurement.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2b4fd38f3351223247d2945b503f268c262d10be",
+          "bytes": 5130,
+          "path": "results/asep_benchmark_v1/test_micro_macro.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2bf25c2121d716f02c1fbeafa1297f28ac156a10",
+          "bytes": 7516,
+          "path": "results/asep_benchmark_v1/threshold_epitope.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "061b191fd21caf3ccca1f615e12745125c03feb0",
+          "bytes": 2991,
+          "path": "results/asep_cohort_overlap_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd02f1503b900facdc527af7ae8b314715c1b614",
+          "bytes": 5134,
+          "path": "results/asep_cohort_overlap_v1/overlap.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bbfa944580047b877aa2a585723246b0bd11df65",
+          "bytes": 5863,
+          "path": "results/baseline_margin_replication_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c17770a59f3a035038d7cb043a0285bdd02acf41",
+          "bytes": 2532,
+          "path": "results/baseline_margin_replication_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1434257e2789d2a6941bcbd990d12c0f7053c0e3",
+          "bytes": 16920,
+          "path": "results/baseline_margin_replication_v1/seed_receipts.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ecc67741992f79262d5e2e7c733f837d33292e62",
+          "bytes": 3332,
+          "path": "results/checkpoint_selection_confirmation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0b6a3c4d62ae7722ef360917053b3585fc5c73e0",
+          "bytes": 4818,
+          "path": "results/checkpoint_selection_confirmation_v1/STAGE_THREE.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7871b47e85583711db9fc7eb3a3ea86562956cf5",
+          "bytes": 7786,
+          "path": "results/checkpoint_selection_confirmation_v1/ratio_test_confirmation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cac2704bf6be18a6af0050b539a1877851f5ec00",
+          "bytes": 4067,
+          "path": "results/checkpoint_selection_confirmation_v1/stage_two_group_validation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "983985dc0636e124de89cd0206156f6350a6ce09",
+          "bytes": 8138,
+          "path": "results/correspondence_corruption_curve_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ae57e30ff3f873975a8be69787d9102ab3a11ab",
+          "bytes": 15181,
+          "path": "results/correspondence_corruption_curve_v1/curve_antiberty_sabdab2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0994899fffdc26ea87297ddb9a2d6bf5e9b2536b",
+          "bytes": 15316,
+          "path": "results/correspondence_corruption_curve_v1/curve_esm_if1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8f6c63750dc4de754581e1530a64183b2105e9a1",
+          "bytes": 9995,
+          "path": "results/correspondence_corruption_curve_v1/curve_igfold.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6b04a2e4affb1674c37bfd120bbfefd26fb92fb0",
+          "bytes": 6292,
+          "path": "results/feature_provenance_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "aa98bc90ae6c2c19a1715a3974d546dedf89662c",
+          "bytes": 3423,
+          "path": "results/feature_provenance_v1/feature_provenance.tsv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "630d9915c3fe8b9b3c028f2b713f4d5a515cdc9f",
+          "bytes": 5345,
+          "path": "results/gradient_alignment_dynamics_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0f49113418f83716f1629a3ed8cf91f598c4a937",
+          "bytes": 485280,
+          "path": "results/gradient_alignment_dynamics_v1/gradient_trajectory.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e0d6c84e7b61ed173201645cd2f4a896c6d7b90b",
+          "bytes": 13143,
+          "path": "results/gradient_alignment_dynamics_v1/step_trace_summary.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6fd5463956c518c19318517b48c59f785db7328c",
+          "bytes": 6559,
+          "path": "results/gradient_conflict_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "589b1f4fe785fc679b82b03f2bd5434da16a7df6",
+          "bytes": 24701,
+          "path": "results/gradient_conflict_v1/seed1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "eefa8904b26ea7a5b6bcd588a7ec9cae082faa16",
+          "bytes": 24701,
+          "path": "results/gradient_conflict_v1/seed2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e8e833186e0df71a08e6a5ba18ef187435b2d826",
+          "bytes": 24699,
+          "path": "results/gradient_conflict_v1/seed3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "33eb0a3f7cf547358fd541c4949dbe48f0ca4156",
+          "bytes": 3860,
+          "path": "results/holdout_confirmation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+          "bytes": 1610,
+          "path": "results/holdout_confirmation_v1/confirmation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "94de29c7c5effc18ceeb00f07fdd6c84175297da",
+          "bytes": 5196,
+          "path": "results/igfold_generality_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "210e2013381bddf469b5c52ad29f2d8d10d1fd2a",
+          "bytes": 4896,
+          "path": "results/igfold_generality_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "efd0470ffab6d6618acfada681460b01d008acf6",
+          "bytes": 6137,
+          "path": "results/multitask_coupling_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5120bc767d1e46ed074ad91b78d3e0f2713eb01b",
+          "bytes": 3534,
+          "path": "results/multitask_coupling_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ade4fe769fc68e59dd8c9b83660e682c7f7c14",
+          "bytes": 5563,
+          "path": "results/objective_component_localisation_v1/PART_TWO.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e3e0b17cf2271c0df9740e39d1c3b2d3adf1a162",
+          "bytes": 4371,
+          "path": "results/objective_component_localisation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a3572103a562766651d9b5bbaa0138607ef7eba8",
+          "bytes": 5249,
+          "path": "results/objective_component_localisation_v1/RUN_CONTRACT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "914f86a7a2f84f5a1b044ff7c77535bcda2ea45b",
+          "bytes": 171697,
+          "path": "results/objective_component_localisation_v1/run_contract.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ec61d88ad6ad27c08db59a7dc9d385a27642a9",
+          "bytes": 5134,
+          "path": "results/pair_decoder_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "206249f88275c888fc312f35150db395db415796",
+          "bytes": 32005,
+          "path": "results/pair_decoder_ablation_v1/report_compact.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5beb1d046902d8e8b2d19927a3ffe039c644ae14",
+          "bytes": 3522,
+          "path": "results/pretrained_representation_coverage_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a1988630910692d212b5c6dcada2d8c8c838dd98",
+          "bytes": 4046,
+          "path": "results/pretrained_representation_coverage_v1/coverage.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b1ff1c0f859d702137489880e2d4381a34bd77c6",
+          "bytes": 14966,
+          "path": "results/representation_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f51f70a431dcdeddaf1b8f9550eb6fc0322f3452",
+          "bytes": 45511,
+          "path": "results/representation_ablation_v1/arms.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "03b286ddd5c0b63d95c6cc61714191bc17d0049b",
+          "bytes": 2159,
+          "path": "results/representation_ablation_v1/margin_antiberty_only.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a742424e5024ce7e23dc3e63ca25813e69285956",
+          "bytes": 3609,
+          "path": "results/representation_ablation_v1/margin_esm2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "290f726cce004f5acd005e97553fde8fe85327da",
+          "bytes": 3594,
+          "path": "results/representation_ablation_v1/margin_esm2_antiberty_esmif1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "139ed74464c2942e491bb21a18cc282f824de22b",
+          "bytes": 2155,
+          "path": "results/representation_ablation_v1/margin_esm_if1_only.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6fa4d60b36fb2dab58d6d9f8e3d2aca761128b60",
+          "bytes": 2159,
+          "path": "results/representation_ablation_v1/margin_random_control.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9510945d857b0c3556693f14f9a900249d4cfb90",
+          "bytes": 2346,
+          "path": "results/representation_ablation_v1/paired_report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b2a67a3782b83ade06df2b6bffb9801022611ca0",
+          "bytes": 5352,
+          "path": "results/representation_ablation_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "51d286a9a568223bed76966496aa160049efa4b8",
+          "bytes": 29397,
+          "path": "results/representation_ablation_v1/width_control.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3731d785637f8a58ffd44afaece19c77a70c1582",
+          "bytes": 7128,
+          "path": "results/representation_attribution_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+          "bytes": 3230,
+          "path": "results/representation_attribution_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ee47160d67ef13e97abb9039f788b0922a4d9836",
+          "bytes": 1430,
+          "path": "results/representation_attribution_v1/variance_aligned_vs_shuffled.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e52f72b44a118e9092b161f7ef25601999c1801",
+          "bytes": 5986,
+          "path": "results/second_structural_encoder_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f2cfd9b65ce0687f567e7ef35cb29764c4a3c0bc",
+          "bytes": 7617,
+          "path": "scripts/report_pair_evaluation.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd53ad18a35462bf0fde1c1713fe6a29528c55fe",
+          "bytes": 6414,
+          "path": "scripts/report_representation_arms.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "24368ec3af7054cf3e4181dad691678d16f531b9",
+          "bytes": 3239,
+          "path": "slurm/asep_benchmark.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3adcbbb6339d659562373fa8732affd2037f9e1d",
+          "bytes": 28479,
+          "path": "src/interaction_first/metrics.py",
+          "status": "M"
+        },
+        {
+          "blob_sha": "f3f0fa1a97e17a7d781c452bfc5942ce47a41c47",
+          "bytes": 2872,
+          "path": "tests/test_macro_metric_summary_types.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9ad9a39158c2956791d8fc0b296cdcf1799e8804",
+          "bytes": 5351,
+          "path": "tests/test_report_representation_arms.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "role": "current structural-PLM, score-dissociation, RePaRank and scale programme"
+    },
+    {
+      "ahead_of_main": 1,
+      "archive_tag": "archive/2026-09-30/branch/kevin/partner-pose-contract-v1",
+      "behind_main": 0,
+      "branch": "kevin/partner-pose-contract-v1",
+      "changed_file_count": 3,
+      "evidence_file_count": 0,
+      "evidence_files": [],
+      "head_sha": "c72fa83be658c6a7f5a28900409649e37233f327",
+      "role": "partner-pose contract"
+    },
+    {
+      "ahead_of_main": 5,
+      "archive_tag": "archive/2026-09-30/branch/kevin/pretrained-representations-v1",
+      "behind_main": 0,
+      "branch": "kevin/pretrained-representations-v1",
+      "changed_file_count": 5,
+      "evidence_file_count": 0,
+      "evidence_files": [],
+      "head_sha": "400022a29f05f8ef43502f39a2e52c345199e644",
+      "role": "initial pretrained representation wiring"
+    },
+    {
+      "ahead_of_main": 1,
+      "archive_tag": "archive/2026-09-30/branch/kevin/protocol-binding-ci-v1",
+      "behind_main": 0,
+      "branch": "kevin/protocol-binding-ci-v1",
+      "changed_file_count": 8,
+      "evidence_file_count": 3,
+      "evidence_files": [
+        {
+          "blob_sha": "e5a59a3cb6e3fcff7d3955ec20097321fc5e0759",
+          "bytes": 19252,
+          "path": "README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "2b0b3235aa183fd0cc0a6b7250aaa8fdc2983d55",
+          "bytes": 18012,
+          "path": "protocols/source_binding_drift_baseline_v1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c55247545881158b5b3a8c1058a89d15bd816c20",
+          "bytes": 9514,
+          "path": "src/interaction_first/protocol_source_bindings.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+      "role": "protocol/source binding CI"
+    },
+    {
+      "ahead_of_main": 132,
+      "archive_tag": "archive/2026-09-30/branch/kevin/representation-ablation-v1",
+      "behind_main": 0,
+      "branch": "kevin/representation-ablation-v1",
+      "changed_file_count": 161,
+      "evidence_file_count": 94,
+      "evidence_files": [
+        {
+          "blob_sha": "81340532eb838655bc30cdf0c4335ea3c4e1e7a3",
+          "bytes": 8315,
+          "path": "freeze/CLAIMS_LEDGER.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b26680c2a24a510d612c82bc9445f355702097fc",
+          "bytes": 4160,
+          "path": "freeze/FREEZE.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a497854633776b8a6f5651656bc85c535916172d",
+          "bytes": 723,
+          "path": "freeze/FREEZE_INDEX.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e60918984215bbaa96972a23d65eeefac93b56ab",
+          "bytes": 248314,
+          "path": "freeze/MANIFEST.sha256",
+          "status": "A"
+        },
+        {
+          "blob_sha": "615485c02859cc34579647ada1fd81470396b683",
+          "bytes": 5858,
+          "path": "freeze/PROVENANCE.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d8c37b53a0f87c2afefb089b08348d80c908c9b7",
+          "bytes": 34009,
+          "path": "freeze/REPRODUCTION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd51480cc92dfb3481cec99b23fe08fc3e4f00e7",
+          "bytes": 6433,
+          "path": "paper/ABSTRACT_v1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "09864f03ba6ee15f7e5f2bfcb85256033b7e8849",
+          "bytes": 2938,
+          "path": "protocols/ASEP_SUPERVISION_PARITY_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "221d128c40b112eab04778eb9dee63db31bdedce",
+          "bytes": 5040,
+          "path": "protocols/ASEP_TEST_MEASUREMENT_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1346008ce9071e7fa8ffb92b7bfbab7acbeec34b",
+          "bytes": 5573,
+          "path": "protocols/CHECKPOINT_SELECTION_CONFIRMATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a6cb5d6a12e249e9cd2e001446ebde379abe5b85",
+          "bytes": 8446,
+          "path": "protocols/CORRESPONDENCE_CORRUPTION_CURVE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "63629f55ad396628cdc38ec7114fc50b9618334a",
+          "bytes": 9484,
+          "path": "protocols/GRADIENT_ALIGNMENT_DYNAMICS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cfdc282c6f68f14bcaa5bec2c58a0ca801d0c0c1",
+          "bytes": 4968,
+          "path": "protocols/HOLDOUT_CONFIRMATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7d3f6b9c72ad4208c4b09a2bfb6ed501ad64db7b",
+          "bytes": 5878,
+          "path": "protocols/MULTITASK_BALANCER_INTERVENTION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f6ddca48b5b37527f7e67838c71626545fd1bebf",
+          "bytes": 8274,
+          "path": "protocols/OBJECTIVE_COMPONENT_LOCALISATION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "71e16a2b3f9cf2a818ca27410e579e6118ecf2e7",
+          "bytes": 2988,
+          "path": "protocols/PAIR_SUPERVISION_DOSE_RESPONSE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e536dd64613299a8556933d2c39ad74ccf2305d1",
+          "bytes": 2285,
+          "path": "protocols/REPRESENTATION_ABLATION_EXTENSION_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b8fd9348b85188632104f660bd481f3abb3a692f",
+          "bytes": 3673,
+          "path": "protocols/REPRESENTATION_ARMS_ANALYSIS_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "01fb548fc5b4435e47d504fa8c24aa87457534f9",
+          "bytes": 4111,
+          "path": "protocols/SECOND_STRUCTURAL_ENCODER_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5f421d3c8fc8d48cd66e111d5e047fd32b75b777",
+          "bytes": 5459,
+          "path": "reproduction/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e6bf06897bdb4bea6d7e28f25a8563c52c8fa5ea",
+          "bytes": 3796,
+          "path": "reproduction/cold_v1/PASS_1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8dde9ad5b1de85f383df74bf43cd5fc44d6a5455",
+          "bytes": 3627,
+          "path": "reproduction/cold_v1/RESULT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9d1e67f8c804b6015233fe8f0714f02e224de0b6",
+          "bytes": 15788,
+          "path": "reproduction/cold_v1/cold_reproduce.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6683322468508e03c2ac362c52c0f94ecca88790",
+          "bytes": 18841,
+          "path": "reproduction/cold_v1/receipt_pass1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "728a7f2e2c6eec28398c98d249fec165d36cdd9c",
+          "bytes": 4507,
+          "path": "reproduction/cold_v1/receipt_pass2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d949a7d98800b9d13ec3f9356cd1ed320e4569ae",
+          "bytes": 2211,
+          "path": "reproduction/cold_v1/receipt_pass3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "221a4ddf97314126cd4f01091bdc56391aa3fa69",
+          "bytes": 2477,
+          "path": "reproduction/cold_v1/receipt_pass4.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "de64b7b1bd246f9119b35d9e061407514d14c995",
+          "bytes": 9650,
+          "path": "results/CLAIMS_LEDGER.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b69b06e08b18d148ad41ccf1b213bbe1603331fa",
+          "bytes": 9537,
+          "path": "results/EVIDENCE_INVENTORY.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c1e4c3dba62f6c8766f90be79a11bf32320d0db2",
+          "bytes": 5089,
+          "path": "results/REPRODUCIBILITY_NOTES.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f0f3d3b50bdd99236e8ccb374fd0c6a4a479d5d3",
+          "bytes": 14066,
+          "path": "results/asep_benchmark_v1/BENCHMARK.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "dbaf4ef421219c2cccaf5353e19bfd721e5f6c22",
+          "bytes": 5306,
+          "path": "results/asep_benchmark_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "00c1c914744283ccc7af37ab5c8cf0d3f857752e",
+          "bytes": 3951,
+          "path": "results/asep_benchmark_v1/arm_selection.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "070f148c17a6a3950a8becc2fcb42ac457a078f7",
+          "bytes": 12966,
+          "path": "results/asep_benchmark_v1/development.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fc02e8a6442cc1d52b6cb3286d85fd2029162ebb",
+          "bytes": 1917,
+          "path": "results/asep_benchmark_v1/ratio_test_measurement.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1340a8b25fd6f3948551ce4857cdd8975c2ce59f",
+          "bytes": 4308,
+          "path": "results/asep_benchmark_v1/test_measurement.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2b4fd38f3351223247d2945b503f268c262d10be",
+          "bytes": 5130,
+          "path": "results/asep_benchmark_v1/test_micro_macro.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2bf25c2121d716f02c1fbeafa1297f28ac156a10",
+          "bytes": 7516,
+          "path": "results/asep_benchmark_v1/threshold_epitope.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "061b191fd21caf3ccca1f615e12745125c03feb0",
+          "bytes": 2991,
+          "path": "results/asep_cohort_overlap_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd02f1503b900facdc527af7ae8b314715c1b614",
+          "bytes": 5134,
+          "path": "results/asep_cohort_overlap_v1/overlap.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bbfa944580047b877aa2a585723246b0bd11df65",
+          "bytes": 5863,
+          "path": "results/baseline_margin_replication_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c17770a59f3a035038d7cb043a0285bdd02acf41",
+          "bytes": 2532,
+          "path": "results/baseline_margin_replication_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1434257e2789d2a6941bcbd990d12c0f7053c0e3",
+          "bytes": 16920,
+          "path": "results/baseline_margin_replication_v1/seed_receipts.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ecc67741992f79262d5e2e7c733f837d33292e62",
+          "bytes": 3332,
+          "path": "results/checkpoint_selection_confirmation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0b6a3c4d62ae7722ef360917053b3585fc5c73e0",
+          "bytes": 4818,
+          "path": "results/checkpoint_selection_confirmation_v1/STAGE_THREE.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7871b47e85583711db9fc7eb3a3ea86562956cf5",
+          "bytes": 7786,
+          "path": "results/checkpoint_selection_confirmation_v1/ratio_test_confirmation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cac2704bf6be18a6af0050b539a1877851f5ec00",
+          "bytes": 4067,
+          "path": "results/checkpoint_selection_confirmation_v1/stage_two_group_validation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "983985dc0636e124de89cd0206156f6350a6ce09",
+          "bytes": 8138,
+          "path": "results/correspondence_corruption_curve_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ae57e30ff3f873975a8be69787d9102ab3a11ab",
+          "bytes": 15181,
+          "path": "results/correspondence_corruption_curve_v1/curve_antiberty_sabdab2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0994899fffdc26ea87297ddb9a2d6bf5e9b2536b",
+          "bytes": 15316,
+          "path": "results/correspondence_corruption_curve_v1/curve_esm_if1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8f6c63750dc4de754581e1530a64183b2105e9a1",
+          "bytes": 9995,
+          "path": "results/correspondence_corruption_curve_v1/curve_igfold.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6b04a2e4affb1674c37bfd120bbfefd26fb92fb0",
+          "bytes": 6292,
+          "path": "results/feature_provenance_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "aa98bc90ae6c2c19a1715a3974d546dedf89662c",
+          "bytes": 3423,
+          "path": "results/feature_provenance_v1/feature_provenance.tsv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "630d9915c3fe8b9b3c028f2b713f4d5a515cdc9f",
+          "bytes": 5345,
+          "path": "results/gradient_alignment_dynamics_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0f49113418f83716f1629a3ed8cf91f598c4a937",
+          "bytes": 485280,
+          "path": "results/gradient_alignment_dynamics_v1/gradient_trajectory.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e0d6c84e7b61ed173201645cd2f4a896c6d7b90b",
+          "bytes": 13143,
+          "path": "results/gradient_alignment_dynamics_v1/step_trace_summary.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6fd5463956c518c19318517b48c59f785db7328c",
+          "bytes": 6559,
+          "path": "results/gradient_conflict_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "589b1f4fe785fc679b82b03f2bd5434da16a7df6",
+          "bytes": 24701,
+          "path": "results/gradient_conflict_v1/seed1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "eefa8904b26ea7a5b6bcd588a7ec9cae082faa16",
+          "bytes": 24701,
+          "path": "results/gradient_conflict_v1/seed2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e8e833186e0df71a08e6a5ba18ef187435b2d826",
+          "bytes": 24699,
+          "path": "results/gradient_conflict_v1/seed3.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "33eb0a3f7cf547358fd541c4949dbe48f0ca4156",
+          "bytes": 3860,
+          "path": "results/holdout_confirmation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+          "bytes": 1610,
+          "path": "results/holdout_confirmation_v1/confirmation.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "94de29c7c5effc18ceeb00f07fdd6c84175297da",
+          "bytes": 5196,
+          "path": "results/igfold_generality_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "210e2013381bddf469b5c52ad29f2d8d10d1fd2a",
+          "bytes": 4896,
+          "path": "results/igfold_generality_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "efd0470ffab6d6618acfada681460b01d008acf6",
+          "bytes": 6137,
+          "path": "results/multitask_coupling_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5120bc767d1e46ed074ad91b78d3e0f2713eb01b",
+          "bytes": 3534,
+          "path": "results/multitask_coupling_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ade4fe769fc68e59dd8c9b83660e682c7f7c14",
+          "bytes": 5563,
+          "path": "results/objective_component_localisation_v1/PART_TWO.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "e3e0b17cf2271c0df9740e39d1c3b2d3adf1a162",
+          "bytes": 4371,
+          "path": "results/objective_component_localisation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a3572103a562766651d9b5bbaa0138607ef7eba8",
+          "bytes": 5249,
+          "path": "results/objective_component_localisation_v1/RUN_CONTRACT.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "914f86a7a2f84f5a1b044ff7c77535bcda2ea45b",
+          "bytes": 171697,
+          "path": "results/objective_component_localisation_v1/run_contract.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "85ec61d88ad6ad27c08db59a7dc9d385a27642a9",
+          "bytes": 5134,
+          "path": "results/pair_decoder_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "206249f88275c888fc312f35150db395db415796",
+          "bytes": 32005,
+          "path": "results/pair_decoder_ablation_v1/report_compact.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5beb1d046902d8e8b2d19927a3ffe039c644ae14",
+          "bytes": 3522,
+          "path": "results/pretrained_representation_coverage_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a1988630910692d212b5c6dcada2d8c8c838dd98",
+          "bytes": 4046,
+          "path": "results/pretrained_representation_coverage_v1/coverage.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b1ff1c0f859d702137489880e2d4381a34bd77c6",
+          "bytes": 14966,
+          "path": "results/representation_ablation_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f51f70a431dcdeddaf1b8f9550eb6fc0322f3452",
+          "bytes": 45511,
+          "path": "results/representation_ablation_v1/arms.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "03b286ddd5c0b63d95c6cc61714191bc17d0049b",
+          "bytes": 2159,
+          "path": "results/representation_ablation_v1/margin_antiberty_only.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a742424e5024ce7e23dc3e63ca25813e69285956",
+          "bytes": 3609,
+          "path": "results/representation_ablation_v1/margin_esm2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "290f726cce004f5acd005e97553fde8fe85327da",
+          "bytes": 3594,
+          "path": "results/representation_ablation_v1/margin_esm2_antiberty_esmif1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "139ed74464c2942e491bb21a18cc282f824de22b",
+          "bytes": 2155,
+          "path": "results/representation_ablation_v1/margin_esm_if1_only.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "6fa4d60b36fb2dab58d6d9f8e3d2aca761128b60",
+          "bytes": 2159,
+          "path": "results/representation_ablation_v1/margin_random_control.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9510945d857b0c3556693f14f9a900249d4cfb90",
+          "bytes": 2346,
+          "path": "results/representation_ablation_v1/paired_report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b2a67a3782b83ade06df2b6bffb9801022611ca0",
+          "bytes": 5352,
+          "path": "results/representation_ablation_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "51d286a9a568223bed76966496aa160049efa4b8",
+          "bytes": 29397,
+          "path": "results/representation_ablation_v1/width_control.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3731d785637f8a58ffd44afaece19c77a70c1582",
+          "bytes": 7128,
+          "path": "results/representation_attribution_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+          "bytes": 3230,
+          "path": "results/representation_attribution_v1/report.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "ee47160d67ef13e97abb9039f788b0922a4d9836",
+          "bytes": 1430,
+          "path": "results/representation_attribution_v1/variance_aligned_vs_shuffled.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3e52f72b44a118e9092b161f7ef25601999c1801",
+          "bytes": 5986,
+          "path": "results/second_structural_encoder_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f2cfd9b65ce0687f567e7ef35cb29764c4a3c0bc",
+          "bytes": 7617,
+          "path": "scripts/report_pair_evaluation.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd53ad18a35462bf0fde1c1713fe6a29528c55fe",
+          "bytes": 6414,
+          "path": "scripts/report_representation_arms.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "24368ec3af7054cf3e4181dad691678d16f531b9",
+          "bytes": 3239,
+          "path": "slurm/asep_benchmark.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3adcbbb6339d659562373fa8732affd2037f9e1d",
+          "bytes": 28479,
+          "path": "src/interaction_first/metrics.py",
+          "status": "M"
+        },
+        {
+          "blob_sha": "f3f0fa1a97e17a7d781c452bfc5942ce47a41c47",
+          "bytes": 2872,
+          "path": "tests/test_macro_metric_summary_types.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9ad9a39158c2956791d8fc0b296cdcf1799e8804",
+          "bytes": 5351,
+          "path": "tests/test_report_representation_arms.py",
+          "status": "A"
+        }
+      ],
+      "head_sha": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "role": "controlled frozen-representation, correspondence, objective, gradient and benchmark evidence"
+    },
+    {
+      "ahead_of_main": 1,
+      "archive_tag": "archive/2026-09-30/branch/kevin/s2-split-readiness-v1",
+      "behind_main": 0,
+      "branch": "kevin/s2-split-readiness-v1",
+      "changed_file_count": 3,
+      "evidence_file_count": 0,
+      "evidence_files": [],
+      "head_sha": "053a0665cb4ccb9df5ce325df330ebae2fc4f973",
+      "role": "S2 split readiness work"
+    },
+    {
+      "ahead_of_main": 10,
+      "archive_tag": "archive/2026-09-30/branch/kevin/teacher-paper-handoff-20260903",
+      "behind_main": 0,
+      "branch": "kevin/teacher-paper-handoff-20260903",
+      "changed_file_count": 92,
+      "evidence_file_count": 80,
+      "evidence_files": [
+        {
+          "blob_sha": "53f1dbb89cb669a6f06c4cd32cbdfcfd5bfac719",
+          "bytes": 6807,
+          "path": "paper/neurips_2026_framecontact/CHECKPOINT_TEST_ALIGNMENT_20260905.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d283a6b51b3dcaf029c82d108ace8986d66896ab",
+          "bytes": 2553,
+          "path": "paper/neurips_2026_framecontact/PAIR_RANKING_NEGATIVE_EVIDENCE_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "528164c1bc3fca099ec9635bb70273fc884e8013",
+          "bytes": 2471,
+          "path": "paper/neurips_2026_framecontact/README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "d06ef3538ddc171a7063e673ccd708b068a96503",
+          "bytes": 2736,
+          "path": "paper/neurips_2026_framecontact/TEACHER_CACHE_MIPE_UPDATE_20260905.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "19924118673a0cca2c053fd79fb0b85c78fd3ec3",
+          "bytes": 9285,
+          "path": "paper/neurips_2026_framecontact/TEACHER_HANDOFF_20260903.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7befbdb0ce417d6ca20ea0ea6a082615181ca564",
+          "bytes": 2168,
+          "path": "paper/neurips_2026_framecontact/data/bilateral_topk_readout_ablation_v1.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "20ab4e5886de216e24d695e33a36e153b74345c0",
+          "bytes": 9878,
+          "path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+          "status": "M"
+        },
+        {
+          "blob_sha": "ca3156ecf2bceacb277fc1e161dcf540abc74cd0",
+          "bytes": 1185,
+          "path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "7033c7a971ed016319b3b48969c8598cd8ad07fe",
+          "bytes": 1303,
+          "path": "paper/neurips_2026_framecontact/data/sequence_predicted_geometry_no_privileged_distance_three_seed_v1.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f0e02f9cf1bf2cc039b33d27f4b70cbb08d1acb6",
+          "bytes": 1442695,
+          "path": "paper/neurips_2026_framecontact/figures/architecture/framecontact.pptx",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2de8593c9bcfccb1395d5e7f22ae083dc0516ff0",
+          "bytes": 1443761,
+          "path": "paper/neurips_2026_framecontact/figures/architecture/framecontact_architecture_detailed_editable.pptx",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d0ee67e757fa090756b035620c05a1eecea7a745",
+          "bytes": 25587,
+          "path": "paper/neurips_2026_framecontact/figures/overview.pdf",
+          "status": "M"
+        },
+        {
+          "blob_sha": "abcb11ae7b9ab573e9e186ba54a3a8db8d812f76",
+          "bytes": 138106,
+          "path": "paper/neurips_2026_framecontact/figures/overview.png",
+          "status": "M"
+        },
+        {
+          "blob_sha": "f079c57bb49e9fd0cd839e3015c6bd17a8300269",
+          "bytes": 147347,
+          "path": "paper/neurips_2026_framecontact/main.pdf",
+          "status": "M"
+        },
+        {
+          "blob_sha": "849e935742ad52c0f5fab0aa98e3275562a055f2",
+          "bytes": 29038,
+          "path": "paper/neurips_2026_framecontact/main.tex",
+          "status": "M"
+        },
+        {
+          "blob_sha": "ea7035f52f221c4c9011a47c50b36f2c10d14d42",
+          "bytes": 4666,
+          "path": "paper/neurips_2026_framecontact/make_figure.py",
+          "status": "M"
+        },
+        {
+          "blob_sha": "d6bc7a230a44ee96a7a2b88b408140ee530d5ed1",
+          "bytes": 4601,
+          "path": "remote_tools/aligned_test549_handoff_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bd3aa4f7d76363b16c6396529736d15d2a978ca7",
+          "bytes": 232,
+          "path": "remote_tools/aligned_test549_handoff_v1/READY_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "86e0be9011777f88815b74579d01b51fde6612a6",
+          "bytes": 1862,
+          "path": "remote_tools/aligned_test549_handoff_v1/READY_RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "cc7848ed2c24fa99f977b7ff40500ce29bbdde50",
+          "bytes": 803,
+          "path": "remote_tools/aligned_test549_handoff_v1/SUBMISSION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f60e20b1a9745982eb44707cbd5d41b19530209d",
+          "bytes": 1210,
+          "path": "remote_tools/aligned_test549_handoff_v1/SUBMISSION_RECOVERY_RECEIPT_SCHEMA_V2.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "16cef3c9abcbbdba0b29bcb6063c50b3de819f17",
+          "bytes": 1210,
+          "path": "remote_tools/aligned_test549_handoff_v1/SUBMISSION_RECOVERY_TRANSFER_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a5d20160b994c4fca445b1d8ebda27fade740706",
+          "bytes": 874,
+          "path": "remote_tools/aligned_test549_handoff_v1/TRANSFER.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "761a095922765ca2ed6c9e51fff81097b925b5c6",
+          "bytes": 906,
+          "path": "remote_tools/aligned_test549_handoff_v1/analyze.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4bb7a144594d3f307b31e851c9028da2edf67f7c",
+          "bytes": 9428,
+          "path": "remote_tools/aligned_test549_handoff_v1/build_bundle.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "fd46c9e6e328e0f01292eca6eb462a75ecb494a5",
+          "bytes": 5137,
+          "path": "remote_tools/aligned_test549_handoff_v1/common.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "32b8cb2f6fa4ee0807ee7d51d9aa73373dacbde0",
+          "bytes": 1140,
+          "path": "remote_tools/aligned_test549_handoff_v1/evaluate.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "913db34e8349ab79aa31fb3139987ec058938a73",
+          "bytes": 3970,
+          "path": "remote_tools/aligned_test549_handoff_v1/finalize_bundle.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9d24f16b86d7a59126838a23ad3189b20067d79c",
+          "bytes": 1385,
+          "path": "remote_tools/aligned_test549_handoff_v1/prepare.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "12ab8c9e2fb74d2bd364e351101e5c883110c888",
+          "bytes": 9438,
+          "path": "remote_tools/aligned_test549_handoff_v1/run_bundle.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3376677c6e4b3fa839c6e1fda3ffb4b0eb20aab6",
+          "bytes": 2014,
+          "path": "remote_tools/aligned_test549_handoff_v1/submit.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9d71cf7d28dbeaa2603f9cfdac74b6e670f47332",
+          "bytes": 4200,
+          "path": "remote_tools/aligned_test549_handoff_v1/test_handoff.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d95e95449a19c565e53a464c7c457abcecdf8424",
+          "bytes": 8789,
+          "path": "remote_tools/bilateral_topk_readout_v1/analyze_bilateral_topk_readout_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "db30f1126cb73ec9a1e2838204f653c6ef7c53bb",
+          "bytes": 15224,
+          "path": "remote_tools/bilateral_topk_readout_v1/evaluate_bilateral_topk_readout_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "76459a18c4feae79d44fd6c036b842a1b46c4845",
+          "bytes": 4661,
+          "path": "remote_tools/bilateral_topk_readout_v1/freeze_bilateral_topk_analysis_recovery_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c48da7cba5a4e5197853f4326ac56820587e983f",
+          "bytes": 9969,
+          "path": "remote_tools/bilateral_topk_readout_v1/freeze_bilateral_topk_readout_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4dff68039879c61dff1972eedbdb86344e70a4c5",
+          "bytes": 1108,
+          "path": "remote_tools/bilateral_topk_readout_v1/slurm_analyze_bilateral_topk_readout_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2a7898c8320bbc45ccf9502e7a0e1af40c4fbbef",
+          "bytes": 1716,
+          "path": "remote_tools/bilateral_topk_readout_v1/slurm_bilateral_topk_readout_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "3db85d3a6bd5794765ee946e7c2a041fdb99942b",
+          "bytes": 1560,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/CACHE_BUNDLE_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9b70894daa6f17617879b0e72333993590ab74f3",
+          "bytes": 908,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/CANONICAL_FROZEN_TEST455_EXPORT_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "efb37e838632f3f34db591d9a8508a33035fb2cb",
+          "bytes": 1742,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/CONSUMPTION_NOTES.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "83969d3be3bb3027c5eeecb68daf9df3e4d60442",
+          "bytes": 1195,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/EMBEDDING_LOADER_VERIFICATION_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d2e5be97fdb32a7045b34dc8c1fd52a54b57f5b7",
+          "bytes": 3782,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/HANDOFF_STATUS_20260904.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bb67cf485dc50d6454089203de29e62138b965fb",
+          "bytes": 2161,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8f8ea4aedc1d53c5f7b21cdcc1dc36280ae77eb3",
+          "bytes": 17630,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/export_sabdab2_esm_subset_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "4192a0d8a17c0d5a9d8555030dada503831440e6",
+          "bytes": 9184,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/finalize_test455_loader_bundle_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8be83186adab4a6b0733ad8bfd4c78d7c78c8057",
+          "bytes": 1331,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/slurm_export_canonical_test455_v1.sbatch",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8894ea1f6930fd620eed1efedbcac8478d883cf2",
+          "bytes": 4544,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/test_finalize_test455_loader_bundle_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "bc82bb1eb2b387767ef27934b6b02ff90ec0df35",
+          "bytes": 6118,
+          "path": "remote_tools/sabdab2_esm455_handoff_v1/verify_test455_embedding_loader_v1.py",
+          "status": "A"
+        },
+        {
+          "blob_sha": "c7c8be4f99c5364425dbd53310f4590f04f98439",
+          "bytes": 707,
+          "path": "remote_tools/sabdab2_top10_case_study_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b0aa7d98be112f0ba6a2cad7da528e72a0926154",
+          "bytes": 1059,
+          "path": "results/aligned_test549_replay_v1/COMPLETION_VERIFICATION.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d95cdd336d7fdf19ed98ffae052adbc07e04026c",
+          "bytes": 3567,
+          "path": "results/aligned_test549_replay_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a074f43599e2a7ffdc9e9c88314c3c7a3280a36e",
+          "bytes": 223,
+          "path": "results/aligned_test549_replay_v1/RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+          "bytes": 7422,
+          "path": "results/aligned_test549_replay_v1/RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f968bcd0b4ea64bd57913ae752f976c9b4ded861",
+          "bytes": 3046,
+          "path": "results/mipe_contact_threshold_diagnostic_v1/MIPE_CONTACT_SOURCE_AUDIT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1aef757f863e2f2b2c46e70b72ffb9a6f75c38e1",
+          "bytes": 92905,
+          "path": "results/mipe_contact_threshold_diagnostic_v1/MIPE_CONTACT_THRESHOLD_PER_COMPLEX.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "9e42f9f77a28698b9be61f3c871440d8d5f388f7",
+          "bytes": 453,
+          "path": "results/mipe_contact_threshold_diagnostic_v1/MIPE_CONTACT_THRESHOLD_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d9a08a517057d6c5b2905d576a168bc2967e7dd5",
+          "bytes": 1715,
+          "path": "results/mipe_contact_threshold_diagnostic_v1/MIPE_CONTACT_THRESHOLD_RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0c2e5e3d7316d3838b85c525db95b07cce7b2787",
+          "bytes": 2993,
+          "path": "results/mipe_contact_threshold_diagnostic_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "77779716d32d2e4ea0e23e493ee2b427e4d5bb81",
+          "bytes": 1010,
+          "path": "results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_METRICS.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1138bc0ff168abc6f8d07e5cee9511fdd0e90e9b",
+          "bytes": 277253,
+          "path": "results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_PER_COMPLEX.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "f6bcaaec6b27a779e18f42c74a4be7140bc72549",
+          "bytes": 642,
+          "path": "results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8f140d5d6748c5c1f83e9f637c1ca18f3bc296a7",
+          "bytes": 7426,
+          "path": "results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "14b0d89e12fcd7e8381d0d55f0b35ae3a888aca2",
+          "bytes": 3667,
+          "path": "results/mipe_paper_track_fixed05_recovery_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "b86bdf41df99dbf76574acc19ded12a405c31655",
+          "bytes": 2859,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_READOUT_DEVELOPMENT_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "39036738df3e2a681be7376b58282c74bd96f7ab",
+          "bytes": 2317,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_READOUT_DEVELOPMENT_PUBLIC_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8ee5689d9c909053442df375472f2b1c52194083",
+          "bytes": 2756,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_TRAINING_ABLATION_DEVELOPMENT_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "1f18d5d3b26ef63758d45c936e3b028d9e9b6296",
+          "bytes": 2062,
+          "path": "results/sabdab2_predicted_geometry_v1/BILATERAL_TOPK_TRAINING_ABLATION_DEVELOPMENT_PUBLIC_V1.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "5dd26e60a02b6a5e2327bf1194e187b7da11a7bc",
+          "bytes": 3335,
+          "path": "results/sabdab2_predicted_geometry_v1/PREDICTED_GEOMETRY_TASK_ASSOCIATION_PUBLIC_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d949615e7b756cc13a1a34e28a42dc0ec01690a1",
+          "bytes": 539,
+          "path": "results/sabdab2_predicted_geometry_v1/PREDICTED_GEOMETRY_TASK_ASSOCIATION_PUBLIC_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "0726559343bd185621a9f55f917eb1c8606ffc97",
+          "bytes": 2763,
+          "path": "results/sabdab2_predicted_geometry_v1/README.md",
+          "status": "M"
+        },
+        {
+          "blob_sha": "bf1f7e0b7011bf60746ce35b474ef4c0a685ab6c",
+          "bytes": 5464,
+          "path": "results/sabdab2_top10_case_study_v1/PROTOCOL_SABDAB2_TOP10_CASE_STUDY_V1.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "8856b1ea22a043736fbe20c81b107b992825785e",
+          "bytes": 378,
+          "path": "results/sabdab2_top10_case_study_v1/PROTOCOL_SABDAB2_TOP10_CASE_STUDY_V1_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "59e6aa5391adcac4bc2b57e0c2da384799448159",
+          "bytes": 2907,
+          "path": "results/sabdab2_top10_case_study_v1/README.md",
+          "status": "A"
+        },
+        {
+          "blob_sha": "08865b973cfd8d978169233822d7289cdd922d1c",
+          "bytes": 545,
+          "path": "results/sabdab2_top10_case_study_v1/TOP10_CASE_STUDY_RECEIPT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "2c345e8d302fe1e14a5dfaf37ef98938ecf419f0",
+          "bytes": 42905,
+          "path": "results/sabdab2_top10_case_study_v1/TOP10_CASE_STUDY_RESULT.json",
+          "status": "A"
+        },
+        {
+          "blob_sha": "eec9e0b93a22505dd0a1f2565d9d41f9a904f49a",
+          "bytes": 1976,
+          "path": "results/sabdab2_top10_case_study_v1/top10_case_confusions.csv",
+          "status": "A"
+        },
+        {
+          "blob_sha": "be3b6312714836a4268f4a1c9126cf7b39cc7564",
+          "bytes": 260342,
+          "path": "results/sabdab2_top10_case_study_v1/top10_case_study_summary.pdf",
+          "status": "A"
+        },
+        {
+          "blob_sha": "d56b8445b4004d9650f11dc8a167a282436315d7",
+          "bytes": 166124,
+          "path": "results/sabdab2_top10_case_study_v1/top10_case_study_summary.png",
+          "status": "A"
+        },
+        {
+          "blob_sha": "097cc2d9383d10053e13f176440e8b956f13b413",
+          "bytes": 9525,
+          "path": "results/sabdab2_top10_case_study_v1/top10_ranked_pairs.csv",
+          "status": "A"
+        }
+      ],
+      "head_sha": "54afd798700bc41ac1352065414d8687c9627871",
+      "role": "latest FrameContact teacher/paper handoff and corrected historical test alignment"
+    }
+  ],
+  "generated_utc": "2026-09-30T07:02:46.530105+00:00"
+}

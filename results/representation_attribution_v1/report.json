@@ -1,0 +1,113 @@
+{
+  "arm_means": {
+    "esm2": 0.022459984574757865,
+    "esm_if1_only": 0.027570672383430774,
+    "esm_if1_shuffled": 0.01936703169765898,
+    "random_control": 0.021864936435361807
+  },
+  "claim_boundary": "Development-only, one cohort, one encoder. It localises where the information sits; it does not establish that every structural encoder behaves this way.",
+  "comparisons": {
+    "aligned_vs_esm2": {
+      "arm": "esm_if1_only",
+      "arm_mean": 0.027570672383430774,
+      "baseline_arm": "esm2",
+      "baseline_mean": 0.022459984574757865,
+      "bootstrap_ci95": [
+        0.0037804980020868864,
+        0.006439117257188512
+      ],
+      "decided": true,
+      "favourable_seed_count": 10,
+      "metric": "auprc",
+      "paired_difference": 0.005110687808672911,
+      "relative": 0.22754636325158775,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "aligned_vs_random": {
+      "arm": "esm_if1_only",
+      "arm_mean": 0.027570672383430774,
+      "baseline_arm": "random_control",
+      "baseline_mean": 0.021864936435361807,
+      "bootstrap_ci95": [
+        0.003722689108711412,
+        0.0076545765230134
+      ],
+      "decided": true,
+      "favourable_seed_count": 9,
+      "metric": "auprc",
+      "paired_difference": 0.005705735948068968,
+      "relative": 0.26095369474027713,
+      "seed_count": 10,
+      "sign_lower_bound": 0.6058366975634952
+    },
+    "aligned_vs_shuffled": {
+      "arm": "esm_if1_only",
+      "arm_mean": 0.027570672383430774,
+      "baseline_arm": "esm_if1_shuffled",
+      "baseline_mean": 0.01936703169765898,
+      "bootstrap_ci95": [
+        0.006927522500949101,
+        0.00945168506501704
+      ],
+      "decided": true,
+      "favourable_seed_count": 10,
+      "metric": "auprc",
+      "paired_difference": 0.008203640685771797,
+      "relative": 0.4235879206395591,
+      "seed_count": 10,
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "random_vs_esm2": {
+      "arm": "random_control",
+      "arm_mean": 0.021864936435361807,
+      "baseline_arm": "esm2",
+      "baseline_mean": 0.022459984574757865,
+      "bootstrap_ci95": [
+        -0.0021509073762782096,
+        0.0009703236011609193
+      ],
+      "decided": false,
+      "favourable_seed_count": 4,
+      "metric": "auprc",
+      "paired_difference": -0.0005950481393960573,
+      "relative": -0.026493702051105367,
+      "seed_count": 10,
+      "sign_lower_bound": 0.15002824080667998
+    },
+    "shuffled_vs_esm2": {
+      "arm": "esm_if1_shuffled",
+      "arm_mean": 0.01936703169765898,
+      "baseline_arm": "esm2",
+      "baseline_mean": 0.022459984574757865,
+      "bootstrap_ci95": [
+        -0.004391297892447222,
+        -0.0018068432339909488
+      ],
+      "decided": true,
+      "favourable_seed_count": 1,
+      "metric": "auprc",
+      "paired_difference": -0.003092952877098886,
+      "relative": -0.13770948358419477,
+      "seed_count": 10,
+      "sign_lower_bound": 0.005116196891823702
+    }
+  },
+  "dataset": "sabdab2",
+  "evaluated_on": "validation",
+  "format_version": "representation_attribution_v1",
+  "metric": "pair macro auprc",
+  "seed_count": 10,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ]
+}

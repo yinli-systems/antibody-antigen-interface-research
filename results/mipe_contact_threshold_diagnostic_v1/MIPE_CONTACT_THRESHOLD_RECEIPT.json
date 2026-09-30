@@ -1,0 +1,9 @@
+{
+  "artifact_tree_sha256": "729144fea872b7747f48ae6958551c4b472aff74f7f7ff8a8fca910aa41e4825",
+  "complexes": 560,
+  "format_version": "mipe_contact_threshold_diagnostic_receipt_v1",
+  "per_complex_csv_sha256": "34ebf89015be0ac481283ea2cbfc34637aaffb2c0bb9ff79879274d9f6ec3d25",
+  "result_sha256": "6ee0cc013dbdd8ad5077c20b70f96f93a187fa7c01eb8af756dd7081d6d41264",
+  "status": "PASS_RETAINED_MIPE_ATTENTION_THRESHOLD_DIAGNOSTIC",
+  "threshold": 0.5
+}

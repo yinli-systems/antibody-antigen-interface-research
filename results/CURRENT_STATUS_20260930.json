@@ -1,0 +1,105 @@
+{
+  "af3_completion": {
+    "exit_code": "2:0",
+    "latest_task0_job": "1640914_0",
+    "scientific_result": false,
+    "status": "FAILED_PRE_INFERENCE_ORCHESTRATION"
+  },
+  "claims": {
+    "blind_claim_authorized": false,
+    "sota_claim_authorized": false
+  },
+  "format_version": "consolidated_execution_status_20260930_v1",
+  "observed_utc": "2026-09-30T06:52:00Z",
+  "reparank_sequence": {
+    "epitope_macro_ap": 0.20203910628196645,
+    "evaluation_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+    "job": "1640813",
+    "macro_pair_ap": 0.03780779120862989,
+    "paratope_macro_ap": 0.5577073439412932,
+    "pooled_pair_metrics": {
+      "auroc": 0.7860643617166425,
+      "average_precision": 0.008738584064940456,
+      "pair_count": 9638880,
+      "positive_count": 9036
+    },
+    "status": "COMPLETE_EXPOSED_PRETRAINED_VALIDATION_DIAGNOSTIC",
+    "training_overlap_audited": false
+  },
+  "reparank_structure": {
+    "canary_job": "1640815",
+    "complete_complexes": 187,
+    "first_full_job": "1640868",
+    "first_full_status": "FAILED_AUTHORITY_COVERAGE",
+    "missing_unique_chains": 40,
+    "total_complexes": 217
+  },
+  "structural_plm": {
+    "analysis_job": "1640514",
+    "completed_count": 6,
+    "completed_tasks": [
+      {
+        "arm": "saprot_layer_00",
+        "best_primary_pair_ap": 0.017987586488391646,
+        "last_primary_pair_ap": 0.015838758048241218,
+        "receipt_sha256": "7bde8e56ba9c19f60042dbfe193a1b5d21397553e53cb7481e94a40b443e079a",
+        "seed": 1,
+        "task_id": 0
+      },
+      {
+        "arm": "saprot_layer_00",
+        "best_primary_pair_ap": 0.021676013546326405,
+        "last_primary_pair_ap": 0.01887444848263688,
+        "receipt_sha256": "871b8b1f6a258d664b43dfe8077e6bc174fd07ff996dc6bc1f6a04a584a8841e",
+        "seed": 2,
+        "task_id": 1
+      },
+      {
+        "arm": "saprot_layer_00",
+        "best_primary_pair_ap": 0.02208172702986689,
+        "last_primary_pair_ap": 0.01846897965097707,
+        "receipt_sha256": "1c10c538856d887648f135dcb546aa3c5ae99e26d7b55e0fbfd2dbf352c6e37e",
+        "seed": 3,
+        "task_id": 2
+      },
+      {
+        "arm": "saprot_layer_08",
+        "best_primary_pair_ap": 0.020779976587368174,
+        "last_primary_pair_ap": 0.018392170426271177,
+        "receipt_sha256": "0a8bd917b9eca42f8599874afc15d1b623ef0f1c93d58f42589e9d7955378ad8",
+        "seed": 1,
+        "task_id": 3
+      },
+      {
+        "arm": "saprot_layer_08",
+        "best_primary_pair_ap": 0.020481103124502915,
+        "last_primary_pair_ap": 0.018312717798222574,
+        "receipt_sha256": "88e85ea549870e4498ff063b4431aa8ee436db874413468ddb66052828e01082",
+        "seed": 2,
+        "task_id": 4
+      },
+      {
+        "arm": "saprot_layer_08",
+        "best_primary_pair_ap": 0.021858266032348632,
+        "last_primary_pair_ap": 0.01877035582776343,
+        "receipt_sha256": "f1bfabfce1dcb4b25c342599a8d9ebd81bf8dbb4e51e1cf2a7d66aac90a367b7",
+        "seed": 3,
+        "task_id": 5
+      }
+    ],
+    "formal_job": "1640503",
+    "pending_task_range": [
+      12,
+      35
+    ],
+    "running_task_ids": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "winner_selected": false
+  }
+}

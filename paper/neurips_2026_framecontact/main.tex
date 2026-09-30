@@ -42,9 +42,12 @@ Antibody--Antigen Interfaces}
 Antibody--antigen interface prediction couples three related outputs: residue-pair
 contacts and their antibody-side paratope and antigen-side epitope marginals. A
 single jointly trained checkpoint, however, can be suboptimal for one output.
-We introduce \method, a partner-conditioned 3D architecture that combines
-protein-language-model residue embeddings, local backbone frames, an explicit
-low-rank contact map, and interleaved bidirectional cross-attention. Under a
+We introduce \method, a partner-conditioned architecture that combines
+protein-language-model residue embeddings, sequence-predicted local backbone
+frames, an explicit low-rank contact map, and interleaved bidirectional
+cross-attention. At inference, antibody and antigen structures are predicted
+separately from sequence; no experimental complex coordinates, native complex
+pose, or cross-partner geometry are required. Under a
 fixed SAbDab2 development protocol, epoch-level diagnostics and a $2\times2$
 task ablation show that the fully joint objective gives the strongest epitope
 result. The curves are consistent with late overfitting and do not support simple
@@ -56,15 +59,19 @@ from the joint baseline. Before full-development retraining, we freeze this rout
 and evaluate its screen-stage checkpoints once on an antigen-cluster-disjoint
 development holdout of 156 complexes. All three seeds improve epitope \mpcap{}
 ($+0.0057$, $+0.0141$, and $+0.0089$); a paired bootstrap over 49 antigen
-clusters gives a cluster-weighted, seed-averaged improvement of $+0.0295$ with 95\% CI
-$[0.0126,0.0474]$, conditional on the three trained seeds. We then retrain on the
-complete 2,565/549 development split, whose 549-complex validation set selects
-checkpoints; its routed three-seed validation median improves from 0.2324 to
-0.2375 ($+0.0051$), with contact and paratope unchanged by construction. The
-fresh156 result validates the frozen routing decision, not the subsequently
-retrained checkpoints. These results support task-specific
-readout and checkpoint routing as a simple way to recover epitope gains while
-retaining joint interface supervision.
+clusters gives a cluster-weighted, seed-averaged improvement of $+0.0295$ with
+95\% CI $[0.0126,0.0474]$, conditional on the three trained seeds. We then
+retrain on the complete 2,565/549 development split using only
+sequence-predicted geometry as model input. The routed three-seed validation
+medians are 0.0267/0.2438/0.6885 for contact/epitope/paratope MPC-AP. Relative
+to matched bound-geometry development checkpoints, the medians change by
+$-0.0015/+0.0067/-0.0233$, respectively. This is a development sensitivity
+analysis: the 549-complex validation set selects checkpoints, and a
+cluster-weighted paired analysis does not establish an epitope improvement.
+The fresh156 result validates the earlier routing decision, not the subsequently
+retrained checkpoints. These results support task-specific routing while
+showing that deployment without experimental structure preserves contact and
+aggregate epitope ranking more readily than paratope ranking.
 \end{abstract}
 
 \section{Introduction}
@@ -90,7 +97,9 @@ Our contributions are:
 \begin{itemize}
   \item We formulate contact, paratope, and epitope prediction around one explicit
   residue-pair contact map, combining pretrained sequence features with local
-  N/CA/C backbone geometry and interleaved bidirectional cross-attention.
+  N/CA/C geometry predicted separately for each partner and interleaved
+  bidirectional cross-attention. Experimental complex coordinates are not
+  required at inference.
   \item A controlled $2\times2$ task ablation and epoch-level analysis produce
   curves consistent with late overfitting and do not support simple multitask
   competition, motivating us to retain the fully joint objective.
@@ -102,17 +111,22 @@ Our contributions are:
   with immutable manifests across screening, a cluster-disjoint route
   confirmation, full-development retraining, and a disclosed non-blind
   historical measurement.
+  \item On the complete development split, we replace bound-complex model input
+  with sequence-predicted partner geometry and quantify the resulting
+  task-specific trade-off without accessing the historical or temporal sets.
 \end{itemize}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/overview.pdf}
   \caption{\textbf{Model and evidence flow.} \method{} predicts an explicit
-  residue-pair contact map from PLM embeddings and intra-chain backbone geometry.
+  residue-pair contact map from PLM embeddings and sequence-predicted
+  intra-chain backbone geometry.
   The joint baseline supplies contact and paratope; the \topktwo{} expert supplies
   epitope only. The route is a fixed task-to-checkpoint map.
-  Right: two distinct fresh156 estimands---per-seed complex-weighted gains and
-  the cluster-weighted, seed-averaged estimate with its conditional interval.}
+  Right: two estimands from the earlier bound-geometry fresh156 route
+  confirmation---per-seed complex-weighted gains and the cluster-weighted,
+  seed-averaged estimate with its conditional interval.}
   \label{fig:overview}
 \end{figure}
 
@@ -137,11 +151,12 @@ residue features \citep{lin2023esm}. Geometry-aware graph networks provide usefu
 inductive biases for molecular coordinates \citep{satorras2021egnn}. Paraplume
 shows that PLM representations alone can be strong and scalable for
 antigen-agnostic paratope prediction \citep{athenes2025paraplume}. Our setting is
-instead partner-specific: antibody and antigen are both inputs, while cross-chain
-ground-truth distances serve exclusively as supervision. Because interface
-performance can differ between bound and unbound structural inputs
-\citep{davila2022abadapt}, we explicitly disclose our bound-conformation setting
-below rather than compare it as if it were sequence-only.
+instead partner-specific: antibody and antigen sequences are both inputs, and
+their chain-internal geometry is predicted before interface inference. This
+removes the need for an experimentally resolved complex at deployment. The
+completed experiment still uses experimental structures to derive contact
+targets and an auxiliary distance target during training, so we distinguish
+sequence-conditioned inference from a fully structure-free training pipeline.
 
 \section{Method}
 
@@ -171,12 +186,14 @@ $H_{\mathrm{intra}}=H_{\mathrm{dense}}+
 input and $\gamma_{\mathrm{geo}}=0$ at
 initialization. Antibody and antigen use separate parameters.
 
-Backbone coordinates are extracted from deposited antibody--antigen complex
-structures. The model retains only each chain's intra-chain N/CA/C geometry: no
+For the deployment-style experiment reported below, backbone coordinates come
+from AlphaFold~3 predictions generated separately for the antibody and antigen
+components from their sequences, with templates disabled. We retain only each
+component's chain-internal N/CA/C geometry: no experimental coordinates,
 cross-chain relative coordinates, native complex pose, or true cross-chain
-distance is supplied as input. Nevertheless, the intra-chain conformations are
-bound-complex-derived. The reported setting is therefore bound-conformation
-structural prediction, not sequence-only or unbound-monomer prediction.
+distance is supplied as model input. Experimental bound structures are used to
+derive the supervised contact matrix and the auxiliary distance bins during
+training, but are not required at inference.
 
 We alternate this intra-chain update with partner exchange rather than applying
 one late fusion step. At layer $\ell\in\{1,2\}$, separate geometry-aware encoders
@@ -195,8 +212,11 @@ orders:
  \end{aligned}
  \label{eq:contact}
 \end{equation}
-where $d_p=128$. The head is evaluated over the complete antibody--antigen
-Cartesian candidate grid. Antibody-to-antigen attention at layer $\ell$ uses
+where $q,k:\mathbb{R}^{d}\rightarrow\mathbb{R}^{d_p}$ are learned projections,
+$u,v:\mathbb{R}^{d}\rightarrow\mathbb{R}$ are learned unary maps,
+$b\in\mathbb{R}$, and $d_p=128$. The head is evaluated over the complete
+antibody--antigen Cartesian candidate grid. Antibody-to-antigen attention at
+layer $\ell$ uses
 content logits only:
 \begin{equation}
  a^{h,\mathrm{Ab}\leftarrow\mathrm{Ag}}_{ij}
@@ -209,7 +229,7 @@ with the analogous update in the reverse direction. Its output is
 $A'_{\ell}=A_{\ell}+\tanh(\gamma_{\ell}^{\mathrm{Ab}})
 \operatorname{CrossAttn}(A_{\ell},G_{\ell})$, and analogously for $G'_{\ell}$;
 both cross-stream gates start at zero. The next intra-chain block consumes these
-partner-conditioned features. Thus, local SE(3)-invariant bound-chain geometry
+partner-conditioned features. Thus, local SE(3)-invariant predicted-chain geometry
 and partner-specific content exchange are interleaved without supplying the
 native cross-chain pose. Although stage contact logits are exposed for
 diagnostics, the frozen configuration is
@@ -221,7 +241,27 @@ are derived strictly from the pair matrix,
  y_i^{\mathrm{para}}=\bigvee_j Y_{ij}, \qquad
  y_j^{\mathrm{epi}}=\bigvee_i Y_{ij},
  \end{equation}
-rather than imported surface annotations. The joint loss is
+rather than imported surface annotations. In the reported joint baseline,
+paratope prediction combines a direct antibody-node logit with a masked
+log-mean-exp contact marginal, whereas epitope prediction is the logit of the
+masked mean pair probability:
+\begin{equation}
+ \begin{aligned}
+ s_i^{\mathrm{para}}
+ &=w_p^\top\operatorname{LN}(h_i^{\mathrm{Ab}})
+ +\operatorname{LME}_{j:M_{ij}=1}(z_{ij}),\\
+ s_j^{\mathrm{epi,base}}
+ &=\operatorname{logit}\!\left[
+ \operatorname{clip}\!\left(
+ \frac{1}{|I_j|}\sum_{i\in I_j}p_{ij},\epsilon,1-\epsilon
+ \right)\right],
+ \qquad I_j=\{i:M_{ij}=1\},
+ \end{aligned}
+ \label{eq:baseline-residue-readouts}
+\end{equation}
+where $\operatorname{LME}_{r\in S}(z_r)=
+\log\sum_{r\in S}\exp(z_r)-\log|S|$. Applying a sigmoid gives the residue
+probabilities. The joint loss is
 \begin{equation}
  \mathcal{L}=\mathcal{L}_{c}+0.1\mathcal{L}_{d}
  +0.1\mathcal{L}_{p}+0.5\mathcal{L}_{e}, \qquad
@@ -246,6 +286,9 @@ With $\varepsilon=10^{-6}$, the epitope-specific terms are
  \end{aligned}
  \label{eq:epitope-loss}
 \end{equation}
+Here, $B$ is the number of complexes in the minibatch, $n_b$ is the number of
+valid antigen residues in complex $b$, and $p_{br}$ and $y_{br}$ are the
+predicted epitope probability and binary label for residue $r$.
 $\mathcal{L}_{\mathrm{Dice}}^{e}$ follows the differentiable Dice objective
 \citep{milletari2016vnet}.
 $\mathcal{L}_{d}$ is class-balanced cross-entropy on C$\alpha$--C$\alpha$
@@ -268,14 +311,17 @@ interface. For antigen residue $j$, the \topktwo{} expert instead computes
 \end{equation}
 where $\epsilon$ is float32 machine epsilon. Empty candidate sets map to zero
 logit, although the complete Cartesian grid prevents this case for real antigen
-residues. This is the only architectural factor changed from the same-protocol
-baseline; the joint contact/paratope/epitope supervision, loss weights,
-candidate grid, and partner panels remain fixed.
+residues. The only intentionally changed forward computation between the two
+training arms is the epitope readout. The backbone, contact decoder,
+supervision, loss weights, training data, candidate grid, and
+checkpoint-selection rule remain fixed. The \topktwo{} readout participates in
+training and supplies the epitope logits used by the epitope loss; it is not a
+post-hoc inference-only transformation.
 
 \subsection{Deterministic task routing}
 
-Raw \topktwo{} checkpoints showed an epitope--paratope trade-off. We therefore
-freeze a per-task route:
+For each seed, we compose the outputs from two independently trained,
+seed-matched checkpoints:
 \begin{equation}
  \left(\hat P_r^{c},\hat p_r^{\mathrm{para}},\hat p_r^{\mathrm{epi}}\right)=
  \left(f_{\theta_{J,r}}^{c}(x),f_{\theta_{J,r}}^{p}(x),
@@ -299,23 +345,30 @@ come from a frozen binary contact cache over the complete Cartesian candidate
 grid (190,509,766 pairs; 143,756 positives). The cache receipt authenticates the
 binary labels but does not independently record the upstream atom-level cutoff
 or missing-residue policy, so we do not infer either definition from the cache.
-All compared development arms use the same labels, candidate grid, external
-embeddings, and 31-way reciprocal partner panels.
+For the 3,114 train/validation complexes used in the final sensitivity study,
+the antibody and antigen components are predicted separately from sequence and
+cached on the same canonical residue axes. Predicted structures for the
+historical partition are not materialized. All compared development arms use
+the same labels, candidate grid, external embeddings, and 31-way reciprocal
+partner panels.
 
 \paragraph{Evidence stages.}
 The $512/128$ screen is used for task ablation and route design. Before measuring
 fresh156, we freeze the route and remove every instance and antigen cluster used
 by earlier selection or confirmation screens, leaving 156 complexes in 49
 clusters. This measurement evaluates the frozen screen-stage route. We then
-retrain the expert on all 2,565 training complexes and select its checkpoint on
-the 549-complex validation set. Consequently, the full-development table is a
-validation summary, while fresh156 is independent evidence for the preceding
-routing decision rather than for the retrained checkpoint. The previously
-exposed 549-complex partition is reported only as a measurement-only historical
-appendix result.
+retrain both arms on all 2,565 training complexes and select checkpoints on the
+549-complex validation set. We first freeze the route under bound-geometry
+development, then repeat the same six seed-and-arm runs after replacing model
+input geometry with sequence-predicted partner structures. Consequently,
+fresh156 is independent evidence for the preceding routing decision, whereas
+the full-development and geometry-replacement tables are validation summaries,
+not independent confirmation. The previously exposed 549-complex partition is
+reported only as a measurement-only historical appendix result and is not used
+in the predicted-geometry study.
 
 \paragraph{Optimization and selection.}
-We use three seeds (17, 29, 43), bf16, two self-geometry layers, eight heads,
+We use three seeds (17, 29, 43), bf16, two interleaved stages, eight heads,
 dropout 0.1, AdamW \citep{loshchilov2019adamw} with learning rate
 $3\times10^{-4}$ and weight decay $10^{-4}$, and batch size one. Checkpoints
 maximize validation epitope \mpcap{}, break ties by contact \mpcap{} and then
@@ -418,56 +471,71 @@ Median difference & & & \textbf{+0.0089} \\
 \end{tabular}
 \end{table}
 
-\subsection{Full-development retraining and validation summary}
+\subsection{Sequence-predicted geometry development sensitivity}
 
-The complete 2,565/549 development rerun passes every frozen promotion check.
-Two seeds improve and one regresses modestly; the three-seed median epitope
-\mpcap{} increases by 0.0051. Table~\ref{tab:full} reports the checkpoints
-selected on the same 549-complex validation set; it is not an independent
-confirmation. Contact and paratope are preserved exactly by routing.
+We repeat the complete 2,565/549 development protocol after replacing
+bound-complex model input with partner-separated AlphaFold~3 predictions. The
+model receives no experimental coordinates as input during training or
+inference, and no cross-partner geometry is constructed. Table~\ref{tab:full} reports the
+three-seed medians on the 549-complex validation set. Because this set also
+selects each checkpoint, the comparison is a development sensitivity analysis,
+not an independent confirmation.
 
 \begin{table}[H]
 \centering
-\caption{Full-development validation \mpcap{}. Validation supplies checkpoint
-selection. Fresh156 independently supports the earlier route decision, not these
-retrained checkpoints.}
+\caption{Full-development validation \mpcap{} with bound-complex versus
+sequence-predicted geometry as model input. The final column is the median of
+the three seed-matched differences, not the difference between displayed
+medians. Validation supplies checkpoint selection for both conditions.}
 \label{tab:full}
 \small
 \begin{tabular}{lrrr}
 \toprule
-Metric & Joint baseline & Routed & Difference \\
+Metric & Bound geometry & Predicted geometry & Paired difference \\
 \midrule
-Contact & 0.02858 & 0.02858 & 0.00000 \\
-Epitope & 0.23241 & \textbf{0.23746} & \textbf{+0.00505} \\
-Paratope & 0.70475 & 0.70475 & 0.00000 \\
+Contact & 0.02858 & 0.02673 & $-0.00155$ \\
+Epitope & 0.23746 & 0.24378 & $+0.00666$ \\
+Paratope & 0.70475 & 0.68847 & $-0.02327$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The per-seed epitope differences are $+0.0130$, $+0.0051$, and $-0.0071$.
-The median remains positive despite seed-level variation, and the result meets
-the predeclared median, positive-seed-count, and worst-seed criteria.
+The predicted-minus-bound epitope differences for seeds 17, 29, and 43 are
+$+0.00791$, $+0.00666$, and $-0.01301$; contact differences are $+0.00189$,
+$-0.00155$, and $-0.00432$; and paratope differences are $-0.01627$,
+$-0.02496$, and $-0.02327$. Thus, the seed-level aggregate keeps contact close
+and has a positive median epitope change, but paratope declines consistently.
+
+A complementary paired analysis first averages the three fixed seeds within
+each complex and then weights 108 antigen clusters equally. Its
+predicted-minus-bound estimates are $-0.00247$ for contact (95\% bootstrap CI
+$[-0.00498,0.00003]$), $-0.00563$ for epitope
+($[-0.02016,0.00880]$), and $-0.02781$ for paratope
+($[-0.03570,-0.02045]$). The apparent epitope direction therefore depends on
+the estimand: the median of seed-level aggregate metrics is positive, whereas
+the cluster-weighted paired estimate is negative and its interval crosses zero.
 
 \section{Discussion and conclusion}
 
 The curves are consistent with late overfitting, and the task ablation does not
 support simple contact/paratope competition as an explanation for the epitope
-gap. Contact-derived
-\topktwo{} aggregation plus deterministic routing produces a consistent
-epitope gain on fresh156 and a positive three-seed median gain on full
-development while preserving contact and paratope exactly. The one regressing
-full-development seed motivates stronger optimization stability and regularized
-checkpoint selection.
+gap. Contact-derived \topktwo{} aggregation plus deterministic routing produces
+a consistent epitope gain on fresh156 under the earlier frozen route. Replacing
+experimental model-input geometry with sequence-predicted partner structures
+then preserves contact approximately and yields a positive median seed-level
+epitope change, but the cluster-weighted epitope interval crosses zero and
+paratope declines consistently. This mixed result is stronger evidence for
+deployment feasibility than for an overall performance improvement.
 
-The same frozen protocol provides a direct path to two extensions: replacing
-ESM-2 with ESM-C to measure representation quality, and training external
-baselines on the identical split, candidate grid, and aggregation rules. A
-strictly later temporal cohort can then quantify performance under dataset
-shift. Together, these experiments position task-specific readout and routing
-as a simple, auditable addition to joint antibody--antigen interface learning.
-The principal limitations are the bound-complex-derived intra-chain geometry,
-the absence of an independent evaluation of the final retrained checkpoints,
-and the cache-level provenance boundary on the atom-level contact definition.
+Cross-paper numbers from EpiFormer, Paraplume, and other published systems use
+different cohorts, splits, labels, and aggregation rules; we therefore do not
+treat them as a formal ranking. A defensible structural-method comparison
+requires rerunning each baseline on the identical split and candidate grid.
+The principal limitations are the absence of an independent evaluation of the
+final retrained checkpoints, the paratope sensitivity to predicted geometry,
+the use of bound-derived labels and auxiliary distance supervision during
+training, and the cache-level provenance boundary on the atom-level contact
+definition.
 
 \section*{Reproducibility statement}
 
@@ -479,10 +547,12 @@ features use \path{facebook/esm2_t33_650M_UR50D}, revision
 \texttt{a08adabb949f}. The embedding-manifest SHA-256 prefix is
 \texttt{9ecbc0881516}.
 
-The full-development protocol and analyzer SHA-256 prefixes are
-\texttt{a00a51a4617a} and \texttt{f4368275e38d}; full digests are stored in the
-accompanying machine-readable record. The split and binary-contact authorities
-are also hashed there.
+The bound-geometry reference analyzer SHA-256 prefix is
+\texttt{f4368275e38d}. The predicted-geometry campaign and analyzer prefixes are
+\texttt{1117a6ac45bd} and \texttt{a4168a919e97}; its model-input structure
+manifest prefix is \texttt{bf6ea4a21ff3}. Full digests, split roles, and
+binary-contact authorities are stored in the accompanying machine-readable
+record.
 The accompanying machine-readable metrics file records the compact metrics,
 seeds, split roles, and audit status used in this draft. The archive also includes
 a machine-readable audit of every bibliographic record.

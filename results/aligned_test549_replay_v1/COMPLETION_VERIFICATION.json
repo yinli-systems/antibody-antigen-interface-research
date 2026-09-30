@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED_COMPLETED",
+  "scheduler": {
+    "1557224": "COMPLETED/0:0",
+    "1557225_0": "COMPLETED/0:0",
+    "1557225_1": "COMPLETED/0:0",
+    "1557225_2": "COMPLETED/0:0",
+    "1557225_3": "COMPLETED/0:0",
+    "1557225_4": "COMPLETED/0:0",
+    "1557225_5": "COMPLETED/0:0",
+    "1557226": "COMPLETED/0:0"
+  },
+  "all_components_gpu": "NVIDIA GeForce RTX 4090",
+  "instances_evaluated_per_component": 549,
+  "mpc_ap_eligible_instances_each_task": 548,
+  "zero_positive_instances_excluded_only_from_mpc_ap": 1,
+  "unique_esm2_embeddings": 503,
+  "predictions_retained": 3294,
+  "bundle_sha256": "3e370ff3ebae1f6261865ace9b71666385ff5722d07f08388c5a490365400958",
+  "result_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+  "receipt_sha256": "e906ec9f91f1ede54611d65851eb5c641f0c870be2685ee1b31aa3bc2dd40f04",
+  "fresh_blind_test": false,
+  "model_selection_or_retraining": false,
+  "calibration_or_threshold_refit": false,
+  "experimental_bound_coordinates_as_model_input": false,
+  "labels_passed_to_model": false
+}

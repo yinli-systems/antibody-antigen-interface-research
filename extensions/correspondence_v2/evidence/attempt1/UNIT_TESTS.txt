@@ -1,0 +1,39 @@
+test_accept_validation (__main__.FirewallTests) ... ok
+test_no_nan_result (__main__.FirewallTests) ... ok
+test_no_overwrite (__main__.FirewallTests) ... ok
+test_reject_duplicate (__main__.FirewallTests) ... ok
+test_reject_overlap (__main__.FirewallTests) ... ok
+test_reject_test (__main__.FirewallTests) ... ok
+test_reject_train (__main__.FirewallTests) ... ok
+test_chain_boundaries_multiset_and_reproducibility (__main__.PermutationTests) ... ok
+test_empty_chain (__main__.PermutationTests) ... ok
+test_integer_severity (__main__.PermutationTests) ... ok
+test_invalid_local (__main__.PermutationTests) ... ok
+test_invalid_mode (__main__.PermutationTests) ... ok
+test_local_shuffle_bound (__main__.PermutationTests) ... ok
+test_oracle_identity (__main__.PermutationTests) ... ok
+test_same_amino_acid (__main__.PermutationTests) ... ok
+test_shift_sign_and_wrap (__main__.PermutationTests) ... ok
+test_all_tied (__main__.RankingTests) ... ok
+test_invalid_labels (__main__.RankingTests) ... ok
+test_loser (__main__.RankingTests) ... ok
+test_multiple_positive_ties_exact_enumeration (__main__.RankingTests) ... ok
+test_nonfinite (__main__.RankingTests) ... ok
+test_unique_winner (__main__.RankingTests) ... ok
+test_cluster_weight_not_row_weight (__main__.StatisticsTests) ... ok
+test_complete_case_guard (__main__.StatisticsTests) ... ok
+test_constant_effect (__main__.StatisticsTests) ... ok
+test_pairing_sign_reversal (__main__.StatisticsTests) ... ok
+test_single_cluster_guard (__main__.StatisticsTests) ... ok
+test_explicit_inverse (__main__.TensorTests) ... ok
+test_finite_guard (__main__.TensorTests) ... ok
+test_missing_source_unchanged (__main__.TensorTests) ... ok
+test_missingness_guard (__main__.TensorTests) ... ok
+test_permutation_guard (__main__.TensorTests) ... ok
+test_preserve_base_and_presence (__main__.TensorTests) ... ok
+test_shape_guard (__main__.TensorTests) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 74.511s
+
+OK

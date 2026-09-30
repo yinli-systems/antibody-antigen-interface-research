@@ -1,0 +1,2 @@
+sbatch: error: slurm_job_submit_lua, 您没有指定申请GPU资源或GPU卡数超过范围,单节点作业仅支持提交1 ~ 8卡,请使用--gpus=卡数 指定使用GPU的数量. 例如: --gpus=1 申请 1 卡GPU.
+allocation failure: Unspecified error

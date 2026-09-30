@@ -1,0 +1,86 @@
+{
+  "baseline": "outer_product",
+  "bootstrap_ci95": [
+    0.0019686912510177143,
+    0.004290434941020674
+  ],
+  "claim_boundary": "Development-only replication on the validation split. It establishes a margin over a baseline, not a benchmark result, and authorizes no test access or model selection.",
+  "decision_rule": "both: the exact sign lower bound exceeds 0.5, and the lower end of the bootstrap interval exceeds the smallest effect worth caring about",
+  "decision_rule_id": "sign_bound_exceeds_half_and_ci_above_sesoi",
+  "effect_size": 1.5473717805639606,
+  "format_version": "pair_baseline_margin_replication_v1",
+  "mean_margin": 0.0031134461184687,
+  "meaningful": true,
+  "metric": "auprc",
+  "per_seed": [
+    {
+      "baseline": 0.018798623693852448,
+      "margin": 0.002807540078134399,
+      "model": 0.021606163771986847,
+      "seed": 1
+    },
+    {
+      "baseline": 0.020984752037536945,
+      "margin": 0.0011223241173518826,
+      "model": 0.022107076154888827,
+      "seed": 2
+    },
+    {
+      "baseline": 0.020185123208356893,
+      "margin": 0.00569540743187992,
+      "model": 0.025880530640236814,
+      "seed": 3
+    },
+    {
+      "baseline": 0.018338356763933018,
+      "margin": 0.0021514329869690915,
+      "model": 0.02048978975090211,
+      "seed": 4
+    },
+    {
+      "baseline": 0.020684120964497277,
+      "margin": 0.0015548403500313147,
+      "model": 0.022238961314528592,
+      "seed": 5
+    },
+    {
+      "baseline": 0.019996583695742313,
+      "margin": 0.0016622217793182056,
+      "model": 0.02165880547506052,
+      "seed": 6
+    },
+    {
+      "baseline": 0.01661824245409084,
+      "margin": 0.004274481533257327,
+      "model": 0.020892723987348167,
+      "seed": 7
+    },
+    {
+      "baseline": 0.02167582150868154,
+      "margin": 0.0006171271380889624,
+      "model": 0.0222929486467705,
+      "seed": 8
+    },
+    {
+      "baseline": 0.016773861105872326,
+      "margin": 0.005797987537677372,
+      "model": 0.022571848643549698,
+      "seed": 9
+    },
+    {
+      "baseline": 0.019409899130328045,
+      "margin": 0.005451098231978521,
+      "model": 0.024860997362306566,
+      "seed": 10
+    }
+  ],
+  "positive_seed_count": 10,
+  "relative_estimand": "per_seed_ratios: each seed's (model - baseline) / baseline; the mean and median of these are reported, not a ratio of means",
+  "scope": "macro",
+  "sd_margin": 0.002012086660475327,
+  "seed_count": 10,
+  "sesoi": 0.0,
+  "sign_lower_bound": 0.7411344491069477,
+  "significant": true,
+  "verdict": "established"
+}

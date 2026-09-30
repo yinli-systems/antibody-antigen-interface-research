@@ -1,0 +1,1120 @@
+{
+  "canonical_manifest_sha256": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+  "contact_labels_read": false,
+  "coordinates_read": false,
+  "created_utc": "2026-09-29T23:57:13Z",
+  "format_version": "untouched_ood_sequence_audit_v1",
+  "limitations": [
+    "Full Fab sequences are compared with project variable domains using target coverage; this is conservative but not ANARCI numbering.",
+    "Sequence passage does not imply interface-structure novelty; Foldseek/interface audit remains required.",
+    "A failed entity blocks its PDB; no post-hoc threshold changes are authorized."
+  ],
+  "metadata_freeze_sha256": "4dfd6766732874ecf7bd0a618b3c2104be4b1a1082d3cb87ac0472d49e1f5d2d",
+  "mmseqs_binary_sha256": "b7ef6e0e33df5dd4fa9cf988cbd8b4988c11a3a1255d2c377f13e1bb40c157fb",
+  "mmseqs_version": "8cc5ce367b5638c4306c2d7cfc652dd099a4643f",
+  "pdb_candidates": 14,
+  "pdb_passing_sequence_gate": 0,
+  "performance_evaluated": false,
+  "results": [
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 109,
+            "bits": 182.0,
+            "evalue": 1.748e-55,
+            "fident": 0.816,
+            "qcov": 1.0,
+            "query": "12IU|antibody|entity1",
+            "target": "45c119bdbb1eb22bea17c055744ac1c5ddb73bc1c792289363d40900a21770d4",
+            "tcov": 0.981
+          },
+          "description": "2F03 light chain",
+          "eligible_hit_count": 1409,
+          "entity_id": "1",
+          "length": 109,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IU",
+          "role": "antibody",
+          "sequence_sha256": "e1f55c131969801ed4129b3642e3312cb0f3cda12a982b92ab51cab2c1ab5966"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 195.0,
+            "evalue": 7.345e-60,
+            "fident": 0.801,
+            "qcov": 0.984,
+            "query": "12IU|antibody|entity2",
+            "target": "0ec6651b0b97460b0e21d62134ff92e5dd8e0e9524ff8ddbd944f1076e751da2",
+            "tcov": 1.0
+          },
+          "description": "2F03 heavy chain",
+          "eligible_hit_count": 2190,
+          "entity_id": "2",
+          "length": 123,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IU",
+          "role": "antibody",
+          "sequence_sha256": "ad1d55122baf3a6a93b0db09bc6da6b983605ca20e1bbced20ed956bf334afa4"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 323,
+            "bits": 685.0,
+            "evalue": 7.623e-226,
+            "fident": 0.996,
+            "qcov": 1.0,
+            "query": "12IU|antigen|entity3",
+            "target": "e1d587a1f8002fab086c4c7de85de45e95f2ed5f9ae11025e3edfb89ad51e4b9",
+            "tcov": 0.997
+          },
+          "description": "Hemagglutinin HA1",
+          "eligible_hit_count": 62,
+          "entity_id": "3",
+          "length": 323,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IU",
+          "role": "antigen",
+          "sequence_sha256": "a9c518cd5cb69d415ea08806c75f3dab0da4fd7907a1e2aa4a6c81140eed29ef"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 159,
+            "bits": 336.0,
+            "evalue": 6.142e-108,
+            "fident": 0.993,
+            "qcov": 0.975,
+            "query": "12IU|antigen|entity4",
+            "target": "09675fd85f7afa5cd255c75d2a393d3df55baaa93e61222e497f170571f95cb6",
+            "tcov": 0.941
+          },
+          "description": "Hemagglutinin HA2",
+          "eligible_hit_count": 7,
+          "entity_id": "4",
+          "length": 163,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IU",
+          "role": "antigen",
+          "sequence_sha256": "69ad1c5d348dc4e5016388bf3c5d6ee285da4aebbab023a4a69d70cbcb96921d"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "12IU",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 120,
+            "bits": 192.0,
+            "evalue": 6.101e-59,
+            "fident": 0.791,
+            "qcov": 0.992,
+            "query": "12IV|antibody|entity3",
+            "target": "0ec6651b0b97460b0e21d62134ff92e5dd8e0e9524ff8ddbd944f1076e751da2",
+            "tcov": 0.992
+          },
+          "description": "Heavy chain 1A02",
+          "eligible_hit_count": 2060,
+          "entity_id": "3",
+          "length": 121,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IV",
+          "role": "antibody",
+          "sequence_sha256": "9de95e7d0e08529cdec59bd3c0080d9aeda3f65e03ee00bc36e1ad4a47816151"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 106,
+            "bits": 198.0,
+            "evalue": 3.555e-61,
+            "fident": 0.886,
+            "qcov": 1.0,
+            "query": "12IV|antibody|entity4",
+            "target": "45c119bdbb1eb22bea17c055744ac1c5ddb73bc1c792289363d40900a21770d4",
+            "tcov": 0.981
+          },
+          "description": "Light chain 1A02",
+          "eligible_hit_count": 1751,
+          "entity_id": "4",
+          "length": 106,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IV",
+          "role": "antibody",
+          "sequence_sha256": "7f90abe8145427f29d29c591c1012727540f759620d990ed0a5bc4c88e2efe3a"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 159,
+            "bits": 336.0,
+            "evalue": 5.318e-108,
+            "fident": 0.993,
+            "qcov": 0.994,
+            "query": "12IV|antigen|entity1",
+            "target": "09675fd85f7afa5cd255c75d2a393d3df55baaa93e61222e497f170571f95cb6",
+            "tcov": 0.941
+          },
+          "description": "Hemagglutinin HA2",
+          "eligible_hit_count": 7,
+          "entity_id": "1",
+          "length": 160,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IV",
+          "role": "antigen",
+          "sequence_sha256": "e85c44427fad2ddeaa7ae75495ffee215f617239b60c807b70d1789b44afd105"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 321,
+            "bits": 683.0,
+            "evalue": 3.354e-225,
+            "fident": 1.0,
+            "qcov": 1.0,
+            "query": "12IV|antigen|entity2",
+            "target": "31f7205c3db0ca94f62a5de78e774af5538ad7ab9b2b9cbff376a703e1383f63",
+            "tcov": 1.0
+          },
+          "description": "Hemagglutinin HA1",
+          "eligible_hit_count": 62,
+          "entity_id": "2",
+          "length": 321,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "12IV",
+          "role": "antigen",
+          "sequence_sha256": "31f7205c3db0ca94f62a5de78e774af5538ad7ab9b2b9cbff376a703e1383f63"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "12IV",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 190.0,
+            "evalue": 2.724e-56,
+            "fident": 0.793,
+            "qcov": 0.527,
+            "query": "21RN|antibody|entity1",
+            "target": "31ee11b9f85213becf75065fe85db87c70d0f335c1fcbeebee108035b05491d0",
+            "tcov": 1.0
+          },
+          "description": "mAb-A46 Fab Heavy chain",
+          "eligible_hit_count": 1789,
+          "entity_id": "1",
+          "length": 224,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RN",
+          "role": "antibody",
+          "sequence_sha256": "9968a2678849becddbc0059e70957dcbe12a972f88d902e8500df38387aeffc0"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 107,
+            "bits": 214.0,
+            "evalue": 1.104e-64,
+            "fident": 0.943,
+            "qcov": 0.498,
+            "query": "21RN|antibody|entity2",
+            "target": "e73aea938f3b862b8da0a3b46c628b0ffde414efb873636aa57a1e5bd6ff10b1",
+            "tcov": 1.0
+          },
+          "description": "mAb-A46 Fab Light chain",
+          "eligible_hit_count": 1488,
+          "entity_id": "2",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RN",
+          "role": "antibody",
+          "sequence_sha256": "b7dee2a582a1bab83f513cf7f9f3783e7f65cae795a312e3520212e538c4b2a1"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 118,
+            "bits": 208.0,
+            "evalue": 1.962e-62,
+            "fident": 0.881,
+            "qcov": 0.527,
+            "query": "21RN|antibody|entity3",
+            "target": "cfe0ea267ff8d02db3d42a01dad0e205ad8292974e8dd9f5da01680e15bf96fe",
+            "tcov": 1.0
+          },
+          "description": "mAb-A24 Fab Heavy chain",
+          "eligible_hit_count": 1630,
+          "entity_id": "3",
+          "length": 224,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RN",
+          "role": "antibody",
+          "sequence_sha256": "166eb37e3875088b96ce52e181d57c46faa8c1ef4063e9d666f3e0055bfdffac"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 107,
+            "bits": 215.0,
+            "evalue": 5.885e-65,
+            "fident": 0.953,
+            "qcov": 0.498,
+            "query": "21RN|antibody|entity4",
+            "target": "e73aea938f3b862b8da0a3b46c628b0ffde414efb873636aa57a1e5bd6ff10b1",
+            "tcov": 1.0
+          },
+          "description": "mAb-A24 Fab Light chain",
+          "eligible_hit_count": 1356,
+          "entity_id": "4",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RN",
+          "role": "antibody",
+          "sequence_sha256": "3f21adb33a9340c2e981c8bb0074486b815e47a785895c0e52683426bd586c50"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Myeloperoxidase light chain",
+          "eligible_hit_count": 0,
+          "entity_id": "5",
+          "length": 114,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "21RN",
+          "role": "antigen",
+          "sequence_sha256": "f5b270998f294a14207d369bc4a9ca57875fabed1ef791fc6465c31a17420a9f"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Myeloperoxidase",
+          "eligible_hit_count": 0,
+          "entity_id": "6",
+          "length": 476,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "21RN",
+          "role": "antigen",
+          "sequence_sha256": "6775396eb488eae4eb1eedf3928f411cdcaa1f50cfe901ce2efc0e32ad22cb8a"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "21RN",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 190.0,
+            "evalue": 2.724e-56,
+            "fident": 0.793,
+            "qcov": 0.527,
+            "query": "21RT|antibody|entity1",
+            "target": "31ee11b9f85213becf75065fe85db87c70d0f335c1fcbeebee108035b05491d0",
+            "tcov": 1.0
+          },
+          "description": "mAb-A46 Fab Heavy chain",
+          "eligible_hit_count": 1789,
+          "entity_id": "1",
+          "length": 224,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RT",
+          "role": "antibody",
+          "sequence_sha256": "9968a2678849becddbc0059e70957dcbe12a972f88d902e8500df38387aeffc0"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 107,
+            "bits": 214.0,
+            "evalue": 1.104e-64,
+            "fident": 0.943,
+            "qcov": 0.498,
+            "query": "21RT|antibody|entity2",
+            "target": "e73aea938f3b862b8da0a3b46c628b0ffde414efb873636aa57a1e5bd6ff10b1",
+            "tcov": 1.0
+          },
+          "description": "mAb-A46 Fab Light chain",
+          "eligible_hit_count": 1488,
+          "entity_id": "2",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RT",
+          "role": "antibody",
+          "sequence_sha256": "b7dee2a582a1bab83f513cf7f9f3783e7f65cae795a312e3520212e538c4b2a1"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 120,
+            "bits": 202.0,
+            "evalue": 2.191e-60,
+            "fident": 0.85,
+            "qcov": 0.527,
+            "query": "21RT|antibody|entity3",
+            "target": "2b742e1db638a297800d5b0d02d0d666b2cdaa9092e5a8e2642fd2b6b499a746",
+            "tcov": 1.0
+          },
+          "description": "mAb-B88 Fab Heavy chain",
+          "eligible_hit_count": 1929,
+          "entity_id": "3",
+          "length": 224,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RT",
+          "role": "antibody",
+          "sequence_sha256": "51dcc3e110e9bca51cb6f7a9e10eaa81e28adedcfbe3ca578006ef3bb05d32a0"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 108,
+            "bits": 223.0,
+            "evalue": 8.272e-68,
+            "fident": 0.953,
+            "qcov": 0.505,
+            "query": "21RT|antibody|entity4",
+            "target": "1675c33e9b1b038aa5e3ea96a6375e74495e3382149099e4bf2b9af9dc51f37a",
+            "tcov": 1.0
+          },
+          "description": "mAb-B88 Fab Light chain",
+          "eligible_hit_count": 1762,
+          "entity_id": "4",
+          "length": 214,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "21RT",
+          "role": "antibody",
+          "sequence_sha256": "3ac6e9f9e8dccb1094ee58bc9c12302d468eaab60b6ba74854153d1da2861b01"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Myeloperoxidase light chain",
+          "eligible_hit_count": 0,
+          "entity_id": "5",
+          "length": 114,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "21RT",
+          "role": "antigen",
+          "sequence_sha256": "f5b270998f294a14207d369bc4a9ca57875fabed1ef791fc6465c31a17420a9f"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Myeloperoxidase",
+          "eligible_hit_count": 0,
+          "entity_id": "6",
+          "length": 476,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "21RT",
+          "role": "antigen",
+          "sequence_sha256": "6775396eb488eae4eb1eedf3928f411cdcaa1f50cfe901ce2efc0e32ad22cb8a"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "21RT",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 127,
+            "bits": 211.0,
+            "evalue": 4.15e-65,
+            "fident": 0.811,
+            "qcov": 0.992,
+            "query": "22PD|antibody|entity1",
+            "target": "9b6c4ef87b6ce04c5df1def10dcdfa58249e7411b26319b6b9dd4d425f436fe0",
+            "tcov": 0.992
+          },
+          "description": "THZ937 fab heavy chain",
+          "eligible_hit_count": 1889,
+          "entity_id": "1",
+          "length": 128,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "22PD",
+          "role": "antibody",
+          "sequence_sha256": "0ed94349f3ace01fd417de5edcd310300ce7ed8026ec54f7d599bc52148d766c"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 109,
+            "bits": 201.0,
+            "evalue": 5.201e-62,
+            "fident": 0.926,
+            "qcov": 0.964,
+            "query": "22PD|antibody|entity2",
+            "target": "07af27c0ada95a43ede0c0a5004ea3b6898536f394beebe73d1e954c73921b88",
+            "tcov": 1.0
+          },
+          "description": "THZ937 fab light chain",
+          "eligible_hit_count": 2030,
+          "entity_id": "2",
+          "length": 112,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "22PD",
+          "role": "antibody",
+          "sequence_sha256": "f3ded0fa33fae5caf4ed7c78bc252af1712193f1867d96e4f144969511c6575c"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 196,
+            "bits": 432.0,
+            "evalue": 2.491e-140,
+            "fident": 1.0,
+            "qcov": 0.98,
+            "query": "22PD|antigen|entity3",
+            "target": "65d7b2b7affe5a7fe51772106cd0b6dee4c6aab6bbc18ee341e52012660240aa",
+            "tcov": 0.961
+          },
+          "description": "SARS-CoV-2 BA.4 spike RBD",
+          "eligible_hit_count": 185,
+          "entity_id": "3",
+          "length": 200,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "22PD",
+          "role": "antigen",
+          "sequence_sha256": "802bd46b373bd71b12b0bc3df4c9901d69965732308b79edd5ce0a3681e7e13c"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "22PD",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 112,
+            "bits": 208.0,
+            "evalue": 1.697e-62,
+            "fident": 0.919,
+            "qcov": 0.521,
+            "query": "45IC|antibody|entity1",
+            "target": "e21624756ef9bfd28d23348160b5b2ee6dc0160ed055e33f76b94668306d9af1",
+            "tcov": 1.0
+          },
+          "description": "THZ-65 Fab Light chain",
+          "eligible_hit_count": 1914,
+          "entity_id": "1",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "45IC",
+          "role": "antibody",
+          "sequence_sha256": "96658964a347c5b54b0ae00559eac7732f60523666116244e049862cdade525d"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 128,
+            "bits": 205.0,
+            "evalue": 3.104e-61,
+            "fident": 0.804,
+            "qcov": 0.557,
+            "query": "45IC|antibody|entity3",
+            "target": "3cc61666193fba0bd70d68293a465f0946ca74db62a7b88c09323d4a2e150771",
+            "tcov": 1.0
+          },
+          "description": "THZ-65 Fab Heavy chain",
+          "eligible_hit_count": 1664,
+          "entity_id": "3",
+          "length": 230,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "45IC",
+          "role": "antibody",
+          "sequence_sha256": "1f867bc7f9f5e242161b25c83922bf1bbe47acafce5ed21bc7b53b0a0f6936e8"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 194,
+            "bits": 429.0,
+            "evalue": 1.241e-139,
+            "fident": 1.0,
+            "qcov": 1.0,
+            "query": "45IC|antigen|entity2",
+            "target": "3e65318af2f688ef65b81645a2ae555e9acee21b2b8e0ab4dc6c9d2737836da2",
+            "tcov": 0.995
+          },
+          "description": "Spike protein S1",
+          "eligible_hit_count": 185,
+          "entity_id": "2",
+          "length": 194,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "45IC",
+          "role": "antigen",
+          "sequence_sha256": "bb85a1449dc36fa551eb1588abd5504b7ee1ca057747398a0392b53208e044e0"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "45IC",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 126,
+            "bits": 198.0,
+            "evalue": 8.876e-59,
+            "fident": 0.809,
+            "qcov": 0.517,
+            "query": "45ID|antibody|entity1",
+            "target": "1200e4b8bb67dcdb8e7c241a5f555108d26ff05be748bb2c9aeb3fbe7d6cde1f",
+            "tcov": 1.0
+          },
+          "description": "THZ-939 Fab Heavy chain",
+          "eligible_hit_count": 2060,
+          "entity_id": "1",
+          "length": 230,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "45ID",
+          "role": "antibody",
+          "sequence_sha256": "77be6dde91b4f51245622a31ec32c738bd02c1f7dd8cd67d4ab2ebdd2edcbfbc"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 113,
+            "bits": 214.0,
+            "evalue": 9.958e-65,
+            "fident": 0.92,
+            "qcov": 0.514,
+            "query": "45ID|antibody|entity2",
+            "target": "3b2c361334cbeb66aec6ecd2fbe1f9a890585d92cd3df87d0cb7a3dcff8c28cb",
+            "tcov": 0.991
+          },
+          "description": "THZ-939 Fab Light chain",
+          "eligible_hit_count": 1459,
+          "entity_id": "2",
+          "length": 218,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "45ID",
+          "role": "antibody",
+          "sequence_sha256": "e9c5043b87782aa8912bb9e5f6513c1fb37aa0b7820e017329e434dd504dcf1f"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 223,
+            "bits": 484.0,
+            "evalue": 6.185e-158,
+            "fident": 1.0,
+            "qcov": 1.0,
+            "query": "45ID|antigen|entity3",
+            "target": "65ed024bba55400863bdb7b92131863efc2d0abe7ba15ebea201db0727946188",
+            "tcov": 0.805
+          },
+          "description": "Spike protein S1",
+          "eligible_hit_count": 185,
+          "entity_id": "3",
+          "length": 223,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "45ID",
+          "role": "antigen",
+          "sequence_sha256": "af5ee94d7b888059635fa1e91fc810f86583974e810182490d1b44808b68055a"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "45ID",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 211.0,
+            "evalue": 1.795e-63,
+            "fident": 0.842,
+            "qcov": 0.511,
+            "query": "9TXJ|antibody|entity2",
+            "target": "6eaf5fcc96e7cc7fa2efbc63297545f94882fea9bf1bd64dc31a8c32400bf57b",
+            "tcov": 1.0
+          },
+          "description": "12A12 mAb F(ab) heavy chain",
+          "eligible_hit_count": 2117,
+          "entity_id": "2",
+          "length": 227,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9TXJ",
+          "role": "antibody",
+          "sequence_sha256": "d1d5cc6b355a8427fe2ce1f5cedbd4d7e4354957f3dec5461050410042eeb169"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 107,
+            "bits": 218.0,
+            "evalue": 4.745e-66,
+            "fident": 0.962,
+            "qcov": 0.498,
+            "query": "9TXJ|antibody|entity3",
+            "target": "e73aea938f3b862b8da0a3b46c628b0ffde414efb873636aa57a1e5bd6ff10b1",
+            "tcov": 1.0
+          },
+          "description": "12A12 mAb F(ab) light chain",
+          "eligible_hit_count": 1627,
+          "entity_id": "3",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9TXJ",
+          "role": "antibody",
+          "sequence_sha256": "6fe8ce39f6a7505fa43910d95ac3acb12c076ea847388c6994359416ed90084f"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Isoform 3 of Inter-alpha-trypsin inhibitor heavy chain H4",
+          "eligible_hit_count": 0,
+          "entity_id": "1",
+          "length": 906,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "9TXJ",
+          "role": "antigen",
+          "sequence_sha256": "e629a6bf9794effb5e7c3fc0e0add7405f0f97f118c7e170302c19a7f99509a7"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9TXJ",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 211.0,
+            "evalue": 1.795e-63,
+            "fident": 0.842,
+            "qcov": 0.511,
+            "query": "9TXK|antibody|entity2",
+            "target": "6eaf5fcc96e7cc7fa2efbc63297545f94882fea9bf1bd64dc31a8c32400bf57b",
+            "tcov": 1.0
+          },
+          "description": "12A12 mAb F(ab) heavy chain",
+          "eligible_hit_count": 2117,
+          "entity_id": "2",
+          "length": 227,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9TXK",
+          "role": "antibody",
+          "sequence_sha256": "d1d5cc6b355a8427fe2ce1f5cedbd4d7e4354957f3dec5461050410042eeb169"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 107,
+            "bits": 218.0,
+            "evalue": 4.745e-66,
+            "fident": 0.962,
+            "qcov": 0.498,
+            "query": "9TXK|antibody|entity3",
+            "target": "e73aea938f3b862b8da0a3b46c628b0ffde414efb873636aa57a1e5bd6ff10b1",
+            "tcov": 1.0
+          },
+          "description": "12A12 mAb F(ab) light chain",
+          "eligible_hit_count": 1627,
+          "entity_id": "3",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9TXK",
+          "role": "antibody",
+          "sequence_sha256": "6fe8ce39f6a7505fa43910d95ac3acb12c076ea847388c6994359416ed90084f"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Isoform 3 of Inter-alpha-trypsin inhibitor heavy chain H4",
+          "eligible_hit_count": 0,
+          "entity_id": "1",
+          "length": 630,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "9TXK",
+          "role": "antigen",
+          "sequence_sha256": "8bb90c5f40faa8a048d3e65005d0b02c91f7b393a0425a418ccad39b47f74363"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9TXK",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 211.0,
+            "evalue": 1.795e-63,
+            "fident": 0.842,
+            "qcov": 0.511,
+            "query": "9TXL|antibody|entity3",
+            "target": "6eaf5fcc96e7cc7fa2efbc63297545f94882fea9bf1bd64dc31a8c32400bf57b",
+            "tcov": 1.0
+          },
+          "description": "12A12 mAb F(ab) heavy chain",
+          "eligible_hit_count": 2117,
+          "entity_id": "3",
+          "length": 227,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9TXL",
+          "role": "antibody",
+          "sequence_sha256": "d1d5cc6b355a8427fe2ce1f5cedbd4d7e4354957f3dec5461050410042eeb169"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 107,
+            "bits": 218.0,
+            "evalue": 4.745e-66,
+            "fident": 0.962,
+            "qcov": 0.498,
+            "query": "9TXL|antibody|entity4",
+            "target": "e73aea938f3b862b8da0a3b46c628b0ffde414efb873636aa57a1e5bd6ff10b1",
+            "tcov": 1.0
+          },
+          "description": "12A12 mAb F(ab) light chain",
+          "eligible_hit_count": 1627,
+          "entity_id": "4",
+          "length": 213,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9TXL",
+          "role": "antibody",
+          "sequence_sha256": "6fe8ce39f6a7505fa43910d95ac3acb12c076ea847388c6994359416ed90084f"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Isoform 3 of Inter-alpha-trypsin inhibitor heavy chain H4",
+          "eligible_hit_count": 0,
+          "entity_id": "1",
+          "length": 630,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "9TXL",
+          "role": "antigen",
+          "sequence_sha256": "8bb90c5f40faa8a048d3e65005d0b02c91f7b393a0425a418ccad39b47f74363"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9TXL",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 123,
+            "bits": 180.0,
+            "evalue": 1.148e-54,
+            "fident": 0.707,
+            "qcov": 1.0,
+            "query": "9Y7C|antibody|entity1",
+            "target": "a2dd65bfdc9e14db552a66d801967169481ef8d6aa2b3504dda56e647d2a4719",
+            "tcov": 1.0
+          },
+          "description": "B57 heavy chain",
+          "eligible_hit_count": 1763,
+          "entity_id": "1",
+          "length": 122,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9Y7C",
+          "role": "antibody",
+          "sequence_sha256": "01edb60645c9bb47563aedaeae6252665ef91da33b1004e64be11f2195ee51e6"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 110,
+            "bits": 207.0,
+            "evalue": 3.006e-64,
+            "fident": 0.9,
+            "qcov": 1.0,
+            "query": "9Y7C|antibody|entity2",
+            "target": "d02faac80c374ac6118b0faeac9fac0838a1cc0dcf4bedf35bbf0c614c3159b2",
+            "tcov": 0.991
+          },
+          "description": "B57 light chain",
+          "eligible_hit_count": 1734,
+          "entity_id": "2",
+          "length": 110,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9Y7C",
+          "role": "antibody",
+          "sequence_sha256": "00ccff1a7b85fc695dcc7de1c4b2dcf4697d4c471e1b08a23e928d9d4e56b684"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 121,
+            "bits": 192.0,
+            "evalue": 6.101e-59,
+            "fident": 0.768,
+            "qcov": 1.0,
+            "query": "9Y7C|antibody|entity3",
+            "target": "5017d0e3adc22c4f02d685cd892c080eb385ac0de948a18c787e0f0d8dae3ebb",
+            "tcov": 1.0
+          },
+          "description": "C50 heavy chain",
+          "eligible_hit_count": 2001,
+          "entity_id": "3",
+          "length": 121,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9Y7C",
+          "role": "antibody",
+          "sequence_sha256": "737a0288131004254a1824527855e6ae1db221090bdd88d5962195222d73d40b"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 101,
+            "bits": 165.0,
+            "evalue": 6.962e-50,
+            "fident": 0.752,
+            "qcov": 1.0,
+            "query": "9Y7C|antibody|entity4",
+            "target": "296c66573a8188a4ebc6c0193c0a4914e803df92c772615fdb4859d0363240f1",
+            "tcov": 0.918
+          },
+          "description": "C50 light chain",
+          "eligible_hit_count": 1310,
+          "entity_id": "4",
+          "length": 101,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9Y7C",
+          "role": "antibody",
+          "sequence_sha256": "8bfb17e7fd49480c4f222b2a09188ced33b4c0f8bbdbbe1b7b51b0e7c24d667a"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 277,
+            "bits": 82.0,
+            "evalue": 7.429e-17,
+            "fident": 0.296,
+            "qcov": 0.22,
+            "query": "9Y7C|antigen|entity5",
+            "target": "3a4434e7439d081006e9168e2e91e4fc7988a03acd3942212bf21b664a72839f",
+            "tcov": 0.857
+          },
+          "description": "PfEMP1",
+          "eligible_hit_count": 2,
+          "entity_id": "5",
+          "length": 1260,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "9Y7C",
+          "role": "antigen",
+          "sequence_sha256": "3ba96084120b79a37a7af7c40590807db60029c6c646893f99df5a1f20bd3f7d"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9Y7C",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 125,
+            "bits": 173.0,
+            "evalue": 5.872e-52,
+            "fident": 0.72,
+            "qcov": 0.953,
+            "query": "9Y7F|antibody|entity1",
+            "target": "5e7683080ea216659bdaa97868e742961c1fb5381e9ce0dc358c4cde37f4b001",
+            "tcov": 1.0
+          },
+          "description": "Nanobody R3D8",
+          "eligible_hit_count": 2072,
+          "entity_id": "1",
+          "length": 127,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9Y7F",
+          "role": "antibody",
+          "sequence_sha256": "57bfe1c7977c8f444ba199a19d1e7b0550e45f4e33eb1f965138a11b82c89144"
+        },
+        {
+          "best_eligible_hit": null,
+          "description": "Sodium channel protein type 9 subunit alpha",
+          "eligible_hit_count": 0,
+          "entity_id": "2",
+          "length": 31,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "9Y7F",
+          "role": "antigen",
+          "sequence_sha256": "3d3c7c89838e6b8e4163bd7c87447f56c3019f353acfd4f38a107a7b3262ee48"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9Y7F",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 117,
+            "bits": 186.0,
+            "evalue": 1.09e-54,
+            "fident": 0.794,
+            "qcov": 0.523,
+            "query": "9ZRS|antibody|entity2",
+            "target": "a4fb73613209ebad598ade595eee74bf43ea2c2dd5b6851f7af66092d69851be",
+            "tcov": 1.0
+          },
+          "description": "D02-F2 antibody fragment heavy chain",
+          "eligible_hit_count": 1639,
+          "entity_id": "2",
+          "length": 222,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRS",
+          "role": "antibody",
+          "sequence_sha256": "eb9a144e53ba525bce4c0c824f77b70adcd6794b0d3f5b824d5a36ef2ae97b7f"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 113,
+            "bits": 197.0,
+            "evalue": 1.455e-58,
+            "fident": 0.823,
+            "qcov": 0.516,
+            "query": "9ZRS|antibody|entity3",
+            "target": "a4f126853d224b91380c743760df40a0a97ac0b08e685b989924cfb1a3699193",
+            "tcov": 1.0
+          },
+          "description": "D02-F2 antibody fragment light chain",
+          "eligible_hit_count": 1400,
+          "entity_id": "3",
+          "length": 219,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRS",
+          "role": "antibody",
+          "sequence_sha256": "8384748d30f08d00bf17521c7c61ee15628d165201bda9c3b66f776fb1d4ee2c"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 119,
+            "bits": 180.0,
+            "evalue": 1.365e-52,
+            "fident": 0.789,
+            "qcov": 0.529,
+            "query": "9ZRS|antibody|entity4",
+            "target": "f631b3c113af155ca86d145de4dea1a62eefd7d0a0d564327495a3c7c452fe1f",
+            "tcov": 1.0
+          },
+          "description": "D02-E4 antibody fragment heavy chain",
+          "eligible_hit_count": 1504,
+          "entity_id": "4",
+          "length": 225,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRS",
+          "role": "antibody",
+          "sequence_sha256": "ccdde6a9e6dd732e40d5f9ad579db8f5a5d7930c2f399887d568d14fc10bdef2"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 108,
+            "bits": 201.0,
+            "evalue": 3.721e-60,
+            "fident": 0.907,
+            "qcov": 0.505,
+            "query": "9ZRS|antibody|entity5",
+            "target": "aac66c01742f66555d0bb0f0e4e5bbac730ad9071740175389ee3da0c40abb0c",
+            "tcov": 1.0
+          },
+          "description": "D02-E4 antibody fragment light chain",
+          "eligible_hit_count": 1694,
+          "entity_id": "5",
+          "length": 214,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRS",
+          "role": "antibody",
+          "sequence_sha256": "86e9fdbd9d153e5db11b85c6d8a86595fcb36ac990b0e85ff444ef8e4525c8af"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 281,
+            "bits": 545.0,
+            "evalue": 1.873e-176,
+            "fident": 1.0,
+            "qcov": 0.787,
+            "query": "9ZRS|antigen|entity1",
+            "target": "1c251855c8ed20d084128f5b3c42f2b57cd194d00597997ab4ea6a16036111f5",
+            "tcov": 0.996
+          },
+          "description": "Invasin IpaD",
+          "eligible_hit_count": 1,
+          "entity_id": "1",
+          "length": 357,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRS",
+          "role": "antigen",
+          "sequence_sha256": "e76e925960ac24cf1be3ed103cc9854110c399801df2624d6498bfec1008593f"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9ZRS",
+      "project_pdb_id_absent": true
+    },
+    {
+      "entity_results": [
+        {
+          "best_eligible_hit": {
+            "alnlen": 126,
+            "bits": 167.0,
+            "evalue": 4.098e-48,
+            "fident": 0.69,
+            "qcov": 0.543,
+            "query": "9ZRT|antibody|entity2",
+            "target": "b52c95f5be1f9087a2bd4eee894ac6ef9ecb0b46c96acb2c2f871ada2967d466",
+            "tcov": 1.0
+          },
+          "description": "D13r-34 antibody fragment heavy chain",
+          "eligible_hit_count": 1544,
+          "entity_id": "2",
+          "length": 232,
+          "passes_70pct_identity_gate": true,
+          "pdb_id": "9ZRT",
+          "role": "antibody",
+          "sequence_sha256": "145a5c35f419609b7f96bcbb856fe29f1532e5c91162f2fe5a28a39bae4982ed"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 108,
+            "bits": 185.0,
+            "evalue": 1.478e-54,
+            "fident": 0.814,
+            "qcov": 0.505,
+            "query": "9ZRT|antibody|entity3",
+            "target": "37611293ac9b5b892e33def4943a37f50c61eb938b9accd0eabe2ebe1ef8b40b",
+            "tcov": 1.0
+          },
+          "description": "D13r-34 antibody fragment light chain",
+          "eligible_hit_count": 1569,
+          "entity_id": "3",
+          "length": 214,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRT",
+          "role": "antibody",
+          "sequence_sha256": "4a4c95b9b47ab75a3728afebc750e76a46a384745e40d01fa20cfdb914643c44"
+        },
+        {
+          "best_eligible_hit": {
+            "alnlen": 281,
+            "bits": 545.0,
+            "evalue": 1.873e-176,
+            "fident": 1.0,
+            "qcov": 0.787,
+            "query": "9ZRT|antigen|entity1",
+            "target": "1c251855c8ed20d084128f5b3c42f2b57cd194d00597997ab4ea6a16036111f5",
+            "tcov": 0.996
+          },
+          "description": "Invasin IpaD",
+          "eligible_hit_count": 1,
+          "entity_id": "1",
+          "length": 357,
+          "passes_70pct_identity_gate": false,
+          "pdb_id": "9ZRT",
+          "role": "antigen",
+          "sequence_sha256": "e76e925960ac24cf1be3ed103cc9854110c399801df2624d6498bfec1008593f"
+        }
+      ],
+      "gate": "PDB ID absent; every frozen antibody entity <70% identity at >=80% project-variable target coverage and every antigen entity <70% at >=80% query-or-target coverage",
+      "passes_sequence_gate": false,
+      "pdb_id": "9ZRT",
+      "project_pdb_id_absent": true
+    }
+  ]
+}

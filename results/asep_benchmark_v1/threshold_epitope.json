@@ -1,0 +1,264 @@
+{
+  "best_minus_fixed": 0.06804269898413229,
+  "best_over_fixed": 1.3301471945341825,
+  "claim_boundary": "A threshold sweep on stored predictions. It says how far a single-point metric can move with its operating point; it does not identify anyone else's operating point.",
+  "evaluated_on": "validation",
+  "format_version": "node_threshold_sensitivity_v1",
+  "operating_points": {
+    "best": {
+      "mcc_mean": 0.2741407670901974,
+      "mcc_sd": 0.03851630216357543,
+      "precision_mean": 0.26080714996820403,
+      "recall_mean": 0.49109653233364575,
+      "threshold_mean": 0.853
+    },
+    "fixed": {
+      "mcc_mean": 0.20609806810606512,
+      "mcc_sd": 0.016750650990527065,
+      "precision_mean": 0.1327967663613053,
+      "recall_mean": 0.8798812870977819,
+      "threshold_mean": 0.5
+    },
+    "prevalence_matched": {
+      "mcc_mean": 0.26138256876037536,
+      "mcc_sd": 0.043066072627780796,
+      "precision_mean": 0.3215789258887136,
+      "recall_mean": 0.31918150577944393,
+      "threshold_mean": 0.9065000000000001
+    }
+  },
+  "per_seed": {
+    "1": {
+      "best": {
+        "mcc": 0.32496377717279645,
+        "precision": 0.3488551582197067,
+        "predicted_positive": 3887,
+        "recall": 0.42361761949390814,
+        "threshold": 0.915
+      },
+      "fixed": {
+        "mcc": 0.21028869890338375,
+        "precision": 0.1292176411685315,
+        "predicted_positive": 22969,
+        "recall": 0.9272102467978757,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.32115334903638015,
+        "precision": 0.37535101404056165,
+        "predicted_positive": 3205,
+        "recall": 0.37582005623242737,
+        "threshold": 0.925
+      }
+    },
+    "10": {
+      "best": {
+        "mcc": 0.26582588323492,
+        "precision": 0.2525608732157851,
+        "predicted_positive": 5955,
+        "recall": 0.4698531708840987,
+        "threshold": 0.85
+      },
+      "fixed": {
+        "mcc": 0.2143630780708126,
+        "precision": 0.13818417898521773,
+        "predicted_positive": 20024,
+        "recall": 0.8644173695720088,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.25083565998737334,
+        "precision": 0.31475515463917525,
+        "predicted_positive": 3104,
+        "recall": 0.30521711965010934,
+        "threshold": 0.9
+      }
+    },
+    "2": {
+      "best": {
+        "mcc": 0.2618618658002162,
+        "precision": 0.24818601583113456,
+        "predicted_positive": 6064,
+        "recall": 0.4701655732583568,
+        "threshold": 0.875
+      },
+      "fixed": {
+        "mcc": 0.20161483511042347,
+        "precision": 0.12784704171989955,
+        "predicted_positive": 22699,
+        "recall": 0.9065916900968447,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.24101518191939214,
+        "precision": 0.3063209076175041,
+        "predicted_positive": 3085,
+        "recall": 0.2952202436738519,
+        "threshold": 0.915
+      }
+    },
+    "3": {
+      "best": {
+        "mcc": 0.2371087252351667,
+        "precision": 0.21573431332516674,
+        "predicted_positive": 7347,
+        "recall": 0.4951577631990003,
+        "threshold": 0.8
+      },
+      "fixed": {
+        "mcc": 0.19511958760213763,
+        "precision": 0.1307596513075965,
+        "predicted_positive": 20878,
+        "recall": 0.8528584817244611,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.22486366303599667,
+        "precision": 0.2843197071384991,
+        "predicted_positive": 3278,
+        "recall": 0.2911590128084973,
+        "threshold": 0.87
+      }
+    },
+    "4": {
+      "best": {
+        "mcc": 0.2990152830319377,
+        "precision": 0.2995219289129079,
+        "predicted_positive": 4811,
+        "recall": 0.45017182130584193,
+        "threshold": 0.895
+      },
+      "fixed": {
+        "mcc": 0.20133677357331284,
+        "precision": 0.12716183837943804,
+        "predicted_positive": 22955,
+        "recall": 0.9119025304592315,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.288498731423782,
+        "precision": 0.3516949152542373,
+        "predicted_positive": 3068,
+        "recall": 0.33708216182442985,
+        "threshold": 0.92
+      }
+    },
+    "5": {
+      "best": {
+        "mcc": 0.29740572355352524,
+        "precision": 0.2756961155036095,
+        "predicted_positive": 5818,
+        "recall": 0.5010934083099031,
+        "threshold": 0.865
+      },
+      "fixed": {
+        "mcc": 0.21671006106978186,
+        "precision": 0.13697967086156826,
+        "predicted_positive": 20660,
+        "recall": 0.8840987191502655,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.2877813669729225,
+        "precision": 0.3470812182741117,
+        "predicted_positive": 3152,
+        "recall": 0.34176819743830056,
+        "threshold": 0.91
+      }
+    },
+    "6": {
+      "best": {
+        "mcc": 0.2647097792132914,
+        "precision": 0.23160762942779292,
+        "predicted_positive": 7340,
+        "recall": 0.5310840362386754,
+        "threshold": 0.835
+      },
+      "fixed": {
+        "mcc": 0.20469001985871782,
+        "precision": 0.13135475506991387,
+        "predicted_positive": 21598,
+        "recall": 0.8862855357700719,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.24744891181266954,
+        "precision": 0.3122772918691286,
+        "predicted_positive": 3087,
+        "recall": 0.30115588878475474,
+        "threshold": 0.905
+      }
+    },
+    "7": {
+      "best": {
+        "mcc": 0.19241673473409002,
+        "precision": 0.15627688697692607,
+        "predicted_positive": 12785,
+        "recall": 0.6241799437675727,
+        "threshold": 0.72
+      },
+      "fixed": {
+        "mcc": 0.16768912415170406,
+        "precision": 0.12262295081967213,
+        "predicted_positive": 21350,
+        "recall": 0.8178694158075601,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.1721019063442286,
+        "precision": 0.23796210003106555,
+        "predicted_positive": 3219,
+        "recall": 0.23930021868166199,
+        "threshold": 0.88
+      }
+    },
+    "8": {
+      "best": {
+        "mcc": 0.3011230064521734,
+        "precision": 0.30233046399328156,
+        "predicted_positive": 4763,
+        "recall": 0.4498594189315839,
+        "threshold": 0.91
+      },
+      "fixed": {
+        "mcc": 0.22576084613688516,
+        "precision": 0.14042259764566814,
+        "predicted_positive": 20303,
+        "recall": 0.8906591690096844,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.2871154130742531,
+        "precision": 0.3385354141656663,
+        "predicted_positive": 3332,
+        "recall": 0.35238987816307404,
+        "threshold": 0.93
+      }
+    },
+    "9": {
+      "best": {
+        "mcc": 0.2969768924738568,
+        "precision": 0.27730211427572954,
+        "predicted_positive": 5723,
+        "recall": 0.4957825679475164,
+        "threshold": 0.865
+      },
+      "fixed": {
+        "mcc": 0.22340765658349218,
+        "precision": 0.14341733765554743,
+        "predicted_positive": 19126,
+        "recall": 0.8569197125898157,
+        "threshold": 0.5
+      },
+      "prevalence_matched": {
+        "mcc": 0.2930115039967555,
+        "precision": 0.34749153585718684,
+        "predicted_positive": 3249,
+        "recall": 0.3527022805373321,
+        "threshold": 0.91
+      }
+    }
+  },
+  "role": "epitope",
+  "seed_count": 10
+}

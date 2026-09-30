@@ -1,0 +1,9 @@
+{
+  "status": "PASS_STRUCTURE_CANARY",
+  "instance_count": 3,
+  "raw_pair_files": 3,
+  "macro_AP": 0.005135983899921787,
+  "coordinate_policy": "independently_predicted_chain_local_NCACO",
+  "test_labels_read": false,
+  "scientific_result": false
+}

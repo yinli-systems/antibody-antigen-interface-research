@@ -1,0 +1,47 @@
+{
+  "claim_boundary": "Diagnostic reconstruction only. It must not be reported as an official MIPE contact head or combined with a different MIPE checkpoint track.",
+  "complexes": 560,
+  "format_version": "mipe_contact_threshold_diagnostic_v1",
+  "overall": {
+    "antibody_to_antigen": {
+      "fn": 18224,
+      "fp": 20607,
+      "mcc": 0.003026826792723,
+      "precision": 0.0044446591622783705,
+      "recall": 0.005022930770910679,
+      "specificity": 0.99819444354392,
+      "tn": 11392495,
+      "tp": 92
+    },
+    "antigen_to_antibody": {
+      "fn": 18307,
+      "fp": 33886,
+      "mcc": -0.0018225841938267367,
+      "precision": 0.00026552588877415547,
+      "recall": 0.0004913736623716969,
+      "specificity": 0.9970309561765066,
+      "tn": 11379216,
+      "tp": 9
+    },
+    "mean_bidirectional": {
+      "fn": 18315,
+      "fp": 161,
+      "mcc": 0.00043019524065382946,
+      "precision": 0.006172839506172839,
+      "recall": 5.4597073596855206e-05,
+      "specificity": 0.9999858934056666,
+      "tn": 11412941,
+      "tp": 1
+    }
+  },
+  "scope": "retained five-fold held-out MIPE interaction maps",
+  "score_semantics": "Head-averaged, row-normalized bidirectional cross-attention weights. These scores are not sigmoid-calibrated residue-pair contact probabilities.",
+  "source": {
+    "artifact_count": 560,
+    "artifact_tree_sha256": "729144fea872b7747f48ae6958551c4b472aff74f7f7ff8a8fca910aa41e4825",
+    "interaction_root": "/ssd/scxi253/model_deployment/results/mipe/formal_seed42/test_interactions",
+    "summary_sha256": "2eb43756333f3be2045113031a8ff017488d2e9b35cd0e998ddb89018a6cb756"
+  },
+  "status": "PASS_RETAINED_MIPE_ATTENTION_THRESHOLD_DIAGNOSTIC",
+  "threshold": 0.5
+}

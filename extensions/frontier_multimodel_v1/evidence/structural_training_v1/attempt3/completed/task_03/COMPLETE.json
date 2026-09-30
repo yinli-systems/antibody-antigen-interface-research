@@ -1,0 +1,37 @@
+{
+  "best_checkpoint_sha256": "d522ecf5156e8957f6096b05ee0d8eb97e253a0431edb3bfe9e23faaf2e225ff",
+  "best_instance_count": 217,
+  "best_primary_pair_ap": 0.020779976587368174,
+  "blind_claim_authorized": false,
+  "expected_per_side_width": 2561,
+  "last_checkpoint_sha256": "f804eb268d0efebfd0b3eb7fe25792fa852c3f5ef8be074e7cb2dbe52c135ad9",
+  "last_instance_count": 217,
+  "last_primary_pair_ap": 0.018392170426271177,
+  "observed_antibody_input_dim": 2561,
+  "observed_antigen_input_dim": 2561,
+  "ood_labels_read": false,
+  "parameter_count": 1096461,
+  "plan_sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12",
+  "scientific_result": true,
+  "slurm_job_id": "1640507",
+  "smoke": false,
+  "sota_claim_authorized": false,
+  "source_commit": "3eb4293464552199c66eff9b6add14d7ed75ae14",
+  "status": "COMPLETE_DEVELOPMENT_TRAINING",
+  "task": {
+    "arm": "saprot_layer_08",
+    "family": "saprot",
+    "kind": "real",
+    "layer": 8,
+    "random_projection_control": false,
+    "seed": 1,
+    "specs": [
+      "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antibody.json",
+      "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_08_antigen.json"
+    ],
+    "task_id": 3
+  },
+  "test_labels_read": false,
+  "training_performed": true,
+  "wall_seconds": 9594.129237256944
+}

@@ -1,0 +1,22 @@
+{
+  "ood_authorized": false,
+  "plan_sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12",
+  "slurm_array_task_id": null,
+  "slurm_job_id": "1640488",
+  "smoke": true,
+  "status": "STARTED",
+  "task": {
+    "arm": "saprot_layer_16",
+    "family": "saprot",
+    "kind": "real",
+    "layer": 16,
+    "random_projection_control": false,
+    "seed": 1,
+    "specs": [
+      "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antibody.json",
+      "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/source_specs/saprot_layer_16_antigen.json"
+    ],
+    "task_id": 6
+  },
+  "test_authorized": false
+}

@@ -1,0 +1,17 @@
+{
+  "antibody_storage": "parts",
+  "dim": 1280,
+  "evidence_role": "development-only frozen structural PLM layer sweep",
+  "format_version": "generic_representation_source_v1",
+  "model_name": "saprot_d9b9ad00ef61c0990e611b2b43f2231c7de24b38_layer_33",
+  "model_revision": "d9b9ad00ef61c0990e611b2b43f2231c7de24b38",
+  "model_sha256": "513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216",
+  "name": "saprot_l33_ab",
+  "root": "/ssd/scxi253/frontier_multimodel_v1/structural_plm_full_v2/output/features/saprot_layer_33/antibody",
+  "sides": [
+    "antibody"
+  ],
+  "source_commit": "e91e4858b55944523f1f8d385f7b96a0d3d34c1d",
+  "structure_authority_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+  "tokenizer_sha256": "d4289b3ff55d50b1aa33a3141ec344fc2a69cb3dca43aeefe9fccfee371ffd28"
+}

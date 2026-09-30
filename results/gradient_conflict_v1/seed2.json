@@ -1,0 +1,764 @@
+{
+  "checkpoint": "/ssd/scxi253/asep_bench/out/esm2_esmif1/seed_2/train/best.pt",
+  "claim_boundary": "Gradients at one trained checkpoint on one split. A cosine near zero rules gradient conflict out as the mechanism; it does not identify which of the remaining explanations is right.",
+  "cosine_shared_mean": 0.698219045996666,
+  "cosine_shared_negative_fraction": 0.0,
+  "cosine_shared_sd": 0.10433892383598956,
+  "format_version": "gradient_conflict_v1",
+  "instances": 80,
+  "node_norm_shared_mean": 3.6647180140018465,
+  "pair_norm_shared_mean": 5.495046883821487,
+  "pair_over_node_norm_shared": 1.4994460318164928,
+  "parameter_counts": {
+    "node_head": 258,
+    "pair_head": 33029,
+    "shared": 863494
+  },
+  "parameter_names": {
+    "node_head": [
+      "epitope_head.weight",
+      "epitope_head.bias",
+      "paratope_head.weight",
+      "paratope_head.bias"
+    ],
+    "pair_head": [
+      "decoder.mixing_logits",
+      "decoder.global_bias",
+      "decoder.ag_query.weight",
+      "decoder.ab_key.weight",
+      "decoder.ab_query.weight",
+      "decoder.ag_key.weight"
+    ],
+    "shared": [
+      "antigen_projection.0.weight",
+      "antigen_projection.0.bias",
+      "antigen_projection.1.weight",
+      "antigen_projection.1.bias",
+      "antibody_projection.0.weight",
+      "antibody_projection.0.bias"
+    ]
+  },
+  "per_instance": [
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.726220428943634,
+      "instance_id": "1adq_0P",
+      "node_norm_node_head": 0.6368304491043091,
+      "node_norm_shared": 3.099825143814087,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.610015392303467
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6593225002288818,
+      "instance_id": "1cz8_1P",
+      "node_norm_node_head": 0.6149951219558716,
+      "node_norm_shared": 3.932281255722046,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.588415622711182
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5392431020736694,
+      "instance_id": "1eo8_0P",
+      "node_norm_node_head": 0.4850173592567444,
+      "node_norm_shared": 2.407557725906372,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.061872959136963
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6668158173561096,
+      "instance_id": "1fdl_0P",
+      "node_norm_node_head": 0.5682557821273804,
+      "node_norm_shared": 2.671217679977417,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.2963151931762695
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8242934942245483,
+      "instance_id": "1g9n_0P",
+      "node_norm_node_head": 0.6095053553581238,
+      "node_norm_shared": 4.295907020568848,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.7659084796905518
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8283875584602356,
+      "instance_id": "1gc1_0P",
+      "node_norm_node_head": 0.5015196800231934,
+      "node_norm_shared": 3.5093324184417725,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.7564337253570557
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.47343698143959045,
+      "instance_id": "1mlc_1P",
+      "node_norm_node_head": 0.7145660519599915,
+      "node_norm_shared": 2.1786646842956543,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.639002323150635
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6513277888298035,
+      "instance_id": "1ncd_0P",
+      "node_norm_node_head": 0.5102940201759338,
+      "node_norm_shared": 3.669769525527954,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.50738000869751
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.835281252861023,
+      "instance_id": "1orq_0P",
+      "node_norm_node_head": 0.5608331561088562,
+      "node_norm_shared": 3.687385082244873,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.817077398300171
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7262245416641235,
+      "instance_id": "1uj3_0P",
+      "node_norm_node_head": 0.631680965423584,
+      "node_norm_shared": 3.295649528503418,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.6856536865234375
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6696063876152039,
+      "instance_id": "2b2x_1P",
+      "node_norm_node_head": 0.5558091998100281,
+      "node_norm_shared": 3.0473461151123047,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.3212921619415283
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6586892008781433,
+      "instance_id": "2dd8_0P",
+      "node_norm_node_head": 0.6553794145584106,
+      "node_norm_shared": 3.9036035537719727,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.987154960632324
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7354432940483093,
+      "instance_id": "2dqf_1P",
+      "node_norm_node_head": 0.2981716990470886,
+      "node_norm_shared": 3.0544400215148926,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.340291976928711
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6910262703895569,
+      "instance_id": "2h9g_0P",
+      "node_norm_node_head": 1.064630150794983,
+      "node_norm_shared": 3.858943462371826,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.319363594055176
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6460934281349182,
+      "instance_id": "2h9g_1P",
+      "node_norm_node_head": 0.868975818157196,
+      "node_norm_shared": 3.7028229236602783,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.735528945922852
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8326212763786316,
+      "instance_id": "2i9l_0P",
+      "node_norm_node_head": 0.9644361734390259,
+      "node_norm_shared": 5.341547966003418,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.746840476989746
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7642877101898193,
+      "instance_id": "2q8b_0P",
+      "node_norm_node_head": 0.5085865259170532,
+      "node_norm_shared": 3.5955750942230225,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.321910381317139
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6097255945205688,
+      "instance_id": "2vh5_0P",
+      "node_norm_node_head": 0.760532796382904,
+      "node_norm_shared": 3.314659595489502,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.861234188079834
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7314189672470093,
+      "instance_id": "2wub_0P",
+      "node_norm_node_head": 0.6919754147529602,
+      "node_norm_shared": 3.2748310565948486,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.786268711090088
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7147086262702942,
+      "instance_id": "2x7l_0P",
+      "node_norm_node_head": 0.9247817993164062,
+      "node_norm_shared": 4.341214179992676,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 10.46900463104248
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5546293258666992,
+      "instance_id": "2ybr_0P",
+      "node_norm_node_head": 0.9947965741157532,
+      "node_norm_shared": 3.927622079849243,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 9.946188926696777
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7311612367630005,
+      "instance_id": "3dvg_0P",
+      "node_norm_node_head": 1.022770643234253,
+      "node_norm_shared": 3.665625810623169,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.640145778656006
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6903437972068787,
+      "instance_id": "3etb_3P",
+      "node_norm_node_head": 0.9691548347473145,
+      "node_norm_shared": 4.802371025085449,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 7.274740695953369
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5702387094497681,
+      "instance_id": "3f7v_0P",
+      "node_norm_node_head": 0.2692926526069641,
+      "node_norm_shared": 2.200406312942505,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.2942070960998535
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7532143592834473,
+      "instance_id": "3g6d_0P",
+      "node_norm_node_head": 1.1023814678192139,
+      "node_norm_shared": 4.581578731536865,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.479745864868164
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8583202958106995,
+      "instance_id": "3j8z_0P",
+      "node_norm_node_head": 0.6905417442321777,
+      "node_norm_shared": 4.311483383178711,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.418400764465332
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7402346730232239,
+      "instance_id": "3jbq_1P",
+      "node_norm_node_head": 0.5721406936645508,
+      "node_norm_shared": 3.175529956817627,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.6463606357574463
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8269746899604797,
+      "instance_id": "3l5w_1P",
+      "node_norm_node_head": 1.130726933479309,
+      "node_norm_shared": 5.063034534454346,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 7.024176597595215
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5983738303184509,
+      "instance_id": "3nps_0P",
+      "node_norm_node_head": 0.7218509912490845,
+      "node_norm_shared": 3.4223074913024902,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.528570175170898
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8175259828567505,
+      "instance_id": "3ubx_1P",
+      "node_norm_node_head": 0.7047996520996094,
+      "node_norm_shared": 3.5463335514068604,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.216111660003662
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8005791306495667,
+      "instance_id": "3ulu_1P",
+      "node_norm_node_head": 0.4034337103366852,
+      "node_norm_shared": 2.9500389099121094,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.786146879196167
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7375954389572144,
+      "instance_id": "3uzv_0P",
+      "node_norm_node_head": 1.0242964029312134,
+      "node_norm_shared": 4.445740699768066,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.63836669921875
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7214400172233582,
+      "instance_id": "3v6z_1P",
+      "node_norm_node_head": 1.159967303276062,
+      "node_norm_shared": 5.24229097366333,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.361330032348633
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7830861806869507,
+      "instance_id": "4ffv_1P",
+      "node_norm_node_head": 0.4053943455219269,
+      "node_norm_shared": 2.7618250846862793,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.442725419998169
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7296562194824219,
+      "instance_id": "4ffy_0P",
+      "node_norm_node_head": 0.6566389203071594,
+      "node_norm_shared": 3.1964948177337646,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 7.786255359649658
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.4646056592464447,
+      "instance_id": "4g6j_0P",
+      "node_norm_node_head": 0.9218965768814087,
+      "node_norm_shared": 3.8489153385162354,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.275191307067871
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8023048639297485,
+      "instance_id": "4hg4_1P",
+      "node_norm_node_head": 0.43435928225517273,
+      "node_norm_shared": 3.3097286224365234,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.0081329345703125
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7283262014389038,
+      "instance_id": "4iof_0P",
+      "node_norm_node_head": 0.48687121272087097,
+      "node_norm_shared": 2.9208147525787354,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.044389247894287
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7828412652015686,
+      "instance_id": "4k9e_0P",
+      "node_norm_node_head": 0.88469398021698,
+      "node_norm_shared": 4.112797737121582,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 7.155373573303223
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7395947575569153,
+      "instance_id": "4khx_0P",
+      "node_norm_node_head": 1.1117842197418213,
+      "node_norm_shared": 6.29496431350708,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 12.949268341064453
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7364901900291443,
+      "instance_id": "4lu5_1P",
+      "node_norm_node_head": 1.0852340459823608,
+      "node_norm_shared": 4.584582328796387,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 9.119009017944336
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6834464073181152,
+      "instance_id": "4m7l_0P",
+      "node_norm_node_head": 0.7011409401893616,
+      "node_norm_shared": 3.1110610961914062,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.0107550621032715
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5019384622573853,
+      "instance_id": "4n90_1P",
+      "node_norm_node_head": 0.9525282979011536,
+      "node_norm_shared": 3.676419973373413,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.46054744720459
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6697971820831299,
+      "instance_id": "4odx_1P",
+      "node_norm_node_head": 0.6619457602500916,
+      "node_norm_shared": 3.579167604446411,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.9749598503112793
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8481991291046143,
+      "instance_id": "4olx_0P",
+      "node_norm_node_head": 0.367055207490921,
+      "node_norm_shared": 2.9976372718811035,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.6163740158081055
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.4842369258403778,
+      "instance_id": "4r9y_0P",
+      "node_norm_node_head": 0.734308660030365,
+      "node_norm_shared": 3.1631977558135986,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.949564456939697
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5156211256980896,
+      "instance_id": "4tsc_0P",
+      "node_norm_node_head": 0.4074985682964325,
+      "node_norm_shared": 2.2053022384643555,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.910020351409912
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.852902352809906,
+      "instance_id": "4xvs_0P",
+      "node_norm_node_head": 0.4855993986129761,
+      "node_norm_shared": 3.683993101119995,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.884887933731079
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7638288140296936,
+      "instance_id": "4y5x_0P",
+      "node_norm_node_head": 0.7260782718658447,
+      "node_norm_shared": 3.2243576049804688,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.325545310974121
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8098481893539429,
+      "instance_id": "4ybl_0P",
+      "node_norm_node_head": 0.9951687455177307,
+      "node_norm_shared": 4.700887680053711,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.030556678771973
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5994402766227722,
+      "instance_id": "4z5r_0P",
+      "node_norm_node_head": 0.9359109997749329,
+      "node_norm_shared": 4.187795639038086,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 7.300521373748779
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7732805013656616,
+      "instance_id": "5aaw_4P",
+      "node_norm_node_head": 0.8849931359291077,
+      "node_norm_shared": 3.9258296489715576,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.691006660461426
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6424899101257324,
+      "instance_id": "5bjz_1P",
+      "node_norm_node_head": 0.5359865427017212,
+      "node_norm_shared": 2.545830249786377,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.369532346725464
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5916452407836914,
+      "instance_id": "5cbe_0P",
+      "node_norm_node_head": 0.8793669939041138,
+      "node_norm_shared": 3.40895938873291,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.9827880859375
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6512535214424133,
+      "instance_id": "5d72_0P",
+      "node_norm_node_head": 0.7263882160186768,
+      "node_norm_shared": 3.6820926666259766,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 10.576706886291504
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.42158031463623047,
+      "instance_id": "5d96_1P",
+      "node_norm_node_head": 0.7621727585792542,
+      "node_norm_shared": 3.914923906326294,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.246354103088379
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6954018473625183,
+      "instance_id": "5dup_0P",
+      "node_norm_node_head": 0.7789551019668579,
+      "node_norm_shared": 4.470278263092041,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.250336647033691
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5762155055999756,
+      "instance_id": "5f3h_1P",
+      "node_norm_node_head": 0.7232915163040161,
+      "node_norm_shared": 4.160116195678711,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.125356197357178
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7206252813339233,
+      "instance_id": "5ggt_0P",
+      "node_norm_node_head": 0.7264078259468079,
+      "node_norm_shared": 2.9462404251098633,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.31085729598999
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6568449139595032,
+      "instance_id": "5ggv_0P",
+      "node_norm_node_head": 0.6039762496948242,
+      "node_norm_shared": 2.6774628162384033,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.6600799560546875
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7745370864868164,
+      "instance_id": "5gru_0P",
+      "node_norm_node_head": 0.6174769401550293,
+      "node_norm_shared": 2.8351216316223145,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.4726850986480713
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7849740982055664,
+      "instance_id": "5gzo_1P",
+      "node_norm_node_head": 0.3587912619113922,
+      "node_norm_shared": 2.9120266437530518,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.792833089828491
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7170441746711731,
+      "instance_id": "5hhv_0P",
+      "node_norm_node_head": 0.9427613019943237,
+      "node_norm_shared": 3.8295652866363525,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.890717029571533
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8179914951324463,
+      "instance_id": "5igx_0P",
+      "node_norm_node_head": 0.55219966173172,
+      "node_norm_shared": 4.103632926940918,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.6798603534698486
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7095664143562317,
+      "instance_id": "5iwl_0P",
+      "node_norm_node_head": 0.9464437961578369,
+      "node_norm_shared": 4.1710662841796875,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.552075386047363
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6636411547660828,
+      "instance_id": "5kel_0P",
+      "node_norm_node_head": 0.4800134599208832,
+      "node_norm_shared": 3.55538272857666,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.353347301483154
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6847649216651917,
+      "instance_id": "5kvf_0P",
+      "node_norm_node_head": 1.1087677478790283,
+      "node_norm_shared": 5.1391801834106445,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 7.793951511383057
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8524922728538513,
+      "instance_id": "5nuz_0P",
+      "node_norm_node_head": 0.9796156883239746,
+      "node_norm_shared": 5.1002655029296875,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.910860061645508
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6631040573120117,
+      "instance_id": "5o4g_0P",
+      "node_norm_node_head": 0.4795129597187042,
+      "node_norm_shared": 2.8718695640563965,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.452949285507202
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6094408631324768,
+      "instance_id": "5ujz_0P",
+      "node_norm_node_head": 0.34552666544914246,
+      "node_norm_shared": 3.0020182132720947,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.669576644897461
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7421458959579468,
+      "instance_id": "5uoe_1P",
+      "node_norm_node_head": 0.31536146998405457,
+      "node_norm_shared": 2.4462625980377197,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.141144037246704
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.5557811260223389,
+      "instance_id": "5usl_1P",
+      "node_norm_node_head": 0.8545903563499451,
+      "node_norm_shared": 4.095506191253662,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.541611671447754
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.8042269349098206,
+      "instance_id": "5vco_1P",
+      "node_norm_node_head": 0.5907516479492188,
+      "node_norm_shared": 3.7357895374298096,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.936065673828125
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7068469524383545,
+      "instance_id": "5vic_0P",
+      "node_norm_node_head": 0.8015357255935669,
+      "node_norm_shared": 4.110988140106201,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 6.269824981689453
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.701234757900238,
+      "instance_id": "5vig_0P",
+      "node_norm_node_head": 0.920295238494873,
+      "node_norm_shared": 4.4765801429748535,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 8.057205200195312
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7933825254440308,
+      "instance_id": "5vl3_2P",
+      "node_norm_node_head": 0.6870600581169128,
+      "node_norm_shared": 2.9127564430236816,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 4.912489891052246
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7552681565284729,
+      "instance_id": "5wko_0P",
+      "node_norm_node_head": 0.4763314425945282,
+      "node_norm_shared": 3.572099447250366,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 3.1573894023895264
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.6697208285331726,
+      "instance_id": "5yy5_1P",
+      "node_norm_node_head": 0.833774209022522,
+      "node_norm_shared": 5.162083625793457,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 5.576022148132324
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.7827781438827515,
+      "instance_id": "5zuf_0P",
+      "node_norm_node_head": 0.746878981590271,
+      "node_norm_shared": 3.642101526260376,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.9812424182891846
+    },
+    {
+      "cosine_node_head": NaN,
+      "cosine_shared": 0.45827487111091614,
+      "instance_id": "6apd_0P",
+      "node_norm_node_head": 0.5159598588943481,
+      "node_norm_shared": 2.694530487060547,
+      "pair_norm_node_head": 0.0,
+      "pair_norm_shared": 2.1333470344543457
+    }
+  ],
+  "split": "validation"
+}

@@ -1,0 +1,247 @@
+{
+  "bundle_sha256": "3e370ff3ebae1f6261865ace9b71666385ff5722d07f08388c5a490365400958",
+  "claim_boundary": {
+    "MSA_homologs_may_be_used_by_AF3": true,
+    "experimental_contact_labels_for_measurement": true,
+    "experimental_coordinates_as_input": false,
+    "fresh_blind_test": false,
+    "historical_exposed_test": true,
+    "model_selection_or_retraining": false,
+    "old455_is_not_checkpoint_test": true,
+    "sequence_double_cold_proven": false
+  },
+  "component_receipts": {
+    "0": {
+      "receipt_sha256": "36839dea013a39826feb6f4776807fc03343f35ad79c333e8fba93ba4513016d",
+      "result_sha256": "e52d22639062efa00db2d5bd1b101b44ae1e328614a7317a54629748468d872c"
+    },
+    "1": {
+      "receipt_sha256": "10bf50151a7127baa280bd0f1a41a0d73e8322733e37f66711049c62495b0e7b",
+      "result_sha256": "ebb34d68d1f52c97f8859259724a47d4a02c9552fd425cbc3f22ed4ebbab54ae"
+    },
+    "2": {
+      "receipt_sha256": "6452e060485d74599d2af90a54231311561cf22a51c10df7c8a1889adf940b28",
+      "result_sha256": "bf6414363d557d94f53a0a8d641b6fcc78ab4db77f3de36f2204143f118c094b"
+    },
+    "3": {
+      "receipt_sha256": "196d349b2a0c3bb3876e4e2eb2e3d95cd628778b88e9db281739fe822add066e",
+      "result_sha256": "2ad83eb29cb9d7bb030be7d71a44ebe1fe11963cdb90aec797bc60f6a0a533f2"
+    },
+    "4": {
+      "receipt_sha256": "a9110adaa3d894ae7c33cc361c7db3bc306cffd780ba158044ca95a53badc9ec",
+      "result_sha256": "adcfa8384fbffd2b03dffc12d7277215d58829ab0c28f743b7587ea73af58f63"
+    },
+    "5": {
+      "receipt_sha256": "1565f284aaf71611bbca924190af4739102c11b76c5cfae164855fb09be28627",
+      "result_sha256": "484700468147a7c023392b8becfbe990c30062f16f220924b0900fe4baf43ea3"
+    }
+  },
+  "routed_per_seed": [
+    {
+      "FN": 20771,
+      "FP": 168274,
+      "MPC_AP": 0.029603116292467313,
+      "TN": 28240319,
+      "TP": 3437,
+      "auprc": 0.011970560478837638,
+      "auroc": 0.9257969993478157,
+      "component": "baseline",
+      "f1": 0.03508592836835631,
+      "mcc": 0.05121813344941705,
+      "precision": 0.020016189993652126,
+      "recall": 0.14197785855915399,
+      "seed": 17,
+      "selected_epoch": 1,
+      "task": "contact",
+      "temperature": 0.9774351119995117,
+      "threshold": 0.9225698113441467
+    },
+    {
+      "FN": 3485,
+      "FP": 51809,
+      "MPC_AP": 0.2405822007722104,
+      "TN": 77590,
+      "TP": 6331,
+      "auprc": 0.12979525910457596,
+      "auroc": 0.6718376132885369,
+      "component": "edge_topk2_supervised",
+      "f1": 0.18632644652422156,
+      "mcc": 0.12696461188103703,
+      "precision": 0.10889232886136911,
+      "recall": 0.6449674001629991,
+      "seed": 17,
+      "selected_epoch": 1,
+      "task": "epitope",
+      "temperature": 1.9686484336853027,
+      "threshold": 0.38411009311676025
+    },
+    {
+      "FN": 2653,
+      "FP": 5801,
+      "MPC_AP": 0.691848866079522,
+      "TN": 98166,
+      "TP": 7689,
+      "auprc": 0.634032543098221,
+      "auroc": 0.9539890654167656,
+      "component": "baseline",
+      "f1": 0.6452668680765358,
+      "mcc": 0.6114446412090384,
+      "precision": 0.5699777613046701,
+      "recall": 0.7434732160123767,
+      "seed": 17,
+      "selected_epoch": 1,
+      "task": "paratope",
+      "temperature": 1.844533085823059,
+      "threshold": 0.7918021082878113
+    },
+    {
+      "FN": 22306,
+      "FP": 124762,
+      "MPC_AP": 0.026674939866968273,
+      "TN": 28283831,
+      "TP": 1902,
+      "auprc": 0.010012902970376155,
+      "auroc": 0.9300453909862715,
+      "component": "baseline",
+      "f1": 0.025213425950474575,
+      "mcc": 0.03248694250057821,
+      "precision": 0.015016105602223205,
+      "recall": 0.07856906807666887,
+      "seed": 29,
+      "selected_epoch": 6,
+      "task": "contact",
+      "temperature": 0.9919592142105103,
+      "threshold": 0.9366440176963806
+    },
+    {
+      "FN": 3050,
+      "FP": 57748,
+      "MPC_AP": 0.22031151958597614,
+      "TN": 71651,
+      "TP": 6766,
+      "auprc": 0.12599121808909616,
+      "auroc": 0.6721625568479008,
+      "component": "edge_topk2_supervised",
+      "f1": 0.18205300686129422,
+      "mcc": 0.12475454925922112,
+      "precision": 0.10487646092321047,
+      "recall": 0.689282803585982,
+      "seed": 29,
+      "selected_epoch": 2,
+      "task": "epitope",
+      "temperature": 2.3647122383117676,
+      "threshold": 0.4657800793647766
+    },
+    {
+      "FN": 2353,
+      "FP": 6059,
+      "MPC_AP": 0.7017003071238084,
+      "TN": 97908,
+      "TP": 7989,
+      "auprc": 0.6467188488568119,
+      "auroc": 0.9552212227680943,
+      "component": "baseline",
+      "f1": 0.6551045510455105,
+      "mcc": 0.6240199157597144,
+      "precision": 0.5686930523917996,
+      "recall": 0.772481144846258,
+      "seed": 29,
+      "selected_epoch": 6,
+      "task": "paratope",
+      "temperature": 1.6050447225570679,
+      "threshold": 0.7340988516807556
+    },
+    {
+      "FN": 21969,
+      "FP": 151901,
+      "MPC_AP": 0.01918296414490346,
+      "TN": 28256692,
+      "TP": 2239,
+      "auprc": 0.009621234543639142,
+      "auroc": 0.9233644970613376,
+      "component": "baseline",
+      "f1": 0.02510821539910736,
+      "mcc": 0.034613866180182175,
+      "precision": 0.014525755806409758,
+      "recall": 0.09249008592200925,
+      "seed": 43,
+      "selected_epoch": 6,
+      "task": "contact",
+      "temperature": 0.8212928175926208,
+      "threshold": 0.9312728643417358
+    },
+    {
+      "FN": 3869,
+      "FP": 49286,
+      "MPC_AP": 0.2068645444216435,
+      "TN": 80113,
+      "TP": 5947,
+      "auprc": 0.12428588504291369,
+      "auroc": 0.6578714885315866,
+      "component": "edge_topk2_supervised",
+      "f1": 0.18284677704499686,
+      "mcc": 0.11772065968483308,
+      "precision": 0.10767113863089095,
+      "recall": 0.6058475957620212,
+      "seed": 43,
+      "selected_epoch": 2,
+      "task": "epitope",
+      "temperature": 2.403953790664673,
+      "threshold": 0.4983751177787781
+    },
+    {
+      "FN": 3330,
+      "FP": 5488,
+      "MPC_AP": 0.6985876493387135,
+      "TN": 98479,
+      "TP": 7012,
+      "auprc": 0.6125171513560264,
+      "auroc": 0.9491860941617193,
+      "component": "baseline",
+      "f1": 0.6139567463444532,
+      "mcc": 0.5746970491836951,
+      "precision": 0.56096,
+      "recall": 0.678011989943918,
+      "seed": 43,
+      "selected_epoch": 6,
+      "task": "paratope",
+      "temperature": 1.4667085409164429,
+      "threshold": 0.7486751079559326
+    }
+  ],
+  "routing": {
+    "contact": "baseline",
+    "epitope": "edge_topk2_supervised",
+    "paratope": "baseline"
+  },
+  "seed_medians": {
+    "contact": {
+      "MPC_AP": 0.026674939866968273,
+      "auprc": 0.010012902970376155,
+      "auroc": 0.9257969993478157,
+      "f1": 0.025213425950474575,
+      "mcc": 0.034613866180182175,
+      "precision": 0.015016105602223205,
+      "recall": 0.09249008592200925
+    },
+    "epitope": {
+      "MPC_AP": 0.22031151958597614,
+      "auprc": 0.12599121808909616,
+      "auroc": 0.6718376132885369,
+      "f1": 0.18284677704499686,
+      "mcc": 0.12475454925922112,
+      "precision": 0.10767113863089095,
+      "recall": 0.6449674001629991
+    },
+    "paratope": {
+      "MPC_AP": 0.6985876493387135,
+      "auprc": 0.634032543098221,
+      "auroc": 0.9539890654167656,
+      "f1": 0.6452668680765358,
+      "mcc": 0.6114446412090384,
+      "precision": 0.5686930523917996,
+      "recall": 0.7434732160123767
+    }
+  },
+  "status": "PASS_ROUTED_HISTORICAL_TEST549"
+}

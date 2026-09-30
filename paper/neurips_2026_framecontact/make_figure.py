@@ -69,7 +69,7 @@ def main():
     blue, teal, orange, purple = "#275DAD", "#1F8A70", "#E57A44", "#6D5BD0"
 
     box(ax, (0.02, 0.63), 0.17, 0.22, "ESM-2 residue\nembeddings", blue)
-    box(ax, (0.02, 0.20), 0.17, 0.22, "N/CA/C local\nbackbone frames", teal)
+    box(ax, (0.02, 0.20), 0.17, 0.22, "Sequence-predicted\nN/CA/C frames", teal)
     box(ax, (0.27, 0.42), 0.19, 0.25, "Separate Ab/Ag\nintra-chain\nencoders", purple)
     box(ax, (0.54, 0.42), 0.17, 0.25, "Explicit pair\ncontact map", orange)
     box(ax, (0.78, 0.64), 0.19, 0.20, "Joint baseline\ncontact + paratope", blue)
@@ -112,7 +112,7 @@ def main():
     ax.axhline(0, color="#111827", linewidth=0.8)
     ax.set_ylabel("Epitope MPC-AP difference")
     ax.set_xticks([0, 1, 2, 3], ["Seed 17", "Seed 29", "Seed 43", "Cluster-\nweighted"])
-    ax.set_title("(b) Fresh156 route confirmation", fontsize=9, fontweight="bold")
+    ax.set_title("(b) Earlier fresh156 route confirmation", fontsize=9, fontweight="bold")
     ax.grid(axis="y", alpha=0.25, linewidth=0.7)
     ymax = max(ci_high, max(values)) * 1.16
     ax.set_ylim(0, ymax)

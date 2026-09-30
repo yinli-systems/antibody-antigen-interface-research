@@ -1,0 +1,51 @@
+{
+  "claim_boundary": "Archival replay on the 64 complexes in the provided public MIPE testdata.pkl. Five fold selections were frozen before scoring. This analyst-exposed benchmark is not blind external evidence and was not used to tune FrameContact or ABPairFM.",
+  "dataset": {
+    "complexes": 64,
+    "sha256": "adc4b5fcf1ee9bc113cc1b844b33303a7741cb46ac7b3dc6b1520eefdae509ca"
+  },
+  "evaluated_at": "2026-09-01T04:08:59+08:00",
+  "format_version": "mipe_800e_fivefold_official_replay_summary_v1",
+  "primary_epoch_800": {
+    "epitope": {
+      "auprc": 0.373718173612025,
+      "auroc": 0.8427417809793853,
+      "mcc_at_0_5": 0.12076850684417678
+    },
+    "pair_contact": {
+      "native_attention_macro_auprc": 0.006230590950153585,
+      "native_attention_pooled_auprc": 0.0029751732332009093,
+      "native_attention_recall_at_1": 0.0,
+      "residue_outer_product_macro_auprc": 0.04657870138653214
+    },
+    "paratope": {
+      "auprc": 0.5262786038532555,
+      "auroc": 0.8018193900821488,
+      "mcc_at_0_5": 0.24420431048633867
+    }
+  },
+  "remote_artifacts": {
+    "markdown_sha256": "933baf582c4039a0093fdde9eef4dcda268c413349d218145477ef77394854e3",
+    "report_sha256": "eaec1c2d18b034cec9da1a42ae894f1c3076f09bfee197704b29185795ee5ab1"
+  },
+  "secondary_validation_best": {
+    "epitope": {
+      "auprc": 0.3927461689837005,
+      "auroc": 0.8479163783351615,
+      "mcc_at_0_5": 0.14651204594442901
+    },
+    "pair_contact": {
+      "native_attention_macro_auprc": 0.006580005541568356,
+      "native_attention_pooled_auprc": 0.0030962338872581813,
+      "native_attention_recall_at_1": 0.0,
+      "residue_outer_product_macro_auprc": 0.04725176410981364
+    },
+    "paratope": {
+      "auprc": 0.5295392457080813,
+      "auroc": 0.8032024662712827,
+      "mcc_at_0_5": 0.3213328716475998
+    }
+  },
+  "selection_performed_on_test": false,
+  "status": "PASS_ARCHIVAL_EXPOSED_BENCHMARK_REPLAY"
+}

@@ -1,0 +1,64 @@
+{
+  "analysis_commit": "f8b51bbf1eaacc7eab44188d80d792fe61f582d9",
+  "analysis_tree_source": "git archive of the stated commit; no working tree, so nothing can be dirty",
+  "forbidden_inputs": [
+    "README.md",
+    "EVIDENCE_INVENTORY.md",
+    "CLAIMS_LEDGER.md",
+    "REPRODUCIBILITY_NOTES.md",
+    "BENCHMARK.md",
+    "STAGE_THREE.md",
+    "PART_TWO.md",
+    "RUN_CONTRACT.md"
+  ],
+  "format_version": "cold_reproduction_receipt_v1",
+  "mismatches": {},
+  "output_digest": "6b0386f66f8b9f3f39a33c3bd846ce8c4dcd7fb9aa8ac1841c2ddbede65a4afb:8",
+  "pass_rule": "every numeric leaf within 1e-10 of the frozen receipt, every bootstrap interval exact, every script exiting zero",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+  "python_version": "3.10.20",
+  "scripts_digest": "3cafe461beed0c19af2861d59407f2f2cf3e01b3f9b3764265a0574c1aaf8e56:413",
+  "src_digest": "32805f5a176311c3650bd7dce8453d10e35fb6c841cfea401ee979f9da3fcafc:139",
+  "steps": [
+    {
+      "arguments": [
+        "--run-root",
+        "/ssd/scxi253/repr_ablation/out",
+        "--control",
+        "esm_if1_shuffled",
+        "--treatment",
+        "esm_if1_only",
+        "--metric",
+        "auprc",
+        "--scope",
+        "macro"
+      ],
+      "compared_against": "results/representation_attribution_v1/report.json#comparisons.aligned_vs_shuffled",
+      "compared_against_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "field_map": {
+        "bootstrap_ci95": "bootstrap_ci95",
+        "control_mean": "baseline_mean",
+        "decided": "decided",
+        "favourable_seed_count": "favourable_seed_count",
+        "mean_difference": "paired_difference",
+        "relative_difference": "relative",
+        "seed_count": "seed_count",
+        "sign_lower_bound": "sign_lower_bound",
+        "treatment_mean": "arm_mean"
+      },
+      "mismatches": 0,
+      "output": "/ssd/scxi253/cold_v1/output/attribution_aligned_vs_shuffled.json",
+      "output_sha256": "42fd6839439b8b6abde0d3fcfce4e8fe6687d09ef7c19ab951d01a38b467df49",
+      "recompute_recorded_in": "an earlier receipt; this pass compares only",
+      "recomputed": false,
+      "returncode": 0,
+      "script": "aggregate_representation_ablation.py",
+      "script_sha256": "8f1841e9425ab17b6d7ca3ecfaba86b3e31b6e87280519d26a900db43a6d06f0",
+      "seconds": 0.0,
+      "stderr_tail": []
+    }
+  ],
+  "timestamp_utc": "2026-09-11T10:45:27Z",
+  "tolerance": 1e-10,
+  "verdict": "PASS"
+}

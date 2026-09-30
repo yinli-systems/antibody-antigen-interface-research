@@ -1,0 +1,3877 @@
+{
+  "contrasts": [
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.004839084000650785,
+        -0.0019217978303465975
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0030176065478665732,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.005424583227054587,
+        -0.0013140148082104895
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.003338893820719002,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.7941176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00393741446285551,
+        -0.0010708213676611188
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0018224970031441652,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.0041382404137071584,
+        -0.0009043063011624277
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0023872378035024004,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.7647058823529411,
+      "positive_cluster_fraction": 0.23529411764705882,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00030073955883988936,
+        0.0001271918346836205
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -1.566051773829829e-05,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.00037991733800485323,
+        0.0002696041747332019
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -9.284464954083222e-05,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.6323529411764706,
+      "positive_cluster_fraction": 0.36764705882352944,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.059131273609309934,
+        -0.018028056242651743
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.038369603818287246,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.062360741006829735,
+        -0.011883881010024374
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.039070210854922655,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.2647058823529412,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.004565758447692689,
+        -0.0021266537409544758
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0030824451258750574,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.0047674724693475175,
+        -0.002044819265725424
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.003334804474244856,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.8676470588235294,
+      "positive_cluster_fraction": 0.1323529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0024617329435723738,
+        7.72572433753691e-05
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0015436650383773753,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.0027330404676123832,
+        0.0005407743398227407
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.001249292954329661,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.2647058823529412,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00017775698989279325,
+        0.0002537930638012921
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 6.471234379839401e-05,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.00023401323723683373,
+        0.0004015211593825301
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 3.094746160006929e-05,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5147058823529411,
+      "positive_cluster_fraction": 0.45588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.047606208498237074,
+        -0.002494334196983357
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.029367241858225118,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.048995300004586864,
+        -0.0015427135486401553
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.028156603402934677,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7205882352941176,
+      "positive_cluster_fraction": 0.27941176470588236,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00613347395050959,
+        -0.002535239824021451
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.003155222286939674,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.0063132374462489,
+        -0.002397430315405599
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.004245991983764646,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.8235294117647058,
+      "positive_cluster_fraction": 0.17647058823529413,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.005111812437927503,
+        -0.0013560047744773371
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.002170299802335793,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.005246258189593063,
+        -0.001227352490950373
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0030398467461706736,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.7941176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00012116831233996272,
+        0.00019899688313261842
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0001669068513306159,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.0001794286763407719,
+        0.0002756139429865897
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 4.013864313614476e-05,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5,
+      "positive_cluster_fraction": 0.5,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.058411690310526496,
+        -0.02198909677007844
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.03817839006858733,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.0614576599866523,
+        -0.01886630171126426
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.03988196668438758,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7647058823529411,
+      "positive_cluster_fraction": 0.23529411764705882,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.007735224706177697,
+        -0.0036688600653021646
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0046252730982247565,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.008331662497134155,
+        -0.0031615945170159823
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0055448234482026425,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.8235294117647058,
+      "positive_cluster_fraction": 0.17647058823529413,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.006816023307477284,
+        -0.002483346371239
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0034273578327362144,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.007081554612512146,
+        -0.0020990250729689018
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.004488056150553155,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.8529411764705882,
+      "positive_cluster_fraction": 0.14705882352941177,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0006411467183204874,
+        9.886937945012278e-05
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.00010456257868007243,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.0007736877188504423,
+        0.0002845773312585624
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.00027129499393350277,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5588235294117647,
+      "positive_cluster_fraction": 0.4411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.10153954048813121,
+        -0.0543671837289641
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.07701856472118074,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.10990240611817717,
+        -0.04310801327499182
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0777742682217993,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7794117647058824,
+      "positive_cluster_fraction": 0.22058823529411764,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.009327023690857722,
+        -0.0038284580588702536
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.00474582022884076,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.00969150002353208,
+        -0.0035867905527628345
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006412360263847579,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.7794117647058824,
+      "positive_cluster_fraction": 0.22058823529411764,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00865817196075191,
+        -0.0026482419232983713
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0031123657171943505,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.008845281312459933,
+        -0.002501407204095601
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005371152881921557,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6911764705882353,
+      "positive_cluster_fraction": 0.3088235294117647,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00043212797808813715,
+        0.0009216570250038735
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0004596897586389892,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.0007780184915436842,
+        0.0015189327075567332
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.00020783924509015374,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.4411764705882353,
+      "positive_cluster_fraction": 0.5588235294117647,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.12069267054442849,
+        -0.07609698883873021
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.09667097762395031,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.1258847909869135,
+        -0.07051975321678468
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.09810053320750513,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.8823529411764706,
+      "positive_cluster_fraction": 0.11764705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.007370493038257286,
+        -0.0033064248655430596
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.004230994675683457,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.007919526419491849,
+        -0.0026894777423190526
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005229094372192011,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.2647058823529412,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.006876342780438765,
+        -0.0022827380827880515
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0027213861828604426,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.007155692318702077,
+        -0.0020648819454575323
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.00435982544269043,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.3235294117647059,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0009359857236002256,
+        0.0011992579137510492
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0006265013481559543,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.0014916982488923259,
+        0.001848374185923284
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.00011173016480654442,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.4411764705882353,
+      "positive_cluster_fraction": 0.5588235294117647,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.10712563035740556,
+        -0.06057244108622869
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.09040984644585229,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.10891921220582755,
+        -0.05889996874166144
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.08393499025481499,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7941176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.004695014668762445,
+        -0.0019440057393520828
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0025846762839204845,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.005022907077041523,
+        -0.0017540458210714204
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0032060195705604535,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.7941176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0031479626969521343,
+        -0.00116480750383899
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0016290687838470938,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.00331194387192585,
+        -0.000991444997812451
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.002083660998725273,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.7794117647058824,
+      "positive_cluster_fraction": 0.22058823529411764,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0004345289722015715,
+        7.571173600203659e-05
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -7.070922792644888e-05,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.0005165759657878152,
+        0.00022583653289925357
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0001815389031523267,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5735294117647058,
+      "positive_cluster_fraction": 0.4264705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.05100297400216146,
+        -0.02175387869843912
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.03273767913863332,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.05182444439098174,
+        -0.02114044893836206
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.03633785419853165,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7794117647058824,
+      "positive_cluster_fraction": 0.22058823529411764,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00468610594264014,
+        -0.0016862242280480091
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0031412824052961317,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.005067635545333689,
+        -0.0013709464317535308
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0031645999028457003,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.8088235294117647,
+      "positive_cluster_fraction": 0.19117647058823528,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0039788635400671265,
+        -0.0007324461545604698
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.002212463528156745,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.00411611442536371,
+        -0.00037819464448138123
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0023229477756045135,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.7647058823529411,
+      "positive_cluster_fraction": 0.23529411764705882,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0005293686586328847,
+        -6.005407527676252e-05
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -5.856818810895132e-05,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.0007423787975832607,
+        0.0001928314489830537
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0002905156939271671,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5735294117647058,
+      "positive_cluster_fraction": 0.4264705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.07374551415468618,
+        -0.04281104662721586
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0538835389685775,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.07751913761430851,
+        -0.03860240384823314
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.05827785210123895,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.8088235294117647,
+      "positive_cluster_fraction": 0.19117647058823528,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008526054451690506,
+        -0.0032030583715231056
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.003944245541599718,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.008787191301539102,
+        -0.003088773077164388
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005720954371272334,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.7058823529411765,
+      "positive_cluster_fraction": 0.29411764705882354,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00404564637727208,
+        -0.0006444919436335908
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0018791997921995503,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.004249581999113375,
+        -0.00033763410270307316
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0023410918432502643,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.7058823529411765,
+      "positive_cluster_fraction": 0.29411764705882354,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00032528895519426366,
+        0.0008596192324163201
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.00048619330168862444,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.0007209746763487729,
+        0.0013946197206051653
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.00023000296137255541,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5147058823529411,
+      "positive_cluster_fraction": 0.4852941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.10339580445198784,
+        -0.05220706258337207
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.07096995366403151,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.10462593532173353,
+        -0.05101290737527427
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.07913892606589976,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7941176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.00955011491211467,
+        -0.004711371781136274
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.005608057865326735,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.009980828730461475,
+        -0.004507459823300109
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006975437737111226,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.8676470588235294,
+      "positive_cluster_fraction": 0.1323529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.005934235445887446,
+        -0.0015080068191713225
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.002153350586981686,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.006543353940761833,
+        -0.0011576376052742704
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0036179404038625073,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.75,
+      "positive_cluster_fraction": 0.25,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0004542627480544653,
+        0.0010782610525074442
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0005114197222648029,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.0008302404382041676,
+        0.0016275916816718722
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.00028142256333834286,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5,
+      "positive_cluster_fraction": 0.5,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.15273931562273657,
+        -0.10839847417968912
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.13032798599288384,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.1546060838312745,
+        -0.10580268902458302
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.13044289770522505,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9558823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "antiberty",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.01535138663020119,
+        -0.007813034821445271
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.010312759616014824,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.01558036711066382,
+        -0.007612143778540644
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.011200502289859452,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9411764705882353,
+      "positive_cluster_fraction": 0.058823529411764705,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.01143024909797687,
+        -0.005799039738394196
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.007666710281944484,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.011684328660064467,
+        -0.005494196369710528
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.008467397633868902,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.9411764705882353,
+      "positive_cluster_fraction": 0.058823529411764705,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.03677149250590201,
+        -0.015668530742365502
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.022502435194530337,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.03796934171719112,
+        -0.014952579518289995
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.02608888450428881,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.2647058823529412,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.1606893433565797,
+        -0.10671124779241935
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.1304844554783157,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.1610796854803494,
+        -0.10681704225501465
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.13400826379839392,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.8970588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.017538818222194066,
+        -0.009275573785758447
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012170902444376247,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.01787664646355704,
+        -0.008949029617676605
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.013063309725276464,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9264705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.012398466561699687,
+        -0.006308099741298305
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.008236681030346952,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.0128030196048746,
+        -0.0059635330317942435
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.009272452295332906,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.8823529411764706,
+      "positive_cluster_fraction": 0.11764705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.04213019552574573,
+        -0.020256680445925098
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.027758373040825717,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.044143825677053744,
+        -0.01837101122698593
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0309443546064376,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.8235294117647058,
+      "positive_cluster_fraction": 0.17647058823529413,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.16746628413819958,
+        -0.11838717470003941
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.15721960525571996,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.16827368427175174,
+        -0.11825980178020215
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.1429436760054855,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9558823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.01821768766427938,
+        -0.009654200652819868
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.011730040886874404,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.018586250393851502,
+        -0.00942685565378784
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.013604782473157799,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9264705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.014339700955705824,
+        -0.00821863451661716
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.008739897100259167,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.0147436533425345,
+        -0.007919256941712423
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.011129010300177452,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.9558823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.04250413472366847,
+        -0.019114979363391474
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.027544015253739458,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.04471151144885597,
+        -0.01769864293750055
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.030624976390543696,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.75,
+      "positive_cluster_fraction": 0.25,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.19409840138491874,
+        -0.14134284460175325
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.17147069974677137,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.19581356064800184,
+        -0.1400567171882705
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.16779326691560897,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9117647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.022147909899803152,
+        -0.013844624790538912
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.016698105493886384,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.02270625729074825,
+        -0.013737914344844828
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.017619431665516994,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9705882352941176,
+      "positive_cluster_fraction": 0.029411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.01699466190658692,
+        -0.011213672571914263
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012026378338402689,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.017946687769618077,
+        -0.01076943104525967
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01397936343065596,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 1.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.03562835605487607,
+        -0.01545908554610246
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.024786333469347607,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.036885895209154695,
+        -0.014302993022027302
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.025680413108307636,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.6617647058823529,
+      "positive_cluster_fraction": 0.3382352941176471,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.30289738399564703,
+        -0.23364249796076159
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.27234187242985086,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.3066613137113857,
+        -0.2320038808666965
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.26799282776832994,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9852941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.02403112649881276,
+        -0.01426518189627984
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.018311498023981153,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.02449598233413333,
+        -0.014023450919476273
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.018777556190485312,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9558823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.018847149164634557,
+        -0.011449375070940116
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.013465327551036391,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.019836429150164953,
+        -0.010821972758918472
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01497970017309378,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.9117647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.05270940262118129,
+        -0.02185537963075541
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.03818341571137203,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.056048664578063304,
+        -0.019864496038286206
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.036973530842483185,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.7647058823529411,
+      "positive_cluster_fraction": 0.23529411764705882,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.30403297606238533,
+        -0.24531614578210917
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.2677706080002738,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.311087846774037,
+        -0.24017153884394515
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.2752296024706078,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 1.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0216873951302502,
+        -0.01311700272569722
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.017172732341986484,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.02209911190813322,
+        -0.012846748178432826
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.017159587908403016,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9411764705882353,
+      "positive_cluster_fraction": 0.058823529411764705,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.016116303721678837,
+        -0.009693511489741924
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012618391397735502,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.017315204770728388,
+        -0.008877349753541604
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.012821621828115118,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.8823529411764706,
+      "positive_cluster_fraction": 0.11764705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.06836322416676434,
+        -0.022950454862046187
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0477040406860034,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.06949097387401862,
+        -0.021871262889665892
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.04509408298708421,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.6617647058823529,
+      "positive_cluster_fraction": 0.3382352941176471,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.3023494471136806,
+        -0.24212371582827125
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.27414141220012456,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.3077763215792141,
+        -0.23795703847454266
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.2720474134075649,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9705882352941176,
+      "positive_cluster_fraction": 0.029411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.014256629674208656,
+        -0.00756265753379352
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.009600585660152327,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.014409173764715075,
+        -0.007409456190437997
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.010639103599527824,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9264705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.011040797594931715,
+        -0.005995101857300542
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.007452712106115451,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.011402177475754009,
+        -0.005686802993090113
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.008414236093705623,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.9117647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.03233725098106897,
+        -0.016567429489065477
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.022213156799822192,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.033571176724714887,
+        -0.015204053930433408
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.024173467318702315,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.8088235294117647,
+      "positive_cluster_fraction": 0.19117647058823528,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.15324883271442377,
+        -0.11120919278209435
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.14235285929884195,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.1532943367956307,
+        -0.11105907526981398
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.13160743827246663,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9705882352941176,
+      "positive_cluster_fraction": 0.029411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.019878637837836288,
+        -0.01143405297129557
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.014821926893835456,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.02032601283529236,
+        -0.011226632211837912
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01527075089547308,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9558823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.015124483753366398,
+        -0.009246172881934417
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.01114205851850691,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.015641455131302436,
+        -0.008936138710391154
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.012035655476833156,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.9705882352941176,
+      "positive_cluster_fraction": 0.029411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.040946340086766425,
+        -0.022085609737078928
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.02959713401035091,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.04200979037658819,
+        -0.020974763720053906
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.03140850956824939,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.8088235294117647,
+      "positive_cluster_fraction": 0.19117647058823528,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.21295767223282633,
+        -0.16213570913715677
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.19050125687835123,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.2151151924112003,
+        -0.16077701354575605
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.1873274791597801,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9852941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.022258779712269538,
+        -0.012664447760704764
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.01689461820119713,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.022688197094407773,
+        -0.012434039894905642
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.017151325302456014,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.8970588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.01670872579184968,
+        -0.00983936273693658
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012170843098985381,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.017514816918013272,
+        -0.009351859248102896
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.013129871326235821,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.8823529411764706,
+      "positive_cluster_fraction": 0.11764705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0588012508048844,
+        -0.027347080007489255
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.04499645309022246,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.0607859563298616,
+        -0.026562216850809884
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.042608201016838425,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.7794117647058824,
+      "positive_cluster_fraction": 0.22058823529411764,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.2245576806925543,
+        -0.16772943143951466
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.1855111687919495,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.2266517706380859,
+        -0.1673216827751003
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.19623284620262574,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9852941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.024690812065592427,
+        -0.01487000651373767
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.018596294886164183,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.024948359193497353,
+        -0.014591620617589982
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01921503117829307,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.9558823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.019357715298327905,
+        -0.012231025259373236
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.013816729854110674,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.020014276647093213,
+        -0.011784767431594548
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.015574617982632601,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.9852941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.06850614244326204,
+        -0.03199303655708772
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.054302362923584695,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.06932941578249172,
+        -0.030717313635098515
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.04947680816992813,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.7794117647058824,
+      "positive_cluster_fraction": 0.22058823529411764,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.2744455923731457,
+        -0.21726250048518764
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.2414383096254755,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.2750467409021839,
+        -0.21709243932304773
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.24587970926637978,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.9852941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "esm_if1",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "identity:0",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008417338486869418,
+        -0.0041367283568973425
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.005565116505652622,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.008675725559895413,
+        -0.003978723355850261
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006106437342472894,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.007919393117140204,
+        -0.0030626196709123434
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.00459756188269373,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.00831530617492203,
+        -0.002502386892049882
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005286785712450009,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6323529411764706,
+      "positive_cluster_fraction": 0.11764705882352941,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.02521131679082828,
+        -0.007548947805343352
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012473415803304681,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.02638295870971345,
+        -0.006704674389996728
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01631725189067177,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5735294117647058,
+      "positive_cluster_fraction": 0.17647058823529413,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.06251849353003844,
+        -0.027239433518017428
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.03628049540145298,
+      "condition": "chain_shift:1",
+      "crossed_seed_cluster_ci95": [
+        -0.06380285087439198,
+        -0.02626814182080165
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.04552918222420093,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.6470588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008612785726245676,
+        -0.004379536518730565
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.00492633296294555,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.008823093785125703,
+        -0.0042144177831632875
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006386322462318978,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.007370863084546193,
+        -0.0030879557871733255
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.004147784138834458,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.007819188287239142,
+        -0.002493580550600171
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0051801495515201015,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.028879234376380722,
+        -0.011636670068971783
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012769574281583472,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.029701414860503744,
+        -0.011188507650293441
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0201018351661079,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5441176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.07524213284085023,
+        -0.05032424451182732
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0570650536854542,
+      "condition": "chain_shift:-1",
+      "crossed_seed_cluster_ci95": [
+        -0.07650460694769591,
+        -0.04931639156654378
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.06267197211433245,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008956935401217598,
+        -0.003821392827830288
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0058554541730093095,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.009301140899415809,
+        -0.0035831932486333016
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006282494966692209,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6470588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008681968437598999,
+        -0.002862906541663997
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.004838303712514922,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.009044534294779005,
+        -0.0026839215039041694
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005627514429581704,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6029411764705882,
+      "positive_cluster_fraction": 0.14705882352941177,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.029472879860285857,
+        -0.01027622939013172
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.013461983866400812,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.031158842561873942,
+        -0.009385717994375339
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01975291823750309,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.6029411764705882,
+      "positive_cluster_fraction": 0.14705882352941177,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.07442299926766154,
+        -0.041518201737983665
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.056385083035090676,
+      "condition": "chain_shift:2",
+      "crossed_seed_cluster_ci95": [
+        -0.07685745239889707,
+        -0.038275010039295114
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.057539573687323965,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.6911764705882353,
+      "positive_cluster_fraction": 0.058823529411764705,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.010823299097418642,
+        -0.005270914543946298
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.007705894994421452,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.011767396156801661,
+        -0.0049455947727855215
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.007949527598463717,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008443981535609607,
+        -0.0038863108088674184
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.006065478290134294,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.008782197980046319,
+        -0.0034305788068829573
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006004991781978043,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6176470588235294,
+      "positive_cluster_fraction": 0.1323529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.029585618293094272,
+        -0.012550495397044446
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.02293585637130799,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.03100976249412268,
+        -0.011392308045505863
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.020950996614220306,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5588235294117647,
+      "positive_cluster_fraction": 0.19117647058823528,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.10679977566406612,
+        -0.06607723278261553
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.08268932834533567,
+      "condition": "chain_shift:4",
+      "crossed_seed_cluster_ci95": [
+        -0.10841003102565276,
+        -0.06353695680422206
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.08549409938602877,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7205882352941176,
+      "positive_cluster_fraction": 0.029411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.009724050112340803,
+        -0.004451426903460279
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0064649065008479355,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.010237714780132245,
+        -0.0041651099503174725
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.007002003675028776,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6176470588235294,
+      "positive_cluster_fraction": 0.1323529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008693444387285452,
+        -0.004310727253163055
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.006459936728462145,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.009046947552173855,
+        -0.003944055757010703
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006397457229373297,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.030982021513476916,
+        -0.009428055989062122
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.022988626993394875,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.03176896008079814,
+        -0.008959789336499172
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01988331816326586,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5588235294117647,
+      "positive_cluster_fraction": 0.19117647058823528,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.10428769363310819,
+        -0.06546879300652368
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.07688219551534477,
+      "condition": "chain_shift:8",
+      "crossed_seed_cluster_ci95": [
+        -0.10571558549526194,
+        -0.06474171223600272
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0851385788896873,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7058823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.010340284132244398,
+        -0.004011602419344504
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.006729906624148255,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.010922086027052887,
+        -0.0036094164541426764
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.007049978718610069,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6470588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.010462509216543412,
+        -0.0031034643402740782
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.006071711603286248,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.010681970725669638,
+        -0.002828445803044551
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.00656070085206656,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6029411764705882,
+      "positive_cluster_fraction": 0.14705882352941177,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.03275351662804955,
+        -0.006465548689309275
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.013023782224210537,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.03305604628614433,
+        -0.005685691872549152
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.018745185596693224,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5,
+      "positive_cluster_fraction": 0.25,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.11483625894388888,
+        -0.07698338495084661
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.08433041042000737,
+      "condition": "chain_shift:16",
+      "crossed_seed_cluster_ci95": [
+        -0.11665953354907055,
+        -0.07574527153392607
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.09578469443357253,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.007499573898994497,
+        -0.0028944031430157315
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.003971064154043694,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.007751927782359851,
+        -0.002684772860330706
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005073400629669652,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6470588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0078574992418943,
+        -0.002920743101990077
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0038383976270244726,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.008642135875779321,
+        -0.002491613346220225
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005249492832534998,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6029411764705882,
+      "positive_cluster_fraction": 0.14705882352941177,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.023403627574403885,
+        -0.008453844977294194
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.009708739354695154,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.02372218117904403,
+        -0.007805016912919038
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.015592293096319291,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5441176470588235,
+      "positive_cluster_fraction": 0.20588235294117646,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.0640736155282022,
+        -0.037190543524781614
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.04742053232188214,
+      "condition": "local_shuffle:4",
+      "crossed_seed_cluster_ci95": [
+        -0.06449630073067454,
+        -0.036538511976229836
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.0501906068391636,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.6911764705882353,
+      "positive_cluster_fraction": 0.058823529411764705,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008702706272069377,
+        -0.0034994309084036878
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.005257502583831636,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.009089426837974118,
+        -0.003118392474737758
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.006032323803873671,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6470588235294118,
+      "positive_cluster_fraction": 0.10294117647058823,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.008347092287384136,
+        -0.002924339969123356
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.004503432410919506,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.008468768682771771,
+        -0.00239961122988165
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.005438730191765176,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.5882352941176471,
+      "positive_cluster_fraction": 0.16176470588235295,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.02355305553323056,
+        -0.009403692395385998
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.012232575984039129,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.024323803408933555,
+        -0.008751258481003851
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.01617160747520293,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.5882352941176471,
+      "positive_cluster_fraction": 0.16176470588235295,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.08769281954126608,
+        -0.05417859997494493
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.060304242557376715,
+      "condition": "local_shuffle:8",
+      "crossed_seed_cluster_ci95": [
+        -0.08937393085330168,
+        -0.052962848139350364
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.07037784954976853,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7352941176470589,
+      "positive_cluster_fraction": 0.014705882352941176,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.011397395777093287,
+        -0.00597365377972123
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.008074398648820534,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.011953311770545552,
+        -0.005751938699175821
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.008499074062229326,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6617647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.010653712101303626,
+        -0.004355701192869811
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0072853410275415045,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.011000348830514452,
+        -0.004207839311698581
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.007257308541945885,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6617647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.03600930876776579,
+        -0.0168277147918813
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.025956636179462686,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.03683475991177258,
+        -0.016051346842078002
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.026207250978422362,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.6617647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.08347735539057577,
+        -0.04983732158352894
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.05190542234315566,
+      "condition": "same_aa_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.08611829509799829,
+        -0.04584281145549484
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.06652769027616463,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.7058823529411765,
+      "positive_cluster_fraction": 0.04411764705882353,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.011838101970317677,
+        -0.005983965168746204
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0076692677190449456,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.012272832860854743,
+        -0.005673731013680178
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.008765697948789748,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.6764705882352942,
+      "positive_cluster_fraction": 0.07352941176470588,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.010837427447483188,
+        -0.00469613125411798
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.0068802427258873936,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.011220565074294567,
+        -0.004059840473648353
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.007567816410028114,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.6617647058823529,
+      "positive_cluster_fraction": 0.08823529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.04254541147194741,
+        -0.018798944339624157
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.02782141812828273,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.043155304942201066,
+        -0.018159603471064788
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.03028075330821856,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.6176470588235294,
+      "positive_cluster_fraction": 0.1323529411764706,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        -0.10417837079014632,
+        -0.06537464916624895
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": -0.07500368283062368,
+      "condition": "global_shuffle:0",
+      "crossed_seed_cluster_ci95": [
+        -0.1051813695817509,
+        -0.0647125820749298
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": -0.08468121545434262,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.6911764705882353,
+      "positive_cluster_fraction": 0.058823529411764705,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "pair_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "outer_product_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "epitope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    },
+    {
+      "bootstrap_repeats": 5000,
+      "cluster_ci95_conditional_on_fixed_seeds": [
+        0.0,
+        0.0
+      ],
+      "cluster_count": 68,
+      "complex_count": 217,
+      "complex_weighted_mean_difference": 0.0,
+      "condition": "oracle_restore:8",
+      "crossed_seed_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "encoder": "proteinmpnn",
+      "estimand": "equal_cluster_equal_seed_mean_paired_difference",
+      "excluded_zero_positive_or_undefined": 0,
+      "mean_difference": 0.0,
+      "metric": "paratope_ap",
+      "negative_cluster_fraction": 0.0,
+      "positive_cluster_fraction": 0.0,
+      "scope": "exploratory development; pointwise intervals, no promotion decision",
+      "seed_count": 3
+    }
+  ],
+  "input_receipts_sha256": {
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_0/RESULT.json": "cb5edebe3a634d38d4affa50dacdbcf99a0cbaa019fd8db9285fc32efb0d2445",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_1/RESULT.json": "6d5a1327d6e616bea509cb568932a9abedd7de4a3a4d41a3467ce13f1b6264e7",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_2/RESULT.json": "287f54f637a402d7ae3385feb44e792ad94ada632fa0fd56cdf45b0f90b8836b",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_3/RESULT.json": "cb3122895ddad2b89c448d6c207c9d5f11026432ebe9209c0d5d91166aad9bf6",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_4/RESULT.json": "e03d35158c63c50b6d3c525bcebdfd38467a1c13eeade6242fb7d1b93ba30722",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_5/RESULT.json": "9e58621549c82fca8e04cccb6951f84b7ec5501ec1f1115bf0f1138dded6f607",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_6/RESULT.json": "f2ddcd241a9616d83bc25acd7758c9599c2efdddac68880951702173acc43276",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_7/RESULT.json": "b826b077d1e83746a492a61fa70bcbc5cf4b3807232c320b0035e59574679bcc",
+    "/ssd/scxi253/correspondence_upgrade_20260930/attempt1/out/task_8/RESULT.json": "47a730df94fbea397addd45d1be96fa74d6641388802df65680403c6e01f8cfe"
+  },
+  "limitations": [
+    "Only three fixed training seeds per encoder",
+    "Validation data previously used for development",
+    "Pointwise exploratory confidence intervals, no multiplicity-corrected claims",
+    "Unknown alternate partners are not experimentally verified non-binders",
+    "Inference-time robustness is not training-time efficacy",
+    "Oracle inverse is a sanity check, not learned realignment",
+    "Sequence-row interventions do not prove spatial causation"
+  ],
+  "plan_sha256": "98aa7753dba0cbcb4c4f769cc2ed630cb7c0a43d2e77f5813644947c962f868f",
+  "promotion_authorized": false,
+  "ranking_means": {
+    "antiberty:1:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.003346387545267739,
+      "mrr": 0.21832906676656677,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:1:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.0032549977302551237,
+      "mrr": 0.20318318833943833,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:1:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.0017751177151997853,
+      "mrr": 0.22480002636252638,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:1:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": -0.0017963767051696776,
+      "mrr": 0.2333107864357864,
+      "recall_at_1": 0.125
+    },
+    "antiberty:1:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": -0.0017098307609558104,
+      "mrr": 0.23539411976911975,
+      "recall_at_1": 0.125
+    },
+    "antiberty:1:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": -0.00022449493408203004,
+      "mrr": 0.2385957792207792,
+      "recall_at_1": 0.125
+    },
+    "antiberty:2:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.008128205935160318,
+      "mrr": 0.24633161976911977,
+      "recall_at_1": 0.125
+    },
+    "antiberty:2:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.009482848644256591,
+      "mrr": 0.21880185786435785,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:2:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.008349418640136719,
+      "mrr": 0.19424828643578643,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:2:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.0012992898623148622,
+      "mrr": 0.22402328574203573,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:2:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.0005931615829467777,
+      "mrr": 0.22129892676767676,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:2:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.00010503133138020735,
+      "mrr": 0.21973642676767677,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:3:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.0025871952374776196,
+      "mrr": 0.2028731684981685,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:3:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.004343581199645997,
+      "mrr": 0.24870494089244088,
+      "recall_at_1": 0.125
+    },
+    "antiberty:3:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.0008414665857950834,
+      "mrr": 0.2007927836052836,
+      "recall_at_1": 0.0625
+    },
+    "antiberty:3:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.0021316528320312507,
+      "mrr": 0.2796773538961039,
+      "recall_at_1": 0.125
+    },
+    "antiberty:3:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.0017075697580973288,
+      "mrr": 0.27667636183261185,
+      "recall_at_1": 0.125
+    },
+    "antiberty:3:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.0016215801239013667,
+      "mrr": 0.26816941738816735,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:1:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.09515020052591958,
+      "mrr": 0.32661210317460315,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:1:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.09792705376942953,
+      "mrr": 0.33155212842712845,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:1:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.09637687603632608,
+      "mrr": 0.25448908730158726,
+      "recall_at_1": 0.0625
+    },
+    "esm_if1:1:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.07549349466959634,
+      "mrr": 0.3194244123931624,
+      "recall_at_1": 0.0625
+    },
+    "esm_if1:1:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.09688657919565838,
+      "mrr": 0.4049648268398269,
+      "recall_at_1": 0.1875
+    },
+    "esm_if1:1:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.06175146500269571,
+      "mrr": 0.29788648851148847,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:2:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.004975628852844238,
+      "mrr": 0.26340525793650793,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:2:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": -0.0018541773160298649,
+      "mrr": 0.13706666597291597,
+      "recall_at_1": 0.0
+    },
+    "esm_if1:2:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": -0.0018552939097086574,
+      "mrr": 0.13337504509379508,
+      "recall_at_1": 0.0
+    },
+    "esm_if1:2:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.0027160286903381353,
+      "mrr": 0.20752190517815516,
+      "recall_at_1": 0.0625
+    },
+    "esm_if1:2:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.0015511155128478992,
+      "mrr": 0.2763167388167388,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:2:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.0016773422559102384,
+      "mrr": 0.22063492063492063,
+      "recall_at_1": 0.0625
+    },
+    "esm_if1:3:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.006688972314198815,
+      "mrr": 0.22608363858363856,
+      "recall_at_1": 0.0625
+    },
+    "esm_if1:3:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.0027247428894042955,
+      "mrr": 0.2121248543123543,
+      "recall_at_1": 0.125
+    },
+    "esm_if1:3:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": -0.004987955093383784,
+      "mrr": 0.14049310064935067,
+      "recall_at_1": 0.0
+    },
+    "esm_if1:3:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.014548782507578533,
+      "mrr": 0.38303415334665336,
+      "recall_at_1": 0.25
+    },
+    "esm_if1:3:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.01587953567504883,
+      "mrr": 0.3143770292207792,
+      "recall_at_1": 0.1875
+    },
+    "esm_if1:3:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": -0.008175333340962723,
+      "mrr": 0.1314073946886447,
+      "recall_at_1": 0.0
+    },
+    "proteinmpnn:1:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.05497055848439534,
+      "mrr": 0.40153232184482185,
+      "recall_at_1": 0.25
+    },
+    "proteinmpnn:1:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.049812491734822585,
+      "mrr": 0.40361721611721607,
+      "recall_at_1": 0.25
+    },
+    "proteinmpnn:1:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.05745725234349568,
+      "mrr": 0.36653025793650795,
+      "recall_at_1": 0.1875
+    },
+    "proteinmpnn:1:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.06314844687779744,
+      "mrr": 0.363147095959596,
+      "recall_at_1": 0.1875
+    },
+    "proteinmpnn:1:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.06434613068898518,
+      "mrr": 0.39347718253968256,
+      "recall_at_1": 0.25
+    },
+    "proteinmpnn:1:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.0794390598932902,
+      "mrr": 0.3322443181818182,
+      "recall_at_1": 0.125
+    },
+    "proteinmpnn:2:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.028001101811726888,
+      "mrr": 0.3059695512820513,
+      "recall_at_1": 0.0625
+    },
+    "proteinmpnn:2:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.027969249089558917,
+      "mrr": 0.34089625652125655,
+      "recall_at_1": 0.125
+    },
+    "proteinmpnn:2:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.030255508422851563,
+      "mrr": 0.35108745421245424,
+      "recall_at_1": 0.125
+    },
+    "proteinmpnn:2:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.03352494637171428,
+      "mrr": 0.2880997474747474,
+      "recall_at_1": 0.125
+    },
+    "proteinmpnn:2:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.035743892192840576,
+      "mrr": 0.2774846681096681,
+      "recall_at_1": 0.125
+    },
+    "proteinmpnn:2:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.048693879445393884,
+      "mrr": 0.3892361111111111,
+      "recall_at_1": 0.1875
+    },
+    "proteinmpnn:3:antibody:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.37771490812301634,
+      "mrr": 0.4113095238095238,
+      "recall_at_1": 0.1875
+    },
+    "proteinmpnn:3:antibody:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.3705406626065572,
+      "mrr": 0.38184523809523807,
+      "recall_at_1": 0.125
+    },
+    "proteinmpnn:3:antibody:identity:0": {
+      "known_positive_minus_distractor_mean": 0.3882695833841959,
+      "mrr": 0.3317422161172161,
+      "recall_at_1": 0.0625
+    },
+    "proteinmpnn:3:antigen:chain_shift:8": {
+      "known_positive_minus_distractor_mean": 0.308291228612264,
+      "mrr": 0.30084325396825395,
+      "recall_at_1": 0.0625
+    },
+    "proteinmpnn:3:antigen:global_shuffle:0": {
+      "known_positive_minus_distractor_mean": 0.3133435686429341,
+      "mrr": 0.2921401515151515,
+      "recall_at_1": 0.0625
+    },
+    "proteinmpnn:3:antigen:identity:0": {
+      "known_positive_minus_distractor_mean": 0.3686631401379903,
+      "mrr": 0.27150297619047614,
+      "recall_at_1": 0.0
+    }
+  },
+  "raw_condition_means": {
+    "antiberty:1:chain_shift:-1": 0.017345694098579688,
+    "antiberty:1:chain_shift:1": 0.017238190679941492,
+    "antiberty:1:chain_shift:16": 0.017940034774814432,
+    "antiberty:1:chain_shift:2": 0.017424952822651583,
+    "antiberty:1:chain_shift:4": 0.016899976633339742,
+    "antiberty:1:chain_shift:8": 0.01695480424196021,
+    "antiberty:1:global_shuffle:0": 0.01468465026652756,
+    "antiberty:1:identity:0": 0.020133124597739697,
+    "antiberty:1:local_shuffle:4": 0.017317210451191698,
+    "antiberty:1:local_shuffle:8": 0.017400353284038064,
+    "antiberty:1:oracle_restore:8": 0.020133124597739697,
+    "antiberty:1:same_aa_shuffle:0": 0.01622221447022862,
+    "antiberty:2:chain_shift:-1": 0.017781707180168756,
+    "antiberty:2:chain_shift:1": 0.01734603098625821,
+    "antiberty:2:chain_shift:16": 0.01635383835334084,
+    "antiberty:2:chain_shift:2": 0.017630071133232717,
+    "antiberty:2:chain_shift:4": 0.015505966629890695,
+    "antiberty:2:chain_shift:8": 0.01562545167077532,
+    "antiberty:2:global_shuffle:0": 0.015959611525205048,
+    "antiberty:2:identity:0": 0.02116697422731532,
+    "antiberty:2:local_shuffle:4": 0.018580170088582114,
+    "antiberty:2:local_shuffle:8": 0.018310164671090836,
+    "antiberty:2:oracle_restore:8": 0.02116697422731532,
+    "antiberty:2:same_aa_shuffle:0": 0.016982642483647042,
+    "antiberty:3:chain_shift:-1": 0.019836418940204853,
+    "antiberty:3:chain_shift:1": 0.020574114286779053,
+    "antiberty:3:chain_shift:16": 0.017224298441372826,
+    "antiberty:3:chain_shift:2": 0.01969046477987516,
+    "antiberty:3:chain_shift:4": 0.01792939303867377,
+    "antiberty:3:chain_shift:8": 0.017393438997320664,
+    "antiberty:3:global_shuffle:0": 0.01674272020886566,
+    "antiberty:3:identity:0": 0.022911056771523452,
+    "antiberty:3:local_shuffle:4": 0.020559746205043212,
+    "antiberty:3:local_shuffle:8": 0.019076790425561183,
+    "antiberty:3:oracle_restore:8": 0.022911056771523452,
+    "antiberty:3:same_aa_shuffle:0": 0.01917356201790366,
+    "esm_if1:1:chain_shift:-1": 0.015407734692047963,
+    "esm_if1:1:chain_shift:1": 0.018137691959625484,
+    "esm_if1:1:chain_shift:16": 0.011239890940216444,
+    "esm_if1:1:chain_shift:2": 0.015644227889520943,
+    "esm_if1:1:chain_shift:4": 0.010513388299003647,
+    "esm_if1:1:chain_shift:8": 0.009560513530793761,
+    "esm_if1:1:global_shuffle:0": 0.009154904645045899,
+    "esm_if1:1:identity:0": 0.029983989683408815,
+    "esm_if1:1:local_shuffle:4": 0.018610826894068275,
+    "esm_if1:1:local_shuffle:8": 0.013603912084100292,
+    "esm_if1:1:oracle_restore:8": 0.029983989683408815,
+    "esm_if1:1:same_aa_shuffle:0": 0.011026202169561293,
+    "esm_if1:2:chain_shift:-1": 0.016213106512336956,
+    "esm_if1:2:chain_shift:1": 0.016821432862217423,
+    "esm_if1:2:chain_shift:16": 0.011097342518024316,
+    "esm_if1:2:chain_shift:2": 0.016102178224411522,
+    "esm_if1:2:chain_shift:4": 0.011012699076806685,
+    "esm_if1:2:chain_shift:8": 0.01034740749324968,
+    "esm_if1:2:global_shuffle:0": 0.00981259516257579,
+    "esm_if1:2:identity:0": 0.025474732856780924,
+    "esm_if1:2:local_shuffle:4": 0.017379362057003675,
+    "esm_if1:2:local_shuffle:8": 0.013230941195668701,
+    "esm_if1:2:oracle_restore:8": 0.025474732856780924,
+    "esm_if1:2:same_aa_shuffle:0": 0.011804826965185028,
+    "esm_if1:3:chain_shift:-1": 0.015851364129020606,
+    "esm_if1:3:chain_shift:1": 0.018087508996646892,
+    "esm_if1:3:chain_shift:16": 0.010129482182334058,
+    "esm_if1:3:chain_shift:2": 0.017048383891978585,
+    "esm_if1:3:chain_shift:4": 0.012364508809064782,
+    "esm_if1:3:chain_shift:8": 0.009142497570547373,
+    "esm_if1:3:global_shuffle:0": 0.009228528200420033,
+    "esm_if1:3:identity:0": 0.02852619012634453,
+    "esm_if1:3:local_shuffle:4": 0.01919296673500533,
+    "esm_if1:3:local_shuffle:8": 0.012684278705258912,
+    "esm_if1:3:oracle_restore:8": 0.02852619012634453,
+    "esm_if1:3:same_aa_shuffle:0": 0.010470028928196555,
+    "proteinmpnn:1:chain_shift:-1": 0.020763013185302444,
+    "proteinmpnn:1:chain_shift:1": 0.018557853683013183,
+    "proteinmpnn:1:chain_shift:16": 0.01794725258815045,
+    "proteinmpnn:1:chain_shift:2": 0.01824817294712721,
+    "proteinmpnn:1:chain_shift:4": 0.015629370176469704,
+    "proteinmpnn:1:chain_shift:8": 0.019682073398178193,
+    "proteinmpnn:1:global_shuffle:0": 0.01737289507128923,
+    "proteinmpnn:1:identity:0": 0.024708093619365077,
+    "proteinmpnn:1:local_shuffle:4": 0.02107822704883743,
+    "proteinmpnn:1:local_shuffle:8": 0.019429565434941003,
+    "proteinmpnn:1:oracle_restore:8": 0.024708093619365077,
+    "proteinmpnn:1:same_aa_shuffle:0": 0.016297466092408494,
+    "proteinmpnn:2:chain_shift:-1": 0.017080358345439615,
+    "proteinmpnn:2:chain_shift:1": 0.018017348467089387,
+    "proteinmpnn:2:chain_shift:16": 0.01703505213434172,
+    "proteinmpnn:2:chain_shift:2": 0.01634521429704869,
+    "proteinmpnn:2:chain_shift:4": 0.015867020869854028,
+    "proteinmpnn:2:chain_shift:8": 0.016730539202770376,
+    "proteinmpnn:2:global_shuffle:0": 0.015354886950901047,
+    "proteinmpnn:2:identity:0": 0.022580918526754402,
+    "proteinmpnn:2:local_shuffle:4": 0.018050190186333394,
+    "proteinmpnn:2:local_shuffle:8": 0.018447748276260816,
+    "proteinmpnn:2:oracle_restore:8": 0.022580918526754402,
+    "proteinmpnn:2:same_aa_shuffle:0": 0.015122042846266412,
+    "proteinmpnn:3:chain_shift:-1": 0.01643097432401903,
+    "proteinmpnn:3:chain_shift:1": 0.015782793076537304,
+    "proteinmpnn:3:chain_shift:16": 0.013881320148660808,
+    "proteinmpnn:3:chain_shift:2": 0.016893594980393906,
+    "proteinmpnn:3:chain_shift:4": 0.014439268714009648,
+    "proteinmpnn:3:chain_shift:8": 0.013246012640105354,
+    "proteinmpnn:3:global_shuffle:0": 0.013317759564272627,
+    "proteinmpnn:3:identity:0": 0.02176433259747826,
+    "proteinmpnn:3:local_shuffle:4": 0.018011735046295836,
+    "proteinmpnn:3:local_shuffle:8": 0.015403523280901011,
+    "proteinmpnn:3:oracle_restore:8": 0.02176433259747826,
+    "proteinmpnn:3:same_aa_shuffle:0": 0.013410639858461238
+  },
+  "status": "COMPLETE_EXPLORATORY_DEVELOPMENT_ANALYSIS",
+  "task_runtime_seconds": {
+    "antiberty:1": 118.166554056108,
+    "antiberty:2": 118.10883910022676,
+    "antiberty:3": 118.95807188749313,
+    "esm_if1:1": 122.07599851675332,
+    "esm_if1:2": 122.10457235947251,
+    "esm_if1:3": 142.91981147229671,
+    "proteinmpnn:1": 121.54002092778683,
+    "proteinmpnn:2": 121.57576088421047,
+    "proteinmpnn:3": 122.79970591515303
+  },
+  "test_labels_read": false
+}

@@ -1,0 +1,595 @@
+{
+  "aligned_seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "claim_boundary": "Validation splits only, evaluation-time perturbation of already-trained models. No test split is read. This measures how much correspondence fidelity is worth, not how well the model performs.",
+  "classification": {
+    "k1_fraction_of_global": 0.517194521935033,
+    "monotone": false,
+    "monotonicity_violations": [
+      {
+        "covers_zero": false,
+        "from_k": 8,
+        "step_ci95": [
+          0.0001399383864675279,
+          0.001127775168120513
+        ],
+        "to_k": 16
+      }
+    ],
+    "reason": "k=1 costs 52%, between the 50% and 80% boundaries",
+    "verdict": "intermediate"
+  },
+  "companion_metrics": {
+    "auroc": {
+      "1": -0.049419315702779,
+      "16": -0.10821748147681867,
+      "2": -0.06870215595183342,
+      "4": -0.1016272768704618,
+      "8": -0.12364239100712378,
+      "999": -0.11620067801500525
+    },
+    "f1": {
+      "1": -0.007678343143950309,
+      "16": -0.010556168411268236,
+      "2": -0.008967495507053818,
+      "4": -0.012412061682869065,
+      "8": -0.01245189982345828,
+      "999": -0.013032176165287198
+    },
+    "mcc": {
+      "1": -0.028619516751500606,
+      "16": -0.04855698302214538,
+      "2": -0.032279877964998815,
+      "4": -0.04504860662405093,
+      "8": -0.04896407964353522,
+      "999": -0.05039390714058496
+    },
+    "precision_at_true_contact_count": {
+      "1": -0.009316751212484011,
+      "16": -0.02088348974243248,
+      "2": -0.010254410603999958,
+      "4": -0.0225516139066465,
+      "8": -0.02121435160585334,
+      "999": -0.02532257184591511
+    }
+  },
+  "endpoint": "auprc",
+  "format_version": "correspondence_corruption_curve_v1",
+  "label": "esm_if1",
+  "per_k": {
+    "1": {
+      "bootstrap_ci95": [
+        -0.010430248652280776,
+        -0.00898251054359464
+      ],
+      "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
+      "mean_difference": -0.00968042210651949,
+      "negative_seed_count": 10,
+      "seed_count": 10,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "16": {
+      "bootstrap_ci95": [
+        -0.017887338270224793,
+        -0.015813179824011404
+      ],
+      "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
+      "mean_difference": -0.01688602617681209,
+      "negative_seed_count": 10,
+      "seed_count": 10,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "2": {
+      "bootstrap_ci95": [
+        -0.011984989134083149,
+        -0.010214718898066112
+      ],
+      "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
+      "mean_difference": -0.011037503068682529,
+      "negative_seed_count": 10,
+      "seed_count": 10,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "4": {
+      "bootstrap_ci95": [
+        -0.017543089865184713,
+        -0.01543447871445712
+      ],
+      "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
+      "mean_difference": -0.016478284882874207,
+      "negative_seed_count": 10,
+      "seed_count": 10,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "8": {
+      "bootstrap_ci95": [
+        -0.01879092272454601,
+        -0.016318097703597555
+      ],
+      "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
+      "mean_difference": -0.0175413790186714,
+      "negative_seed_count": 10,
+      "seed_count": 10,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "sign_lower_bound": 0.7411344491069477
+    },
+    "999": {
+      "bootstrap_ci95": [
+        -0.019885296199418877,
+        -0.01756032387216152
+      ],
+      "damaged": true,
+      "decision_rule": "the exact Clopper-Pearson lower bound on the fraction of seeds in the stated direction exceeds 0.5",
+      "decision_rule_id": "sign_bound_exceeds_half",
+      "mean_difference": -0.018717178345782032,
+      "negative_seed_count": 10,
+      "seed_count": 10,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "sign_lower_bound": 0.7411344491069477
+    }
+  },
+  "per_seed": {
+    "1": [
+      {
+        "aligned": 0.029983989683408815,
+        "corrupted": 0.01813639954804422,
+        "difference": -0.011847590135364596,
+        "seed": 1
+      },
+      {
+        "aligned": 0.025474732856780924,
+        "corrupted": 0.01681903291117289,
+        "difference": -0.008655699945608032,
+        "seed": 2
+      },
+      {
+        "aligned": 0.02852619012634453,
+        "corrupted": 0.01808040658049886,
+        "difference": -0.010445783545845667,
+        "seed": 3
+      },
+      {
+        "aligned": 0.027906531055625426,
+        "corrupted": 0.0194340450254213,
+        "difference": -0.008472486030204125,
+        "seed": 4
+      },
+      {
+        "aligned": 0.02428268168491511,
+        "corrupted": 0.014669821503684913,
+        "difference": -0.009612860181230198,
+        "seed": 5
+      },
+      {
+        "aligned": 0.028203023985917498,
+        "corrupted": 0.01695967184678649,
+        "difference": -0.011243352139131007,
+        "seed": 6
+      },
+      {
+        "aligned": 0.025651787448746632,
+        "corrupted": 0.016970162541226574,
+        "difference": -0.008681624907520058,
+        "seed": 7
+      },
+      {
+        "aligned": 0.029691490329321536,
+        "corrupted": 0.02007885219863701,
+        "difference": -0.009612638130684525,
+        "seed": 8
+      },
+      {
+        "aligned": 0.02830739310988155,
+        "corrupted": 0.018224405283587826,
+        "difference": -0.010082987826293723,
+        "seed": 9
+      },
+      {
+        "aligned": 0.027678903553365733,
+        "corrupted": 0.019529705330052764,
+        "difference": -0.008149198223312969,
+        "seed": 10
+      }
+    ],
+    "16": [
+      {
+        "aligned": 0.029983989683408815,
+        "corrupted": 0.01123466234810092,
+        "difference": -0.018749327335307896,
+        "seed": 1
+      },
+      {
+        "aligned": 0.025474732856780924,
+        "corrupted": 0.010912354389500382,
+        "difference": -0.014562378467280541,
+        "seed": 2
+      },
+      {
+        "aligned": 0.02852619012634453,
+        "corrupted": 0.010049523346116217,
+        "difference": -0.018476666780228312,
+        "seed": 3
+      },
+      {
+        "aligned": 0.027906531055625426,
+        "corrupted": 0.01073490232639692,
+        "difference": -0.017171628729228505,
+        "seed": 4
+      },
+      {
+        "aligned": 0.02428268168491511,
+        "corrupted": 0.010455259942966307,
+        "difference": -0.013827421741948804,
+        "seed": 5
+      },
+      {
+        "aligned": 0.028203023985917498,
+        "corrupted": 0.011586190791035282,
+        "difference": -0.016616833194882216,
+        "seed": 6
+      },
+      {
+        "aligned": 0.025651787448746632,
+        "corrupted": 0.010067782128527011,
+        "difference": -0.015584005320219621,
+        "seed": 7
+      },
+      {
+        "aligned": 0.029691490329321536,
+        "corrupted": 0.010578974166570485,
+        "difference": -0.019112516162751052,
+        "seed": 8
+      },
+      {
+        "aligned": 0.02830739310988155,
+        "corrupted": 0.0108357665635365,
+        "difference": -0.01747162654634505,
+        "seed": 9
+      },
+      {
+        "aligned": 0.027678903553365733,
+        "corrupted": 0.010391046063436826,
+        "difference": -0.017287857489928907,
+        "seed": 10
+      }
+    ],
+    "2": [
+      {
+        "aligned": 0.029983989683408815,
+        "corrupted": 0.01564389568359156,
+        "difference": -0.014340093999817255,
+        "seed": 1
+      },
+      {
+        "aligned": 0.025474732856780924,
+        "corrupted": 0.01610223749446566,
+        "difference": -0.009372495362315263,
+        "seed": 2
+      },
+      {
+        "aligned": 0.02852619012634453,
+        "corrupted": 0.0170268152885129,
+        "difference": -0.01149937483783163,
+        "seed": 3
+      },
+      {
+        "aligned": 0.027906531055625426,
+        "corrupted": 0.016333302786719954,
+        "difference": -0.011573228268905472,
+        "seed": 4
+      },
+      {
+        "aligned": 0.02428268168491511,
+        "corrupted": 0.014329963398266001,
+        "difference": -0.00995271828664911,
+        "seed": 5
+      },
+      {
+        "aligned": 0.028203023985917498,
+        "corrupted": 0.016447901067241068,
+        "difference": -0.01175512291867643,
+        "seed": 6
+      },
+      {
+        "aligned": 0.025651787448746632,
+        "corrupted": 0.014739067547520924,
+        "difference": -0.010912719901225708,
+        "seed": 7
+      },
+      {
+        "aligned": 0.029691490329321536,
+        "corrupted": 0.019716912995389184,
+        "difference": -0.009974577333932352,
+        "seed": 8
+      },
+      {
+        "aligned": 0.02830739310988155,
+        "corrupted": 0.016709379182614902,
+        "difference": -0.011598013927266646,
+        "seed": 9
+      },
+      {
+        "aligned": 0.027678903553365733,
+        "corrupted": 0.01828221770316031,
+        "difference": -0.009396685850205422,
+        "seed": 10
+      }
+    ],
+    "4": [
+      {
+        "aligned": 0.029983989683408815,
+        "corrupted": 0.010514463893758468,
+        "difference": -0.019469525789650347,
+        "seed": 1
+      },
+      {
+        "aligned": 0.025474732856780924,
+        "corrupted": 0.011013344591458848,
+        "difference": -0.014461388265322075,
+        "seed": 2
+      },
+      {
+        "aligned": 0.02852619012634453,
+        "corrupted": 0.012365126576881097,
+        "difference": -0.01616106354946343,
+        "seed": 3
+      },
+      {
+        "aligned": 0.027906531055625426,
+        "corrupted": 0.010769198557174554,
+        "difference": -0.017137332498450873,
+        "seed": 4
+      },
+      {
+        "aligned": 0.02428268168491511,
+        "corrupted": 0.009966048997667126,
+        "difference": -0.014316632687247985,
+        "seed": 5
+      },
+      {
+        "aligned": 0.028203023985917498,
+        "corrupted": 0.010235359504286567,
+        "difference": -0.01796766448163093,
+        "seed": 6
+      },
+      {
+        "aligned": 0.025651787448746632,
+        "corrupted": 0.01140710084026374,
+        "difference": -0.014244686608482892,
+        "seed": 7
+      },
+      {
+        "aligned": 0.029691490329321536,
+        "corrupted": 0.012031750208509738,
+        "difference": -0.017659740120811798,
+        "seed": 8
+      },
+      {
+        "aligned": 0.02830739310988155,
+        "corrupted": 0.01065373777271562,
+        "difference": -0.017653655337165928,
+        "seed": 9
+      },
+      {
+        "aligned": 0.027678903553365733,
+        "corrupted": 0.01196774406284992,
+        "difference": -0.01571115949051581,
+        "seed": 10
+      }
+    ],
+    "8": [
+      {
+        "aligned": 0.029983989683408815,
+        "corrupted": 0.009537695822523983,
+        "difference": -0.020446293860884833,
+        "seed": 1
+      },
+      {
+        "aligned": 0.025474732856780924,
+        "corrupted": 0.0103514652422301,
+        "difference": -0.015123267614550824,
+        "seed": 2
+      },
+      {
+        "aligned": 0.02852619012634453,
+        "corrupted": 0.00914635438016421,
+        "difference": -0.019379835746180317,
+        "seed": 3
+      },
+      {
+        "aligned": 0.027906531055625426,
+        "corrupted": 0.01158321326099324,
+        "difference": -0.016323317794632187,
+        "seed": 4
+      },
+      {
+        "aligned": 0.02428268168491511,
+        "corrupted": 0.009818526310111873,
+        "difference": -0.014464155374803238,
+        "seed": 5
+      },
+      {
+        "aligned": 0.028203023985917498,
+        "corrupted": 0.009897144729752134,
+        "difference": -0.018305879256165364,
+        "seed": 6
+      },
+      {
+        "aligned": 0.025651787448746632,
+        "corrupted": 0.009338708062548447,
+        "difference": -0.016313079386198186,
+        "seed": 7
+      },
+      {
+        "aligned": 0.029691490329321536,
+        "corrupted": 0.009213282407592945,
+        "difference": -0.02047820792172859,
+        "seed": 8
+      },
+      {
+        "aligned": 0.02830739310988155,
+        "corrupted": 0.010673750061501905,
+        "difference": -0.017633643048379645,
+        "seed": 9
+      },
+      {
+        "aligned": 0.027678903553365733,
+        "corrupted": 0.010732793370174878,
+        "difference": -0.016946110183190855,
+        "seed": 10
+      }
+    ],
+    "999": [
+      {
+        "aligned": 0.029983989683408815,
+        "corrupted": 0.008286073821310302,
+        "difference": -0.021697915862098512,
+        "seed": 1
+      },
+      {
+        "aligned": 0.025474732856780924,
+        "corrupted": 0.009055048073206728,
+        "difference": -0.016419684783574195,
+        "seed": 2
+      },
+      {
+        "aligned": 0.02852619012634453,
+        "corrupted": 0.008163507638287014,
+        "difference": -0.020362682488057515,
+        "seed": 3
+      },
+      {
+        "aligned": 0.027906531055625426,
+        "corrupted": 0.010187322069875965,
+        "difference": -0.01771920898574946,
+        "seed": 4
+      },
+      {
+        "aligned": 0.02428268168491511,
+        "corrupted": 0.008581381998034054,
+        "difference": -0.015701299686881057,
+        "seed": 5
+      },
+      {
+        "aligned": 0.028203023985917498,
+        "corrupted": 0.008922952740719668,
+        "difference": -0.01928007124519783,
+        "seed": 6
+      },
+      {
+        "aligned": 0.025651787448746632,
+        "corrupted": 0.008585008504415978,
+        "difference": -0.017066778944330653,
+        "seed": 7
+      },
+      {
+        "aligned": 0.029691490329321536,
+        "corrupted": 0.008830376687757258,
+        "difference": -0.020861113641564278,
+        "seed": 8
+      },
+      {
+        "aligned": 0.02830739310988155,
+        "corrupted": 0.00888810708818088,
+        "difference": -0.01941928602170067,
+        "seed": 9
+      },
+      {
+        "aligned": 0.027678903553365733,
+        "corrupted": 0.009035161754699613,
+        "difference": -0.018643741798666118,
+        "seed": 10
+      }
+    ]
+  }
+}

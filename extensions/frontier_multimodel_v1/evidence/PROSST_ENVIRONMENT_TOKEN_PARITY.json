@@ -1,0 +1,17 @@
+{
+  "status": "PASS_EXACT_TOKEN_MATCH",
+  "sequence_sha256": "0038062ac1b76707245ba122643ae6d03326a9482ce5efce6e1348a8a1b59207",
+  "residue_count": 118,
+  "different_positions": 0,
+  "old_environment": "scikit-learn 1.7.2 exploratory smoke",
+  "official_environment": {
+    "scikit_learn": "1.2.2",
+    "numpy": "1.26.4",
+    "scipy": "1.12.0",
+    "joblib": "1.3.2",
+    "threadpoolctl": "3.3.0"
+  },
+  "old_tokens_sha256": "ad76bda08bda6272340aee3ea950e1d741a479cb05d35d4fd6b28416b9583de0",
+  "official_tokens_sha256": "ad76bda08bda6272340aee3ea950e1d741a479cb05d35d4fd6b28416b9583de0",
+  "interpretation": "one-sequence compatibility check only; full quantization is forced to the official environment"
+}

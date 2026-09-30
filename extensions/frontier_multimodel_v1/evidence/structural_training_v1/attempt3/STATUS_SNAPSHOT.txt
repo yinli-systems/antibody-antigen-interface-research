@@ -1,0 +1,27 @@
+recorded_utc=2026-09-30T02:47:09Z
+source_commit=3eb4293464552199c66eff9b6add14d7ed75ae14
+plan_sha256=24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12
+smoke=1640488
+formal=1640503
+analysis=1640514
+===SQUEUE===
+             JOBID                           NAME      STATE       TIME NODELIST(REASON)
+           1640514             struct-plm-analyze    PENDING       0:00 (Dependency)
+  1640503_[6-35%6]               struct-plm-train    PENDING       0:00 (JobArrayTaskLimit)
+         1640503_0               struct-plm-train    RUNNING       3:02 wqd10naf06g3
+         1640503_1               struct-plm-train    RUNNING       3:02 wqd10nba06g5
+         1640503_2               struct-plm-train    RUNNING       3:02 wqd10nba06g5
+         1640503_3               struct-plm-train    RUNNING       3:02 wqd10naf13g1
+         1640503_4               struct-plm-train    RUNNING       3:02 wqd10naf13g7
+         1640503_5               struct-plm-train    RUNNING       3:02 wqd10naf13g7
+===SACCT===
+1640488                 struct-plm-smoke3  COMPLETED      0:0   00:01:23 
+1640503_0                struct-plm-train    RUNNING      0:0   00:03:02 
+1640503_1                struct-plm-train    RUNNING      0:0   00:03:02 
+1640503_2                struct-plm-train    RUNNING      0:0   00:03:02 
+1640503_3                struct-plm-train    RUNNING      0:0   00:03:02 
+1640503_4                struct-plm-train    RUNNING      0:0   00:03:02 
+1640503_5                struct-plm-train    RUNNING      0:0   00:03:02 
+1640503_[6-+             struct-plm-train    PENDING      0:0   00:00:00 
+1640514                struct-plm-analyze    PENDING      0:0   00:00:00 
+===FAILURES===

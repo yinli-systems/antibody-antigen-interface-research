@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "CLAIMS_LEDGER.json": "28da4096ecb9858dae823d0f63e93ff40f4705a7a7d24b8b24afe375883545f0",
+    "MANIFEST.sha256": "69fddf61d5a1209d781ed8466e00f6bf4f6e2a84c0b092fd294144de884bd0ad",
+    "PROVENANCE.json": "dfc65e64bdd170b5168e134f91fc431b55cb94642a805b7ab7b0f1f752fa2f80",
+    "REPRODUCTION_RECEIPT.json": "4cbbf8b8a89107f65e1818b8e8936d80c6b21ea67b421b358248b6c617d73bea"
+  },
+  "commit": "b8959c6951fdf3f1ba1439f667dd9a9e458dcd72",
+  "counts": {
+    "feature_stores": 5,
+    "files_pinned": 1979,
+    "ledger_rows": 17,
+    "reproduction_steps": 8
+  },
+  "format_version": "evidence_freeze_v1",
+  "python_version": "3.9.6",
+  "tag": "evidence-freeze-v2",
+  "timestamp_utc": "2026-09-11T14:37:36Z"
+}

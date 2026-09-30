@@ -1,0 +1,209 @@
+{
+  "aggregation": "micro counts pooled before computing ratios",
+  "checkpoint_bindings": {
+    "primary_epoch_800": [
+      {
+        "checkpoint_sha256": "6bd8fe08e5df72722edf0c7f8287c9c212828482e38bd32d1997e73b58584335",
+        "epoch": 800,
+        "fold": 0,
+        "prediction_manifest_sha256": "21ef5e829f44dbf5a2cc99883eadb1fc4f874654aad10dc67417ce3d8d048ae3"
+      },
+      {
+        "checkpoint_sha256": "a7dc35fa9a53a7475d8f595145832b97e9a99df4d5473a512315203fea49174f",
+        "epoch": 800,
+        "fold": 1,
+        "prediction_manifest_sha256": "1e586d1da0227a17d0b6bd7c3a08ff97500e3ecefd9b0668bfa7310411dad3b9"
+      },
+      {
+        "checkpoint_sha256": "3fd47fca5b808a40045578c18ee9f550f999485baac5d239136b00498b92a82a",
+        "epoch": 800,
+        "fold": 2,
+        "prediction_manifest_sha256": "6714fce8470f4b6f58aae5a86c7eb68b4aeb0152d326a33a414610e1d0ba605b"
+      },
+      {
+        "checkpoint_sha256": "e7f007959cbe4bd7853902215a5830a7cb63b163914e877e2293a52528eb34d1",
+        "epoch": 800,
+        "fold": 3,
+        "prediction_manifest_sha256": "210db2b103c69cd04e1015d2ea561cf269279456b3cd9870778f06cc8717686b"
+      },
+      {
+        "checkpoint_sha256": "b4960b89fc6a535c483d26be154de1c5d031d6874aabe23173fed759b335140a",
+        "epoch": 800,
+        "fold": 4,
+        "prediction_manifest_sha256": "6c9e73d6e4909b4c4f7a5409f61d1aad96b8333e64e34d0183b68961f2a59f17"
+      }
+    ],
+    "secondary_validation_best": [
+      {
+        "checkpoint_sha256": "d74fc9d11dc124447ebedb1989abc91bd8bc78ea702684a214c15dab8ef463af",
+        "epoch": 572,
+        "fold": 0,
+        "prediction_manifest_sha256": "77aacfce4a8601c315b034dc936f807b263175545b5cb4ad65db7d55e0804754"
+      },
+      {
+        "checkpoint_sha256": "50d57eaa7c3f5e7dae5a14adf33ed38cfa671dc33662e2c98c501119e10a0832",
+        "epoch": 605,
+        "fold": 1,
+        "prediction_manifest_sha256": "51b2cbf5dddd5de68342e63bd42902dc1548b0387cd6ecddabe9f414e716e87e"
+      },
+      {
+        "checkpoint_sha256": "333d6826d0853d7fad8130b433bbf66c7c7b173e1f3ef722ac979a63bb3843c3",
+        "epoch": 704,
+        "fold": 2,
+        "prediction_manifest_sha256": "5c0eda153287a738c6e372b3cb383b14b2f6e24f8aca8af68ed6a98b48966049"
+      },
+      {
+        "checkpoint_sha256": "adf07d528d2503cd22fe4417d74664ec5d43471477340ee602d644b4cd27e916",
+        "epoch": 522,
+        "fold": 3,
+        "prediction_manifest_sha256": "5e27d25376a562bbbff2bf3813a15eff542f8d067f0a4b3ba6dde84a481bda4b"
+      },
+      {
+        "checkpoint_sha256": "611e87c92f567ddbfe0d46aedfc7901562c907deca9e2f19ff9bba9c23065cf6",
+        "epoch": 771,
+        "fold": 4,
+        "prediction_manifest_sha256": "a544ce1594a0ac92069b8196720475e68f910b8e9b789b47c121ad935ff2261b"
+      }
+    ]
+  },
+  "claim_boundary": "Descriptive historical replay. The normalized contact readout must be named explicitly. Keep 560-cohort values separate from 455-cohort baselines.",
+  "contact_score": "mean of two head-averaged row-softmax attention maps after axis transpose",
+  "export_manifest_sha256": "5df6293962cbdf8187eeae0603e8a75bf2034105cc16326ba8fcd09efbe9de1e",
+  "model_inference_rerun": false,
+  "ranking_metrics": "Copied from SHA-bound original evaluation for the same verified raw predictions; AP is pooled average precision.",
+  "results": {
+    "primary_epoch_800": {
+      "contact": {
+        "auroc": 0.4992332385763635,
+        "complexes": 560,
+        "fn": 18315,
+        "fp": 422,
+        "mcc": 0.00011586727175026078,
+        "pooled_ap": 0.0015930955456560868,
+        "precision": 0.002364066193853428,
+        "recall": 5.4597073596855206e-05,
+        "threshold": 0.5,
+        "tn": 11412680,
+        "tp": 1
+      },
+      "epitope": {
+        "auroc": 0.7918528261481147,
+        "complexes": 560,
+        "fn": 8783,
+        "fp": 1384,
+        "mcc": 0.18891051266232453,
+        "pooled_ap": 0.2514327513267267,
+        "precision": 0.43045267489711936,
+        "recall": 0.1064197782073456,
+        "threshold": 0.5,
+        "tn": 136887,
+        "tp": 1046
+      },
+      "historical_validation_fitted_residue": {
+        "epitope": {
+          "fn": 4765,
+          "fp": 18925,
+          "mcc": 0.2556187080445939,
+          "precision": 0.2110967526783109,
+          "recall": 0.5152100925831723,
+          "tn": 119346,
+          "tp": 5064
+        },
+        "paratope": {
+          "fn": 2863,
+          "fp": 7105,
+          "mcc": 0.46212297624096665,
+          "precision": 0.519022474952613,
+          "recall": 0.7281101614434948,
+          "tn": 25555,
+          "tp": 7667
+        }
+      },
+      "paratope": {
+        "auroc": 0.8433471654486147,
+        "complexes": 560,
+        "fn": 6287,
+        "fp": 2229,
+        "mcc": 0.40263654251330955,
+        "pooled_ap": 0.621497479951511,
+        "precision": 0.6555933250927071,
+        "recall": 0.4029439696106363,
+        "threshold": 0.5,
+        "tn": 30431,
+        "tp": 4243
+      }
+    },
+    "secondary_validation_best": {
+      "contact": {
+        "auroc": 0.49811910296808126,
+        "complexes": 560,
+        "fn": 18316,
+        "fp": 210,
+        "mcc": -0.00017170267132661147,
+        "pooled_ap": 0.0015962751843435392,
+        "precision": 0.0,
+        "recall": 0.0,
+        "threshold": 0.5,
+        "tn": 11412892,
+        "tp": 0
+      },
+      "epitope": {
+        "auroc": 0.8074187010268649,
+        "complexes": 560,
+        "fn": 8408,
+        "fp": 1636,
+        "mcc": 0.23239515055205215,
+        "pooled_ap": 0.2804073689419697,
+        "precision": 0.46483480536473665,
+        "recall": 0.1445721843524265,
+        "threshold": 0.5,
+        "tn": 136635,
+        "tp": 1421
+      },
+      "historical_validation_fitted_residue": {
+        "epitope": {
+          "fn": 4400,
+          "fp": 18740,
+          "mcc": 0.2807652513223405,
+          "precision": 0.2246265877777318,
+          "recall": 0.552345101231051,
+          "tn": 119531,
+          "tp": 5429
+        },
+        "paratope": {
+          "fn": 2154,
+          "fp": 6619,
+          "mcc": 0.5346319537428194,
+          "precision": 0.5585861953984661,
+          "recall": 0.7954415954415954,
+          "tn": 26041,
+          "tp": 8376
+        }
+      },
+      "paratope": {
+        "auroc": 0.8810671199250502,
+        "complexes": 560,
+        "fn": 4579,
+        "fp": 2865,
+        "mcc": 0.5086005207686249,
+        "pooled_ap": 0.6892213181587726,
+        "precision": 0.6750226860254084,
+        "recall": 0.5651471984805319,
+        "threshold": 0.5,
+        "tn": 29795,
+        "tp": 5951
+      }
+    }
+  },
+  "scope": "Original MIPE paper-row five-fold held-out cohort, 560 complexes per role; not the SAbDab2 test-455 cohort",
+  "script_sha256": "dda8397baa1ed44ab45e6a18823a8ea33437640b5435d6c3777b2745d8a76efc",
+  "source_evaluation": "/ssd/scxi253/model_deployment/results/mipe/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json",
+  "source_evaluation_sha256": "6f2eee95167e75ae0fb88ceb3dec047c01b8d5812c063df0a45f6e0375896a5a",
+  "source_heldout_root": "/ssd/scxi253/model_deployment/results/mipe/track_a_eval_e7d190_20260725T035346/heldout",
+  "status": "PASS_MIPE_PAPER_TRACK_FIXED05_RECOVERY",
+  "threshold_comparison": ">= 0.5",
+  "threshold_selection_performed": false,
+  "track_id": "released_code_compatible_lr1e3_seed42_legacy_resume_v1",
+  "training_performed": false,
+  "verified_prediction_artifacts": 1120
+}

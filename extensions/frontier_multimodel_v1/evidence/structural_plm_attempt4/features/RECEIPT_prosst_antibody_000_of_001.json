@@ -1,0 +1,48 @@
+{
+  "contact_labels_loaded": false,
+  "dtype_on_disk": "float16",
+  "format_version": "structural_plm_extract_shard_v1",
+  "hidden_size": 768,
+  "layers": [
+    0,
+    3,
+    6,
+    9,
+    12
+  ],
+  "model_kind": "prosst",
+  "model_loading_info": {
+    "mismatched_keys": [],
+    "missing_keys": [],
+    "saprot_allowed_missing_keys": [],
+    "unexpected_keys": []
+  },
+  "model_revision": "e94ffee7846d7f55c1bf5efa8ec7372a336ac4b8",
+  "model_tree_sha256": "ea8e695e8dce82bea6e18d42dad186b102833fb13b43ad5dd9dd24d060164e5c",
+  "record_count": 1,
+  "records": [
+    {
+      "length": 118,
+      "sequence_sha256": "0038062ac1b76707245ba122643ae6d03326a9482ce5efce6e1348a8a1b59207",
+      "side": "antibody",
+      "token_sha256": "03df30ddad9ddebb27857b1b9bcbf5c6583d67d2b8ae2c405337f74aca0fa2dc",
+      "windows": [
+        [
+          0,
+          118
+        ]
+      ]
+    }
+  ],
+  "shard_count": 1,
+  "shard_index": 0,
+  "side": "antibody",
+  "status": "PASS",
+  "structure_units_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+  "test_loaded": false,
+  "window_policy": {
+    "max_residues": 1000,
+    "merge": "uniform mean in overlap",
+    "overlap": 128
+  }
+}

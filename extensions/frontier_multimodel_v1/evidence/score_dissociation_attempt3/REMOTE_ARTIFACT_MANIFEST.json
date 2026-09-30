@@ -1,0 +1,68 @@
+{
+  "pair_grids_not_committed": true,
+  "tasks": [
+    {
+      "task": "seed_1/chain_shift_8",
+      "receipt_sha256": "4298f5b9f605367927e0639140ee94522b60e3eacc2f70887611534eaa04548e",
+      "pair_grid_sha256": "e94114c91ad20c8d793564f617f5ebd3662943cf47288d384df44f893a223a01",
+      "anchor_metrics_sha256": "e493472946b840402ddfe98c10899d25b2474e33c5b96076dc388dbab00f868b",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_1/chain_shift_8"
+    },
+    {
+      "task": "seed_1/global_shuffle_0",
+      "receipt_sha256": "c345839e4c867a354e58e211de8c1ae4927764d244611cc157774807be10a834",
+      "pair_grid_sha256": "2164a2827a537c2f8fbbe0f2fdb77415e8b9ed7be00fc3101cd3fb837a430c56",
+      "anchor_metrics_sha256": "237eb9173d4f975131270644f97b2277e48842774797e1fdfdddcefea8db570f",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_1/global_shuffle_0"
+    },
+    {
+      "task": "seed_1/identity_0",
+      "receipt_sha256": "f4ef90f56972355a6755aacf5581ec958c4c373a010f9322226048ae298f119d",
+      "pair_grid_sha256": "54c9196cb283a269dae2eecfcbac64b0ac6771ad66b8e37c14591031d04d5022",
+      "anchor_metrics_sha256": "3b4243e514fb3cfd13d6bdc8bcd21dfd07b411c3ebe2ea290484c8c7bbf76c1e",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_1/identity_0"
+    },
+    {
+      "task": "seed_2/chain_shift_8",
+      "receipt_sha256": "7950cc23a85f251be8636593a87a19c8cb2e013183e8efee2ca0c48f86604087",
+      "pair_grid_sha256": "d4d75c9c7367296b6f64ba2a2b7774c0a7849636d2d0fb5df00882145abafe99",
+      "anchor_metrics_sha256": "9ad7e42eb1dd8868259d0c1c4680db2b3840a1c6b428caf9ba1762b866676b31",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_2/chain_shift_8"
+    },
+    {
+      "task": "seed_2/global_shuffle_0",
+      "receipt_sha256": "2c3bfa0b5e2186d0c3a5f77a883ab4ce725789398ad8c9e526c30b5c04793537",
+      "pair_grid_sha256": "ebd25aacf91f36e9f60d024a1d5e2a61f40c08c9263605594859644b22bdd155",
+      "anchor_metrics_sha256": "cf8292b904b1a7083146eb08285f709feabdbf85917ddc399b06eeb1795f53ed",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_2/global_shuffle_0"
+    },
+    {
+      "task": "seed_2/identity_0",
+      "receipt_sha256": "e52eba9502cff503d4803e2e958221d66a905e3d2570294cc2ea9caa472431ea",
+      "pair_grid_sha256": "fdc00a1b868edc656b779a77b1affcb2d11ff5124353f488501e292ee1c91077",
+      "anchor_metrics_sha256": "9784e30537706395c5e12a8e5df64f4d4a1b9a59b7b3a350851052d06fa26b5d",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_2/identity_0"
+    },
+    {
+      "task": "seed_3/chain_shift_8",
+      "receipt_sha256": "043270b492b2bc039c4fc690a257f7fa84759b2d944c0622c7d6c8a94171ab33",
+      "pair_grid_sha256": "78c64b05d2bb411a2ea44b83648019ec2d587d3e7789fc26ff24249116ce9389",
+      "anchor_metrics_sha256": "f67161696f1a98d5720e8dc980572ad46884ef9d9ed43f97f0a6c8339706b45d",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_3/chain_shift_8"
+    },
+    {
+      "task": "seed_3/global_shuffle_0",
+      "receipt_sha256": "61c7fc61ef3e7d9fad7d72ce59bfc22cb1a2d6f7023153d7b22624166ca1dcc6",
+      "pair_grid_sha256": "3ab27ac7f7cb7bc3b95094a6aa1a034e0de2d0216017d3cf827682c874d57785",
+      "anchor_metrics_sha256": "a6f60563d153a5338f6335bfcb480808c70e74b10e960d0a0d337561d7c4ddf1",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_3/global_shuffle_0"
+    },
+    {
+      "task": "seed_3/identity_0",
+      "receipt_sha256": "65501470d5921159744b1f62d53bbb9017dd50b959909a8a05316e9f2abaeb47",
+      "pair_grid_sha256": "5cb4d98ed2a71bcb3a7760787e202194a8c135cad3da626425be336626432668",
+      "anchor_metrics_sha256": "d311a562d91edcc4031b140cebeff815e17700b667d8e64c8f35d498efdd93d6",
+      "remote_directory": "/ssd/scxi253/frontier_multimodel_v1/score_dissociation_attempt3/results/seed_3/identity_0"
+    }
+  ]
+}
