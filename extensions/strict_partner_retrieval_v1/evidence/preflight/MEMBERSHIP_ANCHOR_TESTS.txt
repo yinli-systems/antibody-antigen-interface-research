@@ -1,0 +1,6 @@
+2026-09-30
+The repository environments do not currently provide pytest. The two regression functions were invoked directly in isolated temporary directories:
+- a valid provisional assignment/start-ledger/outcome-ledger triple produces a replay-only anchor and never training/outer authorization;
+- a membership digest mismatch fails closed.
+Result: 2/2 direct regression cases PASS.
+Both implementation and test files compile successfully.
