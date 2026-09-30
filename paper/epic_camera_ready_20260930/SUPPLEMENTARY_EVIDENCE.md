@@ -122,17 +122,21 @@ Canonical artifact: `evidence/pair_decoder_v1/ANALYSIS.json` (SHA-256 `171985f3a
 
 ## S5. Contact-gated cross-attention
 
-The connected source supports a learned contact-gate mode and a content-only mode, but no frozen exact-EPIC matched three-seed run comparing these modes was found. Later experiments using content-only attention cannot be relabelled as an ablation of the submitted learned gate. The camera-ready therefore:
+The connected authorities do not contain the exact submitted OpenDDE checkpoint/source needed for a tensor-identical learned-gate versus no-gate EPIC factorial. A later frozen FrameContact ICG campaign provides bounded successor evidence at seed 17:
 
-- moderates the claim from “the gate drives the gain” to “the architecture uses contact-conditioned communication”;
-- does not assign an independent causal improvement to the gate;
-- lists an exact matched gate ablation as unresolved future work rather than inventing a result.
+| Successor variant | Contact macro AP | Contact pooled AP | Epitope macro AP | Paratope macro AP |
+|---|---:|---:|---:|---:|
+| M3 learned full gate | 0.025956 | 0.012446 | 0.226989 | 0.726048 |
+| M4 learned interaction gate | 0.026632 | 0.012076 | 0.208928 | 0.737060 |
+| M6 gate + consistency/distogram objectives | 0.020295 | 0.009174 | 0.195934 | 0.709847 |
 
-This claim moderation directly answers the reviewer under the stated “ablate or moderate” option.
+The intended ordinary/no-gate M2 control (`1351883_5`) timed out after 3 days and produced no final result or receipt. The three completed variants also change more than the gate alone and use one training seed. Consequently, they demonstrate that contact-conditioned communication is trainable and endpoint-dependent in a successor architecture, but **do not estimate the causal effect of the submitted EPIC gate**. The camera-ready therefore retains the mechanism description and removes any claim that the gate independently drives the gain.
+
+Canonical artifacts: `evidence/icg_successor_v1/ICG_SUCCESSOR_AUDIT.json`, `ICG_SUCCESSOR_READOUT.md`, and the preserved M2 timeout digest/tail.
 
 ## S6. Auxiliary epitope losses and the recall trade-off
 
-A frozen single-seed development screen varies dropout and the epitope conditional-count/proportion weight. At dropout 0.2, enabling count weight 0.2 versus 0.0 changes:
+A frozen single-seed development factorial varies dropout and the epitope conditional-count/proportion weight. At dropout 0.2, enabling count weight 0.2 versus 0.0 changes:
 
 | Metric | Count 0.0 | Count 0.2 | Difference |
 |---|---:|---:|---:|
@@ -142,7 +146,7 @@ A frozen single-seed development screen varies dropout and the epitope condition
 | Paratope macro AP | 0.56643 | 0.59733 | +0.03090 |
 | Contact macro AP | 0.02940 | 0.02972 | +0.00032 |
 
-The term therefore shifts the operating point toward higher epitope recall and lower precision in this screen, matching the reviewer's hypothesis. However, at dropout 0.1, removing the count term increases epitope macro AP by `+0.00551`, showing interaction with regularization. Because this is single-seed development evidence, the camera-ready reports the trade-off but does not claim a stable causal gain.
+The term shifts the operating point toward higher epitope recall and lower precision in this screen, matching the reviewer’s hypothesis. However, at dropout 0.1, removing the term improves epitope macro AP by `+0.00551`. The direction therefore depends on regularization, and the evidence is single-seed development-only. The camera-ready may report the observed sensitivity–precision trade-off, but it must not claim a stable independent benefit or use this screen as a multi-seed EPIC ablation.
 
 Canonical artifact: `evidence/auxiliary_loss_screen/JOINT_REGULARIZATION_OBJECTIVE_SCREEN_RESULT_V3.json`.
 

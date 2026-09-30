@@ -1,0 +1,120 @@
+{
+  "schema_version": "framecontact_icg_exploratory_protocol_v1",
+  "protocol_status": "development_only_frozen_before_any_icg_training",
+  "frozen_on": "2026-08-04",
+  "research_basis": {
+    "primary_hypothesis": "Interleaving parameter-unshared bidirectional cross-attention after every intra-chain block improves partner-specific interaction only when routing is controlled by pair interaction evidence rather than additive unary propensities.",
+    "literature": [
+      "EpiFormer arXiv:2606.04154 motivates interleaved bidirectional information flow.",
+      "AsEP NeurIPS 2024 motivates antibody-specific bipartite evaluation and epitope-group generalization."
+    ],
+    "novel_factor": "Predicted interaction-only contact log-probability is an explicit communication bottleneck; unaligned monomer vector coordinates are never mixed across chains."
+  },
+  "evidence_boundary_at_freeze": {
+    "icg_training_started": false,
+    "icg_validation_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_predictions_accessed": false,
+    "sabdab2_antigen_fold_test_metrics_accessed": false,
+    "external_test_predictions_accessed": false
+  },
+  "development_matrix": [
+    "framecontact_contact_hybrid",
+    "framecontact_icg_m2_ordinary",
+    "framecontact_icg_m3_full_gate",
+    "framecontact_icg_m4_interaction_gate",
+    "framecontact_icg_m5_contact_marginal",
+    "framecontact_icg_m6a_joint_no_consistency",
+    "framecontact_icg_m6_joint_consistent",
+    "framecontact_icg_m7_distogram_only"
+  ],
+  "factorized_comparisons": {
+    "M2_vs_M1": "late fusion versus every-layer ordinary bidirectional cross-attention with the binary pair head, gated residue head and noisy-OR pooling held fixed",
+    "M3_vs_M2": "full contact-logit routing versus ordinary cross-attention",
+    "M4_vs_M3": "interaction-only routing versus routing that includes unary shortcuts",
+    "M5_vs_M4": "strict mean-probability contact marginal versus a free gated residue head; this is the pre-registered aggregation change",
+    "M6a_vs_M5": "shared-factor auxiliary distogram without consistency versus direct contact only",
+    "M6_vs_M6a": "JS agreement regularization versus the otherwise identical joint direct-contact and distogram model",
+    "M6_vs_M7": "direct contact primary versus distance-derived contact under matched interleaved routing"
+  },
+  "data": {
+    "dataset_backend": "sabdab2",
+    "split": "frozen antigen-fold v3 train and validation roles only",
+    "reciprocal_partner_panel": {
+      "format_version": "framecontact_reciprocal_partner_panel_v2",
+      "size_per_query": 31,
+      "train_sha256": "fd64b540ed0788d2e89d9c487d9cbde3cc56c4cb0225f29013007b2c3884efd6",
+      "validation_sha256": "222a22e1c640b679df435e51e00f3550a61a6f880a31efb1807883b520aa30f5",
+      "wrong_pairs_are_contact_unlabeled": true
+    },
+    "cross_chain_input_geometry": "none; monomer scalar embeddings and intra-chain invariant geometry only",
+    "bound_distance_policy": "authenticated bound distances are supervision only for M6/M7 and are never model inputs",
+    "test_role_forbidden": true
+  },
+  "implementation": {
+    "d_model": 128,
+    "num_heads": 8,
+    "num_self_layers": 2,
+    "num_rbf": 16,
+    "neighbor_k": 32,
+    "neighbor_radius_angstrom": 16.0,
+    "sequence_window": 32,
+    "dropout": 0.1,
+    "attention_kernel": "reference",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 1,
+    "evaluation_batch_size": 1,
+    "precision": "bf16",
+    "calibration_max_pairs": 2000000,
+    "offload_saved_tensors": true,
+    "checkpoint_wrong_partners": true,
+    "contact_gate_warmup_fraction": 0.05,
+    "contact_gate_ramp_fraction": 0.1
+  },
+  "model_selection": {
+    "seeds": [17, 42, 73, 101, 137],
+    "maximum_epochs": 120,
+    "early_stopping_patience": 20,
+    "checkpoint_rule": "maximize the minimum validation cluster-weighted reciprocal interaction-only margin; break ties within 0.0001 by mean per-complex contact AUPRC, then earlier epoch",
+    "threshold_rule": "one global threshold fitted on validation only; never per-complex and never on test",
+    "test_role_forbidden": true
+  },
+  "training_objective": {
+    "contact": "per-complex observed-class-balanced BCE on authenticated direct or distance-derived contact logits",
+    "marginals": "per-complex observed-class-balanced epitope and paratope BCE",
+    "specificity": "reciprocal wrong-partner ranking; shuffled pairs are never fabricated binary nonbinders",
+    "specificity_score_source": "interaction_only",
+    "specificity_margin": 0.05,
+    "score_fraction": 0.01,
+    "loss_weights_by_condition": {
+      "framecontact_contact_hybrid": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m2_ordinary": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m3_full_gate": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m4_interaction_gate": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m5_contact_marginal": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.0, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m6a_joint_no_consistency": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.25, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m6_joint_consistent": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.25, "contact_distance_consistency": 0.1, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0},
+      "framecontact_icg_m7_distogram_only": {"contact": 1.0, "paratope": 0.25, "epitope": 0.25, "specificity": 0.25, "distogram": 0.25, "contact_distance_consistency": 0.0, "triangle": 0.0, "edm": 0.0, "residue_partner_contrastive": 0.0}
+    },
+    "wrong_pair_rule": "counterfactual ranking and retrieval only; no all-zero pair label"
+  },
+  "required_epoch_metrics": [
+    "pair contact macro and pooled AUPRC, precision, recall, F1, MCC and predicted-positive ratio at raw 0.5",
+    "validation-global-threshold precision and recall",
+    "epitope and paratope complex-macro AUPRC, precision, recall, F1 and MCC",
+    "P@10, P@Lmin/10, P@Lmin/5 and paired Recall@K",
+    "reciprocal partner margin, Recall@1 and MRR",
+    "per-layer contact entropy, attention entropy, learned contact scale, residual gate and curriculum multiplier",
+    "pooled Brier, ECE and calibration slope"
+  ],
+  "required_interventions": [
+    "partner shuffle",
+    "geometry shuffle",
+    "local-frame corruption",
+    "degree-matched neighbor rewiring",
+    "independent monomer SE(3) transforms",
+    "sequence-preserving coordinate perturbation"
+  ],
+  "promotion_rule": "No promotion unless at least 3/5 seeds improve the pre-registered endpoint-disjoint primary metric, paired cluster-bootstrap 95% CI excludes zero, precision and recall do not collapse, and reciprocal partner specificity exceeds the late/unary baseline.",
+  "claim_boundary": "Development-only architecture experiment. No frozen-test, external-generalization, benchmark-improvement or state-of-the-art claim is authorized."
+}

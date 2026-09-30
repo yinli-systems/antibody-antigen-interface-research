@@ -1,30 +1,15 @@
-# EPIC reviewer-response open items
+# EPIC reviewer-response closure status
 
-## Closed by manuscript correction
+## All reviewer concerns now have an explicit camera-ready disposition
 
-- Remove unsupported AsEP claim from abstract/conclusion.
-- Replace “sequence-only” with sequence-input + predicted monomer geometry.
-- Separate imported literature numbers from same-protocol reruns.
-- Remove favorable “best” packaging.
-- Delete undefined TOPK2 sentence.
-- Harmonize pooled versus equal-complex recall.
-- Fix workshop footer and typography.
-- Narrow novelty claims.
+The 19 concerns are mapped in `REVIEWER_CONCERN_CLOSURE.json`. They are addressed by factual text correction, audited existing/post-submission evidence, or explicit claim moderation. None is left unanswered.
 
-## Closed by existing frozen evidence
+## Empirical boundaries that remain unavailable and must not be papered over
 
-- Sparse-contact ranking/practical top-k: existing raw 455 predictions and top-k case studies.
-- Complex-level uncertainty: bootstrap analysis from raw predictions.
-- Joint-task contribution: objective/task-factorial studies.
-- Geometry: equal-parameter geometry controls and predicted-vs-bound sensitivity.
-- Low-rank/pair evidence: three-seed full-pair vs unary/marginal diagnostics and existing decoder ablation.
-- Calibration: existing ECE/Brier/reliability analyses plus raw prediction analysis.
-- Training cost: frozen run receipts.
-- External robustness: separate AsEP/fresh-holdout evidence, not retroactive EPIC evidence.
+- No tensor-identical OpenDDE-versus-AF3 substitution exists for the unchanged anonymous EPIC checkpoint.
+- The later contact-gate campaign is successor, single-seed evidence; its ordinary/no-gate M2 control timed out and produced no final result. It cannot establish an exact EPIC gate effect.
+- The auxiliary epitope count/proportion screen is single-seed and changes direction with dropout; no exact multi-seed submitted-model factorial exists.
+- Reanalysis of the historical 455 cohort does not create a prospective test.
+- Later FrameContact AsEP/OOD results are subsequent evidence, not retroactive EPIC results.
 
-## Must remain explicitly qualified
-
-- No exact paired OpenDDE-versus-AF3 substitution exists in the connected frozen authority.
-- No fresh prospective test is created by reanalyzing the historical 455 cohort.
-- Later FrameContact experiments are successor evidence, not the exact submitted EPIC architecture.
-- Contact-gate and auxiliary-loss effects must not be claimed independently unless the exact matched intervention is identified in existing GPU work or run under a frozen development-only protocol.
+These are deliberate claim boundaries, not pending tasks that may be silently filled from the same development cohort.

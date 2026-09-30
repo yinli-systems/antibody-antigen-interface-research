@@ -8,3 +8,6 @@
 6. **No causal component claim from single-seed screens.** Geometry/count-loss/decoder screens are identified by seed count and authority. Claims are moderated when intervals are unresolved.
 7. **No favorable metric substitution.** Contact AP/AUPRC and prevalence are primary; AUROC and recall are secondary. Pooled and macro metrics are named separately.
 8. **No undefined expert.** TOPK2 is removed from the EPIC manuscript unless fully defined and evaluated as a separate post-submission model.
+
+9. **No exact gate claim from the successor ICG screen.** M3/M4/M6 are single-seed successor variants and the M2 no-gate control timed out; they demonstrate feasibility/heterogeneity, not the submitted EPIC gate effect.
+10. **No stable auxiliary-loss claim.** The count/proportion screen is single-seed and reverses direction across dropout settings; only the observed precision–recall trade-off is reportable.

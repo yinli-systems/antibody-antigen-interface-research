@@ -11,13 +11,16 @@ This directory is the auditable camera-ready response package for the accepted A
 - [`BASELINE_PROTOCOL_TABLE.md`](BASELINE_PROTOCOL_TABLE.md) — corrected modality/comparability table.
 - [`CLAIM_BOUNDARIES.md`](CLAIM_BOUNDARIES.md) — claims that are and are not authorized.
 - [`EVIDENCE_MATRIX.json`](EVIDENCE_MATRIX.json) — machine-readable concern matrix.
-- [`OPEN_ITEMS.md`](OPEN_ITEMS.md) — exact unresolved interventions.
+- [`REVIEWER_CONCERN_CLOSURE.json`](REVIEWER_CONCERN_CLOSURE.json) — all 19 dispositions and exact empirical boundaries.
+- [`EXACT_SUBMISSION_AUTHORITY_AUDIT.json`](EXACT_SUBMISSION_AUTHORITY_AUDIT.json) — what exact submission artifacts were and were not found.
+- [`OPEN_ITEMS.md`](OPEN_ITEMS.md) — remaining empirical boundaries, not unanswered reviewer points.
 
 ## Reproducible artifacts
 
 - `evidence/rank_calibration_v2/ANALYSIS.json` — official-455 post-submission practical ranking/calibration analysis.
 - `evidence/pair_decoder_v1/ANALYSIS.json` — three-seed full-pair versus marginal/unary evidence.
 - `evidence/auxiliary_loss_screen/` — frozen count/proportion-loss screen.
+- `evidence/icg_successor_v1/` — compact successor contact-gate audit, receipts, and preserved M2 timeout provenance.
 - `evidence/original455_authority/` — protocol/build/split audit receipts.
 - `scripts/` — exact analysis scripts.
 

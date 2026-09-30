@@ -1,159 +1,159 @@
 {
-  "format_version": "epic_reviewer_concern_matrix_v1",
-  "status": "COMPLETE_RESPONSE_PACKAGE_WITH_EXPLICIT_UNRESOLVED_EXACT_INTERVENTIONS",
   "accepted_core_preserved": true,
+  "format_version": "epic_reviewer_concern_matrix_v1",
   "items": [
     {
-      "id": "C01",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points",
       "concern": "contact imbalance and practical interpretation",
-      "resolution_class": "existing_raw_analysis",
       "current_evidence": "rank/calibration/top-k package",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points"
+      "id": "C01",
+      "resolution_class": "existing_raw_analysis"
     },
     {
-      "id": "C02",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity",
       "concern": "alternative structure predictor",
-      "resolution_class": "partial_existing",
       "current_evidence": "AF3 and predicted-vs-bound sensitivity; no exact OpenDDE paired substitution",
       "disposition": "addressed_with_qualified_sensitivity",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity"
+      "id": "C02",
+      "resolution_class": "partial_existing"
     },
     {
-      "id": "C03",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s3-joint-supervision-and-objective-interference",
       "concern": "joint supervision",
-      "resolution_class": "existing_evidence",
       "current_evidence": "2x2 task/objective ablation",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s3-joint-supervision-and-objective-interference"
+      "id": "C03",
+      "resolution_class": "existing_evidence"
     },
     {
-      "id": "C04",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity",
       "concern": "geometry branch",
-      "resolution_class": "existing_evidence",
       "current_evidence": "equal-parameter geometry controls",
       "disposition": "addressed_development_only",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity"
+      "id": "C04",
+      "resolution_class": "existing_evidence"
     },
     {
-      "id": "C05",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s5-contact-gated-cross-attention",
       "concern": "contact-gated cross-attention",
-      "resolution_class": "qualification_required",
-      "current_evidence": "do not conflate content-only successor evidence with submitted learned gate",
-      "disposition": "addressed_by_claim_moderation",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s5-contact-gated-cross-attention"
+      "current_evidence": "single-seed M3/M4/M6 successor results; M2 no-gate TIMEOUT with no result; no exact submitted-model causal contrast",
+      "disposition": "addressed_with_bounded_successor_evidence_and_claim_moderation",
+      "id": "C05",
+      "resolution_class": "successor_evidence_plus_claim_moderation"
     },
     {
-      "id": "C06",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s4-pair-decoder--beyond-marginal-evidence",
       "concern": "low-rank pair decoder",
-      "resolution_class": "existing_evidence",
       "current_evidence": "three-seed pair-vs-marginal diagnostics plus decoder ablation",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s4-pair-decoder--beyond-marginal-evidence"
+      "id": "C06",
+      "resolution_class": "existing_evidence"
     },
     {
-      "id": "C07",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off",
       "concern": "auxiliary epitope losses",
-      "resolution_class": "qualification_required",
-      "current_evidence": "development count/pooling screens; exact matched multi-seed intervention not yet bound",
-      "disposition": "addressed_single_seed_with_moderation",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off"
+      "current_evidence": "dropout-0.2 count term raises recall and lowers precision; dropout-0.1 AP direction reverses; exact multi-seed submitted-model intervention unavailable",
+      "disposition": "addressed_with_unstable_development_evidence_and_claim_moderation",
+      "id": "C07",
+      "resolution_class": "single_seed_factorial_plus_claim_moderation"
     },
     {
-      "id": "C08",
+      "canonical_response": "CAMERA_READY_PATCHES.md#abstract-replacement",
       "concern": "AsEP claim absent",
-      "resolution_class": "text_correction",
       "current_evidence": "remove exact-EPIC claim; separate later AsEP evidence",
       "disposition": "addressed_text_correction",
-      "canonical_response": "CAMERA_READY_PATCHES.md#abstract-replacement"
+      "id": "C08",
+      "resolution_class": "text_correction"
     },
     {
-      "id": "C09",
+      "canonical_response": "CAMERA_READY_PATCHES.md#input-modality-clarification",
       "concern": "input modality wording",
-      "resolution_class": "text_correction",
       "current_evidence": "sequence-input with predicted monomer geometry",
       "disposition": "addressed_text_correction",
-      "canonical_response": "CAMERA_READY_PATCHES.md#input-modality-clarification"
+      "id": "C09",
+      "resolution_class": "text_correction"
     },
     {
-      "id": "C10",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s7-externalood-robustness",
       "concern": "external/OOD and uncertainty",
-      "resolution_class": "existing_plus_boundary",
       "current_evidence": "bootstrap/fresh holdout separate; no prospective claim",
       "disposition": "addressed_with_boundary",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s7-externalood-robustness"
+      "id": "C10",
+      "resolution_class": "existing_plus_boundary"
     },
     {
-      "id": "C11",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points",
       "concern": "favorable contact metric packaging",
-      "resolution_class": "text_and_analysis",
       "current_evidence": "AP/prevalence/top-k before AUROC/recall",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points"
+      "id": "C11",
+      "resolution_class": "text_and_analysis"
     },
     {
-      "id": "C12",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off",
       "concern": "epitope recall trade-off",
-      "resolution_class": "text_and_analysis",
       "current_evidence": "precision/F1/calibration/matched-recall; no causal cond-loss claim",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off"
+      "id": "C12",
+      "resolution_class": "text_and_analysis"
     },
     {
-      "id": "C13",
+      "canonical_response": "BASELINE_PROTOCOL_TABLE.md",
       "concern": "baseline comparability",
-      "resolution_class": "text_correction",
       "current_evidence": "split internal vs literature-context tables",
       "disposition": "addressed",
-      "canonical_response": "BASELINE_PROTOCOL_TABLE.md"
+      "id": "C13",
+      "resolution_class": "text_correction"
     },
     {
-      "id": "C14",
+      "canonical_response": "CAMERA_READY_PATCHES.md#topk2-sentence",
       "concern": "undefined TOPK2",
-      "resolution_class": "text_correction",
       "current_evidence": "delete orphan sentence",
       "disposition": "addressed_text_correction",
-      "canonical_response": "CAMERA_READY_PATCHES.md#topk2-sentence"
+      "id": "C14",
+      "resolution_class": "text_correction"
     },
     {
-      "id": "C15",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost",
       "concern": "calibration/translation",
-      "resolution_class": "existing_analysis",
       "current_evidence": "ECE/Brier/reliability and explicit no prospective validation",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost"
+      "id": "C15",
+      "resolution_class": "existing_analysis"
     },
     {
-      "id": "C16",
+      "canonical_response": "CAMERA_READY_PATCHES.md#metric-harmonization",
       "concern": "global recall asymmetry",
-      "resolution_class": "analysis_and_text",
       "current_evidence": "report pooled and equal-complex recall",
       "disposition": "addressed",
-      "canonical_response": "CAMERA_READY_PATCHES.md#metric-harmonization"
+      "id": "C16",
+      "resolution_class": "analysis_and_text"
     },
     {
-      "id": "C17",
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost",
       "concern": "training cost",
-      "resolution_class": "existing_receipts",
       "current_evidence": "parameters/epochs/wall-time/GPU",
       "disposition": "addressed",
-      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost"
+      "id": "C17",
+      "resolution_class": "existing_receipts"
     },
     {
-      "id": "C18",
+      "canonical_response": "CAMERA_READY_PATCHES.md#title-and-footer",
       "concern": "formatting/footnote",
-      "resolution_class": "text_correction",
       "current_evidence": "AI4DD footer and proofreading",
       "disposition": "addressed_text_correction",
-      "canonical_response": "CAMERA_READY_PATCHES.md#title-and-footer"
+      "id": "C18",
+      "resolution_class": "text_correction"
     },
     {
-      "id": "C19",
+      "canonical_response": "CAMERA_READY_PATCHES.md#contribution-bullets",
       "concern": "incremental novelty",
-      "resolution_class": "text_correction",
       "current_evidence": "integrated formulation/evidence claim only",
       "disposition": "addressed_claim_moderation",
-      "canonical_response": "CAMERA_READY_PATCHES.md#contribution-bullets"
+      "id": "C19",
+      "resolution_class": "text_correction"
     }
-  ]
+  ],
+  "status": "COMPLETE_RESPONSE_PACKAGE_WITH_EXPLICIT_UNRESOLVED_EXACT_INTERVENTIONS"
 }

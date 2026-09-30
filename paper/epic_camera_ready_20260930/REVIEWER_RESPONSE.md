@@ -10,6 +10,8 @@ EPIC was accepted, with the decision noting that stronger ablations and robustne
 
 Post-submission experiments are never silently rewritten as if they had been part of the submission. Historical/exposed test sets are labelled as such, and later FrameContact evidence is separated from exact-EPIC evidence when the architecture or structure predictor differs.
 
+All 19 concerns now have a machine-readable disposition in `REVIEWER_CONCERN_CLOSURE.json`. “Closed” means corrected, evidenced, or explicitly moderated; it does not mean that unavailable exact interventions were fabricated.
+
 ## Decision-level response
 
 We agree with the decision. The revised presentation no longer frames EPIC as winning every task. It foregrounds threshold-free average precision under extreme imbalance, identifies the epitope recall/ranking trade-off, separates imported literature numbers from same-protocol measurements, and states that individual components are established techniques whose contribution is the integrated multi-resolution formulation and its controlled evidence—not a claim that each block is independently novel.
@@ -39,8 +41,8 @@ The accepted Table 1 remains historically preserved; the new practical analysis 
 - joint task supervision: frozen 2×2 task-objective ablation;
 - geometry: equal-parameter no-geometry / topology / distance / direction / full-pose controls plus predicted-vs-bound sensitivity;
 - pair decoder: three-seed full pair score versus unary-only and marginal outer-product diagnostics, plus the pre-existing bilinear-vs-Hadamard single-seed ablation;
-- contact-gated cross-attention: reported only where the exact source/configuration supports the intervention; later content-only attention evidence is not mislabeled as an ablation of the submitted learned contact gate;
-- auxiliary epitope losses: existing count/proportion and pooling screens are reported as development evidence; no claim of independent benefit is made without the exact matched multi-seed intervention.
+- contact-gated cross-attention: the later single-seed M3/M4/M6 successor results and the timed-out M2 no-gate control are now reported explicitly; because no completed no-gate contrast exists and the variants change other objectives, no causal submitted-EPIC gate effect is claimed;
+- auxiliary epitope losses: the existing single-seed factorial is reported numerically, including higher recall/lower precision at dropout 0.2 and the reversed AP direction at dropout 0.1; no stable independent benefit is claimed.
 
 Where evidence comes from a successor architecture or a post-submission retrain, that is stated directly.
 
