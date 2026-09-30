@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH --job-name=saprot-real-smoke2
+#SBATCH --partition=gpu_4090
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=4
+#SBATCH --time=00:20:00
+#SBATCH --output=/ssd/scxi253/frontier_multimodel_v1/structural_plm_attempt2/logs/saprot-%j.out
+#SBATCH --error=/ssd/scxi253/frontier_multimodel_v1/structural_plm_attempt2/logs/saprot-%j.err
+set -euo pipefail
+ROOT=/ssd/scxi253/frontier_multimodel_v1; cd "$ROOT/source"
+export PYTHONPATH="$ROOT/pylibs:$PWD/src:$PWD" PYTHONHASHSEED=0
+[[ $(sha256sum "$ROOT/models/saprot650/pytorch_model.bin" | cut -d" " -f1) == 513c39088804b74309d961174d5fc7aeabfb9b79d2814cdc7e465d4fe4b9f216 ]]
+/ssd/scxi253/repr_extract/venv/bin/python3 -u extensions/frontier_multimodel_v1/structural_plm.py extract --model-kind saprot \
+ --structure-units "$ROOT/data/structure_units_v2/STRUCTURE_UNITS_MANIFEST.json" --tokens "$ROOT/tokens/saprot_v2" \
+ --model-path "$ROOT/models/saprot650" --model-revision d9b9ad00ef61c0990e611b2b43f2231c7de24b38 \
+ --layers 0 8 16 24 33 --side antibody --shard-index 0 --shard-count 1 --max-records 1 --output "$A/features"

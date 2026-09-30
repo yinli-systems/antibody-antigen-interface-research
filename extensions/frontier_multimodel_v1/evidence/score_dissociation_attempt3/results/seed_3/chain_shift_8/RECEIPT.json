@@ -1,0 +1,61 @@
+{
+  "anchor_metric_rows": 3615,
+  "artifacts": {
+    "anchor_metrics": "ANCHOR_METRICS.parquet",
+    "anchor_metrics_sha256": "f67161696f1a98d5720e8dc980572ad46884ef9d9ed43f97f0a6c8339706b45d",
+    "pair_grid": "PAIR_GRID.parquet",
+    "pair_grid_sha256": "78c64b05d2bb411a2ea44b83648019ec2d587d3e7789fc26ff24249116ce9389"
+  },
+  "candidate_semantics": "project-observed sequence pairs are known positives; all others are unlabelled distractors, not non-binders",
+  "checkpoint": "/ssd/scxi253/repr_ablation/out/esm_if1_only/seed_3/train/best.pt",
+  "checkpoint_sha256": "cba9ee3298cc8b3645560fbd4ac4ef550b20376b915d07258015afe8c73806f5",
+  "condition": "chain_shift:8",
+  "contact_artifacts_loaded": false,
+  "created_utc": "2026-09-30T00:57:36Z",
+  "format_version": "score_dissociation_v1",
+  "known_positive_pair_count_in_grid": 150,
+  "limitations": [
+    "validation-only diagnosis; alternative scores cannot be promoted",
+    "unobserved sequence pairs are unlabelled, not confirmed non-binders",
+    "chain-local CA packing is a proxy, not solvent-accessible surface area",
+    "three fixed training seeds and pointwise exploratory analyses"
+  ],
+  "packing_proxy_coverage": {
+    "antibody_unique_available": 104,
+    "antibody_unique_total": 122,
+    "antigen_unique_available": 100,
+    "antigen_unique_total": 119,
+    "missingness_policy": "retain every candidate; proxy correlations use available pairs only"
+  },
+  "peak_cuda_bytes": 970111488,
+  "protocol_sha256": "560040291f2f72b5d69fed208a7e1bf0631bb3b98a00150f7c567a7d32be8f9c",
+  "score_columns": [
+    "score_current_centered_lme",
+    "score_uncentered_lme",
+    "score_centered_top_fraction",
+    "interaction_centered_std",
+    "interaction_centered_rms",
+    "interaction_centered_max",
+    "interaction_centered_top16",
+    "interaction_uncentered_mean",
+    "interaction_uncentered_std",
+    "interaction_uncentered_rms",
+    "interaction_uncentered_max",
+    "interaction_uncentered_top16",
+    "pair_probability_mean",
+    "pair_probability_max",
+    "pair_probability_top16"
+  ],
+  "source_sha256": "e61dff8210dd715eae409143b1bdfb143766143bd4b21f8ffa7a60655a5e64d1",
+  "split_manifest_sha256": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396",
+  "status": "PASS_FULL_UNIQUE_SEQUENCE_ALL_VS_ALL_DECOMPOSITION",
+  "structure_manifest_sha256": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+  "test_loaded": false,
+  "training_performed": false,
+  "training_seed": 3,
+  "unique_antibody_count": 122,
+  "unique_antigen_count": 119,
+  "unique_pair_count": 14518,
+  "validation_instance_count": 217,
+  "wall_seconds": 53.758398121222854
+}
