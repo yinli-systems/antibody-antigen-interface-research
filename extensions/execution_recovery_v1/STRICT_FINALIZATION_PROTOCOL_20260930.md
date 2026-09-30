@@ -54,3 +54,14 @@ This is structure-input authority completion, not structure-accuracy evaluation,
 binding prediction, a blind result or model selection. No contact, test or OOD
 labels are read. Scheduler success alone is not completion; only the terminal
 strict authority `COMPLETE.json` is completion evidence.
+
+## Receipt schema transition
+
+The original `79f6a23` receipt and the strict `93aa319` auditor encode their
+`backbone_sha256` canonical tuples differently. Therefore that digest is retained
+for provenance but is not used as a cross-version identity field. Cross-version
+selection identity instead requires exact seed, sample, score, selected-model
+bytes, residue/backbone counts and complete prediction-tree bytes. The strict
+auditor then independently requires exact full-mmCIF semantics, all-atom and
+N/CA/C/O coordinate fingerprints. A model-byte or coordinate difference still
+fails closed.

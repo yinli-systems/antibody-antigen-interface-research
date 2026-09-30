@@ -47,8 +47,11 @@ def source_execution_plan(path: Path, expected_sha256: str, *, deep_runtime: boo
 
 
 def _selected_core(record: dict[str, Any]) -> dict[str, Any]:
-    fields = ('seed','sample','score','model_sha256','backbone_sha256',
-              'residues','backbone_atoms')
+    # `backbone_sha256` is intentionally excluded: source 79f6 and strict
+    # auditor 93aa hash different canonical tuples for the same coordinates.
+    # Selected model bytes and the full output-tree digest are exact, while the
+    # strict auditor independently recomputes all-atom/backbone fingerprints.
+    fields = ('seed','sample','score','model_sha256','residues','backbone_atoms')
     return {key:record.get(key) for key in fields}
 
 
@@ -88,6 +91,14 @@ def strict_task_receipt(plan: dict[str, Any], plan_sha256: str, task_id: int,
         'source_complete_sha256':af3.digest(source_complete),
         'strict_auditor_commit':auditor_commit,
         'strict_af3_sha256':auditor_sha256,
+        'source_selected':old['selected'],
+        'digest_schema_transition':{
+            'legacy_backbone_sha256':old['selected'].get('backbone_sha256'),
+            'strict_backbone_sha256':actual['selected'].get('backbone_sha256'),
+            'strict_all_atom_sha256':actual['selected'].get('all_atom_sha256'),
+            'selection_identity_fields':list(_selected_core(actual['selected'])),
+            'selection_identity_equal':True,
+        },
         'strict_actual':actual,
         'model_inference_performed':False,
         'contact_labels_read':False, 'test_labels_read':False,

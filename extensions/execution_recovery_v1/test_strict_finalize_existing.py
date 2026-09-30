@@ -23,7 +23,7 @@ class StrictFinalizer(unittest.TestCase):
         self.actual={'state':'COMPLETE','task_id':0,'sequence_sha256':'s'*64,
                      'sequence_length':9,'sample_count':25,
                      'selected':{'seed':42,'sample':0,'score':.5,'model_sha256':'m',
-                                 'backbone_sha256':'b','residues':9,'backbone_atoms':36,
+                                 'backbone_sha256':'strict-b','residues':9,'backbone_atoms':36,
                                  'all_atom_sha256':'a'},
                      'output_sha256':{'x':'y'},'contact_labels_read':False,
                      'test_labels_read':False,'ood_labels_read':False,
@@ -33,10 +33,11 @@ class StrictFinalizer(unittest.TestCase):
                   'scientific_plan_sha256':'l'*64,'sequence_sha256':'s'*64,
                   'sequence_length':9,'sample_count':25,
                   'selected':{k:self.actual['selected'][k] for k in
-                              ('seed','sample','score','model_sha256','backbone_sha256',
+                              ('seed','sample','score','model_sha256',
                                'residues','backbone_atoms')},
                   'output_sha256':{'x':'y'},'contact_labels_read':False,
                   'test_labels_read':False,'ood_labels_read':False}
+        self.old['selected']['backbone_sha256']='legacy-b'
         af3.new_json(task/'COMPLETE.json',self.old)
 
     def test_strict_receipt_accepts_extra_strict_fields(self):
@@ -45,10 +46,19 @@ class StrictFinalizer(unittest.TestCase):
                 self.plan,'p'*64,0,auditor_commit='c',auditor_sha256='h')
         self.assertEqual(receipt['state'],'STRICT_AUDIT_COMPLETE')
         self.assertEqual(receipt['strict_actual']['selected']['all_atom_sha256'],'a')
+        self.assertEqual(receipt['digest_schema_transition']['legacy_backbone_sha256'],'legacy-b')
+        self.assertEqual(receipt['digest_schema_transition']['strict_backbone_sha256'],'strict-b')
+        self.assertTrue(receipt['digest_schema_transition']['selection_identity_equal'])
         self.assertFalse(receipt['model_inference_performed'])
 
     def test_changed_prediction_tree_rejected(self):
         changed=dict(self.actual);changed['output_sha256']={'x':'changed'}
+        with patch.object(af3,'audit_task',return_value=changed),self.assertRaises(ValueError):
+            strict.strict_task_receipt(
+                self.plan,'p'*64,0,auditor_commit='c',auditor_sha256='h')
+
+    def test_changed_selected_model_bytes_rejected(self):
+        changed=dict(self.actual);changed['selected']=dict(self.actual['selected'],model_sha256='other')
         with patch.object(af3,'audit_task',return_value=changed),self.assertRaises(ValueError):
             strict.strict_task_receipt(
                 self.plan,'p'*64,0,auditor_commit='c',auditor_sha256='h')
