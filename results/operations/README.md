@@ -1,4 +1,7 @@
-# Operational snapshot — not a live monitor
+# Historical operational snapshot — not a live monitor
+
+**Superseded for completion status.** This page preserves its original observation time. See the [integrated branch progress](../integration_20261007/BRANCH_PROGRESS.md) for later committed terminal records. No live scheduler state was checked.
+
 
 Observed: **2026-09-30T08:09:57 UTC**. Generated from [snapshot_20260930T080957.json](snapshot_20260930T080957.json); no GPU jobs were submitted, cancelled or restarted by publication tooling.
 
@@ -53,7 +56,7 @@ These intermediate values do not select a winner and are not independent test sc
 
 AF3 job `1640914_0` failed before prediction. Earlier references to `1640888` were not the actual ID found in `TASK0_JOB_ID.txt`. No structure result is promoted from that failed launch.
 
-## Still unfinished
+## Unfinished at this historical snapshot
 
 Full layer/control comparison; learned realignment; a newly admitted untouched OOD cohort; same-split RePaRank retraining; complete structure-RePaRank evaluation; co-folder comparison; affinity endpoint. The prior 14 OOD candidates were not admitted.
 

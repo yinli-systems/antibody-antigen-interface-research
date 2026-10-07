@@ -41,14 +41,6 @@ def _next_multiple(value: int, multiple: int) -> int:
     return ((value + multiple - 1) // multiple) * multiple
 
 
-def _cumulative_sequence_lengths(mask: Tensor) -> Tensor:
-    """Return the int32 cumulative offsets required by FlashAttention."""
-    lengths = mask.sum(dim=-1, dtype=torch.int32)
-    return F.pad(lengths.cumsum(dim=0, dtype=torch.int32), (1, 0)).to(
-        dtype=torch.int32
-    )
-
-
 def chain_local_positions(chain_ids: Tensor, valid_mask: Tensor) -> Tensor:
     """Return zero-based positions reset independently for every chain.
 
@@ -317,8 +309,10 @@ def lifted_sdpa_hybrid_attention(
             raise RuntimeError(
                 "The pinned CUDA runtime lacks native variable-length FlashAttention"
             )
-        cumulative_query = _cumulative_sequence_lengths(query_mask)
-        cumulative_key = _cumulative_sequence_lengths(key_mask)
+        query_lengths = query_mask.sum(dim=-1, dtype=torch.int32)
+        key_lengths = key_mask.sum(dim=-1, dtype=torch.int32)
+        cumulative_query = F.pad(query_lengths.cumsum(dim=0), (1, 0))
+        cumulative_key = F.pad(key_lengths.cumsum(dim=0), (1, 0))
         packed_output = flash_forward.default(
             packed_query.contiguous(),
             packed_key.contiguous(),

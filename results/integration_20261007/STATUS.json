@@ -1,0 +1,52 @@
+{
+  "status": "ALL_STARTING_BRANCH_HEADS_INTEGRATED",
+  "as_of": "2026-10-07",
+  "branch_count": 31,
+  "merge_count": 18,
+  "starting_main": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+  "integrated_source_head": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+  "branch_names_changed": 2,
+  "bindings": [
+    {
+      "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+      "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+      "selector": [
+        "task_count"
+      ],
+      "value": 36
+    },
+    {
+      "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+      "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+      "selector": [
+        "arm_count"
+      ],
+      "value": 12
+    },
+    {
+      "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+      "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+      "selector": [
+        "instance_count"
+      ],
+      "value": 217
+    },
+    {
+      "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+      "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+      "selector": [
+        "fresh_model_forward_count"
+      ],
+      "value": 205
+    },
+    {
+      "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+      "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+      "selector": [
+        "reused_pair_prediction_count"
+      ],
+      "value": 12
+    }
+  ],
+  "limits": "Repository integration and software tests only. Historical experiment status retained; no new training, biological inference or live cluster inspection. All historical experiment reproduction remains source-commit specific."
+}

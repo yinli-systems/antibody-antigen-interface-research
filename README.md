@@ -4,7 +4,7 @@
 
 FrameContact and controlled protein-representation experiments: contact maps, epitope/paratope prediction, partner retrieval, and the evidence needed to tell these capabilities apart.
 
-[Results](results/INDEX.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [All branches](results/ALL_BRANCHES.md) · [Run status](results/operations/README.md) · [Preservation](archive/README.md)
+[Results atlas](results/atlas/README.md) · [All branch progress](results/integration_20261007/BRANCH_PROGRESS.md) · [Cohorts](results/atlas/COHORTS.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [Historical jobs](results/operations/README.md) · [Preservation](archive/README.md)
 
 ## FrameContact: three endpoints, one documented evaluation
 
@@ -44,7 +44,7 @@ On AsEP, ten-seed macro MCC is **0.1572** on `epitope_group` and **0.2584** on `
 
 ## Reproduce without mixing source revisions
 
-**Main is the curated evidence hub.** Historical results and experimental extensions have different source commits; copying their results here did not merge every training implementation.
+**Main now integrates the branch histories and their evidence.** Historical experiments still have different source commits. Divergent runtimes are preserved as source variants or separate namespaces; a combined main checkout is not proof of historical reproduction.
 
 ```bash
 # Standard-library reporting and preservation checks; no GPU or dataset required.
@@ -56,9 +56,22 @@ python3 tools/evidence/checkout_experiment.py multimodel ../antibody-multimodel
 
 [Exact-source routes and prerequisites](docs/REPRODUCE_EXACT.md) distinguish artifact verification, metric recomputation, and training reproduction. Large datasets, checkpoints, embedding stores and most raw prediction tensors remain outside Git.
 
-## Ongoing — separate from completed findings
+## Integrated progress — 7 October 2026
 
-As of **2026-09-30T08:09:57 UTC**, the frozen SaProt/ProSST sweep has **12/36** formal tasks complete. No winning layer is selected before the matched controls finish. RePaRank's full structure arm remains incomplete. AF3 recovery task 0 `1641607` is **PENDING** (Priority); its 39 successor tasks are not submitted. [Engineered recovery and exact source](extensions/execution_recovery_v1/README.md) [Timestamped jobs and receipts](results/operations/README.md)
+**All 31 starting branch HEADs are included in the integrated Git history**, through 18 explicit three-way merges and their ancestors. Conflicting experimental variants remain preserved; source-specific protocols and checkpoints are not silently made interchangeable. [Every branch and resolution](results/integration_20261007/BRANCH_PROGRESS.md)
+
+| Workstream | Latest committed record | Result boundary |
+|---|---|---|
+| Structural PLMs | **36/36 tasks complete**, 12 arms | Final decision **NO-PROMOTION** versus matched random-width controls. [Final readout](extensions/frontier_multimodel_v1/STRUCTURAL_PLM_FINAL_READOUT.md) |
+| Correctly centered RePaRank structure | **217/217 cases**, 12 reused + 205 fresh | Complete matched-grid diagnostic, not a new model or blind comparison. [Receipt](extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json) |
+| Synthetic rescue and gating | Completed development records | Clean-input cost and calibration shift retained. [Readout](extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md) |
+| Strict retrieval | Infrastructure and separate model-contract implementations integrated | Still protocol/readiness evidence, not a completed strict-model benchmark. [Source separation](extensions/strict_partner_retrieval_v1/README.md) |
+| Newer EPIC campaigns | October 4 manuscript reports additional experiments | **Report-only** where matching terminal artifacts were not found in the inspected branch trees; evidence may exist off-Git. [Evidence gaps](results/atlas/REVIEW_FINDINGS.md) |
+| AbCite | Separate multimodal evidence-retrieval application | Preserve task-specific protocols and negative holdout-LoRA result. [Application results](abcite/evals/latest.md) |
+
+This is **committed repository progress, not live scheduler status**. Old 12/36 and pending job records remain dated historical snapshots rather than current completion claims. [Historical operations](results/operations/README.md)
+
+The branch names now use neutral `epic-camera-ready` and `main-epic-evidence-index` terminology. Their commit histories are unchanged; historical freeze records retain their original names. [Rename mapping](results/integration_20261007/BRANCH_RENAMES.json)
 
 ## Nothing discarded to make the front page cleaner
 

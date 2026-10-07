@@ -270,7 +270,7 @@ def test_receipt_is_canonical_json(tmp_path: Path) -> None:
 def test_backend_registry_rejects_an_unknown_name() -> None:
     from interaction_first.representation_backends import BACKENDS, build_backend
 
-    assert set(BACKENDS) == {"antiberty", "esm2", "esm_if1"}
+    assert set(BACKENDS) == {"antiberty", "esm2", "esm_if1", "proteinmpnn"}
     with pytest.raises(RepresentationError, match="unknown backend"):
         build_backend("nope")
 

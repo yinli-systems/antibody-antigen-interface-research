@@ -5,7 +5,12 @@ import argparse, hashlib, json, math
 from pathlib import Path
 from typing import Any
 import numpy as np
-from metrics import bidirectional_report, score_matrix_sha256
+# Keep direct-script and package imports on the same namespaced module.
+import sys as _sys
+_package_parent = str(Path(__file__).resolve().parent.parent)
+if _package_parent not in _sys.path:
+    _sys.path.insert(0, _package_parent)
+from strict_partner_retrieval_v1.metrics import bidirectional_report, score_matrix_sha256
 
 VALID=set("ACDEFGHIKLMNPQRSTVWY")
 

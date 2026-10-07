@@ -1,5 +1,7 @@
 # Reproduce the exact experiment, not a mixture of branches
 
+> **7 October integration:** all starting branch histories are now included in main. Exact experimental reproduction still requires the pinned source commits below. Incompatible runtime variants are explicitly preserved; the two strict-retrieval implementations use separate namespaces. See [integration decisions](../results/integration_20261007/BRANCH_PROGRESS.md).
+
 **Main is an evidence hub, not a claim that every historical implementation has
 been merged and retested together.** The first consolidation brought results
 and extensions into main while leaving the old core training implementation in

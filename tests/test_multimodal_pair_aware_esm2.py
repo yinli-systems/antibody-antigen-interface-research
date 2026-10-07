@@ -9,11 +9,11 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from antibody_pretraining.multimodal_pair_aware_esm2 import (  # noqa: E402
+from antibody_pretraining.multimodal_v1.multimodal_pair_aware_esm2 import (  # noqa: E402
     StructureConditionedPairAwareESM2,
     StructureConditioningConfig,
 )
-from antibody_pretraining.pair_aware_esm2 import PairAwareESM2Config  # noqa: E402
+from antibody_pretraining.multimodal_v1.pair_aware_esm2 import PairAwareESM2Config  # noqa: E402
 
 
 def small_model() -> StructureConditionedPairAwareESM2:

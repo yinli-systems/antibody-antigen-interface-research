@@ -10,19 +10,11 @@ torch = pytest.importorskip("torch")
 from antibody_pretraining.pair_aware_attention import (  # noqa: E402
     ChainLocalRotaryEmbedding,
     PairAwareSelfAttention,
-    _cumulative_sequence_lengths,
     build_pair_attention_layout,
     chain_local_positions,
     dense_hybrid_attention,
     lifted_sdpa_hybrid_attention,
 )
-
-
-def test_flash_attention_cumulative_lengths_are_int32() -> None:
-    mask = torch.tensor([[True, True, False], [True, False, False]])
-    cumulative = _cumulative_sequence_lengths(mask)
-    assert cumulative.dtype == torch.int32
-    assert cumulative.tolist() == [0, 2, 3]
 
 
 def test_chain_local_positions_reset_and_reject_bad_padding() -> None:

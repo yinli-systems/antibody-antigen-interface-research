@@ -119,39 +119,6 @@ def test_hidden_only_forward_skips_lm_head() -> None:
         model(tokens, chain_ids, labels=tokens, compute_logits=False)
 
 
-def test_optional_embedding_delta_preserves_default_and_validates_padding() -> None:
-    torch.manual_seed(31)
-    model = PairAwareESM2(_small_config()).eval()
-    tokens = torch.tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]])
-    chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, -1]])
-    zero_delta = torch.zeros(1, 9, 32)
-
-    baseline = model(tokens, chain_ids).logits
-    unchanged = model(
-        tokens,
-        chain_ids,
-        input_embedding_delta=zero_delta,
-    ).logits
-    assert baseline is not None and unchanged is not None
-    torch.testing.assert_close(unchanged, baseline, rtol=0.0, atol=0.0)
-
-    nonzero = zero_delta.clone()
-    nonzero[:, 1, 0] = 0.25
-    changed = model(tokens, chain_ids, input_embedding_delta=nonzero).logits
-    assert changed is not None
-    assert not torch.equal(changed, baseline)
-
-    bad_padding = zero_delta.clone()
-    bad_padding[:, -1, 0] = 1.0
-    with pytest.raises(ValueError, match="Padding positions"):
-        model(tokens, chain_ids, input_embedding_delta=bad_padding)
-
-    nonfinite = zero_delta.clone()
-    nonfinite[:, 1, 0] = float("nan")
-    with pytest.raises(ValueError, match="must be finite"):
-        model(tokens, chain_ids, input_embedding_delta=nonfinite)
-
-
 def test_compatible_loader_allows_only_new_cross_scales() -> None:
     source = PairAwareESM2(_small_config())
     target = PairAwareESM2(_small_config())

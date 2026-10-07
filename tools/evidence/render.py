@@ -109,6 +109,8 @@ Original branches, archive tags, failed experiments and superseded interpretatio
                 f"AF3 task 0 `{recovery['job_id']}`: **{recovery['state']}** ({recovery['reason']}); audited completed structures: **{recovery['complete_task_receipts']}**. The remaining 39 tasks are not submitted.", '',
                 f"Separate schema-corrected analysis `{fixed['job_id']}`: **{fixed['state']}** ({fixed['reason']}); dependency `{fixed['dependency']}`. Original training and original analyzer were not changed.", '',
                 '[Verified defects, 49 tests and synthetic integration check](../../extensions/execution_recovery_v1/README.md). This is not an accuracy improvement or completed structural benchmark.', '']
+    from progress import enhance
+    readme, ops = enhance(readme, ops, root)
     return {'README.md':readme,'figures/evidence/representation_transfer.svg':'\n'.join(svg)+'\n','results/operations/README.md':'\n'.join(ops)}
 
 

@@ -1,5 +1,7 @@
 # Results — start here
 
+> **Integrated update:** all 31 starting branch HEADs are now in the combined source history. Read [current branch progress](results/integration_20261007/BRANCH_PROGRESS.md) and [neutral branch names](results/integration_20261007/BRANCH_RENAMES.json). The 30-branch atlas below remains its original frozen audit snapshot.
+
 [**Open the results atlas**](results/atlas/README.md) · [All 30 branches](results/atlas/BRANCHES.md) · [Every evidence location](results/atlas/FAMILIES.md) · [Audit findings](results/atlas/REVIEW_FINDINGS.md)
 
 The 7 October 2026 snapshot organizes the repository into **37 result cards**, **30 branch pages**, and **337 evidence-location pages**. Its complete inventory contains **4,913 distinct path/blob versions** from all 30 frozen branch HEADs; **1,530** match the explicitly documented evidence-location filter. These are file/version counts, not independent experiments.

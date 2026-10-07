@@ -39,7 +39,7 @@ import pytest
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-for source_directory in (REPOSITORY_ROOT / "scripts", REPOSITORY_ROOT / "src"):
+for source_directory in (REPOSITORY_ROOT / "scripts", REPOSITORY_ROOT / "src", REPOSITORY_ROOT / "extensions"):
     source_path = str(source_directory)
     if source_path not in sys.path:
         sys.path.insert(0, source_path)
@@ -140,7 +140,9 @@ def pytest_collection_modifyitems(
                 item.add_marker(pytest.mark.skip(reason=f"{entry['reason']}: {unmet}"))
                 break
 
-    if _is_full_collection(config):
+    # Failed imports cannot prove a registered test was removed; preserve the
+    # original collection errors instead of replacing them with a stale alarm.
+    if _is_full_collection(config) and not session.testsfailed:
         stale = sorted(set(by_prefix) - matched)
         if stale:
             raise RuntimeError(

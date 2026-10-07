@@ -10,7 +10,12 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from cdr import annotate_antibody
+# Keep direct-script and package imports on the same namespaced module.
+import sys as _sys
+_package_parent = str(Path(__file__).resolve().parent.parent)
+if _package_parent not in _sys.path:
+    _sys.path.insert(0, _package_parent)
+from strict_partner_retrieval_v1.cdr import annotate_antibody
 
 OUT_FORMAT = "strict_partner_retrieval_embedding_v1"
 BANK_FORMAT = "strict_partner_retrieval_source_bank_receipt_v1"
