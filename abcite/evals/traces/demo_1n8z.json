@@ -1,0 +1,70 @@
+{
+  "id": "demo_1n8z",
+  "query": "Does trastuzumab on HER2 (PDB 1N8Z) share the pertuzumab domain II epitope, and which public paper/PDB path supports that?",
+  "pdb_id": "1N8Z",
+  "antibody": "trastuzumab",
+  "antigen": "HER2",
+  "paper": {
+    "citation": "Cho et al., Nature 421:756-760 (2003)",
+    "pmid": "12610673",
+    "doi": "https://doi.org/10.1038/nature01392",
+    "rcsb": "https://www.rcsb.org/structure/1N8Z"
+  },
+  "retrieved_ids": [
+    "txt-1n8z-child-epitope",
+    "txt-pertuzumab",
+    "txt-1n8z-parent",
+    "fig-1n8z",
+    "struct-1n8z",
+    "txt-motavizumab",
+    "txt-hyhel10",
+    "txt-4fqi"
+  ],
+  "retrieved_scores": {
+    "txt-1n8z-child-epitope": 0.0328,
+    "txt-pertuzumab": 0.032,
+    "txt-1n8z-parent": 0.0318,
+    "fig-1n8z": 0.0315,
+    "struct-1n8z": 0.0309,
+    "txt-motavizumab": 0.0301,
+    "txt-hyhel10": 0.0292,
+    "txt-4fqi": 0.029
+  },
+  "status": "answered",
+  "abstain": false,
+  "cites": [
+    {
+      "chunk_id": "txt-1n8z-child-epitope",
+      "quote": "Child chunk: trastuzumab epitope on HER2 domain IV in PDB 1N8Z is membrane-proximal and does not match pertuzumab domain II.",
+      "source_url": "https://doi.org/10.1038/nature01392"
+    },
+    {
+      "chunk_id": "txt-pertuzumab",
+      "quote": "Pertuzumab (2C4) binds HER2 domain II and blocks dimerization. PDB 1S78. This epitope does not coincide with trastuzumab's domain IV site on 1N8Z. PMID 15093539. https://doi.org/10.1016/S1535-6108(04)00083-2",
+      "source_url": "https://doi.org/10.1016/S1535-6108(04)00083-2"
+    },
+    {
+      "chunk_id": "txt-1n8z-parent",
+      "quote": "Crystal structure PDB 1N8Z shows trastuzumab (Herceptin) Fab bound to the extracellular region of HER2. The epitope lies on domain IV, membrane-proximal, and is distinct from the pertuzumab epitope on domain II. Nature 421:756-760 (2003), PMID 12610673. https://doi.org/10.1038/na",
+      "source_url": "https://doi.org/10.1038/nature01392"
+    },
+    {
+      "chunk_id": "fig-1n8z",
+      "quote": "Figure caption: trastuzumab Fab contacts HER2 domain IV; not the pertuzumab domain II site.",
+      "source_url": "https://www.rcsb.org/structure/1N8Z"
+    },
+    {
+      "chunk_id": "struct-1n8z",
+      "quote": "Residue-level 2D snapshot highlighting HER2 positions often discussed for trastuzumab domain IV contacts, including residues near 557-593.",
+      "source_url": "https://www.rcsb.org/structure/1N8Z"
+    }
+  ],
+  "answer_preview": "Grounded summary for: Does trastuzumab on HER2 (PDB 1N8Z) share the pertuzumab domain II epitope, and which public paper/PDB path supports that?\n\nChild chunk: trastuzumab epitope on HER2 domain IV in PDB 1N8Z is membrane-proximal and does not match pertuzumab domain II. Pertuzumab (2C4) binds HER2 domain II and blocks dimerization. PDB 1S78. This epitope does not coincide with trastuzumab's domain IV site on 1N8Z. PMID 15093539. https://doi.org/10.1016/S1535-6108(04)00083-2 Crystal structure PDB 1N8Z shows trastuzumab (Herceptin) Fab bound to the extracellular region of HER2. The epitope lies ",
+  "rcsb_cache": {
+    "pdb_id": "1N8Z",
+    "title": "Crystal structure of extracellular region of HER2 complexed with Herceptin Fab",
+    "cache_hit": true,
+    "rcsb": "https://www.rcsb.org/structure/1N8Z"
+  },
+  "note": "Closed-index demo: Cho 2003 + RCSB 1N8Z cache, not a live PaperQA crawl."
+}

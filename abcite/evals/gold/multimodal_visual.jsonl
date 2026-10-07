@@ -1,0 +1,33 @@
+{"id": "mv-fix-01", "question": "photo panel of fabric bandages securing sample tubes on skin", "gold_figure_ids": ["fix-01", "pmc-00001"], "visual_class": "photo panel"}
+{"id": "mv-fix-02", "question": "multi-panel line plot of temperature traces over time", "gold_figure_ids": ["fix-02", "pmc-00002"], "visual_class": "scientific plot"}
+{"id": "mv-fix-03", "question": "line plot panel comparing temperature curves across materials", "gold_figure_ids": ["fix-03", "pmc-00003"], "visual_class": "scientific plot"}
+{"id": "mv-fix-04", "question": "four-panel scientific plot of temperature under different ambient conditions", "gold_figure_ids": ["fix-04", "pmc-00004"], "visual_class": "scientific plot"}
+{"id": "mv-fix-05", "question": "bar chart panel of contact-angle measurements with error bars", "gold_figure_ids": ["fix-05", "pmc-00005"], "visual_class": "scientific plot"}
+{"id": "mv-fix-06", "question": "two-panel plot of contact angle versus treatment time", "gold_figure_ids": ["fix-06", "pmc-00006"], "visual_class": "scientific plot"}
+{"id": "mv-fix-07", "question": "overlaid infrared spectra plot with labeled wavenumber peaks", "gold_figure_ids": ["fix-07", "pmc-00007"], "visual_class": "scientific plot"}
+{"id": "mv-fix-08", "question": "zoom-in spectral plot panel of infrared absorbance bands", "gold_figure_ids": ["fix-08", "pmc-00008"], "visual_class": "scientific plot"}
+{"id": "mv-fix-09", "question": "scanning electron microscopy micrograph of a polymer surface", "gold_figure_ids": ["fix-09", "pmc-00009"], "visual_class": "microscopy"}
+{"id": "mv-fix-10", "question": "factorial design bar plots of mechanical response variables", "gold_figure_ids": ["fix-10", "pmc-00011"], "visual_class": "scientific plot"}
+{"id": "mv-fix-11", "question": "time-course line plots of photocatalytic assay readouts", "gold_figure_ids": ["fix-11", "pmc-00012"], "visual_class": "scientific plot"}
+{"id": "mv-fix-12", "question": "multi-panel FTIR spectra comparing treated and untreated sheets", "gold_figure_ids": ["fix-12", "pmc-00013"], "visual_class": "scientific plot"}
+{"id": "mv-pmc-00323", "question": "SDS-PAGE gel electrophoresis of bacterial lysate lanes next to a prestained protein molecular-weight ladder", "gold_figure_ids": ["pmc-00323"], "visual_class": "gel electrophoresis"}
+{"id": "mv-pmc-00710", "question": "ribbon diagram of a four-helix bundle viewed down a four-fold axis with a metal ion in the core", "gold_figure_ids": ["pmc-00710"], "visual_class": "ribbon diagram"}
+{"id": "mv-pmc-00238", "question": "heatmap panel of a pairwise kinship matrix with a color histogram of coancestry coefficients", "gold_figure_ids": ["pmc-00238"], "visual_class": "heatmap"}
+{"id": "mv-pmc-00019", "question": "axial CT scan photo of a ruptured globe with a posteriorly dislocated lens marked by an arrow", "gold_figure_ids": ["pmc-00019"], "visual_class": "structure snapshot"}
+{"id": "mv-pmc-00290", "question": "workflow diagram split by dashed gray lines with green tick marks on optimal outcomes", "gold_figure_ids": ["pmc-00290"], "visual_class": "workflow diagram"}
+{"id": "mv-pmc-00014", "question": "multi-panel scanning electron microscopy of a polymer surface after photocatalytic degradation treatments", "gold_figure_ids": ["pmc-00014"], "visual_class": "electron microscopy"}
+{"id": "mv-pmc-00313", "question": "fluorescence microscopy of green nuclear foci marking DNA double-strand breaks in cultured melanoma cells", "gold_figure_ids": ["pmc-00313"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00104", "question": "schematic diagram of a single-chain variable fragment with labeled VH, VL, linker, His-tag and FLAG boxes", "gold_figure_ids": ["pmc-00104"], "visual_class": "schematic panel"}
+{"id": "mv-pmc-00113", "question": "scatter plot of effective number of codons versus GC3 with a superimposed expected-Nc curve and color-coded virus groups", "gold_figure_ids": ["pmc-00113"], "visual_class": "scatter plot"}
+{"id": "mv-pmc-00366", "question": "fluorescence microscopy three-panel of green nuclear immunolabel, DAPI stain, and the merged overlay with a 50 μm scale bar", "gold_figure_ids": ["pmc-00366"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00370", "question": "dark-field photo series of a fibrin clot growing from a tissue-factor activator edge in plasma", "gold_figure_ids": ["pmc-00370"], "visual_class": "microscopy"}
+{"id": "mv-pmc-00388", "question": "two-channel DAPI and FITC microscopy of cultured cells with arrows marking stained versus unstained nuclei", "gold_figure_ids": ["pmc-00388"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00416", "question": "histology micrograph of a tumor section with brown CD66b stain and hematoxylin counterstain at 200×", "gold_figure_ids": ["pmc-00416"], "visual_class": "histology"}
+{"id": "mv-pmc-00067", "question": "photo panel of a 1970s spearfishing contest beside a scuba diver watching a grouper on a reef", "gold_figure_ids": ["pmc-00067"], "visual_class": "photo panel"}
+{"id": "mv-pmc-00356", "question": "forest plot from a meta-analysis with study rows and a pooled-effect diamond", "gold_figure_ids": ["pmc-00356"], "visual_class": "scientific plot"}
+{"id": "mv-pmc-00513", "question": "agarose gel electrophoresis of plasmid digests with a kilobase ladder on the left", "gold_figure_ids": ["pmc-00513"], "visual_class": "gel electrophoresis"}
+{"id": "mv-pmc-01188", "question": "overlaid cryo-EM ribbon cartoons of a transporter in outward-open, occluded, and inward-open states in brown, green, and pink", "gold_figure_ids": ["pmc-01188"], "visual_class": "electron microscopy"}
+{"id": "mv-pmc-00853", "question": "confocal microscopy of lung airway epithelium with cyanine-5 signal and DAPI-stained nuclei", "gold_figure_ids": ["pmc-00853"], "visual_class": "fluorescence microscopy"}
+{"id": "mv-pmc-00075", "question": "phylogenetic tree diagram of viral hexon nucleotide sequences", "gold_figure_ids": ["pmc-00075"], "visual_class": "scientific figure panel"}
+{"id": "mv-pmc-00432", "question": "immunoblot panel of twelve sucrose-gradient fractions run as SDS-PAGE lanes", "gold_figure_ids": ["pmc-00432"], "visual_class": "western blot"}
+{"id": "mv-pmc-00689", "question": "forest plot of pooled prevalence estimates with confidence-interval whiskers", "gold_figure_ids": ["pmc-00689"], "visual_class": "scientific plot"}

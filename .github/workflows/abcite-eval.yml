@@ -1,0 +1,75 @@
+name: AbCite eval gate
+on:
+  push:
+    paths: ["abcite/**"]
+  pull_request:
+    paths: ["abcite/**"]
+jobs:
+  eval:
+    name: fast tests (no CLIP download)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: abcite
+    env:
+      ABCITE_CLIP: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: python evals/build_corpus.py
+      - run: pytest
+      - run: python evals/run.py
+
+  multimodal_figures:
+    name: OA figure gallery (skip if no cache)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: abcite
+    env:
+      ABCITE_CLIP: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: Fixture multimodal eval only
+        run: |
+          if [ -f evals/figures/cache/metadata.jsonl ]; then
+            python evals/run_multimodal.py
+          else
+            echo "No 1000-figure cache in CI; pytest uses committed fixture."
+            pytest tests/test_multimodal_visual.py
+          fi
+
+  clip:
+    name: OpenCLIP ViT-B-32 (cached weights)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: abcite
+    env:
+      ABCITE_CLIP: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            ~/.cache/torch
+            ~/.cache/clip
+          key: openclip-vit-b-32-openai-${{ runner.os }}
+      - run: pip install -e ".[dev,clip]"
+      - run: python evals/build_corpus.py
+      - name: Download OpenCLIP weights
+        run: python -u -m abcite_core.download_clip
+      - name: CLIP tests must use real encoder
+        run: pytest tests/test_clip.py tests/test_tiny_clip.py tests/test_vision_retrieval.py -v

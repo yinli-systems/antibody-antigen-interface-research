@@ -1,0 +1,292 @@
+{
+  "n_human_labeled": 40,
+  "n_annotators": 1,
+  "second_annotator": false,
+  "cohens_kappa_human_vs_human": null,
+  "cohens_kappa_human_vs_lexical": 0.0,
+  "cohens_kappa_human_vs_claim_nli": 0.0,
+  "note": "Single annotator. No second human. Cohen's \u03ba in this repo is human vs machine (lexical / claim-NLI), not inter-annotator \u03ba. Machine labels are not a fake copy of these scores.",
+  "kappa_note": "Cohen's \u03ba is human vs machine (lexical / claim-NLI), not inter-human \u03ba. Second annotator is not a duplicate of the first; n_annotators=1.",
+  "items": [
+    {
+      "id": "g001",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7368,
+      "claim_nli": 0.8541,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g003",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7541,
+      "claim_nli": 0.7092,
+      "claim_span": 0.7143
+    },
+    {
+      "id": "g007",
+      "human_faithfulness": 1.0,
+      "lexical": 0.6835,
+      "claim_nli": 0.82,
+      "claim_span": 0.8889
+    },
+    {
+      "id": "g012",
+      "human_faithfulness": 1.0,
+      "lexical": 0.8353,
+      "claim_nli": 0.7976,
+      "claim_span": 0.8
+    },
+    {
+      "id": "g020",
+      "human_faithfulness": 1.0,
+      "lexical": 0.8226,
+      "claim_nli": 0.8169,
+      "claim_span": 0.9333
+    },
+    {
+      "id": "g024",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7396,
+      "claim_nli": 0.7478,
+      "claim_span": 0.8
+    },
+    {
+      "id": "g026",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g031",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g035",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g050",
+      "human_faithfulness": 1.0,
+      "lexical": 0.6757,
+      "claim_nli": 0.7754,
+      "claim_span": 0.75
+    },
+    {
+      "id": "g004",
+      "human_faithfulness": 0.8,
+      "lexical": 0.589,
+      "claim_nli": 0.6886,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "g015",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7317,
+      "claim_nli": 0.832,
+      "claim_span": 0.875
+    },
+    {
+      "id": "g021",
+      "human_faithfulness": 1.0,
+      "lexical": 0.8,
+      "claim_nli": 0.7922,
+      "claim_span": 0.9
+    },
+    {
+      "id": "g042",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7928,
+      "claim_nli": 0.7745,
+      "claim_span": 0.9231
+    },
+    {
+      "id": "h001",
+      "human_faithfulness": 0.6,
+      "lexical": 0.7368,
+      "claim_nli": 0.78,
+      "claim_span": 0.7778
+    },
+    {
+      "id": "h013",
+      "human_faithfulness": 0.6,
+      "lexical": 0.7792,
+      "claim_nli": 0.8541,
+      "claim_span": 0.8889
+    },
+    {
+      "id": "h020",
+      "human_faithfulness": 0.7,
+      "lexical": 0.8226,
+      "claim_nli": 0.837,
+      "claim_span": 0.9091
+    },
+    {
+      "id": "h023",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "h033",
+      "human_faithfulness": 0.5,
+      "lexical": 0.625,
+      "claim_nli": 0.6802,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h032",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g002",
+      "human_faithfulness": 1.0,
+      "lexical": 0.8116,
+      "claim_nli": 0.8683,
+      "claim_span": 1.0
+    },
+    {
+      "id": "g005",
+      "human_faithfulness": 1.0,
+      "lexical": 0.6923,
+      "claim_nli": 0.8094,
+      "claim_span": 0.7778
+    },
+    {
+      "id": "g008",
+      "human_faithfulness": 1.0,
+      "lexical": 0.5606,
+      "claim_nli": 0.7014,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "g010",
+      "human_faithfulness": 0.8,
+      "lexical": 0.7667,
+      "claim_nli": 0.7155,
+      "claim_span": 0.7143
+    },
+    {
+      "id": "g014",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7843,
+      "claim_nli": 0.7466,
+      "claim_span": 0.7143
+    },
+    {
+      "id": "g017",
+      "human_faithfulness": 1.0,
+      "lexical": 0.6667,
+      "claim_nli": 0.6992,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "g025",
+      "human_faithfulness": 1.0,
+      "lexical": 0.7723,
+      "claim_nli": 0.8561,
+      "claim_span": 0.9
+    },
+    {
+      "id": "g027",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "h002",
+      "human_faithfulness": 0.6,
+      "lexical": 0.7179,
+      "claim_nli": 0.8323,
+      "claim_span": 0.8889
+    },
+    {
+      "id": "h003",
+      "human_faithfulness": 0.4,
+      "lexical": 0.6812,
+      "claim_nli": 0.6672,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h004",
+      "human_faithfulness": 0.7,
+      "lexical": 0.7432,
+      "claim_nli": 0.7597,
+      "claim_span": 0.6667
+    },
+    {
+      "id": "h014",
+      "human_faithfulness": 0.4,
+      "lexical": 0.8161,
+      "claim_nli": 0.8626,
+      "claim_span": 1.0
+    },
+    {
+      "id": "h015",
+      "human_faithfulness": 0.7,
+      "lexical": 0.7639,
+      "claim_nli": 0.7825,
+      "claim_span": 0.7778
+    },
+    {
+      "id": "h021",
+      "human_faithfulness": 0.3,
+      "lexical": 0.6667,
+      "claim_nli": 0.648,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h022",
+      "human_faithfulness": 0.3,
+      "lexical": 0.7077,
+      "claim_nli": 0.6752,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h034",
+      "human_faithfulness": 0.4,
+      "lexical": 0.6607,
+      "claim_nli": 0.6811,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h038",
+      "human_faithfulness": 0.3,
+      "lexical": 0.7188,
+      "claim_nli": 0.6531,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h039",
+      "human_faithfulness": 0.4,
+      "lexical": 0.6129,
+      "claim_nli": 0.673,
+      "claim_span": 0.5714
+    },
+    {
+      "id": "h024",
+      "human_faithfulness": 1.0,
+      "lexical": 1.0,
+      "claim_nli": 1.0,
+      "claim_span": 1.0
+    },
+    {
+      "id": "h040",
+      "human_faithfulness": 0.4,
+      "lexical": 0.6984,
+      "claim_nli": 0.6952,
+      "claim_span": 0.5714
+    }
+  ]
+}

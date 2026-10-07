@@ -1,0 +1,45 @@
+{
+  "protocol": "audio_qa",
+  "n_gallery": 24,
+  "n_queries": 24,
+  "n_answerable": 20,
+  "encoder": "wav-hash",
+  "synthetic_fixture": true,
+  "transcript_bm25": {
+    "recall@1": 0.0,
+    "recall@5": 0.1,
+    "recall@10": 0.5,
+    "ndcg@5": 0.0409,
+    "n": 20
+  },
+  "clap_t2a": {
+    "recall@1": 0.35,
+    "recall@5": 0.7,
+    "recall@10": 1.0,
+    "ndcg@5": 0.5455,
+    "n": 20
+  },
+  "within_audio_rrf": {
+    "recall@1": 0.05,
+    "recall@5": 0.5,
+    "recall@10": 0.9,
+    "ndcg@5": 0.2695,
+    "n": 20
+  },
+  "transcript_bm25_should_fail_subset": {
+    "recall@1": 0.0,
+    "recall@5": 0.1,
+    "recall@10": 0.5,
+    "ndcg@5": 0.0409,
+    "n": 20
+  },
+  "clap_should_fail_subset": {
+    "recall@1": 0.35,
+    "recall@5": 0.7,
+    "recall@10": 1.0,
+    "ndcg@5": 0.5455,
+    "n": 20
+  },
+  "note": "Audio retrieval. Query describes sound (pitch, chirp, pulse, hush), not spoken words. transcript_bm25_should_fail has \u22641 content-token overlap. CI encoder is shared-space spectral cues (wav-hash); CLAP when ABCITE_CLAP=1. RRF is within-audio only.",
+  "clap_beats_transcript_bm25_r@1": true
+}

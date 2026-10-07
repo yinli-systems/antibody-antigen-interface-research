@@ -1,0 +1,53 @@
+{
+  "protocol": "video_qa",
+  "n_gallery": 26,
+  "n_queries": 28,
+  "n_answerable": 26,
+  "encoder": "clip-vit-b-32",
+  "synthetic_fixture": false,
+  "transcript_bm25": {
+    "recall@1": 0.0385,
+    "recall@5": 0.2308,
+    "recall@10": 0.4615,
+    "ndcg@5": 0.1326,
+    "n": 26
+  },
+  "frame_clip_t2i": {
+    "recall@1": 0.4231,
+    "recall@5": 0.6923,
+    "recall@10": 0.8846,
+    "ndcg@5": 0.5591,
+    "n": 26
+  },
+  "audio_clap_t2a": {
+    "recall@1": 0.0769,
+    "recall@5": 0.1538,
+    "recall@10": 0.4231,
+    "ndcg@5": 0.1178,
+    "n": 26
+  },
+  "within_video_rrf": {
+    "recall@1": 0.1923,
+    "recall@5": 0.4231,
+    "recall@10": 0.7692,
+    "ndcg@5": 0.3175,
+    "n": 26
+  },
+  "transcript_bm25_should_fail_subset": {
+    "recall@1": 0.0385,
+    "recall@5": 0.2308,
+    "recall@10": 0.4615,
+    "ndcg@5": 0.1326,
+    "n": 26
+  },
+  "frame_should_fail_subset": {
+    "recall@1": 0.4231,
+    "recall@5": 0.6923,
+    "recall@10": 0.8846,
+    "ndcg@5": 0.5591,
+    "n": 26
+  },
+  "note": "Video keyframe + spoken-track retrieval. Query describes scene (color, layout), not the lecture transcript. RRF is within-video (frames \u27c2 audio). CI local-image uses shared-space scene cues; CLIP when weights are present. Not mixed with paper caption BM25.",
+  "frames_beat_transcript_bm25_r@1": true,
+  "oa": true
+}
