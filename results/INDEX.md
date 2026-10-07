@@ -141,7 +141,7 @@ The historical analyzer `1640514` failed only because it expected the obsolete `
 
 No tested real structural-PLM layer reliably exceeds its matched random-width control under the registered paired component/seed analysis. The prospectively stated promotion decision is therefore **NO-PROMOTION_STRUCTURAL_PLM_FOR_STRICT_PARTNER_RETRIEVAL**. Positive SaProt point estimates are retained as suggestive development evidence, not promoted features. This does not establish that structural PLMs are useless; it is specific to this architecture, cohort and endpoint.
 
-Full raw corrected analysis, original failure log, repair authority, exact reproduction command and decision receipt are pinned at [`kevin/structural-plm-final-20260930`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/kevin/structural-plm-final-20260930/extensions/frontier_multimodel_v1).
+Full raw corrected analysis, original failure log, repair authority, exact reproduction command and decision receipt are pinned at [`kevin/structural-plm-final-20260930`](https://github.com/yinli-systems/antibody-antigen-interface-research/tree/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1).
 
 ## 8. EPIC accepted-paper reviewer-response closure
 

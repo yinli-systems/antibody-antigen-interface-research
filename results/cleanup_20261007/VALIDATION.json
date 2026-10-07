@@ -1,0 +1,97 @@
+{
+  "status": "PASS_FINAL_CLEANUP_WITH_DECLARED_EXTERNAL_REQUIREMENTS",
+  "base_integrated_main": "d8bca436981ee37bcabbde79d47ff8fdf0246386",
+  "validated_at_utc": "2026-10-07T13:20:46.152256+00:00",
+  "suites": [
+    {
+      "name": "core",
+      "summary": "2969 passed, 47 skipped, 36 xfailed, 14 warnings, 37 subtests passed in 99.12s (0:01:39)",
+      "junit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "83",
+          "tests": "3089",
+          "time": "99.060",
+          "timestamp": "2026-10-07T17:13:59.104892+04:00",
+          "hostname": "Mac"
+        }
+      ]
+    },
+    {
+      "name": "abcite",
+      "summary": "118 passed, 2 skipped in 3.62s",
+      "junit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "2",
+          "tests": "120",
+          "time": "3.602",
+          "timestamp": "2026-10-07T17:14:17.742510+04:00",
+          "hostname": "Mac"
+        }
+      ]
+    },
+    {
+      "name": "recovery",
+      "summary": "85 passed, 1 skipped, 13 subtests passed in 1.25s",
+      "junit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "1",
+          "tests": "99",
+          "time": "1.253",
+          "timestamp": "2026-10-07T17:14:22.018391+04:00",
+          "hostname": "Mac"
+        }
+      ]
+    }
+  ],
+  "atlas_unit_tests": 14,
+  "cleanup_unit_tests": 4,
+  "atlas_regeneration_python39_and_python312": "PASS; identical source payload and canonical gzip header",
+  "frontend_build": "npm run build passed; lockfile added; generated build files ignored",
+  "restored_declared_variants": 4,
+  "restored_declared_validation_logs": 10,
+  "historical_metrics_or_protocols_rewritten": false,
+  "training_or_inference_performed": false,
+  "historical_expected_failures_and_external_skips_retained": true,
+  "artifacts": [
+    {
+      "path": "results/cleanup_20261007/final-core.txt",
+      "sha256": "42f9c63b5fb6337a99abd2716fab3eec2331b9994f0943508ea37e18bc8a2d25"
+    },
+    {
+      "path": "results/cleanup_20261007/final-abcite.txt",
+      "sha256": "96140dee6745b1d3ba922db9e351267143f2d972c9a66ad826aaf77d6b2320d7"
+    },
+    {
+      "path": "results/cleanup_20261007/final-recovery.txt",
+      "sha256": "7d5dd4dcb5a1be6032f24bd303401d84c3ac227aa8c5ea9edc106444256a4e8a"
+    },
+    {
+      "path": "results/cleanup_20261007/final-atlas-tests.txt",
+      "sha256": "dcc6a211e860570128db56a86c8dc3c0b55f2d0ab787c52ddae9c293874f5844"
+    },
+    {
+      "path": "results/cleanup_20261007/final-cleanup-tests.txt",
+      "sha256": "09ec3531960f6d82781e3d2edce72afa987f87832b6abd464985000ce84e6656"
+    },
+    {
+      "path": "results/cleanup_20261007/frontend-build.txt",
+      "sha256": "5413145c7a31e585702d2a961072bcd825dc3f02ccfa76046c187ad8c09c2b1c"
+    }
+  ],
+  "changed_source_sha256": {
+    "tools/evidence/build_atlas.py": "28410db78e377e63fbbf161ccd855576e06927c1631d474321c1fa3820782fa0",
+    "tools/evidence/progress.py": "4fe0c19f2bb7d24de0de9f383c51bafa177504d4e19bc3b241279687256cb50e",
+    "tools/evidence/verify_cleanup.py": "1af850b789efb5b71eb05da3ebdab3e5860e50403aaa4554c80d4e811da4472d",
+    "abcite/tests/test_visual_qa.py": "9ccf8c7fa21cf730745b57880034e51c78503ab1b9a12cf998b5e0c337e99b20",
+    "abcite/apps/web/package-lock.json": "07e371722f1c43faa5bd56f0b379c132fd3fa7f4f25ee729e68a0a55630ebc90"
+  }
+}

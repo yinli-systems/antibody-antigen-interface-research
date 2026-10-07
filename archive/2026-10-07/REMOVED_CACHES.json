@@ -1,0 +1,21 @@
+{
+  "scope": "Removed from active working tree only. Git history and backup tag retain exact binary bytes. Repository history was not rewritten or size-purged.",
+  "files": [
+    {
+      "path": "abcite/evals/embeddings-clip-vit-b-32-n1196.npy",
+      "bytes": 2449536,
+      "sha256": "4bfdb7577bdc938f960146571e3aef6ac4835e87c3c801393d47b707bddc8f24",
+      "git_blob": "9668969b9333f79bc03cc37b9c6c207d3073c630",
+      "restore_from": "d8bca436981ee37bcabbde79d47ff8fdf0246386",
+      "reason": "Historical generated embedding cache; no tracked application reference; metrics and ID metadata retained."
+    },
+    {
+      "path": "abcite/evals/embeddings-clip-vit-b-32-n1200.npy",
+      "bytes": 2457728,
+      "sha256": "a4f57e9bdc821fc454ac03b7e9b115184cb0b95ebb06f37c933b1f25ff5a40cd",
+      "git_blob": "bc6f8540fa9f0b16bbb6161ea9b9d2a3503a9a9f",
+      "restore_from": "d8bca436981ee37bcabbde79d47ff8fdf0246386",
+      "reason": "Historical generated embedding cache; no tracked application reference; metrics and ID metadata retained."
+    }
+  ]
+}

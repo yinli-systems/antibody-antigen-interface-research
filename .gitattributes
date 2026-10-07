@@ -25,3 +25,14 @@ results/**/*.tsv linguist-generated=true
 results/mipe_contact_threshold_diagnostic_v1/MIPE_CONTACT_THRESHOLD_PER_COMPLEX.csv -text whitespace=trailing-space,space-before-tab,cr-at-eol
 results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_METRICS.csv -text whitespace=trailing-space,space-before-tab,cr-at-eol
 results/mipe_paper_track_fixed05_recovery_v1/MIPE_PAPER_TRACK_FIXED05_PER_COMPLEX.csv -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Generated navigation is collapsed, while handwritten cards/curation remain reviewable.
+results/atlas/branches/*.md linguist-generated=true
+results/atlas/families/*.md linguist-generated=true
+results/atlas/index.html linguist-generated=true
+results/atlas/FILE_VERSIONS.jsonl.gz binary
+results/atlas/VERIFICATION.json linguist-generated=true
+
+# Exact archived terminal bytes are evidence, not formatted source.
+results/integration_20261007/validation/*.log -text -whitespace
+archive/branch_variants_20261007/**/data/* -text

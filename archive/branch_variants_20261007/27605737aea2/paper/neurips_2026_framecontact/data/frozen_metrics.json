@@ -1,0 +1,144 @@
+{
+  "format_version": "framecontact_paper_metrics_v3",
+  "metric_implementation": {
+    "library_function": "sklearn.metrics.average_precision_score",
+    "definition": "non_interpolated_average_precision",
+    "paper_label": "AP",
+    "mean_per_complex_label": "MPC-AP"
+  },
+  "full_development": {
+    "split": {
+      "train_complexes": 2565,
+      "validation_complexes": 549,
+      "validation_role": "checkpoint_selection_and_development_summary_not_independent_holdout"
+    },
+    "seeds": [17, 29, 43],
+    "metric": "mean_per_complex_average_precision",
+    "checkpoint_stage": "full_development_retraining",
+    "protocol_sha256": "a00a51a4617a581c57a74f854defd6c18d8258180659775b1c5044be10f98c5c",
+    "baseline_by_seed": {
+      "17": {"contact": 0.023899712943923183, "epitope": 0.22283444020538637, "paratope": 0.7047460986114735},
+      "29": {"contact": 0.028576395039455475, "epitope": 0.2324134889742661, "paratope": 0.7348176294096945},
+      "43": {"contact": 0.031048674806163686, "epitope": 0.25688223313791686, "paratope": 0.6962519929492524}
+    },
+    "routed_by_seed": {
+      "17": {"contact": 0.023899712943923183, "epitope": 0.23587096654176729, "paratope": 0.7047460986114735},
+      "29": {"contact": 0.028576395039455475, "epitope": 0.23746407907510497, "paratope": 0.7348176294096945},
+      "43": {"contact": 0.031048674806163686, "epitope": 0.24977467289051003, "paratope": 0.6962519929492524}
+    },
+    "baseline_median": {"contact": 0.028576395039455475, "epitope": 0.2324134889742661, "paratope": 0.7047460986114735},
+    "routed_median": {"contact": 0.028576395039455475, "epitope": 0.23746407907510497, "paratope": 0.7047460986114735},
+    "routed_minus_baseline_median": {"contact": 0.0, "epitope": 0.005050590100838859, "paratope": 0.0},
+    "promotion_gate_passed": true,
+    "analysis_sha256": "f4368275e38d5134e667e23470702e987bb1a301b1c89aee5e82718d39911824"
+  },
+  "predicted_geometry_development": {
+    "split": {
+      "train_complexes": 2565,
+      "validation_complexes": 549,
+      "validation_role": "checkpoint_selection_and_development_sensitivity_not_independent_confirmation"
+    },
+    "seeds": [17, 29, 43],
+    "metric": "mean_per_complex_average_precision",
+    "routed_by_seed": {
+      "17": {"contact": 0.025786814010667226, "epitope": 0.24378169139830286, "paratope": 0.6884720566591362},
+      "29": {"contact": 0.027028333944784533, "epitope": 0.24412414099967428, "paratope": 0.7098599502411875},
+      "43": {"contact": 0.026725701956518834, "epitope": 0.236762637938128, "paratope": 0.6729818167827297}
+    },
+    "routed_median": {"contact": 0.026725701956518834, "epitope": 0.24378169139830286, "paratope": 0.6884720566591362},
+    "predicted_minus_bound_routed_by_seed": {
+      "17": {"contact": 0.001887101066744043, "epitope": 0.007910724856535573, "paratope": -0.01627404195233728},
+      "29": {"contact": -0.001548061094670941, "epitope": 0.006660061924569305, "paratope": -0.024957679168506997},
+      "43": {"contact": -0.004322972849644852, "epitope": -0.01301203495238204, "paratope": -0.023270176166522716}
+    },
+    "predicted_minus_bound_routed_median": {"contact": -0.001548061094670941, "epitope": 0.006660061924569305, "paratope": -0.023270176166522716},
+    "cluster_weighted_seed_averaged_paired_difference": {
+      "contact": {"estimate": -0.002469175663424739, "ci95": [-0.0049836492527222135, 0.000032805407137513504]},
+      "epitope": {"estimate": -0.005630614159883308, "ci95": [-0.020160199826844125, 0.008798906495762617]},
+      "paratope": {"estimate": -0.027808493961554936, "ci95": [-0.035696720285849096, -0.020445050418819537]},
+      "antigen_clusters": 108,
+      "bootstrap_replicates": 10000,
+      "conditional_on_three_fixed_trained_seeds": true
+    },
+    "audit": {
+      "development_only": true,
+      "experimental_bound_geometry_used_as_model_input": false,
+      "experimental_bound_geometry_used_for_auxiliary_training_supervision": true,
+      "experimental_structure_required_at_inference": false,
+      "independent_confirmation": false,
+      "old_sabdab2_test_loaded": false,
+      "temporal_holdout_loaded": false
+    },
+    "campaign_sha256": "1117a6ac45bd0ab57063af52e55ad14948447513d461a959f5d984bc41f99099",
+    "analysis_sha256": "a4168a919e97b1344d718946fdd51305803773ae3355a3014ee2f05583a077b7",
+    "model_input_structure_manifest_sha256": "bf6ea4a21ff303f5e0bbf0f8edca5d824cc5024ec6c41fea9213172c64a8f614"
+  },
+  "fresh156": {
+    "complexes": 156,
+    "antigen_clusters": 49,
+    "role": "cluster_disjoint_development_holdout_confirming_screen_stage_route",
+    "checkpoint_stage": "screen_stage_before_full_development_retraining",
+    "does_not_evaluate_final_retrained_checkpoints": true,
+    "epitope_baseline_by_seed": {"17": 0.1858, "29": 0.1895, "43": 0.1849},
+    "epitope_routed_by_seed": {"17": 0.1915, "29": 0.2036, "43": 0.1938},
+    "epitope_delta_by_seed": {"17": 0.005702071632922079, "29": 0.014096776137424077, "43": 0.00887722234624172},
+    "paired_antigen_cluster_bootstrap": {
+      "point_estimate": 0.029518008868851635,
+      "ci95": [0.01262998049529817, 0.047429431893437866],
+      "replicates": 10000,
+      "seed": 20260829,
+      "estimand": "cluster_weighted_seed_averaged_paired_difference",
+      "conditional_on_three_fixed_trained_seeds": true,
+      "includes_retraining_seed_uncertainty": false
+    },
+    "analysis_sha256": "0e6c6c1a029f35c6bc8f42e6d33aa15f8bac58cb376a5e89f38bc8ce84747800"
+  },
+  "joint_task_ablation_512_128": {
+    "metric": "three_seed_median_epitope_mean_per_complex_average_precision",
+    "epitope_only": 0.2502,
+    "epitope_paratope": 0.2493,
+    "epitope_contact": 0.2509,
+    "epitope_paratope_contact": 0.2532
+  },
+  "historical_benchmark": {
+    "seed": 17,
+    "role": "previously_exposed_non_blind_single_seed_measurement_only_historical_benchmark",
+    "fresh_blind_test": false,
+    "used_for_model_or_checkpoint_selection": false,
+    "prior_test_feedback_influenced_later_development": true,
+    "cumulative_test_access_ordinal": 2,
+    "complexes_pooled": 549,
+    "complexes_eligible_for_mean_per_complex_average_precision": 548,
+    "threshold_selected_on_development_validation": true,
+    "threshold_or_calibration_refit_on_historical_partition": false,
+    "metrics": {
+      "contact": {"auroc": 0.937129, "auprc": 0.012107, "f1": 0.037036, "mcc": 0.051931, "mean_per_complex_auprc": 0.026418},
+      "epitope": {"auroc": 0.691539, "auprc": 0.141144, "f1": 0.211850, "mcc": 0.156441, "mean_per_complex_auprc": 0.248639},
+      "paratope": {"auroc": 0.956706, "auprc": 0.656714, "f1": 0.644019, "mcc": 0.609672, "mean_per_complex_auprc": 0.709487}
+    },
+    "result_sha256": "b7bd6a647c6764c4b75a4ebbc5f4def70fc43279d76f9b68e8fe5252198f9ec1"
+  },
+  "evaluation_status": {
+    "development_evidence": [
+      "full_development_validation",
+      "fresh156_cluster_disjoint_holdout",
+      "predicted_geometry_full_development_sensitivity"
+    ],
+    "final_retrained_checkpoint_independent_evaluation": "not_performed",
+    "historical_partition": "previously_exposed_measurement_only",
+    "temporal_evaluation": "sealed_not_evaluated"
+  },
+  "reproducibility": {
+    "framecontact_parameters_per_checkpoint": 2395374,
+    "task_routing_forward_passes": 2,
+    "training_gpu": "NVIDIA_RTX_4090",
+    "training_precision": "bf16",
+    "training_batch_size": 1,
+    "expert_rerun_aggregate_gpu_hours": 21.33,
+    "esm2_model_id": "facebook/esm2_t33_650M_UR50D",
+    "esm2_revision": "08e4846e537177426273712802403f7ba8261b6c",
+    "esm2_weight_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+    "esm2_embedding_dim": 1280,
+    "embedding_manifest_sha256": "9ecbc08815166fb1a2a4a72f86280ffb808a162faf9521838039fb67c05cd545"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "status": "PASS_ALL_BRANCH_INTEGRATION",
+  "starting_branch_heads": 31,
+  "heads_verified_as_ancestors": 31,
+  "preserved_path_decisions": 25,
+  "preserved_variant_entries": 50,
+  "premerge_tree_entries": 108007,
+  "canonical_python_files_parsed": 1769,
+  "contract_model_bytes_unchanged": true,
+  "contract_tests_only_namespace_changed": true,
+  "optional_multimodal_source_modules_byte_identical": 3,
+  "optional_multimodal_tests_only_namespace_changed": true,
+  "completion_metric_bindings_checked": 5,
+  "scope": "Git history, archived source bytes, imports/syntax and reporting links. Not scientific replication or live job status.",
+  "remote_heads_checked": [
+    {
+      "name": "abcite/multimodal-copilot",
+      "sha": "fb871f35678c4462074c0868a7738f1dc9483b05"
+    },
+    {
+      "name": "docs/results-atlas-20261007",
+      "sha": "1841b985c8df81f566457efa0088d3a82a4efb9d"
+    },
+    {
+      "name": "feature/asep-pretraining-pipeline",
+      "sha": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae"
+    },
+    {
+      "name": "integrate/all-progress-20261007",
+      "sha": "85d30ba40d1432d7b674e4c545e60d7f84f94d16"
+    },
+    {
+      "name": "kevin/af3-semantic-audit-20260930",
+      "sha": "859a7145bfb10bab87ca72a7dd1fbebe5d6a2399"
+    },
+    {
+      "name": "kevin/correspondence-upgrade-20260930",
+      "sha": "14a385feaec24b3141331963ba71dda788a164e1"
+    },
+    {
+      "name": "kevin/epic-camera-ready-20260930",
+      "sha": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c"
+    },
+    {
+      "name": "kevin/evaluate-sensitivity-ci-fix-v1",
+      "sha": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4"
+    },
+    {
+      "name": "kevin/execution-recovery-20260930",
+      "sha": "a5729c49e5d32fc05cd09a10f824a7cc6974fb6b"
+    },
+    {
+      "name": "kevin/framecontact-multimodal-evidence-20260902",
+      "sha": "27605737aea2b2a6c623c3f90711ec64dd626532"
+    },
+    {
+      "name": "kevin/frontier-performance-v1-20260930",
+      "sha": "f1fe5affe119230635b862b0985f2ee92fd781fc"
+    },
+    {
+      "name": "kevin/geometry-gate-power-reanalysis-v1",
+      "sha": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d"
+    },
+    {
+      "name": "kevin/geometry-powered-replication-v1",
+      "sha": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969"
+    },
+    {
+      "name": "kevin/graph-community-split-v1",
+      "sha": "822d91590a42ce970c9d13c176cbe3ef671de42a"
+    },
+    {
+      "name": "kevin/hadamard-pair-decoder-v1",
+      "sha": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc"
+    },
+    {
+      "name": "kevin/main-epic-evidence-index-20260930",
+      "sha": "3ac740d354f9c5b73c39605cb09b0f600609fb82"
+    },
+    {
+      "name": "kevin/main-evidence-consolidation-20260930",
+      "sha": "d75ce2f28750a738dceb5f4f3a4f81d0b36973f5"
+    },
+    {
+      "name": "kevin/multimodel-scale-program-20260930",
+      "sha": "28dffada7aeaf9e5969f87414e91529aef60f717"
+    },
+    {
+      "name": "kevin/partner-pose-contract-v1",
+      "sha": "c72fa83be658c6a7f5a28900409649e37233f327"
+    },
+    {
+      "name": "kevin/partner-retrieval-20260930",
+      "sha": "c9bcb012795e743909376353b2cc450db83866cd"
+    },
+    {
+      "name": "kevin/pretrained-representations-v1",
+      "sha": "400022a29f05f8ef43502f39a2e52c345199e644"
+    },
+    {
+      "name": "kevin/protocol-binding-ci-v1",
+      "sha": "191a8b241d73f0f6c6bfeef9728b530a376a0721"
+    },
+    {
+      "name": "kevin/reparank-structure-resume-20260930",
+      "sha": "2bf3f7b3bc2cf9ff54aeb294e29291f76378f4e3"
+    },
+    {
+      "name": "kevin/representation-ablation-v1",
+      "sha": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5"
+    },
+    {
+      "name": "kevin/rescue-gating-20260930",
+      "sha": "bd3879384aa8ba30ef859c14b13af056f141654f"
+    },
+    {
+      "name": "kevin/rescue-qualification-20260930",
+      "sha": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc"
+    },
+    {
+      "name": "kevin/s2-split-readiness-v1",
+      "sha": "053a0665cb4ccb9df5ce325df330ebae2fc4f973"
+    },
+    {
+      "name": "kevin/strict-dual-axis-retrieval-20260930",
+      "sha": "e9c253bace2edddf60cb4a10e1e839617b5cb927"
+    },
+    {
+      "name": "kevin/strict-partner-retrieval-20260930",
+      "sha": "fdc2db39bd9f8817ae414a17dcf666a565433d83"
+    },
+    {
+      "name": "kevin/structural-plm-final-20260930",
+      "sha": "96864049bdb935d14a4439c3f048231f59e78bee"
+    },
+    {
+      "name": "kevin/teacher-paper-handoff-20260903",
+      "sha": "54afd798700bc41ac1352065414d8687c9627871"
+    },
+    {
+      "name": "main",
+      "sha": "d8bca436981ee37bcabbde79d47ff8fdf0246386"
+    }
+  ],
+  "active_review_named_branches": 0
+}

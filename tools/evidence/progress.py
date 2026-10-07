@@ -22,7 +22,7 @@ def enhance(readme: str, operations: list[str], root: Path):
     if cases != fresh + reused:
         raise ValueError('Reused/fresh case accounting differs')
     nav = '[Results](results/INDEX.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [All branches](results/ALL_BRANCHES.md) · [Run status](results/operations/README.md) · [Preservation](archive/README.md)'
-    updated_nav = '[Results atlas](results/atlas/README.md) · [All branch progress](results/integration_20261007/BRANCH_PROGRESS.md) · [Cohorts](results/atlas/COHORTS.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [Historical jobs](results/operations/README.md) · [Preservation](archive/README.md)'
+    updated_nav = '[Results atlas](results/atlas/README.md) · [All branch progress](results/integration_20261007/BRANCH_PROGRESS.md) · [Cohorts](results/atlas/COHORTS.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [Historical jobs](results/operations/README.md) · [Repository layout](docs/REPOSITORY_LAYOUT.md) · [Preservation](archive/2026-10-07/README.md)'
     if readme.count(nav) != 1:
         raise ValueError('Expected one original navigation line')
     readme = readme.replace(nav, updated_nav)
@@ -43,7 +43,7 @@ def enhance(readme: str, operations: list[str], root: Path):
 
 This is **committed repository progress, not live scheduler status**. Old 12/36 and pending job records remain dated historical snapshots rather than current completion claims. [Historical operations](results/operations/README.md)
 
-The branch names now use neutral `epic-camera-ready` and `main-epic-evidence-index` terminology. Their commit histories are unchanged; historical freeze records retain their original names. [Rename mapping](results/integration_20261007/BRANCH_RENAMES.json)
+Review-related branch names were neutralized before redundant branch references were archived. Their commit histories are unchanged; frozen records retain the names observed at the time. [Rename mapping](results/integration_20261007/BRANCH_RENAMES.json) · [Branch snapshots and restoration](archive/2026-10-07/README.md)
 
 '''
     readme = readme[:start] + current + readme[end:]
@@ -52,4 +52,5 @@ The branch names now use neutral `epic-camera-ready` and `main-epic-evidence-ind
     operations[0] = '# Historical operational snapshot — not a live monitor'
     operations[1:1] = ['', '**Superseded for completion status.** This page preserves its original observation time. See the [integrated branch progress](../integration_20261007/BRANCH_PROGRESS.md) for later committed terminal records. No live scheduler state was checked.', '']
     operations = [x.replace('## Still unfinished', '## Unfinished at this historical snapshot') for x in operations]
+    readme = readme.replace('Original branches, archive tags, failed experiments and superseded interpretations remain available.', 'Original branch commits, archive tags, failed experiments and superseded interpretations remain available. Redundant active branch references may be pruned only after ancestry and backup verification.')
     return readme, operations

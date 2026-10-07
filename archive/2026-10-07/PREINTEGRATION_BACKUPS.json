@@ -1,0 +1,223 @@
+{
+  "snapshot_utc": "2026-10-07T12:48:39.153250+00:00",
+  "base_main": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+  "branches": [
+    {
+      "original_branch": "abcite/multimodal-copilot",
+      "head": "fb871f35678c4462074c0868a7738f1dc9483b05",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/00",
+      "tree_sha256": "53049fc80fa705cbf9d33eecca2896fb96c959fcc8c35dcb7c1a0b7260056dd6",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "docs/results-atlas-20261007",
+      "head": "1841b985c8df81f566457efa0088d3a82a4efb9d",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/01",
+      "tree_sha256": "fe943fae2c06c2c19a4b6f80e1653d70e90c07e6ccc1d66c6bb813051e52aa69",
+      "already_in_main": true
+    },
+    {
+      "original_branch": "feature/asep-pretraining-pipeline",
+      "head": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/02",
+      "tree_sha256": "1006298dbbbea8c6e28f3cf82e0b03effb881522118e5a7dd3c4321e7a0044a9",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/af3-semantic-audit-20260930",
+      "head": "859a7145bfb10bab87ca72a7dd1fbebe5d6a2399",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/03",
+      "tree_sha256": "baa2befad612e07c815b790100499fd69f5c278a665e57e4e5a501453bc2a67a",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/correspondence-upgrade-20260930",
+      "head": "14a385feaec24b3141331963ba71dda788a164e1",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/04",
+      "tree_sha256": "618815dbf2e6d69b728b3b7edf58ab334375ce3d2d40684f20ee3cf8bd90577f",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/epic-camera-ready-20260930",
+      "head": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/05",
+      "tree_sha256": "dc65f58fc8ab05d0e3185b92d3d195d5cddba081e0f689195b9b98eb733f4641",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+      "head": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/06",
+      "tree_sha256": "c49913ab727fad7d4895ffbdb743f06749ee07b509e6e767737dc97b55094b23",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/execution-recovery-20260930",
+      "head": "a5729c49e5d32fc05cd09a10f824a7cc6974fb6b",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/07",
+      "tree_sha256": "9332271f76f8b5cb0c6ca81ac75b2a94307a35eed01494bc2b7b9003844d13d5",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/framecontact-multimodal-evidence-20260902",
+      "head": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/08",
+      "tree_sha256": "05fe96578cb290ac07e5d8a99b6db3b02c8b416f0b446c6287cc523b9ddf9833",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/frontier-performance-v1-20260930",
+      "head": "f1fe5affe119230635b862b0985f2ee92fd781fc",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/09",
+      "tree_sha256": "388b0d0e5eed25cc34c0843b0ace7359b6d3eecc2b7efe2b1d99c9b5023a0884",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/geometry-gate-power-reanalysis-v1",
+      "head": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/10",
+      "tree_sha256": "3d2dc88ca031fb35aeb6217eab4d9ae44d300fba3348e59544be3c08418b6615",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/geometry-powered-replication-v1",
+      "head": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/11",
+      "tree_sha256": "e106f01e9023d3d4dfe414b91b1e58507b4853720ddb1e58f0efcf7ab76d81d8",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/graph-community-split-v1",
+      "head": "822d91590a42ce970c9d13c176cbe3ef671de42a",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/12",
+      "tree_sha256": "d285ade503493cd7fd118dcb201aa90013ebcdfb357f33812f8937372f83be2d",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/hadamard-pair-decoder-v1",
+      "head": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/13",
+      "tree_sha256": "01b4a379a13608612cec04d8e67b816c7335c717f4344775560794b33f4e1ada",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/main-epic-evidence-index-20260930",
+      "head": "3ac740d354f9c5b73c39605cb09b0f600609fb82",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/14",
+      "tree_sha256": "b4b0efe8790a52706617c2b1277ecff933f05dffbce48ecb94fce7a5ee9c758c",
+      "already_in_main": true
+    },
+    {
+      "original_branch": "kevin/main-evidence-consolidation-20260930",
+      "head": "d75ce2f28750a738dceb5f4f3a4f81d0b36973f5",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/15",
+      "tree_sha256": "f7c5e60e99752fed3f14b6ff7b029a2e73349d7288193b35dfcb5bc825077208",
+      "already_in_main": true
+    },
+    {
+      "original_branch": "kevin/multimodel-scale-program-20260930",
+      "head": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/16",
+      "tree_sha256": "1d65d91d89e203a4dbbece680ccbc4d3414de28fb65a91f5db75ef28d41f68b1",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/partner-pose-contract-v1",
+      "head": "c72fa83be658c6a7f5a28900409649e37233f327",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/17",
+      "tree_sha256": "2c4bf981663fa1969ed71c034747dab91c721b08a319b334e8b98c3be31291b1",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/partner-retrieval-20260930",
+      "head": "c9bcb012795e743909376353b2cc450db83866cd",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/18",
+      "tree_sha256": "397d7b7bfede32a53ab663442025ed121e63f9f5201e4d75886b8f366c7d8ca4",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/pretrained-representations-v1",
+      "head": "400022a29f05f8ef43502f39a2e52c345199e644",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/19",
+      "tree_sha256": "1370339b49914228f80e6dd76d8de7260ab7d88828d97c91a949b2def02dec5e",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/protocol-binding-ci-v1",
+      "head": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/20",
+      "tree_sha256": "cd398dc8e59269e13523100fd36899e4ec88e27081dbbcb19f1e96912cd296b3",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/reparank-structure-resume-20260930",
+      "head": "2bf3f7b3bc2cf9ff54aeb294e29291f76378f4e3",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/21",
+      "tree_sha256": "1684cc4fe6326f19e6861ae3de980a8d950bc6f225d4f4190598b4c798fe7f9d",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/representation-ablation-v1",
+      "head": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/22",
+      "tree_sha256": "4299c2f22cfbe70daab8d069e56375fa1bcc4f44a98b70eb42c1deeb141821c3",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/rescue-gating-20260930",
+      "head": "bd3879384aa8ba30ef859c14b13af056f141654f",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/23",
+      "tree_sha256": "b91ea3346dcb25574e1c76807314f70ca16acebf0b49bb72801a7b28224ae483",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/rescue-qualification-20260930",
+      "head": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/24",
+      "tree_sha256": "c4f0590d3bb0692756b18abec9c624e89722ace230f232218c3bebd55d62dd12",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/s2-split-readiness-v1",
+      "head": "053a0665cb4ccb9df5ce325df330ebae2fc4f973",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/25",
+      "tree_sha256": "7e0a77369ce346c5dd441d2ac433ca4ff308441bc2c46502c1796fb82dfe0434",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/strict-dual-axis-retrieval-20260930",
+      "head": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/26",
+      "tree_sha256": "c6fd95f7016ea08fb9f88df1044434dae08a9c0860c4257ddc37c20989d187a8",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/strict-partner-retrieval-20260930",
+      "head": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/27",
+      "tree_sha256": "cb1a9f0d0f57a28c370c2b82bd64f8aabd287a7de1bf43f2e116167cf2c567bc",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/structural-plm-final-20260930",
+      "head": "96864049bdb935d14a4439c3f048231f59e78bee",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/28",
+      "tree_sha256": "4dad5a78562fb6e3180c697b35d54e511aaf338ecb5fefa7be89dc566914ef6d",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "kevin/teacher-paper-handoff-20260903",
+      "head": "54afd798700bc41ac1352065414d8687c9627871",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/29",
+      "tree_sha256": "78d68fef7603aa4fcecc0d291a5200ef65695a1b489a40882f70f19696c0e751",
+      "already_in_main": false
+    },
+    {
+      "original_branch": "main",
+      "head": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+      "archive_tag": "archive/2026-10-07/pre-cleanup/30",
+      "tree_sha256": "fe943fae2c06c2c19a4b6f80e1653d70e90c07e6ccc1d66c6bb813051e52aa69",
+      "already_in_main": true
+    }
+  ]
+}

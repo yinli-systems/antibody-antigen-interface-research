@@ -1,0 +1,9 @@
+test_exact_bytes_required (__main__.CleanupTests.test_exact_bytes_required) ... ok
+test_index_and_worktree_match (__main__.CleanupTests.test_index_and_worktree_match) ... ok
+test_index_bytes_checked_separately (__main__.CleanupTests.test_index_bytes_checked_separately) ... ok
+test_local_only_evidence_is_rejected (__main__.CleanupTests.test_local_only_evidence_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK

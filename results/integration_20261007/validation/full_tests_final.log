@@ -1,0 +1,370 @@
+........................................................................ [  2%]
+........................................................................ [  4%]
+................................xx.....xx.....x.....x.x......x.......... [  7%]
+...........................................x.....x............x.x.....x. [  9%]
+x.....x.x.....x.x.........x.x......................x.................... [ 11%]
+........................................................................ [ 14%]
+......xxxxxxxx...x...x.x................................................ [ 16%]
+........x............................................................... [ 19%]
+.........................................s.s.sss.s.s...s............s... [ 21%]
+..................s....................................s.............. [ 23%]
+.........................................................s.....................................................s. [ 27%]
+........................................................................ [ 29%]
+........................................................xx.............. [ 32%]
+........................................................................ [ 34%]
+........................................................................ [ 36%]
+...........................................................ss........... [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 46%]
+........................................................................ [ 48%]
+.................................................................... [ 51%]
+........................................................................ [ 53%]
+..F.F................................................................... [ 55%]
+........................................................................ [ 58%]
+........................................................................ [ 60%]
+..............................F......................................... [ 62%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 70%]
+..............................................s......................... [ 72%]
+........................................................................ [ 74%]
+........................................................................ [ 77%]
+....sss..............................................................s.s [ 79%]
+ss.ssssssss.sssssss......s..s........................................... [ 82%]
+..................................sss...................s..........s.... [ 84%]
+........................................................................ [ 86%]
+...............x...............................................s........ [ 89%]
+........................................................................ [ 91%]
+........................................................................ [ 93%]
+......s................................................................. [ 96%]
+........................................................................ [ 98%]
+........................................                                 [100%]
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_pair_aware_attention.py ______________
+ImportError while importing test module '/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/tests/test_pair_aware_attention.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/kevin/.local/share/uv/python/cpython-3.11.16-macos-aarch64-none/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_pair_aware_attention.py:10: in <module>
+    from antibody_pretraining.pair_aware_attention import (  # noqa: E402
+E   ImportError: cannot import name '_cumulative_sequence_lengths' from 'antibody_pretraining.pair_aware_attention' (/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/src/antibody_pretraining/pair_aware_attention.py)
+=================================== FAILURES ===================================
+________ test_zero_gate_is_exactly_sequence_compatible_then_conditions _________
+
+    def test_zero_gate_is_exactly_sequence_compatible_then_conditions() -> None:
+        torch.manual_seed(41)
+        model = small_model().eval()
+        tokens, chain_ids, structure_tokens, features, feature_mask = inputs()
+>       baseline = model(tokens, chain_ids).logits
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_multimodal_pair_aware_esm2.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructureConditionedPairAwareESM2(
+  (embed_tokens): Embedding(33, 32, padding_idx=1)
+  (layers): ModuleList(
+    (0-1...ntwise_affine=True, bias=True)
+    (structure_feature_decoder): Linear(in_features=32, out_features=5, bias=True)
+  )
+)
+tokens = tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]])
+chain_ids = tensor([[ 0,  0,  0,  0,  1,  1,  1,  1, -1]])
+structure_tokens = None, structure_features = None
+structure_feature_mask = None, labels = None, return_last_attention = False
+allow_cross_chain_attention = True, return_hidden_states = False
+compute_logits = True, attention_query_capacity = None
+
+    def forward(
+        self,
+        tokens: Tensor,
+        chain_ids: Tensor,
+        *,
+        structure_tokens: Tensor | None = None,
+        structure_features: Tensor | None = None,
+        structure_feature_mask: Tensor | None = None,
+        labels: Tensor | None = None,
+        return_last_attention: bool = False,
+        allow_cross_chain_attention: bool = True,
+        return_hidden_states: bool = False,
+        compute_logits: bool = True,
+        attention_query_capacity: int | None = None,
+    ) -> PairAwareMLMOutput:
+        supplied = (
+            structure_tokens is not None,
+            structure_features is not None,
+            structure_feature_mask is not None,
+        )
+        if any(supplied) and not all(supplied):
+            raise ValueError("All predicted-structure inputs must be supplied together")
+        delta = None
+        if all(supplied):
+            assert structure_tokens is not None
+            assert structure_features is not None
+            assert structure_feature_mask is not None
+            delta = self.structure_embedding_delta(
+                tokens,
+                structure_tokens,
+                structure_features,
+                structure_feature_mask,
+            )
+>       return super().forward(
+            tokens,
+            chain_ids,
+            input_embedding_delta=delta,
+            labels=labels,
+            return_last_attention=return_last_attention,
+            allow_cross_chain_attention=allow_cross_chain_attention,
+            return_hidden_states=return_hidden_states,
+            compute_logits=compute_logits,
+            attention_query_capacity=attention_query_capacity,
+        )
+E       TypeError: PairAwareESM2.forward() got an unexpected keyword argument 'input_embedding_delta'
+
+src/antibody_pretraining/multimodal_pair_aware_esm2.py:373: TypeError
+__________ test_structure_reconstruction_is_chain_balanced_and_finite __________
+
+    def test_structure_reconstruction_is_chain_balanced_and_finite() -> None:
+        torch.manual_seed(43)
+        model = small_model().train()
+        tokens, chain_ids, structure_tokens, features, feature_mask = inputs()
+>       output = model(
+            tokens,
+            chain_ids,
+            structure_tokens=structure_tokens,
+            structure_features=features,
+            structure_feature_mask=feature_mask,
+            return_hidden_states=True,
+            compute_logits=False,
+        )
+
+tests/test_multimodal_pair_aware_esm2.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructureConditionedPairAwareESM2(
+  (embed_tokens): Embedding(33, 32, padding_idx=1)
+  (layers): ModuleList(
+    (0-1...ntwise_affine=True, bias=True)
+    (structure_feature_decoder): Linear(in_features=32, out_features=5, bias=True)
+  )
+)
+tokens = tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]])
+chain_ids = tensor([[ 0,  0,  0,  0,  1,  1,  1,  1, -1]])
+structure_tokens = tensor([[0, 3, 1, 0, 0, 4, 5, 2, 0]])
+structure_features = tensor([[[0.0000, 0.0000, 0.0000, 0.0000, 0.0000],
+         [0.1000, 0.2000, 0.3000, 0.4000, 0.5000],
+         [0.0000....4000, 0.5000],
+         [0.0000, 0.0000, 0.0000, 0.0000, 0.0000],
+         [0.0000, 0.0000, 0.0000, 0.0000, 0.0000]]])
+structure_feature_mask = tensor([[False,  True, False, False, False,  True,  True, False, False]])
+labels = None, return_last_attention = False, allow_cross_chain_attention = True
+return_hidden_states = True, compute_logits = False
+attention_query_capacity = None
+
+    def forward(
+        self,
+        tokens: Tensor,
+        chain_ids: Tensor,
+        *,
+        structure_tokens: Tensor | None = None,
+        structure_features: Tensor | None = None,
+        structure_feature_mask: Tensor | None = None,
+        labels: Tensor | None = None,
+        return_last_attention: bool = False,
+        allow_cross_chain_attention: bool = True,
+        return_hidden_states: bool = False,
+        compute_logits: bool = True,
+        attention_query_capacity: int | None = None,
+    ) -> PairAwareMLMOutput:
+        supplied = (
+            structure_tokens is not None,
+            structure_features is not None,
+            structure_feature_mask is not None,
+        )
+        if any(supplied) and not all(supplied):
+            raise ValueError("All predicted-structure inputs must be supplied together")
+        delta = None
+        if all(supplied):
+            assert structure_tokens is not None
+            assert structure_features is not None
+            assert structure_feature_mask is not None
+            delta = self.structure_embedding_delta(
+                tokens,
+                structure_tokens,
+                structure_features,
+                structure_feature_mask,
+            )
+>       return super().forward(
+            tokens,
+            chain_ids,
+            input_embedding_delta=delta,
+            labels=labels,
+            return_last_attention=return_last_attention,
+            allow_cross_chain_attention=allow_cross_chain_attention,
+            return_hidden_states=return_hidden_states,
+            compute_logits=compute_logits,
+            attention_query_capacity=attention_query_capacity,
+        )
+E       TypeError: PairAwareESM2.forward() got an unexpected keyword argument 'input_embedding_delta'
+
+src/antibody_pretraining/multimodal_pair_aware_esm2.py:373: TypeError
+____ test_optional_embedding_delta_preserves_default_and_validates_padding _____
+
+    def test_optional_embedding_delta_preserves_default_and_validates_padding() -> None:
+        torch.manual_seed(31)
+        model = PairAwareESM2(_small_config()).eval()
+        tokens = torch.tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]])
+        chain_ids = torch.tensor([[0, 0, 0, 0, 1, 1, 1, 1, -1]])
+        zero_delta = torch.zeros(1, 9, 32)
+    
+        baseline = model(tokens, chain_ids).logits
+>       unchanged = model(
+            tokens,
+            chain_ids,
+            input_embedding_delta=zero_delta,
+        ).logits
+
+tests/test_pair_aware_esm2.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PairAwareESM2(
+  (embed_tokens): Embedding(33, 32, padding_idx=1)
+  (layers): ModuleList(
+    (0-1): 2 x PairAwareESM2...32, out_features=32, bias=True)
+    (layer_norm): LayerNorm((32,), eps=1e-05, elementwise_affine=True, bias=True)
+  )
+)
+args = (tensor([[0, 5, 6, 2, 0, 7, 8, 2, 1]]), tensor([[ 0,  0,  0,  0,  1,  1,  1,  1, -1]]))
+kwargs = {'input_embedding_delta': tensor([[[0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0...., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+          0., 0., 0., 0., 0., 0., 0., 0., 0.]]])}
+
+    def _call_impl(self, *args, **kwargs):
+        forward_call = (self._slow_forward if torch._C._get_tracing_state() else self.forward)
+        # If we don't have any hooks, we want to skip the rest of the logic in
+        # this function, and just call forward.
+        if not (self._backward_hooks or self._backward_pre_hooks or self._forward_hooks or self._forward_pre_hooks
+                or _global_backward_pre_hooks or _global_backward_hooks
+                or _global_forward_hooks or _global_forward_pre_hooks):
+>           return forward_call(*args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: PairAwareESM2.forward() got an unexpected keyword argument 'input_embedding_delta'
+
+/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/nn/modules/module.py:1794: TypeError
+=============================== warnings summary ===============================
+tests/test_asymmetric_partner_retrieval.py::ModelTests::test_masked_info_nce_excludes_uncertain_negative
+  /private/tmp/antibody-consolidation-20261007-tj2R6a/repo/tests/test_asymmetric_partner_retrieval.py:1241: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+    self.assertLess(float(masked), float(full))
+
+tests/test_frontier_fsdp2.py::test_dcp_generation_round_trip_restores_model_and_optimizer
+tests/test_frontier_fsdp2.py::test_dcp_generation_is_create_only_and_provenance_bound
+tests/test_frontier_fsdp2.py::test_dcp_verifier_rejects_tampered_shard
+  /tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/distributed/checkpoint/utils.py:488: UserWarning: torch.distributed is disabled, unavailable or uninitialized, assuming the intent is to save in a single process.
+    return func(*args, **kwargs)
+
+tests/test_frontier_fsdp2.py::test_dcp_generation_round_trip_restores_model_and_optimizer
+tests/test_frontier_fsdp2.py::test_two_rank_gloo_dcp_round_trip
+  /tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/distributed/checkpoint/utils.py:488: UserWarning: torch.distributed is disabled, unavailable or uninitialized, assuming the intent is to load in a single process.
+    return func(*args, **kwargs)
+
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_assemble_emits_exact_epitope_projection_keys
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_inference_ensemble_preserves_keys_labels_and_mean_scores
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_prepare_projects_any_positive_contact
+  /private/tmp/antibody-consolidation-20261007-tj2R6a/repo/scripts/sabdab2_sppider_seq.py:225: Pandas4Warning: The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.
+    return instances.set_index("instance_id", verify_integrity=True)
+
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_assemble_emits_exact_epitope_projection_keys
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_assemble_emits_exact_epitope_projection_keys
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_inference_ensemble_preserves_keys_labels_and_mean_scores
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_inference_ensemble_preserves_keys_labels_and_mean_scores
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_prepare_projects_any_positive_contact
+  /private/tmp/antibody-consolidation-20261007-tj2R6a/repo/scripts/sabdab2_sppider_seq.py:692: Pandas4Warning: The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.
+    return frame.set_index("instance_id", verify_integrity=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [6] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: tests/sabdab2_asymmetric_partner_retrieval.py is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: requires_external_artifacts: ../outputs/data_snapshot/double_remote_split.json is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: tests/asymmetric_partner_retrieval_clean_holdout_train.sbatch is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: scripts/interaction_first/asymmetric_retrieval.py is not present
+SKIPPED [1] tests/test_audit_baseline_metrics.py: requires_external_artifacts: ../../work/antibody-antigen-interface-research/results/epiformer/score.json is not present
+SKIPPED [1] tests/test_audit_train_only_s2_exact_four_view_nw.py: requires_pinned_environment: biopython 1.83 is required but 1.88 is installed
+SKIPPED [1] tests/test_build_final_refit_submission_manifest.py: absent_from_repository: tests/sabdab2_asymmetric_partner_retrieval.py is not present
+SKIPPED [1] tests/test_build_train_only_s2_iterative_closure.py: requires_external_artifacts: ../outputs/interaction_first/research/train_only_s2_iterative_closure/closure_config_v2.json is not present
+SKIPPED [1] tests/test_frontier_fsdp2_evidence.py: requires_external_artifacts: results/frontier_fsdp2_dcp/job_1339702_fp32_1gpu/fsdp2.log is not present
+SKIPPED [1] tests/test_frontier_fsdp2_evidence.py: requires_external_artifacts: results/frontier_fsdp2_dcp/job_1339691_scalar_failure/fsdp2.log is not present
+SKIPPED [1] tests/test_partner_retrieval.py: absent_from_repository: tests/sabdab2_partner_retrieval.py is not present
+SKIPPED [3] tests/test_render_fair_comparison_table.py: requires_external_artifacts: ../../mipe-sppider-handoff/mipe-sppider-handoff-20260729-v2/MIPE/results/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json is not present
+SKIPPED [11] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md is not present
+SKIPPED [1] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction...TRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md is not present
+SKIPPED [1] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md is not present
+SKIPPED [8] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: absent_from_repository: tests/asymmetric_partner_retrieval_controls_fit.sbatch is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_6_EXECUTION_HARDENING.md is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/authority_validation_nw_boundaries/independent_verification_v2.json is not present
+SKIPPED [1] tests/test_sabdab2_sppider_seq.py:326: SPPIDER_OFFICIAL_MODEL_DIR is not set
+SKIPPED [1] tests/test_string_v12_expanded_endpoint_union.py: requires_pinned_environment: the zstd executable is not on PATH
+SKIPPED [1] tests/test_v6_b_direct_highs_audit.py: requires_process_isolation: ortools is already imported in this process
+XFAIL tests/test_antibody_compile_accuracy_minifier.py::test_protocol_binds_every_implementation_and_rejected_predecessor - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_accuracy_minifier.py::test_wrapper_accepts_only_the_frozen_dynamo_boundary - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_backend_attribution.py::test_protocol_binds_every_implementation_and_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_backend_attribution.py::test_wrapper_accepts_only_registered_backend_controls - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation.py::test_freezer_selects_only_the_audited_candidate - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation_v2.py::test_freezer_preserves_backend_and_cudagraph_controls - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation_v2.py::test_wrapper_rejects_cudagraph_control_drift - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_numerics_diagnostic.py::test_protocol_binds_every_execution_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_ddp_scientific_parity_execution.py::test_execution_binds_all_inputs_and_the_counterbalanced_run_order - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_ddp_scientific_parity_registration.py::test_registration_binds_the_complete_executed_source_closure - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_block_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_block_bisection.py::test_wrapper_compiles_only_the_registered_single_block - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_eighth_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_eighth_bisection.py::test_wrapper_compiles_only_the_registered_eighth - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_quarter_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_quarter_bisection.py::test_wrapper_compiles_only_the_registered_quarter - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_region_bisection.py::test_protocol_binds_every_implementation_and_failed_minifier - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_region_bisection.py::test_wrapper_validates_flags_and_compiles_exact_registered_membership - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_sixteenth_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_sixteenth_bisection.py::test_wrapper_compiles_only_the_registered_sixteenth - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_efficiency_factor_attribution.py::test_protocol_binds_all_execution_inputs - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_attention_only-attention] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_ffn_only-ffn] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_attention_only-evaluation_noninferiority] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_ffn_only-throughput] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_full_block-None] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_attention_only-attention] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_ffn_only-ffn] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_independent_auditor_replays_localization_selection - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_freezer_accepts_only_an_inductor_quality_failure - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_wrapper_accepts_only_registered_scopes - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_independent_auditor_replays_parent_trigger - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_production_batch_efficiency_protocol.py::test_protocol_binds_every_source_and_evaluation_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_data_registry.py::test_registered_sources_validate_and_only_audited_avida_is_admitted - known_repository_defect: data_registry/sources/pinder_2024_02 and string_v12 hold only license_receipt.json; normalization_receipt.json, raw_sha256.json and source_manifest.json were never committed
+XFAIL tests/test_data_registry.py::test_asset_level_license_routing_separates_data_from_code - known_repository_defect: same incomplete source registrations as the sibling data-registry test
+XFAIL tests/test_source_materializer.py::test_checked_download_plans_match_registered_revisions - known_repository_defect: 6 of 10 download plans declare format_version abpairfm_public_download_plan_v1 while using three mutually incompatible field sets; the version string versions nothing
+ERROR tests/test_pair_aware_attention.py
+FAILED tests/test_multimodal_pair_aware_esm2.py::test_zero_gate_is_exactly_sequence_compatible_then_conditions
+FAILED tests/test_multimodal_pair_aware_esm2.py::test_structure_reconstruction_is_chain_balanced_and_finite
+FAILED tests/test_pair_aware_esm2.py::test_optional_embedding_delta_preserves_default_and_validates_padding
+3 failed, 2941 passed, 47 skipped, 36 xfailed, 14 warnings, 1 error, 37 subtests passed in 93.08s (0:01:33)

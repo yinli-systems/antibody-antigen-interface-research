@@ -1,0 +1,103 @@
+........................................................................ [  2%]
+........................................................................ [  4%]
+................................xx.....xx.....x.....x.x......x.......... [  7%]
+...........................................x.....x............x.x.....x. [  9%]
+x.....x.x.....x.x.........x.x......................x.................... [ 11%]
+........................................................................ [ 14%]
+......xxxxxxxx...x...x.x................................................ [ 16%]
+........x............................................................... [ 18%]
+.........................................s.s.sss.s.s...s............s... [ 21%]
+..................s....................................s.............. [ 23%]
+.........................................................s.....................................................s. [ 27%]
+........................................................................ [ 29%]
+........................................................xx.............. [ 31%]
+........................................................................ [ 34%]
+........................................................................ [ 36%]
+...........................................................ss........... [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 43%]
+........................................................................ [ 46%]
+........................................................................ [ 48%]
+.................................................................... [ 50%]
+........................................................................ [ 53%]
+........................................................................ [ 55%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 67%]
+........................................................................ [ 69%]
+.......................................................................s [ 71%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+.............................sss........................................ [ 78%]
+......................s.sss.ssssssss.sssssss......s..s.................. [ 81%]
+...........................................................sss.......... [ 83%]
+.........s..........s................................................... [ 86%]
+........................................x............................... [ 88%]
+................s....................................................... [ 90%]
+........................................................................ [ 93%]
+...............................s........................................ [ 95%]
+........................................................................ [ 97%]
+.................................................................        [100%]
+=========================== short test summary info ============================
+SKIPPED [6] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: tests/sabdab2_asymmetric_partner_retrieval.py is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: requires_external_artifacts: ../outputs/data_snapshot/double_remote_split.json is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: tests/asymmetric_partner_retrieval_clean_holdout_train.sbatch is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: scripts/interaction_first/asymmetric_retrieval.py is not present
+SKIPPED [1] tests/test_audit_baseline_metrics.py: requires_external_artifacts: ../../work/antibody-antigen-interface-research/results/epiformer/score.json is not present
+SKIPPED [1] tests/test_audit_train_only_s2_exact_four_view_nw.py: requires_pinned_environment: biopython 1.83 is required but 1.88 is installed
+SKIPPED [1] tests/test_build_final_refit_submission_manifest.py: absent_from_repository: tests/sabdab2_asymmetric_partner_retrieval.py is not present
+SKIPPED [1] tests/test_build_train_only_s2_iterative_closure.py: requires_external_artifacts: ../outputs/interaction_first/research/train_only_s2_iterative_closure/closure_config_v2.json is not present
+SKIPPED [1] tests/test_frontier_fsdp2_evidence.py: requires_external_artifacts: results/frontier_fsdp2_dcp/job_1339702_fp32_1gpu/fsdp2.log is not present
+SKIPPED [1] tests/test_frontier_fsdp2_evidence.py: requires_external_artifacts: results/frontier_fsdp2_dcp/job_1339691_scalar_failure/fsdp2.log is not present
+SKIPPED [1] tests/test_partner_retrieval.py: absent_from_repository: tests/sabdab2_partner_retrieval.py is not present
+SKIPPED [3] tests/test_render_fair_comparison_table.py: requires_external_artifacts: ../../mipe-sppider-handoff/mipe-sppider-handoff-20260729-v2/MIPE/results/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json is not present
+SKIPPED [11] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md is not present
+SKIPPED [1] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction...TRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md is not present
+SKIPPED [1] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md is not present
+SKIPPED [8] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: absent_from_repository: tests/asymmetric_partner_retrieval_controls_fit.sbatch is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_6_EXECUTION_HARDENING.md is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/authority_validation_nw_boundaries/independent_verification_v2.json is not present
+SKIPPED [1] tests/test_sabdab2_sppider_seq.py:326: SPPIDER_OFFICIAL_MODEL_DIR is not set
+SKIPPED [1] tests/test_string_v12_expanded_endpoint_union.py: requires_pinned_environment: the zstd executable is not on PATH
+SKIPPED [1] tests/test_v6_b_direct_highs_audit.py: requires_process_isolation: ortools is already imported in this process
+XFAIL tests/test_antibody_compile_accuracy_minifier.py::test_protocol_binds_every_implementation_and_rejected_predecessor - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_accuracy_minifier.py::test_wrapper_accepts_only_the_frozen_dynamo_boundary - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_backend_attribution.py::test_protocol_binds_every_implementation_and_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_backend_attribution.py::test_wrapper_accepts_only_registered_backend_controls - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation.py::test_freezer_selects_only_the_audited_candidate - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation_v2.py::test_freezer_preserves_backend_and_cudagraph_controls - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation_v2.py::test_wrapper_rejects_cudagraph_control_drift - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_numerics_diagnostic.py::test_protocol_binds_every_execution_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_ddp_scientific_parity_execution.py::test_execution_binds_all_inputs_and_the_counterbalanced_run_order - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_ddp_scientific_parity_registration.py::test_registration_binds_the_complete_executed_source_closure - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_block_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_block_bisection.py::test_wrapper_compiles_only_the_registered_single_block - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_eighth_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_eighth_bisection.py::test_wrapper_compiles_only_the_registered_eighth - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_quarter_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_quarter_bisection.py::test_wrapper_compiles_only_the_registered_quarter - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_region_bisection.py::test_protocol_binds_every_implementation_and_failed_minifier - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_region_bisection.py::test_wrapper_validates_flags_and_compiles_exact_registered_membership - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_sixteenth_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_sixteenth_bisection.py::test_wrapper_compiles_only_the_registered_sixteenth - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_efficiency_factor_attribution.py::test_protocol_binds_all_execution_inputs - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_attention_only-attention] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_ffn_only-ffn] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_attention_only-evaluation_noninferiority] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_ffn_only-throughput] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_full_block-None] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_attention_only-attention] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_ffn_only-ffn] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_independent_auditor_replays_localization_selection - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_freezer_accepts_only_an_inductor_quality_failure - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_wrapper_accepts_only_registered_scopes - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_independent_auditor_replays_parent_trigger - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_production_batch_efficiency_protocol.py::test_protocol_binds_every_source_and_evaluation_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_data_registry.py::test_registered_sources_validate_and_only_audited_avida_is_admitted - known_repository_defect: data_registry/sources/pinder_2024_02 and string_v12 hold only license_receipt.json; normalization_receipt.json, raw_sha256.json and source_manifest.json were never committed
+XFAIL tests/test_data_registry.py::test_asset_level_license_routing_separates_data_from_code - known_repository_defect: same incomplete source registrations as the sibling data-registry test
+XFAIL tests/test_source_materializer.py::test_checked_download_plans_match_registered_revisions - known_repository_defect: 6 of 10 download plans declare format_version abpairfm_public_download_plan_v1 while using three mutually incompatible field sets; the version string versions nothing
+2969 passed, 47 skipped, 36 xfailed, 14 warnings, 37 subtests passed in 99.12s (0:01:39)

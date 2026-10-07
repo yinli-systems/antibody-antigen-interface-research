@@ -84,3 +84,8 @@ secrets.*
 # Paper-local compact metric and reference audits are source artifacts, not datasets.
 !/paper/neurips_2026_framecontact/data/
 !/paper/neurips_2026_framecontact/data/*.json
+
+# Explicitly retained, hash-bound evidence must not be omitted from clean clones.
+!archive/branch_variants_20261007/*/paper/neurips_2026_framecontact/data/
+!archive/branch_variants_20261007/*/paper/neurips_2026_framecontact/data/*
+!results/integration_20261007/validation/*.log

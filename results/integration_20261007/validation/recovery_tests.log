@@ -1,0 +1,4 @@
+.................................s....................................................                                              [100%]
+=========================== short test summary info ============================
+SKIPPED [1] ../../../../tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/unittest.py:523: AF3_REAL_FAILURE_ATTEMPT is not set
+85 passed, 1 skipped, 13 subtests passed in 1.48s

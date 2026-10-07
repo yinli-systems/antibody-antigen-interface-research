@@ -1,0 +1,1489 @@
+........................................................................ [  2%]
+........................................................................ [  4%]
+................................xx.....xx.....x.....x.x......x.......... [  7%]
+...........................................x.....x............x.x.....x. [  9%]
+x.....x.x.....x.x.........x.x......................x.................... [ 11%]
+........................................................................ [ 14%]
+......xxxxxxxx...x...x.x................................................ [ 16%]
+........x............................................................... [ 18%]
+.........................................s.s.sss.s.s...s............s... [ 21%]
+..................s....................................s.............. [ 23%]
+.........................................................s.....................................................s. [ 27%]
+........................................................................ [ 29%]
+........................................................xx.............. [ 32%]
+........................................................................ [ 34%]
+........................................................................ [ 36%]
+...........................................................ss........... [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 46%]
+........................................................................ [ 48%]
+.................................................................... [ 51%]
+........................................................................ [ 53%]
+........................................................................ [ 55%]
+........................................................................ [ 58%]
+........................................................................ [ 60%]
+........................................................................ [ 62%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+.......................................FF............................... [ 69%]
+................................FFF.......F.........s................... [ 72%]
+............................................................F........... [ 74%]
+............F..............................FFFFFFFFFF................... [ 77%]
+..........sss........................................................... [ 79%]
+...s.sss.ssssssss.sssssss......s..s..................................... [ 81%]
+........................................sss...................s......... [ 84%]
+.s...................................................................... [ 86%]
+.....................x...............................................s.. [ 88%]
+........................................................................ [ 91%]
+........................................................................ [ 93%]
+............s........................................................... [ 96%]
+........................................................................ [ 98%]
+..............................................                           [100%]
+=================================== FAILURES ===================================
+______________ test_three_phases_update_only_the_authorized_heads ______________
+
+    def test_three_phases_update_only_the_authorized_heads() -> None:
+        import torch
+    
+        config = _config()
+        examples = _examples()
+        panel = select_score_free_bidirectional_decoys(
+            examples,
+            count=config.decoy_count_per_direction,
+            seed=config.seed,
+        )
+        dataset = SimpleNamespace(antibody_input_dim=5, antigen_input_dim=7)
+        model = build_e1_e2_model(dataset, config)
+        optimizer = torch.optim.SGD(model.parameters(), lr=config.learning_rate)
+        pair_before_warmup = _clone_modules(model, PAIR_PATH_MODULES)
+        unused_before_training = _clone_modules(model, UNUSED_FROZEN_MODULES)
+        tracked = {
+            "antibody_unary_head.weight": _clone_parameter(
+                model,
+                "antibody_unary_head.weight",
+            ),
+            "interaction_head.weight": _clone_parameter(
+                model,
+                "interaction_head.weight",
+            ),
+            "specificity_head.weight": _clone_parameter(
+                model,
+                "specificity_head.weight",
+            ),
+        }
+    
+>       warmup_metrics, warmup_steps = train_one_epoch_e1_e2(
+            model=model,
+            optimizer=optimizer,
+            examples=examples,
+            device=torch.device("cpu"),
+            config=config,
+            epoch=1,
+            decoy_panel=panel,
+        )
+
+tests/test_pairscale_e1_e2_step.py:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/interaction_first/pairscale_e1_e2_step.py:439: in train_one_epoch_e1_e2
+    phase_parameters = set_phase_trainable_parameters(model, phase)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/interaction_first/pairscale_e1_e2_step.py:359: in set_phase_trainable_parameters
+    groups = _parameter_ownership(model)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model = ProspectivePairGeometryModel(
+  (antibody_projection): Sequential(
+    (0): LayerNorm((5,), eps=1e-05, elementwise_aff...ear(in_features=12, out_features=1, bias=True)
+  (specificity_head): Linear(in_features=8, out_features=1, bias=True)
+)
+
+    def _parameter_ownership(model: Any) -> Mapping[str, Mapping[str, Any]]:
+        """Assign every parameter to exactly one locked training path."""
+        named_parameters = dict(model.named_parameters())
+        name_by_identity = {id(value): name for name, value in named_parameters.items()}
+        if len(name_by_identity) != len(named_parameters):
+            raise RuntimeError("Model exposes aliased named parameters")
+        groups: dict[str, dict[str, Any]] = {
+            "unary": {},
+            "pair": {},
+            "unused": {},
+        }
+        seen: set[int] = set()
+        for group, module_names in (
+            ("unary", UNARY_PATH_MODULES),
+            ("pair", PAIR_PATH_MODULES),
+            ("unused", UNUSED_FROZEN_MODULES),
+        ):
+            for module_name in module_names:
+                module = getattr(model, module_name, None)
+                if module is None:
+                    raise RuntimeError(
+                        f"Locked E1/E2 module {module_name} is unavailable"
+                    )
+                for parameter in module.parameters():
+                    identity = id(parameter)
+                    if identity in seen:
+                        raise RuntimeError("A parameter belongs to multiple training paths")
+                    name = name_by_identity.get(identity)
+                    if name is None:
+                        raise RuntimeError("A module parameter is absent from the model")
+                    groups[group][name] = parameter
+                    seen.add(identity)
+        missing = sorted(
+            name for name, parameter in named_parameters.items() if id(parameter) not in seen
+        )
+        if missing:
+>           raise RuntimeError(f"Unclassified E1/E2 parameters: {missing}")
+E           RuntimeError: Unclassified E1/E2 parameters: ['inter_chain_projection.network.0.bias', 'inter_chain_projection.network.0.weight', 'inter_chain_projection.network.1.bias', 'inter_chain_projection.network.1.weight', 'inter_chain_projection.network.3.bias', 'inter_chain_projection.network.3.weight']
+
+src/interaction_first/pairscale_e1_e2_step.py:353: RuntimeError
+___________ test_parameter_ownership_rejects_an_unclassified_module ____________
+
+    def test_parameter_ownership_rejects_an_unclassified_module() -> None:
+        import torch
+    
+        dataset = SimpleNamespace(antibody_input_dim=5, antigen_input_dim=7)
+        model = build_e1_e2_model(dataset, _config())
+        model.unclassified = torch.nn.Linear(3, 3)
+        with pytest.raises(RuntimeError, match="Unclassified"):
+            set_phase_trainable_parameters(model, PHASE_UNARY_WARMUP)
+        with pytest.raises(ValueError, match="unary, pair, or unused"):
+            del model.unclassified
+>           parameter_path_state_sha256(model, "unknown")
+
+tests/test_pairscale_e1_e2_step.py:307: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/interaction_first/pairscale_e1_e2_step.py:401: in parameter_path_state_sha256
+    groups = _parameter_ownership(model)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model = ProspectivePairGeometryModel(
+  (antibody_projection): Sequential(
+    (0): LayerNorm((5,), eps=1e-05, elementwise_aff...ear(in_features=12, out_features=1, bias=True)
+  (specificity_head): Linear(in_features=8, out_features=1, bias=True)
+)
+
+    def _parameter_ownership(model: Any) -> Mapping[str, Mapping[str, Any]]:
+        """Assign every parameter to exactly one locked training path."""
+        named_parameters = dict(model.named_parameters())
+        name_by_identity = {id(value): name for name, value in named_parameters.items()}
+        if len(name_by_identity) != len(named_parameters):
+            raise RuntimeError("Model exposes aliased named parameters")
+        groups: dict[str, dict[str, Any]] = {
+            "unary": {},
+            "pair": {},
+            "unused": {},
+        }
+        seen: set[int] = set()
+        for group, module_names in (
+            ("unary", UNARY_PATH_MODULES),
+            ("pair", PAIR_PATH_MODULES),
+            ("unused", UNUSED_FROZEN_MODULES),
+        ):
+            for module_name in module_names:
+                module = getattr(model, module_name, None)
+                if module is None:
+                    raise RuntimeError(
+                        f"Locked E1/E2 module {module_name} is unavailable"
+                    )
+                for parameter in module.parameters():
+                    identity = id(parameter)
+                    if identity in seen:
+                        raise RuntimeError("A parameter belongs to multiple training paths")
+                    name = name_by_identity.get(identity)
+                    if name is None:
+                        raise RuntimeError("A module parameter is absent from the model")
+                    groups[group][name] = parameter
+                    seen.add(identity)
+        missing = sorted(
+            name for name, parameter in named_parameters.items() if id(parameter) not in seen
+        )
+        if missing:
+>           raise RuntimeError(f"Unclassified E1/E2 parameters: {missing}")
+E           RuntimeError: Unclassified E1/E2 parameters: ['inter_chain_projection.network.0.bias', 'inter_chain_projection.network.0.weight', 'inter_chain_projection.network.1.bias', 'inter_chain_projection.network.1.weight', 'inter_chain_projection.network.3.bias', 'inter_chain_projection.network.3.weight']
+
+src/interaction_first/pairscale_e1_e2_step.py:353: RuntimeError
+_____________ test_an_untrained_r2_model_is_reported_inconclusive ______________
+
+    def test_an_untrained_r2_model_is_reported_inconclusive() -> None:
+        """The real model, before its geometry bias is activated, proves nothing."""
+        report = _probe(_r2_model(), _inputs())
+    
+>       assert report.verdict is InvarianceVerdict.INCONCLUSIVE
+E       AssertionError: assert <InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'> is <InvarianceVerdict.INCONCLUSIVE: 'inconclusive_no_backbone_sensitivity'>
+E        +  where <InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'> = InvarianceReport(verdict=<InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'>, sensitivity=0.376259594...esentations', 'rotation': 'pair_representations', 'rotation_and_translation': 'pair_representations'}, tolerance=1e-09).verdict
+E        +  and   <InvarianceVerdict.INCONCLUSIVE: 'inconclusive_no_backbone_sensitivity'> = InvarianceVerdict.INCONCLUSIVE
+
+tests/test_partner_pose_invariance.py:162: AssertionError
+______________ test_the_r2_model_is_invariant_to_the_antigen_pose ______________
+
+    def test_the_r2_model_is_invariant_to_the_antigen_pose() -> None:
+        model = _r2_model()
+        activated = activate_zero_initialised_parameters(model)
+        inputs = _inputs()
+    
+        report = _probe(model, inputs, moved="antigen_backbone")
+    
+        assert activated > 0
+        assert report.sensitivity > 1e-3, "the geometry pathway must be live"
+>       assert report.verdict is InvarianceVerdict.INVARIANT
+E       AssertionError: assert <InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'> is <InvarianceVerdict.INVARIANT: 'invariant'>
+E        +  where <InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'> = InvarianceReport(verdict=<InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'>, sensitivity=0.295594963...esentations', 'rotation': 'pair_representations', 'rotation_and_translation': 'pair_representations'}, tolerance=1e-09).verdict
+E        +  and   <InvarianceVerdict.INVARIANT: 'invariant'> = InvarianceVerdict.INVARIANT
+
+tests/test_partner_pose_invariance.py:178: AssertionError
+_____________ test_the_r2_model_is_invariant_to_the_antibody_pose ______________
+
+    def test_the_r2_model_is_invariant_to_the_antibody_pose() -> None:
+        """The property is symmetric: neither chain's pose may reach the outputs."""
+        model = _r2_model()
+        activate_zero_initialised_parameters(model)
+        inputs = _inputs()
+    
+        report = _probe(model, inputs, moved="antibody_backbone")
+    
+        assert report.sensitivity > 1e-3
+>       assert report.verdict is InvarianceVerdict.INVARIANT
+E       AssertionError: assert <InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'> is <InvarianceVerdict.INVARIANT: 'invariant'>
+E        +  where <InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'> = InvarianceReport(verdict=<InvarianceVerdict.PARTNER_POSE_DEPENDENT: 'partner_pose_dependent'>, sensitivity=0.519355025...esentations', 'rotation': 'pair_representations', 'rotation_and_translation': 'pair_representations'}, tolerance=1e-09).verdict
+E        +  and   <InvarianceVerdict.INVARIANT: 'invariant'> = InvarianceVerdict.INVARIANT
+
+tests/test_partner_pose_invariance.py:192: AssertionError
+_____________________ test_report_serialises_for_a_receipt _____________________
+
+    def test_report_serialises_for_a_receipt() -> None:
+        model = _r2_model()
+        activate_zero_initialised_parameters(model)
+    
+        payload = _probe(model, _inputs()).as_json()
+    
+>       assert payload["verdict"] == "invariant"
+E       AssertionError: assert 'partner_pose_dependent' == 'invariant'
+E         
+E         - invariant
+E         + partner_pose_dependent
+
+tests/test_partner_pose_invariance.py:277: AssertionError
+________________ test_backend_registry_rejects_an_unknown_name _________________
+
+    def test_backend_registry_rejects_an_unknown_name() -> None:
+        from interaction_first.representation_backends import BACKENDS, build_backend
+    
+>       assert set(BACKENDS) == {"antiberty", "esm2", "esm_if1"}
+E       AssertionError: assert {'antiberty',...'proteinmpnn'} == {'antiberty',...2', 'esm_if1'}
+E         
+E         Extra items in the left set:
+E         'proteinmpnn'
+E         Use -v to get more diff
+
+tests/test_pretrained_representations.py:273: AssertionError
+_______________ test_repository_has_no_unbaselined_source_drift ________________
+
+    def test_repository_has_no_unbaselined_source_drift() -> None:
+        """The guard this whole module exists to provide."""
+        drift = find_drift(ROOT, collect_bindings(ROOT))
+        fresh = unbaselined_drift(drift, load_baseline(ROOT))
+    
+>       assert [record.registered_path for record in fresh] == []
+E       AssertionError: assert ['src/antibod..._geometry.py'] == []
+E         
+E         Left contains 3 more items, first extra item: 'src/antibody_pretraining/pair_aware_attention.py'
+E         Use -v to get more diff
+
+tests/test_protocol_source_bindings.py:237: AssertionError
+_____________ test_repository_contract_authenticates_every_source ______________
+
+    def test_repository_contract_authenticates_every_source() -> None:
+>       contract, digest = _load()
+                           ^^^^^^^
+
+tests/test_r2_model_contract.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+____________ test_factory_builds_only_explicit_partner_specific_r2 _____________
+
+    def test_factory_builds_only_explicit_partner_specific_r2() -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+___________ test_frozen_model_runs_native_pair_forward_and_backward ____________
+
+    def test_frozen_model_runs_native_pair_forward_and_backward() -> None:
+        torch = pytest.importorskip("torch")
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+____________ test_contract_mutations_fail_closed[path0-512-d_model] ____________
+
+path = ('model', 'd_model'), value = 512, message = 'd_model'
+
+    @pytest.mark.parametrize(
+        ("path", "value", "message"),
+        (
+            (("model", "d_model"), 512, "d_model"),
+            (
+                ("model", "intra_chain_geometry", "feature_mode"),
+                "full_pose",
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "intra_chain_geometry", "num_layers"),
+                True,
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "pair_representation", "num_update_layers"),
+                1,
+                "pair representation",
+            ),
+            (
+                ("model", "prediction", "contact_logit_mode"),
+                "distance_mass",
+                "prediction contract",
+            ),
+            (
+                ("authorization", "external_test_access"),
+                True,
+                "authorization",
+            ),
+        ),
+    )
+    def test_contract_mutations_fail_closed(
+        path: tuple[str, ...],
+        value: object,
+        message: str,
+    ) -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+__ test_contract_mutations_fail_closed[path1-full_pose-intra-chain geometry] ___
+
+path = ('model', 'intra_chain_geometry', 'feature_mode'), value = 'full_pose'
+message = 'intra-chain geometry'
+
+    @pytest.mark.parametrize(
+        ("path", "value", "message"),
+        (
+            (("model", "d_model"), 512, "d_model"),
+            (
+                ("model", "intra_chain_geometry", "feature_mode"),
+                "full_pose",
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "intra_chain_geometry", "num_layers"),
+                True,
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "pair_representation", "num_update_layers"),
+                1,
+                "pair representation",
+            ),
+            (
+                ("model", "prediction", "contact_logit_mode"),
+                "distance_mass",
+                "prediction contract",
+            ),
+            (
+                ("authorization", "external_test_access"),
+                True,
+                "authorization",
+            ),
+        ),
+    )
+    def test_contract_mutations_fail_closed(
+        path: tuple[str, ...],
+        value: object,
+        message: str,
+    ) -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+_____ test_contract_mutations_fail_closed[path2-True-intra-chain geometry] _____
+
+path = ('model', 'intra_chain_geometry', 'num_layers'), value = True
+message = 'intra-chain geometry'
+
+    @pytest.mark.parametrize(
+        ("path", "value", "message"),
+        (
+            (("model", "d_model"), 512, "d_model"),
+            (
+                ("model", "intra_chain_geometry", "feature_mode"),
+                "full_pose",
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "intra_chain_geometry", "num_layers"),
+                True,
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "pair_representation", "num_update_layers"),
+                1,
+                "pair representation",
+            ),
+            (
+                ("model", "prediction", "contact_logit_mode"),
+                "distance_mass",
+                "prediction contract",
+            ),
+            (
+                ("authorization", "external_test_access"),
+                True,
+                "authorization",
+            ),
+        ),
+    )
+    def test_contract_mutations_fail_closed(
+        path: tuple[str, ...],
+        value: object,
+        message: str,
+    ) -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+_______ test_contract_mutations_fail_closed[path3-1-pair representation] _______
+
+path = ('model', 'pair_representation', 'num_update_layers'), value = 1
+message = 'pair representation'
+
+    @pytest.mark.parametrize(
+        ("path", "value", "message"),
+        (
+            (("model", "d_model"), 512, "d_model"),
+            (
+                ("model", "intra_chain_geometry", "feature_mode"),
+                "full_pose",
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "intra_chain_geometry", "num_layers"),
+                True,
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "pair_representation", "num_update_layers"),
+                1,
+                "pair representation",
+            ),
+            (
+                ("model", "prediction", "contact_logit_mode"),
+                "distance_mass",
+                "prediction contract",
+            ),
+            (
+                ("authorization", "external_test_access"),
+                True,
+                "authorization",
+            ),
+        ),
+    )
+    def test_contract_mutations_fail_closed(
+        path: tuple[str, ...],
+        value: object,
+        message: str,
+    ) -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+_ test_contract_mutations_fail_closed[path4-distance_mass-prediction contract] _
+
+path = ('model', 'prediction', 'contact_logit_mode'), value = 'distance_mass'
+message = 'prediction contract'
+
+    @pytest.mark.parametrize(
+        ("path", "value", "message"),
+        (
+            (("model", "d_model"), 512, "d_model"),
+            (
+                ("model", "intra_chain_geometry", "feature_mode"),
+                "full_pose",
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "intra_chain_geometry", "num_layers"),
+                True,
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "pair_representation", "num_update_layers"),
+                1,
+                "pair representation",
+            ),
+            (
+                ("model", "prediction", "contact_logit_mode"),
+                "distance_mass",
+                "prediction contract",
+            ),
+            (
+                ("authorization", "external_test_access"),
+                True,
+                "authorization",
+            ),
+        ),
+    )
+    def test_contract_mutations_fail_closed(
+        path: tuple[str, ...],
+        value: object,
+        message: str,
+    ) -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+________ test_contract_mutations_fail_closed[path5-True-authorization] _________
+
+path = ('authorization', 'external_test_access'), value = True
+message = 'authorization'
+
+    @pytest.mark.parametrize(
+        ("path", "value", "message"),
+        (
+            (("model", "d_model"), 512, "d_model"),
+            (
+                ("model", "intra_chain_geometry", "feature_mode"),
+                "full_pose",
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "intra_chain_geometry", "num_layers"),
+                True,
+                "intra-chain geometry",
+            ),
+            (
+                ("model", "pair_representation", "num_update_layers"),
+                1,
+                "pair representation",
+            ),
+            (
+                ("model", "prediction", "contact_logit_mode"),
+                "distance_mass",
+                "prediction contract",
+            ),
+            (
+                ("authorization", "external_test_access"),
+                True,
+                "authorization",
+            ),
+        ),
+    )
+    def test_contract_mutations_fail_closed(
+        path: tuple[str, ...],
+        value: object,
+        message: str,
+    ) -> None:
+>       contract, _ = _load()
+                      ^^^^^^^
+
+tests/test_r2_model_contract.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+______ test_contract_and_geometry_schema_digests_are_externally_anchored _______
+
+tmp_path = PosixPath('/private/tmp/pytest-of-kevin/pytest-22/test_contract_and_geometry_sch0')
+
+    def test_contract_and_geometry_schema_digests_are_externally_anchored(
+        tmp_path,
+    ) -> None:
+>       contract, digest = _load()
+                           ^^^^^^^
+
+tests/test_r2_model_contract.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_r2_model_contract.py:54: in _load
+    return load_r2_model_contract(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/protocols/sabdab2_partner_geometry_r2_model_contract_v1.json')
+expected_file_sha256 = '247afe6177167253e2f4097e4f132be18bb2088e63fdd1b3f31575de4f419909'
+repository_root = PosixPath('/private/tmp/antibody-consolidation-20261007-tj2R6a/repo')
+
+    def load_r2_model_contract(
+        path: Path,
+        *,
+        expected_file_sha256: str,
+        repository_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Authenticate the contract, parent protocol, and exact model sources."""
+        expected_file_sha256 = _sha256(
+            expected_file_sha256,
+            "expected_file_sha256",
+        )
+        raw_path = Path(path)
+        raw_repository_root = Path(repository_root)
+        if raw_path.is_symlink() or not raw_path.is_file():
+            raise R2ModelContractError("R2 model contract must be a regular file")
+        if (
+            raw_repository_root.is_symlink()
+            or not raw_repository_root.is_dir()
+        ):
+            raise R2ModelContractError("repository_root must be a regular directory")
+        path = raw_path.resolve()
+        repository_root = raw_repository_root.resolve()
+        payload = path.read_bytes()
+        observed_file_sha256 = hashlib.sha256(payload).hexdigest()
+        if observed_file_sha256 != expected_file_sha256:
+            raise R2ModelContractError("R2 model contract file digest differs")
+        try:
+            contract = json.loads(
+                payload.decode("ascii"),
+                object_pairs_hook=_unique_object,
+                parse_constant=lambda value: (_ for _ in ()).throw(
+                    R2ModelContractError(
+                        f"unsupported JSON constant {value!r}"
+                    )
+                ),
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise R2ModelContractError("R2 model contract is not strict ASCII JSON") from error
+        if not isinstance(contract, dict):
+            raise R2ModelContractError("R2 model contract must be an object")
+        _validate_contract(contract)
+    
+        parent = contract["parent_protocol"]
+        source_bindings = contract["source_bindings"]
+        paths = [parent, *source_bindings.values()]
+        for binding in paths:
+            relative = Path(binding["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise R2ModelContractError("contract source path escapes the repository")
+            unresolved_source_path = repository_root / relative
+            if unresolved_source_path.is_symlink():
+                raise R2ModelContractError(
+                    f"contract source must not be a symbolic link: "
+                    f"{relative.as_posix()}"
+                )
+            source_path = unresolved_source_path.resolve()
+            try:
+                source_path.relative_to(repository_root)
+            except ValueError as error:
+                raise R2ModelContractError(
+                    "contract source resolves outside the repository"
+                ) from error
+            if sha256_file(source_path) != binding["sha256"]:
+>               raise R2ModelContractError(
+                    f"contract source digest differs: {relative.as_posix()}"
+                )
+E               interaction_first.r2_model_contract.R2ModelContractError: contract source digest differs: src/interaction_first/pair_geometry.py
+
+src/interaction_first/r2_model_contract.py:173: R2ModelContractError
+=============================== warnings summary ===============================
+tests/test_asymmetric_partner_retrieval.py::ModelTests::test_masked_info_nce_excludes_uncertain_negative
+  /private/tmp/antibody-consolidation-20261007-tj2R6a/repo/tests/test_asymmetric_partner_retrieval.py:1241: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+    self.assertLess(float(masked), float(full))
+
+tests/test_frontier_fsdp2.py::test_dcp_generation_round_trip_restores_model_and_optimizer
+tests/test_frontier_fsdp2.py::test_dcp_generation_is_create_only_and_provenance_bound
+tests/test_frontier_fsdp2.py::test_dcp_verifier_rejects_tampered_shard
+  /tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/distributed/checkpoint/utils.py:488: UserWarning: torch.distributed is disabled, unavailable or uninitialized, assuming the intent is to save in a single process.
+    return func(*args, **kwargs)
+
+tests/test_frontier_fsdp2.py::test_dcp_generation_round_trip_restores_model_and_optimizer
+tests/test_frontier_fsdp2.py::test_two_rank_gloo_dcp_round_trip
+  /tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/torch/distributed/checkpoint/utils.py:488: UserWarning: torch.distributed is disabled, unavailable or uninitialized, assuming the intent is to load in a single process.
+    return func(*args, **kwargs)
+
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_assemble_emits_exact_epitope_projection_keys
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_inference_ensemble_preserves_keys_labels_and_mean_scores
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_prepare_projects_any_positive_contact
+  /private/tmp/antibody-consolidation-20261007-tj2R6a/repo/scripts/sabdab2_sppider_seq.py:225: Pandas4Warning: The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.
+    return instances.set_index("instance_id", verify_integrity=True)
+
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_assemble_emits_exact_epitope_projection_keys
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_assemble_emits_exact_epitope_projection_keys
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_inference_ensemble_preserves_keys_labels_and_mean_scores
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_inference_ensemble_preserves_keys_labels_and_mean_scores
+tests/test_sabdab2_sppider_seq.py::AdapterContractTest::test_prepare_projects_any_positive_contact
+  /private/tmp/antibody-consolidation-20261007-tj2R6a/repo/scripts/sabdab2_sppider_seq.py:692: Pandas4Warning: The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.
+    return frame.set_index("instance_id", verify_integrity=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [6] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: tests/sabdab2_asymmetric_partner_retrieval.py is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: requires_external_artifacts: ../outputs/data_snapshot/double_remote_split.json is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: tests/asymmetric_partner_retrieval_clean_holdout_train.sbatch is not present
+SKIPPED [1] tests/test_asymmetric_partner_retrieval.py: absent_from_repository: scripts/interaction_first/asymmetric_retrieval.py is not present
+SKIPPED [1] tests/test_audit_baseline_metrics.py: requires_external_artifacts: ../../work/antibody-antigen-interface-research/results/epiformer/score.json is not present
+SKIPPED [1] tests/test_audit_train_only_s2_exact_four_view_nw.py: requires_pinned_environment: biopython 1.83 is required but 1.88 is installed
+SKIPPED [1] tests/test_build_final_refit_submission_manifest.py: absent_from_repository: tests/sabdab2_asymmetric_partner_retrieval.py is not present
+SKIPPED [1] tests/test_build_train_only_s2_iterative_closure.py: requires_external_artifacts: ../outputs/interaction_first/research/train_only_s2_iterative_closure/closure_config_v2.json is not present
+SKIPPED [1] tests/test_frontier_fsdp2_evidence.py: requires_external_artifacts: results/frontier_fsdp2_dcp/job_1339702_fp32_1gpu/fsdp2.log is not present
+SKIPPED [1] tests/test_frontier_fsdp2_evidence.py: requires_external_artifacts: results/frontier_fsdp2_dcp/job_1339691_scalar_failure/fsdp2.log is not present
+SKIPPED [1] tests/test_partner_retrieval.py: absent_from_repository: tests/sabdab2_partner_retrieval.py is not present
+SKIPPED [3] tests/test_render_fair_comparison_table.py: requires_external_artifacts: ../../mipe-sppider-handoff/mipe-sppider-handoff-20260729-v2/MIPE/results/track_a_eval_e7d190_20260725T035346/results/MIPE_HELDOUT_EVALUATION.json is not present
+SKIPPED [11] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md is not present
+SKIPPED [1] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction...TRIEVAL_PROTOCOL_V1_5_EXECUTION_LOCK.md is not present
+SKIPPED [1] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md is not present
+SKIPPED [8] tests/test_retrieval_control_comparator.py: requires_external_artifacts: ../outputs/interaction_first/research/authority_validation_nw_boundaries/concat_boundary_v2.json is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: absent_from_repository: tests/asymmetric_partner_retrieval_controls_fit.sbatch is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_CONTROLS_PROTOCOL_V1.md is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/PARTNER_RETRIEVAL_PROTOCOL_V1_6_EXECUTION_HARDENING.md is not present
+SKIPPED [1] tests/test_sabdab2_retrieval_controls.py: requires_external_artifacts: ../outputs/interaction_first/research/authority_validation_nw_boundaries/independent_verification_v2.json is not present
+SKIPPED [1] tests/test_sabdab2_sppider_seq.py:326: SPPIDER_OFFICIAL_MODEL_DIR is not set
+SKIPPED [1] tests/test_string_v12_expanded_endpoint_union.py: requires_pinned_environment: the zstd executable is not on PATH
+SKIPPED [1] tests/test_v6_b_direct_highs_audit.py: requires_process_isolation: ortools is already imported in this process
+XFAIL tests/test_antibody_compile_accuracy_minifier.py::test_protocol_binds_every_implementation_and_rejected_predecessor - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_accuracy_minifier.py::test_wrapper_accepts_only_the_frozen_dynamo_boundary - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_backend_attribution.py::test_protocol_binds_every_implementation_and_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_backend_attribution.py::test_wrapper_accepts_only_registered_backend_controls - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation.py::test_freezer_selects_only_the_audited_candidate - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation_v2.py::test_freezer_preserves_backend_and_cudagraph_controls - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_candidate_confirmation_v2.py::test_wrapper_rejects_cudagraph_control_drift - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_compile_numerics_diagnostic.py::test_protocol_binds_every_execution_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_ddp_scientific_parity_execution.py::test_execution_binds_all_inputs_and_the_counterbalanced_run_order - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_ddp_scientific_parity_registration.py::test_registration_binds_the_complete_executed_source_closure - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_block_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_block_bisection.py::test_wrapper_compiles_only_the_registered_single_block - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_eighth_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_eighth_bisection.py::test_wrapper_compiles_only_the_registered_eighth - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_quarter_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_quarter_bisection.py::test_wrapper_compiles_only_the_registered_quarter - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_region_bisection.py::test_protocol_binds_every_implementation_and_failed_minifier - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_region_bisection.py::test_wrapper_validates_flags_and_compiles_exact_registered_membership - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_sixteenth_bisection.py::test_protocol_binds_predecessor_and_every_implementation - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_dynamo_sixteenth_bisection.py::test_wrapper_compiles_only_the_registered_sixteenth - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_efficiency_factor_attribution.py::test_protocol_binds_all_execution_inputs - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_attention_only-attention] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_preserves_selected_scope_and_unchanged_gates[inductor_ffn_only-ffn] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_attention_only-evaluation_noninferiority] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_ffn_only-throughput] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_freezer_rejects_failed_or_nonpromotable_selection[inductor_full_block-None] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_attention_only-attention] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_wrapper_compiles_only_the_selected_component[inductor_ffn_only-ffn] - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_confirmation.py::test_independent_auditor_replays_localization_selection - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_freezer_accepts_only_an_inductor_quality_failure - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_wrapper_accepts_only_registered_scopes - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_inductor_component_localization.py::test_independent_auditor_replays_parent_trigger - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_antibody_production_batch_efficiency_protocol.py::test_protocol_binds_every_source_and_evaluation_input - known_source_drift: binds a source digest no protocol registers (protocols/source_binding_drift_baseline_v1.json)
+XFAIL tests/test_data_registry.py::test_registered_sources_validate_and_only_audited_avida_is_admitted - known_repository_defect: data_registry/sources/pinder_2024_02 and string_v12 hold only license_receipt.json; normalization_receipt.json, raw_sha256.json and source_manifest.json were never committed
+XFAIL tests/test_data_registry.py::test_asset_level_license_routing_separates_data_from_code - known_repository_defect: same incomplete source registrations as the sibling data-registry test
+XFAIL tests/test_source_materializer.py::test_checked_download_plans_match_registered_revisions - known_repository_defect: 6 of 10 download plans declare format_version abpairfm_public_download_plan_v1 while using three mutually incompatible field sets; the version string versions nothing
+FAILED tests/test_pairscale_e1_e2_step.py::test_three_phases_update_only_the_authorized_heads
+FAILED tests/test_pairscale_e1_e2_step.py::test_parameter_ownership_rejects_an_unclassified_module
+FAILED tests/test_partner_pose_invariance.py::test_an_untrained_r2_model_is_reported_inconclusive
+FAILED tests/test_partner_pose_invariance.py::test_the_r2_model_is_invariant_to_the_antigen_pose
+FAILED tests/test_partner_pose_invariance.py::test_the_r2_model_is_invariant_to_the_antibody_pose
+FAILED tests/test_partner_pose_invariance.py::test_report_serialises_for_a_receipt
+FAILED tests/test_pretrained_representations.py::test_backend_registry_rejects_an_unknown_name
+FAILED tests/test_protocol_source_bindings.py::test_repository_has_no_unbaselined_source_drift
+FAILED tests/test_r2_model_contract.py::test_repository_contract_authenticates_every_source
+FAILED tests/test_r2_model_contract.py::test_factory_builds_only_explicit_partner_specific_r2
+FAILED tests/test_r2_model_contract.py::test_frozen_model_runs_native_pair_forward_and_backward
+FAILED tests/test_r2_model_contract.py::test_contract_mutations_fail_closed[path0-512-d_model]
+FAILED tests/test_r2_model_contract.py::test_contract_mutations_fail_closed[path1-full_pose-intra-chain geometry]
+FAILED tests/test_r2_model_contract.py::test_contract_mutations_fail_closed[path2-True-intra-chain geometry]
+FAILED tests/test_r2_model_contract.py::test_contract_mutations_fail_closed[path3-1-pair representation]
+FAILED tests/test_r2_model_contract.py::test_contract_mutations_fail_closed[path4-distance_mass-prediction contract]
+FAILED tests/test_r2_model_contract.py::test_contract_mutations_fail_closed[path5-True-authorization]
+FAILED tests/test_r2_model_contract.py::test_contract_and_geometry_schema_digests_are_externally_anchored
+18 failed, 2932 passed, 47 skipped, 36 xfailed, 14 warnings, 37 subtests passed in 176.98s (0:02:56)

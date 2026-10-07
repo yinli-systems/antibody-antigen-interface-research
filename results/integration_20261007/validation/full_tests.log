@@ -1,0 +1,62 @@
+INTERNALERROR> Traceback (most recent call last):
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/main.py", line 330, in wrap_session
+INTERNALERROR>     session.exitstatus = doit(config, session) or 0
+INTERNALERROR>                          ^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/main.py", line 383, in _main
+INTERNALERROR>     config.hook.pytest_collection(session=session)
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+INTERNALERROR>     raise exception
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/logging.py", line 803, in pytest_collection
+INTERNALERROR>     return (yield)
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/warnings.py", line 99, in pytest_collection
+INTERNALERROR>     return (yield)
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/config/__init__.py", line 1445, in pytest_collection
+INTERNALERROR>     return (yield)
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+INTERNALERROR>     res = hook_impl.function(*args)
+INTERNALERROR>           ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/main.py", line 394, in pytest_collection
+INTERNALERROR>     session.perform_collect()
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/main.py", line 872, in perform_collect
+INTERNALERROR>     hook.pytest_collection_modifyitems(
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 167, in _multicall
+INTERNALERROR>     raise exception
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/cacheprovider.py", line 437, in pytest_collection_modifyitems
+INTERNALERROR>     res = yield
+INTERNALERROR>           ^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/_pytest/cacheprovider.py", line 367, in pytest_collection_modifyitems
+INTERNALERROR>     res = yield
+INTERNALERROR>           ^^^^^
+INTERNALERROR>   File "/tmp/antibody-consolidation-20261007-tj2R6a/testenv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+INTERNALERROR>     res = hook_impl.function(*args)
+INTERNALERROR>           ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/private/tmp/antibody-consolidation-20261007-tj2R6a/repo/tests/conftest.py", line 146, in pytest_collection_modifyitems
+INTERNALERROR>     raise RuntimeError(
+INTERNALERROR> RuntimeError: portability_registry_v1.json lists 1 entry/entries matching no collected test; remove them: tests/test_v6_b_direct_highs_audit.py::test_registered_direct_highs_audit_agrees_only_on_linear_infeasibility
+
+6 errors in 95.25s (0:01:35)

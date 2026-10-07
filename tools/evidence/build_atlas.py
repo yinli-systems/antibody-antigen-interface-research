@@ -107,7 +107,10 @@ def products():
             json_count+=1
             try:json.loads(blobs[r['blob']].decode(),parse_constant=lambda x:(_ for _ in ()).throw(ValueError('Nonfinite '+x)))
             except (ValueError,UnicodeDecodeError) as ex:errors.append(dict(path=r['path'],blob=r['blob'],error=str(ex)))
-    packed=gzip.compress(b''.join(dumps(r,False).encode() for r in rows),mtime=0);put('FILE_VERSIONS.jsonl.gz',packed)
+    packed=gzip.compress(b''.join(dumps(r,False).encode() for r in rows),mtime=0)
+    # CPython 3.11/3.12 may inherit zlib's OS byte; canonicalize to RFC gzip unknown.
+    packed=packed[:9]+b'\xff'+packed[10:]
+    put('FILE_VERSIONS.jsonl.gz',packed)
     put('METRIC_BINDINGS.json',dumps(dict(scope='Reporting-value integrity, not scientific replication',legacy_registry_source=registry_source,legacy_metrics=metrics,additional_checks=extra)))
     put('RESULT_CARDS.json',dumps(dict(snapshot_utc=refs['snapshot_utc'],levels=LEVELS,cards=cards)))
     index=['# All 30 branch HEADs — frozen 7 October 2026','','[Results atlas](README.md) · [Cohorts](COHORTS.md) · [Full file inventory](FILE_VERSIONS.jsonl.gz)','','One branch is not one independent experiment. Ahead/behind uses the original main SHA. Shared files are not replications, and a file shared with another side branch is not necessarily on main.','','| Branch | Role / evidence state | HEAD | Different file versions vs main | Detail |','|---|---|---|---:|---|']

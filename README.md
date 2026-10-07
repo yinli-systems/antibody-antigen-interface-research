@@ -4,7 +4,7 @@
 
 FrameContact and controlled protein-representation experiments: contact maps, epitope/paratope prediction, partner retrieval, and the evidence needed to tell these capabilities apart.
 
-[Results atlas](results/atlas/README.md) · [All branch progress](results/integration_20261007/BRANCH_PROGRESS.md) · [Cohorts](results/atlas/COHORTS.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [Historical jobs](results/operations/README.md) · [Preservation](archive/README.md)
+[Results atlas](results/atlas/README.md) · [All branch progress](results/integration_20261007/BRANCH_PROGRESS.md) · [Cohorts](results/atlas/COHORTS.md) · [Reproduce](docs/REPRODUCE_EXACT.md) · [Historical jobs](results/operations/README.md) · [Repository layout](docs/REPOSITORY_LAYOUT.md) · [Preservation](archive/2026-10-07/README.md)
 
 ## FrameContact: three endpoints, one documented evaluation
 
@@ -71,10 +71,10 @@ python3 tools/evidence/checkout_experiment.py multimodel ../antibody-multimodel
 
 This is **committed repository progress, not live scheduler status**. Old 12/36 and pending job records remain dated historical snapshots rather than current completion claims. [Historical operations](results/operations/README.md)
 
-The branch names now use neutral `epic-camera-ready` and `main-epic-evidence-index` terminology. Their commit histories are unchanged; historical freeze records retain their original names. [Rename mapping](results/integration_20261007/BRANCH_RENAMES.json)
+Review-related branch names were neutralized before redundant branch references were archived. Their commit histories are unchanged; frozen records retain the names observed at the time. [Rename mapping](results/integration_20261007/BRANCH_RENAMES.json) · [Branch snapshots and restoration](archive/2026-10-07/README.md)
 
 ## Nothing discarded to make the front page cleaner
 
 **17 preserved pre-consolidation snapshots · 4,526 distinct path/blob versions · 55,630 tracked-file entries including repetitions.**
 
-Original branches, archive tags, failed experiments and superseded interpretations remain available. [747 evidence-path links](results/ALL_BRANCHES.md) · [Complete tracked-tree inventory](archive/FULL_SNAPSHOT_MANIFEST_20260930.json) · [Offline restore procedure](archive/README.md) · [Full result catalogue](results/INDEX.md)
+Original branch commits, archive tags, failed experiments and superseded interpretations remain available. Redundant active branch references may be pruned only after ancestry and backup verification. [747 evidence-path links](results/ALL_BRANCHES.md) · [Complete tracked-tree inventory](archive/FULL_SNAPSHOT_MANIFEST_20260930.json) · [Offline restore procedure](archive/README.md) · [Full result catalogue](results/INDEX.md)

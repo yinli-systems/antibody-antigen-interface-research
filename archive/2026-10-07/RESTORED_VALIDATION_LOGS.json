@@ -1,0 +1,55 @@
+{
+  "scope": "Restore 10 declared validation logs omitted by broad *.log ignore rules. Copied only from the original authorized repository worktree and matched against already-committed SHA-256 and size. No output synthesized.",
+  "files": [
+    {
+      "path": "results/integration_20261007/validation/full_tests.log",
+      "sha256": "7f1d37d2ab5afb0942ffe41e27553ab0ea244a19225f7b1d0da5b1e1060e2574",
+      "bytes": 5697
+    },
+    {
+      "path": "results/integration_20261007/validation/collection.log",
+      "sha256": "9a2573e3d5e67ee05315bf1b9b750e8c1ecc6f470c188a5957118b961ca54308",
+      "bytes": 311260
+    },
+    {
+      "path": "results/integration_20261007/validation/full_tests_v2.log",
+      "sha256": "2cca72ef813debb4b791a86ec954cdd7f5ea365e25e0db343d008c0fd7733b70",
+      "bytes": 81171
+    },
+    {
+      "path": "results/integration_20261007/validation/full_tests_final.log",
+      "sha256": "bba556db452ad5ac0b723b49a4097bcecccb454e34fa71480af68d7d804cd555",
+      "bytes": 30542
+    },
+    {
+      "path": "results/integration_20261007/validation/full_tests_v4.log",
+      "sha256": "e9c6890207d2dfcb2d39d5feaed29ff283a61c7e8e9303e6e4757f68a57308c4",
+      "bytes": 19071
+    },
+    {
+      "path": "results/integration_20261007/validation/recovery_tests.log",
+      "sha256": "737bcdb42f8023a9b9b23220a12d7b98c035fd644ad7337291f0f084036ec28e",
+      "bytes": 435
+    },
+    {
+      "path": "results/integration_20261007/validation/regression_tests.log",
+      "sha256": "8d44c8f62d52ba6365b6c9a17f4a61b0c55718017aaf2914422fdff89ad1a9ad",
+      "bytes": 99
+    },
+    {
+      "path": "results/integration_20261007/validation/namespace_tests.log",
+      "sha256": "4f3390a535c03dc210ad8fb007e8bbf2c6af72230a230f4bc38aa7437bca477e",
+      "bytes": 99
+    },
+    {
+      "path": "results/integration_20261007/validation/atlas_current_tests.log",
+      "sha256": "2097b36600955b3aa9addc9b54b181a1184f8b2c0960e2feda611e366ed809e0",
+      "bytes": 1013
+    },
+    {
+      "path": "results/integration_20261007/validation/atlas_current.log",
+      "sha256": "fb4247af6372c2dff21c5f6ea4911f1b945da6e208c613e5e7d8a9bfca097457",
+      "bytes": 109
+    }
+  ]
+}

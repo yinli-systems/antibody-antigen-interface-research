@@ -1,0 +1,19 @@
+test_all_atlas_local_markdown_links (__main__.AtlasTests.test_all_atlas_local_markdown_links) ... ok
+test_all_cards_have_complete_boundaries (__main__.AtlasTests.test_all_cards_have_complete_boundaries) ... ok
+test_all_structural_layer_intervals_cross_zero (__main__.AtlasTests.test_all_structural_layer_intervals_cross_zero) ... ok
+test_all_thirty_branch_heads (__main__.AtlasTests.test_all_thirty_branch_heads) ... ok
+test_complete_centered_prediction_accounting (__main__.AtlasTests.test_complete_centered_prediction_accounting) ... ok
+test_deduplicated_versions_and_reconstructed_memberships (__main__.AtlasTests.test_deduplicated_versions_and_reconstructed_memberships) ... ok
+test_every_source_matches_inventory (__main__.AtlasTests.test_every_source_matches_inventory) ... ok
+test_generated_hashes (__main__.AtlasTests.test_generated_hashes) ... ok
+test_html_data_and_no_remote_scripts (__main__.AtlasTests.test_html_data_and_no_remote_scripts) ... ok
+test_immutable_links (__main__.AtlasTests.test_immutable_links) ... ok
+test_metric_drift_rejected (__main__.AtlasTests.test_metric_drift_rejected) ... ok
+test_newer_report_not_silently_promoted (__main__.AtlasTests.test_newer_report_not_silently_promoted) ... ok
+test_reported_metric_checks (__main__.AtlasTests.test_reported_metric_checks) ... ok
+test_selector_rejects_ambiguous_named_rows (__main__.AtlasTests.test_selector_rejects_ambiguous_named_rows) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.653s
+
+OK

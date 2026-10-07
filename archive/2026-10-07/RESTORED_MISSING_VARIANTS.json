@@ -1,0 +1,37 @@
+{
+  "reason": "Four declared preserved variants were excluded by broad data/ ignore rules in the integrated checkout. Restored exact original Git blobs; no metric recalculation or content change.",
+  "files": [
+    {
+      "role": "current",
+      "commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+      "source_path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+      "git_blob": "20ab4e5886de216e24d695e33a36e153b74345c0",
+      "sha256": "2949908e7f819c8a2cb1fba78d7800cfc9d4957f9dab9abe00d4afbdb3a8b332",
+      "preserved_path": "archive/branch_variants_20261007/e93f44bf6429/paper/neurips_2026_framecontact/data/frozen_metrics.json"
+    },
+    {
+      "role": "incoming",
+      "commit": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "source_path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+      "git_blob": "db2dc9126debe8bd0035086207e68dddd2f0526e",
+      "sha256": "ea2958cd5e47db6932ce4923a98a08e97c9cac6ac514a3b8821b8cd6e89e2f98",
+      "preserved_path": "archive/branch_variants_20261007/27605737aea2/paper/neurips_2026_framecontact/data/frozen_metrics.json"
+    },
+    {
+      "role": "current",
+      "commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+      "source_path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+      "git_blob": "ca3156ecf2bceacb277fc1e161dcf540abc74cd0",
+      "sha256": "7b10ae93047129170ca2079f9585bc16d1cb7412a13b7fa9a753f8b0ba0923ac",
+      "preserved_path": "archive/branch_variants_20261007/e93f44bf6429/paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv"
+    },
+    {
+      "role": "incoming",
+      "commit": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "source_path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+      "git_blob": "2ab00b37a36728ef0ab633544c88a7f74b2910f4",
+      "sha256": "e86f014109297af2bdf5c1cb3f2472579ca14b6470a26ccb240863b3fce7189f",
+      "preserved_path": "archive/branch_variants_20261007/27605737aea2/paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv"
+    }
+  ]
+}

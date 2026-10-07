@@ -70,8 +70,8 @@ def test_visual_qa_gold_constraints():
 def test_visual_qa_gold_caption_overlap_on_cache_metadata():
     meta = ROOT / "evals" / "figures" / "cache" / "metadata.jsonl"
     fix = ROOT / "evals" / "figures" / "fixture" / "metadata.jsonl"
-    if not meta.exists() and not fix.exists():
-        pytest.skip("no figure metadata")
+    if not meta.exists():
+        pytest.skip("full-gallery metadata is not installed; committed fixture captions have a separate test")
     caps: dict[str, str] = {}
     for path in (meta, fix):
         if not path.exists():
