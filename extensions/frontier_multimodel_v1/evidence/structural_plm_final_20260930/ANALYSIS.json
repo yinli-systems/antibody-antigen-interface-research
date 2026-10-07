@@ -1,0 +1,2040 @@
+{
+  "arm_count": 12,
+  "arms": [
+    {
+      "arm": "prosst_layer_00",
+      "best_epitope_macro_ap_mean": 0.1740291983002422,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.020584469189039976,
+        "2": 0.01907275802162307,
+        "3": 0.018782105888632727
+      },
+      "best_pair_macro_ap_mean": 0.01947977769976526,
+      "best_pair_macro_ap_std": 0.000967665815485881,
+      "best_paratope_macro_ap_mean": 0.6521472716132876,
+      "best_partner_mrr_mean": 0.3839081510740497,
+      "best_partner_recall_at_1_mean": 0.17818740399385558,
+      "family": "prosst",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.019548099022397288,
+      "layer": 0,
+      "parameter_count": 963341,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 28293.900467508473
+    },
+    {
+      "arm": "prosst_layer_03",
+      "best_epitope_macro_ap_mean": 0.1757482386306389,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.01987533718147088,
+        "2": 0.022525893664297966,
+        "3": 0.020802055964854987
+      },
+      "best_pair_macro_ap_mean": 0.021067762270207943,
+      "best_pair_macro_ap_std": 0.001345106797876069,
+      "best_paratope_macro_ap_mean": 0.6326804023662772,
+      "best_partner_mrr_mean": 0.3837447882378759,
+      "best_partner_recall_at_1_mean": 0.1658986175115207,
+      "family": "prosst",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.018443117648799894,
+      "layer": 3,
+      "parameter_count": 963341,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 27531.11180811189
+    },
+    {
+      "arm": "prosst_layer_06",
+      "best_epitope_macro_ap_mean": 0.18076602746993384,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.020226921619568638,
+        "2": 0.020636037149444966,
+        "3": 0.02016211582179328
+      },
+      "best_pair_macro_ap_mean": 0.020341691530268963,
+      "best_pair_macro_ap_std": 0.0002569619728722605,
+      "best_paratope_macro_ap_mean": 0.6310498849884111,
+      "best_partner_mrr_mean": 0.38370516665447546,
+      "best_partner_recall_at_1_mean": 0.1674347158218126,
+      "family": "prosst",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.019117755795912867,
+      "layer": 6,
+      "parameter_count": 963341,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 27909.18133077491
+    },
+    {
+      "arm": "prosst_layer_09",
+      "best_epitope_macro_ap_mean": 0.17208328624747646,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.01785115800070395,
+        "2": 0.021878074368459035,
+        "3": 0.022070525149883616
+      },
+      "best_pair_macro_ap_mean": 0.02059991917301553,
+      "best_pair_macro_ap_std": 0.0023824410407444607,
+      "best_paratope_macro_ap_mean": 0.627555286117811,
+      "best_partner_mrr_mean": 0.37615268329554047,
+      "best_partner_recall_at_1_mean": 0.16436251920122888,
+      "family": "prosst",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.018896178145301434,
+      "layer": 9,
+      "parameter_count": 963341,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 27440.040626967326
+    },
+    {
+      "arm": "prosst_layer_12",
+      "best_epitope_macro_ap_mean": 0.184224684280636,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.021558088512050433,
+        "2": 0.023752630816462308,
+        "3": 0.02121594444470074
+      },
+      "best_pair_macro_ap_mean": 0.02217555459107116,
+      "best_pair_macro_ap_std": 0.001376460208733308,
+      "best_paratope_macro_ap_mean": 0.6374488030434525,
+      "best_partner_mrr_mean": 0.3722411186696901,
+      "best_partner_recall_at_1_mean": 0.16897081413210446,
+      "family": "prosst",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.019495867139399495,
+      "layer": 12,
+      "parameter_count": 963341,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 26742.79790008813
+    },
+    {
+      "arm": "prosst_random_width_control",
+      "best_epitope_macro_ap_mean": 0.18620703027657357,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.02357225425212617,
+        "2": 0.021771314991962904,
+        "3": 0.02172846511588493
+      },
+      "best_pair_macro_ap_mean": 0.022357344786658,
+      "best_pair_macro_ap_std": 0.0010523605774320369,
+      "best_paratope_macro_ap_mean": 0.633372495458502,
+      "best_partner_mrr_mean": 0.25753541559993176,
+      "best_partner_recall_at_1_mean": 0.07680491551459294,
+      "family": "prosst",
+      "kind": "control",
+      "last_pair_macro_ap_mean": 0.018661087596451204,
+      "layer": null,
+      "parameter_count": 963341,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 24026.822477744892
+    },
+    {
+      "arm": "saprot_layer_00",
+      "best_epitope_macro_ap_mean": 0.1719435772553374,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.017987586488391646,
+        "2": 0.021676013546326405,
+        "3": 0.02208172702986689
+      },
+      "best_pair_macro_ap_mean": 0.02058177568819498,
+      "best_pair_macro_ap_std": 0.002255773495048613,
+      "best_paratope_macro_ap_mean": 0.6424283412089143,
+      "best_partner_mrr_mean": 0.38738326871967427,
+      "best_partner_recall_at_1_mean": 0.18125960061443933,
+      "family": "saprot",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.017727395393951725,
+      "layer": 0,
+      "parameter_count": 1096461,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 28240.658421035856
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best_epitope_macro_ap_mean": 0.1744802151746738,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.020779976587368174,
+        "2": 0.020481103124502915,
+        "3": 0.021858266032348632
+      },
+      "best_pair_macro_ap_mean": 0.021039781914739906,
+      "best_pair_macro_ap_std": 0.0007244090866247935,
+      "best_paratope_macro_ap_mean": 0.6185442198707626,
+      "best_partner_mrr_mean": 0.37391558774047257,
+      "best_partner_recall_at_1_mean": 0.16282642089093702,
+      "family": "saprot",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.018491748017419058,
+      "layer": 8,
+      "parameter_count": 1096461,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 28072.588331019506
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best_epitope_macro_ap_mean": 0.18197486332233556,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.02285507060039928,
+        "2": 0.023087032306693317,
+        "3": 0.02334987478547089
+      },
+      "best_pair_macro_ap_mean": 0.02309732589752116,
+      "best_pair_macro_ap_std": 0.0002475626464153933,
+      "best_paratope_macro_ap_mean": 0.6075811295420855,
+      "best_partner_mrr_mean": 0.3735224197205764,
+      "best_partner_recall_at_1_mean": 0.16897081413210446,
+      "family": "saprot",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.020091747629503755,
+      "layer": 16,
+      "parameter_count": 1096461,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 28400.574096664786
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best_epitope_macro_ap_mean": 0.1953645732620497,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.022856068325896928,
+        "2": 0.025875527105945213,
+        "3": 0.024624226201108032
+      },
+      "best_pair_macro_ap_mean": 0.024451940544316726,
+      "best_pair_macro_ap_std": 0.0015170842401642302,
+      "best_paratope_macro_ap_mean": 0.6168260264568981,
+      "best_partner_mrr_mean": 0.36305074000926535,
+      "best_partner_recall_at_1_mean": 0.1551459293394777,
+      "family": "saprot",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.020714563605967774,
+      "layer": 24,
+      "parameter_count": 1096461,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 28252.263032750227
+    },
+    {
+      "arm": "saprot_layer_33",
+      "best_epitope_macro_ap_mean": 0.1892530794242132,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.024259996814950478,
+        "2": 0.02421044001909817,
+        "3": 0.026496473569178162
+      },
+      "best_pair_macro_ap_mean": 0.024988970134408938,
+      "best_pair_macro_ap_std": 0.001305771390169254,
+      "best_paratope_macro_ap_mean": 0.6569305873983408,
+      "best_partner_mrr_mean": 0.38625070099724484,
+      "best_partner_recall_at_1_mean": 0.1674347158218126,
+      "family": "saprot",
+      "kind": "real",
+      "last_pair_macro_ap_mean": 0.020356319269072984,
+      "layer": 33,
+      "parameter_count": 1096461,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 27798.581265142187
+    },
+    {
+      "arm": "saprot_random_width_control",
+      "best_epitope_macro_ap_mean": 0.18379545207518802,
+      "best_pair_macro_ap_by_seed": {
+        "1": 0.021997767162023327,
+        "2": 0.021106661969892287,
+        "3": 0.02312089340875639
+      },
+      "best_pair_macro_ap_mean": 0.022075107513557336,
+      "best_pair_macro_ap_std": 0.0010093404875505052,
+      "best_paratope_macro_ap_mean": 0.6322916578124057,
+      "best_partner_mrr_mean": 0.25324531246190235,
+      "best_partner_recall_at_1_mean": 0.07680491551459294,
+      "family": "saprot",
+      "kind": "control",
+      "last_pair_macro_ap_mean": 0.01980392907076931,
+      "layer": null,
+      "parameter_count": 1096461,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "total_wall_seconds": 24136.09686613269
+    }
+  ],
+  "blind_claim_authorized": false,
+  "component_count": 68,
+  "development_layer_selection": {
+    "prosst": {
+      "raw_highest_arm": "prosst_layer_12",
+      "raw_highest_layer": 12,
+      "raw_highest_mean_pair_macro_ap": 0.02217555459107116,
+      "role": "development selection only; no blind or SOTA status",
+      "selected_arm": "prosst_layer_12",
+      "selected_layer": 12,
+      "selected_mean_pair_macro_ap": 0.02217555459107116,
+      "tie_window": 0.001
+    },
+    "saprot": {
+      "raw_highest_arm": "saprot_layer_33",
+      "raw_highest_layer": 33,
+      "raw_highest_mean_pair_macro_ap": 0.024988970134408938,
+      "role": "development selection only; no blind or SOTA status",
+      "selected_arm": "saprot_layer_24",
+      "selected_layer": 24,
+      "selected_mean_pair_macro_ap": 0.024451940544316726,
+      "tie_window": 0.001
+    }
+  },
+  "format_version": "structural_plm_training_analysis_v1",
+  "limitations": [
+    "Three training seeds per arm quantify optimization repeatability, not population uncertainty.",
+    "All layer selection occurs on previously used development validation data.",
+    "Pointwise exploratory intervals are not multiplicity-adjusted confirmatory tests.",
+    "Historical ESM-2 and ESM-IF1 controls are not contemporaneous same-run arms.",
+    "Partner ranking is secondary because score/contact dissociation has been observed."
+  ],
+  "ood_labels_read": false,
+  "plan_sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12",
+  "primary_endpoint": "validation macro mean-per-complex pair AP from best.pt",
+  "real_vs_width_matched_control": [
+    {
+      "arm": "prosst_layer_00",
+      "control_arm": "prosst_random_width_control",
+      "family": "prosst",
+      "layer": 0,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.002877567086892744,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.004324394679102315,
+          0.0007208586385688338
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.004871751888629293,
+          0.0012808974242766386
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.0016950187904663072,
+        "negative_component_fraction": 0.6323529411764706,
+        "positive_component_fraction": 0.36764705882352944,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.02357225425212617,
+          "difference": -0.0029877850630861957,
+          "real_macro_ap": 0.020584469189039976,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021771314991962904,
+          "difference": -0.0026985569703398306,
+          "real_macro_ap": 0.019072758021623074,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02172846511588493,
+          "difference": -0.0029463592272522023,
+          "real_macro_ap": 0.018782105888632727,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "prosst_layer_03",
+      "control_arm": "prosst_random_width_control",
+      "family": "prosst",
+      "layer": 3,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.0012895825164500553,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.00466427420827401,
+          0.0006763747545831616
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.005492723320347209,
+          0.0017540295000608626
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.0019367458278854333,
+        "negative_component_fraction": 0.5441176470588235,
+        "positive_component_fraction": 0.45588235294117646,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.02357225425212617,
+          "difference": -0.0036969170706552916,
+          "real_macro_ap": 0.01987533718147088,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021771314991962904,
+          "difference": 0.0007545786723350614,
+          "real_macro_ap": 0.022525893664297966,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02172846511588493,
+          "difference": -0.0009264091510299416,
+          "real_macro_ap": 0.020802055964854987,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "prosst_layer_06",
+      "control_arm": "prosst_random_width_control",
+      "family": "prosst",
+      "layer": 6,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.002015653256389038,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.0052602229942590355,
+          0.0006744676321215256
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.006079930505252355,
+          0.0012835944082138233
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.0021272020967203855,
+        "negative_component_fraction": 0.47058823529411764,
+        "positive_component_fraction": 0.5294117647058824,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.02357225425212617,
+          "difference": -0.0033453326325575336,
+          "real_macro_ap": 0.020226921619568638,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021771314991962904,
+          "difference": -0.0011352778425179344,
+          "real_macro_ap": 0.02063603714944497,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02172846511588493,
+          "difference": -0.001566349294091645,
+          "real_macro_ap": 0.020162115821793284,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "prosst_layer_09",
+      "control_arm": "prosst_random_width_control",
+      "family": "prosst",
+      "layer": 9,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.0017574256136424682,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.003978129228828802,
+          0.002845659728743357
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.005449264336112866,
+          0.004558605994436369
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.0005697732281392434,
+        "negative_component_fraction": 0.5588235294117647,
+        "positive_component_fraction": 0.4411764705882353,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.02357225425212617,
+          "difference": -0.005721096251422225,
+          "real_macro_ap": 0.017851158000703946,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021771314991962904,
+          "difference": 0.00010675937649613082,
+          "real_macro_ap": 0.021878074368459035,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02172846511588493,
+          "difference": 0.0003420600339986944,
+          "real_macro_ap": 0.022070525149883623,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "prosst_layer_12",
+      "control_arm": "prosst_random_width_control",
+      "family": "prosst",
+      "layer": 12,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.0001817901955868395,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.002800755526567596,
+          0.002395904830406515
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.0037665749496294987,
+          0.0029893795786605096
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.00014788470248128688,
+        "negative_component_fraction": 0.5147058823529411,
+        "positive_component_fraction": 0.4852941176470588,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.02357225425212617,
+          "difference": -0.0020141657400757386,
+          "real_macro_ap": 0.021558088512050433,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021771314991962904,
+          "difference": 0.0019813158244994036,
+          "real_macro_ap": 0.023752630816462308,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02172846511588493,
+          "difference": -0.0005125206711841905,
+          "real_macro_ap": 0.02121594444470074,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "saprot_layer_00",
+      "control_arm": "saprot_random_width_control",
+      "family": "saprot",
+      "layer": 0,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.001493331825362355,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.004133221484555555,
+          0.00037400806507449907
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.004908354410513831,
+          0.001656905151161639
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.0017259648408311577,
+        "negative_component_fraction": 0.47058823529411764,
+        "positive_component_fraction": 0.5294117647058824,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.021997767162023327,
+          "difference": -0.00401018067363168,
+          "real_macro_ap": 0.017987586488391646,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021106661969892287,
+          "difference": 0.0005693515764341218,
+          "real_macro_ap": 0.02167601354632641,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02312089340875639,
+          "difference": -0.0010391663788895042,
+          "real_macro_ap": 0.022081727029866886,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "saprot_layer_08",
+      "control_arm": "saprot_random_width_control",
+      "family": "saprot",
+      "layer": 8,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": -0.0010353255988174283,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.005095474940230888,
+          0.0038782286802895656
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.005439783776318038,
+          0.004216438192760418
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": -0.0005710589184134857,
+        "negative_component_fraction": 0.45588235294117646,
+        "positive_component_fraction": 0.5441176470588235,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.021997767162023327,
+          "difference": -0.0012177905746551532,
+          "real_macro_ap": 0.020779976587368174,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021106661969892287,
+          "difference": -0.0006255588453893714,
+          "real_macro_ap": 0.020481103124502915,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02312089340875639,
+          "difference": -0.001262627376407758,
+          "real_macro_ap": 0.021858266032348632,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "saprot_layer_16",
+      "control_arm": "saprot_random_width_control",
+      "family": "saprot",
+      "layer": 16,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": 0.0010222183839638274,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.0027971931163398842,
+          0.00792700309054276
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.003094937051121309,
+          0.00846281069019163
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": 0.0024893395698639565,
+        "negative_component_fraction": 0.4411764705882353,
+        "positive_component_fraction": 0.5588235294117647,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.021997767162023327,
+          "difference": 0.0008573034383759538,
+          "real_macro_ap": 0.02285507060039928,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021106661969892287,
+          "difference": 0.0019803703368010336,
+          "real_macro_ap": 0.02308703230669332,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02312089340875639,
+          "difference": 0.0002289813767144995,
+          "real_macro_ap": 0.02334987478547089,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "saprot_layer_24",
+      "control_arm": "saprot_random_width_control",
+      "family": "saprot",
+      "layer": 24,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": 0.0023768330307593877,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.00143168473936963,
+          0.007039021577744758
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.0018429963391926615,
+          0.008483288888758165
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": 0.0027892500809796003,
+        "negative_component_fraction": 0.4264705882352941,
+        "positive_component_fraction": 0.5735294117647058,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.021997767162023327,
+          "difference": 0.000858301163873601,
+          "real_macro_ap": 0.022856068325896928,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021106661969892287,
+          "difference": 0.004768865136052923,
+          "real_macro_ap": 0.02587552710594521,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02312089340875639,
+          "difference": 0.0015033327923516422,
+          "real_macro_ap": 0.024624226201108032,
+          "seed": 3
+        }
+      ]
+    },
+    {
+      "arm": "saprot_layer_33",
+      "control_arm": "saprot_random_width_control",
+      "family": "saprot",
+      "layer": 33,
+      "paired_complex_component_analysis": {
+        "bootstrap_repeats": 10000,
+        "complex_count": 217,
+        "complex_weighted_mean_difference": 0.0029138626208516007,
+        "component_ci95_conditional_on_fixed_seeds": [
+          -0.0016655538053598883,
+          0.005483547821592516
+        ],
+        "component_count": 68,
+        "crossed_seed_component_ci95": [
+          -0.0021940989625649867,
+          0.005860435888204648
+        ],
+        "estimand": "equal_component_equal_training_seed_mean_paired_difference",
+        "mean_difference": 0.0017849623671281226,
+        "negative_component_fraction": 0.4117647058823529,
+        "positive_component_fraction": 0.5882352941176471,
+        "scope": "development-only pointwise exploratory interval",
+        "training_seeds": [
+          1,
+          2,
+          3
+        ]
+      },
+      "per_seed": [
+        {
+          "control_macro_ap": 0.021997767162023327,
+          "difference": 0.002262229652927151,
+          "real_macro_ap": 0.024259996814950478,
+          "seed": 1
+        },
+        {
+          "control_macro_ap": 0.021106661969892287,
+          "difference": 0.003103778049205884,
+          "real_macro_ap": 0.02421044001909817,
+          "seed": 2
+        },
+        {
+          "control_macro_ap": 0.02312089340875639,
+          "difference": 0.0033755801604217726,
+          "real_macro_ap": 0.026496473569178162,
+          "seed": 3
+        }
+      ]
+    }
+  ],
+  "sota_claim_authorized": false,
+  "source_commit": "3eb4293464552199c66eff9b6add14d7ed75ae14",
+  "status": "COMPLETE_DEVELOPMENT_LAYER_SWEEP_ANALYSIS",
+  "task_count": 36,
+  "task_receipt_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/COMPLETE.json": "7bde8e56ba9c19f60042dbfe193a1b5d21397553e53cb7481e94a40b443e079a",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/COMPLETE.json": "871b8b1f6a258d664b43dfe8077e6bc174fd07ff996dc6bc1f6a04a584a8841e",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/COMPLETE.json": "1c10c538856d887648f135dcb546aa3c5ae99e26d7b55e0fbfd2dbf352c6e37e",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/COMPLETE.json": "0a8bd917b9eca42f8599874afc15d1b623ef0f1c93d58f42589e9d7955378ad8",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/COMPLETE.json": "88e85ea549870e4498ff063b4431aa8ee436db874413468ddb66052828e01082",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/COMPLETE.json": "f1bfabfce1dcb4b25c342599a8d9ebd81bf8dbb4e51e1cf2a7d66aac90a367b7",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/COMPLETE.json": "e2795e6a5fe062ce713032b379118e8956a45c13ee93e6978438aec34302d546",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/COMPLETE.json": "fa0f79b96cd39caeaed31c55e2e9978c3125fa6390a9630184205bf6095c01fb",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/COMPLETE.json": "6ca5715a56666a934df6aefd41e487b0449636653eb54e45d74605aa26350e45",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/COMPLETE.json": "ca71a96e76ce9a424950f3982b34a77564c1c44f9802f66c1d71a3d2a1c24f0b",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/COMPLETE.json": "446bea326999eca20c313a3f443bb231de107c050d2cfcb89c6446ce008eec23",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_11/COMPLETE.json": "950ab2f0e59924d53cf251a4707b06680d6f5e9998b1add740e65d4e1beca0ca",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_12/COMPLETE.json": "ad8b0b8bd6206793bb38ff664e98bbb1490d2bd7df8bd8b17925923005eab3fb",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_13/COMPLETE.json": "8666cc684c5a98d8bb3db308aca1c0938fecc9cf4b38e4f7e43848e25fb3b571",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_14/COMPLETE.json": "4eb24ea2ac1ed0da0e8620da68d048fa38e8316465eab9561f8c0b0191dd49c1",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_15/COMPLETE.json": "7f5dd926fa45eeb7eea51bc07d9b9bb1b32c73f1e44a168f702c20bc43745fd4",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_16/COMPLETE.json": "4f62a0c1cfbe51ad20ad3051b6f063d49a9f9642f2f33ff68582f1e2315e496b",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_17/COMPLETE.json": "e583de3d8e423ab4eee106efbe103b0f8754813c5e45d22c7cd1b2e64be9304b",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_18/COMPLETE.json": "d1285cb645ae34bd6e22c2b2ffbb3c237d9914432886869de50dacfdcea85af2",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_19/COMPLETE.json": "78a815b377b4c0f71f8b73f2d0f6e63009ad953c9a3baea756aa44abd9b16ce1",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_20/COMPLETE.json": "2440226c5adf94c215515b92a12ef06ad556b92866b358835e59b8f673cefd07",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_21/COMPLETE.json": "2295a5dcc396fa25b88fe7986ba626946e1aaacb5053bb40f1461ab5326c3096",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_22/COMPLETE.json": "65330dacdeb7c5b241c115dafc7b33c07dda537ab425f3f20cedcd6bc2c466b7",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_23/COMPLETE.json": "29da5c3b1281bed14d3353f0c94d884b4050ad785195ff330e664de6ad96ec35",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_24/COMPLETE.json": "780310cf7c48249bb013c55826b257d07c38340a7cab3bd48ca5ebe12b690dc8",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_25/COMPLETE.json": "f0818595ffe3a120d5994efd0b4e855753d8fcd4e1545c8c4d77744f30e4f89d",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_26/COMPLETE.json": "fcfea91b2730f61fd759dfaf90be629797e9da6cf8a8f8acdcca16c9ce26ef76",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_27/COMPLETE.json": "791c1e290d927705d8986cfbb8cc85d97372d44e4f3e436567981c23311188fb",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_28/COMPLETE.json": "aacd4e4e13480a475875330f3240af72848c21cbe7060f0c6af7268c77d8dc03",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_29/COMPLETE.json": "f689af050f871c481e866add3891c95eff1a2f5f5e9fee091c3e3721ab835683",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_30/COMPLETE.json": "81eab1abfbd9f34e9fa84cdb454106ca648793c1da477f3477752406f748b99f",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_31/COMPLETE.json": "286f5f0ebb8d2bbfb94b5a5cd9a29c9216bdbaabfba51eabe64b8709f40c2591",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_32/COMPLETE.json": "31c71c6e50d6b502ffc7b676773cc6e56b143f76a0aa4df72eea21fd985698f7",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_33/COMPLETE.json": "a3ae3b0f30943804fbf449ffbf38bfcd078aa6dfd19f0a9d33d30d4aaa8b6a14",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_34/COMPLETE.json": "19f76844f3aeef3040746125475b922d9a9d4873608bf1af025263f0b812bcb3",
+    "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_35/COMPLETE.json": "13ed1c3fea5599837d18cf7a725ab572eebbcd1d2dfe1077b25e26d594b4ddf9"
+  },
+  "tasks": [
+    {
+      "arm": "saprot_layer_00",
+      "best": {
+        "epitope_macro_ap": 0.1654826612122789,
+        "instance_count": 217,
+        "pair_macro_ap": 0.017987586488391646,
+        "pair_macro_auroc": 0.9174420071517829,
+        "pair_micro_ap": 0.01108995938226375,
+        "paratope_macro_ap": 0.6319237510108171,
+        "partner_mrr": 0.3814296686416503,
+        "partner_recall_at_1": 0.16589861751152074
+      },
+      "best_minus_last_pair_macro_ap": 0.0021488284401504285,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_00/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.16675094473920093,
+        "instance_count": 217,
+        "pair_macro_ap": 0.015838758048241218,
+        "pair_macro_auroc": 0.9104261208255202,
+        "pair_micro_ap": 0.01000545622562944,
+        "paratope_macro_ap": 0.6365714813278194,
+        "partner_mrr": 0.4003328213005633,
+        "partner_recall_at_1": 0.20276497695852536
+      },
+      "layer": 0,
+      "parameter_count": 1096461,
+      "seed": 1,
+      "task_id": 0,
+      "wall_seconds": 9393.730666201562
+    },
+    {
+      "arm": "saprot_layer_00",
+      "best": {
+        "epitope_macro_ap": 0.16992639064521994,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021676013546326405,
+        "pair_macro_auroc": 0.9158212799353536,
+        "pair_micro_ap": 0.011585044535315513,
+        "paratope_macro_ap": 0.6484602601001912,
+        "partner_mrr": 0.40117950405968844,
+        "partner_recall_at_1": 0.1935483870967742
+      },
+      "best_minus_last_pair_macro_ap": 0.002801565063689525,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_01/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.16794194406041676,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01887444848263688,
+        "pair_macro_auroc": 0.901626334475367,
+        "pair_micro_ap": 0.010149107290307328,
+        "paratope_macro_ap": 0.6298702181536587,
+        "partner_mrr": 0.41002304147465435,
+        "partner_recall_at_1": 0.17050691244239632
+      },
+      "layer": 0,
+      "parameter_count": 1096461,
+      "seed": 2,
+      "task_id": 1,
+      "wall_seconds": 9415.592279005796
+    },
+    {
+      "arm": "saprot_layer_00",
+      "best": {
+        "epitope_macro_ap": 0.18042167990851346,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02208172702986689,
+        "pair_macro_auroc": 0.9179235097953468,
+        "pair_micro_ap": 0.01110303984441228,
+        "paratope_macro_ap": 0.646901012515735,
+        "partner_mrr": 0.37954063345768413,
+        "partner_recall_at_1": 0.18433179723502305
+      },
+      "best_minus_last_pair_macro_ap": 0.0036127473788898183,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_02/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.165114460831037,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01846897965097707,
+        "pair_macro_auroc": 0.9062451669856538,
+        "pair_micro_ap": 0.010386238748863588,
+        "paratope_macro_ap": 0.6512953902116416,
+        "partner_mrr": 0.43092677931387613,
+        "partner_recall_at_1": 0.22580645161290322
+      },
+      "layer": 0,
+      "parameter_count": 1096461,
+      "seed": 3,
+      "task_id": 2,
+      "wall_seconds": 9431.335475828499
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best": {
+        "epitope_macro_ap": 0.1763391126084698,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020779976587368174,
+        "pair_macro_auroc": 0.9158171123054045,
+        "pair_micro_ap": 0.011340554471775897,
+        "paratope_macro_ap": 0.6125205904396522,
+        "partner_mrr": 0.3777192597469095,
+        "partner_recall_at_1": 0.16589861751152074
+      },
+      "best_minus_last_pair_macro_ap": 0.002387806161096996,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_03/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1676330389067292,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018392170426271177,
+        "pair_macro_auroc": 0.8990894873737459,
+        "pair_micro_ap": 0.011294417554619523,
+        "paratope_macro_ap": 0.6097754304503737,
+        "partner_mrr": 0.39908016970228954,
+        "partner_recall_at_1": 0.17972350230414746
+      },
+      "layer": 8,
+      "parameter_count": 1096461,
+      "seed": 1,
+      "task_id": 3,
+      "wall_seconds": 9594.129237256944
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best": {
+        "epitope_macro_ap": 0.17381767155431457,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020481103124502915,
+        "pair_macro_auroc": 0.91038127530957,
+        "pair_micro_ap": 0.010638988283273037,
+        "paratope_macro_ap": 0.6268937132812884,
+        "partner_mrr": 0.3748719918074757,
+        "partner_recall_at_1": 0.17511520737327188
+      },
+      "best_minus_last_pair_macro_ap": 0.0021683853262803414,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_04/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1696664653075023,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018312717798222574,
+        "pair_macro_auroc": 0.8967424797598658,
+        "pair_micro_ap": 0.011336148583743523,
+        "paratope_macro_ap": 0.6198989621002511,
+        "partner_mrr": 0.39625850340136054,
+        "partner_recall_at_1": 0.2073732718894009
+      },
+      "layer": 8,
+      "parameter_count": 1096461,
+      "seed": 2,
+      "task_id": 4,
+      "wall_seconds": 9250.061309144832
+    },
+    {
+      "arm": "saprot_layer_08",
+      "best": {
+        "epitope_macro_ap": 0.17328386136123694,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021858266032348632,
+        "pair_macro_auroc": 0.9146254230736707,
+        "pair_micro_ap": 0.010272777746505372,
+        "paratope_macro_ap": 0.6162183558913473,
+        "partner_mrr": 0.3691555116670325,
+        "partner_recall_at_1": 0.14746543778801843
+      },
+      "best_minus_last_pair_macro_ap": 0.003087910204585202,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_05/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.16254093915156462,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01877035582776343,
+        "pair_macro_auroc": 0.902148875367173,
+        "pair_micro_ap": 0.010141855126482167,
+        "paratope_macro_ap": 0.6232901400438247,
+        "partner_mrr": 0.39402018872064953,
+        "partner_recall_at_1": 0.1935483870967742
+      },
+      "layer": 8,
+      "parameter_count": 1096461,
+      "seed": 3,
+      "task_id": 5,
+      "wall_seconds": 9228.39778461773
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best": {
+        "epitope_macro_ap": 0.18379762287307932,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02285507060039928,
+        "pair_macro_auroc": 0.9091710411227434,
+        "pair_micro_ap": 0.012617842671503352,
+        "paratope_macro_ap": 0.5925304730165143,
+        "partner_mrr": 0.3561224489795919,
+        "partner_recall_at_1": 0.14746543778801843
+      },
+      "best_minus_last_pair_macro_ap": 0.0022468817818457575,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_06/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.18014936916732904,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020608188818553523,
+        "pair_macro_auroc": 0.9028577318305159,
+        "pair_micro_ap": 0.012934370816132933,
+        "paratope_macro_ap": 0.5877297832202582,
+        "partner_mrr": 0.4130074610489357,
+        "partner_recall_at_1": 0.21658986175115208
+      },
+      "layer": 16,
+      "parameter_count": 1096461,
+      "seed": 1,
+      "task_id": 6,
+      "wall_seconds": 9632.063725952059
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best": {
+        "epitope_macro_ap": 0.1816167759372142,
+        "instance_count": 217,
+        "pair_macro_ap": 0.023087032306693317,
+        "pair_macro_auroc": 0.914205831761277,
+        "pair_micro_ap": 0.01234582475818049,
+        "paratope_macro_ap": 0.6146917877446345,
+        "partner_mrr": 0.4014739229024944,
+        "partner_recall_at_1": 0.22119815668202766
+      },
+      "best_minus_last_pair_macro_ap": 0.0032885794757372966,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_07/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.18028015773817413,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01979845283095602,
+        "pair_macro_auroc": 0.9077234350612687,
+        "pair_micro_ap": 0.012555710588514974,
+        "paratope_macro_ap": 0.5966357198498,
+        "partner_mrr": 0.399800672957355,
+        "partner_recall_at_1": 0.1935483870967742
+      },
+      "layer": 16,
+      "parameter_count": 1096461,
+      "seed": 2,
+      "task_id": 7,
+      "wall_seconds": 9599.970573037863
+    },
+    {
+      "arm": "saprot_layer_16",
+      "best": {
+        "epitope_macro_ap": 0.1805101911567131,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02334987478547089,
+        "pair_macro_auroc": 0.9113774244718019,
+        "pair_micro_ap": 0.01053916898972159,
+        "paratope_macro_ap": 0.6155211278651076,
+        "partner_mrr": 0.36297088727964305,
+        "partner_recall_at_1": 0.1382488479262673
+      },
+      "best_minus_last_pair_macro_ap": 0.0034812735464691685,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_08/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17162154023980455,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01986860123900172,
+        "pair_macro_auroc": 0.9004846904112537,
+        "pair_micro_ap": 0.010777929857457458,
+        "paratope_macro_ap": 0.6039157027111437,
+        "partner_mrr": 0.4029679613780996,
+        "partner_recall_at_1": 0.17511520737327188
+      },
+      "layer": 16,
+      "parameter_count": 1096461,
+      "seed": 3,
+      "task_id": 8,
+      "wall_seconds": 9168.539797674865
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best": {
+        "epitope_macro_ap": 0.19416599183809724,
+        "instance_count": 217,
+        "pair_macro_ap": 0.022856068325896928,
+        "pair_macro_auroc": 0.9034474801535861,
+        "pair_micro_ap": 0.012603057674200693,
+        "paratope_macro_ap": 0.6034992428055269,
+        "partner_mrr": 0.35371589496013456,
+        "partner_recall_at_1": 0.15207373271889402
+      },
+      "best_minus_last_pair_macro_ap": 0.003367870450702304,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_09/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17599325802499988,
+        "instance_count": 217,
+        "pair_macro_ap": 0.019488197875194624,
+        "pair_macro_auroc": 0.8939757297536753,
+        "pair_micro_ap": 0.011882080731627007,
+        "paratope_macro_ap": 0.6008951015009605,
+        "partner_mrr": 0.48225806451612907,
+        "partner_recall_at_1": 0.2764976958525346
+      },
+      "layer": 24,
+      "parameter_count": 1096461,
+      "seed": 1,
+      "task_id": 9,
+      "wall_seconds": 9354.746255196631
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best": {
+        "epitope_macro_ap": 0.19707404622437136,
+        "instance_count": 217,
+        "pair_macro_ap": 0.025875527105945213,
+        "pair_macro_auroc": 0.9094896776397695,
+        "pair_micro_ap": 0.011706554128172716,
+        "paratope_macro_ap": 0.626537553253336,
+        "partner_mrr": 0.3389858093775145,
+        "partner_recall_at_1": 0.1336405529953917
+      },
+      "best_minus_last_pair_macro_ap": 0.0048576538764287525,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_10/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17607739128992178,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02101787322951646,
+        "pair_macro_auroc": 0.8920720840489642,
+        "pair_micro_ap": 0.011168301150530222,
+        "paratope_macro_ap": 0.6090786398252014,
+        "partner_mrr": 0.4373692487747787,
+        "partner_recall_at_1": 0.2488479262672811
+      },
+      "layer": 24,
+      "parameter_count": 1096461,
+      "seed": 2,
+      "task_id": 10,
+      "wall_seconds": 9390.255964534357
+    },
+    {
+      "arm": "saprot_layer_24",
+      "best": {
+        "epitope_macro_ap": 0.19485368172368045,
+        "instance_count": 217,
+        "pair_macro_ap": 0.024624226201108032,
+        "pair_macro_auroc": 0.9038753986413705,
+        "pair_micro_ap": 0.01040634175057185,
+        "paratope_macro_ap": 0.6204412833118313,
+        "partner_mrr": 0.396450515690147,
+        "partner_recall_at_1": 0.17972350230414746
+      },
+      "best_minus_last_pair_macro_ap": 0.002986606487915794,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_11/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.18122635496270145,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021637619713192238,
+        "pair_macro_auroc": 0.8957176839606533,
+        "pair_micro_ap": 0.01148979751028236,
+        "paratope_macro_ap": 0.6043509495056224,
+        "partner_mrr": 0.34442981493672736,
+        "partner_recall_at_1": 0.1152073732718894
+      },
+      "layer": 24,
+      "parameter_count": 1096461,
+      "seed": 3,
+      "task_id": 11,
+      "wall_seconds": 9507.260813019238
+    },
+    {
+      "arm": "saprot_layer_33",
+      "best": {
+        "epitope_macro_ap": 0.1893610155078285,
+        "instance_count": 217,
+        "pair_macro_ap": 0.024259996814950478,
+        "pair_macro_auroc": 0.9200008665929941,
+        "pair_micro_ap": 0.014199942333834339,
+        "paratope_macro_ap": 0.6549379696387985,
+        "partner_mrr": 0.38095969570623944,
+        "partner_recall_at_1": 0.15207373271889402
+      },
+      "best_minus_last_pair_macro_ap": 0.00478422622894031,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_12/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17992755776408587,
+        "instance_count": 217,
+        "pair_macro_ap": 0.019475770586010167,
+        "pair_macro_auroc": 0.8940757305765545,
+        "pair_micro_ap": 0.009945606406642734,
+        "paratope_macro_ap": 0.6417127545805693,
+        "partner_mrr": 0.3661601199619633,
+        "partner_recall_at_1": 0.14285714285714285
+      },
+      "layer": 33,
+      "parameter_count": 1096461,
+      "seed": 1,
+      "task_id": 12,
+      "wall_seconds": 9148.876152768731
+    },
+    {
+      "arm": "saprot_layer_33",
+      "best": {
+        "epitope_macro_ap": 0.18676182854735476,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02421044001909817,
+        "pair_macro_auroc": 0.9249208174337213,
+        "pair_micro_ap": 0.014922330140009958,
+        "paratope_macro_ap": 0.666461379672763,
+        "partner_mrr": 0.33964962329017634,
+        "partner_recall_at_1": 0.12442396313364056
+      },
+      "best_minus_last_pair_macro_ap": 0.0027015331250372886,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_13/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.18585420212580236,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021508906894060882,
+        "pair_macro_auroc": 0.9074488539421981,
+        "pair_micro_ap": 0.012887466020657632,
+        "paratope_macro_ap": 0.6490755624963055,
+        "partner_mrr": 0.36725184697534924,
+        "partner_recall_at_1": 0.1382488479262673
+      },
+      "layer": 33,
+      "parameter_count": 1096461,
+      "seed": 2,
+      "task_id": 13,
+      "wall_seconds": 9321.614342685789
+    },
+    {
+      "arm": "saprot_layer_33",
+      "best": {
+        "epitope_macro_ap": 0.1916363942174564,
+        "instance_count": 217,
+        "pair_macro_ap": 0.026496473569178162,
+        "pair_macro_auroc": 0.9195874858003849,
+        "pair_micro_ap": 0.013440433876629923,
+        "paratope_macro_ap": 0.649392412883461,
+        "partner_mrr": 0.4381427839953186,
+        "partner_recall_at_1": 0.22580645161290322
+      },
+      "best_minus_last_pair_macro_ap": 0.0064121932420302605,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_14/COMPLETE.json",
+      "family": "saprot",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.18076049886036694,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020084280327147902,
+        "pair_macro_auroc": 0.8951209052020562,
+        "pair_micro_ap": 0.011153087536078419,
+        "paratope_macro_ap": 0.6454239756646921,
+        "partner_mrr": 0.36996927803379415,
+        "partner_recall_at_1": 0.16129032258064516
+      },
+      "layer": 33,
+      "parameter_count": 1096461,
+      "seed": 3,
+      "task_id": 14,
+      "wall_seconds": 9328.090769687667
+    },
+    {
+      "arm": "prosst_layer_00",
+      "best": {
+        "epitope_macro_ap": 0.1716028382032607,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020584469189039976,
+        "pair_macro_auroc": 0.9127290370162703,
+        "pair_micro_ap": 0.011491744487476719,
+        "paratope_macro_ap": 0.6487410790735358,
+        "partner_mrr": 0.3903920708068173,
+        "partner_recall_at_1": 0.2073732718894009
+      },
+      "best_minus_last_pair_macro_ap": -0.0012034028970741503,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_15/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1686730389783418,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021787872086114126,
+        "pair_macro_auroc": 0.9080460450904384,
+        "pair_micro_ap": 0.012169372386190166,
+        "paratope_macro_ap": 0.6314273296827074,
+        "partner_mrr": 0.38389108331504646,
+        "partner_recall_at_1": 0.17511520737327188
+      },
+      "layer": 0,
+      "parameter_count": 963341,
+      "seed": 1,
+      "task_id": 15,
+      "wall_seconds": 9346.156992584467
+    },
+    {
+      "arm": "prosst_layer_00",
+      "best": {
+        "epitope_macro_ap": 0.178029800407488,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01907275802162307,
+        "pair_macro_auroc": 0.9198674582935642,
+        "pair_micro_ap": 0.011974693187849985,
+        "paratope_macro_ap": 0.6552524712734239,
+        "partner_mrr": 0.3810767317679761,
+        "partner_recall_at_1": 0.16129032258064516
+      },
+      "best_minus_last_pair_macro_ap": 0.0009575777146538407,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_16/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.16375420046256617,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01811518030696923,
+        "pair_macro_auroc": 0.9107597920943123,
+        "pair_micro_ap": 0.011692977365426155,
+        "paratope_macro_ap": 0.6412403217690857,
+        "partner_mrr": 0.33852315119596227,
+        "partner_recall_at_1": 0.1336405529953917
+      },
+      "layer": 0,
+      "parameter_count": 963341,
+      "seed": 2,
+      "task_id": 16,
+      "wall_seconds": 9496.084122072905
+    },
+    {
+      "arm": "prosst_layer_00",
+      "best": {
+        "epitope_macro_ap": 0.1724549562899779,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018782105888632727,
+        "pair_macro_auroc": 0.9156960724615212,
+        "pair_micro_ap": 0.011639565467164579,
+        "paratope_macro_ap": 0.6524482644929029,
+        "partner_mrr": 0.3802556506473557,
+        "partner_recall_at_1": 0.16589861751152074
+      },
+      "best_minus_last_pair_macro_ap": 4.086121452421751e-05,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_17/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.16524549882437461,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01874124467410851,
+        "pair_macro_auroc": 0.9075791410462086,
+        "pair_micro_ap": 0.01174032889918868,
+        "paratope_macro_ap": 0.6354160643218663,
+        "partner_mrr": 0.4040103138029405,
+        "partner_recall_at_1": 0.18433179723502305
+      },
+      "layer": 0,
+      "parameter_count": 963341,
+      "seed": 3,
+      "task_id": 17,
+      "wall_seconds": 9451.6593528511
+    },
+    {
+      "arm": "prosst_layer_03",
+      "best": {
+        "epitope_macro_ap": 0.1782681289295616,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01987533718147088,
+        "pair_macro_auroc": 0.917339139435717,
+        "pair_micro_ap": 0.01300630976533359,
+        "paratope_macro_ap": 0.6390907258766347,
+        "partner_mrr": 0.3818722112500915,
+        "partner_recall_at_1": 0.14746543778801843
+      },
+      "best_minus_last_pair_macro_ap": 0.0026635604553381827,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_18/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17843754282358118,
+        "instance_count": 217,
+        "pair_macro_ap": 0.017211776726132697,
+        "pair_macro_auroc": 0.9063833429416783,
+        "pair_micro_ap": 0.011168466813730805,
+        "paratope_macro_ap": 0.6392801825151506,
+        "partner_mrr": 0.43034525638212273,
+        "partner_recall_at_1": 0.22580645161290322
+      },
+      "layer": 3,
+      "parameter_count": 963341,
+      "seed": 1,
+      "task_id": 18,
+      "wall_seconds": 9064.619464913383
+    },
+    {
+      "arm": "prosst_layer_03",
+      "best": {
+        "epitope_macro_ap": 0.1799752485893869,
+        "instance_count": 217,
+        "pair_macro_ap": 0.022525893664297966,
+        "pair_macro_auroc": 0.9152857334073713,
+        "pair_micro_ap": 0.012006688695931071,
+        "paratope_macro_ap": 0.6387451138798379,
+        "partner_mrr": 0.35469058591178415,
+        "partner_recall_at_1": 0.1382488479262673
+      },
+      "best_minus_last_pair_macro_ap": 0.0033346634236058985,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_19/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17675686956015166,
+        "instance_count": 217,
+        "pair_macro_ap": 0.019191230240692067,
+        "pair_macro_auroc": 0.9079372882530363,
+        "pair_micro_ap": 0.01180618105194145,
+        "paratope_macro_ap": 0.6354861667270904,
+        "partner_mrr": 0.36363652988076955,
+        "partner_recall_at_1": 0.15668202764976957
+      },
+      "layer": 3,
+      "parameter_count": 963341,
+      "seed": 2,
+      "task_id": 19,
+      "wall_seconds": 9187.16426885128
+    },
+    {
+      "arm": "prosst_layer_03",
+      "best": {
+        "epitope_macro_ap": 0.16900133837296816,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020802055964854987,
+        "pair_macro_auroc": 0.9210539961195622,
+        "pair_micro_ap": 0.012982634440507426,
+        "paratope_macro_ap": 0.6202053673423588,
+        "partner_mrr": 0.41467156755175194,
+        "partner_recall_at_1": 0.2119815668202765
+      },
+      "best_minus_last_pair_macro_ap": 0.001875709985280069,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_20/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1690192214073148,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01892634597957492,
+        "pair_macro_auroc": 0.909932194774336,
+        "pair_micro_ap": 0.011864572880689771,
+        "paratope_macro_ap": 0.6315236612154428,
+        "partner_mrr": 0.36727561992538954,
+        "partner_recall_at_1": 0.15207373271889402
+      },
+      "layer": 3,
+      "parameter_count": 963341,
+      "seed": 3,
+      "task_id": 20,
+      "wall_seconds": 9279.328074347228
+    },
+    {
+      "arm": "prosst_layer_06",
+      "best": {
+        "epitope_macro_ap": 0.18799821418805432,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020226921619568638,
+        "pair_macro_auroc": 0.9170358131992762,
+        "pair_micro_ap": 0.01277148375835476,
+        "paratope_macro_ap": 0.6326084552765545,
+        "partner_mrr": 0.3717504205983469,
+        "partner_recall_at_1": 0.15207373271889402
+      },
+      "best_minus_last_pair_macro_ap": 0.001817527476764027,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_21/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1799565928588038,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01840939414280461,
+        "pair_macro_auroc": 0.9009017016812442,
+        "pair_micro_ap": 0.0117349580616968,
+        "paratope_macro_ap": 0.6198813956772637,
+        "partner_mrr": 0.4227397410577134,
+        "partner_recall_at_1": 0.2073732718894009
+      },
+      "layer": 6,
+      "parameter_count": 963341,
+      "seed": 1,
+      "task_id": 21,
+      "wall_seconds": 9252.9258354716
+    },
+    {
+      "arm": "prosst_layer_06",
+      "best": {
+        "epitope_macro_ap": 0.1767347655922852,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020636037149444966,
+        "pair_macro_auroc": 0.9229038839609505,
+        "pair_micro_ap": 0.013005522060568422,
+        "paratope_macro_ap": 0.6393234753073083,
+        "partner_mrr": 0.3757918221051862,
+        "partner_recall_at_1": 0.16589861751152074
+      },
+      "best_minus_last_pair_macro_ap": -0.0013750332161298479,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_22/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.17404530363558327,
+        "instance_count": 217,
+        "pair_macro_ap": 0.022011070365574814,
+        "pair_macro_auroc": 0.8913356993749106,
+        "pair_micro_ap": 0.011330225935828638,
+        "paratope_macro_ap": 0.6273678079987222,
+        "partner_mrr": 0.35407614658766734,
+        "partner_recall_at_1": 0.16129032258064516
+      },
+      "layer": 6,
+      "parameter_count": 963341,
+      "seed": 2,
+      "task_id": 22,
+      "wall_seconds": 9243.774019155651
+    },
+    {
+      "arm": "prosst_layer_06",
+      "best": {
+        "epitope_macro_ap": 0.17756510262946196,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02016211582179328,
+        "pair_macro_auroc": 0.9174937994832688,
+        "pair_micro_ap": 0.012357494104869323,
+        "paratope_macro_ap": 0.6212177243813705,
+        "partner_mrr": 0.4035732572598932,
+        "partner_recall_at_1": 0.18433179723502305
+      },
+      "best_minus_last_pair_macro_ap": 0.003229312942434101,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_23/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1753189847137735,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01693280287935918,
+        "pair_macro_auroc": 0.8940789833383694,
+        "pair_micro_ap": 0.01122059633568326,
+        "paratope_macro_ap": 0.6148431464965031,
+        "partner_mrr": 0.357786555482408,
+        "partner_recall_at_1": 0.12442396313364056
+      },
+      "layer": 6,
+      "parameter_count": 963341,
+      "seed": 3,
+      "task_id": 23,
+      "wall_seconds": 9412.48147614766
+    },
+    {
+      "arm": "prosst_layer_09",
+      "best": {
+        "epitope_macro_ap": 0.17926848087712255,
+        "instance_count": 217,
+        "pair_macro_ap": 0.01785115800070395,
+        "pair_macro_auroc": 0.9136891062360688,
+        "pair_micro_ap": 0.011554937284663516,
+        "paratope_macro_ap": 0.6068857670008869,
+        "partner_mrr": 0.37537305244678526,
+        "partner_recall_at_1": 0.17972350230414746
+      },
+      "best_minus_last_pair_macro_ap": -0.0022572233466403684,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_24/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1794681055695784,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020108381347344318,
+        "pair_macro_auroc": 0.9049285729059757,
+        "pair_micro_ap": 0.013034287620252188,
+        "paratope_macro_ap": 0.6231728645397537,
+        "partner_mrr": 0.3857490307951137,
+        "partner_recall_at_1": 0.14746543778801843
+      },
+      "layer": 9,
+      "parameter_count": 963341,
+      "seed": 1,
+      "task_id": 24,
+      "wall_seconds": 8322.433865102008
+    },
+    {
+      "arm": "prosst_layer_09",
+      "best": {
+        "epitope_macro_ap": 0.17029854532909366,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021878074368459035,
+        "pair_macro_auroc": 0.9169792955561428,
+        "pair_micro_ap": 0.013259106405605204,
+        "paratope_macro_ap": 0.6302165090276909,
+        "partner_mrr": 0.3535165679174896,
+        "partner_recall_at_1": 0.1382488479262673
+      },
+      "best_minus_last_pair_macro_ap": 0.0035624575609541423,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_25/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1675016151971708,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018315616807504893,
+        "pair_macro_auroc": 0.8941131446625072,
+        "pair_micro_ap": 0.01073703708713729,
+        "paratope_macro_ap": 0.6316576947598089,
+        "partner_mrr": 0.35513861458561913,
+        "partner_recall_at_1": 0.16129032258064516
+      },
+      "layer": 9,
+      "parameter_count": 963341,
+      "seed": 2,
+      "task_id": 25,
+      "wall_seconds": 9873.702724561095
+    },
+    {
+      "arm": "prosst_layer_09",
+      "best": {
+        "epitope_macro_ap": 0.16668283253621313,
+        "instance_count": 217,
+        "pair_macro_ap": 0.022070525149883616,
+        "pair_macro_auroc": 0.9168588670005902,
+        "pair_micro_ap": 0.011558517386299842,
+        "paratope_macro_ap": 0.6455635823248552,
+        "partner_mrr": 0.3995684295223466,
+        "partner_recall_at_1": 0.17511520737327188
+      },
+      "best_minus_last_pair_macro_ap": 0.0038059888688285297,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_26/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.16312017827395114,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018264536281055087,
+        "pair_macro_auroc": 0.8973564008021488,
+        "pair_micro_ap": 0.01124448791891479,
+        "paratope_macro_ap": 0.6331861115666064,
+        "partner_mrr": 0.40404505888376857,
+        "partner_recall_at_1": 0.20276497695852536
+      },
+      "layer": 9,
+      "parameter_count": 963341,
+      "seed": 3,
+      "task_id": 26,
+      "wall_seconds": 9243.904037304223
+    },
+    {
+      "arm": "prosst_layer_12",
+      "best": {
+        "epitope_macro_ap": 0.19146268568106414,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021558088512050433,
+        "pair_macro_auroc": 0.9154821608931191,
+        "pair_micro_ap": 0.011622021491235549,
+        "paratope_macro_ap": 0.6170683614422073,
+        "partner_mrr": 0.39732097139931244,
+        "partner_recall_at_1": 0.1935483870967742
+      },
+      "best_minus_last_pair_macro_ap": 0.0012871384576189845,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_27/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.18057817022635395,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02027095005443145,
+        "pair_macro_auroc": 0.9009311397543727,
+        "pair_micro_ap": 0.01275588487212278,
+        "paratope_macro_ap": 0.6327218248931796,
+        "partner_mrr": 0.4500091434423232,
+        "partner_recall_at_1": 0.2534562211981567
+      },
+      "layer": 12,
+      "parameter_count": 963341,
+      "seed": 1,
+      "task_id": 27,
+      "wall_seconds": 8695.591176070273
+    },
+    {
+      "arm": "prosst_layer_12",
+      "best": {
+        "epitope_macro_ap": 0.17414560938795956,
+        "instance_count": 217,
+        "pair_macro_ap": 0.023752630816462308,
+        "pair_macro_auroc": 0.9207990856646686,
+        "pair_micro_ap": 0.012839616066913565,
+        "paratope_macro_ap": 0.6482496781906774,
+        "partner_mrr": 0.3521743105844488,
+        "partner_recall_at_1": 0.15668202764976957
+      },
+      "best_minus_last_pair_macro_ap": 0.005547976399702274,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_28/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1639195865358531,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018204654416760033,
+        "pair_macro_auroc": 0.8956463803426141,
+        "pair_micro_ap": 0.011065486647491114,
+        "paratope_macro_ap": 0.6437364556738691,
+        "partner_mrr": 0.38557347670250897,
+        "partner_recall_at_1": 0.17972350230414746
+      },
+      "layer": 12,
+      "parameter_count": 963341,
+      "seed": 2,
+      "task_id": 28,
+      "wall_seconds": 9379.278545673937
+    },
+    {
+      "arm": "prosst_layer_12",
+      "best": {
+        "epitope_macro_ap": 0.18706575777288426,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02121594444470074,
+        "pair_macro_auroc": 0.9232261242354611,
+        "pair_micro_ap": 0.013986911768537863,
+        "paratope_macro_ap": 0.6470283694974727,
+        "partner_mrr": 0.36722807402530905,
+        "partner_recall_at_1": 0.15668202764976957
+      },
+      "best_minus_last_pair_macro_ap": 0.0012039474976937303,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_29/COMPLETE.json",
+      "family": "prosst",
+      "kind": "real",
+      "last": {
+        "epitope_macro_ap": 0.1844896395359302,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020011996947007008,
+        "pair_macro_auroc": 0.9038698525786034,
+        "pair_micro_ap": 0.012050949820829672,
+        "paratope_macro_ap": 0.6376992239442844,
+        "partner_mrr": 0.4074921366396021,
+        "partner_recall_at_1": 0.2119815668202765
+      },
+      "layer": 12,
+      "parameter_count": 963341,
+      "seed": 3,
+      "task_id": 29,
+      "wall_seconds": 8667.928178343922
+    },
+    {
+      "arm": "saprot_random_width_control",
+      "best": {
+        "epitope_macro_ap": 0.1837677322819533,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021997767162023327,
+        "pair_macro_auroc": 0.9225370619773582,
+        "pair_micro_ap": 0.013088127818975786,
+        "paratope_macro_ap": 0.6376300804789181,
+        "partner_mrr": 0.2620510569819326,
+        "partner_recall_at_1": 0.08755760368663594
+      },
+      "best_minus_last_pair_macro_ap": 0.0017420383171593036,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_30/COMPLETE.json",
+      "family": "saprot",
+      "kind": "control",
+      "last": {
+        "epitope_macro_ap": 0.17457685639127313,
+        "instance_count": 217,
+        "pair_macro_ap": 0.020255728844864023,
+        "pair_macro_auroc": 0.9098238148786199,
+        "pair_micro_ap": 0.010745398642790182,
+        "paratope_macro_ap": 0.6487473713288269,
+        "partner_mrr": 0.25159827371808935,
+        "partner_recall_at_1": 0.07373271889400922
+      },
+      "layer": null,
+      "parameter_count": 1096461,
+      "seed": 1,
+      "task_id": 30,
+      "wall_seconds": 7809.919094095007
+    },
+    {
+      "arm": "saprot_random_width_control",
+      "best": {
+        "epitope_macro_ap": 0.1828189596629291,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021106661969892287,
+        "pair_macro_auroc": 0.9228434739161347,
+        "pair_micro_ap": 0.013346239562052576,
+        "paratope_macro_ap": 0.6355590781691892,
+        "partner_mrr": 0.2496818082071538,
+        "partner_recall_at_1": 0.07373271889400922
+      },
+      "best_minus_last_pair_macro_ap": 0.0015274758520335517,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_31/COMPLETE.json",
+      "family": "saprot",
+      "kind": "control",
+      "last": {
+        "epitope_macro_ap": 0.17743488964645696,
+        "instance_count": 217,
+        "pair_macro_ap": 0.019579186117858735,
+        "pair_macro_auroc": 0.9120228772107206,
+        "pair_micro_ap": 0.01135690356837914,
+        "paratope_macro_ap": 0.6345336370341167,
+        "partner_mrr": 0.2636017847999415,
+        "partner_recall_at_1": 0.08294930875576037
+      },
+      "layer": null,
+      "parameter_count": 1096461,
+      "seed": 2,
+      "task_id": 31,
+      "wall_seconds": 7977.604336705059
+    },
+    {
+      "arm": "saprot_random_width_control",
+      "best": {
+        "epitope_macro_ap": 0.18479966428068165,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02312089340875639,
+        "pair_macro_auroc": 0.9204504835351428,
+        "pair_micro_ap": 0.013861329946762112,
+        "paratope_macro_ap": 0.6236858147891096,
+        "partner_mrr": 0.2480030721966206,
+        "partner_recall_at_1": 0.06912442396313365
+      },
+      "best_minus_last_pair_macro_ap": 0.003544021159171226,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_32/COMPLETE.json",
+      "family": "saprot",
+      "kind": "control",
+      "last": {
+        "epitope_macro_ap": 0.16652779352038588,
+        "instance_count": 217,
+        "pair_macro_ap": 0.019576872249585164,
+        "pair_macro_auroc": 0.905857840611897,
+        "pair_micro_ap": 0.011634265620600914,
+        "paratope_macro_ap": 0.6381632374947854,
+        "partner_mrr": 0.31478677492502377,
+        "partner_recall_at_1": 0.11981566820276497
+      },
+      "layer": null,
+      "parameter_count": 1096461,
+      "seed": 3,
+      "task_id": 32,
+      "wall_seconds": 8348.573435332626
+    },
+    {
+      "arm": "prosst_random_width_control",
+      "best": {
+        "epitope_macro_ap": 0.19201827366450425,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02357225425212617,
+        "pair_macro_auroc": 0.9219864618837432,
+        "pair_micro_ap": 0.014470404777952807,
+        "paratope_macro_ap": 0.6329473802966706,
+        "partner_mrr": 0.27113598127423016,
+        "partner_recall_at_1": 0.09216589861751152
+      },
+      "best_minus_last_pair_macro_ap": 0.003597893683334314,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_33/COMPLETE.json",
+      "family": "prosst",
+      "kind": "control",
+      "last": {
+        "epitope_macro_ap": 0.16422225642095764,
+        "instance_count": 217,
+        "pair_macro_ap": 0.019974360568791857,
+        "pair_macro_auroc": 0.9029896691549972,
+        "pair_micro_ap": 0.011447630674926013,
+        "paratope_macro_ap": 0.6443427623959281,
+        "partner_mrr": 0.28644393241167443,
+        "partner_recall_at_1": 0.08755760368663594
+      },
+      "layer": null,
+      "parameter_count": 963341,
+      "seed": 1,
+      "task_id": 33,
+      "wall_seconds": 8221.662561004981
+    },
+    {
+      "arm": "prosst_random_width_control",
+      "best": {
+        "epitope_macro_ap": 0.179052744606114,
+        "instance_count": 217,
+        "pair_macro_ap": 0.021771314991962904,
+        "pair_macro_auroc": 0.919887536121742,
+        "pair_micro_ap": 0.012680635309423755,
+        "paratope_macro_ap": 0.6386659877541502,
+        "partner_mrr": 0.24377514446638873,
+        "partner_recall_at_1": 0.055299539170506916
+      },
+      "best_minus_last_pair_macro_ap": 0.003941514863304952,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_34/COMPLETE.json",
+      "family": "prosst",
+      "kind": "control",
+      "last": {
+        "epitope_macro_ap": 0.16888608533391453,
+        "instance_count": 217,
+        "pair_macro_ap": 0.017829800128657952,
+        "pair_macro_auroc": 0.9029625262047589,
+        "pair_micro_ap": 0.010175413075091313,
+        "paratope_macro_ap": 0.6321051277492057,
+        "partner_mrr": 0.2822452636968766,
+        "partner_recall_at_1": 0.10138248847926268
+      },
+      "layer": null,
+      "parameter_count": 963341,
+      "seed": 2,
+      "task_id": 34,
+      "wall_seconds": 7850.080550979823
+    },
+    {
+      "arm": "prosst_random_width_control",
+      "best": {
+        "epitope_macro_ap": 0.18755007255910233,
+        "instance_count": 217,
+        "pair_macro_ap": 0.02172846511588493,
+        "pair_macro_auroc": 0.9213307418562858,
+        "pair_micro_ap": 0.013821537602164898,
+        "paratope_macro_ap": 0.6285041183246853,
+        "partner_mrr": 0.25769512105917636,
+        "partner_recall_at_1": 0.08294930875576037
+      },
+      "best_minus_last_pair_macro_ap": 0.003549363023981126,
+      "complete_receipt": "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/attempt3/runs/task_35/COMPLETE.json",
+      "family": "prosst",
+      "kind": "control",
+      "last": {
+        "epitope_macro_ap": 0.17296714234120902,
+        "instance_count": 217,
+        "pair_macro_ap": 0.018179102091903803,
+        "pair_macro_auroc": 0.902352207252461,
+        "pair_micro_ap": 0.010542089830036079,
+        "paratope_macro_ap": 0.6459461660348987,
+        "partner_mrr": 0.26928534854802133,
+        "partner_recall_at_1": 0.09216589861751152
+      },
+      "layer": null,
+      "parameter_count": 963341,
+      "seed": 3,
+      "task_id": 35,
+      "wall_seconds": 7955.079365760088
+    }
+  ],
+  "test_labels_read": false,
+  "validation_complex_count": 217
+}

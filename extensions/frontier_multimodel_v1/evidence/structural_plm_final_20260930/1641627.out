@@ -1,0 +1,28 @@
+{
+  "arms": 12,
+  "output": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/layer_analysis_v1/output/ANALYSIS.json",
+  "selections": {
+    "prosst": {
+      "raw_highest_arm": "prosst_layer_12",
+      "raw_highest_layer": 12,
+      "raw_highest_mean_pair_macro_ap": 0.02217555459107116,
+      "role": "development selection only; no blind or SOTA status",
+      "selected_arm": "prosst_layer_12",
+      "selected_layer": 12,
+      "selected_mean_pair_macro_ap": 0.02217555459107116,
+      "tie_window": 0.001
+    },
+    "saprot": {
+      "raw_highest_arm": "saprot_layer_33",
+      "raw_highest_layer": 33,
+      "raw_highest_mean_pair_macro_ap": 0.024988970134408938,
+      "role": "development selection only; no blind or SOTA status",
+      "selected_arm": "saprot_layer_24",
+      "selected_layer": 24,
+      "selected_mean_pair_macro_ap": 0.024451940544316726,
+      "tie_window": 0.001
+    }
+  },
+  "status": "COMPLETE_DEVELOPMENT_LAYER_SWEEP_ANALYSIS",
+  "tasks": 36
+}
