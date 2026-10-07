@@ -3,7 +3,7 @@ import copy
 import torch
 
 from interaction_first.frontier_model import ProtocolD0Retriever
-from strict_partner_retrieval_v1.models import (
+from strict_partner_retrieval_v1.contract_models import (
     CDRLateInteractionRetriever,
     MatchedBudgetReranker,
     assert_r1_r2_parameter_parity,
