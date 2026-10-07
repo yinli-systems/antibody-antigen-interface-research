@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import hashlib
 import json
 import math
@@ -51,6 +52,53 @@ def atomic_write_dataframe_parquet(frame: Any, path: Path) -> None:
     temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     frame.to_parquet(temporary, index=False, compression="zstd")
     os.replace(temporary, path)
+
+
+def directory_fingerprint(path: Path) -> dict[str, Any]:
+    """Identify a data directory without hashing gigabytes of it.
+
+    Embedding and contact stores run to gigabytes across thousands of shards,
+    so a content digest is not affordable on every run. The resolved path and
+    the file count are affordable, and together they distinguish the stores
+    this pipeline can be pointed at.
+    """
+    resolved = path.expanduser().resolve()
+    if not resolved.is_dir():
+        return {"path": str(resolved), "exists": False}
+    return {
+        "path": str(resolved),
+        "exists": True,
+        "file_count": sum(1 for entry in resolved.rglob("*") if entry.is_file()),
+    }
+
+
+def input_provenance(args: argparse.Namespace) -> dict[str, Any]:
+    """Record which data a run actually read.
+
+    The receipts named every hyperparameter and the split manifest digest but
+    no input directory, so a finished run did not say what it was trained or
+    evaluated on. Recovering that for the seed replication meant matching the
+    split file by digest and the embedding store by tensor width -- and the
+    store that width identified was not the one the directory name suggested.
+    """
+    prepare = args.prepare_dir.expanduser().resolve()
+    instances = prepare / "instances.parquet"
+    manifest = args.split_manifest.expanduser().resolve()
+    return {
+        "coverage": (
+            "paths and cheap identifiers only; the contact and embedding "
+            "stores are identified by path and file count, not by content"
+        ),
+        "prepare_dir": {
+            "path": str(prepare),
+            "instances_parquet_sha256": (
+                sha256_file(instances) if instances.is_file() else None
+            ),
+        },
+        "contact_dir": directory_fingerprint(args.contact_dir),
+        "embedding_dir": directory_fingerprint(args.embedding_dir),
+        "split_manifest": {"path": str(manifest), "sha256": sha256_file(manifest)},
+    }
 
 
 def sha256_file(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
@@ -589,6 +637,185 @@ def _load_group_metadata(path: Path | None) -> dict[str, dict[str, str]]:
     return result
 
 
+def _representation_summary(embedding_store: Any) -> dict[str, Any] | None:
+    """Return the concatenation summary, or None when nothing was concatenated.
+
+    Called where the receipt is written rather than where the store is built:
+    the zero-fill counters are zero until the data has actually been read, so a
+    snapshot taken at construction reports a count that was never measured.
+    """
+    summary = getattr(embedding_store, "summary", None)
+    if summary is None or not hasattr(embedding_store, "describe"):
+        return None
+    return summary()
+
+
+def _add_representation_arguments(parser: argparse.ArgumentParser) -> None:
+    """Extra frozen encoders to concatenate onto the ESM-2 input.
+
+    Train and evaluate must be given the same set: the checkpoint records the
+    per-side widths it was built with, and a mismatch fails the state-dict load
+    rather than producing a quietly different model.
+    """
+    parser.add_argument(
+        "--representation-manifest",
+        type=Path,
+        default=None,
+        help="canonical manifest; supplies the chain keys AntiBERTy is stored under",
+    )
+    parser.add_argument("--antiberty-root", type=Path, default=None)
+    parser.add_argument("--proteinmpnn-root", type=Path, default=None)
+    parser.add_argument("--proteinmpnn-dim", type=int, default=128)
+    parser.add_argument(
+        "--random-control-mirrors", default=None,
+        help="path to a ProteinMPNN root whose widths and coverage the random "
+             "control should mirror; without it the control keeps the shape of "
+             "the AntiBERTy + ESM-IF1 arm it was written for",
+    )
+    parser.add_argument("--antiberty-dim", type=int, default=512)
+    parser.add_argument("--esm-if1-root", type=Path, default=None)
+    parser.add_argument("--esm-if1-dim", type=int, default=512)
+    parser.add_argument("--igfold-root", type=Path, default=None)
+    parser.add_argument("--igfold-dim", type=int, default=512)
+    parser.add_argument(
+        "--random-projection-control",
+        action="store_true",
+        help="append fixed random projections of the base embedding instead of real "
+        "encoders, matching the encoder arm's widths and parameter count exactly",
+    )
+    parser.add_argument("--random-projection-seed", type=int, default=20260910)
+    parser.add_argument(
+        "--shuffle-representation-residues",
+        type=int,
+        default=None,
+        help="permute each extra representation's rows, keeping the complex, its "
+        "length and the vector distribution while destroying which residue each "
+        "vector describes; an attribution control, not a training option",
+    )
+    parser.add_argument(
+        "--shift-representation-residues",
+        type=int,
+        default=0,
+        help="displace each extra representation's rows by this many residues, "
+        "cyclically; the severity knob for correspondence corruption, and an "
+        "evaluation-time control rather than a training option",
+    )
+
+
+def _wrap_with_representations(
+    embedding_store: Any, args: argparse.Namespace, frame: Any, base_dim: int
+) -> tuple[Any, int, int, dict[str, Any] | None]:
+    """Return the store to use and the input width of each side.
+
+    ``base_dim`` is the width of the store being wrapped. Train takes it from
+    ``--input-dim``; evaluate has no such flag and takes it from the checkpoint,
+    which is the only place it is recorded once a run is over.
+
+    With no extra representation named this is the identity, and the widths are
+    ``base_dim`` on both sides. With one named, the store is
+    wrapped and the two sides diverge -- AntiBERTy covers antibodies only -- so
+    the widths are computed rather than assumed, and checked to be constant
+    across the cohort. A width that varied by instance would build a model that
+    cannot accept some of its own training data.
+    """
+    roots = (args.antiberty_root, args.esm_if1_root, args.igfold_root,
+             getattr(args, "proteinmpnn_root", None))
+    if all(root is None for root in roots) and not args.random_projection_control:
+        return embedding_store, base_dim, base_dim, None
+    if args.representation_manifest is None:
+        raise ValueError(
+            "--representation-manifest is required with --antiberty-root/--esm-if1-root: "
+            "the chain keys AntiBERTy is stored under are derived from it"
+        )
+
+    from interaction_first.composite_embeddings import (
+        CompositeEmbeddingStore,
+        build_matched_random_control,
+        build_random_control,
+        build_sources,
+    )
+
+    if args.random_projection_control:
+        if any(root is not None for root in roots):
+            raise ValueError(
+                "--random-projection-control is the width-matched control for the "
+                "encoder arm and cannot be combined with it"
+            )
+        manifest_path = args.representation_manifest.expanduser().resolve()
+        mirror = getattr(args, "random_control_mirrors", None)
+        if mirror:
+            # Mirror an arm declared by name rather than the one this function
+            # was originally written around. The control has to have the same
+            # widths and the same coverage as the arm it controls for, and the
+            # only way to guarantee that is to build it from that arm's sources.
+            sources = build_matched_random_control(
+                manifest_path,
+                build_sources(
+                    manifest_path,
+                    proteinmpnn_root=(Path(mirror) if mirror != "none" else None),
+                    proteinmpnn_dim=args.proteinmpnn_dim,
+                ),
+                seed=args.random_projection_seed,
+            )
+        else:
+            sources = build_random_control(
+                manifest_path,
+                dim=args.antiberty_dim,
+                seed=args.random_projection_seed,
+            )
+        store = CompositeEmbeddingStore(embedding_store, sources)
+        widths = {"antibody": set(), "antigen": set()}
+        for side, column in (
+            ("antibody", "ab_sequence_sha256"),
+            ("antigen", "ag_sequence_sha256"),
+        ):
+            for key in frame[column].astype(str).unique():
+                widths[side].add(store.width_for(key, base_dim))
+        for side, observed in widths.items():
+            if len(observed) != 1:
+                raise ValueError(
+                    f"{side} input width is not constant across the cohort: {sorted(observed)}"
+                )
+        return store, widths["antibody"].pop(), widths["antigen"].pop(), store.describe()
+
+    sources = build_sources(
+        args.representation_manifest.expanduser().resolve(),
+        antiberty_root=(
+            args.antiberty_root.expanduser().resolve() if args.antiberty_root else None
+        ),
+        antiberty_dim=args.antiberty_dim,
+        esm_if1_root=(
+            args.esm_if1_root.expanduser().resolve() if args.esm_if1_root else None
+        ),
+        esm_if1_dim=args.esm_if1_dim,
+        igfold_root=(
+            args.igfold_root.expanduser().resolve() if args.igfold_root else None
+        ),
+        igfold_dim=args.igfold_dim,
+        proteinmpnn_root=(
+            args.proteinmpnn_root.expanduser().resolve()
+            if getattr(args, "proteinmpnn_root", None) else None
+        ),
+        proteinmpnn_dim=getattr(args, "proteinmpnn_dim", 128),
+    )
+    store = CompositeEmbeddingStore(
+        embedding_store, sources,
+        shuffle_seed=args.shuffle_representation_residues,
+        shift=args.shift_representation_residues,
+    )
+
+    widths = {"antibody": set(), "antigen": set()}
+    for side, column in (("antibody", "ab_sequence_sha256"), ("antigen", "ag_sequence_sha256")):
+        for key in frame[column].astype(str).unique():
+            widths[side].add(store.width_for(key, base_dim))
+    for side, observed in widths.items():
+        if len(observed) != 1:
+            raise ValueError(
+                f"{side} input width is not constant across the cohort: {sorted(observed)}"
+            )
+    return store, widths["antibody"].pop(), widths["antigen"].pop(), store.describe()
+
+
 def _selected_embedding(
     embedding_store: Any,
     sequence_key: str,
@@ -700,11 +927,14 @@ def _run_epoch(
     epoch: int,
     args: argparse.Namespace,
     class_weights: Mapping[str, float],
+    balancer: Any | None = None,
+    shared_parameters: Sequence[Any] | None = None,
 ) -> dict[str, float]:
     import numpy as np
     import torch
 
     from interaction_first.losses import InteractionLossWeights, interaction_first_loss
+    from interaction_first.metrics import average_precision, binary_metrics
 
     training = optimizer is not None
     model.train(training)
@@ -713,6 +943,13 @@ def _run_epoch(
         order = np.random.default_rng(args.seed + epoch).permutation(len(identifiers))
         identifiers = [identifiers[int(index)] for index in order]
     totals: dict[str, float] = defaultdict(float)
+    # Per-complex node generalisation, recorded on validation epochs only.
+    # The history used to carry validation *losses* alone, which cannot answer
+    # whether a selection signal tracks node generalisation -- that needs the
+    # metric the model is ultimately judged on, per epoch. Nothing extra is
+    # computed on training epochs, and no extra forward pass is made on either:
+    # these are the predictions the epoch already produced.
+    node_records: list[dict[str, float | None]] = []
     processed = 0
     context = torch.enable_grad() if training else torch.no_grad()
     weights = InteractionLossWeights(
@@ -728,6 +965,23 @@ def _run_epoch(
         paratope_consistency=args.paratope_consistency_weight,
         partner_rank=args.partner_rank_weight,
     )
+    # Three tasks, not two. Splitting the objective into node against
+    # "everything relational" hid the thing worth seeing: contact edges and
+    # complex-level ranking are different objectives that happen to share a
+    # branch, and the cosine measured against their sum cannot say which of them
+    # a conflict belongs to. The three weight sets partition the loss exactly --
+    # every term appears in exactly one of them at its configured weight -- so
+    # the three task losses sum to the objective actually optimised.
+    _NODE_TERMS = dict(
+        epitope_bce=0.0, paratope_bce=0.0, epitope_dice=0.0, paratope_dice=0.0,
+        epitope_count=0.0, paratope_count=0.0, epitope_consistency=0.0,
+        paratope_consistency=0.0,
+    )
+    task_weights = {
+        "node": dataclasses.replace(weights, edge=0.0, partner_rank=0.0),
+        "edge": dataclasses.replace(weights, partner_rank=0.0, **_NODE_TERMS),
+        "rank": dataclasses.replace(weights, edge=0.0, **_NODE_TERMS),
+    }
     with context:
         for instance_id in identifiers:
             row = frame.loc[instance_id]
@@ -823,9 +1077,63 @@ def _run_epoch(
                 raise FloatingPointError(f"Non-finite loss for {instance_id}")
             if training:
                 optimizer.zero_grad(set_to_none=True)
-                loss.backward()
+                if balancer is None:
+                    loss.backward()
+                else:
+                    # The balancer needs the two objectives separately. The model
+                    # forward is already done; only the loss is recomputed, which
+                    # is cheap beside it.
+                    task_losses = {}
+                    for task_name, task_weight in task_weights.items():
+                        task_losses[task_name], _ = interaction_first_loss(
+                            matched, pair_targets=pair_labels,
+                            epitope_targets=epitope_labels,
+                            paratope_targets=paratope_labels, antigen_mask=antigen_mask,
+                            antibody_mask=antibody_mask, weights=task_weight,
+                            edge_positive_weight=class_weights["edge"],
+                            epitope_positive_weight=class_weights["epitope"],
+                            paratope_positive_weight=class_weights["paratope"],
+                            negative_scores=stacked_negative_scores,
+                            partner_temperature=args.partner_temperature,
+                        )
+                    # The partition is the premise of everything the balancers
+                    # report: if the three tasks do not reconstruct the objective,
+                    # a cosine between them describes some other optimisation
+                    # problem. Checked every step because it costs one comparison
+                    # and a silent violation would invalidate the whole arm.
+                    partition_error = abs(
+                        float(sum(task_losses.values()).detach().item())
+                        - float(loss.detach().item())
+                    )
+                    if partition_error > 1e-4 * max(1.0, abs(float(loss.detach().item()))):
+                        raise FloatingPointError(
+                            f"task losses do not sum to the objective for {instance_id}: "
+                            f"difference {partition_error:.3e}"
+                        )
+                    balancer_state = balancer.step(
+                        task_losses, shared_parameters, model
+                    )
+                    # What the balancer did is the evidence this arm exists to
+                    # produce. GradNorm's task weights say whether it rediscovers
+                    # the hand-tuned loss scale; PCGrad's conflict rate says how
+                    # often it had anything to project. Averaged over the epoch
+                    # like every other component, so it lands in the history.
+                    for state_name, state_value in balancer_state.items():
+                        totals[f"balancer_{state_name}"] += float(state_value)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.gradient_clip)
                 optimizer.step()
+            if not training:
+                span = int(antigen_mask[0].sum().item())
+                truth = epitope_labels[0, :span].detach().cpu().numpy().astype(bool)
+                probability = (
+                    matched["epitope_probability"][0, :span].detach().cpu().numpy()
+                )
+                record: dict[str, float | None] = {
+                    "node_epitope_auprc": average_precision(truth, probability)
+                }
+                for name, value in binary_metrics(truth, probability, 0.5).items():
+                    record[f"node_epitope_{name}"] = value
+                node_records.append(record)
             totals["total"] += float(loss.detach().item())
             for name, value in components.items():
                 totals[name] += float(value.detach().item())
@@ -839,7 +1147,14 @@ def _run_epoch(
             del antigen, antibody, matched, stacked_negative_scores, loss
     if processed == 0:
         raise ValueError("Epoch received no instances")
-    return {name: value / processed for name, value in sorted(totals.items())}
+    summary = {name: value / processed for name, value in sorted(totals.items())}
+    if node_records:
+        from interaction_first.metrics import macro_metric_summary
+
+        for name, value in macro_metric_summary(node_records).items():
+            if isinstance(value, (int, float)):
+                summary[name] = float(value)
+    return summary
 
 
 def command_train(args: argparse.Namespace) -> None:
@@ -912,6 +1227,9 @@ def command_train(args: argparse.Namespace) -> None:
         seed=args.seed,
     )
     embedding_store = EmbeddingStore(args.embedding_dir.expanduser().resolve(), args.embedding_cache_gib)
+    embedding_store, antibody_input_dim, antigen_input_dim, representation_summary = (
+        _wrap_with_representations(embedding_store, args, train_frame, args.input_dim)
+    )
     raw_class_weights = _class_weights(train_frame, contact_dir)
     class_weights = {
         **raw_class_weights,
@@ -921,8 +1239,8 @@ def command_train(args: argparse.Namespace) -> None:
     }
 
     model = PartnerSpecificInteractionModel(
-        antigen_input_dim=args.input_dim,
-        antibody_input_dim=args.input_dim,
+        antigen_input_dim=antigen_input_dim,
+        antibody_input_dim=antibody_input_dim,
         d_model=args.d_model,
         pair_dim=args.pair_dim,
         num_heads=args.num_heads,
@@ -937,10 +1255,26 @@ def command_train(args: argparse.Namespace) -> None:
         score_top_fraction=args.score_top_fraction,
         center_partner_score=not args.disable_score_centering,
         cross_attention_gate_initial_logit=args.cross_attention_gate_initial_logit,
+        pair_decoder=args.pair_decoder,
     ).to(device)
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
     )
+    balancer = None
+    shared_parameters: list = []
+    if args.multitask_balancer != "none":
+        from interaction_first.multitask_balancers import build_balancer
+
+        balancer = build_balancer(args.multitask_balancer)
+        # The trunk the cosine was measured on: everything that is not a head.
+        shared_parameters = [
+            parameter
+            for name, parameter in model.named_parameters()
+            if parameter.requires_grad
+            and not name.startswith(("decoder.", "epitope_head.", "paratope_head."))
+        ]
+        if not shared_parameters:
+            raise ValueError("no shared parameters found; the balancer would act on nothing")
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer,
         mode="min",
@@ -958,7 +1292,11 @@ def command_train(args: argparse.Namespace) -> None:
         "format_version": MODEL_FORMAT_VERSION,
         "architecture": "PartnerSpecificInteractionModelV2",
         "input_dim": args.input_dim,
+        "antibody_input_dim": antibody_input_dim,
+        "antigen_input_dim": antigen_input_dim,
+        "representations": representation_summary,
         "d_model": args.d_model,
+        "pair_decoder": args.pair_decoder,
         "pair_dim": args.pair_dim,
         "num_heads": args.num_heads,
         "num_layers": args.num_layers,
@@ -998,6 +1336,7 @@ def command_train(args: argparse.Namespace) -> None:
         "selection_metric": args.selection_metric,
         "seed": args.seed,
         "split_manifest_sha256": split_digest,
+        "inputs": input_provenance(args),
         "class_weights": class_weights,
         "max_positive_weight": args.max_positive_weight,
         "train_instance_count": len(train_frame),
@@ -1031,6 +1370,7 @@ def command_train(args: argparse.Namespace) -> None:
             "score_top_fraction",
             "center_partner_score",
             "cross_attention_gate_initial_logit",
+            "pair_decoder",
             "negative_count",
             "negative_directions",
             "hard_pool_size",
@@ -1071,6 +1411,8 @@ def command_train(args: argparse.Namespace) -> None:
             epoch,
             args,
             class_weights,
+            balancer=balancer,
+            shared_parameters=shared_parameters,
         )
         validation_metrics = _run_epoch(
             model,
@@ -1121,6 +1463,20 @@ def command_train(args: argparse.Namespace) -> None:
         if improved:
             atomic_torch_save(payload, best_path)
         atomic_write_json(history_path, {"config": config, "history": history})
+        # Per-step gradient geometry, when a balancer collected it. The epoch
+        # mean is in the history above; this is what resolves a sign change that
+        # happens inside an epoch, which an epoch mean averages away.
+        trace = getattr(balancer, "trace", None)
+        if trace:
+            atomic_write_json(output_dir / "balancer_trace.json", {
+                "format_version": "balancer_step_trace_v1",
+                "balancer": args.multitask_balancer,
+                "steps_recorded": len(trace),
+                "trace_limit": getattr(type(balancer), "TRACE_LIMIT", None),
+                "note": ("one entry per training step in order, truncated at the "
+                         "limit; step counts are not reset between epochs"),
+                "steps": trace,
+            })
         print(json.dumps(record, sort_keys=True), flush=True)
         if epochs_without_improvement >= args.patience:
             print(f"Early stopping at epoch {epoch}", flush=True)
@@ -1190,9 +1546,15 @@ def command_evaluate(args: argparse.Namespace) -> None:
     expected_split_digest = sha256_file(split_path)
     if config.get("split_manifest_sha256") != expected_split_digest:
         raise ValueError("Checkpoint and evaluation split manifests differ")
+    # After the checkpoint, because the base width lives in its config: evaluate
+    # has no --input-dim, and a finished run records it nowhere else.
+    embedding_store, _, _, _ = _wrap_with_representations(
+        embedding_store, args, selected, int(config["input_dim"])
+    )
+    # Checkpoints written before the sides could differ record only input_dim.
     model = PartnerSpecificInteractionModel(
-        antigen_input_dim=int(config["input_dim"]),
-        antibody_input_dim=int(config["input_dim"]),
+        antigen_input_dim=int(config.get("antigen_input_dim", config["input_dim"])),
+        antibody_input_dim=int(config.get("antibody_input_dim", config["input_dim"])),
         d_model=int(config["d_model"]),
         pair_dim=int(config["pair_dim"]),
         num_heads=int(config["num_heads"]),
@@ -1209,6 +1571,9 @@ def command_evaluate(args: argparse.Namespace) -> None:
         cross_attention_gate_initial_logit=float(
             config["cross_attention_gate_initial_logit"]
         ),
+        # Absent from checkpoints written before the decoder became selectable,
+        # which were all bilinear.
+        pair_decoder=str(config.get("pair_decoder", "bilinear")),
     ).to(device)
     model.load_state_dict(checkpoint["model_state_dict"], strict=True)
     model.eval()
@@ -1377,11 +1742,26 @@ def command_evaluate(args: argparse.Namespace) -> None:
             threshold,
         )
     sensitivity_ci = None
-    if epitope_delta_by_instance:
-        if component_by_instance:
+    sensitivity_ci_skipped = None
+    if epitope_delta_by_instance and component_by_instance:
+        # component_by_instance covers every instance in the split file, while
+        # the deltas cover only the evaluated ones, so the mapping has to be
+        # restricted before the bootstrap, which requires an exact match. Left
+        # unrestricted this raised and failed the whole evaluation after the
+        # predictions had already been written.
+        evaluated = set(epitope_delta_by_instance)
+        missing = sorted(evaluated - set(component_by_instance))
+        if missing:
+            sensitivity_ci_skipped = (
+                f"{len(missing)} evaluated instance(s) have no component assignment"
+            )
+        else:
             sensitivity_ci = cluster_bootstrap_mean_ci(
                 epitope_delta_by_instance,
-                component_by_instance,
+                {
+                    instance_id: component_by_instance[instance_id]
+                    for instance_id in evaluated
+                },
                 iterations=args.bootstrap_iterations,
                 seed=args.seed,
             )
@@ -1390,9 +1770,12 @@ def command_evaluate(args: argparse.Namespace) -> None:
         "stage": "evaluate",
         "split": args.split,
         "instance_count": len(selected),
+        "sensitivity_ci_skipped": sensitivity_ci_skipped,
         "checkpoint": str(checkpoint_path),
         "checkpoint_sha256": sha256_file(checkpoint_path),
         "split_manifest_sha256": expected_split_digest,
+        "inputs": input_provenance(args),
+        "representations": _representation_summary(embedding_store),
         "threshold_policy": "fixed CLI thresholds; no evaluation-split threshold selection",
         "pair": {
             "micro": pair_micro,
@@ -1500,6 +1883,13 @@ def add_benchmark_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--skip-manifest-hash", action="store_true")
 
 
+def _balancer_names() -> tuple[str, ...]:
+    """The balancer names that actually exist, read from the registry."""
+    from interaction_first.multitask_balancers import BALANCERS
+
+    return tuple(BALANCERS)
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the staged interaction-first command-line interface."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1545,6 +1935,18 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--prepare-dir", type=Path, required=True)
     train.add_argument("--contact-dir", type=Path, required=True)
     train.add_argument("--embedding-dir", type=Path, required=True)
+    train.add_argument(
+        "--multitask-balancer",
+        # Derived from the registry rather than restated. A hardcoded list here
+        # drifted from the implementation the moment a balancer was added, and
+        # rejected an arm that existed and worked.
+        choices=tuple(sorted(_balancer_names())),
+        default="none",
+        help="rebalance the node, edge and rank objectives during training; "
+        "measure applies the ordinary summed gradient and only reports the "
+        "gradient geometry, so it is the control arm with a readout attached",
+    )
+    _add_representation_arguments(train)
     train.add_argument("--split-manifest", type=Path, required=True)
     train.add_argument("--partner-metadata", type=Path)
     train.add_argument("--output-dir", type=Path, required=True)
@@ -1601,6 +2003,12 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("partner_rank", "total"),
         default="partner_rank",
     )
+    train.add_argument(
+        "--pair-decoder",
+        choices=("bilinear", "hadamard_mlp"),
+        default="bilinear",
+        help="pair decoder head; the default reproduces every earlier run",
+    )
     train.add_argument("--seed", type=int, default=42)
     train.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
     train.add_argument("--allow-nondeterministic", action="store_true")
@@ -1620,6 +2028,7 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--prepare-dir", type=Path, required=True)
     evaluate.add_argument("--contact-dir", type=Path, required=True)
     evaluate.add_argument("--embedding-dir", type=Path, required=True)
+    _add_representation_arguments(evaluate)
     evaluate.add_argument("--split-manifest", type=Path, required=True)
     evaluate.add_argument("--partner-metadata", type=Path)
     evaluate.add_argument("--checkpoint", type=Path, required=True)
