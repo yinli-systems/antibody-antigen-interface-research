@@ -1,0 +1,738 @@
+{
+  "budget": {
+    "gpu_per_task": 1,
+    "max_allocated_gpu_hours": 120,
+    "parallel_gpus": 4,
+    "tasks": 40,
+    "walltime": "03:00:00"
+  },
+  "contact_label_access": false,
+  "content_sha256": {
+    "/data/run01/scxi253/fanxuezhe/projects/20260424_af3_qiangsheng/scripts/run_5090_singularity.sh": "996c1886f7b77454d24e93c402a3e19078e5d8da0191dfdc6b08368206c14aea",
+    "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/STRUCTURE_UNITS_MANIFEST.json": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/PLAN.json": "f2199a1f1940ff64fb75d7810b974963ed984fc293c6d3f2f0f150663b1bd615",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/source_program_28dffad/extensions/frontier_multimodel_v1/AF3_STRUCTURE_AUTHORITY_COMPLETION_PROTOCOL.md": "88cd36788bbe403f38c6d3ae81397f5b30ba191e8e0a2766665fe87a942b1d49",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/source_program_28dffad/extensions/frontier_multimodel_v1/audit_af3_structure_completion_task.py": "f43a5497cf89797380fbf7b5370d29458f3573e9311e0db0e75a9fac0274c61e",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/source_program_28dffad/extensions/frontier_multimodel_v1/build_af3_structure_completion.py": "23ef9965efbefcaccf4ea5fb2179f624430780f4befcf1755c0a9c2f5ef7c9c0",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/source_program_28dffad/extensions/frontier_multimodel_v1/materialize_af3_structure_completion.py": "b74260c216d843017390a93a044d4134b62f5fbbc00dede523efd1afef42d232",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/source_program_28dffad/extensions/frontier_multimodel_v1/structure_units.py": "2e6b0dc53ceacebe9e2e76e2a9111b0419fa0abd464df1130bcdb744e9716e58",
+    "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/source_program_28dffad/remote_tools/sabdab2_predicted_geometry_v1/run_af3_sdh_array.sbatch": "d09aea1b9919de1c334b80c7211d5af6295bd7e2ea3e7158b4ea5a980dab2725",
+    "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+    "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396"
+  },
+  "created_utc": "2026-09-30T07:55:46Z",
+  "executor_sha256": {
+    "PROTOCOL.md": "0fa10acc4b141070051d3fa92c0bb3e2d6ad52b286b97088d2755ef5d8d0356f",
+    "RESEARCH.md": "f5dbf6745ed54be4db35f7ed2272eafd85ba2eb0923eca9e2ee10dbd7ff8852d",
+    "af3.py": "43396aae158486c3287502388e991cd0c41ea417f8969c7fa51ca7107bdd7bc1"
+  },
+  "large_runtime_files": [
+    {
+      "bytes": 7091593216,
+      "mtime_ns": 1779873036607435045,
+      "path": "/data/run01/scxi253/fanxuezhe/projects/20260424_test_af3_run/alphafold3.sif",
+      "sha256": "32371ab48812a869cefa4d42ba5b5fbb20e22347c959836949274e3276735632"
+    },
+    {
+      "bytes": 1146811260,
+      "mtime_ns": 1765808828051986757,
+      "path": "/public/datasets/alphafold3/3.0.0/model/af3.bin",
+      "sha256": "8a577d5b3cb5f05e0831ff79dfb26d67e58fe2b2e42a2d294abc90fa6f84b106"
+    }
+  ],
+  "legacy_plan": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/PLAN.json",
+  "legacy_plan_sha256": "f2199a1f1940ff64fb75d7810b974963ed984fc293c6d3f2f0f150663b1bd615",
+  "model_seeds": [
+    42,
+    100,
+    18,
+    37,
+    79
+  ],
+  "parameter_resource_directory_label": "3.0.0",
+  "run_root": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs",
+  "runner": "/data/run01/scxi253/fanxuezhe/projects/20260424_af3_qiangsheng/scripts/run_5090_singularity.sh",
+  "runtime_code_version": "3.0.1",
+  "runtime_environment": {
+    "AF3_SHARED_SANDBOX_PATH": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/no_shared_sandbox",
+    "AF3_SIF_PATH": "/data/run01/scxi253/fanxuezhe/projects/20260424_test_af3_run/alphafold3.sif",
+    "AF3_USE_NODE_SANDBOX": "0",
+    "DB_DIR": "/public/datasets/alphafold3/3.0.0/dataset",
+    "MODEL_DIR": "/public/datasets/alphafold3/3.0.0/model",
+    "PDB_DATABASE_PATH": "/public/datasets/alphafold3/3.0.0/dataset/pdb_2022_09_28_mmcif_files.tar"
+  },
+  "runtime_validation": "full SHA-256 at freeze; per-task size/mtime plus source/input hashes; final deep hash audit",
+  "samples_per_seed": 5,
+  "schema": "af3_execution_recovery_v1",
+  "scientific_change": "Input bytes and 25-sample design unchanged; resource weight bytes pinned. Software equivalence to all historical structures is not established.",
+  "source_commit": "0bd7366b68b692fbaec2aa0bf7c18b28b47e726a",
+  "source_root": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/source_0bd7366/extensions/execution_recovery_v1",
+  "tasks": [
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-000",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-000/af3_missing_17b7471b4979f8a662f30e9a.json",
+      "input_sha256": "1cad7fd76c2c541b8fc32b76c8fb7c088918edd6984b173b671016f5955e8824",
+      "instances": [
+        "pdb_00007yru_H_L"
+      ],
+      "length": 78,
+      "name": "af3_missing_17b7471b4979f8a662f30e9a",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "KLYMCVCEGLSCGNEDHCEGQQCFSSLSINDGFHVYQKGCFQVYEQGKMTCKTPPSPGQAVECCQGDWCNRNITAQLP",
+      "sequence_sha256": "17b7471b4979f8a662f30e9aaec999da8777fd45d5b4a37d30146cbd7c3a416e",
+      "task_id": 0
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-001",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-001/af3_missing_c8455fda818528d77cfe58b8.json",
+      "input_sha256": "4a509bbf5413e7f3446f0392779f041187bbdfaffdca97e1eeb27e4ae644efb4",
+      "instances": [
+        "pdb_00005ip4_B_+"
+      ],
+      "length": 80,
+      "name": "af3_missing_c8455fda818528d77cfe58b8",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "KDFVRPKLVTIIRSGVKPRKAVRVLLNKKTAHSFEQVLTDITEAIKLETGVVKKLYTLDGKQVTCLHDFFGDDDVFIACG",
+      "sequence_sha256": "c8455fda818528d77cfe58b841ffd57c52123303c8515dac82b9ab0f543cff09",
+      "task_id": 1
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-002",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-002/af3_missing_1a4f3b22c8ae873f72902004.json",
+      "input_sha256": "c4fb1f94bfe48aed764f2e3fd507e9b1620da6048a311451befd7218e73cba18",
+      "instances": [
+        "pdb_00005ip4_A_+"
+      ],
+      "length": 84,
+      "name": "af3_missing_1a4f3b22c8ae873f72902004",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "KDFVRPKLVTIIRSGVKPRKAVRVLLNKKTAHSFEQVLTDITEAIKLETGVVKKLYTLDGKQVTCLHDFFGDDDVFIACGPEKF",
+      "sequence_sha256": "1a4f3b22c8ae873f72902004c56b20c0080f7bfd6c26d9ce386b3be1f1a86876",
+      "task_id": 2
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-003",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-003/af3_missing_058689280397fd698beccabd.json",
+      "input_sha256": "9ebacf59640014d6830fd55c995c862e2a66d3ae2c0d3012bfe5d3e37bdf38d5",
+      "instances": [
+        "pdb_00004s10_A_+"
+      ],
+      "length": 101,
+      "name": "af3_missing_058689280397fd698beccabd",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "VQRLFQVKGRRVVRATEVPVSWESFNNGDCFILDLGNNIHQWCGSNSNRYERLKATQVSKGIRDNERDGDARVHVSEEGTEPEAMLQVLGPKPALPAGTED",
+      "sequence_sha256": "058689280397fd698beccabdcb111ba4a487912f0de2ab46742f882aa0fc4d33",
+      "task_id": 3
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-004",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-004/af3_missing_9b90f30d5667dd5342a6786a.json",
+      "input_sha256": "4ec31eb823d2d79d890ffd460a909117350ef2e968b61349bc77ad1be147ac71",
+      "instances": [
+        "pdb_00004s10_B_+"
+      ],
+      "length": 102,
+      "name": "af3_missing_9b90f30d5667dd5342a6786a",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "QRLFQVKGRRVVRATEVPVSWESFNNGDCFILDLGNNIHQWCGSNSNRYERLKATQVSKGIRDNERDGDARVHVSEEGTEPEAMLQVLGPKPALPAGTEDTA",
+      "sequence_sha256": "9b90f30d5667dd5342a6786a4cbfa42a15f19811b1b13ea75a61683b2e053bbf",
+      "task_id": 4
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-005",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-005/af3_missing_9286323889488b6ba1c54974.json",
+      "input_sha256": "08cefd6f62c8c513c8bacab86e020da96805b92e565fabd92d182aab8e4da390",
+      "instances": [
+        "pdb_00004kuc_F_E",
+        "pdb_00004kuc_H_D"
+      ],
+      "length": 107,
+      "name": "af3_missing_9286323889488b6ba1c54974",
+      "roles": [
+        "light"
+      ],
+      "sequence": "DIVLTQSPASLAVSLGQRATISYRASKSVSYMHWNQQKPGQPPRLLIYLGSNLESGVGARFSGSGSGTDFTLNIHPVEEEDAATYYCQHKREYPPTFGQGTKVEIKR",
+      "sequence_sha256": "9286323889488b6ba1c54974a1260c6af001a22e68ee64fb4e2de3a907805b04",
+      "task_id": 5
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-006",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-006/af3_missing_f9e5d303908a6d86e0c87a56.json",
+      "input_sha256": "4b217d96714d667a760f5f9da68122361b6b7f2714d2a90c41a15d012d2fbc2f",
+      "instances": [
+        "pdb_00007yru_H_L"
+      ],
+      "length": 108,
+      "name": "af3_missing_f9e5d303908a6d86e0c87a56",
+      "roles": [
+        "light"
+      ],
+      "sequence": "EIVLTQSPTTMAASPGEKVTLNCLASSSVSYMTWYQQKSGASPKLWIYGTSNLASGVPNRFSGSGSGTSYSLAISSMEAEDVATYYCLHLTSYPPYTFGAGTKLELKR",
+      "sequence_sha256": "f9e5d303908a6d86e0c87a5695fa112ef0b0c6b85200d50bb5434075fe3ac4d0",
+      "task_id": 6
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-007",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-007/af3_missing_8c1d3f973188f9ab77b4892d.json",
+      "input_sha256": "e1e17dbefb8c517c3d9d2b34149bdeca7b743e022a6213590a3f525f13fb3eee",
+      "instances": [
+        "pdb_00005ip4_A_+"
+      ],
+      "length": 109,
+      "name": "af3_missing_8c1d3f973188f9ab77b4892d",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VQLQESGGGLVQAGGSLRLSCTASVNIIGGNHWAWYRQAPGQQRDLVASLSRYNANYADSVKGRFTISRDNAKNAAYLQMNSLKPEDTAIYFCALENYYWGQGTQVTVS",
+      "sequence_sha256": "8c1d3f973188f9ab77b4892d6610f84c3dbb2d301c19209a5a7cb7863abde28b",
+      "task_id": 7
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-008",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-008/af3_missing_3f6a364dd01b6936257d4009.json",
+      "input_sha256": "087148bd82204885031b0d7ccbb0ea5653d82eed946b1546abb3622e19c8f134",
+      "instances": [
+        "pdb_00005ip4_B_+"
+      ],
+      "length": 110,
+      "name": "af3_missing_3f6a364dd01b6936257d4009",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VQLQESGGGLVQAGGSLRLSCTASVNIIGGNHWAWYRQAPGQQRDLVASLSRYNANYADSVKGRFTISRDNAKNAAYLQMNSLKPEDTAIYFCALENYYWGQGTQVTVSS",
+      "sequence_sha256": "3f6a364dd01b6936257d400918ba9d7bc7f76645c8320c19494fa29ac9931764",
+      "task_id": 8
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-009",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-009/af3_missing_09c69dd8a2b326d64d0f4850.json",
+      "input_sha256": "b47be0a4d4aa6056106a6435737679f2957294b9a351709d385bc0ff8a99348b",
+      "instances": [
+        "pdb_00005h35_F_G",
+        "pdb_00005h35_H_I"
+      ],
+      "length": 113,
+      "name": "af3_missing_09c69dd8a2b326d64d0f4850",
+      "roles": [
+        "light"
+      ],
+      "sequence": "DIVMTQTPLSLPVSLGDQASISCRSSQFIVHSNGNTYLEWYLQKPGQSPKLLIYKVSNRFSGVPDRFSGSGSGTDFTLKISRVEAEDLGVYYCFQGSHVPWTFGGGTKLEIKR",
+      "sequence_sha256": "09c69dd8a2b326d64d0f485048740056e1bcc0b1d8853bbef46db56dbe019597",
+      "task_id": 9
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-010",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-010/af3_missing_5d83ae49a574a6602e8b1c38.json",
+      "input_sha256": "daaa17768208a0ec071f4903a162b6ee3cb9101c88937ed4ddab6ab4a8bc277b",
+      "instances": [
+        "pdb_00004lgp_D_+"
+      ],
+      "length": 115,
+      "name": "af3_missing_5d83ae49a574a6602e8b1c38",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VQLVETGGGLVQPGGSLTLSCAGSGGTLEHYAIGWFRQAPGKEHEWLVCNRGEYGSTVYVDSVKGRFTASRDNAKNTVYLQLNSLKPDDTGIYYCVSGCYSWRGPWGQGTQVTVS",
+      "sequence_sha256": "5d83ae49a574a6602e8b1c387214bce9a950d3fc496bbd248f691b5d4744bd29",
+      "task_id": 10
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-011",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-011/af3_missing_a5014da6a4dc6e81520b7e01.json",
+      "input_sha256": "ad4c258f5f3a92415161cab79a5f38625b123311b6d5f6911b10a3f8de78536a",
+      "instances": [
+        "pdb_00004lgp_B_+"
+      ],
+      "length": 116,
+      "name": "af3_missing_a5014da6a4dc6e81520b7e01",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QVQLVETGGGLVQPGGSLTLSCAGSGGTLEHYAIGWFRQAPGKEHEWLVCNRGEYGSTVYVDSVKGRFTASRDNAKNTVYLQLNSLKPDDTGIYYCVSGCYSWRGPWGQGTQVTVS",
+      "sequence_sha256": "a5014da6a4dc6e81520b7e015f7a8471c058cb564607801cfe242ef347d6dc5b",
+      "task_id": 11
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-012",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-012/af3_missing_f61282b43eff98ac8872c29e.json",
+      "input_sha256": "3cd6a854252a792c17fb8f9d98dd1da0b582c2a78e83cca1619de504ccedd89c",
+      "instances": [
+        "pdb_00004kuc_F_E",
+        "pdb_00004kuc_H_D"
+      ],
+      "length": 117,
+      "name": "af3_missing_f61282b43eff98ac8872c29e",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QQPGSELVRPGASVKLSCKASGYTFTSYWINWVKQRPGQGLEWIGNIYPGSGRTNYDEKFKNKATLTVDTSSSTVYIQVSSLTSEDAAVFYCVRWVYGNFDSALDYWGQGTSVTVSS",
+      "sequence_sha256": "f61282b43eff98ac8872c29e482ef65fc5095ef75d9f9d1c285fa531990101b5",
+      "task_id": 12
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-013",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-013/af3_missing_2b5378e35ba7c80571dc3022.json",
+      "input_sha256": "2102facba0f32fce57a9f2907470b316c637b328789d0cabd67f7cad15be82da",
+      "instances": [
+        "pdb_00005h35_F_G",
+        "pdb_00005h35_H_I"
+      ],
+      "length": 119,
+      "name": "af3_missing_2b5378e35ba7c80571dc3022",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VKLVESGGGLVKPGGSLKLSCAASGFGFTIYDMSWVRQTPEKRLEWVAYMSSGRGNTYYPDTVKGRFTISRDNAKNTLYLQMSSLKSEDTAMYYCTRGAFYYGYGFAYWGQGTLVTVSA",
+      "sequence_sha256": "2b5378e35ba7c80571dc3022c754816353e90f355eb758ecfea967c203747a6d",
+      "task_id": 13
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-014",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-014/af3_missing_051fc7c1ad47460598d9ad5a.json",
+      "input_sha256": "13146130a1f943fc056833c78488259dcfdefb388c8e7a5dcb45f1e5dc3f94fd",
+      "instances": [
+        "pdb_00005m94_B_+",
+        "pdb_00005m94_D_+",
+        "pdb_00005m95_B_+",
+        "pdb_00005m95_D_+"
+      ],
+      "length": 120,
+      "name": "af3_missing_051fc7c1ad47460598d9ad5a",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VQLQESGGGLVQAGGSLRLSCAASRSIFSIDTANWYRQPPGMQRELVATITRDGNANYADSVKGRFTISRDRARNTVYLQMNSLKPEDTGVYYCNAAIRTTVRTSAQEYWGQGTQVTVSS",
+      "sequence_sha256": "051fc7c1ad47460598d9ad5a96237f035fe108e64c858e0ed783b9df59a53d1b",
+      "task_id": 14
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-015",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-015/af3_missing_8017be93050dbd96ab40518d.json",
+      "input_sha256": "3ca1d386513a67021d730ea566411fb98cf943b9e96129de30123faf4547b7bc",
+      "instances": [
+        "pdb_00006rah_C_+",
+        "pdb_00006rai_C_+",
+        "pdb_00006raj_C_+",
+        "pdb_00006rak_C_+",
+        "pdb_00006ral_C_+",
+        "pdb_00009rye_C_+",
+        "pdb_00009ryf_C_+"
+      ],
+      "length": 121,
+      "name": "af3_missing_8017be93050dbd96ab40518d",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QLVESGGGLVQPGDSLRLSCAVSGSALDYNAIGWFRQAPGKEREGVACISKITGNTAYADSVKGRFTISRDNAKNTVHLQMNSLKPEDTAVYYCATVTAVLLPGRCVPGKYWGQGTPVTVS",
+      "sequence_sha256": "8017be93050dbd96ab40518d858b185b163dcabd4041d116eb18c2657b8b313a",
+      "task_id": 15
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-016",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-016/af3_missing_c6b93d8d3cea0d35b80d9222.json",
+      "input_sha256": "0ca0a6be9ffc3146376c5838b56d67ab0e5903c9f6e19c030c5e123f7f65903e",
+      "instances": [
+        "pdb_00007yru_H_L"
+      ],
+      "length": 121,
+      "name": "af3_missing_c6b93d8d3cea0d35b80d9222",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "EVQLVESGGGLVQPGRSLKLSCLASGSTFSNYGMKWIRQAPGKGLEWVASISRSSTYIYYADTVKGRFTISRDNARNTLYLQMTSLRSEDTALYYCAAAISTPFYWYFDFWGPGTVVTVSS",
+      "sequence_sha256": "c6b93d8d3cea0d35b80d9222b1c25047a89b49139403660472aefb33dfa174e7",
+      "task_id": 16
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-017",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-017/af3_missing_30116ffe821bd2622cf58f4e.json",
+      "input_sha256": "a2451d11a6a713de4f93f0228c63c1a0b9e043c42b64aa3508928aac7567d69a",
+      "instances": [
+        "pdb_00005vxk_B_+"
+      ],
+      "length": 125,
+      "name": "af3_missing_30116ffe821bd2622cf58f4e",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "LQLVESGGGLVQPGGSLRLSCAASGFTLDDQPIAWFRQAPGKEREGVSCISIDGNTQSYSDSVKGRFTISRDTANNRVHLQMNNLKPEDTAVYYCAADRYTSVRQMCTMIEGLHRVWGQGTQVTV",
+      "sequence_sha256": "30116ffe821bd2622cf58f4edf11a79d005b0504247b848b09e4f2f36f60fb18",
+      "task_id": 17
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-018",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-018/af3_missing_812a2e8c90beea939a9b9f24.json",
+      "input_sha256": "96a15620954a58c0e8a60619ea015554634df560e129950eda79b3950df5e708",
+      "instances": [
+        "pdb_00005sv3_C_+"
+      ],
+      "length": 125,
+      "name": "af3_missing_812a2e8c90beea939a9b9f24",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VQLVESGGGLVQAGDSLRLSCTASGRTLGDYGVAWFRQAPGKEREFVSVISRSTIITDYADSVRGRFSISADSAKNTVYLQMNSLKPEDTAVYYCAVIANPVYATSRNSDDYGHWGQGTQVTVSS",
+      "sequence_sha256": "812a2e8c90beea939a9b9f24f0d6416a7dc0e2edd16927887305e01b3e87558d",
+      "task_id": 18
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-019",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-019/af3_missing_0df976faadcd5c8f86212262.json",
+      "input_sha256": "04ee18989029c857b258f0bf9bf2806c9d2430164376dd2f41a4b8f45e3b445e",
+      "instances": [
+        "pdb_00004s10_B_+"
+      ],
+      "length": 126,
+      "name": "af3_missing_0df976faadcd5c8f86212262",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QVQLQESGGGLVQAGGSLRLSCAASGRTFSSFVMGWFRQAPGKEREFVASISRSGSVTRYADSAKGRFTISKDNAKNTVSLQMDNLNPDDTAVYYCAADLHRPYGPGSQRTDDYDTWGQGTQVTVS",
+      "sequence_sha256": "0df976faadcd5c8f862122627c85ca3c61b492ff79aba43f61c199aefe25ae08",
+      "task_id": 19
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-020",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-020/af3_missing_96cb6f0746e2ce2d2da1a920.json",
+      "input_sha256": "f11a2ef906fb63d211ceb588a50aa971eb4d536444570a1fb337ab494c80dc32",
+      "instances": [
+        "pdb_00007kbi_C_+"
+      ],
+      "length": 126,
+      "name": "af3_missing_96cb6f0746e2ce2d2da1a920",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QVQLAETGGGLVEPGGSLRLSCAAPEFRLQYYTAGWFRQAPGKEREWVACISAGGGVTYYTGSVQGRFTISRDNAKRTVYLQMDSLKPEDTAVYSCAADLEYSQIMPSCRGSYGVRGQGTQVTVSS",
+      "sequence_sha256": "96cb6f0746e2ce2d2da1a92082c0b638c4a9862607017fc6069d0b8144ceb136",
+      "task_id": 20
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-021",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-021/af3_missing_ef0209b090f40f588a8381fb.json",
+      "input_sha256": "90fac9e6641b2b86d716d94fa89274cb5cdb8aa0ad6a88e2117b3996f4ed669d",
+      "instances": [
+        "pdb_00005sv3_A_+"
+      ],
+      "length": 126,
+      "name": "af3_missing_ef0209b090f40f588a8381fb",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "EVQLVESGGGLVQAGDSLRLSCTASGRTLGDYGVAWFRQAPGKEREFVSVISRSTIITDYADSVRGRFSISADSAKNTVYLQMNSLKPEDTAVYYCAVIANPVYATSRNSDDYGHWGQGTQVTVSS",
+      "sequence_sha256": "ef0209b090f40f588a8381fb43ac0954c4fdb7ea2284ce6abca043931aeee3c3",
+      "task_id": 21
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-022",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-022/af3_missing_07725a1c1451ef031ac62e91.json",
+      "input_sha256": "265fd1fb629deae9a80e6ec41f01d9248be82920a67092905ef443acf2d253a8",
+      "instances": [
+        "pdb_00005u4m_B_+"
+      ],
+      "length": 127,
+      "name": "af3_missing_07725a1c1451ef031ac62e91",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QVQLVESGGGLVQPGGSLRLSCVASEFSRFTLDYYAIGWFRQAPGKEREGLSSISSSSDGFTSYSDSVKGRFTISRDNAKNTVYLQMNSLKPEDTAVYYCAARLGGWASFSPQEYDYWGQGTQVTVS",
+      "sequence_sha256": "07725a1c1451ef031ac62e91731de215280dddf1812860a60e5680ab72b7b8f1",
+      "task_id": 22
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-023",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-023/af3_missing_0e8fbcd89177bf7735322ab0.json",
+      "input_sha256": "9986fa084746a0690c4476f8f14aaea88c1de047c07feb108c5c1eb114b2a1e9",
+      "instances": [
+        "pdb_00004s10_A_+"
+      ],
+      "length": 127,
+      "name": "af3_missing_0e8fbcd89177bf7735322ab0",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QVQLQESGGGLVQAGGSLRLSCAASGRTFSSFVMGWFRQAPGKEREFVASISRSGSVTRYADSAKGRFTISKDNAKNTVSLQMDNLNPDDTAVYYCAADLHRPYGPGSQRTDDYDTWGQGTQVTVSS",
+      "sequence_sha256": "0e8fbcd89177bf7735322ab0d8dbcf77609d77733a56ae3edbc79071611793fb",
+      "task_id": 23
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-024",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-024/af3_missing_9f4259b27f306563a4281bea.json",
+      "input_sha256": "d24ff116a623b5719294595f902b6539bc1278ecbdc462b36d8a90b0ac06703e",
+      "instances": [
+        "pdb_00004lhq_B_+",
+        "pdb_00004lhq_D_+"
+      ],
+      "length": 128,
+      "name": "af3_missing_9f4259b27f306563a4281bea",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "VQLVETGGGTVQTGGSLRLSCSASGGSFSRNAMGWFRQAPGKEREFVAAINWSASSTYYRDSVKGRFTVSRDNAKNTVYLHLNSLKLEDTAAYYCAGSSVYAEMPYADSVKATSYNYWGQGTQVTVSS",
+      "sequence_sha256": "9f4259b27f306563a4281beae3a66381a9537f2b42306abd14b78639cb2851e7",
+      "task_id": 24
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-025",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-025/af3_missing_9a828b1cd92889dd93bef72b.json",
+      "input_sha256": "f01d0a8a8239c6e5fb9b80a63c3e512627f8591a54927be8cf86b2f58e77fd0e",
+      "instances": [
+        "pdb_00004lgs_B_+"
+      ],
+      "length": 129,
+      "name": "af3_missing_9a828b1cd92889dd93bef72b",
+      "roles": [
+        "heavy"
+      ],
+      "sequence": "QVQLVESGGGLVQAGGSLSLSCAASGGDFSRNAMAWFRQAPGKEREFVASINWTGSGTYYLDSVKGRFTISRDNAKNALYLQMNNLKPEDTAVYYCARSTVFAEITGLAGYQSGSYDYWGQGTQVTVSS",
+      "sequence_sha256": "9a828b1cd92889dd93bef72bbd38a774e670740ef06164ab623778f7fdfdfe07",
+      "task_id": 25
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-026",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-026/af3_missing_159afe5e97aa626e4f0138d1.json",
+      "input_sha256": "fe67286bc0b1af509ef67b82c18bfb2cabb3a506529d0546c6c424c7492b5105",
+      "instances": [
+        "pdb_00005sv3_A_+",
+        "pdb_00005sv3_C_+"
+      ],
+      "length": 167,
+      "name": "af3_missing_159afe5e97aa626e4f0138d1",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "QYPIINFTTAGATVQSYTNFIRAVRGRLTVLPNRVGLPINQRFILVELSNHAELSVTLALDVTNAYVVGYRAGNSAYFFHPDNQEDAEAITHLFTDVQNRYTFAFGGNYDRLEQLAGNLRENIELGNGPLEEAISALYYYSTGGTQLPTLARSFIICIQMISEAARF",
+      "sequence_sha256": "159afe5e97aa626e4f0138d169d3ee5b92c55d2f37aab4a423ac71b91bbeb189",
+      "task_id": 26
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-027",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-027/af3_missing_cd818255b25604a8be94f177.json",
+      "input_sha256": "e9143e568f295ebc13334fc50d85b06cf850dfb70272905a3f98cbcaebf46814",
+      "instances": [
+        "pdb_00005h35_F_G",
+        "pdb_00005h35_H_I"
+      ],
+      "length": 195,
+      "name": "af3_missing_cd818255b25604a8be94f177",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "MYMILELLNIIGIIAFTISGSLKGTNKGLDIFGVVTLGVITSYAGGIIADILLGIYPPQILKELNYLLLSVGISIFVFYFYKWLQTNPIKMIIAISDAVGLSTFATLGASLAYSYGLNPISVGLIAAIVGTGGGVIRDVLVNEIPMVLTKEIYATAALLSGFIYYFTTPYLHHDSLFVAFLGSFLLRILSIKYNF",
+      "sequence_sha256": "cd818255b25604a8be94f17796e06720dc6f3a32472c60ba128b4180069f3022",
+      "task_id": 27
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-028",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-028/af3_missing_7ac89901547e9690c5bb7034.json",
+      "input_sha256": "08f65b5cc5fc5303070d985f5293a00b93549c6f86f0e108d4349171c298b631",
+      "instances": [
+        "pdb_00005u4m_B_+"
+      ],
+      "length": 255,
+      "name": "af3_missing_7ac89901547e9690c5bb7034",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "QYPIINFTTAGATVQSYTNFIRAVRGRLTTGADVRHEIPVLPNRVGLPINQRFILVELSNHAELSVTLALDVTNAYVVGYRAGNSAYFFHPDNQEDAEAITHLFTDVQNRYTFAFGGNYDRLEQLAGNLRENIELGNGPLEEAISALYYYSTGGTQLPTLARSFIICIQMISEAARFQYIEGEMRTRIRYNRRSAPDPSVITLENSWGRLSTAIQESNQGAFASPIQLQRRNGSKFSVYDVSILIPIIALMVYRC",
+      "sequence_sha256": "7ac89901547e9690c5bb7034e2dbd4c98042a6e68e0b86678ae7771dbefa12c1",
+      "task_id": 28
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-029",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-029/af3_missing_f66a9f423e117ab81eb1bb16.json",
+      "input_sha256": "846a7a451b69774779f8d3b30c16f45b4b72b5ebad3271852e0388a65e40d409",
+      "instances": [
+        "pdb_00004kuc_F_E",
+        "pdb_00004kuc_H_D",
+        "pdb_00007kbi_C_+"
+      ],
+      "length": 259,
+      "name": "af3_missing_f66a9f423e117ab81eb1bb16",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "QYPIINFTTAGATVQSYTNFIRAVRGRLTTGADVRHEIPVLPNRVGLPINQRFILVELSNHAELSVTLALDVTNAYVVGYRAGNSAYFFHPDNQEDAEAITHLFTDVQNRYTFAFGGNYDRLEQLAGNLRENIELGNGPLEEAISALYYYSTGGTQLPTLARSFIICIQMISEAARFQYIEGEMRTRIRYNRRSAPDPSVITLENSWGRLSTAIQESNQGAFASPIQLQRRNGSKFSVYDVSILIPIIALMVYRCAPPP",
+      "sequence_sha256": "f66a9f423e117ab81eb1bb16ad5417ef0853d748c381d611c6e81c4390ddb22c",
+      "task_id": 29
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-030",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-030/af3_missing_477aad63eaf5626ddf9ddec7.json",
+      "input_sha256": "14f190e3ebce22e2fd3c4e3f8b576ff42a9a8999beb4c71da64abd937caa48d8",
+      "instances": [
+        "pdb_00004lhq_B_+",
+        "pdb_00004lhq_D_+"
+      ],
+      "length": 260,
+      "name": "af3_missing_477aad63eaf5626ddf9ddec7",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "KQYPIINFTTAGATVQSYTNFIRAVRGRLTTGADVRHEIPVLPNRVGLPINQRFILVELSNHAELSVTLALDVTNAYVVGYRAGNSAYFFHPDNQEDAEAITHLFTDVQNRYTFAFGGNYDRLEQLAGNLRENIELGNGPLEEAISALYYYSTGGTQLPTLARSFIICIQMISEAARFQYIEGEMRTRIRYNRRSAPDPSVITLENSWGRLSTAIQESNQGAFASPIQLQRRNGSKFSVYDVSILIPIIALMVYRCAPPP",
+      "sequence_sha256": "477aad63eaf5626ddf9ddec70078eb135d0397eb96cea53e43acffd17c060e6c",
+      "task_id": 30
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-031",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-031/af3_missing_92cfff33d9d4ae4b23db295e.json",
+      "input_sha256": "1f9efbba4dd20b90bf04f08be38ec7f0df901705e4efa8f71dbb6e4b0a08096a",
+      "instances": [
+        "pdb_00004lgp_B_+",
+        "pdb_00004lgp_D_+"
+      ],
+      "length": 261,
+      "name": "af3_missing_92cfff33d9d4ae4b23db295e",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "IFPKQYPIINFTTAGATVQSYTNFIRAVRGRLTTGADVRHEIPVLPNRVGLPINQRFILVELSNHAELSVTLALDVTNAYVVGYRAGNSAYFFHPDNQEDAEAITHLFTDVQNRYTFAFGGNYDRLEQLAGNLRENIELGNGPLEEAISALYYYSTGGTQLPTLARSFIICIQMISEAARFQYIEGEMRTRIRYNRRSAPDPSVITLENSWGRLSTAIQESNQGAFASPIQLQRRNGSKFSVYDVSILIPIIALMVYRCAP",
+      "sequence_sha256": "92cfff33d9d4ae4b23db295e40ef4d150f0e82023b42969ec84be1b1edc9df9f",
+      "task_id": 31
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-032",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-032/af3_missing_34ec306f1a8d1cfa3c77102a.json",
+      "input_sha256": "ae2b9e0523ff0ee5de17c8c10240291f9bd737097cdc45fb048e9890da752b52",
+      "instances": [
+        "pdb_00004lgs_B_+"
+      ],
+      "length": 263,
+      "name": "af3_missing_34ec306f1a8d1cfa3c77102a",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "KQYPIINFTTAGATVQSYTNFIRAVRGRLTTGADVRHEIPVLPNRVGLPINQRFILVELSNHAELSVTLALDVTNAYVVGYRAGNSAYFFHPDNQEDAEAITHLFTDVQNRYTFAFGGNYDRLEQLAGNLRENIELGNGPLEEAISALYYYSTGGTQLPTLARSFIICIQMISEAARFQYIEGEMRTRIRYNRRSAPDPSVITLENSWGRLSTAIQESNQGAFASPIQLQRRNGSKFSVYDVSILIPIIALMVYRCAPPPSSQ",
+      "sequence_sha256": "34ec306f1a8d1cfa3c77102a568bb1d0b20e99620ce04b444ae3b02d5b0d5547",
+      "task_id": 32
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-033",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-033/af3_missing_1c251855c8ed20d084128f5b.json",
+      "input_sha256": "70d5917025d13862905cf65f12f5af310f6be25241e759cd9764aa55ace7565d",
+      "instances": [
+        "pdb_00005vxk_B_+"
+      ],
+      "length": 282,
+      "name": "af3_missing_1c251855c8ed20d084128f5b",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "VSSLTMLNDTLHNIRTTNQALKKELSQKTLTKTSLEEIALHSSQISMDVNKSAQLLDILSRNEYPINKDARELLHSAPKEAELDGDQMISHRELWAKIANSINDINEQYLKVYEHAVSSYTQMYQDFSAVLSSLAGWISPGGNDGNSVKLQVNSLKKALEELKEKYKDKPLYPANNTVSQEQANKWLTELGGTIGKVSQKNGGYVVSINMTPIDNMLKSLDNLGGNGEVVLDNAKYQAWNAGFSAEDETMKNNLQTLVQKYSNANSIFDNLVKVLSSTISSS",
+      "sequence_sha256": "1c251855c8ed20d084128f5b3c42f2b57cd194d00597997ab4ea6a16036111f5",
+      "task_id": 33
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-034",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-034/af3_missing_7b397becf8afdf8d9f84c057.json",
+      "input_sha256": "3d776810d327b77deef52f7a8e52184025c417e20200a1cac9693b02764ea0b7",
+      "instances": [
+        "pdb_00005m95_B_+",
+        "pdb_00005m95_D_+"
+      ],
+      "length": 395,
+      "name": "af3_missing_7b397becf8afdf8d9f84c057",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "VGYMDPGNWITSMQGGAQYGYTLLFVILISSLAAMLLQSMTVRLGIATGKDLAQMTRHFLSKPVAIIFWIIAELAIIATDIAEVIGSAIALDLIFGIPLIVGALITVFDVFLLLFIMRFGFRKIEAIVGTLIFTVLAIFVFEVFISSPQLTDILNGFVPHKEIVTNQGILYIALGIIGATIMPHNLYLHSSIVQSRKYDRHDNEEKAQAIKYATIDSNLQLSIAFVVNCLLLTLGAALFFGTKTNDLGGFYDLYHALKTEPVLGATLGGVMSTLFAVALLASGQNSTITGTLAGQIVMEGFLRLSIPNWLRRLITRSLAVIPVIICLIIFKGNSEKIEQLLVFSQVFLSIALPFSLIPLQLATSNKKLMGPFINKTWVNIISWTLIVILSGLNVY",
+      "sequence_sha256": "7b397becf8afdf8d9f84c0575af9bf0ebd605f153501879ad201dac3f4077f70",
+      "task_id": 34
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-035",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-035/af3_missing_fde5d8fb5210e7a0f40008d4.json",
+      "input_sha256": "d1c371eca20aaa6ec5913f5548238c277b4da7aa1f08cc2117c09d2fa9914029",
+      "instances": [
+        "pdb_00005m94_B_+",
+        "pdb_00005m94_D_+"
+      ],
+      "length": 401,
+      "name": "af3_missing_fde5d8fb5210e7a0f40008d4",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "VGYMDPGNWITSMQGGAQYGYTLLFVILISSLAAMLLQSMTVRLGIATGKDLAQMTRHFLSKPVAIIFWIIAELAIIATDIAEVIGSAIALDLIFGIPLIVGALITVFDVFLLLFIMRFGFRKIEAIVGTLIFTVLAIFVFEVFISSPQLTDILNGFVPHKEIVTNQGILYIALGIIGATIMPHNLYLHSSIVQSRKYDRHDNEEKAQAIKYATIDSNLQLSIAFVVNCLLLTLGAALFFGTKTNDLGGFYDLYHALKTEPVLGATLGGVMSTLFAVALLASGQNSTITGTLAGQIVMEGFLRLSIPNWLRRLITRSLAVIPVIICLIIFKGNSEKIEQLLVFSQVFLSIALPFSLIPLQLATSNKKLMGPFINKTWVNIISWTLIVILSGLNVYLIIQTF",
+      "sequence_sha256": "fde5d8fb5210e7a0f40008d478e6f8a4047283470aa1022be4dd50299934e2b7",
+      "task_id": 35
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-036",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-036/af3_missing_38a83d28c30072623d4a65a3.json",
+      "input_sha256": "29dfa72660bfb5e552d364fbc4064b0aff9448ad9a9ec96584f4d3682036ace3",
+      "instances": [
+        "pdb_00006rah_C_+"
+      ],
+      "length": 570,
+      "name": "af3_missing_38a83d28c30072623d4a65a3",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "SAAPLLRRLWPYVGRYRWRYLWAVLAGLVSIFFFVLTPYFLRLAVDAVQAGRGFGVYALAIVASAALSGLLSYAMRRLAVVASRQVEYDLRRDLLHHLLTLDRDFYHKHRVGDLMNRLNTDLSAVREMVGPGILMGSRLSFLVLLAFLSMYAVNARLAFYLTLILPGIFLAMRFLLRLIDRRYREAQEVFDRISTLAQEAFSGIRVVKGYALERRMVAWFQDLNRLYVEKSLALARVEGPLHALLGFLMGFAFLTVLWAGGAMVVRGELSVGELVQFNAYLAQLTWPILGLGWVMALYQRGLTSLRRLFELLDEKPAIRDEDPLPLALEDLSGEVRFEGVGLKRDGRWLLRGLTLTIPEGMTLGITGRTGSGKSLLAALVPRLLDPSEGRVYVGGHEARRIPLAVLRKAVGVAPQEPFLFSETILENIAFGLDEVDRERVEWAARLAGIHEEILAFPKGYETVLGERGITLSGGQRQRVALARALAKRPKILILDDALSAVDAETEARILQGLKTVLGKQTTLLISHRTAALRHADWIIVLDGGRIVEEGTHESLLQAGGLYAEMDRLQK",
+      "sequence_sha256": "38a83d28c30072623d4a65a369c494d45c4c5212be5a9ee83a66c73771804dc0",
+      "task_id": 36
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-037",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-037/af3_missing_851199386991ca030f467f56.json",
+      "input_sha256": "ee40875a56ed4dd05c30f072c55ba75f4769c6509518947f528474ae54d1f6bc",
+      "instances": [
+        "pdb_00006rak_C_+",
+        "pdb_00006ral_C_+",
+        "pdb_00009rye_C_+",
+        "pdb_00009ryf_C_+"
+      ],
+      "length": 571,
+      "name": "af3_missing_851199386991ca030f467f56",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "SAAPLLRRLWPYVGRYRWRYLWAVLAGLVSIFFFVLTPYFLRLAVDAVQAGRGFGVYALAIVASAALSGLLSYAMRRLAVVASRQVEYDLRRDLLHHLLTLDRDFYHKHRVGDLMNRLNTDLSAVREMVGPGILMGSRLSFLVLLAFLSMYAVNARLAFYLTLILPGIFLAMRFLLRLIDRRYREAQEVFDRISTLAQEAFSGIRVVKGYALERRMVAWFQDLNRLYVEKSLALARVEGPLHALLGFLMGFAFLTVLWAGGAMVVRGELSVGELVQFNAYLAQLTWPILGLGWVMALYQRGLTSLRRLFELLDEKPAIRDEDPLPLALEDLSGEVRFEGVGLKRDGRWLLRGLTLTIPEGMTLGITGRTGSGKSLLAALVPRLLDPSEGRVYVGGHEARRIPLAVLRKAVGVAPQEPFLFSETILENIAFGLDEVDRERVEWAARLAGIHEEILAFPKGYETVLGERGITLSGGQRQRVALARALAKRPKILILDDALSAVDAETEARILQGLKTVLGKQTTLLISHRTAALRHADWIIVLDGGRIVEEGTHESLLQAGGLYAEMDRLQKE",
+      "sequence_sha256": "851199386991ca030f467f56777acd05ebac2f4efff1d9a99378f7e6dab74dfb",
+      "task_id": 37
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-038",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-038/af3_missing_1c52243a1aba131e25621b32.json",
+      "input_sha256": "a5b36e40e1ce5f9acbbc42aaeae83c0dde17a84ecab1aa263fa08d0c5c5064ba",
+      "instances": [
+        "pdb_00006rai_C_+"
+      ],
+      "length": 573,
+      "name": "af3_missing_1c52243a1aba131e25621b32",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "GRSAAPLLRRLWPYVGRYRWRYLWAVLAGLVSIFFFVLTPYFLRLAVDAVQAGRGFGVYALAIVASAALSGLLSYAMRRLAVVASRQVEYDLRRDLLHHLLTLDRDFYHKHRVGDLMNRLNTDLSAVREMVGPGILMGSRLSFLVLLAFLSMYAVNARLAFYLTLILPGIFLAMRFLLRLIDRRYREAQEVFDRISTLAQEAFSGIRVVKGYALERRMVAWFQDLNRLYVEKSLALARVEGPLHALLGFLMGFAFLTVLWAGGAMVVRGELSVGELVQFNAYLAQLTWPILGLGWVMALYQRGLTSLRRLFELLDEKPAIRDEDPLPLALEDLSGEVRFEGVGLKRDGRWLLRGLTLTIPEGMTLGITGRTGSGKSLLAALVPRLLDPSEGRVYVGGHEARRIPLAVLRKAVGVAPQEPFLFSETILENIAFGLDEVDRERVEWAARLAGIHEEILAFPKGYETVLGERGITLSGGQRQRVALARALAKRPKILILDDALSAVDAETEARILQGLKTVLGKQTTLLISHRTAALRHADWIIVLDGGRIVEEGTHESLLQAGGLYAEMDRLQKE",
+      "sequence_sha256": "1c52243a1aba131e25621b32589d8b12905cd8a60aaadf83325f0db6dfa27efe",
+      "task_id": 38
+    },
+    {
+      "batch_dir": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-039",
+      "input_path": "/ssd/scxi253/frontier_multimodel_v1/structure_units_v3_completion/campaign/inputs/batch-039/af3_missing_a7f2dccf1691367446575708.json",
+      "input_sha256": "1bf568882c80400ceec4f17ac900bf464db3372afbaf3d295202c94c3efe41b5",
+      "instances": [
+        "pdb_00006raj_C_+"
+      ],
+      "length": 573,
+      "name": "af3_missing_a7f2dccf1691367446575708",
+      "roles": [
+        "antigen"
+      ],
+      "sequence": "RSAAPLLRRLWPYVGRYRWRYLWAVLAGLVSIFFFVLTPYFLRLAVDAVQAGRGFGVYALAIVASAALSGLLSYAMRRLAVVASRQVEYDLRRDLLHHLLTLDRDFYHKHRVGDLMNRLNTDLSAVREMVGPGILMGSRLSFLVLLAFLSMYAVNARLAFYLTLILPGIFLAMRFLLRLIDRRYREAQEVFDRISTLAQEAFSGIRVVKGYALERRMVAWFQDLNRLYVEKSLALARVEGPLHALLGFLMGFAFLTVLWAGGAMVVRGELSVGELVQFNAYLAQLTWPILGLGWVMALYQRGLTSLRRLFELLDEKPAIRDEDPLPLALEDLSGEVRFEGVGLKRDGRWLLRGLTLTIPEGMTLGITGRTGSGKSLLAALVPRLLDPSEGRVYVGGHEARRIPLAVLRKAVGVAPQEPFLFSETILENIAFGLDEVDRERVEWAARLAGIHEEILAFPKGYETVLGERGITLSGGQRQRVALARALAKRPKILILDDALSAVDAETEARILQGLKTVLGKQTTLLISHRTAALRHADWIIVLDGGRIVEEGTHESLLQAGGLYAEMDRLQKEV",
+      "sequence_sha256": "a7f2dccf1691367446575708d54d71eb873139c0b033499fbcbe66f30055422a",
+      "task_id": 39
+    }
+  ],
+  "test_access": false
+}
