@@ -1,0 +1,2147 @@
+{
+  "additional_checks": [
+    {
+      "actual": 0.01572086539530153,
+      "card": "synthetic-rescue",
+      "expected": 0.01572086539530153,
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "contrast": "rescued_ap_minus_corrupted_ap"
+          }
+        },
+        "equal_component_equal_paired_seed_effect"
+      ],
+      "source_binding": {
+        "blob": "7598fc0120d54de232f53a5f9dc3a6efd7fac980",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json",
+        "sha256": "b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": [
+        0.011255990518420451,
+        0.02115269924594697
+      ],
+      "card": "synthetic-rescue",
+      "expected": [
+        0.011255990518420451,
+        0.02115269924594697
+      ],
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "contrast": "rescued_ap_minus_corrupted_ap"
+          }
+        },
+        "pointwise_crossed_bootstrap_ci95"
+      ],
+      "source_binding": {
+        "blob": "7598fc0120d54de232f53a5f9dc3a6efd7fac980",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json",
+        "sha256": "b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 217,
+      "card": "gated-rescue",
+      "expected": 217,
+      "selector": [
+        "unique_complexes"
+      ],
+      "source_binding": {
+        "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+        "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 68,
+      "card": "gated-rescue",
+      "expected": 68,
+      "selector": [
+        "independent_components"
+      ],
+      "source_binding": {
+        "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+        "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 1953,
+      "card": "gated-rescue",
+      "expected": 1953,
+      "selector": [
+        "record_count"
+      ],
+      "source_binding": {
+        "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+        "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": -0.00045979402276384953,
+      "card": "gated-rescue",
+      "expected": -0.00045979402276384953,
+      "selector": [
+        "clean",
+        "gated_minus_aligned",
+        "equal_component_equal_seed"
+      ],
+      "source_binding": {
+        "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+        "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": [
+        -0.0011426844725987797,
+        1.9782609094639334e-05
+      ],
+      "card": "gated-rescue",
+      "expected": [
+        -0.0011426844725987797,
+        1.9782609094639334e-05
+      ],
+      "selector": [
+        "clean",
+        "gated_minus_aligned",
+        "crossed_seed_component_ci95"
+      ],
+      "source_binding": {
+        "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+        "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": -0.001430459907154479,
+      "card": "gated-rescue",
+      "expected": -0.001430459907154479,
+      "selector": [
+        "clean",
+        "unconditional_minus_aligned",
+        "equal_component_equal_seed"
+      ],
+      "source_binding": {
+        "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+        "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.0031134461184687,
+      "card": "baseline-margin",
+      "expected": 0.0031134461184687,
+      "selector": [
+        "mean_margin"
+      ],
+      "source_binding": {
+        "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+        "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+        "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+        "path": "results/baseline_margin_replication_v1/report.json",
+        "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": [
+        0.0019686912510177143,
+        0.004290434941020674
+      ],
+      "card": "baseline-margin",
+      "expected": [
+        0.0019686912510177143,
+        0.004290434941020674
+      ],
+      "selector": [
+        "bootstrap_ci95"
+      ],
+      "source_binding": {
+        "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+        "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+        "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+        "path": "results/baseline_margin_replication_v1/report.json",
+        "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 10,
+      "card": "baseline-margin",
+      "expected": 10,
+      "selector": [
+        "seed_count"
+      ],
+      "source_binding": {
+        "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+        "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+        "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+        "path": "results/baseline_margin_replication_v1/report.json",
+        "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 10,
+      "card": "baseline-margin",
+      "expected": 10,
+      "selector": [
+        "positive_seed_count"
+      ],
+      "source_binding": {
+        "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+        "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+        "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+        "path": "results/baseline_margin_replication_v1/report.json",
+        "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.023970778057653425,
+      "card": "hadamard-decoder",
+      "expected": 0.023970778057653425,
+      "selector": [
+        "bilinear",
+        "macro",
+        "auprc"
+      ],
+      "source_binding": {
+        "blob": "206249f88275c888fc312f35150db395db415796",
+        "branch": "kevin/hadamard-pair-decoder-v1",
+        "commit": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+        "path": "results/pair_decoder_ablation_v1/report_compact.json",
+        "sha256": "cfd1fc3432ed7ff2eef8e27d1827846cf0c16cac3fc5537487d893c4e9b32790",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/347acbdfb10a15a2b4081a676b0364d3b83ee8dc/results/pair_decoder_ablation_v1/report_compact.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.02267960882724628,
+      "card": "hadamard-decoder",
+      "expected": 0.02267960882724628,
+      "selector": [
+        "hadamard_mlp",
+        "macro",
+        "auprc"
+      ],
+      "source_binding": {
+        "blob": "206249f88275c888fc312f35150db395db415796",
+        "branch": "kevin/hadamard-pair-decoder-v1",
+        "commit": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+        "path": "results/pair_decoder_ablation_v1/report_compact.json",
+        "sha256": "cfd1fc3432ed7ff2eef8e27d1827846cf0c16cac3fc5537487d893c4e9b32790",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/347acbdfb10a15a2b4081a676b0364d3b83ee8dc/results/pair_decoder_ablation_v1/report_compact.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 217,
+      "card": "reparank-centered",
+      "expected": 217,
+      "selector": [
+        "instance_count"
+      ],
+      "source_binding": {
+        "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+        "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.016013622977683228,
+      "card": "reparank-centered",
+      "expected": 0.016013622977683228,
+      "selector": [
+        "primary_macro_mean_per_complex_AP"
+      ],
+      "source_binding": {
+        "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+        "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.0023662535231304227,
+      "card": "reparank-centered",
+      "expected": 0.0023662535231304227,
+      "selector": [
+        "pooled_pair_metrics",
+        "average_precision"
+      ],
+      "source_binding": {
+        "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+        "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.6721526555729059,
+      "card": "reparank-centered",
+      "expected": 0.6721526555729059,
+      "selector": [
+        "pooled_pair_metrics",
+        "auroc"
+      ],
+      "source_binding": {
+        "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+        "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 12,
+      "card": "reparank-centered",
+      "expected": 12,
+      "selector": [
+        "reused_pair_prediction_count"
+      ],
+      "source_binding": {
+        "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+        "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 205,
+      "card": "reparank-centered",
+      "expected": 205,
+      "selector": [
+        "fresh_model_forward_count"
+      ],
+      "source_binding": {
+        "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+        "branch": "kevin/rescue-qualification-20260930",
+        "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+        "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 36,
+      "card": "structural-plm",
+      "expected": 36,
+      "selector": [
+        "task_count"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 12,
+      "card": "structural-plm",
+      "expected": 12,
+      "selector": [
+        "arm_count"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 217,
+      "card": "structural-plm",
+      "expected": 217,
+      "selector": [
+        "validation_complex_count"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 12,
+      "card": "structural-plm",
+      "expected": 12,
+      "selector": [
+        "development_layer_selection",
+        "prosst",
+        "selected_layer"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 24,
+      "card": "structural-plm",
+      "expected": 24,
+      "selector": [
+        "development_layer_selection",
+        "saprot",
+        "selected_layer"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 33,
+      "card": "structural-plm",
+      "expected": 33,
+      "selector": [
+        "development_layer_selection",
+        "saprot",
+        "raw_highest_layer"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.02217555459107116,
+      "card": "structural-plm",
+      "expected": 0.02217555459107116,
+      "selector": [
+        "development_layer_selection",
+        "prosst",
+        "selected_mean_pair_macro_ap"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    },
+    {
+      "actual": 0.024451940544316726,
+      "card": "structural-plm",
+      "expected": 0.024451940544316726,
+      "selector": [
+        "development_layer_selection",
+        "saprot",
+        "selected_mean_pair_macro_ap"
+      ],
+      "source_binding": {
+        "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+        "branch": "kevin/structural-plm-final-20260930",
+        "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+        "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+        "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+      },
+      "source_index": 0
+    }
+  ],
+  "legacy_metrics": [
+    {
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_base",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "selector": [
+        "arm_means",
+        "esm2"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 0.022459984574757865,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_aligned",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "selector": [
+        "arm_means",
+        "esm_if1_only"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 0.027570672383430774,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_shuffled",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "selector": [
+        "arm_means",
+        "esm_if1_shuffled"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 0.01936703169765898,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "complex macro AP, mean of ten fixed seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_random",
+      "interpretation_limit": "Not an independent test; no cross-model SOTA comparison",
+      "selector": [
+        "arm_means",
+        "random_control"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 0.021864936435361807,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_aligned_delta",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "aligned_vs_esm2",
+        "paired_difference"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 0.005110687808672911,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_aligned_ci",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "aligned_vs_esm2",
+        "bootstrap_ci95"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": [
+        0.0037804980020868864,
+        0.006439117257188512
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_aligned_n",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "aligned_vs_esm2",
+        "seed_count"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 10,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_shuffled_delta",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "shuffled_vs_esm2",
+        "paired_difference"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": -0.003092952877098886,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_shuffled_ci",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "shuffled_vs_esm2",
+        "bootstrap_ci95"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": [
+        -0.004391297892447222,
+        -0.0018068432339909488
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_shuffled_n",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "shuffled_vs_esm2",
+        "seed_count"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 10,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_random_delta",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "random_vs_esm2",
+        "paired_difference"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": -0.0005950481393960573,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_random_ci",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "random_vs_esm2",
+        "bootstrap_ci95"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": [
+        -0.0021509073762782096,
+        0.0009703236011609193
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed effect; confidence intervals resample training seeds",
+      "cohort": "SAbDab2 development validation",
+      "evidence_class": "development",
+      "id": "rep_random_n",
+      "interpretation_limit": "Seed uncertainty is not biological population uncertainty",
+      "selector": [
+        "comparisons",
+        "random_vs_esm2",
+        "seed_count"
+      ],
+      "source": "results/representation_attribution_v1/report.json",
+      "source_binding": {
+        "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/representation_attribution_v1/report.json",
+        "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+      "value": 10,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_esm_if1_identity",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "reduce": "mean",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "esm_if1:1:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:2:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:3:identity:0"
+        ]
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": 0.027994970888844756,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_esm_if1_same_aa",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "reduce": "mean",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "esm_if1:1:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:2:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "esm_if1:3:same_aa_shuffle:0"
+        ]
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": 0.011100352687647625,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_esm_if1_delta",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "encoder": "esm_if1",
+            "metric": "pair_ap"
+          }
+        },
+        "mean_difference"
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": -0.017151325302456014,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_esm_if1_ci",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "encoder": "esm_if1",
+            "metric": "pair_ap"
+          }
+        },
+        "crossed_seed_cluster_ci95"
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": [
+        -0.022688197094407773,
+        -0.012434039894905642
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_antiberty_identity",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "reduce": "mean",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "antiberty:1:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:2:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:3:identity:0"
+        ]
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": 0.021403718532192823,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_antiberty_same_aa",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "reduce": "mean",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "antiberty:1:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:2:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "antiberty:3:same_aa_shuffle:0"
+        ]
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": 0.017459472990593108,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_antiberty_delta",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "encoder": "antiberty",
+            "metric": "pair_ap"
+          }
+        },
+        "mean_difference"
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": -0.005720954371272334,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_antiberty_ci",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "encoder": "antiberty",
+            "metric": "pair_ap"
+          }
+        },
+        "crossed_seed_cluster_ci95"
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": [
+        -0.008787191301539102,
+        -0.003088773077164388
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_proteinmpnn_identity",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "reduce": "mean",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "proteinmpnn:1:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:2:identity:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:3:identity:0"
+        ]
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": 0.023017781581199246,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean per-complex AP, mean of seeds 1/2/3",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_proteinmpnn_same_aa",
+      "interpretation_limit": "Same-AA shuffling preserves residue type, not residue correspondence; no universal necessity claim",
+      "reduce": "mean",
+      "selectors": [
+        [
+          "raw_condition_means",
+          "proteinmpnn:1:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:2:same_aa_shuffle:0"
+        ],
+        [
+          "raw_condition_means",
+          "proteinmpnn:3:same_aa_shuffle:0"
+        ]
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": 0.014943382932378714,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_proteinmpnn_delta",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "encoder": "proteinmpnn",
+            "metric": "pair_ap"
+          }
+        },
+        "mean_difference"
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": -0.008499074062229326,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "equal-component/equal-seed paired effect; crossed seed/component interval",
+      "cohort": "217 development-validation complexes; 68 authority components",
+      "evidence_class": "exploratory development",
+      "id": "corr_proteinmpnn_ci",
+      "interpretation_limit": "Pointwise exploratory interval, no multiplicity-adjusted or OOD confirmation",
+      "selector": [
+        "contrasts",
+        {
+          "where": {
+            "condition": "same_aa_shuffle:0",
+            "encoder": "proteinmpnn",
+            "metric": "pair_ap"
+          }
+        },
+        "crossed_seed_cluster_ci95"
+      ],
+      "source": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+      "source_binding": {
+        "blob": "d25129f46f0d53d74e6de9e2d26b7938385a7634",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json",
+        "sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/correspondence_v2/evidence/attempt1/ANALYSIS.json"
+      },
+      "source_commit": "14a385feaec24b3141331963ba71dda788a164e1",
+      "source_sha256": "a334a59dce84250fda8516873a196a1b7c336fe727ce3c8e1137acece4d4ada8",
+      "value": [
+        -0.011953311770545552,
+        -0.005751938699175821
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "id": "holdout_ESM-IF1_delta",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "selector": [
+        "contrasts",
+        "ESM-IF1",
+        "all_217",
+        "mean"
+      ],
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_binding": {
+        "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/holdout_confirmation_v1/confirmation.json",
+        "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "value": 0.002260074267027126,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "id": "holdout_ESM-IF1_ci",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "selector": [
+        "contrasts",
+        "ESM-IF1",
+        "all_217",
+        "ci"
+      ],
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_binding": {
+        "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/holdout_confirmation_v1/confirmation.json",
+        "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "value": [
+        -7.198970681111876e-06,
+        0.004900886221604488
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "id": "holdout_ESM-IF1_positive_seeds",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "selector": [
+        "contrasts",
+        "ESM-IF1",
+        "all_217",
+        "up"
+      ],
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_binding": {
+        "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/holdout_confirmation_v1/confirmation.json",
+        "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "value": 6,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "id": "holdout_ProteinMPNN_delta",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "selector": [
+        "contrasts",
+        "ProteinMPNN",
+        "all_217",
+        "mean"
+      ],
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_binding": {
+        "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/holdout_confirmation_v1/confirmation.json",
+        "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "value": 0.0035941254577831964,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "id": "holdout_ProteinMPNN_ci",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "selector": [
+        "contrasts",
+        "ProteinMPNN",
+        "all_217",
+        "ci"
+      ],
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_binding": {
+        "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/holdout_confirmation_v1/confirmation.json",
+        "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "value": [
+        0.0015589868078879768,
+        0.005881458517017491
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "paired-seed aligned minus shuffled; seed bootstrap",
+      "cohort": "Registered 217-complex historical holdout confirmation",
+      "evidence_class": "single registered holdout read",
+      "id": "holdout_ProteinMPNN_positive_seeds",
+      "interpretation_limit": "Now closed; 32 cases overlap a separate baseline test, 185-case sensitivity does not replace registered answer",
+      "selector": [
+        "contrasts",
+        "ProteinMPNN",
+        "all_217",
+        "up"
+      ],
+      "source": "results/holdout_confirmation_v1/confirmation.json",
+      "source_binding": {
+        "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/holdout_confirmation_v1/confirmation.json",
+        "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+      "value": 9,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_contact_ap",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "contact",
+        "MPC_AP"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.026674939866968273,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_contact_pooled_ap",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "contact",
+        "auprc"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.010012902970376155,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_contact_auroc",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "contact",
+        "auroc"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.9257969993478157,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_epitope_ap",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "epitope",
+        "MPC_AP"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.22031151958597614,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_epitope_pooled_ap",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "epitope",
+        "auprc"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.12599121808909616,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_epitope_auroc",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "epitope",
+        "auroc"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.6718376132885369,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_paratope_ap",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "paratope",
+        "MPC_AP"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.6985876493387135,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_paratope_pooled_ap",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "paratope",
+        "auprc"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.634032543098221,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "median of seeds 17/29/43; routed components, not a probability ensemble",
+      "cohort": "549 exposed historical antigen-fold complexes",
+      "evidence_class": "exposed historical test",
+      "id": "framecontact_paratope_auroc",
+      "interpretation_limit": "Not fresh blind or sequence-double-cold; AF3 may use homolog MSAs",
+      "selector": [
+        "seed_medians",
+        "paratope",
+        "auroc"
+      ],
+      "source": "results/aligned_test549_replay_v1/RESULT.json",
+      "source_binding": {
+        "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/aligned_test549_replay_v1/RESULT.json",
+        "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+      },
+      "source_commit": "54afd798700bc41ac1352065414d8687c9627871",
+      "source_sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+      "value": 0.9539890654167656,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_macro_ap",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "primary_macro_mean_per_complex_AP"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 0.03780779120862989,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_pooled_ap",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "average_precision"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 0.008738584064940456,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_auroc",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "auroc"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 0.7860643617166425,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_epitope_ap",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "epitope_macro_AP"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 0.20203910628196645,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_paratope_ap",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "paratope_macro_AP"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 0.5577073439412932,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_pairs",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "pair_count"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 9638880,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_positives",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "pooled_pair_metrics",
+        "positive_count"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 9036,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_component_ap",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "primary_equal_component_analysis",
+        "estimate"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": 0.04322164360822419,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "one deterministic checkpoint; named macro/pooled/component statistic",
+      "cohort": "217 development-validation complexes; 9,638,880 residue pairs",
+      "evidence_class": "external checkpoint diagnostic",
+      "id": "reparank_component_ci",
+      "interpretation_limit": "Baseline, not this project model improvement; pretrained training overlap unknown; no matched training budget",
+      "selector": [
+        "primary_equal_component_analysis",
+        "component_bootstrap_ci95"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+      "source_binding": {
+        "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+        "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+      },
+      "source_sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+      "value": [
+        0.02633102266268606,
+        0.06218666145165621
+      ],
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "Cartesian candidate pairs and repeated measurements",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_tasks",
+      "interpretation_limit": "Unobserved alternatives are not experimental non-binders",
+      "selector": [
+        "tasks"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 9,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "Cartesian candidate pairs and repeated measurements",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_total_pair_evaluations",
+      "interpretation_limit": "Unobserved alternatives are not experimental non-binders",
+      "selector": [
+        "total_pair_evaluations"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 130662,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "Cartesian candidate pairs and repeated measurements",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_unique_pair_count_per_task",
+      "interpretation_limit": "Unobserved alternatives are not experimental non-binders",
+      "selector": [
+        "unique_pair_count_per_task"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 14518,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_rank_antibody_for_antigen_identity:0",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "condition": "identity:0",
+            "direction": "rank_antibody_for_antigen",
+            "metric": "mrr_tie_expected",
+            "score_name": "score_current_centered_lme"
+          }
+        },
+        "mean"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 0.07045057779638876,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_rank_antibody_for_antigen_global_shuffle:0",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "condition": "global_shuffle:0",
+            "direction": "rank_antibody_for_antigen",
+            "metric": "mrr_tie_expected",
+            "score_name": "score_current_centered_lme"
+          }
+        },
+        "mean"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 0.0755205487550579,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_rank_antigen_for_antibody_identity:0",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "condition": "identity:0",
+            "direction": "rank_antigen_for_antibody",
+            "metric": "mrr_tie_expected",
+            "score_name": "score_current_centered_lme"
+          }
+        },
+        "mean"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 0.06119707330809172,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "unique-anchor MRR averaged across three checkpoints",
+      "cohort": "122 antibody x 119 antigen unique-sequence grid",
+      "evidence_class": "exploratory development",
+      "id": "ranking_rank_antigen_for_antibody_global_shuffle:0",
+      "interpretation_limit": "Do not compare with residue-pair MRR or claim improved specificity",
+      "selector": [
+        "absolute_metrics",
+        {
+          "where": {
+            "condition": "global_shuffle:0",
+            "direction": "rank_antigen_for_antibody",
+            "metric": "mrr_tie_expected",
+            "score_name": "score_current_centered_lme"
+          }
+        },
+        "mean"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 0.06328316755999165,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean of nine Spearman correlations",
+      "cohort": "122 x 119 grid, nine runs",
+      "evidence_class": "exploratory development",
+      "id": "ranking_dispersion_rho",
+      "interpretation_limit": "Descriptive association, not proven causal bias",
+      "reduce": "mean",
+      "selector": [
+        "mechanism_correlations",
+        "*",
+        "spearman_current_score_vs_centered_std"
+      ],
+      "source": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+      "source_binding": {
+        "blob": "0a5bffa39f605b3a6b2d329303403991b319120c",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json",
+        "sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/score_dissociation_attempt3/ANALYSIS.json"
+      },
+      "source_commit": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "source_sha256": "4c4962565b6953285b8ef5a505ed3dfa043b3e8ed5b4fa84c08aeac15ac5c2bb",
+      "value": 0.9742513789315748,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean of per-complex MCC over ten trained seeds",
+      "cohort": "AsEP epitope_group test",
+      "evidence_class": "historical benchmark",
+      "id": "asep_group_mcc",
+      "interpretation_limit": "Use macro convention only; not an SOTA result",
+      "reduce": "mean",
+      "selector": [
+        "*",
+        "macro_mcc"
+      ],
+      "source": "results/asep_benchmark_v1/test_micro_macro.json",
+      "source_binding": {
+        "blob": "2b4fd38f3351223247d2945b503f268c262d10be",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/asep_benchmark_v1/test_micro_macro.json",
+        "sha256": "f43e1b76a0e485dc044f0e7423a1a45be26d5512b5183f0c1839ee170e1630b9",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/asep_benchmark_v1/test_micro_macro.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "f43e1b76a0e485dc044f0e7423a1a45be26d5512b5183f0c1839ee170e1630b9",
+      "value": 0.15724713931069248,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    },
+    {
+      "aggregation": "mean of per-complex MCC over ten trained seeds",
+      "cohort": "AsEP epitope_ratio test",
+      "evidence_class": "historical benchmark",
+      "id": "asep_ratio_mcc",
+      "interpretation_limit": "Do not confuse published protocol variants; no test reuse",
+      "selector": [
+        "metrics",
+        "mcc",
+        "mean"
+      ],
+      "source": "results/asep_benchmark_v1/ratio_test_measurement.json",
+      "source_binding": {
+        "blob": "fc02e8a6442cc1d52b6cb3286d85fd2029162ebb",
+        "branch": "main",
+        "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+        "path": "results/asep_benchmark_v1/ratio_test_measurement.json",
+        "sha256": "b91423003f149ca72c7645d1a5eaee8a6b6ec1a021184a3c353d6deb46609a37",
+        "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/asep_benchmark_v1/ratio_test_measurement.json"
+      },
+      "source_commit": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "source_sha256": "b91423003f149ca72c7645d1a5eaee8a6b6ec1a021184a3c353d6deb46609a37",
+      "value": 0.25839540723437454,
+      "verification": "Exact JSON field and source digest; no experiment rerun"
+    }
+  ],
+  "legacy_registry_source": {
+    "blob": "a6cce237094b666484c90246d83c0283a98c8feb",
+    "branch": "main",
+    "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+    "path": "results/HEADLINE_REGISTRY.json",
+    "sha256": "f0440c6b2d950633e509018fd45a369f7e1f333e1f363eee14f4a56f3971dcc2",
+    "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/HEADLINE_REGISTRY.json"
+  },
+  "scope": "Reporting-value integrity, not scientific replication"
+}
