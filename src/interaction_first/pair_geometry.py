@@ -29,6 +29,11 @@ from .scoring import (
     pool_pair_marginals,
 )
 from .intra_chain_geometry import DualIntraChainGeometryEncoder
+from .inter_chain_geometry import (
+    build_inter_chain_geometry,
+    InterChainGeometryBias,
+    InterChainPairFeatureProjection,
+)
 from .pair_geometry_schema import PAIR_ORIENTATION, PairGeometrySchema
 
 
@@ -637,6 +642,13 @@ class ProspectivePairGeometryModel(_ModuleBase):
             if intra_chain_geometry_layers > 0
             else None
         )
+        self.inter_chain_geometry_num_rbf = intra_chain_geometry_num_rbf
+        self.inter_chain_geometry_distance_max = intra_chain_geometry_distance_max
+        inter_chain_geometry_dim = intra_chain_geometry_num_rbf + 15
+        self.inter_chain_projection = InterChainPairFeatureProjection(
+            geometry_dim=inter_chain_geometry_dim,
+            pair_dim=pair_dim,
+        )
         self.fusion_layers = nn.ModuleList(
             EarlyBidirectionalResidueFusion(
                 d_model=d_model,
@@ -722,6 +734,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
         antigen_add: Any,
         antigen_gate: Any,
         chunk_mask: Any,
+        inter_chain_features: Any | None = None,
     ) -> Any:
         """Construct one candidate-masked antibody-axis pair-state chunk."""
         antibody_add = self.antibody_pair_add(antibody).unsqueeze(2)
@@ -731,6 +744,8 @@ class ProspectivePairGeometryModel(_ModuleBase):
             + antigen_add.unsqueeze(1)
             + antibody_gate * antigen_gate.unsqueeze(1)
         )
+        if inter_chain_features is not None:
+            pair_seed = pair_seed + inter_chain_features
         pair_state = self.pair_refinement(pair_seed)
         return pair_state.masked_fill(~chunk_mask.unsqueeze(-1), 0.0)
 
@@ -781,6 +796,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
         antigen_gate: Any,
         chunk_mask: Any,
         enabled_heads: frozenset[str],
+        inter_chain_features: Any | None = None,
     ) -> dict[str, Any]:
         """Construct and decode one antibody-axis chunk."""
         pair_state = self._pair_state_chunk(
@@ -788,6 +804,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
             antigen_add,
             antigen_gate,
             chunk_mask,
+            inter_chain_features=inter_chain_features,
         )
         return self._decode_pair_state(pair_state, chunk_mask, enabled_heads)
 
@@ -941,6 +958,25 @@ class ProspectivePairGeometryModel(_ModuleBase):
 
         antigen_add = self.antigen_pair_add(antigen)
         antigen_gate = self.antigen_pair_gate(antigen)
+        
+        inter_chain_features = None
+        if antibody_backbone is not None and antigen_backbone is not None:
+            inter_geom = build_inter_chain_geometry(
+                antibody_backbone,
+                antigen_backbone,
+                antibody_mask,
+                antigen_mask,
+                num_rbf=self.inter_chain_geometry_num_rbf,
+                distance_max=self.inter_chain_geometry_distance_max,
+            )
+            raw_features = torch.cat([
+                inter_geom.distance_rbf,
+                inter_geom.unit_direction,
+                inter_geom.displacement_local,
+                inter_geom.relative_rotation.flatten(-2, -1),
+            ], dim=-1)
+            inter_chain_features = self.inter_chain_projection(raw_features)
+
         pair_chunks: list[Any] = []
         head_chunks: dict[str, list[Any]] = {
             name: []
@@ -966,6 +1002,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
                     antigen_add,
                     antigen_gate,
                     candidate_pair_mask[:, start:end],
+                    inter_chain_features=inter_chain_features[:, start:end] if inter_chain_features is not None else None,
                 )
                 for start, end in chunk_ranges
             ]
@@ -995,6 +1032,7 @@ class ProspectivePairGeometryModel(_ModuleBase):
                     antigen_gate,
                     candidate_pair_mask[:, start:end],
                     enabled_heads,
+                    inter_chain_features=inter_chain_features[:, start:end] if inter_chain_features is not None else None,
                 )
                 if return_pair_representations:
                     pair_chunks.append(chunk["pair_representations"])
