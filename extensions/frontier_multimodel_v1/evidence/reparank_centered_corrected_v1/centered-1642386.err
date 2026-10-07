@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 574, in <module>
+    main()
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 570, in main
+    args.function(args)
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 406, in command_evaluate
+    backbone = center_backbone_like_official_inference(backbone)
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 105, in center_backbone_like_official_inference
+    raise RuntimeError("official-style coordinate centering failed")
+RuntimeError: official-style coordinate centering failed

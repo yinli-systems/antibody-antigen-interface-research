@@ -1,0 +1,5 @@
+data_1N8Z
+# Bundled mmCIF header fixture (not a full coordinate file).
+_entry.id   1N8Z
+_struct.title  'Crystal structure of extracellular region of HER2 complexed with Herceptin Fab'
+_exptl.method  'X-RAY DIFFRACTION'

@@ -1,0 +1,300 @@
+{
+  "at_utc": "2026-09-30T11:15:21.523862+00:00",
+  "complex_count": 217,
+  "component_count": 68,
+  "conditions": [
+    {
+      "canonical_rescued_equals_rescued_all_records": true,
+      "clean_rescued_equals_rescued_all_records": true,
+      "condition": "same_aa_shuffle:0",
+      "contrasts": [
+        {
+          "component_bootstrap_ci95": [
+            0.010579210449673302,
+            0.02219707898502609
+          ],
+          "component_effect_min_max": [
+            -0.03032834181169361,
+            0.16576499954945528
+          ],
+          "component_effect_q10_q50_q90": [
+            -0.0005618776386189385,
+            0.011229625462257056,
+            0.0379502344498338
+          ],
+          "contrast": "rescued_minus_corrupted",
+          "equal_complex_effect": 0.016073204504098163,
+          "equal_component_effect": 0.015733374087153716,
+          "negative_component_fraction": 0.10294117647058823,
+          "positive_component_fraction": 0.8970588235294118
+        },
+        {
+          "component_bootstrap_ci95": [
+            0.012545577031262283,
+            0.023874582756819532
+          ],
+          "component_effect_min_max": [
+            -0.012734521874270446,
+            0.17745298310524066
+          ],
+          "component_effect_q10_q50_q90": [
+            0.00105019550968695,
+            0.012210324314722945,
+            0.036522686169885
+          ],
+          "contrast": "rescued_minus_untrained",
+          "equal_complex_effect": 0.016558212262688193,
+          "equal_component_effect": 0.01739647732012899,
+          "negative_component_fraction": 0.058823529411764705,
+          "positive_component_fraction": 0.9411764705882353
+        },
+        {
+          "component_bootstrap_ci95": [
+            -0.0032568506535699997,
+            -0.0008851243323444254
+          ],
+          "component_effect_min_max": [
+            -0.01629189667535283,
+            0.012685335955370074
+          ],
+          "component_effect_q10_q50_q90": [
+            -0.010835864517948829,
+            -0.00016349802017561892,
+            0.000742809094176427
+          ],
+          "contrast": "clean_rescued_minus_aligned",
+          "equal_complex_effect": -0.0028845830097493615,
+          "equal_component_effect": -0.002029907874941471,
+          "negative_component_fraction": 0.6029411764705882,
+          "positive_component_fraction": 0.35294117647058826
+        },
+        {
+          "component_bootstrap_ci95": [
+            0.0,
+            0.0
+          ],
+          "component_effect_min_max": [
+            0.0,
+            0.0
+          ],
+          "component_effect_q10_q50_q90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "contrast": "canonical_rescued_minus_rescued",
+          "equal_complex_effect": 0.0,
+          "equal_component_effect": 0.0,
+          "negative_component_fraction": 0.0,
+          "positive_component_fraction": 0.0
+        }
+      ],
+      "gap_recovered_ratio": 0.8478417902066714,
+      "means": {
+        "aligned_ap": 0.029983989683408815,
+        "canonical_rescued_ap": 0.027099406673659458,
+        "clean_rescued_ap": 0.027099406673659458,
+        "corrupted_ap": 0.011026202169561293,
+        "rescued_ap": 0.027099406673659458,
+        "untrained_rescued_ap": 0.010541194410971259
+      }
+    },
+    {
+      "canonical_rescued_equals_rescued_all_records": true,
+      "clean_rescued_equals_rescued_all_records": true,
+      "condition": "chain_shift:8",
+      "contrasts": [
+        {
+          "component_bootstrap_ci95": [
+            0.01287766027630067,
+            0.024357430358943964
+          ],
+          "component_effect_min_max": [
+            -0.027680311931217793,
+            0.16852274852124877
+          ],
+          "component_effect_q10_q50_q90": [
+            0.0009695471156586601,
+            0.012062910921233946,
+            0.04085153668659145
+          ],
+          "contrast": "rescued_minus_corrupted",
+          "equal_complex_effect": 0.017538893142865695,
+          "equal_component_effect": 0.018013143358228657,
+          "negative_component_fraction": 0.04411764705882353,
+          "positive_component_fraction": 0.9558823529411765
+        },
+        {
+          "component_bootstrap_ci95": [
+            0.012545577031262283,
+            0.023874582756819532
+          ],
+          "component_effect_min_max": [
+            -0.012734521874270446,
+            0.17745298310524066
+          ],
+          "component_effect_q10_q50_q90": [
+            0.00105019550968695,
+            0.012210324314722945,
+            0.036522686169885
+          ],
+          "contrast": "rescued_minus_untrained",
+          "equal_complex_effect": 0.016558212262688193,
+          "equal_component_effect": 0.01739647732012899,
+          "negative_component_fraction": 0.058823529411764705,
+          "positive_component_fraction": 0.9411764705882353
+        },
+        {
+          "component_bootstrap_ci95": [
+            -0.0032568506535699997,
+            -0.0008851243323444254
+          ],
+          "component_effect_min_max": [
+            -0.01629189667535283,
+            0.012685335955370074
+          ],
+          "component_effect_q10_q50_q90": [
+            -0.010835864517948829,
+            -0.00016349802017561892,
+            0.000742809094176427
+          ],
+          "contrast": "clean_rescued_minus_aligned",
+          "equal_complex_effect": -0.0028845830097493615,
+          "equal_component_effect": -0.002029907874941471,
+          "negative_component_fraction": 0.6029411764705882,
+          "positive_component_fraction": 0.35294117647058826
+        },
+        {
+          "component_bootstrap_ci95": [
+            0.0,
+            0.0
+          ],
+          "component_effect_min_max": [
+            0.0,
+            0.0
+          ],
+          "component_effect_q10_q50_q90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "contrast": "canonical_rescued_minus_rescued",
+          "equal_complex_effect": 0.0,
+          "equal_component_effect": 0.0,
+          "negative_component_fraction": 0.0,
+          "positive_component_fraction": 0.0
+        }
+      ],
+      "gap_recovered_ratio": 0.8587614082835742,
+      "means": {
+        "aligned_ap": 0.029983989683408815,
+        "canonical_rescued_ap": 0.027099406673659458,
+        "clean_rescued_ap": 0.027099406673659458,
+        "corrupted_ap": 0.009560513530793761,
+        "rescued_ap": 0.027099406673659458,
+        "untrained_rescued_ap": 0.010541194410971259
+      }
+    },
+    {
+      "canonical_rescued_equals_rescued_all_records": true,
+      "clean_rescued_equals_rescued_all_records": true,
+      "condition": "global_shuffle:0",
+      "contrasts": [
+        {
+          "component_bootstrap_ci95": [
+            0.013350977468646653,
+            0.024866022831851683
+          ],
+          "component_effect_min_max": [
+            -0.009551228688004407,
+            0.17845421077988546
+          ],
+          "component_effect_q10_q50_q90": [
+            0.0012101203551802054,
+            0.014113747546833401,
+            0.03716055914384193
+          ],
+          "contrast": "rescued_minus_corrupted",
+          "equal_complex_effect": 0.017944502028613557,
+          "equal_component_effect": 0.01834854934738627,
+          "negative_component_fraction": 0.058823529411764705,
+          "positive_component_fraction": 0.9411764705882353
+        },
+        {
+          "component_bootstrap_ci95": [
+            0.012545577031262283,
+            0.023874582756819532
+          ],
+          "component_effect_min_max": [
+            -0.012734521874270446,
+            0.17745298310524066
+          ],
+          "component_effect_q10_q50_q90": [
+            0.00105019550968695,
+            0.012210324314722945,
+            0.036522686169885
+          ],
+          "contrast": "rescued_minus_untrained",
+          "equal_complex_effect": 0.016558212262688193,
+          "equal_component_effect": 0.01739647732012899,
+          "negative_component_fraction": 0.058823529411764705,
+          "positive_component_fraction": 0.9411764705882353
+        },
+        {
+          "component_bootstrap_ci95": [
+            -0.0032568506535699997,
+            -0.0008851243323444254
+          ],
+          "component_effect_min_max": [
+            -0.01629189667535283,
+            0.012685335955370074
+          ],
+          "component_effect_q10_q50_q90": [
+            -0.010835864517948829,
+            -0.00016349802017561892,
+            0.000742809094176427
+          ],
+          "contrast": "clean_rescued_minus_aligned",
+          "equal_complex_effect": -0.0028845830097493615,
+          "equal_component_effect": -0.002029907874941471,
+          "negative_component_fraction": 0.6029411764705882,
+          "positive_component_fraction": 0.35294117647058826
+        },
+        {
+          "component_bootstrap_ci95": [
+            0.0,
+            0.0
+          ],
+          "component_effect_min_max": [
+            0.0,
+            0.0
+          ],
+          "component_effect_q10_q50_q90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "contrast": "canonical_rescued_minus_rescued",
+          "equal_complex_effect": 0.0,
+          "equal_component_effect": 0.0,
+          "negative_component_fraction": 0.0,
+          "positive_component_fraction": 0.0
+        }
+      ],
+      "gap_recovered_ratio": 0.8615117752682585,
+      "means": {
+        "aligned_ap": 0.029983989683408815,
+        "canonical_rescued_ap": 0.027099406673659458,
+        "clean_rescued_ap": 0.027099406673659458,
+        "corrupted_ap": 0.009154904645045899,
+        "rescued_ap": 0.027099406673659458,
+        "untrained_rescued_ap": 0.010541194410971259
+      }
+    }
+  ],
+  "ood_labels_read": false,
+  "seed_pair_count": 1,
+  "source_complete_sha256": "4e98f0798e3e7df0e1ce601069547188d56c01d8982db9dfe05f2c773e72f864",
+  "status": "COMPLETE_SEED101_GROUPED_DEVELOPMENT_ANALYSIS",
+  "test_labels_read": false
+}

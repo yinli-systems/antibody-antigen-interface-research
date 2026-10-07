@@ -1,0 +1,52 @@
+{
+  "authorization": {
+    "gpu_execution": false,
+    "old_sabdab2_test_access": false,
+    "production_training": false,
+    "sable_label_access": false,
+    "temporal_label_access": false
+  },
+  "claim_boundary": "CPU implementation and synthetic/regression evidence only. No GPU optimization, development transfer, test performance, biological improvement, model promotion, or SOTA claim.",
+  "implementation": {
+    "contact_logit_decomposition": "left_unary_plus_right_unary_plus_bilinear_interaction_plus_global_bias",
+    "interaction_centering": "mean_square_penalty_on_sampled_row_and_column_means",
+    "negative_sampling": "deterministic_row_and_column_matched_first_then_random_fill",
+    "ranking": "within_complex_softplus_margin_on_interaction_logits_only"
+  },
+  "parent_evidence": {
+    "internal_holdout_macro_sampled_contact_ap_after": 0.28128273617413924,
+    "internal_holdout_macro_sampled_contact_ap_before": 0.21416942932297578,
+    "internal_holdout_pairwise_accuracy_after": 0.5969855070584209,
+    "internal_holdout_pairwise_accuracy_before": 0.49825469538318146,
+    "result_sha256": "a8fe32eadd8494e708d9111ad6800ffcd8b83d76d3dc6908f7b710089c67a5e0",
+    "source_objective_sha256": "d44f803979c05830affb114caeeb830e2ec916dcc4c20b63df30f32babad9c9e",
+    "source_protocol_sha256": "8f51ce80623f621fc0e32efc6cacb804cabe36edc30dcee3e6d726e65c67845e",
+    "status": "TRAIN_ONLY_EXPOSED_DEVELOPMENT_MECHANISM_EVIDENCE"
+  },
+  "source_sha256": {
+    "scripts/run_phase0_direct_assertions.py": "7f342217490d3f2352cc094d97fc17756548601052367cfd9bf3379e881c1716",
+    "src/antibody_pretraining/__init__.py": "1e30357cd9c805aa0ea5125ccf28d3bb523a978a15c5f57b7fbb917b57397287",
+    "src/antibody_pretraining/pair_aware_attention.py": "4d838dd6a00c42db6205bb59f766e2f2ff3c15de05502fa80c682429eb5316d2",
+    "src/antibody_pretraining/pair_aware_esm2.py": "94f78cfff57c25869c97f8ed2d5244dd19f798ec1ed535ced478d4c3c095dc8f",
+    "src/antibody_pretraining/stage_a1_batch.py": "15407c2b65fb806b5333f6761755bfad59f207040a1900757813793c201182ce",
+    "src/antibody_pretraining/stage_a1_objective.py": "739c93b9af5a189f028831784040d7c1391a58b8af58458a7f0c4e18471cf539",
+    "tests/test_abpairfm_stage_a1_batch.py": "34c38b51e6271ef4d295f4a0eec1c28effb7d470aa966a8f678c27cacdd21fc5",
+    "tests/test_abpairfm_stage_a1_objective.py": "22c4d6dac49d4b784d260ee2ecbd50048f54e88f8158b3a3905b96b615fb3588",
+    "tests/test_paircontact_centered_residual.py": "3d002e1548e90824ce99e9ff601b917953959abb4cd73c5177b6670dbd759030"
+  },
+  "status": "PASS_PHASE0_CPU_IMPLEMENTATION_AND_REGRESSION_GATE",
+  "tests": {
+    "command": "PYTHONPATH=candidate_source/src python3 -m pytest -q candidate_source/tests",
+    "direct_assertions": "PASS_LOCAL_AND_REMOTE_FIXED_ENVIRONMENT",
+    "passed": 16,
+    "runtime_seconds": 1.45,
+    "synthetic_large_batch": {
+      "column_comparisons": 19584,
+      "finite": true,
+      "pair_count": 24480,
+      "row_comparisons": 19584,
+      "runtime_seconds": 0.10075825000240002
+    }
+  },
+  "timestamp_utc": "2026-08-30T21:59:25Z"
+}

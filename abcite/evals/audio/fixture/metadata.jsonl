@@ -1,0 +1,24 @@
+{"audio_id": "aud-01", "path": "evals/audio/fixture/aud-01.wav", "transcript": "The seminar continues without a slide title.", "title": "low drone", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-02", "path": "evals/audio/fixture/aud-02.wav", "transcript": "Please hold while the host adjusts the microphone.", "title": "mid hum", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-03", "path": "evals/audio/fixture/aud-03.wav", "transcript": "The chair asks the audience to wait a moment.", "title": "midhigh tone", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-04", "path": "evals/audio/fixture/aud-04.wav", "transcript": "Someone coughs then the feed resumes.", "title": "piercing beep", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-05", "path": "evals/audio/fixture/aud-05.wav", "transcript": "A door closes in the hallway behind the speaker.", "title": "bright whistle", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-06", "path": "evals/audio/fixture/aud-06.wav", "transcript": "Papers shuffle on the lectern.", "title": "shrill beep", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-07", "path": "evals/audio/fixture/aud-07.wav", "transcript": "The technician says the capture light is on.", "title": "rising chirp", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-08", "path": "evals/audio/fixture/aud-08.wav", "transcript": "Water is poured into a glass off microphone.", "title": "falling chirp", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-09", "path": "evals/audio/fixture/aud-09.wav", "transcript": "A seat scrapes then the pause returns.", "title": "slow click train", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-10", "path": "evals/audio/fixture/aud-10.wav", "transcript": "The projector fan is mentioned only in passing.", "title": "rapid pulse", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-11", "path": "evals/audio/fixture/aud-11.wav", "transcript": "Someone whispers that the talk will start late.", "title": "broadband hiss", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-12", "path": "evals/audio/fixture/aud-12.wav", "transcript": "The ventilation is audible under the pause.", "title": "dull roar", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-13", "path": "evals/audio/fixture/aud-13.wav", "transcript": "A phone is silenced in the front row.", "title": "two-tone interval", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-14", "path": "evals/audio/fixture/aud-14.wav", "transcript": "The host thanks the previous presenter.", "title": "split interval", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-15", "path": "evals/audio/fixture/aud-15.wav", "transcript": "No one speaks for several seconds.", "title": "room hush", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-16", "path": "evals/audio/fixture/aud-16.wav", "transcript": "The wireless pack warning is not described.", "title": "wobble tone", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-17", "path": "evals/audio/fixture/aud-17.wav", "transcript": "Attendees take notes without reading aloud.", "title": "low-mid drone", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-18", "path": "evals/audio/fixture/aud-18.wav", "transcript": "The moderator repeats that questions come later.", "title": "narrow hum", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-19", "path": "evals/audio/fixture/aud-19.wav", "transcript": "A laptop lid shuts near the aisle.", "title": "sparse clicks", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-20", "path": "evals/audio/fixture/aud-20.wav", "transcript": "The camera operator zooms without comment.", "title": "soft hiss decoy", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-21", "path": "evals/audio/fixture/aud-21.wav", "transcript": "Someone requests a short break after this item.", "title": "roar decoy", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-22", "path": "evals/audio/fixture/aud-22.wav", "transcript": "The clock on the wall is not mentioned.", "title": "whistle decoy", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-23", "path": "evals/audio/fixture/aud-23.wav", "transcript": "A bottle cap twists at the back table.", "title": "sweep decoy", "source": "synthetic-fixture", "synthetic": true}
+{"audio_id": "aud-24", "path": "evals/audio/fixture/aud-24.wav", "transcript": "The session chair nods and the feed continues.", "title": "hush decoy", "source": "synthetic-fixture", "synthetic": true}

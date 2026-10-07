@@ -1,0 +1,174 @@
+{
+  "format_version": "strict_dual_axis_partner_retrieval_v1",
+  "status": "FROZEN_PENDING_CERTIFIED_SPLIT_AUTHORITY",
+  "scientific_question": "Under direct-80/80 four-view dual-axis homology separation, does contact/correspondence auxiliary supervision improve partner retrieval beyond an otherwise parameter-identical pair-aware reranker?",
+  "authority": {
+    "source_pool": "authority_train_only",
+    "sealed_source_splits": ["validation", "test"],
+    "required_outer_folds": 3,
+    "required_inner_folds_per_outer": 3,
+    "required_boundary_count": 12,
+    "required_sequence_views": ["vh", "vl_nonempty", "concatenated_antibody", "antigen"],
+    "identity_threshold": 0.8,
+    "reciprocal_coverage_threshold": 0.8,
+    "threshold_equality_is_edge": true,
+    "claim_boundary": "foldwise direct-80/80 four-view homology-separated C3, S2-like development",
+    "training_forbidden_until_assignment_and_independent_audit_authorize": true,
+    "test_ood_access_before_separate_authority": false
+  },
+  "candidate_semantics": {
+    "observed_pair": "positive retrieval edge",
+    "unobserved_cross_pair": "unlabeled_ranking_candidate",
+    "unobserved_cross_pair_is_measured_nonbinder": false,
+    "binary_binder_classifier_is_primary_task": false
+  },
+  "encoders": {
+    "antibody": {
+      "name": "AntiBERTy_md_smooth",
+      "dim": 512,
+      "weights_sha256_contract": "f1ae33eac8cc8784a7d4be5a600141d2fa7bc7d8d5b3f5324d64a6a63bd0f137",
+      "frozen": true
+    },
+    "antigen": {
+      "name": "facebook/esm2_t33_650M_UR50D",
+      "dim": 1280,
+      "weights_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+      "frozen": true
+    }
+  },
+  "cdr_annotation": {
+    "used_by": ["L1"],
+    "source": "sequence_only_ANARCII_IMGT_numbering",
+    "contact_or_interface_labels_used": false,
+    "anarcii_version": "2.0.8",
+    "anarcii_source_commit": "e0d8f192f5a861e03a50918f114d0f5735e42333",
+    "anarcii_wheel_sha256": "6ac81caef04a9cad1af1ea320b35bdced620fe2bfdd0b8b17b98131495b584ca",
+    "anarcii_model_sha256": "03e9d07d13a3ec98a9d9fe57a0b2ff0853218aa2d7bdd50a25b6d83ff2bea2e0",
+    "anarcii_parameters_sha256": "4d8e5fc9d8580f5e26a190a21853dd3f3770fbf83ce45a46a53d92b083063c39",
+    "imgt_ranges_one_based_inclusive": {"cdr1": [27,38], "cdr2": [56,65], "cdr3": [105,117]},
+    "slots": ["H1","H2","H3","L1","L2","L3"]
+  },
+  "models": {
+    "H0_kmer": {
+      "training": false,
+      "k": 3,
+      "transfer": "max observed training-pair geometric mean of antibody and antigen similarities"
+    },
+    "H0_nw": {
+      "training": false,
+      "aligner": "Biopython PairwiseAligner 1.83 global BLOSUM62 gap_open_10 gap_extend_1",
+      "both_orientations": true,
+      "transfer": "max observed training-pair geometric mean of antibody and antigen similarities"
+    },
+    "D0": {
+      "architecture": "global dual encoder",
+      "embedding_dim": 128,
+      "projection_hidden_dim": 256,
+      "antibody_chain_type_embedding": true,
+      "pooling": "project_then_masked_mean",
+      "temperature": 0.07,
+      "loss": "symmetric_multi_positive_InfoNCE",
+      "epochs": 58,
+      "global_batch_exact_pairs": 1024,
+      "optimizer": {"name":"AdamW","lr":0.001,"weight_decay":0.2,"betas":[0.9,0.98],"eps":1e-8},
+      "scheduler": "CosineAnnealingWarmRestarts_T0_10_epochs_Tmult_2",
+      "early_stopping": false
+    },
+    "L1": {
+      "architecture": "sequence-derived CDR-slot to antigen-residue late interaction",
+      "cdr_slots": 6,
+      "projection_dim": 128,
+      "score": "mean_over_present_CDR_slots(max_antigen_residue cosine)",
+      "temperature": 0.07,
+      "loss": "symmetric_multi_positive_InfoNCE",
+      "epochs": 40,
+      "global_batch_exact_pairs": 64,
+      "optimizer": {"name":"AdamW","lr":0.0001,"weight_decay":0.01,"betas":[0.9,0.98],"eps":1e-8},
+      "scheduler": "linear_warmup_5pct_then_cosine_to_zero",
+      "early_stopping": false,
+      "privileged_epitope_or_paratope_masks_forbidden": true
+    },
+    "R1": {
+      "architecture": "matched-budget pair-aware bidirectional cross-attention reranker",
+      "coarse_checkpoint": "same fold/seed D0 bytes reused by R1 and R2",
+      "width": 256,
+      "cross_attention_layers": 2,
+      "heads": 8,
+      "ffn_dim": 512,
+      "dropout": 0.1,
+      "rerank_top_k_per_direction": 64,
+      "contact_head_instantiated": true,
+      "contact_labels_read": false,
+      "auxiliary_path": "zero_weight_label_free_contact_head_sum",
+      "epochs": 40,
+      "global_batch_exact_pairs": 32,
+      "optimizer": {"name":"AdamW","lr":0.0001,"weight_decay":0.01,"betas":[0.9,0.98],"eps":1e-8},
+      "scheduler": "linear_warmup_5pct_then_cosine_to_zero",
+      "gradient_clip_norm": 1.0
+    },
+    "R2": {
+      "inherits_all_R1_parameters_inputs_candidate_sets_and_budget": true,
+      "contact_head_dim": 64,
+      "contact_loss_weight": 0.1,
+      "contact_loss": "equal_positive_and_negative_means_then_equal_exact_pair_means",
+      "contact_labels_scope": "fold_local_training_pairs_only",
+      "contact_definition": "any resolved non-hydrogen atom pair within 4.5 Angstrom",
+      "unresolved_pairs": "masked_not_negative"
+    }
+  },
+  "fairness": {
+    "R1_R2_same_model_class": true,
+    "R1_R2_same_parameter_names_shapes_and_count": true,
+    "R1_R2_same_initialization_seed": true,
+    "R1_R2_same_D0_checkpoint_bytes": true,
+    "R1_R2_same_training_pair_order_candidate_sets_optimizer_scheduler_epochs": true,
+    "only_intended_difference": "R2 receives fold-local contact/correspondence auxiliary supervision"
+  },
+  "seeds": [17,42,73],
+  "primary_execution": {
+    "fixed_candidates_evaluated_on_each_outer_fold": ["H0_kmer","H0_nw","D0","L1","R1","R2"],
+    "outer_fold_count": 3,
+    "learned_runs_per_candidate": 9,
+    "total_learned_outer_runs": 36,
+    "nested_inner_folds_frozen": true,
+    "inner_scores_cannot_change_frozen_v1_architectures": true
+  },
+  "metrics": {
+    "directions": ["antibody_to_antigen","antigen_to_antibody","bidirectional_mean"],
+    "primary": ["mrr","recall_at_1","recall_at_5","recall_at_10","chance_enrichment"],
+    "chance": "exact finite-library chance using candidate count and anchor-specific positive degree",
+    "primary_comparison": "R2_minus_R1",
+    "secondary_model_comparisons": ["D0_vs_H0","L1_vs_D0","R1_vs_D0","R2_vs_R1"],
+    "contact_interface_metrics_reported_separately": true,
+    "affinity_metrics_in_this_protocol": false
+  },
+  "uncertainty": {
+    "paired_query_bootstrap": true,
+    "evolutionary_component_grouped_bootstrap": true,
+    "crossed_antibody_antigen_axis_bootstrap": true,
+    "minimum_training_seeds": 3,
+    "corruption_conditions_are_not_biological_replicates": true
+  },
+  "diagnostics": {
+    "contact_AP_vs_partner_score_dissociation": true,
+    "candidate_library_size_and_positive_degree": true,
+    "score_mean_scale_and_within_query_rank_calibration": true,
+    "same_model_score_aggregation_ablation": true
+  },
+  "external_reference_boundaries": {
+    "CALM_full_sequence": "sequence-only conceptual reference; different split/library so no direct numeric ranking",
+    "CALM_masked": "privileged structural-contact-derived epitope/paratope masks; oracle/reference only, not fair baseline",
+    "Ab_CASLR": "CDR-aware sequence-only local retrieval reference; different split/library so no direct numeric ranking",
+    "DataSAIL": "methodological support for dual-axis similarity-aware splitting and explicit interaction loss accounting"
+  },
+  "compute_and_stop_conditions": {
+    "no_duplicate_hash_execution": true,
+    "split_solver_current_job": "1643164",
+    "if_split_not_certified": "stop before H0/model execution; do not relax direct-80/80 boundary",
+    "if_R2_contact_cache_audit_fails": "R2 blocked; R1 may proceed only under the already-certified retrieval split",
+    "if_any_fold_has_zero_positive_query": "hard fail",
+    "if_candidate_library_or_positive_hash_drifts": "hard fail",
+    "if_R1_R2_parameter_parity_fails": "hard fail",
+    "test_and_untouched_OOD_remain_closed": true
+  }
+}

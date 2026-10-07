@@ -1,0 +1,105 @@
+{
+  "artifact": {
+    "filename": "PINDER_FULL_ANTIBODY_SYSTEMS_V1.tsv.gz",
+    "row_count": 24240,
+    "sha256": "4b27f3d33c1c922a57153e8f206c15ba2e12ccc3a6e8fa0c06d1013c16e23bda"
+  },
+  "checks": {
+    "all_antibody_antigen_support_edges_in_role_exclusive_inventory": true,
+    "all_support_edges_train_split": true,
+    "all_used_monomer_sequences_resolved_without_conflict": true,
+    "antibody_antigen_roles_disjoint": true,
+    "fab_hl_support_required": true,
+    "physical_copy_key_is_pinder_monomer_not_sequence_identity": true,
+    "system_ids_unique": true,
+    "test_rows_read": false,
+    "validation_rows_read": false
+  },
+  "claim_boundary": "Train-only metadata-and-sequence reconstruction of complete antibody systems. The output is not a contact-label cache, training set, validation split, test set, or performance result, and it does not authorize model training or selection.",
+  "firewall": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_metadata_and_sequences_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "format_version": "pinder_full_antibody_system_reconstruction_result_v1",
+  "index_authority": {
+    "index_row_count": 2319564,
+    "sabdab_mapped_edge_count": 195540,
+    "sabdab_mapped_edge_split_counts": {
+      "invalid": 57572,
+      "test": 2,
+      "train": 137965,
+      "val": 1
+    },
+    "strict_train_inventory_edge_count": 35366
+  },
+  "model_selection_authorized": false,
+  "pinder_release": "2024-02",
+  "reconstruction_diagnostics": {
+    "duplicate_occurrences_collapsed": 28,
+    "exclusion_counts": {
+      "fab_antibody_antigen_role_overlap": 318,
+      "fab_missing_antigen_monomers": 4725,
+      "fab_missing_heavy_or_light_monomer": 76,
+      "fab_missing_strict_train_antigen_support": 394,
+      "fab_missing_train_hl_support": 132,
+      "heavy_only_or_vhh_antibody_antigen_role_overlap": 20,
+      "heavy_only_or_vhh_missing_antigen_monomers": 1247,
+      "heavy_only_or_vhh_missing_heavy_monomer": 6,
+      "heavy_only_or_vhh_missing_strict_train_antigen_support": 171,
+      "scfv_antibody_antigen_role_overlap": 2,
+      "scfv_missing_antigen_monomers": 392,
+      "scfv_missing_fused_monomer": 6,
+      "scfv_missing_strict_train_antigen_support": 190,
+      "unsupported_light_only_or_no_antibody_row": 592
+    },
+    "raw_system_occurrence_count": 24268,
+    "row_topology_counts": {
+      "fab": 12443,
+      "heavy_only_or_vhh": 3529,
+      "scfv": 1640,
+      "unsupported": 592
+    }
+  },
+  "required_next_gate": "Freeze one system-level quality/deduplication/multiplicity policy, then construct and independently audit an antibody-and-antigen two-axis split.",
+  "scientific_payload_sha256": "c128891c81f39855c2ec60036f171bfe2d0fbf643fcca589252153eb50b101c6",
+  "source_sha256": {
+    "index_parquet": "ced1936c4f36ea79161579df8d4b23bb4862b9c88f30af9defeeb85af99adac4",
+    "inventory_manifest": "3537f92f9c465bfd3019387080267e6a679fcb781776931d3c775145704cfb6c",
+    "protocol_json": "fbbf8aa234b4e160f7cf877932908dc03d637c3c2b551cf89b634b545dd4da83",
+    "reconstruction_source": "81495926433fee15406790bc1b65da72b27257affb99b407ccd3ae08ca8682fd",
+    "sabdab_metadata_parquet": "afcf824aa992ccb1a0a1abfa913b5313929d8860e04e53402c442b6401be7380",
+    "sequence_database_parquet": "1ea3ccfe3166ebf1ae943e0379f4bfc800292beaee87944288777944364bc77b"
+  },
+  "status": "PASS_PINDER_TRAIN_FULL_ANTIBODY_SYSTEM_RECONSTRUCTION",
+  "system_summary": {
+    "exact_pair_multiplicity_max": 600,
+    "exact_pair_multiplicity_median": 1.0,
+    "exact_pair_multiplicity_p95": 5.0,
+    "fab_antigen_support_patterns": {
+      "heavy_and_light": 10347,
+      "heavy_only": 5819,
+      "light_only": 3297
+    },
+    "system_count": 24240,
+    "topology_counts": {
+      "fab": 19463,
+      "heavy_only_or_vhh": 3237,
+      "scfv": 1540
+    },
+    "unique_antibody_axis_sequence_count": 4775,
+    "unique_antigen_sequence_count": 5287,
+    "unique_exact_sequence_pair_count": 7024,
+    "unique_pdb_count": 5663,
+    "unique_sequence_count": 12995,
+    "unique_sequence_with_noncanonical_residue_count": 18,
+    "unique_support_antibody_antigen_edge_count": 33023,
+    "unique_support_hl_edge_count": 13340
+  },
+  "training_authorized": false
+}

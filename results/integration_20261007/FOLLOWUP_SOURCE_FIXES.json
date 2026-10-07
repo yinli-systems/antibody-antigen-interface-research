@@ -1,0 +1,68 @@
+[
+  {
+    "path": "src/interaction_first/pair_geometry.py",
+    "reason": "Restore already-registered canonical source rather than introduce an incompatible legacy experiment into frozen defaults. The full-suite regression exposed changed parameter ownership, pose contract or unregistered source digests. Both versions remain preserved; no test or scientific threshold is weakened.",
+    "preserved": [
+      {
+        "role": "merged_experimental_variant",
+        "commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+        "source_path": "src/interaction_first/pair_geometry.py",
+        "git_blob": "a834ae07f852f575923797e5ebe205108ac57081",
+        "sha256": "75d8ae3ce257fda6bfda5bdeb66831d551fcffebf0dd1d83e157ce8ede29dfd7",
+        "preserved_path": "archive/branch_variants_20261007/35dfab141435/src/interaction_first/pair_geometry.py"
+      },
+      {
+        "role": "registered_canonical_source",
+        "commit": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+        "source_path": "src/interaction_first/pair_geometry.py",
+        "git_blob": "9fe14af2939081b9c77738b9fca051923184f085",
+        "sha256": "6ab870971aad4e9f4bf55d45d9a0a2ba4b104becfa0c44d3639a4f4d3c42912c",
+        "preserved_path": "archive/branch_variants_20261007/6e80c6d44be5/src/interaction_first/pair_geometry.py"
+      }
+    ]
+  },
+  {
+    "path": "src/antibody_pretraining/pair_aware_attention.py",
+    "reason": "Restore already-registered canonical source rather than introduce an incompatible legacy experiment into frozen defaults. The full-suite regression exposed changed parameter ownership, pose contract or unregistered source digests. Both versions remain preserved; no test or scientific threshold is weakened.",
+    "preserved": [
+      {
+        "role": "merged_experimental_variant",
+        "commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+        "source_path": "src/antibody_pretraining/pair_aware_attention.py",
+        "git_blob": "35630154e07db0611cb674eeabd5b94bd88a646e",
+        "sha256": "08cea126c5bf0480463bfbf5a8d02b18a8c1932092e87cfeeefbd4857b81e44b",
+        "preserved_path": "archive/branch_variants_20261007/35dfab141435/src/antibody_pretraining/pair_aware_attention.py"
+      },
+      {
+        "role": "registered_canonical_source",
+        "commit": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+        "source_path": "src/antibody_pretraining/pair_aware_attention.py",
+        "git_blob": "30b4d1c3ad50c46f72dc99cd8823f156d197b80e",
+        "sha256": "0f84a848e7824a423ea67f8a6e00fbf36e9437064f6d900755a659cc55318f61",
+        "preserved_path": "archive/branch_variants_20261007/6e80c6d44be5/src/antibody_pretraining/pair_aware_attention.py"
+      }
+    ]
+  },
+  {
+    "path": "src/antibody_pretraining/pair_aware_esm2.py",
+    "reason": "Restore already-registered canonical source rather than introduce an incompatible legacy experiment into frozen defaults. The full-suite regression exposed changed parameter ownership, pose contract or unregistered source digests. Both versions remain preserved; no test or scientific threshold is weakened.",
+    "preserved": [
+      {
+        "role": "merged_experimental_variant",
+        "commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+        "source_path": "src/antibody_pretraining/pair_aware_esm2.py",
+        "git_blob": "1eb9ca48c3aff04de5ef51789785b8173f39bd01",
+        "sha256": "286ce3e4609c34212b6d259f83cfdc4916ea9adc3e909ff32811f8d0e9d2fa5a",
+        "preserved_path": "archive/branch_variants_20261007/35dfab141435/src/antibody_pretraining/pair_aware_esm2.py"
+      },
+      {
+        "role": "registered_canonical_source",
+        "commit": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+        "source_path": "src/antibody_pretraining/pair_aware_esm2.py",
+        "git_blob": "dc28510ba1702a68dbcd787f2d64f1364025e8b6",
+        "sha256": "6d87b1a2e2a98b40e0ef633512fbe44b78fd81e3651599164ba0495d70b28009",
+        "preserved_path": "archive/branch_variants_20261007/6e80c6d44be5/src/antibody_pretraining/pair_aware_esm2.py"
+      }
+    ]
+  }
+]

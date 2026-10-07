@@ -1,0 +1,53 @@
+test_column_permutation_invariance_unique_and_tied (test_core.Assignment) ... ok
+test_duplicates_do_not_create_new_vectors (test_core.Assignment) ... ok
+test_empty_rejected (test_core.Assignment) ... ok
+test_infinite_feature_rejected (test_core.Assignment) ... ok
+test_nan_rejected (test_core.Assignment) ... ok
+test_rectangular_contact_map_rejected (test_core.Assignment) ... ok
+test_unique_max_matches_original (test_core.Assignment) ... ok
+test_all_permutations_same_loss_and_gradient (test_core.Equivariance) ... ok
+test_float_indices_rejected (test_core.Equivariance) ... ok
+test_invalid_permutation_rejected (test_core.Equivariance) ... ok
+test_absent_nonzero_features_rejected (test_core.Features) ... ok
+test_base_and_presence_preserved (test_core.Features) ... ok
+test_cross_chain_rescue_rejected (test_core.Features) ... ok
+test_cross_chain_shuffle_rejected (test_core.Features) ... ok
+test_missing_source_keeps_full_case (test_core.Features) ... ok
+test_nonbinary_presence_rejected (test_core.Features) ... ok
+test_nonfinite_rescue_rejected (test_core.Features) ... ok
+test_partial_missingness_rejected (test_core.Features) ... ok
+test_synthesized_features_rejected (test_core.Features) ... ok
+test_wrong_width_rejected (test_core.Features) ... ok
+test_contact_selected (test_core.Receipt) ... ok
+test_correct_earliest_tie (test_core.Receipt) ... ok
+test_nonfinite_history (test_core.Receipt) ... ok
+test_wrong_epoch (test_core.Receipt) ... ok
+test_wrong_plan (test_core.Receipt) ... ok
+test_wrong_seed (test_core.Receipt) ... ok
+test_duplicate_case_fails (test_core.Reporting) ... ok
+test_gap_fraction_unclipped (test_core.Reporting) ... ok
+test_missing_case_fails (test_core.Reporting) ... ok
+test_no_silent_clean_damage (test_core.Reporting) ... ok
+test_nonfinite_ap_fails (test_core.Reporting) ... ok
+test_nonpositive_gap_null (test_core.Reporting) ... ok
+test_aggregation_never_drops_missing_seed (test_qualified_runner.RunnerGates) ... ok
+test_no_unscheduled_contact_inference (test_qualified_runner.RunnerGates) ... ok
+test_prepare_waits_for_existing_training_without_contact_load (test_qualified_runner.RunnerGates) ... ok
+test_reject_wrong_plan_before_model_load (test_qualified_runner.RunnerGates) ... ok
+test_complete_assignment_unchanged_by_additive_correction (test_rescore.Rescoring) ... ok
+test_dense_grid_order_invariance (test_rescore.Rescoring) ... ok
+test_double_center_removes_additive_nuisance (test_rescore.Rescoring) ... ok
+test_double_center_zero_marginal_means (test_rescore.Rescoring) ... ok
+test_duplicates_guard (test_rescore.Rescoring) ... ok
+test_finite_guard (test_rescore.Rescoring) ... ok
+test_identity_exact (test_rescore.Rescoring) ... ok
+test_incomplete_guard (test_rescore.Rescoring) ... ok
+test_method_guard (test_rescore.Rescoring) ... ok
+test_small_csls_matches_brute_force (test_rescore.Rescoring) ... ok
+test_symmetric_methods_transpose (test_rescore.Rescoring) ... ok
+test_tied_top10_is_expected_fraction_not_sort_bias (test_rescore.Rescoring) ... ok
+
+----------------------------------------------------------------------
+Ran 48 tests in 3.584s
+
+OK

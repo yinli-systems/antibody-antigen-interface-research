@@ -1,0 +1,55 @@
+{
+  "authorization": {
+    "cross_specific_adapter": false,
+    "lora_comparison": false,
+    "production_scaling_from_this_mechanism": false,
+    "test_access": false
+  },
+  "checks": {
+    "checkpoint_restore_exact": true,
+    "column_matched_accuracy_gain_gate": true,
+    "distance_loss_exactly_zero": true,
+    "endpoint_centering_error_gate": true,
+    "full_macro_ap_gain_gate": true,
+    "interaction_macro_ap_gain_gate": true,
+    "row_matched_accuracy_gain_gate": true,
+    "test_access_false": true,
+    "tie_aware_ap_contract": true,
+    "train_contact_reduction_gate": false,
+    "train_ranking_reduction_gate": false
+  },
+  "claim_boundary": "Train-only frozen-backbone mechanism evidence on the third PDB-disjoint internal holdout. The frozen gate failed, so this result does not authorize a cross-specific adapter comparison, LoRA, production scaling from this mechanism, downstream claims, blind-test claims, biological claims, or SOTA claims.",
+  "execution_recovery": {
+    "audit_recovery_plan_sha256": "d46105e88004ffa5b945d49b0886a4dc95d625a009c1c1bb3454a8a37cf31f17",
+    "reason": "The original job completed training, evaluation, and checkpoint restore, then failed before writing AUDIT.json because the audit output parent already existed. The exact immutable audit was run once with a new absent output parent.",
+    "retraining": false
+  },
+  "format_version": "abf_paircontact_phase3_zero_sum_fp32_canary_result_receipt_v1",
+  "holdout": {
+    "excluded_prior_pdb_count": 1022,
+    "holdout_pdb_count": 508,
+    "holdout_record_count": 512,
+    "pdb_inventory_sha256": "9bd3afebb2ab4b21db19ae4c564179ead91b9fa93f673bd09fcaa56fa223e17d"
+  },
+  "metrics": {
+    "column_matched_accuracy_absolute_gain": 0.04449556353958317,
+    "full_macro_sampled_contact_ap_absolute_gain": 0.037770752201548546,
+    "interaction_macro_sampled_contact_ap_absolute_gain": 0.030630352592438015,
+    "maximum_endpoint_centering_error": 5.108988874494264e-17,
+    "row_matched_accuracy_absolute_gain": 0.04126787482290173,
+    "train_contact_relative_reduction": 0.009102476395028163,
+    "train_ranking_relative_reduction": 0.014496350251356621
+  },
+  "provenance": {
+    "audit_sha256": "fb2746ccd63047be78a33ba83bb239b8ea4697a887394eaff796877d1d78c27a",
+    "checkpoint_content_sha256": "44d063a33c5618f7c502c900a93f3780fa5ea0f3180f9a21195d9cd10a6f2147",
+    "checkpoint_receipt_sha256": "8c4311aef3d99770d1f76dce8d060a6792508ca1455fef587dc804fd378d2886",
+    "job_id": "1505482",
+    "progress_sha256": "2e5b4086add05bcb717d294a5a32ca9e4acce99dbd6b65b50a0c4d2151d1a355",
+    "protocol_sha256": "9dc2e5450245fc1a7594c5f3f0d29d70dbc82378a22ccecd6c2ab02e8fd640d2",
+    "result_sha256": "c614263c1fd1db49d533ee1163eb81bab44f990ae8bf032243e226fb4d1f4623",
+    "source_sha256": "00d78df4f811f683787882e5869272ffa8cd18ae679dd1961a3bbe6f82608dee"
+  },
+  "status": "FAIL_PAIRCONTACT_ZERO_SUM_FP32_PRECISION_GATE",
+  "test_access": false
+}

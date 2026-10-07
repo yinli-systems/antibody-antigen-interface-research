@@ -1,0 +1,45 @@
+{
+  "authorization": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_sequences_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "claim_boundary": "Train-only sequence assets for a provisional S2-80 design. These assets do not define approved folds, authorize training, or establish zero cross-fold similarity until the exact four-view audit passes.",
+  "expected_counts": {
+    "excluded_noncanonical_systems": 5,
+    "input_systems": 4075,
+    "retained_canonical_systems": 4070
+  },
+  "format_version": "pinder_antibody_s2_asset_protocol_v1",
+  "pinder_release": "2024-02",
+  "sequence_policy": {
+    "antibody_axis": "Fab uses heavy followed by light; heavy-only/VHH uses heavy; scFv uses the fused physical chain.",
+    "noncanonical_residues": "Explicitly exclude a system if any required VH/fused, VL, or antigen view contains a residue outside ACDEFGHIKLMNPQRSTVWY.",
+    "optimized_views": [
+      "concatenated_antibody",
+      "antigen"
+    ],
+    "required_exact_audit_views": [
+      "vh",
+      "vl",
+      "concatenated_antibody",
+      "antigen"
+    ]
+  },
+  "similarity_policy": {
+    "aligned_region_identity_minimum": 0.8,
+    "minimum_reciprocal_coverage": 0.8,
+    "name": "S2-80",
+    "provisional_backend": "MMseqs2 all-versus-all threshold relation",
+    "required_final_backend": "exact global Needleman-Wunsch four-view cross-fold audit"
+  },
+  "source_sha256": {
+    "adaptation_manifest": "8a696085735adae9b5ff890d5fed02a1374917ee5e7d677ffbbbc057224ed74f",
+    "adaptation_result": "ce60e4746636db76e14d4d39afa16c041215c7e1c86a3e79c99ec2ef0cd84139"
+  }
+}

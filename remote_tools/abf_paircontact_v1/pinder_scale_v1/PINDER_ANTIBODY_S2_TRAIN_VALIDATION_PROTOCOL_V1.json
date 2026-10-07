@@ -1,0 +1,52 @@
+{
+  "bucket_names": [
+    "train",
+    "validation"
+  ],
+  "claim_boundary": "Provisional PINDER-train-only antibody adaptation split design. It is not authorized for training or model selection until an independent exhaustive exact four-view Needleman-Wunsch audit reports zero qualifying train-validation crossings. It is not a performance evaluation, temporal test, structural split, or PLM pretraining leakage audit.",
+  "data_firewall": {
+    "model_predictions_or_scores_read": false,
+    "structures_or_contact_labels_read": false,
+    "test_rows_read": false,
+    "train_sequences_only": true,
+    "validation_rows_read": false
+  },
+  "determinism": {
+    "all_inputs_sorted": true,
+    "largest_component_tie_break": "highest original exact-pair degree, then lexical component root",
+    "solver_optimality_gap": 0.0
+  },
+  "discard_policy": "Discard a complete PDB-and-exact-pair connected component whenever its antibody and antigen axis components are assigned to different buckets. Never split a PDB or exact antibody-antigen sequence pair across train, validation, and discarded ledgers.",
+  "format_version": "pinder_antibody_s2_train_validation_protocol_v1",
+  "identity_threshold": 0.8,
+  "known_similarity_evidence": {
+    "base": "Authenticated MMseqs2 S2-80 concatenated-antibody and antigen components from the failed parent assignment.",
+    "exact_extension": "All 6802 digest-only threshold crossings from the independent parent four-view audit, with VH and VL edges lifted to concatenated-antibody entities; exact shared VH and non-empty VL digests are also indivisible.",
+    "iteration_rule": "If the independent audit of this replacement split finds a new crossing, add only the authenticated digest-only crossing relation, rerun under this unchanged protocol, and never relax 80/80 or inspect labels/scores."
+  },
+  "largest_antibody_component_bucket": "train",
+  "objective": "maximize retained unique exact antibody-antigen sequence pairs across train and validation",
+  "reciprocal_coverage_threshold": 0.8,
+  "required_final_gate": "independent exhaustive exact global four-view Needleman-Wunsch train-validation zero-crossing audit",
+  "solver": {
+    "implementation": "scipy.optimize.milp_HiGHS",
+    "presolve": true,
+    "time_limit_seconds": 900
+  },
+  "source_sha256": {
+    "antigen_crossing_edges": "ccef18313c841a1d3851676d40d51abd7fde87e0966f644dd59c54afd5c2eef9",
+    "canonical_manifest": "624612079838536934c81fa3918486e322c16caed19fbba70b6f8b33adc5fb6c",
+    "concatenated_antibody_crossing_edges": "a9d6b1741ba640db4df61729580f005e8c26c6cb0ddf6a2ca5dc32db7a734ef6",
+    "infeasibility_receipt": "b2e32b12bb4ea7cd2b93bd9eb9565006fd8787207eefcb7c49e53fe0342f3b45",
+    "parent_assignment": "cf367c6ae54f2b5cd4eede1df09a6e3a907d61c56ea510e5a6d83495a4ae5ce2",
+    "parent_assignment_scientific_payload": "96481cbca99c10037a4b1bc821f87e77b874e5c97982b7bedc7d849a6d5eac58",
+    "parent_audit_result": "e6d360aec371736b0596407e26fb6f3585703fba29a21316aeed2abd4470c321",
+    "vh_crossing_edges": "e7c2b3bce4533613fbb850b922dbea63b3ef36468ea92bc871e746a9b2b759b9",
+    "vl_crossing_edges": "50b6941682b3bf62fbbdcd7bd681ceacff008a0dc921fc05fefb56448790e182"
+  },
+  "threshold_relaxation_after_results": false,
+  "validation_axis_degree_fraction": {
+    "maximum": 0.25,
+    "minimum": 0.15
+  }
+}

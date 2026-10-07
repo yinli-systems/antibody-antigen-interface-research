@@ -1,0 +1,25 @@
+# Final centered evaluation contract (paths are the frozen ParaCloud authorities used on 2026-09-30).
+# The first centered attempt's 12 validated centered NPZs are reused; no uncentered NPZ is eligible.
+/ssd/scxi253/repr_extract/venv/bin/python3 -u extensions/frontier_multimodel_v1/reparank_same_protocol.py evaluate \
+  --checkpoint /ssd/scxi253/frontier_multimodel_v1/external/RePaRank/checkpoints_official/reparank_sequence_structure.ckpt \
+  --reparank-source /ssd/scxi253/frontier_multimodel_v1/external/RePaRank \
+  --source-commit eca8263dea26d5ee24d436728a24d7ec93f945a2 \
+  --official-source-commit 6910d950c2e483289973be41387c8913b859766a \
+  --canonical-manifest /ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv \
+  --split-manifest /ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json \
+  --contact-dir /ssd/scxi253/model_deployment/data/interaction_first/contacts \
+  --structure-manifest /ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_strict_authority_a5729c4/STRUCTURE_UNITS_MANIFEST.json \
+  --center-structure-coordinates \
+  --reuse-pair-predictions-dir /ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/run/centered_full/pair_predictions \
+  --output /ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/run/centered_resume_final \
+  --device cuda --write-pair-predictions --log-every 10
+
+# Independent three-arm audit; this does not run model inference.
+/ssd/scxi253/repr_extract/venv/bin/python3 audit_reparank_centered_three_arm.py \
+  --sequence /ssd/scxi253/frontier_multimodel_v1/reparank_same_protocol_v1/attempt2/sequence_full \
+  --uncentered /ssd/scxi253/frontier_multimodel_v1/reparank_structure_resume_20260930/run_v1 \
+  --centered /ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/run/centered_resume_final \
+  --structure-manifest /ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_strict_authority_a5729c4/STRUCTURE_UNITS_MANIFEST.json \
+  --failure-2386 /ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/centered-1642386.err \
+  --failure-2395 /ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/centered-1642395.err \
+  --output THREE_ARM_AUDIT.json

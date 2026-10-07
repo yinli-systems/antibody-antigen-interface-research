@@ -1,0 +1,61 @@
+{
+  "authorization": {
+    "external_test_access": false,
+    "generation_training": false,
+    "label_opening": false,
+    "model_selection": false,
+    "unit_and_integration_testing": true
+  },
+  "claim_boundary": "This is a contact-guided CDR sequence-proposal integration protocol. It is not structural diffusion, does not establish affinity or binding, and is not comparable to experimentally validated RFdiffusion/RFantibody design.",
+  "format_version": "contact_guided_cdr_sequence_poc_protocol_v1",
+  "gates": [
+    {
+      "name": "G0_implementation",
+      "requirements": [
+        "framework tokens are bitwise unchanged",
+        "only canonical amino-acid tokens are generated inside the frozen CDR mask",
+        "fixed seeds reproduce identical ranked proposals",
+        "empty hotspot and non-finite score paths fail closed"
+      ],
+      "status": "PASS_LOCAL_UNIT_TESTS"
+    },
+    {
+      "name": "G1_train_only_matched_control",
+      "requirements": [
+        "B32K pair-contact promotion gate passes",
+        "a training-only CDR denoiser checkpoint is frozen",
+        "guided and unguided samplers use matched proposal budgets and seeds",
+        "framework preservation, validity, novelty, diversity, hotspot score, and off-target score are reported"
+      ],
+      "status": "BLOCKED_PENDING_B32K_AND_DENOISER"
+    },
+    {
+      "name": "G2_low_homology_antibody_adaptation",
+      "requirements": [
+        "four-view 40/80 relation materialization passes",
+        "indivisible components produce a feasible split",
+        "independent four-view audit reports zero crossings",
+        "no opened external cohort is used for selection"
+      ],
+      "status": "BLOCKED_PENDING_S40_SPLIT"
+    },
+    {
+      "name": "G3_biological_validation",
+      "requirements": [
+        "third-party or prospective sealed cohort",
+        "orthogonal structure and developability filters frozen before opening",
+        "experimental binding validation for any functional design claim"
+      ],
+      "status": "NOT_STARTED"
+    }
+  ],
+  "method": {
+    "contact_objective": "mean sigmoid pair score over CDR-by-hotspot edges minus a frozen off-target penalty",
+    "framework_policy": "immutable",
+    "generator": "iterative masked CDR sequence proposal",
+    "hotspot_policy": "caller-supplied and frozen before generation",
+    "reranker": "frozen residue-pair contact scorer",
+    "structure_generation": false
+  },
+  "source": "src/antibody_pretraining/contact_guided_cdr_generation.py"
+}

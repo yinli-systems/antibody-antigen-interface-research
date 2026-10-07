@@ -1,0 +1,33 @@
+{
+  "checkpoint_anchor": {
+    "content_sha256": "2735684ef5228dcfe9f8f676c67c8dfc5f8f541521d2ba9f75bbdbfbc97e3ea3",
+    "generation": "segment-000111"
+  },
+  "continuation_plan_sha256": "1c246cabf4a64b9db3effbe65a3dbb2681754cf416d5a893f2976316e86aa877",
+  "format_version": "abpairfm_3b_unique25m_continuation_submission_receipt_v1",
+  "jobs": {
+    "first_training": {
+      "dependency": "afterok:1492110",
+      "job_id": 1492112,
+      "segment_index": 112,
+      "world_size": 4
+    },
+    "manifest_112": {
+      "job_id": 1492110,
+      "segment_index": 112
+    },
+    "manifest_113": {
+      "job_id": 1492111,
+      "segment_index": 113
+    },
+    "successor_watchdog": {
+      "completed_segment_index": 112,
+      "dependency": "afterok:1492112:1492111",
+      "job_id": 1492113
+    }
+  },
+  "source_manifest_sha256": "d4863f7832fd352ad415c7f73412692b65eeaf623980b6772d6e3cdea44ede62",
+  "status": "SUBMITTED_AFTER_FROZEN_PREFLIGHT_PASS",
+  "submitted_at_utc": "2026-08-29T13:50:33Z",
+  "test_access": false
+}

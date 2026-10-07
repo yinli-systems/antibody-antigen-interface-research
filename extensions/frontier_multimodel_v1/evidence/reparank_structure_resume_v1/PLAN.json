@@ -1,0 +1,1232 @@
+{
+  "canonical_manifest": "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv",
+  "checkpoint": "/ssd/scxi253/frontier_multimodel_v1/external/RePaRank/checkpoints_official/reparank_sequence_structure.ckpt",
+  "checkpoint_sha256": "ce95a698e866246b647197f5b12e11d86c2392d462d2cb2a9ed63c57cf51ae0d",
+  "checkpoint_training_overlap_audited": false,
+  "contact_definition": "existing project contact labels/candidate grid; no threshold changed by this wrapper",
+  "contact_dir": "/ssd/scxi253/model_deployment/data/interaction_first/contacts",
+  "created_utc": "2026-09-30T11:51:12Z",
+  "input_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/STRUCTURE_UNITS_MANIFEST.json": "551424135207c7c2ac36e83e4d3e0ffb224113bc2cb5fc948fd06e39ca7f53c8",
+    "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_strict_authority_a5729c4/STRUCTURE_UNITS_MANIFEST.json": "bf47107325885a7f555767cf9f55f8d8074bdafaaae6956961ee2ea6408cc594",
+    "/ssd/scxi253/frontier_multimodel_v1/external/RePaRank/checkpoints_official/reparank_sequence_structure.ckpt": "ce95a698e866246b647197f5b12e11d86c2392d462d2cb2a9ed63c57cf51ae0d",
+    "/ssd/scxi253/frontier_multimodel_v1/reparank_structure_resume_20260930/source_2bf3f7b/extensions/frontier_multimodel_v1/reparank_same_protocol.py": "b4bb57f5e999cba4284ae63b542019bb40628a8a42169773a297847b89a68eeb",
+    "/ssd/scxi253/frontier_multimodel_v1/reparank_structure_resume_20260930/source_2bf3f7b/extensions/frontier_multimodel_v1/reparank_structure_resume.py": "2c0b320ffc23fd5d7020cf56e28cd2db3d8addd5add6106eed92d5ef097c3d15",
+    "/ssd/scxi253/model_deployment/data/interaction_first/canonical_manifest.csv": "548bcfab75923ec6621c1a3fef1aa6673c034f64a9bdc752e7ee15b41b4a4e63",
+    "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json": "3da484ae31bd6b54c4bec4073cb980c88d9ab42c3213ca30933ff29186d1e396"
+  },
+  "missing_count": 191,
+  "missing_ids": [
+    "pdb_00004kuc_F_E",
+    "pdb_00004kuc_H_D",
+    "pdb_00004lgp_B_+",
+    "pdb_00004lgp_D_+",
+    "pdb_00004lgs_B_+",
+    "pdb_00004lhq_B_+",
+    "pdb_00004lhq_D_+",
+    "pdb_00004orz_C_+",
+    "pdb_00004qo1_A_+",
+    "pdb_00004s10_A_+",
+    "pdb_00004s10_B_+",
+    "pdb_00004w2q_A_+",
+    "pdb_00004w2q_C_+",
+    "pdb_00004w2q_E_+",
+    "pdb_00004w2q_G_+",
+    "pdb_00005anm_B_A",
+    "pdb_00005c2u_B_+",
+    "pdb_00005foj_A_+",
+    "pdb_00005h35_F_G",
+    "pdb_00005h35_H_I",
+    "pdb_00005ip4_A_+",
+    "pdb_00005ip4_B_+",
+    "pdb_00005ldn_H_L",
+    "pdb_00005lsp_H_L",
+    "pdb_00005lsp_S_T",
+    "pdb_00005m94_B_+",
+    "pdb_00005m94_D_+",
+    "pdb_00005m95_B_+",
+    "pdb_00005m95_D_+",
+    "pdb_00005o0w_E_+",
+    "pdb_00005o0w_F_+",
+    "pdb_00005o0w_G_+",
+    "pdb_00005o0w_H_+",
+    "pdb_00005sv3_A_+",
+    "pdb_00005sv3_C_+",
+    "pdb_00005u4m_B_+",
+    "pdb_00005uk4_f_+",
+    "pdb_00005uk4_g_+",
+    "pdb_00005uk4_l_+",
+    "pdb_00005uk4_r_+",
+    "pdb_00005vxk_B_+",
+    "pdb_00005y9j_H_L",
+    "pdb_00006app_A_+",
+    "pdb_00006ikm_a1_a2",
+    "pdb_00006ikm_b1_b2",
+    "pdb_00006ikm_c1_c2",
+    "pdb_00006ikm_d1_d2",
+    "pdb_00006ikm_e1_e2",
+    "pdb_00006ikm_f1_f2",
+    "pdb_00006ikm_g1_g2",
+    "pdb_00006ikm_h1_h2",
+    "pdb_00006ikm_i1_i2",
+    "pdb_00006ikm_j1_j2",
+    "pdb_00006ikm_k1_k2",
+    "pdb_00006ikm_l1_l2",
+    "pdb_00006ikm_m1_m2",
+    "pdb_00006ikm_n1_n2",
+    "pdb_00006ikm_o1_o2",
+    "pdb_00006ikm_p1_p2",
+    "pdb_00006ikm_q1_q2",
+    "pdb_00006ikm_r1_r2",
+    "pdb_00006itc_V_+",
+    "pdb_00006jhs_E_D",
+    "pdb_00006jod_H_L",
+    "pdb_00006oel_H_L",
+    "pdb_00006pcu_B2_B1",
+    "pdb_00006pcu_E2_E1",
+    "pdb_00006pcu_H2_H1",
+    "pdb_00006rah_C_+",
+    "pdb_00006rai_C_+",
+    "pdb_00006raj_C_+",
+    "pdb_00006rak_C_+",
+    "pdb_00006ral_C_+",
+    "pdb_00006s3d_A_B",
+    "pdb_00006s3d_C_D",
+    "pdb_00006s3d_E_F",
+    "pdb_00006s3d_H_L",
+    "pdb_00006u6u_H_L",
+    "pdb_00006wmw_H_L",
+    "pdb_00006wmw_M_N",
+    "pdb_00006ztr_A_B",
+    "pdb_00006ztr_H_L",
+    "pdb_00007kbi_C_+",
+    "pdb_00007lf7_A_B",
+    "pdb_00007lfa_B_D",
+    "pdb_00007lfa_H_L",
+    "pdb_00007m1h_B_+",
+    "pdb_00007m1h_C_+",
+    "pdb_00007m1h_D_+",
+    "pdb_00007m1h_E_+",
+    "pdb_00007nqk_B_+",
+    "pdb_00007ox2_J_K",
+    "pdb_00007s11_H_L",
+    "pdb_00007s11_I_M",
+    "pdb_00007shy_I_J",
+    "pdb_00007shy_K_L",
+    "pdb_00007si0_C_D",
+    "pdb_00007uia_B_+",
+    "pdb_00007uia_E_+",
+    "pdb_00007uib_B_+",
+    "pdb_00007uib_E_+",
+    "pdb_00007uie_B_+",
+    "pdb_00007uie_C_+",
+    "pdb_00007uie_E_+",
+    "pdb_00007uie_G_+",
+    "pdb_00007uie_I_+",
+    "pdb_00007xtp_C_+",
+    "pdb_00007xtp_D_+",
+    "pdb_00007yru_H_L",
+    "pdb_00007zoz_H_L",
+    "pdb_00008cz5_H_L",
+    "pdb_00008df1_H_L",
+    "pdb_00008df1_M_N",
+    "pdb_00008df1_O_P",
+    "pdb_00008df1_Q_R",
+    "pdb_00008df1_S_T",
+    "pdb_00008df1_U_V",
+    "pdb_00008dke_A_B",
+    "pdb_00008dki_A_B",
+    "pdb_00008dkm_A_B",
+    "pdb_00008dkw_A_B",
+    "pdb_00008dkx_A_B",
+    "pdb_00008ds5_C_B",
+    "pdb_00008ee2_D_+",
+    "pdb_00008ee2_H_+",
+    "pdb_00008evd_A_+",
+    "pdb_00008evd_B_+",
+    "pdb_00008evd_E_+",
+    "pdb_00008evd_F_+",
+    "pdb_00008evd_I_+",
+    "pdb_00008evd_J_+",
+    "pdb_00008f6u_A_+",
+    "pdb_00008f6u_B_+",
+    "pdb_00008f6v_A_+",
+    "pdb_00008f6v_B_+",
+    "pdb_00008gjr_A_+",
+    "pdb_00008hs2_B_C",
+    "pdb_00008k4q_B_+",
+    "pdb_00008k4q_D_+",
+    "pdb_00008ozb_A_+",
+    "pdb_00008ozb_C_+",
+    "pdb_00008rtf_G_+",
+    "pdb_00008rtf_H_+",
+    "pdb_00008tfl_H_L",
+    "pdb_00008uf7_B_A",
+    "pdb_00008y4w_B_+",
+    "pdb_00008y4x_B_+",
+    "pdb_00008y9z_V_+",
+    "pdb_00008ya0_V_+",
+    "pdb_00009b6s_H_L",
+    "pdb_00009b6s_h_l",
+    "pdb_00009e3k_H_L",
+    "pdb_00009e3k_J_K",
+    "pdb_00009e3l_I_J",
+    "pdb_00009e3l_K_L",
+    "pdb_00009eti_H_L",
+    "pdb_00009fww_B_+",
+    "pdb_00009fzc_C_+",
+    "pdb_00009fzc_D_+",
+    "pdb_00009fzd_B_+",
+    "pdb_00009g95_B_+",
+    "pdb_00009g97_B_+",
+    "pdb_00009g9m_B_+",
+    "pdb_00009g9m_C_+",
+    "pdb_00009g9n_B_+",
+    "pdb_00009g9n_C_+",
+    "pdb_00009g9o_B_+",
+    "pdb_00009g9o_C_+",
+    "pdb_00009g9p_B_+",
+    "pdb_00009g9p_C_+",
+    "pdb_00009gv3_E_+",
+    "pdb_00009gv3_F_+",
+    "pdb_00009gv3_G_+",
+    "pdb_00009gv3_H_+",
+    "pdb_00009hvk_H_+",
+    "pdb_00009hvk_Q_+",
+    "pdb_00009jqy_H_L",
+    "pdb_00009jqz_H_L",
+    "pdb_00009mla_G_J",
+    "pdb_00009mla_H_K",
+    "pdb_00009mla_I_L",
+    "pdb_00009np0_B_C",
+    "pdb_00009nz5_F_E",
+    "pdb_00009rye_C_+",
+    "pdb_00009ryf_C_+",
+    "pdb_00009uok_A_+",
+    "pdb_00009vca_H_L",
+    "pdb_00009vnp_C_A",
+    "pdb_00009xzx_C_+",
+    "pdb_00009xzx_D_+",
+    "pdb_00009yc3_A_+"
+  ],
+  "new_structure_manifest": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_strict_authority_a5729c4/STRUCTURE_UNITS_MANIFEST.json",
+  "official_source": "/ssd/scxi253/frontier_multimodel_v1/external/RePaRank",
+  "official_source_commit": "6910d950c2e483289973be41387c8913b859766a",
+  "old_structure_manifest": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/STRUCTURE_UNITS_MANIFEST.json",
+  "ood_labels_read": false,
+  "partial_output": "/ssd/scxi253/frontier_multimodel_v1/reparank_same_protocol_v1/attempt2/structure_full_v2",
+  "project_source": "/ssd/scxi253/frontier_multimodel_v1/reparank_same_protocol_v1/source_exact_808523e",
+  "reused": [
+    {
+      "instance_id": "pdb_000010zo_A_+",
+      "pair_count": 7412,
+      "positive_count": 31,
+      "score_max": -4.945627212524414,
+      "score_min": -24.60223388671875,
+      "sha256": "f00e037f21762d0bcfd8a25e3d2403e21423bd7f9cdaa681f5f0d1e7b55a1d36",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/421b0c94661386daeb30fffeb73090f3ca2f2f3576ee893c7b1fe98beee9cace.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/421b0c94661386daeb30fffeb73090f3ca2f2f3576ee893c7b1fe98beee9cace.pdb",
+            "pdb_sha256": "4eadfe56a771ca15f3981f2a15a49e07e36bb32154be3ebf1929fa47a4b24e9f",
+            "role": "heavy",
+            "sequence_sha256": "421b0c94661386daeb30fffeb73090f3ca2f2f3576ee893c7b1fe98beee9cace"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/53f06d333cc746fd1ec88791d8b82634b96d7aec9060028d39a0fd98dbf42d2a.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/53f06d333cc746fd1ec88791d8b82634b96d7aec9060028d39a0fd98dbf42d2a.pdb",
+            "pdb_sha256": "a9f04788140c1a3c42e978c2fad314fe7bba73b8a69820e2b50d22cfd2c3d280",
+            "role": "antigen",
+            "sequence_sha256": "53f06d333cc746fd1ec88791d8b82634b96d7aec9060028d39a0fd98dbf42d2a"
+          }
+        ],
+        "instance_id": "pdb_000010zo_A_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00001bzq_K_+",
+      "pair_count": 15004,
+      "positive_count": 37,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "fbc3dbc571574e1d19ae77bd092162ef2de6ca38d55c6d99b5f75ff0f75f6927",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00001bzq_K_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00001bzq_L_+",
+      "pair_count": 15004,
+      "positive_count": 40,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "b44e0f10ea5382fa75f1ca8a637b404bbf538462b2b70ebced325f32f63f0314",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00001bzq_L_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00001bzq_M_+",
+      "pair_count": 15004,
+      "positive_count": 38,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "e10ea11e7bd5324780ab62a3aa26871e3aa3049cec52e4ffaa05acda3ebcb3c9",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00001bzq_M_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00001bzq_N_+",
+      "pair_count": 15004,
+      "positive_count": 40,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "04e36cd5e0d5d6f9b3672c03ef395f77c0f44debdc16bd375cfa3ff423fa8519",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00001bzq_N_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00001nsn_H_L",
+      "pair_count": 31050,
+      "positive_count": 37,
+      "score_max": -4.397126197814941,
+      "score_min": -16.598857879638672,
+      "sha256": "48106bc3ba8917d4897d336e4f536e0942bf54ec517b77bf84661d7981ba1b42",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/2b730032240a2ff40244244a29bf3e75a0f8d392305c1a468a2e56fda16ad1de.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/2b730032240a2ff40244244a29bf3e75a0f8d392305c1a468a2e56fda16ad1de.pdb",
+            "pdb_sha256": "316492d766146d24a566521c7c5ed8c73ddd72b867d9b1b61b1548574dc81850",
+            "role": "heavy",
+            "sequence_sha256": "2b730032240a2ff40244244a29bf3e75a0f8d392305c1a468a2e56fda16ad1de"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/80386cd4c572558d4460430938ab82aa2aa7c9f812362e50a0f4646dcb21fc0a.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/80386cd4c572558d4460430938ab82aa2aa7c9f812362e50a0f4646dcb21fc0a.pdb",
+            "pdb_sha256": "1d727fe3487913895ddbaaaf2892c5545eab1db5dfb8f431885a003bf680338d",
+            "role": "light",
+            "sequence_sha256": "80386cd4c572558d4460430938ab82aa2aa7c9f812362e50a0f4646dcb21fc0a"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/def7f4a2e77b58828d2bbe4504d88fd6b7ce71f5e04bffd31bcff8fbfe1f7080.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/def7f4a2e77b58828d2bbe4504d88fd6b7ce71f5e04bffd31bcff8fbfe1f7080.pdb",
+            "pdb_sha256": "8b5f91d29fd465b2934817f0e51ea2536cd6c1fa754162f09f9ffcd76eaca739",
+            "role": "antigen",
+            "sequence_sha256": "def7f4a2e77b58828d2bbe4504d88fd6b7ce71f5e04bffd31bcff8fbfe1f7080"
+          }
+        ],
+        "instance_id": "pdb_00001nsn_H_L"
+      }
+    },
+    {
+      "instance_id": "pdb_00001v7m_H_L",
+      "pair_count": 32335,
+      "positive_count": 43,
+      "score_max": -4.552013397216797,
+      "score_min": -26.46376609802246,
+      "sha256": "0bf820ce41339ead30831f9d21c1656957492ac2d56d75272437d4ae6bf36bbe",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "pdb_sha256": "8cf662783257bf86d27e26cfa234983dbf4abb1505f3c9f49a58a54e1794d62a",
+            "role": "heavy",
+            "sequence_sha256": "4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "pdb_sha256": "7399733a3ccda720d9eccd8e50743113c66414076b5fa9292c4594eae3904c2b",
+            "role": "light",
+            "sequence_sha256": "f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/944848d7a6e134d23b45daf35123273e26a20b86de26a7da3444149e5e45361a.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/944848d7a6e134d23b45daf35123273e26a20b86de26a7da3444149e5e45361a.pdb",
+            "pdb_sha256": "4773c47dc335f4367da6c0eb83fdf6e67ed8679d3ac2129e0582ec83b23e38fb",
+            "role": "antigen",
+            "sequence_sha256": "944848d7a6e134d23b45daf35123273e26a20b86de26a7da3444149e5e45361a"
+          }
+        ],
+        "instance_id": "pdb_00001v7m_H_L"
+      }
+    },
+    {
+      "instance_id": "pdb_00001v7m_I_M",
+      "pair_count": 32335,
+      "positive_count": 42,
+      "score_max": -4.552013397216797,
+      "score_min": -26.46376609802246,
+      "sha256": "9e1a2a52c5c6bb3609e5964adbb1be5f396b8465b69eb69cc66e0d9193677c76",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "pdb_sha256": "8cf662783257bf86d27e26cfa234983dbf4abb1505f3c9f49a58a54e1794d62a",
+            "role": "heavy",
+            "sequence_sha256": "4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "pdb_sha256": "7399733a3ccda720d9eccd8e50743113c66414076b5fa9292c4594eae3904c2b",
+            "role": "light",
+            "sequence_sha256": "f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/944848d7a6e134d23b45daf35123273e26a20b86de26a7da3444149e5e45361a.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/944848d7a6e134d23b45daf35123273e26a20b86de26a7da3444149e5e45361a.pdb",
+            "pdb_sha256": "4773c47dc335f4367da6c0eb83fdf6e67ed8679d3ac2129e0582ec83b23e38fb",
+            "role": "antigen",
+            "sequence_sha256": "944848d7a6e134d23b45daf35123273e26a20b86de26a7da3444149e5e45361a"
+          }
+        ],
+        "instance_id": "pdb_00001v7m_I_M"
+      }
+    },
+    {
+      "instance_id": "pdb_00001v7n_H_L",
+      "pair_count": 32335,
+      "positive_count": 43,
+      "score_max": -4.4924726486206055,
+      "score_min": -26.812814712524414,
+      "sha256": "092b9a175b9da710591974f32ab92af1539f8cf4f463839943f54448446f78fe",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "pdb_sha256": "8cf662783257bf86d27e26cfa234983dbf4abb1505f3c9f49a58a54e1794d62a",
+            "role": "heavy",
+            "sequence_sha256": "4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "pdb_sha256": "7399733a3ccda720d9eccd8e50743113c66414076b5fa9292c4594eae3904c2b",
+            "role": "light",
+            "sequence_sha256": "f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/d0a64d6c1d3bbd4d5d751f267ed166e28a81e3c713c23fadba2482f46f723cb6.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/d0a64d6c1d3bbd4d5d751f267ed166e28a81e3c713c23fadba2482f46f723cb6.pdb",
+            "pdb_sha256": "cc4807d44e0b24100385e60d9995298e45027e392b4d74050b62fce4780d0ea3",
+            "role": "antigen",
+            "sequence_sha256": "d0a64d6c1d3bbd4d5d751f267ed166e28a81e3c713c23fadba2482f46f723cb6"
+          }
+        ],
+        "instance_id": "pdb_00001v7n_H_L"
+      }
+    },
+    {
+      "instance_id": "pdb_00001v7n_I_M",
+      "pair_count": 30774,
+      "positive_count": 44,
+      "score_max": -4.588186264038086,
+      "score_min": -25.75016212463379,
+      "sha256": "55a635d6455cdaf971229a1ad1fb611a78daf61385029253860436f46883eca6",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "pdb_sha256": "8cf662783257bf86d27e26cfa234983dbf4abb1505f3c9f49a58a54e1794d62a",
+            "role": "heavy",
+            "sequence_sha256": "4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "pdb_sha256": "7399733a3ccda720d9eccd8e50743113c66414076b5fa9292c4594eae3904c2b",
+            "role": "light",
+            "sequence_sha256": "f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/1ed7e47ea2461182d09549475879ab4fae378a80f94c910054b137a83b05d337.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/1ed7e47ea2461182d09549475879ab4fae378a80f94c910054b137a83b05d337.pdb",
+            "pdb_sha256": "9cfcf65261f2906b08554df4910ee5f2ce5c1aee3519aa17b6096907776ce7f5",
+            "role": "antigen",
+            "sequence_sha256": "1ed7e47ea2461182d09549475879ab4fae378a80f94c910054b137a83b05d337"
+          }
+        ],
+        "instance_id": "pdb_00001v7n_I_M"
+      }
+    },
+    {
+      "instance_id": "pdb_00001v7n_J_N",
+      "pair_count": 30997,
+      "positive_count": 41,
+      "score_max": -4.698444366455078,
+      "score_min": -21.60938835144043,
+      "sha256": "76b629d003fdf3a71d95137cc83f5f874dcb6cfbc6ecf6781cd0c96f63830b6b",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "pdb_sha256": "8cf662783257bf86d27e26cfa234983dbf4abb1505f3c9f49a58a54e1794d62a",
+            "role": "heavy",
+            "sequence_sha256": "4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "pdb_sha256": "7399733a3ccda720d9eccd8e50743113c66414076b5fa9292c4594eae3904c2b",
+            "role": "light",
+            "sequence_sha256": "f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/07732fa3145387a3d56f7a0fad2224abdd1c4c9df7d6a56161e5f4322250ddaa.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/07732fa3145387a3d56f7a0fad2224abdd1c4c9df7d6a56161e5f4322250ddaa.pdb",
+            "pdb_sha256": "730033b2003cb69757b36b39cf7b309e1603890c77815ca05c88df0d34b94ab8",
+            "role": "antigen",
+            "sequence_sha256": "07732fa3145387a3d56f7a0fad2224abdd1c4c9df7d6a56161e5f4322250ddaa"
+          }
+        ],
+        "instance_id": "pdb_00001v7n_J_N"
+      }
+    },
+    {
+      "instance_id": "pdb_00001v7n_K_O",
+      "pair_count": 30774,
+      "positive_count": 38,
+      "score_max": -4.352761745452881,
+      "score_min": -19.372982025146484,
+      "sha256": "1f60180ef1563b234a7bab14abf6126104dde34ba9eb52b770ba8d8812e5a556",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c.pdb",
+            "pdb_sha256": "8cf662783257bf86d27e26cfa234983dbf4abb1505f3c9f49a58a54e1794d62a",
+            "role": "heavy",
+            "sequence_sha256": "4d237bfebef7df6af3b429dfb060c83b1564e8ab17698fb8478923c69aec386c"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283.pdb",
+            "pdb_sha256": "7399733a3ccda720d9eccd8e50743113c66414076b5fa9292c4594eae3904c2b",
+            "role": "light",
+            "sequence_sha256": "f2ed6b8322c79f30d771171fc5e4476b12b5993f025d05def32c7d5a923ba283"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/8ae9d1f9ee9d23d56d6198158e6e5085dec79899933b0bb5249c5783c9ac5ede.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/8ae9d1f9ee9d23d56d6198158e6e5085dec79899933b0bb5249c5783c9ac5ede.pdb",
+            "pdb_sha256": "09939ee6e300fcba81111eb9f8179d34737235c45f33a0f54773c0f2c4ccd075",
+            "role": "antigen",
+            "sequence_sha256": "8ae9d1f9ee9d23d56d6198158e6e5085dec79899933b0bb5249c5783c9ac5ede"
+          }
+        ],
+        "instance_id": "pdb_00001v7n_K_O"
+      }
+    },
+    {
+      "instance_id": "pdb_00002oz4_H_L",
+      "pair_count": 58830,
+      "positive_count": 58,
+      "score_max": -6.623152732849121,
+      "score_min": -38.55693054199219,
+      "sha256": "1afb8a71b282dfcf1f27b9558e66784a3805e9226370fde4f473be2ebd4a03d4",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/a64381e216ecae00c3fa43ee80c1da3b9285344996de545beab68bc60194e450.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/a64381e216ecae00c3fa43ee80c1da3b9285344996de545beab68bc60194e450.pdb",
+            "pdb_sha256": "57aec17bee2ee1df00df646812d28cb6772636932cdfb26ae0f93dbeb44f5b82",
+            "role": "heavy",
+            "sequence_sha256": "a64381e216ecae00c3fa43ee80c1da3b9285344996de545beab68bc60194e450"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6ad706a4b4dcf7fd77396522948e34196ba847747a90a310ede7624a1d088b10.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6ad706a4b4dcf7fd77396522948e34196ba847747a90a310ede7624a1d088b10.pdb",
+            "pdb_sha256": "814c6601aba15d3af6c03f2781891ad677f33b045258e9ebfc1c8d5dab8e5ca9",
+            "role": "light",
+            "sequence_sha256": "6ad706a4b4dcf7fd77396522948e34196ba847747a90a310ede7624a1d088b10"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/c43763212b1b9882af2cd770c68aa72a0ad0ffc81f4a2d5aabefbe0363761918.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/c43763212b1b9882af2cd770c68aa72a0ad0ffc81f4a2d5aabefbe0363761918.pdb",
+            "pdb_sha256": "500b7470848bce698b1729e9283d868338a862449995b135dc3556bc00bbacfa",
+            "role": "antigen",
+            "sequence_sha256": "c43763212b1b9882af2cd770c68aa72a0ad0ffc81f4a2d5aabefbe0363761918"
+          }
+        ],
+        "instance_id": "pdb_00002oz4_H_L"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p42_B_+",
+      "pair_count": 15004,
+      "positive_count": 38,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "3569083750729bafcde67c32c12d9528699df13f73aee30e279fe1033805bae8",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00002p42_B_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p42_D_+",
+      "pair_count": 15004,
+      "positive_count": 36,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "22e5f802e571f615a9b17a32ad96f1f3a8abf8a413409a5d82a38fcc6524d6c6",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00002p42_D_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p43_B_+",
+      "pair_count": 15004,
+      "positive_count": 36,
+      "score_max": -6.479709148406982,
+      "score_min": -46.09912872314453,
+      "sha256": "4e32131efa9f8492d933628c6b8ca893e7f8bdbcc75c4b19a7b840c517fb4b25",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639.pdb",
+            "pdb_sha256": "614d3b2b163d8d9b63a86b6badbe82da6a8be3ca3d44eae2159dd0019ea648ce",
+            "role": "heavy",
+            "sequence_sha256": "6d600e3f1ef401ba5a026cdf547d4b045d461209b356b2a50e523b59fd7fc639"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00002p43_B_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p45_B_+",
+      "pair_count": 15004,
+      "positive_count": 36,
+      "score_max": -7.705208778381348,
+      "score_min": -43.69825744628906,
+      "sha256": "0bbe0e7097217db5d2cb4eb925e29681960af744d07a529eb19bf242a1bd004b",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716.pdb",
+            "pdb_sha256": "3d5ba66bec3bb432e54731139584f4a88567e887e9ed81b6691b9f47d1fa64aa",
+            "role": "heavy",
+            "sequence_sha256": "7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00002p45_B_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p47_B_+",
+      "pair_count": 14883,
+      "positive_count": 38,
+      "score_max": -7.1574225425720215,
+      "score_min": -48.44656753540039,
+      "sha256": "ed6996337aa836323c393b15411bf99c8c4659ab679cb23233c3a1c7de73266c",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716.pdb",
+            "pdb_sha256": "3d5ba66bec3bb432e54731139584f4a88567e887e9ed81b6691b9f47d1fa64aa",
+            "role": "heavy",
+            "sequence_sha256": "7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/bb853f8191c55f109f5543012245ac50476c74cebad85dc0eea0501aa88c2136.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/bb853f8191c55f109f5543012245ac50476c74cebad85dc0eea0501aa88c2136.pdb",
+            "pdb_sha256": "5aa2dba95c4b6bc8a5193f025428cd7e065875ff7ca8f38d9fb0b21ee55bcb6b",
+            "role": "antigen",
+            "sequence_sha256": "bb853f8191c55f109f5543012245ac50476c74cebad85dc0eea0501aa88c2136"
+          }
+        ],
+        "instance_id": "pdb_00002p47_B_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p4a_B_+",
+      "pair_count": 15004,
+      "positive_count": 39,
+      "score_max": -5.909034252166748,
+      "score_min": -47.753082275390625,
+      "sha256": "5f260d7746426a00fba32a4e294b792fdf5540d4d2bd44b8bcf19cd0f9ca6bdc",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/146724a56f9fe50a7541cf024020da50968baf2fa4c5176203e3b4bc20a803c5.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/146724a56f9fe50a7541cf024020da50968baf2fa4c5176203e3b4bc20a803c5.pdb",
+            "pdb_sha256": "4a25a8fd2c20ceca248fb40e0a4b5493d74fa2277beff9113e2b571efb12f274",
+            "role": "heavy",
+            "sequence_sha256": "146724a56f9fe50a7541cf024020da50968baf2fa4c5176203e3b4bc20a803c5"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00002p4a_B_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00002p4a_D_+",
+      "pair_count": 15004,
+      "positive_count": 41,
+      "score_max": -5.909034252166748,
+      "score_min": -47.753082275390625,
+      "sha256": "3ce2ccf076162a66b3422a926becd9afec99b0f204448faa30b822a82cbb5a21",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/146724a56f9fe50a7541cf024020da50968baf2fa4c5176203e3b4bc20a803c5.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/146724a56f9fe50a7541cf024020da50968baf2fa4c5176203e3b4bc20a803c5.pdb",
+            "pdb_sha256": "4a25a8fd2c20ceca248fb40e0a4b5493d74fa2277beff9113e2b571efb12f274",
+            "role": "heavy",
+            "sequence_sha256": "146724a56f9fe50a7541cf024020da50968baf2fa4c5176203e3b4bc20a803c5"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307.pdb",
+            "pdb_sha256": "22d3827b0c22671454519d03ca1469d30597e70d88ab5746a62eff0aa0d13858",
+            "role": "antigen",
+            "sequence_sha256": "3fdb0ecddf682ea329409cbd65f1023ab86b89d3649887fc5fd63ee07a63f307"
+          }
+        ],
+        "instance_id": "pdb_00002p4a_D_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00003b9k_D_C",
+      "pair_count": 26208,
+      "positive_count": 54,
+      "score_max": -4.786678791046143,
+      "score_min": -36.159610748291016,
+      "sha256": "1d05632c4e281f59ff0792f0003b9bd6b142dfc39814cb1c7987bbc5188e2f17",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/e67b9f5814658e526d78827a6868f3764d491c30d20c86604e9a213e084fcea7.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/e67b9f5814658e526d78827a6868f3764d491c30d20c86604e9a213e084fcea7.pdb",
+            "pdb_sha256": "0959df4113bf1a973bbb2fd09d135b58a9b955c8cbff4b512a0a17ba89bfda75",
+            "role": "heavy",
+            "sequence_sha256": "e67b9f5814658e526d78827a6868f3764d491c30d20c86604e9a213e084fcea7"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/470298939d376aa247cb7da1eb820858480e87045de35ac41031c73d9329f98a.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/470298939d376aa247cb7da1eb820858480e87045de35ac41031c73d9329f98a.pdb",
+            "pdb_sha256": "2b79602789b81e18bb23879bfe6a8fd77dc987ab2b0f80ab0c3549defceb459e",
+            "role": "light",
+            "sequence_sha256": "470298939d376aa247cb7da1eb820858480e87045de35ac41031c73d9329f98a"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/8589dcc3e909163a6b64e3dd503f62c259d95d460a2fc1082f07a94770683a59.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/8589dcc3e909163a6b64e3dd503f62c259d95d460a2fc1082f07a94770683a59.pdb",
+            "pdb_sha256": "e0844fb7fbf83f02a13d58b1d801a72306113752eca9caa7c0dc6f68e63e1c47",
+            "role": "antigen",
+            "sequence_sha256": "8589dcc3e909163a6b64e3dd503f62c259d95d460a2fc1082f07a94770683a59"
+          }
+        ],
+        "instance_id": "pdb_00003b9k_D_C"
+      }
+    },
+    {
+      "instance_id": "pdb_00003b9k_H_L",
+      "pair_count": 26208,
+      "positive_count": 52,
+      "score_max": -4.786678791046143,
+      "score_min": -36.159610748291016,
+      "sha256": "a0ca05d7f95453f6dae2e5fa899f257e5fea09be347c30d534b001f2c3dd8f58",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/e67b9f5814658e526d78827a6868f3764d491c30d20c86604e9a213e084fcea7.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/e67b9f5814658e526d78827a6868f3764d491c30d20c86604e9a213e084fcea7.pdb",
+            "pdb_sha256": "0959df4113bf1a973bbb2fd09d135b58a9b955c8cbff4b512a0a17ba89bfda75",
+            "role": "heavy",
+            "sequence_sha256": "e67b9f5814658e526d78827a6868f3764d491c30d20c86604e9a213e084fcea7"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/470298939d376aa247cb7da1eb820858480e87045de35ac41031c73d9329f98a.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/470298939d376aa247cb7da1eb820858480e87045de35ac41031c73d9329f98a.pdb",
+            "pdb_sha256": "2b79602789b81e18bb23879bfe6a8fd77dc987ab2b0f80ab0c3549defceb459e",
+            "role": "light",
+            "sequence_sha256": "470298939d376aa247cb7da1eb820858480e87045de35ac41031c73d9329f98a"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/8589dcc3e909163a6b64e3dd503f62c259d95d460a2fc1082f07a94770683a59.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/8589dcc3e909163a6b64e3dd503f62c259d95d460a2fc1082f07a94770683a59.pdb",
+            "pdb_sha256": "e0844fb7fbf83f02a13d58b1d801a72306113752eca9caa7c0dc6f68e63e1c47",
+            "role": "antigen",
+            "sequence_sha256": "8589dcc3e909163a6b64e3dd503f62c259d95d460a2fc1082f07a94770683a59"
+          }
+        ],
+        "instance_id": "pdb_00003b9k_H_L"
+      }
+    },
+    {
+      "instance_id": "pdb_00003bsz_H_L",
+      "pair_count": 40020,
+      "positive_count": 28,
+      "score_max": -4.630770206451416,
+      "score_min": -31.345998764038086,
+      "sha256": "83d0baf76177da78ee07a4c2fa6a854de6493afe6380547094268587743ee93d",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/d6d1e81d26a88bfba4a0d911ca296d6406d37112224d0503ddd92a8a3f0516fd.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/d6d1e81d26a88bfba4a0d911ca296d6406d37112224d0503ddd92a8a3f0516fd.pdb",
+            "pdb_sha256": "75a66726d8cd3cb162a76054f7ecdd5636d7d910db400a0033072603f3c9d3e4",
+            "role": "heavy",
+            "sequence_sha256": "d6d1e81d26a88bfba4a0d911ca296d6406d37112224d0503ddd92a8a3f0516fd"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/3fa44a6739e931bb2f880f965056bf3b21c53b1ab6ff9a0c8c3124b8fc23ac9e.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/3fa44a6739e931bb2f880f965056bf3b21c53b1ab6ff9a0c8c3124b8fc23ac9e.pdb",
+            "pdb_sha256": "0cd2d1c95522278ab971558bdfe825bb3ef2b5b487431aaf234117683a8c07bd",
+            "role": "light",
+            "sequence_sha256": "3fa44a6739e931bb2f880f965056bf3b21c53b1ab6ff9a0c8c3124b8fc23ac9e"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/4279c8ac66420d835748693120c973c16de8841430a8b87de1aa7289a4d994ed.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/4279c8ac66420d835748693120c973c16de8841430a8b87de1aa7289a4d994ed.pdb",
+            "pdb_sha256": "cbc09117f787beb39004cc1b7e17370bfb49a299d49c5c87710be4b5194ec78b",
+            "role": "antigen",
+            "sequence_sha256": "4279c8ac66420d835748693120c973c16de8841430a8b87de1aa7289a4d994ed"
+          }
+        ],
+        "instance_id": "pdb_00003bsz_H_L"
+      }
+    },
+    {
+      "instance_id": "pdb_00003bsz_N_M",
+      "pair_count": 40020,
+      "positive_count": 33,
+      "score_max": -4.630770206451416,
+      "score_min": -31.345998764038086,
+      "sha256": "51cdab3c768b48be03e4ee6e6c393fe09b014b22b21bb4ff747e1ef26f5bc7bc",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/d6d1e81d26a88bfba4a0d911ca296d6406d37112224d0503ddd92a8a3f0516fd.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/d6d1e81d26a88bfba4a0d911ca296d6406d37112224d0503ddd92a8a3f0516fd.pdb",
+            "pdb_sha256": "75a66726d8cd3cb162a76054f7ecdd5636d7d910db400a0033072603f3c9d3e4",
+            "role": "heavy",
+            "sequence_sha256": "d6d1e81d26a88bfba4a0d911ca296d6406d37112224d0503ddd92a8a3f0516fd"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/3fa44a6739e931bb2f880f965056bf3b21c53b1ab6ff9a0c8c3124b8fc23ac9e.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/3fa44a6739e931bb2f880f965056bf3b21c53b1ab6ff9a0c8c3124b8fc23ac9e.pdb",
+            "pdb_sha256": "0cd2d1c95522278ab971558bdfe825bb3ef2b5b487431aaf234117683a8c07bd",
+            "role": "light",
+            "sequence_sha256": "3fa44a6739e931bb2f880f965056bf3b21c53b1ab6ff9a0c8c3124b8fc23ac9e"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/4279c8ac66420d835748693120c973c16de8841430a8b87de1aa7289a4d994ed.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/4279c8ac66420d835748693120c973c16de8841430a8b87de1aa7289a4d994ed.pdb",
+            "pdb_sha256": "cbc09117f787beb39004cc1b7e17370bfb49a299d49c5c87710be4b5194ec78b",
+            "role": "antigen",
+            "sequence_sha256": "4279c8ac66420d835748693120c973c16de8841430a8b87de1aa7289a4d994ed"
+          }
+        ],
+        "instance_id": "pdb_00003bsz_N_M"
+      }
+    },
+    {
+      "instance_id": "pdb_00003k3q_A_+",
+      "pair_count": 22605,
+      "positive_count": 18,
+      "score_max": -3.7268900871276855,
+      "score_min": -15.397172927856445,
+      "sha256": "9d8d67b00d5a282f8303388a5b685302ec0d4bae520b4d6d292598893401eafc",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/67e51778e130c3d2848a782515509806bee4c037902886df13d70c75766cfec5.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/67e51778e130c3d2848a782515509806bee4c037902886df13d70c75766cfec5.pdb",
+            "pdb_sha256": "0d3dee8db5d60f8fe09e1c7098ff761035e9d3180471a23eac02ea7595be897d",
+            "role": "heavy",
+            "sequence_sha256": "67e51778e130c3d2848a782515509806bee4c037902886df13d70c75766cfec5"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fe4c83f580111005112a17726670ef198343389a0d2aead703de05cc79de55b.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/3fe4c83f580111005112a17726670ef198343389a0d2aead703de05cc79de55b.pdb",
+            "pdb_sha256": "17cc0536e306444987d4f44a0f80e97f55a06af73d1e68fdb8b83edca6e42477",
+            "role": "antigen",
+            "sequence_sha256": "3fe4c83f580111005112a17726670ef198343389a0d2aead703de05cc79de55b"
+          }
+        ],
+        "instance_id": "pdb_00003k3q_A_+"
+      }
+    },
+    {
+      "instance_id": "pdb_00004hep_G_+",
+      "pair_count": 21060,
+      "positive_count": 43,
+      "score_max": -5.5517802238464355,
+      "score_min": -22.804340362548828,
+      "sha256": "0c12425116994d916b8e4c8b02c718ec80fac84b0c2214d5832d661dd375895e",
+      "structure_equivalence": {
+        "chains": [
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/9868449e9c92589fcfb80a449625528d20a08f379bc4301d60980fb3d0d0afbb.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antibody/9868449e9c92589fcfb80a449625528d20a08f379bc4301d60980fb3d0d0afbb.pdb",
+            "pdb_sha256": "4adde266647a261b19445cf33ca2b8cc237830bfc0b9d3fb9c63c44d877ebf87",
+            "role": "heavy",
+            "sequence_sha256": "9868449e9c92589fcfb80a449625528d20a08f379bc4301d60980fb3d0d0afbb"
+          },
+          {
+            "new_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/000c7daaf1dc4142ebfd83a7b01da5468906993e1ef5ee26e5afe87581c21a58.pdb",
+            "old_path": "/ssd/scxi253/frontier_multimodel_v1/data/structure_units_v2/pdb/antigen/000c7daaf1dc4142ebfd83a7b01da5468906993e1ef5ee26e5afe87581c21a58.pdb",
+            "pdb_sha256": "53c19bcb0182e9726223ac3472e582c1bd03b6ed96adadcebb6622353fe64f98",
+            "role": "antigen",
+            "sequence_sha256": "000c7daaf1dc4142ebfd83a7b01da5468906993e1ef5ee26e5afe87581c21a58"
+          }
+        ],
+        "instance_id": "pdb_00004hep_G_+"
+      }
+    }
+  ],
+  "reused_count": 26,
+  "schema": "reparank_structure_resume_v1",
+  "scientific_change": "none; execution resumes only missing validation cases after exact compatibility audit",
+  "score_definition": "negative Euclidean distance between official RePaRank complex embeddings",
+  "split_manifest": "/ssd/scxi253/model_deployment/data/interaction_first/double_remote_split.json",
+  "test_labels_read": false,
+  "validation_ids": [
+    "pdb_000010zo_A_+",
+    "pdb_00001bzq_K_+",
+    "pdb_00001bzq_L_+",
+    "pdb_00001bzq_M_+",
+    "pdb_00001bzq_N_+",
+    "pdb_00001nsn_H_L",
+    "pdb_00001v7m_H_L",
+    "pdb_00001v7m_I_M",
+    "pdb_00001v7n_H_L",
+    "pdb_00001v7n_I_M",
+    "pdb_00001v7n_J_N",
+    "pdb_00001v7n_K_O",
+    "pdb_00002oz4_H_L",
+    "pdb_00002p42_B_+",
+    "pdb_00002p42_D_+",
+    "pdb_00002p43_B_+",
+    "pdb_00002p45_B_+",
+    "pdb_00002p47_B_+",
+    "pdb_00002p4a_B_+",
+    "pdb_00002p4a_D_+",
+    "pdb_00003b9k_D_C",
+    "pdb_00003b9k_H_L",
+    "pdb_00003bsz_H_L",
+    "pdb_00003bsz_N_M",
+    "pdb_00003k3q_A_+",
+    "pdb_00004hep_G_+",
+    "pdb_00004kuc_F_E",
+    "pdb_00004kuc_H_D",
+    "pdb_00004lgp_B_+",
+    "pdb_00004lgp_D_+",
+    "pdb_00004lgs_B_+",
+    "pdb_00004lhq_B_+",
+    "pdb_00004lhq_D_+",
+    "pdb_00004orz_C_+",
+    "pdb_00004qo1_A_+",
+    "pdb_00004s10_A_+",
+    "pdb_00004s10_B_+",
+    "pdb_00004w2q_A_+",
+    "pdb_00004w2q_C_+",
+    "pdb_00004w2q_E_+",
+    "pdb_00004w2q_G_+",
+    "pdb_00005anm_B_A",
+    "pdb_00005c2u_B_+",
+    "pdb_00005foj_A_+",
+    "pdb_00005h35_F_G",
+    "pdb_00005h35_H_I",
+    "pdb_00005ip4_A_+",
+    "pdb_00005ip4_B_+",
+    "pdb_00005ldn_H_L",
+    "pdb_00005lsp_H_L",
+    "pdb_00005lsp_S_T",
+    "pdb_00005m94_B_+",
+    "pdb_00005m94_D_+",
+    "pdb_00005m95_B_+",
+    "pdb_00005m95_D_+",
+    "pdb_00005o0w_E_+",
+    "pdb_00005o0w_F_+",
+    "pdb_00005o0w_G_+",
+    "pdb_00005o0w_H_+",
+    "pdb_00005sv3_A_+",
+    "pdb_00005sv3_C_+",
+    "pdb_00005u4m_B_+",
+    "pdb_00005uk4_f_+",
+    "pdb_00005uk4_g_+",
+    "pdb_00005uk4_l_+",
+    "pdb_00005uk4_r_+",
+    "pdb_00005vxk_B_+",
+    "pdb_00005y9j_H_L",
+    "pdb_00006app_A_+",
+    "pdb_00006ikm_a1_a2",
+    "pdb_00006ikm_b1_b2",
+    "pdb_00006ikm_c1_c2",
+    "pdb_00006ikm_d1_d2",
+    "pdb_00006ikm_e1_e2",
+    "pdb_00006ikm_f1_f2",
+    "pdb_00006ikm_g1_g2",
+    "pdb_00006ikm_h1_h2",
+    "pdb_00006ikm_i1_i2",
+    "pdb_00006ikm_j1_j2",
+    "pdb_00006ikm_k1_k2",
+    "pdb_00006ikm_l1_l2",
+    "pdb_00006ikm_m1_m2",
+    "pdb_00006ikm_n1_n2",
+    "pdb_00006ikm_o1_o2",
+    "pdb_00006ikm_p1_p2",
+    "pdb_00006ikm_q1_q2",
+    "pdb_00006ikm_r1_r2",
+    "pdb_00006itc_V_+",
+    "pdb_00006jhs_E_D",
+    "pdb_00006jod_H_L",
+    "pdb_00006oel_H_L",
+    "pdb_00006pcu_B2_B1",
+    "pdb_00006pcu_E2_E1",
+    "pdb_00006pcu_H2_H1",
+    "pdb_00006rah_C_+",
+    "pdb_00006rai_C_+",
+    "pdb_00006raj_C_+",
+    "pdb_00006rak_C_+",
+    "pdb_00006ral_C_+",
+    "pdb_00006s3d_A_B",
+    "pdb_00006s3d_C_D",
+    "pdb_00006s3d_E_F",
+    "pdb_00006s3d_H_L",
+    "pdb_00006u6u_H_L",
+    "pdb_00006wmw_H_L",
+    "pdb_00006wmw_M_N",
+    "pdb_00006ztr_A_B",
+    "pdb_00006ztr_H_L",
+    "pdb_00007kbi_C_+",
+    "pdb_00007lf7_A_B",
+    "pdb_00007lfa_B_D",
+    "pdb_00007lfa_H_L",
+    "pdb_00007m1h_B_+",
+    "pdb_00007m1h_C_+",
+    "pdb_00007m1h_D_+",
+    "pdb_00007m1h_E_+",
+    "pdb_00007nqk_B_+",
+    "pdb_00007ox2_J_K",
+    "pdb_00007s11_H_L",
+    "pdb_00007s11_I_M",
+    "pdb_00007shy_I_J",
+    "pdb_00007shy_K_L",
+    "pdb_00007si0_C_D",
+    "pdb_00007uia_B_+",
+    "pdb_00007uia_E_+",
+    "pdb_00007uib_B_+",
+    "pdb_00007uib_E_+",
+    "pdb_00007uie_B_+",
+    "pdb_00007uie_C_+",
+    "pdb_00007uie_E_+",
+    "pdb_00007uie_G_+",
+    "pdb_00007uie_I_+",
+    "pdb_00007xtp_C_+",
+    "pdb_00007xtp_D_+",
+    "pdb_00007yru_H_L",
+    "pdb_00007zoz_H_L",
+    "pdb_00008cz5_H_L",
+    "pdb_00008df1_H_L",
+    "pdb_00008df1_M_N",
+    "pdb_00008df1_O_P",
+    "pdb_00008df1_Q_R",
+    "pdb_00008df1_S_T",
+    "pdb_00008df1_U_V",
+    "pdb_00008dke_A_B",
+    "pdb_00008dki_A_B",
+    "pdb_00008dkm_A_B",
+    "pdb_00008dkw_A_B",
+    "pdb_00008dkx_A_B",
+    "pdb_00008ds5_C_B",
+    "pdb_00008ee2_D_+",
+    "pdb_00008ee2_H_+",
+    "pdb_00008evd_A_+",
+    "pdb_00008evd_B_+",
+    "pdb_00008evd_E_+",
+    "pdb_00008evd_F_+",
+    "pdb_00008evd_I_+",
+    "pdb_00008evd_J_+",
+    "pdb_00008f6u_A_+",
+    "pdb_00008f6u_B_+",
+    "pdb_00008f6v_A_+",
+    "pdb_00008f6v_B_+",
+    "pdb_00008gjr_A_+",
+    "pdb_00008hs2_B_C",
+    "pdb_00008k4q_B_+",
+    "pdb_00008k4q_D_+",
+    "pdb_00008ozb_A_+",
+    "pdb_00008ozb_C_+",
+    "pdb_00008rtf_G_+",
+    "pdb_00008rtf_H_+",
+    "pdb_00008tfl_H_L",
+    "pdb_00008uf7_B_A",
+    "pdb_00008y4w_B_+",
+    "pdb_00008y4x_B_+",
+    "pdb_00008y9z_V_+",
+    "pdb_00008ya0_V_+",
+    "pdb_00009b6s_H_L",
+    "pdb_00009b6s_h_l",
+    "pdb_00009e3k_H_L",
+    "pdb_00009e3k_J_K",
+    "pdb_00009e3l_I_J",
+    "pdb_00009e3l_K_L",
+    "pdb_00009eti_H_L",
+    "pdb_00009fww_B_+",
+    "pdb_00009fzc_C_+",
+    "pdb_00009fzc_D_+",
+    "pdb_00009fzd_B_+",
+    "pdb_00009g95_B_+",
+    "pdb_00009g97_B_+",
+    "pdb_00009g9m_B_+",
+    "pdb_00009g9m_C_+",
+    "pdb_00009g9n_B_+",
+    "pdb_00009g9n_C_+",
+    "pdb_00009g9o_B_+",
+    "pdb_00009g9o_C_+",
+    "pdb_00009g9p_B_+",
+    "pdb_00009g9p_C_+",
+    "pdb_00009gv3_E_+",
+    "pdb_00009gv3_F_+",
+    "pdb_00009gv3_G_+",
+    "pdb_00009gv3_H_+",
+    "pdb_00009hvk_H_+",
+    "pdb_00009hvk_Q_+",
+    "pdb_00009jqy_H_L",
+    "pdb_00009jqz_H_L",
+    "pdb_00009mla_G_J",
+    "pdb_00009mla_H_K",
+    "pdb_00009mla_I_L",
+    "pdb_00009np0_B_C",
+    "pdb_00009nz5_F_E",
+    "pdb_00009rye_C_+",
+    "pdb_00009ryf_C_+",
+    "pdb_00009uok_A_+",
+    "pdb_00009vca_H_L",
+    "pdb_00009vnp_C_A",
+    "pdb_00009xzx_C_+",
+    "pdb_00009xzx_D_+",
+    "pdb_00009yc3_A_+"
+  ]
+}

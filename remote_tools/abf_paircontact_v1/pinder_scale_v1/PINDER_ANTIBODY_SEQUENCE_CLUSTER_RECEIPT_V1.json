@@ -1,0 +1,16 @@
+{
+  "cluster_assignments": {
+    "filename": "PINDER_ANTIBODY_SEQUENCE_CLUSTER_ASSIGNMENTS_V1.tsv.gz",
+    "row_count": 35366,
+    "sha256": "6d729bacb8f48df1093e49e0ecbdc73c49378fb4838157fd156af97cce347343"
+  },
+  "format_version": "pinder_antibody_sequence_cluster_receipt_v1",
+  "model_selection_authorized": false,
+  "result": {
+    "filename": "PINDER_ANTIBODY_SEQUENCE_CLUSTER_RESULT_V1.json",
+    "sha256": "7b0da62e349175b6921deb2bc98dd0151165bbcb2be3a2aedb972b81fd73d076"
+  },
+  "scientific_payload_sha256": "43ca11306db762861d46e83aa01a3a4c8f840c6f823b917d8e547218d45e9f18",
+  "status": "PASS_PINDER_ANTIBODY_SEQUENCE_CLUSTER_AND_QUALITY_AUDIT",
+  "training_authorized": false
+}

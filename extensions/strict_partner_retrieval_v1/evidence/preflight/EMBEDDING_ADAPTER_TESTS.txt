@@ -1,0 +1,12 @@
+2026-09-30
+Real source formats were inspected on ParaCloud:
+- AntiBERTy: pretrained_representation_v1, chain-level, model=antiberty, revision=antiberty-pypi, dim=512;
+- ESM-2: sppider_seq_embedding_v1, model=facebook/esm2_t33_650M_UR50D, dim=1280, per-artifact weight SHA bound.
+Authority-train coverage audit before code change:
+- VH 1282/1282 present, zero identity/length errors;
+- VL 981/981 present, zero identity/length errors;
+- antigen 1172/1172 present, zero identity/length errors.
+Two synthetic source-format regressions ran in the ParaCloud repr_extract runtime:
+- chainwise VH/VL loading concatenates correctly and ESM-2 adapter loads sppider format;
+- source file digest mismatch fails closed.
+Result: 2/2 embedding adapter cases PASS.

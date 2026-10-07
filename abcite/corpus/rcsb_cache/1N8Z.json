@@ -1,0 +1,13 @@
+{
+  "pdb_id": "1N8Z",
+  "rcsb_id": "1N8Z",
+  "title": "Crystal structure of extracellular region of HER2 complexed with Herceptin Fab",
+  "method": "X-RAY DIFFRACTION",
+  "released": "2003-02-11",
+  "resolution": 2.5,
+  "rcsb": "https://www.rcsb.org/structure/1N8Z",
+  "cif_header_path": null,
+  "source": "bundled_cache",
+  "live": false,
+  "cache_hit": true
+}

@@ -1,0 +1,35 @@
+{"argv": ["/ssd/scxi253/repr_extract/venv/bin/python3", "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/source_e61c6bd/extensions/execution_recovery_v1/semantic_audit.py", "--plan", "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt4/PLAN.json", "--plan-sha256", "397193cd9248d4157b836de3db6c1e3f729cc9665817b9af49117c5f59b880ea", "--task-id", "3", "--output", "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/semantic_review_20260930T0902Z/receipts/TASK003.json"]}
+{
+  "state": "PASS_STRICT_SEMANTIC_POST_AUDIT",
+  "task_id": 3,
+  "sample_count": 25,
+  "sequence_length": 101,
+  "selected": {
+    "seed": 79,
+    "sample": 4,
+    "score": 0.6288774468811826,
+    "model_sha256": "93e4dfb8993ad8c9b0b40b53474f986e02d0249354b5e4d365d76ff512bfea71",
+    "summary_confidences_sha256": "dbbc380ea4e4598e544fb6eff3537857a2674ea55a5185c0d0c3e2297d62f1c1",
+    "confidences_sha256": "4b6dbc71a7bea81e1440f93c6721c6c15075aea63b18863c62faf5459646074c",
+    "residues": 101,
+    "atom_count": 794,
+    "backbone_atoms": 404,
+    "backbone_sha256": "20e0129fc88d298f862d9df45e79535455c3eef66d3ea27aa6b1a18e42bf4667",
+    "all_atom_sha256": "3cec7cb20d7d869da9988fa9f4ddb1f341b2cf06e3d30c6647f30136dcd6dceb",
+    "atom_bfactor_sha256": "02c55e1199277176b89f5a0efed699fa8b9c9f0aae443382efd7583bd4a15d73",
+    "atom_topology_sha256": "22c1a8a4151e28e353490a9686d849159b7ed4f6bc1adc135fb7a83b17f53932"
+  },
+  "top_model_comparison": {
+    "equivalent": true,
+    "raw_difference_keys": [],
+    "normalized_difference_keys": [],
+    "top_semantic_sha256": null,
+    "sample_semantic_sha256": null,
+    "normalised_fields": [],
+    "comparison_mode": "BYTE_IDENTICAL"
+  },
+  "recovered_source": null,
+  "task_tree_unchanged": true,
+  "runtime_deep_hashes_verified": false,
+  "inference_performed": false
+}

@@ -1,0 +1,106 @@
+{
+  "b_canary": {
+    "checkpoint_content_sha256": "bb6cc3d7146e880e7589c682c59d7c7236c406bcd6970eff95fa6665a830c273",
+    "checkpoint_receipt_sha256": "dfa79eb180dc63313c382606e7964b0319732081d7d9fa22bcbc14ba27da965d",
+    "contact_ap_after": 0.0024729,
+    "contact_ap_before": 0.0014651,
+    "contact_prevalence": 0.00091396,
+    "job": 1527640,
+    "label_manifest_sha256": "d1565738427bba396591e7dd2c9f690194f696c8a68cf66bfc0db31780869589",
+    "label_receipt_sha256": "7a34c6b1ea0a9797cf058b7ff42ccc838d013e7598b258407fa3a2347fea89a4",
+    "matched_minus_swapped_after": 0.03953,
+    "result_sha256": "6438b868f63f74de8ac52f3cf8bd83eb1f2e46645a41a7c6003e3b7c57bc023f",
+    "status": "PASS_B_CANARY_SYSTEMS_AND_OBJECTIVE",
+    "test_access": false
+  },
+  "b32k": {
+    "active_job": 1528772,
+    "predecessor_attempts": [
+      {
+        "job": 1528250,
+        "reason": "SOURCE_PACKAGE_INCOMPLETE"
+      },
+      {
+        "job": 1528285,
+        "reason": "PRUNED_STAGE_A0_GENERATION_PAYLOAD"
+      },
+      {
+        "job": 1528343,
+        "reason": "CHECKPOINT_SHA_TRANSCRIPTION_ERROR"
+      },
+      {
+        "job": 1528384,
+        "reason": "PARTNER_SWAP_TOKEN_BUDGET_RANK_DIVERGENCE"
+      },
+      {
+        "job": 1528614,
+        "progress_sha256": "f84e3e827005f2662c8a6b6e1d296c06f612ecc4df831da48361b64c205ffe96",
+        "reason": "INSUFFICIENT_8_HOUR_TIME_LIMIT_PREEMPTIVELY_CANCELLED",
+        "updates_complete": 9
+      }
+    ],
+    "label_manifest_sha256": "9f76bb32b2022599225cca686017d92f119eec3d4183e11782a720445cca6637",
+    "label_materialization_jobs": [1528123, 1528124],
+    "label_receipt_sha256": "b8b18478f21ba46542b727af68fe1cbe5cf711e86b68a3c106cd4a8a8ec1034a",
+    "protocol_sha256": "7ab61d5b94682e59719a66a5ca534e3ffc23e9852b2affae84a4e02df100c48d",
+    "source_checkpoint_content_sha256": "71c6b345d251a350b2299884f7576b989413b40ec7f40fea31eb2f30d1c00e2c",
+    "source_generation": "segment-000129",
+    "token_safe_group_preflight": {
+      "holdout_groups": 64,
+      "maximum_cross_pair_tokens": 1024,
+      "maximum_native_tokens": 1024,
+      "status": "PASS_B32K_TOKEN_SAFE_GROUP_PREFLIGHT",
+      "training_groups": 8192
+    },
+    "status": "RUNNING_RECOVERY_V5_20H_SAME_FROZEN_PROTOCOL",
+    "systems": 32768,
+    "test_access": false,
+    "time_limit_hours": 20,
+    "updates": 2048,
+    "world_size": 8
+  },
+  "distributed_pretraining": {
+    "latest_verified_checkpoint_content_sha256": "be22eb1889dd4f15b3d2c2ad449cb5084bde91435dd8d4d392f9295d6f10f839",
+    "latest_verified_generation": "segment-000130",
+    "latest_verified_residue_tokens": 2070335724,
+    "memory_tier_recovery": {
+      "failed_job": 1528842,
+      "failed_updates": 0,
+      "failure_record_sha256": "fbd17254d13ba0b0069d5afbd0ce670294ad18517221dc3eca8f579c76d4c7c0",
+      "global_batch_changed": false,
+      "recovery_job": 1529027,
+      "scientific_protocol_changed": false,
+      "watchdog_job": 1529028
+    },
+    "stage_a0_successor_job": 1529028,
+    "stage_a0_training_job": 1529027,
+    "status": "RUNNING_SEGMENT_000131_FROM_VERIFIED_SEGMENT_000130",
+    "target_residue_tokens": 5000000000,
+    "test_access": false
+  },
+  "format_version": "abpairfm_distributed_contact_pretraining_execution_receipt_v1",
+  "mipe_appendix_replay": {
+    "claim_boundary": "Exposed archival replay, not blind evidence or a scale-stage promotion gate.",
+    "result_sha256": "2036cc3faa156ef1f7ffdc5eb413497f765d610b87ffbb7477bb0b8dee6b32b3",
+    "selection_freeze_sha256": "065b4059d41f55a0892e94cc637625eee8a495b7052a97760e42e29d6bba69b3",
+    "status": "COMPLETE_EXPOSED_ARCHIVAL_REPLAY"
+  },
+  "official_sabdab2_splits": {
+    "archive_sha256": "6f3aad7c62c2afb8f94075a38eca76a61b5558b5feef34cb4d976511012b06ce",
+    "download_plan_sha256": "7d26068bc2c924d584bb3cbbb9daf429c818bed86e256de1715f847aec970edd",
+    "normalization_receipt_sha256": "1f5df3d141850f7f3697e46d850eb02a6e999367a1680a9ac481a88a7ab0e6ac",
+    "official_comparability_only": true,
+    "pdb_disjoint": false,
+    "split_audit_receipt_sha256": "923c7bb5030c23934596f815058c1c9ee0b718ad14f0b0dd28a6518d81602ddd",
+    "status": "PASS_OFFICIAL_SPLITS_EXTRACTED_AND_AUDITED"
+  },
+  "pinder_antibody_split": {
+    "first_job": 1526354,
+    "first_job_status": "FAIL_SOLVER_TIME_LIMIT_NO_SPLIT_PUBLISHED",
+    "protocol": "PINDER_ANTIBODY_S2_TRAIN_VALIDATION_VERTEX_SEPARATOR_PROTOCOL_RECOVERY_V2.json",
+    "protocol_sha256": "0c4d49b791655aef3876d38ac6d8d95f656121316108cab18910a906c78c5d16",
+    "recovery_job": 1527693,
+    "status": "RUNNING_SAME_CONSTRAINTS_EXTENDED_SOLVER_WINDOW"
+  },
+  "protocol_sha256": "ef045205e0585a04311edd332167ccde90d8c2a6fe3680edf54d43fd770e2cc1"
+}

@@ -1,0 +1,6 @@
+{
+  "format_version": "abpairfm_3b_unique25m_source_manifest_receipt_v1",
+  "source_manifest_sha256": "d4863f7832fd352ad415c7f73412692b65eeaf623980b6772d6e3cdea44ede62",
+  "status": "PASS_SOURCE_FROZEN",
+  "test_access": false
+}

@@ -1,0 +1,55 @@
+{
+  "artifacts": {
+    "audit_sha256": "69b580d9c6342582b07c7c5e4527733bd456202165df4c1f2eaa8ab627f685ae",
+    "checkpoint_content_sha256": "72a18cf123c8ac4de20ba2dd38e06c558c42976cdce386d6900f3cc53c44a80f",
+    "checkpoint_receipt_sha256": "9416f583beb917d7249be011d5fc6bf379b4c42e24adad8a51400b8e803f1698",
+    "progress_sha256": "90c8ff340a24d4c38dbd4fc0bb3d9a48e0963c8d9f04fcacf48853770349aee8",
+    "result_sha256": "bdaf0bf195c6d7f07d7b6d34992c76eaa73aa963910be3d3dd275148e78c598c",
+    "stderr_sha256": "925bc8c621b52b4954a16e2ee397271a4c465d74f14dac89bfec16cd2bbdcd29",
+    "stdout_sha256": "b28323ea22b9ca1cec2f123dc9103865462fe8f9bb9f6700e36b16fe2d220021"
+  },
+  "audit": {
+    "checkpoint_restore_exact": true,
+    "distance_loss_exactly_zero": true,
+    "exit_code": "1:0",
+    "job_id": 1504387,
+    "scheduler_state": "FAILED_BY_FROZEN_SCIENTIFIC_AUDIT",
+    "test_access": false,
+    "training_and_checkpoint_completed": true,
+    "updates": 80
+  },
+  "claim_boundary": "Internal head-only mechanism evidence on an exposed 512-complex development holdout. It is not downstream, blind-test, temporal, or scaling evidence.",
+  "decision": {
+    "reason": "The frozen scientific gate failed on contact-loss reduction, matched-ranking-loss reduction, and centering-loss behavior. Average-precision gains from this run are additionally invalid because the executed evaluator resolved tied scores in sampler order.",
+    "scaling_authorized": false,
+    "status": "SCALING_NOT_AUTHORIZED"
+  },
+  "evaluator_correction": {
+    "ap_metrics_valid": false,
+    "corrected_source_sha256": "bf185ef119bb980c6c1ee2aebf237e268469ecea52b244f72026fca9fce5091f",
+    "executed_source_sha256": "44d5c213149ce30717360c42a2857d8b8d9f383878536cc0660f79c0f4ce7f9f",
+    "local_tests": "19 passed",
+    "problem": "The executed AP implementation used stable item-level ordering inside tied score groups. Because positives precede negatives in the deterministic sampler, a constant score could produce AP=1 instead of prevalence.",
+    "resolution": "The corrected implementation computes precision and recall increments only at distinct score thresholds and is invariant to permutations within ties. No corrected AP is backfilled into the frozen audit."
+  },
+  "format_version": "abf_paircontact_phase1_mechanism_canary_result_receipt_v3",
+  "frozen_gate": {
+    "failed_checks": [
+      "centering_loss_decreased",
+      "train_contact_relative_reduction_at_least_0p02",
+      "train_ranking_relative_reduction_at_least_0p02"
+    ],
+    "status": "FAIL_PAIRCONTACT_RESIDUAL_MECHANISM_GATE",
+    "train_relative_reduction": {
+      "centering": -4.864507794244023,
+      "contact": 0.0058598982753115,
+      "ranking": 0.010348372116252396
+    }
+  },
+  "valid_mechanism_metrics": {
+    "column_matched_accuracy_absolute_gain": 0.042167669388784024,
+    "row_matched_accuracy_absolute_gain": 0.04440730795902015,
+    "tie_policy": "strictly-greater=1, equal=0.5, lower=0"
+  },
+  "status": "FAIL_PAIRCONTACT_RESIDUAL_MECHANISM_GATE"
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "old_name": "kevin/epic-reviewer-response-20260930",
+    "new_name": "kevin/epic-camera-ready-20260930",
+    "sha_before": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+    "sha_after": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+    "method": "GitHub native branch rename; no commit rewritten"
+  },
+  {
+    "old_name": "kevin/main-epic-review-index-20260930",
+    "new_name": "kevin/main-epic-evidence-index-20260930",
+    "sha_before": "3ac740d354f9c5b73c39605cb09b0f600609fb82",
+    "sha_after": "3ac740d354f9c5b73c39605cb09b0f600609fb82",
+    "method": "GitHub native branch rename; no commit rewritten"
+  }
+]

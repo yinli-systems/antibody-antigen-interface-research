@@ -1,0 +1,40 @@
+{
+  "origin_job": "1641607_0",
+  "sequence": "KLYMCVCEGLSCGNEDHCEGQQCFSSLSINDGFHVYQKGCFQVYEQGKMTCKTPPSPGQAVECCQGDWCNRNITAQLP",
+  "sequence_sha256": "17b7471b4979f8a662f30e9aaec999da8777fd45d5b4a37d30146cbd7c3a416e",
+  "top_selected_seed": 42,
+  "top_selected_sample": 2,
+  "files": [
+    {
+      "file": "top.cif.gz",
+      "original_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs/task_000/results/af3_missing_17b7471b4979f8a662f30e9a/af3_missing_17b7471b4979f8a662f30e9a_model.cif",
+      "original_sha256": "ddb22d140df46fa6c4df6adfd324d7ea92cfb8db07f88b9af1d1b3e2b3016c01",
+      "stored_sha256": "a10a026cf7525d821b475e4841694bf5b4ceca9092fcd5444e9e2f1e5b3cd7d8"
+    },
+    {
+      "file": "sample.cif.gz",
+      "original_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs/task_000/results/af3_missing_17b7471b4979f8a662f30e9a/seed-42_sample-2/model.cif",
+      "original_sha256": "2dbe2afcf7ea105c571ec0712a30746f9a5c8332814b5485efd19768cabb88de",
+      "stored_sha256": "aeb2e40ae4e64a2b28c590929fab12101f3f83f9561e1a249f0c374b0fc3988d"
+    },
+    {
+      "file": "confidences.json.gz",
+      "original_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs/task_000/results/af3_missing_17b7471b4979f8a662f30e9a/seed-42_sample-2/confidences.json",
+      "original_sha256": "e09ca37dfc1608eac51a1cc1e69b7123a86909aa7b1c85a7eae6f748a715ab9b",
+      "stored_sha256": "e1723e81447cfefad0a178cab6a290672b2293a28f694ad43f256f43862a575c"
+    },
+    {
+      "file": "summary_confidences.json",
+      "original_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs/task_000/results/af3_missing_17b7471b4979f8a662f30e9a/seed-42_sample-2/summary_confidences.json",
+      "original_sha256": "fe3df4e1ffb85c96c26e275cc82cd8cef4c59745c146e11342d1d45c4e03b309",
+      "stored_sha256": "fe3df4e1ffb85c96c26e275cc82cd8cef4c59745c146e11342d1d45c4e03b309"
+    },
+    {
+      "file": "ranking_scores.csv",
+      "original_path": "/ssd/scxi253/frontier_multimodel_v1/execution_recovery_v1/af3_attempt2/runs/task_000/results/af3_missing_17b7471b4979f8a662f30e9a/ranking_scores.csv",
+      "original_sha256": "e7d46b5c16188744613a2913603e0f5c0a6251909850c65489f29e22d8a4bf06",
+      "stored_sha256": "e7d46b5c16188744613a2913603e0f5c0a6251909850c65489f29e22d8a4bf06"
+    }
+  ],
+  "purpose": "Real timestamp-only failure regression, not a benchmark"
+}

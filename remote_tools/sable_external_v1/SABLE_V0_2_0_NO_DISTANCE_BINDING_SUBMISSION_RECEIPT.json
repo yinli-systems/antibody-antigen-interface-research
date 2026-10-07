@@ -1,0 +1,22 @@
+{
+  "format_version": "sable_v0_2_0_no_distance_binding_submission_receipt_v1",
+  "submitted_at": "2026-08-29T20:18:27+08:00",
+  "job_id": 1491984,
+  "dependency": "afterok:1491875",
+  "partition": "gpu_4090",
+  "freezer_path": "/ssd/scxi253/model_deployment/tools/sable_external_v1/freeze_sable_v0_2_0_no_distance_checkpoint_binding_v1.py",
+  "freezer_sha256": "9be0b190f80df09fcf0033fe61c53fca4f2302afe3de862fa8b6a1a79c6dafd2",
+  "launcher_path": "/ssd/scxi253/model_deployment/tools/sable_external_v1/freeze_sable_v0_2_0_no_distance_checkpoint_binding_v1.sbatch",
+  "launcher_sha256": "0f0da5f13d9b257a8fdd5a255f1bdc9d40f3365409f475c6b0c0dece7138ee42",
+  "expected_no_distance_campaign_sha256": "9eddf93aca94c1018287620e3720f873ece3730d9e3fe85d340b372a9ef0b4d0",
+  "external_execution_plan_sha256": "d97f0b94863fe9227d80c5675e944091809245b8fab22a89cda81148a8de172a",
+  "expected_analysis_status": "PASS_PREDICTED_GEOMETRY_NO_BOUND_DISTANCE_AUXILIARY_DEVELOPMENT",
+  "expected_checkpoint_count": 6,
+  "performance_threshold_applied": false,
+  "task_labels_read": false,
+  "sable_bound_structures_downloaded": false,
+  "bound_label_opening_authorized": false,
+  "old_sabdab2_test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "selection_or_tuning": false
+}

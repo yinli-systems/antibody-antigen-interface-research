@@ -1,0 +1,715 @@
+[
+  {
+    "branch": "kevin/representation-ablation-v1",
+    "current_name": "kevin/representation-ablation-v1",
+    "source_sha": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+    "before": "6e80c6d44be531edd6f40404521ba4f087a81fd4",
+    "merge_commit": "73af0c096924618f8109c3052a83e9149a7b7519",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "abcite/multimodal-copilot",
+    "current_name": "abcite/multimodal-copilot",
+    "source_sha": "fb871f35678c4462074c0868a7738f1dc9483b05",
+    "before": "73af0c096924618f8109c3052a83e9149a7b7519",
+    "merge_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "feature/asep-pretraining-pipeline",
+    "current_name": "feature/asep-pretraining-pipeline",
+    "source_sha": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+    "before": "db743ef7ee9600ee91760d7f131ef1b015250798",
+    "conflict_paths": [
+      "scripts/sabdab2_interaction_first.py",
+      "src/interaction_first/metrics.py",
+      "src/interaction_first/model.py"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "3b16c85a2d984dd2017da9ef5d6960005f837209",
+    "resolution": "The older AsEP pretraining branch hard-replaces the selectable pair decoder with a MIPE head, introduces a manifest-mismatch bypass, and substitutes graph/solver/training behavior. Keep the newer representation-line shared runtime, strict split check, typed metric filtering, sensitivity-CI fix and solver defaults. Import its separate adapters, scripts and measured reports; preserve both shared-runtime variants byte-for-byte for exact source checkout rather than silently altering historical experiment semantics.",
+    "conflicts": [
+      {
+        "path": "scripts/sabdab2_interaction_first.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "scripts/sabdab2_interaction_first.py",
+            "git_blob": "9c97fe8c1dd72b1d25aa2595886974710afb49b4",
+            "sha256": "a4253636408f1c05cf11cef17db1ac9e7843488852b04e9bb2472ef7ca1939e9",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/scripts/sabdab2_interaction_first.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "scripts/sabdab2_interaction_first.py",
+            "git_blob": "e62f7ed1b7d5994249374509f39701d011359424",
+            "sha256": "b3d7ad6e9a94aadc35a754f025d706752c3ecd6483f1c7642a7e5e2ddb8fbd97",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/scripts/sabdab2_interaction_first.py"
+          }
+        ]
+      },
+      {
+        "path": "src/interaction_first/metrics.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "src/interaction_first/metrics.py",
+            "git_blob": "3adcbbb6339d659562373fa8732affd2037f9e1d",
+            "sha256": "f880b8dc4fdf749ee742d4f5580f44e8378972461a9ebbdb66f1514d002b781b",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/src/interaction_first/metrics.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "src/interaction_first/metrics.py",
+            "git_blob": "8956036613d370db4ccac221d38ee9fc4719e45b",
+            "sha256": "c0421302cf19c5921cfb0eca36cd350923e476a28b906be162903054eee18d7e",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/src/interaction_first/metrics.py"
+          }
+        ]
+      },
+      {
+        "path": "src/interaction_first/model.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "src/interaction_first/model.py",
+            "git_blob": "d3339a820fb5804e2649502217d0f53b58321064",
+            "sha256": "8262cecc5e854e3b5d61f2aca2c1efe7369186b2ecfb513fc38bc40bc55b9c13",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/src/interaction_first/model.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "src/interaction_first/model.py",
+            "git_blob": "d68e4d5be9b77295814384f16db5ebac0b23c1b0",
+            "sha256": "b752147a63bdad8cc8bf1d47d2fcee87299aa0b3d0cf3220c4e1061fa19ef043",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/src/interaction_first/model.py"
+          }
+        ]
+      },
+      {
+        "path": "src/interaction_first/__init__.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "src/interaction_first/__init__.py",
+            "git_blob": "8a7971222b191ff5173e8974cb10a9168afe4b73",
+            "sha256": "6890cf2769c3293df7613315aa52a927dc14d724ea35b5cfcc75eec7aa9b712a",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/src/interaction_first/__init__.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "src/interaction_first/__init__.py",
+            "git_blob": "b7cc6e64885b07e94f9acba678c3052669b5acc9",
+            "sha256": "a216c6d18816ebc029ef3acd6202a8a50aee8ccafcc551de01e70da80df77f3d",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/src/interaction_first/__init__.py"
+          }
+        ]
+      },
+      {
+        "path": "src/interaction_first/losses.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "src/interaction_first/losses.py",
+            "git_blob": "e641f292e00cede07652f375337e4f36168baa68",
+            "sha256": "baf01f4c6d8e949ff87729664921c7727c68d58ced9177c1354b2ea6267aa052",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/src/interaction_first/losses.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "src/interaction_first/losses.py",
+            "git_blob": "4d588fba83001ba153f7e0d151b3e06f975869b2",
+            "sha256": "853d6acf7e7377694b7bb73f172578e094c088d85165cbe0e24ffb649f373dfb",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/src/interaction_first/losses.py"
+          }
+        ]
+      },
+      {
+        "path": "src/interaction_first/v6_exact_separation_oracle.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "src/interaction_first/v6_exact_separation_oracle.py",
+            "git_blob": "2c25c41818cbe101a4ddbd66f030f3fc46e37d27",
+            "sha256": "902b838cf6ba7c39d51f774497f855a8bec455b7942804c8031f88e09c575cef",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/src/interaction_first/v6_exact_separation_oracle.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "src/interaction_first/v6_exact_separation_oracle.py",
+            "git_blob": "156d9e9ff594fe1d850570297f59a7ffb83bfa5d",
+            "sha256": "b445452592dfcb9dbc5c6525bccfc27da451b6d7ed6fbc0290a39560a491c7af",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/src/interaction_first/v6_exact_separation_oracle.py"
+          }
+        ]
+      },
+      {
+        "path": "src/interaction_first/v6_joint_ir.py",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "src/interaction_first/v6_joint_ir.py",
+            "git_blob": "e0aa8287a6a5a875a9e387a6895f53b5c379a0dd",
+            "sha256": "595043922213c0e5c95d6a8563e64decaa1d7783d1aa668c6e23e7a099b8fe32",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/src/interaction_first/v6_joint_ir.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "src/interaction_first/v6_joint_ir.py",
+            "git_blob": "7bc3197f7b6dc8db3f008b41915329a3ecd1016a",
+            "sha256": "9d654ca682c7d77a722875efebf8bfa52797548af9ee4fc212a62df91ceb52d0",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/src/interaction_first/v6_joint_ir.py"
+          }
+        ]
+      },
+      {
+        "path": "slurm/interaction_first_prepare_split.sbatch",
+        "selected": "current",
+        "selected_source_commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "db743ef7ee9600ee91760d7f131ef1b015250798",
+            "source_path": "slurm/interaction_first_prepare_split.sbatch",
+            "git_blob": "f137a7866bef500653d97bca6bd6425d0aa0ab73",
+            "sha256": "bf037b92d89d297d5fe2a88add8dcd611fd80beef59333d902d788f8f1250bee",
+            "preserved_path": "archive/branch_variants_20261007/db743ef7ee96/slurm/interaction_first_prepare_split.sbatch"
+          },
+          {
+            "role": "incoming",
+            "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+            "source_path": "slurm/interaction_first_prepare_split.sbatch",
+            "git_blob": "f76286f38f72544961ec53bbe6181d88b3924b5f",
+            "sha256": "9c2eb9339da32ae32af33a32fd3119f29858257c8a9036ed349f57f9d6b89c00",
+            "preserved_path": "archive/branch_variants_20261007/b730070e4d32/slurm/interaction_first_prepare_split.sbatch"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/geometry-gate-power-reanalysis-v1",
+    "current_name": "kevin/geometry-gate-power-reanalysis-v1",
+    "source_sha": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+    "before": "3b16c85a2d984dd2017da9ef5d6960005f837209",
+    "merge_commit": "59e7d2112211035dc1b4c39a3beaeda9fe051bac",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/geometry-powered-replication-v1",
+    "current_name": "kevin/geometry-powered-replication-v1",
+    "source_sha": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+    "before": "59e7d2112211035dc1b4c39a3beaeda9fe051bac",
+    "merge_commit": "f97da0955c1bdfa64429936e42264ba4b9a5505f",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/s2-split-readiness-v1",
+    "current_name": "kevin/s2-split-readiness-v1",
+    "source_sha": "053a0665cb4ccb9df5ce325df330ebae2fc4f973",
+    "before": "f97da0955c1bdfa64429936e42264ba4b9a5505f",
+    "merge_commit": "aaf17a2c826a4de1a54c7e25d4828c22481335a5",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/protocol-binding-ci-v1",
+    "current_name": "kevin/protocol-binding-ci-v1",
+    "source_sha": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+    "before": "aaf17a2c826a4de1a54c7e25d4828c22481335a5",
+    "conflict_paths": [
+      "README.md"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "b1af552d04f4d9fd78b60affb4d55ed734460a3f",
+    "resolution": "Preserve curated main landing page instead of replacing it with an older CI-focused README; merge all source-binding and portability-test implementation changes. Both README versions are archived.",
+    "conflicts": [
+      {
+        "path": "README.md",
+        "selected": "current",
+        "selected_source_commit": "aaf17a2c826a4de1a54c7e25d4828c22481335a5",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "aaf17a2c826a4de1a54c7e25d4828c22481335a5",
+            "source_path": "README.md",
+            "git_blob": "b47947500722579a225d02331e42821240a1a204",
+            "sha256": "7a02f5108df359e18a41a52c97b8cb14f842afd81d5d955242adfe9f30eeb7fe",
+            "preserved_path": "archive/branch_variants_20261007/aaf17a2c826a/README.md"
+          },
+          {
+            "role": "incoming",
+            "commit": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+            "source_path": "README.md",
+            "git_blob": "e5a59a3cb6e3fcff7d3955ec20097321fc5e0759",
+            "sha256": "0dfebd6ec958f77f81456149270e85c2b6a2d8ba6ad6a1166fde71a7568498dc",
+            "preserved_path": "archive/branch_variants_20261007/191a8b241d73/README.md"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/teacher-paper-handoff-20260903",
+    "current_name": "kevin/teacher-paper-handoff-20260903",
+    "source_sha": "54afd798700bc41ac1352065414d8687c9627871",
+    "before": "b1af552d04f4d9fd78b60affb4d55ed734460a3f",
+    "merge_commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/framecontact-multimodal-evidence-20260902",
+    "current_name": "kevin/framecontact-multimodal-evidence-20260902",
+    "source_sha": "27605737aea2b2a6c623c3f90711ec64dd626532",
+    "before": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+    "conflict_paths": [
+      "README.md",
+      "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+      "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "610c77665aeae0e901d1871bb5daa61bff143387",
+    "resolution": "Keep the corrected checkpoint-aligned main/teacher-handoff paper metrics and curated landing page. The earlier September2 snapshot has superseded presentation metrics. Its original JSON/CSV/README are retained byte-for-byte; all other evidence and implementation additions are merged.",
+    "conflicts": [
+      {
+        "path": "README.md",
+        "selected": "current",
+        "selected_source_commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+            "source_path": "README.md",
+            "git_blob": "b47947500722579a225d02331e42821240a1a204",
+            "sha256": "7a02f5108df359e18a41a52c97b8cb14f842afd81d5d955242adfe9f30eeb7fe",
+            "preserved_path": "archive/branch_variants_20261007/e93f44bf6429/README.md"
+          },
+          {
+            "role": "incoming",
+            "commit": "27605737aea2b2a6c623c3f90711ec64dd626532",
+            "source_path": "README.md",
+            "git_blob": "20829e342e560c4c8a203eacf4ec16378bb87d10",
+            "sha256": "8333b5e152a3f0aa30febb1fe560a529b52ca14f9466ab4d2b10961c73e468e2",
+            "preserved_path": "archive/branch_variants_20261007/27605737aea2/README.md"
+          }
+        ]
+      },
+      {
+        "path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+        "selected": "current",
+        "selected_source_commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+            "source_path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+            "git_blob": "20ab4e5886de216e24d695e33a36e153b74345c0",
+            "sha256": "2949908e7f819c8a2cb1fba78d7800cfc9d4957f9dab9abe00d4afbdb3a8b332",
+            "preserved_path": "archive/branch_variants_20261007/e93f44bf6429/paper/neurips_2026_framecontact/data/frozen_metrics.json"
+          },
+          {
+            "role": "incoming",
+            "commit": "27605737aea2b2a6c623c3f90711ec64dd626532",
+            "source_path": "paper/neurips_2026_framecontact/data/frozen_metrics.json",
+            "git_blob": "db2dc9126debe8bd0035086207e68dddd2f0526e",
+            "sha256": "ea2958cd5e47db6932ce4923a98a08e97c9cac6ac514a3b8821b8cd6e89e2f98",
+            "preserved_path": "archive/branch_variants_20261007/27605737aea2/paper/neurips_2026_framecontact/data/frozen_metrics.json"
+          }
+        ]
+      },
+      {
+        "path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+        "selected": "current",
+        "selected_source_commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "e93f44bf64290b470da0f51d9c372b690654bdfb",
+            "source_path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+            "git_blob": "ca3156ecf2bceacb277fc1e161dcf540abc74cd0",
+            "sha256": "7b10ae93047129170ca2079f9585bc16d1cb7412a13b7fa9a753f8b0ba0923ac",
+            "preserved_path": "archive/branch_variants_20261007/e93f44bf6429/paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv"
+          },
+          {
+            "role": "incoming",
+            "commit": "27605737aea2b2a6c623c3f90711ec64dd626532",
+            "source_path": "paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv",
+            "git_blob": "2ab00b37a36728ef0ab633544c88a7f74b2910f4",
+            "sha256": "e86f014109297af2bdf5c1cb3f2472579ca14b6470a26ccb240863b3fce7189f",
+            "preserved_path": "archive/branch_variants_20261007/27605737aea2/paper/neurips_2026_framecontact/data/latest_three_task_metrics_v1.csv"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/strict-dual-axis-retrieval-20260930",
+    "current_name": "kevin/strict-dual-axis-retrieval-20260930",
+    "source_sha": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+    "before": "610c77665aeae0e901d1871bb5daa61bff143387",
+    "conflict_paths": [
+      "README.md",
+      "extensions/execution_recovery_v1/af3.py",
+      "extensions/execution_recovery_v1/test_af3.py",
+      "extensions/frontier_multimodel_v1/reparank_same_protocol.py"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "62f4d127be70c7c128649215f9645df07b2bd800",
+    "resolution": "Retain curated README. Integrate the later lineage with official-style centering, exact-grid score reuse and explicit reused/fresh counts rather than the obsolete uncentered evaluator. Adopt the recovered AF3 input-schema/audit source with its tests as an intermediate lineage; the stronger full-semantic audit branch is merged next before validation/publication. Preserve every conflicting earlier source byte.",
+    "conflicts": [
+      {
+        "path": "README.md",
+        "selected": "current",
+        "selected_source_commit": "610c77665aeae0e901d1871bb5daa61bff143387",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "610c77665aeae0e901d1871bb5daa61bff143387",
+            "source_path": "README.md",
+            "git_blob": "b47947500722579a225d02331e42821240a1a204",
+            "sha256": "7a02f5108df359e18a41a52c97b8cb14f842afd81d5d955242adfe9f30eeb7fe",
+            "preserved_path": "archive/branch_variants_20261007/610c77665aea/README.md"
+          },
+          {
+            "role": "incoming",
+            "commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+            "source_path": "README.md",
+            "git_blob": "97da3b87150e27db1889a84b6cc278424d1ace3e",
+            "sha256": "12f33a136dadfb1f40d83628d92174888d3375bd965b7c9280f89ae102abce98",
+            "preserved_path": "archive/branch_variants_20261007/e9c253bace2e/README.md"
+          }
+        ]
+      },
+      {
+        "path": "extensions/execution_recovery_v1/af3.py",
+        "selected": "incoming",
+        "selected_source_commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "610c77665aeae0e901d1871bb5daa61bff143387",
+            "source_path": "extensions/execution_recovery_v1/af3.py",
+            "git_blob": "7ad112575c92be73d059e20aad880c8dd67b65e1",
+            "sha256": "43396aae158486c3287502388e991cd0c41ea417f8969c7fa51ca7107bdd7bc1",
+            "preserved_path": "archive/branch_variants_20261007/610c77665aea/extensions/execution_recovery_v1/af3.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+            "source_path": "extensions/execution_recovery_v1/af3.py",
+            "git_blob": "bb9a8cc9ff3a70dd2261b9bd36d97701a0cc2295",
+            "sha256": "0b584e4021ee444c4e575218a7d4a79d6b57e163c856dc34a3b7df272c008274",
+            "preserved_path": "archive/branch_variants_20261007/e9c253bace2e/extensions/execution_recovery_v1/af3.py"
+          }
+        ]
+      },
+      {
+        "path": "extensions/execution_recovery_v1/test_af3.py",
+        "selected": "incoming",
+        "selected_source_commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "610c77665aeae0e901d1871bb5daa61bff143387",
+            "source_path": "extensions/execution_recovery_v1/test_af3.py",
+            "git_blob": "16abc38c153b6534a576c17462037aa192320243",
+            "sha256": "9f48b57f52635e21c6bfd0f2a07a90b79cd3ccd8507dbcc52aada79dea3625f3",
+            "preserved_path": "archive/branch_variants_20261007/610c77665aea/extensions/execution_recovery_v1/test_af3.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+            "source_path": "extensions/execution_recovery_v1/test_af3.py",
+            "git_blob": "37c7c5a98f738bcc4c675524d8a1d607ecf3c0af",
+            "sha256": "ff2b9aa4efc700ac91face6458472331677b1763a94ec433e7f921e0e314ab30",
+            "preserved_path": "archive/branch_variants_20261007/e9c253bace2e/extensions/execution_recovery_v1/test_af3.py"
+          }
+        ]
+      },
+      {
+        "path": "extensions/frontier_multimodel_v1/reparank_same_protocol.py",
+        "selected": "incoming",
+        "selected_source_commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "610c77665aeae0e901d1871bb5daa61bff143387",
+            "source_path": "extensions/frontier_multimodel_v1/reparank_same_protocol.py",
+            "git_blob": "fe528c86ec0097751e3186a3da83f54508f90185",
+            "sha256": "b4bb57f5e999cba4284ae63b542019bb40628a8a42169773a297847b89a68eeb",
+            "preserved_path": "archive/branch_variants_20261007/610c77665aea/extensions/frontier_multimodel_v1/reparank_same_protocol.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+            "source_path": "extensions/frontier_multimodel_v1/reparank_same_protocol.py",
+            "git_blob": "22d3df82f2169baa5b7e66e510af1374123c1c44",
+            "sha256": "fe7b3c24b790112ee2d9652c195862302df8c4c5775d44a766be471a474b6404",
+            "preserved_path": "archive/branch_variants_20261007/e9c253bace2e/extensions/frontier_multimodel_v1/reparank_same_protocol.py"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/af3-semantic-audit-20260930",
+    "current_name": "kevin/af3-semantic-audit-20260930",
+    "source_sha": "859a7145bfb10bab87ca72a7dd1fbebe5d6a2399",
+    "before": "62f4d127be70c7c128649215f9645df07b2bd800",
+    "merge_commit": "b8605f474fd56f8607bb27e0b98c0d30bbabd1e6",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/execution-recovery-20260930",
+    "current_name": "kevin/execution-recovery-20260930",
+    "source_sha": "a5729c49e5d32fc05cd09a10f824a7cc6974fb6b",
+    "before": "b8605f474fd56f8607bb27e0b98c0d30bbabd1e6",
+    "conflict_paths": [
+      "extensions/execution_recovery_v1/af3.py"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "8cc91e932e35712509cc125d53cd4bc3d111a862",
+    "resolution": "Retain the stronger semantic-audit implementation: duplicate-CIF-key rejection, valid timestamp parsing, finite occupancy/pLDDT, integer residue IDs, atom-topology and confidence/CIF consistency. The execution-recovery branch omits these stricter checks. Its finalization tooling and documentation merge normally; both af3.py versions are preserved and historical executions remain pinned.",
+    "conflicts": [
+      {
+        "path": "extensions/execution_recovery_v1/af3.py",
+        "selected": "current",
+        "selected_source_commit": "b8605f474fd56f8607bb27e0b98c0d30bbabd1e6",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "b8605f474fd56f8607bb27e0b98c0d30bbabd1e6",
+            "source_path": "extensions/execution_recovery_v1/af3.py",
+            "git_blob": "64becb7dde619c3b2442032855565e5aed337b44",
+            "sha256": "6e4111bd8be3956bc22af167fd2c1b3dbb9f1dfc6d9ea86e51d1546486511d32",
+            "preserved_path": "archive/branch_variants_20261007/b8605f474fd5/extensions/execution_recovery_v1/af3.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "a5729c49e5d32fc05cd09a10f824a7cc6974fb6b",
+            "source_path": "extensions/execution_recovery_v1/af3.py",
+            "git_blob": "11829f868e1c54194e44c465bfec14f4ef327ebe",
+            "sha256": "87e368c6fa0edad73c844f1835f4a0687b1f5e699c451e2c947e9c983b8972f5",
+            "preserved_path": "archive/branch_variants_20261007/a5729c49e5d3/extensions/execution_recovery_v1/af3.py"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/partner-retrieval-20260930",
+    "current_name": "kevin/partner-retrieval-20260930",
+    "source_sha": "c9bcb012795e743909376353b2cc450db83866cd",
+    "before": "8cc91e932e35712509cc125d53cd4bc3d111a862",
+    "merge_commit": "74a8fdc5c298cca46245116a91c5563836fb40eb",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/reparank-structure-resume-20260930",
+    "current_name": "kevin/reparank-structure-resume-20260930",
+    "source_sha": "2bf3f7b3bc2cf9ff54aeb294e29291f76378f4e3",
+    "before": "74a8fdc5c298cca46245116a91c5563836fb40eb",
+    "merge_commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/rescue-gating-20260930",
+    "current_name": "kevin/rescue-gating-20260930",
+    "source_sha": "bd3879384aa8ba30ef859c14b13af056f141654f",
+    "before": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+    "conflict_paths": [
+      "extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md",
+      "extensions/rescue_qualification_v2/gated_rescue.py",
+      "extensions/rescue_qualification_v2/test_gated_rescue.py"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "8f643b72db5ad410a7aa182cdfecef275c530fe3",
+    "resolution": "Keep the later frozen qualification source (f87cc9b,17:08) and matching protocol/tests as the canonical version rather than reverting to the earlier alternate gate implementation (bd38793,15:58). Preserve both variants byte-for-byte; no gate algorithm is synthesized or executed during this merge.",
+    "conflicts": [
+      {
+        "path": "extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md",
+        "selected": "current",
+        "selected_source_commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+            "source_path": "extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md",
+            "git_blob": "3ae24b0e162bb16585b7ade1880712ea76564ff1",
+            "sha256": "3cdb3ec7c12174e3b6ac235beb4d26f4a03f79d7cf826b9a0b60768536adc089",
+            "preserved_path": "archive/branch_variants_20261007/14526474be2c/extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md"
+          },
+          {
+            "role": "incoming",
+            "commit": "bd3879384aa8ba30ef859c14b13af056f141654f",
+            "source_path": "extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md",
+            "git_blob": "76af5ef0f4faebae5ea3cc29f4f270a5b0604ea0",
+            "sha256": "f09274cac19a638099ba8054dadd87a5463bf1c48298e28d89b710ae13f92286",
+            "preserved_path": "archive/branch_variants_20261007/bd3879384aa8/extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md"
+          }
+        ]
+      },
+      {
+        "path": "extensions/rescue_qualification_v2/gated_rescue.py",
+        "selected": "current",
+        "selected_source_commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+            "source_path": "extensions/rescue_qualification_v2/gated_rescue.py",
+            "git_blob": "1ee421f467d1528ef68db8674723d605a3b4f6e4",
+            "sha256": "6d7bb4665229a64237d2125e734a617899d33c5f792f65a26596bb8e107314dc",
+            "preserved_path": "archive/branch_variants_20261007/14526474be2c/extensions/rescue_qualification_v2/gated_rescue.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "bd3879384aa8ba30ef859c14b13af056f141654f",
+            "source_path": "extensions/rescue_qualification_v2/gated_rescue.py",
+            "git_blob": "9d1f35eba0f149ef9a2130253a9ce485625e2f66",
+            "sha256": "a6f531ede1a0f49ca6691e072dd89dee1cb792372fea6f123ebfbaa34a365a86",
+            "preserved_path": "archive/branch_variants_20261007/bd3879384aa8/extensions/rescue_qualification_v2/gated_rescue.py"
+          }
+        ]
+      },
+      {
+        "path": "extensions/rescue_qualification_v2/test_gated_rescue.py",
+        "selected": "current",
+        "selected_source_commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "14526474be2c47e16b8ea6c841ddcf6b3c008c1b",
+            "source_path": "extensions/rescue_qualification_v2/test_gated_rescue.py",
+            "git_blob": "2cf76275c230fbba747dabaf2094b73d98857682",
+            "sha256": "e66cbcac8f7332edda5fbea08adbf9990850d3edaa86a0317002249cae36e751",
+            "preserved_path": "archive/branch_variants_20261007/14526474be2c/extensions/rescue_qualification_v2/test_gated_rescue.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "bd3879384aa8ba30ef859c14b13af056f141654f",
+            "source_path": "extensions/rescue_qualification_v2/test_gated_rescue.py",
+            "git_blob": "6429a6599c6c69b76719cbf7a353dd9665da1e7d",
+            "sha256": "942bde53ed92623a038f9f7bfb447d110a78a53547c92f3a6bc8658aba0d0a4d",
+            "preserved_path": "archive/branch_variants_20261007/bd3879384aa8/extensions/rescue_qualification_v2/test_gated_rescue.py"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/strict-partner-retrieval-20260930",
+    "current_name": "kevin/strict-partner-retrieval-20260930",
+    "source_sha": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+    "before": "8f643b72db5ad410a7aa182cdfecef275c530fe3",
+    "conflict_paths": [
+      "extensions/strict_partner_retrieval_v1/h0.py",
+      "extensions/strict_partner_retrieval_v1/models.py"
+    ],
+    "merge_exit": 1,
+    "merge_commit": "ebe9464dc13ab1586a3310252f573baad1d09231",
+    "resolution": "The two strict-retrieval branches implement different public class interfaces. Keep the split/training-line models.py for its existing callers; preserve the independent matched-budget contract implementation for a separate contract_models.py namespace and unchanged synthetic tests apart from their import path. h0 differs only by trailing whitespace, so take the later formatted file. Do not blend model architectures or claim either experiment completed.",
+    "conflicts": [
+      {
+        "path": "extensions/strict_partner_retrieval_v1/models.py",
+        "selected": "current",
+        "selected_source_commit": "8f643b72db5ad410a7aa182cdfecef275c530fe3",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "8f643b72db5ad410a7aa182cdfecef275c530fe3",
+            "source_path": "extensions/strict_partner_retrieval_v1/models.py",
+            "git_blob": "03f6d325bc8c3d54cd70398d667016de9a1acb72",
+            "sha256": "533b418b50016deffd860ee93c5e175b1f88b48e8861922e33a9a96ff69f23a8",
+            "preserved_path": "archive/branch_variants_20261007/8f643b72db5a/extensions/strict_partner_retrieval_v1/models.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+            "source_path": "extensions/strict_partner_retrieval_v1/models.py",
+            "git_blob": "8f2eef4571f2982c0d70b5d92c10e5d5f2d3b8dd",
+            "sha256": "0057ba30f48f10c55194f8b3c1ec551dce284776eae8b5e62b440986acf96bf2",
+            "preserved_path": "archive/branch_variants_20261007/fdc2db39bd9f/extensions/strict_partner_retrieval_v1/models.py"
+          }
+        ]
+      },
+      {
+        "path": "extensions/strict_partner_retrieval_v1/h0.py",
+        "selected": "incoming",
+        "selected_source_commit": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+        "preserved": [
+          {
+            "role": "current",
+            "commit": "8f643b72db5ad410a7aa182cdfecef275c530fe3",
+            "source_path": "extensions/strict_partner_retrieval_v1/h0.py",
+            "git_blob": "e6bda11c9c0bd06c97ea98e270fe5bf6eafac888",
+            "sha256": "e3356eea3dd8d3a79bb93b51134dd5f8ed7fd07ede6bf18d608104b2e357c6e7",
+            "preserved_path": "archive/branch_variants_20261007/8f643b72db5a/extensions/strict_partner_retrieval_v1/h0.py"
+          },
+          {
+            "role": "incoming",
+            "commit": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+            "source_path": "extensions/strict_partner_retrieval_v1/h0.py",
+            "git_blob": "9e74f184d1b33a4cd3204485eb1b9a37f71d3283",
+            "sha256": "1d37092b95925eb5f7aae872ed2468c546626df40ffba1b1580295a20f8d02d5",
+            "preserved_path": "archive/branch_variants_20261007/fdc2db39bd9f/extensions/strict_partner_retrieval_v1/h0.py"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "branch": "kevin/structural-plm-final-20260930",
+    "current_name": "kevin/structural-plm-final-20260930",
+    "source_sha": "96864049bdb935d14a4439c3f048231f59e78bee",
+    "before": "88b9bab2034d87fb5a7c1885d4a6e904677e2e63",
+    "merge_commit": "1a48c68d5edc394eb1822dfd8428efcba727f49f",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  },
+  {
+    "branch": "kevin/epic-reviewer-response-20260930",
+    "current_name": "kevin/epic-camera-ready-20260930",
+    "source_sha": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+    "before": "1a48c68d5edc394eb1822dfd8428efcba727f49f",
+    "merge_commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+    "resolution": "clean three-way merge",
+    "conflicts": []
+  }
+]

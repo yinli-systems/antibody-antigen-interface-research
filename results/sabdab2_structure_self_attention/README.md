@@ -124,6 +124,11 @@ confirmatory protocol and cannot satisfy that requirement retroactively.
 - `FINAL_GEOMETRY_RESEARCH_REPORT.md`: literature synthesis, implementation
   rationale, complete evidence interpretation, and the next partner-specific
   experiment.
+- `GEOMETRY_GATE_POWER_ANALYSIS_V1.md` / `.json`: non-authorizing design
+  analysis of the gate itself -- statistical power, minimum detectable effect,
+  the exact replicate count the sign criterion requires, and an audit of the
+  recorded multiplicity adjustment. It supersedes no result and does not change
+  the recorded gate outcome; it states what the design could have detected.
 
 ## Claim boundary
 

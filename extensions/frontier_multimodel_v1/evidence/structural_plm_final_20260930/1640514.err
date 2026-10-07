@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/source_exact_3eb4293/extensions/frontier_multimodel_v1/aggregate_structural_training.py", line 279, in <module>
+    main()
+  File "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/source_exact_3eb4293/extensions/frontier_multimodel_v1/aggregate_structural_training.py", line 163, in main
+    "best": metric_snapshot(best), "last": metric_snapshot(last),
+  File "/ssd/scxi253/frontier_multimodel_v1/structural_training_v1/source_exact_3eb4293/extensions/frontier_multimodel_v1/aggregate_structural_training.py", line 101, in metric_snapshot
+    "partner_mrr": float(evaluation["partner_retrieval"]["mrr"]),
+KeyError: 'mrr'

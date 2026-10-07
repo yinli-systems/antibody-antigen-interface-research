@@ -1,0 +1,62 @@
+{
+  "output": "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/audit_20260930/THREE_ARM_AUDIT.json",
+  "sha256": "71565a269de5102a633a94db3f05cae181a82b90a38397297ac0786746ed586a",
+  "centered_minus_uncentered_ap": {
+    "equal_complex": 0.005270594664053366,
+    "equal_component": 0.0041419431547192855,
+    "component_bootstrap_ci95": [
+      -0.0035064530646665357,
+      0.011360105568491869
+    ],
+    "positive_complex_fraction": 0.6267281105990783,
+    "positive_component_fraction": 0.6176470588235294,
+    "complex_q10_q50_q90": [
+      -0.0021283149269954596,
+      0.0001113355646884574,
+      0.0108514569882885
+    ],
+    "complex_min_max": [
+      -0.17320309902294226,
+      0.29696315577658544
+    ]
+  },
+  "centered_minus_sequence_ap": {
+    "equal_complex": -0.021794168230946664,
+    "equal_component": -0.02683843338374377,
+    "component_bootstrap_ci95": [
+      -0.043917513595866424,
+      -0.011822818322353426
+    ],
+    "positive_complex_fraction": 0.35023041474654376,
+    "positive_component_fraction": 0.27941176470588236,
+    "complex_q10_q50_q90": [
+      -0.12606706719221747,
+      -0.0013182564853378583,
+      0.017511101315608138
+    ],
+    "complex_min_max": [
+      -0.5337570007790122,
+      0.2341604824944321
+    ]
+  },
+  "pooled_diag": {
+    "uncentered": {
+      "raw_ap": 0.0028956413841824493,
+      "within_complex_percentile_ap": 0.0032368271104907444,
+      "within_complex_z_ap": 0.003249492609682115,
+      "score_mean_vs_pair_count_spearman": 0.09787855282163258,
+      "score_mean_vs_prevalence_spearman": -0.022440330346473976,
+      "score_std_vs_pair_count_spearman": -0.2227620976322225,
+      "role": "post_hoc_calibration_diagnostic_not_registered_endpoint"
+    },
+    "centered": {
+      "raw_ap": 0.0023662535231304227,
+      "within_complex_percentile_ap": 0.004147137583342826,
+      "within_complex_z_ap": 0.003981539018025081,
+      "score_mean_vs_pair_count_spearman": -0.005630985644070197,
+      "score_mean_vs_prevalence_spearman": 0.010421011456607985,
+      "score_std_vs_pair_count_spearman": -0.08600253791478683,
+      "role": "post_hoc_calibration_diagnostic_not_registered_endpoint"
+    }
+  }
+}

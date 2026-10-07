@@ -1,0 +1,27 @@
+{
+  "failed_job_id": 1528842,
+  "failure_type": "GPU_NODE_MEMORY_TIER_OOM_BEFORE_FIRST_UPDATE",
+  "format_version": "abpairfm_3b_stage_a0_execution_failure_v1",
+  "input_checkpoint_content_sha256": "be22eb1889dd4f15b3d2c2ad449cb5084bde91435dd8d4d392f9295d6f10f839",
+  "input_generation": "segment-000130",
+  "observed_gpu_memory_total_mib": 23028,
+  "recovery_boundary": {
+    "data_changed": false,
+    "global_batch_changed": false,
+    "model_changed": false,
+    "objective_changed": false,
+    "optimizer_changed": false,
+    "protocol_changed": false,
+    "retry_excludes_confirmed_low_memory_nodes": [
+      "wqd10naf05g3",
+      "wqd10naf05g5"
+    ]
+  },
+  "segment_index": 131,
+  "status": "FAIL_CLOSED_NO_RESULT_PROGRESS_OR_CHECKPOINT_PUBLISHED",
+  "stderr_sha256": "4dd5b3e49f9be018fe345fb281cf5889b6c97c14e6ceff77f0ee7a82a8efa56c",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "test_access": false,
+  "updates_completed": 0,
+  "utilization_log_sha256": "ff1d96ca255f84418b66483fd32d00a41d753b8129f044a05b6e066515ede28c"
+}

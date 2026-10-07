@@ -1,0 +1,11 @@
+{
+  "status": "PASS_R1_R2_PARAMETER_AND_INITIAL_STATE_PARITY",
+  "parameter_count": 3397378,
+  "named_parameter_count": 80,
+  "state_dict_key_count": 81,
+  "r1_state_sha256": "371b5da11a29a888ccf457e8c16692eaec0ffa5fbfc46c56b5d4f0803aa7a02f",
+  "r2_state_sha256": "371b5da11a29a888ccf457e8c16692eaec0ffa5fbfc46c56b5d4f0803aa7a02f",
+  "state_equal": true,
+  "contact_head_present_in_both": true,
+  "contact_labels_read_by_R1": false
+}

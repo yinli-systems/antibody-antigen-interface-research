@@ -1,0 +1,15 @@
+inferred missing 25/191
+inferred missing 50/191
+inferred missing 75/191
+inferred missing 100/191
+inferred missing 125/191
+inferred missing 150/191
+inferred missing 175/191
+inferred missing 191/191
+{
+  "status": "COMPLETE_EXPOSED_PRETRAINED_VALIDATION_DIAGNOSTIC",
+  "instance_count": 217,
+  "macro_AP": 0.010743028313629863,
+  "reused": 26,
+  "new": 191
+}

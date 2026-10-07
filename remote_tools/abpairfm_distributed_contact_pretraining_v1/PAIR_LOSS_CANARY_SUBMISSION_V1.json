@@ -1,0 +1,24 @@
+{
+  "analyzer_job_id": 1530561,
+  "array_job_id": 1530560,
+  "arms": {
+    "0": "adaptive_balanced_control",
+    "1": "balanced_focal"
+  },
+  "checkpoint_content_sha256": "be22eb1889dd4f15b3d2c2ad449cb5084bde91435dd8d4d392f9295d6f10f839",
+  "checkpoint_generation": "segment-000130",
+  "format_version": "abpairfm_pair_loss_canary_submission_v1",
+  "protocol_sha256": {
+    "adaptive_balanced_control": "b4dd3ab8cabe9889204c5b32c0c8d24db2f8629c03d2f5880e34ff4f222e10f1",
+    "balanced_focal": "ea5c0dbb216df312efd93fb585654bd3ceb10cfeda35ba9c0f963f3aa0f96249"
+  },
+  "remote_source_root": "/ssd/scxi253/model_deployment/abpairfm_pair_loss_canary_v1/source",
+  "source_sha256": "b47eff405951c07c08feaf6b4928e0daea040617356ae729b71619fd301aff4c",
+  "submitted_at_utc": "2026-09-01T02:33:54Z",
+  "systems": {
+    "gpus_per_arm": 4,
+    "partition": "gpu_4090",
+    "precision": "BF16_forward_backward_FP32_optimizer"
+  },
+  "test_access": false
+}

@@ -1,0 +1,42 @@
+{
+  "recorded_utc": "2026-09-30T09:08:06.437841+00:00",
+  "af3_complete_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "af3_failed_ids": [],
+  "af3_started_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "squeue": "                 JOBID                         NAME      STATE         TIME NODELIST(REASON)\n      1641712_[9-39%4]             ab-af3r-397193cd    PENDING         0:00 (Priority)\n               1641627          ab-layer-schema-fix    PENDING         0:00 (Dependency)\n     1640503_[18-35%6]             struct-plm-train    PENDING         0:00 (JobArrayTaskLimit)\n               1640514           struct-plm-analyze    PENDING         0:00 (Dependency)\n             1641712_8             ab-af3r-397193cd    RUNNING         0:08 wqd10naf05g2\n             1641712_7             ab-af3r-397193cd    RUNNING         1:38 wqd10naf05g2\n             1641712_6             ab-af3r-397193cd    RUNNING         2:08 wqd10naf06g3\n            1640503_17             struct-plm-train    RUNNING      1:05:13 wqd10naf13g1\n            1640503_15             struct-plm-train    RUNNING      1:09:13 wqd10naf05g2\n            1640503_16             struct-plm-train    RUNNING      1:09:13 wqd10naf06g3\n            1640503_14             struct-plm-train    RUNNING      1:09:43 wqd10nae09g3\n            1640503_13             struct-plm-train    RUNNING      1:10:43 wqd10naf06g3\n            1640503_12             struct-plm-train    RUNNING      1:14:14 wqd10naf05g8\n",
+  "sacct": "1640503_0|struct-plm-train|COMPLETED|0:0|02:36:35\n1640503_1|struct-plm-train|COMPLETED|0:0|02:36:57\n1640503_2|struct-plm-train|COMPLETED|0:0|02:37:13\n1640503_3|struct-plm-train|COMPLETED|0:0|02:39:56\n1640503_4|struct-plm-train|COMPLETED|0:0|02:34:12\n1640503_5|struct-plm-train|COMPLETED|0:0|02:33:50\n1640503_6|struct-plm-train|COMPLETED|0:0|02:40:34\n1640503_7|struct-plm-train|COMPLETED|0:0|02:40:01\n1640503_8|struct-plm-train|COMPLETED|0:0|02:32:50\n1640503_9|struct-plm-train|COMPLETED|0:0|02:35:56\n1640503_10|struct-plm-train|COMPLETED|0:0|02:36:32\n1640503_11|struct-plm-train|COMPLETED|0:0|02:38:28\n1640503_12|struct-plm-train|RUNNING|0:0|01:14:14\n1640503_13|struct-plm-train|RUNNING|0:0|01:10:43\n1640503_14|struct-plm-train|RUNNING|0:0|01:09:43\n1640503_15|struct-plm-train|RUNNING|0:0|01:09:13\n1640503_16|struct-plm-train|RUNNING|0:0|01:09:13\n1640503_17|struct-plm-train|RUNNING|0:0|01:05:13\n1640503_[18-35%6]|struct-plm-train|PENDING|0:0|00:00:00\n1640514|struct-plm-analyze|PENDING|0:0|00:00:00\n1641627|ab-layer-schema-fix|PENDING|0:0|00:00:00\n1641712_1|ab-af3r-397193cd|COMPLETED|0:0|00:02:40\n1641712_2|ab-af3r-397193cd|COMPLETED|0:0|00:03:00\n1641712_3|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_4|ab-af3r-397193cd|COMPLETED|0:0|00:02:23\n1641712_5|ab-af3r-397193cd|COMPLETED|0:0|00:02:20\n1641712_6|ab-af3r-397193cd|RUNNING|0:0|00:02:08\n1641712_7|ab-af3r-397193cd|RUNNING|0:0|00:01:38\n1641712_8|ab-af3r-397193cd|RUNNING|0:0|00:00:08\n1641712_[9-39%4]|ab-af3r-397193cd|PENDING|0:0|00:00:00\n",
+  "formal_sweep_completed_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "formal_sweep_failure_files": [],
+  "new_job_submissions_in_this_review": 0,
+  "protected_jobs_modified": false
+}

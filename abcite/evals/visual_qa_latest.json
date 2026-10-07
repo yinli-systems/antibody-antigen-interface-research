@@ -1,0 +1,153 @@
+{
+  "protocol": "visual_qa",
+  "n_gallery": 15949,
+  "n_queries": 295,
+  "n_answerable": 273,
+  "n_caption_bm25_should_fail": 273,
+  "encoder": "colqwen2",
+  "rerank_k": 50,
+  "caption_bm25": {
+    "recall@1": 0.0,
+    "recall@5": 0.0,
+    "recall@10": 0.0,
+    "ndcg@5": 0.0,
+    "n": 273
+  },
+  "clip_image_only": {
+    "recall@1": 0.0733,
+    "recall@5": 0.1795,
+    "recall@10": 0.2125,
+    "ndcg@5": 0.1298,
+    "n": 273
+  },
+  "vision_rerank": {
+    "recall@1": 0.0073,
+    "recall@5": 0.0256,
+    "recall@10": 0.033,
+    "ndcg@5": 0.0168,
+    "n": 273
+  },
+  "fusion": {
+    "recall@1": 0.0073,
+    "recall@5": 0.033,
+    "recall@10": 0.1099,
+    "ndcg@5": 0.0191,
+    "n": 273
+  },
+  "caption_bm25_should_fail_subset": {
+    "recall@1": 0.0,
+    "recall@5": 0.0,
+    "recall@10": 0.0,
+    "ndcg@5": 0.0,
+    "n": 273
+  },
+  "vision_should_fail_subset": {
+    "recall@1": 0.0733,
+    "recall@5": 0.1795,
+    "recall@10": 0.2125,
+    "ndcg@5": 0.1298,
+    "n": 273
+  },
+  "fusion_default": "off",
+  "vqa": {
+    "n": 295,
+    "end_to_end_accuracy": 0.0949,
+    "oracle_figure_accuracy": 0.6034,
+    "cite_top1": 0.0733,
+    "abstain_accuracy": 0.7273,
+    "n_abstain": 22,
+    "gold_answer_overlap_e2e": 0.1013,
+    "gold_answer_overlap_oracle": 0.0661,
+    "path": "extractive/heuristic pixel cues; not a VLM",
+    "vlm_skip": null,
+    "not_vidore": true,
+    "not_maxsim": true,
+    "scored": true
+  },
+  "mean_gap_image_i2i": 0.178737,
+  "mean_gap_clip_text_to_image": 0.332475,
+  "note": "Primary multimodal task: visual figure QA + pixel retrieval. Query is a visual question (panel layout, stain, gel bands, colors, arrows, microscopy type), not the figure caption. Gold figure is unique. caption_bm25_should_fail items have \u22641 content-token overlap with the caption. Vision column is T\u2192I over pixels; captions never enter encode_image. Retrieval R@K is not VQA and not ViDoRe. VQA is cite-or-abstain given the retrieved figure (extractive/heuristic pixel cues; not a VLM).",
+  "vision_beats_bm25_r@1": true,
+  "vision_beats_bm25_ndcg@5": true,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "four_column": {
+    "caption_bm25": {
+      "recall@1": 0.0,
+      "recall@5": 0.0,
+      "recall@10": 0.0,
+      "ndcg@5": 0.0,
+      "n": 273
+    },
+    "biomedclip_t2i": {
+      "recall@1": 0.0403,
+      "recall@5": 0.0842,
+      "recall@10": 0.1136,
+      "ndcg@5": 0.0623,
+      "n": 273
+    },
+    "openclip_t2i": {
+      "recall@1": 0.0147,
+      "recall@5": 0.0623,
+      "recall@10": 0.0916,
+      "ndcg@5": 0.04,
+      "n": 273
+    },
+    "colpali_t2i": {
+      "recall@1": 0.0733,
+      "recall@5": 0.1795,
+      "recall@10": 0.2125,
+      "ndcg@5": 0.1298,
+      "n": 273
+    },
+    "vqa": {
+      "n": 295,
+      "end_to_end_accuracy": 0.0949,
+      "oracle_figure_accuracy": 0.6034,
+      "cite_top1": 0.0733,
+      "abstain_accuracy": 0.7273,
+      "n_abstain": 22,
+      "gold_answer_overlap_e2e": 0.1013,
+      "gold_answer_overlap_oracle": 0.0661,
+      "path": "extractive/heuristic pixel cues; not a VLM",
+      "vlm_skip": null,
+      "not_vidore": true,
+      "not_maxsim": true,
+      "scored": true
+    },
+    "n_answerable": 273,
+    "n_gallery": 15949,
+    "same_gold": true,
+    "clip_npy": "embeddings-clip-vit-b-32-n15949.npy and embeddings-biomedclip-n15949.npy hit",
+    "colqwen2_npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode",
+    "maxsim": "GPU n_q=273 n_d=15949",
+    "bm25_leak_fix": "rewrote vqa-pmc-02280 (dropped haplotype) and vqa-pmc-00657 (dropped panoramic)",
+    "vision_beats_bm25_r@1": true,
+    "vision_beats_bm25_ndcg@5": true
+  },
+  "colpali_t2i": {
+    "recall@1": 0.0733,
+    "recall@5": 0.1795,
+    "recall@10": 0.2125,
+    "ndcg@5": 0.1298,
+    "n": 273
+  },
+  "colpali_encoder": "colqwen2",
+  "openclip_t2i": {
+    "recall@1": 0.0147,
+    "recall@5": 0.0623,
+    "recall@10": 0.0916,
+    "ndcg@5": 0.04,
+    "n": 273
+  },
+  "biomedclip_t2i": {
+    "recall@1": 0.0403,
+    "recall@5": 0.0842,
+    "recall@10": 0.1136,
+    "ndcg@5": 0.0623,
+    "n": 273
+  },
+  "maxsim": "GPU n_q=273 n_d=15949",
+  "npz": "embeddings-colqwen2-n15949.npz hit; no 16k re-encode",
+  "query_prefix": "Query: ",
+  "skipped_clip_columns": false
+}

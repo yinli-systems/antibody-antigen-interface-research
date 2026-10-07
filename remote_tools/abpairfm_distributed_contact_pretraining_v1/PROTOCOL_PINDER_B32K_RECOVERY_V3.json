@@ -1,0 +1,86 @@
+{
+  "authorization": {
+    "B32K_training": true,
+    "B500K_training": false,
+    "antibody_adaptation": false,
+    "external_test_access": false
+  },
+  "checkpoint": {
+    "consumed_residue_tokens": 2054510881,
+    "content_sha256": "71c6b345d251a350b2299884f7576b989413b40ec7f40fea31eb2f30d1c00e2c",
+    "generation": "segment-000129"
+  },
+  "claim_boundary": "Two-epoch B32K biological pretraining on authenticated PINDER-Train residue-pair labels. The frozen 512-PDB train-only holdout is excluded from gradient updates and supports promotion within this stage only. This protocol does not authorize PINDER validation/test, antibody adaptation, external-test access, or state-of-the-art claims.",
+  "data": {
+    "contact_definition": "minimum inter-chain non-hydrogen atom distance <= 4.5 Angstrom",
+    "evaluation_groups": 64,
+    "holdout": "512 deterministic PDB-disjoint train-only representatives, excluded from gradient updates",
+    "holdout_systems": 512,
+    "manifest_receipt_sha256": "b8b18478f21ba46542b727af68fe1cbe5cf711e86b68a3c106cd4a8a8ec1034a",
+    "manifest_sha256": "9f76bb32b2022599225cca686017d92f119eec3d4183e11782a720445cca6637",
+    "model_inputs": ["resolved_left_sequence", "resolved_right_sequence"],
+    "model_inputs_exclude": ["coordinates", "distances", "contact_labels"],
+    "source_partition": "PINDER-Train",
+    "system_weight_mean": 11.643417937109827,
+    "systems": 32768
+  },
+  "format_version": "abpairfm_pinder_b32k_v1",
+  "loss": {
+    "epitope_marginal_weight": 0.2,
+    "hard_negative_temperature": 0.5,
+    "marginal_temperature": 0.25,
+    "masked_language_modeling_weight": 0.25,
+    "pair_contact_weight": 1.0,
+    "paratope_marginal_weight": 0.2,
+    "partner_swap_weight": 0.2
+  },
+  "model": {
+    "architecture": "PairAwareESM2_3B",
+    "pair_decoder": "symmetric_low_rank",
+    "pair_dimension": 128,
+    "trainable_top_layers": 8
+  },
+  "optimization": {
+    "accumulation_steps": 4,
+    "backbone_learning_rate": 0.000001,
+    "betas": [0.9, 0.98],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "minimum_learning_rate_ratio": 0.1,
+    "optimizer": "fused_AdamW",
+    "scheduler": "linear_warmup_cosine_decay",
+    "systems_per_rank": 1,
+    "updates": 2048,
+    "warmup_updates": 128,
+    "weight_decay": 0.01
+  },
+  "promotion": {
+    "exact_DCP_restore_required": true,
+    "finite_all_terms_required": true,
+    "maximum_peak_memory_fraction": 0.9,
+    "require_contact_ap_above_prevalence": true,
+    "require_contact_ap_non_decrease": true,
+    "require_matched_minus_swapped_positive": true
+  },
+  "source_sha256": "64f63449b78629b02f1382562a66f9e231701a73e2532686ef1585fbac765810",
+  "stage": {
+    "fail_status": "FAIL_B32K_PROMOTION_GATE",
+    "name": "B32K",
+    "output_generation": "b32k-002048",
+    "pass_status": "PASS_B32K_PAIR_CONTACT_PRETRAINING",
+    "progress_format": "abpairfm_pinder_b32k_progress_v1",
+    "result_format": "abpairfm_pinder_b32k_result_v1"
+  },
+  "status": "FROZEN_B32K_AUTHORIZED",
+  "systems": {
+    "activation_checkpointing": false,
+    "attention": "native_variable_length_flash_sdpa",
+    "execution": "eager_reference",
+    "length_bucketed_eight_rank_groups": true,
+    "partition": "gpu_4090",
+    "precision": "BF16_forward_backward_FP32_optimizer",
+    "sharding": "FSDP2_single_node_full_shard",
+    "world_size": 8
+  },
+  "test_access": false
+}

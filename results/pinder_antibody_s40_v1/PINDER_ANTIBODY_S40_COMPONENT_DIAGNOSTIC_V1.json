@@ -1,0 +1,62 @@
+{
+  "authorized_for_model_selection": false,
+  "authorized_for_training": false,
+  "axis_results": {
+    "antibody": {
+      "component_count": 3,
+      "feasible_subset_sum_count": 0,
+      "feasible_subset_sum_exists": false,
+      "largest_component_fixed_to_train": true,
+      "largest_component_unique_pair_degree": 2716,
+      "maximum_feasible_subset_sum": null,
+      "minimum_feasible_subset_sum": null,
+      "nearest_reachable_above_maximum": null,
+      "nearest_reachable_below_minimum": 2
+    },
+    "antigen": {
+      "component_count": 605,
+      "feasible_subset_sum_count": 272,
+      "feasible_subset_sum_exists": true,
+      "largest_component_fixed_to_train": false,
+      "largest_component_unique_pair_degree": 407,
+      "maximum_feasible_subset_sum": 679,
+      "minimum_feasible_subset_sum": 408,
+      "nearest_reachable_above_maximum": 680,
+      "nearest_reachable_below_minimum": 407
+    }
+  },
+  "counts": {
+    "antibody_components": 3,
+    "antigen_components": 605,
+    "systems": 4070,
+    "unique_exact_pairs": 2718,
+    "unique_pdbs": 2289
+  },
+  "data_firewall": {
+    "predictions_read": false,
+    "source_pool": "PINDER_train_only",
+    "structures_read": false,
+    "task_labels_read": false,
+    "test_rows_read": false
+  },
+  "format_version": "pinder_antibody_s40_component_diagnostic_v1",
+  "inputs": {
+    "canonical_manifest_sha256": "624612079838536934c81fa3918486e322c16caed19fbba70b6f8b33adc5fb6c",
+    "relation_result_sha256": "aceaf0b53b60f4c124c3c3b26e57082477678ccebf3b0c8cb939b5692b1f6b5d",
+    "relation_rows_consumed": {
+      "antigen": 56069,
+      "concatenated_antibody": 2508590,
+      "vh": 2471824,
+      "vl": 1586364
+    }
+  },
+  "monotonicity": "If an axis is already subset-sum infeasible under these qualifying edges, adding missed qualifying edges can only merge components and cannot create a previously unavailable subset of the current components.",
+  "proof_boundary": "This is a strict no-discard component diagnostic under the frozen MMseqs2 40/80 relations. It does not rule out a separately frozen vertex-separator protocol that discards complete bridge systems.",
+  "required_next_action": "If strict closure is infeasible, preregister a minimum-discard vertex separator and independently audit zero four-view crossings.",
+  "scientific_payload_sha256": "438ba382eb7b2f96b1b435d19a29f266b7ee662a493cfcccb26bd2bf38dfbf15",
+  "status": "FAIL_S40_STRICT_NO_DISCARD_SPLIT_INFEASIBLE",
+  "validation_unique_pair_degree_bounds": {
+    "maximum": 679,
+    "minimum": 408
+  }
+}

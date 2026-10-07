@@ -1,0 +1,442 @@
+{
+  "at_utc": "2026-09-30T13:34:08.903132+00:00",
+  "boundaries": {
+    "contact_labels_used_for_gate": false,
+    "downstream_model_forward_performed": false,
+    "ood_labels_read": false,
+    "synthetic_corruption_is_real_ood": false,
+    "test_labels_read": false,
+    "validation_trigger_rate_guaranteed_by_calibration": false
+  },
+  "clean": {
+    "gated_minus_aligned": {
+      "component_effect_q10_q50_q90": [
+        -0.0022330045926253475,
+        0.0,
+        0.0
+      ],
+      "component_only_ci95": [
+        -0.0008376820558650365,
+        -0.00012733925043254855
+      ],
+      "crossed_seed_component_ci95": [
+        -0.0011426844725987797,
+        1.9782609094639334e-05
+      ],
+      "equal_complex": -0.0005689852290523546,
+      "equal_component_equal_seed": -0.00045979402276384953,
+      "min_max_component_mean": [
+        -0.006246577337436221,
+        0.003264067830249411
+      ],
+      "positive_component_seed_cell_fraction": 0.03431372549019608,
+      "seed_effects": {
+        "101": -0.0007878442485506246,
+        "202": -0.0006113204288355636,
+        "303": 1.9782609094639334e-05
+      }
+    },
+    "gated_minus_unconditional": {
+      "component_effect_q10_q50_q90": [
+        -0.0013088037930292311,
+        4.5321472057383134e-05,
+        0.004233647778933501
+      ],
+      "component_only_ci95": [
+        7.92519003497645e-05,
+        0.0019376511359684983
+      ],
+      "crossed_seed_component_ci95": [
+        -0.0003061357166409167,
+        0.0022060477993179877
+      ],
+      "equal_complex": 0.0018190212684815088,
+      "equal_component_equal_seed": 0.0009706658843906294,
+      "min_max_component_mean": [
+        -0.011391585744709607,
+        0.016158659484415007
+      ],
+      "positive_component_seed_cell_fraction": 0.4852941176470588,
+      "seed_effects": {
+        "101": 0.0012420636263908468,
+        "202": 0.00017004457537133575,
+        "303": 0.0014998894514097053
+      }
+    },
+    "unconditional_minus_aligned": {
+      "component_effect_q10_q50_q90": [
+        -0.007200595084960238,
+        -4.5321472057383134e-05,
+        0.0012043732395821008
+      ],
+      "component_only_ci95": [
+        -0.0025195462223230824,
+        -0.0004042187770273102
+      ],
+      "crossed_seed_component_ci95": [
+        -0.0027163145658067106,
+        -8.479601742141569e-05
+      ],
+      "equal_complex": -0.0023880064975338633,
+      "equal_component_equal_seed": -0.001430459907154479,
+      "min_max_component_mean": [
+        -0.016158659484415007,
+        0.011391585744709607
+      ],
+      "positive_component_seed_cell_fraction": 0.36764705882352944,
+      "seed_effects": {
+        "101": -0.002029907874941471,
+        "202": -0.0007813650042068995,
+        "303": -0.001480106842315066
+      }
+    }
+  },
+  "conditions": {
+    "chain_shift:8": {
+      "gated_minus_corrupted": {
+        "component_effect_q10_q50_q90": [
+          0.0014218176307113758,
+          0.01374543891511118,
+          0.03683779716822265
+        ],
+        "component_only_ci95": [
+          0.013027757761616798,
+          0.022606198421434708
+        ],
+        "crossed_seed_component_ci95": [
+          0.012824387991441014,
+          0.02289607139407308
+        ],
+        "equal_complex": 0.015923491526447286,
+        "equal_component_equal_seed": 0.01734709628333083,
+        "min_max_component_mean": [
+          -0.018485279339144105,
+          0.14343745070928207
+        ],
+        "positive_component_seed_cell_fraction": 0.9411764705882353,
+        "seed_effects": {
+          "101": 0.018013143358228657,
+          "202": 0.0158264513929881,
+          "303": 0.01820169409877573
+        }
+      },
+      "gated_minus_unconditional": {
+        "component_effect_q10_q50_q90": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "component_only_ci95": [
+          0.0,
+          0.0
+        ],
+        "crossed_seed_component_ci95": [
+          0.0,
+          0.0
+        ],
+        "equal_complex": 0.0,
+        "equal_component_equal_seed": 0.0,
+        "min_max_component_mean": [
+          0.0,
+          0.0
+        ],
+        "positive_component_seed_cell_fraction": 0.0,
+        "seed_effects": {
+          "101": 0.0,
+          "202": 0.0,
+          "303": 0.0
+        }
+      },
+      "no_rescue_reference": "corrupted_ap",
+      "unconditional_minus_corrupted": {
+        "component_effect_q10_q50_q90": [
+          0.0014218176307113758,
+          0.01374543891511118,
+          0.03683779716822265
+        ],
+        "component_only_ci95": [
+          0.01307412201801769,
+          0.022796351546323656
+        ],
+        "crossed_seed_component_ci95": [
+          0.0128104950099678,
+          0.023070549920483643
+        ],
+        "equal_complex": 0.015923491526447286,
+        "equal_component_equal_seed": 0.01734709628333083,
+        "min_max_component_mean": [
+          -0.018485279339144105,
+          0.14343745070928207
+        ],
+        "positive_component_seed_cell_fraction": 0.9411764705882353,
+        "seed_effects": {
+          "101": 0.018013143358228657,
+          "202": 0.0158264513929881,
+          "303": 0.01820169409877573
+        }
+      }
+    },
+    "global_shuffle:0": {
+      "gated_minus_corrupted": {
+        "component_effect_q10_q50_q90": [
+          0.0037028052833803964,
+          0.013458148009888048,
+          0.029889005464884856
+        ],
+        "component_only_ci95": [
+          0.013571415565374771,
+          0.023453004519005116
+        ],
+        "crossed_seed_component_ci95": [
+          0.013392330730021633,
+          0.023755819840464966
+        ],
+        "equal_complex": 0.01620828838863032,
+        "equal_component_equal_seed": 0.017784571271138583,
+        "min_max_component_mean": [
+          -0.007393341034562905,
+          0.15946861478244637
+        ],
+        "positive_component_seed_cell_fraction": 0.9509803921568627,
+        "seed_effects": {
+          "101": 0.01834854934738627,
+          "202": 0.016687203606109004,
+          "303": 0.018317960859920473
+        }
+      },
+      "gated_minus_unconditional": {
+        "component_effect_q10_q50_q90": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "component_only_ci95": [
+          0.0,
+          0.0
+        ],
+        "crossed_seed_component_ci95": [
+          0.0,
+          0.0
+        ],
+        "equal_complex": 0.0,
+        "equal_component_equal_seed": 0.0,
+        "min_max_component_mean": [
+          0.0,
+          0.0
+        ],
+        "positive_component_seed_cell_fraction": 0.0,
+        "seed_effects": {
+          "101": 0.0,
+          "202": 0.0,
+          "303": 0.0
+        }
+      },
+      "no_rescue_reference": "corrupted_ap",
+      "unconditional_minus_corrupted": {
+        "component_effect_q10_q50_q90": [
+          0.0037028052833803964,
+          0.013458148009888048,
+          0.029889005464884856
+        ],
+        "component_only_ci95": [
+          0.013567973639740022,
+          0.02340417470655607
+        ],
+        "crossed_seed_component_ci95": [
+          0.013300374586867057,
+          0.02363934589436555
+        ],
+        "equal_complex": 0.01620828838863032,
+        "equal_component_equal_seed": 0.017784571271138583,
+        "min_max_component_mean": [
+          -0.007393341034562905,
+          0.15946861478244637
+        ],
+        "positive_component_seed_cell_fraction": 0.9509803921568627,
+        "seed_effects": {
+          "101": 0.01834854934738627,
+          "202": 0.016687203606109004,
+          "303": 0.018317960859920473
+        }
+      }
+    },
+    "same_aa_shuffle:0": {
+      "gated_minus_corrupted": {
+        "component_effect_q10_q50_q90": [
+          -0.00018584774020787638,
+          0.01233336531263123,
+          0.03407352844626068
+        ],
+        "component_only_ci95": [
+          0.01141217135329222,
+          0.020885051821837423
+        ],
+        "crossed_seed_component_ci95": [
+          0.01116012408116836,
+          0.02119188448392942
+        ],
+        "equal_complex": 0.014506611703663266,
+        "equal_component_equal_seed": 0.01572086539530153,
+        "min_max_component_mean": [
+          -0.01431198530934201,
+          0.1378156349096971
+        ],
+        "positive_component_seed_cell_fraction": 0.8872549019607843,
+        "seed_effects": {
+          "101": 0.015733374087153716,
+          "202": 0.014269524158371277,
+          "303": 0.01715969794037961
+        }
+      },
+      "gated_minus_unconditional": {
+        "component_effect_q10_q50_q90": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "component_only_ci95": [
+          0.0,
+          0.0
+        ],
+        "crossed_seed_component_ci95": [
+          0.0,
+          0.0
+        ],
+        "equal_complex": 0.0,
+        "equal_component_equal_seed": 0.0,
+        "min_max_component_mean": [
+          0.0,
+          0.0
+        ],
+        "positive_component_seed_cell_fraction": 0.0,
+        "seed_effects": {
+          "101": 0.0,
+          "202": 0.0,
+          "303": 0.0
+        }
+      },
+      "no_rescue_reference": "corrupted_ap",
+      "unconditional_minus_corrupted": {
+        "component_effect_q10_q50_q90": [
+          -0.00018584774020787638,
+          0.01233336531263123,
+          0.03407352844626068
+        ],
+        "component_only_ci95": [
+          0.011443359743371129,
+          0.020944692430224995
+        ],
+        "crossed_seed_component_ci95": [
+          0.011209846565500097,
+          0.02139279535910584
+        ],
+        "equal_complex": 0.014506611703663266,
+        "equal_component_equal_seed": 0.01572086539530153,
+        "min_max_component_mean": [
+          -0.01431198530934201,
+          0.1378156349096971
+        ],
+        "positive_component_seed_cell_fraction": 0.8872549019607843,
+        "seed_effects": {
+          "101": 0.015733374087153716,
+          "202": 0.014269524158371277,
+          "303": 0.01715969794037961
+        }
+      }
+    }
+  },
+  "independent_components": 68,
+  "input_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/gated_rescue_v1/runs/seed_0.json": "0b0574cb5564f4eb2fa6740da14a0a39a94d6b65118839a07551c2e2f0fbac69",
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/gated_rescue_v1/runs/seed_1.json": "d6eb3879fb8141b9e4dceb25ac91891749a86a9fabf10d31754c438c6bf57208",
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/gated_rescue_v1/runs/seed_2.json": "e5675d2c8b647b0b870b3d32d240c0c389b4892c924852713c9092eabd58da53"
+  },
+  "paired_seeds": [
+    [
+      101,
+      1
+    ],
+    [
+      202,
+      2
+    ],
+    [
+      303,
+      3
+    ]
+  ],
+  "record_count": 1953,
+  "status": "COMPLETE_GATED_RESCUE_CROSSED_ANALYSIS",
+  "trigger_rates": {
+    "calibration": {
+      "101": {
+        "clean": 0.00390625,
+        "corruption": {
+          "chain_shift:8": 1.0,
+          "global_shuffle:0": 1.0,
+          "same_aa_shuffle:0": 1.0
+        },
+        "threshold": 0.9878612560384413
+      },
+      "202": {
+        "clean": 0.00390625,
+        "corruption": {
+          "chain_shift:8": 1.0,
+          "global_shuffle:0": 1.0,
+          "same_aa_shuffle:0": 1.0
+        },
+        "threshold": 0.8719418600115473
+      },
+      "303": {
+        "clean": 0.00390625,
+        "corruption": {
+          "chain_shift:8": 1.0,
+          "global_shuffle:0": 1.0,
+          "same_aa_shuffle:0": 1.0
+        },
+        "threshold": 2.9970000759208864
+      }
+    },
+    "development": {
+      "101": {
+        "clean": 0.15668202764976957,
+        "corruption": {
+          "chain_shift:8": 1.0,
+          "global_shuffle:0": 1.0,
+          "same_aa_shuffle:0": 1.0
+        }
+      },
+      "202": {
+        "clean": 0.17972350230414746,
+        "corruption": {
+          "chain_shift:8": 1.0,
+          "global_shuffle:0": 1.0,
+          "same_aa_shuffle:0": 1.0
+        }
+      },
+      "303": {
+        "clean": 0.004608294930875576,
+        "corruption": {
+          "chain_shift:8": 1.0,
+          "global_shuffle:0": 1.0,
+          "same_aa_shuffle:0": 1.0
+        }
+      }
+    }
+  },
+  "trigger_shift": {
+    "101": {
+      "clean_absolute_delta": 0.15277577764976957,
+      "clean_ratio": 40.11059907834101
+    },
+    "202": {
+      "clean_absolute_delta": 0.17581725230414746,
+      "clean_ratio": 46.00921658986175
+    },
+    "303": {
+      "clean_absolute_delta": 0.000702044930875576,
+      "clean_ratio": 1.1797235023041475
+    }
+  },
+  "unique_complexes": 217
+}

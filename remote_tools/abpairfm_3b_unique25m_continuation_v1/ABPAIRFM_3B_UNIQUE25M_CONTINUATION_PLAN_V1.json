@@ -1,0 +1,56 @@
+{
+  "authorization": {
+    "continue_production_stage_a0_pair_mlm": true,
+    "production_stage_a_full_objective": false,
+    "repeat_previously_consumed_pair_slices": false,
+    "test_access": false
+  },
+  "checkpoint_anchor": {
+    "checkpoint_content_sha256": "2735684ef5228dcfe9f8f676c67c8dfc5f8f541521d2ba9f75bbdbfbc97e3ea3",
+    "checkpoint_receipt_file_sha256": "25cc8917e8e224da3d4a08fc6ab2a1fdb6d8d1464439bd98200418b133a9d7de",
+    "consumed_residue_tokens": 1770311241,
+    "generation": "segment-000111",
+    "global_update": 22400,
+    "result_file_sha256": "a186d77f4dd56c7d44736fa6c487c0c392d1067ac4c5a08d5c41253f48308e86",
+    "status": "PASS_CHECKPOINT_VERIFIED"
+  },
+  "claim_boundary": "Continuation of the already-authorized Stage-A0 pair-aware balanced MLM objective over additional deterministic, strictly development-decontaminated STRING physical cluster pairs. This changes neither the model, objective, optimizer, global batch, checkpoint semantics, nor scientific-claim authority.",
+  "continuation": {
+    "first_new_segment_index": 112,
+    "first_new_selection_start": 2508800,
+    "manifest_records_per_segment": 22400,
+    "maximum_unique_pair_target": 25000000,
+    "maximum_whole_unique_segments": 1116,
+    "selection_rule": "ascending_sha256_of_seed_and_canonical_cluster_pair",
+    "selection_seed": 1701,
+    "target_consumed_residue_tokens": 5000000000
+  },
+  "format_version": "abpairfm_3b_unique25m_continuation_plan_v1",
+  "frozen_sources": {
+    "campaign_protocol_sha256": "a783f3b20516fbb2c85dba27833d3125683184ae2be608dfcfdbf91e58a3747b",
+    "manifest_builder_sha256": "7c8bb4d36e0dcc563fcc8022413f2500aad7f9fb8cbf868f5b6c3b68247fd46b",
+    "manifest_launcher_sha256": "e1eba94e62676f3e7ed612351fd65999febe1f46a975b7fe5b8a3551152ec94a",
+    "segment_launcher_sha256": "1d929f425aaffc92e3733926db1a59b4d72ac1ffd514f560dab2117205029864",
+    "training_entrypoint_sha256": "73e4fd7644d9de7b05412415b73e4c1edae76249d8abe45067f6bfde28e1733a",
+    "training_source_sha256": "8b94d5fa308c9845a5567b80b9dab6d4a35e298a91c2a807521774896be946f8"
+  },
+  "invariants": {
+    "attention_backend": "aten_native_varlen_flash",
+    "global_pair_batch": 112,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "manifest_slices_are_disjoint": true,
+    "microbatch_pairs_per_rank": 4,
+    "no_login_node_training": true,
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 4
+  },
+  "status": "FROZEN_BEFORE_SEGMENT_000112_SUBMISSION",
+  "stop_conditions": {
+    "consumed_residue_tokens_at_least_target": "stop_successor_submission",
+    "manifest_or_checkpoint_authority_mismatch": "fail_closed",
+    "new_failure_type": "fail_closed",
+    "nonfinite_update": "fail_closed",
+    "test_access_not_false": "fail_closed"
+  },
+  "test_access": false
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AbCite gold item",
+  "type": "object",
+  "required": ["id", "question", "answerable", "expected_status", "query_class", "source"],
+  "properties": {
+    "id": { "type": "string" },
+    "question": { "type": "string" },
+    "answerable": { "type": "boolean" },
+    "expected_status": { "enum": ["answered", "abstain", "hitl_pending"] },
+    "must_cite_chunk_ids": { "type": "array", "items": { "type": "string" } },
+    "must_cite_image_id": { "type": ["string", "null"] },
+    "high_stakes": { "type": "boolean" },
+    "query_class": { "type": "string" },
+    "source": { "enum": ["public_pdb", "synthetic_exam"] },
+    "split": { "enum": ["fixture", "hard"] },
+    "notes": { "type": "string" }
+  }
+}

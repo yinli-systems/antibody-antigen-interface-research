@@ -1,0 +1,51 @@
+{
+  "status": "COMPLETE_STRUCTURAL_PLM_PROMOTION_DECISION",
+  "decision": "NO_PROMOTION_STRUCTURAL_PLM_FOR_STRICT_PARTNER_RETRIEVAL",
+  "formal_training_job": "1640503",
+  "formal_tasks_completed": 36,
+  "formal_training_failures": 0,
+  "failed_original_analysis_job": "1640514",
+  "failed_original_analysis_reason": "schema mismatch: missing historical partner_retrieval.mrr field",
+  "corrected_analysis_job": "1641627",
+  "corrected_analysis_state": "COMPLETED_0_0",
+  "original_plan_sha256": "24d6c6cfb2cee44b9cc289ac8721b3ad183321db11a059c14b29c878dd7cea12",
+  "original_source_commit": "3eb4293464552199c66eff9b6add14d7ed75ae14",
+  "repair_source_commit": "b72e6bf1736e763135f2104303383b3e4ef0336a",
+  "validation_complex_count": 217,
+  "component_count": 68,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "selected_development_layers": {
+    "prosst": 12,
+    "saprot": 24
+  },
+  "promotion_gate": "real structural-PLM feature must reliably exceed contemporaneous width-matched random control under registered paired component/seed analysis",
+  "prosst_selected_vs_random": {
+    "equal_component_equal_seed_delta": -0.00014788470248128688,
+    "crossed_ci95": [
+      -0.0037665749496294987,
+      0.0029893795786605096
+    ]
+  },
+  "saprot_selected_vs_random": {
+    "equal_component_equal_seed_delta": 0.0027892500809796003,
+    "crossed_ci95": [
+      -0.0018429963391926615,
+      0.008483288888758165
+    ]
+  },
+  "saprot_raw_highest_layer33_vs_random": {
+    "equal_component_equal_seed_delta": 0.0017849623671281226,
+    "crossed_ci95": [
+      -0.0021940989625649867,
+      0.005860435888204648
+    ]
+  },
+  "test_labels_read": false,
+  "ood_labels_read": false,
+  "blind_claim_authorized": false,
+  "sota_claim_authorized": false
+}

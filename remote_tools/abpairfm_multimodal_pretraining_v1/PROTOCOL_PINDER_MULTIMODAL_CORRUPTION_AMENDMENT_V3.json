@@ -1,0 +1,39 @@
+{
+  "authorization": {
+    "external_test_access": false,
+    "mm_32k_training": false,
+    "mm_canary_training": false,
+    "mm_scale_training": false,
+    "structure_corruption_implementation": true
+  },
+  "claim_boundary": "Train-only deterministic corruption amendment frozen before the first multimodal optimization update. It defines masked predicted-structure reconstruction and modality dropout without reading PINDER validation/test rows or any downstream benchmark metric.",
+  "corruption": {
+    "chain_modality_dropout_probability": 0.15,
+    "deterministic_ranking": "SHA-256(seed, scope, residue_index); no ambient RNG state",
+    "dropped_modality_reconstruction_target": false,
+    "masked_residue_probability": 0.15,
+    "masked_residue_rule": "For each observed, non-dropped chain, select max(1, ceil(0.15 * observed_residues)) residues by deterministic SHA-256 rank; replace 3Di by MASK and continuous features by zero.",
+    "reconstruction_targets": [
+      "original observed 3Di class at masked residues",
+      "original 17D continuous feature vector at masked residues"
+    ],
+    "special_and_missing_positions": "Never selected as reconstruction targets and always carry missing token plus zero continuous features.",
+    "whole_system_modality_dropout_probability": 0.1
+  },
+  "format_version": "abpairfm_pinder_multimodal_corruption_amendment_v3",
+  "parent_protocol": {
+    "format_version": "abpairfm_pinder_multimodal_pretraining_protocol_v1",
+    "sha256": "33671f0afb4225ea571b66ce3537b5dc5cc2f69bfede6ba4a127ec822c2663e7"
+  },
+  "rationale": {
+    "discovery_stage": "implementation before any multimodal optimization update",
+    "scientific_change": false,
+    "selection_metrics_read": false
+  },
+  "status": "FROZEN_CORRUPTION_IMPLEMENTATION_BLOCKED_PENDING_PARENT_AND_FEATURE_GATES",
+  "test_access": {
+    "downstream_metrics_read": false,
+    "pinder_test_rows_read": false,
+    "pinder_validation_rows_read": false
+  }
+}

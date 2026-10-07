@@ -1,0 +1,25 @@
+
+==================================== ERRORS ====================================
+__________ ERROR collecting tests/test_freeze_reparank_evaluation.py ___________
+ImportError while importing test module '/ssd/scxi253/frontier_multimodel_v1/reparank_centering_test_precommit/tests/test_freeze_reparank_evaluation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../model_deployment/envs/contact/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_freeze_reparank_evaluation.py:9: in <module>
+    from extensions.frontier_multimodel_v1.freeze_reparank_evaluation import freeze, sha256
+E   ModuleNotFoundError: No module named 'extensions.frontier_multimodel_v1.freeze_reparank_evaluation'
+__________ ERROR collecting tests/test_compare_reparank_same_grid.py ___________
+ImportError while importing test module '/ssd/scxi253/frontier_multimodel_v1/reparank_centering_test_precommit/tests/test_compare_reparank_same_grid.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../model_deployment/envs/contact/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_compare_reparank_same_grid.py:8: in <module>
+    from extensions.frontier_multimodel_v1.compare_reparank_same_grid import (
+E   ModuleNotFoundError: No module named 'extensions.frontier_multimodel_v1.compare_reparank_same_grid'
+=========================== short test summary info ============================
+ERROR tests/test_freeze_reparank_evaluation.py
+ERROR tests/test_compare_reparank_same_grid.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.71s

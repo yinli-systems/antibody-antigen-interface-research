@@ -1,0 +1,50 @@
+{
+  "authorization": {
+    "contact_labels_read": false,
+    "external_test_access": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "train_sequences_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "claim_boundary": "PINDER-train-only asymmetric cold-split construction. The antibody axis is the concatenation of all IMGT CDR1, CDR2, and CDR3 residues recovered from the antibody variable domains represented by each physical PINDER monomer; the antigen axis is the full antigen sequence. Both axes use inclusive 40 percent aligned-region identity and 80 percent reciprocal coverage. No coordinates, contact labels, validation/test rows, checkpoints, predictions, or scores may be read.",
+  "cdr_definition": {
+    "numbering_scheme": "IMGT",
+    "ordered_inclusive_ranges": [
+      [27, 38],
+      [56, 65],
+      [105, 117]
+    ],
+    "domain_order": "heavy_then_kappa_or_lambda_when_both_are_present",
+    "scfv_domain_detection": "ANARCII may recover one H, one K/L, or one H plus one K/L domain because the frozen PINDER reconstruction represents each mapped H/L-union physical monomer independently",
+    "sequence_representation": "all_recovered_variable_domain_CDR1_CDR2_CDR3_sequences_in_domain_order"
+  },
+  "format_version": "pinder_antibody_cdr_antigen_s40_protocol_v1",
+  "retention_policy": {
+    "discard_bridge_components_allowed_after_strict_infeasibility_only": true,
+    "minimum_retained_unique_exact_pair_fraction": 0.8,
+    "validation_fraction_of_retained_unique_exact_pairs": {
+      "maximum": 0.25,
+      "minimum": 0.15
+    }
+  },
+  "recovery": {
+    "predecessor_job_id": "1533295",
+    "predecessor_stderr_sha256": "476ee2001cdd8e841d29d7317caacd368e5bae9f6cdbe7b7aead77c202d93ce8",
+    "predecessor_status": "FAILED_CLOSED_SCFV_PHYSICAL_MONOMER_CONTAINED_ONE_VARIABLE_DOMAIN",
+    "scientific_thresholds_changed": false
+  },
+  "source": {
+    "canonical_manifest_sha256": "624612079838536934c81fa3918486e322c16caed19fbba70b6f8b33adc5fb6c",
+    "pinder_partition": "train",
+    "s40_antigen_relation_result_sha256": "aceaf0b53b60f4c124c3c3b26e57082477678ccebf3b0c8cb939b5692b1f6b5d"
+  },
+  "thresholds": {
+    "antibody_cdr_aligned_region_identity_minimum": 0.4,
+    "antigen_aligned_region_identity_minimum": 0.4,
+    "minimum_reciprocal_coverage": 0.8,
+    "threshold_equality_included": true
+  }
+}

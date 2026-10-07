@@ -91,9 +91,11 @@ def write_backbone(source,sequence,destination):
     return {'pdb_sha256':digest(destination),'max_coordinate_rounding_A':maximum}
 
 
-def assemble(plan_path,sha,output):
-    plan=load_plan(plan_path,sha)
-    receipts=complete_receipts(plan,sha)  # no output until full campaign admitted
+def assemble(plan_path,sha,output, *, plan_loader=None, receipt_loader=None):
+    loader=plan_loader or load_plan
+    reader=receipt_loader or complete_receipts
+    plan=loader(plan_path,sha)
+    receipts=reader(plan,sha)  # no output until full campaign admitted
     old=read_json(plan['legacy_plan'])
     basepath=Path(old['base_structure_manifest']);base=read_json(basepath)
     require_digest(basepath,old['base_structure_manifest_sha256'])
@@ -127,7 +129,8 @@ def assemble(plan_path,sha,output):
                 'pdb_path':str(pdb),'pdb_sha256':audit['pdb_sha256'],
                 'coordinate_rounding':audit,'task_receipt':rpath,'task_receipt_sha256':rsha,
                 'chosen':{'model_path':receipt['top_model'],
-                          'model_sha256':receipt['selected']['model_sha256'],
+                          'model_sha256':digest(Path(receipt['top_model'])),
+                          'selected_sample_model_sha256':receipt['selected']['model_sha256'],
                           'score':receipt['selected']['score'],'seed':receipt['selected']['seed'],
                           'sample':receipt['selected']['sample']},
                 'runtime_code_version':plan['runtime_code_version'],
@@ -145,7 +148,7 @@ def assemble(plan_path,sha,output):
         new_json(output/'EXTENSION_MANIFEST.json',{'records':added,'record_count':40,'plan_sha256':sha})
         new_json(output/'STRUCTURE_UNITS_MANIFEST.json',combined)
         # Frozen input/source and large runtime bytes verified again before closure.
-        load_plan(plan_path,sha)
+        loader(plan_path,sha)
         for resource in plan['large_runtime_files']:require_digest(resource['path'],resource['sha256'])
         new_json(output/'COMPLETE.json',{'state':'COMPLETE_217_CASE_STRUCTURE_AUTHORITY',
                  'complete_cases_before':sum(x['complete'] for x in before),

@@ -1,0 +1,6 @@
+2026-09-30
+The replay-intent generator was exercised by directly invoking two isolated regression cases:
+- a valid membership anchor creates a replay-only intent with exact source/input environment and no training/outer authorization;
+- a replay ID equal to the provisional attempt ID fails closed.
+Result: 2/2 replay-intent regression cases PASS.
+Both implementation and test files compile successfully.

@@ -1,0 +1,17 @@
+{
+  "artifact": {
+    "filename": "PINDER_ANTIBODY_ADAPTATION_SYSTEMS_V1.tsv.gz",
+    "row_count": 4075,
+    "sha256": "8a696085735adae9b5ff890d5fed02a1374917ee5e7d677ffbbbc057224ed74f"
+  },
+  "format_version": "pinder_antibody_adaptation_quality_receipt_v1",
+  "model_selection_authorized": false,
+  "result": {
+    "filename": "PINDER_ANTIBODY_ADAPTATION_QUALITY_RESULT_V1.json",
+    "sha256": "ce60e4746636db76e14d4d39afa16c041215c7e1c86a3e79c99ec2ef0cd84139"
+  },
+  "scientific_payload_sha256": "b99b7eb2761acdf8cef9695cb860eafe824a8d902aa6e904f10d842b4cbe369e",
+  "status": "PASS_PINDER_ANTIBODY_ADAPTATION_QUALITY_AND_MULTIPLICITY_GATE",
+  "test_access": false,
+  "training_authorized": false
+}

@@ -1,0 +1,10 @@
+{
+  "aggregate_validation_sha256": "71b0b3805a636fcfff37c5624f5a5d99d7a076f239d4ed942f292efa94f4b894",
+  "freeze_training_sha256": "f2d59d80423ebf53da5a92120120ad0ede0924b44d3a252f00a7ae1d53daa586",
+  "status": "PASS_SYNTHETIC_POST_TRAINING_PIPELINE_INTEGRATION_TEST",
+  "synthetic_run_count": 6,
+  "synthetic_validation_complex_count": 4,
+  "training_manifest_sha256": "ef91f7af2f3df3d9b3c5bbbf7abe4b9630c865c2f3d8d2801c5376f9caffff3c",
+  "validation_analysis_receipt_sha256": "bdd82c0801eae18dd3226713ec1063816fd881cdcf583443064dc4468c3fa0a2",
+  "validation_analysis_sha256": "b3d61ed67a8315dd08499a08ca363778ae8c91dc762f8ed0c8562e6cbe00363f"
+}

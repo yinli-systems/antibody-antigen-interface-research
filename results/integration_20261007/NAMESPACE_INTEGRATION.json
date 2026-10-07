@@ -1,0 +1,35 @@
+[
+  {
+    "source_commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+    "source_path": "src/antibody_pretraining/pair_aware_attention.py",
+    "integrated_path": "src/antibody_pretraining/multimodal_v1/pair_aware_attention.py",
+    "sha256": "08cea126c5bf0480463bfbf5a8d02b18a8c1932092e87cfeeefbd4857b81e44b",
+    "change": "none; exact source bytes in independent package"
+  },
+  {
+    "source_commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+    "source_path": "src/antibody_pretraining/pair_aware_esm2.py",
+    "integrated_path": "src/antibody_pretraining/multimodal_v1/pair_aware_esm2.py",
+    "sha256": "286ce3e4609c34212b6d259f83cfdc4916ea9adc3e909ff32811f8d0e9d2fa5a",
+    "change": "none; exact source bytes in independent package"
+  },
+  {
+    "source_commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+    "source_path": "src/antibody_pretraining/multimodal_pair_aware_esm2.py",
+    "integrated_path": "src/antibody_pretraining/multimodal_v1/multimodal_pair_aware_esm2.py",
+    "sha256": "ea339978bc4b2474a2e1dd08c417a834858b36a5d9240c9437f3f5b1ae6f65a6",
+    "change": "none; exact source bytes in independent package"
+  },
+  {
+    "source_commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+    "source_path": "tests/test_pair_aware_attention.py",
+    "integrated_path": "tests/test_multimodal_v1_attention.py",
+    "change": "import namespace only; original frozen-core test restored from starting main"
+  },
+  {
+    "source_commit": "35dfab14143578c75b7aa7c838cff8a5d2215231",
+    "source_path": "tests/test_pair_aware_esm2.py",
+    "integrated_path": "tests/test_multimodal_v1_esm2.py",
+    "change": "import namespace only; original frozen-core test restored from starting main"
+  }
+]

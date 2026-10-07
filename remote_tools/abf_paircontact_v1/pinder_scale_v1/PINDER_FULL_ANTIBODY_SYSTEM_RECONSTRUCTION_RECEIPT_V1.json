@@ -1,0 +1,17 @@
+{
+  "format_version": "pinder_full_antibody_system_reconstruction_receipt_v1",
+  "manifest": {
+    "filename": "PINDER_FULL_ANTIBODY_SYSTEMS_V1.tsv.gz",
+    "row_count": 24240,
+    "sha256": "4b27f3d33c1c922a57153e8f206c15ba2e12ccc3a6e8fa0c06d1013c16e23bda"
+  },
+  "model_selection_authorized": false,
+  "result": {
+    "filename": "PINDER_FULL_ANTIBODY_SYSTEM_RECONSTRUCTION_RESULT_V1.json",
+    "sha256": "51f9706de36d9fd00a97945c8fdcb6e85c7b2b0faf4c9bc1c677b84eb00af443"
+  },
+  "scientific_payload_sha256": "c128891c81f39855c2ec60036f171bfe2d0fbf643fcca589252153eb50b101c6",
+  "status": "PASS_PINDER_TRAIN_FULL_ANTIBODY_SYSTEM_RECONSTRUCTION",
+  "test_access": false,
+  "training_authorized": false
+}

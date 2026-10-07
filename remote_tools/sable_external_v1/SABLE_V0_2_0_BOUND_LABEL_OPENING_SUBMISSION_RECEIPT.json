@@ -1,0 +1,22 @@
+{
+  "format_version": "sable_v0_2_0_bound_label_opening_submission_receipt_v1",
+  "submitted_at": "2026-08-29T20:29:23+08:00",
+  "job_id": 1491995,
+  "submitted_dependency": "afterok:1491974:1491984:1491992",
+  "observed_unfulfilled_dependencies": [1491974, 1491984],
+  "partition": "gpu_4090",
+  "freezer_path": "/ssd/scxi253/model_deployment/tools/sable_external_v1/freeze_sable_v0_2_0_bound_label_opening_v1.py",
+  "freezer_sha256": "bb5149d519058470b6ab8ee82db68357bde9866be21291afa127003f9d8eb03c",
+  "launcher_path": "/ssd/scxi253/model_deployment/tools/sable_external_v1/freeze_sable_v0_2_0_bound_label_opening_v1.sbatch",
+  "launcher_sha256": "42b9070244cc152699e7970efc2bb83ad9f90f508a318ae0f050c3a08e4937f8",
+  "external_execution_plan_sha256": "d97f0b94863fe9227d80c5675e944091809245b8fab22a89cda81148a8de172a",
+  "required_label_free_structure_cache_job": 1491974,
+  "required_no_distance_checkpoint_binding_job": 1491984,
+  "required_label_free_esm2_job": 1491992,
+  "maximum_label_openings": 1,
+  "task_labels_read_by_freezer": false,
+  "sable_bound_structures_downloaded_by_freezer": false,
+  "old_sabdab2_test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "selection_or_tuning": false
+}

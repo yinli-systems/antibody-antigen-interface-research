@@ -1,5 +1,7 @@
 # Canonical results index
 
+> **Integrated update:** [all 31 starting branch HEADs and latest committed progress](integration_20261007/BRANCH_PROGRESS.md) are consolidated. Earlier dates and source-specific claims below remain historical. Newer manuscript-only claims do not gain evidence status merely by merging.
+
 This page is the human-readable index for the strongest completed evidence in the repository. It is deliberately more detailed than the root README and deliberately shorter than the full branch history.
 
 ## 1. Frozen representation transfer and correspondence

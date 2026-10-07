@@ -1,0 +1,2 @@
+# Copy to terraform.tfvars. Do not commit secrets.
+# Keys are created by Azure after apply; pipe them into Key Vault, not git.

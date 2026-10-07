@@ -1,0 +1,34 @@
+{
+  "authorization": {
+    "external_test_access": false,
+    "labels_read": false,
+    "model_selection": false,
+    "predictions_read": false,
+    "structures_read": false,
+    "train_sequences_only": true,
+    "training": false
+  },
+  "claim_boundary": "This train-only stage materializes a 40%-identity, 80%-reciprocal-coverage relation in VH, VL, concatenated-antibody, and antigen views. It neither constructs an approved split nor creates a blind benchmark. Training and model selection remain unauthorized until an indivisible-component split has zero independent four-view crossings.",
+  "format_version": "pinder_antibody_s40_relation_protocol_v1",
+  "required_views": [
+    "vh",
+    "vl",
+    "concatenated_antibody",
+    "antigen"
+  ],
+  "source": {
+    "asset_root": "/ssd/scxi253/model_deployment/results/development/pinder_antibody_s2_v1/assets",
+    "fasta_sha256": {
+      "antigen": "010cd3328aae41ebca953bd63dd641128ac20b86508e1665de203a68783fd494",
+      "concatenated_antibody": "4b2cd17a250a55fc382e677783a54bbf6adbbf1c0f9993c9198831f6a1c45d53",
+      "vh": "eff253bba83bdcdaf5270e51e697efa417d6388f0b3ea3651e6461e6f5121310",
+      "vl": "12c2d4b90d76a2137ca86ea59bf2954a07efe940819a699e7630d176c8cb48c9"
+    },
+    "partition": "PINDER_train_only"
+  },
+  "thresholds": {
+    "aligned_region_identity_minimum": 0.4,
+    "minimum_reciprocal_coverage": 0.8,
+    "threshold_equality_included": true
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "af3_array": "0-17%4",
+  "af3_array_dependency": "afterok:1491932",
+  "af3_array_job_id": "1491933",
+  "af3_runner_sha256": "996c1886f7b77454d24e93c402a3e19078e5d8da0191dfdc6b08368206c14aea",
+  "builder_job_id": "1491932",
+  "builder_launcher_sha256": "c840f77a93cf411b6e28c2d6fbd46813379cbb421f55ac3edda000c5a2ff7a22",
+  "builder_source_sha256": "51f21f544dd0615943463f149ca9a5ed0be68cd1f531bd9c95a7bbf29a7f38a6",
+  "cross_partner_geometry_used": false,
+  "eligible_entries": 97,
+  "eligible_unique_pdb_ids": 88,
+  "experimental_bound_geometry_used_as_prediction_input": false,
+  "format_version": "sable_v0_2_0_af3_label_free_submission_receipt_v1",
+  "model_seeds": [
+    42,
+    100,
+    18,
+    37,
+    79
+  ],
+  "partition": "gpu_4090",
+  "prediction_entities": 179,
+  "runner_launcher_sha256": "0501f6fb7c9097cdfed6b7f1c543618bb65c8a21e2f4c6244e60eaf65dd9025d",
+  "screen_receipt_sha256": "5aee4ff1c98a9936674d68aae74d28e90f6d9ba357464f7776f72c7d5cbd73d6",
+  "screen_result_sha256": "2c6f6ec9f9b8ff6fd11112a9131fdd9fa024591bc99df36e42caecd8819eca00",
+  "selection_or_tuning": false,
+  "status": "SUBMITTED_FROZEN_LABEL_FREE_AF3_PREDICTION",
+  "submitted_at": "2026-08-29T19:52:41+08:00",
+  "task_labels_read": false,
+  "test_bound_structures_downloaded": false
+}

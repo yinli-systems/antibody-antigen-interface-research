@@ -196,12 +196,14 @@ def test_dcp_generation_round_trip_restores_model_and_optimizer(
         optimizer=source_optimizer,
         provenance_hashes=PROVENANCE,
         training_state={"global_step": 1, "synthetic_only": True},
+        claim_boundary="Unit-test checkpoint claim boundary.",
     )
     generation = tmp_path / "checkpoints" / "step_000001"
     try:
         assert receipt["source_world_size"] == 1
         assert receipt["status"] == "complete"
         assert receipt["training_state"]["synthetic_only"] is True
+        assert receipt["claim_boundary"] == "Unit-test checkpoint claim boundary."
         assert ".metadata" in receipt["files"]
         assert not bool(generation.stat().st_mode & 0o222)
 
@@ -215,6 +217,7 @@ def test_dcp_generation_round_trip_restores_model_and_optimizer(
             model=restored_model,
             optimizer=restored_optimizer,
             expected_provenance_hashes=PROVENANCE,
+            expected_claim_boundary="Unit-test checkpoint claim boundary.",
         )
         assert load_receipt["content_sha256"] == receipt["content_sha256"]
         for name, tensor in restored_model.state_dict().items():

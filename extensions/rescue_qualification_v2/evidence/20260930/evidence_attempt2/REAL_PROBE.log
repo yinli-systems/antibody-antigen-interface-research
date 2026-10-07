@@ -1,0 +1,144 @@
+{
+  "status": "PASS_REAL_FEATURE_EQUIVARIANCE_PROBE",
+  "at_utc": "2026-09-30T09:48:28Z",
+  "samples": [
+    {
+      "role": "train",
+      "sequence_key": "000332b077ade3a8a907acd49e56a615a6451e560129385e6027e54bf27298fd",
+      "chain_lengths": [
+        120,
+        107
+      ],
+      "loss_max_abs_delta": 0.0,
+      "parameter_gradient_max_abs_delta": 2.498001805406602e-16,
+      "original_hard_output_equal_across_all_pure_permutations": true,
+      "canonical_hard_output_equal_across_all_pure_permutations": true,
+      "conditions": [
+        "identity:0",
+        "same_aa_shuffle:0",
+        "chain_shift:8",
+        "global_shuffle:0"
+      ]
+    },
+    {
+      "role": "train",
+      "sequence_key": "002baeb97bc36916bd74d9a7051a588695fe92b96e215c12da9ff6529f5eece2",
+      "chain_lengths": [
+        121,
+        107
+      ],
+      "loss_max_abs_delta": 0.0,
+      "parameter_gradient_max_abs_delta": 2.7755575615628914e-16,
+      "original_hard_output_equal_across_all_pure_permutations": true,
+      "canonical_hard_output_equal_across_all_pure_permutations": true,
+      "conditions": [
+        "identity:0",
+        "same_aa_shuffle:0",
+        "chain_shift:8",
+        "global_shuffle:0"
+      ]
+    },
+    {
+      "role": "validation",
+      "sequence_key": "000c7daaf1dc4142ebfd83a7b01da5468906993e1ef5ee26e5afe87581c21a58",
+      "chain_lengths": [
+        162
+      ],
+      "loss_max_abs_delta": 8.881784197001252e-16,
+      "parameter_gradient_max_abs_delta": 6.661338147750939e-16,
+      "original_hard_output_equal_across_all_pure_permutations": true,
+      "canonical_hard_output_equal_across_all_pure_permutations": true,
+      "conditions": [
+        "identity:0",
+        "same_aa_shuffle:0",
+        "chain_shift:8",
+        "global_shuffle:0"
+      ]
+    },
+    {
+      "role": "validation",
+      "sequence_key": "051fc7c1ad47460598d9ad5a96237f035fe108e64c858e0ed783b9df59a53d1b",
+      "chain_lengths": [
+        120
+      ],
+      "loss_max_abs_delta": 0.0,
+      "parameter_gradient_max_abs_delta": 3.885780586188048e-16,
+      "original_hard_output_equal_across_all_pure_permutations": true,
+      "canonical_hard_output_equal_across_all_pure_permutations": true,
+      "conditions": [
+        "identity:0",
+        "same_aa_shuffle:0",
+        "chain_shift:8",
+        "global_shuffle:0"
+      ]
+    }
+  ],
+  "missing_feature_checks": [
+    {
+      "sequence_key": "7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716",
+      "length": 121,
+      "original_failure": "missing ESMIF1 feature 7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716",
+      "replacement_presence_zero": true,
+      "all_four_arms_unchanged": true,
+      "matcher_called": false
+    }
+  ],
+  "feature_pairs": 4,
+  "dtype": "float64",
+  "device": "CPU",
+  "matcher": "untrained seeded original v1 model; not a trained performance measurement",
+  "metadata": {
+    "status": "PASS_METADATA_PREFLIGHT_WITH_EVALUATION_COVERAGE_WARNING",
+    "at_utc": "2026-09-30T09:48:27Z",
+    "frozen_rescue_plan_sha256": "dbab0019832814ed89ab9c63c299e969509604e9d96606e9f0dfe6d4a58a7919",
+    "original_training_source_commit": "f1fe5affe119230635b862b0985f2ee92fd781fc",
+    "train_complexes": 3229,
+    "validation_complexes": 217,
+    "train_full_keys": 2555,
+    "validation_full_keys": 241,
+    "train_chain_parts": 3435,
+    "validation_chain_parts": 286,
+    "train_validation_full_key_overlap": 0,
+    "train_validation_chain_part_overlap": 0,
+    "covered_train_keys": 2552,
+    "covered_validation_keys": 240,
+    "absent_validation_keys": {
+      "7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716": [
+        "/ssd/scxi253/repr_extract/out/esm_if1/7a/7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716.pt"
+      ]
+    },
+    "affected_validation_complexes": [
+      {
+        "instance_id": "pdb_00002p45_B_+",
+        "missing_side_keys": {
+          "antibody": "7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716"
+        }
+      },
+      {
+        "instance_id": "pdb_00002p47_B_+",
+        "missing_side_keys": {
+          "antibody": "7a23dd196797f6b5658301162d05581561314f8798bdc7c330804e99274f0716"
+        }
+      }
+    ],
+    "legacy_evaluator_risk": "load_full_features raises for unavailable source; all-one flags are not historical missingness",
+    "supplemental_resolution": "retain every complex; exact zero-feature/zero-presence behavior of original CompositeEmbeddingStore",
+    "feature_storage_contract": "legacy ESM-IF1 full-key combined antibody tensor; biological parts audited separately",
+    "homology_leakage_audited": false,
+    "pretrained_encoder_contamination_audited": false,
+    "feature_tensor_bytes_hashed": false,
+    "input_source_and_downstream_checkpoint_hashes_verified": true,
+    "contact_labels_read": false,
+    "test_labels_read": false,
+    "ood_labels_read": false,
+    "model_inference_performed": false,
+    "scheduler_changes": false
+  },
+  "contact_labels_read": false,
+  "test_labels_read": false,
+  "ood_labels_read": false,
+  "model_training_performed": false,
+  "downstream_contact_inference_performed": false,
+  "original_source_sha256": "0dda3b48f93cdd813b47a65830fbe6b8134464465ef8e8ba0ebd496fb0738cff",
+  "live_training_modified": false
+}

@@ -1,0 +1,45 @@
+{
+  "bundle_sha256": "3e370ff3ebae1f6261865ace9b71666385ff5722d07f08388c5a490365400958",
+  "claim_boundary": {
+    "MSA_homologs_may_be_used_by_AF3": true,
+    "experimental_contact_labels_for_measurement": true,
+    "experimental_coordinates_as_input": false,
+    "fresh_blind_test": false,
+    "historical_exposed_test": true,
+    "model_selection_or_retraining": false,
+    "old455_is_not_checkpoint_test": true,
+    "sequence_double_cold_proven": false
+  },
+  "component_receipts": {
+    "0": {
+      "receipt_sha256": "181d5ccaeb715835461d117bd68ef64d79440338d6afa3612d1d3d8173d482bc",
+      "result_sha256": "0fdf822800477be2ec0c16135a90e1441299b0519586ecf8f9729b1dedc700fc"
+    },
+    "1": {
+      "receipt_sha256": "f68084372b3b4f80b52b0266ecb600e57e03ecfc80cca13049c4d955116555f4",
+      "result_sha256": "6c781125e62da138186ff82fc8f5236d76a42615fa073c1829d95d0fedf68b94"
+    },
+    "2": {
+      "receipt_sha256": "46b47ad4f3fd9fcd3b6b841ac1f445eea91e5fecabfa44874d6ce38b838f00c0",
+      "result_sha256": "fc6e057087e0b6519ed64a1c1deb287572fa443f6bbe0089bea050929c247a5c"
+    },
+    "3": {
+      "receipt_sha256": "7b1691d6d8611f092de8621b9083c8a6f9662046424659eee6970a4e4496b79c",
+      "result_sha256": "cef6119972650039187ad45c3478cad829efb46d49a87ccdf3865c4a60a766b1"
+    },
+    "4": {
+      "receipt_sha256": "29a2002893e2aaea799288be651fcde9ced6d4b8f7d2c970de60d8c8f5a136fe",
+      "result_sha256": "51040a3a53baac4589ba4671124ba72bb1626b40c1cf5befbd6f572a9bbdfbda"
+    },
+    "5": {
+      "receipt_sha256": "7e1f3ba2055ab5f49f1ce7cac17c6726a6a4aed4c751b906afb69aab55e5e4ab",
+      "result_sha256": "512fd4b25996473b2b539bda63a25a3af5381f47cf13bef4a5d8db1bf16fc898"
+    }
+  },
+  "routing": {
+    "contact": "baseline",
+    "epitope": "edge_topk2_supervised",
+    "paratope": "baseline"
+  },
+  "status": "PASS_MODEL_READY_ALIGNED_TEST549_BUNDLE"
+}

@@ -1,0 +1,21 @@
+{
+  "status": "FROZEN_BEFORE_SUBMISSION",
+  "at_utc": "2026-09-30T13:11:44.626598+00:00",
+  "source_commit": "b090e60bd7b517258ee41b50ee773255f92fcdef",
+  "inputs_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/source_gate_b090e60/extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md": "3cdb3ec7c12174e3b6ac235beb4d26f4a03f79d7cf826b9a0b60768536adc089",
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/source_gate_b090e60/extensions/rescue_qualification_v2/gated_rescue.py": "6d7bb4665229a64237d2125e734a617899d33c5f792f65a26596bb8e107314dc",
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/EVALUATION_PLAN.json": "9b84a97c3f68dbc0f6ba167b2ee573ee8a6e6f5c7663794b74b9af1a42ba907a",
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json": "b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc"
+  },
+  "array_indices": [
+    0,
+    1,
+    2
+  ],
+  "calibration_size": 256,
+  "contact_labels_used_for_gate": false,
+  "downstream_model_forward_performed": false,
+  "test_access": false,
+  "ood_access": false
+}

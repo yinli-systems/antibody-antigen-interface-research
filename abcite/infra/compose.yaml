@@ -1,0 +1,45 @@
+# AbCite local stack
+# From repo: antibody-antigen-interface-research/abcite
+#
+# API only:
+#   docker compose -f infra/compose.yaml up --build api
+#   curl -s http://127.0.0.1:8000/health
+#
+# API + web (Vite proxies /query to the api service):
+#   docker compose -f infra/compose.yaml up --build
+#   open http://127.0.0.1:5173
+#
+# Optional keys (do not bake into the image):
+#   OPENAI_API_KEY=... docker compose -f infra/compose.yaml up api
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      ABCITE_PROVIDER: auto
+      ABCITE_LOG_LEVEL: INFO
+      ABCITE_RCSB_LIVE: "0"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY:-}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
+      AZURE_OPENAI_DEPLOYMENT: ${AZURE_OPENAI_DEPLOYMENT:-}
+      LANGSMITH_TRACING: ${LANGSMITH_TRACING:-false}
+      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
+      LANGCHAIN_API_KEY: ${LANGCHAIN_API_KEY:-}
+    working_dir: /opt/abcite
+  web:
+    image: node:22-alpine
+    working_dir: /web
+    volumes:
+      - ../apps/web:/web
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+    environment:
+      PROXY_API: http://api:8000

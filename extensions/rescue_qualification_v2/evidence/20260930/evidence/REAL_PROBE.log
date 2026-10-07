@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/source/extensions/rescue_qualification_v2/real_probe.py", line 69, in <module>
+    if __name__=='__main__':main()
+  File "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/source/extensions/rescue_qualification_v2/real_probe.py", line 15, in main
+    metadata=inspect(a.plan,a.plan_sha256)
+  File "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/source/extensions/rescue_qualification_v2/preflight.py", line 55, in inspect
+    raise ValueError('frozen rescue availability disagrees with current stores')
+ValueError: frozen rescue availability disagrees with current stores

@@ -1,0 +1,94 @@
+{
+  "protocol": "unique_gold_visual",
+  "n_gallery": 15949,
+  "n_queries": 33,
+  "encoder": "clip-vit-b-32",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "rerank_k": 50,
+  "caption_bm25": {
+    "recall@1": 0.5758,
+    "recall@5": 0.8182,
+    "recall@10": 0.8485
+  },
+  "clip_image_only": {
+    "recall@1": 0.0303,
+    "recall@5": 0.0909,
+    "recall@10": 0.1212
+  },
+  "vision_rerank": {
+    "recall@1": 0.1515,
+    "recall@5": 0.4242,
+    "recall@10": 0.5152
+  },
+  "fusion": {
+    "recall@1": 0.2727,
+    "recall@5": 0.4848,
+    "recall@10": 0.697
+  },
+  "fusion_default": "off",
+  "rerank_helps_bm25": {
+    "helps_any": false,
+    "hurts_any": true,
+    "helps": {
+      "recall@1": false,
+      "recall@5": false,
+      "recall@10": false
+    },
+    "delta": {
+      "recall@1": -0.4243,
+      "recall@5": -0.394,
+      "recall@10": -0.3333
+    },
+    "note": "Positive delta means CLIP rerank of BM25 top-K beat caption BM25. Fusion RRF is a separate ablation and is off in the product default."
+  },
+  "mean_gap_image_i2i": 0.080677,
+  "mean_gap_clip_text_to_image": 0.003915,
+  "biomedclip_skip": null,
+  "note": "Protocol B: unique-gold visual questions (caption-free, no PDB). Committed fix-* gold is remapped to pmc-* via href when the PMC cache is used. Small-n. Not mixed with caption-as-query. 14 SVG cite-id match is a demo, not this protocol.",
+  "published_ranges": {
+    "scimmir_clip_ft_hits@10_t2i": "~0.135 (ALL, different 530k gallery; not a target to match)",
+    "scimmir_zs_clip_hits@10": "~0.0067 on 16k test (pair retrieval, not class)",
+    "scimmir_zs_vlm_hits@10": "<0.0023 typical",
+    "biomedclip_pmc_r@1_r@5": "~0.56 / ~0.77 on ~726k pairs (not this gallery)"
+  },
+  "small_n": true,
+  "n_queries_label": "small-n n=33",
+  "biomedclip": {
+    "encoder": "biomedclip",
+    "caption_bm25": {
+      "recall@1": 0.5758,
+      "recall@5": 0.8182,
+      "recall@10": 0.8485
+    },
+    "clip_image_only": {
+      "recall@1": 0.0909,
+      "recall@5": 0.2121,
+      "recall@10": 0.2424
+    },
+    "vision_rerank": {
+      "recall@1": 0.2424,
+      "recall@5": 0.3939,
+      "recall@10": 0.4545
+    },
+    "fusion": {
+      "recall@1": 0.303,
+      "recall@5": 0.4848,
+      "recall@10": 0.6061
+    },
+    "rerank_helps_bm25": {
+      "helps_any": false,
+      "hurts_any": true,
+      "helps": {
+        "recall@1": false,
+        "recall@5": false,
+        "recall@10": false
+      },
+      "delta": {
+        "recall@1": -0.3334,
+        "recall@5": -0.4243,
+        "recall@10": -0.394
+      },
+      "note": "Positive delta means CLIP rerank of BM25 top-K beat caption BM25. Fusion RRF is a separate ablation and is off in the product default."
+    }
+  }
+}

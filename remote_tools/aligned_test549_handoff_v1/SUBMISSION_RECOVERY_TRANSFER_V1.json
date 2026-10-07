@@ -1,0 +1,24 @@
+{
+  "jobs": {
+    "analyze": "1557213",
+    "evaluate": "1557212",
+    "prepare": "1557211"
+  },
+  "model_update": false,
+  "scope": "Existing 549-instance exposed historical test; correct checkpoint/data handoff",
+  "status": "SUBMITTED",
+  "test_selection": false,
+  "threshold_refit": false,
+  "tool_sha256": {
+    "README.md": "d6f98a7d684e2842d3f604f089865eb4e3b6f2a565d91c0ca3acfe86e61c8ed7",
+    "analyze.sbatch": "ce179911d8d17c37b6839fc68d668c2a17705fadcfc5b92b0a719517004aaeca",
+    "build_bundle.py": "6ec547e484e3154f4c440665b1ae725a4212a7aaa52b65b0c374da7558f7ff33",
+    "common.py": "704385a35884c832f50475997ca6cae7b0dc2e33d0821c3feddad74ce98d9139",
+    "evaluate.sbatch": "404d33fd3da2642baffddae6a13c78db384e7b09f900b164130e0292623388f7",
+    "finalize_bundle.py": "919efddf170b03ef25bd8658644ff7c7df63a6822c51a578b5d10445cb2fe921",
+    "prepare.sbatch": "465920d8b8f3abdfc82401c968b4f260c74dc9f3868242b2eaf1f931be90dc7a",
+    "run_bundle.py": "49803d04b3c8d1b538975969019b33c0141aa1071edd162587e153dcaac5266a",
+    "submit.py": "76d65900584cdaa8a5e1a8da05e8bc627a54ff941108cbfa486e1affec6a7b54",
+    "test_handoff.py": "7e2f19a219c3861dfbdd9452f5dfde09106d7870690e43c44fea68fff969916d"
+  }
+}

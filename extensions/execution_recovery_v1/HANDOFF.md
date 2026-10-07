@@ -39,3 +39,24 @@ checks, not additional independent biological samples. The latest preserved
 snapshot contains 12/36 completed formal training tasks. Do not select a layer
 without all registered controls, call an unknown pairing a non-binder, or reopen
 closed test/OOD data. No autonomous assistant follow-up is configured.
+
+## AF3 task-0 audit correction after 1641607_0
+
+`1641607_0` is a preserved post-inference audit failure, not a failed AF3
+prediction. Do not submit task 0 again. Use the latest source snapshot and
+`admit-existing` to copy/re-audit its exact outputs into a fresh attempt. The
+new audit allows only the verified `_ma_model_list.model_group_name` serialization
+timestamp difference while requiring exact full mmCIF semantics, all-atom and
+backbone coordinates, selected confidence payloads, seed/sample grid and input
+contract. Submit tasks 1–39 only after the admitted task-0 receipt passes and no
+same-plan allocation is active. Do not alter jobs 1640503, 1640514 or 1641627.
+
+## Strict finalization of the single submitted remaining-chain array
+
+Tasks 1–39 are owned by the one existing controller submission `1641712`; do not
+submit them again. After that array succeeds, run `strict_finalize_existing.py`
+against its immutable plan/output tree. The finalizer verifies all 40 original
+terminal receipts and prediction bytes with the current strict semantic auditor
+before creating any authority, then assembles the exact 40-chain completion.
+See `STRICT_FINALIZATION_PROTOCOL_20260930.md`. A dependency waiting in Slurm is
+not terminal completion and must not be described as a completed authority.

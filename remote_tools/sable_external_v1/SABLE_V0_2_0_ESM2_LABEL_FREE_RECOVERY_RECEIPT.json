@@ -1,0 +1,30 @@
+{
+  "format_version": "sable_v0_2_0_esm2_label_free_recovery_receipt_v1",
+  "submitted_at": "2026-08-29T20:26:12+08:00",
+  "recovery_job_id": 1491992,
+  "observed_initial_state": "RUNNING",
+  "partition": "gpu_4090",
+  "failed_job_id": 1491978,
+  "failed_job_evidence_sha256": "1a0e904dc9ec99026e0e2c2df67797925ecfeadbec2ee59c8028a2c7e2d50d66",
+  "recovery_class": "explicit_read_only_dependency_recovery",
+  "python_executable": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+  "pip_used": false,
+  "dependency_site_packages": "/ssd/scxi253/model_deployment/envs/epiformer/lib/python3.10/site-packages",
+  "dependency_versions": {
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "safetensors": "0.8.0"
+  },
+  "materializer_sha256": "51251b28f5d1aed961bc03984e6937059b3f8731f035229c5c718f7db63c2e91",
+  "launcher_sha256": "0ba4958f28f268332b0650edfe66799fc529cd4e68ad9caa51cb8c88bbf94896",
+  "input_plan_sha256": "c82c12f08c87b42d21aee31cc555373ffbc4211415d9aff302444baefc971ad6",
+  "frozen_esm_module_sha256": "2adc1d711f7d5a9d0fcfb34d4813468393d18ea45b0751fffa9d569857570dd8",
+  "model_weight_sha256": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0",
+  "embedding_artifacts_reused_from_failed_job": 0,
+  "scientific_protocol_changed": false,
+  "task_labels_read": false,
+  "bound_structures_read": false,
+  "old_sabdab2_test_loaded": false,
+  "temporal_holdout_loaded": false,
+  "selection_or_tuning": false
+}

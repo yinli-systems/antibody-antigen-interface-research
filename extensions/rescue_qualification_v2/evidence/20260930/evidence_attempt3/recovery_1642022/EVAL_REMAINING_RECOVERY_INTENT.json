@@ -1,0 +1,17 @@
+{
+  "at_utc": "2026-09-30T11:18:31.758200+00:00",
+  "recovery_of_job": "1642017",
+  "failed_exit": "2:0",
+  "failure_class": "launcher_source_path_only",
+  "preserved_failed_stderr_sha256": {
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/eval-remaining-1642017_1.err": "f7a28f83608727e0b136106f7e5b2cf873154b35183644572ab79b755703b0c8",
+    "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/evidence_attempt3/eval-remaining-1642017_2.err": "f7a28f83608727e0b136106f7e5b2cf873154b35183644572ab79b755703b0c8"
+  },
+  "source_root": "/ssd/scxi253/frontier_multimodel_v1/frontier_performance_v1/rescue_qualification_v2_20260930/source_attempt3",
+  "plan_sha256": "9b84a97c3f68dbc0f6ba167b2ee573ee8a6e6f5c7663794b74b9af1a42ba907a",
+  "tasks": [
+    1,
+    2
+  ],
+  "training_rerun": false
+}

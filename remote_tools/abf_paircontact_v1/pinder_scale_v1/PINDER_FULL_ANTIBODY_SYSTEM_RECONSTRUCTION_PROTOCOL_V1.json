@@ -1,0 +1,45 @@
+{
+  "authorization": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_metadata_and_sequences_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "claim_boundary": "Train-only metadata-and-sequence reconstruction of complete antibody systems. The output is not a contact-label cache, training set, validation split, test set, or performance result, and it does not authorize model training or selection.",
+  "deduplication_key": [
+    "topology",
+    "heavy_monomer",
+    "light_monomer",
+    "fused_monomer",
+    "antigen_monomer"
+  ],
+  "expected_counts": {
+    "fab": 19463,
+    "heavy_only_or_vhh": 3237,
+    "scfv": 1540,
+    "total_unique_systems": 24240
+  },
+  "format_version": "pinder_full_antibody_system_reconstruction_protocol_v1",
+  "pinder_release": "2024-02",
+  "reconstruction": {
+    "antibody_antigen_support": "Every antibody-antigen support edge must be listed by both corresponding SAbDab roles, belong to PINDER train, and occur in the frozen role-exclusive antibody-antigen inventory.",
+    "antigen_scope": "One physical PINDER protein-chain monomer per reconstructed system; multi-chain antigens are represented as separately auditable systems at this gate.",
+    "fab": "Require non-overlapping heavy and light monomers plus a PINDER-train H-L edge listed by both SAbDab roles. Attach an antigen monomer when at least one strict train H-antigen or L-antigen support edge exists; the unsupported antibody chain remains an explicit all-negative candidate axis for later label materialization.",
+    "heavy_only_or_vhh": "Require a mapped heavy monomer, no declared light chain, and a strict train heavy-antigen support edge. This gate does not infer VHH biology beyond the heavy-only SAbDab topology.",
+    "physical_copy_rule": "PINDER monomer identifiers, not sequence identity or PDB-level Cartesian products, define physical copies.",
+    "required_split": "train",
+    "role_ambiguity": "Exclude any SAbDab row whose mapped antibody and antigen monomer sets overlap.",
+    "scfv": "For SAbDab scfv=true, treat each mapped H/L-union monomer as one fused antibody chain and require a strict train fused-chain-antigen support edge; no H-L edge is required.",
+    "unsupported_topologies": "Exclude light-only and no-antibody rows. Do not silently reinterpret incomplete Fab rows as heavy-only systems."
+  },
+  "source_sha256": {
+    "index_parquet": "ced1936c4f36ea79161579df8d4b23bb4862b9c88f30af9defeeb85af99adac4",
+    "inventory_manifest": "3537f92f9c465bfd3019387080267e6a679fcb781776931d3c775145704cfb6c",
+    "sabdab_metadata_parquet": "afcf824aa992ccb1a0a1abfa913b5313929d8860e04e53402c442b6401be7380",
+    "sequence_database_parquet": "1ea3ccfe3166ebf1ae943e0379f4bfc800292beaee87944288777944364bc77b"
+  }
+}

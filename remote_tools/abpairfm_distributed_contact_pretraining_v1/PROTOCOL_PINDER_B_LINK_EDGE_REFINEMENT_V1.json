@@ -1,0 +1,95 @@
+{
+  "authorization": {
+    "B32K_training": false,
+    "B_canary_training": true,
+    "external_test_access": false
+  },
+  "checkpoint": {
+    "consumed_residue_tokens": 2070335724,
+    "content_sha256": "be22eb1889dd4f15b3d2c2ad449cb5084bde91435dd8d4d392f9295d6f10f839",
+    "generation": "segment-000130"
+  },
+  "claim_boundary": "Matched 64-update PINDER-Train-only explicit bipartite edge-refinement canary. It may compare decoder optimization and frozen holdout ranking against the preregistered low-rank control; it cannot support scale, antibody-adaptation, external-test, or SOTA claims.",
+  "data": {
+    "canary_system_weight_mean": 15.306879939130896,
+    "contact_definition": "minimum inter-chain non-hydrogen atom distance <= 4.5 Angstrom",
+    "evaluation_groups": 4,
+    "holdout": "16 deterministic PDB-disjoint train-only representatives, never used for gradient updates",
+    "holdout_systems": 16,
+    "manifest_receipt_sha256": "7a34c6b1ea0a9797cf058b7ff42ccc838d013e7598b258407fa3a2347fea89a4",
+    "manifest_sha256": "d1565738427bba396591e7dd2c9f690194f696c8a68cf66bfc0db31780869589",
+    "maximum_tokens": 1024,
+    "model_inputs": [
+      "resolved_left_sequence",
+      "resolved_right_sequence"
+    ],
+    "model_inputs_exclude": [
+      "coordinates",
+      "distances",
+      "contact_labels"
+    ],
+    "source_partition": "PINDER-Train",
+    "systems": 512
+  },
+  "format_version": "abpairfm_pinder_b_canary_v1",
+  "loss": {
+    "epitope_marginal_weight": 0.2,
+    "hard_negative_temperature": 0.5,
+    "marginal_temperature": 0.25,
+    "masked_language_modeling_weight": 0.25,
+    "pair_contact_weight": 1.0,
+    "paratope_marginal_weight": 0.2,
+    "partner_swap_weight": 0.2
+  },
+  "model": {
+    "architecture": "PairAwareESM2_3B",
+    "edge_dimension": 32,
+    "pair_decoder": "bipartite_edge_refinement",
+    "pair_dimension": 128,
+    "refinement_steps": 2,
+    "trainable_top_layers": 4
+  },
+  "optimization": {
+    "accumulation_steps": 2,
+    "backbone_learning_rate": 1e-6,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "minimum_learning_rate_ratio": 0.1,
+    "optimizer": "fused_AdamW",
+    "systems_per_rank": 1,
+    "updates": 64,
+    "warmup_updates": 4,
+    "weight_decay": 0.01
+  },
+  "promotion": {
+    "exact_DCP_restore_required": true,
+    "finite_all_terms_required": true,
+    "matched_comparison_required": true,
+    "maximum_peak_memory_fraction": 0.92
+  },
+  "source_sha256": "78736d49f17eb622bcb2f48cc7f1853563d111b42f5969f5d21c0ebbe2700b51",
+  "stage": {
+    "fail_status": "FAIL_BIPARTITE_EDGE_REFINEMENT_CANARY",
+    "name": "B-canary",
+    "output_generation": "b-link-edge-refinement-000000",
+    "pass_status": "PASS_BIPARTITE_EDGE_REFINEMENT_CANARY",
+    "progress_format": "abpairfm_bipartite_edge_refinement_progress_v1",
+    "result_format": "abpairfm_bipartite_edge_refinement_result_v1"
+  },
+  "status": "FROZEN_B_CANARY_AUTHORIZED",
+  "systems": {
+    "activation_checkpointing": false,
+    "attention": "native_variable_length_flash_sdpa",
+    "execution": "eager_reference",
+    "length_bucketed_four_rank_groups": true,
+    "partition": "gpu_4090",
+    "precision": "BF16_forward_backward_FP32_optimizer",
+    "sharding": "FSDP2_single_node_full_shard",
+    "world_size": 4
+  },
+  "test_access": false
+}
