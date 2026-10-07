@@ -1,0 +1,159 @@
+{
+  "accepted_core_preserved": true,
+  "format_version": "epic_reviewer_concern_matrix_v1",
+  "items": [
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points",
+      "concern": "contact imbalance and practical interpretation",
+      "current_evidence": "rank/calibration/top-k package",
+      "disposition": "addressed",
+      "id": "C01",
+      "resolution_class": "existing_raw_analysis"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity",
+      "concern": "alternative structure predictor",
+      "current_evidence": "AF3 and predicted-vs-bound sensitivity; no exact OpenDDE paired substitution",
+      "disposition": "addressed_with_qualified_sensitivity",
+      "id": "C02",
+      "resolution_class": "partial_existing"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s3-joint-supervision-and-objective-interference",
+      "concern": "joint supervision",
+      "current_evidence": "2x2 task/objective ablation",
+      "disposition": "addressed",
+      "id": "C03",
+      "resolution_class": "existing_evidence"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity",
+      "concern": "geometry branch",
+      "current_evidence": "equal-parameter geometry controls",
+      "disposition": "addressed_development_only",
+      "id": "C04",
+      "resolution_class": "existing_evidence"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s5-contact-gated-cross-attention",
+      "concern": "contact-gated cross-attention",
+      "current_evidence": "single-seed M3/M4/M6 successor results; M2 no-gate TIMEOUT with no result; no exact submitted-model causal contrast",
+      "disposition": "addressed_with_bounded_successor_evidence_and_claim_moderation",
+      "id": "C05",
+      "resolution_class": "successor_evidence_plus_claim_moderation"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s4-pair-decoder--beyond-marginal-evidence",
+      "concern": "low-rank pair decoder",
+      "current_evidence": "three-seed pair-vs-marginal diagnostics plus decoder ablation",
+      "disposition": "addressed",
+      "id": "C06",
+      "resolution_class": "existing_evidence"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off",
+      "concern": "auxiliary epitope losses",
+      "current_evidence": "dropout-0.2 count term raises recall and lowers precision; dropout-0.1 AP direction reverses; exact multi-seed submitted-model intervention unavailable",
+      "disposition": "addressed_with_unstable_development_evidence_and_claim_moderation",
+      "id": "C07",
+      "resolution_class": "single_seed_factorial_plus_claim_moderation"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#abstract-replacement",
+      "concern": "AsEP claim absent",
+      "current_evidence": "remove exact-EPIC claim; separate later AsEP evidence",
+      "disposition": "addressed_text_correction",
+      "id": "C08",
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#input-modality-clarification",
+      "concern": "input modality wording",
+      "current_evidence": "sequence-input with predicted monomer geometry",
+      "disposition": "addressed_text_correction",
+      "id": "C09",
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s7-externalood-robustness",
+      "concern": "external/OOD and uncertainty",
+      "current_evidence": "bootstrap/fresh holdout separate; no prospective claim",
+      "disposition": "addressed_with_boundary",
+      "id": "C10",
+      "resolution_class": "existing_plus_boundary"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points",
+      "concern": "favorable contact metric packaging",
+      "current_evidence": "AP/prevalence/top-k before AUROC/recall",
+      "disposition": "addressed",
+      "id": "C11",
+      "resolution_class": "text_and_analysis"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off",
+      "concern": "epitope recall trade-off",
+      "current_evidence": "precision/F1/calibration/matched-recall; no causal cond-loss claim",
+      "disposition": "addressed",
+      "id": "C12",
+      "resolution_class": "text_and_analysis"
+    },
+    {
+      "canonical_response": "BASELINE_PROTOCOL_TABLE.md",
+      "concern": "baseline comparability",
+      "current_evidence": "split internal vs literature-context tables",
+      "disposition": "addressed",
+      "id": "C13",
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#topk2-sentence",
+      "concern": "undefined TOPK2",
+      "current_evidence": "delete orphan sentence",
+      "disposition": "addressed_text_correction",
+      "id": "C14",
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost",
+      "concern": "calibration/translation",
+      "current_evidence": "ECE/Brier/reliability and explicit no prospective validation",
+      "disposition": "addressed",
+      "id": "C15",
+      "resolution_class": "existing_analysis"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#metric-harmonization",
+      "concern": "global recall asymmetry",
+      "current_evidence": "report pooled and equal-complex recall",
+      "disposition": "addressed",
+      "id": "C16",
+      "resolution_class": "analysis_and_text"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost",
+      "concern": "training cost",
+      "current_evidence": "parameters/epochs/wall-time/GPU",
+      "disposition": "addressed",
+      "id": "C17",
+      "resolution_class": "existing_receipts"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#title-and-footer",
+      "concern": "formatting/footnote",
+      "current_evidence": "AI4DD footer and proofreading",
+      "disposition": "addressed_text_correction",
+      "id": "C18",
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#contribution-bullets",
+      "concern": "incremental novelty",
+      "current_evidence": "integrated formulation/evidence claim only",
+      "disposition": "addressed_claim_moderation",
+      "id": "C19",
+      "resolution_class": "text_correction"
+    }
+  ],
+  "status": "COMPLETE_RESPONSE_PACKAGE_WITH_EXPLICIT_UNRESOLVED_EXACT_INTERVENTIONS"
+}

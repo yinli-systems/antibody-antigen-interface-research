@@ -1,0 +1,224 @@
+{
+  "concern_count": 19,
+  "exact_interventions_still_unavailable": [
+    "OpenDDE-versus-AF3 on unchanged submitted checkpoint",
+    "exact submitted contact-gate/no-gate multi-seed factorial",
+    "exact submitted auxiliary-loss multi-seed factorial",
+    "fresh prospective biological validation"
+  ],
+  "format_version": "epic_reviewer_concern_closure_v1",
+  "items": [
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points",
+      "closure_type": "audited_existing_evidence",
+      "concern": "contact imbalance and practical interpretation",
+      "current_evidence": "rank/calibration/top-k package",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C01",
+      "remaining_boundary": null,
+      "resolution_class": "existing_raw_analysis"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity",
+      "closure_type": "bounded_post_submission_or_successor_evidence",
+      "concern": "alternative structure predictor",
+      "current_evidence": "AF3 and predicted-vs-bound sensitivity; no exact OpenDDE paired substitution",
+      "disposition": "addressed_with_qualified_sensitivity",
+      "exact_submitted_model_empirical_closure": false,
+      "id": "C02",
+      "remaining_boundary": "No tensor-identical OpenDDE-versus-AF3 substitution on the submitted checkpoint.",
+      "resolution_class": "partial_existing"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s3-joint-supervision-and-objective-interference",
+      "closure_type": "audited_existing_evidence",
+      "concern": "joint supervision",
+      "current_evidence": "2x2 task/objective ablation",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C03",
+      "remaining_boundary": null,
+      "resolution_class": "existing_evidence"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s2-geometry-and-predictor-sensitivity",
+      "closure_type": "bounded_post_submission_or_successor_evidence",
+      "concern": "geometry branch",
+      "current_evidence": "equal-parameter geometry controls",
+      "disposition": "addressed_development_only",
+      "exact_submitted_model_empirical_closure": false,
+      "id": "C04",
+      "remaining_boundary": "Geometry evidence includes controlled later experiments, not every submitted-model component in isolation.",
+      "resolution_class": "existing_evidence"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s5-contact-gated-cross-attention",
+      "closure_type": "bounded_post_submission_or_successor_evidence",
+      "concern": "contact-gated cross-attention",
+      "current_evidence": "single-seed M3/M4/M6 successor results; M2 no-gate TIMEOUT with no result; no exact submitted-model causal contrast",
+      "disposition": "addressed_with_bounded_successor_evidence_and_claim_moderation",
+      "exact_submitted_model_empirical_closure": false,
+      "id": "C05",
+      "remaining_boundary": "No completed exact submitted-model no-gate control; successor M2 timed out.",
+      "resolution_class": "successor_evidence_plus_claim_moderation"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s4-pair-decoder--beyond-marginal-evidence",
+      "closure_type": "audited_existing_evidence",
+      "concern": "low-rank pair decoder",
+      "current_evidence": "three-seed pair-vs-marginal diagnostics plus decoder ablation",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C06",
+      "remaining_boundary": null,
+      "resolution_class": "existing_evidence"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off",
+      "closure_type": "bounded_post_submission_or_successor_evidence",
+      "concern": "auxiliary epitope losses",
+      "current_evidence": "dropout-0.2 count term raises recall and lowers precision; dropout-0.1 AP direction reverses; exact multi-seed submitted-model intervention unavailable",
+      "disposition": "addressed_with_unstable_development_evidence_and_claim_moderation",
+      "exact_submitted_model_empirical_closure": false,
+      "id": "C07",
+      "remaining_boundary": "No exact submitted-model multi-seed Dice/count factorial.",
+      "resolution_class": "single_seed_factorial_plus_claim_moderation"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#abstract-replacement",
+      "closure_type": "camera_ready_text_correction",
+      "concern": "AsEP claim absent",
+      "current_evidence": "remove exact-EPIC claim; separate later AsEP evidence",
+      "disposition": "addressed_text_correction",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C08",
+      "remaining_boundary": null,
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#input-modality-clarification",
+      "closure_type": "camera_ready_text_correction",
+      "concern": "input modality wording",
+      "current_evidence": "sequence-input with predicted monomer geometry",
+      "disposition": "addressed_text_correction",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C09",
+      "remaining_boundary": null,
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s7-externalood-robustness",
+      "closure_type": "bounded_post_submission_or_successor_evidence",
+      "concern": "external/OOD and uncertainty",
+      "current_evidence": "bootstrap/fresh holdout separate; no prospective claim",
+      "disposition": "addressed_with_boundary",
+      "exact_submitted_model_empirical_closure": false,
+      "id": "C10",
+      "remaining_boundary": "No fresh prospective biological test; later OOD evidence is separate.",
+      "resolution_class": "existing_plus_boundary"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s1-sparse-contact-ranking-and-practical-operating-points",
+      "closure_type": "audited_existing_evidence",
+      "concern": "favorable contact metric packaging",
+      "current_evidence": "AP/prevalence/top-k before AUROC/recall",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C11",
+      "remaining_boundary": null,
+      "resolution_class": "text_and_analysis"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s6-auxiliary-epitope-losses-and-the-recall-trade-off",
+      "closure_type": "audited_existing_evidence",
+      "concern": "epitope recall trade-off",
+      "current_evidence": "precision/F1/calibration/matched-recall; no causal cond-loss claim",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C12",
+      "remaining_boundary": null,
+      "resolution_class": "text_and_analysis"
+    },
+    {
+      "canonical_response": "BASELINE_PROTOCOL_TABLE.md",
+      "closure_type": "audited_existing_evidence",
+      "concern": "baseline comparability",
+      "current_evidence": "split internal vs literature-context tables",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C13",
+      "remaining_boundary": null,
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#topk2-sentence",
+      "closure_type": "camera_ready_text_correction",
+      "concern": "undefined TOPK2",
+      "current_evidence": "delete orphan sentence",
+      "disposition": "addressed_text_correction",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C14",
+      "remaining_boundary": null,
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost",
+      "closure_type": "audited_existing_evidence",
+      "concern": "calibration/translation",
+      "current_evidence": "ECE/Brier/reliability and explicit no prospective validation",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C15",
+      "remaining_boundary": null,
+      "resolution_class": "existing_analysis"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#metric-harmonization",
+      "closure_type": "audited_existing_evidence",
+      "concern": "global recall asymmetry",
+      "current_evidence": "report pooled and equal-complex recall",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C16",
+      "remaining_boundary": null,
+      "resolution_class": "analysis_and_text"
+    },
+    {
+      "canonical_response": "SUPPLEMENTARY_EVIDENCE.md#s8-calibration-and-training-cost",
+      "closure_type": "audited_existing_evidence",
+      "concern": "training cost",
+      "current_evidence": "parameters/epochs/wall-time/GPU",
+      "disposition": "addressed",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C17",
+      "remaining_boundary": null,
+      "resolution_class": "existing_receipts"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#title-and-footer",
+      "closure_type": "camera_ready_text_correction",
+      "concern": "formatting/footnote",
+      "current_evidence": "AI4DD footer and proofreading",
+      "disposition": "addressed_text_correction",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C18",
+      "remaining_boundary": null,
+      "resolution_class": "text_correction"
+    },
+    {
+      "canonical_response": "CAMERA_READY_PATCHES.md#contribution-bullets",
+      "closure_type": "claim_moderation",
+      "concern": "incremental novelty",
+      "current_evidence": "integrated formulation/evidence claim only",
+      "disposition": "addressed_claim_moderation",
+      "exact_submitted_model_empirical_closure": true,
+      "id": "C19",
+      "remaining_boundary": null,
+      "resolution_class": "text_correction"
+    }
+  ],
+  "policy": "A concern can be closed by correction, audited evidence, or explicit claim moderation; closure does not imply an unavailable experiment was fabricated.",
+  "status": "ALL_19_CONCERNS_HAVE_CAMERA_READY_DISPOSITIONS_WITH_EXPLICIT_EMPIRICAL_BOUNDARIES",
+  "unanswered_concern_count": 0
+}

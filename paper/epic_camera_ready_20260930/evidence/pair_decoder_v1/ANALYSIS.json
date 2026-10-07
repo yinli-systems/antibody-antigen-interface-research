@@ -1,0 +1,288 @@
+{
+  "antigen_cluster_count": 108,
+  "authority": {
+    "calibration_or_threshold_fitting": false,
+    "checkpoint_selection": false,
+    "development_only": true,
+    "distance_label_manifest_sha256": null,
+    "experimental_bound_coordinates_used_as_model_input": false,
+    "model_state_sha256_after": "4fbbafddf801a882bb5113f3b7f244f27ca4349927fcd8250b0e5102311524ef",
+    "model_state_sha256_before": "4fbbafddf801a882bb5113f3b7f244f27ca4349927fcd8250b0e5102311524ef",
+    "model_training": false,
+    "raw_pair_predictions_persisted": false,
+    "sable_external_labels_loaded": false,
+    "temporal_holdout_loaded": false,
+    "test_loaded": false
+  },
+  "claim_boundary": "Post-submission development/historical diagnostic from the successor FrameContact checkpoint family; no retraining, no test selection, and not an exact ablation of the anonymous submitted EPIC checkpoint.",
+  "comparisons": {
+    "full_contact_minus_residue_head_outer_product": {
+      "average_precision": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          0.0030120951104442074,
+          0.005484336738094166
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          0.0022898190376824377,
+          0.006293240391986953
+        ],
+        "equal_antigen_cluster_equal_seed": 0.004257384068802852,
+        "equal_complex": 0.004958826228106766,
+        "positive_seed_cluster_cell_fraction": 0.8333333333333334,
+        "seed_effects": {
+          "17": 0.005717336059913773,
+          "29": 0.003892759514883053,
+          "43": 0.0052663831095234705
+        }
+      },
+      "hits_at_1": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          -0.028298013135295265,
+          0.018664990571693473
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -0.03899465594318535,
+          0.02474304653992894
+        ],
+        "equal_antigen_cluster_equal_seed": -0.004925823148921566,
+        "equal_complex": -0.004857316332726169,
+        "positive_seed_cluster_cell_fraction": 0.05246913580246913,
+        "seed_effects": {
+          "17": 0.0018214936247723133,
+          "29": -0.012750455373406194,
+          "43": -0.0036429872495446266
+        }
+      },
+      "recall_at_P": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          0.0010392257267769322,
+          0.008158091250027593
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -5.980510944424117e-05,
+          0.009084472758467434
+        ],
+        "equal_antigen_cluster_equal_seed": 0.004551013540824722,
+        "equal_complex": 0.007439383965768806,
+        "positive_seed_cluster_cell_fraction": 0.3765432098765432,
+        "seed_effects": {
+          "17": 0.008169716311483891,
+          "29": 0.005211130877559786,
+          "43": 0.008937304708262737
+        }
+      },
+      "reciprocal_rank_first_positive": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          -0.013831854988239915,
+          0.027927306480068137
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -0.025778089223677105,
+          0.035979239682406794
+        ],
+        "equal_antigen_cluster_equal_seed": 0.0068756547747484496,
+        "equal_complex": 0.01527450809343645,
+        "positive_seed_cluster_cell_fraction": 0.691358024691358,
+        "seed_effects": {
+          "17": 0.015958455488682657,
+          "29": 0.011398151903113548,
+          "43": 0.01846691688851315
+        }
+      }
+    },
+    "full_contact_minus_unary_only": {
+      "average_precision": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          0.0001596760238219601,
+          0.0024297486026279985
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -0.0006993492689394563,
+          0.003110299187062426
+        ],
+        "equal_antigen_cluster_equal_seed": 0.001285975539839686,
+        "equal_complex": 0.0023658290063322614,
+        "positive_seed_cluster_cell_fraction": 0.5339506172839507,
+        "seed_effects": {
+          "17": 0.0003385223952059787,
+          "29": 0.0034729678614356294,
+          "43": 0.003285996762355177
+        }
+      },
+      "hits_at_1": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          -0.019535264314098858,
+          0.016224386230047457
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -0.027146817666141344,
+          0.02229673828521155
+        ],
+        "equal_antigen_cluster_equal_seed": -0.0027831942837981487,
+        "equal_complex": -0.0018214936247723133,
+        "positive_seed_cluster_cell_fraction": 0.043209876543209874,
+        "seed_effects": {
+          "17": -0.012750455373406194,
+          "29": 0.0018214936247723133,
+          "43": 0.00546448087431694
+        }
+      },
+      "recall_at_P": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          0.00025756026274161513,
+          0.00538132892268312
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -0.0017781677044661102,
+          0.00757182317045194
+        ],
+        "equal_antigen_cluster_equal_seed": 0.0028411852301358093,
+        "equal_complex": 0.005518315591058627,
+        "positive_seed_cluster_cell_fraction": 0.3734567901234568,
+        "seed_effects": {
+          "17": 0.0018278509190210518,
+          "29": 0.009131216901459986,
+          "43": 0.005595878952694842
+        }
+      },
+      "reciprocal_rank_first_positive": {
+        "bootstrap_repeats": 10000,
+        "cluster_count": 108,
+        "cluster_only_ci95_conditional_on_fixed_seeds": [
+          -0.01841518440145493,
+          0.019284954451480606
+        ],
+        "complex_count": 549,
+        "crossed_seed_cluster_ci95": [
+          -0.03064921894104875,
+          0.025655642820919172
+        ],
+        "equal_antigen_cluster_equal_seed": -0.00026600078062864345,
+        "equal_complex": 0.008253624339573008,
+        "positive_seed_cluster_cell_fraction": 0.46296296296296297,
+        "seed_effects": {
+          "17": -0.010869449557133471,
+          "29": 0.01637310817047687,
+          "43": 0.019257214405375617
+        }
+      }
+    }
+  },
+  "complex_count": 549,
+  "format_version": "epic_pair_decoder_existing_evidence_v1",
+  "seed_score_summaries": {
+    "17": {
+      "full_contact": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.02768367284030703,
+        "pooled_average_precision": 0.01526008125892404
+      },
+      "gauge_fixed_residual": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.00584594784612513,
+        "pooled_average_precision": 0.002225569696667285
+      },
+      "raw_interaction": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.0020299931171172676,
+        "pooled_average_precision": 0.000970918902450157
+      },
+      "residue_head_outer_product": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.021966336780393253,
+        "pooled_average_precision": 0.011196026458602702
+      },
+      "unary_only": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.02734515044510105,
+        "pooled_average_precision": 0.013708903092068422
+      }
+    },
+    "29": {
+      "full_contact": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.026708020006876228,
+        "pooled_average_precision": 0.013908249827510613
+      },
+      "gauge_fixed_residual": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.0102606474632961,
+        "pooled_average_precision": 0.004617449919591791
+      },
+      "raw_interaction": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.00821015942128076,
+        "pooled_average_precision": 0.003297964627522693
+      },
+      "residue_head_outer_product": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.022815260491993172,
+        "pooled_average_precision": 0.011430814220122496
+      },
+      "unary_only": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.023235052145440596,
+        "pooled_average_precision": 0.012137407903127506
+      }
+    },
+    "43": {
+      "full_contact": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.02805845582605276,
+        "pooled_average_precision": 0.014743796393990696
+      },
+      "gauge_fixed_residual": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.005358361696135242,
+        "pooled_average_precision": 0.002229875399324533
+      },
+      "raw_interaction": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.0015229578508456647,
+        "pooled_average_precision": 0.0009325257069771857
+      },
+      "residue_head_outer_product": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.022792072716529287,
+        "pooled_average_precision": 0.01049172331846547
+      },
+      "unary_only": {
+        "eligible_complex_count": 549,
+        "mean_per_complex_average_precision": 0.024772459063697582,
+        "pooled_average_precision": 0.013033217555294636
+      }
+    }
+  },
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "source_files": {
+    "/ssd/scxi253/model_deployment/results/development/abf30b_framecontact_v1/results/beyond_marginals_v1/seed-17/ABF30B_BEYOND_MARGINALS_COMPONENT_V1.json": "79049216db5859c967c09f25666cf1ba389864ad417338f5f451c2efc19cfdee",
+    "/ssd/scxi253/model_deployment/results/development/abf30b_framecontact_v1/results/beyond_marginals_v1/seed-29/ABF30B_BEYOND_MARGINALS_COMPONENT_V1.json": "df766ee35ad1f400c7cee461fab1e32d3e87ca1a5c446f48826e791dbdca769c",
+    "/ssd/scxi253/model_deployment/results/development/abf30b_framecontact_v1/results/beyond_marginals_v1/seed-43/ABF30B_BEYOND_MARGINALS_COMPONENT_V1.json": "0b44ee89a7230623ea6cab0cc4d545eaf0a4525c630da1195192088966367c7f"
+  },
+  "status": "COMPLETE_EXISTING_THREE_SEED_DIAGNOSTIC"
+}

@@ -1,0 +1,58 @@
+{
+  "analysis_protocol": {
+    "full_training_result_count_at_freeze": 0,
+    "path": "protocol/ANALYSIS_PROTOCOL.json",
+    "remote_receipt_path": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z/receipts/ANALYSIS_PROTOCOL_RECEIPT.json",
+    "remote_receipt_sha256": "7c05a5e146382509f2e54784575d66ff555e76e91cd8bedcab3b2b79fc188303",
+    "sha256": "163245a45aee020b71c9f995a997ba7e08913286a95d8b10d7cf8a2a7c581012",
+    "status": "PASS_ANALYSIS_PROTOCOL_FROZEN_BEFORE_FIRST_FULL_RESULT"
+  },
+  "authority": {
+    "receipt_path": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z/receipts/AUTHORITY_RECEIPT.json",
+    "receipt_sha256": "22758cac5289c70393711a6e17456ee8747aa5341ecdb8384c5d2372e7f79130",
+    "status": "PASS_FULL_PARENT_BUNDLE_VERIFICATION",
+    "verified_file_count": 6597,
+    "verified_total_bytes": 123904952
+  },
+  "campaign_protocol_sha256": "d6647c4421eebb910d8adae73f41c814690e50f5b41ea1d6264179dcea7f0bc7",
+  "format_version": "epic_reviewer_closure_run_ledger_v1",
+  "main_training": {
+    "array_task_count": 36,
+    "full_result_count": 0,
+    "job_id": "1643900",
+    "result_count_at_submission": 0,
+    "started_receipt_count": 36,
+    "state_at_2026-09-30T22:08:12Z": "RUNNING_ALL_36_TASKS",
+    "state_at_2026-09-30T22:11:23Z": "RUNNING_ALL_36_TASKS"
+  },
+  "post_training_freeze_and_analysis": {
+    "dependency": "afterok:1643900",
+    "expected_outputs": [
+      "TRAINING_MANIFEST.json",
+      "VALIDATION_ANALYSIS.json",
+      "VALIDATION_ANALYSIS.md",
+      "VALIDATION_ANALYSIS_RECEIPT.json",
+      "POST_TRAINING_COMPLETE.json"
+    ],
+    "job_id": "1643939",
+    "state_at_submission": "PENDING_DEPENDENCY",
+    "test_access": false
+  },
+  "remote_root": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z",
+  "smoke": {
+    "array_task_count": 12,
+    "job_id": "1643888",
+    "manifest_path": "/ssd/scxi253/frontier_multimodel_v1/epic_reviewer_closure_v1_20260930T220257Z/receipts/SMOKE_MANIFEST.json",
+    "manifest_sha256": "f9eb682edd0dbff8559b71df708b8f3d31989329ed199db9a4839c8b15f92534",
+    "nonempty_stderr_count": 0,
+    "result_count": 12,
+    "status": "PASS_ALL_CONDITION_SMOKES_FROZEN"
+  },
+  "synthetic_post_training_pipeline_test": {
+    "receipt_path": "SYNTHETIC_PIPELINE_TEST_RECEIPT.json",
+    "receipt_sha256": "5a5e4bb6d2fa52504d8a840ec7af0f6aa074d64184854403c87a65fdfc35e167",
+    "status": "PASS_SYNTHETIC_POST_TRAINING_PIPELINE_INTEGRATION_TEST"
+  },
+  "test_label_artifacts_opened": false,
+  "test_selection_performed": false
+}

@@ -1,0 +1,80 @@
+{
+  "output": "/ssd/scxi253/frontier_multimodel_v1/epic_camera_ready_20260930/rank_calibration_v2/ANALYSIS.json",
+  "sha256": "85fbce6e1c245091cafc0c02833637f1e3904551a0a2d6d4fc3a04e7fcae43eb",
+  "ensemble_contact": {
+    "average_precision": 0.02478753742182331,
+    "auroc": 0.909699262746182,
+    "precision_at_05": 0.010701423972372935,
+    "recall_at_05": 0.6171272933051491,
+    "ranked_cutoffs": {
+      "10": {
+        "mean_precision": 0.039340659340659334,
+        "mean_recall": 0.009233030543671972,
+        "mean_k": 10.0
+      },
+      "20": {
+        "mean_precision": 0.03538461538461539,
+        "mean_recall": 0.01661042132565109,
+        "mean_k": 20.0
+      },
+      "50": {
+        "mean_precision": 0.02808791208791209,
+        "mean_recall": 0.03299353882822628,
+        "mean_k": 50.0
+      },
+      "100": {
+        "mean_precision": 0.024153846153846154,
+        "mean_recall": 0.057227223538380514,
+        "mean_k": 100.0
+      },
+      "lmin": {
+        "mean_precision": 0.02379410859525943,
+        "mean_recall": 0.06971564231726686,
+        "mean_k": 144.16043956043956,
+        "mean_enrichment_over_prevalence": 17.185188012771484
+      },
+      "true_count": {
+        "mean_precision": 0.029406914691969085,
+        "mean_recall": 0.029406914691969085,
+        "mean_k": 43.48571428571429,
+        "mean_enrichment_over_prevalence": 22.450148459606176
+      },
+      "top_1pct": {
+        "mean_precision": 0.020412818651500037,
+        "mean_recall": 0.1479723832721193,
+        "mean_k": 406.4747252747253,
+        "mean_enrichment_over_prevalence": 14.775168777661863
+      }
+    }
+  },
+  "ensemble_contact_pooled": {
+    "prevalence": 0.001071052819046097,
+    "average_precision": 0.010841480128789422,
+    "auroc": 0.9119524536424183,
+    "precision_at_05": 0.008182616377698407,
+    "recall_at_05": 0.610431618315981,
+    "brier": 0.055063112621325856,
+    "ece_15": 0.12170499206377262
+  },
+  "bootstrap_contact": {
+    "estimand": "equal_complex_mean_after_averaging_three_fixed_seeds",
+    "complex_count": 455,
+    "seeds": [
+      "17",
+      "29",
+      "43"
+    ],
+    "bootstrap_repeats": 10000,
+    "macro_average_precision": 0.019427837710008136,
+    "macro_average_precision_ci95": [
+      0.017627148834635693,
+      0.0212881136781322
+    ],
+    "macro_recall_at_05": 0.5971358125619662,
+    "macro_recall_at_05_ci95": [
+      0.5754689585198149,
+      0.6180238219494351
+    ],
+    "conditional_on_fixed_seeds": true
+  }
+}
