@@ -106,7 +106,7 @@ def score(cache:dict[str,Any],method:str)->tuple[np.ndarray,dict[str,Any]]:
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--cache",type=Path,required=True);ap.add_argument("--method",choices=("kmer","nw"),required=True);ap.add_argument("--output",type=Path,required=True)
-    a=ap.parse_args(); 
+    a=ap.parse_args();
     if a.output.exists():raise FileExistsError(a.output)
     d=load_json(a.cache);validate_cache(d);scores,meta=score(d,a.method)
     pp=[(x["antibody_id"],x["antigen_id"]) for x in d["validation_pairs"]]

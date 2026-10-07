@@ -1,0 +1,1 @@
+First focused preflight failed before tests because PYTHONPATH incorrectly pointed at extensions/strict_partner_retrieval_v1 instead of its parent extensions. No model assertion executed. Source bytes unchanged.
