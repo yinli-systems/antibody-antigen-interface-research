@@ -1,0 +1,342 @@
+{
+  "snapshot_utc": "2026-10-07T11:36:54.800931+00:00",
+  "main_sha": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+  "counts": {
+    "branch_count": 30,
+    "tracked_entries": 103552,
+    "distinct_path_blob_versions": 4913,
+    "distinct_blobs": 4756
+  },
+  "branches": [
+    {
+      "name": "abcite/multimodal-copilot",
+      "sha": "fb871f35678c4462074c0868a7738f1dc9483b05",
+      "committed_at": "2026-09-10T19:13:26+04:00",
+      "subject": "Report holdout ColQwen2.5 LoRA that did not beat zero-shot.",
+      "ahead": 41,
+      "behind": 10,
+      "files": 3477,
+      "distinct_versions_only_this_branch": 306,
+      "changed_vs_main": 758
+    },
+    {
+      "name": "feature/asep-pretraining-pipeline",
+      "sha": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+      "committed_at": "2026-09-06T19:01:50+04:00",
+      "subject": "feat: in-domain fine-tuning and evaluation for SAbDab2 to resolve Trade-off",
+      "ahead": 5,
+      "behind": 10,
+      "files": 3193,
+      "distinct_versions_only_this_branch": 23,
+      "changed_vs_main": 484
+    },
+    {
+      "name": "kevin/af3-semantic-audit-20260930",
+      "sha": "859a7145bfb10bab87ca72a7dd1fbebe5d6a2399",
+      "committed_at": "2026-09-30T13:15:48+04:00",
+      "subject": "Record strict AF3 recovery certificates, preserved failure, and actual pending work",
+      "ahead": 172,
+      "behind": 10,
+      "files": 3651,
+      "distinct_versions_only_this_branch": 48,
+      "changed_vs_main": 224
+    },
+    {
+      "name": "kevin/correspondence-upgrade-20260930",
+      "sha": "14a385feaec24b3141331963ba71dda788a164e1",
+      "committed_at": "2026-09-30T02:53:26+04:00",
+      "subject": "Publish complete three-encoder correspondence results and exact reproduction evidence",
+      "ahead": 136,
+      "behind": 10,
+      "files": 3372,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 395
+    },
+    {
+      "name": "kevin/epic-reviewer-response-20260930",
+      "sha": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+      "committed_at": "2026-10-01T02:17:03+04:00",
+      "subject": "Freeze EPIC reviewer ablation analysis pipeline",
+      "ahead": 4,
+      "behind": 3,
+      "files": 3671,
+      "distinct_versions_only_this_branch": 58,
+      "changed_vs_main": 61
+    },
+    {
+      "name": "kevin/evaluate-sensitivity-ci-fix-v1",
+      "sha": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+      "committed_at": "2026-09-09T22:03:52+04:00",
+      "subject": "Record the ten-seed baseline margin, and that one seed overstated it",
+      "ahead": 16,
+      "behind": 10,
+      "files": 3187,
+      "distinct_versions_only_this_branch": 3,
+      "changed_vs_main": 463
+    },
+    {
+      "name": "kevin/execution-recovery-20260930",
+      "sha": "a5729c49e5d32fc05cd09a10f824a7cc6974fb6b",
+      "committed_at": "2026-09-30T13:25:21+04:00",
+      "subject": "Handle AF3 auditor digest schema transition safely",
+      "ahead": 171,
+      "behind": 10,
+      "files": 3610,
+      "distinct_versions_only_this_branch": 8,
+      "changed_vs_main": 185
+    },
+    {
+      "name": "kevin/framecontact-multimodal-evidence-20260902",
+      "sha": "27605737aea2b2a6c623c3f90711ec64dd626532",
+      "committed_at": "2026-09-03T00:29:40+04:00",
+      "subject": "results: add bilateral Top-K training ablation",
+      "ahead": 2,
+      "behind": 10,
+      "files": 3691,
+      "distinct_versions_only_this_branch": 507,
+      "changed_vs_main": 948
+    },
+    {
+      "name": "kevin/frontier-performance-v1-20260930",
+      "sha": "f1fe5affe119230635b862b0985f2ee92fd781fc",
+      "committed_at": "2026-09-30T13:12:43+04:00",
+      "subject": "Add label-free learned residue correspondence rescue experiment",
+      "ahead": 169,
+      "behind": 10,
+      "files": 3608,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 181
+    },
+    {
+      "name": "kevin/geometry-gate-power-reanalysis-v1",
+      "sha": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+      "committed_at": "2026-09-08T18:31:53+04:00",
+      "subject": "Report the power and decision-rule properties of the geometry gate",
+      "ahead": 1,
+      "behind": 10,
+      "files": 3176,
+      "distinct_versions_only_this_branch": 6,
+      "changed_vs_main": 459
+    },
+    {
+      "name": "kevin/geometry-powered-replication-v1",
+      "sha": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+      "committed_at": "2026-09-09T12:04:53+04:00",
+      "subject": "Drop --mem: gpu_4090 rejects explicit memory requests",
+      "ahead": 3,
+      "behind": 10,
+      "files": 3176,
+      "distinct_versions_only_this_branch": 2,
+      "changed_vs_main": 458
+    },
+    {
+      "name": "kevin/graph-community-split-v1",
+      "sha": "822d91590a42ce970c9d13c176cbe3ef671de42a",
+      "committed_at": "2026-09-03T09:57:58+04:00",
+      "subject": "feat: replace deterministic component split with Louvain community detection",
+      "ahead": 1,
+      "behind": 10,
+      "files": 3174,
+      "distinct_versions_only_this_branch": 1,
+      "changed_vs_main": 462
+    },
+    {
+      "name": "kevin/hadamard-pair-decoder-v1",
+      "sha": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+      "committed_at": "2026-09-09T16:44:29+04:00",
+      "subject": "Record the pair-decoder ablation result",
+      "ahead": 8,
+      "behind": 10,
+      "files": 3178,
+      "distinct_versions_only_this_branch": 1,
+      "changed_vs_main": 458
+    },
+    {
+      "name": "kevin/main-epic-review-index-20260930",
+      "sha": "3ac740d354f9c5b73c39605cb09b0f600609fb82",
+      "committed_at": "2026-10-01T01:32:43+04:00",
+      "subject": "Update EPIC reviewer closure with bounded GPU evidence",
+      "ahead": 0,
+      "behind": 1,
+      "files": 3613,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 2
+    },
+    {
+      "name": "kevin/main-evidence-consolidation-20260930",
+      "sha": "d75ce2f28750a738dceb5f4f3a4f81d0b36973f5",
+      "committed_at": "2026-09-30T12:15:55+04:00",
+      "subject": "Integrate pinned execution recovery, tested analysis adapter, and current experiment status",
+      "ahead": 0,
+      "behind": 7,
+      "files": 3613,
+      "distinct_versions_only_this_branch": 1,
+      "changed_vs_main": 3
+    },
+    {
+      "name": "kevin/multimodel-scale-program-20260930",
+      "sha": "28dffada7aeaf9e5969f87414e91529aef60f717",
+      "committed_at": "2026-09-30T08:05:13+04:00",
+      "subject": "Bind AF3 completion execution source in frozen plans",
+      "ahead": 159,
+      "behind": 10,
+      "files": 3551,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 230
+    },
+    {
+      "name": "kevin/partner-pose-contract-v1",
+      "sha": "c72fa83be658c6a7f5a28900409649e37233f327",
+      "committed_at": "2026-09-08T18:41:41+04:00",
+      "subject": "Make the no-bound-geometry clause an executable contract",
+      "ahead": 1,
+      "behind": 10,
+      "files": 3174,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 456
+    },
+    {
+      "name": "kevin/partner-retrieval-20260930",
+      "sha": "c9bcb012795e743909376353b2cc450db83866cd",
+      "committed_at": "2026-09-30T19:08:24+04:00",
+      "subject": "Add hash-bound outer feasibility canary for retrieval split",
+      "ahead": 188,
+      "behind": 10,
+      "files": 3705,
+      "distinct_versions_only_this_branch": 3,
+      "changed_vs_main": 279
+    },
+    {
+      "name": "kevin/pretrained-representations-v1",
+      "sha": "400022a29f05f8ef43502f39a2e52c345199e644",
+      "committed_at": "2026-09-09T13:04:21+04:00",
+      "subject": "Run ESM-IF1 on the model's own device",
+      "ahead": 5,
+      "behind": 10,
+      "files": 3176,
+      "distinct_versions_only_this_branch": 3,
+      "changed_vs_main": 458
+    },
+    {
+      "name": "kevin/protocol-binding-ci-v1",
+      "sha": "191a8b241d73f0f6c6bfeef9728b530a376a0721",
+      "committed_at": "2026-09-08T13:30:08+04:00",
+      "subject": "Bind protocols to source and classify the test suite",
+      "ahead": 1,
+      "behind": 10,
+      "files": 3177,
+      "distinct_versions_only_this_branch": 8,
+      "changed_vs_main": 460
+    },
+    {
+      "name": "kevin/reparank-structure-resume-20260930",
+      "sha": "2bf3f7b3bc2cf9ff54aeb294e29291f76378f4e3",
+      "committed_at": "2026-09-30T15:43:32+04:00",
+      "subject": "Add hash-bound RePaRank structure resume without duplicate inference",
+      "ahead": 176,
+      "behind": 10,
+      "files": 3653,
+      "distinct_versions_only_this_branch": 4,
+      "changed_vs_main": 226
+    },
+    {
+      "name": "kevin/representation-ablation-v1",
+      "sha": "55cfd137aee2b3b749f244fcb76dd11d30dda2c5",
+      "committed_at": "2026-09-11T18:37:36+04:00",
+      "subject": "Evidence Freeze v2",
+      "ahead": 132,
+      "behind": 10,
+      "files": 3329,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 438
+    },
+    {
+      "name": "kevin/rescue-gating-20260930",
+      "sha": "bd3879384aa8ba30ef859c14b13af056f141654f",
+      "committed_at": "2026-09-30T15:58:23+04:00",
+      "subject": "Add train-only abstention gate for correspondence rescue",
+      "ahead": 177,
+      "behind": 10,
+      "files": 3666,
+      "distinct_versions_only_this_branch": 3,
+      "changed_vs_main": 239
+    },
+    {
+      "name": "kevin/rescue-qualification-20260930",
+      "sha": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+      "committed_at": "2026-09-30T17:51:23+04:00",
+      "subject": "Close synthetic gate line with cheap-selector diagnostics",
+      "ahead": 186,
+      "behind": 10,
+      "files": 3702,
+      "distinct_versions_only_this_branch": 0,
+      "changed_vs_main": 276
+    },
+    {
+      "name": "kevin/s2-split-readiness-v1",
+      "sha": "053a0665cb4ccb9df5ce325df330ebae2fc4f973",
+      "committed_at": "2026-09-08T20:17:16+04:00",
+      "subject": "Diagnose what actually blocks the two-axis S2 split",
+      "ahead": 1,
+      "behind": 10,
+      "files": 3174,
+      "distinct_versions_only_this_branch": 3,
+      "changed_vs_main": 456
+    },
+    {
+      "name": "kevin/strict-dual-axis-retrieval-20260930",
+      "sha": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+      "committed_at": "2026-09-30T19:32:48+04:00",
+      "subject": "Audit scoped embedding banks and fix chainwise staging",
+      "ahead": 211,
+      "behind": 10,
+      "files": 3731,
+      "distinct_versions_only_this_branch": 27,
+      "changed_vs_main": 305
+    },
+    {
+      "name": "kevin/strict-partner-retrieval-20260930",
+      "sha": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+      "committed_at": "2026-09-30T23:16:47+04:00",
+      "subject": "Freeze strict dual-axis partner retrieval contract",
+      "ahead": 1,
+      "behind": 3,
+      "files": 3633,
+      "distinct_versions_only_this_branch": 18,
+      "changed_vs_main": 23
+    },
+    {
+      "name": "kevin/structural-plm-final-20260930",
+      "sha": "96864049bdb935d14a4439c3f048231f59e78bee",
+      "committed_at": "2026-09-30T22:51:03+04:00",
+      "subject": "Finalize structural PLM matched-random decision",
+      "ahead": 9,
+      "behind": 4,
+      "files": 3622,
+      "distinct_versions_only_this_branch": 10,
+      "changed_vs_main": 12
+    },
+    {
+      "name": "kevin/teacher-paper-handoff-20260903",
+      "sha": "54afd798700bc41ac1352065414d8687c9627871",
+      "committed_at": "2026-09-05T13:23:13+04:00",
+      "subject": "Record verified 549-case routed replay and handoff readiness",
+      "ahead": 10,
+      "behind": 10,
+      "files": 3254,
+      "distinct_versions_only_this_branch": 36,
+      "changed_vs_main": 453
+    },
+    {
+      "name": "main",
+      "sha": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+      "committed_at": "2026-10-04T17:21:21+04:00",
+      "subject": "Add NeurIPS 2026 AI4DD reviewer responses for EPIC (submission 182)",
+      "ahead": 0,
+      "behind": 0,
+      "files": 3615,
+      "distinct_versions_only_this_branch": 2,
+      "changed_vs_main": 0
+    }
+  ]
+}

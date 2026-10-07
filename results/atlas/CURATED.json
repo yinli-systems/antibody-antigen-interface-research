@@ -1,0 +1,1287 @@
+{
+  "cards": [
+    {
+      "id": "framecontact-historical",
+      "title": "FrameContact: three outputs on the corrected historical test",
+      "level": "metric-bound",
+      "workstream": "Interface prediction",
+      "answer": "Corrected test 549 routed medians: contact AP 0.02667, epitope AP 0.22031, paratope AP 0.69859. The old 455 cache was not held out for this checkpoint.",
+      "cohort": "Checkpoint-aligned historical 549 test, already exposed",
+      "inputs": "Sequence plus independently predicted intra-chain geometry; no bound complex pose",
+      "seeds": "17 /29 /43; fixed routed medians",
+      "estimand": "Mean-per-complex AP, not pooled AP or accuracy",
+      "boundary": "This correction applies to the specific checkpoint, not every official 455 evaluation. Some AF3 predictions use homolog MSAs. Not fresh blind or proven sequence-double-cold evidence.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/aligned_test549_replay_v1/RESULT.json"
+        },
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/CHECKPOINT_TEST_ALIGNMENT_20260905.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "framecontact_contact_ap",
+        "framecontact_epitope_ap",
+        "framecontact_paratope_ap"
+      ]
+    },
+    {
+      "id": "representation-transfer",
+      "title": "Aligned features versus shuffled and width controls",
+      "level": "metric-bound",
+      "workstream": "Correspondence",
+      "answer": "Aligned ESM-IF1 minus ESM-2: +0.005111 AP; shuffled minus ESM-2: −0.003093. The random-width control is undecided, not equivalent.",
+      "cohort": "SAbDab2 development 217",
+      "inputs": "Frozen ESM-2 with aligned/shuffled ESM-IF1 and random-width controls",
+      "seeds": "10 paired seeds",
+      "estimand": "Macro pair AP differences; seed-bootstrap intervals",
+      "boundary": "Training-seed repeatability is not population confirmation or universal alignment necessity.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/representation_attribution_v1/report.json"
+        },
+        {
+          "branch": "main",
+          "path": "results/CLAIMS_LEDGER.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "rep_aligned_delta",
+        "rep_aligned_ci",
+        "rep_shuffled_delta",
+        "rep_random_ci"
+      ]
+    },
+    {
+      "id": "same-aa-corruption",
+      "title": "Same-AA shuffling isolates correspondence damage",
+      "level": "metric-bound",
+      "workstream": "Correspondence",
+      "answer": "ESM-IF1 identity AP 0.027995 becomes 0.011100 under same-AA shuffle; component-weighted paired effect about −0.017151.",
+      "cohort": "217 development complexes /68 components",
+      "inputs": "Same-amino-acid permutation retains residue types and feature multiset but breaks correspondence",
+      "seeds": "3 fixed seeds",
+      "estimand": "Complex-weighted levels versus component/seed-weighted effects; crossed intervals",
+      "boundary": "Synthetic sensitivity does not establish natural misregistration prevalence. Same-AA shuffling is not correspondence-preserving.",
+      "sources": [
+        {
+          "branch": "kevin/correspondence-upgrade-20260930",
+          "path": "extensions/correspondence_v2/READOUT.md"
+        },
+        {
+          "branch": "main",
+          "path": "docs/CLAIM_BOUNDARIES.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "corr_esm_if1_identity",
+        "corr_esm_if1_same_aa",
+        "corr_esm_if1_delta",
+        "corr_esm_if1_ci"
+      ]
+    },
+    {
+      "id": "holdout-confirmation",
+      "title": "Registered holdout: one encoder confirms",
+      "level": "metric-bound",
+      "workstream": "Correspondence",
+      "answer": "ProteinMPNN aligned−shuffled: +0.003594 AP,9/10 favorable, interval above zero. ESM-IF1: +0.002260,6/10, interval includes zero. Both outcomes must remain visible.",
+      "cohort": "Registered 217-complex holdout, distinct from development 217",
+      "inputs": "ProteinMPNN and ESM-IF1 correspondence controls",
+      "seeds": "10 paired seeds per encoder",
+      "estimand": "Per-encoder paired macro AP contrast and registered decision rule",
+      "boundary": "Disclosed 32-case overlap with a different exposed baseline test. The 185-case sensitivity does not replace the registered outcome; do not pool encoder seed counts.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/holdout_confirmation_v1/confirmation.json"
+        },
+        {
+          "branch": "main",
+          "path": "results/holdout_confirmation_v1/README.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "holdout_ProteinMPNN_delta",
+        "holdout_ProteinMPNN_ci",
+        "holdout_ESM-IF1_delta",
+        "holdout_ESM-IF1_ci"
+      ]
+    },
+    {
+      "id": "synthetic-rescue",
+      "title": "Learned rescue: synthetic gain with clean-input cost",
+      "level": "metric-bound",
+      "workstream": "Correspondence",
+      "answer": "Same-AA rescued−corrupted AP: +0.0157209,95% CI [0.0112560,0.0211527]. Clean inputs incur about −0.001430 component-weighted AP cost.",
+      "cohort": "217 development complexes /68 components; 3 synthetic conditions",
+      "inputs": "Trained residue matcher and fixed downstream models",
+      "seeds": "Paired (101,1),(202,2),(303,3)",
+      "estimand": "Equal-component/equal-paired-seed effect; pointwise crossed seed×component bootstrap",
+      "boundary": "1,953 rows are repeated observations of 217 complexes, not 1,953 biological samples. Not OOD, natural-corruption detection or production improvement.",
+      "sources": [
+        {
+          "branch": "kevin/rescue-qualification-20260930",
+          "path": "extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json"
+        },
+        {
+          "branch": "kevin/rescue-qualification-20260930",
+          "path": "extensions/rescue_qualification_v2/READOUT.md"
+        }
+      ],
+      "checks": [
+        {
+          "source_index": 0,
+          "selector": [
+            "contrasts",
+            {
+              "where": {
+                "condition": "same_aa_shuffle:0",
+                "contrast": "rescued_ap_minus_corrupted_ap"
+              }
+            },
+            "equal_component_equal_paired_seed_effect"
+          ],
+          "expected": 0.01572086539530153
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "contrasts",
+            {
+              "where": {
+                "condition": "same_aa_shuffle:0",
+                "contrast": "rescued_ap_minus_corrupted_ap"
+              }
+            },
+            "pointwise_crossed_bootstrap_ci95"
+          ],
+          "expected": [
+            0.011255990518420451,
+            0.02115269924594697
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gated-rescue",
+      "title": "Gating reduces clean damage but does not establish safety",
+      "level": "metric-bound",
+      "workstream": "Correspondence",
+      "answer": "All registered synthetic corruptions trigger. Clean damage becomes −0.0004598 AP, crossed CI [−0.0011427,+0.0000198]; no clean-safety guarantee.",
+      "cohort": "217 development complexes /68 components; train-only threshold calibration",
+      "inputs": "Label-free gate; no contact AP used to choose thresholds",
+      "seeds": "3 paired rescue/downstream seeds",
+      "estimand": "Equal-component/equal-seed contrasts and crossed intervals",
+      "boundary": "Train-clean trigger≈0.39% becomes 15.67% /17.97% /0.46% on validation. No post-hoc noninferiority margin or deployment guarantee.",
+      "sources": [
+        {
+          "branch": "kevin/rescue-qualification-20260930",
+          "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+        },
+        {
+          "branch": "kevin/rescue-qualification-20260930",
+          "path": "extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md"
+        }
+      ],
+      "checks": [
+        {
+          "source_index": 0,
+          "selector": [
+            "unique_complexes"
+          ],
+          "expected": 217
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "independent_components"
+          ],
+          "expected": 68
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "record_count"
+          ],
+          "expected": 1953
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "clean",
+            "gated_minus_aligned",
+            "equal_component_equal_seed"
+          ],
+          "expected": -0.00045979402276384953
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "clean",
+            "gated_minus_aligned",
+            "crossed_seed_component_ci95"
+          ],
+          "expected": [
+            -0.0011426844725987797,
+            1.9782609094639334e-05
+          ]
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "clean",
+            "unconditional_minus_aligned",
+            "equal_component_equal_seed"
+          ],
+          "expected": -0.001430459907154479
+        }
+      ]
+    },
+    {
+      "id": "cheap-gate-control",
+      "title": "Cheap selectors also detect synthetic corruption",
+      "level": "readout-bound",
+      "workstream": "Correspondence",
+      "answer": "Moved-fraction and related inexpensive statistics also detect same-AA/global permutations at or near 100%. The synthetic construction moves about 91% of same-AA rows and nearly all globally shuffled rows.",
+      "cohort": "Same 217 development complexes; training-only calibration",
+      "inputs": "Label-free heuristic controls",
+      "seeds": "3 fixed seeds",
+      "estimand": "Detection and clean-trigger rates, not downstream AP",
+      "boundary": "Counterevidence to a uniquely capable natural-error detector. Preserve the synthetic-line stopping boundary; no repeated threshold tuning on exposed outcomes.",
+      "sources": [
+        {
+          "branch": "kevin/rescue-qualification-20260930",
+          "path": "extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md"
+        }
+      ]
+    },
+    {
+      "id": "baseline-margin",
+      "title": "Ten-seed pair head versus its own marginal baseline",
+      "level": "metric-bound",
+      "workstream": "Objectives & controls",
+      "answer": "Paired macro AP margin +0.00311345, CI [0.00196869,0.00429043], positive 10/10. Ratio of means≈16.1%; mean seed ratios≈16.7%; neither is the single-seed 32.7%.",
+      "cohort": "217 validation complexes /68 clusters; documented split drift",
+      "inputs": "Bilinear head versus outer product of its own marginals",
+      "seeds": "10 seeds",
+      "estimand": "Absolute paired difference primary; seed bootstrap and exact sign bound",
+      "boundary": "Exceeding a separable baseline does not alone prove true binding-partner identification; own-model marginals are not an independent specialist baseline.",
+      "sources": [
+        {
+          "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+          "path": "results/baseline_margin_replication_v1/report.json"
+        },
+        {
+          "branch": "main",
+          "path": "results/CLAIMS_LEDGER.md"
+        }
+      ],
+      "checks": [
+        {
+          "source_index": 0,
+          "selector": [
+            "mean_margin"
+          ],
+          "expected": 0.0031134461184687
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "bootstrap_ci95"
+          ],
+          "expected": [
+            0.0019686912510177143,
+            0.004290434941020674
+          ]
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "seed_count"
+          ],
+          "expected": 10
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "positive_seed_count"
+          ],
+          "expected": 10
+        }
+      ]
+    },
+    {
+      "id": "hadamard-decoder",
+      "title": "Hadamard decoder: no demonstrated win",
+      "level": "metric-bound",
+      "workstream": "Objectives & controls",
+      "answer": "Bilinear macro pair AP 0.0239708 versus Hadamard 0.0226796. No superiority or equivalence of decoder classes follows from one seed.",
+      "cohort": "217 validation complexes /9,638,880 pairs",
+      "inputs": "Matched bilinear versus Hadamard MLP",
+      "seeds": "One seed 42; both checkpoint epoch 1",
+      "estimand": "Macro pair AP; other endpoints disagree in direction",
+      "boundary": "AP is not top-k precision: the legacy 97.6%-false-top-pairs deduction from AP 0.024 is invalid. Preserve the original post-prediction aggregation failure.",
+      "sources": [
+        {
+          "branch": "kevin/hadamard-pair-decoder-v1",
+          "path": "results/pair_decoder_ablation_v1/report_compact.json"
+        },
+        {
+          "branch": "main",
+          "path": "results/pair_decoder_ablation_v1/README.md"
+        }
+      ],
+      "checks": [
+        {
+          "source_index": 0,
+          "selector": [
+            "bilinear",
+            "macro",
+            "auprc"
+          ],
+          "expected": 0.023970778057653425
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "hadamard_mlp",
+            "macro",
+            "auprc"
+          ],
+          "expected": 0.02267960882724628
+        }
+      ]
+    },
+    {
+      "id": "objective-factorial",
+      "title": "Ranking-term removal improves two measured endpoints",
+      "level": "readout-bound",
+      "workstream": "Objectives & controls",
+      "answer": "Node+edge pair AP 0.09055 versus full-objective 0.06917; paired gains about+0.0214 pair AP and+0.0369 node MCC, favorable 10/10.",
+      "cohort": "AsEP epitope_group validation",
+      "inputs": "Four node/contact/ranking objective combinations",
+      "seeds": "10 paired seeds per arm",
+      "estimand": "Macro pair AP; node MCC fixed 0.5; paired seed effects",
+      "boundary": "Scheduler/checkpoint selection also change through the monitored loss. This is a full-procedure intervention, not isolated ranking-gradient causality or all-task Pareto improvement.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/objective_component_localisation_v1/PART_TWO.md"
+        },
+        {
+          "branch": "main",
+          "path": "results/objective_component_localisation_v1/RUN_CONTRACT.md"
+        }
+      ]
+    },
+    {
+      "id": "gradient-dynamics",
+      "title": "Gradient alignment changes during training",
+      "level": "readout-bound",
+      "workstream": "Objectives & controls",
+      "answer": "Recorded sign crossings occur at steps 77–110 on AsEP and 38–50 on SAbDab2. Converged positive cosine does not describe the early trajectory.",
+      "cohort": "AsEP/SAbDab2 training diagnostics",
+      "inputs": "Shared-trunk gradients and two diagnostic toolchains",
+      "seeds": "3 runs per documented cohort/toolchain",
+      "estimand": "Per-step trajectories, not accuracy",
+      "boundary": "Gradient norm or cosine alone does not establish the mechanism of the loss-ablation performance effect.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/gradient_alignment_dynamics_v1/step_trace_summary.json"
+        },
+        {
+          "branch": "main",
+          "path": "results/CLAIMS_LEDGER.md"
+        }
+      ]
+    },
+    {
+      "id": "reparank-sequence",
+      "title": "Official RePaRank sequence checkpoint",
+      "level": "metric-bound",
+      "workstream": "External baselines",
+      "answer": "Macro pair AP 0.0378078; pooled AP 0.00873858; pooled AUROC 0.786064. These are different estimators, not interchangeable scores.",
+      "cohort": "217 development complexes /68 components; 9,638,880 pairs /9,036 contacts",
+      "inputs": "Released sequence checkpoint, no new head/fine-tuning",
+      "seeds": "One released checkpoint",
+      "estimand": "Macro, pooled and equal-component results separate",
+      "boundary": "External-baseline measurement is not a new algorithmic gain. Training overlap unknown; do not rank against FrameContact test 549.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+        },
+        {
+          "branch": "main",
+          "path": "docs/CLAIM_BOUNDARIES.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "reparank_macro_ap",
+        "reparank_pooled_ap",
+        "reparank_pairs",
+        "reparank_positives"
+      ]
+    },
+    {
+      "id": "reparank-centered",
+      "title": "RePaRank structure: completed and correctly centered",
+      "level": "metric-bound",
+      "workstream": "External baselines",
+      "answer": "Centered structure macro AP 0.0160136 versus sequence 0.0378078; pooled AP 0.00236625 /AUROC 0.672153. Complete 217/217: 12 reused+205 fresh predictions.",
+      "cohort": "Same 217-complex pair grid as sequence checkpoint",
+      "inputs": "Official-style per-chain centering; independently predicted chain-local geometry",
+      "seeds": "One released checkpoint; reuse is not replication",
+      "estimand": "Macro AP versus pooled metrics; component contrasts remain separate",
+      "boundary": "Uncentered results are a protocol-mismatch control. This does not establish that structure is useless: no correctly docked complex pose is supplied and checkpoint overlap is unknown.",
+      "sources": [
+        {
+          "branch": "kevin/rescue-qualification-20260930",
+          "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+        },
+        {
+          "branch": "main",
+          "path": "results/INDEX.md"
+        }
+      ],
+      "checks": [
+        {
+          "source_index": 0,
+          "selector": [
+            "instance_count"
+          ],
+          "expected": 217
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "primary_macro_mean_per_complex_AP"
+          ],
+          "expected": 0.016013622977683228
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "pooled_pair_metrics",
+            "average_precision"
+          ],
+          "expected": 0.0023662535231304227
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "pooled_pair_metrics",
+            "auroc"
+          ],
+          "expected": 0.6721526555729059
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "reused_pair_prediction_count"
+          ],
+          "expected": 12
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "fresh_model_forward_count"
+          ],
+          "expected": 205
+        }
+      ]
+    },
+    {
+      "id": "structural-plm",
+      "title": "Structural PLMs: 36/36 complete, no promotion",
+      "level": "metric-bound",
+      "workstream": "Representation screening",
+      "answer": "Complete SaProt/ProSST sweep: 36 tasks,12 arms; no real-layer crossed interval excludes zero against its matched random-width control. Decision NO-PROMOTION.",
+      "cohort": "217 exposed development complexes /68 components",
+      "inputs": "Five real layers and one matched random control per family",
+      "seeds": "3 seeds per arm: 1/2/3",
+      "estimand": "Paired seed/component effects; development selection is not promotion",
+      "boundary": "ProSST selects layer 12; SaProt tie-window selects 24, not raw-highest 33. This is specific to this study, not universal structural-PLM failure.",
+      "sources": [
+        {
+          "branch": "kevin/structural-plm-final-20260930",
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+        },
+        {
+          "branch": "kevin/structural-plm-final-20260930",
+          "path": "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_FINAL_READOUT.md"
+        }
+      ],
+      "checks": [
+        {
+          "source_index": 0,
+          "selector": [
+            "task_count"
+          ],
+          "expected": 36
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "arm_count"
+          ],
+          "expected": 12
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "validation_complex_count"
+          ],
+          "expected": 217
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "development_layer_selection",
+            "prosst",
+            "selected_layer"
+          ],
+          "expected": 12
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "development_layer_selection",
+            "saprot",
+            "selected_layer"
+          ],
+          "expected": 24
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "development_layer_selection",
+            "saprot",
+            "raw_highest_layer"
+          ],
+          "expected": 33
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "development_layer_selection",
+            "prosst",
+            "selected_mean_pair_macro_ap"
+          ],
+          "expected": 0.02217555459107116
+        },
+        {
+          "source_index": 0,
+          "selector": [
+            "development_layer_selection",
+            "saprot",
+            "selected_mean_pair_macro_ap"
+          ],
+          "expected": 0.024451940544316726
+        }
+      ]
+    },
+    {
+      "id": "full-partner-grid",
+      "title": "Full partner grid does not confirm the small-panel anomaly",
+      "level": "metric-bound",
+      "workstream": "Partner retrieval",
+      "answer": "122×119=14,518 distinct pairings. The earlier small-panel MRR improvement after corruption is not robustly reproduced on the complete grid.",
+      "cohort": "122-antibody /119-antigen development library",
+      "inputs": "Frozen checkpoints and registered corruption conditions",
+      "seeds": "9 repeated grid tasks; not independent new pairings",
+      "estimand": "Finite-library ranking, separate from within-complex contact AP",
+      "boundary": "Unobserved pairings are unlabelled alternatives, not verified non-binders. Score/length correlations do not prove causal bias.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "ranking_unique_pair_count_per_task",
+        "ranking_total_pair_evaluations"
+      ]
+    },
+    {
+      "id": "strict-retrieval",
+      "title": "Strict dual-axis retrieval: protocol, not a score",
+      "level": "protocol-only",
+      "workstream": "Partner retrieval",
+      "answer": "Frozen retrieval contract and implementation support exist; no completed strict-model performance is promoted here. Passing builder and independent audit authorities are prerequisites.",
+      "cohort": "Prospectively separated authority-train development",
+      "inputs": "Tensor-identical retrieval controls and scoped inputs",
+      "seeds": "Prospective, not completed repetitions",
+      "estimand": "MRR/recall-at-K with chance and grouped uncertainty",
+      "boundary": "A canary, embedding audit, solver status or Slurm script is not a completed audited split, trained model or binding-specificity result.",
+      "sources": [
+        {
+          "branch": "kevin/strict-dual-axis-retrieval-20260930",
+          "path": "extensions/strict_partner_retrieval_v1/PROTOCOL.md"
+        },
+        {
+          "branch": "kevin/strict-partner-retrieval-20260930",
+          "path": "extensions/strict_partner_retrieval_v1/README.md"
+        }
+      ]
+    },
+    {
+      "id": "asep-benchmark",
+      "title": "AsEP benchmark position without inflation",
+      "level": "metric-bound",
+      "workstream": "External baselines",
+      "answer": "Ten-seed macro MCC≈0.1572 on epitope_group and 0.2584 on epitope_ratio. These constrain rather than establish benchmark leadership.",
+      "cohort": "AsEP group/ratio test protocols with exposure histories",
+      "inputs": "Repository model under documented benchmark conventions",
+      "seeds": "10 seeds per protocol",
+      "estimand": "Per-complex MCC with validation-selected thresholds",
+      "boundary": "Pooled-versus-macro comparisons and favorable older literature rows cannot establish SOTA. Preserve registered test-access history.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/asep_benchmark_v1/BENCHMARK.md"
+        }
+      ],
+      "legacy_metric_ids": [
+        "asep_group_mcc",
+        "asep_ratio_mcc"
+      ]
+    },
+    {
+      "id": "geometry-gate",
+      "title": "Geometry gate remains failed after power analysis",
+      "level": "readout-bound",
+      "workstream": "Representation screening",
+      "answer": "The design analysis explains limited power and a Holm/Bonferroni field-label issue, but does not reverse the failed superiority gate.",
+      "cohort": "Historical geometry development comparison",
+      "inputs": "Topology-only versus geometry features",
+      "seeds": "Small historical seed count",
+      "estimand": "Power/decision-rule analysis, not a new performance run",
+      "boundary": "Low-power failure is not proof of no effect; changing interpretation is not independent confirmation.",
+      "sources": [
+        {
+          "branch": "kevin/geometry-gate-power-reanalysis-v1",
+          "path": "results/sabdab2_structure_self_attention/GEOMETRY_GATE_POWER_ANALYSIS_V1.md"
+        }
+      ]
+    },
+    {
+      "id": "geometry-replication",
+      "title": "Powered replication is prospective",
+      "level": "protocol-only",
+      "workstream": "Representation screening",
+      "answer": "A separately numbered protocol specifies 24 prospective replicates and leaves the earlier failed gate unchanged.",
+      "cohort": "Development-only geometry comparison",
+      "inputs": "Existing comparison under a frozen design",
+      "seeds": "24 prospective replicates",
+      "estimand": "Power/minimum-effect/stopping rule before outcomes",
+      "boundary": "Protocol existence does not prove completion or authorize sealed-test access.",
+      "sources": [
+        {
+          "branch": "kevin/geometry-powered-replication-v1",
+          "path": "protocols/SABDAB2_GEOMETRY_POWERED_REPLICATION_PROTOCOL_V1.md"
+        }
+      ]
+    },
+    {
+      "id": "asep-pretraining",
+      "title": "AsEP transfer: pair gain and epitope trade-off",
+      "level": "readout-bound",
+      "workstream": "Historical studies",
+      "answer": "September 4 summary reports pooled pair AUROC 0.6220→0.6904 for1D versus3D+margin transfer, while epitope pooled AP falls 0.2210→0.1567.",
+      "cohort": "Official 455 SAbDab2 transfer; separate 172-case AsEP-derived study",
+      "inputs": "AsEP-derived pretraining and1D/3D+margin conditions",
+      "seeds": "Seed replication not fully specified by summary",
+      "estimand": "Pooled/macro AUROC, pooled epitope AP and pruning metrics",
+      "boundary": "Committed summary, not a newly verified matched campaign. Do not infer significance or compare AUROC to another cohort’s AP.",
+      "sources": [
+        {
+          "branch": "feature/asep-pretraining-pipeline",
+          "path": "docs/evaluations/2026-09-04_sabdab2_asep_benchmarks_summary.md"
+        }
+      ]
+    },
+    {
+      "id": "historical-routing",
+      "title": "Routing: fresh 156 confirmation versus later development",
+      "level": "readout-bound",
+      "workstream": "Historical studies",
+      "answer": "Fresh 156 routing gains are positive across 3 seeds. Later full-development routed medians 0.028576 /0.237464 /0.704746 are a distinct evidence stage.",
+      "cohort": "Fresh 156 versus later 549 development validation",
+      "inputs": "Deterministic task routing",
+      "seeds": "3 fixed seeds",
+      "estimand": "Seed effects and antigen-cluster effects separately",
+      "boundary": "Later validation selected checkpoints. Contact/paratope invariance under routing is by construction, not another trained improvement.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/LATEST_RESULTS_20260827.md"
+        }
+      ]
+    },
+    {
+      "id": "historical-pooling-esmc",
+      "title": "Pooling and ESM-C controls retain negative endpoints",
+      "level": "readout-bound",
+      "workstream": "Historical studies",
+      "answer": "TopK1/2/4/8 and log-mean-exp are close; noisy-OR is worse. Published AbCDR-ESMC improves contact/epitope but lowers paratope. Local CDR adaptation trades CDR against full-chain quality.",
+      "cohort": "Development cohorts in August 27 snapshot",
+      "inputs": "Pooling rules and ESM-C representation controls",
+      "seeds": "Study-specific seeds, not pooled",
+      "estimand": "Readout AP, downstream AP and MLM metrics separate",
+      "boundary": "Local MLM adaptation is not proof of a downstream gain. Preserve negative endpoints beside positive ones.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/LATEST_RESULTS_20260827.md"
+        }
+      ]
+    },
+    {
+      "id": "temporal-gates",
+      "title": "Prospective temporal admission failed closed",
+      "level": "readout-bound",
+      "workstream": "Historical studies",
+      "answer": "August temporal cohort: 15 eligible complexes but 9 unique PDBs, below preregistered 10-PDB minimum. A separate later 14-candidate OOD admission also failed.",
+      "cohort": "Distinct prospective temporal/OOD attempts",
+      "inputs": "Label-free admission checks",
+      "seeds": "Not model replications",
+      "estimand": "Cohort counts and admission decisions",
+      "boundary": "Labels remain unopened under documented gates. Failed cohorts cannot be turned into fresh OOD results by lowering thresholds.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/LATEST_RESULTS_20260827.md"
+        },
+        {
+          "branch": "main",
+          "path": "docs/CLAIM_BOUNDARIES.md"
+        }
+      ]
+    },
+    {
+      "id": "af3-recovery",
+      "title": "AF3 semantic recovery is provenance, not accuracy",
+      "level": "engineering",
+      "workstream": "Execution & provenance",
+      "answer": "Task 0 originally failed after prediction due to a one-second valid CIF timestamp difference. Stricter semantics certified unchanged outputs while preserving the original failure.",
+      "cohort": "Frozen 40-chain completion; dated operational snapshots",
+      "inputs": "Sequence/all-atom/CIF/confidence and seed/sample checks",
+      "seeds": "78 tests reported by readout, not rerun here",
+      "estimand": "Execution and byte/semantic identity",
+      "boundary": "The semantic-audit branch snapshot was partial; later centered-RePaRank authority covers the completed cohort. Neither an old pending state nor a recovery test is an accuracy result.",
+      "sources": [
+        {
+          "branch": "kevin/af3-semantic-audit-20260930",
+          "path": "extensions/execution_recovery_v1/SEMANTIC_AUDIT_READOUT.md"
+        },
+        {
+          "branch": "kevin/execution-recovery-20260930",
+          "path": "extensions/execution_recovery_v1/HANDOFF.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-closure",
+      "title": "EPIC reviewer dispositions are not all-new experiments",
+      "level": "readout-bound",
+      "workstream": "EPIC paper",
+      "answer": "Earlier package addresses 19 concerns through corrections, bounded follow-up evidence, explicit unavailable interventions and moderated claims.",
+      "cohort": "Original submission versus post-submission/successor studies",
+      "inputs": "Exact original submitted checkpoint was not restored",
+      "seeds": "Study-specific, not 19 replications",
+      "estimand": "Concern disposition and evidence provenance",
+      "boundary": "Do not backfill AF3 or successor FrameContact metrics into the anonymous OpenDDE submission. Closed means addressed, not that every requested experiment succeeded.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "results/INDEX.md"
+        },
+        {
+          "branch": "kevin/epic-reviewer-response-20260930",
+          "path": "paper/epic_camera_ready_20260930/README.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-ablations",
+      "title": "October 4 report: reconstructed ablation campaigns",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Manuscript reports 36-model CampaignA and 39-model CampaignB; predicted-geometry epitope gains about+0.031 /+0.025 AP. Gate/cross-attention findings are mixed.",
+      "cohort": "Reported official 455 test; 2,887 train /321 carved validation",
+      "inputs": "Reconstructed AF3-monomer EPIC, not the original submitted checkpoint",
+      "seeds": "Reported 17/29/43",
+      "estimand": "Reported simultaneous PDB-block contrasts; analysis revision needs authority",
+      "boundary": "Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        },
+        {
+          "branch": "kevin/epic-reviewer-response-20260930",
+          "path": "paper/epic_camera_ready_20260930/campaign_v1/ANALYSIS_PROTOCOL.json"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-consistency",
+      "title": "October 4 report: consistency is not attributed to gating",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Head/contact-marginal rank agreement≈0.97–0.99 is reported; removing contact-derived readout changes little, while removing contact supervision damages paratope coupling.",
+      "cohort": "Reported reconstructed official 455 study",
+      "inputs": "Shared pairwise representation and task heads",
+      "seeds": "Reported 3 seeds",
+      "estimand": "Per-complex rank agreement and separate task AP",
+      "boundary": "Agreement is not automatically accuracy or true-partner specificity. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-partner",
+      "title": "October 4 report: partner ranking near chance",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "One true antigen plus 9 decoys: reported less-length-confounded top 1 rates 0.103–0.110 versus chance 0.100; broad partner-conditioning claim withdrawn.",
+      "cohort": "Reported test 455 decoy diagnostic",
+      "inputs": "Frozen reconstructed contact-map scores",
+      "seeds": "Reported fixed checkpoints",
+      "estimand": "Finite ten-candidate R@1, distinct from contact AP",
+      "boundary": "This is not proof of zero information in every scorer/population. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-v2-report",
+      "title": "October 4 report: ensemble gains and selection-transfer failure",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Reported AP 0.0214→0.0346 contact,0.2148→0.2502 epitope,0.6841→0.7215 paratope. Roughly half contact/epitope gain is seed ensembling. Contact-selected ensemble instead scores 0.0240 versus baseline ensemble 0.0273.",
+      "cohort": "Reported cluster-disjoint 324 validation and official 455 test",
+      "inputs": "Reported averaging/regularization/feature ensemble; distinct from earlier PLM screen",
+      "seeds": "Reported 3-seed arms; 75-improvement-model count unresolved",
+      "estimand": "Separate single model, unchanged seed ensemble, new-component ensemble, and task-specific validation choice",
+      "boundary": "Paratope-selected ensemble happened to lead every test task; contact/epitope outcomes are exploratory, not successful per-task selection. Two rounds 6+12 arms×3 account for 54, not 75 without additional entries. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-predictor",
+      "title": "October 4 report: predictor swap versus matched retraining",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Inference-time validation OpenDDE swap and matched retraining are separate. Reported ensemble test epitope AP:AF3 0.2321 versus OpenDDE 0.2157; a long-entity training fallback remains AF3.",
+      "cohort": "Reported 321 validation swap; separate 455 retrained test",
+      "inputs": "AF3/OpenDDE monomer predictors",
+      "seeds": "Reported 3 seeds per condition",
+      "estimand": "Paired AP differences; inference swap is not retraining",
+      "boundary": "Reconcile 3,015-complete wording with the fallback. CI crossing zero is not equivalence. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-specialists",
+      "title": "October 4 report: specialist comparisons and input mismatch",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Reported EpiFormer epitope AP 0.372 exceeds reconstructed EPIC 0.214. Paraplume overlap excludes 69/455; on clean 386, improved EPIC 0.709 versus Paraplume 0.691 has CI crossing zero.",
+      "cohort": "Reported official 455 and overlap-clean 386",
+      "inputs": "EpiFormer bound experimental backbone versus EPIC predicted monomers; released Paraplume",
+      "seeds": "Reported 3-seed EpiFormer/EPIC and released specialist",
+      "estimand": "Matched labels/axes do not imply matched inputs",
+      "boundary": "Not a modality-matched architecture leaderboard. As-published labels need checking against the unavailable original checkpoint. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-asep",
+      "title": "October 4 report: overlap-stratified AsEP evaluation",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Reported 1,553 AsEP cases have median training similarity 0.97; below 0.5-identity stratum 412 has epitope AP 0.186 versus 0.316 in the near-duplicate stratum.",
+      "cohort": "Reported AsEP stratified external-cohort diagnostic",
+      "inputs": "Frozen SAbDab2 model; AsEP CDR/surface axes differ",
+      "seeds": "Reported fixed models",
+      "estimand": "Within-AsEP stratification, not absolute cross-benchmark AP",
+      "boundary": "Check identity definition and both molecular axes before calling a subset strictly OOD. Reconcile the later no-external-test sentence. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "epic-new-labels",
+      "title": "October 4 report: label-definition correction",
+      "level": "report-only",
+      "workstream": "EPIC newer report",
+      "answer": "Reported heavy-atom≤4.5Å reproduces 3,047/3,208 complexes exactly; ≤4.502Å reproduces 3,169. Textual Cα definition conflicts with these labels.",
+      "cohort": "Reported 3,208 training/validation complexes",
+      "inputs": "Label-rule reconstruction, not model improvement",
+      "seeds": "Not training seeds",
+      "estimand": "Exact complex-level agreement and tolerance",
+      "boundary": "No 3,208/3,208 float 16 exact-match claim is introduced without its certificate. Contact construction was not rerun. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "sources": [
+        {
+          "branch": "main",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ]
+    },
+    {
+      "id": "abcite-visual",
+      "title": "AbCite visual figure retrieval is a separate application",
+      "level": "readout-bound",
+      "workstream": "AbCite multimodal",
+      "answer": "Reported 273 answerable visual queries /15,949 figures:ColQwen2.5 R@1≈0.103,nDCG@5≈0.155. Retrieval and answer generation are separately evaluated.",
+      "cohort": "PMC cropped figures; 295 total gold including 22 abstentions",
+      "inputs": "Released multimodal retrievers plus citation/abstention application",
+      "seeds": "Fixed evaluation snapshot",
+      "estimand": "R@K/nDCG separate from VQA",
+      "boundary": "Do not compare cropped-figure scores to official full-page ViDoRe as one leaderboard. Not an antibody contact model.",
+      "sources": [
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/latest.md"
+        },
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/visual_qa_colqwen2_5_latest.json"
+        }
+      ]
+    },
+    {
+      "id": "abcite-lora",
+      "title": "AbCite LoRA did not beat zero-shot",
+      "level": "readout-bound",
+      "workstream": "AbCite multimodal",
+      "answer": "Reported 55-query holdout: zero-shot R@1≈0.0545 versus LoRA≈0.0182; nDCG@5≈0.0991 versus 0.050.",
+      "cohort": "218 train /55 holdout figure IDs; frozen gallery",
+      "inputs": "ColQwen2.5 query-side LoRA",
+      "seeds": "Seed 7; 256 reported steps",
+      "estimand": "Same-holdout retrieval metrics",
+      "boundary": "Small holdout does not imply general LoRA failure, but does not support promoting this adaptation.",
+      "sources": [
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/visual_qa_colqwen2_5_holdout_lora_latest.json"
+        },
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/latest.md"
+        }
+      ]
+    },
+    {
+      "id": "abcite-vidore",
+      "title": "AbCite ViDoRe reproduces released checkpoints",
+      "level": "readout-bound",
+      "workstream": "AbCite multimodal",
+      "answer": "Official-harness mean nDCG@5 reported 0.8911 ColQwen2 and 0.8947 ColQwen2.5 over 10 tasks; checkpoint reproduction, not new-model invention.",
+      "cohort": "Official ViDoRe v1 full-page tasks",
+      "inputs": "Released checkpoints and official scorer",
+      "seeds": "10 tasks, not 10 training seeds",
+      "estimand": "Mean task nDCG@5; custom scorer kept separate",
+      "boundary": "No current-leaderboard/SOTA claim. Different candidate spaces from the cropped-figure visual task.",
+      "sources": [
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/vidore_official_latest.json"
+        },
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/vidore_official_colqwen2_5_latest.json"
+        },
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/latest.md"
+        }
+      ]
+    },
+    {
+      "id": "abcite-audio-video",
+      "title": "AbCite real audio/video and synthetic fixtures stay separate",
+      "level": "readout-bound",
+      "workstream": "AbCite multimodal",
+      "answer": "Reported real-audio CLAP R@1≈0.414 on 29 items; video-frame R@1≈0.423 on 26. Synthetic hash/audio and keyframes have separate tables.",
+      "cohort": "Real audio 29/video 26 galleries plus separate fixtures",
+      "inputs": "Released CLAP/OpenCLIP and application retrieval",
+      "seeds": "Fixed small-n snapshots",
+      "estimand": "Within-modality retrieval",
+      "boundary": "Hash fixtures are not trained audio-model results; small galleries and heuristic VQA do not establish production multimodal reasoning.",
+      "sources": [
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/audio_qa_oa_latest.json"
+        },
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/video_qa_oa_latest.json"
+        },
+        {
+          "branch": "abcite/multimodal-copilot",
+          "path": "abcite/evals/latest.md"
+        }
+      ]
+    }
+  ],
+  "branches": {
+    "main": {
+      "role": "Curated evidence and paper hub",
+      "state": "Mixed measured receipts and newer report-only prose",
+      "interpretation": "Main contains curated evidence from multiple source lineages; not every experiment implementation. October 4 adds narrative while generated status still uses September 30.",
+      "read_first": [
+        "results/INDEX.md",
+        "docs/CLAIM_BOUNDARIES.md",
+        "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+      ]
+    },
+    "abcite/multimodal-copilot": {
+      "role": "Multimodal evidence-retrieval application",
+      "state": "Released-checkpoint reproductions and negative LoRA result",
+      "interpretation": "Separate fixtures, PMC visual retrieval, VQA, ViDoRe and real/synthetic media from each other and from antibody prediction.",
+      "read_first": [
+        "abcite/evals/latest.md"
+      ]
+    },
+    "feature/asep-pretraining-pipeline": {
+      "role": "AsEP transfer/pretraining pipeline",
+      "state": "Committed summary with task trade-offs",
+      "interpretation": "September 4 1D/3D+margin study is not the later EPIC reconstruction. Favorable pair AUROC coexists with an epitope AP decline.",
+      "read_first": [
+        "docs/evaluations/2026-09-04_sabdab2_asep_benchmarks_summary.md"
+      ]
+    },
+    "kevin/af3-semantic-audit-20260930": {
+      "role": "Strict AF3 semantic audit",
+      "state": "Engineering recovery; partial historical snapshot",
+      "interpretation": "Preserve failure/audit-source distinction. This HEAD did not claim all 40 certificates or all 36 PLM tasks complete; later branches have newer evidence.",
+      "read_first": [
+        "extensions/execution_recovery_v1/SEMANTIC_AUDIT_READOUT.md"
+      ]
+    },
+    "kevin/correspondence-upgrade-20260930": {
+      "role": "Three-encoder correspondence expansion",
+      "state": "Development perturbation evidence",
+      "interpretation": "Later branches inherit the same artifacts; identical files are not new experimental replications.",
+      "read_first": [
+        "extensions/correspondence_v2/READOUT.md"
+      ]
+    },
+    "kevin/epic-reviewer-response-20260930": {
+      "role": "Reviewer package and frozen campaign",
+      "state": "Earlier closure and pre-result protocol",
+      "interpretation": "An earlier 36-task running ledger and synthetic pipeline test cannot certify the later 75/150-model claims.",
+      "read_first": [
+        "paper/epic_camera_ready_20260930/campaign_v1/README.md"
+      ]
+    },
+    "kevin/evaluate-sensitivity-ci-fix-v1": {
+      "role": "Aggregation repair and baseline-margin replication",
+      "state": "Ten-seed development result after repair",
+      "interpretation": "Preserve original failures and subsequent reevaluation; replicated absolute margin replaces the single-seed magnitude, not the original bytes.",
+      "read_first": [
+        "results/baseline_margin_replication_v1/README.md"
+      ]
+    },
+    "kevin/execution-recovery-20260930": {
+      "role": "AF3/analyzer execution repair",
+      "state": "Engineering and recovery provenance",
+      "interpretation": "A corrected analyzer is not new training. Old pending snapshots are not current scheduler status.",
+      "read_first": [
+        "extensions/execution_recovery_v1/HANDOFF.md"
+      ]
+    },
+    "kevin/framecontact-multimodal-evidence-20260902": {
+      "role": "Broad FrameContact/scaling evidence",
+      "state": "Historical studies, controls and plans",
+      "interpretation": "507 path/blob versions are exclusive to this HEAD. Pretraining correctness, model performance, case studies and failed prospective admission remain separate evidence classes.",
+      "read_first": [
+        "README.md"
+      ]
+    },
+    "kevin/frontier-performance-v1-20260930": {
+      "role": "Learned-rescue implementation",
+      "state": "Earlier rescue development source",
+      "interpretation": "Use later completed three-seed qualification and clean-input controls rather than an early favorable canary.",
+      "read_first": []
+    },
+    "kevin/geometry-gate-power-reanalysis-v1": {
+      "role": "Power and decision-rule reanalysis",
+      "state": "Historical gate remains failed",
+      "interpretation": "Explaining limited power is not a new positive experiment or permission to change the observed decision.",
+      "read_first": [
+        "results/sabdab2_structure_self_attention/GEOMETRY_GATE_POWER_ANALYSIS_V1.md"
+      ]
+    },
+    "kevin/geometry-powered-replication-v1": {
+      "role": "Prospective powered geometry study",
+      "state": "Protocol, not a terminal outcome",
+      "interpretation": "Prospective replicate count and criteria are not a completed-study badge.",
+      "read_first": [
+        "protocols/SABDAB2_GEOMETRY_POWERED_REPLICATION_PROTOCOL_V1.md"
+      ]
+    },
+    "kevin/graph-community-split-v1": {
+      "role": "Community split and associated source changes",
+      "state": "Implementation, not a validated split",
+      "interpretation": "Diff also changes geometry/contact-head and split-oracle source. A branch title or community membership does not certify homology separation.",
+      "read_first": []
+    },
+    "kevin/hadamard-pair-decoder-v1": {
+      "role": "Decoder comparison",
+      "state": "Single-seed non-win",
+      "interpretation": "No superiority/equivalence or true-partner specificity conclusion. Later ten-seed baseline-margin replication answers a different question.",
+      "read_first": [
+        "results/pair_decoder_ablation_v1/README.md"
+      ]
+    },
+    "kevin/main-epic-review-index-20260930": {
+      "role": "Reviewer evidence integration",
+      "state": "Ancestor of main",
+      "interpretation": "One commit behind audited main; an integration snapshot, not a new experiment.",
+      "read_first": [
+        "results/INDEX.md"
+      ]
+    },
+    "kevin/main-evidence-consolidation-20260930": {
+      "role": "Earlier evidence consolidation",
+      "state": "Historical integration snapshot",
+      "interpretation": "Preserve 17 archive snapshots and 747 evidence paths; these are not the current 30 branch HEADs.",
+      "read_first": [
+        "results/INDEX.md"
+      ]
+    },
+    "kevin/multimodel-scale-program-20260930": {
+      "role": "Multimodel extraction/sweep program",
+      "state": "Earlier execution lineage",
+      "interpretation": "Coverage, finished arrays, final analysis and promotion are distinct milestones; consult final PLM/centered-RePaRank receipts.",
+      "read_first": []
+    },
+    "kevin/partner-pose-contract-v1": {
+      "role": "No-bound-pose input contract",
+      "state": "Engineering contract",
+      "interpretation": "Pose invariance tests constrain inputs, not accuracy, binding specificity or independent test generalization.",
+      "read_first": []
+    },
+    "kevin/partner-retrieval-20260930": {
+      "role": "Split feasibility canary",
+      "state": "Readiness, no strict-model score",
+      "interpretation": "A hash-bound outer feasibility canary is not a complete split plus independent audit. Later dual-axis and model-contract branches are distinct.",
+      "read_first": []
+    },
+    "kevin/pretrained-representations-v1": {
+      "role": "Representation extraction backends",
+      "state": "Implementation and coverage",
+      "interpretation": "Device-correct extraction and feature availability are prerequisites, not downstream performance results.",
+      "read_first": []
+    },
+    "kevin/protocol-binding-ci-v1": {
+      "role": "Protocol/source binding and test portability",
+      "state": "Engineering verification",
+      "interpretation": "Binding drift and test requirement classification are not benchmark results.",
+      "read_first": [
+        "docs/CONTINUOUS_VERIFICATION.md"
+      ]
+    },
+    "kevin/reparank-structure-resume-20260930": {
+      "role": "Hash-bound structure resume",
+      "state": "Earlier resume/partial qualification",
+      "interpretation": "Follow later completed centered receipt. Reused plus fresh forwards must sum to 217 without counting reuse as new replication.",
+      "read_first": []
+    },
+    "kevin/representation-ablation-v1": {
+      "role": "Representation and objective evidence",
+      "state": "Evidence Freeze v 2 source",
+      "interpretation": "Core source lineage. Claims ledger corrects unsupported blended percentages/seed counts and estimator definitions.",
+      "read_first": [
+        "results/CLAIMS_LEDGER.md",
+        "results/EVIDENCE_INVENTORY.md"
+      ]
+    },
+    "kevin/rescue-gating-20260930": {
+      "role": "Train-only abstention gate",
+      "state": "Earlier gate protocol",
+      "interpretation": "Read later completed crossed analysis and cheap-selector controls together; a training quantile is not a validation-rate guarantee.",
+      "read_first": [
+        "extensions/rescue_qualification_v2/GATED_RESCUE_PROTOCOL.md"
+      ]
+    },
+    "kevin/rescue-qualification-20260930": {
+      "role": "Completed rescue and centered RePaRank",
+      "state": "Final development results and countercontrols",
+      "interpretation": "Important final evidence resides off-main; exact links expose it without merging unrelated training implementations.",
+      "read_first": [
+        "extensions/rescue_qualification_v2/READOUT.md",
+        "extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md"
+      ]
+    },
+    "kevin/s2-split-readiness-v1": {
+      "role": "S 2 readiness diagnosis",
+      "state": "Implementation/diagnosis",
+      "interpretation": "Three-file diagnostic can identify blockers; not a terminal full-cohort split certificate or model result.",
+      "read_first": []
+    },
+    "kevin/strict-dual-axis-retrieval-20260930": {
+      "role": "Dual-axis split/scoped embedding infrastructure",
+      "state": "Frozen protocol and readiness",
+      "interpretation": "Split construction/audit and model-contract implementation are separate. No final partner-retrieval score is certified here.",
+      "read_first": [
+        "extensions/strict_partner_retrieval_v1/PROTOCOL.md"
+      ]
+    },
+    "kevin/strict-partner-retrieval-20260930": {
+      "role": "Retrieval model/metric contract",
+      "state": "Protocol and preflight",
+      "interpretation": "Explicitly refuses execution before passing builder and independent audit authority. Preflight is not performance.",
+      "read_first": [
+        "extensions/strict_partner_retrieval_v1/README.md"
+      ]
+    },
+    "kevin/structural-plm-final-20260930": {
+      "role": "Formal structural-PLM final analysis",
+      "state": "36/36 complete; NO-PROMOTION",
+      "interpretation": "Corrected aggregation uses original trained models; preserve obsolete-schema failure and no-promotion outcome.",
+      "read_first": [
+        "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_FINAL_READOUT.md"
+      ]
+    },
+    "kevin/teacher-paper-handoff-20260903": {
+      "role": "Checkpoint-aligned paper handoff",
+      "state": "Historical test 549 recovery",
+      "interpretation": "Resolves old 455 misalignment for this checkpoint; does not invalidate unrelated official 455 studies.",
+      "read_first": []
+    }
+  },
+  "cohorts_md": "# Cohorts, estimators and comparisons\n\n[Atlas](README.md) · [Audit findings](REVIEW_FINDINGS.md)\n\n# # A sample count is not a dataset identity\n\n| Authority | Role and valid interpretation | Invalid inference |\n|---|---|---|\n| Development 217 /68 components | Exposed SAbDab2 development; matched grid/arm comparisons | Fresh test; repeated corruption rows as independent samples |\n| Registered holdout 217 | Separate registered read, disclosed 32-case overlap with another exposed baseline test | Same cohort as development 217; replacing the answer by 185-case sensitivity |\n| Aligned historical test 549 | Checkpoint-specific exposed historical test | Fresh blind or proved sequence-double-cold generalization |\n| Old FrameContact cache 455 |272 train /73 validation /110 held out for that checkpoint; provenance correction | A valid headline test score, or proof all 455-case studies are invalid |\n| Official 455 in EPIC reconstruction | Distinct authority, historically exposed test | Original submitted OpenDDE checkpoint or pristine benchmark |\n| EPIC 321 validation | Carved from official training | An official validation release or demonstrated cluster-disjoint split |\n| Newer EPIC 324 validation | Reported cluster-disjoint 324 /82 clusters; evidence pending | Automatic test transfer of task-specific selection |\n| AsEP group/ratio | Distinct task axes and test histories; same-split per-complex MCC | Pooled scores compared to macro published tables |\n| Newer AsEP 1553 | Reported overlap-stratified frozen-model diagnostic | Strict OOD from one incompletely specified identity threshold |\n| Strict dual-axis retrieval | Prospective authority-train protocol; builder AND independent audit required | Results from a canary, or unknown pairings treated as verified negatives |\n| AbCite PMC/ViDoRe/VQA/audio-video | Distinct query construction, galleries and answerers | A unified model leaderboard or antibody accuracy |\n\n# # Keep each estimator attached\n\nMacro AP averages per-complex AP. Pooled AP concatenates candidate pairs. Equal-component AP averages within components and then across components. They weight cases differently and can order models differently.\n\nA mean or median of per-seed AP is not AP of averaged ensemble predictions. Compare a new ensemble with an unchanged-model seed ensemble before assigning gains to new components.\n\nRatio of means and mean of per-seed ratios differ; keep absolute paired differences primary. Resampling seeds, complexes, PDB blocks and components addresses different uncertainties. A crossed seed×component bootstrap is not a PDB-block bootstrap after averaging seeds. Pointwise intervals are not simultaneous family intervals.\n\nAP is not accuracy or P@k: AP 0.024 does not imply 97.6% false predictions in any specified top-k set. Show measured precision/recall at candidate budgets. AP/prevalence ratios are not a matched random-baseline experiment.\n\nA confidence interval crossing zero does not establish equivalence, clean-safety or uselessness. Noninferiority/equivalence requires a justified prespecified margin and corresponding analysis.\n\nA comparison key should include cohort hash, split role, label rule, candidate axes, input access, checkpoint selection, seed rule, aggregation and uncertainty unit. Missing keys allow contextual discussion, not an automatically fair ranked table. Exact sources are bound in the result cards.\n",
+  "findings_md": "# Presentation audit —7 October 2026\n\n[Atlas](README.md) · [All branches](BRANCHES.md)\n\nThis is reporting and evidence-location review, not an independent rerun or a declaration that off-Git files do not exist. Historical artifacts remain unchanged; result cards bind sources to commits and hashes.\n\n## 1. Stale completion claims on the landing page\n\nOriginal main README uses the September 30 operations snapshot: 12/36 PLM tasks, structure RePaRank incomplete. Final receipts record 36/36 with no promotion and centered RePaRank 217/217. Correct the generator, not only its output. Keep scheduler snapshots historical, not falsely live.\n\n## 2. An old branch archive is not the current branch inventory\n\nThe preserved archive has 17 snapshots and 747 evidence-path links. This audit has 30 HEADs,103,552 repeated tree entries,4,913 distinct path/blob versions and 4,756 Git blobs. Units and observation dates must remain separate.\n\n## 3. Completed evidence is scattered across side branches\n\nFinal rescue, centered RePaRank and structural-PLM evidence is not all stored locally on main. Fixed-commit links resolve this without merging experiment implementations or moving hash-bound files.\n\n## 4. The October 4 manuscript has an evidence-publication gap\n\nLatest main adds reviewer Markdown reporting 75 ablation models,75 improvement models, new OpenDDE, specialist and AsEP experiments. Matching terminal artifacts were not identified in the 30 HEAD trees. The earlier 36-task running ledger and synthetic integration test cannot verify those later results. Mark them report-only, not false or never run.\n\nTo close the gap, attach condition/seed/run membership, source/split hashes, selection freezes, terminal receipts, per-seed/per-complex metrics, uncertainty outputs and raw-prediction location/hashes. Existing off-Git artifacts may suffice; this audit does not require rerunning training.\n\n## 5. Counts and analysis authority need reconciliation\n\nThe report’s 75 further models are described as rounds of 6 and 12 arms×3 seeds: that accounts for 54, not 75 without extra entries. The earlier frozen plan uses crossed seed×complex uncertainty; the newer report says simultaneous PDB-block bootstrap after seed averaging. Link the actual revised analysis authority and freeze, rather than silently conflating protocols.\n\n## 6. EPIC v2 needs model identity and selection-transfer context\n\nOriginal submitted checkpoint is not exactly restored. Reconstructed AF3 scores cannot be labelled as the original submission. The contact-selected ensemble fails to beat the unchanged-model ensemble on test, while the paratope-selected ensemble happens to lead all tasks. Separate successful paratope selection, exploratory cross-task observations and seed-ensemble versus component contributions. Check ambiguous as-published labels.\n\n## 7. Identical sample counts cause false comparisons\n\nDevelopment 217 is not holdout 217; historical test 549 is not later development 549. A checkpoint-specific invalid 455 cache does not invalidate official 455 under another authority. Use the cohort guide before creating any ranking.\n\n## 8. AP was incorrectly translated into top-k precision\n\nThe decoder README infers 97.6% false top-ranked pairs from AP≈0.024. That is not a valid interpretation of AP. Its decoder-choice-does-not-matter heading also exceeds what one seed establishes. Keep the original file but place this correction at the entry route and report actual P@k/recall metrics.\n\n## 9. Pair structure is not proven partner identification\n\nExceeding the model’s marginal outer product establishes a within-complex scoring margin. It does not alone show true-antigen identification among alternatives. The full-grid counterevidence and newer near-chance decoy report must be presented alongside it. Head/contact consistency is also not partner specificity.\n\n## 10. Estimator and uncertainty language remains important\n\nThe claims ledger correctly distinguishes ratio-of-means and mean-of-ratios near its top, but still says mean of per-seed ratios throughout later. Do not unify these numbers by renaming. Keep component/complex weighting, seed/block uncertainty and pointwise/simultaneous intervals separate. A zero-crossing interval is not equivalence, safety or universal failure.\n\n## 11. Newer prose has scope and coverage inconsistencies\n\nOpenDDE full-completion wording must retain the disclosed long-entity AF3 fallback. AsEP external-diagnostic versus no-external-test wording needs consistent chronology/scope. Reported label matches are 3,047/3,208, or 3,169 at tolerance: do not introduce 3,208/3,208 float 16 without its actual certificate. AUTHOR TO CONFIRM fields remain unresolved.\n\n## 12. Negative results and application boundaries are part of the work\n\nRetain structural-PLM no-promotion, clean-input rescue damage, cheap-gate controls, failed OOD admission, non-replicated MRR anomaly, Hadamard non-win and AbCite LoRA regression. AbCite retrieval is a separate application, not more antibody-prediction evidence. Branch copies are not replications.\n\n## Review depth\n\nAll 30 HEAD trees and source-object bytes are mechanically inventoried and hashed. Selected load-bearing readouts and numeric fields are reviewed in detail. Supporting artifacts, code, images and protocols are also catalogued, but not all manually adjudicated. This is not a claim to have read every code line, binary figure, historical commit or off-Git file. Verification records exact checks and exclusions.\n",
+  "presentation_md": "# Present every result in three layers\n\n[Atlas](README.md) · [Cohorts](COHORTS.md) · [Findings](REVIEW_FINDINGS.md)\n\n## Layer 1: landing page\n\nLead with bounded questions and a few protocol-scoped results, not a cross-cohort leaderboard. Final decisions such as 36/36 complete with no promotion are more informative than training counts. Newer manuscript claims need their own labelled evidence-pending section.\n\n## Layer 2: uniform result cards\n\nEach card includes answer, evidence level, cohort, model/input access, seeds, estimator/uncertainty, limitations and exact source links. Put controls and negative endpoints beside gains. Separate interface prediction, correspondence, objectives, external baselines, screening, retrieval, engineering, newer EPIC reports and AbCite.\n\n## Layer 3: branch and source provenance\n\nThirty branch pages show role, HEAD, ahead/behind and exact differences from original main. The full explorer contains 4,913 path/blob versions with memberships; the evidence-location catalogue includes all files under its documented filter. Do not relocate frozen files for cosmetic tidiness. Preserve the old 17-snapshot archive.\n\n## Plot designs for future evidence-bound figures\n\n| Question | Display | Required guardrail |\n|---|---|---|\n| Representation/objective effect | Paired-difference intervals around zero | One cohort and declared uncertainty unit; pointwise versus simultaneous separated |\n| Structural PLM selection | Every real layer versus its own random-width control | All 10 contrasts, tie-window selection and no-promotion verdict |\n| Rescue | Corruption benefit and clean cost in separate panels | Equal-complex levels differ from equal-component deltas; repeated conditions are not samples |\n| Contact usefulness | P@10/P@50, recall, precision-recall curves | Matching prediction grid; never derive P@k from AP |\n| EPIC v2 | Single model→unchanged ensemble→component ensemble | Frozen per-task selection and failed contact-selection transfer |\n| RePaRank | Sequence, uncentered mismatch, corrected-centered | Separate macro/pooled metrics and input-access caveats |\n| AbCite | Separate figure/page/VQA/real-media panels | No fixture/held-out/synthetic/official-harness mixing |\n\nThese are presentation specifications, not claims that new plots have been computed from off-Git predictions. The current HTML provides source-linked cards and complete searchable tables.\n\n## Adding results\n\nAttach terminal artifacts before upgrading a report-only card. Register numeric JSON selectors and expected values. Keep this dated source snapshot immutable; create a new dated snapshot for newer HEADs. Rebuild/check the atlas and run the historical-preservation verifier. A newer date or stronger prose alone cannot upgrade evidence.\n"
+}

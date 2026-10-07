@@ -1,0 +1,1601 @@
+{
+  "cards": [
+    {
+      "answer": "Corrected test 549 routed medians: contact AP 0.02667, epitope AP 0.22031, paratope AP 0.69859. The old 455 cache was not held out for this checkpoint.",
+      "boundary": "This correction applies to the specific checkpoint, not every official 455 evaluation. Some AF3 predictions use homolog MSAs. Not fresh blind or proven sequence-double-cold evidence.",
+      "checks": [],
+      "cohort": "Checkpoint-aligned historical 549 test, already exposed",
+      "estimand": "Mean-per-complex AP, not pooled AP or accuracy",
+      "id": "framecontact-historical",
+      "inputs": "Sequence plus independently predicted intra-chain geometry; no bound complex pose",
+      "legacy_metric_ids": [
+        "framecontact_contact_ap",
+        "framecontact_epitope_ap",
+        "framecontact_paratope_ap"
+      ],
+      "level": "metric-bound",
+      "seeds": "17 /29 /43; fixed routed medians",
+      "sources": [
+        {
+          "blob": "a90a0437bf519397b68b4c22d22ef9f6a72a2900",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/aligned_test549_replay_v1/RESULT.json",
+          "sha256": "26822d1b921f3566112b0f8498e230e41f5d2cbe487f7b5474e77c24d67a79d2",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/aligned_test549_replay_v1/RESULT.json"
+        },
+        {
+          "blob": "53f1dbb89cb669a6f06c4cd32cbdfcfd5bfac719",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/CHECKPOINT_TEST_ALIGNMENT_20260905.md",
+          "sha256": "e27a47ebb92ed9542a4b58e771b522d3e6cd2310eb94ddd49385d95a2cff4fc7",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/CHECKPOINT_TEST_ALIGNMENT_20260905.md"
+        }
+      ],
+      "title": "FrameContact: three outputs on the corrected historical test",
+      "workstream": "Interface prediction"
+    },
+    {
+      "answer": "Aligned ESM-IF1 minus ESM-2: +0.005111 AP; shuffled minus ESM-2: −0.003093. The random-width control is undecided, not equivalent.",
+      "boundary": "Training-seed repeatability is not population confirmation or universal alignment necessity.",
+      "checks": [],
+      "cohort": "SAbDab2 development 217",
+      "estimand": "Macro pair AP differences; seed-bootstrap intervals",
+      "id": "representation-transfer",
+      "inputs": "Frozen ESM-2 with aligned/shuffled ESM-IF1 and random-width controls",
+      "legacy_metric_ids": [
+        "rep_aligned_delta",
+        "rep_aligned_ci",
+        "rep_shuffled_delta",
+        "rep_random_ci"
+      ],
+      "level": "metric-bound",
+      "seeds": "10 paired seeds",
+      "sources": [
+        {
+          "blob": "a00b0bd9d589a655902446b10e3755e3232ff6b4",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/representation_attribution_v1/report.json",
+          "sha256": "23525fb42c38c82579299654b4ec54a68e37483fe7fdd7334b99b829adf4e832",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/representation_attribution_v1/report.json"
+        },
+        {
+          "blob": "de64b7b1bd246f9119b35d9e061407514d14c995",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/CLAIMS_LEDGER.md",
+          "sha256": "11601363a09cd2b61f8557c9a5ed7091e646624a06ab1bac8bbd11d20a925e86",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/CLAIMS_LEDGER.md"
+        }
+      ],
+      "title": "Aligned features versus shuffled and width controls",
+      "workstream": "Correspondence"
+    },
+    {
+      "answer": "ESM-IF1 identity AP 0.027995 becomes 0.011100 under same-AA shuffle; component-weighted paired effect about −0.017151.",
+      "boundary": "Synthetic sensitivity does not establish natural misregistration prevalence. Same-AA shuffling is not correspondence-preserving.",
+      "checks": [],
+      "cohort": "217 development complexes /68 components",
+      "estimand": "Complex-weighted levels versus component/seed-weighted effects; crossed intervals",
+      "id": "same-aa-corruption",
+      "inputs": "Same-amino-acid permutation retains residue types and feature multiset but breaks correspondence",
+      "legacy_metric_ids": [
+        "corr_esm_if1_identity",
+        "corr_esm_if1_same_aa",
+        "corr_esm_if1_delta",
+        "corr_esm_if1_ci"
+      ],
+      "level": "metric-bound",
+      "seeds": "3 fixed seeds",
+      "sources": [
+        {
+          "blob": "054ff8b771c6368b660b1b3eb408b571b51e0892",
+          "branch": "kevin/correspondence-upgrade-20260930",
+          "commit": "14a385feaec24b3141331963ba71dda788a164e1",
+          "path": "extensions/correspondence_v2/READOUT.md",
+          "sha256": "be6f680bac4d24e561c4466b279532d43b1bfd2d9e629565248caac18a4ddc88",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/14a385feaec24b3141331963ba71dda788a164e1/extensions/correspondence_v2/READOUT.md"
+        },
+        {
+          "blob": "36f24360004d53790cffe74199fdab909c77f2e6",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "docs/CLAIM_BOUNDARIES.md",
+          "sha256": "285394e4f62f18c7bb8b0ee41a63aa22e3c3a586681e96801e9627ba256b194f",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/docs/CLAIM_BOUNDARIES.md"
+        }
+      ],
+      "title": "Same-AA shuffling isolates correspondence damage",
+      "workstream": "Correspondence"
+    },
+    {
+      "answer": "ProteinMPNN aligned−shuffled: +0.003594 AP,9/10 favorable, interval above zero. ESM-IF1: +0.002260,6/10, interval includes zero. Both outcomes must remain visible.",
+      "boundary": "Disclosed 32-case overlap with a different exposed baseline test. The 185-case sensitivity does not replace the registered outcome; do not pool encoder seed counts.",
+      "checks": [],
+      "cohort": "Registered 217-complex holdout, distinct from development 217",
+      "estimand": "Per-encoder paired macro AP contrast and registered decision rule",
+      "id": "holdout-confirmation",
+      "inputs": "ProteinMPNN and ESM-IF1 correspondence controls",
+      "legacy_metric_ids": [
+        "holdout_ProteinMPNN_delta",
+        "holdout_ProteinMPNN_ci",
+        "holdout_ESM-IF1_delta",
+        "holdout_ESM-IF1_ci"
+      ],
+      "level": "metric-bound",
+      "seeds": "10 paired seeds per encoder",
+      "sources": [
+        {
+          "blob": "b46ee8b2699744b33c3495ecc0a2e0d420fe5f35",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/holdout_confirmation_v1/confirmation.json",
+          "sha256": "e30b34bd3720e9443ccd53975415ecf983671a9715aef63e4324c02526b2fb46",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/confirmation.json"
+        },
+        {
+          "blob": "33eb0a3f7cf547358fd541c4949dbe48f0ca4156",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/holdout_confirmation_v1/README.md",
+          "sha256": "ddcf7e2f3ef5f5ba8dd8946151578817eaba5a789652dbe718d5bbfc325b06f3",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/holdout_confirmation_v1/README.md"
+        }
+      ],
+      "title": "Registered holdout: one encoder confirms",
+      "workstream": "Correspondence"
+    },
+    {
+      "answer": "Same-AA rescued−corrupted AP: +0.0157209,95% CI [0.0112560,0.0211527]. Clean inputs incur about −0.001430 component-weighted AP cost.",
+      "boundary": "1,953 rows are repeated observations of 217 complexes, not 1,953 biological samples. Not OOD, natural-corruption detection or production improvement.",
+      "checks": [
+        {
+          "actual": 0.01572086539530153,
+          "expected": 0.01572086539530153,
+          "selector": [
+            "contrasts",
+            {
+              "where": {
+                "condition": "same_aa_shuffle:0",
+                "contrast": "rescued_ap_minus_corrupted_ap"
+              }
+            },
+            "equal_component_equal_paired_seed_effect"
+          ],
+          "source_binding": {
+            "blob": "7598fc0120d54de232f53a5f9dc3a6efd7fac980",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json",
+            "sha256": "b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": [
+            0.011255990518420451,
+            0.02115269924594697
+          ],
+          "expected": [
+            0.011255990518420451,
+            0.02115269924594697
+          ],
+          "selector": [
+            "contrasts",
+            {
+              "where": {
+                "condition": "same_aa_shuffle:0",
+                "contrast": "rescued_ap_minus_corrupted_ap"
+              }
+            },
+            "pointwise_crossed_bootstrap_ci95"
+          ],
+          "source_binding": {
+            "blob": "7598fc0120d54de232f53a5f9dc3a6efd7fac980",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json",
+            "sha256": "b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json"
+          },
+          "source_index": 0
+        }
+      ],
+      "cohort": "217 development complexes /68 components; 3 synthetic conditions",
+      "estimand": "Equal-component/equal-paired-seed effect; pointwise crossed seed×component bootstrap",
+      "id": "synthetic-rescue",
+      "inputs": "Trained residue matcher and fixed downstream models",
+      "level": "metric-bound",
+      "seeds": "Paired (101,1),(202,2),(303,3)",
+      "sources": [
+        {
+          "blob": "7598fc0120d54de232f53a5f9dc3a6efd7fac980",
+          "branch": "kevin/rescue-qualification-20260930",
+          "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+          "path": "extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json",
+          "sha256": "b5dc2f31682a17502262c60c72cee9d926557f520ffe532da2b070ee421adcdc",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/evidence_attempt3/THREE_SEED_AGGREGATE.json"
+        },
+        {
+          "blob": "576aed0760b5b88077a3f267704257df566ad4d6",
+          "branch": "kevin/rescue-qualification-20260930",
+          "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+          "path": "extensions/rescue_qualification_v2/READOUT.md",
+          "sha256": "a659cb4617d5ee26ab4f4008043e5fcde250b7654029500d435389b5e2280043",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/READOUT.md"
+        }
+      ],
+      "title": "Learned rescue: synthetic gain with clean-input cost",
+      "workstream": "Correspondence"
+    },
+    {
+      "answer": "All registered synthetic corruptions trigger. Clean damage becomes −0.0004598 AP, crossed CI [−0.0011427,+0.0000198]; no clean-safety guarantee.",
+      "boundary": "Train-clean trigger≈0.39% becomes 15.67% /17.97% /0.46% on validation. No post-hoc noninferiority margin or deployment guarantee.",
+      "checks": [
+        {
+          "actual": 217,
+          "expected": 217,
+          "selector": [
+            "unique_complexes"
+          ],
+          "source_binding": {
+            "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+            "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 68,
+          "expected": 68,
+          "selector": [
+            "independent_components"
+          ],
+          "source_binding": {
+            "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+            "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 1953,
+          "expected": 1953,
+          "selector": [
+            "record_count"
+          ],
+          "source_binding": {
+            "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+            "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": -0.00045979402276384953,
+          "expected": -0.00045979402276384953,
+          "selector": [
+            "clean",
+            "gated_minus_aligned",
+            "equal_component_equal_seed"
+          ],
+          "source_binding": {
+            "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+            "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": [
+            -0.0011426844725987797,
+            1.9782609094639334e-05
+          ],
+          "expected": [
+            -0.0011426844725987797,
+            1.9782609094639334e-05
+          ],
+          "selector": [
+            "clean",
+            "gated_minus_aligned",
+            "crossed_seed_component_ci95"
+          ],
+          "source_binding": {
+            "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+            "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": -0.001430459907154479,
+          "expected": -0.001430459907154479,
+          "selector": [
+            "clean",
+            "unconditional_minus_aligned",
+            "equal_component_equal_seed"
+          ],
+          "source_binding": {
+            "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+            "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+          },
+          "source_index": 0
+        }
+      ],
+      "cohort": "217 development complexes /68 components; train-only threshold calibration",
+      "estimand": "Equal-component/equal-seed contrasts and crossed intervals",
+      "id": "gated-rescue",
+      "inputs": "Label-free gate; no contact AP used to choose thresholds",
+      "level": "metric-bound",
+      "seeds": "3 paired rescue/downstream seeds",
+      "sources": [
+        {
+          "blob": "4eb8e91002cd83958cacd40332641f1fbfbb4f4a",
+          "branch": "kevin/rescue-qualification-20260930",
+          "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+          "path": "extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json",
+          "sha256": "f40f84837f3484e490513f5729b273c017620934725c50aa26a1b1bf2368e987",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/evidence/20260930/gated_rescue_v1/GATED_RESCUE_CROSSED_ANALYSIS.json"
+        },
+        {
+          "blob": "97b3521b78d5f813a32a34584451267721739f07",
+          "branch": "kevin/rescue-qualification-20260930",
+          "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+          "path": "extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md",
+          "sha256": "73d7b1db445d9bff650772698618873e44556f9fcaec9a26c8561f7aaf045366",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md"
+        }
+      ],
+      "title": "Gating reduces clean damage but does not establish safety",
+      "workstream": "Correspondence"
+    },
+    {
+      "answer": "Moved-fraction and related inexpensive statistics also detect same-AA/global permutations at or near 100%. The synthetic construction moves about 91% of same-AA rows and nearly all globally shuffled rows.",
+      "boundary": "Counterevidence to a uniquely capable natural-error detector. Preserve the synthetic-line stopping boundary; no repeated threshold tuning on exposed outcomes.",
+      "checks": [],
+      "cohort": "Same 217 development complexes; training-only calibration",
+      "estimand": "Detection and clean-trigger rates, not downstream AP",
+      "id": "cheap-gate-control",
+      "inputs": "Label-free heuristic controls",
+      "level": "readout-bound",
+      "seeds": "3 fixed seeds",
+      "sources": [
+        {
+          "blob": "97b3521b78d5f813a32a34584451267721739f07",
+          "branch": "kevin/rescue-qualification-20260930",
+          "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+          "path": "extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md",
+          "sha256": "73d7b1db445d9bff650772698618873e44556f9fcaec9a26c8561f7aaf045366",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/rescue_qualification_v2/GATED_RESCUE_READOUT.md"
+        }
+      ],
+      "title": "Cheap selectors also detect synthetic corruption",
+      "workstream": "Correspondence"
+    },
+    {
+      "answer": "Paired macro AP margin +0.00311345, CI [0.00196869,0.00429043], positive 10/10. Ratio of means≈16.1%; mean seed ratios≈16.7%; neither is the single-seed 32.7%.",
+      "boundary": "Exceeding a separable baseline does not alone prove true binding-partner identification; own-model marginals are not an independent specialist baseline.",
+      "checks": [
+        {
+          "actual": 0.0031134461184687,
+          "expected": 0.0031134461184687,
+          "selector": [
+            "mean_margin"
+          ],
+          "source_binding": {
+            "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+            "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+            "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+            "path": "results/baseline_margin_replication_v1/report.json",
+            "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": [
+            0.0019686912510177143,
+            0.004290434941020674
+          ],
+          "expected": [
+            0.0019686912510177143,
+            0.004290434941020674
+          ],
+          "selector": [
+            "bootstrap_ci95"
+          ],
+          "source_binding": {
+            "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+            "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+            "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+            "path": "results/baseline_margin_replication_v1/report.json",
+            "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 10,
+          "expected": 10,
+          "selector": [
+            "seed_count"
+          ],
+          "source_binding": {
+            "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+            "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+            "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+            "path": "results/baseline_margin_replication_v1/report.json",
+            "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 10,
+          "expected": 10,
+          "selector": [
+            "positive_seed_count"
+          ],
+          "source_binding": {
+            "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+            "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+            "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+            "path": "results/baseline_margin_replication_v1/report.json",
+            "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+          },
+          "source_index": 0
+        }
+      ],
+      "cohort": "217 validation complexes /68 clusters; documented split drift",
+      "estimand": "Absolute paired difference primary; seed bootstrap and exact sign bound",
+      "id": "baseline-margin",
+      "inputs": "Bilinear head versus outer product of its own marginals",
+      "level": "metric-bound",
+      "seeds": "10 seeds",
+      "sources": [
+        {
+          "blob": "78b0539245dcc8cc7212ccb94e0ce5bea8e65a22",
+          "branch": "kevin/evaluate-sensitivity-ci-fix-v1",
+          "commit": "ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4",
+          "path": "results/baseline_margin_replication_v1/report.json",
+          "sha256": "d03a2ce41f1a0944e8eefd5cb815cbb642b52fbc31b7c78051232e148b98e447",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/ed8c33fb3e25666a72cf1f368e03d83d5c7d89a4/results/baseline_margin_replication_v1/report.json"
+        },
+        {
+          "blob": "de64b7b1bd246f9119b35d9e061407514d14c995",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/CLAIMS_LEDGER.md",
+          "sha256": "11601363a09cd2b61f8557c9a5ed7091e646624a06ab1bac8bbd11d20a925e86",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/CLAIMS_LEDGER.md"
+        }
+      ],
+      "title": "Ten-seed pair head versus its own marginal baseline",
+      "workstream": "Objectives & controls"
+    },
+    {
+      "answer": "Bilinear macro pair AP 0.0239708 versus Hadamard 0.0226796. No superiority or equivalence of decoder classes follows from one seed.",
+      "boundary": "AP is not top-k precision: the legacy 97.6%-false-top-pairs deduction from AP 0.024 is invalid. Preserve the original post-prediction aggregation failure.",
+      "checks": [
+        {
+          "actual": 0.023970778057653425,
+          "expected": 0.023970778057653425,
+          "selector": [
+            "bilinear",
+            "macro",
+            "auprc"
+          ],
+          "source_binding": {
+            "blob": "206249f88275c888fc312f35150db395db415796",
+            "branch": "kevin/hadamard-pair-decoder-v1",
+            "commit": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+            "path": "results/pair_decoder_ablation_v1/report_compact.json",
+            "sha256": "cfd1fc3432ed7ff2eef8e27d1827846cf0c16cac3fc5537487d893c4e9b32790",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/347acbdfb10a15a2b4081a676b0364d3b83ee8dc/results/pair_decoder_ablation_v1/report_compact.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 0.02267960882724628,
+          "expected": 0.02267960882724628,
+          "selector": [
+            "hadamard_mlp",
+            "macro",
+            "auprc"
+          ],
+          "source_binding": {
+            "blob": "206249f88275c888fc312f35150db395db415796",
+            "branch": "kevin/hadamard-pair-decoder-v1",
+            "commit": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+            "path": "results/pair_decoder_ablation_v1/report_compact.json",
+            "sha256": "cfd1fc3432ed7ff2eef8e27d1827846cf0c16cac3fc5537487d893c4e9b32790",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/347acbdfb10a15a2b4081a676b0364d3b83ee8dc/results/pair_decoder_ablation_v1/report_compact.json"
+          },
+          "source_index": 0
+        }
+      ],
+      "cohort": "217 validation complexes /9,638,880 pairs",
+      "estimand": "Macro pair AP; other endpoints disagree in direction",
+      "id": "hadamard-decoder",
+      "inputs": "Matched bilinear versus Hadamard MLP",
+      "level": "metric-bound",
+      "seeds": "One seed 42; both checkpoint epoch 1",
+      "sources": [
+        {
+          "blob": "206249f88275c888fc312f35150db395db415796",
+          "branch": "kevin/hadamard-pair-decoder-v1",
+          "commit": "347acbdfb10a15a2b4081a676b0364d3b83ee8dc",
+          "path": "results/pair_decoder_ablation_v1/report_compact.json",
+          "sha256": "cfd1fc3432ed7ff2eef8e27d1827846cf0c16cac3fc5537487d893c4e9b32790",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/347acbdfb10a15a2b4081a676b0364d3b83ee8dc/results/pair_decoder_ablation_v1/report_compact.json"
+        },
+        {
+          "blob": "85ec61d88ad6ad27c08db59a7dc9d385a27642a9",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/pair_decoder_ablation_v1/README.md",
+          "sha256": "b4a78853bd601e0172875acc0d9deb84df6a7a65869570f1c9248ebda778b566",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/pair_decoder_ablation_v1/README.md"
+        }
+      ],
+      "title": "Hadamard decoder: no demonstrated win",
+      "workstream": "Objectives & controls"
+    },
+    {
+      "answer": "Node+edge pair AP 0.09055 versus full-objective 0.06917; paired gains about+0.0214 pair AP and+0.0369 node MCC, favorable 10/10.",
+      "boundary": "Scheduler/checkpoint selection also change through the monitored loss. This is a full-procedure intervention, not isolated ranking-gradient causality or all-task Pareto improvement.",
+      "checks": [],
+      "cohort": "AsEP epitope_group validation",
+      "estimand": "Macro pair AP; node MCC fixed 0.5; paired seed effects",
+      "id": "objective-factorial",
+      "inputs": "Four node/contact/ranking objective combinations",
+      "level": "readout-bound",
+      "seeds": "10 paired seeds per arm",
+      "sources": [
+        {
+          "blob": "85ade4fe769fc68e59dd8c9b83660e682c7f7c14",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/objective_component_localisation_v1/PART_TWO.md",
+          "sha256": "fc5e0293364121df5fe38d52a7799e2149707d4e73635da196004c1db4a3da07",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/objective_component_localisation_v1/PART_TWO.md"
+        },
+        {
+          "blob": "a3572103a562766651d9b5bbaa0138607ef7eba8",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/objective_component_localisation_v1/RUN_CONTRACT.md",
+          "sha256": "69da2b9e21d2780cacec96c71d3fd0bc0f7427b8d9c4e543658d75e04826f3be",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/objective_component_localisation_v1/RUN_CONTRACT.md"
+        }
+      ],
+      "title": "Ranking-term removal improves two measured endpoints",
+      "workstream": "Objectives & controls"
+    },
+    {
+      "answer": "Recorded sign crossings occur at steps 77–110 on AsEP and 38–50 on SAbDab2. Converged positive cosine does not describe the early trajectory.",
+      "boundary": "Gradient norm or cosine alone does not establish the mechanism of the loss-ablation performance effect.",
+      "checks": [],
+      "cohort": "AsEP/SAbDab2 training diagnostics",
+      "estimand": "Per-step trajectories, not accuracy",
+      "id": "gradient-dynamics",
+      "inputs": "Shared-trunk gradients and two diagnostic toolchains",
+      "level": "readout-bound",
+      "seeds": "3 runs per documented cohort/toolchain",
+      "sources": [
+        {
+          "blob": "e0d6c84e7b61ed173201645cd2f4a896c6d7b90b",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/gradient_alignment_dynamics_v1/step_trace_summary.json",
+          "sha256": "8251cfdf5842d1a70715e5bd970a5769258dd9513cf03eeedc9c075034e8defb",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/gradient_alignment_dynamics_v1/step_trace_summary.json"
+        },
+        {
+          "blob": "de64b7b1bd246f9119b35d9e061407514d14c995",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/CLAIMS_LEDGER.md",
+          "sha256": "11601363a09cd2b61f8557c9a5ed7091e646624a06ab1bac8bbd11d20a925e86",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/CLAIMS_LEDGER.md"
+        }
+      ],
+      "title": "Gradient alignment changes during training",
+      "workstream": "Objectives & controls"
+    },
+    {
+      "answer": "Macro pair AP 0.0378078; pooled AP 0.00873858; pooled AUROC 0.786064. These are different estimators, not interchangeable scores.",
+      "boundary": "External-baseline measurement is not a new algorithmic gain. Training overlap unknown; do not rank against FrameContact test 549.",
+      "checks": [],
+      "cohort": "217 development complexes /68 components; 9,638,880 pairs /9,036 contacts",
+      "estimand": "Macro, pooled and equal-component results separate",
+      "id": "reparank-sequence",
+      "inputs": "Released sequence checkpoint, no new head/fine-tuning",
+      "legacy_metric_ids": [
+        "reparank_macro_ap",
+        "reparank_pooled_ap",
+        "reparank_pairs",
+        "reparank_positives"
+      ],
+      "level": "metric-bound",
+      "seeds": "One released checkpoint",
+      "sources": [
+        {
+          "blob": "e9d21731ff0c55952054dd199213d1b533574d31",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json",
+          "sha256": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/evidence/reparank_same_protocol_v1/sequence_full/evaluation.json"
+        },
+        {
+          "blob": "36f24360004d53790cffe74199fdab909c77f2e6",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "docs/CLAIM_BOUNDARIES.md",
+          "sha256": "285394e4f62f18c7bb8b0ee41a63aa22e3c3a586681e96801e9627ba256b194f",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/docs/CLAIM_BOUNDARIES.md"
+        }
+      ],
+      "title": "Official RePaRank sequence checkpoint",
+      "workstream": "External baselines"
+    },
+    {
+      "answer": "Centered structure macro AP 0.0160136 versus sequence 0.0378078; pooled AP 0.00236625 /AUROC 0.672153. Complete 217/217: 12 reused+205 fresh predictions.",
+      "boundary": "Uncentered results are a protocol-mismatch control. This does not establish that structure is useless: no correctly docked complex pose is supplied and checkpoint overlap is unknown.",
+      "checks": [
+        {
+          "actual": 217,
+          "expected": 217,
+          "selector": [
+            "instance_count"
+          ],
+          "source_binding": {
+            "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+            "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 0.016013622977683228,
+          "expected": 0.016013622977683228,
+          "selector": [
+            "primary_macro_mean_per_complex_AP"
+          ],
+          "source_binding": {
+            "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+            "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 0.0023662535231304227,
+          "expected": 0.0023662535231304227,
+          "selector": [
+            "pooled_pair_metrics",
+            "average_precision"
+          ],
+          "source_binding": {
+            "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+            "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 0.6721526555729059,
+          "expected": 0.6721526555729059,
+          "selector": [
+            "pooled_pair_metrics",
+            "auroc"
+          ],
+          "source_binding": {
+            "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+            "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 12,
+          "expected": 12,
+          "selector": [
+            "reused_pair_prediction_count"
+          ],
+          "source_binding": {
+            "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+            "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 205,
+          "expected": 205,
+          "selector": [
+            "fresh_model_forward_count"
+          ],
+          "source_binding": {
+            "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+            "branch": "kevin/rescue-qualification-20260930",
+            "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+            "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+            "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+          },
+          "source_index": 0
+        }
+      ],
+      "cohort": "Same 217-complex pair grid as sequence checkpoint",
+      "estimand": "Macro AP versus pooled metrics; component contrasts remain separate",
+      "id": "reparank-centered",
+      "inputs": "Official-style per-chain centering; independently predicted chain-local geometry",
+      "level": "metric-bound",
+      "seeds": "One released checkpoint; reuse is not replication",
+      "sources": [
+        {
+          "blob": "21475fd3021661f7b32c9c4e40fa693a42bfcab2",
+          "branch": "kevin/rescue-qualification-20260930",
+          "commit": "a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc",
+          "path": "extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json",
+          "sha256": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a11a6ae7a9e2d56a3ff29bb8057e74f1c479b7cc/extensions/frontier_multimodel_v1/evidence/reparank_centered_corrected_v1/evaluation.json"
+        },
+        {
+          "blob": "383e5a2c8ef5f3fbebfe6251e65a71f6d0a2ef5d",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/INDEX.md",
+          "sha256": "d585cf1bcf7623ecdcae26a09bb5c1761d25a54884ea3f8b35159d8dbbdd1076",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/INDEX.md"
+        }
+      ],
+      "title": "RePaRank structure: completed and correctly centered",
+      "workstream": "External baselines"
+    },
+    {
+      "answer": "Complete SaProt/ProSST sweep: 36 tasks,12 arms; no real-layer crossed interval excludes zero against its matched random-width control. Decision NO-PROMOTION.",
+      "boundary": "ProSST selects layer 12; SaProt tie-window selects 24, not raw-highest 33. This is specific to this study, not universal structural-PLM failure.",
+      "checks": [
+        {
+          "actual": 36,
+          "expected": 36,
+          "selector": [
+            "task_count"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 12,
+          "expected": 12,
+          "selector": [
+            "arm_count"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 217,
+          "expected": 217,
+          "selector": [
+            "validation_complex_count"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 12,
+          "expected": 12,
+          "selector": [
+            "development_layer_selection",
+            "prosst",
+            "selected_layer"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 24,
+          "expected": 24,
+          "selector": [
+            "development_layer_selection",
+            "saprot",
+            "selected_layer"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 33,
+          "expected": 33,
+          "selector": [
+            "development_layer_selection",
+            "saprot",
+            "raw_highest_layer"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 0.02217555459107116,
+          "expected": 0.02217555459107116,
+          "selector": [
+            "development_layer_selection",
+            "prosst",
+            "selected_mean_pair_macro_ap"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        },
+        {
+          "actual": 0.024451940544316726,
+          "expected": 0.024451940544316726,
+          "selector": [
+            "development_layer_selection",
+            "saprot",
+            "selected_mean_pair_macro_ap"
+          ],
+          "source_binding": {
+            "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+            "branch": "kevin/structural-plm-final-20260930",
+            "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+            "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+            "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+            "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+          },
+          "source_index": 0
+        }
+      ],
+      "cohort": "217 exposed development complexes /68 components",
+      "estimand": "Paired seed/component effects; development selection is not promotion",
+      "id": "structural-plm",
+      "inputs": "Five real layers and one matched random control per family",
+      "level": "metric-bound",
+      "seeds": "3 seeds per arm: 1/2/3",
+      "sources": [
+        {
+          "blob": "0c515f1457de631731098f0de07d32be5f5482a1",
+          "branch": "kevin/structural-plm-final-20260930",
+          "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+          "path": "extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json",
+          "sha256": "d40d8a434349531bc7df9625220b3becef0b42a860da826310d5fa031264ed41",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/evidence/structural_plm_final_20260930/ANALYSIS.json"
+        },
+        {
+          "blob": "e8d68f8842431bd1c3037c241ebf6f1cb4d8c2d3",
+          "branch": "kevin/structural-plm-final-20260930",
+          "commit": "96864049bdb935d14a4439c3f048231f59e78bee",
+          "path": "extensions/frontier_multimodel_v1/STRUCTURAL_PLM_FINAL_READOUT.md",
+          "sha256": "1c7344aa808b091ace0fbf0400be2b58060762e98a38f54a0888d4640dec9fef",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96864049bdb935d14a4439c3f048231f59e78bee/extensions/frontier_multimodel_v1/STRUCTURAL_PLM_FINAL_READOUT.md"
+        }
+      ],
+      "title": "Structural PLMs: 36/36 complete, no promotion",
+      "workstream": "Representation screening"
+    },
+    {
+      "answer": "122×119=14,518 distinct pairings. The earlier small-panel MRR improvement after corruption is not robustly reproduced on the complete grid.",
+      "boundary": "Unobserved pairings are unlabelled alternatives, not verified non-binders. Score/length correlations do not prove causal bias.",
+      "checks": [],
+      "cohort": "122-antibody /119-antigen development library",
+      "estimand": "Finite-library ranking, separate from within-complex contact AP",
+      "id": "full-partner-grid",
+      "inputs": "Frozen checkpoints and registered corruption conditions",
+      "legacy_metric_ids": [
+        "ranking_unique_pair_count_per_task",
+        "ranking_total_pair_evaluations"
+      ],
+      "level": "metric-bound",
+      "seeds": "9 repeated grid tasks; not independent new pairings",
+      "sources": [
+        {
+          "blob": "3f73027ac12d153cf3261bf678c56766804acd94",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md",
+          "sha256": "cc404e6b6336b53e87ca30fe22060d65e928161a1dc300fa96bf385e9e997fa8",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/extensions/frontier_multimodel_v1/SCORE_DISSOCIATION_READOUT.md"
+        }
+      ],
+      "title": "Full partner grid does not confirm the small-panel anomaly",
+      "workstream": "Partner retrieval"
+    },
+    {
+      "answer": "Frozen retrieval contract and implementation support exist; no completed strict-model performance is promoted here. Passing builder and independent audit authorities are prerequisites.",
+      "boundary": "A canary, embedding audit, solver status or Slurm script is not a completed audited split, trained model or binding-specificity result.",
+      "checks": [],
+      "cohort": "Prospectively separated authority-train development",
+      "estimand": "MRR/recall-at-K with chance and grouped uncertainty",
+      "id": "strict-retrieval",
+      "inputs": "Tensor-identical retrieval controls and scoped inputs",
+      "level": "protocol-only",
+      "seeds": "Prospective, not completed repetitions",
+      "sources": [
+        {
+          "blob": "89965e982c18344a4eaf765d7bb480deca387adc",
+          "branch": "kevin/strict-dual-axis-retrieval-20260930",
+          "commit": "e9c253bace2edddf60cb4a10e1e839617b5cb927",
+          "path": "extensions/strict_partner_retrieval_v1/PROTOCOL.md",
+          "sha256": "0d4e54d9164bf00d456bffbece6f57b8060ee0f3ab812a8b36de41d536825abd",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/e9c253bace2edddf60cb4a10e1e839617b5cb927/extensions/strict_partner_retrieval_v1/PROTOCOL.md"
+        },
+        {
+          "blob": "52bf46534118ff49227ed4fd3494d2488c2e383e",
+          "branch": "kevin/strict-partner-retrieval-20260930",
+          "commit": "fdc2db39bd9f8817ae414a17dcf666a565433d83",
+          "path": "extensions/strict_partner_retrieval_v1/README.md",
+          "sha256": "a3bdd788ccd20911a83e114378097713852533c41d04bbc91437b1f8a184d04b",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fdc2db39bd9f8817ae414a17dcf666a565433d83/extensions/strict_partner_retrieval_v1/README.md"
+        }
+      ],
+      "title": "Strict dual-axis retrieval: protocol, not a score",
+      "workstream": "Partner retrieval"
+    },
+    {
+      "answer": "Ten-seed macro MCC≈0.1572 on epitope_group and 0.2584 on epitope_ratio. These constrain rather than establish benchmark leadership.",
+      "boundary": "Pooled-versus-macro comparisons and favorable older literature rows cannot establish SOTA. Preserve registered test-access history.",
+      "checks": [],
+      "cohort": "AsEP group/ratio test protocols with exposure histories",
+      "estimand": "Per-complex MCC with validation-selected thresholds",
+      "id": "asep-benchmark",
+      "inputs": "Repository model under documented benchmark conventions",
+      "legacy_metric_ids": [
+        "asep_group_mcc",
+        "asep_ratio_mcc"
+      ],
+      "level": "metric-bound",
+      "seeds": "10 seeds per protocol",
+      "sources": [
+        {
+          "blob": "f0f3d3b50bdd99236e8ccb374fd0c6a4a479d5d3",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/asep_benchmark_v1/BENCHMARK.md",
+          "sha256": "b06f8b39adbb0f6362c55b9bbe2615105fcc69fb965d413099d569a4e8af1b55",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/asep_benchmark_v1/BENCHMARK.md"
+        }
+      ],
+      "title": "AsEP benchmark position without inflation",
+      "workstream": "External baselines"
+    },
+    {
+      "answer": "The design analysis explains limited power and a Holm/Bonferroni field-label issue, but does not reverse the failed superiority gate.",
+      "boundary": "Low-power failure is not proof of no effect; changing interpretation is not independent confirmation.",
+      "checks": [],
+      "cohort": "Historical geometry development comparison",
+      "estimand": "Power/decision-rule analysis, not a new performance run",
+      "id": "geometry-gate",
+      "inputs": "Topology-only versus geometry features",
+      "level": "readout-bound",
+      "seeds": "Small historical seed count",
+      "sources": [
+        {
+          "blob": "e0830f606fe8462ff570fd5bf9d0216d6ecf7b05",
+          "branch": "kevin/geometry-gate-power-reanalysis-v1",
+          "commit": "96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d",
+          "path": "results/sabdab2_structure_self_attention/GEOMETRY_GATE_POWER_ANALYSIS_V1.md",
+          "sha256": "3df973a0a86f178491c309186548665d14283284550fbd95d1a6935c80a0c919",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/96e2a244cacd3d3a6d6b413a45e1a0af36c5f69d/results/sabdab2_structure_self_attention/GEOMETRY_GATE_POWER_ANALYSIS_V1.md"
+        }
+      ],
+      "title": "Geometry gate remains failed after power analysis",
+      "workstream": "Representation screening"
+    },
+    {
+      "answer": "A separately numbered protocol specifies 24 prospective replicates and leaves the earlier failed gate unchanged.",
+      "boundary": "Protocol existence does not prove completion or authorize sealed-test access.",
+      "checks": [],
+      "cohort": "Development-only geometry comparison",
+      "estimand": "Power/minimum-effect/stopping rule before outcomes",
+      "id": "geometry-replication",
+      "inputs": "Existing comparison under a frozen design",
+      "level": "protocol-only",
+      "seeds": "24 prospective replicates",
+      "sources": [
+        {
+          "blob": "b24cfd3d10a543c8fbe18b1c21f9d721e48ad61f",
+          "branch": "kevin/geometry-powered-replication-v1",
+          "commit": "f04dbeb92be4b8e072b17d382d2e3edf3dcdf969",
+          "path": "protocols/SABDAB2_GEOMETRY_POWERED_REPLICATION_PROTOCOL_V1.md",
+          "sha256": "c603a36f400935dff51fcb57c246e4c6df0a0b511c09bcb22dbad1a916424542",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/f04dbeb92be4b8e072b17d382d2e3edf3dcdf969/protocols/SABDAB2_GEOMETRY_POWERED_REPLICATION_PROTOCOL_V1.md"
+        }
+      ],
+      "title": "Powered replication is prospective",
+      "workstream": "Representation screening"
+    },
+    {
+      "answer": "September 4 summary reports pooled pair AUROC 0.6220→0.6904 for1D versus3D+margin transfer, while epitope pooled AP falls 0.2210→0.1567.",
+      "boundary": "Committed summary, not a newly verified matched campaign. Do not infer significance or compare AUROC to another cohort’s AP.",
+      "checks": [],
+      "cohort": "Official 455 SAbDab2 transfer; separate 172-case AsEP-derived study",
+      "estimand": "Pooled/macro AUROC, pooled epitope AP and pruning metrics",
+      "id": "asep-pretraining",
+      "inputs": "AsEP-derived pretraining and1D/3D+margin conditions",
+      "level": "readout-bound",
+      "seeds": "Seed replication not fully specified by summary",
+      "sources": [
+        {
+          "blob": "dadbd005b134bce94fbf14c483c9f80aa0bcc747",
+          "branch": "feature/asep-pretraining-pipeline",
+          "commit": "b730070e4d3247e26b3f64f5c10f8f4e16bfccae",
+          "path": "docs/evaluations/2026-09-04_sabdab2_asep_benchmarks_summary.md",
+          "sha256": "e5044d6a4aaa86f8aae3456fb3f26f983f601015f212d8fae5b836b8f49267d6",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/b730070e4d3247e26b3f64f5c10f8f4e16bfccae/docs/evaluations/2026-09-04_sabdab2_asep_benchmarks_summary.md"
+        }
+      ],
+      "title": "AsEP transfer: pair gain and epitope trade-off",
+      "workstream": "Historical studies"
+    },
+    {
+      "answer": "Fresh 156 routing gains are positive across 3 seeds. Later full-development routed medians 0.028576 /0.237464 /0.704746 are a distinct evidence stage.",
+      "boundary": "Later validation selected checkpoints. Contact/paratope invariance under routing is by construction, not another trained improvement.",
+      "checks": [],
+      "cohort": "Fresh 156 versus later 549 development validation",
+      "estimand": "Seed effects and antigen-cluster effects separately",
+      "id": "historical-routing",
+      "inputs": "Deterministic task routing",
+      "level": "readout-bound",
+      "seeds": "3 fixed seeds",
+      "sources": [
+        {
+          "blob": "05c109cf66d0f41d03566a2f09d1c425eaba5f80",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/LATEST_RESULTS_20260827.md",
+          "sha256": "eadb6c4e747c02da3e260f3a958219a293afe7876bd69aea4c3da96bd2f0bb0b",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/LATEST_RESULTS_20260827.md"
+        }
+      ],
+      "title": "Routing: fresh 156 confirmation versus later development",
+      "workstream": "Historical studies"
+    },
+    {
+      "answer": "TopK1/2/4/8 and log-mean-exp are close; noisy-OR is worse. Published AbCDR-ESMC improves contact/epitope but lowers paratope. Local CDR adaptation trades CDR against full-chain quality.",
+      "boundary": "Local MLM adaptation is not proof of a downstream gain. Preserve negative endpoints beside positive ones.",
+      "checks": [],
+      "cohort": "Development cohorts in August 27 snapshot",
+      "estimand": "Readout AP, downstream AP and MLM metrics separate",
+      "id": "historical-pooling-esmc",
+      "inputs": "Pooling rules and ESM-C representation controls",
+      "level": "readout-bound",
+      "seeds": "Study-specific seeds, not pooled",
+      "sources": [
+        {
+          "blob": "05c109cf66d0f41d03566a2f09d1c425eaba5f80",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/LATEST_RESULTS_20260827.md",
+          "sha256": "eadb6c4e747c02da3e260f3a958219a293afe7876bd69aea4c3da96bd2f0bb0b",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/LATEST_RESULTS_20260827.md"
+        }
+      ],
+      "title": "Pooling and ESM-C controls retain negative endpoints",
+      "workstream": "Historical studies"
+    },
+    {
+      "answer": "August temporal cohort: 15 eligible complexes but 9 unique PDBs, below preregistered 10-PDB minimum. A separate later 14-candidate OOD admission also failed.",
+      "boundary": "Labels remain unopened under documented gates. Failed cohorts cannot be turned into fresh OOD results by lowering thresholds.",
+      "checks": [],
+      "cohort": "Distinct prospective temporal/OOD attempts",
+      "estimand": "Cohort counts and admission decisions",
+      "id": "temporal-gates",
+      "inputs": "Label-free admission checks",
+      "level": "readout-bound",
+      "seeds": "Not model replications",
+      "sources": [
+        {
+          "blob": "05c109cf66d0f41d03566a2f09d1c425eaba5f80",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/LATEST_RESULTS_20260827.md",
+          "sha256": "eadb6c4e747c02da3e260f3a958219a293afe7876bd69aea4c3da96bd2f0bb0b",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/LATEST_RESULTS_20260827.md"
+        },
+        {
+          "blob": "36f24360004d53790cffe74199fdab909c77f2e6",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "docs/CLAIM_BOUNDARIES.md",
+          "sha256": "285394e4f62f18c7bb8b0ee41a63aa22e3c3a586681e96801e9627ba256b194f",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/docs/CLAIM_BOUNDARIES.md"
+        }
+      ],
+      "title": "Prospective temporal admission failed closed",
+      "workstream": "Historical studies"
+    },
+    {
+      "answer": "Task 0 originally failed after prediction due to a one-second valid CIF timestamp difference. Stricter semantics certified unchanged outputs while preserving the original failure.",
+      "boundary": "The semantic-audit branch snapshot was partial; later centered-RePaRank authority covers the completed cohort. Neither an old pending state nor a recovery test is an accuracy result.",
+      "checks": [],
+      "cohort": "Frozen 40-chain completion; dated operational snapshots",
+      "estimand": "Execution and byte/semantic identity",
+      "id": "af3-recovery",
+      "inputs": "Sequence/all-atom/CIF/confidence and seed/sample checks",
+      "level": "engineering",
+      "seeds": "78 tests reported by readout, not rerun here",
+      "sources": [
+        {
+          "blob": "af37fc28cd84bff68394bb4b6c3bdcb6dc99b9cd",
+          "branch": "kevin/af3-semantic-audit-20260930",
+          "commit": "859a7145bfb10bab87ca72a7dd1fbebe5d6a2399",
+          "path": "extensions/execution_recovery_v1/SEMANTIC_AUDIT_READOUT.md",
+          "sha256": "69d9219a3ffa7693f4d4a3fe8c1f857851d16648444d6b903a2ac594161ce2bd",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/859a7145bfb10bab87ca72a7dd1fbebe5d6a2399/extensions/execution_recovery_v1/SEMANTIC_AUDIT_READOUT.md"
+        },
+        {
+          "blob": "982c53dd2b90a8d5a52f940458992c8b6247944a",
+          "branch": "kevin/execution-recovery-20260930",
+          "commit": "a5729c49e5d32fc05cd09a10f824a7cc6974fb6b",
+          "path": "extensions/execution_recovery_v1/HANDOFF.md",
+          "sha256": "24e18374d8a714fd7f5ca2e65dd946cff1370c0685fa03290af63f56d2a6717c",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a5729c49e5d32fc05cd09a10f824a7cc6974fb6b/extensions/execution_recovery_v1/HANDOFF.md"
+        }
+      ],
+      "title": "AF3 semantic recovery is provenance, not accuracy",
+      "workstream": "Execution & provenance"
+    },
+    {
+      "answer": "Earlier package addresses 19 concerns through corrections, bounded follow-up evidence, explicit unavailable interventions and moderated claims.",
+      "boundary": "Do not backfill AF3 or successor FrameContact metrics into the anonymous OpenDDE submission. Closed means addressed, not that every requested experiment succeeded.",
+      "checks": [],
+      "cohort": "Original submission versus post-submission/successor studies",
+      "estimand": "Concern disposition and evidence provenance",
+      "id": "epic-closure",
+      "inputs": "Exact original submitted checkpoint was not restored",
+      "level": "readout-bound",
+      "seeds": "Study-specific, not 19 replications",
+      "sources": [
+        {
+          "blob": "383e5a2c8ef5f3fbebfe6251e65a71f6d0a2ef5d",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "results/INDEX.md",
+          "sha256": "d585cf1bcf7623ecdcae26a09bb5c1761d25a54884ea3f8b35159d8dbbdd1076",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/results/INDEX.md"
+        },
+        {
+          "blob": "1edc8a5b9659eed19a4f0b2a3090168b13c42741",
+          "branch": "kevin/epic-reviewer-response-20260930",
+          "commit": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+          "path": "paper/epic_camera_ready_20260930/README.md",
+          "sha256": "d5668cb9eb762b16c6cb000bad77f4ba491a0aa04f682a2316707929c55bd294",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a7bb1a0ca76fd7edca603842425bfc1ec2e1523c/paper/epic_camera_ready_20260930/README.md"
+        }
+      ],
+      "title": "EPIC reviewer dispositions are not all-new experiments",
+      "workstream": "EPIC paper"
+    },
+    {
+      "answer": "Manuscript reports 36-model CampaignA and 39-model CampaignB; predicted-geometry epitope gains about+0.031 /+0.025 AP. Gate/cross-attention findings are mixed.",
+      "boundary": "Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported official 455 test; 2,887 train /321 carved validation",
+      "estimand": "Reported simultaneous PDB-block contrasts; analysis revision needs authority",
+      "id": "epic-new-ablations",
+      "inputs": "Reconstructed AF3-monomer EPIC, not the original submitted checkpoint",
+      "level": "report-only",
+      "seeds": "Reported 17/29/43",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        },
+        {
+          "blob": "63c57b08b7d31550bb6cecc4945f32bff0f0e8dd",
+          "branch": "kevin/epic-reviewer-response-20260930",
+          "commit": "a7bb1a0ca76fd7edca603842425bfc1ec2e1523c",
+          "path": "paper/epic_camera_ready_20260930/campaign_v1/ANALYSIS_PROTOCOL.json",
+          "sha256": "163245a45aee020b71c9f995a997ba7e08913286a95d8b10d7cf8a2a7c581012",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/a7bb1a0ca76fd7edca603842425bfc1ec2e1523c/paper/epic_camera_ready_20260930/campaign_v1/ANALYSIS_PROTOCOL.json"
+        }
+      ],
+      "title": "October 4 report: reconstructed ablation campaigns",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Head/contact-marginal rank agreement≈0.97–0.99 is reported; removing contact-derived readout changes little, while removing contact supervision damages paratope coupling.",
+      "boundary": "Agreement is not automatically accuracy or true-partner specificity. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported reconstructed official 455 study",
+      "estimand": "Per-complex rank agreement and separate task AP",
+      "id": "epic-new-consistency",
+      "inputs": "Shared pairwise representation and task heads",
+      "level": "report-only",
+      "seeds": "Reported 3 seeds",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: consistency is not attributed to gating",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "One true antigen plus 9 decoys: reported less-length-confounded top 1 rates 0.103–0.110 versus chance 0.100; broad partner-conditioning claim withdrawn.",
+      "boundary": "This is not proof of zero information in every scorer/population. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported test 455 decoy diagnostic",
+      "estimand": "Finite ten-candidate R@1, distinct from contact AP",
+      "id": "epic-new-partner",
+      "inputs": "Frozen reconstructed contact-map scores",
+      "level": "report-only",
+      "seeds": "Reported fixed checkpoints",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: partner ranking near chance",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Reported AP 0.0214→0.0346 contact,0.2148→0.2502 epitope,0.6841→0.7215 paratope. Roughly half contact/epitope gain is seed ensembling. Contact-selected ensemble instead scores 0.0240 versus baseline ensemble 0.0273.",
+      "boundary": "Paratope-selected ensemble happened to lead every test task; contact/epitope outcomes are exploratory, not successful per-task selection. Two rounds 6+12 arms×3 account for 54, not 75 without additional entries. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported cluster-disjoint 324 validation and official 455 test",
+      "estimand": "Separate single model, unchanged seed ensemble, new-component ensemble, and task-specific validation choice",
+      "id": "epic-v2-report",
+      "inputs": "Reported averaging/regularization/feature ensemble; distinct from earlier PLM screen",
+      "level": "report-only",
+      "seeds": "Reported 3-seed arms; 75-improvement-model count unresolved",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: ensemble gains and selection-transfer failure",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Inference-time validation OpenDDE swap and matched retraining are separate. Reported ensemble test epitope AP:AF3 0.2321 versus OpenDDE 0.2157; a long-entity training fallback remains AF3.",
+      "boundary": "Reconcile 3,015-complete wording with the fallback. CI crossing zero is not equivalence. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported 321 validation swap; separate 455 retrained test",
+      "estimand": "Paired AP differences; inference swap is not retraining",
+      "id": "epic-new-predictor",
+      "inputs": "AF3/OpenDDE monomer predictors",
+      "level": "report-only",
+      "seeds": "Reported 3 seeds per condition",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: predictor swap versus matched retraining",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Reported EpiFormer epitope AP 0.372 exceeds reconstructed EPIC 0.214. Paraplume overlap excludes 69/455; on clean 386, improved EPIC 0.709 versus Paraplume 0.691 has CI crossing zero.",
+      "boundary": "Not a modality-matched architecture leaderboard. As-published labels need checking against the unavailable original checkpoint. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported official 455 and overlap-clean 386",
+      "estimand": "Matched labels/axes do not imply matched inputs",
+      "id": "epic-new-specialists",
+      "inputs": "EpiFormer bound experimental backbone versus EPIC predicted monomers; released Paraplume",
+      "level": "report-only",
+      "seeds": "Reported 3-seed EpiFormer/EPIC and released specialist",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: specialist comparisons and input mismatch",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Reported 1,553 AsEP cases have median training similarity 0.97; below 0.5-identity stratum 412 has epitope AP 0.186 versus 0.316 in the near-duplicate stratum.",
+      "boundary": "Check identity definition and both molecular axes before calling a subset strictly OOD. Reconcile the later no-external-test sentence. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported AsEP stratified external-cohort diagnostic",
+      "estimand": "Within-AsEP stratification, not absolute cross-benchmark AP",
+      "id": "epic-new-asep",
+      "inputs": "Frozen SAbDab2 model; AsEP CDR/surface axes differ",
+      "level": "report-only",
+      "seeds": "Reported fixed models",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: overlap-stratified AsEP evaluation",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Reported heavy-atom≤4.5Å reproduces 3,047/3,208 complexes exactly; ≤4.502Å reproduces 3,169. Textual Cα definition conflicts with these labels.",
+      "boundary": "No 3,208/3,208 float 16 exact-match claim is introduced without its certificate. Contact construction was not rerun. Newer manuscript claim: matching terminal campaign artifacts were not identified in the 30 inspected HEAD trees; they may exist off-Git. Attach run membership, source/split/selection hashes, final receipts and per-seed/per-complex outputs before promotion to artifact-verified headlines.",
+      "checks": [],
+      "cohort": "Reported 3,208 training/validation complexes",
+      "estimand": "Exact complex-level agreement and tolerance",
+      "id": "epic-new-labels",
+      "inputs": "Label-rule reconstruction, not model improvement",
+      "level": "report-only",
+      "seeds": "Not training seeds",
+      "sources": [
+        {
+          "blob": "dd878e9b097515b3f6ff51c596d9c8d14287dadd",
+          "branch": "main",
+          "commit": "23480c507aeab4a5bb212631ad2b8eb09cb8867f",
+          "path": "paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md",
+          "sha256": "7524e311c438085891ebc856df4fd2afdc322e9bc32862fcf4f6673b5f6f3cce",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/23480c507aeab4a5bb212631ad2b8eb09cb8867f/paper/neurips_2026_framecontact/REVIEWER_RESPONSE_20261004.md"
+        }
+      ],
+      "title": "October 4 report: label-definition correction",
+      "workstream": "EPIC newer report"
+    },
+    {
+      "answer": "Reported 273 answerable visual queries /15,949 figures:ColQwen2.5 R@1≈0.103,nDCG@5≈0.155. Retrieval and answer generation are separately evaluated.",
+      "boundary": "Do not compare cropped-figure scores to official full-page ViDoRe as one leaderboard. Not an antibody contact model.",
+      "checks": [],
+      "cohort": "PMC cropped figures; 295 total gold including 22 abstentions",
+      "estimand": "R@K/nDCG separate from VQA",
+      "id": "abcite-visual",
+      "inputs": "Released multimodal retrievers plus citation/abstention application",
+      "level": "readout-bound",
+      "seeds": "Fixed evaluation snapshot",
+      "sources": [
+        {
+          "blob": "9641b28c847eda8fd654a23d50753067c7f2faf1",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/latest.md",
+          "sha256": "83b900d112558c8915ad85eb0a6886d9768fbd643e4cecae74a79694473006f1",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/latest.md"
+        },
+        {
+          "blob": "6af3106c61a0c0b05fac5694362ce73417938077",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/visual_qa_colqwen2_5_latest.json",
+          "sha256": "67fb80878bcb2fb42bc5eb87d5956a1271683b3e745f3f348f5468aa1b52ff4d",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/visual_qa_colqwen2_5_latest.json"
+        }
+      ],
+      "title": "AbCite visual figure retrieval is a separate application",
+      "workstream": "AbCite multimodal"
+    },
+    {
+      "answer": "Reported 55-query holdout: zero-shot R@1≈0.0545 versus LoRA≈0.0182; nDCG@5≈0.0991 versus 0.050.",
+      "boundary": "Small holdout does not imply general LoRA failure, but does not support promoting this adaptation.",
+      "checks": [],
+      "cohort": "218 train /55 holdout figure IDs; frozen gallery",
+      "estimand": "Same-holdout retrieval metrics",
+      "id": "abcite-lora",
+      "inputs": "ColQwen2.5 query-side LoRA",
+      "level": "readout-bound",
+      "seeds": "Seed 7; 256 reported steps",
+      "sources": [
+        {
+          "blob": "7a386075436dcea926296cf39bf554780cadfb21",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/visual_qa_colqwen2_5_holdout_lora_latest.json",
+          "sha256": "b1050c0a97e4805ffaf64cf7cfb2d5015ce7affcd3026193f704205c2c375956",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/visual_qa_colqwen2_5_holdout_lora_latest.json"
+        },
+        {
+          "blob": "9641b28c847eda8fd654a23d50753067c7f2faf1",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/latest.md",
+          "sha256": "83b900d112558c8915ad85eb0a6886d9768fbd643e4cecae74a79694473006f1",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/latest.md"
+        }
+      ],
+      "title": "AbCite LoRA did not beat zero-shot",
+      "workstream": "AbCite multimodal"
+    },
+    {
+      "answer": "Official-harness mean nDCG@5 reported 0.8911 ColQwen2 and 0.8947 ColQwen2.5 over 10 tasks; checkpoint reproduction, not new-model invention.",
+      "boundary": "No current-leaderboard/SOTA claim. Different candidate spaces from the cropped-figure visual task.",
+      "checks": [],
+      "cohort": "Official ViDoRe v1 full-page tasks",
+      "estimand": "Mean task nDCG@5; custom scorer kept separate",
+      "id": "abcite-vidore",
+      "inputs": "Released checkpoints and official scorer",
+      "level": "readout-bound",
+      "seeds": "10 tasks, not 10 training seeds",
+      "sources": [
+        {
+          "blob": "b0d92f8625dd3a3c77f61306c82c12a0e9b12f05",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/vidore_official_latest.json",
+          "sha256": "0b0ab120327367e3c7ab09d181d653c054f7028fa2d0334bcd515af252ac5d07",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/vidore_official_latest.json"
+        },
+        {
+          "blob": "c689929894aa95231c7501cd6620ef354f9d40db",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/vidore_official_colqwen2_5_latest.json",
+          "sha256": "96b20a0af53a9e7dc1ed4591775aca60d6775f0495b033f1e07854f3c6c2cd89",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/vidore_official_colqwen2_5_latest.json"
+        },
+        {
+          "blob": "9641b28c847eda8fd654a23d50753067c7f2faf1",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/latest.md",
+          "sha256": "83b900d112558c8915ad85eb0a6886d9768fbd643e4cecae74a79694473006f1",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/latest.md"
+        }
+      ],
+      "title": "AbCite ViDoRe reproduces released checkpoints",
+      "workstream": "AbCite multimodal"
+    },
+    {
+      "answer": "Reported real-audio CLAP R@1≈0.414 on 29 items; video-frame R@1≈0.423 on 26. Synthetic hash/audio and keyframes have separate tables.",
+      "boundary": "Hash fixtures are not trained audio-model results; small galleries and heuristic VQA do not establish production multimodal reasoning.",
+      "checks": [],
+      "cohort": "Real audio 29/video 26 galleries plus separate fixtures",
+      "estimand": "Within-modality retrieval",
+      "id": "abcite-audio-video",
+      "inputs": "Released CLAP/OpenCLIP and application retrieval",
+      "level": "readout-bound",
+      "seeds": "Fixed small-n snapshots",
+      "sources": [
+        {
+          "blob": "51df49bfee1cb93d616a0990fc23fa54c89bbb7f",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/audio_qa_oa_latest.json",
+          "sha256": "6973d977b2fb46d947bc47c9d3b7f846614b2fa076909d100cf611983e9de40c",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/audio_qa_oa_latest.json"
+        },
+        {
+          "blob": "7c5d113966558aa76a495e4ca18a2965bcd80adf",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/video_qa_oa_latest.json",
+          "sha256": "7bc7d36adf8cbd1c37dd0951dbb95db1d78b682dfc0c21c572893bca28a4cfbc",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/video_qa_oa_latest.json"
+        },
+        {
+          "blob": "9641b28c847eda8fd654a23d50753067c7f2faf1",
+          "branch": "abcite/multimodal-copilot",
+          "commit": "fb871f35678c4462074c0868a7738f1dc9483b05",
+          "path": "abcite/evals/latest.md",
+          "sha256": "83b900d112558c8915ad85eb0a6886d9768fbd643e4cecae74a79694473006f1",
+          "url": "https://github.com/yinli-systems/antibody-antigen-interface-research/blob/fb871f35678c4462074c0868a7738f1dc9483b05/abcite/evals/latest.md"
+        }
+      ],
+      "title": "AbCite real audio/video and synthetic fixtures stay separate",
+      "workstream": "AbCite multimodal"
+    }
+  ],
+  "levels": {
+    "engineering": "Execution/provenance evidence, not model accuracy",
+    "historical": "Earlier snapshot or superseded interpretation, retained unchanged",
+    "metric-bound": "Committed numeric fields checked; no model rerun",
+    "protocol-only": "Protocol or implementation, not completed performance",
+    "readout-bound": "Committed research readout inspected; not independently recomputed",
+    "report-only": "Newer narrative claim; matching terminal campaign artifacts not identified in the inspected HEAD trees"
+  },
+  "snapshot_utc": "2026-10-07T11:36:54.800931+00:00"
+}
