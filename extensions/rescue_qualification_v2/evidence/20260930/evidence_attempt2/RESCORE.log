@@ -1,0 +1,91 @@
+{
+  "status": "COMPLETE_EXPLORATORY_FIXED_RESCORE_DIAGNOSTIC",
+  "at_utc": "2026-09-30T09:49:08Z",
+  "plan_sha256": "34e638f4659c1bca7530f96cc850ca0cf5d039dbfac0992c0ae479ffcf5a178d",
+  "complex_count": 217,
+  "component_count": 68,
+  "pair_count": 9638880,
+  "positive_count": 9036,
+  "arms": [
+    {
+      "method": "identity",
+      "macro_pair_ap": 0.03780779120862989,
+      "mean_top10_precision": 0.0543778801843318
+    },
+    {
+      "method": "row_center",
+      "macro_pair_ap": 0.015820725629123625,
+      "mean_top10_precision": 0.02304147465437788
+    },
+    {
+      "method": "column_center",
+      "macro_pair_ap": 0.010487973014357058,
+      "mean_top10_precision": 0.019815668202764977
+    },
+    {
+      "method": "double_center",
+      "macro_pair_ap": 0.003394226504173677,
+      "mean_top10_precision": 0.004147465437788018
+    },
+    {
+      "method": "local_scale_10",
+      "macro_pair_ap": 0.03285629412815195,
+      "mean_top10_precision": 0.04700460829493088
+    }
+  ],
+  "contrasts": [
+    {
+      "method_minus_identity": "row_center",
+      "equal_complex_difference": -0.021987065579506263,
+      "equal_component_difference": -0.023771554026656063,
+      "component_bootstrap_ci95": [
+        -0.03764573949717946,
+        -0.011158758030317024
+      ],
+      "positive_component_fraction": 0.5147058823529411,
+      "negative_component_fraction": 0.4852941176470588
+    },
+    {
+      "method_minus_identity": "column_center",
+      "equal_complex_difference": -0.027319818194272833,
+      "equal_component_difference": -0.03197795045893769,
+      "component_bootstrap_ci95": [
+        -0.04717421720190323,
+        -0.018626148523064767
+      ],
+      "positive_component_fraction": 0.014705882352941176,
+      "negative_component_fraction": 0.9852941176470589
+    },
+    {
+      "method_minus_identity": "double_center",
+      "equal_complex_difference": -0.03441356470445621,
+      "equal_component_difference": -0.039671613954864356,
+      "component_bootstrap_ci95": [
+        -0.057967914642369875,
+        -0.023128561914961793
+      ],
+      "positive_component_fraction": 0.11764705882352941,
+      "negative_component_fraction": 0.8823529411764706
+    },
+    {
+      "method_minus_identity": "local_scale_10",
+      "equal_complex_difference": -0.004951497080477943,
+      "equal_component_difference": -0.0026992436087276946,
+      "component_bootstrap_ci95": [
+        -0.007124018380473644,
+        0.0018502931817938276
+      ],
+      "positive_component_fraction": 0.29411764705882354,
+      "negative_component_fraction": 0.7058823529411765
+    }
+  ],
+  "identity_parity_abs_difference": 0.0,
+  "wall_seconds": 10.713000415824354,
+  "new_training": false,
+  "new_model_inference": false,
+  "new_gpu_jobs": 0,
+  "test_labels_read": false,
+  "ood_labels_read": false,
+  "baseline_training_overlap_unknown": true,
+  "interpretation": "fixed exploratory rescoring on exposed development; no learned model or SOTA promotion"
+}

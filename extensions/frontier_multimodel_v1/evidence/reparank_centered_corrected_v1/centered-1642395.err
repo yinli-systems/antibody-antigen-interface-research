@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 574, in <module>
+    main()
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 570, in main
+    args.function(args)
+  File "/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/source/extensions/frontier_multimodel_v1/reparank_same_protocol.py", line 372, in command_evaluate
+    output_dir.mkdir(parents=True, exist_ok=False)
+  File "/ssd/scxi253/model_deployment/envs/contact/lib/python3.10/pathlib.py", line 1175, in mkdir
+    self._accessor.mkdir(self, mode)
+FileExistsError: [Errno 17] File exists: '/ssd/scxi253/frontier_multimodel_v1/reparank_centered_corrected_v1/run/centered_full'

@@ -1,0 +1,198 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from extensions.frontier_multimodel_v1.reparank_same_protocol import (
+    checkpoint_hyperparameters,
+    equal_component_bootstrap,
+    model_state,
+    parse_backbone_pdb,
+    per_complex_metrics,
+    tie_aware_first_positive,
+)
+
+
+def test_checkpoint_hyperparameters_fill_only_declared_defaults() -> None:
+    payload = {
+        "hyper_parameters": {
+            "dims": 512,
+            "num_heads": 16,
+            "hidden_dims": 1024,
+            "num_sequence_layers": 8,
+            "num_complex_layers": 8,
+            "skip_position_encoding": True,
+            "feature_dims": None,
+        }
+    }
+    result = checkpoint_hyperparameters(payload)
+    assert result["dims"] == 512
+    assert result["ax_dims"] == 32
+    assert result["pos_num"] == 1
+    assert result["skip_position_encoding"] is True
+    assert result["feature_dims"] is None
+
+
+def test_checkpoint_hyperparameters_reject_missing_core_parameter() -> None:
+    with pytest.raises(ValueError, match="could not locate"):
+        checkpoint_hyperparameters({"hyper_parameters": {"dims": 512}})
+
+
+def test_model_state_strips_only_lightning_model_prefix() -> None:
+    payload = {
+        "state_dict": {
+            "_model.layer.weight": np.array([1.0]),
+            "_model.layer.bias": np.array([0.0]),
+            "_quantiles": np.array([0.5]),
+        }
+    }
+    prefix, state = model_state(payload)
+    assert prefix == "_model."
+    assert set(state) == {"layer.weight", "layer.bias"}
+
+
+def test_model_state_rejects_only_wrapper_buffers() -> None:
+    with pytest.raises(ValueError, match="isolate"):
+        model_state({"state_dict": {"_quantiles": np.array([0.5])}})
+
+
+def test_parse_backbone_pdb_requires_exact_sequence_and_four_atoms(tmp_path: Path) -> None:
+    pdb = tmp_path / "unit.pdb"
+    pdb.write_text(
+        "ATOM      1  N   ALA A   1       1.000   2.000   3.000  1.00 20.00           N\n"
+        "ATOM      2  CA  ALA A   1       2.000   3.000   4.000  1.00 20.00           C\n"
+        "ATOM      3  C   ALA A   1       3.000   4.000   5.000  1.00 20.00           C\n"
+        "ATOM      4  O   ALA A   1       4.000   5.000   6.000  1.00 20.00           O\n"
+        "ATOM      5  N   GLY A   2       5.000   6.000   7.000  1.00 20.00           N\n"
+        "ATOM      6  CA  GLY A   2       6.000   7.000   8.000  1.00 20.00           C\n"
+        "ATOM      7  C   GLY A   2       7.000   8.000   9.000  1.00 20.00           C\n"
+        "ATOM      8  O   GLY A   2       8.000   9.000  10.000  1.00 20.00           O\nEND\n",
+        encoding="utf-8",
+    )
+    array = parse_backbone_pdb(pdb, "AG")
+    assert array.shape == (2, 4, 3)
+    assert np.allclose(array[0, 1], [2, 3, 4])
+    with pytest.raises(ValueError, match="sequence mismatch"):
+        parse_backbone_pdb(pdb, "AA")
+
+
+def test_parse_backbone_pdb_rejects_missing_oxygen(tmp_path: Path) -> None:
+    pdb = tmp_path / "bad.pdb"
+    pdb.write_text(
+        "ATOM      1  N   ALA A   1       1.000   2.000   3.000  1.00 20.00           N\n"
+        "ATOM      2  CA  ALA A   1       2.000   3.000   4.000  1.00 20.00           C\n"
+        "ATOM      3  C   ALA A   1       3.000   4.000   5.000  1.00 20.00           C\nEND\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="incomplete backbone"):
+        parse_backbone_pdb(pdb, "A")
+
+
+def test_tie_aware_first_positive_uses_expected_rank() -> None:
+    result = tie_aware_first_positive(
+        np.array([1.0, 1.0, 1.0, 0.0]),
+        np.array([True, False, False, False]),
+    )
+    assert result["recall_at_1"] == pytest.approx(1 / 3)
+    assert result["mrr"] == pytest.approx((1 + 1 / 2 + 1 / 3) / 3)
+
+
+def test_per_complex_metrics_use_higher_score_as_more_contact_like() -> None:
+    good = per_complex_metrics(
+        np.array([1, 0, 0, 0], dtype=np.uint8),
+        np.array([4.0, 3.0, 2.0, 1.0]),
+    )
+    bad = per_complex_metrics(
+        np.array([1, 0, 0, 0], dtype=np.uint8),
+        np.array([1.0, 2.0, 3.0, 4.0]),
+    )
+    assert good["average_precision"] == 1.0
+    assert good["mrr"] == 1.0
+    assert bad["average_precision"] < good["average_precision"]
+    assert bad["mrr"] == pytest.approx(0.25)
+
+
+def test_per_complex_metrics_reject_undefined_binary_problem() -> None:
+    with pytest.raises(ValueError, match="positive and negative"):
+        per_complex_metrics(np.ones(4, dtype=np.uint8), np.arange(4, dtype=float))
+
+
+def test_equal_component_bootstrap_weights_components_not_rows() -> None:
+    values = {"a1": 0.0, "a2": 0.0, "a3": 0.0, "b1": 1.0}
+    components = {"a1": "a", "a2": "a", "a3": "a", "b1": "b"}
+    result = equal_component_bootstrap(values, components, repeats=1000)
+    assert result["estimate"] == pytest.approx(0.5)
+    assert result["complex_weighted_estimate"] == pytest.approx(0.25)
+    assert result["component_count"] == 2
+
+
+def test_protocol_names_overlap_and_threshold_boundaries() -> None:
+    text = (
+        Path(__file__).resolve().parents[1]
+        / "extensions/frontier_multimodel_v1/REPARANK_SAME_PROTOCOL_PROTOCOL.md"
+    ).read_text(encoding="utf-8")
+    assert "training accession list" in text
+    assert "Threshold metrics never" in text
+    assert "Experimental bound antibody-antigen pose is forbidden" in text
+    assert "binary BCE would be a different model" in text
+
+
+def test_official_style_backbone_centering_matches_center_mesh_semantics() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    rng = np.random.default_rng(17)
+    x = rng.normal(size=(9, 4, 3)).astype(np.float32)
+    expected = x - x.mean(axis=(0, 1), keepdims=True)
+    actual = center_backbone_like_official_inference(x)
+    np.testing.assert_allclose(actual, expected, rtol=0, atol=1e-6)
+    np.testing.assert_allclose(actual.mean(axis=(0, 1)), np.zeros(3), rtol=0, atol=1e-6)
+
+
+def test_official_style_backbone_centering_removes_global_translation() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    rng = np.random.default_rng(23)
+    x = rng.normal(size=(7, 4, 3)).astype(np.float32)
+    shift = np.asarray([31.0, -17.5, 8.25], dtype=np.float32)
+    np.testing.assert_allclose(
+        center_backbone_like_official_inference(x),
+        center_backbone_like_official_inference(x + shift),
+        rtol=0,
+        atol=4e-6,
+    )
+
+
+def test_official_style_backbone_centering_rejects_wrong_shape_and_nonfinite() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    import pytest
+    with pytest.raises(ValueError, match="expected"):
+        center_backbone_like_official_inference(np.zeros((4, 3), dtype=np.float32))
+    bad = np.zeros((2, 4, 3), dtype=np.float32); bad[0, 0, 0] = np.nan
+    with pytest.raises(ValueError, match="non-finite"):
+        center_backbone_like_official_inference(bad)
+
+
+def test_official_style_backbone_centering_does_not_add_nonofficial_residual_gate() -> None:
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import center_backbone_like_official_inference
+    # Large absolute coordinates / long chain exercise float32 reduction residue.
+    rng = np.random.default_rng(29)
+    x = (rng.normal(size=(700, 4, 3)) * 10000.0 + 1_000_000.0).astype(np.float32)
+    expected = x - x.mean(axis=(0, 1), keepdims=True)
+    actual = center_backbone_like_official_inference(x)
+    np.testing.assert_array_equal(actual, expected)
+
+
+def test_reusable_pair_prediction_requires_exact_grid_and_labels(tmp_path: Path) -> None:
+    from types import SimpleNamespace
+    from extensions.frontier_multimodel_v1.reparank_same_protocol import load_reusable_pair_prediction
+    ag=np.array([4,8],dtype=np.int64);ab=np.array([2,5,9],dtype=np.int64)
+    labels=np.array([[1,0,0],[0,1,0]],dtype=np.uint8);mask=np.ones_like(labels,dtype=bool)
+    contact=SimpleNamespace(antigen_indices=ag,antibody_indices=ab,dense=lambda:(labels,mask))
+    al,bl=np.nonzero(mask);p=tmp_path/'x.npz'
+    np.savez_compressed(p,instance_id=np.asarray('x'),antigen_residue_index=ag[al],antibody_residue_index=ab[bl],label=labels[mask],score=np.linspace(-2,-1,6,dtype=np.float32),score_definition=np.asarray('negative_euclidean_distance'))
+    score,y,dense=load_reusable_pair_prediction(p,'x',contact)
+    np.testing.assert_array_equal(y,labels[mask]);np.testing.assert_allclose(dense[mask],score)
+    bad=tmp_path/'bad.npz';np.savez_compressed(bad,instance_id=np.asarray('x'),antigen_residue_index=ag[al],antibody_residue_index=ab[bl],label=1-labels[mask],score=np.linspace(-2,-1,6,dtype=np.float32),score_definition=np.asarray('negative_euclidean_distance'))
+    import pytest
+    with pytest.raises(ValueError,match='labels mismatch'):load_reusable_pair_prediction(bad,'x',contact)

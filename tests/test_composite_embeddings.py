@@ -22,6 +22,8 @@ from interaction_first.composite_embeddings import (  # noqa: E402
     PRESENCE_COLUMNS,
     CompositeEmbeddingStore,
     RepresentationSource,
+    build_generic_sources,
+    build_matched_random_control,
     build_sources,
     manifest_chain_keys,
 )
@@ -444,3 +446,107 @@ def test_the_receipt_records_the_shift(tmp_path: Path) -> None:
 
     assert described["residue_shift"] == 5
     assert "multiset of vectors is unchanged" in described["residue_shift_note"]
+
+
+def _manifest_for_generic(path: Path) -> Path:
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["INSTANCE", "vh_seq", "vl_seq", "ag_seq"])
+        writer.writeheader()
+        writer.writerow({"INSTANCE": "one", "vh_seq": "AAA", "vl_seq": "CC", "ag_seq": "GGGG"})
+    return path
+
+
+def test_generic_source_parts_maps_vh_vl_and_antigen_without_inference(tmp_path: Path) -> None:
+    import json
+
+    manifest = _manifest_for_generic(tmp_path / "manifest.csv")
+    root = (tmp_path / "features").resolve()
+    spec = tmp_path / "source.json"
+    spec.write_text(json.dumps({
+        "format_version": "generic_representation_source_v1",
+        "name": "saprot_l24",
+        "root": str(root),
+        "dim": 1280,
+        "sides": ["antibody", "antigen"],
+        "antibody_storage": "parts",
+        "model_name": "saprot_650m_layer_24",
+        "model_revision": "hf-commit",
+        "source_commit": "git-commit",
+    }))
+
+    (source,) = build_generic_sources(manifest, [spec])
+    entry = next(iter(manifest_chain_keys(manifest).values()))
+    assert source.parts_by_key[entry["antibody_key"]] == entry["antibody_parts"]
+    assert source.parts_by_key[entry["antigen_key"]] == (entry["antigen_key"],)
+    assert source.dim == 1280
+    described = source.describe_entry()
+    assert described["provenance"]["specification_sha256"] == hashlib.sha256(spec.read_bytes()).hexdigest()
+    assert described["expected_model_revision"] == "hf-commit"
+
+
+def test_generic_source_can_cover_only_one_side(tmp_path: Path) -> None:
+    import json
+
+    manifest = _manifest_for_generic(tmp_path / "manifest.csv")
+    spec = tmp_path / "source.json"
+    spec.write_text(json.dumps({
+        "format_version": "generic_representation_source_v1", "name": "ab-only",
+        "root": str((tmp_path / "features").resolve()), "dim": 7,
+        "sides": ["antibody"], "antibody_storage": "combined",
+    }))
+    (source,) = build_generic_sources(manifest, [spec])
+    entry = next(iter(manifest_chain_keys(manifest).values()))
+    assert source.parts_by_key == {entry["antibody_key"]: (entry["antibody_key"],)}
+
+
+def test_generic_source_rejects_unknown_schema_and_relative_root(tmp_path: Path) -> None:
+    import json
+
+    manifest = _manifest_for_generic(tmp_path / "manifest.csv")
+    bad = tmp_path / "bad.json"
+    bad.write_text(json.dumps({
+        "format_version": "generic_representation_source_v1", "name": "x",
+        "root": "relative", "dim": 2, "sides": ["antibody"], "surprise": True,
+    }))
+    with pytest.raises(RepresentationError, match="unknown keys"):
+        build_generic_sources(manifest, [bad])
+    payload = json.loads(bad.read_text()); payload.pop("surprise"); bad.write_text(json.dumps(payload))
+    with pytest.raises(RepresentationError, match="root must be absolute"):
+        build_generic_sources(manifest, [bad])
+
+
+def test_generic_source_verifies_artifact_model_identity(tmp_path: Path) -> None:
+    key = _write(tmp_path, "AAAA", 1.0)
+    source = RepresentationSource(
+        "strict", tmp_path, SOURCE_DIM, {key: (key,)},
+        expected_model_name="not-the-test-encoder", expected_model_revision="v0",
+    )
+    with pytest.raises(RepresentationError, match="model_name"):
+        CompositeEmbeddingStore(_Base(4), [source]).load(key, "cpu")
+
+
+
+def test_generic_structural_source_gets_exact_width_and_side_matched_random_control(tmp_path: Path) -> None:
+    import json
+
+    manifest = _manifest_for_generic(tmp_path / "manifest.csv")
+    spec_ab = tmp_path / "ab.json"
+    spec_ag = tmp_path / "ag.json"
+    common = {
+        "format_version": "generic_representation_source_v1",
+        "dim": 1280,
+        "antibody_storage": "parts",
+        "model_name": "saprot_rev_layer_8",
+        "model_revision": "rev",
+        "evidence_role": "development layer sweep",
+    }
+    spec_ab.write_text(json.dumps({**common, "name": "saprot_l08_ab", "root": str((tmp_path / "features" / "ab").resolve()), "sides": ["antibody"]}))
+    spec_ag.write_text(json.dumps({**common, "name": "saprot_l08_ag", "root": str((tmp_path / "features" / "ag").resolve()), "sides": ["antigen"]}))
+    real = build_generic_sources(manifest, [spec_ab, spec_ag])
+    random = build_matched_random_control(manifest, real, seed=17)
+    assert [source.dim for source in random] == [1280, 1280]
+    assert [set(source.parts_by_key) for source in random] == [
+        set(real[0].parts_by_key), set(real[1].parts_by_key)
+    ]
+    assert random[0].name == "random_saprot_l08_ab"
+    assert random[1].name == "random_saprot_l08_ag"

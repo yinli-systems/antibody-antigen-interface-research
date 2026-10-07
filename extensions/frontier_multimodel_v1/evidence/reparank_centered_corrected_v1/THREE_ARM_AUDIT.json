@@ -1,0 +1,407 @@
+{
+  "center_mesh_audit": {
+    "bitwise_equivalence_claimed": false,
+    "formula": "points - points.mean((residue, atom), keepdim=True), independently per chain",
+    "numpy_vs_torch_max_abs_on_synthetic_float32": 3.0517578125e-05,
+    "post_center_numpy_mean_max_abs": 1.1556288882275112e-05,
+    "post_center_torch_mean_max_abs": 9.5367431640625e-06,
+    "semantic_equivalence_claimed": true
+  },
+  "centered_resume": {
+    "fresh_model_forward_count": 205,
+    "reused_pair_prediction_count": 12
+  },
+  "checkpoint_sha256": {
+    "centered": "ce95a698e866246b647197f5b12e11d86c2392d462d2cb2a9ed63c57cf51ae0d",
+    "sequence": "b9bbb418aeeb2c96ffa00ccbce36ad169a183c81d57200b503bdb8c1435a4c14",
+    "uncentered": "ce95a698e866246b647197f5b12e11d86c2392d462d2cb2a9ed63c57cf51ae0d"
+  },
+  "checkpoint_training_overlap_audited": false,
+  "claims": {
+    "clean_architecture_comparison": false,
+    "sota": false,
+    "structure_useless": false
+  },
+  "component_count": 68,
+  "evaluation_sha256": {
+    "centered": "e6ce65b7219cbad93b456a1a011a7681fa84c0b9a034768b77365e9919887bc9",
+    "sequence": "3b41d0943eaea3113408274508a03fbc64282c06a26d56d58a8e3ac6837907ce",
+    "uncentered": "4b7bb520b4aaa103d3efaf90b3a07c94927e8d30a583d78f08918f8d2eb60932"
+  },
+  "evidence_class": "exposed_pretrained_development_diagnostic",
+  "failure_provenance": {
+    "1642386_stderr_sha256": "85d010d5ad77dd0a080b640947a30374ad830f709768f217b9dc8e6dbad29b3c",
+    "1642395_stderr_sha256": "b79e7fb71955677b818656688f3a213db10b552e28757fef7321170b4d2ae96d"
+  },
+  "grids": {
+    "centered": {
+      "digest": "ca55ae91723d14061c867ddf8046baac64183e33fbe6180a95102033d692cf82",
+      "file_count": 217,
+      "pair_count": 9638880,
+      "positive_count": 9036
+    },
+    "sequence": {
+      "digest": "ca55ae91723d14061c867ddf8046baac64183e33fbe6180a95102033d692cf82",
+      "file_count": 217,
+      "pair_count": 9638880,
+      "positive_count": 9036
+    },
+    "uncentered": {
+      "digest": "ca55ae91723d14061c867ddf8046baac64183e33fbe6180a95102033d692cf82",
+      "file_count": 217,
+      "pair_count": 9638880,
+      "positive_count": 9036
+    }
+  },
+  "headline": {
+    "centered": {
+      "epitope_macro_ap": 0.193265259221554,
+      "macro_pair_ap": 0.016013622977683228,
+      "paratope_macro_ap": 0.47920242340031843,
+      "pooled": {
+        "auroc": 0.6721526555729059,
+        "average_precision": 0.0023662535231304227,
+        "pair_count": 9638880,
+        "positive_count": 9036
+      }
+    },
+    "sequence": {
+      "epitope_macro_ap": 0.20203910628196645,
+      "macro_pair_ap": 0.03780779120862989,
+      "paratope_macro_ap": 0.5577073439412932,
+      "pooled": {
+        "auroc": 0.7860643617166425,
+        "average_precision": 0.008738584064940456,
+        "pair_count": 9638880,
+        "positive_count": 9036
+      }
+    },
+    "uncentered": {
+      "epitope_macro_ap": 0.18282893936868366,
+      "macro_pair_ap": 0.010743028313629863,
+      "paratope_macro_ap": 0.40977658284291774,
+      "pooled": {
+        "auroc": 0.6601714173155381,
+        "average_precision": 0.0028956413841824493,
+        "pair_count": 9638880,
+        "positive_count": 9036
+      }
+    }
+  },
+  "instance_count": 217,
+  "limitations": [
+    "Official checkpoint training overlap with this 217-complex cohort is unknown.",
+    "Centered implementation matches the official CenterMesh formula and float32 semantics but NumPy and PyTorch reduction kernels are not bitwise identical; synthetic max absolute difference is recorded.",
+    "Structure confidence stratification is post-hoc and does not establish causal dependence on structure accuracy.",
+    "Within-complex percentile/z pooled AP values are post-hoc calibration diagnostics, not replacement endpoints."
+  ],
+  "official_source_commit": "6910d950c2e483289973be41387c8913b859766a",
+  "ood_labels_read": false,
+  "paired_contrasts": {
+    "auroc": {
+      "centered_minus_sequence": {
+        "complex_min_max": [
+          -0.7422543995996387,
+          0.45545840533394405
+        ],
+        "complex_q10_q50_q90": [
+          -0.41657173619296645,
+          -0.04726636880327473,
+          0.2256727543920756
+        ],
+        "component_bootstrap_ci95": [
+          -0.1399897269001946,
+          -0.04477330658220447
+        ],
+        "equal_complex": -0.09030324106285577,
+        "equal_component": -0.09163547717924111,
+        "positive_complex_fraction": 0.33640552995391704,
+        "positive_component_fraction": 0.3235294117647059
+      },
+      "centered_minus_uncentered": {
+        "complex_min_max": [
+          -0.3335904839424355,
+          0.3059933009160123
+        ],
+        "complex_q10_q50_q90": [
+          -0.04113798841496381,
+          0.008300999187641628,
+          0.10752859307364611
+        ],
+        "component_bootstrap_ci95": [
+          -0.008169042630649024,
+          0.03912662927952043
+        ],
+        "equal_complex": 0.017252527800594143,
+        "equal_component": 0.01573223398003524,
+        "positive_complex_fraction": 0.6221198156682027,
+        "positive_component_fraction": 0.5735294117647058
+      },
+      "uncentered_minus_sequence": {
+        "complex_min_max": [
+          -0.7510249400012574,
+          0.4443268289890074
+        ],
+        "complex_q10_q50_q90": [
+          -0.5087244683406548,
+          -0.06783368936632728,
+          0.22901810782845308
+        ],
+        "component_bootstrap_ci95": [
+          -0.154969728685067,
+          -0.0601835253528449
+        ],
+        "equal_complex": -0.10755576886344992,
+        "equal_component": -0.10736771115927636,
+        "positive_complex_fraction": 0.29493087557603687,
+        "positive_component_fraction": 0.2647058823529412
+      }
+    },
+    "average_precision": {
+      "centered_minus_sequence": {
+        "complex_min_max": [
+          -0.5337570007790122,
+          0.2341604824944321
+        ],
+        "complex_q10_q50_q90": [
+          -0.12606706719221747,
+          -0.0013182564853378583,
+          0.017511101315608138
+        ],
+        "component_bootstrap_ci95": [
+          -0.043917513595866424,
+          -0.011822818322353426
+        ],
+        "equal_complex": -0.021794168230946664,
+        "equal_component": -0.02683843338374377,
+        "positive_complex_fraction": 0.35023041474654376,
+        "positive_component_fraction": 0.27941176470588236
+      },
+      "centered_minus_uncentered": {
+        "complex_min_max": [
+          -0.17320309902294226,
+          0.29696315577658544
+        ],
+        "complex_q10_q50_q90": [
+          -0.0021283149269954596,
+          0.0001113355646884574,
+          0.0108514569882885
+        ],
+        "component_bootstrap_ci95": [
+          -0.0035064530646665357,
+          0.011360105568491869
+        ],
+        "equal_complex": 0.005270594664053366,
+        "equal_component": 0.0041419431547192855,
+        "positive_complex_fraction": 0.6267281105990783,
+        "positive_component_fraction": 0.6176470588235294
+      },
+      "uncentered_minus_sequence": {
+        "complex_min_max": [
+          -0.5335922128992712,
+          0.07861890048936165
+        ],
+        "complex_q10_q50_q90": [
+          -0.11275629035860497,
+          -0.0015682552847148294,
+          0.004886907174086315
+        ],
+        "component_bootstrap_ci95": [
+          -0.04824755489712111,
+          -0.015552067591369855
+        ],
+        "equal_complex": -0.027064762895000025,
+        "equal_component": -0.030980376538463056,
+        "positive_complex_fraction": 0.31797235023041476,
+        "positive_component_fraction": 0.27941176470588236
+      }
+    },
+    "epitope_average_precision": {
+      "centered_minus_sequence": {
+        "complex_min_max": [
+          -0.6666167433899945,
+          0.4069016273588161
+        ],
+        "complex_q10_q50_q90": [
+          -0.20145355504601892,
+          -0.008467400907858125,
+          0.2366948610204268
+        ],
+        "component_bootstrap_ci95": [
+          -0.07245401259982764,
+          0.006839934833022473
+        ],
+        "equal_complex": -0.008773847060412452,
+        "equal_component": -0.03193986085493045,
+        "positive_complex_fraction": 0.4377880184331797,
+        "positive_component_fraction": 0.39705882352941174
+      },
+      "centered_minus_uncentered": {
+        "complex_min_max": [
+          -0.3752855895153293,
+          0.7613400295500473
+        ],
+        "complex_q10_q50_q90": [
+          -0.0872363921682115,
+          0.0018789797230868537,
+          0.060092502057728286
+        ],
+        "component_bootstrap_ci95": [
+          -0.00539004904596369,
+          0.03722939586878845
+        ],
+        "equal_complex": 0.010436319852870315,
+        "equal_component": 0.015626369902898316,
+        "positive_complex_fraction": 0.6036866359447005,
+        "positive_component_fraction": 0.6029411764705882
+      },
+      "uncentered_minus_sequence": {
+        "complex_min_max": [
+          -0.6927894860718558,
+          0.6251899630583426
+        ],
+        "complex_q10_q50_q90": [
+          -0.23495479879802084,
+          -0.009213426598578565,
+          0.13588292663286755
+        ],
+        "component_bootstrap_ci95": [
+          -0.08888776087587197,
+          -0.008443502863288687
+        ],
+        "equal_complex": -0.01921016691328277,
+        "equal_component": -0.04756623075782877,
+        "positive_complex_fraction": 0.4377880184331797,
+        "positive_component_fraction": 0.39705882352941174
+      }
+    },
+    "paratope_average_precision": {
+      "centered_minus_sequence": {
+        "complex_min_max": [
+          -0.7161372132540189,
+          0.7510055304172949
+        ],
+        "complex_q10_q50_q90": [
+          -0.40818156229133906,
+          -0.025701197483605664,
+          0.17794500774289074
+        ],
+        "component_bootstrap_ci95": [
+          -0.09898120837108412,
+          -0.0021559657247670434
+        ],
+        "equal_complex": -0.07850492054097481,
+        "equal_component": -0.05100495200189868,
+        "positive_complex_fraction": 0.4423963133640553,
+        "positive_component_fraction": 0.4264705882352941
+      },
+      "centered_minus_uncentered": {
+        "complex_min_max": [
+          -0.5010964267930212,
+          0.7607142857142856
+        ],
+        "complex_q10_q50_q90": [
+          -0.05994944132189616,
+          0.02649827683105971,
+          0.29854691335643213
+        ],
+        "component_bootstrap_ci95": [
+          0.022943820976051296,
+          0.10717059004609145
+        ],
+        "equal_complex": 0.06942584055740071,
+        "equal_component": 0.06508256273310065,
+        "positive_complex_fraction": 0.6543778801843319,
+        "positive_component_fraction": 0.6323529411764706
+      },
+      "uncentered_minus_sequence": {
+        "complex_min_max": [
+          -0.7021418539765762,
+          0.5406692343494408
+        ],
+        "complex_q10_q50_q90": [
+          -0.4145925872490624,
+          -0.14936012041461022,
+          0.14755777928453545
+        ],
+        "component_bootstrap_ci95": [
+          -0.16117924271652181,
+          -0.06936459476696828
+        ],
+        "equal_complex": -0.14793076109837552,
+        "equal_component": -0.11608751473499931,
+        "positive_complex_fraction": 0.2488479262672811,
+        "positive_component_fraction": 0.2647058823529412
+      }
+    }
+  },
+  "pooled_calibration_diagnostic": {
+    "centered": {
+      "raw_ap": 0.0023662535231304227,
+      "role": "post_hoc_calibration_diagnostic_not_registered_endpoint",
+      "score_mean_vs_pair_count_spearman": -0.005630985644070197,
+      "score_mean_vs_prevalence_spearman": 0.010421011456607985,
+      "score_std_vs_pair_count_spearman": -0.08600253791478683,
+      "within_complex_percentile_ap": 0.004147137583342826,
+      "within_complex_z_ap": 0.003981539018025081
+    },
+    "uncentered": {
+      "raw_ap": 0.0028956413841824493,
+      "role": "post_hoc_calibration_diagnostic_not_registered_endpoint",
+      "score_mean_vs_pair_count_spearman": 0.09787855282163258,
+      "score_mean_vs_prevalence_spearman": -0.022440330346473976,
+      "score_std_vs_pair_count_spearman": -0.2227620976322225,
+      "within_complex_percentile_ap": 0.0032368271104907444,
+      "within_complex_z_ap": 0.003249492609682115
+    }
+  },
+  "status": "COMPLETE_REPARANK_THREE_ARM_AUDIT",
+  "structure_manifest_sha256": "bf47107325885a7f555767cf9f55f8d8074bdafaaae6956961ee2ea6408cc594",
+  "structure_ranking_score_stratification": {
+    "n_with_direct_receipts": 205,
+    "quartiles": [
+      {
+        "centered_minus_sequence_mean_ap": -0.02839911224177459,
+        "centered_minus_uncentered_mean_ap": -0.0011919120630011293,
+        "min_score_range": [
+          0.2814513340426575,
+          0.4608028484171084
+        ],
+        "n": 50,
+        "quartile": 1
+      },
+      {
+        "centered_minus_sequence_mean_ap": -0.0064464307357475015,
+        "centered_minus_uncentered_mean_ap": 0.009793743958266885,
+        "min_score_range": [
+          0.4608028484171084,
+          0.7760134140833119
+        ],
+        "n": 52,
+        "quartile": 2
+      },
+      {
+        "centered_minus_sequence_mean_ap": -0.03490702080148136,
+        "centered_minus_uncentered_mean_ap": 0.009179662653718208,
+        "min_score_range": [
+          0.7760134140833119,
+          0.8710348997919852
+        ],
+        "n": 51,
+        "quartile": 3
+      },
+      {
+        "centered_minus_sequence_mean_ap": -0.0005881108466868161,
+        "centered_minus_uncentered_mean_ap": 0.0027983162006458982,
+        "min_score_range": [
+          0.8710348997919852,
+          0.929768465523088
+        ],
+        "n": 52,
+        "quartile": 4
+      }
+    ],
+    "warning": "AF3 ranking score is a model confidence/ranking quantity, not experimental structure accuracy; exploratory only."
+  },
+  "test_labels_read": false
+}

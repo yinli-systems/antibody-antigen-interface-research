@@ -1,0 +1,37 @@
+test_column_permutation_invariance_unique_and_tied (__main__.Assignment) ... ok
+test_duplicates_do_not_create_new_vectors (__main__.Assignment) ... ok
+test_empty_rejected (__main__.Assignment) ... ok
+test_infinite_feature_rejected (__main__.Assignment) ... ok
+test_nan_rejected (__main__.Assignment) ... ok
+test_rectangular_contact_map_rejected (__main__.Assignment) ... ok
+test_unique_max_matches_original (__main__.Assignment) ... ok
+test_all_permutations_same_loss_and_gradient (__main__.Equivariance) ... ok
+test_float_indices_rejected (__main__.Equivariance) ... ok
+test_invalid_permutation_rejected (__main__.Equivariance) ... ok
+test_absent_nonzero_features_rejected (__main__.Features) ... ok
+test_base_and_presence_preserved (__main__.Features) ... ok
+test_cross_chain_rescue_rejected (__main__.Features) ... ok
+test_cross_chain_shuffle_rejected (__main__.Features) ... ok
+test_missing_source_keeps_full_case (__main__.Features) ... ok
+test_nonbinary_presence_rejected (__main__.Features) ... ok
+test_nonfinite_rescue_rejected (__main__.Features) ... ok
+test_partial_missingness_rejected (__main__.Features) ... ok
+test_synthesized_features_rejected (__main__.Features) ... ok
+test_wrong_width_rejected (__main__.Features) ... ok
+test_contact_selected (__main__.Receipt) ... ok
+test_correct_earliest_tie (__main__.Receipt) ... ok
+test_nonfinite_history (__main__.Receipt) ... ok
+test_wrong_epoch (__main__.Receipt) ... ok
+test_wrong_plan (__main__.Receipt) ... ok
+test_wrong_seed (__main__.Receipt) ... ok
+test_duplicate_case_fails (__main__.Reporting) ... ok
+test_gap_fraction_unclipped (__main__.Reporting) ... ok
+test_missing_case_fails (__main__.Reporting) ... ok
+test_no_silent_clean_damage (__main__.Reporting) ... ok
+test_nonfinite_ap_fails (__main__.Reporting) ... ok
+test_nonpositive_gap_null (__main__.Reporting) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 1.164s
+
+OK

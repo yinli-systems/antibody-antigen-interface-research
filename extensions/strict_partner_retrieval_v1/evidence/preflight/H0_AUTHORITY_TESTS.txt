@@ -1,0 +1,13 @@
+2026-09-30
+Local system Python lacks NumPy, so H0 authority tests were executed in the ParaCloud repr_extract scientific runtime.
+Remote evidence root:
+/ssd/scxi253/frontier_multimodel_v1/strict_partner_retrieval_v1/preflight/h0_authority_001
+Results:
+- unauthorized H0 cache fails closed;
+- audited H0-only cache passes;
+- implementation/test files compile.
+Result: 2/2 H0 authority cases PASS.
+Source hashes:
+- h0.py e3356eea3dd8d3a79bb93b51134dd5f8ed7fd07ede6bf18d608104b2e357c6e7
+- metrics.py 53f701f3f11c67e24c46db18a46392588277c30fde413954f339c871d50bcb65
+- test 724da8f75dc433510ebfa2174e50e62ea95bd7b5ab06109794d8d3c30bef3f10

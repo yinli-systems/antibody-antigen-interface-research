@@ -1,0 +1,35 @@
+..........F...                                                           [100%]
+=================================== FAILURES ===================================
+_____________ test_protocol_names_overlap_and_threshold_boundaries _____________
+
+    def test_protocol_names_overlap_and_threshold_boundaries() -> None:
+>       text = (
+            Path(__file__).resolve().parents[1]
+            / "extensions/frontier_multimodel_v1/REPARANK_SAME_PROTOCOL_PROTOCOL.md"
+        ).read_text(encoding="utf-8")
+
+tests/test_reparank_same_protocol.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../model_deployment/envs/contact/lib/python3.10/pathlib.py:1134: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/ssd/scxi253/frontier_multimodel_v1/reparank_centering_test_precommit/extensions/frontier_multimodel_v1/REPARANK_SAME_PROTOCOL_PROTOCOL.md')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return self._accessor.open(self, mode, buffering, encoding, errors,
+                                   newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/ssd/scxi253/frontier_multimodel_v1/reparank_centering_test_precommit/extensions/frontier_multimodel_v1/REPARANK_SAME_PROTOCOL_PROTOCOL.md'
+
+../../model_deployment/envs/contact/lib/python3.10/pathlib.py:1119: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_reparank_same_protocol.py::test_protocol_names_overlap_and_threshold_boundaries
+1 failed, 13 passed in 4.93s

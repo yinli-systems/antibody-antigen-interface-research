@@ -214,24 +214,37 @@ def audit_task(plan, task_id):
                         **protein_backbone(model,task['sequence'])})
     top = result/(task['name']+'_model.cif')
     top_sha = digest(top)
+    top_structure = protein_backbone(top,task['sequence'])
     maximum = max(r['score'] for r in records)
-    matching = [r for r in records if r['score']==maximum and r['model_sha256']==top_sha]
+    matching = [r for r in records if r['score']==maximum and
+                r['backbone_sha256']==top_structure['backbone_sha256']]
     if not matching:
-        raise ValueError('top-level model is not a maximum-score sample byte for byte')
+        raise ValueError('top-level model structure is not a maximum-score sample')
+    # AF3 serializes the same InferenceResult twice; mmCIF bytes need not be identical.
+    # Scientific identity is exact sequence + canonical N/CA/C/O coordinates, while
+    # both raw byte hashes remain recorded for provenance.
     chosen = sorted(matching,key=lambda r:(r['seed'],r['sample']))[0]
     actual_input = read_json(result/(task['name']+'_data.json'))
-    # Verify AF3 did not silently add MSA/templates; schema normalization allowed.
+    # Official AF3 converts an explicitly empty MSA to a query-only A3M before
+    # featurisation. This is still MSA-free: no homologous sequence is present.
     protein = actual_input['sequences'][0]['protein']
-    if (protein['sequence']!=task['sequence'] or actual_input['modelSeeds']!=plan['model_seeds'] or
-        protein.get('templates')!=[] or protein.get('pairedMsa') not in ('',None) or
-        protein.get('unpairedMsa') not in ('',None)):
+    query_only = '>Original query\n'+task['sequence']+'\n'
+    if (actual_input.get('dialect')!='alphafold3' or actual_input.get('version')!=3 or
+        actual_input.get('name')!=task['name'] or actual_input['modelSeeds']!=plan['model_seeds'] or
+        actual_input.get('bondedAtomPairs') is not None or actual_input.get('userCCD') is not None or
+        len(actual_input.get('sequences',[]))!=1 or set(actual_input['sequences'][0])!={'protein'} or
+        protein.get('id')!='A' or protein.get('sequence')!=task['sequence'] or
+        protein.get('modifications')!=[] or protein.get('templates')!=[] or
+        protein.get('pairedMsa')!=query_only or protein.get('unpairedMsa')!=query_only):
         raise ValueError('AF3 processed inputs changed the scientific input contract')
     manifest = {str(p.relative_to(task_dir(plan,task_id))):digest(p)
                 for p in sorted(base.rglob('*')) if p.is_file()}
     return {'state':'COMPLETE', 'task_id':task_id, 'at_utc':utc(),
             'sequence_sha256':task['sequence_sha256'], 'sequence_length':task['length'],
             'sample_count':len(records), 'selected':chosen, 'samples':records,
-            'output_sha256':manifest, 'top_model':str(top),
+            'output_sha256':manifest, 'top_model':str(top), 'top_model_sha256':top_sha,
+            'top_model_backbone_sha256':top_structure['backbone_sha256'],
+            'top_model_byte_identical_to_selected_sample':top_sha==chosen['model_sha256'],
             'model_score_is_binding_evidence':False, 'contact_labels_read':False,
             'test_labels_read':False, 'ood_labels_read':False}
 
@@ -311,6 +324,58 @@ def freeze(args):
     print(json.dumps({'plan':str(dest/'PLAN.json'),'sha256':digest(dest/'PLAN.json'),'tasks':40},sort_keys=True))
 
 
+
+def admit_existing(plan_path, expected, task_id, source_task_dir):
+    """Admit successful prediction bytes from a failed audit into a fresh attempt.
+
+    No model inference occurs here. The old directory is never modified; all
+    bytes are copied into a new task-owned directory and re-audited under the
+    current executor before COMPLETE can exist.
+    """
+    plan = load_plan(plan_path, expected)
+    task = plan['tasks'][task_id]
+    source = Path(source_task_dir).resolve()
+    if not (source/'FAILURE.json').is_file():
+        raise ValueError('source task must preserve the earlier failed audit receipt')
+    if not (source/'results'/task['name']).is_dir() or not (source/'inputs').is_dir():
+        raise ValueError('source task does not contain completed prediction outputs')
+    target = task_dir(plan, task_id)
+    target.mkdir(parents=True, exist_ok=False)
+    new_json(target/'START.json', {'state':'ADMITTING_EXISTING_PREDICTION',
+             'task_id':task_id,'at_utc':utc(),'execution_plan_sha256':expected,
+             'source_task_dir':str(source),'source_failure_sha256':digest(source/'FAILURE.json'),
+             'model_inference_performed':False})
+    try:
+        shutil.copytree(source/'inputs',target/'inputs')
+        shutil.copytree(source/'results',target/'results')
+        # Every copied prediction file must be byte-identical to its source.
+        source_files={str(x.relative_to(source/'results')):digest(x)
+                      for x in sorted((source/'results').rglob('*')) if x.is_file()}
+        copied_files={str(x.relative_to(target/'results')):digest(x)
+                      for x in sorted((target/'results').rglob('*')) if x.is_file()}
+        if source_files != copied_files:
+            raise ValueError('copied prediction tree differs from preserved source bytes')
+        if digest(target/'inputs'/Path(task['input_path']).name) != task['input_sha256']:
+            raise ValueError('copied input bytes differ')
+        result = audit_task(plan,task_id)
+        check_static(plan)
+        result.update(execution_plan_sha256=expected,
+                      scientific_plan_sha256=plan['legacy_plan_sha256'],
+                      execution_mode='ADMITTED_EXISTING_SUCCESSFUL_PREDICTION_AFTER_AUDIT_FIX',
+                      source_task_dir=str(source),source_prediction_file_count=len(source_files),
+                      source_prediction_tree_sha256=hashlib.sha256(json.dumps(source_files,sort_keys=True).encode()).hexdigest(),
+                      model_inference_performed=False)
+        new_json(target/'COMPLETE.json',result)
+        print(json.dumps({'state':result['state'],'task_id':task_id,
+                          'sample_count':result['sample_count'],
+                          'model_inference_performed':False,
+                          'top_bytes_identical':result['top_model_byte_identical_to_selected_sample']},sort_keys=True))
+    except BaseException as e:
+        new_json(target/'FAILURE.json',{'state':'FAILED_ADMISSION','at_utc':utc(),
+                 'task_id':task_id,'error_type':type(e).__name__,'error':str(e),
+                 'model_inference_performed':False,'source_task_dir':str(source)})
+        raise
+
 def validate_task_set(task_ids, count):
     if not task_ids or len(set(task_ids))!=len(task_ids):
         raise ValueError('tasks must be nonempty and unique')
@@ -375,15 +440,18 @@ def main():
     f = sub.add_parser('freeze')
     for flag in ('legacy-plan','legacy-sha256','sif','model-dir','db-dir','source-commit','output-root'):
         f.add_argument('--'+flag,required=True)
-    for action in ('run','submit','verify'):
+    for action in ('run','submit','verify','admit-existing'):
         s = sub.add_parser(action); s.add_argument('--plan',required=True); s.add_argument('--plan-sha256',required=True)
         if action=='run': s.add_argument('--task-id',required=True,type=int)
         if action=='submit': s.add_argument('--tasks',required=True)
+        if action=='admit-existing':
+            s.add_argument('--task-id',required=True,type=int); s.add_argument('--source-task-dir',required=True)
         if action=='verify': s.add_argument('--deep-runtime',action='store_true')
     a = p.parse_args()
     if a.action=='freeze': freeze(a)
     elif a.action=='run': run_task(a.plan,a.plan_sha256,a.task_id)
     elif a.action=='submit': submit(a.plan,a.plan_sha256,[int(x) for x in a.tasks.split(',')])
+    elif a.action=='admit-existing': admit_existing(a.plan,a.plan_sha256,a.task_id,a.source_task_dir)
     else:
         plan = load_plan(a.plan,a.plan_sha256)
         if a.deep_runtime:
