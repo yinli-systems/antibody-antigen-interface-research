@@ -62,3 +62,13 @@ model accuracy. Chain-only predictions are not a co-folder comparison. No contac
 closed-test or rejected-OOD labels are read. These engineering tests do not count
 as new biological evidence; the full 40-chain authority is incomplete until all
 40 complete receipts exist and are validated.
+
+## Amendment: top-level AF3 serialization semantics (2026-09-30)
+
+Official AF3 output semantics use `ranking_scores.csv` to select the root
+highest-ranked prediction. Root and sample mmCIF files are not assumed to be
+byte-identical because AF3 can stamp their separate serialization times. The
+corrected audit compares full mmCIF semantics and all atom coordinates exactly,
+normalising only the timestamp in `_ma_model_list.model_group_name`. See
+`AF3_SEMANTIC_AUDIT_FIX_20260930.md`. This amendment does not change sequences,
+seeds, sample count, ranking, coordinates, confidence checks or scientific data.
