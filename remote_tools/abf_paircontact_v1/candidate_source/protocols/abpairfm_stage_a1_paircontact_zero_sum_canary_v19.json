@@ -1,0 +1,160 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "generation": "segment-000127",
+    "minimum_consumed_residue_tokens": 2000000000,
+    "optimizer_resume": false
+  },
+  "claim_boundary": "Train-only four-GPU frozen-backbone 80-update mechanism canary anchored to the exact-verified 2.023B-residue-token Stage-A0 checkpoint. It tests an analytically endpoint-zero-sum contact residual with deterministic row- and column-matched native noncontacts. The prior 512-record v18 holdout is excluded before a second PDB-disjoint 512-record confirmatory holdout is frozen. No distance-bin targets, privileged distance labels, downstream development data, old test, SABLE, fresh156, or temporal labels are read. Passing authorizes only a preregistered LoRA comparison; it is not downstream, blind-test, biological, or SOTA evidence.",
+  "efficiency": {
+    "activation_checkpointing_candidates": [
+      "off"
+    ],
+    "expected_bucket_records": 4967,
+    "expected_source_records": 19200,
+    "gpu_peak_bfloat16_flops": 82580000000000,
+    "maximum_combined_tokens": 128,
+    "minimum_combined_tokens": 65,
+    "padding_multiple": 64,
+    "parameter_count": 2839005633,
+    "phase_schedule": "paircontact_zero_sum_head_only_frozen_backbone",
+    "selection_seed": 1701,
+    "trial_matrix": [
+      {
+        "activation_checkpointing": "off",
+        "microbatch_pairs_per_rank": 48
+      }
+    ]
+  },
+  "efficiency_gate_only": true,
+  "evaluation": {
+    "average_precision": "non-interpolated AP evaluated only at distinct score thresholds; invariant to ordering within tied score groups",
+    "before_after_scoring": "exactly once before and once after training",
+    "matched_accuracy_tie_credit": 0.5,
+    "prior_holdout_reuse": false
+  },
+  "format_version": "abpairfm_stage_a1_paircontact_zero_sum_canary_v19",
+  "internal_holdout": {
+    "excluded_pdb_set": {
+      "expected_pdb_count": 511,
+      "ordering_salt": "v17_holdout",
+      "pdb_inventory_sha256": "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028",
+      "selection_seed": 1701,
+      "target_records": 512
+    },
+    "expected_pdb_count": 511,
+    "grouping": "lowercase_pdb_prefix",
+    "ordering_salt": "v19_confirmatory_holdout",
+    "pdb_inventory_sha256": "305e868ed39fcc9794ebe06b48b28228e1831a2b29e568b9a8b80835652b119c",
+    "selection_seed": 2909,
+    "target_records": 512,
+    "test_access": false
+  },
+  "loss": {
+    "contact": {
+      "centering": "analytic zero-sum gauge: subtract each complex's mean unique projected endpoint vector on both sides before the bilinear interaction",
+      "centering_weight": 0.0,
+      "class_balance": "sampled positive-weighted binary cross entropy over unary plus endpoint-zero-sum interaction logits",
+      "distance_bin_weight": 0.0,
+      "distance_label_manifest_permitted": false,
+      "interaction_residualization": "endpoint_zero_sum",
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_positive_pairs_per_complex": 102,
+      "maximum_sampled_pairs_per_complex": 512,
+      "projection_dimension": 256,
+      "ranking": "mean softplus margin over within-complex positive-negative pairs sharing the antibody or antigen endpoint; endpoint-zero-sum interaction logits only",
+      "ranking_margin": 0.5,
+      "ranking_weight": 0.5,
+      "representation_view": "joint_cross_chain_attention_frozen_backbone",
+      "sampling": "deterministic row- and column-matched native noncontacts before random fill",
+      "sampling_seed": 1701,
+      "weight": 1.0
+    },
+    "masked_language_modeling": {
+      "balance": "disabled_for_head_only_diagnostic",
+      "representation_view": "joint_cross_chain_attention_frozen_backbone",
+      "weight": 0.0
+    },
+    "retrieval": {
+      "candidate_scope": "disabled_for_head_only_diagnostic",
+      "direction": "disabled_for_head_only_diagnostic",
+      "participants": "none",
+      "representation_view": "disabled_for_head_only_diagnostic",
+      "temperature": 0.07,
+      "weight": 0.0
+    }
+  },
+  "optimization": {
+    "accumulation_steps": 1,
+    "backbone_learning_rate": 0.0,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "microbatch_pairs_per_rank_candidates": [
+      48
+    ],
+    "updates": 80,
+    "weight_decay": 0.01
+  },
+  "pilot_manifest": {
+    "counterfactual_mapped_retrieval_records": 15948,
+    "expected_retrieval_supervised_records": 16000,
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "minimum_full_endpoint_residues": 8,
+    "minimum_patch_endpoint_residues": 4,
+    "ppiref_records_per_microbatch": 5,
+    "receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "selection_seed": 1701,
+    "source_protocol_sha256": "27da4df9fcca2d7faf4f75d95c8e73f6c5470680d76ee5e467af6618acc60a24",
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
+    "total_records": 19200,
+    "unique_ppiref_exact_pairs": true
+  },
+  "promotion_gates": {
+    "finite_all_losses": true,
+    "maximum_endpoint_centering_error": 1e-8,
+    "maximum_peak_memory_fraction": 0.95,
+    "minimum_contact_positive_support": 50,
+    "minimum_counterfactual_coverage": 0.995,
+    "minimum_internal_holdout_column_matched_accuracy_absolute_gain": 0.02,
+    "minimum_internal_holdout_full_macro_ap_absolute_gain": 0.01,
+    "minimum_internal_holdout_interaction_macro_ap_absolute_gain": 0.01,
+    "minimum_internal_holdout_row_matched_accuracy_absolute_gain": 0.02,
+    "minimum_retrieval_candidates_per_query": 0,
+    "minimum_retrieval_cognate_support": 0,
+    "minimum_train_contact_relative_reduction": 0.01,
+    "minimum_train_ranking_relative_reduction": 0.02,
+    "required_checkpoint_restore": true
+  },
+  "research_basis": {
+    "balanced_endpoint_negatives": "https://www.nature.com/articles/s41467-026-73143-8",
+    "partner_specific_cross_chain_adaptation": "https://www.biorxiv.org/content/10.64898/2026.06.04.730144v1",
+    "paired_task_leakage_control": "https://www.nature.com/articles/s42256-025-01176-7",
+    "zero_sum_gauge_and_apc": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4520494/"
+  },
+  "status": "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING",
+  "systems": {
+    "cpus_per_task": 24,
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8"
+    },
+    "explicit_mem_argument_permitted": false,
+    "hp_4090_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 4
+  },
+  "systems_gate_only": true,
+  "test_access": false
+}

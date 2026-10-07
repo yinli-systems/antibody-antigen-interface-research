@@ -1,0 +1,144 @@
+{
+  "authorization": {
+    "external_test_access": false,
+    "mm_32k_training": false,
+    "mm_canary_training": false,
+    "mm_scale_training": false,
+    "pinder_validation_access": false,
+    "structure_cache_materialization": true
+  },
+  "backbone": {
+    "architecture": "StructureConditionedPairAwareESM2_3B",
+    "initialization": "exact passing B32K PairAwareESM2 checkpoint",
+    "required_parent_job": 1528772,
+    "required_parent_status": "PASS_B32K_BIOLOGICAL_AND_SYSTEMS_GATE",
+    "sequence_only_initialization_equivalence": "zero-initialized tanh structure residual gate"
+  },
+  "claim_boundary": "Train-only PINDER multimodal pretraining design. Sequence and independently predicted chain structures are model inputs; experimental bound structures supply residue-pair labels only. No PINDER validation/test, antibody benchmark test, temporal, SABLE, MIPE, or previously opened labels may select architecture, loss weights, checkpoints, or promotion.",
+  "data": {
+    "curriculum_manifest": {
+      "b500k_both_predicted_systems": 277211,
+      "b500k_systems": 500000,
+      "b500k_unique_predicted_structures": 19758,
+      "b_full_both_predicted_systems": 359555,
+      "b_full_sha256": "3ace51fc6807517b0ab42b8223e813f619aec40297d183943f40a28475a8d0ec",
+      "b_full_systems": 865471,
+      "b_full_unique_predicted_structures": 19923,
+      "selection_rule": "both predicted_R_pdb and predicted_L_pdb are non-empty in the frozen B-full PINDER-Train manifest"
+    },
+    "model_inputs": [
+      "paired amino-acid sequences",
+      "masked Foldseek 3Di tokens from independently predicted monomer structures",
+      "masked continuous SE(3)-invariant local-backbone features",
+      "predicted-structure confidence mask"
+    ],
+    "model_input_excludes": [
+      "experimental bound coordinates",
+      "cross-partner coordinates or distances",
+      "contact labels",
+      "PINDER validation or test structures"
+    ],
+    "pinder_structure_archive": {
+      "sha256": "125bc49d515803576c19123afdc72f4f59e84d64522866f99d089c53b7d27912",
+      "size_bytes": 168884420877,
+      "test_archive_requested": false
+    },
+    "structure_alignment": {
+      "axis": "authenticated holo sequence axes already present in the B-full manifest",
+      "failure_policy": "fail closed on missing member, sequence mismatch, ambiguous mapping, non-finite coordinate, or length mismatch",
+      "low_confidence_rule": "mask predicted residues with pLDDT below 70 when confidence is available",
+      "selected_archive_members_only": true
+    }
+  },
+  "format_version": "abpairfm_pinder_multimodal_pretraining_protocol_v1",
+  "loss": {
+    "continuous_local_geometry_weight": 0.1,
+    "epitope_marginal_weight": 0.2,
+    "masked_3di_weight": 0.15,
+    "masked_language_modeling_weight": 0.25,
+    "pair_contact_weight": 1.0,
+    "paratope_marginal_weight": 0.2,
+    "partner_swap_weight": 0.2,
+    "reduction": "equal physical-system weighting followed by equal contributing-chain weighting for reconstruction",
+    "selection_policy": "weights are frozen before downstream scoring and may change only after a numerical canary failure, never from development or test metrics"
+  },
+  "modality": {
+    "continuous_feature_dimension": 17,
+    "continuous_features": [
+      "sin/cos backbone phi",
+      "sin/cos backbone psi",
+      "sin/cos backbone omega",
+      "normalized N-CA bond length",
+      "normalized CA-C bond length",
+      "normalized peptide C-N bond length",
+      "normalized adjacent CA-CA distance",
+      "six-dimensional adjacent local-frame rotation",
+      "predicted-structure confidence"
+    ],
+    "dropout": {
+      "chain_modality_probability": 0.15,
+      "whole_system_modality_probability": 0.1
+    },
+    "structure_token_vocabulary": {
+      "3di_tokens": 20,
+      "dropped": 2,
+      "mask": 1,
+      "missing": 0,
+      "size": 23
+    }
+  },
+  "promotion": {
+    "mm_32k": [
+      "all objective terms finite",
+      "exact DCP restart equivalence",
+      "contact AP above prevalence on the frozen train-only holdout",
+      "positive matched-minus-swapped separation",
+      "no sequence-only regression beyond the preregistered tolerance",
+      "no forbidden data access"
+    ],
+    "mm_canary": [
+      "sequence-only zero-gate logits are bitwise equal",
+      "structure corruption and padding leakage fail closed",
+      "all structure losses and gradients are finite",
+      "peak GPU memory below 90 percent",
+      "exact batch cursor and checkpoint restart equivalence"
+    ],
+    "mm_scale": [
+      "MM32K passes",
+      "at least 250000 authenticated both-predicted systems",
+      "all 19923 selected structure assets pass byte and alignment audit",
+      "one frozen token budget and no intermediate external-test access"
+    ]
+  },
+  "stages": [
+    {
+      "name": "MM-canary",
+      "systems": 512,
+      "updates": 20
+    },
+    {
+      "name": "MM32K",
+      "systems": 32768,
+      "updates": 1024
+    },
+    {
+      "name": "MM-scale",
+      "systems": 359555,
+      "updates": "fixed token budget derived before training"
+    }
+  ],
+  "status": "FROZEN_DESIGN_BLOCKED_PENDING_PARENT_AND_CACHE_GATES",
+  "systems": {
+    "checkpoint": "PyTorch Distributed Checkpoint with model, optimizer, scheduler, RNG, data cursor, and structure-mask RNG",
+    "execution": "single-node FSDP2 BF16 with FP32 optimizer state",
+    "production_gpu": "8 RTX 5090 only after a contiguous node is available and a measured MM32K systems gate passes",
+    "reference_execution": "eager",
+    "topology_note": "RTX 5090 has no NVLink; multi-GPU promotion depends on measured collective efficiency rather than aggregate VRAM"
+  },
+  "test_access": {
+    "analyst_exposed_benchmarks_used_for_selection": false,
+    "pinder_test_rows_read": false,
+    "pinder_test_structures_read": false,
+    "pinder_validation_rows_read": false
+  }
+}

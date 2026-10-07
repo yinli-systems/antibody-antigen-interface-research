@@ -1,0 +1,43 @@
+{
+  "authorization": {
+    "lora_comparison": false,
+    "production_scaling": false,
+    "test_access": false
+  },
+  "checks": {
+    "checkpoint_restore_exact": true,
+    "column_matched_accuracy_gain_gate": true,
+    "distance_loss_exactly_zero": true,
+    "endpoint_centering_error_gate": false,
+    "full_macro_ap_gain_gate": true,
+    "interaction_macro_ap_gain_gate": true,
+    "row_matched_accuracy_gain_gate": true,
+    "tie_aware_ap_contract": true,
+    "train_contact_reduction_gate": false,
+    "train_ranking_reduction_gate": false
+  },
+  "claim_boundary": "Train-only frozen-backbone mechanism evidence on the second PDB-disjoint internal holdout. The frozen gate failed, so this result does not authorize LoRA, production scaling, downstream claims, blind-test claims, or SOTA claims.",
+  "format_version": "abf_paircontact_phase2_zero_sum_canary_result_receipt_v1",
+  "metrics": {
+    "column_matched_accuracy_absolute_gain": 0.042406070893153125,
+    "full_macro_sampled_contact_ap_absolute_gain": 0.035422163453717764,
+    "interaction_macro_sampled_contact_ap_absolute_gain": 0.029493076255578787,
+    "maximum_endpoint_centering_error": 1.122532804487264e-06,
+    "row_matched_accuracy_absolute_gain": 0.04308678979759889,
+    "train_contact_relative_reduction": 0.006754402634372633,
+    "train_ranking_relative_reduction": 0.01028983870627459
+  },
+  "provenance": {
+    "audit_sha256": "8d86edc714a805d13c84137dd086d4451bfc0a7f16d23e31a56d625f14fc02fc",
+    "checkpoint_content_sha256": "0af06d02e797f6cb99f04c672f6346b8166c5a5cb0a6aeaa487fc08d9f79670e",
+    "checkpoint_receipt_sha256": "34299221b4670cef39e021144dd1b682217235569095fb5c6e90eabd3e6c521e",
+    "input_checkpoint_content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "job_id": "1504931",
+    "progress_sha256": "b07f0a6a1dba8b19de40e5879a29183e7e599b28ec68b617969d1b7814bfe86e",
+    "protocol_sha256": "cf4f6ee373fff3fa76f2c3fb92f7e7f431611615563f5457b19ebc8116f02c3c",
+    "result_sha256": "d7aa555e55f7e0cfbca52c7685a4a27667e31a84269f7274b961e48151cca730",
+    "source_sha256": "b60643815919d08b546393da4c3c09974c95ccdcc0c0997e886a7fa08492f814"
+  },
+  "status": "FAIL_PAIRCONTACT_ZERO_SUM_MECHANISM_GATE",
+  "test_access": false
+}

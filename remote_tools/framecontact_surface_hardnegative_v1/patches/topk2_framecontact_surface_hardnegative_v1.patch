@@ -1,0 +1,139 @@
+--- a/src/interaction_first/framecontact.py
++++ b/src/interaction_first/framecontact.py
+@@ -541,6 +541,55 @@
+     masked = logits.masked_fill(~mask, torch.finfo(logits.dtype).min)
+     result = torch.logsumexp(masked, dim=dim) - count.to(logits.dtype).log()
+     return result.masked_fill(observed_count == 0, 0.0)
++
++
++def chain_internal_ca_surface_score(
++    backbone: Any,
++    residue_mask: Any,
++    chain_ids: Any,
++    *,
++    radius: float = 10.0,
++) -> Any:
++    """Estimate residue exposure from chain-internal predicted C-alpha density."""
++    torch_module = _require_torch()
++    if (
++        not torch_module.is_tensor(backbone)
++        or tuple(backbone.shape[-2:]) != (3, 3)
++        or not torch_module.is_tensor(residue_mask)
++        or residue_mask.dtype != torch_module.bool
++        or tuple(residue_mask.shape) != tuple(backbone.shape[:2])
++        or not torch_module.is_tensor(chain_ids)
++        or tuple(chain_ids.shape) != tuple(residue_mask.shape)
++        or torch_module.is_floating_point(chain_ids)
++    ):
++        raise ValueError("surface-score inputs must align on the residue axis")
++    if not math.isfinite(float(radius)) or float(radius) <= 0.0:
++        raise ValueError("surface radius must be finite and positive")
++    ca = backbone[..., 1, :].to(torch_module.float32)
++    valid = residue_mask & torch_module.isfinite(ca).all(dim=-1)
++    safe_ca = torch_module.where(valid[..., None], ca, 0.0)
++    distances = torch_module.cdist(safe_ca, safe_ca)
++    same_chain = chain_ids[:, :, None] == chain_ids[:, None, :]
++    pair_valid = valid[:, :, None] & valid[:, None, :] & same_chain
++    identity = torch_module.eye(
++        residue_mask.shape[1], dtype=torch_module.bool, device=residue_mask.device
++    ).unsqueeze(0)
++    pair_valid = pair_valid & ~identity
++    density = torch_module.exp(-((distances / float(radius)) ** 2))
++    density = (density * pair_valid.to(density.dtype)).sum(dim=-1)
++    score = torch_module.zeros_like(density)
++    for batch_index in range(int(backbone.shape[0])):
++        for chain_id in torch_module.unique(chain_ids[batch_index][valid[batch_index]]):
++            local = valid[batch_index] & (chain_ids[batch_index] == chain_id)
++            values = density[batch_index][local]
++            if values.numel() == 1:
++                score[batch_index][local] = 0.0
++                continue
++            standardized = (values.mean() - values) / values.std(
++                unbiased=False
++            ).clamp_min(1e-6)
++            score[batch_index][local] = standardized.clamp(-3.0, 3.0)
++    return score.masked_fill(~valid, 0.0)
+ 
+ 
+ def masked_mean_probability_logit(logits: Any, mask: Any, *, dim: int) -> Any:
+@@ -613,6 +662,8 @@
+         adapter_mode: str = "framecontact",
+         distance_bin_count: int = 0,
+         contrastive_dim: int = 64,
++        surface_prior_mode: str = "none",
++        surface_radius: float = 10.0,
+     ) -> None:
+         _require_torch()
+         super().__init__()
+@@ -630,6 +681,12 @@
+             raise ValueError("unknown same-protocol adapter mode")
+         self.fusion_mode = fusion_mode
+         self.adapter_mode = adapter_mode
++        if surface_prior_mode not in {"none", "ca_density"}:
++            raise ValueError("surface_prior_mode must be none or ca_density")
++        if not math.isfinite(float(surface_radius)) or float(surface_radius) <= 0.0:
++            raise ValueError("surface_radius must be finite and positive")
++        self.surface_prior_mode = surface_prior_mode
++        self.surface_radius = float(surface_radius)
+         self.antibody_projection = nn.Sequential(
+             nn.LayerNorm(antibody_input_dim), nn.Linear(antibody_input_dim, d_model)
+         )
+@@ -717,6 +774,10 @@
+         self.epitope_head = nn.Linear(d_model, 1)
+         self.paratope_contact_gate = nn.Parameter(torch.zeros(()))
+         self.epitope_contact_gate = nn.Parameter(torch.zeros(()))
++        if surface_prior_mode == "ca_density":
++            self.antigen_surface_contact_gate = nn.Parameter(torch.zeros(()))
++        else:
++            self.register_parameter("antigen_surface_contact_gate", None)
+         nn.init.constant_(self.paratope_head.bias, -2.5)
+         nn.init.constant_(self.epitope_head.bias, -2.5)
+ 
+@@ -905,7 +966,24 @@
+         contact_components = self.contact_head.components(
+             antibody_fused, antigen_fused, pair_mask
+         )
+-        contact_logits = contact_components["logits"]
++        contact_logits_without_surface_prior = contact_components["logits"]
++        antigen_surface_score = None
++        if self.surface_prior_mode == "ca_density":
++            assert self.antigen_surface_contact_gate is not None
++            antigen_surface_score = chain_internal_ca_surface_score(
++                batch["antigen_backbone"],
++                antigen_mask,
++                batch["antigen_chain_ids"],
++                radius=self.surface_radius,
++            )
++            contact_logits = contact_logits_without_surface_prior + torch.tanh(
++                self.antigen_surface_contact_gate
++            ) * antigen_surface_score[:, None, :].to(
++                contact_logits_without_surface_prior.dtype
++            )
++            contact_logits = contact_logits.masked_fill(~pair_mask, 0.0)
++        else:
++            contact_logits = contact_logits_without_surface_prior
+         distance_bin_logits = (
+             None
+             if self.distance_bin_head is None
+@@ -947,6 +1025,13 @@
+             ],
+             "intermediate_contact_logits": intermediate_contact_logits,
+             "contact_logits": contact_logits,
++            "contact_logits_without_surface_prior": contact_logits_without_surface_prior,
++            "antigen_surface_score": antigen_surface_score,
++            "antigen_surface_contact_gate": (
++                None
++                if self.antigen_surface_contact_gate is None
++                else torch.tanh(self.antigen_surface_contact_gate)
++            ),
+             "distance_bin_logits": distance_bin_logits,
+             "contact_interaction_logits": contact_components["interaction_logits"],
+             "antibody_contact_propensity_logits": contact_components[
+@@ -996,6 +1081,7 @@
+     "FrameContactModel",
+     "PairContactHead",
+     "PairDistanceBinHead",
++    "chain_internal_ca_surface_score",
+     "masked_logmeanexp",
+     "masked_topk_mean_probability_logit",
+ ]

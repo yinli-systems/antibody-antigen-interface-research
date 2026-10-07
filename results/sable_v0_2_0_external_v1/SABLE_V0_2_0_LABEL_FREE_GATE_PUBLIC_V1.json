@@ -1,0 +1,34 @@
+{
+  "counts": {
+    "amino_acid_candidate_entries": 170,
+    "eligible_entries": 97,
+    "eligible_unique_pdb_ids": 88,
+    "source_test_entries": 327,
+    "source_test_entries_with_antigen": 199,
+    "unique_development_antibody_sequences": 1341,
+    "unique_development_antigen_sequences": 1171
+  },
+  "development_sequence_view_sha256": "27e0beb755c3d8e4b9910d4ad2ca979161668a1e1fe7b4d09bf6a60251e07468",
+  "exclusion_counts": {
+    "antibody_global_identity_above_0.9": 17,
+    "antigen_local_similarity_gate": 32,
+    "exact_development_sequence_overlap": 24
+  },
+  "format_version": "sable_v0_2_0_label_free_gate_public_v1",
+  "minimum_gate": {
+    "eligible_entries": 50,
+    "eligible_unique_pdb_ids": 40
+  },
+  "old_sabdab2_test_loaded": false,
+  "sable_bound_structures_downloaded": false,
+  "sable_metadata_sha256": "d6b16885c7ab44bbe2a38b3fc02ab085adff73479c1a119e3786831f464b20b7",
+  "selection_or_tuning": false,
+  "source": {
+    "dataset": "SABLE",
+    "doi": "10.5281/zenodo.21759053",
+    "version": "0.2.0"
+  },
+  "status": "PASS_LABEL_FREE_GATE",
+  "task_labels_read": false,
+  "temporal_holdout_loaded": false
+}

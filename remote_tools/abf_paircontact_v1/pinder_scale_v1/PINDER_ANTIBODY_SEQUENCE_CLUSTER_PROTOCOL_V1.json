@@ -1,0 +1,53 @@
+{
+  "authorization": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_metadata_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "cluster_identity_thresholds_percent": [
+    30,
+    50,
+    70,
+    90
+  ],
+  "edge_format": [
+    "query",
+    "target",
+    "fident",
+    "qcov",
+    "tcov",
+    "alnlen",
+    "evalue",
+    "bits"
+  ],
+  "format_version": "pinder_antibody_sequence_cluster_protocol_v1",
+  "input_sha256": {
+    "antibody_edges_tsv": "2e0e56d33dd17274cc991cda5d11f24683a0f06f4d4e197e72c663d01fecea99",
+    "antibody_fasta": "874f8f6907802205d80cc5809a299f735ada0365329a882ee434c545f1341450",
+    "antigen_edges_tsv": "2962d5185455481926d1532a626df815e6be06aab0bf8990e9e6b755486d6ac9",
+    "antigen_fasta": "e4d5335f224161558b47e2003b75d071e301f4d990e4ad3c6a59424363b80f0d",
+    "inventory_manifest": "3537f92f9c465bfd3019387080267e6a679fcb781776931d3c775145704cfb6c",
+    "metadata_parquet": "3e3cfdc21d6c685891d6732edda13fea9d5566d056dfea56a2ae902ab80b4e6c",
+    "sequence_manifest": "c5e0f5f6d66e88e4d4cbfd2c57b3f81684b069429bd94a00e79b45116944cb27"
+  },
+  "minimum_sequence_identity_percent": 30.0,
+  "mmseqs_binary_sha256": "837eaf6cc9be92ff320c42c4cf56ae0d75f2a53c6ff6b24a577e803e9e3951be",
+  "mmseqs_release": "18-8cc5c (commit 8cc5ce367b5638c4306c2d7cfc652dd099a4643f)",
+  "pinder_release": "2024-02",
+  "quality_filters": {
+    "bio_subset_label": "BIO",
+    "components_per_chain": 1,
+    "interface_atom_gaps_4A": 0,
+    "max_coordinate_variance": 0.98,
+    "method": "X-RAY DIFFRACTION",
+    "minimum_atom_types": 3,
+    "minimum_chain_length": 40,
+    "resolution_max_angstrom": 3.5
+  },
+  "reciprocal_coverage_percent": 80.0
+}

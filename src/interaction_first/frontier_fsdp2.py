@@ -325,6 +325,7 @@ def save_dcp_generation(
     optimizer: Any,
     provenance_hashes: Mapping[str, str],
     training_state: Mapping[str, Any],
+    claim_boundary: str = FSDP2_CLAIM_BOUNDARY,
     group: Any = None,
 ) -> dict[str, Any]:
     """Collectively save one immutable, hash-inventoried DCP generation."""
@@ -339,6 +340,8 @@ def save_dcp_generation(
         raise RuntimeError("Distributed Checkpoint is unavailable") from error
     selected_generation = _validate_generation(generation)
     provenance = _validate_hashes(provenance_hashes)
+    if not isinstance(claim_boundary, str) or not claim_boundary.strip():
+        raise FSDP2ContractError("claim_boundary must be a non-empty string")
     canonical_training_state = json.loads(_canonical_json_bytes(training_state))
     distributed, world_size, rank = _distributed_identity(group)
     output_root = Path(root).resolve()
@@ -418,7 +421,7 @@ def save_dcp_generation(
                     "provenance_hashes": provenance,
                     "training_state": canonical_training_state,
                     "files": inventory,
-                    "claim_boundary": FSDP2_CLAIM_BOUNDARY,
+                    "claim_boundary": claim_boundary.strip(),
                 }
                 receipt = {
                     **unsigned,
@@ -446,6 +449,7 @@ def save_dcp_generation(
             output_root,
             selected_generation,
             expected_provenance_hashes=provenance,
+            expected_claim_boundary=claim_boundary.strip(),
             group=group,
         )
     except BaseException:
@@ -459,6 +463,7 @@ def verify_dcp_generation(
     generation: str,
     *,
     expected_provenance_hashes: Mapping[str, str] | None = None,
+    expected_claim_boundary: str = FSDP2_CLAIM_BOUNDARY,
 ) -> dict[str, Any]:
     """Verify one immutable DCP generation without loading tensors."""
     selected_generation = _validate_generation(generation)
@@ -483,11 +488,13 @@ def verify_dcp_generation(
     }
     if set(receipt) != expected_fields:
         raise FSDP2ContractError("DCP receipt fields differ from the locked schema")
+    if not isinstance(expected_claim_boundary, str) or not expected_claim_boundary.strip():
+        raise FSDP2ContractError("expected_claim_boundary must be a non-empty string")
     if (
         receipt["format"] != FSDP2_DCP_FORMAT
         or receipt["generation"] != selected_generation
         or receipt["status"] != "complete"
-        or receipt["claim_boundary"] != FSDP2_CLAIM_BOUNDARY
+        or receipt["claim_boundary"] != expected_claim_boundary.strip()
     ):
         raise FSDP2ContractError("DCP receipt identity or status is invalid")
     unsigned = {key: value for key, value in receipt.items() if key != "content_sha256"}
@@ -552,6 +559,7 @@ def _verify_dcp_generation_collectively(
     generation: str,
     *,
     expected_provenance_hashes: Mapping[str, str],
+    expected_claim_boundary: str = FSDP2_CLAIM_BOUNDARY,
     group: Any = None,
 ) -> dict[str, Any]:
     """Hash one large generation on rank zero and broadcast the verified receipt."""
@@ -561,6 +569,7 @@ def _verify_dcp_generation_collectively(
             root,
             generation,
             expected_provenance_hashes=expected_provenance_hashes,
+            expected_claim_boundary=expected_claim_boundary,
         )
     payload: list[dict[str, Any]] = [{"error": None, "receipt": None}]
     if rank == 0:
@@ -569,6 +578,7 @@ def _verify_dcp_generation_collectively(
                 root,
                 generation,
                 expected_provenance_hashes=expected_provenance_hashes,
+                expected_claim_boundary=expected_claim_boundary,
             )
         except BaseException as error:
             payload[0]["error"] = f"{type(error).__name__}: {error}"
@@ -590,6 +600,7 @@ def load_dcp_generation(
     model: Any,
     optimizer: Any,
     expected_provenance_hashes: Mapping[str, str],
+    expected_claim_boundary: str = FSDP2_CLAIM_BOUNDARY,
     group: Any = None,
 ) -> dict[str, Any]:
     """Verify and collectively restore model and optimizer state through DCP."""
@@ -607,6 +618,7 @@ def load_dcp_generation(
         root,
         selected_generation,
         expected_provenance_hashes=expected_provenance_hashes,
+        expected_claim_boundary=expected_claim_boundary,
         group=group,
     )
     distributed, world_size, _ = _distributed_identity(group)

@@ -1,0 +1,7 @@
+{
+  "candidate_manifest_sha256": "3537f92f9c465bfd3019387080267e6a679fcb781776931d3c775145704cfb6c",
+  "format_version": "pinder_antibody_inventory_receipt_v1",
+  "result_sha256": "36428e9de0585a10e359ce6646723a3c81b33148323dcb32cc433793d6b5eb3e",
+  "status": "PASS_METADATA_ONLY_PINDER_ANTIBODY_TRAIN_INVENTORY",
+  "test_access": false
+}

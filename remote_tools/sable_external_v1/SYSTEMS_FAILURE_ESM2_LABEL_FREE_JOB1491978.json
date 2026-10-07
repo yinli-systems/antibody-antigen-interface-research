@@ -1,0 +1,29 @@
+{
+  "format_version": "sable_v0_2_0_esm2_label_free_systems_failure_v1",
+  "job_id": 1491978,
+  "state": "FAILED",
+  "exit_code": "1:0",
+  "elapsed": "00:00:22",
+  "failure_class": "missing_runtime_dependency_before_model_load",
+  "exception": "ModuleNotFoundError: No module named 'transformers'",
+  "stderr_sha256": "15e616e524b4895245b435c47c7bc8c997c869a0200207057d78b0d616b157b5",
+  "embedding_root_created": false,
+  "embedding_artifacts_written": 0,
+  "task_labels_read": false,
+  "bound_structures_read": false,
+  "model_loaded": false,
+  "scientific_state_changed": false,
+  "silent_retry": false,
+  "authorized_recovery": {
+    "python_executable_unchanged": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "pip_used": false,
+    "read_only_dependency_source": "/ssd/scxi253/model_deployment/envs/epiformer/lib/python3.10/site-packages",
+    "verified_versions": {
+      "transformers": "4.57.6",
+      "tokenizers": "0.22.2",
+      "safetensors": "0.8.0"
+    },
+    "contact_torch_version": "2.7.1+cu128",
+    "model_weight_sha256_unchanged": "a08adabb949fa67ad3c14b509d04fd60368b35007b0095e3358f81200c4f4db0"
+  }
+}

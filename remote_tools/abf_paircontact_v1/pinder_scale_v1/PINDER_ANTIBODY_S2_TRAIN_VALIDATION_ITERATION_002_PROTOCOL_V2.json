@@ -1,0 +1,48 @@
+{
+  "bucket_names": [
+    "train",
+    "validation"
+  ],
+  "claim_boundary": "Provisional PINDER-train-only antibody adaptation split closure iteration. It is not authorized for training or model selection until the independent exhaustive exact four-view Needleman-Wunsch audit reports zero qualifying train-validation crossings. It is not a performance evaluation, temporal test, structural split, or PLM pretraining leakage audit.",
+  "closure_iteration": 2,
+  "data_firewall": {
+    "model_predictions_or_scores_read": false,
+    "structures_or_contact_labels_read": false,
+    "test_rows_read": false,
+    "train_sequences_only": true,
+    "validation_rows_read": false
+  },
+  "determinism": {
+    "all_inputs_sorted": true,
+    "largest_component_tie_break": "highest original exact-pair degree, then lexical component root",
+    "solver_optimality_gap": 0.0
+  },
+  "discard_policy": "Discard a complete PDB-and-exact-pair connected component whenever its antibody and antigen axis components are assigned to different buckets. Never split a PDB or exact antibody-antigen sequence pair across train, validation, and discarded ledgers.",
+  "format_version": "pinder_antibody_s2_train_validation_iteration_protocol_v2",
+  "identity_threshold": 0.8,
+  "iteration_rule": "Merge all 624 authenticated digest-only threshold crossings from iteration 1 into the existing component closure, rerun the unchanged binary MILP, and independently audit the new train-validation boundary. If new crossings remain, repeat without relaxing 80/80 or reading labels, structures, predictions, scores, external validation, or test data.",
+  "largest_antibody_component_bucket": "train",
+  "objective": "maximize retained unique exact antibody-antigen sequence pairs across train and validation",
+  "reciprocal_coverage_threshold": 0.8,
+  "required_final_gate": "independent exhaustive exact global four-view Needleman-Wunsch train-validation zero-crossing audit",
+  "solver": {
+    "implementation": "scipy.optimize.milp_HiGHS",
+    "presolve": true,
+    "time_limit_seconds": 900
+  },
+  "source_sha256": {
+    "antigen_crossing_edges": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "canonical_manifest": "624612079838536934c81fa3918486e322c16caed19fbba70b6f8b33adc5fb6c",
+    "concatenated_antibody_crossing_edges": "a8e3a72b504d4314b1e53d7a287bb21a770908c5818be4ed5a465507468ad0d3",
+    "previous_assignment": "7e0cccdb90089ccc4d4a443ec73719d11a73f048f2cb581685134d9e847e28d3",
+    "previous_assignment_scientific_payload": "b5b7f232e722473f11ca7e1306bee1bccdfd81c14deb34a21168ed82d4609a69",
+    "previous_audit_result": "31c569657db0bf4b3cb0786c2a84f4133d104136e61b6f1453bc957d5636ea3e",
+    "vh_crossing_edges": "2e2ac58215144454d0d02432cf6f3d76e0dd4ff5b6c90ec130df308043a954be",
+    "vl_crossing_edges": "22106ab82ff401092c9f39136d84228089873edaff550cd186d739ac06de7072"
+  },
+  "threshold_relaxation_after_results": false,
+  "validation_axis_degree_fraction": {
+    "maximum": 0.25,
+    "minimum": 0.15
+  }
+}

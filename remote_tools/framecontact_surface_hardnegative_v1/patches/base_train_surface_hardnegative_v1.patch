@@ -1,0 +1,68 @@
+--- a/scripts/train_framecontact.py
++++ b/scripts/train_framecontact.py
+@@ -260,6 +260,16 @@
+     parser.add_argument("--specificity-margin", type=float, default=0.05)
+     parser.add_argument("--score-fraction", type=float, default=0.01)
+     parser.add_argument("--contact-focal-gamma", type=float, default=0.0)
++    parser.add_argument(
++        "--surface-prior-mode", choices=("none", "ca_density"), default="none"
++    )
++    parser.add_argument("--surface-radius", type=float, default=10.0)
++    parser.add_argument("--contact-hard-negative-loss-weight", type=float, default=0.0)
++    parser.add_argument("--contact-hard-negative-fraction", type=float, default=0.01)
++    parser.add_argument(
++        "--contact-hard-negative-maximum-pairs", type=int, default=64
++    )
++    parser.add_argument("--contact-hard-negative-margin", type=float, default=0.5)
+     parser.add_argument("--epitope-dice-weight", type=float, default=0.0)
+     parser.add_argument("--epitope-count-weight", type=float, default=0.0)
+     parser.add_argument("--distance-loss-weight", type=float, default=0.0)
+@@ -578,6 +588,11 @@
+         "calibration_max_pairs": "calibration_max_pairs",
+         "offload_saved_tensors": "offload_saved_tensors",
+         "contact_focal_gamma": "contact_focal_gamma",
++        "surface_prior_mode": "surface_prior_mode",
++        "surface_radius": "surface_radius_angstrom",
++        "contact_hard_negative_fraction": "contact_hard_negative_fraction",
++        "contact_hard_negative_maximum_pairs": "contact_hard_negative_maximum_pairs",
++        "contact_hard_negative_margin": "contact_hard_negative_margin",
+         "epitope_dice_weight": "epitope_dice_weight",
+         "epitope_count_weight": "epitope_count_weight",
+     }
+@@ -604,6 +619,7 @@
+     loss_weights = objective.get("loss_weights", {})
+     for argument_name, protocol_name in (
+         ("contact_loss_weight", "contact"),
++        ("contact_hard_negative_loss_weight", "contact_hard_negative"),
+         ("paratope_loss_weight", "paratope"),
+         ("epitope_loss_weight", "epitope"),
+         ("specificity_loss_weight", "specificity"),
+@@ -1343,6 +1359,8 @@
+         adapter_mode=EXPERIMENTS[experiment]["adapter_mode"],
+         distance_bin_count=int(EXPERIMENTS[experiment]["distance_bin_count"]),
+         contrastive_dim=int(configuration["contrastive_dim"]),
++        surface_prior_mode=str(configuration["surface_prior_mode"]),
++        surface_radius=float(configuration["surface_radius"]),
+     )
+     _configure_experiment(model, experiment)
+     return model
+@@ -1493,6 +1511,7 @@
+     model.to(device)
+     weights = FrameContactLossWeights(
+         contact=arguments.contact_loss_weight,
++        contact_hard_negative=arguments.contact_hard_negative_loss_weight,
+         paratope=arguments.paratope_loss_weight,
+         epitope=arguments.epitope_loss_weight,
+         specificity=arguments.specificity_loss_weight,
+@@ -1512,6 +1531,11 @@
+         contact_focal_gamma=arguments.contact_focal_gamma,
+         epitope_dice_weight=arguments.epitope_dice_weight,
+         epitope_count_weight=arguments.epitope_count_weight,
++        contact_hard_negative_fraction=arguments.contact_hard_negative_fraction,
++        contact_hard_negative_maximum_pairs=(
++            arguments.contact_hard_negative_maximum_pairs
++        ),
++        contact_hard_negative_margin=arguments.contact_hard_negative_margin,
+         contrastive_temperature=arguments.contrastive_temperature,
+         contrastive_maximum_residues=arguments.contrastive_maximum_residues,
+     )

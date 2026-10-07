@@ -12,8 +12,16 @@ Scientific boundaries:
 - old SAbDab2 test and temporal structures are not materialized or accessed;
 - predicted coordinates are chain-internal inputs only, with no cross-partner
   geometry;
-- existing contact and distance targets are reused byte-for-byte under explicit
-  provenance adapters rather than regenerated from predicted structures;
+- existing contact targets are reused byte-for-byte under an explicit
+  provenance adapter rather than regenerated from predicted structures;
+- the completed corrected-distance study retains bound-derived distance bins
+  only as auxiliary training supervision, never as model input;
+- the frozen `no_privileged_distance_v1` follow-up supplies no distance-label
+  cache and sets the distance loss weight to zero, while holding the model,
+  optimizer, split, task labels, seeds, and checkpoint rule fixed;
+- the geometry-quality mechanism analysis aligns predicted and experimental
+  backbones independently within each physical chain and relates chain-internal
+  RMSD/graph changes to seed-matched development contact-ranking changes;
 - recovery files document systems and schema failures; they are not additional
   model-selection attempts.
 

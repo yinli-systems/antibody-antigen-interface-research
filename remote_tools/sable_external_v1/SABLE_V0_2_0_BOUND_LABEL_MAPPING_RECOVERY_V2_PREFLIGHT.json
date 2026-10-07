@@ -1,0 +1,18 @@
+{
+  "analyzable_entries": 97,
+  "analyzable_unique_pdb_ids": 88,
+  "bound_structure_cohort_changed": false,
+  "contact_labels_materialized": false,
+  "created_at_utc": "2026-08-29T18:05:47Z",
+  "entries": 97,
+  "excluded_entries": [],
+  "format_version": "sable_v0_2_0_bound_label_mapping_recovery_v2_preflight",
+  "issues": [],
+  "performance_metrics_computed": false,
+  "recovery_materializer_sha256": "d00406f71889367e0d77bd7a856b6e33b80eea879cfdfe2746c77d5322e9bf8c",
+  "recovery_plan_sha256": "3d53060d11a74666246af72e7eb721c42931a6bd6c24ed31ca97f2fa04b13f44",
+  "selection_or_tuning": false,
+  "status": "PASS_MAPPING_ONLY_PREFLIGHT",
+  "test_or_temporal_access": false,
+  "unknown_residue_wildcard": false
+}

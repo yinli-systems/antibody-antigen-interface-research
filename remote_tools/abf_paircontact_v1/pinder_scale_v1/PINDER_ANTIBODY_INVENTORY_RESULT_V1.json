@@ -1,0 +1,54 @@
+{
+  "authorizations": {
+    "download_structures": false,
+    "materialize_contact_labels": false,
+    "model_selection": false,
+    "test_access": false,
+    "train_model": false
+  },
+  "candidate_manifest": {
+    "filename": "PINDER_ANTIBODY_TRAIN_CANDIDATES_V1.tsv.gz",
+    "row_count": 35366,
+    "sha256": "3537f92f9c465bfd3019387080267e6a679fcb781776931d3c775145704cfb6c"
+  },
+  "checks": {
+    "all_candidates_train_split": true,
+    "ambiguous_endpoint_roles_excluded": true,
+    "candidate_ids_unique": true,
+    "index_sha256_verified": true,
+    "sabdab_sha256_verified": true,
+    "test_rows_selected": 0,
+    "validation_rows_selected": 0
+  },
+  "claim_boundary": "Metadata-only PINDER-Train antibody-antigen inventory; no structures, contact labels, validation/test examples, training, or performance claims.",
+  "counts": {
+    "ambiguous_train_pairs_excluded": 410,
+    "antibody_monomers": 36675,
+    "antibody_monomers_on_L": 29101,
+    "antibody_monomers_on_R": 6265,
+    "antibody_role_antigen_role_overlap": 363,
+    "antigen_monomers": 23554,
+    "candidate_antibody_clusters": 41,
+    "candidate_antigen_clusters": 1296,
+    "candidate_interface_clusters": 1763,
+    "candidate_pdb_ids": 5734,
+    "candidate_rows": 35366,
+    "index_rows": 2319564,
+    "index_split_counts": {
+      "invalid": 754969,
+      "test": 1955,
+      "train": 1560682,
+      "val": 1958
+    },
+    "strict_role_split_counts": {
+      "invalid": 14533,
+      "train": 35366
+    }
+  },
+  "format_version": "pinder_antibody_inventory_result_v1",
+  "source_sha256": {
+    "index": "ced1936c4f36ea79161579df8d4b23bb4862b9c88f30af9defeeb85af99adac4",
+    "sabdab_metadata": "afcf824aa992ccb1a0a1abfa913b5313929d8860e04e53402c442b6401be7380"
+  },
+  "status": "PASS_METADATA_ONLY_PINDER_ANTIBODY_TRAIN_INVENTORY"
+}

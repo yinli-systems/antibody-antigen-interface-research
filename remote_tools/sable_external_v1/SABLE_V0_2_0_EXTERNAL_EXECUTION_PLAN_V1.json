@@ -1,0 +1,102 @@
+{
+  "analysis": {
+    "average_precision_definition": "sklearn.metrics.average_precision_score; non-interpolated AP",
+    "bootstrap": {
+      "confidence_interval": "2.5 and 97.5 percentiles",
+      "replicates": 10000,
+      "seed": 20260830,
+      "unit": "SABLE PDB ID"
+    },
+    "primary_estimand": "PDB-equal-weighted mean of per-entry AP after averaging the three fixed seed-specific AP values within entry",
+    "primary_tasks": [
+      "contact",
+      "epitope",
+      "paratope"
+    ],
+    "reported_for_each_seed": [
+      "mean per-complex AP",
+      "pooled AP",
+      "pooled AUROC"
+    ],
+    "seed_summary": "median across seeds 17, 29, and 43",
+    "zero_positive_rule": "exclude from the corresponding per-entry AP denominator and report the excluded count; retain all observed labels for pooled metrics",
+    "zero_negative_rule": "exclude from AUROC only and report the excluded count"
+  },
+  "bound_label_opening_authorized": false,
+  "checkpoint_binding_gate": {
+    "required_analysis_job_id": "1491875",
+    "required_analysis_status": "PASS_PREDICTED_GEOMETRY_NO_BOUND_DISTANCE_AUXILIARY_DEVELOPMENT",
+    "required_conditions": [
+      "all six no-distance development runs verified",
+      "distance label cache not supplied",
+      "distance labels not loaded",
+      "distance loss weight equals zero",
+      "old SAbDab2 test not loaded",
+      "temporal holdout not loaded"
+    ],
+    "required_exact_binding_before_label_opening": true
+  },
+  "cohort_authority": {
+    "eligible_entries": 97,
+    "eligible_unique_pdb_ids": 88,
+    "label_free_screen_receipt_sha256": "5aee4ff1c98a9936674d68aae74d28e90f6d9ba357464f7776f72c7d5cbd73d6",
+    "label_free_screen_result_sha256": "2c6f6ec9f9b8ff6fd11112a9131fdd9fa024591bc99df36e42caecd8819eca00",
+    "minimum_analyzable_entries_after_mapping": 50,
+    "minimum_analyzable_unique_pdb_ids_after_mapping": 40
+  },
+  "contact_label_definition": {
+    "antibody_axis": "metadata H_sequence followed by L_sequence when present",
+    "antigen_axis": "metadata antigen chains in declared antigen_chain_id order",
+    "contact": "minimum cross-partner non-hydrogen atom distance at most 4.5 angstrom",
+    "coordinate_source": "SABLE v0.2.0 experimental bound structure, used for labels only",
+    "missing_residues": "unobserved or unmappable residues are masked from evaluation, never assigned negative labels",
+    "paratope": "antibody residue has at least one observed positive contact",
+    "epitope": "antigen residue has at least one observed positive contact",
+    "sequence_mapping": "deterministic chain-specific order-preserving mapping of observed coordinate residues onto the metadata sequence; non-identical mapped amino acids fail closed"
+  },
+  "external_data": {
+    "dataset": "SABLE",
+    "doi": "10.5281/zenodo.21759053",
+    "manifest_sha256": "2715120cd40b3e46b09fc17e0db7b7c209c65f1e111f8c28e5a031effe57df10",
+    "split": "official v0.2.0 test split followed by the frozen FrameContact label-free double-cold screen",
+    "version": "0.2.0"
+  },
+  "format_version": "sable_v0_2_0_framecontact_external_execution_plan_v1",
+  "geometry_input": {
+    "af3_input_plan_sha256": "c82c12f08c87b42d21aee31cc555373ffbc4211415d9aff302444baefc971ad6",
+    "antibody_antigen_joint_prediction": false,
+    "cross_partner_geometry": false,
+    "experimental_structure_required_at_inference": false,
+    "experimental_structure_used_as_model_input": false,
+    "source": "independent sequence-predicted chain-internal AlphaFold 3 N/CA/C backbone geometry"
+  },
+  "model_binding_rule": {
+    "contact": "no-distance baseline checkpoint from the same seed",
+    "epitope": "no-distance TopK2 expert checkpoint from the same seed",
+    "mixture_weight_tuning": false,
+    "paratope": "no-distance baseline checkpoint from the same seed",
+    "seeds": [
+      17,
+      29,
+      43
+    ]
+  },
+  "opening": {
+    "action_if_mapping_gate_fails": "FAIL_CLOSED without reporting performance",
+    "feedback_to_model_or_protocol": false,
+    "maximum_label_openings": 1,
+    "sequence": [
+      "complete and SHA-bind all label-free AF3 predictions",
+      "complete and SHA-bind the no-distance checkpoints",
+      "freeze the exact checkpoint-binding receipt",
+      "download and SHA-verify the SABLE bound structures",
+      "materialize contact labels once",
+      "evaluate once under this plan"
+    ]
+  },
+  "old_sabdab2_test_loaded": false,
+  "selection_or_tuning": false,
+  "status": "FROZEN_POST_GATE_BEFORE_BOUND_LABEL_OPENING",
+  "task_labels_read_at_freeze": false,
+  "temporal_holdout_loaded": false
+}

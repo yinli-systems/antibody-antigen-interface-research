@@ -1,0 +1,46 @@
+{
+  "authorization": {
+    "external_test_access": false,
+    "labels_read": false,
+    "model_selection": false,
+    "predictions_read": false,
+    "structures_read": false,
+    "train_sequences_only": true,
+    "training": false
+  },
+  "claim_boundary": "This train-only stage materializes a 40%-identity, 80%-reciprocal-coverage relation in VH, VL, concatenated-antibody, and antigen views. It neither constructs an approved split nor creates a blind benchmark. Training and model selection remain unauthorized until an indivisible-component split has zero independent four-view crossings.",
+  "format_version": "pinder_antibody_s40_relation_result_v1",
+  "model_selection_authorized": false,
+  "protocol_sha256": "c4fe237faa20be19e8621000641ecc0f18ccdf4b087a50fb2602350fd3b98f9b",
+  "relations": {
+    "antigen": {
+      "canonical_row_count": 56069,
+      "receipt_sha256": "2c8ad135cfd27c29df9f4aea434dac719751620c77e497d059772f4c7bd25379",
+      "relation_sha256": "f8d1b0efde0e47a0237a238f6c41a5b063ea46fb8feeb3da407e2227b74fdfc8"
+    },
+    "concatenated_antibody": {
+      "canonical_row_count": 2508590,
+      "receipt_sha256": "efae8d15704133bfbfa9fb55479a003509955711532bf8bc7a36540dea405b3d",
+      "relation_sha256": "5af8bda2869f1618a77f11cb002448ded130c599fa73304ab5b3b7f84d39fd02"
+    },
+    "vh": {
+      "canonical_row_count": 2471824,
+      "receipt_sha256": "c3db26c158f0db9ea0eab4e25aad246d2fe2fc53c4e524b2d6154132f5b583bc",
+      "relation_sha256": "dad5a20699e81e3aecad108402326ff298354f26fd1e42e345a45d2b54c6ebdc"
+    },
+    "vl": {
+      "canonical_row_count": 1586364,
+      "receipt_sha256": "5fdd6a819f43c60d702be1f50ef2af0629acd010b4257ed1e33a748f9abaf85a",
+      "relation_sha256": "1444ecd31c5ed7294bcf377eabc6391f28b35f5b34b7beb0fded015650c2682e"
+    }
+  },
+  "required_next_gate": "Build indivisible four-view similarity components, construct a split, then pass an independent zero-crossing audit.",
+  "scientific_payload_sha256": "e3e93cbafdcac6cb4c175de7c27950b99bc9bbf3125253ffaa12b4bddc78a76f",
+  "status": "PASS_PINDER_TRAIN_FOUR_VIEW_S40_RELATIONS_MATERIALIZED",
+  "thresholds": {
+    "aligned_region_identity_minimum": 0.4,
+    "minimum_reciprocal_coverage": 0.8,
+    "threshold_equality_included": true
+  },
+  "training_authorized": false
+}

@@ -1,0 +1,18 @@
+{
+  "data_root": "/ssd/scxi253/model_deployment/data/external/sable_v0_2_0_label_free",
+  "format_version": "sable_v0_2_0_label_free_screen_submission_receipt_v1",
+  "job_id": "1491926",
+  "launcher_sha256": "f4c1cb3b71db154481b1d761659b81e8dce2395ce7062bff820c55a150c3b014",
+  "metadata_sha256": "d6b16885c7ab44bbe2a38b3fc02ab085adff73479c1a119e3786831f464b20b7",
+  "old_sabdab2_test_loaded": false,
+  "partition": "gpu_4090",
+  "plan_sha256": "6187210253ca07b2d6c5e11e017552485bbb2699bc3772f67d0ee6ad9657d9a4",
+  "sable_bound_structures_downloaded": false,
+  "selection_or_tuning": false,
+  "source_sha256": "17ed317cf18671a902105363721359684450a5cb796ba349ec976728260acd8d",
+  "status": "SUBMITTED_FROZEN_LABEL_FREE_SCREEN",
+  "submitted_at": "2026-08-29T19:45:16+08:00",
+  "task_labels_read": false,
+  "temporal_holdout_loaded": false,
+  "tools_root": "/ssd/scxi253/model_deployment/tools/sable_external_v1"
+}

@@ -1,0 +1,45 @@
+{
+  "bucket_names": [
+    "train",
+    "validation"
+  ],
+  "claim_boundary": "PINDER-train-only antibody adaptation split built from the complete exact four-view 80/80 sequence relation. The assignment remains provisional and is not authorized for training or model selection until an independent exhaustive train-validation Needleman-Wunsch audit reports zero qualifying crossings in VH, VL, concatenated antibody, and antigen views. This is not a performance evaluation, temporal test, structural split, or PLM pretraining leakage audit.",
+  "data_firewall": {
+    "external_validation_rows_read": false,
+    "model_predictions_or_scores_read": false,
+    "structures_or_contact_labels_read": false,
+    "test_rows_read": false,
+    "train_sequences_only": true
+  },
+  "determinism": {
+    "all_inputs_sorted": true,
+    "complete_relation_edge_orientation": "digest ascending",
+    "largest_component_tie_break": "highest original exact-pair degree, then lexical component root",
+    "solver_optimality_gap": 0.0
+  },
+  "discard_policy": "Discard a complete PDB-and-exact-pair connected component whenever its antibody and antigen axis components are assigned to different buckets. Never split a PDB or exact antibody-antigen sequence pair across train, validation, and discarded ledgers.",
+  "format_version": "pinder_antibody_s2_train_validation_full_closure_protocol_v1",
+  "identity_threshold": 0.8,
+  "largest_antibody_component_bucket": "train",
+  "objective": "maximize retained unique exact antibody-antigen sequence pairs across train and validation",
+  "reciprocal_coverage_threshold": 0.8,
+  "required_final_gate": "independent exhaustive exact global four-view Needleman-Wunsch train-validation zero-crossing audit",
+  "solver": {
+    "implementation": "scipy.optimize.milp_HiGHS",
+    "presolve": true,
+    "time_limit_seconds": 900
+  },
+  "source_sha256": {
+    "antigen_complete_edges": "90d41556822b39b271a656986a34cf74c992309de80fc313810b0a8b6d52d0b3",
+    "canonical_manifest": "624612079838536934c81fa3918486e322c16caed19fbba70b6f8b33adc5fb6c",
+    "concatenated_antibody_complete_edges": "d917f42c8f9b1ae1b6eb227418ab1ce2b25d564bfb92ee6df96fcdd2c500e3ed",
+    "full_relation_result": "4cc8ec876c6a6e813013d3e01056799b47992c0010bafe4d528f1b6da943df28",
+    "vh_complete_edges": "1904fde0f38c7a299bbf68e753b89bcfc4e9d1467c2a4223831c01613d5ca134",
+    "vl_complete_edges": "a85f0755501ca2fdb996a4fb1c184d27b9d1faa2e5364e213b2d1ba7cc8631e0"
+  },
+  "threshold_relaxation_after_results": false,
+  "validation_axis_degree_fraction": {
+    "maximum": 0.25,
+    "minimum": 0.15
+  }
+}

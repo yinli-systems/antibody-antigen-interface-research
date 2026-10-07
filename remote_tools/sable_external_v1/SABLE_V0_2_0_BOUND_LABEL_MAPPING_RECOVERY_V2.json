@@ -1,0 +1,32 @@
+{
+  "automatic_retry": false,
+  "bound_structure_cohort_changed": false,
+  "contact_definition_changed": false,
+  "created_at_utc": "2026-08-29T18:03:35Z",
+  "excluded_entries": [],
+  "failure_receipt_sha256": "bb647d6a8c39e90f136cbd3c8ef73ecae95299f05381317b4799942ac55abc24",
+  "format_version": "sable_v0_2_0_bound_label_mapping_recovery_v2",
+  "label_opening_count": 1,
+  "mapping_preflight_entry_count": 97,
+  "mapping_recovery": {
+    "modified_residue_parent_map": {
+      "CSO": "C",
+      "HYP": "P",
+      "MSE": "M",
+      "PCA": "Q",
+      "SEP": "S",
+      "TYS": "Y"
+    },
+    "repeated_physical_chain_rule": "Concatenate declared sequence segments sharing one physical chain ID, map the observed chain exactly once, and project mapped residues back to the original partner axis.",
+    "unknown_residue_wildcard": false
+  },
+  "model_or_checkpoint_changed": false,
+  "original_materializer_sha256": "32c6391363c0673bc6e9427b697fbb861cba13ecc72ee366d5cc9b796107ab09",
+  "performance_metrics_computed_before_recovery": false,
+  "recovery_materializer_sha256": "d00406f71889367e0d77bd7a856b6e33b80eea879cfdfe2746c77d5322e9bf8c",
+  "recovery_sbatch_sha256": "6d0f35ebb1d160f3b8fc03ab98df40e2781b0199b99ca152b74b249fcdadea73",
+  "selection_or_tuning": false,
+  "status": "FROZEN_MEASUREMENT_ONLY_BOUND_LABEL_MAPPING_RECOVERY_V2",
+  "test_or_temporal_access": false,
+  "user_authorized_recovery": true
+}

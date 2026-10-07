@@ -1,0 +1,32 @@
+{
+  "artifacts": {
+    "audit_exists": false,
+    "checkpoint_exists": false,
+    "progress_exists": false,
+    "result_exists": false,
+    "stderr_sha256": "8d5998b7c79223442e731b8faf327b7fbce69395a6faace9ff33c00fedf048a3",
+    "stdout_sha256": "26ce219a940a3f5739bee74d1c546cf99013a8de9e162256dc20d4b29b8d2732"
+  },
+  "classification": "RUNNER_BATCH_API_CONTRACT_FAILURE_BEFORE_FIRST_OPTIMIZER_UPDATE",
+  "failure": {
+    "exit_code": "1:0",
+    "job_id": 1504219,
+    "message": "TypeError: build_stage_a1_microbatch() got an unexpected keyword argument 'padding_multiple'",
+    "state": "FAILED"
+  },
+  "format_version": "abf_paircontact_phase1_mechanism_canary_recovery_failure_v2",
+  "input_checkpoint": {
+    "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "exact_verification": "PASS_DCP_EXACT_VERIFICATION",
+    "generation": "segment-000127"
+  },
+  "scientific_state": {
+    "before_training_holdout_complete": false,
+    "checkpoint_written": false,
+    "holdout_metrics_produced": false,
+    "optimizer_updates": 0,
+    "result_written": false,
+    "test_access": false
+  },
+  "status": "FAIL_CLOSED_NO_SCIENTIFIC_RESULT"
+}

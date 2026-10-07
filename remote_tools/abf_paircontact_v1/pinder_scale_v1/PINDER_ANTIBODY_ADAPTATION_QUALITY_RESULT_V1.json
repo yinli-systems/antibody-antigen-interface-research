@@ -1,0 +1,78 @@
+{
+  "artifact": {
+    "filename": "PINDER_ANTIBODY_ADAPTATION_SYSTEMS_V1.tsv.gz",
+    "row_count": 4075,
+    "sha256": "8a696085735adae9b5ff890d5fed02a1374917ee5e7d677ffbbbc057224ed74f"
+  },
+  "checks": {
+    "all_antibody_antigen_support_edges_official_like_xray_quality": true,
+    "all_rows_sequence_only_at_this_gate": true,
+    "all_rows_train_only": true,
+    "final_weight_mean_is_one": true,
+    "system_ids_unique": true,
+    "test_rows_read": false,
+    "validation_rows_read": false
+  },
+  "claim_boundary": "Train-only quality filtering and multiplicity weighting of reconstructed complete antibody systems. This policy does not materialize contact labels, define a train/development split, authorize training, or report model performance.",
+  "firewall": {
+    "contact_labels_read": false,
+    "model_predictions_read": false,
+    "model_selection_authorized": false,
+    "structures_read": false,
+    "test_rows_read": false,
+    "train_metadata_and_sequences_only": true,
+    "training_authorized": false,
+    "validation_rows_read": false
+  },
+  "format_version": "pinder_antibody_adaptation_quality_result_v1",
+  "model_selection_authorized": false,
+  "multiplicity_policy": {
+    "clip_after_initial_mean_normalization": [
+      0.1,
+      10.0
+    ],
+    "final_normalization": "divide clipped weights by their arithmetic mean so the final mean is one",
+    "formula": "raw=(m_exact_sequence_pair*m_pdb*m_interface_cluster_signature)^(-1/3)",
+    "interface_cluster_signature": "sorted unique PINDER interface cluster IDs across all antibody-antigen support edges of the physical system"
+  },
+  "pinder_release": "2024-02",
+  "quality_policy": {
+    "applies_to": "every antibody-antigen support edge; the H-L assembly-support edge is not an antibody-antigen label source and is not included",
+    "components_per_chain": 1,
+    "interface_atom_gaps_4A": 0,
+    "max_coordinate_variance": 0.98,
+    "method": "X-RAY DIFFRACTION",
+    "minimum_atom_types": 3,
+    "minimum_chain_length": 40,
+    "resolution_max_angstrom": 3.5
+  },
+  "required_next_gate": "Construct a deterministic antibody-and-antigen two-axis split, keep exact sequence pairs and PDB groups indivisible, and independently audit VH, VL, concatenated-antibody, and antigen cross-partition similarity before training.",
+  "retained_summary": {
+    "fab": 3116,
+    "heavy_only_or_vhh": 841,
+    "scfv": 118,
+    "total_systems": 4075,
+    "unique_exact_sequence_pairs": 2722,
+    "unique_interface_cluster_signatures": 582,
+    "unique_pdbs": 2294
+  },
+  "scientific_payload_sha256": "b99b7eb2761acdf8cef9695cb860eafe824a8d902aa6e904f10d842b4cbe369e",
+  "source_sha256": {
+    "full_system_manifest": "4b27f3d33c1c922a57153e8f206c15ba2e12ccc3a6e8fa0c06d1013c16e23bda",
+    "full_system_result": "51f9706de36d9fd00a97945c8fdcb6e85c7b2b0faf4c9bc1c677b84eb00af443",
+    "metadata_parquet": "3e3cfdc21d6c685891d6732edda13fea9d5566d056dfea56a2ae902ab80b4e6c",
+    "protocol_json": "5c871827f4dad526b69fc0bb3db3e5db4402491f6eccb3f0fce87e7334f0954f",
+    "quality_source": "1b8a1d68c09cad765e39554d22b79b9aa627be93f1cbea4f170b6da7b25407c6"
+  },
+  "status": "PASS_PINDER_ANTIBODY_ADAPTATION_QUALITY_AND_MULTIPLICITY_GATE",
+  "training_authorized": false,
+  "weight_summary": {
+    "exact_pair_multiplicity_max": 264,
+    "final_weight_effective_sample_size": 2324.450858196768,
+    "final_weight_max": 3.3140750615985874,
+    "final_weight_mean": 1.0,
+    "final_weight_min": 0.0995241838604456,
+    "interface_cluster_signature_multiplicity_max": 292,
+    "pdb_multiplicity_max": 18
+  }
+}

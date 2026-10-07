@@ -1,0 +1,19 @@
+{
+  "failed_job_id": "1527510",
+  "failed_output_root": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_pinder_b_canary_v1",
+  "failure_class": "execution_plumbing_flash_attention_cu_seqlens_dtype",
+  "failure_log": {
+    "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm-pinder-bcanary-1527510.err",
+    "sha256": "3793def29fb4fdd6463b214c8a8af75620dc3250ee5c5a5c908e58cb3171c4f7",
+    "size": 19603
+  },
+  "gpu_log": {
+    "path": "/ssd/scxi253/model_deployment/results/pretraining/abpairfm_pinder_b_canary_v1/GPU_UTILIZATION.csv",
+    "sha256": "a87219aa0a5d5329d69b6c77cf1155d85221e24e756526b75dce4b8b0818c1a6",
+    "size": 10300
+  },
+  "model_updates": 0,
+  "scientific_protocol_changed": false,
+  "test_access": false,
+  "traceback_terminal": "RuntimeError: cu_seqlens_q must have dtype int32"
+}

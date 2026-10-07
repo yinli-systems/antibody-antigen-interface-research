@@ -1,0 +1,40 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "73fd08e73bf41118ece0e657059c5211ce5930c1c651e3cfd219554692edf08b",
+    "generation": "segment-000031"
+  },
+  "claim_boundary": "Four-GPU train-only frozen-backbone mechanism canary. It cannot establish downstream, external-test, biological, production, or SOTA performance.",
+  "execution": {
+    "job_id": 1504011,
+    "partition": "gpu_4090",
+    "updates": 80,
+    "world_size": 4
+  },
+  "format_version": "abf_paircontact_phase1_mechanism_canary_submission_receipt_v1",
+  "holdout": {
+    "pdb_count": 511,
+    "pdb_inventory_sha256": "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028",
+    "records": 512,
+    "test_access": false
+  },
+  "source": {
+    "audit_sha256": "29a6e995230b3229ca8eda70a8b9e6bd3eb365b2d0ead9c3799529ce65027f2f",
+    "manifest_receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "protocol_sha256": "a3c99d47a57da6a78e050aec342107654b05a132cf50ab42beaf03de3cdd9b54",
+    "reviewed_source_sha256": "5084815803bead4497c2cc723aa375af0ab25fe3ecaa4cb973d873b57e1a518b",
+    "submission_script_sha256": "e1c4092b2bb0def178e9046eea7db3ad623cf92da85b83d89a452ae8bf9972d5"
+  },
+  "supervision": {
+    "distance_bin_weight": 0.0,
+    "distance_label_manifest_permitted": false,
+    "negative_sampling": "deterministic row- and column-matched native noncontacts before random fill"
+  },
+  "test_access": false
+}

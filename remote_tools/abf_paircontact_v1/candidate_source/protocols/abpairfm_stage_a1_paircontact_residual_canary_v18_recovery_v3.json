@@ -1,0 +1,164 @@
+{
+  "authorization": {
+    "development_evaluation": false,
+    "pilot_training": true,
+    "production_training": false,
+    "test_access": false
+  },
+  "checkpoint": {
+    "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+    "generation": "segment-000127",
+    "minimum_consumed_residue_tokens": 2000000000,
+    "optimizer_resume": false
+  },
+  "claim_boundary": "Train-only four-GPU frozen-backbone 80-update standalone mechanism canary anchored to the exact-verified 2.023B-residue-token Stage-A0 checkpoint. It tests whether a decomposed contact head can learn partner-specific interaction residuals under deterministic row- and column-matched negatives. A PDB-disjoint 512-record internal holdout is scored once before and once after training. Because checkpoint retention removed the earlier segment-000031 tensor shards, this recovery is not an exact single-factor comparison with the prior v17 canary. No distance-bin targets, privileged distance labels, frozen development, old test, or temporal data are read. Passing authorizes only a later preregistered Stage-A1 scaling experiment; it is not downstream, external-test, biological, or SOTA evidence.",
+  "efficiency": {
+    "activation_checkpointing_candidates": [
+      "off"
+    ],
+    "expected_bucket_records": 4967,
+    "expected_source_records": 19200,
+    "gpu_peak_bfloat16_flops": 82580000000000,
+    "maximum_combined_tokens": 128,
+    "mfu_semantics": "approximate frozen-backbone forward-token 2N MFU; head FLOPs, holdout evaluation, padding and communication are excluded",
+    "minimum_combined_tokens": 65,
+    "padding_multiple": 64,
+    "parameter_count": 2839005633,
+    "phase_schedule": "paircontact_residual_head_only_frozen_backbone",
+    "selection_seed": 1701,
+    "trial_matrix": [
+      {
+        "activation_checkpointing": "off",
+        "microbatch_pairs_per_rank": 48
+      }
+    ]
+  },
+  "efficiency_gate_only": true,
+  "format_version": "abpairfm_stage_a1_paircontact_residual_canary_v18",
+  "internal_holdout": {
+    "expected_pdb_count": 511,
+    "grouping": "lowercase_pdb_prefix",
+    "pdb_inventory_sha256": "0166ecee25b61f333fe36197ca9625ed3a134221946a38e023f6022b4cc49028",
+    "selection_seed": 1701,
+    "target_records": 512,
+    "test_access": false
+  },
+  "loss": {
+    "contact": {
+      "centering": "mean squared sampled row and column interaction-logit means",
+      "centering_weight": 0.1,
+      "class_balance": "sampled positive-weighted binary cross entropy over full logits",
+      "distance_bin_weight": 0.0,
+      "distance_label_manifest_permitted": false,
+      "maximum_negative_to_positive_ratio": 4,
+      "maximum_positive_pairs_per_complex": 102,
+      "maximum_sampled_pairs_per_complex": 512,
+      "projection_dimension": 256,
+      "ranking": "mean softplus margin over within-complex positive-negative pairs sharing the antibody or antigen endpoint; interaction logits only",
+      "ranking_margin": 0.5,
+      "ranking_weight": 0.5,
+      "representation_view": "joint_cross_chain_attention_frozen_backbone",
+      "sampling": "deterministic row- and column-matched native noncontacts before random fill",
+      "sampling_seed": 1701,
+      "weight": 1.0
+    },
+    "masked_language_modeling": {
+      "balance": "disabled_for_head_only_diagnostic",
+      "representation_view": "joint_cross_chain_attention_frozen_backbone",
+      "weight": 0.0
+    },
+    "retrieval": {
+      "candidate_scope": "disabled_for_head_only_diagnostic",
+      "direction": "disabled_for_head_only_diagnostic",
+      "participants": "none",
+      "representation_view": "disabled_for_head_only_diagnostic",
+      "temperature": 0.07,
+      "weight": 0.0
+    }
+  },
+  "optimization": {
+    "accumulation_steps": 1,
+    "backbone_learning_rate": 0.0,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "gradient_clip_norm": 1.0,
+    "head_learning_rate": 0.0001,
+    "microbatch_pairs_per_rank_candidates": [
+      48
+    ],
+    "updates": 80,
+    "weight_decay": 0.01
+  },
+  "pilot_manifest": {
+    "counterfactual_mapped_retrieval_records": 15948,
+    "expected_retrieval_supervised_records": 16000,
+    "manifest_sha256": "45e0ff7deb6a1e1ef54fb5efba1c82bd8d918e34061ad4c4201e903097bccaed",
+    "minimum_full_endpoint_residues": 8,
+    "minimum_patch_endpoint_residues": 4,
+    "ppiref_records_per_microbatch": 5,
+    "receipt_sha256": "2513b8548baca2755ca681e8fc2589ab45922d71491966551aeb82ecd754d74a",
+    "selection_seed": 1701,
+    "source_protocol_sha256": "27da4df9fcca2d7faf4f75d95c8e73f6c5470680d76ee5e467af6618acc60a24",
+    "string_direct_only": false,
+    "string_records_per_microbatch": 1,
+    "string_retrieval_supervision": false,
+    "total_records": 19200,
+    "unique_ppiref_exact_pairs": true
+  },
+  "promotion_gates": {
+    "finite_all_losses": true,
+    "maximum_peak_memory_fraction": 0.95,
+    "minimum_contact_positive_support": 50,
+    "minimum_counterfactual_coverage": 0.995,
+    "minimum_internal_holdout_column_matched_accuracy_absolute_gain": 0.02,
+    "minimum_internal_holdout_full_macro_ap_absolute_gain": 0.02,
+    "minimum_internal_holdout_interaction_macro_ap_absolute_gain": 0.01,
+    "minimum_internal_holdout_row_matched_accuracy_absolute_gain": 0.02,
+    "minimum_retrieval_candidates_per_query": 0,
+    "minimum_retrieval_cognate_support": 0,
+    "minimum_train_contact_relative_reduction": 0.02,
+    "minimum_train_ranking_relative_reduction": 0.02,
+    "required_checkpoint_restore": true
+  },
+  "recovery": {
+    "authorized_once": true,
+    "code_fix": "Remove unsupported padding_multiple and contact_distance_bin_count keywords from all runner calls to build_stage_a1_microbatch; no objective, data, split, holdout, seed, optimization, update-count, or gate change.",
+    "failed_job_ids": [
+      1504011,
+      1504219
+    ],
+    "failure_receipts": {
+      "1504011": "PHASE1_MECHANISM_CANARY_FAILURE_V1.json",
+      "1504219": "PHASE1_MECHANISM_CANARY_RECOVERY_FAILURE_V2.json"
+    },
+    "new_checkpoint_exact_verification": {
+      "consumed_residue_tokens": 2022862461,
+      "content_sha256": "3f3e79d4b49fa16c3d837a1417ed3c8b677da11e357e5fb9af133edcfa83bd2e",
+      "elapsed_seconds": 41.92185044288635,
+      "generation": "segment-000127",
+      "global_update": 25600,
+      "status": "PASS_DCP_EXACT_VERIFICATION",
+      "test_access": false
+    },
+    "only_scientific_change_from_original_v18": "The frozen backbone anchor advances from pruned segment-000031 to exact-verified segment-000127; all other scientific choices are unchanged.",
+    "regression_test": "test_runner_microbatch_calls_match_frozen_batch_api",
+    "silent_retry": false,
+    "systems_change": "Set CUBLAS_WORKSPACE_CONFIG=:4096:8 before Python starts, matching the passed one-GPU deterministic recovery.",
+    "tests": "18 passed"
+  },
+  "status": "FROZEN_BEFORE_PILOT_MANIFEST_AND_GPU_TRAINING",
+  "systems": {
+    "cpus_per_task": 24,
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8"
+    },
+    "explicit_mem_argument_permitted": false,
+    "partition": "gpu_4090",
+    "python": "/ssd/scxi253/model_deployment/envs/contact/bin/python3.10",
+    "world_size": 4
+  },
+  "systems_gate_only": true,
+  "test_access": false
+}
